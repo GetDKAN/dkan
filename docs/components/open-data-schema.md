@@ -2,7 +2,7 @@
 
 This module provides a flexible way to expose your Drupal content via APIs following specific Open Data schemas. Currently, the [CKAN](http://docs.ckan.org/en/ckan-1.8/domain-model-dataset.html), [Project Open Data](http://project-open-data.github.io/schema/) and [DCAT-AP](https://joinup.ec.europa.eu/asset/dcat_application_profile/description) schemas are provided, but new schemas can be easily added through your own modules. A user interface is in place to create endpoints and map fields from the chosen schema to Drupal content using tokens.
 
-This module was developed as part of the DKAN project, but will work on an Drupal 7 site. A [separate module exists for DKAN-specific implementation](https://github.com/NuCivic/open_data_schema_map_dkan).
+This module was developed as part of the DKAN project, but will work on an Drupal 7 site. A [separate module exists for DKAN-specific implementation](https://github.com/GetDKAN/open_data_schema_map_dkan).
 
 Note that serious performance issues can result if you do not follow recommendations in the [ODSM File Cache section](#the-odsm-file-cache).
 
@@ -12,7 +12,7 @@ Note that serious performance issues can result if you do not follow recommendat
 A schema is a list of field definitions, usually representing a community specification for presenting machine-readable data. The core Open Data Schema Map module does not include any schemas; they are provided by additional modules. A schema module includes:
 
 * a standard Drupal .module file -- with an implementation of ```hook_open_data_schema()``` to expose the schema to the core Open Data Schema Map module, plus _alter functions for any needed modifications of the UI form or the data output itself.
-* the schema itself, expressed as a .json file. For instance, see the [Project Open Data schema file](https://github.com/NuCivic/open_data_schema_map/blob/master/modules/open_data_schema_pod/data/single_entry.json) to see how these schema are defined in JSON
+* the schema itself, expressed as a .json file. For instance, see the [Project Open Data schema file](https://github.com/GetDKAN/open_data_schema_map/blob/master/modules/open_data_schema_pod/data/single_entry.json) to see how these schema are defined in JSON
 
 
 ### API
@@ -35,7 +35,7 @@ Navigate to admin/config/services/odsm and click "Add API."
 
 ![screen shot 2014-07-14 at 3 24 03 pm](../images/c7ff24e6-0b8c-11e4-92c3-9ba2e163bf56.png)
 
-Give the API a title, machine name, choose which entity type (usually _node_) and bundle (in [DKAN](https://github.com/NuCivic/dkan), this is usually _Dataset_).
+Give the API a title, machine name, choose which entity type (usually _node_) and bundle (in [DKAN](https://github.com/GetDKAN/dkan), this is usually _Dataset_).
 
 ![screen shot 2014-07-14 at 3 46 39 pm](../images/b3e6ea90-0b8f-11e4-9d9e-33b4515310f0.png)
 
@@ -116,7 +116,7 @@ Date formats can be chanaged manually by changing the "Medium" date time format 
 
 Open Data Schema Map provides an XML output format. This is provided via a separate submodule in the `modules/` folder for historical reasons, but should be refactored into the main ODSM module in a future release. 
 
-XML endpoints still require a _schema_ defined in JSON. Defining your own XML endpoint may be less than intuitive for the time beind, but take a look at the [DCAT schema module](https://github.com/NuCivic/open_data_schema_map/tree/master/modules/open_data_schema_dcat) for a model.
+XML endpoints still require a _schema_ defined in JSON. Defining your own XML endpoint may be less than intuitive for the time beind, but take a look at the [DCAT schema module](https://github.com/GetDKAN/open_data_schema_map/tree/master/modules/open_data_schema_dcat) for a model.
 
 ## The ODSM File Cache
 
@@ -155,6 +155,6 @@ Both the Project Open Data and DCAT-AP schemas ship with validation tools you ca
 
 ## Community
 
-We are accepting issues for Open Data Schema Map in the [DKAN issue queue](https://github.com/NuCivic/dkan/issues) only. Please label your issue as **"Component: ODSM"** after submitting so we can identify problems and feature requests faster.
+We are accepting issues for Open Data Schema Map in the [DKAN issue queue](https://github.com/GetDKAN/dkan/issues) only. Please label your issue as **"Component: ODSM"** after submitting so we can identify problems and feature requests faster.
 
 If submitting a pull request to this project, please try to link your PR to the corresponding  issue in the DKAN issue thread.

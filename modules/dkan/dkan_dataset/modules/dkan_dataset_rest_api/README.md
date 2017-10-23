@@ -45,13 +45,13 @@ Session authentication is enabled by default. With session authentication an ini
 Token authenticaion is not currently available out of the box. However, it can be enabled by adding the <a href="https://www.drupal.org/project/services_token_access">Services Token Access</a> module to your site. This is less secure but is easier for community members to use, and may be added to the DKAN distribution in a future release.
 
 ### Authentication Permissions
-The permissions with which a user is granted depend on the user role. User roles and permissions are easily configured in the user administration screen at ``admin/people``, and DKAN comes with a number of pre-configured default roles via the [DKAN Permissions](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_permissions) module.
+The permissions with which a user is granted depend on the user role. User roles and permissions are easily configured in the user administration screen at ``admin/people``, and DKAN comes with a number of pre-configured default roles via the [DKAN Permissions](https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/dkan_permissions) module.
 
 ## Examples
 
 Below you can find examples in PHP for the most common use cases, using session authentication.
 
-For an example of a fully-functional python-based client to the DKAN REST API, see the [pydkan](https://github.com/NuCivic/pydkan) project.
+For an example of a fully-functional python-based client to the DKAN REST API, see the [pydkan](https://github.com/GetDKAN/pydkan) project.
 
 #### How to Log In and get the Session Cookie
 

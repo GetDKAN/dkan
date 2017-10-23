@@ -2,7 +2,7 @@ DKAN Workflow
 =============
 
 DKAN Workflow is a Workflow implementation for `DKAN
-<https://github.com/NuCivic/dkan>`_ based on the `Workbench
+<https://github.com/GetDKAN/dkan>`_ based on the `Workbench
 <https://www.drupal.org/project/workbench>`_ family of modules.
 
 The goal of this component is help various organizations adhere to an editorial
@@ -41,7 +41,7 @@ contrib modules to provide extra functionality (Menu and link badges, etc).
 * `Better Exposed Filters <https://www.drupal.org/project/better_exposed_filters>`_
 
 All those dependencies are declared in the `drupal-org.make
-<https://github.com/NuCivic/dkan/blob/7.x-1.x/drupal-org.make>`_ file.
+<https://github.com/GetDKAN/dkan/blob/7.x-1.x/drupal-org.make>`_ file.
 
 Installation
 ------------

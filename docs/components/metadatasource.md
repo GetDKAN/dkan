@@ -1,7 +1,7 @@
 # Metadata Source Module
 
 ### Summary
-This documentation is for a module that is not part of the DKAN distribution but can be added to an existing DKAN site. This module, along with further documentation, is here: https://github.com/NuCivic/dkan_dataset_metadata_source#dkan-metadata-source
+This documentation is for a module that is not part of the DKAN distribution but can be added to an existing DKAN site. This module, along with further documentation, is here: https://github.com/GetDKAN/dkan_dataset_metadata_source#dkan-metadata-source
 
 ### DKAN Metadata Source
 Metadata is the “Who, What, When, Where, Why” of each dataset and its associated resources. When data contributors make sure to provide appropriate and thorough information for each dataset, users will have an easier time understanding the source and purpose of each dataset, and they can more easily plug it into their application of choice.

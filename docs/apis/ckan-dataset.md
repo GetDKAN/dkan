@@ -2,7 +2,7 @@
 
 DKAN provides a number of public, read-only APIs that are designed to provide catalog and dataset information as well as updates that allow observers to track and pull in changes.  These public APIs are specifically designed to allow CKAN sites to harvest from DKAN based off of the APIs used for the [CKAN Harvester](https://github.com/ckan/ckanext-harvest/tree/master/ckanext/harvest/harvesters).
 
-All the APIs listed on this page are provided via the [Open Data Schema Map](https://github.com/NuCivic/open_data_schema_map) module.
+All the APIs listed on this page are provided via the [Open Data Schema Map](https://github.com/GetDKAN/open_data_schema_map) module.
 
 ## Supported APIs
 

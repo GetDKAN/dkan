@@ -17,7 +17,7 @@ through the command line, or run periodically.
 
 ### Example module
 
-We have provided an example module in this repo. To create a custom migration just create a module that inherits the Resource and Dataset classes and puts in the endpoint for your CKAN instance: https://github.com/NuCivic/dkan_migrate_base/blob/master/modules/dkan_migrate_base_example/dkan_migrate_base_example.module#L41
+We have provided an example module in this repo. To create a custom migration just create a module that inherits the Resource and Dataset classes and puts in the endpoint for your CKAN instance: https://github.com/GetDKAN/dkan_migrate_base/blob/master/modules/dkan_migrate_base_example/dkan_migrate_base_example.module#L41
 
 ### Periodic Migrations
 After the initial time the migration is run it will check each dataset and resource from the CKAN instance and only update items that have changed in CKAN.
@@ -129,7 +129,7 @@ We are working on improving this documentation. Please let us know if you have a
 
 ### Contributing
 
-We are accepting issues in the dkan issue thread only -> https://github.com/NuCivic/dkan/issues -> Please label your issue as **"component: dkan_migrate_base"** after submitting so we can identify problems and feature requests faster.
+We are accepting issues in the dkan issue thread only -> https://github.com/GetDKAN/dkan/issues -> Please label your issue as **"component: dkan_migrate_base"** after submitting so we can identify problems and feature requests faster.
 
 If you can, please cross reference commits in this repo to the corresponding issue in the dkan issue thread. You can do that easily adding this text:
 
