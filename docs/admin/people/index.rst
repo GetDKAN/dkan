@@ -8,8 +8,9 @@ Data and content management can't be done alone. Site Managers handle all the us
 
 .. toctree::
    :maxdepth: 2
-   
+
    dkan_user_accounts
    adding_new_users
    group_roles_and_permissions
+   user_management
    dkan_workflow
