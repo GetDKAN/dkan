@@ -11,9 +11,9 @@ Multinational
 ===========================================      =============
 Organization                                     URL
 ===========================================      =============
-United Nations (Open Data System Inventory)      www3.unog.ch/web/hlcm/inventory/
-The World Bank                                   climatesmartplanning.org
-Votes Without Violence                           www.voteswithoutviolence.org
+United Nations (Open Data System Inventory)      http://data.un.org/
+The World Bank                                   http://climatesmartplanning.org
+Votes Without Violence                           http://www.voteswithoutviolence.org
 ===========================================      =============
 
 
@@ -23,18 +23,18 @@ United States of America
 ==================================================      =============
 Organization                                            URL
 ==================================================      =============
-U.S. Department of Health and Human Services (USA)      healthdata.gov
-National Democratic Institute                           nditech.org/project/dkan
-USDA National Agricultural Library                      data.nal.usda.gov
-California                                              data.ca.gov
-Oklahoma                                                data.ok.gov
-North Dakota                                            gishubdata.nd.gov/
-Georgia (Governor's Office of Student Achievement)      schoolgrades.ga.gov
-Massachusetts                                           docs.digital.mass.gov
-Nebraska                                                nebraskamap.gov/
-Louisville, KY                                          data.louisvilleky.gov
-OpenOakland                                             data.openoakland.org
-DigitalC                                                civicinsights.org
+U.S. Department of Health and Human Services (USA)      http://healthdata.gov
+National Democratic Institute                           http://nditech.org/project/dkan
+USDA National Agricultural Library                      http://data.nal.usda.gov
+California                                              http://data.ca.gov
+Oklahoma                                                http://data.ok.gov
+North Dakota                                            http://gishubdata.nd.gov/
+Georgia (Governor's Office of Student Achievement)      http://schoolgrades.ga.gov
+Massachusetts                                           http://docs.digital.mass.gov
+Nebraska                                                http://nebraskamap.gov/
+Louisville, KY                                          http://data.louisvilleky.gov
+OpenOakland                                             http://data.openoakland.org
+DigitalC                                                http://civicinsights.org
 ==================================================      =============
 
 
