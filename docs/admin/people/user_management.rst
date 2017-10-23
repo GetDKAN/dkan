@@ -1,7 +1,10 @@
 Managing existing users
 =======================
 
-Site managers can manage users’ clicking 'People' in the Admin Menu. From this screen you can see all existing users, their roles, and details about their account, and by clicking on individual users you can additionally see all the content the user has created. You can also edit their account to change details, add or remove a role, add them to Groups or cancel an account.
+Site managers can manage users by clicking 'People' in the Admin Menu. From this screen you can see all existing users, their roles, and details about their account, and by clicking on individual users you can additionally see all the content the user has created. You can also edit their account to change details, add or remove a role, add them to Groups or cancel an account.
+
+.. figure:: ../../images/site_manager_playbook/people/user-administration.png
+   :alt: Screen shot of the user administration page.
 
 **To edit an existing user's account:**
 
@@ -10,41 +13,29 @@ Site managers can manage users’ clicking 'People' in the Admin Menu. From this
 * On the resulting “edit user” page, you can edit the user’s username, email, or profile information. You can also set a new password for the user. Click the “Save” button at the bottom of the page to save your changes.
 * Use the “Cancel account” at the bottom of the edit user page to delete an account. You will be given the option to preserve or delete any website content added by that user before deletion.
 
-Finding users and bulk actions
-------------------------------
+Filtering Users
+---------------
 
-On some sites, the list of users can be several pages long. To find a specific user or group of users you can use the filters to narrow the results.
+On some sites, the list of users can be several pages long. To find a specific user or group of users you can use filters to narrow the results. This makes it easy to manage multiple users at the same time or find an individual user without needing to browse through several pages of users.
 
-Filter users and refine results. Filters are most helpful when you're looking for a group of users that can meet a general search criteria. This makes it easy to manage multiple users at the same time or find an individual user without needing to browse through several pages of users. There are two types of filters to narrow users: role and status.
+- **Username** You can enter text into the username filter to limit the results to usernames that contain matching text.
+- **E-mail** Filter users by e-mail
+- **Active** This filter will limit the results to either Active users or Blocked users.
+- **Role** By selecting a role, the results will only show users that are assigned that specific role.
 
-- **Role.** Filtering users by a role is best used for managing users by permissions. You may want to give a group of users higher permissions or you may want to change the status of a group of users. By selecting a role, the results will only show users that are assigned that specific role.
-- **Status.** You can also filter users with a certain status. Click the drop-down menu in the status field and click active to show only active users. Showing only active users ignores users that are not active so that you manage only relevant accounts.
 
-**Refine results.** If your search is more complex, you can refine the results of the initial results by adding additional search criteria. You can select multiple roles and/or status. So the results would only show users who meet all the criteria.
+Bulk Operations
+---------------
 
-.. figure:: ../../images/site_manager_playbook/managing_users/managing_users_02.png
-   :alt: A screencap of the "Show Only Users Where" screen for narrowing down specific users.
+When you have several users that require the same action, you can use the **Operations** selector to perform bulk actions on a group of users. Rather than spend extra time performing the same action over and over again for individual users, you can select multiple users and make the change for the group with just one click.
 
-Select the first criteria and click the Filter button to narrow the user list. Once the results are narrowed, you can select an additional search criteria and click the Refine button to narrow the results further. You can do this for multiple search criteria.
+From the People page, check the box next to all of the users you would like to update. Select a task from the Operations drop-down list and click the **Execute** button. You can quickly make changes for a group of users like adding or removing a role and blocking or canceling their accounts.
 
-Click the Undo button to remove the last search criteria you added or click the Reset button to remove all the search criteria. Make sure to click the Reset button once you're done with your search. Otherwise the results will remain narrowed, even if you navigate to another page, until all the criteria have been removed.
-
-.. figure:: ../../images/site_manager_playbook/managing_users/managing_users_03.gif
-   :alt: An animated screencap showing user management on the People page.
-
-**Bulk actions.** When you have several users that require the same action, you can use this menu to perform bulk actions on a group of users. Rather than spend extra time performing the same action over and over again for individual users, you can select multiple users and make the change for the group with just one click.
-
-From the People page, select all the user accounts that need to be updated by checking the white check box next to their username. Find the drop-down Update options menu and choose the action you want to perform. You can quickly make changes for a group of users like adding or removing a role and blocking or canceling their accounts.
-
-In the example below, the Site Manager first uses the status filter to show only blocked users. Then the Site Manager checks the users that should be unblocked, and then finds the Unblock the selected user option in the Update options drop-down menu. Finally, they click the Update button to finalize the changes.
-
-.. figure:: ../../images/site_manager_playbook/managing_users/managing_users_04.gif
-   :alt: An animated screencap showing user management on the People page.
 
 Blocking a user or canceling an account
 ---------------------------------------
 
-At some point, most user accounts will need to be deleted or blocked. Typically this is for internal employees who move on from the organization, but there are occasions involving external users. There are a number of options for canceling an account or blocking a user to meet a number of scenarios.
+At some point, a user account may need to be deleted or blocked. Typically this is for internal employees who move on from the organization, but there are occasions involving external users. There are a number of options for canceling an account or blocking a user to meet a number of scenarios.
 
 **Block an account.** Blocking an account is the most simple and straightforward way to suspend an account. Blocking a user account keeps a user from logging in, and accounts can easily be unblocked. A blocked account only means that a user cannot login to their account and access your DKAN site. All of their content and profile details will remain, so nothing is lost if you want to unblock an account and restore access.
 

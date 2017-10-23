@@ -32,23 +32,35 @@ When any user creates a new piece of content it defaults to a published state. T
 
 Though you might not edit every piece of content, you'll generally review all the content that is visible to the public (in a published state) and make edits whenever necessary. Only Site Managers have the ability to edit or delete any piece of content regardless of the author, so use your best judgment when reviewing and editing content. If you're ever unsure, you can unpublish the content and go back to the author before making changes or removing the content.
 
-.. image:: ../../images/site_manager_playbook/managing_existing_content/content_admin_page.png
+.. image:: ../../images/site_manager_playbook/managing_existing_content/content_admin_page_new.png
    :alt: content administration page highlighting admin menu option, add content button, search, and content list
 
-Find content
+Filtering content
+-----------------
+
+Your DKAN site may have hundreds, or even thousands, of pieces of content from Resources to Data Stories; and as a Site Manager you'll have access to every piece of content. You can sift through the content and use filters on the Content main page to find content effectively. Filters help narrow your search by a set of criteria.
+
+Title
+  Type in text to narrow results to content where the title contains the text entered here.
+Type
+  Select a content type from the drop-down menu to limit the results to content that matches the type selected.
+Published
+  Limit results to published or unpublished content.
+Author
+  Type in a username to limit the results to content submitted by the user entered here.
+Date
+  Use the date filters to limit the results to content matching the dates entered.
+
+Bulk Operations
 ---------------
 
-Your DKAN site may have hundreds, or even thousands, of pieces of content from Resources to Data Stories; and as a Site Manager you'll have access to every piece of content. You can sift through the content and use filters on the Content main page to find content effectively. Filters help narrow your search by a set of criteria. On the Content main page, there are two types of filters to narrow the results: status and type.
+To perform a task on multiple pieces of content at one time use the Operations selector. This is good for publishing/unpublishing/deleting several items at once, or assigning content to a different author.
 
-Status
-  Choose from the status drop-down menu to show content that fits a specific status, like published or unpublished. The other options on this list, like promoted and sticky, are not typically used.
-Type
-  The type of content includes all the content types that may be added to your DKAN site. Choose from the type drop-down menu to select the content type to show only content that fits the specific type, like Resource or Data Story.
-
-.. image:: ../../images/site_manager_playbook/managing_existing_content/content_status_dropdown.png
-   :alt: content search by status dropdown options
-.. image:: ../../images/site_manager_playbook/managing_existing_content/content_type_dropdown.png
-   :alt: content search by type dropdown options
+1. Navigate to the Content page `admin/content`
+2. (Optional) Filter the content to bring the content you want to work with to the top of the list.
+3. Check the box next to each item you want to run the operation on.
+4. Select an operation from the **Operations** dropdown list.
+5. Click the **Execute** button.
 
 Edit from the page
 ------------------
@@ -155,15 +167,6 @@ When content is added, by any user, the content defaults to a published state. U
 
 In some cases the changes may be minor revisions, but other scenarios could require heavy editing before the content is ready to be made public. Some content is simply time-sensitive; the information is authored ahead of time but shouldn't be made public until a certain date. Publishing states let you manage the visibility of your content to give Site Managers greater control over the content that appears on your DKAN site.
 
-Bulk actions
-------------
-
-Some changes are general and can be applied to multiple pieces of content at the same time. You can use the Update options menu to make changes to content by checking all the pieces of content you want to make updates, selecting an update option, and clicking the Update button. The most frequently used actions for bulk actions on content are unpublishing content and deleting content.
-
-.. figure:: ../../images/site_manager_playbook/managing_existing_content/editing_bulk_content_animation.gif
-   :alt: animation of content bulk edits
-
-   In this example, a Site Manager is selecting multiple pieces of content to have a common action taken on all the content—a bulk action. The Site Manager then chooses the unpublish option from the drop-down Update options menu and clicks the Update button to finalize the action.
 
 Deleting content
 ----------------
