@@ -1,9 +1,9 @@
-7.x-1.14.x
-----------
- - #1979 Allow users to set Groups on standalone resources.
-
 7.x-1.14
 --------
+ - #2186 Move the 'back to dataset' local task position so that the 'revisions' link position matches the standard location.
+ - #1979 Allow users to set Groups on standalone resources.
+ - #2151 Adding print styling so that images, table rows, and charts work with page breaks.
+ - #2141 Exclude header search form from printed output
  - #2174 Fix access to revisions for anonymous users when dkan_workflow is enabled.
  - #2175 Removed video content from the About page. Removed or replaced references to Granicus.
  - #2075 DKAN Harvest: Modified batch process to split harvest migrations in chunks.
@@ -28,18 +28,18 @@
  - #1955 Update ahoy docker tooling for local environment usecase.
  - #1903 Add support for tab-delimited files (TSV) in resources/recline preview.
  - #2001 Improve REST API documentation.
- - #1991 Fix host IP replacement on script used to recconect the MySQL container. 
+ - #1991 Fix host IP replacement on script used to recconect the MySQL container.
  - #1942 DevOps: Restore drush commands to deal with orphaned resources.
  - #1943 Update tests to be more compatible with client sites, multiple testing and devops improvements.
  - #1962 Recline.view.nvd3.js: Fixed display of data with zero as values.
  - #1888 Added validation on axis tick settings on visualization_entity.
  - #1725 Fix `ahoy dkan uli` output login link.
- - #1881 Fix yaml syntaxt to make it standard. 
+ - #1881 Fix yaml syntaxt to make it standard.
  - #1853 Update chart documentation.
  - #1839 Add help text and improve UI on the chart form for better clarity.
- - #1827 Remove option to import TABed CSV files into datastore. 
+ - #1827 Remove option to import TABed CSV files into datastore.
  - #1807 Add admin_views module for enhanced content and file filtering.
- - #1990 DevOps: Automatically populate required fields when running behat tests. 
+ - #1990 DevOps: Automatically populate required fields when running behat tests.
  - #1938 DevOps: Allow behat tests to be skipped in circle.
  - #1842 Add help text to explain the pager on data previews.
  - #1542 Creates migration on harvest source import.
@@ -120,7 +120,7 @@
  - #1876 Removed hard coded colors in the menu.scss file.
  - #1825 Adapt the 'dataQuality' input value druing POD harvest.
  - #1817 Load empty cells as null in fast import.
- - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar. 
+ - #1846 Adds a hook_update to exclude the data dictionary field from using the markdown toolbar.
  - #1813 Update the groups page view to sort alphabetically rather than by post date.
  - NuCivic/recline#89 Only load previews for resources using files; API/website links should always display iframe.
  - #1841 Fixed mis-named function on dkan_dataset_content_types.api.php
@@ -131,14 +131,14 @@
  - #1828 Field Frequency Harvest POD integration is missing support for "irregular" value.
  - #1820 Use "accessURL" during resources harvest if "downloadURL" field is not available.
  - #1852 Allow the use of multi-polygonal data for Dataset Spatial field.
- - #1857 Fixed publishing options not accessible when dkan_workflow is enabled. 
+ - #1857 Fixed publishing options not accessible when dkan_workflow is enabled.
  - #1932 Fix windows delimiter for datastore_fast_import.
 
 7.x-1.13.3 2017-04-18
 ---------------------
  - #1863 Update restws module to v2.7
  - #1859 Fixed update hooks to correctly set jquery version and remove old modified source date field
- - #1864 Update media to 2.0 and remove patch 2534724. 
+ - #1864 Update media to 2.0 and remove patch 2534724.
  - #1829 Fixed missing properties on warning message during datajson harvest cache.
  - #1802 Better support for Issued and Updated dataset properties from harvested sources.
  - #1821 Remove redundant CSS load in dkan_dataset.
