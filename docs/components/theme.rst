@@ -97,7 +97,7 @@ To create a Nuboot Radix subtheme, run these commands
 
   drush vset theme_default radix
 
-  drush radix "MyThemeName" --kit=https://github.com/NuCivic/radix-kit-nuboot/archive/master.zip
+  drush radix "MyThemeName" --kit=https://github.com/GetDKAN/radix-kit-nuboot/archive/master.zip
 
   drush vset theme_default MyThemeName
 

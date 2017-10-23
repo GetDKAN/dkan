@@ -147,7 +147,7 @@ Feature: Resource
 
   @fixme @dkanBug @noworkflow
     #TODO: There is an issue where an admin, when clicking revert, gets a access unauthorized response.
-    #     See: https://github.com/NuCivic/dkan/issues/793
+    #     See: https://github.com/GetDKAN/dkan/issues/793
   Scenario: Revert any resource revision
     Given I am logged in as "John"
     And I am on "Resource 02" page

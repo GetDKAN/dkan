@@ -18,7 +18,7 @@ See installation instructions here: http://docs.getdkan.com/dkan-documentation/d
 
 ## Contributing
 
-We are accepting issues in the dkan issue thread only -> https://github.com/NuCivic/dkan/issues -> Please label your issue as **"component: dkan_dataset"** after submitting so we can identify problems and feature requests faster.
+We are accepting issues in the dkan issue thread only -> https://github.com/GetDKAN/dkan/issues -> Please label your issue as **"component: dkan_dataset"** after submitting so we can identify problems and feature requests faster.
 
 If you can, please cross reference commits in this repo to the corresponding issue in the dkan issue thread. You can do that easily adding this text:
 

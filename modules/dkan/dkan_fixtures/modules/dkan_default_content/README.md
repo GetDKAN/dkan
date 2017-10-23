@@ -1,7 +1,7 @@
 # DKAN Default Content
 
 DKAN Default Content is the module that holds all the default content delivered with DKAN. All content is
-imported through the _fixtures_ that can be found inside the /data directory. [DKAN Fixtures](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_fixtures) was used to generate
+imported through the _fixtures_ that can be found inside the /data directory. [DKAN Fixtures](https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/dkan_fixtures) was used to generate
 the default content fixtures and to migrate all the data using the migration clases that are provided.
 
 ## Updating the fixtures
