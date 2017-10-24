@@ -10,7 +10,7 @@
       "accessLevel": "public",
       "contactPoint": {
         "fn": "Stefanie Gray",
-        "hasEmail": "mailto:stefanie@nucivic.com"
+        "hasEmail": "mailto:stefanie@example.com"
       },
       "description": "<p>Information about the state workforce, broken down into four generational cohorts.</p> <p><strong>Note:</strong> This dataset has been given a vague name because it is anonymized demo data, not actual state data.</p> ",
       "identifier": "95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
