@@ -8,7 +8,7 @@ DKAN is an open source open data platform with a full suite of cataloging, publi
 
 ## Community
 
-Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
+Join the [DKAN Slack community](https://dkansignup.herokuapp.com/). 
 
 ## Connect
 
