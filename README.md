@@ -2,9 +2,9 @@
 
 DKAN is an open source open data platform with a full suite of cataloging, publishing and visualization features that allow organizations to easily publish data to the public.
 
-*  [ Official website ](https://getdkan.org)
-*  [ Demo ](http://demo.getdkan.com/)
-*  [ Documetation ](http://docs.getdkan.com/)
+*  [Official website](https://getdkan.org)
+*  [Demo](http://demo.getdkan.com/)
+*  [Documetation](http://docs.getdkan.com/)
 
 ## Community
 
@@ -12,15 +12,15 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 
 ## Connect
 
-* [ Subscribe ](http://eepurl.com/c01YS1)
-* [ Slack ](https://dkan.slack.com/)
-* [ Blog ](https://medium.com/dkan-blog)
-* [ Twitter ](https://twitter.com/getdkan)
-* [ GitHub ](https://github.com/getdkan)
-* [ YouTube ](https://www.youtube.com/channel/UCl7qFUCkyh32lss4EjQEUXg)
-* [ Drupal ](https://www.drupal.org/project/dkan)
-* [ Eventbrite ](https://www.eventbrite.com/o/dkan-14793986036)
-* [ RSS ](https://medium.com/feed/dkan-blog)
+* [Subscribe](http://eepurl.com/c01YS1)
+* [Slack](https://dkan.slack.com/)
+* [Blog](https://medium.com/dkan-blog)
+* [Twitter](https://twitter.com/getdkan)
+* [GitHub](https://github.com/getdkan)
+* [YouTube](https://www.youtube.com/channel/UCl7qFUCkyh32lss4EjQEUXg)
+* [Drupal](https://www.drupal.org/project/dkan)
+* [Eventbrite](https://www.eventbrite.com/o/dkan-14793986036)
+* [RSS](https://medium.com/feed/dkan-blog)
 
 ## Help
 
