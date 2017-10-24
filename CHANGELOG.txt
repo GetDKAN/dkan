@@ -1,5 +1,5 @@
 7.x-1.14
---------
+-------- 
  - #2186 Move the 'back to dataset' local task position so that the 'revisions' link position matches the standard location.
  - #1979 Allow users to set Groups on standalone resources.
  - #2151 Adding print styling so that images, table rows, and charts work with page breaks.
