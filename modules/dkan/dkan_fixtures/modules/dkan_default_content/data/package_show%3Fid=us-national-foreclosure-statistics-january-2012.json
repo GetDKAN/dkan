@@ -4,7 +4,7 @@
         "id": "74c06c81-9fe0-439c-aba9-cd5c980a6df4",
         "name": "us-national-foreclosure-statistics-january-2012",
         "title": "US National Foreclosure Statistics January 2012",
-        "author_email": "datademo@nucivic.com",
+        "author_email": "datademo@example.com",
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/cc-zero/",
@@ -54,7 +54,7 @@
         ],
         "dkan_additional_fields": {
             "field_additional_info": [],
-            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_email": "datademo@example.com",
             "field_contact_name": "Gray, Stefanie",
             "field_data_dictionary": null,
             "field_frequency": "3",

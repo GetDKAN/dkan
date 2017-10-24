@@ -2,9 +2,9 @@ DKAN uses [Behat](http://behat.org) for behavioral testing, both locally and in 
 
 ## Behat tests
 
-The `behat.yml` file that ships with DKAN is intended for use on CircleCI. When running tests locally, we recommend making a copy of `behat.local.demo.yml` and overriding Behat's default profile there. 
+The `behat.yml` file that ships with DKAN is intended for use on CircleCI. When running tests locally, we recommend making a copy of `behat.local.demo.yml` and overriding Behat's default profile there.
 
-Obviously, steps will differ depending on your development environment. 
+Obviously, steps will differ depending on your development environment.
 
 Assuming you have a working DKAN installation you wish to test on:
 
@@ -29,6 +29,7 @@ Your tests should run from the VM and use your host machine as a Selenium server
  - **@enableDKAN_Workflow** Enables dkan_workflow
  - **@fixme** label only
  - **@globalUser** Populates the global user with the current user
+ - **@harvest** Creates harvest sources for testing then rolls back to pre-harvest state
  - **@javascript** switches the current Mink session to Selenium2
  - **@mail** Setup the testing mail system, then restore original mail system
  - **@no-main-menu** used to skip tests that requires a link in the main menu
@@ -40,15 +41,15 @@ Your tests should run from the VM and use your host machine as a Selenium server
  - **@testBug** label only
  - **@timezone** Sets the timezone for tests and restores the timezone afterwards.
  - **@Topics** label only
- 
+
  **Unique tag per scenario pattern**
- 
+
  To allow customized sites to skip specific tests we are adding a unique tag to every scenario. The pattern is the feature name followed by a two digit numerical value. So the pod.feature scenarios are tagged like this: @pod_01, @pod_02, @pod_03, etc.
 
 ## PHPUnit tests
 
 Starting from 1.13 PHPUnit tests were added into DKAN core. All tests can be found inside the `/phpunit` directory separated in different test suites, one per DKAN module.
-  
+
 *Running PHPUnit tests locally:*
 
 Using Ahoy:
@@ -56,12 +57,12 @@ Using Ahoy:
 ```sh
 # To run all the tests:
 ahoy dkan unittests
- 
+
 # To run an individual test:
 ahoy dkan unittests dkan_harvest/HarvestCacheTest.php
 ```
 
-Manually:  
+Manually:
 1. Edit the configuration on `boot.php` if needed. The `$dir` variable needs to point to the actual DKAN working directory.
 2. If you are using the [DKAN Starter docker/ahoy environment](http://dkan-starter.readthedocs.io/en/latest/docker-dev-env/installation.html), get to the Docker cli prompt: `ahoy docker exec bash`.
 3. Go to `/test` folder.
@@ -73,7 +74,7 @@ PHPUnit will load the configuration from `/test/phpunit/phpunit.xml`.
 ### Running specific tests
 
 PHPUnit allows you to easily filter tests that are going to be executed by using the `--filter <pattern>` option.
- 
+
 For example:
 
 ```sh
@@ -84,7 +85,7 @@ bin/phpunit --configuration phpunit --filter testMethod
 ```
 
 For additional options or more detailed information on how to use PHPUnit please check the [PHPUnit Documentation]( https://phpunit.de/manual/current/en/textui.html)
- 
+
 ## Tips
 
 Failing builds or tests can be very frustrating and occasionally make small improvements or bugfixes take much longer to complete than expected. This section is a collection of techniques that have proved useful in debugging and solving stubborn test issues in both DKAN core and individual projects.
@@ -96,7 +97,7 @@ Click on the Artifacts tab, go to the container where the error happened and the
 ### Running tests locally
 Running tests in circleCI is a time consuming task. Every time you run a test in circleCI a whole new build process is triggered. Also, there is a limited number of container that can run at the same time so if your team is doing a heavy use of them you might experience several delays until your container runs.
 
-It's highly recommend to avoid delays run test in the local environment. For example: 
+It's highly recommend to avoid delays run test in the local environment. For example:
 
 ```
 ahoy dkan test features/resource.author.feature
@@ -130,7 +131,7 @@ To troubleshoot this it is advisable to build the site from scratch and run the 
 
 ### Proxy CircleCI built site
 
-So your tests are failing just in CircleCI but passing locally. Screenshots weren't helpful and you don't have any clue what's happening. 
+So your tests are failing just in CircleCI but passing locally. Screenshots weren't helpful and you don't have any clue what's happening.
 
 Because UI tests are intended to mimic the behavior of a real user, you can do the oposite, try to mimic the UI test as a real user.
 
@@ -146,7 +147,7 @@ In order to do that you will need to access to the same Dkan instance where test
 At this point http://127.0.0.1:8888 is pointing to the CircleCI server instance so you can troubleshoot using the same instance against which tests are run.
 
 ### Watch tests running in CircleCI
-Most of times you won't need to do this but there are some cases where the above procedures are not enough. 
+Most of times you won't need to do this but there are some cases where the above procedures are not enough.
 
 Configure this is very similar to configure the proxy site.
 
