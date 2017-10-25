@@ -221,6 +221,26 @@ Response
       "nid": "75",
       "uri": "http://docker:32774/api/dataset/node/75"
   }
+  
+Delete dataset
+==============
+
+Request
+-------
+
+.. code-block:: bash
+
+  DELETE http://docker:32774/api/dataset/node/123
+  Content-Type: application/json
+  X-CSRF-Token: XBWI44XD33XBIANLpyK-rtvRa0N5OcaC03qLx0VQsP4
+
+Response
+--------
+
+.. code-block:: json
+
+  ---
+  - true
 
 Create resource
 ===============
