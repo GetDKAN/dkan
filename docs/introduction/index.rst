@@ -13,6 +13,4 @@ DKAN is a Drupal-based open data tool with a full suite of cataloging, publishin
    get-dkan
    installation
    maintaining
-   community
-   code-of-conduct
    dkan-sites

@@ -1,11 +1,8 @@
-DKAN Community
-==============
-
 Welcome!
---------
+=========
 
-DKAN Slack
-~~~~~~~~~~
+Slack
+~~~~~~
 
 Give and get help in the `DKAN Slack community! <https://dkan.slack.com/>`_
 
@@ -25,20 +22,16 @@ Github
 
 For developers and contributors:
 
-- Pull requests welcome!
-- `Submit an issue at the official DKAN repo <https://github.com/NuCivic/dkan/issues/new>`_
+- `Pull requests welcome! <https://github.com/GetDKAN/dkan>`_
+- `Submit an issue at the official DKAN repo <https://github.com/GetDKAN/dkan/issues/new>`_
 
-Code of Conduct
-~~~~~~~~~~~~~~~
+Social Media
+~~~~~~~~~~~~
+- `DKAN Blog <https://medium.com/dkan-blog>`_
+- `DKAN Events <https://www.eventbrite.com/o/dkan-14793986036>`_
+- `Twitter <https://twitter.com/getdkan>`_
 
-- See our :doc:`Code of Conduct <code-of-conduct>`
 
-Professional Help
------------------
+See our :doc:`Code of Conduct <code-of-conduct>`
 
-For professional DKAN development services and support:
 
-- `CivicActions <https://civicactions.com/dkan>`_
-- `Angry Cactus <http://www.angrycactus.biz/>`_
-- `National Democratic Institute <https://www.nditech.org/project/dkan>`_
-- `Annai <http://landing.dkan.annai.co.jp/>`_

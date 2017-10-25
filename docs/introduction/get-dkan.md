@@ -1,6 +1,6 @@
 # Get DKAN
 
-DKAN is open source and flexible: You can download it for free and run it on your own server or choose from one of our hosting partners below.
+DKAN is open source and flexible: You can download it for free and run it on your own server or choose from one of our hosting partners below. Visit getdkan.org for more information.
 
 ## Download and run DKAN on your server
 

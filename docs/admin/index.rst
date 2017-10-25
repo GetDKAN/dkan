@@ -1,9 +1,10 @@
 ==================
-Site Manager Guide
+User Guide
 ==================
 
 .. warning::
-  **We are in the process of migrating our legacy, user oriented documentation to this site. There are some new changes to DKAN that have not yet been updated in this documentation, so there may be some inconsistencies with how DKAN works in the latest version. There may also be some formatting issues that still need to be corrected as we transer the documentation from the previous system. Thanks for your patience!**
+  **We are in the process of migrating our legacy, user oriented documentation to this site. There are some new changes to DKAN that have not yet been updated in this documentation, so there may be some inconsistencies with how DKAN works in the latest version. There may also be some formatting issues that still need to be corrected as we transfer the documentation from the previous system. Thanks for your patience!**
+
 
 The Site Manager role is the highest non-technical role available on DKAN sites. Users assigned to this role need a good understanding of how DKAN works, and what administrative actions may be necessary to support the site and its users.
 
@@ -11,7 +12,7 @@ The Site Manager role is the highest non-technical role available on DKAN sites.
 
 The role of *Site Manager* is broad. You'll have access many parts of the site and will need to know what's happening at a high level, but typically a Site Manager isn't dealing with the finer details of content management.
 
-Other roles, like *Editors* and *Content Creators*, focus on maintaining high quality data and narrative content that both follow standards as well as engage site visitors. Get more information about different user roles in the :ref:`People section<user-docs people>` of this playbook.
+Other roles, like *Editors* and *Content Creators*, focus on maintaining high quality data and narrative content that both follow standards as well as engage site visitors. Get more information about different user roles in the :ref:`Roles and Permissions Overview <admin/people/dkan_user_accounts.html#roles-and-permissions-overview>` of this playbook.
 
 As a Site Manager, you build the framework that other roles operate within and build on. With that structure in place, you can focus on the overall experience site visitors have as they navigate your Open Data site. A Site Manager's objective is to make open data meaningful by reaching citizens and connecting them to the right data at the right time.
 
@@ -21,7 +22,7 @@ Data and Content
    One of the biggest pieces of a DKAN site is of course the data itself. A Site Manager can decide how users can add data and create content, and use special visual tools to showcase the stories and insights gained from datasets.
 
 People
-   Data and content management can't be done alone. Site Managers handle all the users on the site and decide who has access to what. They can also create Groups for organizations, which have :ref:`even more possibilities for roles and permissions<user-docs group roles and permissions>`. Build your team to build your site.
+   Data and content management can't be done alone. Site Managers handle all the users on the site and decide who has access to what. They can also create Groups for organizations, which have :ref:`even more possibilities for roles and permissions <admin/people/dkan_user_accounts.html#roles-and-permissions-overview>`. Build your team to build your site.
 
 Structure
    Creating new Pages, DKAN Topics, creating Groups, etc. are all forms of structure on a DKAN site. Use these structure types to create a framework for other users to operate within and build upon.
