@@ -22,8 +22,8 @@ Github
 
 For developers and contributors:
 
-- `Pull requests welcome! <https://github.com/GetDKAN/dkan>`_
-- `Submit an issue at the official DKAN repo <https://github.com/GetDKAN/dkan/issues/new>`_
+- `Pull requests welcome! <https://github.com/GetDKAN/dkan>`_ Add a link to the issue it fixes and a detailed description about your fix.
+- `Submit an issue at the official DKAN repo <https://github.com/GetDKAN/dkan/issues/new>`_ Please add detailed steps on how to reproduce the error, what version of DKAN you are using, and any environment details that could help expedite work on the problem.
 
 Social Media
 ~~~~~~~~~~~~

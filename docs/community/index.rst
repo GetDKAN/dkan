@@ -5,5 +5,5 @@ DKAN Community
    :maxdepth: 1
 
    welcome
-   code-of-conduct
    help
+   code-of-conduct
