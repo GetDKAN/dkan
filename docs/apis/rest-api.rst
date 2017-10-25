@@ -666,6 +666,29 @@ Create a Dataset
 
    // Execute request and get response.
    $response = curl_exec($curl);
+   
+Delete a Dataset
+----------------
+
+.. code-block:: php
+
+   $request_url = 'http://example.com/api/dataset/node/100'; // 100 is the node id
+
+   $curl = curl_init($request_url);
+   curl_setopt($curl, CURLOPT_HTTPHEADER, ['Accept: application/json']);
+    
+   // set up request
+   $curl = curl_init($request_url);
+   curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json', 'X-CSRF-Token: ' . $csrf_token));
+   curl_setopt($curl, CURLOPT_POST, 1);
+   curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+   curl_setopt($curl, CURLOPT_COOKIE, $cookie_session);
+   curl_setopt($curl, CURLOPT_HEADER, false);
+   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+   curl_setopt($curl, CURLOPT_FAILONERROR, true);
+
+   // Execute request and get response.
+   $response = curl_exec($curl);
 
 Python client
 =============
