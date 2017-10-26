@@ -9,7 +9,7 @@
     "authors": [
         {
             "name": "acouch",
-            "email": "aaron@nucivic.com"
+            "email": "aaron@example.com"
         }
     ],
     "autoload": {

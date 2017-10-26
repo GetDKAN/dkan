@@ -12,6 +12,7 @@ This is the central site for technical/developer documentation of DKAN. DKAN is 
    development/index
    apis/index
    releases/index
+   license
 
 Additional resources
 --------------------
