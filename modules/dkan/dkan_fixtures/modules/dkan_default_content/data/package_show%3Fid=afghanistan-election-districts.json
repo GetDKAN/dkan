@@ -4,7 +4,7 @@
         "id": "c9e2d352-e24c-4051-9158-f48127aa5692",
         "name": "afghanistan-election-districts",
         "title": "Afghanistan Election Districts",
-        "author_email": "datademo@nucivic.com",
+        "author_email": "datademo@example.com",
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/odc-by/",
@@ -68,7 +68,7 @@
         ],
         "dkan_additional_fields": {
             "field_additional_info": [],
-            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_email": "datademo@example.com",
             "field_contact_name": "Gray, Stefanie",
             "field_data_dictionary": null,
             "field_frequency": "5",

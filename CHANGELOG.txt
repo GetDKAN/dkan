@@ -1,6 +1,7 @@
 7.x-1.14
 --------
  - #2188 Move DKAN repository to GetDKAN organization in Github 
+ - #2189 #2190 Documentation updates (Add help, license, dkan sites pages. Update site manager guide. Update dkan README.)
  - #2186 Move the 'back to dataset' local task position so that the 'revisions' link position matches the standard location.
  - #1979 Allow users to set Groups on standalone resources.
  - #2151 Adding print styling so that images, table rows, and charts work with page breaks.
@@ -510,7 +511,7 @@ DKAN Dataset:
  - Fix some bugs breaking the resource links on dataset pages
  - Re-arranged group links on group landing pages; membership links now in sidebar rather than tabs
  - For long fields in the "additional info" custom metadata table on dataset pages, limit the row height for fields displaying extremely long text values
- - Add a list of related visualizations (if using the [Visualization Entity](https://github.com/GetDKAN/visualization_entity) module) to resource pages
+ - Add a list of related visualizations (if using the [Visualization Entity](https://github.com/NuCivic/visualization_entity) module) to resource pages
  - Move group-level permission export into new dkan_dataset_groups_perms module
  - Fixed counting of datasets, broken when a dataset belongs to more than one group
  - Hide "add resource" button on datasets from users who do not have permission to do so
@@ -538,7 +539,7 @@ NuBoot Radix Theme:
  - Patch the FacetAPI module to avoid a cross-site scripting vulnerability
  - Add integration with ProboCI (http://probo.ci/) for QA builds
  - Fix a bug that showed an extra pager on the group page
- - Major refactor of Behat tests, including introduction of new [DKAN extension](https://github.com/GetDKAN/dkanextension).
+ - Major refactor of Behat tests, including introduction of new [DKAN extension](https://github.com/NuCivic/dkanextension).
  - Improve layout/ordering of blocks in the sidebar for dataset pages
  - Improvement in the UX of user pictures, including Gravatar integration
  - Numerous other small improvements and bugfixes
@@ -628,14 +629,14 @@ NuBoot Radix Theme:
  - Numerous bug fixes and small styling improvements
 
 DKAN Datastore:
- - Better UX/behavior for the "add to datastore" button: https://github.com/GetDKAN/dkan_datastore/pull/39
+ - Better UX/behavior for the "add to datastore" button: https://github.com/NuCivic/dkan_datastore/pull/39
  - Small bugfixes and improvements
 
 DKAN Dataset:
  - Fixed issues around the group/publisher field in search indexes and facets
  - When multiple resources are available for a dataset, new option to download all as zip file
  - Improvements for resource display in dataset pages and teasers
- - New hooks to allow additional license options https://github.com/GetDKAN/dkan/issues/447
+ - New hooks to allow additional license options https://github.com/NuCivic/dkan/issues/447
  - Numerous small improvements and bugfixes
 
 **Search API Database upgrade issue**
@@ -677,7 +678,7 @@ DKAN Dataset:
 7.x-1.7  2015-02-20
 -------------------
  - Adds Panels to DKAN for Drag and Drop layouts: http://docs.getdkan.com/dkan-documentation/dkan-users-guide/customize-dkan-pages-layouts-and-components-using-panels
- - Adds Open Data Schema to DKAN https://github.com/GetDKAN/open_data_schema_map#open-data-schema-map
+ - Adds Open Data Schema to DKAN https://github.com/NuCivic/open_data_schema_map#open-data-schema-map
  - Adds 'saved states' to Recline data preview
  - DKAN_Datastore: Remove schema patch
 
@@ -769,7 +770,7 @@ NuBoot Radix Theme:
 
 7.x-1.1 2013-06-27
 ------------------
- - Moved dkan development to Nucivic's github: https://github.com/GetDKAN/dkan
+ - Moved dkan development to Nucivic's github: https://github.com/NuCivic/dkan
  - Grabbing dkan_dataset.make and dkan_datastore.make fiels from github cdn
  - Several bugs fixed.
  - Moving to using URLs for make file instead of copying locally #160
@@ -787,7 +788,7 @@ NuBoot Radix Theme:
 
 DKAN_Datastore:
  - Moved dkan_datastore development to NuCivic:
-   https://github.com/GetDKAN/dkan_datastore
+   https://github.com/NuCivic/dkan_datastore
  - DKAN_Datastore: Several bugs fixed.
 
 DKAN Dataset:

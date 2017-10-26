@@ -34,13 +34,9 @@ Updates to DKAN are released frequently. Acquia will not push these updates to y
 
 Pantheon provides reliable Drupal cloud hosting with a powerful development tools and web-based user interface designed to facilitate and encourage best development practices. With essentially a single click, you can spin up a new DKAN instance on Pantheon and log in to your new site in just a few minutes.
 
-You can register for a free account [here](https://www.getpantheon.com/). Once you have access, create a new site:
+You can register for a free account [here](https://www.getpantheon.com/). Once you have access, create a new [dkan site](https://dashboard.getpantheon.com/products/dkan/spinup):
 
-![Pantheon new site form](../images/pantheon-new-site.png)
-
-Choose to make a new site from scratch, and to use the DKAN distribution:
-
-![DKAN distribution link](../images/pantheon-install-button.png)
+![Pantheon new site form](../images/Pantheon_Dashboard.png)
 
 Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation.md).
 
@@ -73,9 +69,4 @@ An error like the following is often seen at the end of the install process on P
 ![An AJAX HTTP error occurred. HTTP Result Code: 502 Debugging information follows...](../images/pantheon-error.png)
 
 This will hopefully be fixed on future releases. However, the resulting site should still be fully installed and functional.
-
-
-## Granicus Data Subscription
-
-[Granicus](http://granicus.com), the company leading DKAN's development, offers a turn-key software as a service (SaaS) product called [Granicus Data Enterprise](https://insights.govdelivery.com/Digital_Services/GovDelivery_Open_Data). Hosted on Acquia Cloud, Granicus Data Enterprise meets US government [security standards](https://docs.acquia.com/cloud/arch/compliance-standards-and-regulations), comes pre-configured for out-of-the-box open data standards compliance and advanced data visualization techniques, and includes 24-hour, enterprise-level support. [Contact Granicus](http://granicus.com/contact) for more information.
 

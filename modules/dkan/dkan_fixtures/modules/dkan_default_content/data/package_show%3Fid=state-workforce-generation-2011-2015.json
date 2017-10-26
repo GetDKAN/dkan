@@ -4,7 +4,7 @@
         "id": "95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
         "name": "state-workforce-generation-2011-2015",
         "title": "State Workforce by Generation (2011-2015)",
-        "author_email": "stefanie@nucivic.com",
+        "author_email": "stefanie@example.com",
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/gfdl/",
@@ -93,7 +93,7 @@
         ],
         "dkan_additional_fields": {
             "field_additional_info": [],
-            "field_contact_email": "stefanie@nucivic.com",
+            "field_contact_email": "stefanie@example.com",
             "field_contact_name": "Stefanie Gray",
             "field_data_dictionary": null,
             "field_frequency": "4",

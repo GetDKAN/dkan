@@ -4,7 +4,7 @@
         "id": "5dc1cfcf-8028-476c-a020-f58ec6dd621c",
         "name": "gold-prices-london-1950-2008-monthly",
         "title": "Gold Prices in London 1950-2008 (Monthly)",
-        "author_email": "datademo@nucivic.com",
+        "author_email": "datademo@example.com",
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/odc-pddl/",
@@ -54,7 +54,7 @@
         ],
         "dkan_additional_fields": {
             "field_additional_info": [],
-            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_email": "datademo@example.com",
             "field_contact_name": "Gray, Stefanie",
             "field_data_dictionary": null,
             "field_frequency": null,
