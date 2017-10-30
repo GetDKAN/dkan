@@ -1,8 +1,4 @@
-Issue: link_to_jira_github_issue
-
-## Description
-
-Please write any background information about this PR you think is useful for the product team. 
+Description. Please write any background information about this PR you think is useful for the product team. Use any of the items below that are relevant to this pull request, and delete any that are not.
 
 ## User story
 
@@ -10,7 +6,7 @@ If this PR introduces new functionality, include a user story or stories describ
 
 ## How to reproduce
 
-1.  If the PR fixes a bug, include instructions for reproducing the bug on a current DKAN release.
+1.  If the PR fixes a bug, include step-by-step instructions for reproducing the bug on a current DKAN release.
 
 ## QA Steps
 
@@ -21,6 +17,7 @@ If this PR introduces new functionality, include a user story or stories describ
 - [ ] Note if there is a special sequence for merging (such as PRs on other repos that need to be merged first) or other abnormalities to look out for.
 
 ## Reminders
+
 - [ ] There is test for the issue.
 - [ ] CHANGELOG updated.
 - [ ] Coding standards checked.

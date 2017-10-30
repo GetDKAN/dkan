@@ -5,7 +5,7 @@
         "name": "london-deprivation-index",
         "title": "London Deprivation Index",
         "author": "Department for Communities and Local Government",
-        "author_email": "datademo@nucivic.com",
+        "author_email": "datademo@example.com",
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/odc-odbl/",
@@ -76,7 +76,7 @@
         ],
         "dkan_additional_fields": {
             "field_additional_info": [],
-            "field_contact_email": "datademo@nucivic.com",
+            "field_contact_email": "datademo@example.com",
             "field_contact_name": "Gray, Stefanie",
             "field_data_dictionary": null,
             "field_frequency": "3",
