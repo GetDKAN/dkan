@@ -7,11 +7,13 @@ This is the central site for technical/developer documentation of DKAN. DKAN is 
    :maxdepth: 1
 
    introduction/index
-   admin/index
    components/index
+   community/index
+   admin/index
    development/index
    apis/index
    releases/index
+   license
 
 Additional resources
 --------------------

@@ -145,9 +145,8 @@ function dkan_workflow_menu_local_tasks_alter(&$data, $router_item, $root_path) 
   }
   // Restore 'Revisions' tab for anonymous users when dkan_workflow is enabled.
   global $user;
-  if (isset($data['tabs'][0]['output'][1]) &&
-    $data['tabs'][0]['output'][1]['#link']['page_callback'] == 'workbench_moderation_node_history_view' &&
-    $user->uid == 0) {
+  if ($user->uid == 0 && isset($data['tabs'][0]['output'][1]) &&
+    $data['tabs'][0]['output'][1]['#link']['page_callback'] == 'workbench_moderation_node_history_view') {
     // Check if revisions exist.
     $node = node_load(arg(1));
     $r = count(node_revision_list($node));
