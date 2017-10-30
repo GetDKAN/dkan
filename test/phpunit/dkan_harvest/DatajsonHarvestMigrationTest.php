@@ -115,7 +115,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    */
   public function testContact($dataset) {
     $this->assertEquals("Stefanie Gray", $dataset->field_contact_name->value());
-    $this->assertEquals("stefanie@nucivic.com", $dataset->field_contact_email->value());
+    $this->assertEquals("stefanie@example.com", $dataset->field_contact_email->value());
   }
 
   /**

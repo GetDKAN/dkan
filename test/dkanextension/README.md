@@ -1,6 +1,6 @@
 # Behat DKAN Context
 
-This creates a feature context for DKAN and NuCivic specific steps.
+This creates a feature context for DKAN specific steps.
 
 ## Install
 
