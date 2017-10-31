@@ -4,7 +4,7 @@ A basic overview of open data standards and best practices.
 
 ## The open data publishing process from start-to-finish
 
-![image alt text](image_0.png)
+![This flowchart displays the steps of the open data publishing process](/images/OpenDataPublishingProcess.png)
 
 # Datasets, Resources and Groups
 
@@ -16,7 +16,7 @@ These three content types serve as a means of organizing data for maximum site f
 
 You can picture a DKAN-based open data portal as a massive file cabinet, as in the below diagram:
 
-![image alt text](image_1.png)
+![This image displays a DKAN Open Data site as a file cabinet with Datasets, Resources and Groups represented as folders, files and drawers.](/images/DKANFileCabinet.png)
 
 ### Datasets
 
@@ -70,11 +70,9 @@ When viewing a dataset, you can scroll down the page to the "Dataset Info" secti
 
 The screencap below is an example of metadata for the "Safety Net Clinics" dataset on [HealthData.gov](http://www.healthdata.gov/):
 
+![Metadata in DKAN is displayed as a table on the Datasets page](/images/MetadataInDKAN.png)
 
-![image alt text](image_2.png)
-
-*An example of how metadata is presented within DKAN
-.*
+*An example of how metadata is presented within DKAN.*
 
 *Source: **[http://www.healthdata.gov/dataset/safety-net-clinic*s](http://www.healthdata.gov/dataset/safety-net-clinics)
 
