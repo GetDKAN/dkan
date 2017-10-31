@@ -321,7 +321,7 @@ projects:
   strongarm:
     version: '2.0'
   tablefield:
-    version: '2.5'
+    version: '3.1'
   taxonomy_menu:
     version: '1.5'
   taxonomy_fixtures:
