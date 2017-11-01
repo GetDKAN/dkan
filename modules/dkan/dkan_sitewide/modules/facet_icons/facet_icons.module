@@ -34,7 +34,7 @@ function facet_icons_facetapi_widgets() {
 /**
  * Implements hook_theme().
  *
- * @see https://github.com/NuCivic/nuboot_radix/blob/7.x-1.x/template.php
+ * @see https://github.com/GetDKAN/nuboot_radix/blob/7.x-1.x/template.php
  */
 function facet_icons_theme($existing, $type, $theme, $path) {
   return array(

@@ -1,7 +1,7 @@
 # DKAN Workflow
 ![DKAN Workflow](./dkan_workflow_screenshot.png)
 
-Publishing workflow for [DKAN](https://github.com/NuCivic/dkan) based on
+Publishing workflow for [DKAN](https://github.com/GetDKAN/dkan) based on
 [Workbench](https://www.drupal.org/project/workbench) and related modules.
 
 ## Requirements
@@ -26,7 +26,7 @@ This module is disabled by default in a new DKAN installation. After either enab
 
 * Transitions config and Emails templates for "Original Author" could not be
  exported due to a bug in workbench_email.
-* Behat tests uses [hhs_implementation](https://github.com/NuCivic/dkanextension/tree/hhs_implementation)
+* Behat tests uses [hhs_implementation](https://github.com/GetDKAN/dkanextension/tree/hhs_implementation)
  dkanextension instead of the master branch.
 * Support for OG while sending emails is supported but not clearly documented.
 

@@ -189,7 +189,7 @@ commands:
       rm -fR dkan-ahoy
       rm -fR dkan/.ahoy
       rm dkan/dkan-init.sh
-      git clone 'git@github.com:nucivic/dkan' --depth=1 dkan-ahoy
+      git clone 'git@github.com:getdkan/dkan' --depth=1 dkan-ahoy
       cp -r dkan-ahoy/.ahoy dkan/
       cp dkan-ahoy/dkan-init.sh  dkan/
       cp dkan-ahoy/test/behat.docker.yml dkan/test/
