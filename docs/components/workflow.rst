@@ -2,7 +2,7 @@ DKAN Workflow
 =============
 
 DKAN Workflow is a Workflow implementation for `DKAN
-<https://github.com/NuCivic/dkan>`_ based on the `Workbench
+<https://github.com/GetDKAN/dkan>`_ based on the `Workbench
 <https://www.drupal.org/project/workbench>`_ family of modules.
 
 The goal of this component is help various organizations adhere to an editorial
@@ -13,7 +13,7 @@ workflow for metadata publishing by providing:
 * Access control
 
 .. figure:: ../images/workflow/dkan_workflow_screenshot.png
-   
+
    DKAN Workflow main administration interface.
 
 Requirements
@@ -41,7 +41,7 @@ contrib modules to provide extra functionality (Menu and link badges, etc).
 * `Better Exposed Filters <https://www.drupal.org/project/better_exposed_filters>`_
 
 All those dependencies are declared in the `drupal-org.make
-<https://github.com/NuCivic/dkan/blob/7.x-1.x/drupal-org.make>`_ file.
+<https://github.com/GetDKAN/dkan/blob/7.x-1.x/drupal-org.make>`_ file.
 
 Installation
 ------------
@@ -98,7 +98,7 @@ navigation bar, or accessible directly via *admin/workbench*.
 .. image:: ../images/workflow/dkan_workflow_main_interface.png
 
 1. **Moderation Tabs**.
-   
+
    :My content: This tab is the only tab without the moderation table and provides quick
     links to content creation forms.
 

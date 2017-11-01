@@ -15,5 +15,5 @@ Additional visualization functionality can be found in the following projects,
 which are not included in the core DKAN project and are still in a relatively
 expiremental state:
 
-* `DKAN Datastore CartoDB Integration <https://github.com/NuCivic/dkan_datastore_cartodb>`_
+* `DKAN Datastore CartoDB Integration <https://github.com/GetDKAN/dkan_datastore_cartodb>`_
 * `React Dash library <https://react-dashboard.readthedocs.io>`_

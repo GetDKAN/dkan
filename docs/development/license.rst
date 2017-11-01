@@ -46,6 +46,6 @@ Additional notes about the behavior of both hooks
 References to the code
 ----------------------
 
-+ Hooks are invoked in `dkan_dataset_content_types.license.field.inc <https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_content_types/dkan_dataset_content_types.license_field.inc#L20>`_
-+ Field formatter implementation for the license field is in `dkan_dataset_content_types.module <https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_content_types/dkan_dataset_content_types.module#L46>`_
++ Hooks are invoked in `dkan_dataset_content_types.license.field.inc <https://github.com/GetDKAN/dkan/blob/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_content_types/dkan_dataset_content_types.license_field.inc#L20>`_
++ Field formatter implementation for the license field is in `dkan_dataset_content_types.module <https://github.com/GetDKAN/dkan/blob/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_content_types/dkan_dataset_content_types.module#L46>`_
 

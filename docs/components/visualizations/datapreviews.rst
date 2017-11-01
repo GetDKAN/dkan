@@ -3,14 +3,14 @@ DKAN Data Preview Features
 
 DKAN allows users to have a preview of their data when uploaded to or linked to a *resource*. Which preview type is displayed for a particular *resource* depends on the data **format** selected. If no data format is provided, DKAN will attempt to auto-detect the format from the file's metadata; re-editing the *resource* and correcting the format field manually may be necessary if the auto-detection is not successful.
 
-This functionality is provided via the `Recline module <https://github.com/NuCivic/recline>`_, which is not part of the core DKAN repository but is a basic dependency of it (and will be included when building the distribution via ``drush make``).
+This functionality is provided via the `Recline module <https://github.com/GetDKAN/recline>`_, which is not part of the core DKAN repository but is a basic dependency of it (and will be included when building the distribution via ``drush make``).
 
 Recline.js
 ----------
 
 DKAN, like CKAN, offers an integration with the `Recline <http://reclinejs.com>`_ Javascript library. Recline allows site visitors to preview tabular data visually. The preview works for CSV and XLS [*]_ files that are uploaded to the DKAN site or hosted remotely and linked to, as well as for data stored in DKAN's local SQL-based :doc:`datastore <../datastore>`.
 
-**Record limit:** The previews will display up to 100 records by default. You can use the pager to preview additional results based on the range given. If you want to preview more than 100 records at a time, adjust the max range value to the desired range. 
+**Record limit:** The previews will display up to 100 records by default. You can use the pager to preview additional results based on the range given. If you want to preview more than 100 records at a time, adjust the max range value to the desired range.
 
 .. figure:: ../../images/pager.png
 
@@ -46,7 +46,7 @@ Files that are too large to preview in the browser can be previewed by :doc:`add
 
 Additional Preview Types
 ------------------------
-DKAN provides preview formats for several additional file types beyond what is supported by Recline.js, these include: JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, and ZIP files. These additional preview formatters are defined in a `forked version of Recline <https://github.com/NuCivic/recline>`_
+DKAN provides preview formats for several additional file types beyond what is supported by Recline.js, these include: JSON, geojson, XML, ArcGIS REST, WMS, images, PDF, and ZIP files. These additional preview formatters are defined in a `forked version of Recline <https://github.com/GetDKAN/recline>`_
 
 Zip files
 *********
