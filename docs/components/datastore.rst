@@ -173,7 +173,7 @@ Installation
 ^^^^^^^^^^^^^^
 
 - Inside your settings.php add a `pdo` element to your database configuration. For example:
-  
+
   .. code-block:: php
 
     <?php

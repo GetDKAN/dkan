@@ -92,7 +92,7 @@ Creating a new subtheme
 To create a Nuboot Radix subtheme, run these commands
 
 .. code-block:: php
-  
+
   drush en radix
 
   drush vset theme_default radix

@@ -114,7 +114,7 @@ Date formats can be chanaged manually by changing the "Medium" date time format 
 
 ## A Note on XML Output
 
-Open Data Schema Map provides an XML output format. This is provided via a separate submodule in the `modules/` folder for historical reasons, but should be refactored into the main ODSM module in a future release. 
+Open Data Schema Map provides an XML output format. This is provided via a separate submodule in the `modules/` folder for historical reasons, but should be refactored into the main ODSM module in a future release.
 
 XML endpoints still require a _schema_ defined in JSON. Defining your own XML endpoint may be less than intuitive for the time beind, but take a look at the [DCAT schema module](https://github.com/GetDKAN/open_data_schema_map/tree/master/modules/open_data_schema_dcat) for a model.
 
@@ -122,7 +122,7 @@ XML endpoints still require a _schema_ defined in JSON. Defining your own XML en
 
 Open Data Schema Map endpoints that list a large number of entities -- Project Open Data (`data.json`), the CKAN Package List (`/api/3/action/package_list`) and DCAT-AP Catalog (`catalog.xml`) -- perform a full entity load for each record listed in order to perform the token replacements. This can cause a major performance hit each time any of these URLs is hit on a site with more than a few dozen datasets, and on a site with thousands the response time can be two minutes or more.
 
-Open Data Schema Map includes a file caching function to save a snapshot of any endpoint as a static file to be served up quickly, with very few hits to the database. 
+Open Data Schema Map includes a file caching function to save a snapshot of any endpoint as a static file to be served up quickly, with very few hits to the database.
 
 File caches can be generated either via a Drush command, or an admin UI. The recommended usage on a production website is to set up a cron job or use a task runner like [Jenkins](https://jenkins.io/) to regenerate the file caches for your performance-intensive endpoints daily (usin the drush command), at whatever time your site experiences the least amount of traffic. The trade-off of course is that any additions or changes to your site will not be reflected on these endpoints until they are regenerated.
 

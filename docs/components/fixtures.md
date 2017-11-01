@@ -63,4 +63,4 @@ Pathauto is disabled for content created using dkan_fixtures because performance
 
 ## Taxonomy Fixtures
 
-A similar system exists for importing and exporting taxonomy terms as default content. The NuCivic-created [Taxonomy Fixtures module](https://github.com/GetDKAN/taxonomy_fixtures) ships with DKAN but is available for us in other Drupal projects.
+A similar system exists for importing and exporting taxonomy terms as default content. The [Taxonomy Fixtures module](https://github.com/GetDKAN/taxonomy_fixtures) ships with DKAN but is available for us in other Drupal projects.

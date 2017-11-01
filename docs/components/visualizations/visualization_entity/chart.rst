@@ -11,8 +11,8 @@ Step One - Choose a Resource
 *****************************
 - Enter a title for the chart.
 - Enter a description if needed.
-- Then start typing the title of a resource that you would like to use as the data source. A list will appear, select the resource from the list. 
-- OR, if the data you want to use is not on your site, click the Upload Data tab to upload a CSV data file. 
+- Then start typing the title of a resource that you would like to use as the data source. A list will appear, select the resource from the list.
+- OR, if the data you want to use is not on your site, click the Upload Data tab to upload a CSV data file.
 - Click the Next button.
 
 .. image:: images/chart-step-1n.png
@@ -40,7 +40,7 @@ Click the question mark icons if you need help understanding the configuration o
 
 .. image:: images/chart-configuration.png
 
-By default the chart will use the first 100 records of your data source. To use all records, click the Dataset tab to reveal the data pager, edit the max range value from 100 to the total number of records present. 
+By default the chart will use the first 100 records of your data source. To use all records, click the Dataset tab to reveal the data pager, edit the max range value from 100 to the total number of records present.
 
 .. image:: images/chart-pager.png
 
@@ -74,18 +74,18 @@ Chart Configuration
 X Axis
 ~~~~~~~~~~~~~~~~~~~~~~
 * **Format** Select an appropriate format for the X Axis labels.
-* **Axis Label**  will provide a custom label for the x axis. 
+* **Axis Label**  will provide a custom label for the x axis.
 * **Note:** Axis labels do not display for Pie Charts.
 * **Label rotation** will change angle of label values.
-* **Tick Values** Enter a numerical range to set the start and end values to display. 
+* **Tick Values** Enter a numerical range to set the start and end values to display.
 * **Step**: Use the Step field to define the value between each tick within the range. **NOTE:** If the range set for tick values is smaller than the range of complete data represented, the chart will be abbreviated.
 
 Y Axis
 ~~~~~~~~~~~~~~~~~~~~~~
-* **Axis Label** Provides a custom label for the y axis. 
-* **Note:** Axis labels do not display for Pie Charts. 
+* **Axis Label** Provides a custom label for the y axis.
+* **Note:** Axis labels do not display for Pie Charts.
 * Adjust the *distance* field if your axis label overlaps the y-axis data labels. You can move the label left with positive values, and right with negative values. You may need to adjust the left margin of the chart as well.
-* **Tick Values** Enter a numerical range to set the start and end values to display. 
+* **Tick Values** Enter a numerical range to set the start and end values to display.
 * **Step**: Use the Step field to define the value between each tick within the range. **NOTE:** If the range set for tick values is smaller than the range of complete data represented, the chart will be abbreviated.
 
 General

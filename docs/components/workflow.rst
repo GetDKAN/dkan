@@ -13,7 +13,7 @@ workflow for metadata publishing by providing:
 * Access control
 
 .. figure:: ../images/workflow/dkan_workflow_screenshot.png
-   
+
    DKAN Workflow main administration interface.
 
 Requirements
@@ -98,7 +98,7 @@ navigation bar, or accessible directly via *admin/workbench*.
 .. image:: ../images/workflow/dkan_workflow_main_interface.png
 
 1. **Moderation Tabs**.
-   
+
    :My content: This tab is the only tab without the moderation table and provides quick
     links to content creation forms.
 

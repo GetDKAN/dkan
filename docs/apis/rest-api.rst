@@ -85,14 +85,14 @@ URL Query Parameters
 The output from a url is paginated and displays 20 items per page by default. You can specify which page to view by adding a `page` value. And you can change the number of items per page by including a `pagesize` value. For example, the following query will display items 11 - 20:
 
 .. code-block:: bash
-  
+
   http://demo.getdkan.com/api/dataset/node.json?page=2&pagesize=10
 
 
 To return only a specific node type, include a `type` parameter:
 
 .. code-block:: bash
-  
+
   http://demo.getdkan.com/api/dataset/node.json?parameters[type]=dataset
 
 
@@ -221,7 +221,7 @@ Response
       "nid": "75",
       "uri": "http://docker:32774/api/dataset/node/75"
   }
-  
+
 Delete dataset
 ==============
 

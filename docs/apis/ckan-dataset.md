@@ -10,7 +10,7 @@ All the APIs listed on this page are provided via the [Open Data Schema Map](htt
 
 See: <http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.site_read>
 
-Demo: <http://demo.getdkan.com/api/3/action/site_read>  
+Demo: <http://demo.getdkan.com/api/3/action/site_read>
 
 ### revision_list
 
@@ -22,7 +22,7 @@ Demo: <http://demo.getdkan.com/api/3/action/revision_list>
 
 See: <http://docs.ckan.org/en/latest/api/index.html#ckan.logic.action.get.package_list>
 
-Demo: <http://demo.getdkan.com/api/3/action/package_list>  
+Demo: <http://demo.getdkan.com/api/3/action/package_list>
 
 ### current_package_list_with_resources
 
