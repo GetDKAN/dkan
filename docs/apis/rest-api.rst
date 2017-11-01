@@ -4,7 +4,7 @@
 Dataset REST API
 #####################
 
-The `DKAN Dataset REST API <https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_rest_api>`_ uses the `Services <https://www.drupal.org/project/services>`_ module to create CRUD endpoint at ``api/dataset/node``. By default, this endpoint provides full CRUD access to a website's content nodes, and limited access to users (to allow authentication). The endpoint can be customized at ``/admin/structure/services/list/dkan_dataset_api/resources``.
+The `DKAN Dataset REST API <https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset/modules/dkan_dataset_rest_api>`_ uses the `Services <https://www.drupal.org/project/services>`_ module to create CRUD endpoint at ``api/dataset/node``. By default, this endpoint provides full CRUD access to a website's content nodes, and limited access to users (to allow authentication). The endpoint can be customized at ``/admin/structure/services/list/dkan_dataset_api/resources``.
 
 **********************
 Services Documentation
@@ -68,7 +68,7 @@ Token authenticaion is not currently available out-of-the-box. However, it can b
 Authentication Permissions
 ==========================
 
-The permissions with which a user is granted depend on the user role. User roles and permissions are easily configured in the user administration screen at ``admin/people``, and DKAN comes with a number of pre-configured default roles via the `DKAN Permissions <https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_permissions>`_ module.
+The permissions with which a user is granted depend on the user role. User roles and permissions are easily configured in the user administration screen at ``admin/people``, and DKAN comes with a number of pre-configured default roles via the `DKAN Permissions <https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/dkan_permissions>`_ module.
 
 ****************
 Request Examples
@@ -85,14 +85,14 @@ URL Query Parameters
 The output from a url is paginated and displays 20 items per page by default. You can specify which page to view by adding a `page` value. And you can change the number of items per page by including a `pagesize` value. For example, the following query will display items 11 - 20:
 
 .. code-block:: bash
-  
+
   http://demo.getdkan.com/api/dataset/node.json?page=2&pagesize=10
 
 
 To return only a specific node type, include a `type` parameter:
 
 .. code-block:: bash
-  
+
   http://demo.getdkan.com/api/dataset/node.json?parameters[type]=dataset
 
 
@@ -106,7 +106,7 @@ To return only the title and node id of published resources:
 
 Below you can find examples in PHP for a basic set of CRUD operations on datasets and resources. This documentation is a work in progress. The examples are raw HTTP requests, with a short example of how to execute a query in PHP as well.
 
-For an example of a fully-functional python-based client to the DKAN REST API, see the `pydkan <https://github.com/NuCivic/pydkan>`_ project.
+For an example of a fully-functional python-based client to the DKAN REST API, see the `pydkan <https://github.com/GetDKAN/pydkan>`_ project.
 
 Login
 =====
@@ -221,7 +221,7 @@ Response
       "nid": "75",
       "uri": "http://docker:32774/api/dataset/node/75"
   }
-  
+
 Delete dataset
 ==============
 
@@ -690,12 +690,12 @@ Create a Dataset
 Python client
 =============
 
-Be sure to look at the `pydkan Python client <https://github.com/NuCivic/pydkan>`_ to see a working API client you can build on for your own applications.
+Be sure to look at the `pydkan Python client <https://github.com/GetDKAN/pydkan>`_ to see a working API client you can build on for your own applications.
 
 Safe FME Integration
 ====================
 
-Building on the pydkan client, the `FME Workflows <https://github.com/NuCivic/fme_dkan_apis_workflows>`_ repo provides code and instructions for integrating DKAN into `Safe FME <https://www.safe.com/>`_ workflows.
+Building on the pydkan client, the `FME Workflows <https://github.com/GetDKAN/fme_dkan_apis_workflows>`_ repo provides code and instructions for integrating DKAN into `Safe FME <https://www.safe.com/>`_ workflows.
 
 ************
 Known issues

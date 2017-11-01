@@ -3,7 +3,7 @@ Metadata Source Module
 
 Summary
 --------
-This documentation is for a module that is not part of the DKAN distribution but can be added to an existing DKAN site. This module, along with further documentation, is here: `DKAN Metadata Source <https://github.com/NuCivic/dkan_dataset_metadata_source#dkan-metadata-source>`_
+This documentation is for a module that is not part of the DKAN distribution but can be added to an existing DKAN site. This module, along with further documentation, is here: `DKAN Metadata Source <https://github.com/GetDKAN/dkan_dataset_metadata_source#dkan-metadata-source>`_
 
 DKAN Metadata Source
 ---------------------
