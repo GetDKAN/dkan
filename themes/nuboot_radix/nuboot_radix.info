@@ -55,3 +55,7 @@ settings[toggle_favicon] = 1
 settings[toggle_main_menu] = 1
 settings[toggle_secondary_menu] = 1
 settings[copyright][format] = 'html'
+
+; Information added by DKAN release script on 11/1/2017
+version = 7.x-1.14-RC4
+project = dkan

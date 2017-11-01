@@ -125,3 +125,7 @@ features_exclude[dependencies][og] = og
 features_exclude[dependencies][dkan_featured_topics] = dkan_featured_topics
 features_exclude[field_base][og_group_ref] = og_group_ref
 features_exclude[field_instance][node-dataset-og_group_ref] = node-dataset-og_group_ref
+
+; Information added by DKAN release script on 11/1/2017
+version = 7.x-1.14-RC4
+project = dkan
