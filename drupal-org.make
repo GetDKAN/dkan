@@ -19,7 +19,7 @@ projects:
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
-    version: '2.2'
+    version: '2.3'
     patch:
       2833824: https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch
   beautytips:
@@ -31,7 +31,7 @@ projects:
     patch:
       849232: http://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
   better_exposed_filters:
-    version: '3.4'
+    version: '3.5'
   bueditor:
     version: '1.8'
   bueditor_plus:
@@ -138,7 +138,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.3
+    version: 2.12
   file_resup:
     download:
       type: git
@@ -205,11 +205,9 @@ projects:
     patch:
       2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.9
-    patch:
-      2272567: https://www.drupal.org/files/issues/media_dialog_appears_2272567-32.patch
+    version: 2.13
   media_youtube:
-    version: '3.4'
+    version: '3.5'
   media_vimeo:
     version: '2.1'
     patch:
@@ -321,7 +319,7 @@ projects:
   strongarm:
     version: '2.0'
   tablefield:
-    version: '2.5'
+    version: '3.1'
   taxonomy_menu:
     version: '1.5'
   taxonomy_fixtures:
@@ -334,7 +332,7 @@ projects:
   uuid:
     version: '1.0'
   views:
-    version: '3.17'
+    version: '3.18'
   views_autocomplete_filters:
     version: '1.2'
     patch:
