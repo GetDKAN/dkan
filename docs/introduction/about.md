@@ -1,6 +1,6 @@
 # About this documentation
 
-What follows is a style guide for the DKAN documentation. Use it both to follow the conventions used throughout the site, and for your own contributions. DKAN's docs are written in a combination of [Markdown](https://daringfireball.net/projects/markdown) (specifiically, [CommonMark](http://commonmark.org/)) and [ReStructuredText (RST)](http://www.sphinx-doc.org/en/stable/rest.html), and built with [Sphynx](http://www.sphinx-doc.org/en/stable/index.html). The docs live in the `/docs` folder of the [DKAN Project](https://github.com/NuCivic/dkan); to suggest modifications, submit a pull request as you would for any suggested code change.
+What follows is a style guide for the DKAN documentation. Use it both to follow the conventions used throughout the site, and for your own contributions. DKAN's docs are written in a combination of [Markdown](https://daringfireball.net/projects/markdown) (specifiically, [CommonMark](http://commonmark.org/)) and [ReStructuredText (RST)](http://www.sphinx-doc.org/en/stable/rest.html), and built with [Sphynx](http://www.sphinx-doc.org/en/stable/index.html). The docs live in the `/docs` folder of the [DKAN Project](https://github.com/GetDKAN/dkan); to suggest modifications, submit a pull request as you would for any suggested code change.
 
 ## File types
 
