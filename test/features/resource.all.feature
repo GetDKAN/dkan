@@ -158,7 +158,9 @@ Feature: Resource
     Given resources:
       | title                    | publisher | format | dataset | author | published | description |
       | Resource Without Dataset | Group 01  | csv    |         | Katie  | Yes       | Old Body    |
+    And I am logged in as a user with the "site manager" role
     And I am on "Resource Without Dataset" page
     Then I should not see the link "Back to dataset"
-    And I should see "Groups"
+    When I click "Edit"
+    Then I should see "Groups" in the "content" region
 
