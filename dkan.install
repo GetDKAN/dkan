@@ -387,3 +387,47 @@ function dkan_update_7022() {
   variable_set('chosen_jquery_selector',
     '.page-node select:not([class*="delta-order"], [name*="workbench_moderation"], [class*="filter-list"], [id*="delimiter"],[name*="sort_by"],[name*="sort_order"], [id*="lines-terminated-by"], [id*="lang-dropdown-select-language"])');
 }
+
+/**
+ * Remove deprecated modules from the db: menu_token and remote_file_source.
+ */
+function dkan_update_7023() {
+  if (!module_exists('menu_token')) {
+    db_delete('system')
+      ->condition('name', 'menu_token')
+      ->condition('type', 'module')
+      ->execute();
+    db_drop_table('menu_token');
+  }
+  if (!module_exists('remote_file_source')) {
+    db_delete('system')
+      ->condition('name', 'remote_file_source')
+      ->condition('type', 'module')
+      ->execute();
+  }
+}
+
+/**
+ * Update default variables.
+ */
+function dkan_update_7024(&$context) {
+  dkan_misc_variables_set($context);
+}
+
+/**
+ * Update copyright information.
+ */
+function dkan_update_7025() {
+  $settings = variable_get('theme_nuboot_radix_settings', array());
+  if ($settings['copyright']['value'] == 'Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>') {
+    $settings['copyright']['value'] = t('Powered by <a href="http://getdkan.org/">DKAN</a>');
+    variable_set('theme_nuboot_radix_settings', $settings);
+  }
+}
+
+/**
+ * Revert content types dataset to revert og_group_ref on resources.
+ */
+function dkan_update_7026() {
+  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
+}

@@ -82,13 +82,13 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @noworkflow @javascript
+  @noworkflow @datastore @javascript
   Scenario: Import items on datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     When I click "Manage Datastore"
     And I press "Import"
@@ -96,14 +96,14 @@ Feature: Resource
     Then I should see "Last import"
     And I should see "imported items total"
 
-  @noworkflow @javascript
+  @noworkflow @datastore @javascript
   Scenario: Delete items on datastore of any resource
     # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple1.csv"
     And I press "Save"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
@@ -111,19 +111,16 @@ Feature: Resource
     And I wait for "Delete Items"
     And I click "Delete items"
     And I press "Delete"
-    And I wait for "items have been deleted"
-    And I am on "Resource 04" page
-    When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then I wait for "items have been deleted"
 
-  @noworkflow @javascript
+  @noworkflow @datastore @javascript
   Scenario: Drop datastore of any resource
     # Backgorund steps to add a file to a resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
     And I click "Edit"
     And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple2.csv"
     And I press "Save"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
@@ -134,7 +131,7 @@ Feature: Resource
     Then I should see "Datastore dropped!"
     And I should see "Your file for this resource is not added to the datastore"
     When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then I wait for "No imported items."
 
   @noworkflow
   Scenario: Add revision to any resource

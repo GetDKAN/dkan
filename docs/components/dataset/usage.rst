@@ -6,7 +6,7 @@ Creating Datasets and Resources
 
 DKAN’s data publishing model is based on the concept of :ref:`datasets <datasets>` and :ref:`resources <resources>`.  A dataset is a container for one or more resources; a resource is the actual “data” being published, such as a CSV table, a GeoJSON data file, or a TIFF aerial image.
 
-The dataset and resource content types in DKAN are provided by the `DKAN Dataset module <https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset>`_.
+The dataset and resource content types in DKAN are provided by the `DKAN Dataset module <https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset>`_.
 
 In our example, we’ll be adding a dataset with Wisconsin polling places to a DKAN site. The data may look familiar; it's one of the sample datasets provided with DKAN upon installation.
 
@@ -27,8 +27,8 @@ After creating a dataset, we’re prompted to add one or more data resources to 
 :Remote file: This option allows publishers to create a link to a data file published on another Internet website.  Although the file itself will remain on the other site, the data within the file can be imported into your DKAN site’s Datastore for preview and analysis by your users.  See :doc:`../datastore` for more information.
 
 .. note::
-   
-   To provide :doc:`previews <../visualizations/datapreviews>` for your resources, they must contain either a local or remote file (*Link to a file* or *Upload a file*). If you use *API or Website URL* your link will be displayed in an iFrame but not further previewing will be possible. 
+
+   To provide :doc:`previews <../visualizations/datapreviews>` for your resources, they must contain either a local or remote file (*Link to a file* or *Upload a file*). If you use *API or Website URL* your link will be displayed in an iFrame but not further previewing will be possible.
 
 To continue with our Wisconsin Polling Places example, we’ll add one resource file to the Dataset we created in Step 1.  Our resource file is a CSV, that is, comma-separated values format; this is a popular file format for exchanging tabular data.  Let’s explore the example resource shown here and the various fields within:
 

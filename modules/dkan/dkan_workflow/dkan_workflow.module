@@ -37,8 +37,8 @@ function dkan_workflow_menu() {
   // Add dummy link so administrators can access My Workbench.
   $items['admin/myworkbench'] = array(
     'menu_name' => 'management',
-    'title' => t('My Workbench'),
-    'description' => t('My Workbench'),
+    'title' => 'My Workbench',
+    'description' => 'My Workbench',
     'page callback' => 'drupal_goto',
     'page arguments' => array('admin/workbench'),
     'access arguments' => array('access workbench'),
@@ -50,8 +50,8 @@ function dkan_workflow_menu() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/workbench/drafts-active',
     'router_path' => 'admin/workbench/drafts-active',
-    'title' => t('My drafts'),
-    'description' => t('My drafts'),
+    'title' => 'My drafts',
+    'description' => 'My drafts',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
     'weight' => 0,
@@ -61,8 +61,8 @@ function dkan_workflow_menu() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/workbench/needs-review-active',
     'router_path' => 'admin/workbench/needs-review-active',
-    'title' => t('Needs review'),
-    'description' => t('Needs review'),
+    'title' => 'Needs review',
+    'description' => 'Needs review',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
     'weight' => 1,
@@ -72,8 +72,8 @@ function dkan_workflow_menu() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/workbench/drafts-stale',
     'router_path' => 'admin/workbench/drafts-stale',
-    'title' => t('Stale drafts'),
-    'description' => t('Stale drafts'),
+    'title' => 'Stale drafts',
+    'description' => 'Stale drafts',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
     'weight' => 2,
@@ -83,8 +83,8 @@ function dkan_workflow_menu() {
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/workbench/needs-review-stale',
     'router_path' => 'admin/workbench/needs-review-stale',
-    'title' => t('Stale reviews'),
-    'description' => t('Stale reviews'),
+    'title' => 'Stale reviews',
+    'description' => 'Stale reviews',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
     'weight' => 3,
@@ -136,12 +136,28 @@ function dkan_workflow_menu_local_tasks_alter(&$data, $router_item, $root_path) 
         'title' => $stale_drafts,
       ),
     );
-    $stale_reviews  = $data['tabs'][0]['output'][4]['#link']['description'];
+    $stale_reviews = $data['tabs'][0]['output'][4]['#link']['description'];
     $data['tabs'][0]['output'][4]['#link']['localized_options'] = array(
       'attributes' => array(
         'title' => $stale_reviews,
       ),
     );
+  }
+  // Restore 'Revisions' tab for anonymous users when dkan_workflow is enabled.
+  global $user;
+  if ($user->uid == 0 && isset($data['tabs'][0]['output'][1]) &&
+    $data['tabs'][0]['output'][1]['#link']['page_callback'] == 'workbench_moderation_node_history_view') {
+    // Check if revisions exist.
+    $node = node_load(arg(1));
+    $r = count(node_revision_list($node));
+    if ($r > 1) {
+      // Change moderate button text to 'Revisions' if user is anonymous.
+      $data['tabs'][0]['output'][1]['#link']['title'] = 'Revisions';
+    }
+    else {
+      // Remove local tabs if there are no revisions.
+      unset($data['tabs']);
+    }
   }
 }
 
@@ -330,8 +346,8 @@ function dkan_workflow_views_pre_view(&$view, &$display_id, &$args) {
 
     $item = $view->set_item($display_id, 'filter', 'type', $filter_content_type);
 
-    $role_workflow_contributor  = user_role_load_by_name('Workflow Contributor');
-    $role_workflow_moderator  = user_role_load_by_name('Workflow Moderator');
+    $role_workflow_contributor = user_role_load_by_name('Workflow Contributor');
+    $role_workflow_moderator = user_role_load_by_name('Workflow Moderator');
 
     // On the Needs Review tab, Workflow Moderator can see:
     // - the content submitted to their organic group.

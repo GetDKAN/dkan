@@ -1,8 +1,8 @@
---- 
-default: 
-  suites: 
-    dkan: 
-      contexts: 
+---
+default:
+  suites:
+    dkan:
+      contexts:
       - FeatureContext
       - Drupal\DrupalExtension\Context\MinkContext
       - Drupal\DrupalExtension\Context\DrupalContext
@@ -15,8 +15,9 @@ default:
       - Drupal\DKANExtension\Context\GroupContext
       - Drupal\DKANExtension\Context\HarvestSourceContext
       - Drupal\DKANExtension\Context\WorkflowContext
-      - Drupal\DKANExtension\Context\DatasetContext: 
-        - fields: 
+      - Drupal\DKANExtension\Context\DatasetAutoFillContext
+      - Drupal\DKANExtension\Context\DatasetContext:
+        - fields:
             title: title
             description: body
             published: status
@@ -33,7 +34,8 @@ default:
             license: field_license
             doi: field_doi
             citation: field_citation
-        - labels: 
+            publisher: og_group_ref
+        - labels:
             title: Title
             body: Description
             field_tags: Tags
@@ -55,41 +57,43 @@ default:
             field_conforms_to: Data Standard
             field_language: Language
             og_group_ref: Groups
-        - sets: 
+        - sets:
             field_spatial: Spatial / Geographical Coverage Area
             field_temporal_coverage: Temporal Coverage
-        - defaults: 
+        - defaults:
             field_public_access_level: public
             field_hhs_attestation_negative: 1
             field_license: odc-by
       - Drupal\DKANExtension\Context\DataDashboardContext
       - Drupal\DKANExtension\Context\PODContext
       - Drupal\DKANExtension\Context\FastImportContext
-      - Drupal\DKANExtension\Context\SearchAPIContext: 
-          search_forms: 
-            default: 
+      - Drupal\DKANExtension\Context\SearchAPIContext:
+          search_forms:
+            default:
               form_css: "#dkan-sitewide-dataset-search-form"
               form_field: "edit-search"
               form_button: "edit-submit"
               results_css: ".view-dkan-datasets"
               result_item_css: ".views-row"
-            harvest_source: 
+            harvest_source:
               results_css: ".view-dkan-harvest-source-search"
               result_item_css: ".views-row"
       - Drupal\DKANExtension\Context\ResourceContext
-      - Drupal\DKANExtension\Context\ServicesContext: 
-        - request_fields_map: 
-            resource: 
+      - Drupal\DKANExtension\Context\ServicesContext:
+        - request_fields_map:
+            resource:
               type: type
               title: title
               body: body[und][0][value]
               status: status
-            dataset: 
+            dataset:
               type: type
               title: title
               status: status
               published: status
               body: body[und][0][value]
+              description: body[und][0][value]
+              tags: field_tags[und][value_field]
               resource: field_resources[und][0][target_id]
               access level: field_public_access_level[und]
               contact name: field_contact_name[und][0][value]
@@ -103,26 +107,29 @@ default:
               license: field_license[und][select]
               doi: field_doi[und][0][value]
               citation: field_citation[und][0][value]
+              program code: field_odfe_program_code[und][]
+              groups: og_group_ref[und][]
+              publisher: og_group_ref[und][]
       - Drupal\DKANExtension\Context\PODContext
       - Drupal\DKANExtension\Context\DatastoreContext
       - Drupal\DKANExtension\Context\TimezoneContext
       - Drupal\DrupalExtension\Context\DrushContext
-      - Devinci\DevinciExtension\Context\DebugContext: 
+      - Devinci\DevinciExtension\Context\DebugContext:
           asset_dump_path: "%paths.base%/assets"
-      - Devinci\DevinciExtension\Context\JavascriptContext: 
+      - Devinci\DevinciExtension\Context\JavascriptContext:
           maximum_wait: 30
-  formatters: 
-    pretty: 
-      output_styles: 
-        comment: 
+  formatters:
+    pretty:
+      output_styles:
+        comment:
         - default
         - default
         - [conceal]
-  gherkin: 
-    filters: 
+  gherkin:
+    filters:
       tags: ~@fixme
-  extensions: 
-    Behat\MinkExtension: 
+  extensions:
+    Behat\MinkExtension:
       goutte: []
 
       selenium2: []
@@ -131,17 +138,18 @@ default:
       javascript_session: "selenium2"
       browser_name: chrome
       files_path: "%paths.base%/files"
-    Drupal\DrupalExtension: 
-      blackbox: 
-      drupal: 
+    Drupal\DrupalExtension:
+      blackbox:
+      drupal:
         drupal_root: "%paths.base%/../../docroot"
       api_driver: "drupal"
-      region_map: 
+      region_map:
         admin menu: "#admin-menu"
         breadcrumb: ".breadcrumb"
         comment: ".comment-main"
         content search: ".form-item-query"
         content: ".region-content"
+        close-modal: ".ctools-close-modal"
         dashboards: ".view-data-dashboards table tbody"
         dataset body: ".field-name-body"
         dataset edit body: "#edit-body"
@@ -185,13 +193,12 @@ default:
         user content: ".view-user-profile-search"
         user page: ".main"
         user profile: ".pane-dkan-sitewide-panels-dkan-user-summary"
-      text: 
+      text:
         log_out: "Log out"
         log_in: "Log in"
-      selectors: 
+      selectors:
         message_selector: ".alert"
         error_message_selector: ".alert.alert-error"
         success_message_selector: ".alert.alert-success"
-    Drupal\DKANExtension: 
+    Drupal\DKANExtension:
       some_param: "test"
-

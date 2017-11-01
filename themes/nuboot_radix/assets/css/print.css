@@ -1,2 +1,7 @@
+@media print {
+  #block-dkan-sitewide-dkan-sitewide-search-bar {
+    display: none; }
+  img, tr, svg, .card-chart {
+    break-inside: avoid; } }
 
 /*# sourceMappingURL=print.css.map */

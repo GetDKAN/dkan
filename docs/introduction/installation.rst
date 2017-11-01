@@ -21,13 +21,13 @@ with:
    distributions <https://www.drupal.org/node/1089736#distributions-vs-installation-profiles>`__
 
 What you will find in the main `DKAN
-Repository <https://github.com/NuCivic/dkan>`__ is a Drupal
+Repository <https://github.com/GetDKAN/dkan>`__ is a Drupal
 *installation profile*. To set up a working website using DKAN, you will
 need to acquire or build a full DKAN distribution of Drupal.
 
 .. tip:: `DKAN Starter <http://dkan-starter.readthedocs.io>`_ is project
-  containing a prebuilt version of DKAN and the tools `Granicus
-  <https://www.granicus.com/>`_ uses for our own implementations and
+  containing a prebuilt version of DKAN and the tools `CivicActions
+  <https://civicactions.com/dkan/>`_ uses for our own implementations and
   deployments. Learn more advanced workflows in that project's
   `documentation <https://dkan-starter.readthedocs.io>`_.
 
@@ -72,7 +72,7 @@ Using fully made version
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 At the moment, our supported fully-made DKAN codebase is the `DKAN
-DROPS-7 <https://github.com/NuCivic/dkan-drops-7>`__ repository, which
+DROPS-7 <https://github.com/GetDKAN/dkan-drops-7>`__ repository, which
 is optimized to run on the Pantheon platform. You can build a DKAN site
 with a single click on Pantheon
 `here <https://dashboard.getpantheon.com/products/dkan/spinup>`__. (We
@@ -80,7 +80,7 @@ also offer `one-click installation on
 Acquia <http://docs.getdkan.com/dkan-documentation/get-dkan/dkan-acquia>`__)
 
 Download and unzip `the latest version of the "DKAN DROPS"
-codebase <https://github.com/NuCivic/dkan-drops-7/archive/master.zip>`__
+codebase <https://github.com/GetDKAN/dkan-drops-7/archive/master.zip>`__
 on your server webroot.
 
 if you want to do this with git instead:
@@ -107,7 +107,7 @@ Requires drush version 8.x.
 
 ::
 
-    $ git clone --branch 7.x-1.x https://github.com/NuCivic/dkan.git
+    $ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
     $ cd dkan
     $ drush make --prepare-install drupal-org-core.make webroot --yes
     $ rsync -av . webroot/profiles/dkan --exclude webroot
@@ -119,7 +119,7 @@ correct tag after cloning. For instance:
 
 ::
 
-    $ git clone --branch 7.x-1.x https://github.com/NuCivic/dkan.git
+    $ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
     $ git checkout tags/7.x-1.11
     ...
 
