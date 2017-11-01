@@ -160,5 +160,5 @@ Feature: Resource
       | Resource Without Dataset | Group 01  | csv    |         | Katie  | Yes       | Old Body    |
     And I am on "Resource Without Dataset" page
     Then I should not see the link "Back to dataset"
-    And I should see "Groups"
+    And I should see "Groups" in the "content" region
 
