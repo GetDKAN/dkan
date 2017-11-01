@@ -8,7 +8,7 @@ There will also be cases where you need users to have different permissions in t
 
 The DKAN Permissions module
 ---------------------------
-The DKAN Permissions module provides default roles and permissions for the DKAN distribution. It uses the export method provided by the `Features Roles Permissions <https://www.drupal.org/project/features_roles_permissions>`_ module so you can examine the specific roles and permissions provided by reviewing `dkan_permissions.features.roles_permissions.inc <https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_permissions/dkan_permissions.features.roles_permissions.inc>`_.
+The DKAN Permissions module provides default roles and permissions for the DKAN distribution. It uses the export method provided by the `Features Roles Permissions <https://www.drupal.org/project/features_roles_permissions>`_ module so you can examine the specific roles and permissions provided by reviewing `dkan_permissions.features.roles_permissions.inc <https://github.com/GetDKAN/dkan/blob/7.x-1.x/modules/dkan/dkan_permissions/dkan_permissions.features.roles_permissions.inc>`_.
 
 Drupal Core Roles
 ---------------------------
