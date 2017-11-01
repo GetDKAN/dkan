@@ -342,9 +342,11 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['field_link_api'][$field_link_api_langcode][0]['#title'] = '';
     $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['#title'] = '';
 
-    // If the resource is not assigned to a dataset,
+    // If the resource is not assigned to a dataset, and not step two of a multi-part dataset form,
     // allow the user to edit the groups field.
-    if (empty($form['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id']['#default_value'])) {
+    $params = drupal_get_query_parameters();
+    if (empty($form['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id']['#default_value']) &&
+      empty($params['dataset'])) {
       $form['og_group_ref']['#access'] = TRUE;
       // Get a list of groups the user is a member of.
       $groups = dkan_dataset_get_group_options();
