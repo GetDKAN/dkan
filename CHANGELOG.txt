@@ -1,5 +1,6 @@
 7.x-1.14
 --------
+ - #2188 Move DKAN repository to GetDKAN organization in Github 
  - #2033 Remove "author" facet from search page (generally never relevant information)
  - #2205 Update docs files with organization changes (NuCivic to GetDKAN)
  - #2206 Update autocomplete_deluxe, better_exposed_filters, file_entity, media, media_youtube, tablefield and views to latest version

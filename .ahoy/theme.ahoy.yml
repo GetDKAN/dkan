@@ -73,7 +73,7 @@ commands:
       ahoy drush pm-enable radix -y
       ahoy drush vset theme_default radix
       ahoy cmd-proxy drush cc drush
-      KIT_URL="https://github.com/NuCivic/radix-kit-nuboot/archive/master.zip"
+      KIT_URL="https://github.com/GetDKAN/radix-kit-nuboot/archive/master.zip"
       if ahoy cmd-proxy wget -q "$KIT_URL"; then
         ahoy cmd-proxy unzip master.zip
         ahoy cmd-proxy rm -rf master.zip
