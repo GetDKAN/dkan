@@ -159,15 +159,7 @@ Feature: Dataset Features
     Then I should see "csv 2 (1)" in the "filter by resource format" region
     And I should see "html 2 (2)" in the "filter by resource format" region
 
-  @dataset_all_10
-  Scenario: View available author filters for datasets
-    When I am on "Datasets Search" page
-    And I wait for "Author"
-    ## Uncomment this if you wanna use selenium.    
-    # When I click on the text "Author"
-    # And I wait for "1" seconds
-    Then I should see "Gabriel (2)" in the "filter by author" region
-    Then I should see "Katie (1)" in the "filter by author" region
+  # dataset_all_10/author facet removed. See GetDKAN/dkan#2033
 
   # TODO: make sure it works when we don't have default content on.
   @dataset_all_11
