@@ -358,7 +358,7 @@ Example code snippet:
   }
 
 
-Harvest and `DKAN Workflow <https://github.com/GetDKAN/dkan_workflow>`_ support
+Harvest and DKAN Workflow support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 By default, DKAN Harvest will make sure that the harvested *dataset* node will be
 set to the ``published`` moderation state if the DKAN Workflow module is enabled

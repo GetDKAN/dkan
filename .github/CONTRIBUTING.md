@@ -76,7 +76,7 @@ ref: NuCivic/[repo]/[issue#]
 
 Please use a reasonably descriptive *title* as well. "Updating drupal-org.make" is not a helpful title; "Add views patch to drupal-org.make to address argument bug" is a helpful title!
 
-[See this pull request for an example](https://github.com/NuCivic/dkan/pull/629).
+[See this pull request for an example](https://github.com/GetDKAN/dkan/pull/629).
 
 If a pull request is simply being created for QA purposes or should for some other reason NOT be merged, explain this in the description and add a "don't merge" tag.
 

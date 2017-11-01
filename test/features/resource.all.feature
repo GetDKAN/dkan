@@ -79,8 +79,8 @@ Feature: Resource
   @resource_all_05 @api @fixme @testBug
     #TODO: Need to have test data api set up for new resources for this test
     #      This functionality is tested in another module, test again here?
-    #      See:     https://github.com/NuCivic/dkan_datastore/blob/7.x-1.x/tests/dkan_datastore.test
-    #      And See: https://github.com/NuCivic/dkan_dataset/compare/310_dataset_rest_api
+    #      See:     https://github.com/GetDKAN/dkan_datastore/blob/7.x-1.x/tests/dkan_datastore.test
+    #      And See: https://github.com/GetDKAN/dkan_dataset/compare/310_dataset_rest_api
   Scenario: View the Data API information for a published resource
     Given I am on "Resource 02" page
     When I click "Data API"

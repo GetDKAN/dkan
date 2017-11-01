@@ -69,4 +69,3 @@ Once a Metadata Type has been created the Metadata Source will be displayed on t
 .. figure:: https://cloud.githubusercontent.com/assets/512243/9552388/3d15af2e-4d7d-11e5-9d51-2304bf03c59f.png
 
 Clicking ‘View’ will allow you to check out a preview of the metadata content; clicking the ‘Download’ button will allow you to download it directly.
-

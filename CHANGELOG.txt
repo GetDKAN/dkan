@@ -1,6 +1,7 @@
 7.x-1.14
 --------
  - #2208 Fix access to groups field when adding a resource inside the dataset form.
+ - #2188 Move DKAN repository to GetDKAN organization in Github 
  - #2205 Update docs files with organization changes (NuCivic to GetDKAN)
  - #2206 Update autocomplete_deluxe, better_exposed_filters, file_entity, media, media_youtube, tablefield and views to latest version
  - #2189 #2190 Documentation updates (Add help, license, dkan sites pages. Update site manager guide. Update dkan README.)
