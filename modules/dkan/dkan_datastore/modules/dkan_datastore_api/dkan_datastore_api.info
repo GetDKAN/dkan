@@ -3,3 +3,7 @@ description = Access datastore info over json.
 package = DKAN API
 core = 7.x
 dependencies[] = services
+
+; Information added by DKAN release script on 11/2/2017
+version = 7.x-1.14-RC3
+project = dkan

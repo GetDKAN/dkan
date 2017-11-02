@@ -1,21 +1,22 @@
+---
 api: '2'
 core: 7.x
 includes:
-  - "https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.x/visualization_entity.make"
-  - "https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.x/open_data_schema_map.make"
-  - "https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/master/leaflet_widget.make"
-  - "https://raw.githubusercontent.com/NuCivic/recline/7.x-1.x/recline.make"
+- https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-1.14-RC3/visualization_entity.make
+- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-1.14-RC3/open_data_schema_map.make
+- https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
+- https://raw.githubusercontent.com/NuCivic/recline/7.x-1.14-RC3/recline.make
 projects:
   admin_menu:
-    version: '3.0-rc5'
+    version: 3.0-rc5
   admin_menu_source:
     version: '1.1'
     patch:
-      2441283: 'https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch'
+      2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
   admin_views:
     version: '1.6'
     patch:
-      1780004: 'https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch'
+      1780004: https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
@@ -60,7 +61,7 @@ projects:
   date:
     version: '2.10'
   defaultconfig:
-    version: '1.0-alpha11'
+    version: 1.0-alpha11
   devel:
     version: '1.5'
   diff:
@@ -115,8 +116,8 @@ projects:
   feeds_flatstore_processor:
     download:
       type: git
-      url: 'https://github.com/GetDKAN/feeds_flatstore_processor.git'
-      branch: master
+      url: https://github.com/GetDKAN/feeds_flatstore_processor.git
+      revision: 82b2a05bd133dbf870bdf09f1c0a45711f1432e3
   field_group:
     version: '1.5'
     patch:
@@ -186,8 +187,8 @@ projects:
   leaflet_draw_widget:
     download:
       type: git
-      url: 'https://github.com/GetDKAN/leaflet_draw_widget.git'
-      branch: 'master'
+      url: https://github.com/GetDKAN/leaflet_draw_widget.git
+      revision: 5a5f8faf664aeca02371f6692307580d9fab9116
   libraries:
     version: '2.3'
   link:
@@ -245,7 +246,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/open_data_schema_map.git
-      branch: 7.x-1.x
+      tag: 7.x-1.14-RC3
   panelizer:
     version: '3.4'
   panels:
@@ -274,8 +275,8 @@ projects:
   recline:
     download:
       type: git
-      url: 'https://github.com/GetDKAN/recline.git'
-      branch: 7.x-1.x
+      url: https://github.com/GetDKAN/recline.git
+      tag: 7.x-1.14-RC3
   ref_field:
     download:
       type: git
@@ -287,7 +288,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/remote_stream_wrapper.git
-      branch: 7.x-1.x
+      revision: 20311eee8f0ba87cbb7e48788b176c34e0313a78
   role_export:
     version: '1.0'
   rules:
@@ -325,8 +326,8 @@ projects:
   taxonomy_fixtures:
     download:
       type: git
-      url: 'https://github.com/GetDKAN/taxonomy_fixtures.git'
-      branch: 7.x-1.x
+      url: https://github.com/GetDKAN/taxonomy_fixtures.git
+      revision: b2f092c963f4a24afe1e6443eb9ff01c959079ed
   token:
     version: '1.7'
   uuid:
@@ -346,7 +347,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/visualization_entity.git
-      branch: 7.x-1.x
+      tag: 7.x-1.14-RC3
     type: module
   workbench:
     version: '1.2'
