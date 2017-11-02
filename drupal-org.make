@@ -329,6 +329,8 @@ projects:
       branch: 7.x-1.x
   token:
     version: '1.7'
+  token_tweaks:
+    version: 1.x-dev
   uuid:
     version: '1.0'
   views:
