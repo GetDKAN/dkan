@@ -2,14 +2,14 @@
 
 You may also refer to the [Visualization Entity specific ReadTheDocs site.](http://visualization-entity.readthedocs.io/en/latest/)
 
-The <a href="https://github.com/NuCivic/visualization_entity">Visualization Entity</a> module provides a suite of options for creating visualizations in DKAN that used natively or embedded in other sites.
+The <a href="https://github.com/GetDKAN/visualization_entity">Visualization Entity</a> module provides a suite of options for creating visualizations in DKAN that used natively or embedded in other sites.
 
 This module is under development. Documentation will be updated as the module is updated.
 
 ### The Visualization Entity module provides the following types of visualizations:
 
 * Charts and Graphs 
- * [More information](https://github.com/NuCivic/visualization_entity_charts) (Under development)
+ * [More information](https://github.com/GetDKAN/visualization_entity_charts) (Under development)
 
 * Choropleth maps
  * [More information]( http://visualization-entity.readthedocs.org/en/latest/create-a-choropleth-visualization/)
