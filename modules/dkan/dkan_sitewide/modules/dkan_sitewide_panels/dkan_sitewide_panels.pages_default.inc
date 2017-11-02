@@ -1528,37 +1528,6 @@ return TRUE;
   $display->content['new-b0fb8ba0-c78f-4b2e-9ae3-e4cc61f06345'] = $pane;
   $display->panels['sidebar'][4] = 'new-b0fb8ba0-c78f-4b2e-9ae3-e4cc61f06345';
   $pane = new stdClass();
-  $pane->pid = 'new-51f2a5b5-ab6a-474a-b0f8-4a0b297160a8';
-  $pane->panel = 'sidebar';
-  $pane->type = 'block';
-  $pane->subtype = 'facetapi-wsVI1ENUXwf4Rz08n9fg2WvfQ0Gs5h2a';
-  $pane->shown = TRUE;
-  $pane->access = array();
-  $pane->configuration = array(
-    'override_title' => 1,
-    'override_title_text' => 'Author',
-    'override_title_heading' => 'h2',
-  );
-  $pane->cache = array();
-  $pane->style = array(
-    'settings' => array(
-      'pane_title' => '%title',
-      'pane_collapsed' => 1,
-      'pane_empty_check' => 0,
-    ),
-    'style' => 'collapsible',
-  );
-  $pane->css = array(
-    'css_id' => '',
-    'css_class' => 'pane-facetapi pane-block',
-  );
-  $pane->extras = array();
-  $pane->position = 5;
-  $pane->locks = array();
-  $pane->uuid = '51f2a5b5-ab6a-474a-b0f8-4a0b297160a8';
-  $display->content['new-51f2a5b5-ab6a-474a-b0f8-4a0b297160a8'] = $pane;
-  $display->panels['sidebar'][5] = 'new-51f2a5b5-ab6a-474a-b0f8-4a0b297160a8';
-  $pane = new stdClass();
   $pane->pid = 'new-0541c9a5-2e8c-488f-8db4-4cd064bdc903';
   $pane->panel = 'sidebar';
   $pane->type = 'block';
@@ -1584,11 +1553,11 @@ return TRUE;
     'css_class' => 'pane-facetapi pane-block',
   );
   $pane->extras = array();
-  $pane->position = 6;
+  $pane->position = 5;
   $pane->locks = array();
   $pane->uuid = '0541c9a5-2e8c-488f-8db4-4cd064bdc903';
   $display->content['new-0541c9a5-2e8c-488f-8db4-4cd064bdc903'] = $pane;
-  $display->panels['sidebar'][6] = 'new-0541c9a5-2e8c-488f-8db4-4cd064bdc903';
+  $display->panels['sidebar'][5] = 'new-0541c9a5-2e8c-488f-8db4-4cd064bdc903';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;

@@ -79,8 +79,8 @@ Feature: Resource
   @resource_all_05 @api @fixme @testBug
     #TODO: Need to have test data api set up for new resources for this test
     #      This functionality is tested in another module, test again here?
-    #      See:     https://github.com/NuCivic/dkan_datastore/blob/7.x-1.x/tests/dkan_datastore.test
-    #      And See: https://github.com/NuCivic/dkan_dataset/compare/310_dataset_rest_api
+    #      See:     https://github.com/GetDKAN/dkan_datastore/blob/7.x-1.x/tests/dkan_datastore.test
+    #      And See: https://github.com/GetDKAN/dkan_dataset/compare/310_dataset_rest_api
   Scenario: View the Data API information for a published resource
     Given I am on "Resource 02" page
     When I click "Data API"
@@ -158,7 +158,9 @@ Feature: Resource
     Given resources:
       | title                    | publisher | format | dataset | author | published | description |
       | Resource Without Dataset | Group 01  | csv    |         | Katie  | Yes       | Old Body    |
+    And I am logged in as a user with the "site manager" role
     And I am on "Resource Without Dataset" page
     Then I should not see the link "Back to dataset"
-    And I should see "Groups"
+    When I click "Edit"
+    Then I should see "Groups" in the "content" region
 

@@ -4,9 +4,7 @@ Usage
 Creating Datasets and Resources
 -------------------------------
 
-DKAN’s data publishing model is based on the concept of :ref:`datasets <datasets>` and :ref:`resources <resources>`.  A dataset is a container for one or more resources; a resource is the actual “data” being published, such as a CSV table, a GeoJSON data file, or a TIFF aerial image.
-
-The dataset and resource content types in DKAN are provided by the `DKAN Dataset module <https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/dkan_dataset>`_.
+DKAN’s data publishing model is based on the concept of :ref:`datasets <datasets>` and :ref:`resources <resources>`.  A dataset is a container for one or more resources; a resource is the actual “data” being published, such as a CSV table, a GeoJSON data file, or a TIFF aerial image. The dataset and resource content types in DKAN are provided by the DKAN Dataset module.
 
 In our example, we’ll be adding a dataset with Wisconsin polling places to a DKAN site. The data may look familiar; it's one of the sample datasets provided with DKAN upon installation.
 

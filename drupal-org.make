@@ -115,7 +115,7 @@ projects:
   feeds_flatstore_processor:
     download:
       type: git
-      url: 'https://github.com/NuCivic/feeds_flatstore_processor.git'
+      url: 'https://github.com/GetDKAN/feeds_flatstore_processor.git'
       branch: master
   field_group:
     version: '1.5'
@@ -186,7 +186,7 @@ projects:
   leaflet_draw_widget:
     download:
       type: git
-      url: 'https://github.com/NuCivic/leaflet_draw_widget.git'
+      url: 'https://github.com/GetDKAN/leaflet_draw_widget.git'
       branch: 'master'
   libraries:
     version: '2.3'
@@ -244,7 +244,7 @@ projects:
   open_data_schema_map:
     download:
       type: git
-      url: https://github.com/NuCivic/open_data_schema_map.git
+      url: https://github.com/GetDKAN/open_data_schema_map.git
       branch: 7.x-1.x
   panelizer:
     version: '3.4'
@@ -274,7 +274,7 @@ projects:
   recline:
     download:
       type: git
-      url: 'https://github.com/NuCivic/recline.git'
+      url: 'https://github.com/GetDKAN/recline.git'
       branch: 7.x-1.x
   ref_field:
     download:
@@ -286,7 +286,7 @@ projects:
   remote_stream_wrapper:
     download:
       type: git
-      url: https://github.com/NuCivic/remote_stream_wrapper.git
+      url: https://github.com/GetDKAN/remote_stream_wrapper.git
       branch: 7.x-1.x
   role_export:
     version: '1.0'
@@ -325,7 +325,7 @@ projects:
   taxonomy_fixtures:
     download:
       type: git
-      url: 'https://github.com/NuCivic/taxonomy_fixtures.git'
+      url: 'https://github.com/GetDKAN/taxonomy_fixtures.git'
       branch: 7.x-1.x
   token:
     version: '1.7'
@@ -345,7 +345,7 @@ projects:
   visualization_entity:
     download:
       type: git
-      url: https://github.com/NuCivic/visualization_entity.git
+      url: https://github.com/GetDKAN/visualization_entity.git
       branch: 7.x-1.x
     type: module
   workbench:
@@ -395,7 +395,7 @@ libraries:
   spectrum:
     download:
       type: git
-      url: https://github.com/NuCivic/spectrum.git
+      url: https://github.com/GetDKAN/spectrum.git
       tag: 1.8.0-civic-4736
     directory_name: bgrins-spectrum
   spyc:

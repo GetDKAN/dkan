@@ -2,7 +2,7 @@
 
 ## The DKAN Permissions module
 
-The DKAN Permissions module provides default roles and permissions for the DKAN distribution. It uses the alternative [Features](https://www.drupal.org/project/features) export method provided by the [Features Roles Permissions](https://www.drupal.org/project/features_roles_permissions) module, rather than Features' standard permissions and roles exports. Among other advantages, this produces very human-readable code; you can examine the specific roles and permissions provided by reviewing [`dkan_permissions.features.roles_permissions.inc`](https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_permissions/dkan_permissions.features.roles_permissions.inc).
+The DKAN Permissions module provides default roles and permissions for the DKAN distribution. It uses the alternative [Features](https://www.drupal.org/project/features) export method provided by the [Features Roles Permissions](https://www.drupal.org/project/features_roles_permissions) module, rather than Features' standard permissions and roles exports. Among other advantages, this produces very human-readable code; you can examine the specific roles and permissions provided by reviewing [`dkan_permissions.features.roles_permissions.inc`](https://github.com/GetDKAN/dkan/blob/7.x-1.x/modules/dkan/dkan_permissions/dkan_permissions.features.roles_permissions.inc).
 
 ## DKAN Core Roles
 
