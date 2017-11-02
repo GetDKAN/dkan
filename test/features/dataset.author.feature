@@ -85,6 +85,7 @@ Feature: Dataset Features
       | description     | Test description  |
       | publisher       | Group 01          |
     And I press "Next: Add data"
+    Then I should not see "Groups" in the "content" region
     And I fill in "title" with "Test Resource Link File"
     And I press "Next: Additional Info"
     And I press "Save"
