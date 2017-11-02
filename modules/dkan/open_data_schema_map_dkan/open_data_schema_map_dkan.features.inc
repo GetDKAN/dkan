@@ -62,7 +62,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'notes' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'url' => array(
@@ -131,7 +131,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'description' => array(
-          'value' => '[node:field-resources:Nth:body]',
+          'value' => '[node:field-resources:Nth:body_raw]',
           'type' => '',
         ),
         'format' => array(
@@ -239,7 +239,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'description' => array(
-          'value' => '[node:og-group-ref:Nth:body]',
+          'value' => '[node:og-group-ref:Nth:body_raw]',
           'type' => '',
         ),
         'id' => array(
@@ -634,7 +634,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'notes' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'url' => array(
@@ -703,7 +703,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'description' => array(
-          'value' => '[node:field-resources:Nth:body]',
+          'value' => '[node:field-resources:Nth:body_raw]',
           'type' => '',
         ),
         'format' => array(
@@ -811,7 +811,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'description' => array(
-          'value' => '[node:og-group-ref:Nth:body]',
+          'value' => '[node:og-group-ref:Nth:body_raw]',
           'type' => '',
         ),
         'id' => array(
@@ -920,7 +920,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'notes' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'url' => array(
@@ -989,7 +989,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'description' => array(
-          'value' => '[node:field-resources:Nth:body]',
+          'value' => '[node:field-resources:Nth:body_raw]',
           'type' => '',
         ),
         'format' => array(
@@ -1097,7 +1097,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'description' => array(
-          'value' => '[node:og-group-ref:Nth:body]',
+          'value' => '[node:og-group-ref:Nth:body_raw]',
           'type' => '',
         ),
         'id' => array(
@@ -1182,7 +1182,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'description' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'format' => array(
@@ -1312,7 +1312,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'boolean',
       ),
       'description' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'distribution' => array(
@@ -1350,7 +1350,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'language' => array(
-        'value' => '[node:field_language]',
+        'value' => 'en',
         'type' => 'array',
       ),
       'license' => array(
@@ -1473,7 +1473,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'boolean',
       ),
       'description' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'distribution' => array(
@@ -1502,7 +1502,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'description' => array(
-          'value' => '[node:field-resources:Nth:body]',
+          'value' => '[node:field-resources:Nth:body_raw]',
           'type' => '',
         ),
         'title' => array(
@@ -1619,7 +1619,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:description' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'dcat:keyword' => array(
@@ -1748,7 +1748,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:description' => array(
-          'value' => '[node:field-resources:Nth:body]',
+          'value' => '[node:field-resources:Nth:body_raw]',
           'type' => '',
         ),
         'dct:issued' => array(
@@ -1823,7 +1823,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:description' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'dcat:keyword' => array(
@@ -1948,7 +1948,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:description' => array(
-          'value' => '[node:field-resources:Nth:body]',
+          'value' => '[node:field-resources:Nth:body_raw]',
           'type' => '',
         ),
         'dct:issued' => array(
@@ -2018,7 +2018,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
         'type' => 'string',
       ),
       'dct:description' => array(
-        'value' => '[node:body]',
+        'value' => '[node:body_raw]',
         'type' => 'string',
       ),
       'dcat:keyword' => array(
@@ -2143,7 +2143,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dct:description' => array(
-          'value' => '[node:field-resources:Nth:body]',
+          'value' => '[node:field-resources:Nth:body_raw]',
           'type' => '',
         ),
         'dct:issued' => array(
