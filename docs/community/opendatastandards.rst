@@ -6,7 +6,7 @@ A basic overview of open data standards and best practices.
 The open data publishing process from start-to-finish
 -----------------------------------------------------
 
-.. figure:: ../../images/OpenDataPublishingProcess.png
+.. figure:: ../images/OpenDataPublishingProcess.png
 
    This flowchart displays the steps of the open data publishing process.
 
@@ -21,7 +21,7 @@ These three content types serve as a means of organizing data for maximum site f
 
 You can picture a DKAN-based open data portal as a massive file cabinet, as in the below diagram:
 
-.. figure:: ../../images/DKANFileCabinet.png
+.. figure:: ../images/DKANFileCabinet.png
 
    This image displays a DKAN Open Data site as a file cabinet with Datasets, Resources and Groups represented as folders, files and drawers.
 
@@ -73,7 +73,7 @@ When viewing a dataset, you can scroll down the page to the "Dataset Info" secti
 
 The screencap below is an example of metadata for the "Safety Net Clinics" dataset on `HealthData.gov <http://www.healthdata.gov/>`_:
 
-.. figure:: ../../images/MetadataInDKAN.png
+.. figure:: ../images/MetadataInDKAN.png
 
    Metadata in DKAN is displayed as a table on the Datasets page
 
