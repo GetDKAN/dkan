@@ -553,21 +553,3 @@ Relevant Reading Materials
 
 "Open Data Standards" W3C blog post: https://www.linkedin.com/pulse/open-data-standards-steven-adler
 
-
-Open Data Experts on Social Media
----------------------------------
-
-Steve Adler: https://twitter.com/DataGov | `Adler1@us.ibm.com <mailto:Adler1@us.ibm.com>`_
-
-Jeanne Holme: https://twitter.com/JeanneHolm | `jeanne.m.holm@jpl.nasa.gov <mailto:jeanne.m.holm@jpl.nasa.gov>`_
-
-Waldo Jaquith: https://twitter.com/waldojaquith | `waldo@jaquith.org <mailto:waldo@jaquith.org>`_
-
-Abhi Nemani: https://twitter.com/abhinemani | `abhi.nemani@gmail.com <mailto:abhi.nemani@gmail.com>`_
-
-Andrew Nicklin: https://twitter.com/technickle | `andrew.nicklin@gmail.com <mailto:andrew.nicklin@gmail.com>`_
-
-Beth Noveck: https://twitter.com/bethnoveck | `noveck@thegovlab.org <mailto:noveck@thegovlab.org>`_
-
-Tim Wisniewski: https://twitter.com/timwis | `Tim.Wisniewski@phila.gov <mailto:Tim.Wisniewski@phila.gov>`_
-
