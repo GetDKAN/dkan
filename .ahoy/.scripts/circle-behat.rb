@@ -24,14 +24,17 @@ error = 0
 parsed = behat_parse_params(ARGV)
 params = behat_join_params parsed[:params]
 files = balance(parsed[:files])
+composer = ""
 
 files[CIRCLE_NODE_INDEX].each_index do |i|
   file = Pathname(files[CIRCLE_NODE_INDEX][i]).realpath.to_s
   suite = behat_parse_suite(file)
-  puts "RUNNING: ahoy dkan test #{file} --suite=#{suite} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
-  IO.popen(
-  "ahoy dkan test #{file} --suite=#{suite} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
-  ) do |io|
+  testCmd = "ahoy dkan test #{file} --suite=#{suite} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
+  if i > 1
+    testCmd.concat(" --skip-composer")
+  end
+  puts "RUNNING: #{testCmd}"
+  IO.popen(testCmd) do |io|
     while line = io.gets
       print line
     end
