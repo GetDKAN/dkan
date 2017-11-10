@@ -105,6 +105,28 @@ class DatastoreContext extends RawDKANContext {
   }
 
   /**
+   * @Then :title should have no datastore records
+   */
+  public function assertHasNoDatastoreRecords($title) {
+    $nid = $this->getNidByTitle($title);
+    $status = dkan_datastore_records($nid);
+    if (!empty($status)) {
+      throw new \Exception($title . ' has datastore records.'); 
+    }
+  }
+
+  /**
+   * @Then :title should have datastore records
+   */
+  public function assertHasDatastoreRecords($title) {
+    $nid = $this->getNidByTitle($title);
+    $status = dkan_datastore_records($nid);
+    if (empty($status)) {
+      throw new \Exception($title . ' has no datastore records.'); 
+    }
+  }
+
+  /**
    * @BeforeScenario @datastore
    *
    * @param BeforeScenarioScope $scope
