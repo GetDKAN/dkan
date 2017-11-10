@@ -33,7 +33,8 @@ database:
   pre:
     - echo -e 'secure_file_priv = ""' | sudo sh -c "cat >> /etc/mysql/my.cnf"
     - echo -e 'max_allowed_packet = 128M' | sudo sh -c "cat >> /etc/mysql/my.cnf"
-    - echo -e 'innodb_buffer_pool_size=256M ' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+    - echo -e 'innodb_buffer_pool_size=256M' | sudo sh -c "cat >> /etc/mysql/my.cnf"
+    - echo -e 'tmpdir = /run/mysqld' | sudo sh -c "cat >> /etc/mysql/my.cnf"
     - sudo /usr/sbin/service mysql restart
 
 ## Customize dependencies
