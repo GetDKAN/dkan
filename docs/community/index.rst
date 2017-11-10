@@ -5,5 +5,6 @@ DKAN Community
    :maxdepth: 1
 
    welcome
+   opendatastandards
    help
    code-of-conduct
