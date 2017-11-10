@@ -55,6 +55,9 @@ dependencies:
     - rm /opt/circleci/php/$(phpenv global)/etc/conf.d/xdebug.ini
     - echo "memory_limit = 256M" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/memory.ini
     - echo "always_populate_raw_post_data = -1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/deprecated.ini
+    - echo "opcache.enable=1" > $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/opcode.ini
+    - echo "opcache.enable_cli=1" >> $PHPENV_ROOT/versions/$(phpenv global)/etc/conf.d/opcode.ini
+    - php -i
   override:
     - printenv
     - mkdir $CIRCLE_ARTIFACTS/junit
