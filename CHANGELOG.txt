@@ -1,3 +1,7 @@
+7.x-1.14.1
+----------
+ - #2103 Fixed field mapping defaults for open data schema APIs
+
 7.x-1.14
 --------
  - Added new module Token Tweaks to allow ui control of token recursion level in effort to help avoid memory issues with Token (see https://www.drupal.org/node/1058912)
