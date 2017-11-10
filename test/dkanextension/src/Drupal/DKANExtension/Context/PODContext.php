@@ -34,12 +34,8 @@ class PODContext extends RawDKANContext {
    */
   public function iSeeAValidDataJson($should)
   {
-    $data_json = open_data_schema_map_api_load('data_json_1_1');
-    // Get base URL.
-    $url = $this->getMinkParameter('base_url') ? $this->getMinkParameter('base_url') : "http://127.0.0.1:8888";
-
     // Validate POD.
-    $results = open_data_schema_pod_process_validate($url . '/data.json', TRUE);
+    $results = _open_data_schema_map_process_validate('PodValidator', TRUE);
     if ($results['errors'] && $should === 'should') {
       throw new \Exception(sprintf('Data.json is not valid.'));
     }
@@ -53,33 +49,9 @@ class PODContext extends RawDKANContext {
    * @Then I should see a valid catalog xml
    */
   public function iShouldSeeAValidCatalogXml() {
-    // Change /catalog.xml path to /catalog during tests. The '.' on the filename breaks tests on CircleCI's server.
-    $dcat = open_data_schema_map_api_load('dcat_v1_1');
-    if ($dcat->endpoint !== 'catalog') {
-      $dcat->endpoint = 'catalog';
-      drupal_write_record('open_data_schema_map', $dcat, 'id');
-      drupal_static_reset('open_data_schema_map_api_load_all');
-      menu_rebuild();
-    }
-
-    // Change /catalog.json path to /catalogjson during tests. The '.' on the filename breaks tests on CircleCI's server.
-    $dcat_json = open_data_schema_map_api_load('dcat_v1_1_json');
-    if ($dcat_json->endpoint !== 'catalogjson') {
-      $dcat_json->endpoint = 'catalogjson';
-      drupal_write_record('open_data_schema_map', $dcat_json, 'id');
-      drupal_static_reset('open_data_schema_map_api_load_all');
-      menu_rebuild();
-    }
-
-    // Get base URL.
-    $url = $this->getMinkParameter('base_url') ? $this->getMinkParameter('base_url') : "http://127.0.0.1::8888";
-    $url_xml = $url . '/catalog';
-    $url_json = $url . '/catalogjson';
-    $this->visitPath($url_xml);
-    $this->assertSession()->statusCodeEquals('200');
-
     // Validate DCAT.
-    $results = open_data_schema_dcat_process_validate($url_json, TRUE);
+    $results = _open_data_schema_map_process_validate('DcatValidator', TRUE);
+
     if ($results['errors']) {
       throw new \Exception(sprintf('catalog.xml is not valid.'));
     }

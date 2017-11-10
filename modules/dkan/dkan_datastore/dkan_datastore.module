@@ -391,7 +391,8 @@ function dkan_datastore_records($nid) {
         $query = db_select($table, 't')
           ->fields('t', array('timestamp'))
           ->range(0, 1);
-        if ($result = $query->execute()) {
+        $result = $query->execute();
+        if (!empty($result->rowCount())) {
           return TRUE;
         }
       }
