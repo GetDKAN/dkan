@@ -21,6 +21,8 @@ web:
     - "./.docker/etc/php5/php.ini:/etc/php5/fpm/conf.d/z_php.ini"
     # Project root folder mapping
     - &project_root "../../:/var/www/"
+    # MySQL configuration overrides
+    - "./.docker/etc/mysql/my.cnf:/etc/mysql/conf.d/z_my.cnf"
   links:
     - db
     # Uncomment this and the memcached service definition below to start using memcached.
@@ -63,6 +65,8 @@ cli:
     # Host SSH keys mapping. Uncomment one of the lines below based on your setup.
     # - /.ssh:/.ssh   # boot2docker-vagrant
     - ~/.ssh:/.ssh  # Linux
+    # MySQL configuration overrides
+    - "./.docker/etc/mysql/my.cnf:/etc/mysql/conf.d/z_my.cnf"
   links:
     - db
     - web
