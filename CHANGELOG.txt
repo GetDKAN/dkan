@@ -1,3 +1,7 @@
+7.x-1.14.1
+----------
+ - #2103 Fixed field mapping defaults for open data schema APIs
+
 7.x-1.14
 --------
  - #2208 Fix access to groups field when adding a resource inside the dataset form.
