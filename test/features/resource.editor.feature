@@ -95,56 +95,57 @@ Feature: Resource
   @resource_editor_6 @datastore @noworkflow @javascript
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
-    And I am on "Resource 01" page
+    And I am on "Resource 02" page
     And I click "Edit"
     And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple7.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
+    And I am on "Resource 02" page
     When I click "Manage Datastore"
     And I wait for "Import"
     And I press "Import"
     And I wait for "Delete Items"
-    Then I should see "Last import"
-    And I should see "imported items total"
+    Then "Resource 02" should have datastore records
 
   @resource_editor_7 @datastore @db @noworkflow @javascript
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
       Given I am logged in as "John"
-      And I am on "Resource 01" page
+      And I am on "Resource 02" page
       And I click "Edit"
       And I click "Remote file"
       And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple8.csv"
       And I press "Save"
       Given I am logged in as "Celeste"
-      When I am on "Resource 01" page
+      When I am on "Resource 02" page
       When I click "Manage Datastore"
+      And I wait for "Import"
       And I press "Import"
       And I wait for "Delete Items"
+      Then "Resource 02" should have datastore records
       And I click "Delete items"
       And I press "Delete"
-      Then I wait for "items have been deleted"
+      And I wait for "items have been deleted"
+      Then "Resource 02" should have no datastore records
 
   @resource_editor_8 @datastore @noworkflow @javascript
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
-    And I am on "Resource 01" page
+    And I am on "Resource 02" page
     And I click "Edit"
     And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple9.csv"
     And I press "Save"
     Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
+    And I am on "Resource 02" page
     When I click "Manage Datastore"
+    And I wait for "Import"
     And I press "Import"
     And I wait for "Delete Items"
+    Then "Resource 02" should have datastore records
     When I click "Drop Datastore"
     And I press "Drop"
-    Then I should see "Datastore dropped!"
-    And I should see "Your file for this resource is not added to the datastore"
-    When I click "Manage Datastore"
-    Then I should see "No imported items."
+    Then "Resource 02" should have no datastore records
 
   @resource_editor_9 @noworkflow
   Scenario: Add revision to resources associated with groups that I am a member of
