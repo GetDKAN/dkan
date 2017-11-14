@@ -30,3 +30,7 @@ features[variable][] = panelizer_node:data_dashboard_default
 features[views_view][] = data_dashboards
 features[views_view][] = front_page_dashboards_list
 features_exclude[dependencies][dkan_topics] = dkan_topics
+
+; Information added by DKAN release script on 11/14/2017
+version = 7.x-1.14
+project = dkan
