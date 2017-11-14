@@ -1,6 +1,7 @@
 7.x-1.14.1
 ----------
  - #2103 Fixed field mapping defaults for open data schema APIs
+ - #2237 Migration of CircleCI from V1 to V2
 
 7.x-1.14
 --------
