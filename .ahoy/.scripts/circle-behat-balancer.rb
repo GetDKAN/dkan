@@ -36,11 +36,14 @@ def parse_header(file)
 end 
 
 def sort_files(files)
-  sorted_files = {}
+  keyed_files = {}
   files.each_index do |i|
-    sorted_files[files[i]] = parse_header(files[i])
+    keyed_files[files[i]] = parse_header(files[i])
   end
-  return sorted_files.sort_by {|k, v| v}.reverse
+  sorted_files = keyed_files.sort_by {|k, v| k}.sort_by {|k, v| v}.reverse
+  puts "Feature Files (sorted by weight desc)"
+  pp sorted_files
+  return sorted_files
 end
 
 def node_total()
