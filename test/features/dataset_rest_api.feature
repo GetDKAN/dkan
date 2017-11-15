@@ -96,6 +96,8 @@ Feature: DKAN Dataset REST API
   @dataset_rest_api_07
   Scenario: Delete a Dataset using the 'Dataset REST API' endpoint
     Given I am on "Search Datasets" page
+    And I fill in "edit-query" with "Dataset 01"
+    And I press "Apply"
     Then I should see "Dataset 01"
     Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
     And I use the "dataset rest api" endpoint to delete the node "Dataset 01"
