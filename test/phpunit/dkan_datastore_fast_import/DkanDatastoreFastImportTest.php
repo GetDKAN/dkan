@@ -139,7 +139,7 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
       'encoding' => 'UTF-8',
     );
 
-    variable_set('dkan_datastore_load_data_type', 'load_data_infile');
+    variable_set('dkan_datastore_load_data_type', 'load_data_local_infile');
     variable_set('quote_delimiters', '"');
     variable_set('lines_terminated_by', '\n');
     variable_set('fields_escaped_by', '');
@@ -167,7 +167,7 @@ class DkanDatastoreFastImportTest extends \PHPUnit_Framework_TestCase {
       'encoding' => 'UTF-8',
     );
 
-    variable_set('dkan_datastore_load_data_type', 'load_data_infile');
+    variable_set('dkan_datastore_load_data_type', 'load_data_local_infile');
     variable_set('quote_delimiters', '"');
     variable_set('lines_terminated_by', '\n');
     variable_set('fields_escaped_by', '');
