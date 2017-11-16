@@ -1,4 +1,4 @@
-# time:3m30.05s
+# time:5m23.05s
 @harvest_rollback @disablecaptcha
 Feature: Dkan Harvest
   Background:

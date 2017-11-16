@@ -1,4 +1,4 @@
-# time:0m23.12s
+# time:0m9.35s
 @api @disablecaptcha
 Feature: Data Stories
 

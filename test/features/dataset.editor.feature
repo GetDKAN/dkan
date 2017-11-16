@@ -1,4 +1,4 @@
-# time:0m18.30s
+# time:0m39.30s
 # The first scenario requires that the timezone be set to UTC.
 # @timezone will set the timezone for tests and restore the timezone afterwards.
 @api @timezone @disablecaptcha
