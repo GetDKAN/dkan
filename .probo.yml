@@ -5,6 +5,11 @@ steps:
     # we need to use 'script:' instead of 'command:'
     plugin: Script
     script: |
+      #Increase PHP memory limit
+      echo "memory_limit: 512M" >> /etc/php5/apache2/conf.d/99-probo-settings.ini
+      apache2ctl graceful
+      php -i
+
       # Fail right away.
       set -e
       # Start in the right folder of our checkout (/src)
