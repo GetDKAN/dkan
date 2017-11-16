@@ -4,6 +4,7 @@
 
 7.x-1.14
 --------
+ - Added new module Token Tweaks to allow ui control of token recursion level in effort to help avoid memory issues with Token (see https://www.drupal.org/node/1058912)
  - #2208 Fix access to groups field when adding a resource inside the dataset form.
  - #2188 Move DKAN repository to GetDKAN organization in Github 
  - #2033 Remove "author" facet from search page (generally never relevant information)
