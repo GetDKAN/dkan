@@ -1,3 +1,4 @@
+# time:1m35.23s
 @api @enableFastImport @javascript @disablecaptcha
 Feature: DKAN Datastore Fast Import
   Background:

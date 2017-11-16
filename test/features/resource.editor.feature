@@ -1,4 +1,4 @@
-# time:3m12.22s
+# time:1m38.22s
 @api @disablecaptcha
 Feature: Resource
 
