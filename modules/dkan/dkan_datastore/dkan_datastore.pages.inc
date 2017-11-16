@@ -5,6 +5,10 @@
  * Callbacks for datastore pages.
  */
 
+use Dkan\Datastore\Form\Drop;
+use Dkan\Datastore\Form\Import;
+use Dkan\Datastore\Form\Delete;
+
 // Default to 50MB.
 define('MAX_FILE_REMOTE_PROXY_DEFAULT', 1024 * 1024 * 50);
 
@@ -12,12 +16,50 @@ define('MAX_FILE_REMOTE_PROXY_DEFAULT', 1024 * 1024 * 50);
  * Callback for Data API instructions.
  */
 function dkan_datastore_datastore_api($node) {
+  $output = "";
+  $redirect_path = NULL;
+
   $status = dkan_datastore_status($node);
+
   switch ($status) {
     case DKAN_DATASTORE_EXISTS:
+      /* @var $datastore DkanDatastore */
       $datastore = dkan_datastore_go($node->uuid);
-      $output = $datastore->apiForm();
-      return $output;
+
+      $output .= '<h2>' . t('DKAN Datastore API') . '</h2>';
+
+      if ($datastore_id = $datastore->getId()) {
+        if (!$datastore->exists()) {
+          $output .= t('This resources has a file that has not been added to the datastore.');
+        }
+        else {
+          $progress = $datastore->getImportProgress();
+          if ($progress != 1.0) {
+            $output .= t('This data source has not yet completed importing. Import is at @progress%. The API for this data source will be available upon the completion of the import process.', array('@ progress' => number_format(100 * $progress, 0)));
+          }
+          else {
+            $output .= t('Access resource data via a web API with powerful query support.');
+            $output .= '<h3>' . t('Resource ID') . '</h3>';
+            $output .= t("The Resource ID for this resource is %id", array('%id' => $node->uuid));
+            $output .= '<h3>' . t('Example Query') . '</h3>';
+            $url = url("api/action/datastore/search.json", array(
+              'query' => array(
+                'resource_id' => $node->uuid,
+                'limit' => 5,
+              ),
+              'absolute' => TRUE,
+            ));;
+            $output .= '<p>' . l($url, $url) . '</p>';
+            $output .= '<p>' . t('Query this datastore and return first five results') . '</p>';
+            $output .= '<h3>' . t('Documentation') . '</h3>';
+            $output .= '<p>' . t('See DKAN API documentation for more details: <a href="http://docs.getdkan.com/docs/dkan-documentation/dkan-api/datastore-api">DKAN Datastore API</a>') . '</p>';
+          }
+        }
+      }
+      else {
+        $output .= t('No files have been added to the datastore.');
+      }
+      break;
 
     case DKAN_DATASTORE_FILE_EXISTS:
       drupal_set_message(t('You need to add your file to the datastore in order to use the DATA API'));
@@ -29,7 +71,13 @@ function dkan_datastore_datastore_api($node) {
       $redirect_path = 'node/' . $node->nid;
       break;
   }
-  drupal_goto($redirect_path);
+
+  if ($redirect_path) {
+    drupal_goto($redirect_path);
+  }
+  else {
+    return $output;
+  }
 }
 
 /**
@@ -112,8 +160,12 @@ function dkan_datastore_add_resource($node) {
  * Render a datastore import form on node/id/import pages.
  */
 function dkan_datastore_import_tab_form($form, &$form_state, $node) {
+  module_load_include("php", "dkan_datastore", "src/Form/Import");
+
+  /* @var $datastore DkanDatastore */
   $datastore = dkan_datastore_go($node->uuid);
-  $form = $datastore->manageForm($form_state);
+  $dkan_form = new Import($datastore);
+  $form = $dkan_form->toArray($form_state);
   $form['#datastore'] = $datastore;
   return $form;
 }
@@ -122,8 +174,11 @@ function dkan_datastore_import_tab_form($form, &$form_state, $node) {
  * Submit function for import tab.
  */
 function dkan_datastore_import_tab_form_submit($form, &$form_state) {
+  module_load_include("php", "dkan_datastore", "src/Form/Import");
+
   $datastore = $form['#datastore'];
-  $datastore->manageFormSubmit($form_state);
+  $dkan_form = new Import($datastore);
+  $dkan_form->submitHandler($form_state);
 }
 
 /**
@@ -133,62 +188,37 @@ function dkan_datastore_import_tab_form_submit($form, &$form_state) {
  * Therefore $node may be missing.
  */
 function dkan_datastore_delete_tab_form($form, &$form_state, $importer_id, $node = NULL) {
+  module_load_include("php", "dkan_datastore", "src/Form/Delete");
+
   $datastore = dkan_datastore_go($node->uuid);
-  $form = $datastore->deleteForm($form_state);
-  $form['#submit'] = array('feeds_delete_tab_form_submit');
+  $dkan_form = new Delete($datastore);
+  $form = $dkan_form->toArray($form_state);
+  $form['#datastore'] = $datastore;
   return $form;
 }
 
 /**
- * Render a datastore unlock form.
- *
- * Used on both node pages and configuration pages.
- * Therefore $node may be missing.
+ * Submit function for import tab.
  */
-function dkan_datastore_unlock_tab_form($form, &$form_state, $importer_id, $node = NULL) {
-  module_load_include('inc', 'feeds', 'feeds.pages');
-  if (empty($node)) {
-    $source = feeds_source($importer_id);
-    $form['#redirect'] = 'import/' . $source->id;
-  }
-  else {
-    $importer_id = feeds_get_importer_id($node->type);
-    $source = feeds_source($importer_id, $node->nid);
-    $form['#redirect'] = 'node/' . $source->feed_nid;
-  }
-  // Form cannot pass on source object.
-  $form['#importer_id'] = $source->id;
-  $form['#feed_nid'] = $source->feed_nid;
-  $form['source_status'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Status'),
-    '#tree' => TRUE,
-    '#value' => feeds_source_status($source),
-  );
-  $form = confirm_form($form, t('Unlock this importer?'), $form['#redirect'], '', t('Delete'), t('Cancel'), 'confirm feeds update');
-  if ($source->progressImporting() == FEEDS_BATCH_COMPLETE && $source->progressClearing() == FEEDS_BATCH_COMPLETE) {
-    $form['source_locked'] = array(
-      '#type' => 'markup',
-      '#title' => t('Not Locked'),
-      '#tree' => TRUE,
-      '#markup' => t('This importer is not locked, therefore it cannot be unlocked.'),
-    );
-    $form['actions']['submit']['#disabled'] = TRUE;
-    $form['actions']['submit']['#value'] = t('Unlock (disabled)');
-  }
-  else {
-    $form['actions']['submit']['#value'] = t('Unlock');
-  }
-  $form['#submit'] = array('feeds_unlock_tab_form_submit');
-  return $form;
+function dkan_datastore_delete_tab_form_submit($form, &$form_state) {
+  module_load_include("php", "dkan_datastore", "src/Form/Import");
+
+  $datastore = $form['#datastore'];
+  $dkan_form = new Delete($datastore);
+  $form_state['redirect'] = $form['#redirect'];
+  $dkan_form->submitHandler($form_state);
 }
 
 /**
  * Render a datastore drop form on node/id/drop pages.
  */
 function dkan_datastore_drop_tab_form($form, &$form_state, $node) {
+  module_load_include("php", "dkan_datastore", "src/Form/Drop");
+
+  /* @var $datastore DkanDatastore */
   $datastore = dkan_datastore_go($node->uuid);
-  $form = $datastore->dropForm($form_state);
+  $dkan_form = new Drop($datastore);
+  $form = $dkan_form->toArray($form_state);
   $form['#datastore'] = $datastore;
   return $form;
 }
@@ -197,8 +227,11 @@ function dkan_datastore_drop_tab_form($form, &$form_state, $node) {
  * Submit function for drop tab.
  */
 function dkan_datastore_drop_tab_form_submit($form, &$form_state) {
+  module_load_include("php", "dkan_datastore", "src/Form/Drop");
+
+  /* @var $datastore DkanDatastore */
   $datastore = $form['#datastore'];
-  $form_state['#tables_to_drop'] = $form['#tables_to_drop'];
-  $datastore->dropFormSubmit($form_state);
+  $dkan_form = new Drop($datastore);
+  $dkan_form->submitHandler($form_state);
   $form_state['redirect'] = $form['#redirect'];
 }

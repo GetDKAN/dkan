@@ -175,9 +175,11 @@ function dkan_datastore_api_datastore_create_command($file = NULL) {
 function dkan_datastore_api_datastore_file_delete_command($id = NULL) {
 
   if ($datastore = get_datastore($id)) {
-    $result = $datastore->deleteFile();
 
-    if ($result) {
+    $node = entity_metadata_wrapper('node', $datastore->getNode());
+    $file = $node->field_upload->value();
+
+    if (file_delete($file, TRUE)) {
       drush_print('The file has been deleted and the items were removed.');
     }
     else {
@@ -234,7 +236,6 @@ function get_datastore($id) {
   // Search for a datastore associated with the resource.
   try {
     $datastore = dkan_datastore_go($id);
-
   }
   catch (Exception $e) {
     drush_print('There are no datastores with the specified id.');

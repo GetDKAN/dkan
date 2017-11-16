@@ -1,358 +1,166 @@
 <?php
 
-/**
- * @file
- * DKAN Datatore implementation of Datastore class.
- */
+module_load_include("php", "dkan_datastore", "src/DatastoreInterface");
+
+use Dkan\Datastore\Helper\Node;
+use Dkan\Datastore\DatastoreInterface;
 
 /**
  * Class for DKAN Datastores.
  */
-class DkanDatastore extends Datastore implements DatastoreFormInterface {
+class DkanDatastore implements DatastoreInterface {
 
-  public $endpoint = 'api/action/datastore/search.json';
+  private $node;
+
+  private $feedsConfig = [];
+
+  private $feedsSource;
 
   /**
    * Sets default items for datastore object.
    */
-  protected function __construct($uuid) {
-    $this->uuid = $uuid;
-    $this->node = $this->node($uuid);
-    $this->importerId = $this->importerId();
-    $this->source = $this->source();
-    $this->importer = $this->importer();
-    $this->sourceId = dkan_datastore_api_get_feeds_source($this->node->nid);
-    $this->tableName = feeds_flatstore_processor_table_name($this->sourceId, $this->node->nid);
-    $this->status = $this->status();
+  public function __construct($uuid) {
+    module_load_include("php", "dkan_datastore", "src/Helper/Node");
+    $this->node = Node::getNodeFromUuid($uuid);
   }
 
   /**
-   * Retrieves importer id.
+   * A machine readable identifier for a datastore.
    */
-  public function importerId() {
-    $id = db_query("SELECT id FROM {feeds_source} WHERE feed_nid = :nid", array(':nid' => $this->node->nid))->fetchField();
-    return $id;
+  public function getId() {
+    return $this->getImporterId();
   }
 
   /**
-   * Revrieves source from $node if it exists.
-   *
-   * @return FeedsSource
-   *   Instance of FeedsSource class fetched. Or FALSE if failed.
+   * A label is a human readable identifier for the datastore.
    */
-  public function source() {
-    $source = FALSE;
-
-    if ($this->importerId) {
-      $source = feeds_source($this->importerId, $this->node->nid);
-    }
-
-    return $source instanceof FeedsSource ?
-      $source :
-      FALSE;
+  public function getLabel() {
+    return $this->getImporterName();
   }
 
   /**
-   * Revrieves importer from $node if it exists.
+   * {@inheritdoc}
    */
-  public function importer() {
-    if ($this->importerId) {
-      $importer = feeds_importer($this->importerId, $this->node->nid);
-      if ($importer) {
-        return $importer;
-      }
-    }
-    return FALSE;
+  public function getNode() {
+    return $this->node;
   }
 
   /**
-   * Returns Importer ID.
+   * Progress of the import (0 - 1).
    */
-
-  /**
-   * Retrieves importers from node and instantiates FeedsSource.
-   */
-  public function feed($node) {
-    $importer_ids = feeds_get_importer_ids($node->type, $node->nid);
-    foreach ($importer_ids as $importer_id) {
-      $importer = feeds_importer($importer_id, $node->nid);
-      $source = feeds_source($importer_id, $node->nid);
-      $source_input = isset($source->config[$source->importer->config['fetcher']['plugin_key']]['source']) ? $source->config[$source->importer->config['fetcher']['plugin_key']]['source'] : '';
-      if ($source_input) {
-        return array('source' => $source, 'importer' => $importer);
-      }
-    }
-    return FALSE;
-  }
-
-  /**
-   * Returns number of records in the datastore.
-   */
-  public function records() {
-    if ($records = dkan_datastore_records($this->node->nid)) {
-      return $records;
-    }
-    else {
-      return FALSE;
-    }
-  }
-
-  /**
-   * Retrieves current Datastore status.
-   */
-  public function status() {
-    module_load_include('module', 'dkan_datastore', 'dkan_datastore');
-    return dkan_datastore_status($this->node);
-  }
-
-  /**
-   * Construcs api endpoint.
-   */
-  public function apiUri() {
-    return url($this->endpoint, array(
-      'query' => array(
-        'resource_id' => $this->uuid,
-        'limit' => 5,
-      ),
-      'absolute' => TRUE,
-    ));
-  }
-
-  /**
-   * Retrievs number of rows from the Datastore.
-   */
-  public function rows() {
-    if ($this->status == DKAN_DATASTORE_EXISTS) {
-      $result = db_select($this->tableName, 't')->addExpression('count(t.timestamp)')->execute();
-      return $result->fetchField();
-    }
-    return FALSE;
-  }
-
-  /**
-   * Retrieves headers from Datastore.
-   */
-  public function headers() {
-    if ($this->status == DKAN_DATASTORE_EXISTS) {
-      $table = data_get_table($this->tableName);
-      if (isset($table->meta['fields'])) {
-        $headers = array();
-        foreach ($table->meta['fields'] as $safe_name => $label) {
-          $headers[$safe_name] = $label['label'];
-        }
-        return $headers;
-      }
-    }
-    return FALSE;
-  }
-
-  /**
-   * Creates manage form for Datastore.
-   */
-  public function manageForm(&$form_state) {
-    $node = $this->node;
-    module_load_include('inc', 'feeds', 'feeds.pages');
-    $total_progress = 0;
-    $importer_id = $this->importerId;
-    $form = array();
-    if ($importer_id) {
-      $source = $this->source;
-      $importer = $this->importer;
-      $plugin = $source->importer->config['fetcher']['plugin_key'];
-      $form[$importer_id]['source_status'] = array(
-        '#type' => 'item',
-        '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
-        '#markup' => $this->statusMessage(),
-      );
-      $form['#feed_nid'] = $node->nid;
-      $form['#redirect'] = 'node/' . $node->nid;
-      $source_input = isset($source->config[$plugin]['source']) ? $source->config[$plugin]['source'] : '';
-      $default_values = $source->config[$plugin];
-      if ($source_input) {
-        $form[$importer_id]['settings'] = array(
-          '#type' => 'fieldset',
-          '#title' => t('Settings'),
-        );
-        $form[$importer_id]['settings'] = $source->configForm($form_state);
-        $form[$importer_id]['settings']['#submit'] = array('feeds_form_submit');
-        $form[$importer_id]['#count'] = $source->itemCount();
-        $progress = $source->progressImporting();
-        $form = confirm_form($form, t('Import all content from source?'), 'node/' . $node->nid, '', t('Import'), t('Cancel'), 'confirm feeds update');
-        $form[$importer_id]['description']['#weight'] = '-10';
-        $form[$importer_id]['source_status']['#weight'] = '-9';
-        if (isset($form[$importer_id]['settings']['FeedsCSVParser']['help'])) {
-          unset($form[$importer_id]['settings']['FeedsCSVParser']['help']);
-        }
-        $form['importer_id'] = array(
-          '#type' => 'value',
-          '#value' => $importer_id,
-        );
-        if ($progress !== FEEDS_BATCH_COMPLETE) {
-          $form['actions']['submit']['#disabled'] = TRUE;
-          $form['actions']['submit']['#value'] = t('Importing (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
-        }
-      }
-      else {
-        $form['no_source'] = array(
-          '#markup' => t('The file type for this resource is not supported by the datastore.'),
-        );
-      }
-    }
-    else {
-      $form['no_source'] = array(
-        '#markup' => t('There is nothing to manage! You need to upload or link to a file in order to use the datastore.'),
-      );
-    }
-    return $form;
-
-  }
-
-  /**
-   * Takes values from form submit, saves updated config and starts import.
-   */
-  public function manageFormSubmit(&$form_state) {
-    $importer_id = $form_state['values']['importer_id'];
-    $source = feeds_source($importer_id, $this->node->nid);
-    $parser = $source->importer->config['parser']['plugin_key'];
-    $processor = $source->importer->config['processor']['plugin_key'];
-    $this->addConfig(array($parser => $form_state['values'][$parser]));
-    $this->addConfig(array($processor => $form_state['values'][$processor]));
-    $this->save();
-    $this->import();
-  }
-
-  /**
-   * Adds configuration to feeds source.
-   */
-  public function addConfig($config) {
-    $this->source->addConfig($config);
-  }
-
-  /**
-   * Saves feeds source.
-   */
-  public function save() {
-    $this->source->save();
+  public function getImportProgress() {
+    return $this->getFeedsSource()->progressImporting();
   }
 
   /**
    * Provides themed status message for import.
    */
-  public function statusMessage() {
-    return feeds_source_status($this->source);
-  }
-
-  /**
-   * Provides delete form.
-   */
-  public function deleteForm(&$form_state) {
+  public function getStatusMessage() {
     module_load_include('inc', 'feeds', 'feeds.pages');
-    $total_progress = 0;
-    $node = $this->node;
-
-    $form = array();
-    $importer_id = $this->importerId;
-    $form['#redirect'] = 'node/' . $node->nid;
-
-    if ($importer_id) {
-      // Form cannot pass on source object.
-      $form['#feed_nid'] = $node->nid;
-      $source = feeds_source($importer_id, $node->nid);
-      $form[$importer_id]['source_status'] = array(
-        '#type' => 'item',
-        '#title' => t('@source_name: Status', array('@source_name' => $source->importer->config['name'])),
-        '#tree' => TRUE,
-        '#markup' => $this->statusMessage(),
-      );
-      $progress = $source->progressClearing();
-      $form['importer_ids'] = array(
-        '#type' => 'value',
-        '#value' => array($importer_id),
-      );
-
-      $form = confirm_form($form, t('Delete all items from source?'), $form['#redirect'], '', t('Delete'), t('Cancel'), 'confirm feeds update');
-
-      if ($progress !== FEEDS_BATCH_COMPLETE) {
-        $form['actions']['submit']['#disabled'] = TRUE;
-        $form['actions']['submit']['#value'] = t('Deleting (@progress %)', array('@progress' => number_format(100 * $progress, 0)));
-      }
-    }
-    else {
-      $form['no_source'] = array(
-        '#markup' => t('No feeds sources added to node.'),
-      );
-    }
-    return $form;
+    return feeds_source_status($this->getFeedsSource());
   }
 
   /**
-   * Feeds does the magic on this.
-   *
-   * TODO: undo feeds magic.
+   * Starts import.
    */
-  public function deleteFormSubmit(&$form_submit) {}
-
-  /**
-   * Provides form to drop datastore.
-   */
-  public function dropForm(&$form_state) {
-    module_load_include('module', 'data', 'data');
-    module_load_include('inc', 'feeds', 'feeds.pages');
-    $node = $this->node;
-    $form = array();
-    $form['#redirect'] = 'node/' . $node->nid;
-    $form = confirm_form($form, t('Drop this datastore?'), $form['#redirect'], '', t('Drop'), t('Cancel'), 'confirm drop');
-
-    $importer_ids = feeds_get_importer_ids($node->type);
-    $tables_to_drop = array();
-
-    foreach ($importer_ids as $importer_id) {
-      $source = feeds_source($importer_id, $node->nid);
-      $table_name = feeds_flatstore_processor_table_name($source->id, $source->feed_nid);
-      $table = data_get_table($table_name) ? data_get_table($table_name) : db_table_exists($table_name);
-      if ($table) {
-        array_push($tables_to_drop, $table_name);
-      }
-    }
-    if (!count($tables_to_drop)) {
-      $form['tables_absent'] = array(
-        '#type' => 'markup',
-        '#title' => t("Can't drop table"),
-        '#tree' => TRUE,
-        '#markup' => t('You need to have a file or link imported to the datastore in order to drop it.'),
-      );
-      $form['actions']['submit']['#disabled'] = TRUE;
-      $form['actions']['submit']['#value'] = t('Drop (disabled)');
-    }
-    else {
-      $form['tables_present'] = array(
-        '#type' => 'markup',
-        '#title' => t('Drop tables'),
-        '#tree' => TRUE,
-        '#markup' => t('Are you sure you want to drop the datastore?'),
-      );
-      $form['#tables_to_drop'] = $tables_to_drop;
-      $form['actions']['submit']['#value'] = t('Drop');
-    }
-    return $form;
+  public function import() {
+    $source = $this->getFeedsSource();
+    $source->addConfig($this->feedsConfig['parser']);
+    $source->addConfig($this->feedsConfig['processor']);
+    $source->save();
+    $source->startImport();
   }
 
   /**
-   * Drop form submision.
+   * {@inheritdoc}
    */
-  public function dropFormSubmit(&$form_state) {
+  public function drop() {
     module_load_include('module', 'data', 'data');
     module_load_include('module', 'dkan_datastore', 'dkan_datastore');
-    foreach ($form_state['#tables_to_drop'] as $table_name) {
-      $node = node_load($form_state['build_info']['args']['0']->nid);
-      $has_file = dkan_datastore_file_field($node);
-      $node = entity_metadata_wrapper('node', $node);
+
+    foreach ($this->getTables() as $table_name) {
+      $has_file = dkan_datastore_file_field($this->node);
+      $node = entity_metadata_wrapper('node', $this->node);
       $status = ($has_file) ? DKAN_DATASTORE_FILE_EXISTS : DKAN_DATASTORE_EMPTY;
       $node->field_datastore_status->set($status);
       $node->save();
       $this->dropTable($table_name);
     }
-    drupal_set_message(t('Datastore dropped!'));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function delete() {
+    $source = $this->getFeedsSource();
+    $source->startClear();
+    $source->ensureSchedule();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function exists() {
+    $tables_to_drop = $this->getTables();
+
+    if (!empty($tables_to_drop)) {
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getConfigForm(&$form_state) {
+    $form['settings'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Settings'),
+    );
+    $form['settings'] = $this->getFeedsSource()->configForm($form_state);
+    $form['#count'] = $this->getFeedsSource()->itemCount();
+
+    $form['description']['#weight'] = '-10';
+    $form['source_status']['#weight'] = '-9';
+
+    if (isset($form['settings']['FeedsCSVParser']['help'])) {
+      unset($form['settings']['FeedsCSVParser']['help']);
+    }
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function configFormSubmitHandler(&$form_state) {
+    $source = $this->getFeedsSource();
+
+    $parser = $source->importer->config['parser']['plugin_key'];
+    $processor = $source->importer->config['processor']['plugin_key'];
+
+    $this->feedsConfig['parser'] = array($parser => $form_state['values'][$parser]);
+    $this->feedsConfig['processor'] = array($processor => $form_state['values'][$processor]);
+  }
+
+  /**
+   * Get tables.
+   */
+  private function getTables() {
+    module_load_include('module', 'data', 'data');
+    module_load_include('inc', 'feeds', 'feeds.pages');
+
+    $tables = [];
+    $importer_ids = feeds_get_importer_ids($this->node->type);
+    foreach ($importer_ids as $importer_id) {
+      $source = feeds_source($importer_id, $this->node->nid);
+      $table_name = feeds_flatstore_processor_table_name($source->id, $source->feed_nid);
+      $table = data_get_table($table_name) ? data_get_table($table_name) : db_table_exists($table_name);
+      if ($table) {
+        array_push($tables, $table_name);
+      }
+    }
+
+    return $tables;
   }
 
   /**
@@ -369,319 +177,48 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
   }
 
   /**
-   * Provides API form.
+   * Get the feeds source.
+   *
+   * @return FeedsSource
+   *   The feed source.
    */
-  public function apiForm() {
-    // TODO: Make a theme function.
-    $output = '<h2>' . t('DKAN Datastore API') . '</h2>';
-    if ($importer_id = $this->importerId) {
-      $source_config = feeds_source($importer_id, $this->node->nid);
-      $fetcher = get_class($source_config->importer->fetcher);
-      $source = isset($source_config->config[$fetcher]['source']) ? $source_config->config[$fetcher]['source'] : '';
-      if ($source) {
-        $table_name = feeds_flatstore_processor_table_name($source_config->id, $source_config->feed_nid);
-        if (!db_table_exists($table_name)) {
-          $output .= t('This resources has a file that has not been added to the datastore.');
-        }
-        else {
-          $progress = $source_config->progressImporting();
-          if ($progress != FEEDS_BATCH_COMPLETE) {
-            $output .= t('This data source has not yet completed importing. Import is at @progress%. The API for this data source will be available upon the completion of the import process.', array('@ progress' => number_format(100 * $progress, 0)));
-          }
-          else {
-            $output .= t('Access resource data via a web API with powerful query support.');
-            $output .= '<h3>' . t('Resource ID') . '</h3>';
-            $output .= t("The Resource ID for this resource is %id", array('%id' => $this->node->uuid));
-            $output .= '<h3>' . t('Example Query') . '</h3>';
-            $url = $this->apiUri();
-            $output .= '<p>' . l($url, $url) . '</p>';
-            $output .= '<p>' . t('Query this datastore and return first five results') . '</p>';
-            $output .= '<h3>' . t('Documentation') . '</h3>';
-            $output .= '<p>' . t('See DKAN API documentation for more details: <a href="http://docs.getdkan.com/docs/dkan-documentation/dkan-api/datastore-api">DKAN Datastore API</a>') . '</p>';
-          }
-        }
-        return $output;
-      }
+  protected function getFeedsSource() {
+    if (!$this->feedsSource) {
+      $this->feedsSource = feeds_source($this->getImporterId(), $this->node->nid);
     }
-    else {
-      $output .= t('No files have been added to the datastore.');
-    }
-    return $output;
-
+    return $this->feedsSource;
   }
 
   /**
-   * Starts import.
+   * Get importer name.
    */
-  public function import() {
-    $feed = isset($this->feed) ? $this->feed : $this->feed($this->node);
-    $feed['source']->startImport();
+  private function getImporterName() {
+    /* @var $importer FeedsImporter */
+    $importer = $this->getFeedsImporter();
+    return $importer->getConfig()['name'];
   }
 
   /**
-   * Starts import without invoking batch UI process.
-   *
-   * @return bool
-   *   Status of the import operation. TRUE if successful, FALSE if failed.
+   * Get importer id.
    */
-  public function importByCli() {
-    $source = $this->source();
+  private function getImporterId() {
+    $id = db_query("SELECT id FROM {feeds_source} WHERE feed_nid = :nid", array(':nid' => $this->node->nid))->fetchField();
 
-    // Prepare for background process.
-    $source_prepared = $this->setupSourceBackground($source);
-
-    // Check we got the source up and ready.
-    if (!$source_prepared) {
-      watchdog('dkan_datastore', "Failed to load or prepare the source.",
-        array(), WATCHDOG_ERROR);
-      return FALSE;
+    if (!$id) {
+      $id = feeds_get_importer_id($this->getNode()->type);
     }
 
-    // Import new items.
-    try {
-      while (FEEDS_BATCH_COMPLETE != $source->import()) {
-        continue;
-      };
+    if (!$id) {
+      throw new \Exception("No Feeds Importer setup.");
     }
-    catch (Exception $exception) {
-      watchdog('dkan_datastore', "Source import crashed with exception: \"@exception_message\".",
-        array('@exception_message' => $exception->getMessage()), WATCHDOG_ERROR);
-      return FALSE;
-    }
-
-    return TRUE;
+    return $id;
   }
 
   /**
-   * Updates the resource file using the URI.
-   *
-   * @param string $uri
-   *   The URI, ie public://myfile.png, for the file.
-   * @param bool $copy_file
-   *   A boolean indicating whether to copy the file locally.
-   *   If set to TRUE the file is copied locally.
+   * Revrieves importer from $node if it exists.
    */
-  public function updateFromFileUri($uri = '', $copy_file = TRUE) {
-    $file = FALSE;
-
-    // Sanity check: make sure the file exits.
-    if (!file_exists($uri)) {
-      return FALSE;
-    }
-
-    if ($copy_file) {
-      // Generate destination based on the URI.
-      $destination = 'public://' . drupal_basename($uri);
-
-      $data = file_get_contents($uri);
-      // Using the same name can break the update process when the current file
-      // is cleaned.
-      $file = file_save_data($data, $destination, FILE_EXISTS_RENAME);
-    }
-    else {
-      $file = file_uri_to_object($uri);
-    }
-
-    // At this point we should have a valid file object.
-    if (!$file) {
-      return FALSE;
-    }
-
-    return $this->updateFromFile($file);
-  }
-
-  /**
-   * Update resource with file.
-   *
-   * @param object $file
-   *   Drupal file object.
-   * @param bool $use_current_setttings
-   *   If set to TRUE use the current file visibility settings.
-   */
-  public function updateFromFile($file, $use_current_setttings = TRUE) {
-    // Get current file.
-    $current_file = $this->file();
-
-    if ($current_file && $use_current_setttings) {
-      // Copy view settings from current file.
-      if (isset($current_file->map)) {
-        $file->map = $current_file->map;
-      }
-      if (isset($current_file->grid)) {
-        $file->grid = $current_file->grid;
-      }
-      if (isset($current_file->graph)) {
-        $file->graph = $current_file->graph;
-      }
-
-      // Delete current file.
-      $this->deleteFile();
-    }
-
-    // Save the file if new.
-    if (empty($file->fid)) {
-      file_save($file);
-    }
-
-    $file_field = dkan_datastore_file_upload_field();
-    $this->node->{$file_field} = array(LANGUAGE_NONE => array((array) $file));
-    node_save($this->node);
-
-    return TRUE;
-  }
-
-  /**
-   * Delete file from datastore.
-   */
-  public function deleteFile() {
-
-    // Get current file.
-    $current_file = $this->file();
-
-    if ($current_file) {
-      // If the datastore has items, delete them.
-      $this->deleteItems();
-      // Delete file.
-      file_delete($current_file, TRUE);
-      return TRUE;
-    }
-    else {
-      return FALSE;
-    }
-  }
-
-  /**
-   * Delete file from datastore.
-   */
-  public function createFromFileUri($uri = '', $copy_file = TRUE) {
-
-    if ($uri) {
-      return $this->updateFromFileUri($uri, $copy_file);
-    }
-    else {
-      return FALSE;
-    }
-  }
-
-  /**
-   * Set up of source and importer for background operations.
-   *
-   * @param FeedsSource $source
-   *   The FeedsSource object to work on.
-   *
-   * @return bool
-   *   TRUE if the new configuration is applyed to the source. FALSE if not.
-   */
-  protected function setupSourceBackground(FeedsSource &$source) {
-    if ($source instanceof FeedsSource) {
-      // IMPROVEMENT: Allow configuration of parser.
-      // IMPROVEMENT: Allow configuration of processor.
-      // Code added to fix this issue: https://www.drupal.org/node/2087091
-      // The feeds source does not get cleaned up properly.
-      // Ask it for its states so they are all present.
-      $source->state(FEEDS_FETCH);
-      $source->state(FEEDS_PROCESS);
-      $source->state(FEEDS_PROCESS_CLEAR);
-
-      $config = array(
-        'process_in_background' => TRUE,
-      );
-      $source->importer->addConfig($config);
-
-      $source->save();
-      return TRUE;
-    }
-
-    // Something wrong happened. Fail.
-    watchdog('dkan_datastore',
-      "Failed to setup the source for background operations.",
-      array(), WATCHDOG_ERROR);
-    return FALSE;
-  }
-
-  /**
-   * Delete items in datastore.
-   *
-   * @return bool
-   *   Status of the operation. TRUE if successful, FALSE if failed.
-   */
-  protected function deleteItems() {
-    // If the datastore has items, delete them.
-    if ($this->status() == DKAN_DATASTORE_EXISTS) {
-      // Set up source and importer.
-      $source = $this->source();
-      $source_ready = $this->setupSourceBackground($source);
-
-      if (!$source_ready) {
-        watchdog('dkan_datastore',
-          "Delete failed. Cannot instantiate the source or source not ready.",
-          array(), WATCHDOG_ERROR);
-        return FALSE;
-      }
-
-      // Delete items.
-      try {
-        while (FEEDS_BATCH_COMPLETE != $source->clear()) {
-          continue;
-        };
-      }
-      catch (Exception $exception) {
-        // Log error and fail.
-        watchdog('dkan_datastore',
-          "Delete failed. Operation crashed with exception: \"@exception_message\".",
-          array('@exception_message' => $exception->getMessage()),
-          WATCHDOG_ERROR);
-        return FALSE;
-      }
-    }
-
-    return TRUE;
-  }
-
-  /**
-   * Adds row to table.
-   *
-   * @param array $row
-   *   Key/value array of table fields to data.
-   *
-   * @return string
-   *   Autoincrement id number for row if successful.
-   */
-  public function addRow(array $row = array()) {
-    if (is_array($row) && $row) {
-      $defaults = array(
-        'timestamp' => time(),
-        'feeds_entity_id' => $this->node->nid,
-      );
-      $row = array_merge($defaults, $row);
-      $insert = db_insert($this->tableName)
-        ->fields($row)
-        ->execute();
-
-      return $insert;
-    }
-    else {
-      return FALSE;
-    }
-  }
-
-  /**
-   * Deletes row from table.
-   *
-   * @param string $field
-   *   Database field to use for condition value.
-   * @param string $value
-   *   Condition value from which to delete.
-   *
-   * @return string
-   *   Number of rows deleted.
-   */
-  public function deleteRow($field, $value) {
-    $num_deleted = db_delete($this->tableName)
-      ->condition($field, $value)
-      ->execute();
-
-    return $num_deleted;
+  private function getFeedsImporter() {
+    return feeds_importer($this->getImporterId(), $this->node->nid);
   }
 
 }

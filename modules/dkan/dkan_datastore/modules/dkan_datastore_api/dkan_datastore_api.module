@@ -1060,15 +1060,21 @@ function dkan_datastore_api_datastore_update_raw($id) {
  * For arguments, see: dkan_datastore_api_services_resources().
  */
 function dkan_datastore_api_datastore_file_delete($id) {
-
+  watchdog("api", "Delete");
+  /* @var $datastore \Dkan\Datastore\DatastoreInterface */
   $datastore = dkan_datastore_go($id);
-  if ($datastore) {
-    if ($datastore->deleteFile()) {
 
+  if ($datastore) {
+    $datastore->delete();
+
+    $node = entity_metadata_wrapper('node', $datastore->getNode());
+    $file = $node->field_upload->value();
+
+    if (file_delete($file, TRUE)) {
       $result = new stdClass();
       $result->result = 'success';
-      $result->datastore_id = $datastore->node->uuid;
-      $result->node_id = $datastore->node->nid;
+      $result->datastore_id = $datastore->getNode()->uuid;
+      $result->node_id = $datastore->getNode()->nid;
       return $result;
     }
   }

@@ -10,4 +10,12 @@
  */
 function dkan_datastore_fast_import_enable() {
   dkan_datastore_check_database();
+  variable_set('dkan_datastore_class', "DkanDatastoreFastImport");
+}
+
+/**
+ * Implements hook_disable().
+ */
+function dkan_datastore_fast_import_disable() {
+  variable_set('dkan_datastore_class', "DkanDatastore");
 }

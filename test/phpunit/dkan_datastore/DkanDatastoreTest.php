@@ -13,11 +13,11 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
   /**
    * Test updateFromFileUri.
    *
-   * @covers DkanDatastore::updateFromFileUri
+   * @covers DkanDatastoreCliWrapper::updateFromFileUri
    */
   public function testUpdateFromFileUri() {
     // Create a stub for the DkanDatastore class.
-    $dkanDatastorestub = $this->getMockBuilder(DkanDatastore::class)
+    $dkanDatastorestub = $this->getMockBuilder(DkanDatastoreCliWrapper::class)
       ->setMethods(['updateFromFile'])
       ->disableOriginalConstructor()
       ->disableOriginalClone()
@@ -41,7 +41,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
    */
   public function testUpdateFromFileUriNoFile() {
     // Create a stub for the DkanDatastore class.
-    $dkanDatastorestub = $this->getMockBuilder(DkanDatastore::class)
+    $dkanDatastorestub = $this->getMockBuilder(DkanDatastoreCliWrapper::class)
       ->setMethods(['updateFromFile'])
       ->disableOriginalConstructor()
       ->disableOriginalClone()
@@ -72,7 +72,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
       ->willReturn(FEEDS_BATCH_COMPLETE);
 
     // Create a stub for the DkanDatastore class.
-    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastore::class)
+    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastoreCliWrapper::class)
       ->setMethods(['source', 'setupSourceBackground'])
       ->disableOriginalConstructor()
       ->disableOriginalClone()
@@ -107,7 +107,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
       ->method('import');
 
     // Create a stub for the DkanDatastore class.
-    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastore::class)
+    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastoreCliWrapper::class)
       ->setMethods(['source', 'setupSourceBackground'])
       ->disableOriginalConstructor()
       ->disableOriginalClone()
@@ -143,7 +143,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
       ->will($this->throwException(new Exception()));
 
     // Create a stub for the DkanDatastore class.
-    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastore::class)
+    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastoreCliWrapper::class)
       ->setMethods(['source', 'setupSourceBackground'])
       ->disableOriginalConstructor()
       ->disableOriginalClone()

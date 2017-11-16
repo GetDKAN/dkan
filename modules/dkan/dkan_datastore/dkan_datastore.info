@@ -19,6 +19,6 @@ features[feeds_importer][] = dkan_link
 features[field_base][] = field_datastore_status
 features[field_instance][] = node-resource-field_datastore_status
 features[views_view][] = datasets
-files[] = includes/Datastore.inc
+
 files[] = includes/DkanDatastore.inc
-files[] = includes/DkanDatastoreFastImport.inc
+files[] = includes/DkanDatastoreCliWrapper.inc
