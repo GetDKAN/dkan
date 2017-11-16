@@ -1,4 +1,4 @@
-# time:4m22.76s
+# time:5m51.88s
 @api @enableDKAN_Workflow @disablecaptcha
 Feature:
   Workflow (Workbench) tests for DKAN Workflow Module
@@ -451,7 +451,7 @@ Feature:
       | name               | mail                     | status | roles             |
       | Administrator      | admin@fakeemail.com      | 1      | administrator     |
     And The "source_one" source is harvested
-    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
+    And the content "Florida Bike Lanes Harvest" should be "published"
     
   @workflow_21 @ok @globalUser
   Scenario: As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'

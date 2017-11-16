@@ -1,4 +1,4 @@
-# time:0m11.86s
+# time:0m51.86s
 @disablecaptcha
 Feature: Homepage
   In order to know the website is running

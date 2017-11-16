@@ -37,24 +37,25 @@ def behat_parse_params args
   params = []
 
   args.each do |param|
+    if not param.start_with?('--')
+      puts "Seaching #{param} for feature files..."
+      # Fetch all of the feature files for each parameter (directories)
+      if Dir.exist? param
+        Dir.glob("#{param}/*.feature") {
+          |f|
+          filename = File.basename(f)
+          if CONFIG["circle"]["skip_features"].include? filename
+            next
+          end
+          files.push f
+        }
 
-    puts "Seaching #{param} for feature files..."
-    # Fetch all of the feature files for each parameter (directories)
-    if Dir.exist? param
-      Dir.glob("#{param}/*.feature") {
-        |f|
-        filename = File.basename(f)
-        if CONFIG["circle"]["skip_features"].include? filename
-          next
-        end
-        files.push f
-      }
+        # Add loose features passed in as direct paths
+      elsif File.exist? param
+        files.push param
 
-      # Add loose features passed in as direct paths
-    elsif File.exist? param
-      files.push param
-
-      # Track non feature parameters
+        # Track non feature parameters
+      end
     else 
       params.push param
     end
