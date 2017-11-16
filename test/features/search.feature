@@ -1,4 +1,4 @@
-# time:0m13.96s
+# time:0m22.96s
 @api
 # features/search.feature
 Feature: Search
