@@ -326,7 +326,7 @@ Feature: Dkan Harvest
     And I select "Harvest (Cache and Migrate) Source(s)" from "operation"
     And I select "Migrate Source(s)" from "operation"
 
-  @harvest_19and we  @api @javascript
+  @harvest_19 @api @javascript
   Scenario: Topics set in harvest should set topic field in harvested datasources.
     Given users:
       | name              | mail                     | status | roles             |
