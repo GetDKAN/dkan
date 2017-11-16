@@ -86,6 +86,7 @@ dependencies[] = rest_server
 dependencies[] = restws
 dependencies[] = r4032login
 dependencies[] = token
+dependencies[] = token_tweaks
 dependencies[] = uuid
 dependencies[] = views
 dependencies[] = views_ui
