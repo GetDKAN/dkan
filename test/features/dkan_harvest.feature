@@ -131,6 +131,7 @@ Feature: Dkan Harvest
     And I am on the "Source one" page
     Given The "source_one" source is harvested
     When I am on the "Source one" page
+    And I wait for "Florida Bike Lanes Harvest"
     Then I should see the link "Florida Bike Lanes Harvest"
     And I click "Florida Bike Lanes Harvest"
     And I should see the text "Harvested from Source one"
