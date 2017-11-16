@@ -18,7 +18,7 @@ Feature: Dkan Harvest
     Then I should see the text "Create Harvest Source"
     And I fill in "Title" with "Source 1"
     And I wait for "2" seconds
-    And I fill in "Source URI" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json"
+    And I fill in "Source URI" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
     And I select "Project Open Data v1.1 JSON" from "Type"
     And I press "Save"
     And I wait for "2" seconds
@@ -71,19 +71,19 @@ Feature: Dkan Harvest
     And The "source_one" source is harvested
     And I am logged in as "Site manager"
     When I am on "admin/content"
-    Then I should see "Gold Prices in London 1950-2008 (Monthly) Harvest"
+    Then I should see "Florida Bike Lanes Harvest"
     Given I am on the "Source one" page
     And I click "Edit"
     And I press "Delete"
     Then I should see "Are you sure you want to delete Source one?"
-    And I should see "Source one: 10 Datasets, 18 Resources"
+    And I should see "Source one: 3 Datasets, 3 Resources"
     And I should see "No groups generated during harvest will be affected by this action. They must be manually managed"
     When I select the radio button "Delete content." with the id "edit-dataset-op-0"
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
     And I wait for "3" seconds
-    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "deleted"
+    And the content "Florida Bike Lanes Harvest" should be "deleted"
     And the content "Table of Gold Prices Harvest" should be "deleted"
 
   @api @javascript @harvest
@@ -101,8 +101,8 @@ Feature: Dkan Harvest
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
-    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "unpublished"
-    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "orphaned"
+    And the content "Florida Bike Lanes Harvest" should be "unpublished"
+    And the content "Florida Bike Lanes Harvest" should be "orphaned"
 
   @api @javascript @harvest
   Scenario: Keep published but mark as orphan all associated content when a Source is deleted
@@ -119,8 +119,8 @@ Feature: Dkan Harvest
     And I press "Delete Sources"
     And I wait for the batch job to finish
     Then I should see "Harvest Source Source one has been deleted."
-    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "published"
-    And the content "Gold Prices in London 1950-2008 (Monthly) Harvest" should be "orphaned"
+    And the content "Florida Bike Lanes Harvest" should be "published"
+    And the content "Florida Bike Lanes Harvest" should be "orphaned"
 
   @api @harvest
   Scenario: As a user I should have access to see harvest information into dataset node.
@@ -200,7 +200,7 @@ Feature: Dkan Harvest
     And I am logged in as a "<role>"
     And I am on the "Source one" page
     When I click "Manage Datasets"
-    Then the table with the class name "views-table" should have 10 rows
+    Then the table with the class name "views-table" should have 3 rows
 
     Examples:
       | role              |
@@ -218,7 +218,7 @@ Feature: Dkan Harvest
     And I am logged in as a "<role>"
     And I am on the "Harvest Dashboard Datasets" page
     And I should see a table with a class name "views-table"
-    And the table with the class name "views-table" should have 10 rows
+    And the table with the class name "views-table" should have 3 rows
 
     Examples:
       | role              |
@@ -286,7 +286,7 @@ Feature: Dkan Harvest
     And I press "Apply"
     Then I wait for "3" seconds
     And I should see a table with a class name "views-table"
-    Then the table with the class name "views-table" should have 10 rows
+    Then the table with the class name "views-table" should have 3 rows
 
     Examples:
       | role              |
@@ -310,7 +310,7 @@ Feature: Dkan Harvest
     Then I wait for "DKAN Harvest Dashboard"
     And I should see "Performed Delete item on 1 item"
     And I should see a table with a class name "views-table"
-    Then the table with the class name "views-table" should have 9 rows
+    Then the table with the class name "views-table" should have 2 rows
 
     Examples:
       | role              |
