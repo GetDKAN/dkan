@@ -1,4 +1,4 @@
-# time:2m56.53s
+# time:2m45.53s
 @api @disablecaptcha
 Feature: Dataset Features
   In order to realize a named business value
@@ -85,6 +85,7 @@ Feature: Dataset Features
       | description     | Test description  |
       | publisher       | Group 01          |
     And I press "Next: Add data"
+    Then I should not see "Groups" in the "content" region
     And I fill in "title" with "Test Resource Link File"
     And I press "Next: Additional Info"
     And I press "Save"

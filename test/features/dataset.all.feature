@@ -1,4 +1,4 @@
-# time:0m53.16s
+# time:1m12.16s
 @api
 
   # TODO: 5 datasets are created in the test but the DKAN site has 4 datasets pre-made,
@@ -159,15 +159,7 @@ Feature: Dataset Features
     Then I should see "csv 2 (1)" in the "filter by resource format" region
     And I should see "html 2 (2)" in the "filter by resource format" region
 
-  @dataset_all_10
-  Scenario: View available author filters for datasets
-    When I am on "Datasets Search" page
-    And I wait for "Author"
-    ## Uncomment this if you wanna use selenium.    
-    # When I click on the text "Author"
-    # And I wait for "1" seconds
-    Then I should see "Gabriel (2)" in the "filter by author" region
-    Then I should see "Katie (1)" in the "filter by author" region
+  # dataset_all_10/author facet removed. See GetDKAN/dkan#2033
 
   # TODO: make sure it works when we don't have default content on.
   @dataset_all_11
@@ -198,20 +190,7 @@ Feature: Dataset Features
     Then I should see "1 results"
     And I should see "1" items in the "datasets" region
 
-  # TODO: make sure it works when we don't have default content on.
-  @dataset_all_13
-  Scenario: Filter dataset search results by author
-    When I am on "Datasets Search" page
-    And I search for "DKANTest"
-    And I press "Apply"
-    Then I should see "3 results"
-    And I should see "3" items in the "datasets" region
-    ## Uncomment this if you wanna use selenium.
-    # Then I click on the text "Author"
-    # Then I wait for "1" seconds
-    When I click "Gabriel" in the "filter by author" region
-    Then I should see "2 results"
-    And I should see "2" items in the "datasets" region
+  # dataset_all_13/author facet removed. See GetDKAN/dkan#2033
 
   @dataset_all_14
   Scenario: View published dataset

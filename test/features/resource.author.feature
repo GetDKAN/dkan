@@ -1,4 +1,4 @@
-# time:4m30.30s
+# time:5m47.66s
 @api @disablecaptcha
 Feature: Resource
 
@@ -245,8 +245,7 @@ Feature: Resource
     When I click "Manage Datastore"
     And I press "Import"
     And I wait for "Delete items"
-    Then I should see "Last import"
-    And I wait for "imported items total"
+    Then "Resource 05" should have datastore records
 
   @resource_author_16 @datastore @noworkflow @javascript
   Scenario: Delete items on datastore of own resource
@@ -261,12 +260,11 @@ Feature: Resource
     When I click "Manage Datastore"
     And I press "Import"
     And I wait for "Delete Items"
+    Then "Resource 03" should have datastore records
     And I click "Delete items"
     And I press "Delete"
-    And I wait for "items have been deleted"
-    And I am on "Resource 03" page
-    When I click "Manage Datastore"
-    Then I wait for "No imported items."
+    Then I wait for "items have been deleted"
+    And "Resource 03" should have no datastore records
 
   @resource_author_17 @datastore @noworkflow @javascript
   Scenario: Drop datastore of own resource
@@ -281,12 +279,11 @@ Feature: Resource
     When I click "Manage Datastore"
     And I press "Import"
     And I wait for "Delete Items"
+    Then "Resource 03" should have datastore records
     When I click "Drop Datastore"
     And I press "Drop"
     Then I should see "Datastore dropped!"
-    And I should see "Your file for this resource is not added to the datastore"
-    When I click "Manage Datastore"
-    Then I wait for "No imported items."
+    And "Resource 03" should have no datastore records
 
   @resource_author_18 @noworkflow
   Scenario: Add revision to own resource

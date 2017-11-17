@@ -16,7 +16,7 @@ DKAN Harvest is built on top of the widely-used
 follows a two-step process to import datasets:
 
 1. Process a source URI and save resulting data locally to disk as JSON
-2. Perform migrations into DKAN with the locally cached JSON files, using mappings provided by the `DKAN Migrate Base module <https://github.com/NuCivic/dkan_migrate_base>`_ .
+2. Perform migrations into DKAN with the locally cached JSON files, using mappings provided by the `DKAN Migrate Base module <https://github.com/GetDKAN/dkan_migrate_base>`_ .
 
 Harvest Sources
 ---------------
@@ -270,9 +270,9 @@ Migration Classes
 **************************************
 
 The common harvest migration logic is encapsulated in the `HarvestMigration
-class <https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_harvest/dkan_harvest.migrate.inc#L15>`_,
-(which extends the `MigrateDKAN <https://github.com/NuCivic/dkan/blob/7.x-1.x/modules/dkan/dkan_migrate_base/dkan_migrate_base.migrate.inc#L241>`_ class provided
-via the `DKAN Migrate Base <https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_migrate_base>`_
+class <https://github.com/GetDKAN/dkan/blob/7.x-1.x/modules/dkan/dkan_harvest/dkan_harvest.migrate.inc#L15>`_,
+(which extends the `MigrateDKAN <https://github.com/GetDKAN/dkan/blob/7.x-1.x/modules/dkan/dkan_migrate_base/dkan_migrate_base.migrate.inc#L241>`_ class provided
+via the `DKAN Migrate Base <https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/dkan_migrate_base>`_
 module. DKAN Harvest will support only migration classes extended from
 ``HarvestMigration``. This class is responsible for consuming the downloaded data
 during the harvest cache step to create the DKAN `dataset` and associated
@@ -358,7 +358,7 @@ Example code snippet:
   }
 
 
-Harvest and `DKAN Workflow <https://github.com/NuCivic/dkan_workflow>`_ support
+Harvest and DKAN Workflow support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 By default, DKAN Harvest will make sure that the harvested *dataset* node will be
 set to the ``published`` moderation state if the DKAN Workflow module is enabled

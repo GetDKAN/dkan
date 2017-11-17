@@ -5,7 +5,7 @@ DKAN Datastore bundles a number of modules and configuration to allow users to u
 
 **Drupal Architecture**
 
-The DKAN Datastore's importer is a wrapper around the `Feeds <https://www.drupal.org/project/feeds>`_ module. The custom `Feeds Flatstore Processor <https://github.com/NuCivic/feeds_flatstore_processor>`_ and `Feeds Field Fetcher <https://www.drupal.org/project/feeds_field_fetcher>`_ plugins were created  the file uploaded to the resource form a feed item.
+The DKAN Datastore's importer is a wrapper around the `Feeds <https://www.drupal.org/project/feeds>`_ module. The custom `Feeds Flatstore Processor <https://github.com/GetDKAN/feeds_flatstore_processor>`_ and `Feeds Field Fetcher <https://www.drupal.org/project/feeds_field_fetcher>`_ plugins were created  the file uploaded to the resource form a feed item.
 
 The `Data <https://www.drupal.org/project/data>`_ module is used to manage datastore tables' schema.
 
@@ -173,7 +173,7 @@ Installation
 ^^^^^^^^^^^^^^
 
 - Inside your settings.php add a `pdo` element to your database configuration. For example:
-  
+
   .. code-block:: php
 
     <?php

@@ -342,9 +342,32 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['field_link_api'][$field_link_api_langcode][0]['#title'] = '';
     $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['#title'] = '';
 
-    // Resources inherit groups from parent dataset.
-    // Hide field so users cannot manually modify that information.
-    $form['og_group_ref']['#access'] = FALSE;
+    // If the resource is not assigned to a dataset, and not step two of a multi-part dataset form,
+    // allow the user to edit the groups field.
+    $params = drupal_get_query_parameters();
+    if (empty($form['field_dataset_ref'][$field_dataset_ref_langcode][0]['target_id']['#default_value']) &&
+      empty($params['dataset'])) {
+      $form['og_group_ref']['#access'] = TRUE;
+      // Get a list of groups the user is a member of.
+      $groups = dkan_dataset_get_group_options();
+
+      if (count($groups)) {
+        // Get langcode for og_group_ref.
+        $og_group_ref_langcode = dkan_dataset_form_field_language($form, 'og_group_ref');
+        // Set up group options.
+        $form['og_group_ref'][$og_group_ref_langcode]['#options'] = $groups;
+        // Modify title of Publisher field.
+        $form['og_group_ref'][$og_group_ref_langcode]['#title'] = t('Groups');
+      }
+      else {
+        // If the user is not assigned to any groups then hide the fields.
+        $form['og_group_ref']['#access'] = FALSE;
+      }
+    }
+    else {
+      // If the resource belongs to a dataset, do not show the groups field.
+      $form['og_group_ref']['#access'] = FALSE;
+    }
 
     if ($query = drupal_get_query_parameters()) {
       if (isset($query['dataset'])) {
@@ -494,13 +517,13 @@ function dkan_dataset_dataset_node_form_validate($form, &$form_state) {
     $field_data_dictionary_langcode = dkan_dataset_form_field_language($form, 'field_data_dictionary');
     $data_dictionary = $form_state['values']['field_data_dictionary'][$field_data_dictionary_langcode][0]['value'];
 
-    // In order to pass strict POD validation the 'data dictionary' value must be NULL,
+    // To pass strict POD validation the 'data dictionary' value must be NULL,
     // a valid URL or redacted.
     if (isset($data_dictionary) && $data_dictionary != '') {
       $is_valid_URL = valid_url($data_dictionary, TRUE);
       $is_redacted = preg_match('/^(\\[\\[REDACTED).*?(\\]\\])$/', $data_dictionary);
 
-      // If a value is present (not NULL) then chech if it is a valid URL or redacted.
+      // If a value is present, then check if it is a valid URL or redacted.
       if (!$is_valid_URL && !$is_redacted) {
         form_set_error('field_data_dictionary', t('Data dictionary should be empty, a valid URL or redacted.'));
       }

@@ -1,6 +1,6 @@
 # Federal Extras
 
-The [Open Data Federal Extras Module](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/open_data_federal_extras) module extends DKAN Dataset to include selected Project Open Data and other federal requirements. See the [Project Open Data Schema](https://project-open-data.cio.gov/v1.1/schema/) for more information (this module essentially adds the fields marked "USG"). It includes a list of U.S. federal bureau and program codes, with a script to keep program codes up-to-date.
+The [Open Data Federal Extras Module](https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/open_data_federal_extras) module extends DKAN Dataset to include selected Project Open Data and other federal requirements. See the [Project Open Data Schema](https://project-open-data.cio.gov/v1.1/schema/) for more information (this module essentially adds the fields marked "USG"). It includes a list of U.S. federal bureau and program codes, with a script to keep program codes up-to-date.
 
 ## Additional Fields
 

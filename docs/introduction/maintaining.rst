@@ -12,9 +12,9 @@ and libraries work the same as any other modules, themes, or libraries
 that are added to Drupal sites. They are packaged together in the
 ``profiles`` directory to make it easier to install and maintain.
 
-.. tip:: `DKAN Starter <https://github.com/NuCivic/dkan-starter>`_ is project
-  containing a prebuilt version of DKAN and the tools `Granicus
-  <https://www.granicus.com/>`_ uses for our own implementations and
+.. tip:: `DKAN Starter <https://github.com/GetDKAN/dkan-starter>`_ is project
+  containing a prebuilt version of DKAN and the tools `CivicActions
+  <https://civicactions.com/dkan/>`_ uses for our own implementations and
   deployments. Learn more advanced workflows in that project's
   `documentation <https://dkan-starter.readthedocs.io>`_.
 
@@ -70,9 +70,9 @@ update of Drupal itself <https://www.drupal.org/node/1494290>`__.
 1. Back up your database (just in case!)
 2. Copy your ``sites`` folder somewhere safe.
 3. Replace your entire codebase with the latest fully built version of
-   DKAN from `DKAN DROPS-7 <https://github.com/NuCivic/dkan-drops-7>`__.
+   DKAN from `DKAN DROPS-7 <https://github.com/GetDKAN/dkan-drops-7>`__.
 4. Check the new versions' `release
-   notes <https://github.com/NuCivic/dkan/releases>`__ to see if there
+   notes <https://github.com/GetDKAN/dkan/releases>`__ to see if there
    are any special instructions for updating. (If you are several
    releases behind, you may need to follow instructions for several
    releases).
@@ -104,7 +104,7 @@ is similar to the process described above.
 
 Assuming you have followed the instructions for ``drush make`` and have
 a ``webroot`` folder inside a main clone of the `DKAN
-repo <https://github.com/NuCivic/dkan>`__:
+repo <https://github.com/GetDKAN/dkan>`__:
 
 1.  Back up your database
 2.  Copy your ``sites`` folder somewhere safe.
@@ -117,7 +117,7 @@ repo <https://github.com/NuCivic/dkan>`__:
 8.  Replace the ``sites`` folder in your new codebase with your old
     ``sites`` folder.
 9.  Check the new versions' `release
-    notes <https://github.com/NuCivic/dkan/releases>`__ to see if there
+    notes <https://github.com/GetDKAN/dkan/releases>`__ to see if there
     are any special instructions for updating. (If you are several
     releases behind, you may need to follow instructions for several
     releases).
@@ -149,7 +149,7 @@ Using a Custom Make file
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 DKAN is “built” using a make file and ``drush make``. The
-`drupal-org.make <https://github.com/NuCivic/dkan/blob/7.x-1.x/drupal-org.make>`_
+`drupal-org.make <https://github.com/GetDKAN/dkan/blob/7.x-1.x/drupal-org.make>`_
 file in DKAN contains a list of most of the modules installed in DKAN.
 
 When developing a website for production, it is recommended to keep a

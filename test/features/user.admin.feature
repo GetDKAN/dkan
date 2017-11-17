@@ -1,4 +1,4 @@
-# time:0m45.62s
+# time:0m50.62s
 @api @disablecaptcha
 Feature: User
 
@@ -57,7 +57,7 @@ Feature: User
 
   @dkanBug @deleteTempUsers @javascript
     # Site managers trigger honeypot when creating users.
-    # See https://github.com/NuCivic/dkan/issues/811
+    # See https://github.com/GetDKAN/dkan/issues/811
     # Workaround: Wait for 6 seconds so that honeypot doesn't overreact
   Scenario: Create user and assign role as site manager
     Given I am logged in as "John"

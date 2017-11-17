@@ -1,0 +1,140 @@
+version: 2
+## Customize the test machine
+
+jobs:
+  build:
+    working_directory: ~/site_build
+    environment:
+      TZ: "/usr/share/zoneinfo/America/New_York"
+    parallelism: 5
+    docker:
+      - image: circleci/php:5.6.31-apache-node-browsers
+        environment:
+          MYSQL_HOST: "127.0.0.1"
+          DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
+      - image: circleci/mysql:5.5.58-ram
+        command: --secure-file-priv='' --max-allowed-packet=128M --innodb-buffer-pool-size=256M
+        environment:
+          - MYSQL_ROOT_PASSWORD=
+          - MYSQL_USER=drupal
+          - MYSQL_PASSWORD=123
+          - MYSQL_DATABASE=drupal
+      # Selenium image won't start, running via npm install
+      #- image: selenium/standalone-chrome-debug:2.53.1
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dkan-{{ .Branch }}
+            - v1-dkan-test-vendor
+      - run:
+          name: Install Selenium
+          command: |
+            sudo npm install selenium-standalone@latest -g
+            #npm install geckodriver
+            sudo selenium-standalone install
+
+      - run:
+          name: Run Selenium
+          command: |
+            sudo selenium-standalone start
+          background: true
+      - run:
+          name: Update Packages
+          command: sudo apt-get update
+      - run:
+          name: Install Packages
+          command: sudo apt-get install -y ruby libpng-dev libmcrypt-dev mysql-client x11vnc
+
+#Available Extensions:
+#bcmath bz2 calendar ctype curl dba dom enchant exif fileinfo filter ftp gd gettext gmp hash iconv imap interbase intl json ldap mbstring mcrypt mssql mysql mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline recode reflection session shmop simplexml snmp soap sockets spl standard sybase_ct sysvmsg sysvsem sysvshm tidy tokenizer wddx xml xmlreader xmlrpc xmlwriter xsl zip
+      - run:
+          name: Install PHP Extensions
+          command: sudo docker-php-ext-install gd json mcrypt mysql mysqli opcache pdo pdo_mysql zip
+      - run:
+          name: Install Composer
+          command: |
+            curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+            composer global require hirak/prestissimo
+            echo 'export PATH=~/.composer/vendor/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Edit MySQL Configuration
+          command: |
+            mysql -uroot -e "grant FILE on *.* to 'drupal'@'%'"
+            sudo chmod 777 /etc/mysql/my.cnf
+            sudo echo -e "[client]\nloose-local-infile" >> /etc/mysql/my.cnf
+            sudo chmod 644 /etc/mysql/my.cnf
+      - run:
+          name: Adjust PHP Settings
+          command: |
+            sudo chmod 777 /usr/local/etc/php/conf.d
+            echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini
+            echo "always_populate_raw_post_data = -1" > /usr/local/etc/php/conf.d/deprecated.ini
+
+      - checkout
+      - run: php -i
+      - run:
+          name: Setup Apache
+          command : |
+            sudo cp .circleci/tests/circle/circle.conf /etc/apache2/sites-available
+            sudo a2dissite 000-default
+            sudo a2ensite circle.conf
+            sudo a2enmod rewrite
+            sudo service apache2 restart
+
+      # Ahoy install in dkan-init.sh had problems detecting root user.
+      - run:
+          name: Install Ahoy
+          command: |
+            sudo wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy &&
+            sudo chmod +x /usr/local/bin/ahoy
+
+      ### Setup DKAN
+      - run:
+          name: DKAN Initialization
+          command: |
+            bash dkan-init.sh dkan --deps --build=$DATABASE_URL
+            ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
+            ahoy drush cc all
+      - run:
+          name: Server Router Background Server Task
+          command: ahoy dkan server
+          background: true
+      - run:
+          name: X11 VNC Background Server Task
+          command: x11vnc -forever -nopw
+          background: true
+
+      - run:
+          name: Enable dkan_harvest_test and reinstall
+          command: |
+            ahoy drush en --yes dkan_harvest_test
+            ahoy dkan reinstall --yes
+      - save_cache:
+          key: v1-dkan-{{ .Branch }}
+          paths:
+            - ~/.drush
+            - ~/.composer
+      - save_cache:
+          key: v1-dkan-test-vendor
+          paths:
+            - dkan/test/vendor
+      - run:
+          name: Run Parallel Behat Tests
+          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
+      # Lint only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
+      - run:
+          name: Run Lint
+          command: |
+            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
+              ahoy dkan lint
+            fi
+      # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
+      - run:
+          name: Run PHPUnit Tests
+          command: |
+            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
+              ahoy dkan unittests
+            fi
+      - store_artifacts:
+          path: ~/site_build/dkan/test/assets
+

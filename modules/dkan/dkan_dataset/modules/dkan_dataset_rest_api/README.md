@@ -45,13 +45,13 @@ Session authentication is enabled by default. With session authentication an ini
 Token authenticaion is not currently available out of the box. However, it can be enabled by adding the <a href="https://www.drupal.org/project/services_token_access">Services Token Access</a> module to your site. This is less secure but is easier for community members to use, and may be added to the DKAN distribution in a future release.
 
 ### Authentication Permissions
-The permissions with which a user is granted depend on the user role. User roles and permissions are easily configured in the user administration screen at ``admin/people``, and DKAN comes with a number of pre-configured default roles via the [DKAN Permissions](https://github.com/NuCivic/dkan/tree/7.x-1.x/modules/dkan/dkan_permissions) module.
+The permissions with which a user is granted depend on the user role. User roles and permissions are easily configured in the user administration screen at ``admin/people``, and DKAN comes with a number of pre-configured default roles via the [DKAN Permissions](https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules/dkan/dkan_permissions) module.
 
 ## Examples
 
 Below you can find examples in PHP for the most common use cases, using session authentication.
 
-For an example of a fully-functional python-based client to the DKAN REST API, see the [pydkan](https://github.com/NuCivic/pydkan) project.
+For an example of a fully-functional python-based client to the DKAN REST API, see the [pydkan](https://github.com/GetDKAN/pydkan) project.
 
 #### How to Log In and get the Session Cookie
 
@@ -193,7 +193,7 @@ curl_setopt($curl, CURLOPT_FAILONERROR, TRUE);
 $response = curl_exec($curl);
 ```
 
-## Testing in the terminal 
+## Testing in the terminal
 
 If you want to quickly test that the functionality is working, you can run the following commands from a terminal.
 
@@ -269,9 +269,9 @@ Example response:
   "field_contact_email": {
     "und": [
       {
-        "value": "datademo@nucivic.com",
+        "value": "datademo@example.com",
         "format": null,
-        "safe_value": "datademo@nucivic.com"
+        "safe_value": "datademo@example.com"
       }
     ]
   },
@@ -472,7 +472,7 @@ curl -X PUT -i -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK
 }'
 ```
 
-Because the REST API runs input through the dataset node form for validation, the data structure may differ for different fields. For instance, because it is a "Select or license" field, the structure for changing the License field on a dataset to "cc-nc" (Creative Commons Non-Commercial) would be: 
+Because the REST API runs input through the dataset node form for validation, the data structure may differ for different fields. For instance, because it is a "Select or license" field, the structure for changing the License field on a dataset to "cc-nc" (Creative Commons Non-Commercial) would be:
 
 ```
 {
@@ -487,7 +487,7 @@ See the [Services documentation on custom fields](https://www.drupal.org/node/13
 This is a two-step process with the API:
 
 1. Create the resource node.
-  
+
   ```sh
   curl -X POST -i -H "Content-type: application/json" -H "X-CSRF-Token: 8RniaOCwrsK8Mvue0al_C6EMAraTg26jzklDdLLgvns" -b cookies.txt -X POST http://demo.getdkan.com/api/dataset/node -d '{
   "title":"A resource created via the DKAN REST API",
@@ -511,7 +511,7 @@ the value expected from the dataset entry form, with "45" being the resource nod
 
 #### Query for url/values of previous revision of file.
 
-The assumption in this example is that the file is stored remotely and we are looking to get the link as it was set in a previous revision of the resource node. 
+The assumption in this example is that the file is stored remotely and we are looking to get the link as it was set in a previous revision of the resource node.
 
 Version (revision) are tracked via the VID Durpal identifier. We can query a specific node revision (for example version id 89) using the vid as parameter:
 

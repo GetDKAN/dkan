@@ -1,12 +1,14 @@
 Release Notes
 =============
 
-Release notes here will be identical to the releases kept in the `Github repository's releases section <https://github.com/NuCivic/dkan/releases>`_.
+Release notes here will be identical to the releases kept in the `Github repository's releases section <https://github.com/GetDKAN/dkan/releases>`_.
 
 
 .. toctree::
    :maxdepth: 1
 
+   1.14 <1.14>
+   1.13.7 <1.13.7>
    1.13.6 <1.13.6>
    1.13.5 <1.13.5>
    1.13.4 <1.13.4>
