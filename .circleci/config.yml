@@ -137,4 +137,131 @@ jobs:
             fi
       - store_artifacts:
           path: ~/site_build/dkan/test/assets
+  build_php71:
+    working_directory: ~/site_build
+    environment:
+      TZ: "/usr/share/zoneinfo/America/New_York"
+    parallelism: 5
+    docker:
+      - image: pythagory/dkan-web:7-latest
+        environment:
+          MYSQL_HOST: "127.0.0.1"
+          DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
+      - image: circleci/mysql:5.5.58-ram
+        command: --secure-file-priv='' --max-allowed-packet=128M --innodb-buffer-pool-size=256M
+        environment:
+          - MYSQL_ROOT_PASSWORD=
+          - MYSQL_USER=drupal
+          - MYSQL_PASSWORD=123
+          - MYSQL_DATABASE=drupal
+      # Selenium image won't start, running via npm install
+      #- image: selenium/standalone-chrome-debug:2.53.1
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dkan-{{ .Branch }}
+            - v1-dkan-test-vendor
+      # Selenium is already installed, run it
+      - run:
+          name: Run Selenium
+          command: |
+            sudo selenium-standalone start
+          background: true
+      - checkout
+      - run: php -i
+      - run:
+          name: Setup Apache
+          command : |
+            sudo cp .circleci/tests/circle/circle.conf /etc/apache2/sites-available
+            sudo a2dissite 000-default
+            sudo a2ensite circle.conf
+            sudo a2enmod rewrite
+            sudo service apache2 restart
 
+      # Ahoy install in dkan-init.sh had problems detecting root user.
+      - run:
+          name: Install Ahoy
+          command: |
+            sudo wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy &&
+            sudo chmod +x /usr/local/bin/ahoy
+
+      ### Setup DKAN
+      - run:
+          name: DKAN Initialization
+          command: |
+            bash dkan-init.sh dkan --deps --build=$DATABASE_URL
+            ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
+            ahoy drush cc all
+      - run:
+          name: Server Router Background Server Task
+          command: ahoy dkan server
+          background: true
+      - run:
+          name: X11 VNC Background Server Task
+          command: x11vnc -forever -nopw
+          background: true
+
+      - run:
+          name: Enable dkan_harvest_test and reinstall
+          command: |
+            ahoy drush en --yes dkan_harvest_test
+            ahoy dkan reinstall --yes
+      - save_cache:
+          key: v1-dkan-{{ .Branch }}
+          paths:
+            - ~/.drush
+            - ~/.composer
+      - run:
+          name: Edit MySQL Configuration
+          command: |
+            mysql -uroot -e "grant FILE on *.* to 'drupal'@'%'"
+      - save_cache:
+          key: v1-dkan-test-vendor
+          paths:
+            - dkan/test/vendor
+      - run:
+          name: Run Parallel Behat Tests
+          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
+      # Lint only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
+      - run:
+          name: Run Lint
+          command: |
+            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
+              ahoy dkan lint
+            fi
+      # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
+      - run:
+          name: Run PHPUnit Tests
+          command: |
+            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
+              ahoy dkan unittests
+            fi
+      - store_artifacts:
+          path: ~/site_build/dkan/test/assets
+
+
+#Workflow to only run PHP 7 build if branch name contains php7
+#TODO - filter to run PHP71 on releases
+workflows:
+  version: 2
+  build_php5:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore: /.*php7.*/
+  build_php5_php7:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: 7.x-1.x
+      - build_php71:
+          requires:
+            - build
+  build_php7:
+    jobs:
+      - build_php71:
+          filters:
+            branches:
+              only: /.*php7.*/
