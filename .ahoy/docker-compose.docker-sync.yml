@@ -1,0 +1,16 @@
+# Docker Sync volumes for Mac OS
+# See https://github.com/EugenMayer/docker-sync
+version: "2"
+services:
+  web:
+    volumes:
+      - filesync:/var/www:nocopy
+
+  cli:
+    volumes:
+      - filesync:/var/www:nocopy
+
+volumes:
+  filesync:
+    external:
+      name: "${SLUG}_filesync"
