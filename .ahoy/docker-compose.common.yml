@@ -1,0 +1,116 @@
+# Common Docker Container configuration
+version: "2"
+services:
+  web:
+    hostname: web
+    image: nuams/drupal-apache-php:1.0-5.6
+    ports:
+      - "80"
+      - "443"
+      - "8888"
+    links:
+      - db
+      # Uncomment this and the memcached service definition below to start using memcached.
+      - memcached
+      - solr
+    volumes:
+      # PHP configuration overrides
+      - "./.docker/etc/php5/php.ini:/etc/php5/fpm/conf.d/z_php.ini"
+      - "./.docker/etc/php5/xdebug-linux.ini:/etc/php5/xdebug-linux.ini"
+      - "./.docker/etc/php5/xdebug-macos.ini:/etc/php5/xdebug-macos.ini"
+
+  # DB node
+  db:
+    hostname: db
+    image: blinkreaction/mysql:5.5
+    ports:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_USER=drupal
+      - MYSQL_PASSWORD=123
+      - MYSQL_DATABASE=drupal
+    volumes:
+       # MySQL configuration overrides
+       - "./.docker/etc/mysql/my.cnf:/etc/mysql/conf.d/z_my.cnf"
+       # Permanent DB data storage
+       - /var/lib/mysql
+    labels:
+      - traefik.enable=false
+
+  # CLI node
+  # Used for all console commands and tools.
+  cli:
+    hostname: cli
+    image: nuams/drupal-cli:2016-10-16
+    environment:
+      - XDEBUG_CONFIG=idekey=PHPSTORM
+    links:
+      - db
+      - web
+      # Uncomment this and the browser service definition below to start using selenium2.
+      - browser
+      - memcached
+      - solr
+    ports:
+      - "8888"
+    volumes:
+      # PHP configuration overrides
+      - "./.docker/etc/php5/php-cli.ini:/etc/php5/cli/conf.d/z_php.ini"
+      - "./.docker/etc/php5/xdebug-linux.ini:/etc/php5/xdebug-linux.ini"
+      - "./.docker/etc/php5/xdebug-macos.ini:/etc/php5/xdebug-macos.ini"
+      # Host SSH keys mapping. Uncomment one of the lines below based on your setup.
+      - ~/.ssh:/.ssh
+    labels:
+      - traefik.enable=false
+
+  # Memcached node
+  # Uncomment the service definition section below and the link in the web service above to start using memcached.
+  memcached:
+    hostname: memcached
+    image: memcached
+    environment:
+      # Memcached memory limit in megabytes
+      - MEMCACHED_MEMORY_LIMIT=128
+    labels:
+      - traefik.enable=false
+
+  # ngrok node
+  # Uncomment the service definition section below to start using ngrok for sharing your local web server with the world.
+  # share:
+  #   hostname: share
+  #   image: fnichol/ngrok
+  #   ports:
+  #     - "4040:4040"
+  #     # Use IP based mapping when working with multiple projects. See docs (^^) for more details.
+  #     #- 192.168.10.10:4040:4040
+  #   links:
+  #     - web:http
+
+  # selenium2 node
+  # Uncomment the service definition section below and the link in the web service above to start using selenium2 driver for Behat tests requiring JS support.
+  browser:
+    hostname: browser
+    image: selenium/standalone-chrome-debug:2.53.1
+    # This helps keep selenium-chrome from crashing because it uses shared memory.
+    volumes:
+      - /dev/shm:/dev/shm
+      # Project root folder mapping
+      - "../../:/var/www/"
+    links:
+      - web
+
+  solr:
+    hostname: solr
+    image: devinci/drupal-solr:3.x
+    ports:
+      - "8983"
+    volumes:
+      - "./.docker/etc/solr/3.x:/var/lib/solr/conf"
+    labels:
+      - traefik.enable=false
+
+networks:
+  default:
+    external:
+      name: dkan_default
