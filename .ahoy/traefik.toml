@@ -1,0 +1,14 @@
+defaultEntryPoints = ["https","http"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+  [entryPoints.https]
+  address = ":443"
+  [entryPoints.https.tls]
+
+[acme]
+email = "user@getdkan.org"
+storage = "/etc/traefik/acme.json"
+entryPoint = "https"
+OnHostRule = true
