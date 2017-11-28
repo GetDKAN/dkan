@@ -67,7 +67,7 @@ jobs:
           name: Adjust PHP Settings
           command: |
             sudo chmod 777 /usr/local/etc/php/conf.d
-            echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini
+            echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory.ini
             echo "always_populate_raw_post_data = -1" > /usr/local/etc/php/conf.d/deprecated.ini
 
       - checkout
