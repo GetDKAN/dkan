@@ -1,3 +1,4 @@
+# time:2m54.46s
 @api @enableDKAN_Workflow @disablecaptcha
 Feature:
   Workflow (Workbench) tests for emails related to DKAN Workflow Module

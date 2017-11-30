@@ -1,12 +1,14 @@
 7.x-1.14.1
 ----------
+ - #2249 Change timezone handling to 'none' on temporal coverage field
  - #2103 Fixed field mapping defaults for open data schema APIs
+ - #2237 Migration of CircleCI from V1 to V2
 
 7.x-1.14
 --------
  - Added new module Token Tweaks to allow ui control of token recursion level in effort to help avoid memory issues with Token (see https://www.drupal.org/node/1058912)
  - #2208 Fix access to groups field when adding a resource inside the dataset form.
- - #2188 Move DKAN repository to GetDKAN organization in Github 
+ - #2188 Move DKAN repository to GetDKAN organization in Github
  - #2033 Remove "author" facet from search page (generally never relevant information)
  - #2205 Update docs files with organization changes (NuCivic to GetDKAN)
  - #2206 Update autocomplete_deluxe, better_exposed_filters, file_entity, media, media_youtube, tablefield and views to latest version

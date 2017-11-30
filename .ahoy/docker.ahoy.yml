@@ -8,16 +8,30 @@ commands:
         # Run: eval "\$(ahoy docker env)"
         #   OR
         # Add the following to your ~/.bashrc
+        #
+        # To use docker-sync for improved performance on Mac OS, run:
+        #   export AHOY_DOCKER_SYNC=true
+        # which will use Docker For Mac instead of docker-machine using native OS file syncing.
+        #
+        # To use Traefik proxy, set:
+        #   export AHOY_USE_PROXY=true
+        #
+        # To override the default proxy domain (localtest.me), set:
+        #   export AHOY_WEB_DOMAIN=mydomain.com
+        #
+        #
         which docker || (echo "you don't seem to have docker installed. Exiting."; exit 1)
         which docker-compose || (echo "you don't seem to have docker-compose installed. Exiting."; exit 1)
         echo "Setting up docker environment"
         export AHOY_CMD_PROXY=DOCKER
+        if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+          which docker-sync || (echo "you don't seem to have docker-sync installed. Run 'sudo gem install docker-sync' to install. Exiting."; exit 1)
+        fi
         which docker-machine || (echo "you don't seem to have docker-machine installed. Exiting."; exit 1)
         if [ ! -z "$DOCKER_MACHINE_NAME"  ]; then
           docker-machine start default
           $(docker-machine env default)
         fi
-
         ahoy docker up
       EOF
     usage: Outputs the commands needed to setup a docker environment.
@@ -39,37 +53,100 @@ commands:
         echo "AHOY_CMD_PROXY is not set. Run 'ahoy docker env' and follow instructions."
         exit 0
       fi
+      if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+        ahoy docker docker-sync-init
+        export HOST_UID=$(id -u)
+        docker-sync start -c dkan/.ahoy/docker-sync.yml
+      fi
+      # Create dkan network
+      DKAN_NETWORK=$(docker network ls -q -f name=dkan_default)
+      if [ -z "$DKAN_NETWORK" ]; then
+        docker network create dkan_default
+      fi
+
+      if [ ! -z "$AHOY_USE_PROXY" ]; then
+        ahoy docker proxy-up
+      fi;
       ahoy docker compose up -d {{args}}
-      ahoy docker proxy-up
       ahoy docker hostfile
     usage: Start the docker-compose containers.
-  proxy-up:
+
+  docker-sync-init:
     cmd: |
-      proxy_image=jwilder/nginx-proxy
-      # Check if the proxy container is running.
-      if [ ! "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -q)" ];then
-        # Check if the proxy container stopped.
-        if [ "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -qa)" ];then
-          echo "Restarting dkan_proxy container"
-          docker start dkan_proxy
+      SLUG=$(ahoy docker get-slug)
+      SYNCDIR=$(pwd)
+      sed "s/%%syncname%%/${SLUG}_filesync/g; s~%%syncdir%%~${SYNCDIR}~" dkan/.ahoy/docker-sync.template.yml > dkan/.ahoy/docker-sync.yml
+  get-slug:
+    cmd: |
+      #Use current dir name as basis for slug. Ahoy uses the root folder regardless of being deeper when executed.
+      SLUG=${PWD##*/}
+      SLUG=${SLUG//-/}
+      SLUG=${SLUG//_/}
+      SLUG=$(echo ${SLUG} | tr "[A-Z]" "[a-z]") # Mixed case dirs cause issue with docker image names
+      echo ${SLUG}
+  get-proxy-domain:
+    cmd: |
+      [ "$AHOY_WEB_DOMAIN" ] && WEB_DOMAIN=$AHOY_WEB_DOMAIN || WEB_DOMAIN="localtest.me"
+      echo $WEB_DOMAIN
+  get-hostname:
+    cmd: |
+      if [ ! -z "$AHOY_USE_PROXY" ]; then
+        echo "$(ahoy docker get-slug).$(ahoy docker get-proxy-domain)"
+      else
+        if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+          echo "`ahoy docker web-host`"
         else
-          echo "Starting dkan_proxy container"
-          docker run -d --privileged \
-            -p 80:80 -p 443:443 -p 5959:5900 \
-            -v /var/run/docker.sock:/tmp/docker.sock:ro \
-            --name=dkan_proxy jwilder/nginx-proxy
+          echo "`docker-machine ip default`:`ahoy docker compose port web 80|cut -d ':' -f2`"
         fi
       fi
+
+  proxy-up:
+    cmd: |
+      PROXY_IMAGE=traefik
+      PROXY_NAME=proxy
+      PROXY_DOMAIN=$(ahoy docker get-proxy-domain)
+      DKAN_PATH=$(pwd)/dkan
+      # Check if the proxy container is running.
+      if [ ! "$(docker ps -f name=${PROXY_NAME} -f ancestor=${PROXY_IMAGE} -q)" ];then
+        # Check if the proxy container stopped.
+        if [ "$(docker ps -f name=${PROXY_NAME} -f ancestor=${PROXY_IMAGE} -qa)" ];then
+          echo "Restarting ${PROXY_NAME} container"
+          docker start ${PROXY_NAME}
+        else
+          echo "Starting proxy container"
+          docker run -d --privileged \
+            -p 80:80 -p 443:443 -p 8080:8080 --network dkan_default \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$DKAN_PATH/.ahoy/traefik.toml:/etc/traefik/traefik.toml" \
+            --name=${PROXY_NAME} traefik --web --docker --docker.domain=${PROXY_DOMAIN} --logLevel=DEBUG
+        fi
+      fi
+
+      SLUG=$(ahoy docker get-slug)
+
+      # Configure host for proxy.
+      PROXYCONF_FILE="dkan/.ahoy/docker-compose.proxyconf.yml"
+      echo -e "version: \"2\"" > ${PROXYCONF_FILE}
+      echo -e "services:" >> ${PROXYCONF_FILE}
+      echo -e "  web:\n    labels:" >> ${PROXYCONF_FILE}
+      echo -e "      - traefik.backend=${SLUG}" >> ${PROXYCONF_FILE}
+      echo -e "      - traefik.frontend.rule=Host:$(ahoy docker get-hostname)" >> ${PROXYCONF_FILE}
+      echo -e "      - traefik.frontend.passHostHeader=true" >> ${PROXYCONF_FILE}
+      echo -e "  browser:\n    labels:" >> ${PROXYCONF_FILE}
+      echo -e "      - traefik.backend=${SLUG}_browser" >> ${PROXYCONF_FILE}
+      echo -e "      - traefik.frontend.rule=Host:browser.$(ahoy docker get-hostname)" >> ${PROXYCONF_FILE}
+
     usage: Run the nginx-proxy container
   stop:
     cmd: |
       ahoy docker compose stop
-      proxy_image=jwilder/nginx-proxy
-      if [ ! -z "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -q)" ];then
-        echo "Stopping dkan_proxy container"
-        docker stop dkan_proxy
+      if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+        export HOST_UID=$(id -u)
+        docker-sync stop -c dkan/.ahoy/docker-sync.yml
       fi
+
     usage: Stop the docker-compose containers (non-destructive).
+
   ps:
     cmd: "ahoy docker compose ps"
     usage: List the running docker-compose containers.
@@ -93,10 +170,12 @@ commands:
     cmd: |
       ahoy docker stop
       ahoy docker compose rm
-      proxy_image=jwilder/nginx-proxy
-      if [ ! -z "$(docker ps -f name=dkan_proxy -f ancestor=$proxy_image -all -q)" ];then
-        docker rm dkan_proxy
+      if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+        export HOST_UID=$(id -u)
+        docker-sync stop -c dkan/.ahoy/docker-sync.yml
+        docker-sync clean -c dkan/.ahoy/docker-sync.yml
       fi
+
     usage: Destroy all the docker compose containers. (use before deleting folder)
   exec:
     cmd: |
@@ -139,7 +218,20 @@ commands:
     cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysqldump -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
     usage: Dump data out into a file. `ahoy docker mysql-dump > backups/local.sql`
   compose:
-    cmd: docker-compose -f dkan/.ahoy/docker-compose.yml -p "${PWD##*/}" {{args}}
+    cmd: |
+      DOCKER_COMPOSE_COMMON_CONF="dkan/.ahoy/docker-compose.common.yml"
+      if [ ! -z "$AHOY_USE_PROXY" ]; then
+        PROXY_CONF="dkan/.ahoy/docker-compose.proxyconf.yml"
+      else
+        PROXY_CONF="dkan/.ahoy/docker-compose.noproxy.yml"
+      fi;
+      if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
+        export SLUG=$(ahoy docker get-slug)
+        VOLUME_CONF="dkan/.ahoy/docker-compose.docker-sync.yml"
+      else
+        VOLUME_CONF="dkan/.ahoy/docker-compose.nosync.yml"
+      fi;
+      docker-compose -f $DOCKER_COMPOSE_COMMON_CONF -f $VOLUME_CONF -f $PROXY_CONF -p "${PWD##*/}" {{args}}
     usage: Abstraction for docker-compose
   web-host:
     cmd: |
@@ -151,28 +243,31 @@ commands:
   url:
     usage: Prints the project URL
     cmd: |
-      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
-        echo "http://`ahoy docker web-host`"
-      else
-        echo "http://`docker-machine ip default`:`ahoy docker compose port web 80|cut -d ':' -f2`"
-      fi
+      echo -n "http://`ahoy docker get-hostname`"
+      if [ -z "$AHOY_USE_PROXY" ]; then
+        echo -n ":`ahoy docker compose port web 80|cut -d ':' -f2`"
+      fi;
+      echo ""
   surl:
     usage: Prints a secure project URL
     cmd: |
-      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
-        echo "https://`ahoy docker web-host`:`ahoy docker compose port web 443|cut -d ':' -f2`"
-      else
-        echo "https://`docker-machine ip default`:`ahoy docker compose port web 443|cut -d ':' -f2`"
-      fi
+      echo -n "https://`ahoy docker get-hostname`"
+      if [ -z "$AHOY_USE_PROXY" ]; then
+        echo -n ":`ahoy docker compose port web 443|cut -d ':' -f2`"
+      fi;
+      echo ""
   vnc:
     usage: Prints the project VNC URL
     cmd: |
-      if [ -z "$DOCKER_MACHINE_NAME"  ]; then
-        echo "https://`ahoy docker web-host`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+      if [ "$AHOY_CMD_PROXY" = "DOCKER" ]; then
+        echo "https://browser.$(ahoy docker get-hostname):5900"
       else
-        echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+        if [ -z "$DOCKER_MACHINE_NAME"  ]; then
+          echo "https://`ahoy docker web-host`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+        else
+          echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+        fi
       fi
-
   cleanup:
     usage: Clean ups docker unused images and volumes. See http://blog.yohanliyanage.com/2015/05/docker-clean-up-after-yourself/.
     cmd: |
@@ -187,6 +282,11 @@ commands:
         docker rmi $DANGLING
       fi
       docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes
+  sync:
+    usage: Wrapper for docker-sync using config
+    cmd: |
+      export HOST_UID=$(id -u)
+      docker-sync {{args}} -c dkan/.ahoy/docker-sync.yml
 
   log:
     usage: Target spcific logs using tail -f.  targets the error log by default.
@@ -206,20 +306,30 @@ commands:
 
   apache:
     usage: Interact with the docker apache service Accepts start, stop, restart.
-    cmd: ahoy docker exec web service apache2 {{args}}
+    cmd: ahoy docker exec web apache2ctl {{args}}
 
   xdebug:
     usage: Enable or disable xdebug configuration. Accepts stop or start
     cmd: |
+      os=$(uname)
+      if [ "$os" = "Darwin" ]; then
+        XDEBUG_FILE=/etc/php5/xdebug-macos.ini
+      else
+        XDEBUG_FILE=/etc/php5/xdebug-linux.ini
+      fi
       args=$(echo {{args}})
       case $args in
         start)
-        ahoy docker exec web cp -f /etc/php5/xdebug.ini /etc/php5/mods-available
-        ahoy docker apache restart
+        ahoy docker exec web cp -f ${XDEBUG_FILE} /etc/php5/mods-available/xdebug.ini
+        ahoy docker exec cli cp -f ${XDEBUG_FILE} /etc/php5/mods-available/xdebug.ini
+        ahoy docker compose restart web
+        ahoy docker compose restart cli
           ;;
         stop)
         ahoy docker exec web rm -f /etc/php5/mods-available/xdebug.ini
-        ahoy docker apache restart
+        ahoy docker exec cli rm -f /etc/php5/mods-available/xdebug.ini
+        ahoy docker compose restart web
+        ahoy docker compose restart cli
           ;;
         *)
           echo "Accepted arguments are 'sart' or 'stop'".
