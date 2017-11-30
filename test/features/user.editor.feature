@@ -1,4 +1,4 @@
-# time:0m25.25s
+# time:0m27.25s
 @api @disablecaptcha
 Feature: User command center links for editor role.
 
