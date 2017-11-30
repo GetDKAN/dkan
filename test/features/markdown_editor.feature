@@ -1,4 +1,4 @@
-# time:1m32.15s
+# time:0m54.15s
 @api @disablecaptcha
 Feature: Markdown Editor
   In order to create content
