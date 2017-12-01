@@ -284,7 +284,7 @@ commands:
   vnc:
     usage: Prints the project VNC URL
     cmd: |
-      if [ "$AHOY_CMD_PROXY" = "DOCKER" ]; then
+      if [ "$AHOY_CMD_PROXY" = "DOCKER" ] && [ -n "$AHOY_USE_PROXY" ]; then
         echo "https://browser.$(ahoy docker get-hostname):5900"
       else
         if [ -z "$DOCKER_MACHINE_NAME"  ]; then
