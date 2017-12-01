@@ -8,7 +8,7 @@
 <div class="panel-display panel-full-width clearfix" <?php if (!empty($css_id)) { print "id=\"$css_id\""; } ?>>
 
   <?php if($content['top-first'] || $content['top-second']): ?>
-    <div class="panel-top panel-row" <?php print 'style="background-image:url(' . $path . ');background-color:' . $bg_color . '"'; ?>>
+    <div class="panel-hero panel-top panel-row" <?php print 'style="background-image:' . $path . ';background-color:' . $bg_color . '"'; ?>>
       <div class="<?php print $tint; ?>"></div>
       <div class="container">
         <div class="panel-col-first">

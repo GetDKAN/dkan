@@ -51,7 +51,7 @@ function nuboot_radix_preprocess(&$variables, $hook) {
     if ($uri = nuboot_radix_hero_file_uri()) :
       $variables['tint'] = 'tint';
       $variables['bg_color'] = 'transparent';
-      $variables['path'] = file_create_url($uri);
+      $variables['path'] = 'url(' . file_create_url($uri) . ')';
     else :
       $background_option = theme_get_setting('background_option');
       if (empty($background_option)) :
