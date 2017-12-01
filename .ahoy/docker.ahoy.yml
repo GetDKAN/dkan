@@ -204,18 +204,43 @@ commands:
     usage: run a command in the docker-compose cli service container.
   mysql-url:
     cmd: |
-      MYSQL=`docker exec -it $(ahoy docker compose ps -q cli) bash -c 'echo "mysql://$DB_1_ENV_MYSQL_USER:$DB_1_ENV_MYSQL_PASSWORD@$DB_1_PORT_3306_TCP_ADDR/$DB_1_ENV_MYSQL_DATABASE"'`
-      MYSQL="$(echo -e "${MYSQL}" | tr -d '[[:space:]]')"
-      echo "$MYSQL"
+      MYSQL_USER=$(ahoy docker mysql-param username)
+      if [ -n "$MYSQL_USER" ]; then
+        MYSQL=`docker exec -it $(ahoy docker compose ps -q db) bash -c "echo 'mysql://$(ahoy docker mysql-param username):$(ahoy docker mysql-param password)@$(ahoy docker mysql-param hostname)/$(ahoy docker mysql-param database)'"`
+        MYSQL="$(echo -e "${MYSQL}" | tr -d '[[:space:]]')"
+        echo -n "$MYSQL"
+      fi
     usage: Outputs a mysql-url
+  mysql-param:
+    cmd: |
+      case "{{args}}" in
+        username)
+          RESULT=`docker exec -it $(ahoy docker compose ps -q db) bash -c 'if [ -n \"\$MYSQL_USER\" ]; then echo -n \$MYSQL_USER; fi'`
+          ;;
+        rootpassword)
+          RESULT=`docker exec -it $(ahoy docker compose ps -q db) bash -c 'if [ -n \"\$MYSQL_ROOT_PASSWORD\" ]; then echo -n \$MYSQL_ROOT_PASSWORD; fi'`
+          ;;
+        password)
+          RESULT=`docker exec -it $(ahoy docker compose ps -q db) bash -c 'if [ -n \"\$MYSQL_PASSWORD\" ]; then echo -n \$MYSQL_PASSWORD; fi'`
+          ;;
+        database)
+          RESULT=`docker exec -it $(ahoy docker compose ps -q db) bash -c 'if [ -n \"\$MYSQL_DATABASE\" ]; then echo -n \$MYSQL_DATABASE; fi'`
+          ;;
+        hostname)
+          RESULT=`docker exec -it $(ahoy docker compose ps -q db) bash -c 'if [ -n \"\$HOSTNAME\" ]; then echo -n \$HOSTNAME; fi'`
+          ;;
+      esac
+      echo -n "$RESULT"
+    usage: Outputs a mysql connection parameter. mysql-param [username|password|rootpassword|database|hostname]
+
   mysql:
-    cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysql -uroot -p$DB_ENV_MYSQL_ROOT_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
+    cmd: docker exec -it $(ahoy docker compose ps -q cli) bash -c "mysql -uroot -p$(ahoy docker mysql-param rootpassword) -h$(ahoy docker mysql-param hostname) $(ahoy docker mysql-param database)"
     usage: Connect to the default mysql database as the root user.
   mysql-import:
-    cmd: "docker exec -i $(ahoy docker compose ps -q cli) bash -c 'mysql -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
+    cmd: docker exec -it $(ahoy docker compose ps -q cli) bash -c "mysql -u$(ahoy docker mysql-param username) -p$(ahoy docker mysql-param password) -h$(ahoy docker mysql-param hostname) $(ahoy docker mysql-param database)"
     usage: Pipe in a sql file.  `ahoy docker mysql-import < backups/live.sql`
   mysql-dump:
-    cmd: "docker exec -it $(ahoy docker compose ps -q cli) bash -c 'mysqldump -u$DB_ENV_MYSQL_USER -p$DB_ENV_MYSQL_PASSWORD -h$DB_PORT_3306_TCP_ADDR $DB_ENV_MYSQL_DATABASE'"
+    cmd: docker exec -it $(ahoy docker compose ps -q cli) bash -c "mysqldump -u$(ahoy docker mysql-param username) -p$(ahoy docker mysql-param password) -h$(ahoy docker mysql-param hostname) $(ahoy docker mysql-param database)"
     usage: Dump data out into a file. `ahoy docker mysql-dump > backups/local.sql`
   compose:
     cmd: |
