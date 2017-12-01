@@ -96,7 +96,7 @@ commands:
         if [ -z "$DOCKER_MACHINE_NAME"  ]; then
           echo "`ahoy docker web-host`"
         else
-          echo "`docker-machine ip default`:`ahoy docker compose port web 80|cut -d ':' -f2`"
+          echo "`docker-machine ip default`"
         fi
       fi
 
