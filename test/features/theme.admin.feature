@@ -1,4 +1,4 @@
-# time:0m22s
+# time:0m26s
 @api @javascript @disablecaptcha
 Feature: Theme
 

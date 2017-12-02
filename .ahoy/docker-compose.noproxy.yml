@@ -1,0 +1,14 @@
+version: "2"
+services:
+  web:
+    environment:
+      - VIRTUAL_HOST=dkan.docker
+      - no_proxy=localhost
+      #- VIRTUAL_PROTO=https
+  cli:
+    environment:
+      - PHP_IDE_CONFIG=serverName=dkan.docker
+      - VIRTUAL_HOST=dkan.docker
+  browser:
+    ports:
+      - "5900"
