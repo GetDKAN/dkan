@@ -1444,7 +1444,7 @@ function dkan_harvest_build_delete_confirmation_description(array $sources) {
   }
   $markup .= '</ul>';
   $markup .= 'No groups generated during harvest will be affected by this action. They must be manually managed.';
-  $markup .= '<p></br>' . t('Plese select the operation you want to perform on the
+  $markup .= '<p></br>' . t('Please select the operation you want to perform on the
     associated content (datasets and resources):') . '</p>';
 
   return $markup;

@@ -104,6 +104,13 @@ class DatajsonHarvestMigration extends HarvestMigration {
       }
     }
 
+    if ($row->accessLevel == 'restricted public') {
+      $row->accessLevel = 'restricted';
+    }
+    if ($row->accessLevel == 'non-public') {
+      $row->accessLevel = 'private';
+    }
+
     // Process Temporal Coverage. The mapping are defined in the base main
     // class, we just need to set the properties.
     if (isset($row->temporal)) {
