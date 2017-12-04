@@ -21,6 +21,20 @@ function dkan_workflow_permissions_enable() {
   if (!module_exists('workbench_moderation')) {
     module_enable(array('workbench_moderation'));
   }
+
+  // Assign role supervisor to editor users.
+  $uids = array();
+  $supervisor = user_role_load_by_name("Workflow Supervisor");
+  $site_manager = user_role_load_by_name("site manager");
+  $result = db_query("SELECT uid FROM {users_roles} WHERE rid=:site_manager AND uid NOT IN (SELECT uid FROM {users_roles} WHERE rid=:supervisor)", array(':site_manager' => $site_manager->rid, ':supervisor' => $supervisor->rid));
+
+  if (!empty($result)) {
+    foreach ($result as $user) {
+      $uids[] = $user->uid;
+    }
+    user_multiple_role_edit($uids, 'add_role', $supervisor->rid);
+  }
+
   $anon = user_role_load_by_name('anonymous user');
   user_role_grant_permissions($anon->rid, array('view moderation history'));
 
