@@ -225,6 +225,7 @@ commands:
       else
         echo "1"
       fi
+    usage: Reports a 0 or 1 if "proxy" docker container is running.
   compose:
     cmd: |
       DOCKER_COMPOSE_COMMON_CONF="dkan/.ahoy/docker-compose.common.yml"
