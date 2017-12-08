@@ -18,6 +18,14 @@ services:
       - "./.docker/etc/php5/php.ini:/etc/php5/fpm/conf.d/z_php.ini"
       - "./.docker/etc/php5/xdebug-linux.ini:/etc/php5/xdebug-linux.ini"
       - "./.docker/etc/php5/xdebug-macos.ini:/etc/php5/xdebug-macos.ini"
+    network_mode: bridge
+    labels:
+      - "traefik.frontend.rule=Host:${SLUG}.${PROXY_DOMAIN}"
+      - "traefik.frontend.passHostHeader=true"
+    environment:
+      # no_proxy="" required for default Docker For Mac system proxy that contains a space and prevents Selenium from loading.
+      # Linked containers to browser will also need this setting.
+      - no_proxy=""
 
   # DB node
   db:
@@ -37,6 +45,7 @@ services:
        - /var/lib/mysql
     labels:
       - traefik.enable=false
+    network_mode: bridge
 
   # CLI node
   # Used for all console commands and tools.
@@ -63,6 +72,7 @@ services:
       - ~/.ssh:/.ssh
     labels:
       - traefik.enable=false
+    network_mode: bridge
 
   # Memcached node
   # Uncomment the service definition section below and the link in the web service above to start using memcached.
@@ -74,6 +84,7 @@ services:
       - MEMCACHED_MEMORY_LIMIT=128
     labels:
       - traefik.enable=false
+    network_mode: bridge
 
   # ngrok node
   # Uncomment the service definition section below to start using ngrok for sharing your local web server with the world.
@@ -93,12 +104,20 @@ services:
     hostname: browser
     image: selenium/standalone-chrome-debug:2.53.1
     # This helps keep selenium-chrome from crashing because it uses shared memory.
+    ports:
+      - "5900"
     volumes:
       - /dev/shm:/dev/shm
       # Project root folder mapping
       - "../../:/var/www/"
     links:
       - web
+    environment:
+      # no_proxy="" required for default Docker For Mac system proxy that contains a space and prevents Selenium from loading.
+      - no_proxy=""
+    network_mode: bridge
+    labels:
+      - traefik.enable=false
 
   solr:
     hostname: solr
@@ -108,9 +127,5 @@ services:
     volumes:
       - "./.docker/etc/solr/3.x:/var/lib/solr/conf"
     labels:
-      - traefik.enable=false
-
-networks:
-  default:
-    external:
-      name: dkan_default
+      - "traefik.frontend.rule=Host:${SLUG}-solr.${PROXY_DOMAIN}"
+    network_mode: bridge
