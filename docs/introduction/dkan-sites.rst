@@ -78,6 +78,7 @@ Ukraine                                                 http://data.gov.ua
 Russia                                                  http://data.gov.ru
 Moscow Region, Russia                                   http://data.mosreg.ru
 Instituto Politécnico de Bragança, Portugal             http://observatoriottm.ipb.pt
+Barcelona Provicial Diputation, Spain                   https://dadesobertes.diba.cat/
 ==================================================      =============
 
 
