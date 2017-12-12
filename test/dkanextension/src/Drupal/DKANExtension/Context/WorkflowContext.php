@@ -25,14 +25,15 @@ class WorkflowContext extends RawDKANContext {
     define('MAINTENANCE_MODE', 'update');
     @module_enable(array(
       'dkan_workflow',
+      'dkan_workflow_permissions',
       'drafty',
       'workbench_moderation',
       'workbench_email', 'workbench',
       'views_dkan_workflow_tree',
       'menu_badges',
       'link_badges',
-      'dkan_workflow_permissions'
     ));
+
     if (module_exists('dkan_feeedback')) {
       features_revert(array('dkan_feedback'));
     }
