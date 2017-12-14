@@ -216,7 +216,7 @@
   {% endif %}
 
   {# Do not conflict with RTD insertion of analytics script #}
-  {% if not READTHEDOCS %}
+  {# % if not READTHEDOCS % #}
     {% if theme_analytics_id %}
     <!-- Theme Analytics -->
     <script>
@@ -229,7 +229,7 @@
     </script>
 
     {% endif %}
-  {% endif %}
+  {# % endif % #}
 
   {%- block footer %} {% endblock %}
 
