@@ -1,5 +1,6 @@
 7.x-1.14.1
 ----------
+ - #2284 Change the default title for harvested resources to use the format value rather than url value
  - #2263 Fix harvest validation for accessLevel values
  - #2249 Change timezone handling to 'none' on temporal coverage field
  - #2103 Fixed field mapping defaults for open data schema APIs
