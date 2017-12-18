@@ -265,6 +265,10 @@ projects:
       3: patches/panopoly_widgets_overrides_OOB.patch
   panopoly_images:
     version: '1.45'
+  paragraphs:
+    version: '1.0-rc5'
+  paragraphs_defaults:
+    version: '1.0'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -293,6 +297,10 @@ projects:
       type: git
       url: https://github.com/GetDKAN/remote_stream_wrapper.git
       branch: 7.x-1.x
+  replicate:
+    version: '1.2'
+  replicate_paragraphs:
+    version: '1.2'
   role_export:
     version: '1.0'
   rules:
