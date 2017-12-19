@@ -8,13 +8,15 @@ A partial list of `DKAN <https://getdkan.org>`_ sites around the world.
 Multinational
 -------------
 
-===========================================      =============
+==============================================   =============
 Organization                                     URL
-===========================================      =============
+==============================================   =============
+International Organization of Migration (CTDC)   https://www.ctdatacollaborative.org/
+The Asian Development Bank                       https://data.adb.org/
 United Nations (Open Data System Inventory)      http://data.un.org/
 The World Bank                                   http://climatesmartplanning.org
 Votes Without Violence                           http://www.voteswithoutviolence.org
-===========================================      =============
+==============================================   =============
 
 
 United States of America
@@ -78,6 +80,7 @@ Ukraine                                                 http://data.gov.ua
 Russia                                                  http://data.gov.ru
 Moscow Region, Russia                                   http://data.mosreg.ru
 Instituto Politécnico de Bragança, Portugal             http://observatoriottm.ipb.pt
+Barcelona Provicial Diputation, Spain                   https://dadesobertes.diba.cat/
 ==================================================      =============
 
 
