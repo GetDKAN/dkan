@@ -462,7 +462,8 @@ li .heading:hover {
   background-color: blue;
 }
 .label[data-format=json],
-.label[data-format*=json] {
+.label[data-format*=json],
+.label[data-format=geojson] {
   background-color: #ef7100;
 }
 .label[data-format=xml],
