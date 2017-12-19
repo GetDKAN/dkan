@@ -1,5 +1,6 @@
 7.x-1.14.1
 ----------
+ - #2283 Share MySQL Credentials With Docker Containers
  - #2273 Remove dkan_workflow_permissions dependency
  - #2275 Docker Proxy Config Updates
  - #2263 Fix harvest validation for accessLevel values

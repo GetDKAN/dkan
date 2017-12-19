@@ -26,6 +26,8 @@ services:
       # no_proxy="" required for default Docker For Mac system proxy that contains a space and prevents Selenium from loading.
       # Linked containers to browser will also need this setting.
       - no_proxy=""
+    env_file:
+      - mysql.env
 
   # DB node
   db:
@@ -33,11 +35,9 @@ services:
     image: blinkreaction/mysql:5.5
     ports:
       - "3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=admin123
-      - MYSQL_USER=drupal
-      - MYSQL_PASSWORD=123
-      - MYSQL_DATABASE=drupal
+    # MYSQL Credentials in mysql.env
+    env_file:
+      - mysql.env
     volumes:
        # MySQL configuration overrides
        - "./.docker/etc/mysql/my.cnf:/etc/mysql/conf.d/z_my.cnf"
@@ -54,6 +54,8 @@ services:
     image: nuams/drupal-cli:2016-10-16
     environment:
       - XDEBUG_CONFIG=idekey=PHPSTORM
+    env_file:
+      - mysql.env
     links:
       - db
       - web
