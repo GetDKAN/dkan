@@ -568,7 +568,8 @@ li .heading:hover {
   content: "\e64f";
   color: blue;
 }
-.format-label[data-format=json]:before {
+.format-label[data-format=json]:before,
+.format-label[data-format=geojson]:before {
   content: "\e651";
   color: #ef7100;
 }
