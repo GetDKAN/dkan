@@ -9,6 +9,3 @@ services:
     environment:
       - PHP_IDE_CONFIG=serverName=dkan.docker
       - VIRTUAL_HOST=dkan.docker
-  browser:
-    ports:
-      - "5900"
