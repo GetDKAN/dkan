@@ -81,6 +81,7 @@ Russia                                                  http://data.gov.ru
 Moscow Region, Russia                                   http://data.mosreg.ru
 Instituto Politécnico de Bragança, Portugal             http://observatoriottm.ipb.pt
 Barcelona Provicial Diputation, Spain                   https://dadesobertes.diba.cat/
+Düsseldorf, Germany                                     https://opendata.duesseldorf.de/
 ==================================================      =============
 
 
@@ -101,7 +102,7 @@ Urban Data Challenge, Japan                             http://udct-data.aigid.j
 Banda Aceh City Council, Indonesia                      http://data.bandaacehkota.go.id/
 Gerakan Anti Corruption Project, Indonesia              http://data.gerakaceh.id/
 Hutanriau, Indonesia                                    http://Hutanriau.org
-Telangana Open Data, India                              http://data.telangana.gov.in/ 
+Telangana Open Data, India                              http://data.telangana.gov.in/
 ==================================================      =============
 
 
