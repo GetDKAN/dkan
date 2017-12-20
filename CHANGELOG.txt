@@ -1,5 +1,7 @@
 7.x-1.14.1
 ----------
+ - #2265 Fix hero background image setup
+ - #2288 Use geojson icon for GeoJSON files in listings
  - #2283 Share MySQL Credentials With Docker Containers
  - #2273 Remove dkan_workflow_permissions dependency
  - #2275 Docker Proxy Config Updates
