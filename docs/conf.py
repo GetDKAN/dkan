@@ -214,6 +214,7 @@ source_parsers = {
 
 github_doc_root = 'https://github.com/GetDKAN/dkan/tree/rtd/docs/'
 def setup(app):
+    app.add_stylesheet( "css/custom.css" )
     app.add_config_value('recommonmark_config', {
             'url_resolver': lambda url: github_doc_root + url,
             'auto_toc_tree_section': 'Contents',
