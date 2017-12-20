@@ -65,6 +65,11 @@ projects:
     version: '1.5'
   diff:
     version: '3.3'
+  dkan_dataset_paragraphs:
+    download:
+      type: git
+      url: https://github.com/GetDKAN/dkan_dataset_paragraphs.git
+      branch: 7.x-1.x
   double_field:
     version: '2.5'
   draggableviews:
