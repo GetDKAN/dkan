@@ -13,6 +13,9 @@
 .panel-dkan-front .inside {
   padding: 15px;
 }
+.panel-dkan-front .panel-hero .inside {
+  padding: 30px 15px;
+}
 
 .panel-dkan-front .panel-hero .panel-col-first,
 .panel-dkan-front .panel-hero .panel-col-second,
