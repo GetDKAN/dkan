@@ -1,7 +1,3 @@
-7.x-1.15
---------
- - #2290 Add Extended Metadata Field for Datasets
-
 7.x-1.14.3
 ----------
  - #2377 Upgrade entity to 1.9
