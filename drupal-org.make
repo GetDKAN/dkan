@@ -76,6 +76,11 @@ projects:
     version: '1.5'
   diff:
     version: '3.3'
+  dkan_dataset_paragraphs:
+    download:
+      type: git
+      url: https://github.com/GetDKAN/dkan_dataset_paragraphs.git
+      branch: 7.x-1.x
   double_field:
     version: '2.5'
   drafty:
@@ -279,6 +284,10 @@ projects:
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
     version: '1.54'
+  paragraphs:
+    version: '1.0-rc5'
+  paragraphs_defaults:
+    version: '1.0'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -309,6 +318,11 @@ projects:
       type: git
       url: https://github.com/GetDKAN/remote_stream_wrapper.git
       revision: 20311eee8f0ba87cbb7e48788b176c34e0313a78
+      branch: 7.x-1.x
+  replicate:
+    version: '1.2'
+  replicate_paragraphs:
+    version: '1.2'
   role_export:
     version: '1.0'
   rules:
