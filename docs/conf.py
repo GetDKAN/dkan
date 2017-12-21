@@ -19,13 +19,13 @@ templates_path = ['_templates']
 master_doc = 'index'
 
 # General information about the project.
-project = u'DKAN'
+project = u'DKAN Docs'
 copyright = u'2017'
 author = u'DKAN Team'
 
 
-version = '1.13'
-release = '1.13'
+version = '1.14'
+release = '1.14'
 
 language = 'en'
 
