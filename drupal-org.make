@@ -275,7 +275,7 @@ projects:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.45'
+    version: '1.54'
   paragraphs:
     version: '1.0-rc5'
   paragraphs_defaults:
