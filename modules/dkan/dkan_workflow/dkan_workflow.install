@@ -16,6 +16,26 @@ function dkan_workflow_install() {
  * Implements hook_enable().
  */
 function dkan_workflow_enable() {
+  // Create new roles for workflow if don't exist.
+  $roles = array(
+    'Workflow Contributor',
+    'Workflow Moderator',
+    'Workflow Supervisor',
+  );
+
+  foreach ($roles as $role_name) {
+    $existing_role = user_role_load_by_name($role_name);
+    if (empty($existing_role)) {
+      $role = new stdClass();
+      $role->name = $role_name;
+      user_role_save($role);
+    }
+  }
+
+  // Enable dkan_workflow_permissions if not already.
+  if (!module_exists('dkan_workflow_permissions')) {
+    module_enable(array('dkan_workflow_permissions'));
+  }
 
   // Enable moderation for dkan_workflow enabled content types upon install.
   // This config is kept persistant using the hook_strongarm_alter().
@@ -43,18 +63,6 @@ function dkan_workflow_enable() {
   // Revert dkan sitewide menu to add links to command center.
   features_revert(array('dkan_sitewide_menu' => array('menu_links')));
 
-  // Assign role supervisor to editor users.
-  $uids = array();
-  $supervisor = user_role_load_by_name("Workflow Supervisor");
-  $site_manager = user_role_load_by_name("site manager");
-  $result = db_query("SELECT uid FROM {users_roles} WHERE rid=:site_manager AND uid NOT IN (SELECT uid FROM {users_roles} WHERE rid=:supervisor)", array(':site_manager' => $site_manager->rid, ':supervisor' => $supervisor->rid));
-
-  if (!empty($result)) {
-    foreach ($result as $user) {
-      $uids[] = $user->uid;
-    }
-    user_multiple_role_edit($uids, 'add_role', $supervisor->rid);
-  }
   dkan_workflow_admin_menu_source();
 
   // Add dkan workflow roles to roleassign config.
