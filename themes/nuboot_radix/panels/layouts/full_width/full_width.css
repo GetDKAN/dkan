@@ -17,6 +17,9 @@
 .panel-full-width .panel-middle .inside {
   margin: 15px;
 }
+.panel-full-width .panel-hero .inside {
+  padding: 30px 15px;
+}
 
 .panel-full-width .panel-top .panel-col-first,
 .panel-full-width .panel-top .panel-col-second {
