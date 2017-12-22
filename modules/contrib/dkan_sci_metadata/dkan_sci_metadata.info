@@ -1,0 +1,26 @@
+name = DKAN Science Metadata
+core = 7.x
+package = DKAN
+version = 7.x-1.0
+dependencies[] = ctools
+dependencies[] = dkan_dataset_paragraphs
+dependencies[] = features
+dependencies[] = list
+dependencies[] = options
+dependencies[] = paragraphs
+dependencies[] = strongarm
+dependencies[] = text
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:2
+features[field_base][] = field_sci_auth_is_organization
+features[field_base][] = field_sci_author_id
+features[field_base][] = field_sci_author_id_type
+features[field_base][] = field_sci_author_name
+
+features[field_instance][] = paragraphs_item-sci_author-field_sci_auth_is_organization
+features[field_instance][] = paragraphs_item-sci_author-field_sci_author_id
+features[field_instance][] = paragraphs_item-sci_author-field_sci_author_id_type
+features[field_instance][] = paragraphs_item-sci_author-field_sci_author_name
+features[paragraphs][] = sci_author
+features[taxonomy][] = sci_author_id_type
+features[variable][] = field_bundle_settings_paragraphs_item__sci_author
