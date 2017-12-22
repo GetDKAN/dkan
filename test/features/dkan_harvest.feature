@@ -7,7 +7,7 @@ Feature: Dkan Harvest
       | Source one | /harvest_source/source-one |
       | Source two | /harvest_source/source-two |
 
-  @api @javascript
+  @harvest_01 @api @javascript
   Scenario: As a site manager I should be able to add a harvest source.
     Given users:
       | name              | mail                     | status | roles             |
@@ -24,7 +24,7 @@ Feature: Dkan Harvest
     And I wait for "2" seconds
     Then I should see the success message "Harvest Source Source 1 has been created."
 
-  @api @javascript
+  @harvest_02 @api @javascript
   Scenario: Harvest source machine name should not have forward slash character.
     Given users:
       | name              | mail                     | status | roles             |
@@ -37,7 +37,7 @@ Feature: Dkan Harvest
     And I wait for "2" seconds
     Then I should see "harvest_test_01_17"
 
-  @api
+  @harvest_03 @api
   Scenario Outline: As a user I should not be able to add a harvest source.
     Given pages:
       | name                  | url                      |
@@ -50,7 +50,7 @@ Feature: Dkan Harvest
       | role                    |
       | authenticated user      |
 
-  @api @harvest
+  @harvest_04 @api @harvest
   Scenario: As a site manager I should see only the published harvest sources listed on the harvest dashboard.
     Given users:
       | name            | mail                   | roles           |
@@ -63,7 +63,7 @@ Feature: Dkan Harvest
     Then I should see the text "Source one"
     And I should not see the text "Source two"
 
-  @api @javascript @harvest
+  @harvest_05 @api @javascript @harvest
   Scenario: Delete all associated content when a Source is deleted
     Given users:
       | name              | mail                     | status | roles             |
@@ -86,7 +86,7 @@ Feature: Dkan Harvest
     And the content "Florida Bike Lanes Harvest" should be "deleted"
     And the content "Table of Gold Prices Harvest" should be "deleted"
 
-  @api @javascript @harvest
+  @harvest_06 @api @javascript @harvest
   Scenario: Unpublish and mark as orphan all associated content when a Source is deleted
     Given users:
       | name              | mail                     | status | roles             |
@@ -104,7 +104,7 @@ Feature: Dkan Harvest
     And the content "Florida Bike Lanes Harvest" should be "unpublished"
     And the content "Florida Bike Lanes Harvest" should be "orphaned"
 
-  @api @javascript @harvest
+  @harvest_07 @api @javascript @harvest
   Scenario: Keep published but mark as orphan all associated content when a Source is deleted
     Given users:
       | name              | mail                     | status | roles             |
@@ -122,7 +122,7 @@ Feature: Dkan Harvest
     And the content "Florida Bike Lanes Harvest" should be "published"
     And the content "Florida Bike Lanes Harvest" should be "orphaned"
 
-  @api @harvest
+  @harvest_08 @api @harvest
   Scenario: As a user I should have access to see harvest information into dataset node.
     Given users:
       | name            | mail                   | roles           |
@@ -141,7 +141,7 @@ Feature: Dkan Harvest
     And I should see "2016-06-22" in the "Release Date" row
     And I should see "2016-08-02" in the "Modified Date" row
 
-  @api @harvest
+  @harvest_09 @api @harvest
   Scenario: As a user I should have access to see harvest preview information.
     Given users:
       | name            | mail                   | roles           |
@@ -155,7 +155,7 @@ Feature: Dkan Harvest
     And I should see the text "Harvest now"
     And I should see the text "Florida Bike Lanes Harvest"
 
-  @api @harvest
+  @harvest_10 @api @harvest
   Scenario: As a user I should be able to refresh the preview on the Harvest Source.
     Given users:
       | name            | mail                   | roles           |
@@ -172,7 +172,7 @@ Feature: Dkan Harvest
     And I should see the text "Preview"
 
 
-  @api @harvest
+  @harvest_11 @api @harvest
   Scenario Outline: As a user I should have access to the Event log tab on the Harvest Source.
     Given users:
       | name            | mail                   | roles           |
@@ -191,7 +191,7 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @harvest
+  @harvest_12 @api @harvest
   Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
     Given users:
       | name            | mail                   | roles           |
@@ -206,7 +206,7 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @harvest
+  @harvest_13 @api @harvest
   Scenario Outline: As user I should see a list of imported datasets in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
@@ -224,7 +224,7 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @javascript @harvest
+  @harvest_14 @api @javascript @harvest
   Scenario Outline: As user I want to filter harvested datasets by orphan status in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
@@ -243,7 +243,7 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @javascript @harvest
+  @harvest_15 @api @javascript @harvest
   Scenario Outline: As user I want to filter harvested datasets by post date in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
@@ -266,7 +266,7 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @javascript @harvest
+  @harvest_16 @api @javascript @harvest
   Scenario Outline: As user I want to filter harvested datasets by updated date in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
@@ -292,7 +292,7 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api @javascript @harvest
+  @harvest_17 @api @javascript @harvest
   Scenario Outline: As user I want to delete harvested datasets in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
@@ -316,7 +316,7 @@ Feature: Dkan Harvest
       | role              |
       | site manager      |
 
-  @api
+  @harvest_18 @api
   Scenario: Site Manager role should have access to the Harvest actions on the Harvest Dashboard.
     Given pages:
       | name              | url                           |
@@ -327,18 +327,24 @@ Feature: Dkan Harvest
     And I select "Harvest (Cache and Migrate) Source(s)" from "operation"
     And I select "Migrate Source(s)" from "operation"
 
-  @api @javascript
+  @harvest_19 @api @javascript
   Scenario: Topics set in harvest should set topic field in harvested datasources.
     Given users:
       | name              | mail                     | status | roles             |
       | Site manager      | admin@fakeemail.com      | 1      | site manager      |
+      
+    And "dkan_topics" terms:
+      | name         | field_icon_type  | field_topic_icon   |
+      | Topic1       | font             | xe904              |
+      | Topic2       | font             | xe97b              |
+      
     And harvest sources:
       | title         | machine name  | source uri                                                                 | type               | author       | published | topics                 |
-      | Topics source | topics_source | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Health Care, Education |
+      | Topics source | topics_source | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Topic1, Topic2 |
 
     And The "topics_source" source is harvested
     And I am logged in as "Site manager"
     Given I am on the "Topics source" page
     And I click "Edit"
-    Then the "Health Care" option from "Topics" should be selected
-    And the "Education" option from "Topics" should be selected
+    Then the "Topic1" option from "Topics" should be selected
+    And the "Topic2" option from "Topics" should be selected

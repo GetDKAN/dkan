@@ -13,9 +13,6 @@ commands:
         #   export AHOY_DOCKER_SYNC=true
         # which will use Docker For Mac instead of docker-machine using native OS file syncing.
         #
-        # To use Traefik proxy, set:
-        #   export AHOY_USE_PROXY=true
-        #
         # To override the default proxy domain (localtest.me), set:
         #   export AHOY_WEB_DOMAIN=mydomain.com
         #
@@ -58,15 +55,7 @@ commands:
         export HOST_UID=$(id -u)
         docker-sync start -c dkan/.ahoy/docker-sync.yml
       fi
-      # Create dkan network
-      DKAN_NETWORK=$(docker network ls -q -f name=dkan_default)
-      if [ -z "$DKAN_NETWORK" ]; then
-        docker network create dkan_default
-      fi
 
-      if [ ! -z "$AHOY_USE_PROXY" ]; then
-        ahoy docker proxy-up
-      fi;
       ahoy docker compose up -d {{args}}
       ahoy docker hostfile
     usage: Start the docker-compose containers.
@@ -82,7 +71,7 @@ commands:
       SLUG=${PWD##*/}
       SLUG=${SLUG//-/}
       SLUG=${SLUG//_/}
-      SLUG=$(echo ${SLUG} | tr "[A-Z]" "[a-z]") # Mixed case dirs cause issue with docker image names
+      SLUG=$(echo ${SLUG} | tr -d '[:space:]' | tr "[A-Z]" "[a-z]") # Mixed case dirs cause issue with docker image names
       echo ${SLUG}
   get-proxy-domain:
     cmd: |
@@ -90,7 +79,7 @@ commands:
       echo $WEB_DOMAIN
   get-hostname:
     cmd: |
-      if [ ! -z "$AHOY_USE_PROXY" ]; then
+      if [ "$(ahoy docker proxy-running)" = "1" ]; then
         echo "$(ahoy docker get-slug).$(ahoy docker get-proxy-domain)"
       else
         if [ -z "$DOCKER_MACHINE_NAME"  ]; then
@@ -115,26 +104,12 @@ commands:
         else
           echo "Starting proxy container"
           docker run -d --privileged \
-            -p 80:80 -p 443:443 -p 8080:8080 --network dkan_default \
+            -p 80:80 -p 443:443 -p 8080:8080 \
             -v /var/run/docker.sock:/var/run/docker.sock \
             -v "$DKAN_PATH/.ahoy/traefik.toml:/etc/traefik/traefik.toml" \
             --name=${PROXY_NAME} traefik --web --docker --docker.domain=${PROXY_DOMAIN} --logLevel=DEBUG
         fi
       fi
-
-      SLUG=$(ahoy docker get-slug)
-
-      # Configure host for proxy.
-      PROXYCONF_FILE="dkan/.ahoy/docker-compose.proxyconf.yml"
-      echo -e "version: \"2\"" > ${PROXYCONF_FILE}
-      echo -e "services:" >> ${PROXYCONF_FILE}
-      echo -e "  web:\n    labels:" >> ${PROXYCONF_FILE}
-      echo -e "      - traefik.backend=${SLUG}" >> ${PROXYCONF_FILE}
-      echo -e "      - traefik.frontend.rule=Host:$(ahoy docker get-hostname)" >> ${PROXYCONF_FILE}
-      echo -e "      - traefik.frontend.passHostHeader=true" >> ${PROXYCONF_FILE}
-      echo -e "  browser:\n    labels:" >> ${PROXYCONF_FILE}
-      echo -e "      - traefik.backend=${SLUG}_browser" >> ${PROXYCONF_FILE}
-      echo -e "      - traefik.frontend.rule=Host:browser.$(ahoy docker get-hostname)" >> ${PROXYCONF_FILE}
 
     usage: Run the nginx-proxy container
   stop:
@@ -242,21 +217,39 @@ commands:
   mysql-dump:
     cmd: docker exec -it $(ahoy docker compose ps -q cli) bash -c "mysqldump -u$(ahoy docker mysql-param username) -p$(ahoy docker mysql-param password) -h$(ahoy docker mysql-param hostname) $(ahoy docker mysql-param database)"
     usage: Dump data out into a file. `ahoy docker mysql-dump > backups/local.sql`
+  proxy-running:
+    cmd: |
+      PROXY_RUNNING=$(docker ps | grep proxy)
+      if [ -z "$PROXY_RUNNING" ]; then
+        echo "0"
+      else
+        echo "1"
+      fi
+    usage: Reports a 0 or 1 if "proxy" docker container is running.
   compose:
     cmd: |
       DOCKER_COMPOSE_COMMON_CONF="dkan/.ahoy/docker-compose.common.yml"
-      if [ ! -z "$AHOY_USE_PROXY" ]; then
-        PROXY_CONF="dkan/.ahoy/docker-compose.proxyconf.yml"
-      else
-        PROXY_CONF="dkan/.ahoy/docker-compose.noproxy.yml"
+      if [ "$(ahoy docker proxy-running)" = "0" ]; then
+        PROXY_CONF="-f dkan/.ahoy/docker-compose.noproxy.yml"
       fi;
+
       if [ ! -z "$AHOY_DOCKER_SYNC" ]; then
         export SLUG=$(ahoy docker get-slug)
         VOLUME_CONF="dkan/.ahoy/docker-compose.docker-sync.yml"
       else
         VOLUME_CONF="dkan/.ahoy/docker-compose.nosync.yml"
       fi;
-      docker-compose -f $DOCKER_COMPOSE_COMMON_CONF -f $VOLUME_CONF -f $PROXY_CONF -p "${PWD##*/}" {{args}}
+      export SLUG=$(ahoy docker get-slug)
+
+      #Check for proxy container, get domain from that.
+      PROXY_DOMAIN=`docker inspect proxy 2> /dev/null | grep docker.domain | tr -d ' ",-' | cut -d \= -f 2 | head -1`
+
+      #If no proxy is running, use the overridden or default proxy domain
+      if [ -z "$PROXY_DOMAIN" ]; then
+        PROXY_DOMAIN=$(ahoy get-proxy-domain)
+      fi
+      export PROXY_DOMAIN=$PROXY_DOMAIN
+      docker-compose -f $DOCKER_COMPOSE_COMMON_CONF -f $VOLUME_CONF $PROXY_CONF -p "${PWD##*/}" {{args}}
     usage: Abstraction for docker-compose
   web-host:
     cmd: |
@@ -269,7 +262,7 @@ commands:
     usage: Prints the project URL
     cmd: |
       echo -n "http://`ahoy docker get-hostname`"
-      if [ -z "$AHOY_USE_PROXY" ]; then
+      if [ "$(ahoy docker proxy-running)" = "0" ]; then
         echo -n ":`ahoy docker compose port web 80|cut -d ':' -f2`"
       fi;
       echo ""
@@ -277,20 +270,21 @@ commands:
     usage: Prints a secure project URL
     cmd: |
       echo -n "https://`ahoy docker get-hostname`"
-      if [ -z "$AHOY_USE_PROXY" ]; then
+      if [ "$(ahoy docker proxy-running)" = "0" ]; then
         echo -n ":`ahoy docker compose port web 443|cut -d ':' -f2`"
       fi;
       echo ""
   vnc:
     usage: Prints the project VNC URL
     cmd: |
-      if [ "$AHOY_CMD_PROXY" = "DOCKER" ] && [ -n "$AHOY_USE_PROXY" ]; then
-        echo "https://browser.$(ahoy docker get-hostname):5900"
+      VNC_PORT=`ahoy docker compose port browser 5900|cut -d ':' -f2`
+      if [ "$AHOY_CMD_PROXY" = "DOCKER" ] && [ "$(ahoy docker proxy-running)" = "1" ]; then
+        echo "$(ahoy docker get-hostname):${VNC_PORT}"
       else
         if [ -z "$DOCKER_MACHINE_NAME"  ]; then
-          echo "https://`ahoy docker web-host`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+          echo "`ahoy docker web-host`:${VNC_PORT}"
         else
-          echo "`docker-machine ip default`:`ahoy docker compose port browser 5900|cut -d ':' -f2`"
+          echo "`docker-machine ip default`:${VNC_PORT}"
         fi
       fi
   cleanup:

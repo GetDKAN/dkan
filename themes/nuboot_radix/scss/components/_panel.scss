@@ -16,6 +16,13 @@
   .pane-fieldable-panels-pane {
     margin-bottom: 3em;
   }
+  .panel-hero {
+    .pane-custom,
+    .pane-node-field-image,
+    .pane-fieldable-panels-pane {
+      margin-bottom: 0;
+    }
+  }
 }
 
 h2.pane-title {
