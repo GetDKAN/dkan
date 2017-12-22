@@ -13,3 +13,5 @@ projects:
       628094: 'https://www.drupal.org/files/issues/file.remote-file_save.628094.22.patch'
       # State error with select multiple
       2844358: 'https://www.drupal.org/files/issues/drupal_bug_multiple_values_select_states.patch'
+      # When trying to create a table that already exists but is empty, recreate the table rather than throwing a DatabaseSchemaObjectExistsException
+      1551132: 'https://www.drupal.org/files/issues/1551132-drupal-reinstall-schema-empty-tables-87-D7.patch'
