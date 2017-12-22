@@ -10314,6 +10314,11 @@ ul.action-links {
 .main .pane-fieldable-panels-pane {
   margin-bottom: 3em; }
 
+.main .panel-hero .pane-custom,
+.main .panel-hero .pane-node-field-image,
+.main .panel-hero .pane-fieldable-panels-pane {
+  margin-bottom: 0; }
+
 h2.pane-title {
   border-bottom: 1px solid #ddd;
   padding-bottom: 10px; }

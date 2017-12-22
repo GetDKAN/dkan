@@ -1,10 +1,14 @@
 7.x-1.14.1
 ----------
+ - #2265 Fix hero background image setup
+ - #2288 Use geojson icon for GeoJSON files in listings
+ - #2283 Share MySQL Credentials With Docker Containers
+ - #2273 Remove dkan_workflow_permissions dependency
+ - #2275 Docker Proxy Config Updates
  - #2263 Fix harvest validation for accessLevel values
  - #2249 Change timezone handling to 'none' on temporal coverage field
  - #2103 Fixed field mapping defaults for open data schema APIs
  - #2237 Migration of CircleCI from V1 to V2
- - #2273 Remove dkan_workflow_permissions dependency
 
 7.x-1.14
 --------
