@@ -70,6 +70,11 @@ projects:
       type: git
       url: https://github.com/GetDKAN/dkan_dataset_paragraphs.git
       branch: 7.x-1.x
+  dkan_sci_metadata:
+    download:
+      type: git
+      url: https://github.com/GetDKAN/dkan_sci_metadata.git
+      branch: 7.x-1.x
   double_field:
     version: '2.5'
   draggableviews:
