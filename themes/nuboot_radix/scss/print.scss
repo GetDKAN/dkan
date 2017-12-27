@@ -2,16 +2,48 @@
 // Print Styles
 // --------------------------------------------------
 
-
 @media print {
-  #block-dkan-sitewide-dkan-sitewide-search-bar {
+  .container {
+    width: 100%;
+  }
+  // Dataset Layout.
+  .node-type-dataset {
+    .col-md-3 {
+      width: 25%;
+      float: left;
+    }
+    .col-md-9 {
+      width: 75%;
+      float: left;
+    }
+    .node-dataset .resource-list li {
+      padding: 0 0 0 45px;
+    }
+  }
+
+  // Hide elements.
+  #block-dkan-sitewide-dkan-sitewide-search-bar,
+  .breadcrumb,
+  .pane-dkan-sitewide-dkan-sitewide-other-access,
+  .pane-dkan-sitewide-dkan-sitewide-social,
+  .resource-list .links,
+  .tabs--primary {
     display: none;
   }
 
+  .branding a[href]:after {
+    content: none !important;
+  }
+
+  // Colors.
+  .node-type-dataset.panel-region-sidebar .radix-layouts-sidebar h2.pane-title {
+    border-color: #dddddd !important;
+  }
+
+  // Breaking.
   img, tr, svg, .card-chart {
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid;
   }
 }
-    
