@@ -1164,7 +1164,7 @@ class HarvestMigration extends MigrateDKAN {
     $resource->format = isset($format) ? strtolower($format) : $format_detected;
 
     // Title.
-    $resource->title = isset($title) ? $title : $url;
+    $resource->title = isset($title) ? $title : $resource->format;
 
     // Created.
     $resource->created = isset($created) ? $created : time();
