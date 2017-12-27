@@ -1,0 +1,217 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN Science Metadata feature.
+ */
+
+include_once 'dkan_sci_metadata.features.inc';
+include_once 'includes/DkanSciMetadataAuthor.php';
+include_once 'includes/DkanSciMetadataAuthorOrcid.php';
+
+/**
+ * Implements hook_taxonomy_fixtures_vocabulary().
+ */
+function dkan_sci_metadata_taxonomy_fixtures_vocabulary() {
+  return array(
+    'sci_author_id_type' => array(
+      'export_path' => drupal_get_path('module', 'dkan_sci_metadata') . '/data',
+      'map' => array(
+        'name' => 'name',
+        'weight' => 'weight',
+        'uuid' => 'uuid',
+        'description' => 'description',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_node_validate().
+ */
+function dkan_sci_metadata_node_validate($node, $form, &$form_state) {
+  if ($form['type']['#value'] == 'dataset') {
+    // Validate extended metadata fields.
+    if (count($form['field_metadata_extended'][LANGUAGE_NONE])) {
+      foreach ($form['field_metadata_extended'][LANGUAGE_NONE] as $key => $value) {
+        if (is_numeric($key)) {
+          if (
+            isset($value['#entity']) &&
+            isset($value['#entity']->bundle) &&
+            $value['#entity']->bundle == DkanSciMetadataAuthor::AUTHOR_BUNDLE
+          ) {
+            $author_id_type = NULL;
+            $author_id = NULL;
+
+            if (
+              isset($value['field_sci_author_name'][LANGUAGE_NONE][0]['value']['#value']) &&
+              !empty($value['field_sci_author_name'][LANGUAGE_NONE][0]['value']['#value'])
+            ) {
+              // @todo Enforce last, first name format.
+            }
+            else {
+              // Validate author ID if possible.
+              $author_id_type_field = $value['field_sci_author_id_type'][LANGUAGE_NONE];
+              $author_id_field = $value['field_sci_author_id'][LANGUAGE_NONE];
+
+              if (isset($author_id_type_field)) {
+                $author_id_type = strtolower($author_id_type_field['#options'][$author_id_type_field['#value']]);
+              }
+              if (isset($author_id_field)) {
+                $author_id = $author_id_field[0]['value']['#value'];
+              }
+
+              if (!empty($author_id_type) && !empty($author_id)) {
+                switch ($author_id_type) {
+                  case DkanSciMetadataAuthorOrcid::AUTHOR_ID_TYPE:
+                    // Validate ORCID author ID.
+                    $error_msg = DkanSciMetadataAuthorOrcid::validate($author_id);
+                    if (!empty($error_msg)) {
+                      form_set_error('field_metadata_extended][' . LANGUAGE_NONE . '][' . $key . '][field_sci_author_id', $error_msg);
+                    }
+                    break;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function dkan_sci_metadata_entity_presave($entity, $type) {
+  // Populate author name field.
+  if ($type == 'paragraphs_item' && $entity->field_name == 'field_metadata_extended') {
+    $author_id_type_field = $entity->field_sci_author_id_type[LANGUAGE_NONE];
+    $author_id_field = $entity->field_sci_author_id[LANGUAGE_NONE];
+
+    if (count($author_id_type_field) && count($author_id_field)) {
+      $author_id_type_tid = strtolower($author_id_type_field[0]['tid']);
+      $term = taxonomy_term_load($author_id_type_tid);
+      $author_id_type = $term->name;
+      $author_id = $author_id_field[0]['value'];
+
+      switch ($author_id_type) {
+        // Populate author name from ORCID biography data.
+        case DkanSciMetadataAuthorOrcid::AUTHOR_TAXONOMY_NAME:
+          // Only replace blank author names.
+          if (!count($entity->field_sci_author_name[LANGUAGE_NONE])) {
+            $entity->field_sci_author_name[LANGUAGE_NONE][0]['value'] = DkanSciMetadataAuthorOrcid::getName($author_id);
+          }
+          break;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_default_search_api_index_alter().
+ */
+function dkan_sci_metadata_default_search_api_index_alter(&$defaults) {
+  if (isset($defaults['datasets'])) {
+    // Adds Author Name / Type to search index.
+    $defaults['datasets']->options['fields']['field_metadata_extended:field_sci_author_name'] = array(
+      'type' => 'list<string>',
+    );
+    $defaults['datasets']->options['fields']['field_metadata_extended:field_sci_author_id_type:name'] = array(
+      'type' => 'list<string>',
+    );
+  }
+}
+
+/**
+ * Implements hook_environment_switch().
+ */
+function dkan_sci_metadata_environment_switch(
+  $target_env,
+  $current_env,
+  $workflow = NULL
+) {
+  _dkan_sci_metadata_enable_facets();
+}
+
+/**
+ * Implements hook_panels_pre_render().
+ */
+function dkan_sci_metadata_panels_pre_render(&$display, $renderer) {
+  // Add Filter by Author Name facet.
+  if (is_numeric(strpos($display->cache_key, 'page-datasets'))) {
+    $map = facetapi_get_delta_map();
+    $realms = array();
+    foreach ($map as $machine_name => $facet) {
+      $facet_keys = explode(':', $facet);
+      // Decode encoded :'s.
+      array_walk($facet_keys, function(&$val) {
+        $val = urldecode($val);
+      });
+      if (in_array('search_api@datasets', $facet_keys)) {
+        if (in_array('field_metadata_extended:field_sci_author_name', $facet_keys)) {
+          $realms['field_sci_author_name'] = 'facetapi-' . $machine_name;
+        }
+      }
+    }
+    if ($realms) {
+      foreach ($realms as $field => $machine_name) {
+        $title = '';
+        $pane = panels_new_pane('block', $machine_name, TRUE);
+        $pane->uuid = ctools_uuid_generate();
+        $pane->pid = 'new-' . $pane->uuid;
+        $pane->panel = 'sidebar';
+        $pane->subtype = $machine_name;
+        unset($pane->did);
+        $pane->shown = TRUE;
+
+        switch ($field) {
+          case 'field_sci_author_name':
+            $title = 'Filter by Author Name';
+            break;
+        }
+        $pane->configuration = array(
+          'override_title' => TRUE,
+          'override_title_heading' => 'h2',
+          'override_title_text' => $title,
+        );
+        $pane->css = array(
+          'css_id' => '',
+          'css_class' => 'pane-facetapi pane-block',
+        );
+        $pane->style = array(
+          'settings' => array(
+            'pane_title' => '%title',
+            'pane_collapsed' => TRUE,
+            'pane_empty_check' => FALSE,
+          ),
+          'style' => 'collapsible',
+        );
+        $display->panels['sidebar'][] = $pane->pid;
+        $display->content[$pane->pid] = $pane;
+      }
+    }
+  }
+}
+
+/**
+ * Enables facets for author fields.
+ */
+function _dkan_sci_metadata_enable_facets() {
+  $searchers = array('search_api@datasets');
+  foreach ($searchers as $searcher) {
+    $realm = "block";
+    $facets_to_enable = array('field_metadata_extended:field_sci_author_name','field_metadata_extended:field_sci_author_id_type:name');
+
+    $adapter = facetapi_adapter_load($searcher);
+    $facet_info = facetapi_get_facet_info($searcher);
+
+    foreach (array_keys($facet_info) as $item) {
+      $facet = facetapi_facet_load($item, $searcher);
+      if (in_array($item, $facets_to_enable)) {
+        $facet_settings = $adapter->getFacet($facet)->getSettings($realm);
+        $facet_settings->enabled = 1;
+        ctools_export_crud_save('facetapi', $facet_settings);
+      }
+    }
+  }
+}
