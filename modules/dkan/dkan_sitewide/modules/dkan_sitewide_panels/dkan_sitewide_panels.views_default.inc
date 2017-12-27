@@ -279,7 +279,7 @@ function dkan_sitewide_panels_views_default_views() {
     'page' => 'page',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
-  /* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
+  /* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
@@ -528,7 +528,8 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['arguments']['etid']['field'] = 'etid';
   $handler->display->display_options['arguments']['etid']['ui_name'] = 'We pass the user ID as the Entity ID.';
   $handler->display->display_options['arguments']['etid']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['etid']['default_argument_type'] = 'current_user';
+  $handler->display->display_options['arguments']['etid']['default_argument_type'] = 'user';
+  $handler->display->display_options['arguments']['etid']['default_argument_options']['user'] = FALSE;
   $handler->display->display_options['arguments']['etid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['etid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['etid']['summary_options']['items_per_page'] = '25';
