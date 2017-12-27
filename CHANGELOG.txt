@@ -1,5 +1,6 @@
 7.x-1.15
 --------
+ - #2299 Added dkan_sci_metadata module
  - #2290 Add Extended Metadata Field for Datasets
 
 7.x-1.14.1
