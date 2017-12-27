@@ -397,7 +397,7 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
             $output .= '<p>' . l($url, $url) . '</p>';
             $output .= '<p>' . t('Query this datastore and return first five results') . '</p>';
             $output .= '<h3>' . t('Documentation') . '</h3>';
-            $output .= '<p>' . t('See DKAN API documentation for more details: <a href="http://docs.getdkan.com/docs/dkan-documentation/dkan-api/datastore-api">DKAN Datastore API</a>') . '</p>';
+            $output .= '<p>' . t('See DKAN API documentation for more details: <a href="https://docs.getdkan.com/en/latest/apis/datastore-api.html">DKAN Datastore API</a>') . '</p>';
           }
         }
         return $output;
