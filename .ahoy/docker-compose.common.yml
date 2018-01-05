@@ -32,7 +32,7 @@ services:
   # DB node
   db:
     hostname: db
-    image: blinkreaction/mysql:5.5
+    image: wodby/mariadb:latest
     ports:
       - "3306"
     # MYSQL Credentials in mysql.env
