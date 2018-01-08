@@ -5,3 +5,7 @@ package = DKAN Features
 dependencies[] = dkan_topics
 dependencies[] = taxonomy_fixtures
 dependencies[] = taxonomy
+
+; Information added by DKAN release script on 1/8/2018
+version = 7.x-1.14.1
+project = dkan
