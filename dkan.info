@@ -25,6 +25,7 @@ dependencies[] = bueditor
 dependencies[] = bueditor_plus
 dependencies[] = beautytips
 dependencies[] = chosen
+dependencies[] = composer_manager
 dependencies[] = contextual
 dependencies[] = ctools
 dependencies[] = date
