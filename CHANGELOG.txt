@@ -1,5 +1,7 @@
 7.x-1.14.1
 ----------
+ - #2280 Fix contextual filter on list_of_users_groups view
+ - #2284 Change the default title for harvested resources to use the format value rather than url value
  - #2265 Fix hero background image setup
  - #2288 Use geojson icon for GeoJSON files in listings
  - #2283 Share MySQL Credentials With Docker Containers
