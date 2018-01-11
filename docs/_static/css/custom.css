@@ -1,0 +1,20 @@
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 900;
+}
+.wy-nav-side {
+  background: #212121;
+}
+.wy-nav-content {
+  color: #212121;
+}
+.wy-nav-content a,
+.wy-nav-content a:visited {
+  color: #0071BC;
+}
+.wy-side-nav-search {
+  background-color: #0071BC;
+}
+.wy-side-nav-search>div.version {
+  color: #eee;
+}
