@@ -78,6 +78,3 @@ features[views_view][] = front_page_group_list
 features[views_view][] = group_block
 features[views_view][] = groups_page
 
-; Information added by DKAN release script on 1/8/2018
-version = 7.x-1.14.1
-project = dkan

@@ -23,6 +23,3 @@ files[] = includes/Datastore.inc
 files[] = includes/DkanDatastore.inc
 files[] = includes/DkanDatastoreFastImport.inc
 
-; Information added by DKAN release script on 1/8/2018
-version = 7.x-1.14.1
-project = dkan
