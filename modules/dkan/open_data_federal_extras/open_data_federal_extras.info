@@ -28,6 +28,3 @@ features[field_instance][] = node-dataset-field_odfe_investment_uii
 features[field_instance][] = node-dataset-field_odfe_program_code
 features[field_instance][] = node-dataset-field_odfe_system_of_records
 
-; Information added by DKAN release script on 1/8/2018
-version = 7.x-1.14.1
-project = dkan
