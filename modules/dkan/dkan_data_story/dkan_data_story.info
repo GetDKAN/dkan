@@ -55,4 +55,3 @@ features_exclude[dependencies][image] = image
 features_exclude[dependencies][strongarm] = strongarm
 features_exclude[dependencies][taxonomy] = taxonomy
 no autodetect = 1
-
