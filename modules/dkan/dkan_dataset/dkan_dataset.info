@@ -33,4 +33,3 @@ features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
 features[variable][] = pathauto_node_dataset_pattern
 features[variable][] = pathauto_node_resource_pattern
-
