@@ -1,4 +1,5 @@
 7.x-1.15
+----------
 - #2339 Adds a linkchecker to DKAN.
 - #2409 Allows the services API to be able to consume datasets with the same format given when retrieving a dataset through the API
 - #2434 Disable option to assign content to anonymous user
@@ -7,47 +8,47 @@
 
 7.x-1.14.7
 ----------
- - #2473 Security upgrades to Drupal 7.59 and Media 2.9
- - #2470 Get harvest tests passing
- - #2468 Update urls to use https rather than http
- - #2467 Update command center menu links
- - #2464 Move functions out of the dkan_sitewide_menu.install file
+- #2473 Security upgrades to Drupal 7.59 and Media 2.9
+- #2470 Get harvest tests passing
+- #2468 Update urls to use https rather than http
+- #2467 Update command center menu links
+- #2464 Move functions out of the dkan_sitewide_menu.install file
 
 7.x-1.14.6
 ----------
- - #2461 Update CONTRIBUTING.md
- - #2456 Remove exra docker dir
- - #2458 Fix the chrome issue
- - #2450 Incorrect Readme Links
+- #2461 Update CONTRIBUTING.md
+- #2456 Remove exra docker dir
+- #2458 Fix the chrome issue
+- #2450 Incorrect Readme Links
 
 7.x-1.14.5
 ----------
- - #2435 Update Drupal core to 7.58
- - #2412 Update installation instructions
+- #2435 Update Drupal core to 7.58
+- #2412 Update installation instructions
 
 7.x-1.14.4
 ----------
- - #2404 Avoid undefined offset on nuboot_radix/includes/panel.inc line 45
- - #2402 Update Drupal core to 7.57
- - #2375 Improvements to automated tests
+- #2404 Avoid undefined offset on nuboot_radix/includes/panel.inc line 45
+- #2402 Update Drupal core to 7.57
+- #2375 Improvements to automated tests
 
- 7.x-1.14.3
+7.x-1.14.3
 ----------
- - #2377 Upgrade entity to 1.9
+- #2377 Upgrade entity to 1.9
 
 7.x-1.14.2
 ----------
- - #2359 Upgrade filefield_sources to 1.11
- - #2341 Modifies curl settings so url headers and info can be properly acquired with curl
- - #2370 Patch features to add new line after <?php
- - #2346 Updated Help page; can add your company to listing
- - Remove out-dated owners.md file
- - #2345 Site Manager Monthly Maintenance checklist
- - #2347 Moving the "Adding New Content" page to main admin doc tree
- - #2321 Update @resource_all_09 scenario
- - #2327 Add results count to dkan admin views
- - #2337 Pin sphinx to 1.5.6
- - #2332 Remove redundant debug output
+- #2359 Upgrade filefield_sources to 1.11
+- #2341 Modifies curl settings so url headers and info can be properly acquired with curl
+- #2370 Patch features to add new line after <?php
+- #2346 Updated Help page; can add your company to listing
+- Remove out-dated owners.md file
+- #2345 Site Manager Monthly Maintenance checklist
+- #2347 Moving the "Adding New Content" page to main admin doc tree
+- #2321 Update @resource_all_09 scenario
+- #2327 Add results count to dkan admin views
+- #2337 Pin sphinx to 1.5.6
+- #2332 Remove redundant debug output
 
 7.x-1.14.1
 ----------

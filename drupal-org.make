@@ -50,8 +50,6 @@ projects:
     version: '1.8'
     patch:
       2696505: https://www.drupal.org/files/issues/color_field-requirements-2696505-v2.patch
-  composer_manager:
-    version: '1.8'
   conditional_styles:
     version: '2.2'
   context:
