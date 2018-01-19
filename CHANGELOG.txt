@@ -1,6 +1,5 @@
 7.x-1.15
 --------
- - #2323 Add composer_manager module
  - #2290 Add Extended Metadata Field for Datasets
 
 7.x-1.14.1
