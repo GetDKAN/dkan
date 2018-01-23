@@ -15,7 +15,6 @@ function dkan_linkchecker_user_default_permissions() {
   $permissions['access broken links report'] = array(
     'name' => 'access broken links report',
     'roles' => array(
-      'administrator' => 'administrator',
       'site manager' => 'site manager',
     ),
     'module' => 'linkchecker',
@@ -25,7 +24,6 @@ function dkan_linkchecker_user_default_permissions() {
   $permissions['access own broken links report'] = array(
     'name' => 'access own broken links report',
     'roles' => array(
-      'administrator' => 'administrator',
       'site manager' => 'site manager',
     ),
     'module' => 'linkchecker',
@@ -35,7 +33,6 @@ function dkan_linkchecker_user_default_permissions() {
   $permissions['administer linkchecker'] = array(
     'name' => 'administer linkchecker',
     'roles' => array(
-      'administrator' => 'administrator',
       'site manager' => 'site manager',
     ),
     'module' => 'linkchecker',
@@ -45,7 +42,6 @@ function dkan_linkchecker_user_default_permissions() {
   $permissions['edit link settings'] = array(
     'name' => 'edit link settings',
     'roles' => array(
-      'administrator' => 'administrator',
       'site manager' => 'site manager',
     ),
     'module' => 'linkchecker',

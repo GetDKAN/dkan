@@ -10,7 +10,6 @@
  */
 function dkan_linkchecker_views_default_views() {
   $export = array();
-
   $view = new view();
   $view->name = 'dkan_linkchecker_reports';
   $view->description = 'Display a list of broken links.';
@@ -37,6 +36,7 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'url' => 'url',
@@ -47,14 +47,18 @@ function dkan_linkchecker_views_default_views() {
     'edit_node' => 'edit_node',
     'bid' => 'bid',
     'block_edit' => 'block_edit',
+    'type' => 'type',
+    'title' => 'title',
+    'field_contact_email_1' => 'field_contact_email_1',
+    'field_contact_email' => 'field_contact_email',
     'field_contact_name_1' => 'field_contact_name_1',
     'field_contact_name' => 'field_contact_name',
-    'type' => 'type',
-    'uuid' => 'uuid',
+    'field_public_access_level_2' => 'field_public_access_level_2',
+    'field_public_access_level' => 'field_public_access_level',
     'last_checked' => 'last_checked',
     'nothing' => 'nothing',
   );
-  $handler->display->display_options['style_options']['default'] = 'uuid';
+  $handler->display->display_options['style_options']['default'] = '-1';
   $handler->display->display_options['style_options']['info'] = array(
     'url' => array(
       'sortable' => 1,
@@ -106,6 +110,34 @@ function dkan_linkchecker_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
+    'type' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_contact_email_1' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_contact_email' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
     'field_contact_name_1' => array(
       'sortable' => 0,
       'default_sort_order' => 'asc',
@@ -114,21 +146,21 @@ function dkan_linkchecker_views_default_views() {
       'empty_column' => 0,
     ),
     'field_contact_name' => array(
-      'sortable' => 1,
+      'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
     ),
-    'type' => array(
-      'sortable' => 1,
+    'field_public_access_level_2' => array(
+      'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
       'empty_column' => 0,
     ),
-    'uuid' => array(
-      'sortable' => 1,
+    'field_public_access_level' => array(
+      'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
@@ -194,7 +226,7 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['link_edit']['field'] = 'link_edit';
   $handler->display->display_options['fields']['link_edit']['exclude'] = TRUE;
   $handler->display->display_options['fields']['link_edit']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['link_edit']['alter']['text'] = '<li>Edit link settings</li>';
+  $handler->display->display_options['fields']['link_edit']['alter']['text'] = '<div class="btn-primary">Edit link settings</div>';
   $handler->display->display_options['fields']['link_edit']['hide_empty'] = TRUE;
   /* Field: Content: Nid */
   $handler->display->display_options['fields']['nid']['id'] = 'nid';
@@ -210,22 +242,36 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['edit_node']['label'] = 'Edit node';
   $handler->display->display_options['fields']['edit_node']['exclude'] = TRUE;
   $handler->display->display_options['fields']['edit_node']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['edit_node']['alter']['text'] = '<li>Edit node [nid]</li>';
+  $handler->display->display_options['fields']['edit_node']['alter']['text'] = '<div class="btn-primary">Edit node [nid]</div>';
   $handler->display->display_options['fields']['edit_node']['hide_empty'] = TRUE;
-  /* Field: Broken links: Block ID */
-  $handler->display->display_options['fields']['bid']['id'] = 'bid';
-  $handler->display->display_options['fields']['bid']['table'] = 'linkchecker_block_custom';
-  $handler->display->display_options['fields']['bid']['field'] = 'bid';
-  $handler->display->display_options['fields']['bid']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['bid']['separator'] = '';
-  /* Field: Broken links: Edit block */
-  $handler->display->display_options['fields']['block_edit']['id'] = 'block_edit';
-  $handler->display->display_options['fields']['block_edit']['table'] = 'linkchecker_block_custom';
-  $handler->display->display_options['fields']['block_edit']['field'] = 'block_edit';
-  $handler->display->display_options['fields']['block_edit']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['block_edit']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['block_edit']['alter']['text'] = '<li>Edit block [bid]</li>';
-  $handler->display->display_options['fields']['block_edit']['hide_empty'] = TRUE;
+  /* Field: Content: Type */
+  $handler->display->display_options['fields']['type']['id'] = 'type';
+  $handler->display->display_options['fields']['type']['table'] = 'node';
+  $handler->display->display_options['fields']['type']['field'] = 'type';
+  $handler->display->display_options['fields']['type']['relationship'] = 'nid';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['relationship'] = 'nid';
+  /* Field: Resource contact email */
+  $handler->display->display_options['fields']['field_contact_email_1']['id'] = 'field_contact_email_1';
+  $handler->display->display_options['fields']['field_contact_email_1']['table'] = 'field_data_field_contact_email';
+  $handler->display->display_options['fields']['field_contact_email_1']['field'] = 'field_contact_email';
+  $handler->display->display_options['fields']['field_contact_email_1']['relationship'] = 'field_dataset_ref_target_id';
+  $handler->display->display_options['fields']['field_contact_email_1']['ui_name'] = 'Resource contact email';
+  $handler->display->display_options['fields']['field_contact_email_1']['label'] = '';
+  $handler->display->display_options['fields']['field_contact_email_1']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_contact_email_1']['element_label_colon'] = FALSE;
+  /* Field: Dataset contact email */
+  $handler->display->display_options['fields']['field_contact_email']['id'] = 'field_contact_email';
+  $handler->display->display_options['fields']['field_contact_email']['table'] = 'field_data_field_contact_email';
+  $handler->display->display_options['fields']['field_contact_email']['field'] = 'field_contact_email';
+  $handler->display->display_options['fields']['field_contact_email']['relationship'] = 'nid';
+  $handler->display->display_options['fields']['field_contact_email']['ui_name'] = 'Dataset contact email';
+  $handler->display->display_options['fields']['field_contact_email']['label'] = '';
+  $handler->display->display_options['fields']['field_contact_email']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_contact_email']['element_label_colon'] = FALSE;
   /* Field: Content: Contact Name */
   $handler->display->display_options['fields']['field_contact_name_1']['id'] = 'field_contact_name_1';
   $handler->display->display_options['fields']['field_contact_name_1']['table'] = 'field_data_field_contact_name';
@@ -240,17 +286,22 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['field_contact_name']['field'] = 'field_contact_name';
   $handler->display->display_options['fields']['field_contact_name']['relationship'] = 'nid';
   $handler->display->display_options['fields']['field_contact_name']['empty'] = '[field_contact_name_1]';
-  /* Field: Content: Type */
-  $handler->display->display_options['fields']['type']['id'] = 'type';
-  $handler->display->display_options['fields']['type']['table'] = 'node';
-  $handler->display->display_options['fields']['type']['field'] = 'type';
-  $handler->display->display_options['fields']['type']['relationship'] = 'nid';
-  /* Field: Content: Node UUID */
-  $handler->display->display_options['fields']['uuid']['id'] = 'uuid';
-  $handler->display->display_options['fields']['uuid']['table'] = 'node';
-  $handler->display->display_options['fields']['uuid']['field'] = 'uuid';
-  $handler->display->display_options['fields']['uuid']['relationship'] = 'nid';
-  $handler->display->display_options['fields']['uuid']['label'] = 'Identifier';
+  /* Field: Resource Access Level */
+  $handler->display->display_options['fields']['field_public_access_level_2']['id'] = 'field_public_access_level_2';
+  $handler->display->display_options['fields']['field_public_access_level_2']['table'] = 'field_data_field_public_access_level';
+  $handler->display->display_options['fields']['field_public_access_level_2']['field'] = 'field_public_access_level';
+  $handler->display->display_options['fields']['field_public_access_level_2']['relationship'] = 'field_dataset_ref_target_id';
+  $handler->display->display_options['fields']['field_public_access_level_2']['ui_name'] = 'Resource Access Level';
+  $handler->display->display_options['fields']['field_public_access_level_2']['label'] = 'Resource Access Level';
+  $handler->display->display_options['fields']['field_public_access_level_2']['exclude'] = TRUE;
+  /* Field: Dataset Access Level */
+  $handler->display->display_options['fields']['field_public_access_level']['id'] = 'field_public_access_level';
+  $handler->display->display_options['fields']['field_public_access_level']['table'] = 'field_data_field_public_access_level';
+  $handler->display->display_options['fields']['field_public_access_level']['field'] = 'field_public_access_level';
+  $handler->display->display_options['fields']['field_public_access_level']['relationship'] = 'nid';
+  $handler->display->display_options['fields']['field_public_access_level']['ui_name'] = 'Dataset Access Level';
+  $handler->display->display_options['fields']['field_public_access_level']['label'] = 'Access Level';
+  $handler->display->display_options['fields']['field_public_access_level']['empty'] = '[field_public_access_level_2]';
   /* Field: Broken links: Last checked */
   $handler->display->display_options['fields']['last_checked']['id'] = 'last_checked';
   $handler->display->display_options['fields']['last_checked']['table'] = 'linkchecker_link';
@@ -262,13 +313,15 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = 'Operations';
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '<ul>
-  [link_edit]
-  [edit_node]
-  [block_edit]
-</ul>';
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '[link_edit]
+  [edit_node]';
   $handler->display->display_options['fields']['nothing']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = TRUE;
+  /* Sort criterion: Content: Title */
+  $handler->display->display_options['sorts']['title']['id'] = 'title';
+  $handler->display->display_options['sorts']['title']['table'] = 'node';
+  $handler->display->display_options['sorts']['title']['field'] = 'title';
+  $handler->display->display_options['sorts']['title']['relationship'] = 'nid';
   /* Filter criterion: Broken links: Last checked */
   $handler->display->display_options['filters']['last_checked']['id'] = 'last_checked';
   $handler->display->display_options['filters']['last_checked']['table'] = 'linkchecker_link';
@@ -287,102 +340,6 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['filters']['status']['expose']['operator'] = 'status_op';
   $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
   $handler->display->display_options['filters']['status']['expose']['required'] = TRUE;
-  /* Filter criterion: Broken links: HTTP status code */
-  $handler->display->display_options['filters']['code']['id'] = 'code';
-  $handler->display->display_options['filters']['code']['table'] = 'linkchecker_link';
-  $handler->display->display_options['filters']['code']['field'] = 'code';
-  $handler->display->display_options['filters']['code']['value'] = array(
-    100 => '100',
-    101 => '101',
-    201 => '201',
-    202 => '202',
-    203 => '203',
-    204 => '204',
-    205 => '205',
-    206 => '206',
-    300 => '300',
-    301 => '301',
-    302 => '302',
-    303 => '303',
-    304 => '304',
-    305 => '305',
-    307 => '307',
-    400 => '400',
-    401 => '401',
-    402 => '402',
-    403 => '403',
-    404 => '404',
-    405 => '405',
-    406 => '406',
-    407 => '407',
-    408 => '408',
-    409 => '409',
-    410 => '410',
-    411 => '411',
-    412 => '412',
-    413 => '413',
-    414 => '414',
-    415 => '415',
-    416 => '416',
-    417 => '417',
-    500 => '500',
-    501 => '501',
-    502 => '502',
-    503 => '503',
-    504 => '504',
-    505 => '505',
-    -10053 => '-10053',
-    -11001 => '-11001',
-  );
-  $handler->display->display_options['filters']['code']['group'] = 1;
-  $handler->display->display_options['filters']['code']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['code']['expose']['operator_id'] = 'code_op';
-  $handler->display->display_options['filters']['code']['expose']['label'] = 'HTTP status code';
-  $handler->display->display_options['filters']['code']['expose']['operator'] = 'code_op';
-  $handler->display->display_options['filters']['code']['expose']['identifier'] = 'code';
-  $handler->display->display_options['filters']['code']['expose']['remember_roles'] = array(
-    2 => '2',
-    11 => 0,
-    1 => 0,
-    21 => 0,
-    16 => 0,
-    26 => 0,
-  );
-  $handler->display->display_options['filters']['code']['expose']['reduce'] = TRUE;
-  /* Filter criterion: Content: Type */
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'node';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['relationship'] = 'nid';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'dataset' => 'dataset',
-    'harvest_source' => 'harvest_source',
-    'resource' => 'resource',
-  );
-  $handler->display->display_options['filters']['type']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
-  $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
-  $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
-  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-  $handler->display->display_options['filters']['type']['expose']['remember_roles'] = array(
-    2 => '2',
-    11 => 0,
-    1 => 0,
-    21 => 0,
-    16 => 0,
-    26 => 0,
-  );
-  $handler->display->display_options['filters']['type']['expose']['reduce'] = TRUE;
-  /* Filter criterion: Content: Public Access Level (field_public_access_level) */
-  $handler->display->display_options['filters']['field_public_access_level_value']['id'] = 'field_public_access_level_value';
-  $handler->display->display_options['filters']['field_public_access_level_value']['table'] = 'field_data_field_public_access_level';
-  $handler->display->display_options['filters']['field_public_access_level_value']['field'] = 'field_public_access_level_value';
-  $handler->display->display_options['filters']['field_public_access_level_value']['relationship'] = 'nid';
-  $handler->display->display_options['filters']['field_public_access_level_value']['operator'] = 'not';
-  $handler->display->display_options['filters']['field_public_access_level_value']['value'] = array(
-    'restricted' => 'restricted',
-    'private' => 'private',
-  );
   /* Filter criterion: Broken links: HTTP status code */
   $handler->display->display_options['filters']['code_1']['id'] = 'code_1';
   $handler->display->display_options['filters']['code_1']['table'] = 'linkchecker_link';
@@ -390,65 +347,10 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['filters']['code_1']['operator'] = 'not in';
   $handler->display->display_options['filters']['code_1']['value'] = array(
     200 => '200',
+    301 => '301',
+    302 => '302',
   );
-
-  /* Display: Advanced Broken links */
-  $handler = $view->new_display('page', 'Advanced Broken links', 'dkan_linkchecker_admin_report_page');
-  $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Broken Links Report (public content)';
-  $handler->display->display_options['display_description'] = 'Shows a list of broken links in content, with advanced filters.';
-  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['path'] = 'admin/reports/dkan-linkchecker-report';
-  $handler->display->display_options['menu']['type'] = 'normal';
-  $handler->display->display_options['menu']['title'] = 'Advanced Broken links';
-  $handler->display->display_options['menu']['description'] = 'Shows a list of broken links in content, with advanced filters.';
-  $handler->display->display_options['menu']['weight'] = '2';
-  $handler->display->display_options['menu']['name'] = 'management';
-  $handler->display->display_options['menu']['context'] = 0;
-  $handler->display->display_options['menu']['context_only_inline'] = 0;
-
-  /* Display: Public Broken links */
-  $handler = $view->new_display('page', 'Public Broken links', 'page_1');
-  $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Broken Links Report (public content)';
-  $handler->display->display_options['display_description'] = 'Shows a list of broken links in content, with advanced filters.';
-  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['path'] = 'admin/reports/dkan-linkchecker-report/public';
-  $handler->display->display_options['menu']['type'] = 'default tab';
-  $handler->display->display_options['menu']['title'] = 'Public Broken links';
-  $handler->display->display_options['menu']['description'] = 'Shows a list of broken links in content, with advanced filters.';
-  $handler->display->display_options['menu']['weight'] = '0';
-  $handler->display->display_options['menu']['name'] = 'management';
-  $handler->display->display_options['menu']['context'] = 0;
-  $handler->display->display_options['menu']['context_only_inline'] = 0;
-  $handler->display->display_options['tab_options']['weight'] = '0';
-
-  /* Display: Private Broken links */
-  $handler = $view->new_display('page', 'Private Broken links', 'page_2');
-  $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Broken Links Report (private or restricted content)';
-  $handler->display->display_options['display_description'] = 'Shows a list of broken links in content, with advanced filters.';
-  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
-  $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Broken links: Last checked */
-  $handler->display->display_options['filters']['last_checked']['id'] = 'last_checked';
-  $handler->display->display_options['filters']['last_checked']['table'] = 'linkchecker_link';
-  $handler->display->display_options['filters']['last_checked']['field'] = 'last_checked';
-  $handler->display->display_options['filters']['last_checked']['operator'] = '!=';
-  $handler->display->display_options['filters']['last_checked']['value']['value'] = '0';
-  $handler->display->display_options['filters']['last_checked']['group'] = 1;
-  /* Filter criterion: Broken links: Status */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'linkchecker_link';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = '1';
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['status']['expose']['label'] = 'Check link status';
-  $handler->display->display_options['filters']['status']['expose']['operator'] = 'status_op';
-  $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['code_1']['group'] = 1;
   /* Filter criterion: Broken links: HTTP status code */
   $handler->display->display_options['filters']['code']['id'] = 'code';
   $handler->display->display_options['filters']['code']['table'] = 'linkchecker_link';
@@ -521,6 +423,7 @@ function dkan_linkchecker_views_default_views() {
     'harvest_source' => 'harvest_source',
     'resource' => 'resource',
   );
+  $handler->display->display_options['filters']['type']['group'] = 1;
   $handler->display->display_options['filters']['type']['exposed'] = TRUE;
   $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
   $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
@@ -540,20 +443,35 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['filters']['field_public_access_level_value']['table'] = 'field_data_field_public_access_level';
   $handler->display->display_options['filters']['field_public_access_level_value']['field'] = 'field_public_access_level_value';
   $handler->display->display_options['filters']['field_public_access_level_value']['relationship'] = 'nid';
-  $handler->display->display_options['filters']['field_public_access_level_value']['value'] = array(
-    'restricted' => 'restricted',
-    'private' => 'private',
+  $handler->display->display_options['filters']['field_public_access_level_value']['group'] = 1;
+  $handler->display->display_options['filters']['field_public_access_level_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_public_access_level_value']['expose']['operator_id'] = 'field_public_access_level_value_op';
+  $handler->display->display_options['filters']['field_public_access_level_value']['expose']['label'] = 'Public Access Level';
+  $handler->display->display_options['filters']['field_public_access_level_value']['expose']['operator'] = 'field_public_access_level_value_op';
+  $handler->display->display_options['filters']['field_public_access_level_value']['expose']['identifier'] = 'field_public_access_level_value';
+  $handler->display->display_options['filters']['field_public_access_level_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    4 => 0,
+    6 => 0,
   );
-  $handler->display->display_options['path'] = 'admin/reports/dkan-linkchecker-report/private';
-  $handler->display->display_options['menu']['type'] = 'tab';
-  $handler->display->display_options['menu']['title'] = 'Private Broken links';
+
+  /* Display: Advanced Broken links */
+  $handler = $view->new_display('page', 'Advanced Broken links', 'dkan_linkchecker_admin_report_page');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Broken Links Report';
+  $handler->display->display_options['display_description'] = 'Shows a list of broken links in content, with advanced filters.';
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['path'] = 'admin/reports/dkan-linkchecker-report';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Broken Links Report';
   $handler->display->display_options['menu']['description'] = 'Shows a list of broken links in content, with advanced filters.';
   $handler->display->display_options['menu']['weight'] = '2';
   $handler->display->display_options['menu']['name'] = 'management';
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
-  $handler->display->display_options['tab_options']['weight'] = '0';
   $export['dkan_linkchecker_reports'] = $view;
-
   return $export;
 }
