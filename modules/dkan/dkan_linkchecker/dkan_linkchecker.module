@@ -64,3 +64,117 @@ function dkan_linkchecker_menu_alter(&$items) {
   // Remove normal linkchecker report link.
   $items['admin/reports/linkchecker']['access callback'] = FALSE;
 }
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function dkan_linkchecker_views_query_alter(&$view, &$query) {
+  if ($view->name == 'dkan_linkchecker_reports') {
+    switch ($view->exposed_raw_input['field_public_access_level_value']) {
+      case 'public':
+        $level = 'public';
+        // Get the public access level value from the dataset reference field.
+        $join = new views_join();
+        $join->table = 'field_data_field_public_access_level';
+        $join->field = 'entity_id';
+        $join->left_table = 'node_linkchecker_node__field_data_field_dataset_ref';
+        $join->left_field = 'field_dataset_ref_target_id';
+        $join->type = 'LEFT';
+
+        // Do the actual join.
+        $query->table_queue['public_access_level'] = array(
+          'alias' => 'public_access_level',
+          'table' => 'field_data_field_public_access_level',
+          'relationship' => 'node_linkchecker_node__field_data_field_dataset_ref',
+          'join' => $join,
+        );
+        $query->where[1] = array(
+          'conditions' => array(
+            array(
+              'field' => 'public_access_level.field_public_access_level_value',
+              'value' => $level,
+              'operator' => '=',
+            ),
+          ),
+          'type' => 'OR',
+        );
+
+        $query->table_queue['node_linkchecker_node__field_data_field_public_access_level']['join']->type = 'LEFT';
+        $query->add_where(1, db_or()->condition(
+          'node_linkchecker_node__field_data_field_public_access_level.field_public_access_level_value',
+          $level));
+        break;
+
+      case 'private':
+        $level = 'private';
+        // Get the public access level value from the dataset reference field.
+        $join = new views_join();
+        $join->table = 'field_data_field_public_access_level';
+        $join->field = 'entity_id';
+        $join->left_table = 'node_linkchecker_node__field_data_field_dataset_ref';
+        $join->left_field = 'field_dataset_ref_target_id';
+        $join->type = 'LEFT';
+
+        // Do the actual join.
+        $query->table_queue['public_access_level'] = array(
+          'alias' => 'public_access_level',
+          'table' => 'field_data_field_public_access_level',
+          'relationship' => 'node_linkchecker_node__field_data_field_dataset_ref',
+          'join' => $join,
+        );
+        $query->where[1] = array(
+          'conditions' => array(
+            array(
+              'field' => 'public_access_level.field_public_access_level_value',
+              'value' => $level,
+              'operator' => '=',
+            ),
+          ),
+          'type' => 'OR',
+        );
+
+        $query->table_queue['node_linkchecker_node__field_data_field_public_access_level']['join']->type = 'LEFT';
+        $query->add_where(1, db_or()->condition(
+          'node_linkchecker_node__field_data_field_public_access_level.field_public_access_level_value',
+          $level));
+        break;
+
+      case 'restricted':
+        $level = 'restricted';
+        // Get the public access level value from the dataset reference field.
+        $join = new views_join();
+        $join->table = 'field_data_field_public_access_level';
+        $join->field = 'entity_id';
+        $join->left_table = 'node_linkchecker_node__field_data_field_dataset_ref';
+        $join->left_field = 'field_dataset_ref_target_id';
+        $join->type = 'LEFT';
+
+        // Do the actual join.
+        $query->table_queue['public_access_level'] = array(
+          'alias' => 'public_access_level',
+          'table' => 'field_data_field_public_access_level',
+          'relationship' => 'node_linkchecker_node__field_data_field_dataset_ref',
+          'join' => $join,
+        );
+        $query->where[1] = array(
+          'conditions' => array(
+            array(
+              'field' => 'public_access_level.field_public_access_level_value',
+              'value' => $level,
+              'operator' => '=',
+            ),
+          ),
+          'type' => 'OR',
+        );
+
+        $query->table_queue['node_linkchecker_node__field_data_field_public_access_level']['join']->type = 'LEFT';
+        $query->add_where(1, db_or()->condition(
+          'node_linkchecker_node__field_data_field_public_access_level.field_public_access_level_value',
+          $level));
+        break;
+
+      default:
+        break;
+    }
+  }
+}
