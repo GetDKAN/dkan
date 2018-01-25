@@ -9,6 +9,9 @@
 .view-dkan-linkchecker-reports .views-field-nothing ul {
   list-style: none;
 }
+.view-dkan-linkchecker-reports th.views-field-nothing {
+  text-align: center;
+}
 .view-dkan-linkchecker-reports td.views-field-nothing a {
   line-height: 1.15em;
   background: #888;

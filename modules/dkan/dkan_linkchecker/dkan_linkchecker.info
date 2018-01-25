@@ -2,7 +2,6 @@ name = DKAN Link Checker
 description = Checks for broken links in datasets, resources, and harvest sources.
 core = 7.x
 package = DKAN
-version = 7.x-1.0
 dependencies[] = dkan_sitewide_menu
 dependencies[] = features
 dependencies[] = linkchecker
