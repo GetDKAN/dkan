@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_dataset_collections.features.field_instance.inc
@@ -11,8 +10,8 @@
 function dkan_dataset_collections_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-dataset-field_dkan_ispartof_ref'.
-  $field_instances['node-dataset-field_dkan_ispartof_ref'] = array(
+  // Exported field_instance: 'node-dataset-field_collection'.
+  $field_instances['node-dataset-field_collection'] = array(
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
@@ -42,7 +41,7 @@ function dkan_dataset_collections_field_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_dkan_ispartof_ref',
+    'field_name' => 'field_collection',
     'label' => 'Collection',
     'required' => 0,
     'settings' => array(

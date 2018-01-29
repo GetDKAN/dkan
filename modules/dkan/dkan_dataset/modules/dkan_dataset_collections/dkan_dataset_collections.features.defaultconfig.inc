@@ -1,13 +1,24 @@
 <?php
 /**
  * @file
- * dkan_dataset_collections.views_default.inc
+ * dkan_dataset_collections.features.defaultconfig.inc
  */
 
 /**
- * Implements hook_views_default_views().
+ * Implements hook_defaultconfig_features().
  */
-function dkan_dataset_collections_views_default_views() {
+function dkan_dataset_collections_defaultconfig_features() {
+  return array(
+    'dkan_dataset_collections' => array(
+      'views_default_views' => 'views_default_views',
+    ),
+  );
+}
+
+/**
+ * Implements hook_defaultconfig_views_default_views().
+ */
+function dkan_dataset_collections_defaultconfig_views_default_views() {
   $export = array();
 
   $view = new view();
@@ -88,7 +99,7 @@ function dkan_dataset_collections_views_default_views() {
 
   /* Display: Content pane */
   $handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
-  $handler->display->display_options['link_url'] = 'search?sort_by=changed&f%5B0%5D=field_collection:110';
+  $handler->display->display_options['link_url'] = 'search?sort_by=changed&f%5B0%5D=field_collection:!1';
   $handler->display->display_options['argument_input'] = array(
     'field_collection_target_id' => array(
       'type' => 'context',
