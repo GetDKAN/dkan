@@ -903,7 +903,6 @@ function dkan_datastore_api_output($data_select, $results, $table, $fields, $res
   $return->limit = (int) $limit;
   $return->total = (int) $count;
   $return->records = $items;
-  $return->sql = dkan_datastore_api_debug($data_select);
   return $help + $success + array('result' => $return);
 }
 
