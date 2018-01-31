@@ -114,6 +114,10 @@ function dkan_sitewide_views_default_views() {
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
   $handler->display->display_options['style_options']['empty_table'] = TRUE;
+  /* Header: Global: Result summary */
+  $handler->display->display_options['header']['result']['id'] = 'result';
+  $handler->display->display_options['header']['result']['table'] = 'views';
+  $handler->display->display_options['header']['result']['field'] = 'result';
   /* No results behavior: Global: Unfiltered text */
   $handler->display->display_options['empty']['area_text_custom']['id'] = 'area_text_custom';
   $handler->display->display_options['empty']['area_text_custom']['table'] = 'views';
@@ -434,6 +438,10 @@ function dkan_sitewide_views_default_views() {
   );
   $handler->display->display_options['style_options']['sticky'] = TRUE;
   $handler->display->display_options['style_options']['empty_table'] = TRUE;
+  /* Header: Global: Result summary */
+  $handler->display->display_options['header']['result']['id'] = 'result';
+  $handler->display->display_options['header']['result']['table'] = 'views';
+  $handler->display->display_options['header']['result']['field'] = 'result';
   /* No results behavior: Global: Unfiltered text */
   $handler->display->display_options['empty']['area_text_custom']['id'] = 'area_text_custom';
   $handler->display->display_options['empty']['area_text_custom']['table'] = 'views';
