@@ -87,7 +87,7 @@ Feature: Resource
     Then I should see "The Resource ID for this resource is"
     And I should see "Example Query"
 
-  @resource_all_06 @api @noworkflow 
+  @resource_all_06 @api @noworkflow
   Scenario: View previous revisions of published resource
     Given I am logged in as a user with the "administrator" role
     And I am on "Resource 01" page
@@ -122,7 +122,9 @@ Feature: Resource
   @resource_all_09 @api
   Scenario: View dataset reference on Resource teaser
     Given I am on "/search"
-    And I click "Resource"
+    And I click "Resource" in the "facet container" region
+    And I fill in "edit-query" with "Resource 01"
+    And I press "Apply"
     Then I should see "Dataset 01"
 
   @resource_all_10 @api @noworkflow
@@ -143,7 +145,7 @@ Feature: Resource
     When I click "Resource 01"
     Then I should see "Edit"
     When I click "Edit"
-    ## If you use selenium uncomment this    
+    ## If you use selenium uncomment this
     # And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/district_centerpoints_0.csv"
     And I press "edit-submit"
