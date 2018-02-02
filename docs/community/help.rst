@@ -15,3 +15,5 @@ If you provide DKAN development and/or support services, here's how to add your 
 
 - Create a /dkan page on your website (ex: https://civicactions.com/dkan/)
 - Create a [new issue](https://github.com/GetDKAN/dkan/issues/new) and include logo, company name, link to /dkan page, brief description of services with respect to DKAN
+
+Someone on the DKAN team will review your request and add your company if it's appropriate for the DKAN community.
