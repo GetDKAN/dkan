@@ -14,7 +14,7 @@
 }
 .view-dkan-linkchecker-reports td.views-field-nothing a {
   line-height: 1.15em;
-  background: #888;
+  /*background: #888;*/
   color: #fff;
   display: block;
   padding: 4px;
@@ -24,6 +24,9 @@
   font-weight: bold;
 }
 .view-dkan-linkchecker-reports td.views-field-nothing a:hover {
-  background: #333;
+  /*background: #333;*/
   text-decoration: none;
+}
+.view-dkan-linkchecker-reports .views-field i {
+  font-size: 1.5em;
 }

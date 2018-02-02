@@ -11,7 +11,7 @@ include_once 'dkan_linkchecker.features.inc';
  * Implements hook_preprocess_page().
  */
 function dkan_linkchecker_preprocess_page(&$vars) {
-  if (arg(2) == 'dkan-linkchecker-report') {
+  if (arg(2) == 'dkan-linkchecker-report' || arg(4) == 'dkan_linkchecker_reports') {
     drupal_add_css(drupal_get_path('module', 'dkan_linkchecker') . '/css/linkchecker.css');
   }
 }
@@ -63,6 +63,31 @@ function _dkan_linkchecker_form() {
 function dkan_linkchecker_menu_alter(&$items) {
   // Remove normal linkchecker report link.
   $items['admin/reports/linkchecker']['access callback'] = FALSE;
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function dkan_linkchecker_views_pre_render(&$view) {
+  if ($view->name == 'dkan_linkchecker_reports') {
+    // Re-write the output of the contact email.
+    foreach ($view->result as $key => $result) {
+      // Dataset results.
+      if (isset($result->field_field_contact_email[0]['raw']['value'])) {
+        $email = '<a href="mailto:' . $result->field_field_contact_email[0]['raw']['value'] . '"><i class="fa fa-envelope-square"></i></a> ';
+      }
+      if (isset($result->field_field_contact_name[0]['rendered']['#markup'])) {
+        $result->field_field_contact_name[0]['rendered']['#markup'] = $email . $result->field_field_contact_name[0]['raw']['safe_value'];
+      }
+      // Resource results.
+      if (isset($result->field_field_contact_email_1[0]['raw']['value'])) {
+        $email = '<a href="mailto:' . $result->field_field_contact_email_1[0]['raw']['value'] . '"><i class="fa fa-envelope-square"></i></a> ';
+      }
+      if (isset($result->field_field_contact_name_1[0]['rendered']['#markup'])) {
+        $result->field_field_contact_name_1[0]['rendered']['#markup'] = $email . $result->field_field_contact_name_1[0]['raw']['safe_value'];
+      }
+    }
+  }
 }
 
 /**
@@ -131,29 +156,3 @@ function _access_level_query(&$view, &$query, $level) {
 
   return $query;
 }
-
-/**
- * Sort results by contact name. NEEDS WORK.
- */
-// @codingStandardsIgnoreStart
-// function _contact_name_query(&$view, &$query) {
-//   $join = new views_join();
-//   $join->table = 'field_data_field_contact_name';
-//   $join->field = 'entity_id';
-//   $join->left_table = 'linkchecker_node';
-//   $join->left_field = 'nid';
-//   $join->type = 'LEFT';
-
-//   // Do the actual join.
-//   $query->table_queue['cn'] = array(
-//     'alias' => 'cn',
-//     'table' => 'field_data_field_contact_name',
-//     'relationship' => 'linkchecker_node',
-//     'join' => $join,
-//   );
-
-//   $query->orderby[1]['field'] = 'cn.field_contact_name_value';
-//   dpm($query);
-//   return $query;
-// }
-// @codingStandardsIgnoreEnd

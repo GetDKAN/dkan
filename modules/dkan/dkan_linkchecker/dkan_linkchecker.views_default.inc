@@ -36,6 +36,7 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '50';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'url' => 'url',
@@ -225,7 +226,7 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['link_edit']['field'] = 'link_edit';
   $handler->display->display_options['fields']['link_edit']['exclude'] = TRUE;
   $handler->display->display_options['fields']['link_edit']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['link_edit']['alter']['text'] = '<li>Edit link settings</li>';
+  $handler->display->display_options['fields']['link_edit']['alter']['text'] = '<div class="btn-primary">Edit link settings</div>';
   $handler->display->display_options['fields']['link_edit']['hide_empty'] = TRUE;
   /* Field: Content: Nid */
   $handler->display->display_options['fields']['nid']['id'] = 'nid';
@@ -241,7 +242,7 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['edit_node']['label'] = 'Edit node';
   $handler->display->display_options['fields']['edit_node']['exclude'] = TRUE;
   $handler->display->display_options['fields']['edit_node']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['edit_node']['alter']['text'] = '<li>Edit node [nid]</li>';
+  $handler->display->display_options['fields']['edit_node']['alter']['text'] = '<div class="btn-primary">Edit node [nid]</div>';
   $handler->display->display_options['fields']['edit_node']['hide_empty'] = TRUE;
   /* Field: Broken links: Block ID */
   $handler->display->display_options['fields']['bid']['id'] = 'bid';
@@ -298,11 +299,7 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['field_contact_name']['table'] = 'field_data_field_contact_name';
   $handler->display->display_options['fields']['field_contact_name']['field'] = 'field_contact_name';
   $handler->display->display_options['fields']['field_contact_name']['relationship'] = 'nid';
-  $handler->display->display_options['fields']['field_contact_name']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['field_contact_name']['alter']['text'] = '[field_contact_name]<br>
-  <a href="mailto:[field_contact_email]">email</a>';
-  $handler->display->display_options['fields']['field_contact_name']['empty'] = '[field_contact_name_1]<br>
-  <a href="mailto:[field_contact_email_1]">email</a>';
+  $handler->display->display_options['fields']['field_contact_name']['empty'] = '[field_contact_name_1]';
   /* Field: Resource Access Level */
   $handler->display->display_options['fields']['field_public_access_level_2']['id'] = 'field_public_access_level_2';
   $handler->display->display_options['fields']['field_public_access_level_2']['table'] = 'field_data_field_public_access_level';
@@ -330,13 +327,16 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = 'Operations';
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '<ul>
-      [link_edit]
-      [edit_node]
-      [block_edit]
-    </ul>';
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '[link_edit]
+  [edit_node]
+  [block_edit]';
   $handler->display->display_options['fields']['nothing']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = TRUE;
+  /* Sort criterion: Content: Title */
+  $handler->display->display_options['sorts']['title']['id'] = 'title';
+  $handler->display->display_options['sorts']['title']['table'] = 'node';
+  $handler->display->display_options['sorts']['title']['field'] = 'title';
+  $handler->display->display_options['sorts']['title']['relationship'] = 'nid';
   /* Filter criterion: Broken links: Last checked */
   $handler->display->display_options['filters']['last_checked']['id'] = 'last_checked';
   $handler->display->display_options['filters']['last_checked']['table'] = 'linkchecker_link';
