@@ -244,20 +244,6 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['edit_node']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['edit_node']['alter']['text'] = '<div class="btn-primary">Edit node [nid]</div>';
   $handler->display->display_options['fields']['edit_node']['hide_empty'] = TRUE;
-  /* Field: Broken links: Block ID */
-  $handler->display->display_options['fields']['bid']['id'] = 'bid';
-  $handler->display->display_options['fields']['bid']['table'] = 'linkchecker_block_custom';
-  $handler->display->display_options['fields']['bid']['field'] = 'bid';
-  $handler->display->display_options['fields']['bid']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['bid']['separator'] = '';
-  /* Field: Broken links: Edit block */
-  $handler->display->display_options['fields']['block_edit']['id'] = 'block_edit';
-  $handler->display->display_options['fields']['block_edit']['table'] = 'linkchecker_block_custom';
-  $handler->display->display_options['fields']['block_edit']['field'] = 'block_edit';
-  $handler->display->display_options['fields']['block_edit']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['block_edit']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['block_edit']['alter']['text'] = '<li>Edit block [bid]</li>';
-  $handler->display->display_options['fields']['block_edit']['hide_empty'] = TRUE;
   /* Field: Content: Type */
   $handler->display->display_options['fields']['type']['id'] = 'type';
   $handler->display->display_options['fields']['type']['table'] = 'node';
@@ -328,8 +314,7 @@ function dkan_linkchecker_views_default_views() {
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = 'Operations';
   $handler->display->display_options['fields']['nothing']['alter']['text'] = '[link_edit]
-  [edit_node]
-  [block_edit]';
+  [edit_node]';
   $handler->display->display_options['fields']['nothing']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = TRUE;
   /* Sort criterion: Content: Title */

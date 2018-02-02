@@ -48,17 +48,17 @@ Feature: Dataset Features
       | csv 2  |
       | html 2 |
     And datasets:
-      | title                | publisher | author  | published        | tags     | description |
-      | DKANTest Dataset 01 | Group 01  | Gabriel | Yes              | Health 2 | Test        |
-      | DKANTest Dataset 02 | Group 01  | Gabriel | Yes              | Gov 2    | Test        |
-      | DKANTest Dataset 03 | Group 01  | Katie   | Yes              | Health 2 | Test        |
-      | DKANTest Dataset 04 | Group 02  | Celeste | No               | Gov 2    | Test        |
-      | DKANTest Dataset 05 | Group 01  | Katie   | No               | Gov 2    | Test        |
+      | title         | publisher | author  | published        | tags     | description |
+      | DatasetAll 01 | Group 01  | Gabriel | Yes              | Health 2 | Test        |
+      | DatasetAll 02 | Group 01  | Gabriel | Yes              | Gov 2    | Test        |
+      | DatasetAll 03 | Group 01  | Katie   | Yes              | Health 2 | Test        |
+      | DatasetAll 04 | Group 02  | Celeste | No               | Gov 2    | Test        |
+      | DatasetAll 05 | Group 01  | Katie   | No               | Gov 2    | Test        |
     And resources:
-      | title       | publisher | format | author | published | dataset             | description |
-      | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | DKANTest Dataset 01 |             |
-      | Resource 02 | Group 01  | html 2 | Katie  | Yes       | DKANTest Dataset 01 |             |
-      | Resource 03 | Group 01  | html 2 | Katie  | Yes       | DKANTest Dataset 02 |             |
+      | title       | publisher | format | author | published | dataset       | description |
+      | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | DatasetAll 01 |             |
+      | Resource 02 | Group 01  | html 2 | Katie  | Yes       | DatasetAll 01 |             |
+      | Resource 03 | Group 01  | html 2 | Katie  | Yes       | DatasetAll 02 |             |
 
    @fixme @dkanBug
     # TODO: Datasets not shown on homepage currently
@@ -73,40 +73,9 @@ Feature: Dataset Features
   Scenario: View list of published datasets
     When I am on the homepage
     And I click "Datasets"
-    And I search for "DKANTest"
+    And I search for "DatasetAll"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region
-
-  @dataset_all_3
-  Scenario: Order datasets by "Date changed" by oldest first.
-    Given datasets:
-      | title                 |  published | description | date changed |
-      | Dataset 5 years ago   |  Yes       | Test        | -5 year      |
-      | Dataset 2 years ago   |  Yes       | Test        | -2 year      |
-      | Dataset 1 year ago    |  Yes       | Test        | -1 year      |
-      | Dataset 3 years ago   |  Yes       | Test        | -3 year      |
-    When I am on "Datasets Search" page
-    And I search for "Dataset"
-    And I select "Date changed" from "Sort by"
-    And I select "Asc" from "Order"
-    And I press "Apply"
-    And I should see the first "4" dataset items in "Date changed" "Asc" order.
-
-
-  @dataset_all_4
-  Scenario: Order datasets by "Date changed" with newest first.
-    Given datasets:
-      | title               |  published | description | date changed |
-      | Dataset 5 years +   |  Yes       | Test        | +5 year      |
-      | Dataset 2 years +   |  Yes       | Test        | +2 year      |
-      | Dataset 3 years +   |  Yes       | Test        | +3 year      |
-      | Dataset 1 year +    |  Yes       | Test        | +1 year      |
-    When I am on "Datasets Search" page
-    And I search for "Dataset"
-    And I select "Date changed" from "Sort by"
-    And I select "Desc" from "Order"
-    And I press "Apply"
-    And I should see the first "4" dataset items in "Date changed" "Desc" order.
 
   @dataset_all_5
   Scenario: Search datasets by "title" with "Asc" order
@@ -130,7 +99,7 @@ Feature: Dataset Features
   @dataset_all_7
   Scenario: Reset dataset search filters
     When I am on "Datasets Search" page
-    And I fill in "DKANTest" for "Search" in the "datasets" region
+    And I fill in "DatasetAll" for "Search" in the "datasets" region
     And I press "Apply"
     Then I should see "3 results"
     And I should see "3" items in the "datasets" region

@@ -72,6 +72,7 @@ function dkan_linkchecker_views_pre_render(&$view) {
   if ($view->name == 'dkan_linkchecker_reports') {
     // Re-write the output of the contact email.
     foreach ($view->result as $key => $result) {
+      $email = '';
       // Dataset results.
       if (isset($result->field_field_contact_email[0]['raw']['value'])) {
         $email = '<a href="mailto:' . $result->field_field_contact_email[0]['raw']['value'] . '"><i class="fa fa-envelope-square"></i></a> ';

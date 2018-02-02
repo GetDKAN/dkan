@@ -6,26 +6,15 @@
 .view-dkan-linkchecker-reports .views-exposed-form .views-exposed-widget {
   padding-top: 0;
 }
-.view-dkan-linkchecker-reports .views-field-nothing ul {
-  list-style: none;
-}
 .view-dkan-linkchecker-reports th.views-field-nothing {
   text-align: center;
 }
-.view-dkan-linkchecker-reports td.views-field-nothing a {
-  line-height: 1.15em;
-  /*background: #888;*/
-  color: #fff;
-  display: block;
-  padding: 4px;
-  margin: 0 0 3px;
-  border-radius: 4px;
-  text-align: center;
-  font-weight: bold;
-}
 .view-dkan-linkchecker-reports td.views-field-nothing a:hover {
-  /*background: #333;*/
   text-decoration: none;
+}
+.view-dkan-linkchecker-reports td.views-field-nothing a .btn-primary {
+  margin: 2px;
+  padding: 4px 8px;
 }
 .view-dkan-linkchecker-reports .views-field i {
   font-size: 1.5em;
