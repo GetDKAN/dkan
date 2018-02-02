@@ -201,6 +201,14 @@ projects:
     version: '1.1'
   link_iframe_formatter:
     version: '1.1'
+  linkchecker:
+    download:
+      type: git
+      url: 'https://git.drupal.org/project/linkchecker.git'
+      revision: 623819d04464b26af8e216113a88cd03f4bb4ccc
+    patch:
+      965720: https://www.drupal.org/files/issues/linkchecker-views-integration-965720-124.patch
+      1: patches/dkan_linkchecker_file.patch
   manualcrop:
     version: '1.6'
   markdown:
