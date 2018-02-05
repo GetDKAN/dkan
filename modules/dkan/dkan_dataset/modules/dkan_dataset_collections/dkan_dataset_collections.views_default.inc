@@ -41,7 +41,7 @@ function dkan_dataset_collections_views_default_views() {
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<h2>Collection</h2>';
-  $handler->display->display_options['header']['area']['format'] = 'full_html';
+  $handler->display->display_options['header']['area']['format'] = 'html';
   /* Relationship: Entity Reference: Referenced Entity */
   $handler->display->display_options['relationships']['field_dataset_collections_target_id']['id'] = 'field_dataset_collections_target_id';
   $handler->display->display_options['relationships']['field_dataset_collections_target_id']['table'] = 'field_data_field_dataset_collections';
