@@ -3,6 +3,7 @@ core = 7.x
 package = DKAN
 dependencies[] = ctools
 dependencies[] = entityreference
+dependencies[] = dkan_dataset
 dependencies[] = dkan_dataset_content_types
 dependencies[] = facetapi
 dependencies[] = filter
