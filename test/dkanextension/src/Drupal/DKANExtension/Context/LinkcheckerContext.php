@@ -1,9 +1,10 @@
 <?php
+
+// @codingStandardsIgnoreFile
 namespace Drupal\DKANExtension\Context;
+
 use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Behat\Behat\Hook\Scope\AfterFeatureScope;
-use Behat\Behat\Hook\Scope\AfterScenarioScope;
-use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Drupal\DKANExtension\Hook\Scope\BeforeDKANEntityCreateScope;
 
 /**
@@ -57,29 +58,4 @@ class LinkcheckerContext extends RawDKANContext {
     node_access_rebuild(TRUE);
   }
 
-  /**
-   * @Then I run linkchecker-analyze
-   */
-  public function iRunLinkcheckerAnalyze()
-  {
-    //$base_url = CIRCLE_BUILD_URL;
-    $base_url = 'http://web';
-
-    module_load_include('admin.inc', 'linkchecker');
-
-    // Fake $form_state to leverage _submit function.
-    $form_state = array(
-      'values' => array('op' => t('Analyze content for links')),
-      'buttons' => array(),
-    );
-
-    $node_types = linkchecker_scan_node_types();
-    if (!empty($node_types) || variable_get('linkchecker_scan_blocks', 0)) {
-      linkchecker_analyze_links_submit(NULL, $form_state);
-      drush_backend_batch_process();
-    }
-    else {
-      throw new \Exception("Unable to analyze links");
-    }
-  }
 }
