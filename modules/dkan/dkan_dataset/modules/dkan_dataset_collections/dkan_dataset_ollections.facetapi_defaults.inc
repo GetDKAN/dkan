@@ -13,10 +13,10 @@ function dkan_dataset_collections_facetapi_default_facet_settings() {
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
   $facet->api_version = 1;
-  $facet->name = 'search_api@dkan_sci_search:block:field_dataset_collections';
+  $facet->name = 'search_api@dkan_sci_search:block:field_dkan_ispartof_ref';
   $facet->searcher = 'search_api@dkan_sci_search';
   $facet->realm = 'block';
-  $facet->facet = 'field_dataset_collections';
+  $facet->facet = 'field_dkan_ispartof_ref';
   $facet->enabled = TRUE;
   $facet->settings = array(
     'weight' => 0,
@@ -44,15 +44,15 @@ function dkan_dataset_collections_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
   );
-  $export['search_api@dkan_sci_search:block:field_dataset_collections'] = $facet;
+  $export['search_api@dkan_sci_search:block:field_dkan_ispartof_ref'] = $facet;
 
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
   $facet->api_version = 1;
-  $facet->name = 'search_api@dkan_sci_search:block:field_dataset_collections:nid';
+  $facet->name = 'search_api@dkan_sci_search:block:field_dkan_ispartof_ref:nid';
   $facet->searcher = 'search_api@dkan_sci_search';
   $facet->realm = 'block';
-  $facet->facet = 'field_dataset_collections:nid';
+  $facet->facet = 'field_dkan_ispartof_ref:nid';
   $facet->enabled = FALSE;
   $facet->settings = array(
     'weight' => 0,
@@ -80,15 +80,15 @@ function dkan_dataset_collections_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
   );
-  $export['search_api@dkan_sci_search:block:field_dataset_collections:nid'] = $facet;
+  $export['search_api@dkan_sci_search:block:field_dkan_ispartof_ref:nid'] = $facet;
 
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
   $facet->api_version = 1;
-  $facet->name = 'search_api@dkan_sci_search:block:field_dataset_collections:title';
+  $facet->name = 'search_api@dkan_sci_search:block:field_dkan_ispartof_ref:title';
   $facet->searcher = 'search_api@dkan_sci_search';
   $facet->realm = 'block';
-  $facet->facet = 'field_dataset_collections:title';
+  $facet->facet = 'field_dkan_ispartof_ref:title';
   $facet->enabled = FALSE;
   $facet->settings = array(
     'weight' => 0,
@@ -116,15 +116,15 @@ function dkan_dataset_collections_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
   );
-  $export['search_api@dkan_sci_search:block:field_dataset_collections:title'] = $facet;
+  $export['search_api@dkan_sci_search:block:field_dkan_ispartof_ref:title'] = $facet;
 
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
   $facet->api_version = 1;
-  $facet->name = 'search_api@dkan_sci_search:block:field_dataset_collections:url';
+  $facet->name = 'search_api@dkan_sci_search:block:field_dkan_ispartof_ref:url';
   $facet->searcher = 'search_api@dkan_sci_search';
   $facet->realm = 'block';
-  $facet->facet = 'field_dataset_collections:url';
+  $facet->facet = 'field_dkan_ispartof_ref:url';
   $facet->enabled = FALSE;
   $facet->settings = array(
     'weight' => 0,
@@ -152,7 +152,7 @@ function dkan_dataset_collections_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
   );
-  $export['search_api@dkan_sci_search:block:field_dataset_collections:url'] = $facet;
+  $export['search_api@dkan_sci_search:block:field_dkan_ispartof_ref:url'] = $facet;
 
   return $export;
 }
