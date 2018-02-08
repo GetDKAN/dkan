@@ -1,5 +1,6 @@
 name = DKAN Collections
 core = 7.x
+description = Provides collections logic for datasets
 package = DKAN
 dependencies[] = ctools
 dependencies[] = entityreference
