@@ -20,7 +20,7 @@ fi
 
 if [ ! -z "$files" ]; then
   echo "Linting: $files"
-  test/bin/phpcs --standard=Drupal,DrupalPractice -n $files --ignore=test/dkanextension/*,patches/*
+  test/bin/phpcs --standard=Drupal,DrupalPractice -n $files --ignore=test/dkanextension/*,patches/*,*+*,+linkchecker*
 else
   echo "No Drupal file changes available for linting."
 fi
