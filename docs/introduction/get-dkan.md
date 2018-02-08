@@ -2,7 +2,7 @@
 
 DKAN is open source and flexible: You can download it for free and run it on your own server or choose from one of our hosting partners below. For more information on DKAN outside of our ReadTheDocs site, visit https://getdkan.org/.
 
-## Download and run DKAN on your server
+## Download and run DKAN
 
 DKAN is based on the open source </a><a href="http://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported. There is extensive information on how to install DKAN on your own in the [the developers/installation](/dkan-documentation/dkan-developers/installation) section of this site.
 
@@ -11,6 +11,8 @@ If you're not a developer, or are simply unfamiliar with Drupal, you may be more
 ## Hosting Partners
 
 DKAN is open source and flexible: you can download it for free and run it on your own server (see [installation instructions](installation.rst)) or choose from one of our hosting partners below.
+
+# For General Users and Developers Alike:
 
 ### Acquia
 
@@ -43,6 +45,8 @@ You can register for a free account [here](https://www.getpantheon.com/). Once y
 Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation.md).
 
 This is currently the recommended option for "non-developer" users or users who wish to spin up an out-of-the-box test run DKAN site without the use of code. Though Pantheon only allows free users to build two sites at a time, there is no time limit or expiration on site availability.
+
+### More on Pantheon
 
 #### Using Terminus
 
