@@ -11,10 +11,11 @@ Feature: Theme
       | name    | mail                | roles                |
       | John    | john@example.com    | administrator         |
       | Site Manager | sitemanager@example.com | site manager |
-  
-  @noworkflow 
+
+  @noworkflow
   Scenario: Add custom logo
     Given I am logged in as "John"
+    And I hide the admin menu
     And I am on "Settings" page
     Then I should see "Logo image settings"
     And I uncheck "Use the default logo"
@@ -35,9 +36,10 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
-  @noworkflow 
+  @noworkflow
   Scenario: Add custom site information
     Given I am logged in as "Site Manager"
+    And I hide the admin menu
     Then I am on "Settings" page
     And I should see "E-mail address"
     And I fill in "Site name" with "sitename test"

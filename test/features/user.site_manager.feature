@@ -40,6 +40,7 @@ Feature: User command center links for site manager role.
 
   Scenario: Site manager role should not see Customize Display link
     Given I am logged in as "John"
+    And I hide the admin menu
     When I hover over the admin menu item "Add content"
     And I click "Page"
     Then I should see "Create Page"
