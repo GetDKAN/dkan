@@ -1,7 +1,45 @@
 <?php
+
 /**
  * @file
  * Code for the DKAN Data Dictionary feature.
  */
 
 include_once 'dkan_data_dictionary.features.inc';
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state) {
+  // Load jsoneditor libray and attach to resource form.
+  $form['#attached']['libraries_load'][] = array('jsoneditor');
+  $form['#attached']['js'][] = drupal_get_path('module', 'dkan_data_dictionary') . '/js/editor.js';
+  drupal_add_css(drupal_get_path('module', 'dkan_data_dictionary') . '/css/dkan_data_dictionary.css');
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function dkan_data_dictionary_libraries_info() {
+  $libraries = array();
+  $libraries['jsoneditor'] = array(
+    'name' => 'JSONEditor',
+    'vendor url' => 'https://github.com/josdejong/jsoneditor',
+    'download url' => 'https://github.com/josdejong/jsoneditor/archive/master.zip',
+    'path' => '',
+    'version arguments' => array(
+      'file' => 'package.json',
+      'pattern' => '/"version": "(\d+\.\d+\.\d+)"/',
+    ),
+    'dependencies' => array('d3'),
+    'files' => array(
+      'js' => array(
+        'dist/jsoneditor.min.js',
+      ),
+      'css' => array(
+        'dist/jsoneditor.min.css',
+      ),
+    ),
+  );
+  return $libraries;
+}

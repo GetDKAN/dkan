@@ -5,15 +5,10 @@
  */
 
 /**
- * Implements hook_paragraphs_info().
+ * Implements hook_ctools_plugin_api().
  */
-function dkan_data_dictionary_paragraphs_info() {
-  $items = array(
-    'data_dictionary' => array(
-      'name' => 'Data Dictionary',
-      'bundle' => 'data_dictionary',
-      'locked' => '1',
-    ),
-  );
-  return $items;
+function dkan_data_dictionary_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == "field_group" && $api == "field_group") {
+    return array("version" => "1");
+  }
 }
