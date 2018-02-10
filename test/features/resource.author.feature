@@ -484,3 +484,17 @@ Feature: Resource
     # Make sure it autodetects the format.
     When I click "Edit"
     Then the "field_format[und][textfield]" field should contain "tsv"
+
+  @resource_author_28 @noworkflow @javascript
+  Scenario: Add a data dictionary
+    Given resources:
+      | title       | author   | published | description |
+      | Resource 09 | Katie    | Yes       | Test        |
+    Given I am logged in as "John"
+    And I am on "Resource 09" page
+    And I click "Edit"
+    And I enter '{"fields":[{"name":"Lorem Ipsum","type":"string","description":"Dolor sit amet"}]}' into the JSONEditor
+    And I press "Save"
+    Then I should see "Dolor sit amet"
+    When I click "Edit"
+    Then I should see "Dolor sit amet"
