@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_dataset_collections.features.inc

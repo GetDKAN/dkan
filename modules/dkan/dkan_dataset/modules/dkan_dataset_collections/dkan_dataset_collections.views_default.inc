@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_dataset_collections.views_default.inc
@@ -55,6 +54,13 @@ function dkan_dataset_collections_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: Nid */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'node';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
+  $handler->display->display_options['fields']['nid']['label'] = '';
+  $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
@@ -89,7 +95,7 @@ function dkan_dataset_collections_views_default_views() {
 
   /* Display: Content pane */
   $handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
-  $handler->display->display_options['link_url'] = 'search?sort_by=changed&f%5B0%5D=field_dkan_ispartof_ref:110';
+  $handler->display->display_options['link_url'] = 'search/field_dkan_ispartof_ref/!1';
   $handler->display->display_options['argument_input'] = array(
     'field_dkan_ispartof_ref_target_id' => array(
       'type' => 'context',
