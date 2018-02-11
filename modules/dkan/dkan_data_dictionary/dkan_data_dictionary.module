@@ -31,11 +31,6 @@ function dkan_data_dictionary_libraries_info() {
       'file' => 'package.json',
       'pattern' => '/"version": "(\d+\.\d+\.\d+)"/',
     ),
-    // 'dependencies' => array(
-    //   'ajv (3.8.8)',
-    //   'brace (0.8.0)',
-    //   'javascript-natural-sort (0.7.1)',
-    // ),
     'files' => array(
       'js' => array(
         'dist/jsoneditor.min.js',
