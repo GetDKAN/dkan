@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * dkan_sitewide_search_db.facetapi_defaults.inc
