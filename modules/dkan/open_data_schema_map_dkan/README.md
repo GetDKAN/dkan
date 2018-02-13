@@ -13,7 +13,7 @@ Provides default mappings between DKAN and POD's [data.json](https://project-ope
 
 ## CKAN
 
-Provides endpoints for publishing via the [CKAN API](http://docs.ckan.org/en/latest/api/)
+Provides endpoints for publishing via the [CKAN API](https://docs.ckan.org/en/latest/api/)
 
 * ckan_package_show
 * ckan_current_package_list_with_resources

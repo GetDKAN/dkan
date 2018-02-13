@@ -138,7 +138,7 @@ function dkan_topics_uninstall() {
     };
   }
   // Purge all field infromation
-  // http://api.drupal.org/api/function/field_purge_batch/7
+  // https://api.drupal.org/api/function/field_purge_batch/7
   field_purge_batch(1000);
   menu_rebuild();
 }
