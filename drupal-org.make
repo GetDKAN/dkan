@@ -113,8 +113,8 @@ projects:
       branch: 7.x-1.x
       revision: 6725b86
     patch:
-      2315425: http://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch
-      2829416: http://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch
+      2315425: https://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch
+      2829416: https://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch
   feeds_flatstore_processor:
     download:
       type: git
@@ -341,8 +341,8 @@ projects:
   views_autocomplete_filters:
     version: '1.2'
     patch:
-      2374709: http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
-      2317351: http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
+      2374709: https://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
+      2317351: https://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
   views_bulk_operations:
     version: '3.4'
   views_responsive_grid:
