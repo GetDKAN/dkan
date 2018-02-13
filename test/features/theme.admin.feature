@@ -15,9 +15,9 @@ Feature: Theme
   @noworkflow
   Scenario: Add custom logo
     Given I am logged in as "John"
-    And I hide the admin menu
     And I am on "Settings" page
     Then I should see "Logo image settings"
+    And I hide the admin menu
     And I uncheck "Use the default logo"
     And I attach the drupal file "dkan/dkan_logo.png" to "files[logo_upload]"
     And I wait for the file upload to finish

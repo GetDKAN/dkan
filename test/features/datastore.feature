@@ -104,7 +104,7 @@ Feature: Datastore
     When I click "Resource 03"
     And I click "Edit"
     And I wait for "Remote file"
-    And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.csv" to "field_upload[und][0][resup]"
+    And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.csv" to "files[field_upload_und_0]"
     #And I select "tab" from "Delimiter"
     And I press "Save"
     Then I should see "Resource Resource 03 has been updated"

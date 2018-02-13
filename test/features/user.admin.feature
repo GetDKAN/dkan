@@ -12,13 +12,9 @@ Feature: User
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
-      | Badmin  | admin@example.com   | site manager         |
       | aadmin  | admin@example.com   | administrator        |
-      | Gabriel | gabriel@example.com | content creator      |
       | Jaz     | jaz@example.com     | editor               |
       | Katie   | katie@example.com   | content creator      |
-      | Martin  | martin@example.com  | editor               |
-      | Celeste | celeste@example.com | editor               |
 
   Scenario: Edit any user account
     Given I am logged in as "John"
