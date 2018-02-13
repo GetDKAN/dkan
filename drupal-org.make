@@ -401,6 +401,11 @@ libraries:
       type: file
       url: https://github.com/odyniec/imgareaselect/archive/v0.9.11-rc.1.tar.gz
       subtree: imgareaselect-0.9.11-rc.1
+  jsoneditor:
+    download:
+      type: git
+      url: 'https://github.com/josdejong/jsoneditor.git'
+      tag: v5.5.11
   slugify:
     download:
       type: git
