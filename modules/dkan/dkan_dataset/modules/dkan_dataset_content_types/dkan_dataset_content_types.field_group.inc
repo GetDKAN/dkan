@@ -51,7 +51,7 @@ function dkan_dataset_content_types_field_group_info() {
       'label' => 'Dataset Info',
       'instance_settings' => array(
         'label' => 'hide',
-        'desc' => '<div class="fieldset-description"><i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web.</div>',
+        'desc' => '<div class="fieldset-description"><i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="https://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web.</div>',
         'first_column' => 'Field',
         'second_column' => 'Value',
         'cells' => 'empty',
@@ -103,7 +103,7 @@ function dkan_dataset_content_types_field_group_info() {
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => ' group-additional field-group-fieldset',
-        'description' => '<i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="http://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web. These fields are also compatible with the Common Core metadata schema from <a href="http://project-open-data.github.io/schema/">Project Open Data</a>.',
+        'description' => '<i class="icon-large icon-info-sign"></i>These fields are compatible with <a href="https://www.w3.org/TR/vocab-dcat/">DCAT</a>, an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web. These fields are also compatible with the Common Core metadata schema from <a href="https://project-open-data.github.io/schema/">Project Open Data</a>.',
       ),
       'formatter' => 'open',
     ),
