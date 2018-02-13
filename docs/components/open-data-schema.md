@@ -1,6 +1,6 @@
 # Open Data Schema Map
 
-This module provides a flexible way to expose your Drupal content via APIs following specific Open Data schemas. Currently, the [CKAN](http://docs.ckan.org/en/ckan-1.8/domain-model-dataset.html), [Project Open Data](http://project-open-data.github.io/schema/) and [DCAT-AP](https://joinup.ec.europa.eu/asset/dcat_application_profile/description) schemas are provided, but new schemas can be easily added through your own modules. A user interface is in place to create endpoints and map fields from the chosen schema to Drupal content using tokens.
+This module provides a flexible way to expose your Drupal content via APIs following specific Open Data schemas. Currently, the [CKAN](http://docs.ckan.org/en/ckan-1.8/domain-model-dataset.html), [Project Open Data](https://project-open-data.github.io/schema/) and [DCAT-AP](https://joinup.ec.europa.eu/asset/dcat_application_profile/description) schemas are provided, but new schemas can be easily added through your own modules. A user interface is in place to create endpoints and map fields from the chosen schema to Drupal content using tokens.
 
 This module was developed as part of the DKAN project, but will work on an Drupal 7 site. A [separate module exists for DKAN-specific implementation](https://github.com/GetDKAN/open_data_schema_map_dkan).
 
@@ -16,7 +16,7 @@ A schema is a list of field definitions, usually representing a community specif
 
 
 ### API
-An API in this module is a configuration set that exposes a specific set of machine-readable data at a specific URL (known as the API's endpoint). This module allows you to create multiple APIs that you save as database records and/or export using [Features](http://drupal.org/project/features). An API record will contain:
+An API in this module is a configuration set that exposes a specific set of machine-readable data at a specific URL (known as the API's endpoint). This module allows you to create multiple APIs that you save as database records and/or export using [Features](https://drupal.org/project/features). An API record will contain:
 
 * an endpoint URL
 * a schema (chosen from the available schemas provided by the additional modules as described above)
