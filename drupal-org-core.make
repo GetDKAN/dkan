@@ -4,7 +4,7 @@ projects:
   drupal:
     type: core
     version: '7.56'
-    # Use vocabulary machine name for permissions, see http://drupal.org/node/995156
+    # Use vocabulary machine name for permissions, see https://drupal.org/node/995156
     patch:
       995156: 'https://drupal.org/files/issues/995156-5_portable_taxonomy_permissions.patch'
       # Notice: Undefined index: #field_name in file_managed_file_save_upload()

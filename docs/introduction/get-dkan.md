@@ -4,7 +4,7 @@ DKAN is open source and flexible: You can download it for free and run it on you
 
 ## Download and run DKAN on your server
 
-DKAN is based on the open source </a><a href="http://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [the developers/installation](/dkan-documentation/dkan-developers/installation) section of this site.
+DKAN is based on the open source </a><a href="https://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [the developers/installation](/dkan-documentation/dkan-developers/installation) section of this site.
 
 ## Hosting Partners
 
