@@ -8,8 +8,8 @@
   Drupal.behaviors.jsonEditor = {
     attach: function (context, settings) {
       // Get the existing value
-      var containerId = '#field-conformsto-schema-add-more-wrapper';
-      var field = document.getElementById('edit-field-conformsto-schema-und-0-value');
+      var containerId = '#field-describedby-schema-add-more-wrapper';
+      var field = document.getElementById('edit-field-describedby-schema-und-0-value');
       var json;
       try {
         json = field.value ? JSON.parse(field.value) : {};
@@ -18,7 +18,7 @@
       }
       // Insert the editor
       $(containerId, context).once(function(){
-        // var container = document.getElementById('field-conformsto-schema-add-more-wrapper');
+        // var container = document.getElementById('field-describedby-schema-add-more-wrapper');
         var options = {
           mode: 'code',
           modes: ['code', 'form', 'tree']
@@ -28,7 +28,7 @@
         this.jsoneditor = editor;
         editor.set(json);
         // Remove the old field
-        $('.form-item-field-conformsto-schema-und-0-value .resizable-textarea').css({display: "none"});
+        $('.form-item-field-describedby-schema-und-0-value .resizable-textarea').css({display: "none"});
       });
 
       // Submit!

@@ -14,17 +14,17 @@ function dkan_data_dictionary_field_group_info() {
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
-  $field_group->identifier = 'group_conformsto_schema_file|node|resource|form';
-  $field_group->group_name = 'group_conformsto_schema_file';
+  $field_group->identifier = 'group_describedby_schema_file|node|resource|form';
+  $field_group->group_name = 'group_describedby_schema_file';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'resource';
   $field_group->mode = 'form';
-  $field_group->parent_name = 'group_conformsto_schema_source';
+  $field_group->parent_name = 'group_describedby_schema_source';
   $field_group->data = array(
     'label' => 'File',
     'weight' => '39',
     'children' => array(
-      0 => 'field_conformsto_file',
+      0 => 'field_describedby_file',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
@@ -36,22 +36,22 @@ function dkan_data_dictionary_field_group_info() {
       ),
     ),
   );
-  $field_groups['group_conformsto_schema_file|node|resource|form'] = $field_group;
+  $field_groups['group_describedby_schema_file|node|resource|form'] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
-  $field_group->identifier = 'group_conformsto_schema_json|node|resource|form';
-  $field_group->group_name = 'group_conformsto_schema_json';
+  $field_group->identifier = 'group_describedby_schema_json|node|resource|form';
+  $field_group->group_name = 'group_describedby_schema_json';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'resource';
   $field_group->mode = 'form';
-  $field_group->parent_name = 'group_conformsto_schema_source';
+  $field_group->parent_name = 'group_describedby_schema_source';
   $field_group->data = array(
     'label' => 'JSON',
     'weight' => '40',
     'children' => array(
-      0 => 'field_conformsto_schema',
+      0 => 'field_describedby_schema',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
@@ -63,23 +63,23 @@ function dkan_data_dictionary_field_group_info() {
       ),
     ),
   );
-  $field_groups['group_conformsto_schema_json|node|resource|form'] = $field_group;
+  $field_groups['group_describedby_schema_json|node|resource|form'] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
-  $field_group->identifier = 'group_conformsto_schema_source|node|resource|form';
-  $field_group->group_name = 'group_conformsto_schema_source';
+  $field_group->identifier = 'group_describedby_schema_source|node|resource|form';
+  $field_group->group_name = 'group_describedby_schema_source';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'resource';
   $field_group->mode = 'form';
-  $field_group->parent_name = 'group_conformsto';
+  $field_group->parent_name = 'group_describedby';
   $field_group->data = array(
     'label' => 'Schema Source',
     'weight' => '37',
     'children' => array(
-      0 => 'group_conformsto_schema_file',
-      1 => 'group_conformsto_schema_json',
+      0 => 'group_describedby_schema_file',
+      1 => 'group_describedby_schema_json',
     ),
     'format_type' => 'htabs',
     'format_settings' => array(
@@ -90,13 +90,13 @@ function dkan_data_dictionary_field_group_info() {
       ),
     ),
   );
-  $field_groups['group_conformsto_schema_source|node|resource|form'] = $field_group;
+  $field_groups['group_describedby_schema_source|node|resource|form'] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
-  $field_group->identifier = 'group_conformsto|node|resource|form';
-  $field_group->group_name = 'group_conformsto';
+  $field_group->identifier = 'group_describedby|node|resource|form';
+  $field_group->group_name = 'group_describedby';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'resource';
   $field_group->mode = 'form';
@@ -105,8 +105,8 @@ function dkan_data_dictionary_field_group_info() {
     'label' => 'Data Dictionary',
     'weight' => '10',
     'children' => array(
-      0 => 'field_conformsto_spec',
-      1 => 'group_conformsto_schema_source',
+      0 => 'field_describedby_spec',
+      1 => 'group_describedby_schema_source',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
@@ -120,7 +120,7 @@ function dkan_data_dictionary_field_group_info() {
       'formatter' => 'open',
     ),
   );
-  $field_groups['group_conformsto|node|resource|form'] = $field_group;
+  $field_groups['group_describedby|node|resource|form'] = $field_group;
 
   // Translatables
   // Included for use with string extractors like potx.
