@@ -71,12 +71,12 @@ function dkan_topics_install() {
     }
   }
   $message = <<<EOF
-'You have just enabled the DKAN Topics module. Most likely you are
+t('You have just enabled the DKAN Topics module. Most likely you are
 starting with an empty Topics vocabulary. To load sample topics, enable the
 additional DKAN Default Topics module. <a href="@topics_admin">Click here to
-manage the Topics vocabulary yourself.</a>'
+manage the Topics vocabulary yourself.</a>')
 EOF;
-  drupal_set_message(t($message, array('@topics_admin' => 'admin/structure/taxonomy/dkan_topics')));
+  drupal_set_message($message, array('@topics_admin' => 'admin/structure/taxonomy/dkan_topics'));
 
   // Set up fonts.
   module_load_include('inc', 'font_icon_select', 'font_icon_select.admin');
