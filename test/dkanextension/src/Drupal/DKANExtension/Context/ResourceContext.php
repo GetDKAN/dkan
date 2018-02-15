@@ -97,7 +97,7 @@ class ResourceContext extends RawDKANEntityContext{
  */
   public function iEnterATestSchemaIntoTheJsoneditor($schema)
   {
-    $selector = '#field-conformsto-schema-add-more-wrapper';
+    $selector = '#field-describedby-schema-add-more-wrapper';
     // Does the ace_editor exist in the dom?
     if (is_array($this->getSession()->evaluateScript("document.querySelector('$selector .ace_content');"))) {
       // Add the supplied schema into the dictionary field
