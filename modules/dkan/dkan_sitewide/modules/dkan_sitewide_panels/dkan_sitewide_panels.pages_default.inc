@@ -1558,6 +1558,29 @@ return TRUE;
   $pane->uuid = '0541c9a5-2e8c-488f-8db4-4cd064bdc903';
   $display->content['new-0541c9a5-2e8c-488f-8db4-4cd064bdc903'] = $pane;
   $display->panels['sidebar'][5] = 'new-0541c9a5-2e8c-488f-8db4-4cd064bdc903';
+  $pane = new stdClass();
+  $pane->pid = 'new-e9e837de-fde5-421e-b698-d9d1d75f9375';
+  $pane->panel = 'sidebar';
+  $pane->type = 'block';
+  $pane->subtype = 'facetapi-nSfOGeWhiLagPUYEma8AowuwlSHisprc';
+  $pane->shown = TRUE;
+  $pane->access = array();
+  $pane->configuration = array(
+    'override_title' => 1,
+    'override_title_text' => 'Filter by Collection',
+    'override_title_heading' => 'h2',
+  );
+  $pane->cache = array();
+  $pane->style = array(
+    'settings' => NULL,
+  );
+  $pane->css = array();
+  $pane->extras = array();
+  $pane->position = 6;
+  $pane->locks = array();
+  $pane->uuid = 'e9e837de-fde5-421e-b698-d9d1d75f9375';
+  $display->content['new-e9e837de-fde5-421e-b698-d9d1d75f9375'] = $pane;
+  $display->panels['sidebar'][6] = 'new-e9e837de-fde5-421e-b698-d9d1d75f9375';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
