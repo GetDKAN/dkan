@@ -61,7 +61,7 @@ function dkan_data_dictionary_field_default_field_instances() {
             'clipboard' => 0,
             'dkan_remotefile' => 0,
             'reference' => 0,
-            'remote' => 'remote',
+            'remote' => 0,
             'upload' => 'upload',
           ),
           'source_attach' => array(
@@ -80,7 +80,7 @@ function dkan_data_dictionary_field_default_field_instances() {
         'progress_indicator' => 'throbber',
       ),
       'type' => 'file_generic',
-      'weight' => 36,
+      'weight' => 37,
     ),
   );
 
@@ -127,7 +127,7 @@ function dkan_data_dictionary_field_default_field_instances() {
         'rows' => 5,
       ),
       'type' => 'text_textarea',
-      'weight' => 35,
+      'weight' => 37,
     ),
   );
 
