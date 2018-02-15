@@ -21,19 +21,20 @@ function dkan_data_dictionary_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = 'group_describedby_schema_source';
   $field_group->data = array(
-    'label' => 'File',
-    'weight' => '39',
+    'label' => 'File Upload or URL',
+    'weight' => '41',
     'children' => array(
       0 => 'field_describedby_file',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
-      'formatter' => 'closed',
+      'label' => 'File Upload or URL',
       'instance_settings' => array(
-        'description' => '',
-        'classes' => '',
         'required_fields' => 1,
+        'classes' => '',
+        'description' => '',
       ),
+      'formatter' => 'closed',
     ),
   );
   $field_groups['group_describedby_schema_file|node|resource|form'] = $field_group;
@@ -48,19 +49,20 @@ function dkan_data_dictionary_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = 'group_describedby_schema_source';
   $field_group->data = array(
-    'label' => 'JSON',
-    'weight' => '40',
+    'label' => 'JSON Schema',
+    'weight' => '42',
     'children' => array(
       0 => 'field_describedby_schema',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
-      'formatter' => 'closed',
+      'label' => 'JSON Schema',
       'instance_settings' => array(
-        'description' => '',
-        'classes' => 'group-conformsto-schema-json field-group-htab',
         'required_fields' => 1,
+        'classes' => 'group-conformsto-schema-json field-group-htab',
+        'description' => '',
       ),
+      'formatter' => 'closed',
     ),
   );
   $field_groups['group_describedby_schema_json|node|resource|form'] = $field_group;
@@ -76,7 +78,7 @@ function dkan_data_dictionary_field_group_info() {
   $field_group->parent_name = 'group_describedby';
   $field_group->data = array(
     'label' => 'Schema Source',
-    'weight' => '37',
+    'weight' => '35',
     'children' => array(
       0 => 'group_describedby_schema_file',
       1 => 'group_describedby_schema_json',
@@ -103,7 +105,7 @@ function dkan_data_dictionary_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Data Dictionary',
-    'weight' => '10',
+    'weight' => '8',
     'children' => array(
       0 => 'field_describedby_spec',
       1 => 'group_describedby_schema_source',
@@ -125,8 +127,8 @@ function dkan_data_dictionary_field_group_info() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Data Dictionary');
-  t('File');
-  t('JSON');
+  t('File Upload or URL');
+  t('JSON Schema');
   t('Schema Source');
 
   return $field_groups;
