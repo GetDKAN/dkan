@@ -2,6 +2,10 @@
 --------
  - #2290 Add Extended Metadata Field for Datasets
 
+7.x-1.14.3
+----------
+ - #2377 Upgrade entity to 1.9
+
 7.x-1.14.2
 ----------
  - #2359 Upgrade filefield_sources to 1.11
