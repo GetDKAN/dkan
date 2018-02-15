@@ -493,8 +493,10 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 09" page
     And I click "Edit"
+    And I click "JSON Schema"
     And I enter '{"fields":[{"name":"Lorem Ipsum","type":"string","description":"Dolor sit amet"}]}' into the JSONEditor
     And I press "Save"
     Then I should see "Dolor sit amet"
     When I click "Edit"
+    And I click "JSON Schema"
     Then I should see "Dolor sit amet"
