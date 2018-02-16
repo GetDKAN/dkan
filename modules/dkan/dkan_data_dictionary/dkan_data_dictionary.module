@@ -64,6 +64,12 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
 
   if ($display['type'] == 'text_schema_table') {
     foreach ($items as $delta => $item) {
+      if ($item['value'] === '{}' || $item['value'] === '') {
+        // If this field value is empty unset it and skip display processing.
+        unset($items[$delta]);
+        continue;
+      }
+
       $schema = json_decode($item['value']);
 
       if (json_last_error() === JSON_ERROR_NONE && property_exists($schema, 'fields')) {
