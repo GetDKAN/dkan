@@ -42,3 +42,75 @@ function dkan_data_dictionary_libraries_info() {
   );
   return $libraries;
 }
+
+/**
+* Implements hook_field_formatter_info().
+*/
+function dkan_data_dictionary_field_formatter_info() {
+  return array(
+    'text_schema_table' => array(
+      'label' => t('Schema Table'),
+      'field types' => array('text_long'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $settings = $display['settings'];
+  $elements = array();
+
+  if ($display['type'] == 'text_schema_table') {
+    foreach ($items as $delta => $item) {
+      $schema = json_decode($item['value']);
+
+      if (json_last_error() === JSON_ERROR_NONE && property_exists($schema, 'fields')) {
+        // Parse the schema array and build the table.
+        $rows = array();
+
+        foreach ($schema->fields as $field) {
+          $name = (property_exists($field, 'name')) ? $field->name : '';
+          $type = (property_exists($field, 'type')) ? $field->type : '';
+          $format = (property_exists($field, 'format')) ? $field->format : 'default';
+          $description = (property_exists($field, 'description')) ? $field->description : '';
+          $constraints = '';
+
+          if (property_exists($field, 'constraints')) {
+            $array = (array) $field->constraints;
+
+            $constraints = implode(', ', array_map(
+              function ($v, $k) { return sprintf("%s = %s", $k, $v); },
+              $array,
+              array_keys($array)
+            ));
+
+          }
+
+          $rows[] = array($name, $type, $format, $description, $constraints);
+        }
+
+        $elements[$delta] = array(
+          '#theme' => 'table',
+          '#header' => array(
+            t('Name'),
+            t('Type'),
+            t('Format'),
+            t('Description'),
+            t('Constraints'),
+          ),
+          '#rows' => $rows,
+        );
+
+      }
+      else {
+        // If the supplied value isn't valid JSON or it is valid JSON but
+        // isn't a schema containing fields - simply output the raw text.
+        $elements[$delta] = array('#markup' => $item['value']);
+      }
+    }
+  }
+
+  return $elements;
+}
