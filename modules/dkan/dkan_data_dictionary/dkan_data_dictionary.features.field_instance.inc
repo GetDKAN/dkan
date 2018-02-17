@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_data_dictionary.features.field_instance.inc
@@ -94,9 +93,9 @@ function dkan_data_dictionary_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
+        'module' => 'dkan_data_dictionary',
         'settings' => array(),
-        'type' => 'text_default',
+        'type' => 'text_schema_table',
         'weight' => 24,
       ),
       'search_result' => array(

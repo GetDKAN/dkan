@@ -42,3 +42,108 @@ function dkan_data_dictionary_libraries_info() {
   );
   return $libraries;
 }
+
+/**
+* Implements hook_field_formatter_info().
+*/
+function dkan_data_dictionary_field_formatter_info() {
+  return array(
+    'text_schema_table' => array(
+      'label' => t('Schema Table'),
+      'field types' => array('text_long'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $settings = $display['settings'];
+  $elements = array();
+
+  if ($display['type'] == 'text_schema_table') {
+    foreach ($items as $delta => $item) {
+      if ($item['value'] === '{}' || $item['value'] === '') {
+        // If this field value is empty unset it and skip display processing.
+        unset($items[$delta]);
+        continue;
+      }
+
+      $schema = json_decode($item['value']);
+
+      if (json_last_error() === JSON_ERROR_NONE && property_exists($schema, 'fields')) {
+        // Parse the schema array and build the table.
+        $headers = array();
+        $rows = array();
+
+        // Build our collection of unique table headers.
+        foreach ($schema->fields as $field) {
+          $item = (array) $field;
+          $new_keys = array_keys($item);
+          $headers = array_merge($headers, array_diff($new_keys, $headers));
+        }
+
+        // Check the set of values for each field description against all table headers.
+        foreach ($schema->fields as $field) {
+          $row = array();
+          $item = (array) $field;
+
+          foreach ($headers as $header) {
+            $column = '';
+
+            // Compare all properties for the current field definition ($item)
+            // against each table header ($headers).
+            // Default behavior:
+            // If the $item contains a value for the $header return it.
+            // If the $item does not contain a value for the $header return ''.
+            // Special cases can be defined using the switch statement below.
+            switch ($header) {
+              case 'format':
+                $column = (array_key_exists($header, $item)) ? $item[$header] : 'default';
+                break;
+
+              case 'constraints':
+                if (array_key_exists($header, $item)) {
+                  $constraints = (array) $item[$header];
+
+                  $column = implode(', ', array_map(
+                    function ($v, $k) { return sprintf("%s = %s", $k, $v); },
+                    $constraints,
+                    array_keys($constraints)
+                  ));
+                }
+                else {
+                  $column = '';
+                }
+                break;
+
+              default:
+                $column = (array_key_exists($header, $item)) ? $item[$header] : '';
+                break;
+            }
+
+            $row[] = $column;
+          }
+
+          $rows[] = $row;
+
+        }
+
+        $elements[$delta] = array(
+          '#theme' => 'table',
+          '#header' => array_map('t', array_map('ucfirst', $headers)),
+          '#rows' => $rows,
+        );
+
+      }
+      else {
+        // If the supplied value isn't valid JSON or it is valid JSON but
+        // isn't a schema containing fields - simply output the raw text.
+        $elements[$delta] = array('#markup' => $item['value']);
+      }
+    }
+  }
+
+  return $elements;
+}
