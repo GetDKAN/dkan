@@ -74,38 +74,65 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
 
       if (json_last_error() === JSON_ERROR_NONE && property_exists($schema, 'fields')) {
         // Parse the schema array and build the table.
+        $headers = array();
         $rows = array();
 
+        // Build our collection of unique table headers.
         foreach ($schema->fields as $field) {
-          $name = (property_exists($field, 'name')) ? $field->name : '';
-          $type = (property_exists($field, 'type')) ? $field->type : '';
-          $format = (property_exists($field, 'format')) ? $field->format : 'default';
-          $description = (property_exists($field, 'description')) ? $field->description : '';
-          $constraints = '';
+          $item = (array) $field;
+          $new_keys = array_keys($item);
+          $headers = array_merge($headers, array_diff($new_keys, $headers));
+        }
 
-          if (property_exists($field, 'constraints')) {
-            $array = (array) $field->constraints;
+        // Check the set of values for each field description against all table headers.
+        foreach ($schema->fields as $field) {
+          $row = array();
+          $item = (array) $field;
 
-            $constraints = implode(', ', array_map(
-              function ($v, $k) { return sprintf("%s = %s", $k, $v); },
-              $array,
-              array_keys($array)
-            ));
+          foreach ($headers as $header) {
+            $column = '';
 
+            // Compare all properties for the current field definition ($item)
+            // against each table header ($headers).
+            // Default behavior:
+            // If the $item contains a value for the $header return it.
+            // If the $item does not contain a value for the $header return ''.
+            // Special cases can be defined using the switch statement below.
+            switch ($header) {
+              case 'format':
+                $column = (array_key_exists($header, $item)) ? $item[$header] : 'default';
+                break;
+
+              case 'constraints':
+                if (array_key_exists($header, $item)) {
+                  $constraints = (array) $item[$header];
+
+                  $column = implode(', ', array_map(
+                    function ($v, $k) { return sprintf("%s = %s", $k, $v); },
+                    $constraints,
+                    array_keys($constraints)
+                  ));
+                }
+                else {
+                  $column = '';
+                }
+                break;
+
+              default:
+                $column = (array_key_exists($header, $item)) ? $item[$header] : '';
+                break;
+            }
+
+            $row[] = $column;
           }
 
-          $rows[] = array($name, $type, $format, $description, $constraints);
+          $rows[] = $row;
+
         }
 
         $elements[$delta] = array(
           '#theme' => 'table',
-          '#header' => array(
-            t('Name'),
-            t('Type'),
-            t('Format'),
-            t('Description'),
-            t('Constraints'),
-          ),
+          '#header' => array_map('t', array_map('ucfirst', $headers)),
           '#rows' => $rows,
         );
 
