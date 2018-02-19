@@ -123,17 +123,24 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
                 break;
             }
 
-            $row[] = $column;
+            $row[] = array('data' => $column, 'class' => array('json-schema-item', 'json-schema-' . $header));
+
           }
 
           $rows[] = $row;
 
         }
 
+        // Format headers.
+        foreach ($headers as $key => $header) {
+          $headers[$key] = array('data' => t(ucfirst($header)), 'class' => array('json-schema-item', 'json-schema-' . $header));
+        }
+
         $elements[$delta] = array(
           '#theme' => 'table',
-          '#header' => array_map('t', array_map('ucfirst', $headers)),
+          '#header' => $headers,
           '#rows' => $rows,
+          '#attributes' => array('class' => array('json-schema')),
         );
 
       }
