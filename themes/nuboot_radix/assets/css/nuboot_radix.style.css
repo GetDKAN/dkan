@@ -9339,6 +9339,12 @@ body.maintenance-page .form-actions .media-widget > a:active:first-child,
 p.dkan-profile-page-user-name {
   display: inline-block; }
 
+.node-resource .field-name-field-describedby-spec {
+  margin-bottom: 20px; }
+
+.node-resource .field-name-field-describedby-schema table.json-schema {
+  margin-top: 0; }
+
 .table-select-processed .checkbox input[type="checkbox"],
 .permissions-processed .checkbox input[type="checkbox"] {
   margin-left: 0px; }
