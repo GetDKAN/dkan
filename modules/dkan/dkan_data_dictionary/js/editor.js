@@ -16,26 +16,27 @@
       } catch(e) {
         console.warn('An error ocurred trying to parse the dictionary schema.');
       }
+
       // Insert the editor
       $(containerId, context).once(function(){
-        // var container = document.getElementById('field-describedby-schema-add-more-wrapper');
         var options = {
           mode: 'code',
-          modes: ['code', 'form', 'tree']
+          modes: ['code', 'form', 'tree'],
+          onChange: function () {
+            var json = editor.get();
+            // When the editor is updated update the original field.
+            field.value = JSON.stringify(json);
+          }
         };
         var editor = new JSONEditor(this, options);
-        // Store reference to object for easier manipulation of API
+        // Store reference to object for easier manipulation of API.
         this.jsoneditor = editor;
         editor.set(json);
-        // Remove the old field
+
+        // Hide the original field.
         $('.form-item-field-describedby-schema-und-0-value .resizable-textarea').css({display: "none"});
       });
 
-      // Submit!
-      $('#resource-node-form').submit(function( event ) {
-        var json = document.querySelector(containerId).jsoneditor.get();
-        field.value = JSON.stringify(json);
-      });
     }
   };
 
