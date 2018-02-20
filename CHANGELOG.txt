@@ -1,15 +1,19 @@
+7.x-1.14.3
+----------
+ - #2377 Upgrade entity to 1.9
+
 7.x-1.14.2
 ----------
- - #2359 Upgrade filefield_sources to 1.11 
- - #2341 Modifies curl settings so url headers and info can be properly acquired with curl 
- - #2370 Patch features to add new line after <?php 
- - #2346 Updated Help page; can add your company to listing 
+ - #2359 Upgrade filefield_sources to 1.11
+ - #2341 Modifies curl settings so url headers and info can be properly acquired with curl
+ - #2370 Patch features to add new line after <?php
+ - #2346 Updated Help page; can add your company to listing
  - Remove out-dated owners.md file
- - #2345 Site Manager Monthly Maintenance checklist 
- - #2347 Moving the "Adding New Content" page to main admin doc tree 
- - #2321 Update @resource_all_09 scenario 
- - #2327 Add results count to dkan admin views 
- - #2337 Pin sphinx to 1.5.6 
+ - #2345 Site Manager Monthly Maintenance checklist
+ - #2347 Moving the "Adding New Content" page to main admin doc tree
+ - #2321 Update @resource_all_09 scenario
+ - #2327 Add results count to dkan admin views
+ - #2337 Pin sphinx to 1.5.6
  - #2332 Remove redundant debug output
 
 7.x-1.14.1
