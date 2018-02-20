@@ -99,11 +99,9 @@ Feature: Datastore
   @api @noworkflow @javascript @datastore
   Scenario: Import a csv tab delimited file.
     Given I am logged in as a user with the "site manager" role
-    And I hide the admin menu
     And I am on "dataset/dataset-02"
     When I click "Resource 03"
     And I click "Edit"
-    And I wait for "Remote file"
     And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.csv" to "files[field_upload_und_0]"
     #And I select "tab" from "Delimiter"
     And I press "Save"

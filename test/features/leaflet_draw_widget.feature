@@ -19,12 +19,6 @@ Feature: Leaflet Map Widget
     And datasets:
       | title                  | author | published | tags    | description | publisher |
       | This is a test dataset | admin  | Yes       | New Tag | Test        | Group 01  |
-
-    And I disable the module "dkan_data_story"
-    And I disable the module "dkan_sitewide_menu"
-    And I disable the module "admin_menu_toolbar"
-    And I disable the module "admin_menu_source"
-    And I disable the module "admin_menu"
     And I am logged in as "Gabriel"
     And I visit the "This is a test dataset" page
     And I click "Edit"
@@ -46,8 +40,3 @@ Feature: Leaflet Map Widget
     Then the "div" element with id set to "leaflet-widget_field-spatial" in the "dataset spatial" region should be visible
     And the "input" element with id set to "leaflet-widget_field-spatial-points-input" in the "dataset spatial" region should be visible
     And I should see the link "Add Points" in the "dataset spatial" region
-    And I enable the module "admin_menu"
-    And I enable the module "admin_menu_source"
-    And I enable the module "admin_menu_toolbar"
-    And I enable the module "dkan_sitewide_menu"
-    And I enable the module "dkan_data_story"

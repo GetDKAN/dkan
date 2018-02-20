@@ -11,18 +11,32 @@ Feature: User
     Given users:
       | name    | mail                | roles                | pass     |
       | John    | john@example.com    | site manager         | johnpass |
+      | Badmin  | admin@example.com   | site manager         | pass     |
+      | Gabriel | gabriel@example.com | content creator      | pass     |
+      | Jaz     | jaz@example.com     | editor               | pass     |
       | Katie   | katie@example.com   | content creator      | pass     |
+      | Martin  | martin@example.com  | editor               | pass     |
+      | Celeste | celeste@example.com | editor               | pass     |
     Given groups:
       | title    | author  | published |
-      | Group 01 | John    | Yes       |
+      | Group 01 | Badmin  | Yes       |
+      | Group 02 | Badmin  | Yes       |
+      | Group 03 | Badmin  | No        |
     And group memberships:
       | user    | group    | role on group        | membership status |
-      | John    | Group 01 | administrator member | Active            |
+      | Gabriel | Group 01 | administrator member | Active            |
       | Katie   | Group 01 | member               | Active            |
+      | Jaz     | Group 01 | member               | Pending           |
+      | Admin   | Group 02 | administrator member | Active            |
+      | Celeste | Group 02 | member               | Active            |
+    And "Tags" terms:
+      | name    |
+      | world   |
+      | results |
     And datasets:
-      | title      | publisher | author  | published        | description |
-      | Dataset 01 | Group 01  | Katie   | Yes              | Test        |
-      | Dataset 02 | Group 01  | Katie   | Yes              | Test        |
+      | title      | publisher | author  | published        | tags     | description |
+      | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Katie   | Yes              | world    | Test        |
 
   @user_all_01 @login
   Scenario: Login

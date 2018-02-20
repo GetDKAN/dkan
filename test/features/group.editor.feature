@@ -39,9 +39,23 @@ Feature: Site Manager administer groups
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
       | Celeste | Group 02 | member               | Active            |
-
-
-
+    And "Tags" terms:
+      | name     |
+      | price    |
+      | election |
+    And datasets:
+      | title      | publisher | tags       | author  | published | description                |
+      | Dataset 01 | Group 01  | world      | Katie   | Yes       | Increase of toy prices     |
+      | Dataset 02 | Group 01  | world      | Katie   | No        | Cost of oil in January     |
+      | Dataset 03 | Group 01  | results    | Gabriel | Yes       | Election results           |
+    And "format" terms:
+      | name |
+      | csv  |
+      | zip |
+    And resources:
+      | title       | publisher | format | author | published | dataset    | description |
+      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
+      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
 
   Scenario: Edit group as group administrator
     Given I am logged in as "Gabriel"
@@ -153,20 +167,14 @@ Feature: Site Manager administer groups
     And I am on "Group 01" page
     And I click "Group"
     When I click "People"
-    Then I should see "Total content: 0"
+    Then I should see "Total content: 5"
 
   Scenario: Edit dataset content created by others on group as editor
-    Given datasets:
-      | title       | publisher | author  | published | description                |
-      | GDataset 01 | Group 01  | Katie   | Yes       | Increase of toy prices     |
-      | GDataset 02 | Group 01  | Katie   | No        | Cost of oil in January     |
-      | GDataset 03 | Group 01  | Gabriel | Yes       | Election results           |
     Given I am logged in as "Martin"
-    And I am on "GDataset 01" page
+    And I am on "Dataset 01" page
     Then I should see "Edit"
 
   Scenario: Show correct number of groups to which user belongs
     Given I am logged in as "Celeste"
     When I am on "user"
     Then I should see "1 Groups" in the "content" region
-
