@@ -15,6 +15,23 @@ function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state
   $form['#attached']['libraries_load'][] = array('jsoneditor');
   $form['#attached']['js'][] = drupal_get_path('module', 'dkan_data_dictionary') . '/js/editor.js';
   drupal_add_css(drupal_get_path('module', 'dkan_data_dictionary') . '/css/dkan_data_dictionary.css');
+  $form['#validate'][] = 'dkan_data_dictionary_validate_resource';
+}
+
+/**
+ * Custom validation function for resource node
+ */
+function dkan_data_dictionary_validate_resource($form, &$form_state) {
+  $language = $form_state['values']['language'];
+  foreach ($form_state['values']['field_describedby_schema'][$language] as $item) {
+    if ($item['value'] !== '{}' && $item['value'] !== '') {
+      $schema = json_decode($item['value']);
+
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        form_set_error('field_describedby_schema', t('JSON Schema provided is not valid JSON.'));
+      }
+    }
+  }
 }
 
 /**
