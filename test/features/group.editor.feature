@@ -25,7 +25,6 @@ Feature: Site Manager administer groups
       | title    | author  | published |
       | Group A  | Gabriel | Yes       |
       | Group B  | Katie   | Yes       |
-      | Group C  | Gabriel | No        |
     And group memberships:
       | user    | group   | role on group        | membership status |
       | Gabriel | Group A | administrator member | Active            |
