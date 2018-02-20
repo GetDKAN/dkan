@@ -31,9 +31,9 @@ Feature: Site Manager administer groups
       | Gabriel | Group A | administrator member | Active            |
       | Katie   | Group A | member               | Active            |
       | Jaz     | Group A | member               | Pending           |
-    And datasets:
-      | title  | publisher | author  | published | description |
-      | GC1    | Group A   | Gabriel | Yes       | --test--    |
+    And resources:
+      | title    | publisher | format | author | published | description |
+      | GER1     | Group A   | csv    | Katie  | Yes       |             |
 
   Scenario: Edit group as group administrator
     Given I am logged in as "Gabriel"
@@ -147,9 +147,9 @@ Feature: Site Manager administer groups
     When I click "People"
     Then I should see "Total content: 1"
 
-  Scenario: Edit dataset content created by others on group as editor
+  Scenario: Edit resource content created by others on group as editor
     Given I am logged in as "Martin"
-    And I am on "GC1" page
+    And I am on "GER1" page
     Then I should see "Edit"
 
   Scenario: Show correct number of groups to which user belongs
