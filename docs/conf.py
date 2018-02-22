@@ -19,13 +19,13 @@ templates_path = ['_templates']
 master_doc = 'index'
 
 # General information about the project.
-project = u'DKAN'
+project = u'DKAN Docs'
 copyright = u'2017'
 author = u'DKAN Team'
 
 
-version = '1.13'
-release = '1.13'
+version = '1.14'
+release = '1.14'
 
 language = 'en'
 
@@ -214,6 +214,7 @@ source_parsers = {
 
 github_doc_root = 'https://github.com/GetDKAN/dkan/tree/rtd/docs/'
 def setup(app):
+    app.add_stylesheet( "css/custom.css" )
     app.add_config_value('recommonmark_config', {
             'url_resolver': lambda url: github_doc_root + url,
             'auto_toc_tree_section': 'Contents',
