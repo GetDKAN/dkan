@@ -1038,7 +1038,7 @@ public function iWaitForTextToDisappear($text)
     );
     $title->click();
   }
-    
+
   /**
    * Assert selector count in given region.
    *
@@ -1082,6 +1082,21 @@ public function iWaitForTextToDisappear($text)
 
     if (!$optionField->isSelected()) {
       throw new \Exception('Select option field with value|text "' . $option . '" is not selected in the select "' . $select . '"', $this->getSession());
+    }
+  }
+
+  /**
+   * @Given I hide the admin menu
+   */
+  public function iHideTheAdminMenu()
+  {
+    $selector = '#admin-menu';
+    // Does the admin-menu exist in the dom?
+    if (is_array($this->getSession()->evaluateScript("document.querySelector('$selector');"))) {
+      // Hide it so it does not overlap the item we are testing.
+      $this->getSession()->executeScript("document.querySelector('$selector').style.display = 'none';");
+    } else {
+      throw new \Exception("admin-menu not exist");
     }
   }
 
