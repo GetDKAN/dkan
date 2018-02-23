@@ -1,4 +1,9 @@
-7.x-1.14.3
+7.x-1.14.4
+----------
+ - #2402 Update Drupal core to 7.57
+ - #2375 Improvements to automated tests
+
+ 7.x-1.14.3
 ----------
  - #2377 Upgrade entity to 1.9
 
