@@ -1,14 +1,18 @@
 # Get DKAN
 
-DKAN is open source and flexible: You can download it for free and run it on your own server or choose from one of our hosting partners below. Visit getdkan.org for more information.
+DKAN is open source and flexible: You can download it for free and run it on your own server or choose from one of our hosting partners below. For more information on DKAN outside of our ReadTheDocs site, visit https://getdkan.org/.
 
-## Download and run DKAN on your server
+## Download and Run DKAN
 
-DKAN is based on the open source </a><a href="http://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [the developers/installation](/dkan-documentation/dkan-developers/installation) section of this site.
+DKAN is based on the open source </a><a href="http://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported. There is extensive information on how to install DKAN on your own in the [the developers/installation](/dkan-documentation/dkan-developers/installation) section of this site.
+
+If you're not a developer, or are simply unfamiliar with Drupal, you may be more comfortable trying one of the hosted options listed below (such as creating an "out of the box" DKAN site on Pantheon), or contacting us to obtain a private demonstration instance.
 
 ## Hosting Partners
 
 DKAN is open source and flexible: you can download it for free and run it on your own server (see [installation instructions](installation.rst)) or choose from one of our hosting partners below.
+
+## For General Users and Developers Alike:
 
 ### Acquia
 
@@ -22,7 +26,7 @@ These tools allow a single site builder or team of developers to follow best pra
 
 #### Single-click Installation
 
-Acquia offers a "single-click" installation of DKAN. While this is labelled as a "Test drive," the environment offers the same dashboard tools as a full, paid account. [Visit Acquia's website for complete instructions](https://docs.acquia.com/cloud/free/aws-testdrive/dkan).
+Acquia offers a "single-click" installation of DKAN. While this is labelled as a "Test drive," the environment offers the same dashboard tools as a full, paid account. (However, if using an Acquia Cloud free trial, the "Test Drive" site will only be available for 30 days.) [Visit Acquia's website for complete instructions](https://docs.acquia.com/cloud/free/aws-testdrive/dkan).
 
 #### Maintaining a DKAN Site on Acquia
 
@@ -39,6 +43,10 @@ You can register for a free account [here](https://www.getpantheon.com/). Once y
 ![Pantheon new site form](../images/Pantheon_Dashboard.png)
 
 Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation.md).
+
+This is currently the recommended option for "non-developer" users or users who wish to spin up an out-of-the-box test run DKAN site without the use of code. Though Pantheon only allows free users to build two sites at a time, there is no time limit or expiration on site availability.
+
+### More on Pantheon
 
 #### Using Terminus
 
