@@ -103,7 +103,7 @@ class ResourceContext extends RawDKANEntityContext{
       // Add the supplied schema into the dictionary field
       $this->getSession()->executeScript("document.querySelector('$selector').jsoneditor.set('$schema');");
     } else {
-      throw new \Exception("jsoneditor not dispalyed");
+      throw new \Exception("jsoneditor not displayed");
     }
   }
 

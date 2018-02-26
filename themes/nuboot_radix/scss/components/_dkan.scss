@@ -63,4 +63,16 @@
 // Move this to dkan_sitewide_profile_page.css.
 p.dkan-profile-page-user-name {
   display: inline-block;
-}   
+}
+
+.node-resource {
+  .field-name-field-describedby-spec {
+    margin-bottom: 20px;
+  }
+
+  .field-name-field-describedby-schema {
+    table.json-schema {
+      margin-top: 0;
+    }
+  }
+}
