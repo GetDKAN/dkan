@@ -11,11 +11,27 @@ include_once 'dkan_data_dictionary.features.inc';
  * Implements hook_form_FORM_ID_alter().
  */
 function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state) {
+  $lang = $form['language']['#value'];
+
   // Load jsoneditor libray and attach to resource form.
   $form['#attached']['libraries_load'][] = array('jsoneditor');
   $form['#attached']['js'][] = drupal_get_path('module', 'dkan_data_dictionary') . '/js/editor.js';
   drupal_add_css(drupal_get_path('module', 'dkan_data_dictionary') . '/css/dkan_data_dictionary.css');
   $form['#validate'][] = 'dkan_data_dictionary_validate_resource';
+
+  // Add javascript for csv data dictionary schema
+  $fid = $form['field_describedby_file'][$lang][0]['#default_value']['fid'];
+  if ($fid !== 0) {
+    $valid = _dkan_data_dictionary_csv_is_schema($fid);
+  }
+  else {
+    $valid = false;
+  }
+
+  drupal_add_js(array('dkan_data_dictionary' => array('fileid' => $fid)), 'setting');
+  drupal_add_js(array('dkan_data_dictionary' => array('valid' => $valid)), 'setting');
+  drupal_add_js(drupal_get_path('module', 'dkan_data_dictionary') . '/js/dkan_data_dictionary.js');
+
 }
 
 /**
@@ -29,6 +45,131 @@ function dkan_data_dictionary_validate_resource($form, &$form_state) {
 
       if (json_last_error() !== JSON_ERROR_NONE) {
         form_set_error('field_describedby_schema', t('JSON Schema provided is not valid JSON.'));
+      }
+    }
+  }
+}
+
+/**
+ *
+ * @param integer $fid
+ *
+ * @return boolean
+ */
+function _dkan_data_dictionary_csv_is_schema($fid) {
+  $file = file_load($fid);
+  if ($file->filemime === 'text/csv' && $file->filesize > 0) {
+    $url = drupal_realpath($file->uri);
+    $csv = fopen($url, "r");
+
+    if ($csv) {
+      $allowed = array('name','title','type','description','format','constraints','rdftype');
+      $required = array('name');
+
+      // Check the first line of the file to be sure all properties are valid.
+      $properties = fgetcsv($csv);
+      $invalid = array_diff(array_map('strtolower', $properties), $allowed);
+      $missing = array_diff($required, array_map('strtolower', $properties));
+
+      // Attempt to read the next line - check for at least one row of values.
+      $data = fgetcsv($csv);
+      fclose($csv);
+
+      if ($invalid || $missing || !$data) {
+        return FALSE;
+      }
+
+      return TRUE;
+
+    }
+    else {
+      return FALSE;
+    }
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function dkan_data_dictionary_node_presave($node) {
+  if ($node->type === 'resource') {
+    $lang = $node->language;
+    $files = count($node->field_describedby_file[$lang]);
+    $original_fid = (isset($node->original->field_describedby_file[$lang][0]['fid'])) ? $node->original->field_describedby_file[$lang][0]['fid'] : 0;
+
+    // If there is no schema file attached see if there was once before.
+    if ($files === 0) {
+      if (_dkan_data_dictionary_csv_is_schema($original_fid)) {
+        // If a valid schema file was previously supplied but removed -
+        // the JSON Schema field must also be emptied.
+        $node->field_describedby_schema[$lang][0]['value'] = '{}';
+      }
+    }
+    // Was a schema source file provided?
+    else if ($files === 1) {
+      $fid = $node->field_describedby_file[$lang][0]['fid'];
+
+      // If the supplied file is new process it otherwise skip processing.
+      if ($fid != $original_fid) {
+
+        // If the supplied file is a CSV and isn't empty.
+        if (_dkan_data_dictionary_csv_is_schema($fid)) {
+          $file = file_load($fid);
+          $url = drupal_realpath($file->uri);
+          $csv = fopen($url, "r");
+
+          if ($csv) {
+            $fields = array();
+
+            while ($lines[] = fgetcsv($csv)) {
+
+              if (count($lines) === 1) {
+                $properties = $lines[count($lines)-1];
+              }
+              else {
+                $current_item = $lines[count($lines)-1];
+                $field = new stdClass();
+
+                foreach($properties as $key => $property) {
+                  if (!empty($current_item[$key])) {
+                    if($property !== 'constraints') {
+                      $field->$property = $current_item[$key];
+                    }
+                    else {
+                      // Constraints require additional processing.
+                       $new_constraint = new stdClass();
+
+                      $constraints = explode(",", $current_item[$key]);
+                      foreach ($constraints as $constraint) {
+                        $parts = explode(":", $constraint);
+                        $new_constraint->$parts[0] = $parts[1];
+                      }
+
+                      $field->$property = $new_constraint;
+
+                    }
+                  }
+                }
+
+                $fields[] = $field;
+
+              }
+            }
+
+            // If we ended up with at least one valid field update JSON Schema.
+            if (count($fields) != 0) {
+              $json = new stdClass();
+              $json->fields = $fields;
+              $schema = json_encode($json);
+              $node->field_describedby_schema[$lang][0]['value'] = $schema;
+            }
+
+            fclose($csv);
+          }
+          else {
+            drupal_set_message(t('Unable to open the supplied schema file.'));
+          }
+        }
       }
     }
   }
