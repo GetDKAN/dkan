@@ -16,7 +16,7 @@ function dkan_dataset_collections_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Please see: <a href="https://project-open-data.cio.gov/v1.1/schema/#isPartOf" target="_blank">https://project-open-data.cio.gov</a>',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -26,7 +26,7 @@ function dkan_dataset_collections_field_default_field_instances() {
           'link' => 1,
         ),
         'type' => 'entityreference_label',
-        'weight' => 8,
+        'weight' => 6,
       ),
       'search_result' => array(
         'label' => 'above',
@@ -57,13 +57,14 @@ function dkan_dataset_collections_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'entityreference_autocomplete',
-      'weight' => 14,
+      'weight' => 11,
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
   t('Collection');
+  t('Please see: <a href="https://project-open-data.cio.gov/v1.1/schema/#isPartOf" target="_blank">https://project-open-data.cio.gov</a>');
 
   return $field_instances;
 }
