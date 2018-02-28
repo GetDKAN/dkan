@@ -17,45 +17,15 @@ Feature: Site Manager administer groups
       | Content   | /admin/content/ |
     Given users:
       | name    | mail                | roles                |
-      | John    | john@example.com    | site manager         |
-      | Badmin  | admin@example.com   | site manager         |
-      | Gabriel | gabriel@example.com | editor               |
-      | Jaz     | jaz@example.com     | editor               |
+      | Juan    | juan@example.com    | site manager         |
       | Katie   | katie@example.com   | content creator      |
-      | Martin  | martin@example.com  | editor               |
-      | Celeste | celeste@example.com | editor               |
     Given groups:
       | title    | author | published |
-      | Group 01 | Badmin | Yes       |
-      | Group 02 | Badmin | Yes       |
-      | Group 03 | Badmin | No        |
-    And "Tags" terms:
-      | name    |
-      | world   |
-      | results |
+      | Group 01 | Juan   | Yes       |
+      | Group 02 | Juan   | Yes       |
     And group memberships:
       | user    | group    | role on group        | membership status |
-      | Gabriel | Group 01 | administrator member | Active            |
       | Katie   | Group 01 | member               | Active            |
-      | Jaz     | Group 01 | member               | Pending           |
-      | Celeste | Group 02 | member               | Active            |
-    And "Tags" terms:
-      | name     |
-      | price    |
-      | election |
-    And datasets:
-      | title      | publisher | tags       | author  | published | description                |
-      | Dataset 01 | Group 01  | world      | Katie   | Yes       | Increase of toy prices     |
-      | Dataset 02 | Group 01  | world      | Katie   | No        | Cost of oil in January     |
-      | Dataset 03 | Group 01  | results    | Gabriel | Yes       | Election results           |
-    And "format" terms:
-      | name |
-      | csv  |
-      | zip |
-    And resources:
-      | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
 
   @api
   Scenario: Request group membership
