@@ -5,23 +5,20 @@
  * Code for the DKAN Collections feature.
  */
 
- include_once 'dkan_dataset_collections.features.inc';
+include_once 'dkan_dataset_collections.features.inc';
 
 /**
- * Implements hook_panels_pane_content_alter().
+ * Implements hook_node_view_alter().
  */
-function dkan_dataset_collections_panels_pane_content_alter($content, $pane, $args, $contexts) {
-
-  if ($pane->panel === 'contentmain') {
+function dkan_dataset_collections_node_view_alter(&$build) {
+  if ($build['#bundle'] === 'dataset') {
     $collection = views_embed_view('collection_parent', 'panel_pane_1');
-
-    if (!empty($content->content['#node']) && $content->content['#node']->type === 'dataset') {
-      // This is where we plug in collection children on collection parents.
-      $content->content['#prefix'] = $collection;
+    if (!empty($build['body'][0]['#markup'])) {
+      $build['body'][0]['#markup'] .= $collection;
     }
-    elseif (!empty($content->content['node']) && reset($content->content['node'])['#bundle'] === 'dataset') {
-      // This is where we plug in collection children on collection parents.
-      $content->content['node']['#prefix'] = $collection;
+    elseif (empty($build['body'][0]['#markup'])) {
+      $build['body'][0]['#markup'] = $collection;
+
     }
   }
 }
