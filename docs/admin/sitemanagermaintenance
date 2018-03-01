@@ -1,0 +1,47 @@
+# Site Manager Monthly Maintenance Checklist
+
+
+### Content
+*(Accessible via the “Content” tab on the black site administration toolbar)*
+
+- Check the “Content” list for an overview of the content currently hosted on your site. 
+
+- Is there any content that needs to be published or unpublished? Are there duplicates? If so, take a moment to clean up your content.
+
+### Groups
+*(Accessible via the “Groups” button on the main site navigation bar)*
+
+- Is the Groups list up to date? 
+
+- Does each Group have an appropriate image and description?
+
+### Tags and Taxonomies
+*(Mouse over Site Configuration on the black site administration toolbar, then click “Taxonomy”)*
+
+- Check your site’s list of Tags, located in the Taxonomy menu. To view a list of all Tags on the site, click “List terms.” 
+
+- Are there any misspelled tags? Are there any duplicate tags? If so, take a moment to clean up your tags.
+
+### User management
+*(Accessible via the “People” tab on the black site administration toolbar)*
+
+- Is the user list up to date? For site security, always double-check that there aren’t any accounts accessible to users who have left your organization. If this is the case, their accounts should be canceled or blocked.
+
+- Do all of the users in your organization have the proper site roles? (Site Manager, Editor, Content Creator.)
+
+### Workbench (Optional, if the Workbench/Workflow Modules have been enabled)
+*(Accessible via the “My Workbench” tab in the site administration bar)*
+
+- Workbench moderation queue tasks - check each of these tabs:
+
+**My drafts**
+- Are there any drafts that ought to be pushed to “Published” or “Needs Review”?
+
+**Needs review**
+- Are there any items under review that ought to be pushed back to “Draft” or published?
+
+**Stale drafts**
+- These are drafts that have been unmoderated for over 72 hours. Make sure content doesn’t build up under this queue!
+
+**Stale reviews**
+- These are items under review that have been unmoderated for over 72 hours.
