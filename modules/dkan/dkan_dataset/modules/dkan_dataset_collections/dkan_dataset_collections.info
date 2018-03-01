@@ -22,4 +22,5 @@ features[features_api][] = api:2
 features[field_base][] = field_dkan_ispartof_ref
 features[field_instance][] = node-dataset-field_dkan_ispartof_ref
 features[views_view][] = collection_parent
+features[views_view][] = collections_entity_reference_field_autocomplete
 features_exclude[dependencies][features] = features
