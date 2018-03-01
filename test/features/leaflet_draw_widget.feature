@@ -22,6 +22,7 @@ Feature: Leaflet Map Widget
     And I am logged in as "Gabriel"
     And I visit the "This is a test dataset" page
     And I click "Edit"
+    And I hide the admin menu
     Then I should see "Spatial / Geographical Coverage Area"
     And I should see the link "Map" in the "dataset spatial" region
     And I should see the link "GeoJSON" in the "dataset spatial" region
