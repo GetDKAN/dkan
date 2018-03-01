@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Install file for DKAN dataset collections.
+ */
+
+/**
+ * Prevent children from being used as parent collections.
+ */
+function dkan_dataset_collections_update_7001() {
+  features_revert(array('dkan_dataset_collections'));
+}
