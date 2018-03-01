@@ -10,24 +10,6 @@ DKAN is based on the open source </a><a href="http://drupal.org">Drupal</a> cont
 
 DKAN is open source and flexible: you can download it for free and run it on your own server (see [installation instructions](installation.rst)) or choose from one of our hosting partners below.
 
-### Acquia
-
-**[Click here](https://insight.acquia.com/free?distro=dkantestdrive)**  to install DKAN on Acquia for free.
-
-[Acquia](http://acquia.com) offers a number of [hosting tools](http://www.acquia.com/products-services/acquia-cloud#Overview) built specifically for best maintaining Drupal sites. These include integrations with 3rd party systems like New Relic and Blaze Meter as well as reports on module updates, performance, and security reviews. Most importantly, Acquia offers a dashboard that makes it easy to move code (hosted by git), media files, and the database between development, testing, and production environments:
-
-![Acquia Dashboard screenshot](../images/acquia-dashboard.png)
-
-These tools allow a single site builder or team of developers to follow best practices, scale up if needed, and follow a rigorous QA process all without ever touching a server.
-
-#### Single-click Installation
-
-Acquia offers a "single-click" installation of DKAN. While this is labelled as a "Test drive," the environment offers the same dashboard tools as a full, paid account. [Visit Acquia's website for complete instructions](https://docs.acquia.com/cloud/free/aws-testdrive/dkan).
-
-#### Maintaining a DKAN Site on Acquia
-
-Updates to DKAN are released frequently. Acquia will not push these updates to your instance automatically, but you can keep your codebase up-to-date using your own workflow, or following our general [Upgrade Instructions](../development/maintaining.md).
-
 ### Pantheon
 
 **[Click here](https://dashboard.getpantheon.com/products/dkan/spinup)**  to install DKAN on Pantheon for free.
@@ -70,3 +52,20 @@ An error like the following is often seen at the end of the install process on P
 
 This will hopefully be fixed on future releases. However, the resulting site should still be fully installed and functional.
 
+### Acquia
+
+**[Click here](https://insight.acquia.com/free?distro=dkantestdrive)**  to install DKAN on Acquia for free.
+
+[Acquia](http://acquia.com) offers a number of [hosting tools](http://www.acquia.com/products-services/acquia-cloud#Overview) built specifically for best maintaining Drupal sites. These include integrations with 3rd party systems like New Relic and Blaze Meter as well as reports on module updates, performance, and security reviews. Most importantly, Acquia offers a dashboard that makes it easy to move code (hosted by git), media files, and the database between development, testing, and production environments:
+
+![Acquia Dashboard screenshot](../images/acquia-dashboard.png)
+
+These tools allow a single site builder or team of developers to follow best practices, scale up if needed, and follow a rigorous QA process all without ever touching a server.
+
+#### Single-click Installation
+
+Acquia offers a "single-click" installation of DKAN. While this is labelled as a "Test drive," the environment offers the same dashboard tools as a full, paid account. [Visit Acquia's website for complete instructions](https://docs.acquia.com/cloud/free/aws-testdrive/dkan).
+
+#### Maintaining a DKAN Site on Acquia
+
+Updates to DKAN are released frequently. Acquia will not push these updates to your instance automatically, but you can keep your codebase up-to-date using your own workflow, or following our general [Upgrade Instructions](../development/maintaining.md).
