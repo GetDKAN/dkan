@@ -1,14 +1,12 @@
 # Get DKAN
 
-DKAN is open source and flexible: You can download it for free and run it on your own server or choose from one of our hosting partners below. Visit getdkan.org for more information.
+DKAN is open source and flexible: you can download it for free and run it on your own server or choose from one of our hosting partners below. Visit getdkan.org for more information.
 
 ## Download and run DKAN on your server
 
-DKAN is based on the open source </a><a href="http://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [the developers/installation](/dkan-documentation/dkan-developers/installation) section of this site.
+DKAN is based on the open source </a><a href="https://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [installation](../installation/index.rst) section of this site.
 
 ## Hosting Partners
-
-DKAN is open source and flexible: you can download it for free and run it on your own server (see [installation instructions](installation.rst)) or choose from one of our hosting partners below.
 
 ### Pantheon
 
@@ -56,7 +54,7 @@ This will hopefully be fixed on future releases. However, the resulting site sho
 
 **[Click here](https://insight.acquia.com/free?distro=dkantestdrive)**  to install DKAN on Acquia for free.
 
-[Acquia](http://acquia.com) offers a number of [hosting tools](http://www.acquia.com/products-services/acquia-cloud#Overview) built specifically for best maintaining Drupal sites. These include integrations with 3rd party systems like New Relic and Blaze Meter as well as reports on module updates, performance, and security reviews. Most importantly, Acquia offers a dashboard that makes it easy to move code (hosted by git), media files, and the database between development, testing, and production environments:
+[Acquia](https://acquia.com) offers a number of [hosting tools](https://www.acquia.com/products-services/acquia-cloud#Overview) built specifically for best maintaining Drupal sites. These include integrations with 3rd party systems like New Relic and Blaze Meter as well as reports on module updates, performance, and security reviews. Most importantly, Acquia offers a dashboard that makes it easy to move code (hosted by git), media files, and the database between development, testing, and production environments:
 
 ![Acquia Dashboard screenshot](../images/acquia-dashboard.png)
 
