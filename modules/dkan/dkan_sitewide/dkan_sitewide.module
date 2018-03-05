@@ -113,7 +113,7 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     $form['#id'] == 'views-exposed-form-dkan-datasets-panel-pane-1') {
     $form['#info']['filter-search_api_views_fulltext']['description'] = '';
     $form['submit']['#title'] = '';
-    $form['query']['#title'] = 'Search';
+    $form['query']['#title'] = t('Search');
     $form['query']['#attributes'] = array('placeholder' => t('Search'));
     $form['query']['#size'] = 60;
   }
