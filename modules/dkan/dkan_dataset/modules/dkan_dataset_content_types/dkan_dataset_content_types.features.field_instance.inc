@@ -288,7 +288,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Contact person’s email address. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
+    'description' => 'Contact person’s email address. See <a href="https://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -335,7 +335,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.',
+    'description' => 'Contact person’s name for the asset. See <a href="https://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -383,7 +383,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Provides some sort of description that helps understanding the data. This can be a URL to such a resource. See Project Open Data <a href="http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.',
+    'description' => 'Provides some sort of description that helps understanding the data. This can be a URL to such a resource. See Project Open Data <a href="https://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -476,7 +476,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.',
+    'description' => 'The frequency with which dataset is published.See <a href="https://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -522,7 +522,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://project-open-data.github.io/schema/#expanded-fields">DCAT Granularity</a> for more info.',
+    'description' => 'This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="https://project-open-data.github.io/schema/#expanded-fields">DCAT Granularity</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -1000,7 +1000,7 @@ uk-ogl|UK Open Government Licence (OGL)',
       ),
     ),
     'deleted' => 0,
-    'description' => 'The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
+    'description' => 'The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="https://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -1201,7 +1201,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.',
+    'description' => 'Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="https://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -1255,7 +1255,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         ),
         'map' => array(
           'auto_center' => 1,
-          'base_url' => 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          'base_url' => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           'center' => array(
             'lat' => 43,
             'lng' => -89,
@@ -1274,7 +1274,7 @@ uk-ogl|UK Open Government Licence (OGL)',
     'bundle' => 'dataset',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.',
+    'description' => 'Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="https://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -1369,7 +1369,7 @@ uk-ogl|UK Open Government Licence (OGL)',
   $field_instances['node-dataset-field_temporal_coverage'] = array(
     'bundle' => 'dataset',
     'deleted' => 0,
-    'description' => 'The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">temporal coverage</a> for more info.',
+    'description' => 'The temporal period that the dataset covers. See DCAT <a href="https://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">temporal coverage</a> for more info.',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -1842,8 +1842,8 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('Author');
   t('Contact Email');
   t('Contact Name');
-  t('Contact person’s email address. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
-  t('Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.');
+  t('Contact person’s email address. See <a href="https://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
+  t('Contact person’s name for the asset. See <a href="https://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.');
   t('Data Dictionary');
   t('Data Dictionary Type');
   t('Data Standard');
@@ -1865,26 +1865,26 @@ uk-ogl|UK Open Government Licence (OGL)',
   t('Link API');
   t('Link File');
   t('POD Theme');
-  t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See Project Open Data <a href="http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.');
+  t('Provides some sort of description that helps understanding the data. This usually consists of a table providing explanation of columns meaning, values interpretation and acronyms/codes used in the data. Can be a URL to such a resource. See Project Open Data <a href="https://project-open-data.github.io/schema/#common-core-required-if-applicable-fields">data dictionary</a> for more info.');
   t('Public Access Level');
   t('Related Content');
   t('Resources');
   t('Rights');
   t('Spatial / Geographical Coverage Area');
   t('Spatial / Geographical Coverage Location');
-  t('Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
-  t('Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
+  t('Spatial coverage of the dataset. Will be rendered as GeoJSON. See DCAT <a href="https://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
+  t('Spatial location of the dataset. Could be Address, City, State, part of the world or other description. See DCAT <a href="https://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial">spatial/geographical coverage</a> for more info.');
   t('Tags');
   t('Temporal Coverage');
-  t('The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
-  t('The frequency with which dataset is published.See <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.');
-  t('The temporal period that the dataset covers. See DCAT <a href="http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">temporal coverage</a> for more info.');
+  t('The degree to which this dataset <em>could</em> be made publicly-available, regardless of whether it has been made available. See <a href="https://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.');
+  t('The frequency with which dataset is published.See <a href="https://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency">DCAT frequency</a> for more info.');
+  t('The temporal period that the dataset covers. See DCAT <a href="https://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal">temporal coverage</a> for more info.');
   t('This field allows the grouping of multiple datasets into a “collection”. This field should be employed by the individual datasets that together make up a collection. The value for this field should match the identifier of the parent dataset.');
   t('This field is not intended for an agency’s homepage (e.g. www.agency.gov), but rather if a dataset has a human-friendly hub or landing page that users can be directed to for all resources tied to the dataset.');
   t('This is the author of the dataset.');
   t('This is used to identify a standardized specification the dataset conforms to. If this is a technical specification associated with a particular serialization of a distribution, this should be specified with <a href="#distribution-conformsTo">conformsTo</a> at the distribution level. It’s recommended that this be a URI that serves as a unique identifier for the standard. The URI may or may not also be a URL that provides documentation of the specification. See <a href="https://project-open-data.cio.gov/v1.1/schema/#dataset-conformsTo">Data Standard at Project Open Data</a>.');
   t('This is used to identify the media type (IANA Media Type also known as MIME Type) of the URL used for the dataset’s describedBy field. This should be specified if describedBy is not an HTML webpage.');
-  t('This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="http://project-open-data.github.io/schema/#expanded-fields">DCAT Granularity</a> for more info.');
+  t('This is usually geographical or temporal but can also be other dimension e.g. Person can be used to describe granularity of a dataset about average income. See <a href="https://project-open-data.github.io/schema/#expanded-fields">DCAT Granularity</a> for more info.');
   t('This should adhere to the RFC 5646 standard. This language subtag lookup provides a good tool for checking and verifying language codes. A language tag is comprised of either one or two parts, the language subtag (such as en for English, sp for Spanish, wo for Wolof) and the regional subtag (such as US for United States, GB for Great Britain, MX for Mexico), separated by a hyphen. Regional subtags should only be provided when needed to distinguish a language tag from another one (such as American vs. British English).');
   t('Upload');
 
