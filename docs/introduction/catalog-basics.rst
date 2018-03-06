@@ -31,7 +31,7 @@ Resources are the actual files, APIs or links that are being shared. Resource ty
 Datasets and Resources within DKAN and CKAN
 -------------------------------------------
 
-The following images display how datasets and resources are structured within DKAN and CKAN. Screenshots are from `Data.gov <http://data.gov>`_ which is powered by CKAN. DKAN follows CKAN conventions where possible.
+The following images display how datasets and resources are structured within DKAN and CKAN. Screenshots are from `Data.gov <https://data.gov>`_ which is powered by CKAN. DKAN follows CKAN conventions where possible.
 
 .. figure:: ../images/DatasetResourceDiagram2.png
 
