@@ -1,5 +1,6 @@
 7.x-1.14.4
 ----------
+ - #2404 Avoid undefined offset on nuboot_radix/includes/panel.inc line 45
  - #2402 Update Drupal core to 7.57
  - #2375 Improvements to automated tests
 
