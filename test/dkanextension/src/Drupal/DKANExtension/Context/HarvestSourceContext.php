@@ -30,7 +30,7 @@ class HarvestSourceContext extends RawDKANEntityContext {
     );
   }
 
-  /** 
+  /**
    * @BeforeFeature
    */
   public static function setupFeature(BeforeFeatureScope $scope)
@@ -41,7 +41,7 @@ class HarvestSourceContext extends RawDKANEntityContext {
     }
   }
 
-  /** 
+  /**
    * @AfterFeature
    */
   public static function teardownFeature(AfterFeatureScope $scope)
@@ -113,7 +113,7 @@ class HarvestSourceContext extends RawDKANEntityContext {
       $wrapper->title = $title;
       $wrapper->status = 1;
       $wrapper->field_dkan_harveset_type = 'datajson_v1_1_json';
-      $wrapper->field_dkan_harvest_source_uri = 'http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json';
+      $wrapper->field_dkan_harvest_source_uri = 'https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json';
       $wrapper->field_dkan_harvest_machine_name = array(
         'human' => $title,
         'machine' => $machine_name,

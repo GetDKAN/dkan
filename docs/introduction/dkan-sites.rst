@@ -25,16 +25,16 @@ United States of America
 ==================================================      =============
 Organization                                            URL
 ==================================================      =============
-U.S. Department of Health and Human Services (USA)      http://healthdata.gov
-National Democratic Institute                           http://nditech.org/project/dkan
-USDA National Agricultural Library                      http://data.nal.usda.gov
-California                                              http://data.ca.gov
-Oklahoma                                                http://data.ok.gov
-North Dakota                                            http://gishubdata.nd.gov/
-Georgia (Governor's Office of Student Achievement)      http://schoolgrades.ga.gov
-Massachusetts                                           http://docs.digital.mass.gov
-Nebraska                                                http://nebraskamap.gov/
-Louisville, KY                                          http://data.louisvilleky.gov
+U.S. Department of Health and Human Services (USA)      https://healthdata.gov
+National Democratic Institute                           https://nditech.org/project/dkan
+USDA National Agricultural Library                      https://data.nal.usda.gov
+California                                              https://data.ca.gov
+Oklahoma                                                https://data.ok.gov
+North Dakota                                            https://gishubdata.nd.gov
+Georgia (Governor's Office of Student Achievement)      https://schoolgrades.georgia.gov
+Massachusetts                                           https://docs.digital.mass.gov/
+Nebraska                                                https://nebraskamap.gov/
+Louisville, KY                                          https://data.louisvilleky.gov
 OpenOakland                                             http://data.openoakland.org
 DigitalC                                                http://civicinsights.org
 ==================================================      =============
@@ -51,11 +51,11 @@ Marine Scotland, UK                                     http://marinedata.scotla
 Detail Data Northern Ireland, UK                        http://data.nicva.org
 UK Financial Conduct Authority                          Internal site - no public access
 Bank of England                                         Internal site - no public access
-Bonn, Germany                                           http://opendata.bonn.de
-Cologne, Germany                                        http://offenedaten-koeln.de
-Mülheim an der Ruhr, Germany                            http://geo.muelheim-ruhr.de
-Bielefeld University, Germany                           http://dszbo-portal.uni-bielefeld.de
-Wuppertal, Germany                                      http://offenedaten-wuppertal.de
+Bonn, Germany                                           https://opendata.bonn.de
+Cologne, Germany                                        https://offenedaten-koeln.de
+Mülheim an der Ruhr, Germany                            https://geo.muelheim-ruhr.de
+Bielefeld University, Germany                           https://dszbo-portal.uni-bielefeld.de
+Wuppertal, Germany                                      https://offenedaten-wuppertal.de
 RNV, Germany                                            http://opendata.rnv-online.de
 KDZV Frechen Rhein Erft Rur, Germany                    http://offenedaten.kdvz-frechen.de
 Montpellier, France                                     http://data.montpellier3m.fr
