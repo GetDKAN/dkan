@@ -13,6 +13,5 @@ DKAN is a Drupal-based open data portal based on CKAN, the first widely adopted 
    catalog-features
    dkan-ckan
    get-dkan
-   installation
    maintaining
    dkan-sites
