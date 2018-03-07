@@ -75,7 +75,9 @@ function _facet_is_user($uid) {
  * Implements hook_menu_alter().
  */
 function dkan_sitewide_search_db_menu_alter(&$items) {
-  $items['search']['page callback'] = '_alter_search_callback';
+  if (!empty($items['search'])) {
+    $items['search']['page callback'] = '_alter_search_callback';
+  }
 }
 
 /**
