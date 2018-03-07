@@ -2,39 +2,81 @@
 Adding New Content
 ==================
 
-Your DKAN site is an access point for users to connect with open data, but data isn't the only content that you can add.
+Your DKAN site is an access point for users to connect with open data, but data isn't the only content type that you can add. There are a variety of content types at your disposal, and it's up to you to choose which best suits your needs.
 
-DKAN is designed to showcase your open data in a number of ways to best engage site visitors and demonstrate tangible value.
-
-There are a variety of content types at your disposal, and it's up to you to choose which best suits your needs. What are you aiming for? What kind of experience do you want your site visitors to have? The answers to these questions will help you decide which content type is right.
-
-In some cases, like data content, it's not a complicated choice. Data Stories and Dashboards are less obvious content types to use. As a Site Manager, you think about the site as a whole and how all the content flows together to create a transformative experience for citizens.
-
-The early stages of creating your DKAN site will involve adding more new content than later stages, which involve more content management. Some content, like Resources, might get added every day as new data is made open in many different data formats. Alternatively, Group is a less frequently added piece of content.
-
-As a Site Manager, you might be involved in adding content in earlier stages and gradually become less involved, or you might never directly generate content. In any case, it's important to understand what content can be added, how it is used and how often, and the overall process so that you can effectively manage your DKAN site and support your team.
-
-**DKAN Content Types**
+**Content Types in DKAN**
 
 Dataset
-  "Containers" that hold Resources. Datasets are given metadata such as author, open data license type, frequency of publication, and they can be assigned to Groups.
+-------
+  Datasets are used to group related pieces of data and their associated metadata. These pieces of data - known as Resources - can then be found under a single url along with descriptions and licensing information.
+
+  You can think of Datasets as ‘folders’ for the Resources within. In real life, a typical folder could contain a printed spreadsheet, a PDF of a map, and a CD-ROM within it. In DKAN, you can similarly add a wide number of Resources in various formats to a single Dataset.
+
+  Datasets are assigned to Groups, which helps sort Datasets according to a common publisher. For more on Groups, see below.
+
+  Admins, Site Managers, Editors and Content Creators can all add Datasets.
+
 Resource
-  The most basic piece of content as well as the most abundant. Resources are the actual files that represent your open data.
+--------
+  In DKAN, Resources are the files, APIs or links that are being shared within a Dataset.
+
+  Resource types include csv, html, xls, json, xlsx, doc, docx, rdf, txt, jpg, png, gif, tiff, pdf, odf, ods, odt, tsv, geojson and xml files.
+
+  If the Resource is an API, it can be used as a live source of information for building a site or application.
+
+  Resources can be previewed within your browser in the form of a grid, graph or map using DKAN Data Previews or used to create visualizations.
+
+  Admins, Site Managers, Editors and Content Creators can all add Resources.
+
 Group
-  Groups both collect content with a common data publisher as well as provide a workflow for a group of users on your DKAN site.
+-----
+  Groups allow you to group together Datasets under a organization (i.e. Department of Transportation, Department of Education) in order to make it easier for users to browse Datasets by theme.
+
+  As a best practice, Datasets and Resources that are added to a Group should share a common publisher.
+
+  Groups also enable you to assign roles and permissions to members of the group. By adding users to the Group’s membership roster, you can create and manage a community based around the data within the group.
+
+  Groups may be added by Admins and Site Managers, but not by Editors or Content Creators.
+
 Page
-  One of the most basic content types on DKAN is a Page. Though the content type is straightforward it has implications for the structure, appearance, and experience of your DKAN site.
+------
+  Pages are used for static content, such as an “About” or “FAQ” page. They may be added by Admins, Site Managers and Editors, but not by Content Creators.
+
 Data Story
-  Similar to a blog post, Data Stories provide a narrative that adds the depth of impact. Stories focus on how data changes real lives every day.
+----------
+  Data Stories are used for creating blog-like content pertaining to data over time. A real life example would be monthly Data Stories created by the Parks and Recreation Department to use charts and maps to update site visitors on a local tree-planting campaign.
+
+  Much like Data Dashboards, Data Stories offer a wide range of possible layouts and can be curated with data visualizations like charts, maps and tables.
+
+  Admins, Site Managers, Editors and Content Creators can all add Data Stories.
+
 Data Dashboard
-  A piece of content that curates all kinds of content on your DKAN site. Dashboards make it easy to put data, media, and narrative into meaningful conversation.
+---------------
+  The Data Dashboards feature allows you to create pages that bring together various forms of content about a specific subject all in one place.
+
+  A real-life example of a data dashboard can be found on any major weather site when looking up the charts, maps and tables from a specific zip code.
+
+  Admins, Site Managers, Editors and Content Creators can all add Data Dashboards.
+
 Harvest Source
+--------------
   A Harvest Source is a content type that allows administrators or Site Managers to "harvest" data from outside sources. To “harvest” data is to use the public feed or API of another data portal to import items from that portal’s catalog into your own.
 
-**DKAN Entity Types**
+  Harvested datasets are fully imported from an external source onto your DKAN site.  This means that the datasets exist both on the external source and your site - independently from one another, and with all of the same information (including title, metadata, tags, and so on.)
 
-Visualizations
-  Visualizations take Resources on your DKAN site and generate visual representations to make data understandable and accessible.
+  By importing datasets from external sources, you can provide more open data on your site without manually managing the dataset content itself. Site visitors will see that a dataset was harvested and its original source, promoting visibility across agencies and sectors.
+
+  Admins and Site Managers can add Harvest Sources, but not Editors or Content Creators.
+
+Visualization
+--------------
+  Visualizations provide intuitive, understandable displays of data. Visualizing information fulfills a basic need; the need to tell a story.
+
+  Visualizations allow users to understand the data from a new perspective, and can be viewed within the site or embedded elsewhere without having to download the data itself. This not only saves time, but also saves memory, bandwidth and hard drive storage space.
+
+  Currently, Charts are the only Visualization type included within out-of-the-box DKAN, but Maps are underway in the future.
+
+  Admins, Site Managers, and Editors can create Visualizations, but not Content Creators.
 
 Where do I add new content?
 ===========================
@@ -42,29 +84,24 @@ Where do I add new content?
 Using the Add content menu
 --------------------------
 
-The most direct path for creating content is through the **Add content** menu item on the Admin Menu bar. Select the content type you'd like to add and then complete the fields shown in the following form.
+The most direct path for creating content is through the **Add content** menu item on the Admin Menu bar. Select the content type you'd like to add, then complete the fields shown in the following form.
 
 .. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_01.png
    :alt: An image displaying the location of the "Add content" menu on the DKAN navigation bar.
 
-Using the Content menu
-----------------------
+The Content Page
+-----------------
 
-In some cases, you may want to see what content exists before creating something new from scratch.
+In some cases, you may want to see what content exists before creating something new from scratch. As your site grows, it's helpful to check what already exists before starting something new.
 
-As a Site Manager, you're able to view and edit all the content that has been authored on your DKAN site. It's not uncommon that content is added but never completed, is complete but outdated, or simply has an unpublished status. As your site matures and contains more content, it's helpful to check what already exists before starting a new piece of content.
-
-You can use the **Content** menu item to get to the Content screen where you can see all existing content, filter and search, and add new content.
+You can click **Content** from the admin menu to access the Content page and view all existing content, publish or unpublish content, and add new content from scratch.
 
 .. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_02.png
    :alt: A screenshot of the DKAN "Content" page, as seen by a Site Manager.
 
-The Content page
-----------------
+In the example below, the Site Manager is adding a new Dataset with Tags, Topics, and other metadata associated with Datasets.
 
-Most of the time, adding a new piece of content is as straightforward as filling out all the fields in a form where some fields are required and others are optional fields for additional information that provide context.
-
-In the example below, the Site Manager is adding a new Dataset with Tags, Topics, and other metadata associated with Datasets. Though not all the fields in the form are required, it's best to include as much information as possible. Complete content gives your site visitors confidence that your content is professional, current, and polished.
+Though not all fields in the Dataset creation form are required, it's best to include as much information as possible.
 
 .. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_03.gif
    :alt: An animated screenshot showing the process of creating a new dataset.
@@ -72,7 +109,7 @@ In the example below, the Site Manager is adding a new Dataset with Tags, Topics
 .. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_04.gif
    :alt: An animated screenshot showing the process of inputting metadata when creating a new dataset.
 
-The final step in creating a piece of content is using the submenu at the bottom of the form to add the final administrative information to the content. Administrative info is kept behind the scenes, and it helps with content management. Keep in mind that your role gives you more permissions than other users on the site; other users with lower-access roles won't see most of these options.
+The final step in creating a piece of content is using the submenu at the bottom of the form to add the administrative information to the content.
 
 .. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_05.png
    :alt: Administrative content settings.
@@ -80,13 +117,18 @@ The final step in creating a piece of content is using the submenu at the bottom
 **Use this menu to add information about:**
 
 URL path settings
-  By default, the Generate automatic URL alias option is selected because DKAN is designed to provide the most intuitive and SEO-optimized URL path. To create your own path, simply uncheck the box and type in your own alias. As a reminder, the URL path is how site visitors access and find your content. You want to use terms that are likely to be searched by a general site visitor.
-Revision information
-  This information is important for content that has been added and then edited. By checking the Create new revision checkbox, DKAN will create a revision of the content. You can think of this like a new version where the changes are tracked and recorded. Revisions can be incredibly helpful if a change is made and published and later you want revert to an old revision. Include notes about the changes in the Revision log message text box to give other users context for changes made to the content.
-Authoring information
-  In DKAN, content must be assigned to an author and given an authoring date so that it can be managed later even if the author is the Anonymous user. An author must be a user on your DKAN site, and this is helpful in knowing which users have added what content. By default, DKAN assigns the author to the user who is logged in when the content is added. Though the author and publishing date is mostly only important for content management behind the scenes, there are some cases when you might want to change the author information on a piece of content.
+  By default, the "generate automatic URL alias" option is selected because DKAN is designed to provide the most intuitive and SEO-optimized URL path. To create your own path, uncheck the box and type in a new alias.
 
-  To change the author you can begin typing a user and the field will autocomplete. Leave the field blank to assign the author to Anonymous. You can change the Authored on information by simply typing a new date into the field. If you leave the field blank, DKAN will use the date and time of when the content was originally saved.
+Revision information
+  This information is important for content that has been added and then edited. By checking the "create new revision" checkbox, DKAN will create a revision of the content.
+
+  Revisions can be incredibly helpful if a change is made and published and later you want revert to an old revision. Include notes about the changes in the Revision log message text box to give other users context.
+
+Authoring information
+  In DKAN, content must be assigned to an author and given an authoring date so that it can be managed later even if the author is the Anonymous user. An author must be a user on your DKAN site, and this is helpful in knowing which users have added what content. By default, DKAN assigns the author to the user who is logged in when the content is added.
+
+  If you leave the "authored on" field blank, DKAN will use the date and time of when the content was originally saved.
+
 Publishing options
   As a Site Manager you can publish and unpublish content. Published content is saved and visible on your DKAN site. Unpublished content is saved, but it is not visible on your DKAN site.
 
