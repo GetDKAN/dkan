@@ -31,7 +31,7 @@ function dkan_additional_setup() {
       array('dkan_enable_optional_module', array('dkan_permissions')),
       array('dkan_enable_optional_module', array('dkan_default_topics')),
       array('dkan_enable_optional_module', array('dkan_dataset_search')),
-    array('dkan_revert_feature',
+      array('dkan_revert_feature',
         array(
           'dkan_sitewide_menu',
           array('content_menu_links', 'menu_links'),
