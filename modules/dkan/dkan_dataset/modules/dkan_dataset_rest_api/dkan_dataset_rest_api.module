@@ -35,3 +35,188 @@ function dkan_dataset_rest_api_services_request_postprocess_alter($controller, $
     }
   }
 }
+
+/**
+ * Implements hook_services_resources_alter().
+ *
+ * Out of the box, the services module handles nodes, but they use the Form API
+ * to enforce data validation. This is a reasonable approach given that lots
+ * of validation is attached to the forms used to input/update data, but it
+ * also brings complications due the the structure differences between forms
+ * and the objects accepted by the Entity API. We are overriding the node
+ * handling to allow Entity API acceptable structures when working with
+ * services while still keeping some of the validation for the data.
+ */
+function dkan_dataset_rest_api_services_resources_alter(&$resources, $endpoint) {
+  if (isset($resources['node']['operations']['create'])) {
+    $resources['node']['operations']['create']['callback'] =
+      "_dkan_dataset_rest_api_resource_create";
+  }
+
+  if (isset($resources['node']['operations']['update'])) {
+    $resources['node']['operations']['update']['callback'] =
+      "_dkan_dataset_rest_api_resource_update";
+  }
+}
+
+/**
+ * Services operation callback: node creation.
+ */
+function _dkan_dataset_rest_api_resource_create($request) {
+  $node_array = _services_arg_value($request, 'node');
+  $node = (object) $node_array;
+
+  if (isset($node->type)) {
+    if ($node->type == "dataset" || $node->type == "resource") {
+
+      try {
+        field_attach_validate('node', $node);
+        _dkan_dataset_rest_api_field_validation($node);
+      }
+      catch (\Exception $e) {
+        return services_error($e->getMessage());
+      }
+
+      node_save($node);
+
+      $nid = $node->nid;
+      $response = array('nid' => $nid);
+      if ($uri = services_resource_uri(array('node', $nid))) {
+        $response['uri'] = $uri;
+      }
+    }
+    else {
+      $response = _node_resource_create($request);
+    }
+  }
+  else {
+    return services_error("Type not set for node");
+  }
+
+  return $response;
+}
+
+/**
+ * Services operation callback: node update.
+ */
+function _dkan_dataset_rest_api_resource_update($nid, $request) {
+  $node = node_load($nid);
+
+  if (isset($node->type)) {
+    if ($node->type == "dataset" || $node->type == "resource") {
+
+      $node_array = _services_arg_value($request, 'node');
+
+      if (!empty($node_array['type']) && $node_array['type'] != $node->type) {
+        // Node types cannot be changed once they are created.
+        return services_error(t('Node type cannot be changed'), 406);
+      }
+
+      foreach ($node_array as $field => $value) {
+        $node->{$field} = $value;
+      }
+
+      try {
+        field_attach_validate('node', $node);
+        _dkan_dataset_rest_api_field_validation($node);
+      }
+      catch (\Exception $e) {
+        return services_error($e->getMessage());
+      }
+
+      if (!isset($node->revision)) {
+        $node->revision = 1;
+      }
+
+      node_save($node);
+
+      $nid = $node->nid;
+      $response = array('nid' => $nid);
+      if ($uri = services_resource_uri(array('node', $nid))) {
+        $response['uri'] = $uri;
+      }
+      return $response;
+    }
+    else {
+      return _node_resource_update($nid, $request);
+    }
+  }
+  else {
+    return services_error("Type not set for node");
+  }
+}
+
+/**
+ * Basic validation of fields.
+ *
+ * Currently we are only checking for required fields, and that the
+ * values in an options/select list field are valid.
+ */
+function _dkan_dataset_rest_api_field_validation($node) {
+  $instances = field_info_instances('node', $node->type);
+
+  foreach ($instances as $field_name => $info) {
+    if ($info['required'] == 1 && empty($node->{$field_name})) {
+      throw new Exception("Field {$field_name} is required");
+    }
+
+    if (!empty($node->{$field_name})) {
+      $options = _dkan_dataset_rest_api_field_validation_get_options($node, $field_name, $info);
+
+      // Check that the values match the options.
+      if (!empty($options) && is_array($options)) {
+        _dkan_dataset_rest_api_field_validation_check_field_values_against_options($field_name, $node->{$field_name}, $options);
+      }
+    }
+  }
+}
+
+/**
+ * Get options for a field.
+ */
+function _dkan_dataset_rest_api_field_validation_get_options($node, $field_name, $field_instance) {
+  $options = [];
+
+  // Look for predefined options for this field.
+  if (!empty($field_instance['widget']['settings']['available_options'])) {
+    $string = $field_instance['widget']['settings']['available_options'];
+    $lines = explode(PHP_EOL, $string);
+    foreach ($lines as $line) {
+      $pieces = explode("|", $line);
+      $options[trim($pieces[0])] = trim($pieces[1]);
+    }
+  }
+  else {
+    $field = field_info_field($field_name);
+    $properties = [
+      'strip_tags' => FALSE,
+      'strip_tags_and_unescape' => FALSE,
+      'filter_xss' => FALSE,
+      'empty_option' => FALSE,
+      'optgroups' => FALSE
+    ];
+
+    $options = _options_get_options($field, $field_instance, $properties, 'node', $node);
+  }
+
+  return $options;
+}
+
+/**
+ * Check field values against field options.
+ */
+function _dkan_dataset_rest_api_field_validation_check_field_values_against_options($field_name, $field_values, $options) {
+  $keys = array_keys($options);
+
+  foreach ($field_values as $language => $info) {
+    foreach ($info as $delta => $info2) {
+      foreach ($info2 as $property => $value) {
+        if (substr_count($property, "value") > 0) {
+          if (!in_array($value, $keys)) {
+            throw new \Exception("Invalid option for field {$field_name}");
+          }
+        }
+      }
+    }
+  }
+}

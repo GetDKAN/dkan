@@ -1,4 +1,10 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/GetDKAN/dkan_api_client.git"
+        }
+    ],
     "require": {
         "phpunit/phpunit": "5.7.*",
         "behat/behat": "3.1.*@dev",
@@ -8,7 +14,8 @@
         "drupal/drupal-extension": "~3.0",
         "squizlabs/php_codesniffer": "2.7.0",
         "drupal/coder": "8.2.10",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "dkan/dkan_api_client": "1.0.0"
     },
     "autoload": {
         "psr-0": {
