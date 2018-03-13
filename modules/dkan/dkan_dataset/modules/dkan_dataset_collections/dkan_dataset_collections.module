@@ -18,7 +18,6 @@ function dkan_dataset_collections_node_view_alter(&$build) {
     }
     elseif (empty($build['body'][0]['#markup'])) {
       $build['body'][0]['#markup'] = $collection;
-
     }
   }
 }
