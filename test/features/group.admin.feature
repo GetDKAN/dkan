@@ -18,44 +18,24 @@ Feature: Site managers administer groups
     Given users:
       | name    | mail                | roles        |
       | John    | john@example.com    | site manager |
-      | Badmin  | admin@example.com   | site manager |
       | Gabriel | gabriel@example.com | editor       |
       | Jaz     | jaz@example.com     | editor       |
       | Katie   | katie@example.com   | editor       |
-      | Martin  | martin@example.com  | editor       |
-      | Celeste | celeste@example.com | editor       |
     Given groups:
       | title    | author | published |
       | Group 01 | John   | Yes       |
       | Group 02 | John   | Yes       |
       | Group 03 | John   | No        |
-    And "Tags" terms:
-      | name    |
-      | world   |
-      | results |
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Gabriel | Group 01 | administrator member | Active            |
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
-      | Celeste | Group 02 | member               | Active            |
-    And "Tags" terms:
-      | name     |
-      | price    |
-      | election |
     And datasets:
-      | title      | publisher | tags       | author  | published | description                |
-      | Dataset 01 | Group 01  | world      | Katie   | Yes       | Increase of toy prices     |
-      | Dataset 02 | Group 01  | world      | Katie   | No        | Cost of oil in January     |
-      | Dataset 03 | Group 01  | results    | Gabriel | Yes       | Election results           |
-    And "format" terms:
-      | name |
-      | csv  |
-      | zip |
-    And resources:
-      | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 |             |
-      | Resource 02 | Group 01  | zip    | Katie  | Yes       | Dataset 01 |             |
+      | title      | publisher | author  | published | description                |
+      | Dataset 01 | Group 01  | Katie   | Yes       | Increase of toy prices     |
+      | Dataset 02 | Group 01  | Katie   | No        | Cost of oil in January     |
+      | Dataset 03 | Group 01  | Gabriel | Yes       | Election results           |
 
   @group_admin_01
   Scenario: Create group
@@ -195,7 +175,7 @@ Feature: Site managers administer groups
     And I am on "Group 01" page
     And I click "Group"
     When I click "People"
-    Then I should see "Total content: 5"
+    Then I should see "Total content: 3"
 
   @group_admin_14
   Scenario: View list of unpublished groups
