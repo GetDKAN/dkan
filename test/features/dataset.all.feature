@@ -28,17 +28,17 @@ Feature: Dataset Features
       | user    | group    | role on group        | membership status |
       | John    | Group 01 | administrator member | Active            |
     And "Tags" terms:
-      | name     |
-      | Health 2 |
-      | Gov 2    |
+      | name         |
+      | gobbledygook |
+      | gibberish    |
     And "Format" terms:
       | name   |
       | csv 2  |
       | html 2 |
     And datasets:
-      | title               | publisher | author  | published        | tags     | description |
-      | DKANTest Dataset 01 | Group 01  | John    | Yes              | Health 2 | Test        |
-      | DKANTest Dataset 02 | Group 01  | John    | Yes              | Gov 2    | Test        |
+      | title               | publisher | author  | published        | tags         | description |
+      | DKANTest Dataset 01 | Group 01  | John    | Yes              | gobbledygook | Test        |
+      | DKANTest Dataset 02 | Group 01  | John    | Yes              | gibberish    | Test        |
     And resources:
       | title       | publisher | format | author | published | dataset             | description |
       | Resource 01 | Group 01  | csv 2  | John   | Yes       | DKANTest Dataset 01 |             |
@@ -127,11 +127,19 @@ Feature: Dataset Features
   @dataset_all_8
   Scenario: View available tag filters for datasets
     When I am on "Datasets Search" page
+    # Sites with long lists of tags will fail unless you filter first.
+    And I fill in "gobbledygook" for "Search" in the "datasets" region
+    And I press "Apply"
     ## Uncomment this if you wanna use selenium.
     # Then I click on the text "Tags"
     # And I wait for "1" seconds
-    Then I should see "Health 2 (1)" in the "filter by tag" region
-    Then I should see "Gov 2 (1)" in the "filter by tag" region
+    Then I should see "gobbledygook (1)" in the "filter by tag" region
+    And I fill in "gibberish" for "Search" in the "datasets" region
+    And I press "Apply"
+    ## Uncomment this if you wanna use selenium.
+    # Then I click on the text "Tags"
+    # And I wait for "1" seconds
+    Then I should see "gibberish (1)" in the "filter by tag" region
 
   # TODO: make sure it works when we don't have default content on.
   @dataset_all_9
