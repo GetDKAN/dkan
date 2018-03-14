@@ -130,7 +130,9 @@ default:
       tags: ~@fixme
   extensions:
     Behat\MinkExtension:
-      goutte: []
+      goutte:
+        guzzle_parameters:
+          verify: false
 
       selenium2: []
 
