@@ -1567,14 +1567,22 @@ return TRUE;
   $pane->access = array();
   $pane->configuration = array(
     'override_title' => 1,
-    'override_title_text' => 'Filter by Collection',
+    'override_title_text' => 'Collection',
     'override_title_heading' => 'h2',
   );
   $pane->cache = array();
   $pane->style = array(
-    'settings' => NULL,
+    'settings' => array(
+      'pane_title' => '%title',
+      'pane_collapsed' => 1,
+      'pane_empty_check' => 0,
+    ),
+    'style' => 'collapsible',
   );
-  $pane->css = array();
+  $pane->css = array(
+    'css_id' => '',
+    'css_class' => 'pane-facetapi pane-block',
+  );
   $pane->extras = array();
   $pane->position = 6;
   $pane->locks = array();

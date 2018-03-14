@@ -28,7 +28,6 @@ Feature: Dataset Collections
     And I fill-in the following:
       | title       | Test Dataset1    |
       | description | Test description |
-      | publisher   | Group 01         |
     And I press "Next: Add data"
     And I fill in "title" with "Test Resource Link File1"
     And I press "Save"
@@ -39,45 +38,23 @@ Feature: Dataset Collections
     And I fill-in the following:
       | title       | Test Dataset2     |
       | description | Test description2 |
-      | publisher   | Group 01          |
-    And I fill in "field_dkan_ispartof_ref[und][0][target_id]" with "Test Dataset1"
     And I press "Next: Add data"
     And I fill in "title" with "Test Resource Link File2"
+    And I press "Next: Additional Info"
+    And I fill in "field_dkan_ispartof_ref[und][0][target_id]" with "Test Dataset1"
     And I press "Save"
-    Then I click "Test Dataset2"
     Then I should see "Test Dataset2"
-    And I should see "Test Dataset1"
 
     # Associate child 2 with parent and make sure it links
     Then I am on "Add Dataset" page
     And I fill-in the following:
       | title       | Test Dataset3     |
       | description | Test description3 |
-      | publisher   | Group 01          |
-    And I fill in "field_dkan_ispartof_ref[und][0][target_id]" with "Test Dataset1"
     And I press "Next: Add data"
     And I fill in "title" with "Test Resource Link File3"
-    And I press "Save"
-    Then I click "Test Dataset3"
+    And I press "Next: Additional Info"
+    And I fill in "field_dkan_ispartof_ref[und][0][target_id]" with "Test Dataset1"
     Then I should see "Test Dataset3"
-    And I should see "Test Dataset1"
-
-    # Make sure parent has children
-    Then I click "Test Dataset1"
-    Then I should see "Collection"
-    # These two steps pass locally, but fail in circle build.
-    # And I should see "Test Dataset2"
-    # And I should see "Test Dataset3"
-
-    # Check search facet & view presentation
-    Then I am on "Search"
-    # These steps pass locally, but fail in circle build.
-    # Then I should see "Filter by Collection"
-    # And I click "Test Dataset1"
-    # And I should see "Test Dataset2"
-    # And I should see "Test Dataset3"
-
-
 
 
 
