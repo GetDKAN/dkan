@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * dkan_dataset_collections.views_default.inc
@@ -41,8 +40,7 @@ function dkan_dataset_collections_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] = '<h2>In this Collection</h2>
-Items related to this dataset:';
+  $handler->display->display_options['header']['area']['content'] = 'Items related to this dataset:';
   $handler->display->display_options['header']['area']['format'] = 'html';
   /* Footer: Global: Result summary */
   $handler->display->display_options['footer']['result']['id'] = 'result';
@@ -110,7 +108,7 @@ Items related to this dataset:';
 
   /* Display: Content pane */
   $handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
-  $handler->display->display_options['link_url'] = 'search/field_dkan_ispartof_ref/!1';
+  $handler->display->display_options['link_url'] = 'search?f[0]=field_dkan_ispartof_ref:!1';
   $handler->display->display_options['argument_input'] = array(
     'field_dkan_ispartof_ref_target_id' => array(
       'type' => 'context',

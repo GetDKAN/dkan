@@ -12,13 +12,13 @@ include_once 'dkan_dataset_collections.features.inc';
  */
 function dkan_dataset_collections_node_view_alter(&$build) {
   if ($build['#bundle'] === 'dataset') {
+    drupal_add_js(drupal_get_path('module', 'dkan_dataset_collections') . '/dkan_dataset_collections.js');
     $collection = views_embed_view('collection_parent', 'panel_pane_1');
     if (!empty($build['body'][0]['#markup'])) {
       $build['body'][0]['#markup'] .= $collection;
     }
     elseif (empty($build['body'][0]['#markup'])) {
       $build['body'][0]['#markup'] = $collection;
-
     }
   }
 }
