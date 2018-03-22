@@ -21,7 +21,8 @@ function nuboot_radix_preprocess_node(&$variables) {
 
     $variables['dataset_list'] = '';
     $variables['group_list'] = NULL;
-    $variables['body'] = empty($wrapper->body->value()) ? '' : $wrapper->body->value->value();
+    $body = $wrapper->body->value();
+    $variables['body'] = empty($body) ? '' : $body;
     $path = drupal_lookup_path('alias', "node/" . $wrapper->getIdentifier());
     $variables['node_url'] = $path ? $path : "node/{$variables['nid']}";
     if ($variables['type'] == 'resource' && $wrapper->field_dataset_ref->count() > 0) {

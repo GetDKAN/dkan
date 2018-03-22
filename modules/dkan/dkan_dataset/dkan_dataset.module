@@ -1280,8 +1280,8 @@ function dkan_dataset_release_date($node) {
 
   // Last time a dataset was harvested is supposedly the time of the last
   // update.
-  if (isset($node->field_harvest_source_issued) &&
-    !empty($node->field_harvest_source_issued->value())) {
+  $issued = $node->field_harvest_source_issued->value();
+  if (isset($node->field_harvest_source_issued) && !empty($issued)) {
     $date = format_date($node->field_harvest_source_issued->value(), 'iso_8601_date');
   }
   else {
