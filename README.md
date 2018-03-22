@@ -4,7 +4,7 @@ DKAN is an open source open data platform with a full suite of cataloging, publi
 
 *  [ Official website ](https://getdkan.org)
 *  [ Demo ](http://demo.getdkan.com/)
-*  [ Documetation ](http://docs.getdkan.com/)
+*  [ Documetation ](https://docs.getdkan.com/)
 
 ## Community
 
@@ -24,7 +24,7 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 
 ## Help
 
-* General: [DKAN documentation](http://docs.getdkan.com)
+* General: [DKAN documentation](https://docs.getdkan.com)
 * Developers: Submit a [Github issue](https://github.com/nucivic/dkan/issues) or post to [ #dev ](https://dkan.slack.com/messages/C4BEVFDKJ/) channel in [ DKAN Slack ](https://dkan.slack.com)
 * Bugs: Submit a [Github issue](https://github.com/nucivic/dkan/issues)
 
@@ -47,11 +47,11 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 
 ## Installation
 
-Please see the [Installation](http://docs.getdkan.com/en/latest/introduction/installation.html) section of the DKAN Documentation.
+Please see the [Installation](https://docs.getdkan.com/en/latest/introduction/installation.html) section of the DKAN Documentation.
 
 ### Upgrading DKAN
 
-Please see the [Updating and Maintaining DKAN](http://docs.getdkan.com/en/latest/introduction/maintaining.html) section of the DKAN Documentation for general upgrade information.
+Please see the [Updating and Maintaining DKAN](https://docs.getdkan.com/en/latest/introduction/maintaining.html) section of the DKAN Documentation for general upgrade information.
 
 ## Releases
 
