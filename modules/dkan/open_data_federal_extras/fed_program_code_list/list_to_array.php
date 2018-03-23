@@ -27,7 +27,7 @@ function opfe_list_to_array_process_agencies() {
   /**
    * @file
    * Array of federal agencies produced by Federal Inventory Program.
-   * @see http://project-open-data.github.io/schema/#programCode
+   * @see https://project-open-data.github.io/schema/#programCode
    */
 
   $federal_inventory_agency_list = ';
@@ -55,7 +55,7 @@ function opfe_list_to_array_process_codes() {
   /**
    * @file
    * Array of federal agency codes produced by Federal Inventory Program.
-   * @see http://project-open-data.github.io/schema/#programCode
+   * @see https://project-open-data.github.io/schema/#programCode
    */
 
   $federal_inventory_full_list = ';
@@ -64,7 +64,7 @@ function opfe_list_to_array_process_codes() {
   /**
    * @file
    * Key/Vallue array of federal agencies produced by Federal Inventory Program.
-   * @see http://project-open-data.github.io/schema/#programCode
+   * @see https://project-open-data.github.io/schema/#programCode
    */
 
   $federal_inventory_small_list = ';
