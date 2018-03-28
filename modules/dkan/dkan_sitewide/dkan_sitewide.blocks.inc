@@ -169,7 +169,7 @@ function dkan_sitewide_data_extent_block() {
       $output = "var dataExtent = " . $geojson;
       $output .= "; var map = L.map('map');
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href=\"https://openstreetmap.org\">OpenStreetMap</a>'
+        attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a>'
         }).addTo(map);
 
         var geojson = L.geoJson(dataExtent).addTo(map);
@@ -295,9 +295,10 @@ function dkan_sitewide_license_block() {
  */
 function dkan_sitewide_footer_author() {
   return t(
-    "Powered by !dkan",
+    "Powered by !dkan, a project of !nucivic",
     array(
-      '!dkan' => l(t('DKAN'), 'https://getdkan.org/'),
+      '!dkan' => l(t('DKAN'), 'http://nucivic.com/dkan'),
+      '!nucivic' => l(t('NuCivic'), 'http://nucivic.com'),
     )
   );
 }
@@ -343,7 +344,7 @@ function dkan_sitewide_social_block() {
       ),
       'reddit' => array(
         'data' => l('<i class="ckan-icon ckan-icon-fb fa fa-lg fa-reddit-square"></i> ' . t('Reddit'),
-          'https://www.reddit.com/submit', array(
+          'http://www.reddit.com/submit', array(
             'query' => array(
               'url' => $link,
               'title' => $title,
@@ -436,7 +437,7 @@ function dkan_sitewide_other_access() {
       ),
       'dkan_api' => array(
         '#type' => 'markup',
-        '#markup' => '<p><small>' . t('via the  <a href="https://docs.getdkan.com/en/latest/apis/index.html">DKAN API</a>') . '</small></p>',
+        '#markup' => '<p><small>' . t('via the  <a href="http://docs.getdkan.com/en/latest/apis/index.html">DKAN API</a>') . '</small></p>',
       ),
     );
 
