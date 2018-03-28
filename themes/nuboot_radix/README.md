@@ -5,7 +5,7 @@ This is the default theme for DKAN 1.0 -> https://github.com/GetDKAN/dkan
 
 ## Installation
 
-Your theme will use [Gulp](https://gulpjs.com/) to compile Sass. Gulp needs Node.
+Your theme will use [Gulp](http://gulpjs.com) to compile Sass. Gulp needs Node.
 
 #### Step 1
 Make sure you have Node and npm installed.
@@ -50,13 +50,13 @@ OR if using Ahoy:
 
 ```ahoy dkan theme watch```
 
-The new subtheme will be placed in to the /sites/all/themes/ directory, it will contain the proper directory structure to get you started.
+The new subtheme will be placed in to the /sites/all/themes/ directory, it will contain the proper directory structure to get you started. 
 
 
 ## Updating subthemes that were based on Radix 7.x-rc4
 
 To upgrade an older NuBoot Radix subtheme to use the new Radix 7.x-3.3 compiling process, it will need to be done manually, follow the steps outlined here:
-https://www.radixtheme.org/articles/update-rc4-to-3/
+http://www.radixtheme.org/articles/update-rc4-to-3/
 
 
 ## Use
@@ -67,8 +67,8 @@ Use the components directory to break out your styles into easy to find partial 
 
 ## Credits for icon assets used in this project
 
-**Streamline Icons** https://www.streamlineicons.com/index.html
+**Streamline Icons** http://www.streamlineicons.com/index.html
 
-**Flaticons** designed by Freepik https://www.flaticon.com/packs/file-formats-icons
+**Flaticons** designed by Freepik http://www.flaticon.com/packs/file-formats-icons
 
-**Font Awesome** https://fontawesome.com/
+**Font Awesome** http://fontawesome.io/
