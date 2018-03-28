@@ -24,7 +24,7 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
     '#title' => t('Footer text'),
     '#type' => 'text_format',
     '#format' => 'html',
-    '#default_value' => isset($copyright['value']) ? $copyright['value'] : t('Powered by <a href="https://getdkan.org/">DKAN</a>'),
+    '#default_value' => isset($copyright['value']) ? $copyright['value'] : t('Powered by <a href="http://getdkan.org/">DKAN</a>'),
   );
 
   $display_login_menu = (theme_get_setting('display_login_menu', 'nuboot_radix') === NULL) ? 1 : theme_get_setting('display_login_menu', 'nuboot_radix');

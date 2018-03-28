@@ -3,7 +3,7 @@
   /**
    * @file
    * Array of federal agencies produced by Federal Inventory Program.
-   * @see https://project-open-data.github.io/schema/#programCode
+   * @see http://project-open-data.github.io/schema/#programCode
    */
 
   $federal_inventory_agency_list = array(
