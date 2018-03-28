@@ -63,7 +63,7 @@ Let's take a closer look at some of the metadata fields available on this form:
 :Frequency: How often is this dataset updated? We might expect our list of polling places to be updated every year, so we could select "annually." However, often we don't expect the data to be updated (even in this case, perhaps we plan to post the next version of the data as a _separate_ dataset), in which case we can leave this blank.
 :Temporal Coverage: Like Geographic Coverage, this field lets us give some context to the data, but now for the relevant time period. Here we could enter the year or years for which our polling places data is accurate.
 :Granularity: This is a somewhat open-ended metadata field that lets you describe the granularity or accuracy of your data. For instance: "Year". Note, this field is depreciated in DCAT and Project Open Data, and may be removed from DKAN.
-:Data Dictionary: This should be a URL to a resource that provides some sort of description that helps understanding the data. See `Project Open Data data dictionary <https://project-open-data.github.io/schema/#common-core-required-if-applicable-fields>`_ for more info.
+:Data Dictionary: This should be a URL to a resource that provides some sort of description that helps understanding the data. See `Project Open Data data dictionary <http://project-open-data.github.io/schema/#common-core-required-if-applicable-fields>`_ for more info.
 :Additional Info: Lets us arbitrarily define other metadata fields. See :ref:`Additional Info field <custom_metadata>` for more information.
 :Resources: This field is a reference to the resources you have already added.
 

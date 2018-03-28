@@ -7,7 +7,7 @@
  or located where the classloader for the Solr webapp can find it.
 
  For more information, on how to customize this file, please see
- https://wiki.apache.org/solr/SchemaXml
+ http://wiki.apache.org/solr/SchemaXml
 -->
 
 <schema name="drupal-4.3-solr-3.x" version="1.3">
@@ -101,7 +101,7 @@
 
     <!-- The format for this date field is of the form 1995-12-31T23:59:59Z, and
          is a more restricted form of the canonical representation of dateTime
-         https://www.w3.org/TR/xmlschema-2/#dateTime
+         http://www.w3.org/TR/xmlschema-2/#dateTime
          The trailing "Z" designates UTC time and is mandatory.
          Optional fractional seconds are allowed: 1995-12-31T23:59:59.999Z
          All other components are mandatory.
@@ -133,7 +133,7 @@
          matching across fields.
 
          For more info on customizing your analyzer chain, please see
-         https://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters
+         http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters
      -->
 
     <!-- One can also specify an existing Analyzer class that has a
@@ -326,14 +326,14 @@
     <fieldType name="location" class="solr.LatLonType" subFieldType="tdouble"/>
 
     <!-- A Geohash is a compact representation of a latitude longitude pair in a single field.
-         See https://wiki.apache.org/solr/SpatialSearch
+         See http://wiki.apache.org/solr/SpatialSearch
      -->
     <fieldtype name="geohash" class="solr.GeoHashField"/>
     <!-- End added Solr 3.4+ types -->
   </types>
 
   <!-- Following is a dynamic way to include other types, added by other contrib modules -->
-  <xi:include href="schema_extra_types.xml" xmlns:xi="https://www.w3.org/2001/XInclude">
+  <xi:include href="schema_extra_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude">
     <xi:fallback></xi:fallback>
   </xi:include>
 
@@ -499,7 +499,7 @@
     <dynamicField name="zm_*" type="string"   indexed="false"  stored="true" multiValued="true"/>
 
     <!-- Begin added fields to use features in Solr 3.4+
-         https://wiki.apache.org/solr/SpatialSearch#geodist_-_The_distance_function -->
+         http://wiki.apache.org/solr/SpatialSearch#geodist_-_The_distance_function -->
     <dynamicField name="points_*" type="point" indexed="true"  stored="true" multiValued="false"/>
     <dynamicField name="pointm_*" type="point" indexed="true"  stored="true" multiValued="true"/>
     <dynamicField name="locs_*" type="location" indexed="true"  stored="true" multiValued="false"/>
@@ -528,7 +528,7 @@
   </fields>
 
   <!-- Following is a dynamic way to include other fields, added by other contrib modules -->
-  <xi:include href="schema_extra_fields.xml" xmlns:xi="https://www.w3.org/2001/XInclude">
+  <xi:include href="schema_extra_fields.xml" xmlns:xi="http://www.w3.org/2001/XInclude">
     <xi:fallback></xi:fallback>
   </xi:include>
 

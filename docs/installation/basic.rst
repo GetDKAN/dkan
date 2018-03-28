@@ -18,7 +18,7 @@ Repository <https://github.com/GetDKAN/dkan>`__ is a Drupal
 *installation profile*. To set up a working website using DKAN, you will
 need to acquire or build a full DKAN distribution of Drupal.
 
-.. tip:: `DKAN Starter <https://dkan-starter.readthedocs.io>`_ is project
+.. tip:: `DKAN Starter <http://dkan-starter.readthedocs.io>`_ is project
   containing a prebuilt version of DKAN and the tools `CivicActions
   <https://civicactions.com/dkan/>`_ uses for our own implementations and
   deployments. Learn more advanced workflows in that project's
@@ -70,7 +70,7 @@ is optimized to run on the Pantheon platform. You can build a DKAN site
 with a single click on Pantheon
 `here <https://dashboard.getpantheon.com/products/dkan/spinup>`__. (We
 also offer `one-click installation on
-Acquia <https://docs.getdkan.com/dkan-documentation/get-dkan/dkan-acquia>`__)
+Acquia <http://docs.getdkan.com/dkan-documentation/get-dkan/dkan-acquia>`__)
 
 Download and unzip `the latest version of the "DKAN DROPS"
 codebase <https://github.com/GetDKAN/dkan-drops-7/archive/master.zip>`__
@@ -189,8 +189,8 @@ With the web installer
    a short congratulatory message and you’ll be prompted to access your
    new site.
 -  Proceed to “\ `DKAN - Data
-   Management <https://docs.getdkan.com/v1/data>`__\ ” or “\ `DKAN - User
-   Management <https://docs.getdkan.com/v1/users>`__ ” next to continue
+   Management <http://docs.getdkan.com/v1/data>`__\ ” or “\ `DKAN - User
+   Management <http://docs.getdkan.com/v1/users>`__ ” next to continue
    setting up your new DKAN server.
 
 Install for development

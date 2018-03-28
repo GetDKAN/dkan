@@ -8,9 +8,9 @@ CSV and XML files uploaded to DKAN through the "Add Resources" form or through t
 
 ### Manual Processing
 
-Files are parsed and inserted in batches. The user has the option of parsing them upon form submission. If the user chooses to parse the file manually they are able to see the progress of the processing through a batch operations screen similar to the one below.
+Files are parsed and inserted in batches. The user has the option of parsing them upon form submission. If the user chooses to parse the file manually they are able to see the progress of the processing through a batch operations screen similar to the one below. 
 
-![Drupal batch operation](https://drupal.org/files/images/computed_field_tools_drupal7_batch.png)
+![Drupal batch operation](http://drupal.org/files/images/computed_field_tools_drupal7_batch.png)
 
 ### Cron Processing
 

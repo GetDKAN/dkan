@@ -8,7 +8,7 @@
         "maintainer": "DKAN",
         "maintainer_email": "admin@example.com",
         "license_title": "http://opendefinition.org/licenses/cc-zero/",
-        "notes": "<p>County data: <a href=\"https://www.npr.org/templates/story/story.php?storyId=111494514\">https://www.npr.org/templates/story/story.php?storyId=111494514</a></p>\n<p>State data: <a href=\"http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1\">http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1</a></p>\n",
+        "notes": "<p>County data: <a href=\"http://www.npr.org/templates/story/story.php?storyId=111494514\">http://www.npr.org/templates/story/story.php?storyId=111494514</a></p>\n<p>State data: <a href=\"http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1\">http://statehealthfacts.org/comparetable.jsp?ind=649&cat=1</a></p>\n",
         "url": "http://default/dataset/us-national-foreclosure-statistics-january-2012",
         "state": "Active",
         "log_message": "Update to resource '1-2012-Foreclosures-by-State'",
