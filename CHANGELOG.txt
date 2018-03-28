@@ -1,7 +1,6 @@
 7.x-1.14.5
 ----------
  - #2435 Update Drupal core to 7.58
- - #2374 Update urls to use https
  - #2412 Update installation instructions
 
 7.x-1.14.4
