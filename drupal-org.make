@@ -270,7 +270,9 @@ projects:
     version: '1.45'
   paragraphs:
     version: '1.0-rc5'
-  paragraphs_defaults:
+    patch:
+      2558517: https://drupal.org/files/issues/paragraphs-is_required_check_fails-2558517-23.patch 
+paragraphs_defaults:
     version: '1.0'
   path_breadcrumbs:
     version: '3.3'
