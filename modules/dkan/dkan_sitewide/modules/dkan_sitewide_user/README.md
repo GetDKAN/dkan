@@ -14,12 +14,12 @@ In this example we’ll add a new editor user to the site.
 
 ## Managing, Editing, and Deleting Existing Users
 
-![User admin screen](https://docs.getdkan.com/sites/default/files/user_01.png)
+![User admin screen](http://docs.getdkan.com/sites/default/files/user_01.png)
 
 * Visit your site’s User Management page by clicking “People” in the admin menu.
 * The displayed list of users on the User Management page can be filtered and sorted using the filters at the top of the page. Once you’ve found the user you wish to edit in the user table, click the “edit” link at the end of that user’s row.
 
-![User edit screen](https://docs.getdkan.com/sites/default/files/user_02.png)
+![User edit screen](http://docs.getdkan.com/sites/default/files/user_02.png)
 
 * On the resulting “edit user” page, you can edit the user’s username, email, or profile information. You can also set a new password for the user. Click the “Save” button at the bottom of the page to save your changes.
 * Use the “Cancel account” at the bottom of the edit user page to delete an account. You will be given the option to preserve or delete any website content added by that user before deletion.
