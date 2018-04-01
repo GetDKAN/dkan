@@ -8,7 +8,7 @@ jobs:
       TZ: "/usr/share/zoneinfo/America/New_York"
     parallelism: 5
     docker:
-      - image: circleci/php:5.6.31-apache-node-browsers
+      - image: getdkan/dkan-web:5-latest
         environment:
           MYSQL_HOST: "127.0.0.1"
           DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
@@ -27,43 +27,10 @@ jobs:
             - v1-dkan-{{ .Branch }}
             - v1-dkan-test-vendor
       - run:
-          name: Install Chrome
-          command: |
-            curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            sudo dpkg -i google-chrome.deb
-            sudo sed -i 's|HERE/chrome\"|HERE/chrome\" --disable-setuid-sandbox|g' /opt/google/chrome/google-chrome
-            rm google-chrome.deb
-
-      - run:
-          name: Install Selenium
-          command: |
-            sudo npm install selenium-standalone@latest -g
-            #npm install geckodriver
-            sudo selenium-standalone install
-
-      - run:
           name: Run Selenium
           command: |
             sudo selenium-standalone start
           background: true
-      - run:
-          name: Update Packages
-          command: sudo apt-get update
-      - run:
-          name: Install Packages
-          command: sudo apt-get install -y ruby libpng-dev libmcrypt-dev mysql-client x11vnc
-
-#Available Extensions:
-#bcmath bz2 calendar ctype curl dba dom enchant exif fileinfo filter ftp gd gettext gmp hash iconv imap interbase intl json ldap mbstring mcrypt mssql mysql mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline recode reflection session shmop simplexml snmp soap sockets spl standard sybase_ct sysvmsg sysvsem sysvshm tidy tokenizer wddx xml xmlreader xmlrpc xmlwriter xsl zip
-      - run:
-          name: Install PHP Extensions
-          command: sudo docker-php-ext-install gd json mcrypt mysql mysqli opcache pdo pdo_mysql zip
-      - run:
-          name: Install Composer
-          command: |
-            curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-            composer global require hirak/prestissimo
-            echo 'export PATH=~/.composer/vendor/bin:$PATH' >> $BASH_ENV
       - run:
           name: Edit MySQL Configuration
           command: |
@@ -71,12 +38,6 @@ jobs:
             sudo chmod 777 /etc/mysql/my.cnf
             sudo echo -e "[client]\nloose-local-infile" >> /etc/mysql/my.cnf
             sudo chmod 644 /etc/mysql/my.cnf
-      - run:
-          name: Adjust PHP Settings
-          command: |
-            sudo chmod 777 /usr/local/etc/php/conf.d
-            echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory.ini
-            echo "always_populate_raw_post_data = -1" > /usr/local/etc/php/conf.d/deprecated.ini
 
       - checkout
       - run: php -i
@@ -88,13 +49,6 @@ jobs:
             sudo a2ensite circle.conf
             sudo a2enmod rewrite
             sudo service apache2 restart
-
-      # Ahoy install in dkan-init.sh had problems detecting root user.
-      - run:
-          name: Install Ahoy
-          command: |
-            sudo wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy &&
-            sudo chmod +x /usr/local/bin/ahoy
 
       ### Setup DKAN
       - run:
@@ -151,7 +105,7 @@ jobs:
       TZ: "/usr/share/zoneinfo/America/New_York"
     parallelism: 5
     docker:
-      - image: pythagory/dkan-web:7-latest
+      - image: getdkan/dkan-web:7-latest
         environment:
           MYSQL_HOST: "127.0.0.1"
           DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
