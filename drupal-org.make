@@ -26,11 +26,11 @@ projects:
   beautytips:
     download:
       type: git
-      url: http://git.drupal.org/project/beautytips.git
+      url: https://git.drupal.org/project/beautytips.git
       branch: 7.x-2.x
       revision: f9a8b5b
     patch:
-      849232: http://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
+      849232: https://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
   better_exposed_filters:
     version: '3.5'
   bueditor:
@@ -106,7 +106,7 @@ projects:
   feeds:
     download:
       type: git
-      url: http://git.drupal.org/project/feeds.git
+      url: https://git.drupal.org/project/feeds.git
       branch: 7.x-2.x
       revision: d312f4f66e98cc12b8462cd13874184589017f72
     patch:
@@ -114,12 +114,12 @@ projects:
   feeds_field_fetcher:
     download:
       type: git
-      url: http://git.drupal.org/project/feeds_field_fetcher.git
+      url: https://git.drupal.org/project/feeds_field_fetcher.git
       branch: 7.x-1.x
       revision: 6725b86
     patch:
-      2315425: http://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch
-      2829416: http://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch
+      2315425: https://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch
+      2829416: https://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch
   feeds_flatstore_processor:
     download:
       type: git
@@ -128,7 +128,7 @@ projects:
   field_group:
     version: '1.5'
     patch:
-      2042681: http://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch
+      2042681: https://drupal.org/files/issues/field-group-show-ajax-2042681-8.patch
       2831815: https://www.drupal.org/files/issues/hash-location-sanitization.diff
   field_group_table:
     version: '1.6'
@@ -171,11 +171,11 @@ projects:
   gravatar:
     download:
       type: git
-      url: http://git.drupal.org/project/gravatar.git
+      url: https://git.drupal.org/project/gravatar.git
       branch: 7.x-1.x
       revision: bb2f81e
     patch:
-      1568162: http://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch
+      1568162: https://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch
   honeypot:
     version: '1.22'
   image_url_formatter:
@@ -185,7 +185,7 @@ projects:
     type: module
     download:
       type: git
-      url: http://git.drupal.org/project/imagecache_actions.git
+      url: https://git.drupal.org/project/imagecache_actions.git
       revision: cd19d2a
   job_scheduler:
     version: 2.x
@@ -211,7 +211,7 @@ projects:
   markdowneditor:
     version: '1.4'
     patch:
-      2045225: http://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
+      2045225: https://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
     version: 2.13
   media_youtube:
@@ -237,12 +237,12 @@ projects:
   multistep:
     download:
       type: git
-      url: http://git.drupal.org/project/multistep.git
+      url: https://git.drupal.org/project/multistep.git
       revision: 3b0d40a
   og:
     version: '2.9'
     patch:
-      1090438: http://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch
+      1090438: https://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch
       2549071: https://www.drupal.org/files/issues/og_actions-bug-vbo-delete.patch
       2301831: https://www.drupal.org/files/issues/og-missing-permission-roles-2301831-1.patch
   og_extras:
@@ -291,7 +291,7 @@ projects:
   ref_field:
     download:
       type: git
-      url: http://git.drupal.org/project/ref_field.git
+      url: https://git.drupal.org/project/ref_field.git
       revision: 9dbf7cf
     patch:
       2360019: https://www.drupal.org/files/issues/ref_field-delete-insert-warning-2360019-5.patch
@@ -354,8 +354,8 @@ projects:
   views_autocomplete_filters:
     version: '1.2'
     patch:
-      2374709: http://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
-      2317351: http://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
+      2374709: https://www.drupal.org/files/issues/views_autocomplete_filters-cache-2374709-2.patch
+      2317351: https://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
   views_bulk_operations:
     version: '3.4'
   views_responsive_grid:

@@ -1,31 +1,24 @@
-Installation
-============
+Installation Basics
+===================
 
-This document contains instructions for installing the DKAN open data
-publishing software on your webserver. If you’re not comfortable
-installing and maintaining server software, you may wish to Deploy a
-Ready-to-Run DKAN Instance instead.
-
-Please note that we are in the process of revamping our installation and
-upgrade guide. The instructions here will work, but please bear with us
-as we develop better documentation and processes.
+.. note:: This page is essentially legacy documentation, but still provides some useful information for alternative methods of downloading and working with DKAN. For a more robust local development for working on DKAN core, see :doc:`local-dev`. For the most up-to-date documentation on managing website projects with DKAN, see `DKAN Starter documentation <https://dkan-starter.readthedocs.io>`_.
 
 Before getting started, it's recommended that you familiarize yourself
 with:
 
--  `Drush, the command line tool <http://docs.drush.org/en/master/>`__
+-  `Drush, the command line tool <http://docs.drush.org/en/master/>`_
 -  `Drupal's installation
-   process <https://www.drupal.org/documentation/install>`__
--  `Drupal's upgrade process <https://www.drupal.org/upgrade>`__
+   process <https://www.drupal.org/documentation/install>`_
+-  `Drupal's upgrade process <https://www.drupal.org/upgrade>`_
 -  `Drupal profiles and
-   distributions <https://www.drupal.org/node/1089736#distributions-vs-installation-profiles>`__
+   distributions <https://www.drupal.org/node/1089736#distributions-vs-installation-profiles>`_
 
 What you will find in the main `DKAN
 Repository <https://github.com/GetDKAN/dkan>`__ is a Drupal
 *installation profile*. To set up a working website using DKAN, you will
 need to acquire or build a full DKAN distribution of Drupal.
 
-.. tip:: `DKAN Starter <http://dkan-starter.readthedocs.io>`_ is project
+.. tip:: `DKAN Starter <https://dkan-starter.readthedocs.io>`_ is project
   containing a prebuilt version of DKAN and the tools `CivicActions
   <https://civicactions.com/dkan/>`_ uses for our own implementations and
   deployments. Learn more advanced workflows in that project's
@@ -77,7 +70,7 @@ is optimized to run on the Pantheon platform. You can build a DKAN site
 with a single click on Pantheon
 `here <https://dashboard.getpantheon.com/products/dkan/spinup>`__. (We
 also offer `one-click installation on
-Acquia <http://docs.getdkan.com/dkan-documentation/get-dkan/dkan-acquia>`__)
+Acquia <https://docs.getdkan.com/dkan-documentation/get-dkan/dkan-acquia>`__)
 
 Download and unzip `the latest version of the "DKAN DROPS"
 codebase <https://github.com/GetDKAN/dkan-drops-7/archive/master.zip>`__
@@ -87,7 +80,7 @@ if you want to do this with git instead:
 
 ::
 
-    $ git clone --branch master https://github.com/nuams/dkan-drops-7.git dkan
+    $ git clone --branch master https://github.com/GetDKAN/dkan-drops-7.git dkan
 
 Build your own
 ~~~~~~~~~~~~~~
@@ -196,8 +189,8 @@ With the web installer
    a short congratulatory message and you’ll be prompted to access your
    new site.
 -  Proceed to “\ `DKAN - Data
-   Management <http://docs.getdkan.com/v1/data>`__\ ” or “\ `DKAN - User
-   Management <http://docs.getdkan.com/v1/users>`__ ” next to continue
+   Management <https://docs.getdkan.com/v1/data>`__\ ” or “\ `DKAN - User
+   Management <https://docs.getdkan.com/v1/users>`__ ” next to continue
    setting up your new DKAN server.
 
 Install for development
@@ -213,7 +206,7 @@ Grab Development version
 
 ::
 
-    $ git clone --branch 7.x-1.x https://github.com/nuams/dkan.git
+    $ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
     $ cd dkan
 
 Build dkan
