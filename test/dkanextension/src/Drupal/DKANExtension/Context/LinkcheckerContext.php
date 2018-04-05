@@ -13,8 +13,8 @@ use Drupal\DKANExtension\Hook\Scope\BeforeDKANEntityCreateScope;
 class LinkcheckerContext extends RawDKANContext {
 
   protected $old_global_user;
-  public static $modules_before_feature = array();
-  public static $users_before_feature = array();
+  private static $modules_before_feature = array();
+  private static $users_before_feature = array();
 
   /**
    * @BeforeFeature @enableDKAN_Linkchecker

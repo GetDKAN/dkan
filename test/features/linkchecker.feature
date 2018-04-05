@@ -7,14 +7,6 @@ Feature:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
 
-    Given groups:
-      | title    | author  | published |
-      | Group 01 | John    | Yes       |
-
-    And group memberships:
-      | user    | group    | role on group        | membership status |
-      | John    | Group 01 | administrator member | Active            |
-
   @linkchecker_01
   Scenario: As a site manager I should have access to the link checker config and report pages.
     Given I am logged in as "John"
