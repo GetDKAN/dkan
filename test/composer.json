@@ -12,8 +12,8 @@
         "myplanetdigital/function_mock": "dev-master",
         "drupal/drupal-driver": "^1.2",
         "drupal/drupal-extension": "~3.0",
-        "squizlabs/php_codesniffer": "2.9.1",
-        "drupal/coder": "8.2.12",
+        "squizlabs/php_codesniffer": "2.7.0",
+        "drupal/coder": "8.2.10",
         "guzzlehttp/guzzle": "^6.3",
         "dkan/dkan_api_client": "1.0.0"
     },
@@ -21,7 +21,7 @@
         "psr-0": {
             "Drupal\\DKANExtension\\": "dkanextension/src/"
         },
-        "drupal/coder": "8.2.12"
+        "drupal/coder": "8.2.10"
     },
     "config": {
         "bin-dir": "bin/"
