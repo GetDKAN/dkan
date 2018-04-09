@@ -15,12 +15,12 @@ fi
 
 if [ "$CI_PULL_REQUEST" ]; then
   echo Diff URL: "$CI_PULL_REQUEST".diff
-  files=`curl -sL "$CI_PULL_REQUEST".diff | grep "$DRUPAL_FILES"`
+  files=`curl -sL "$CI_PULL_REQUEST".diff | grep "^+++" | sed 's/+++ b\///g' | grep "$DRUPAL_FILES"`
 fi
 
 if [ ! -z "$files" ]; then
   echo "Linting: $files"
-  test/bin/phpcs --standard=Drupal,DrupalPractice -n $files --ignore=test/dkanextension/*,patches/*
+  test/bin/phpcs --standard=Drupal,DrupalPractice -n $files --ignore=test/dkanextension/*,patches/*,+*
 else
   echo "No Drupal file changes available for linting."
 fi
