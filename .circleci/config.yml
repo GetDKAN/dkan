@@ -118,9 +118,6 @@ jobs:
           key: v1-dkan-test-vendor
           paths:
             - dkan/test/vendor
-      - run:
-          name: Run Parallel Behat Tests
-          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
       # Lint only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
       - run:
           name: Run Lint
@@ -128,6 +125,9 @@ jobs:
             if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
               ahoy dkan lint
             fi
+      - run:
+          name: Run Parallel Behat Tests
+          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
       # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
       - run:
           name: Run PHPUnit Tests
