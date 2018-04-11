@@ -9,6 +9,22 @@
 
 define('DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS', 't');
 
+function dkan_datastore_api_menu() {
+  $items = [];
+
+  $items['node/%node/api'] = array(
+    'title' => 'Data API',
+    'page callback' => 'dkan_datastore_api_api_page',
+    'page arguments' => array(1),
+    'access callback' => 'dkan_datastore_api_api_page_access',
+    'access arguments' => array(1),
+    'weight' => '25',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
 /**
  * Given all the possible fields input returns a normalized version.
  *
@@ -140,20 +156,16 @@ function schema_fields($resource_ids) {
 
   foreach ((array) $resource_ids as $id) {
     $table = dkan_datastore_api_tablename($id);
-    if ($data_table = data_get_table($table)) {
-      $schema = $data_table->table_schema;
-      $meta = $data_table->meta;
-    }
-    else {
-      $schema = drupal_get_schema($table);
-      $meta = array('fields' => array());
-    }
+
+    $schema = drupal_get_schema($table);
+    $meta = array('fields' => array());
 
     $meta_fields = array_merge_recursive($meta['fields'], $schema['fields']);
     $fields = array_merge_recursive((array) $fields, (array) $meta_fields);
   }
 
   // Remove flatstore processor fields.
+  // This is feeds specific, It should not be here.
   unset($fields['timestamp']);
   unset($fields['feeds_entity_id']);
   unset($fields['feeds_flatstore_entry_id']);
@@ -266,109 +278,6 @@ function dkan_datastore_api_services_resources() {
         'access arguments append' => FALSE,
       ),
     ),
-    'dkan_datastore' => array(
-      'operations' => array(
-        'create' => array(
-          'file' => array(
-            'type' => 'module',
-            'module' => 'dkan_datastore_api',
-            'name' => 'dkan_datastore_api',
-          ),
-          'help' => 'Create a store with a file with base64 encoded data',
-          'callback' => 'dkan_datastore_api_datastore_create',
-          'access arguments' => array('create ' . $datastore_node_type . ' content'),
-          'args' => array(
-            array(
-              'name' => 'file',
-              'type' => 'array',
-              'description' => t('An array representing a file.'),
-              'source' => 'data',
-              'optional' => FALSE,
-            ),
-          ),
-        ),
-        'update' => array(
-          'file' => array(
-            'type' => 'module',
-            'module' => 'dkan_datastore_api',
-            'name' => 'dkan_datastore_api',
-          ),
-          'help' => 'Update a store with a file with base64 encoded data',
-          'callback' => 'dkan_datastore_api_datastore_update',
-          'access arguments' => array('edit any ' . $datastore_node_type . ' content'),
-          'args' => array(
-            array(
-              'name' => 'id',
-              'optional' => FALSE,
-              'type' => 'string',
-              'description' => 'Datastore ID',
-              'default value' => '',
-              'source' => array('path' => 0),
-            ),
-            array(
-              'name' => 'file',
-              'type' => 'array',
-              'description' => t('An array representing a file.'),
-              'source' => 'data',
-              'optional' => FALSE,
-            ),
-          ),
-        ),
-      ),
-      'actions' => array(
-        'create' => array(
-          'help' => 'Create store with a file with raw data.',
-          'file' => array(
-            'type' => 'module',
-            'module' => 'dkan_datastore_api',
-            'name' => 'dkan_datastore_api',
-          ),
-          'callback' => 'dkan_datastore_api_datastore_create_raw',
-          'access arguments' => array('create ' . $datastore_node_type . ' content'),
-        ),
-        'update' => array(
-          'help' => 'Update a store with a file with raw data.',
-          'file' => array(
-            'type' => 'module',
-            'module' => 'dkan_datastore_api',
-            'name' => 'dkan_datastore_api',
-          ),
-          'callback' => 'dkan_datastore_api_datastore_update_raw',
-          'access arguments' => array('edit any ' . $datastore_node_type . ' content'),
-          'args' => array(
-            array(
-              'name' => 'id',
-              'optional' => FALSE,
-              'type' => 'string',
-              'description' => 'Datastore ID',
-              'default value' => '',
-              'source' => array('path' => 1),
-            ),
-          ),
-        ),
-      ),
-    ),
-    'dkan_datastore_file' => array(
-      'delete' => array(
-        'file' => array(
-          'type' => 'module',
-          'module' => 'dkan_datastore_api',
-          'name' => 'dkan_datastore_api',
-        ),
-        'callback' => 'dkan_datastore_api_datastore_file_delete',
-        'access arguments' => array('edit any ' . $datastore_node_type . ' content'),
-        'args' => array(
-          array(
-            'name' => 'id',
-            'optional' => FALSE,
-            'type' => 'string',
-            'description' => 'Datastore ID',
-            'default value' => '',
-            'source' => array('path' => 0),
-          ),
-        ),
-      ),
-    ),
   );
 }
 
@@ -380,14 +289,15 @@ function dkan_datastore_api_services_resources() {
 function dkan_datastore_api_datastore_index() {
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $params = dkan_datastore_api_get_params();
+
     // Add anonoymous user to hash so refresh after login relaxes query limits.
     $cache_hash = md5(json_encode($params)) . user_is_anonymous();
 
-    if ($cache = cache_get($cache_hash)) {
+    /*if ($cache = cache_get($cache_hash)) {
       return $cache->data;
-    }
+    }*/
     $result = dkan_datastore_api_query($params);
-    cache_set($cache_hash, $result, 'cache', CACHE_TEMPORARY);
+    //cache_set($cache_hash, $result, 'cache', CACHE_TEMPORARY);
   }
   elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = dkan_datastore_api_multiple_query();
@@ -441,46 +351,51 @@ function dkan_datastore_api_get_params($params = array()) {
  * I decided to wrap it to make easy to decouple it.
  */
 function normalize_field_name($field) {
-  return feeds_flatstore_processor_safe_name($field);
+  return $field; //feeds_flatstore_processor_safe_name($field);
 }
 
 /**
  * Performs a single query against the datastore.
  */
 function dkan_datastore_api_query($params) {
-  extract($params);
+
   $data_select = NULL;
-  $aggregations = array(
-    'sum' => $sum,
-    'avg' => $avg,
-    'max' => $max,
-    'min' => $min,
-    'count' => $count,
-  );
+
   try {
-    $resource_ids = (array) $resource_ids;
-    list($alias, $resource_id) = each($resource_ids);
+    $resource_ids = (array) $params['resource_ids'];
+
+    if (empty($resource_ids)) {
+      throw new \Exception("The resource_id is a required parameter.");
+    }
+
+    $alias = array_shift(array_keys($resource_ids));
+    $resource_id = array_shift(array_values($resource_ids));
+
     $alias = is_string($alias) ? $alias : DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS;
     $table = dkan_datastore_api_tablename($resource_id);
     $data_select = db_select($table, $alias);
 
-    dkan_datastore_api_limit($data_select, $offset, $limit);
-    dkan_datastore_api_group_by($data_select, $group_by);
-    dkan_datastore_api_aggregations($data_select, $aggregations);
-    dkan_datastore_api_sort($data_select, $sort, $alias);
-    dkan_datastore_api_where($data_select, $filters);
+    dkan_datastore_api_limit($data_select, $params['offset'], $params['limit']);
+    dkan_datastore_api_group_by($data_select, $params['group_by']);
+    dkan_datastore_api_aggregations($data_select, $params['aggregations']);
+    dkan_datastore_api_sort($data_select, $params['sort'], $alias);
+    dkan_datastore_api_where($data_select, $params['filters']);
 
     // Query for a single resource.
     if (count($resource_ids) > 1) {
 
       // We can't have multiple resources if we can't join them.
-      if (!$join) {
+      if (!$params['join']) {
         throw new Exception('Mulitple resources require joins.');
       }
 
-      while (list($alias, $resource_id) = each($resource_ids)) {
-        $table = dkan_datastore_api_tablename($resource_id);
-        dkan_datastore_api_join($data_select, $table, $join);
+      $counter = 0;
+      foreach($resource_ids as $alias => $resource_id) {
+        if ($counter >=1 ) {
+          $table = dkan_datastore_api_tablename($resource_id);
+          dkan_datastore_api_join($data_select, $table, $params['join']);
+        }
+        $counter++;
       }
     }
 
@@ -489,18 +404,23 @@ function dkan_datastore_api_query($params) {
     // avoid alias renaming we need to move fields below the
     // join process otherwise join alias will be renamed using
     // incremental counters.
-    dkan_datastore_api_select_fields($data_select, $fields, $resource_ids);
+    dkan_datastore_api_select_fields($data_select, $params['fields'], $resource_ids);
 
-    if ($query && $query != 'api/3/action/datastore_search') {
-      dkan_datastore_api_use_indexes($data_select, $table, $query);
+    if (!empty($params['query']) && $params['query'] != 'api/3/action/datastore_search') {
+      dkan_datastore_api_use_indexes($data_select, $table, $params['query']);
     }
 
     $count = dkan_datastore_api_count($data_select);
     $results = $data_select->execute();
-    return dkan_datastore_api_output($data_select, $results, $table, $fields, $resource_ids, $count, $limit);
+
+    return dkan_datastore_api_output($data_select, $results, $table, $params['fields'], $resource_ids, $count, $params['limit']);
   }
-  catch (Exception $ex) {
-    return array('sql' => dkan_datastore_api_debug($data_select), 'error' => array('message' => 'Caught exception: ' . $ex->getMessage()));
+  catch (Exception $e) {
+    $info = "";
+    if ($data_select) {
+      $info = dkan_datastore_api_debug($data_select);
+    }
+    return array('sql' => $info, 'error' => array('message' => 'Caught exception: ' . $e->getMessage()));
   }
 }
 
@@ -672,7 +592,7 @@ function dkan_datastore_api_aggregations(&$data_select, $aggregations, $alias = 
  *
  * @todo Add SQL server support
  */
-function dkan_datastore_api_use_indexes(&$data_select, $table, $query) {
+function dkan_datastore_api_use_indexes(SelectQuery &$data_select, $table, $query) {
   if (db_driver() == 'mysql') {
     // Get fulltext fields.
     $ft_result = db_query("SHOW INDEX IN {$table} WHERE Index_type = 'FULLTEXT'");
@@ -688,9 +608,20 @@ function dkan_datastore_api_use_indexes(&$data_select, $table, $query) {
   }
 
   // If no FULLTEXT indexes, try concat method if on mysql or postgres.
-  if ($field_list = feeds_flatstore_fulltext_fields(drupal_get_schema($table))) {
+  /* @var $result DatabaseStatementBase */
+  $result = db_query("DESCRIBE {$table}");
+  $field_list = [];
+  foreach ($result->fetchAll() as $field_info) {
+    $field_list[] = $field_info->Field;
+  }
+
+  if (!empty($field_list)) {
     if (db_driver() == 'mysql' || db_driver() == 'pgsql') {
-      $data_select->where("CONCAT_WS(' ', $field_list) LIKE :query", array(':query' => "%$query%"));
+      $or = db_or();
+      foreach ($field_list as $field_name) {
+        $or->condition($field_name, "%{$query}%", "LIKE");
+      }
+      $data_select->condition($or);
     }
     // For MS SQL Server, use alternate concat syntax.
     elseif (db_driver() == 'sqlsrv') {
@@ -742,30 +673,9 @@ function dkan_datastore_api_sort_clean($sort) {
  * Returns table name or exeption.
  */
 function dkan_datastore_api_tablename($resource_id) {
-  static $tables;
-  if (!isset($tables[$resource_id])) {
-    $nid = db_query('SELECT nid FROM {node} WHERE uuid = :uuid', array(':uuid' => $resource_id))->fetchField();
-    $source_id = dkan_datastore_api_get_feeds_source($nid);
-    $table = feeds_flatstore_processor_table_name($source_id, $nid);
-    if (db_table_exists($table) && dkan_datastore_datastore_api_access($nid)) {
-      $tables[$resource_id] = $table;
-      return $table;
-    }
-    else {
-      throw new Exception('Resource ' . $resource_id . ' does not exist.');
-    }
-  }
-  else {
-    return $tables[$resource_id];
-  }
-}
-
-/**
- * Retrieves source_id from feeds_source.
- */
-function dkan_datastore_api_get_feeds_source($nid) {
-  $source_id = db_query("SELECT id FROM {feeds_source} WHERE feed_nid = :nid AND source != ''", array(':nid' => $nid))->fetchField();
-  return $source_id ? $source_id : NULL;
+  /* @var $datastore DkanDatastoreInterface */
+  $datastore = dkan_datastore_go($resource_id);
+  return $datastore->getTableName();
 }
 
 /**
@@ -789,32 +699,26 @@ function dkan_datastore_api_build_query($table, $fields, $sort, $alias = DKAN_DA
 function dkan_datastore_api_sort(&$data_select, $sort, $alias) {
   if (!is_array($sort)) {
     $sort = explode(' ', $sort);
-    $order = $sort[0];
     $columns = empty($sort) ? $sort : explode(',', $sort[0]);
   }
   else {
     $columns = $sort;
   }
 
-  if (count($columns) == 1 && array_values($columns)[0] == '') {
-    $data_select->orderBy($alias . '.feeds_flatstore_entry_id', 'ASC');
+  $key = end(array_values($sort));
+  if (!in_array($key, ['desc', 'asc'])) {
+    $columns = $key;
+    $alias = end(array_keys($sort));
   }
-  else {
-    $key = end(array_values($sort));
-    if (!in_array($key, ['desc', 'asc'])) {
-      $columns = $key;
-      $alias = end(array_keys($sort));
-    }
-    foreach ($columns as $field => $order) {
-      $data_select->orderBy($alias . '.' . $field, $order);
-    }
+  foreach ($columns as $field => $order) {
+    $data_select->orderBy($alias . '.' . $field, $order);
   }
 }
 
 /**
  * Same as services version but not adding conditions.
  */
-function dkan_datastore_api_select_fields(&$data_select, $fields, $resource_ids) {
+function dkan_datastore_api_select_fields(SelectQuery &$data_select, $fields, $resource_ids) {
   $resource_ids = is_assoc($resource_ids)
     ? $resource_ids
     : array(DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS => $resource_ids[0]);
@@ -876,7 +780,12 @@ function dkan_datastore_api_output($data_select, $results, $table, $fields, $res
       if (!dkan_datastore_api_field_excluded($name)) {
         if (!empty($schema_fields[$name])) {
           $new_name = $schema_fields[$name]['label'];
-          $new_item->$new_name = $data;
+          if ($new_name) {
+            $new_item->$new_name = $data;
+          }
+          else {
+            $new_item->$name = $data;
+          }
         }
         else {
           $new_item->$name = $data;
@@ -914,198 +823,6 @@ function dkan_datastore_api_resource_help() {
 }
 
 /**
- * For arguments, see: dkan_datastore_api_services_resources().
- */
-function dkan_datastore_api_datastore_create($file) {
-
-  $file = _services_arg_value($file, 'file');
-
-  // If the file data or filename is empty then bail.
-  if (!isset($file['file']) || empty($file['filename'])) {
-    return services_error(t("Missing data the file upload can not be completed"), 500);
-  }
-
-  $file_saved = process_file_argument($file);
-
-  if ($file_saved) {
-    $datastore = dkan_datastore_go();
-    if ($datastore) {
-      if ($datastore->createFromFileUri($file_saved->uri, FALSE)) {
-
-        $result = new stdClass();
-        $result->result = 'success';
-        $result->datastore_id = $datastore->node->uuid;
-        $result->node_id = $datastore->node->nid;
-        return $result;
-      }
-    }
-  }
-  else {
-    return services_error(t('The store could not be created.'));
-  }
-}
-
-/**
- * For arguments, see: dkan_datastore_api_services_resources().
- */
-function dkan_datastore_api_datastore_create_raw() {
-
-  $validators = array(
-    'file_validate_extensions' => array(),
-    'file_validate_size' => array(),
-  );
-
-  foreach ($_FILES['files']['name'] as $field_name => $file_name) {
-    $file = file_save_upload($field_name, $validators, file_default_scheme() . "://");
-
-    if (!empty($file->fid)) {
-      $file->status = FILE_STATUS_PERMANENT;
-      file_save($file);
-
-      // Required to be able to reference this file.
-      file_usage_add($file, 'dkan_datastore_api', 'files', $file->fid);
-
-      $datastore = dkan_datastore_go();
-      if ($datastore) {
-        if ($datastore->createFromFileUri($file->uri, FALSE)) {
-
-          $result = new stdClass();
-          $result->result = 'success';
-          $result->datastore_id = $datastore->node->uuid;
-          $result->node_id = $datastore->node->nid;
-          return $result;
-        }
-      }
-    }
-    else {
-      return services_error(t('An unknown error occured'), 500);
-    }
-  }
-
-  return services_error(t('An unknown error occured'), 500);
-}
-
-/**
- * For arguments, see: dkan_datastore_api_services_resources().
- */
-function dkan_datastore_api_datastore_update($id, $file) {
-
-  $file = _services_arg_value($file, 'file');
-
-  if (!isset($file['file']) || empty($file['filename'])) {
-    return services_error(t("The file is missing or empty."), 500);
-  }
-
-  $file_saved = process_file_argument($file);
-
-  if ($file_saved) {
-    $datastore = dkan_datastore_go($id);
-    if ($datastore) {
-      if ($datastore->updateFromFileUri($file_saved->uri, FALSE)) {
-
-        $result = new stdClass();
-        $result->result = 'success';
-        $result->datastore_id = $datastore->node->uuid;
-        $result->node_id = $datastore->node->nid;
-        return $result;
-      }
-    }
-  }
-  else {
-    return services_error(t('The store could not be updated.'));
-  }
-}
-
-/**
- * For arguments, see: dkan_datastore_api_services_resources().
- */
-function dkan_datastore_api_datastore_update_raw($id) {
-
-  $validators = array(
-    'file_validate_extensions' => array(),
-    'file_validate_size' => array(),
-  );
-
-  foreach ($_FILES['files']['name'] as $field_name => $file_name) {
-    $file = file_save_upload($field_name, $validators, file_default_scheme() . "://");
-
-    if (!empty($file->fid)) {
-      $file->status = FILE_STATUS_PERMANENT;
-      file_save($file);
-
-      file_usage_add($file, 'dkan_datastore_api', 'files', $file->fid);
-
-      $datastore = dkan_datastore_go($id);
-      if ($datastore) {
-        if ($datastore->updateFromFileUri($file->uri, FALSE)) {
-
-          $result = new stdClass();
-          $result->result = 'success';
-          $result->datastore_id = $datastore->node->uuid;
-          $result->node_id = $datastore->node->nid;
-          return $result;
-        }
-      }
-    }
-    else {
-      return services_error(t('The store could not be updated.'));
-    }
-  }
-
-  return services_error(t('An unknown error occured'), 500);
-}
-
-/**
- * For arguments, see: dkan_datastore_api_services_resources().
- */
-function dkan_datastore_api_datastore_file_delete($id) {
-
-  $datastore = dkan_datastore_go($id);
-  if ($datastore) {
-    if ($datastore->deleteFile()) {
-
-      $result = new stdClass();
-      $result->result = 'success';
-      $result->datastore_id = $datastore->node->uuid;
-      $result->node_id = $datastore->node->nid;
-      return $result;
-    }
-  }
-}
-
-/**
- * Saves the received file.
- */
-function process_file_argument($file) {
-
-  if (!isset($file['file']) || empty($file['filename'])) {
-    return FALSE;
-  }
-
-  if (empty($file['filepath'])) {
-    $file['filepath'] = file_default_scheme() . '://' . $file['filename'];
-  }
-  $dir = drupal_dirname($file['filepath']);
-
-  if (!file_prepare_directory($dir, FILE_CREATE_DIRECTORY)) {
-    return FALSE;
-  }
-
-  if (!$file_saved = file_save_data(base64_decode($file['file']), $file['filepath'], FILE_EXISTS_RENAME)) {
-    return FALSE;
-  }
-
-  if (isset($file['status']) && $file['status'] == 0) {
-    $file_saved->status = FILE_STATUS_PERMANENT;
-    file_save($file_saved);
-  }
-
-  file_usage_add($file_saved, 'dkan_datastore_api', 'files', $file_saved->fid);
-
-  return $file_saved;
-}
-
-/**
  * Returns sql statement for debug purposes.
  */
 function dkan_datastore_api_debug($data_select) {
@@ -1121,4 +838,62 @@ function dkan_datastore_api_debug($data_select) {
   $sql = strtr($sql, $quoted);
   $sql = str_replace('\n', ' ', $sql);
   return (string) $sql;
+}
+
+/**
+ * Callback for Data API instructions.
+ */
+function dkan_datastore_api_api_page($node) {
+  $datastore = dkan_datastore_go($node->uuid);
+  $status = $datastore->getStatus();
+
+  switch ($status) {
+    case DKAN_DATASTORE_EXISTS:
+      $output = $datastore->apiForm();
+      return $output;
+
+    case DKAN_DATASTORE_FILE_EXISTS:
+      drupal_set_message(t('You need to add your file to the datastore in order to use the DATA API'));
+      $redirect_path = 'node/' . $node->nid . '/datastore';
+      break;
+
+    default:
+      drupal_set_message(t('This resource can not be added to the datastore'));
+      $redirect_path = 'node/' . $node->nid;
+      break;
+  }
+  drupal_goto($redirect_path);
+}
+
+/**
+ * Access callback for Data API instructions.
+ */
+function dkan_datastore_api_api_page_access($resource) {
+  return TRUE;
+
+  $status = dkan_datastore_status($resource);
+  if ($status == DKAN_DATASTORE_FILE_EXISTS && !user_access('manage datastore')) {
+    return FALSE;
+  }
+  if ($status != DKAN_DATASTORE_WRONG_TYPE) {
+    $file_field = dkan_datastore_file_upload_field();
+    $link_field = dkan_datastore_file_link_field();
+    $type = dkan_datastore_node_type();
+    $node = is_object($resource) ? $resource : node_load($resource);
+    $upload = '';
+    $link = '';
+    if (isset($node->$file_field) && $node->$file_field) {
+      $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
+    }
+    if (isset($node->{$link_field}) && $node->{$link_field}) {
+      $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
+    }
+    if ($node->type == $type && ($upload || $link)) {
+      return node_access('view', $node);
+    }
+    else {
+      return FALSE;
+    }
+  }
+  return FALSE;
 }
