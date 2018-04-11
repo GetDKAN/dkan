@@ -1,0 +1,8 @@
+name = DKAN Datastore Simple Import
+description = A datastore importer that uses MySQL insert statements, and a custom csv parser.
+core = 7.x
+package = DKAN
+dependencies[] = dkan_datastore
+dependencies[] = autoload
+
+autoload[psr-4][] = Dkan\Datastore\Manager
