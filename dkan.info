@@ -127,6 +127,7 @@ dependencies[] = dkan_harvest_datajson
 dependencies[] = dkan_sitewide
 dependencies[] = dkan_dataset
 dependencies[] = dkan_datastore
+dependencies[] = dkan_datastore_simple_import
 dependencies[] = dkan_datastore_api
 dependencies[] = open_data_schema_map_dkan
 dependencies[] = visualization_entity_charts_dkan
