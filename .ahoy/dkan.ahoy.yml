@@ -158,7 +158,7 @@ commands:
     cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-unittests.sh "{{args}}"
 
   lint:
-    usage: Run linter on code
+    usage: Run linter on DKAN code
     hidden: true
     cmd: |
       ahoy cmd-proxy gem install git
