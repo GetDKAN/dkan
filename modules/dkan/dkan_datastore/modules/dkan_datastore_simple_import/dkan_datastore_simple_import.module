@@ -1,0 +1,10 @@
+<?php
+
+function dkan_datastore_simple_import_dkan_datastore_manager() {
+  $info = new \Dkan\Datastore\Manager\Info(
+    '\Dkan\Datastore\Manager\SimpleImport',
+    "Simple Import"
+  );
+
+  return $info;
+}
