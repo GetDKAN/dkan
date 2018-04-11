@@ -158,9 +158,13 @@ commands:
     cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-unittests.sh "{{args}}"
 
   lint:
-    usage: Run linter on code
+    usage: Run linter on DKAN code
     hidden: true
-    cmd: ahoy cmd-proxy bash dkan/.ahoy/.scripts/dkan-lint.sh "{{args}}"
+    cmd: |
+      ahoy cmd-proxy gem install git
+      ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh dkan/test
+      ahoy cmd-proxy dkan/test/bin/phpcs --config-set installed_paths dkan/test/vendor/drupal/coder/coder_sniffer
+      ahoy cmd-proxy ruby dkan/.ahoy/.scripts/dkan-lint.rb {{args}}
 
   create-qa-users:
     usage: Create users for each core role for QA purposes
