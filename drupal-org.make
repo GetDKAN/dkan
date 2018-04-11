@@ -23,6 +23,12 @@ projects:
     version: '2.3'
     patch:
       2833824: https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch
+  autoload:
+    download:
+      type: git
+      url: https://git.drupal.org/project/autoload.git
+      branch: 7.x-2.x
+      revision: 80ea4d125a2edf1e3c68c5627b3afb4614828a27
   beautytips:
     download:
       type: git
