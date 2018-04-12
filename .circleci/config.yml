@@ -43,7 +43,9 @@ jobs:
           command: sudo apt-get update
       - run:
           name: Install Packages
-          command: sudo apt-get install -y ruby libpng-dev libmcrypt-dev mysql-client x11vnc
+          command: |
+            sudo apt-get install -y ruby libpng-dev libmcrypt-dev mysql-client x11vnc
+            sudo gem install git
 
 #Available Extensions:
 #bcmath bz2 calendar ctype curl dba dom enchant exif fileinfo filter ftp gd gettext gmp hash iconv imap interbase intl json ldap mbstring mcrypt mssql mysql mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline recode reflection session shmop simplexml snmp soap sockets spl standard sybase_ct sysvmsg sysvsem sysvshm tidy tokenizer wddx xml xmlreader xmlrpc xmlwriter xsl zip
