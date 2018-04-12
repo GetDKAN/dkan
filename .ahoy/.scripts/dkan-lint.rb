@@ -25,10 +25,10 @@ def get_pr_files(user, repo, pr)
   return files
 end
 
-if ENV.key?("CI_PULL_REQUEST")
-  user = ENV['CIRCLE_PROJECT_USERNAME']
-  repo = ENV['CIRCLE_PROJECT_REPONAME']
-  pr = ENV['CIRCLE_PR_NUMBER']
+if 1==1
+  user = 'GetDKAN'
+  repo = 'dkan'
+  pr = '2454'
   files = get_pr_files(user, repo, pr)
 elsif ARGV.any?
   files = ARGV
@@ -42,7 +42,11 @@ end
 if files.any?
   # Filter file list for approved file types
   files.select!{ |i| i[/\.*(\.php|\.inc|\.module|\.install|\.profile|\.info)$/] }
-  files.map! {|item| 'dkan/' + item}
-  puts "Linting files:\n" + files.join("\n")
-  puts `dkan/test/bin/phpcs --standard=Drupal,DrupalPractice -n --ignore=test/dkanextension/*,patches/* #{files.join(" ")}`
+  if files.any?
+    files.map! {|item| 'dkan/' + item}
+    puts "Linting files:\n" + files.join("\n")
+    puts `dkan/test/bin/phpcs --standard=Drupal,DrupalPractice -n --ignore=test/dkanextension/*,patches/* #{files.join(" ")}`
+  else
+    puts "No files available to lint; ending."
+  end
 end
