@@ -1,9 +1,9 @@
 <?php
 
-/**
- * @file
- * Creates DKAN Datastore.
- */
+
+
+
+
 
 // Datastore is created for a given resource.
 define('DKAN_DATASTORE_EMPTY', 0);
