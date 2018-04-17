@@ -11,8 +11,8 @@ jobs:
       MYSQL_ROOT_PASSWORD: ""
       MYSQL_USER: drupal
       MYSQL_PASSWORD: 123
-	    MYSQL_DATABASE: drupal
-			DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
+      MYSQL_DATABASE: drupal
+      DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
     steps:
       - checkout
       - setup_remote_docker
@@ -53,15 +53,15 @@ jobs:
             composer global require hirak/prestissimo
             echo 'export PATH=~/.composer/vendor/bin:$PATH' >> $BASH_ENV
       - run:
-					name: Install Drush
-					command: |
-						composer global require consolidation/cgr
-						cgr drush/drush
-						drush --version
+          name: Install Drush
+          command: |
+            composer global require consolidation/cgr
+            cgr drush/drush
+            drush --version
       - run:
-					name: Install DKAN
-					command: |
-						bash dkan-init.sh dkan --deps
+          name: Install DKAN
+          command: |
+            bash dkan-init.sh dkan --deps
       - run:
           name: Start containers
           command: |
@@ -74,12 +74,12 @@ jobs:
       - run:
           name: Install DKAN
           command: |
-						ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
+            ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
             ahoy site reinstall
             ahoy ci deploy
             ahoy drush en -y dkan_dataset_rest_api
-						ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
-						ahoy drush cc all
+            ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
+            ahoy drush cc all
       - run:
           name: Install Test Libs
           command: |
