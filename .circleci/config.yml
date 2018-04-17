@@ -48,7 +48,7 @@ jobs:
       - run:
           name: Install Composer
           command: |
-            curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+            curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             composer global require hirak/prestissimo
             echo 'export PATH=~/.composer/vendor/bin:$PATH' >> $BASH_ENV
       - run:
