@@ -4,7 +4,7 @@ jobs:
     parallelism: 5
     docker:
       - image: ubuntu:16.04
-    working_directory: /go/src/github.com/dkan_starter
+    working_directory: /go/src/github.com/dkan
     environment:
       TEST_RESULTS: /tmp/test-results
       AHOY_CMD_PROXY: DOCKER
