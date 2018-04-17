@@ -21,7 +21,7 @@ jobs:
           command: |
             apt-get update
             apt-get upgrade -y
-            apt-get install curl wget ruby -y
+            apt-get install curl wget ruby php php-mbstring -y
       - run:
           name: Install Docker client
           command: |
