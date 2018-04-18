@@ -74,19 +74,22 @@ jobs:
           name: Install Drupal
           command: |
             ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
+            mkdir backups
             docker cp $(docker-compose ps -q cli):/var/www/docroot docroot
+            docker cp backups $(docker-compose ps -q cli):/var/www/backups
       - run:
           name: Install DKAN
           command: |
             ahoy dkan remake
             ahoy dkan reinstall
       - run:
-          name: Install Test Libs
+          name: Enable modules
           command: |
-            ls
-            ahoy drush pml
             ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
             ahoy drush cc all
+      - run:
+          name: Install Test Libs
+          command: |
             ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
       - run:
           name: Run Parallel Behat Tests
