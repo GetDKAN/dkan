@@ -58,7 +58,7 @@ jobs:
             cgr drush/drush
             drush --version
       - run:
-          name: Install DKAN
+          name: Setup DKAN
           command: |
             bash dkan-init.sh dkan --deps
       - run:
@@ -75,11 +75,13 @@ jobs:
           command: |
             ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
             docker cp $(docker-compose ps -q cli):/var/www/docroot docroot
-            ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
-            ahoy drush cc all
       - run:
           name: Install Test Libs
           command: |
+            ls
+            ahoy drush pml
+            ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
+            ahoy drush cc all
             ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
       - run:
           name: Run Parallel Behat Tests
