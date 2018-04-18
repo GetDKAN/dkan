@@ -54,7 +54,7 @@ abstract class Manager implements ManagerInterface {
   }
 
   /**
-   * Get pareser.
+   * Get parser.
    *
    * @return CsvParser
    *   Parser object.
