@@ -12,7 +12,7 @@
         "myplanetdigital/function_mock": "dev-master",
         "drupal/drupal-driver": "^1.2",
         "drupal/drupal-extension": "~3.0",
-        "squizlabs/php_codesniffer": "2.7.0",
+        "squizlabs/php_codesniffer": "^2.7.0",
         "drupal/coder": "8.2.10",
         "guzzlehttp/guzzle": "^6.3",
         "dkan/dkan_api_client": "1.0.0"
@@ -20,10 +20,12 @@
     "autoload": {
         "psr-0": {
             "Drupal\\DKANExtension\\": "dkanextension/src/"
-        },
-        "drupal/coder": "8.2.10"
+        }
     },
     "config": {
-        "bin-dir": "bin/"
+        "bin-dir": "bin/",
+        "platform": {
+          "php": "5.6.23"
+        }
     }
 }
