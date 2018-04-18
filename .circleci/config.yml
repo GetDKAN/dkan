@@ -74,6 +74,8 @@ jobs:
           name: Install DKAN
           command: |
             ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
+            ls
+            docker cp docroot $(docker-compose ps -q cli):/var/www
             ahoy drush pml
             #ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
             #ahoy drush cc all
