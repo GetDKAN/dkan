@@ -16,17 +16,29 @@ Feature: Dataset Features
 
   Background:
     Given pages:
-      | name             | url                    |
-      | Datasets Search  | /search/type/dataset   |
+      | name             | url                        |
+      | Datasets Search  | /search/type/dataset       |
     Given users:
-      | name    | mail             | roles        |
-      | John    | john@example.com | site manager |
+      | name    | mail             | roles                |
+      | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
+      | Gabriel | gabriel@example.com | editor               |
+      | Jaz     | jaz@example.com     | editor               |
+      | Katie   | katie@example.com   | content creator      |
+      | Martin  | martin@example.com  | editor               |
+      | Celeste | celeste@example.com | editor               |
     Given groups:
       | title    | author  | published |
-      | Group 01 | John    | Yes       |
+      | Group 01 | Badmin  | Yes       |
+      | Group 02 | Badmin  | Yes       |
+      | Group 03 | Badmin  | No        |
     And group memberships:
       | user    | group    | role on group        | membership status |
-      | John    | Group 01 | administrator member | Active            |
+      | Gabriel | Group 01 | administrator member | Active            |
+      | Katie   | Group 01 | member               | Active            |
+      | Jaz     | Group 01 | member               | Pending           |
+      | Admin   | Group 02 | administrator member | Active            |
+      | Celeste | Group 02 | member               | Active            |
     And "Tags" terms:
       | name     |
       | Health 2 |
@@ -36,13 +48,17 @@ Feature: Dataset Features
       | csv 2  |
       | html 2 |
     And datasets:
-      | title               | publisher | author  | published        | tags     | description |
-      | DKANTest Dataset 01 | Group 01  | John    | Yes              | Health 2 | Test        |
-      | DKANTest Dataset 02 | Group 01  | John    | Yes              | Gov 2    | Test        |
+      | title                | publisher | author  | published        | tags     | description |
+      | DKANTest Dataset 01 | Group 01  | Gabriel | Yes              | Health 2 | Test        |
+      | DKANTest Dataset 02 | Group 01  | Gabriel | Yes              | Gov 2    | Test        |
+      | DKANTest Dataset 03 | Group 01  | Katie   | Yes              | Health 2 | Test        |
+      | DKANTest Dataset 04 | Group 02  | Celeste | No               | Gov 2    | Test        |
+      | DKANTest Dataset 05 | Group 01  | Katie   | No               | Gov 2    | Test        |
     And resources:
       | title       | publisher | format | author | published | dataset             | description |
-      | Resource 01 | Group 01  | csv 2  | John   | Yes       | DKANTest Dataset 01 |             |
-      | Resource 02 | Group 01  | html 2 | John   | Yes       | DKANTest Dataset 02 |             |
+      | Resource 01 | Group 01  | csv 2  | Katie  | Yes       | DKANTest Dataset 01 |             |
+      | Resource 02 | Group 01  | html 2 | Katie  | Yes       | DKANTest Dataset 01 |             |
+      | Resource 03 | Group 01  | html 2 | Katie  | Yes       | DKANTest Dataset 02 |             |
 
    @fixme @dkanBug
     # TODO: Datasets not shown on homepage currently
@@ -58,39 +74,8 @@ Feature: Dataset Features
     When I am on the homepage
     And I click "Datasets"
     And I search for "DKANTest"
-    Then I should see "2 results"
-    And I should see "2" items in the "datasets" region
-
-  @dataset_all_3
-  Scenario: Order datasets by "Date changed" by oldest first.
-    Given datasets:
-      | title                 |  published | description | date changed |
-      | Dataset 5 years ago   |  Yes       | Test        | -5 year      |
-      | Dataset 2 years ago   |  Yes       | Test        | -2 year      |
-      | Dataset 1 year ago    |  Yes       | Test        | -1 year      |
-      | Dataset 3 years ago   |  Yes       | Test        | -3 year      |
-    When I am on "Datasets Search" page
-    And I search for "Dataset"
-    And I select "Date changed" from "Sort by"
-    And I select "Asc" from "Order"
-    And I press "Apply"
-    And I should see the first "4" dataset items in "Date changed" "Asc" order.
-
-
-  @dataset_all_4
-  Scenario: Order datasets by "Date changed" with newest first.
-    Given datasets:
-      | title               |  published | description | date changed |
-      | Dataset 5 years +   |  Yes       | Test        | +5 year      |
-      | Dataset 2 years +   |  Yes       | Test        | +2 year      |
-      | Dataset 3 years +   |  Yes       | Test        | +3 year      |
-      | Dataset 1 year +    |  Yes       | Test        | +1 year      |
-    When I am on "Datasets Search" page
-    And I search for "Dataset"
-    And I select "Date changed" from "Sort by"
-    And I select "Desc" from "Order"
-    And I press "Apply"
-    And I should see the first "4" dataset items in "Date changed" "Desc" order.
+    Then I should see "3 results"
+    And I should see "3" items in the "datasets" region
 
   @dataset_all_5
   Scenario: Search datasets by "title" with "Asc" order
@@ -116,8 +101,8 @@ Feature: Dataset Features
     When I am on "Datasets Search" page
     And I fill in "DKANTest" for "Search" in the "datasets" region
     And I press "Apply"
-    Then I should see "2 results"
-    And I should see "2" items in the "datasets" region
+    Then I should see "3 results"
+    And I should see "3" items in the "datasets" region
     When I press "Reset"
     Then I should see all published search content
     # Then I should see "7 results"
@@ -130,7 +115,7 @@ Feature: Dataset Features
     ## Uncomment this if you wanna use selenium.
     # Then I click on the text "Tags"
     # And I wait for "1" seconds
-    Then I should see "Health 2 (1)" in the "filter by tag" region
+    Then I should see "Health 2 (2)" in the "filter by tag" region
     Then I should see "Gov 2 (1)" in the "filter by tag" region
 
   # TODO: make sure it works when we don't have default content on.
@@ -141,7 +126,7 @@ Feature: Dataset Features
     # When I click on the text "Format"
     # And I wait for "1" seconds
     Then I should see "csv 2 (1)" in the "filter by resource format" region
-    And I should see "html 2 (1)" in the "filter by resource format" region
+    And I should see "html 2 (2)" in the "filter by resource format" region
 
   # dataset_all_10/author facet removed. See GetDKAN/dkan#2033
 
@@ -151,13 +136,13 @@ Feature: Dataset Features
     When I am on "Datasets Search" page
     And I search for "DKANTest"
     And I press "Apply"
-    Then I should see "2 results"
-    And I should see "2" items in the "datasets" region
+    Then I should see "3 results"
+    And I should see "3" items in the "datasets" region
     ## Uncomment this if you wanna use selenium.
     # Then I click on the text "Tags"
     When I click "Health 2" in the "filter by tag" region
-    Then I should see "1 results"
-    And I should see "1" items in the "datasets" region
+    Then I should see "2 results"
+    And I should see "2" items in the "datasets" region
 
   # TODO: make sure it works when we don't have default content on.
   @dataset_all_12
@@ -165,8 +150,8 @@ Feature: Dataset Features
     When I am on "Datasets Search" page
     And I search for "DKANTest"
     And I press "Apply"
-    Then I should see "2 results"
-    And I should see "2" items in the "datasets" region
+    Then I should see "3 results"
+    And I should see "3" items in the "datasets" region
     ## Uncomment this if you wanna use selenium.
     # Then I click on the text "Format"
     # Then I wait for "1" seconds
