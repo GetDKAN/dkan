@@ -21,41 +21,31 @@ function dkan_linkchecker_preprocess_page(&$vars) {
  * Implements hook_menu().
  */
 function dkan_linkchecker_menu() {
+  $config_parent_normal_path = 'admin/config';
+  $config_plid = db_query("SELECT mlid FROM {menu_links} WHERE link_path = :parent AND menu_name = :menu", array(':parent' => $config_parent_normal_path, ':menu' => 'menu-command-center-menu'))->fetchField();
+
   $items = array();
   // Add links to command center menu for site manager access.
-  $items['admin/dkan/dkan-linkchecker-report'] = array(
+  $items['cc/admin/config/link-checker'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'title' => 'Link Checker Settings',
+    'page callback' => 'drupal_goto',
+    'page arguments' => array('admin/config/content/linkchecker'),
+    'access arguments' => array('administer linkchecker'),
+    'weight' => 10,
+    'type' => MENU_NORMAL_ITEM,
+    'plid' => $config_plid,
+  );
+  $items['cc/admin/config/link-checker/dkan-linkchecker-report'] = array(
     'menu_name' => 'menu-command-center-menu',
     'title' => 'Broken Links Report',
-    'page callback' => '_dkan_linkchecker_report',
+    'page callback' => 'drupal_goto',
+    'page arguments' => array('admin/reports/dkan-linkchecker-report'),
     'access arguments' => array('access broken links report'),
     'weight' => 11,
     'type' => MENU_NORMAL_ITEM,
   );
-
-  $items['admin/config/link-checker-settings'] = array(
-    'menu_name' => 'menu-command-center-menu',
-    'title' => 'Link Checker Settings',
-    'page callback' => '_dkan_linkchecker_form',
-    'access arguments' => array('administer linkchecker'),
-    'weight' => 10,
-    'type' => MENU_NORMAL_ITEM,
-  );
-
   return $items;
-}
-
-/**
- * Redirect to link checker report.
- */
-function _dkan_linkchecker_report() {
-  drupal_goto('admin/reports/dkan-linkchecker-report');
-}
-
-/**
- * Redirect to link checker form.
- */
-function _dkan_linkchecker_form() {
-  drupal_goto('admin/config/content/linkchecker');
 }
 
 /**

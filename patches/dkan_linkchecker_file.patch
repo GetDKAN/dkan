@@ -1,8 +1,8 @@
 diff --git a/linkchecker.module b/linkchecker.module
-index 7038adf..d22b07e 100644
+index b7bbe3e..9b4b440 100644
 --- a/linkchecker.module
 +++ b/linkchecker.module
-@@ -338,6 +338,7 @@ function _linkchecker_link_node_ids($link, $node_author_account = NULL) {
+@@ -333,6 +333,7 @@ function _linkchecker_link_node_ids($link, $node_author_account = NULL) {
            'text_long',
            'text',
            'link_field',
@@ -10,24 +10,29 @@ index 7038adf..d22b07e 100644
          );
 
          // Only check link and text fields, since those are the only types we
-@@ -1789,6 +1790,20 @@ function _linkchecker_parse_fields($entity_type, $bundle_name, $entity, $return_
+@@ -1774,6 +1775,26 @@ function _linkchecker_parse_fields($entity_type, $bundle_name, $entity, $return_
            }
          }
          break;
 +
-+      // File module field, http://drupal.org/project/file.
++      // File module field.
 +      case 'file':
 +        foreach ($entity_field as $language) {
 +          foreach ($language as $item) {
 +            $item += array(
 +              'title' => '',
 +            );
-+            $text_items[] = $text_items_by_field[$field['field_name']][] = l($item['title'], $item['uri']);
-+            //dpm($text_items);
-+            $text_items[] = $text_items_by_field[$field['field_name']][] = _linkchecker_check_markup($item['title'], NULL, linkchecker_entity_language($entity_type, $entity), TRUE);
++            if (isset($item['uri'])) {
++              $text_items[] = $text_items_by_field[$field['field_name']][] = l($item['title'], $item['uri']);
++              $text_items[] = $text_items_by_field[$field['field_name']][] = _linkchecker_check_markup($item['title'], NULL, linkchecker_entity_language($entity_type, $entity), TRUE);
++            }
++            elseif (isset($item['filefield_dkan_remotefile']['url'])) {
++              $text_items[] = $text_items_by_field[$field['field_name']][] = l($item['title'], $item['filefield_dkan_remotefile']['url']);
++              $text_items[] = $text_items_by_field[$field['field_name']][] = _linkchecker_check_markup($item['title'], NULL, linkchecker_entity_language($entity_type, $entity), TRUE);
++            }
 +          }
 +        }
 +        break;
++
      }
    }
-
