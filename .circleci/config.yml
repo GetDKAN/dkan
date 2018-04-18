@@ -71,10 +71,15 @@ jobs:
             docker cp .ahoy.yml $(docker-compose ps -q cli):/var/www
             docker cp dkan $(docker-compose ps -q cli):/var/www
       - run:
-          name: Install DKAN
+          name: Install Drupal
           command: |
             ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
             docker cp $(docker-compose ps -q cli):/var/www/docroot docroot
+      - run:
+          name: Install DKAN
+          command: |
+            ahoy dkan remake
+            ahoy dkan reinstall
       - run:
           name: Install Test Libs
           command: |
