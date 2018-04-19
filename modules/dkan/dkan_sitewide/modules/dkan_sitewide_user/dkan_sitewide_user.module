@@ -7,11 +7,12 @@
 
 include_once 'dkan_sitewide_user.features.inc';
 
-/*
+/**
  * Implements hook_user_cancel_methods_alter().
  */
 function dkan_sitewide_user_user_cancel_methods_alter(&$methods) {
-  // Assigning unpublished content to the anonymous role will make it visible to anonymous users.
+  // Assigning unpublished content to the anonymous role
+  // will make it visible to anonymous users.
   unset($methods['user_cancel_reassign']);
   // Add a custom method.
   $methods['dkan_sitewide_user_assign_to_admin'] = array(
@@ -21,7 +22,7 @@ function dkan_sitewide_user_user_cancel_methods_alter(&$methods) {
   );
 }
 
-/*
+/**
  * Implements hook_user_cancel().
  */
 function dkan_sitewide_user_user_cancel($edit, $account, $method) {
