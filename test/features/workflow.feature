@@ -496,7 +496,7 @@ Feature:
     When I am on the "My Drafts" page
     Then I should see "My Draft Dataset"
 
-  @workflow_23 @javascript @exceeds30seconds
+  @workflow_23 @javascript @fixme
   Scenario: As an anonymous user I should see a revisions link when dkan_workflow is enabled.
     Given pages:
       | name               | url                                  |
