@@ -25,8 +25,8 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 ## Help
 
 * General: [DKAN documentation](http://docs.getdkan.com)
-* Developers: Submit a [Github issue](https://github.com/nucivic/dkan/issues) or post to [ #dev ](https://dkan.slack.com/messages/C4BEVFDKJ/) channel in [ DKAN Slack ](https://dkan.slack.com)
-* Bugs: Submit a [Github issue](https://github.com/nucivic/dkan/issues)
+* Developers: Submit a [Github issue](https://github.com/GetDKAN/dkan/issues) or post to [ #dev ](https://dkan.slack.com/messages/C4BEVFDKJ/) channel in [ DKAN Slack ](https://dkan.slack.com)
+* Bugs: Submit a [Github issue](https://github.com/GetDKAN/dkan/issues)
 
 ## Features
 
@@ -47,7 +47,7 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 
 ## Installation
 
-Please see the [Installation](http://docs.getdkan.com/en/latest/introduction/installation.html) section of the DKAN Documentation.
+Please see the [Installation](http://docs.getdkan.com/en/latest/installation/index.html) section of the DKAN Documentation.
 
 ### Upgrading DKAN
 
