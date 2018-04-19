@@ -9,7 +9,7 @@ use dkanDataset\getRemoteFileInfo;
 
 include_once 'getRemoteFileInfo.php';
 
-$url = 'https://www.nd.gov/gis/apps/NDHUB.TraumaCenters.csv';
+$url = 'http://www.nd.gov/gis/apps/NDHUB.TraumaCenters.csv';
 
 $file_info = new GetRemoteFileInfo($url, 'test');
 var_dump($file_info->getType());
