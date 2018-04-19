@@ -420,7 +420,7 @@ function dkan_update_7024(&$context) {
 function dkan_update_7025() {
   $settings = variable_get('theme_nuboot_radix_settings', array());
   if ($settings['copyright']['value'] == 'Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>') {
-    $settings['copyright']['value'] = t('Powered by <a href="https://getdkan.org/">DKAN</a>');
+    $settings['copyright']['value'] = t('Powered by <a href="http://getdkan.org/">DKAN</a>');
     variable_set('theme_nuboot_radix_settings', $settings);
   }
 }

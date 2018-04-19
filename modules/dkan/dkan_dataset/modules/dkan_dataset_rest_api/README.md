@@ -10,7 +10,7 @@ The DKAN Dataset API module is only a light wrapper around the <a href="https://
 * <a href="https://www.drupal.org/node/1827698">Using REST Server with 2-Legged OAuth Authentication (Example with Java Servlet)</a>
 * <a href="http://tylerfrankenstein.com/code/drupal-services-csrf-token-firefox-poster">Services CSRF Token with FireFox Poster</a>
 
-The Sessions module also [has a thriving community on the Drupal Stack Exchange](https://drupal.stackexchange.com/questions/tagged/services).
+The Sessions module also [has a thriving community on the Drupal Stack Exchange](http://drupal.stackexchange.com/questions/tagged/services).
 
 ## Server Types
 DKAN Dataset REST API comes with a REST Server. Other server types are also incldued in the Services module but not turned on. Those include:
@@ -57,7 +57,7 @@ For an example of a fully-functional python-based client to the DKAN REST API, s
 
 ```php
 // Setup request URL.
-$request_url = 'https://example.com/api/dataset/user/login';
+$request_url = 'http://example.com/api/dataset/user/login';
 
 // Prepare user data.
 $user_data = array(
@@ -89,7 +89,7 @@ $cookie_session = $logged_user->session_name . '=' . $logged_user->sessid;
 
 ```
 // Setup request URL.
-$request_url = 'https://example.com/services/session/token';
+$request_url = 'http://example.com/services/session/token';
 
 // Setup request.
 $curl = curl_init($request_url);
@@ -108,7 +108,7 @@ $csrf_token = curl_exec($curl);
 
 ```
 // Setup request URL.
-$request_url = 'https://example.com/api/dataset/node';
+$request_url = 'http://example.com/api/dataset/node';
 
 // Setup resource data.
 // A great explanation on how to target each node field can be found on the 'Identifying field names' article linked on the 'Documentation' section.
@@ -138,7 +138,7 @@ $response = curl_exec($curl);
 
 ```
 // Setup request URL.
-$request_url = 'https://example.com/api/dataset/node/' . $resource_id . '/attach_file';
+$request_url = 'http://example.com/api/dataset/node/' . $resource_id . '/attach_file';
 
 // Setup file data.
 $file_data = array(
@@ -165,7 +165,7 @@ $response = curl_exec($curl);
 
 ```
 // Setup request URL.
-$request_url = 'https://example.com/api/dataset/node';
+$request_url = 'http://example.com/api/dataset/node';
 
 // Setup dataset data.
 // A great explanation on how to target each node field can be found on the 'Identifying field names' article linked on the 'Documentation' section.
@@ -493,7 +493,7 @@ This is a two-step process with the API:
   "title":"A resource created via the DKAN REST API",
   "type":"resource",
   "body": {"und": [{"value": "This should be the description for the resource."}]},
-  "field_link_api": {"und": [{"url": "https://data.worldbank.org/"}]}
+  "field_link_api": {"und": [{"url": "http://data.worldbank.org/"}]}
   }'
   ```
 
