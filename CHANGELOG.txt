@@ -1,3 +1,10 @@
+7.x-1.14.6
+----------
+ - #2461 Update CONTRIBUTING.md
+ - #2456 Remove exra docker dir
+ - #2458 Fix the chrome issue
+ - #2450 Incorrect Readme Links
+
 7.x-1.14.5
 ----------
  - #2435 Update Drupal core to 7.58
