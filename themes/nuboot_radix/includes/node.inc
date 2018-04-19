@@ -33,7 +33,7 @@ function nuboot_radix_preprocess_node(&$variables) {
 
     $groups = og_get_entity_groups('node', $wrapper->value());
     if (!empty($groups['node'])) {
-      $groups = array_map(function($gid) {
+      $groups = array_map(function ($gid) {
         $g_wrapper = entity_metadata_wrapper('node', $gid);
         return $g_wrapper->label();
       }, array_values($groups['node']));
