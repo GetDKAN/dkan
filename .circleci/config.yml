@@ -8,7 +8,7 @@ jobs:
       TZ: "/usr/share/zoneinfo/America/New_York"
     parallelism: 5
     docker:
-      - image: circleci/php:5.6.31-apache-node-browsers
+      - image: circleci/php:5.6.35-apache-node-browsers
         environment:
           MYSQL_HOST: "127.0.0.1"
           DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"

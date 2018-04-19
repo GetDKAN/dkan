@@ -300,10 +300,6 @@ projects:
       type: git
       url: https://github.com/GetDKAN/remote_stream_wrapper.git
       revision: 20311eee8f0ba87cbb7e48788b176c34e0313a78
-  replicate:
-    version: '1.2'
-  replicate_paragraphs:
-    version: '1.2'
   role_export:
     version: '1.0'
   rules:
