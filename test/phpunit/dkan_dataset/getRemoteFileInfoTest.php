@@ -49,7 +49,7 @@ Age: 5730';
     $urls[1]['url'] = "https://data.ca.gov/node/1801/download";
     $urls[1]['type'] = 'text/csv';
     $urls[1]['extension'] = 'csv';
-    $urls[1]['name'] = "uw_supplier_data020618.csv";
+    $urls[1]['name'] = "uw_supplier_data040318.csv";
 
     $urls[2]['url'] = "https://s3.amazonaws.com/dkan-default-content-files/files/albo.xls";
     $urls[2]['type'] = 'application/vnd.ms-excel';

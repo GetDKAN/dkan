@@ -85,7 +85,7 @@ function dkan_dataset_groups_block_view_alter(&$data, $block) {
  * Create a formatted 'Subscribe' link for this group.
  *
  * @TODO
- * Replace with helper function if https://drupal.org/node/1568858 gets in.
+ * Replace with helper function if http://drupal.org/node/1568858 gets in.
  */
 function dkan_dataset_groups_extras_subscribe($entity_type, $entity) {
   $display['type'] = 'og_group_subscribe';
@@ -320,7 +320,7 @@ function dkan_dataset_groups_get_og_rid_by_name($name) {
  * Implements hook_og_membership_insert().
  */
 function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
-
+  
   // If the user is an editor, assign the og administrator role
   // when adding the user to a group.
   $group_type = $og_membership->group_type;
@@ -332,7 +332,7 @@ function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
   $user = user_load($uid);
   // Get 'editor' role ID.
   $erid = user_role_load_by_name('editor');
-  // If the user is an 'editor' then process it to assign it the
+  // If the user is an 'editor' then process it to assign it the 
   // OG administrator role.
   if (user_has_role($erid->rid, $user)) {
     // Get the existing OG roles that the user has on the group.
@@ -363,7 +363,7 @@ function dkan_dataset_groups_og_membership_insert(OgMembership $og_membership) {
  * Implements hook_user_update().
  */
 function dkan_dataset_groups_user_update(&$edit, $account, $category) {
-
+ 
   // OG roles are checked every time a user is updated. If the user is an 'editor'
   // then the 'administrator member' OG role is granted. If the user is not an 'editor' and
   // also not a 'site manager' then the 'administrator member' OG role is removed.
@@ -399,7 +399,7 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
         }
       }
 
-      // Remove the 'administrator member' role from the user on all the groups.
+      // Remove the 'administrator member' role from the user on all the groups.  
       db_delete('og_users_roles')
         ->condition('uid', $account->uid)
         ->condition('rid', $rid)
@@ -443,7 +443,7 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
               ))
               ->execute();
 
-            // Display a message to the user.
+            // Display a message to the user.  
             if (isset($row->title)) {
               drupal_set_message(t('%user is an editor so has also been granted the group administrator role for the group: %group.', array('%user' => $account->name, '%group' => $row->title)), 'status');
             }
