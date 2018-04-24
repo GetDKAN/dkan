@@ -79,9 +79,12 @@ jobs:
             mkdir backups
             docker cp backups $(docker-compose ps -q cli):/var/www/backups
       - run:
-          name: Install DKAN
+          name: Make DKAN
           command: |
             ahoy dkan remake
+      - run:
+          name: Install DKAN
+          command: |
             ahoy dkan reinstall
       - run:
           name: Enable modules
