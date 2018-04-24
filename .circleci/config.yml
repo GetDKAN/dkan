@@ -125,5 +125,5 @@ jobs:
               ahoy dkan unittests
             fi
       - store_artifacts:
-        path: /go/src/github.com/dkan/assets
+          path: /go/src/github.com/dkan/assets
 
