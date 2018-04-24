@@ -69,13 +69,14 @@ jobs:
             ahoy docker up
             rm -rf dkan/.ahoy/.docker
             docker cp .ahoy.yml $(docker-compose ps -q cli):/var/www
+            mkdir -p dkan/test/assets/junit
             docker cp dkan $(docker-compose ps -q cli):/var/www
       - run:
           name: Install Drupal
           command: |
             ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
-            mkdir backups
             docker cp $(docker-compose ps -q cli):/var/www/docroot docroot
+            mkdir backups
             docker cp backups $(docker-compose ps -q cli):/var/www/backups
       - run:
           name: Install DKAN
@@ -93,6 +94,9 @@ jobs:
             ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
       - run:
           name: Run Parallel Behat Tests
+          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
+      - run:
+          name: Copy Assets to Base Image
           command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
       - run:
           name: Figure out cirlce tools
