@@ -1,3 +1,11 @@
+7.x-1.14.7
+----------
+ - #2473 Security upgrades to Drupal 7.59 and Media 2.9
+ - #2470 Get harvest tests passing
+ - #2468 Update urls to use https rather than http
+ - #2467 Update command center menu links
+ - #2464 Move functions out of the dkan_sitewide_menu.install file
+
 7.x-1.14.6
 ----------
  - #2461 Update CONTRIBUTING.md
