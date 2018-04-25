@@ -1,5 +1,6 @@
 7.x-1.14.6
 ----------
+ - #2472 Upgrade to Drupal 7.59 and Media 2.9
  - #2461 Update CONTRIBUTING.md
  - #2456 Remove exra docker dir
  - #2458 Fix the chrome issue
