@@ -233,10 +233,10 @@ function dkan_sitewide_update_status_alter(&$projects) {
   $projects[$project]['releases'][$dkan_tag]['date'] = $tag_date;
 
   $projects[$project]['datestamp'] = $tag_date;
-  $projects[$project]['link'] = 'http://github.com/GetDKAN/' . $project;
+  $projects[$project]['link'] = 'https://github.com/GetDKAN/' . $project;
   $projects[$project]['reason'] = 'Development Release';
   $projects[$project]['releases']['latest_version'] = $dkan_tag;
-  $projects[$project]['releases']['7.x-1.x-dev']['release_link'] = 'http://github.com/GetDKAN/' . $project;
+  $projects[$project]['releases']['7.x-1.x-dev']['release_link'] = 'https://github.com/GetDKAN/' . $project;
   $projects[$project]['releases']['7.x-1.x-dev']['reason'] = 'Development Release';
   $projects[$project]['releases']['7.x-1.x-dev']['download_link'] = 'https://api.github.com/repos/NuCivic/' . $project . '/zipball/7.x-1.x';
 
