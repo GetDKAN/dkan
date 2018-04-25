@@ -10,7 +10,7 @@ Catalog
 
 The catalog is a wrapper containing information, sorted into datasets. A catalog should provide the answers to basic questions such as: "Who is providing this data?" and "Under what conditions?"
 
-`DCAT <http://www.w3.org/TR/vocab-dcat/>`_ - an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web -  recommends providing the following fields: catalog record, dataset, description, homepage, language, license, publisher, release date, rights, spatial, themes, title and update date.
+`DCAT <https://www.w3.org/TR/vocab-dcat/>`_ - an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web -  recommends providing the following fields: catalog record, dataset, description, homepage, language, license, publisher, release date, rights, spatial, themes, title and update date.
 
 .. _datasets:
 
@@ -31,7 +31,7 @@ Resources are the actual files, APIs or links that are being shared. Resource ty
 Datasets and Resources within DKAN and CKAN
 -------------------------------------------
 
-The following images display how datasets and resources are structured within DKAN and CKAN. Screenshots are from `Data.gov <http://data.gov>`_ which is powered by CKAN. DKAN follows CKAN conventions where possible.
+The following images display how datasets and resources are structured within DKAN and CKAN. Screenshots are from `Data.gov <https://data.gov>`_ which is powered by CKAN. DKAN follows CKAN conventions where possible.
 
 .. figure:: ../images/DatasetResourceDiagram2.png
 
