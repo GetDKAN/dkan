@@ -1040,7 +1040,7 @@ function dkan_dataset_preview_url_arcgis($node) {
   // Get resource API link URL.
   $resource_wrapper = entity_metadata_wrapper('node', $node);
   if ($resource_wrapper->field_link_api->value()) {
-    return 'http://www.arcgis.com/home/webmap/viewer.html?url=' . $resource_wrapper->field_link_api->url->value();
+    return 'https://www.arcgis.com/home/webmap/viewer.html?url=' . $resource_wrapper->field_link_api->url->value();
   }
 }
 
