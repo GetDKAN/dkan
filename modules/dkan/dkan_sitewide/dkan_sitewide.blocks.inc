@@ -168,8 +168,8 @@ function dkan_sitewide_data_extent_block() {
       $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
       $output = "var dataExtent = " . $geojson;
       $output .= "; var map = L.map('map');
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a>'
+        L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href=\"https://openstreetmap.org\">OpenStreetMap</a>'
         }).addTo(map);
 
         var geojson = L.geoJson(dataExtent).addTo(map);
