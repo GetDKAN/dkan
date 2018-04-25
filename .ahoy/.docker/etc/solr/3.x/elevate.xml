@@ -15,7 +15,7 @@
  Otherwise, place it with the other configuration files into the conf/
  directory.
 
- See http://wiki.apache.org/solr/QueryElevationComponent for more information.
+ See https://wiki.apache.org/solr/QueryElevationComponent for more information.
 -->
 
 <elevate>
