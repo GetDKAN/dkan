@@ -19,6 +19,7 @@ Feature: User command center links for site manager role.
     Then I hover over the admin menu item "Page"
     And I hover over the admin menu item "Data Story"
     And I hover over the admin menu item "Data Dashboard"
+    And I hover over the admin menu item "Harvest Source"
     #DKAN
     When I hover over the admin menu item "DKAN"
     Then I hover over the admin menu item "DKAN Dataset Forms"
@@ -54,5 +55,6 @@ Feature: User command center links for site manager role.
   Scenario: Site manager role can configure custom fonts
     Given I am logged in as "John"
     When I hover over the admin menu item "Site Configuration"
+    Then I hover over the admin menu item "Appearance"
     And I click "Fonts"
     Then I should see "No fonts enabled yet, please enable some fonts first."
