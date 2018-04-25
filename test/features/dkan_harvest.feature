@@ -18,7 +18,7 @@ Feature: Dkan Harvest
     Then I should see the text "Create Harvest Source"
     And I fill in "Title" with "Source 1"
     And I wait for "2" seconds
-    And I fill in "Source URI" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
+    And I fill in "Source URI" with "https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
     And I select "Project Open Data v1.1 JSON" from "Type"
     And I press "Save"
     And I wait for "2" seconds
@@ -332,15 +332,15 @@ Feature: Dkan Harvest
     Given users:
       | name              | mail                     | status | roles             |
       | Site manager      | admin@fakeemail.com      | 1      | site manager      |
-      
+
     And "dkan_topics" terms:
       | name         | field_icon_type  | field_topic_icon   |
       | Topic1       | font             | xe904              |
       | Topic2       | font             | xe97b              |
-      
+
     And harvest sources:
       | title         | machine name  | source uri                                                                 | type               | author       | published | topics                 |
-      | Topics source | topics_source | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Topic1, Topic2 |
+      | Topics source | topics_source | https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Topic1, Topic2 |
 
     And The "topics_source" source is harvested
     And I am logged in as "Site manager"
