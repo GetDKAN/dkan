@@ -4,7 +4,7 @@ DKAN is an open source open data platform with a full suite of cataloging, publi
 
 *  [ Official website ](https://getdkan.org)
 *  [ Demo ](http://demo.getdkan.com/)
-*  [ Documetation ](http://docs.getdkan.com/)
+*  [ Documetation ](https://docs.getdkan.com/)
 
 ## Community
 
@@ -24,7 +24,7 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 
 ## Help
 
-* General: [DKAN documentation](http://docs.getdkan.com)
+* General: [DKAN documentation](https://docs.getdkan.com)
 * Developers: Submit a [Github issue](https://github.com/GetDKAN/dkan/issues) or post to [ #dev ](https://dkan.slack.com/messages/C4BEVFDKJ/) channel in [ DKAN Slack ](https://dkan.slack.com)
 * Bugs: Submit a [Github issue](https://github.com/GetDKAN/dkan/issues)
 
@@ -47,11 +47,11 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 
 ## Installation
 
-Please see the [Installation](http://docs.getdkan.com/en/latest/installation/index.html) section of the DKAN Documentation.
+Please see the [Installation](https://docs.getdkan.com/en/latest/introduction/installation.html) section of the DKAN Documentation.
 
 ### Upgrading DKAN
 
-Please see the [Updating and Maintaining DKAN](http://docs.getdkan.com/en/latest/introduction/maintaining.html) section of the DKAN Documentation for general upgrade information.
+Please see the [Updating and Maintaining DKAN](https://docs.getdkan.com/en/latest/introduction/maintaining.html) section of the DKAN Documentation for general upgrade information.
 
 ## Releases
 
@@ -86,9 +86,9 @@ Please follow the [Ticket Template](https://github.com/GetDKAN/dkan/blob/7.x-1.x
 Also, please remember to reference the issue across repositories in order for maintainers to pick up commits and pull requests looking at the issue. You can do that for commits like this:
 
 ```bash
-git commit -m "Issue NuCivic/dkan#<issue_number>: ..."
+git commit -m "Issue GetDKAN/dkan#<issue_number>: ..."
 ```
 
-Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"NuCivic/dkan#&lt;issue_number&gt;"** in a comment.
+Just replace **<issue_number>** with the actual issue number. You can reference pull requests exactly like that if you add the same text **"GetDKAN/dkan#&lt;issue_number&gt;"** in a comment.
 
 This helps us with detecting changes and pulling them in faster.
