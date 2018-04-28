@@ -16,6 +16,7 @@ default:
       - Drupal\DKANExtension\Context\HarvestSourceContext
       - Drupal\DKANExtension\Context\WorkflowContext
       - Drupal\DKANExtension\Context\DatasetAutoFillContext
+      - Drupal\DKANExtension\Context\LinkcheckerContext
       - Drupal\DKANExtension\Context\DatasetContext:
         - fields:
             title: title
@@ -178,6 +179,7 @@ default:
         modal: "#modalContent"
         navigation: ".navigation-wrapper"
         other access: ".pane-dkan-sitewide-dkan-sitewide-other-access"
+        page header: ".page-header"
         primary tabs: ".tabs--primary"
         recline preview: ".recline-data-explorer"
         resource groups: "#edit-groups"
