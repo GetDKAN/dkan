@@ -1,0 +1,53 @@
+{
+    "name": "acouch/dkan",
+    "description": "DKAN Open Data Catalog",
+    "type": "project",
+    "require": {
+       "composer/installers": "^1.2",
+       "drupal-composer/drupal-scaffold":"dev-master",
+       "drupal/core": "8.5.x-dev"
+    },
+    "require-dev": {
+        "burdamagazinorg/thunder-dev-tools": "dev-master",
+        "drupal/coder": "8.2"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "license": "GPL2",
+    "scripts": {
+        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold"
+    },
+    "extra": {
+        "installer-paths": {
+            "web/core": [
+                "type:drupal-core"
+            ],
+            "web/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "web/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "web/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "drush/contrib/{$name}": [
+                "type:drupal-drush"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "acouch",
+            "email": "acinternets@gmail.com"
+        }
+    ]
+}

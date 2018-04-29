@@ -1,0 +1,10 @@
+/vendor
+/node_modules
+/web
+/libraries
+/themes/infinite/
+.DS_Store
+composer.lock
+/tests/reports
+.env.local
+.swp

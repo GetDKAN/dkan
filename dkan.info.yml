@@ -1,0 +1,10 @@
+name: DKAN
+core: 8.x
+type: profile
+description: 'DKAN Open Data Catalog.'
+version: '2.0.1'
+distribution:
+  name: DKAN
+dependencies:
+  - jsonapi
+project: dkan
