@@ -5,7 +5,9 @@
     "require": {
        "composer/installers": "^1.2",
        "drupal-composer/drupal-scaffold":"dev-master",
-       "drupal/core": "8.5.x-dev"
+       "drupal/core": "8.5.x-dev",
+        "drupal/config_update": "^1.5",
+        "drupal/features": "^3.7"
     },
     "require-dev": {
         "burdamagazinorg/thunder-dev-tools": "dev-master",
