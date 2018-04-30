@@ -1,0 +1,12 @@
+name: 'DKAN Dataset'
+description: 'Provides Dataset content type and related configuration. '
+type: module
+core: 8.x
+dependencies:
+  - field
+  - menu_ui
+  - node
+  - path
+  - taxonomy
+  - text
+  - user

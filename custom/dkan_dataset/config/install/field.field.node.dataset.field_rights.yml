@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_rights
+    - node.type.dataset
+id: node.dataset.field_rights
+field_name: field_rights
+entity_type: node
+bundle: dataset
+label: Rights
+description: 'Contact person’s email address. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
