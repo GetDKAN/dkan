@@ -452,7 +452,7 @@ Feature:
       | Administrator      | admin@fakeemail.com      | 1      | administrator     |
     And The "source_one" source is harvested
     And the content "Florida Bike Lanes Harvest" should be "published"
-    
+
   @workflow_21 @ok @globalUser
   Scenario: As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
     Given users:
@@ -468,7 +468,7 @@ Feature:
     Given I am logged in as "Moderator"
     And I am on "Stale Reviews" page
     Then I should see the text "Not My Dataset"
-    
+
   @workflow_22 @api @javascript @globalUser
   Scenario: As a user I should be able to see my content back on "My Drafts" section if it was rejected
     # Submit a dataset to Needs Review

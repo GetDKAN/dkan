@@ -1,3 +1,11 @@
+7.x-1.15
+----------
+- #2339 Adds a linkchecker to DKAN.
+- #2409 Allows the services API to be able to consume datasets with the same format given when retrieving a dataset through the API
+- #2434 Disable option to assign content to anonymous user
+- #2431  Fix calls to the empty function that check the return value of a function or method
+- #2405 & #2427 Improve tests
+
 7.x-1.14.7
 ----------
  - #2473 Security upgrades to Drupal 7.59 and Media 2.9

@@ -36,7 +36,7 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
-  @noworkflow
+  @noworkflow @fixme
   Scenario: Add custom site information
     Given I am logged in as "Site Manager"
     And I hide the admin menu

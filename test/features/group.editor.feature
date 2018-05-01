@@ -30,9 +30,6 @@ Feature: Site Manager administer groups
       | Gabriel | Group A | administrator member | Active            |
       | Katie   | Group A | member               | Active            |
       | Jaz     | Group A | member               | Pending           |
-    And resources:
-      | title    | publisher | format | author | published | description |
-      | GER1     | Group A   | csv    | Katie  | Yes       |             |
 
   Scenario: Edit group as group administrator
     Given I am logged in as "Gabriel"
@@ -140,15 +137,21 @@ Feature: Site Manager administer groups
     Then I should see "Total members: 3"
 
   Scenario: View the number of content on group as group administrator
-    Given I am logged in as "Gabriel"
+    Given resources:
+      | title    | publisher | format | author | published | description |
+      | content2 | Group A   | csv    | Katie  | Yes       |             |
+    And I am logged in as "Gabriel"
     And I am on "Group A" page
     And I click "Group"
     When I click "People"
     Then I should see "Total content: 1"
 
   Scenario: Edit resource content created by others on group as editor
-    Given I am logged in as "Martin"
-    And I am on "GER1" page
+    Given resources:
+      | title    | publisher | format | author | published | description |
+      | content1 | Group A   | csv    | Katie  | Yes       |             |
+    And I am logged in as "Martin"
+    And I am on "content1" page
     Then I should see "Edit"
 
   Scenario: Show correct number of groups to which user belongs
