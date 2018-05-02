@@ -2,17 +2,26 @@
 
 namespace Dkan\Datastore;
 
-
 use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Manager\ManagerInterface;
 
+/**
+ * Class Pages.
+ */
 class Pages {
+
   private $node;
 
+  /**
+   * Pages constructor.
+   */
   public function __construct($node) {
     $this->node = $node;
   }
 
+  /**
+   * Private method.
+   */
   private function getResource() {
     try {
       $resource = Resource::createFromDrupalNode($this->node);
@@ -25,20 +34,26 @@ class Pages {
     return $resource;
   }
 
+  /**
+   * Private method.
+   */
   private function getDatastoreManager() {
     $resource = $this->getResource();
 
     try {
       $datastore_manager = Factory::create($resource);
     }
-    catch (\Exception $e){
+    catch (\Exception $e) {
       return NULL;
     }
 
     return $datastore_manager;
   }
 
-  private function chooseAManagerForm($form) {
+  /**
+   * Private method.
+   */
+  private function chooseManagerForm($form) {
     $managers_info = dkan_datastore_managers_info();
 
     $options = [];
@@ -62,12 +77,15 @@ class Pages {
     return $form;
   }
 
+  /**
+   * Import form.
+   */
   public function importForm($form, &$form_state) {
 
     $datastore_manager = $this->getDatastoreManager();
 
     if (!$datastore_manager) {
-      $form = $this->chooseAManagerForm($form);
+      $form = $this->chooseManagerForm($form);
     }
     else {
 
@@ -92,13 +110,15 @@ class Pages {
     return $form;
   }
 
+  /**
+   * Form Submit.
+   */
   public function importFormSubmit($form, &$form_state) {
     $values = $form_state['values'];
     $resource = $this->getResource();
 
     if (isset($values['datastore_managers_selection'])) {
       $class = $values['datastore_managers_selection'];
-
 
       /* @var $datastore_manager \Dkan\Datastore\Manager\ManagerInterface */
       $datastore_manager = Factory::create($resource, $class);
@@ -109,13 +129,14 @@ class Pages {
       else {
         drupal_set_message("The datastore manger {$class} could not be initialized.");
       }
-    } else {
+    }
+    else {
       /* @var $datastore_manager \Dkan\Datastore\Manager\ManagerInterface */
       $datastore_manager = Factory::create($resource);
 
       $configurable_properties = [];
       foreach ($values as $property_name => $value) {
-        if(substr_count($property_name, "datastore_manager_") > 0) {
+        if (substr_count($property_name, "datastore_manager_") > 0) {
           if (!empty($value)) {
             $property_name = str_replace("datastore_manager_", "", $property_name);
             $configurable_properties[$property_name] = $value;
@@ -129,6 +150,9 @@ class Pages {
     }
   }
 
+  /**
+   * Private method.
+   */
   private function setStatusInfo($form, ManagerInterface $datastore_manager) {
     $state = $datastore_manager->getStatus();
 
@@ -151,37 +175,34 @@ class Pages {
     return $form;
   }
 
+  /**
+   * Private method.
+   */
   private function datastoreStateToString($state) {
-    switch($state) {
+    switch ($state) {
       case ManagerInterface::STORAGE_UNINITIALIZED:
         return "<b>Storage:</b> Uninitialized";
+
       case ManagerInterface::STORAGE_INITIALIZED:
         return "<b>Storage:</b> Initialized";
+
       case ManagerInterface::DATA_IMPORT_UNINITIALIZED:
         return "<b>Data Importing:</b> Uninitialized";
+
       case ManagerInterface::DATA_IMPORT_IN_PROGRESS:
         return "<b>Data Importing:</b> In Progress";
+
       case ManagerInterface::DATA_IMPORT_DONE:
         return "<b>Data Importing:</b> Done";
+
       case ManagerInterface::DATA_IMPORT_ERROR:
         return "<b>Data Importing:</b> Error";
     }
   }
 
-  public function deleteForm($form, &$form_state){
-    $datastore_manager = $this->getDatastoreManager();
-    if ($datastore_manager) {
-      drupal_set_message("Delete operation not available.");
-    }
-    else {
-      drupal_set_message("Choose a datastore manager.");
-    }
-    drupal_goto("/node/{$this->node->nid}/datastore");
-  }
-
-  public function deleteFormSubmit($form, &$form_state) {
-  }
-
+  /**
+   * Drop form.
+   */
   public function dropForm($form, &$form_state) {
     /* @var $datastore_manager \Dkan\Datastore\Manager\ManagerInterface */
     $datastore_manager = $this->getDatastoreManager();
@@ -211,6 +232,9 @@ class Pages {
     drupal_goto("/node/{$this->node->nid}/datastore");
   }
 
+  /**
+   * Form Submit.
+   */
   public function dropFormSubmit($form, &$form_state) {
     $nid = $this->node->nid;
     $datastore_manager = $this->getDatastoreManager();
@@ -221,22 +245,13 @@ class Pages {
     drupal_set_message("The datastore for node {$nid} has been successfully dropped.");
   }
 
-  public function unlockForm($form, &$form_state) {
-    $datastore_manager = $this->getDatastoreManager();
-    if ($datastore_manager) {
-      drupal_set_message("Unlock operation not available.");
-    }
-    else {
-      drupal_set_message("Choose a datastore manager.");
-    }
-    drupal_goto("/node/{$this->node->nid}/datastore");
-  }
-
-  public function unlockFormSubmit($form, &$form_state) {
-  }
-
-  // Move this.
+  /**
+   * Api Form.
+   *
+   * @todo this does not belong here.
+   */
   public function apiForm($form, &$form_state) {
     return $this->setupFormCommons($form);
   }
+
 }
