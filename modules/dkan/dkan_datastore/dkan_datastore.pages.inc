@@ -5,6 +5,8 @@
  * Callbacks for datastore pages.
  */
 
+use \Dkan\Datastore\Pages;
+
 // Default to 50MB.
 define('MAX_FILE_REMOTE_PROXY_DEFAULT', 1024 * 1024 * 50);
 
@@ -84,23 +86,26 @@ function dkan_datastore_add_resource($node) {
   drupal_goto('node/add/resource', array('query' => array('dataset' => $node->nid)));
 }
 
+/**
+ * Datastore forms menu callback.
+ */
 function dkan_datastore_pages($form, &$form_state, $node, $method) {
   $form['#node'] = $node;
   $form['#pages_method'] = $method;
 
-  $pages = new \Dkan\Datastore\Pages($node);
-  return $pages->{$method}($form,$form_state);
+  $pages = new Pages($node);
+  return $pages->{$method}($form, $form_state);
 }
 
+/**
+ * Form submit handler.
+ */
 function dkan_datastore_pages_submit($form, &$form_state) {
   $node = $form['#node'];
 
   $method = $form['#pages_method'];
   $submit_method = "{$method}Submit";
 
-  $pages = new \Dkan\Datastore\Pages($node);
+  $pages = new Pages($node);
   $pages->{$submit_method}($form, $form_state);
 }
-
-
-
