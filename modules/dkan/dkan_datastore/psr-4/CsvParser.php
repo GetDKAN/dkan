@@ -2,6 +2,9 @@
 
 namespace Dkan\Datastore;
 
+/**
+ * Class CsvParser.
+ */
 class CsvParser {
 
   const STATE_NEW_FIELD = 0;
@@ -34,6 +37,18 @@ class CsvParser {
 
   private $stateMachine = [];
 
+  /**
+   * CsvParser constructor.
+   *
+   * @param string $delimiter
+   *   Delimiter.
+   * @param string $quote
+   *   Quote.
+   * @param string $escape
+   *   Escape.
+   * @param array $record_end
+   *   Record end.
+   */
   public function __construct($delimiter, $quote, $escape, array $record_end) {
     $this->recordEnd = $record_end;
     $this->delimiter = $delimiter;
@@ -52,7 +67,6 @@ class CsvParser {
     $this->stateMachine[self::STATE_CAPTURE][self::CHAR_TYPE_BLANK][self::STATE_CAPTURE] = TRUE;
     $this->stateMachine[self::STATE_CAPTURE][self::CHAR_TYPE_OTHER][self::STATE_CAPTURE] = TRUE;
     $this->stateMachine[self::STATE_CAPTURE][self::CHAR_TYPE_RECORD_END][self::STATE_NEW_FIELD] = TRUE;
-
 
     $this->stateMachine[self::STATE_NO_CAPTURE][self::CHAR_TYPE_DELIMITER][self::STATE_NEW_FIELD] = TRUE;
     $this->stateMachine[self::STATE_NO_CAPTURE][self::CHAR_TYPE_QUOTE][self::STATE_QUOTE_INITIAL] = TRUE;
@@ -80,7 +94,6 @@ class CsvParser {
     $this->stateMachine[self::STATE_QUOTE_CAPTURE][self::CHAR_TYPE_OTHER][self::STATE_QUOTE_CAPTURE] = TRUE;
     $this->stateMachine[self::STATE_QUOTE_CAPTURE][self::CHAR_TYPE_RECORD_END][self::STATE_QUOTE_CAPTURE] = TRUE;
 
-
     $this->stateMachine[self::STATE_QUOTE_ESCAPE][self::CHAR_TYPE_DELIMITER][self::STATE_QUOTE_CAPTURE] = TRUE;
     $this->stateMachine[self::STATE_QUOTE_ESCAPE][self::CHAR_TYPE_QUOTE][self::STATE_QUOTE_CAPTURE] = TRUE;
     $this->stateMachine[self::STATE_QUOTE_ESCAPE][self::CHAR_TYPE_ESCAPE][self::STATE_QUOTE_CAPTURE] = TRUE;
@@ -88,20 +101,20 @@ class CsvParser {
     $this->stateMachine[self::STATE_QUOTE_ESCAPE][self::CHAR_TYPE_OTHER][self::STATE_QUOTE_CAPTURE] = TRUE;
     $this->stateMachine[self::STATE_QUOTE_ESCAPE][self::CHAR_TYPE_RECORD_END][self::STATE_QUOTE_CAPTURE] = TRUE;
 
-
     $this->stateMachine[self::STATE_QUOTE_FINAL][self::CHAR_TYPE_DELIMITER][self::STATE_NEW_FIELD] = TRUE;
     $this->stateMachine[self::STATE_QUOTE_FINAL][self::CHAR_TYPE_BLANK][self::STATE_QUOTE_NO_CAPTURE] = TRUE;
     $this->stateMachine[self::STATE_QUOTE_FINAL][self::CHAR_TYPE_RECORD_END][self::STATE_NEW_FIELD] = TRUE;
-
 
     $this->stateMachine[self::STATE_QUOTE_NO_CAPTURE][self::CHAR_TYPE_DELIMITER][self::STATE_NEW_FIELD] = TRUE;
     $this->stateMachine[self::STATE_QUOTE_NO_CAPTURE][self::CHAR_TYPE_BLANK][self::STATE_QUOTE_NO_CAPTURE] = TRUE;
     $this->stateMachine[self::STATE_QUOTE_NO_CAPTURE][self::CHAR_TYPE_RECORD_END][self::STATE_NEW_FIELD] = TRUE;
 
-
     $this->reset();
   }
 
+  /**
+   * Private method.
+   */
   private function goToState($state, $char) {
     switch ($state) {
       case self::STATE_NEW_FIELD:
@@ -112,66 +125,93 @@ class CsvParser {
           $this->removeFieldBlankCharsAtEndOfLine();
         }
 
-        if($type == self::CHAR_TYPE_RECORD_END && (
+        if ($type == self::CHAR_TYPE_RECORD_END && (
             $this->currentState == self::STATE_QUOTE_NO_CAPTURE ||
             $this->currentState == self::STATE_QUOTE_FINAL ||
             $this->currentState == self::STATE_CAPTURE
           )) {
 
           $this->createNewRecord();
-        }else {
+        }
+        else {
           $this->createNewField();
         }
         break;
+
       case self::STATE_CAPTURE:
         $this->addCharToField($char);
         break;
+
       case self::STATE_NO_CAPTURE:
         break;
+
       case self::STATE_ESCAPE:
         break;
+
       case self::STATE_QUOTE_INITIAL:
         break;
+
       case self::STATE_QUOTE_FINAL:
         break;
+
       case self::STATE_QUOTE_CAPTURE:
         $this->addCharToField($char);
         break;
+
       case self::STATE_QUOTE_ESCAPE:
         break;
+
       case self::STATE_QUOTE_NO_CAPTURE:
         break;
     }
     $this->currentState = $state;
   }
 
+  /**
+   * Private method.
+   */
   private function removeFieldBlankCharsAtEndOfLine() {
     $this->field = rtrim($this->field);
   }
 
+  /**
+   * Private method.
+   */
   private function addCharToField($char) {
     $this->field .= $char;
   }
 
+  /**
+   * Private method.
+   */
   private function createNewRecord() {
     $this->createNewField();
     $this->records[] = $this->fields;
     $this->fields = [];
   }
 
+  /**
+   * Private method.
+   */
   private function createNewField() {
     $this->fields[] = $this->field;
     $this->field = "";
   }
 
+  /**
+   * Private method.
+   */
   private function stateMachineInput($char) {
     $char_type = $this->getCharType($char);
     $next_state = $this->getNextState($char_type);
     $this->goToState($next_state, $char);
   }
 
+  /**
+   * Private method.
+   */
   private function getCharType($char) {
-    if(in_array($char, $this->recordEnd)) {
+    if (in_array($char, $this->recordEnd)) {
       return self::CHAR_TYPE_RECORD_END;
     }
     if ($char == $this->delimiter) {
@@ -189,6 +229,9 @@ class CsvParser {
     return self::CHAR_TYPE_OTHER;
   }
 
+  /**
+   * Private method.
+   */
   private function getNextState($char_type) {
     if (isset($this->stateMachine[$this->currentState][$char_type])) {
       $keys = array_keys($this->stateMachine[$this->currentState][$char_type]);
@@ -197,6 +240,12 @@ class CsvParser {
     throw new \Exception("Error parsing the current chunk. [{$this->currentState}->{$char_type}]");
   }
 
+  /**
+   * Feed the parser a chunck of the csv formatted string to be parsed.
+   *
+   * @param string $chunk
+   *   Part or all of a csv file.
+   */
   public function feed($chunk) {
     $chars = str_split($chunk);
     foreach ($chars as $char) {
@@ -204,10 +253,16 @@ class CsvParser {
     }
   }
 
+  /**
+   * Gets a record.
+   */
   public function getRecord() {
     return array_shift($this->records);
   }
 
+  /**
+   * It sets the parser's state to its initial state.
+   */
   public function reset() {
     $this->field = "";
     $this->fields = [];
@@ -215,6 +270,9 @@ class CsvParser {
     $this->currentState = self::STATE_NEW_FIELD;
   }
 
+  /**
+   * Informs the parser that we are done.
+   */
   public function finish() {
     if (!empty($this->field)) {
       $this->createNewRecord();
