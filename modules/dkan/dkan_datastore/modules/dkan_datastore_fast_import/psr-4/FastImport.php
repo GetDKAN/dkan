@@ -4,14 +4,20 @@ namespace Dkan\Datastore\Manager;
 
 use Dkan\Datastore\Resource;
 
+/**
+ * Class FastImport.
+ */
 class FastImport extends Manager {
 
+  /**
+   * {@inheritdoc}
+   */
+  protected function initialization(Resource $resource) {}
 
-
-  function initialization(Resource $resource) {
-  }
-
-  function storeRecords() {
+  /**
+   * {@inheritdoc}
+   */
+  protected function storeRecords() {
     $properties = $this->getConfigurableProperties();
 
     $file_path = $this->getResource()->getFilePath();
@@ -22,31 +28,13 @@ class FastImport extends Manager {
     $delim = $properties['delimiter'];
 
     // @todo Add support for no headers.
-    $has_headers = ''; //($config['no_headers']) ? '' : 'IGNORE 1 LINES';
+    $has_headers = '';
 
     $quote_delimiters = $properties["quote"];
 
     $lines_terminated_by = "\n";
 
     $fields_escaped_by = $properties["escape"];
-
-    $set_null_values = '';
-    // @todo Add support for empty as null.
-    /*
-    $empty_as_null = FALSE; //variable_get('dkan_datastore_fast_import_load_empty_cells_as_null', 0);
-
-    $params = array();
-
-    // If importing empty values as null, create a local var for each column.
-    // See https://stackoverflow.com/questions/2675323/mysql-load-null-values-from-csv-data
-    if ($empty_as_null) {
-      $vars = dkan_datastore_fast_import_get_fields_as_vars($headers);
-      $fields = implode(',', $vars);
-      $headers_to_vars = array_combine($headers, $vars);
-      foreach ($headers_to_vars as $header => $var) {
-        $set_null_values = $set_null_values . ", $header = nullif($var,'')";
-      }
-    }*/
 
     $load_data_statement = 'LOAD DATA';
 
@@ -74,4 +62,5 @@ class FastImport extends Manager {
 
     return TRUE;
   }
+
 }

@@ -1,17 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: fmizzell
- * Date: 4/9/18
- * Time: 2:19 PM
- */
 
 namespace Dkan\Datastore\Manager;
 
 use Dkan\Datastore\LockableDrupalVariables;
 use Dkan\Datastore\Resource;
 
+/**
+ * Class Factory.
+ */
 class Factory {
+
+  /**
+   * Create a Datastore Manager.
+   *
+   * @param Resource $resource
+   *   A resource object.
+   * @param string $class
+   *   The Datastore Manager class.
+   *
+   * @throws \Exception
+   *   When an incorrect class is passed.
+   */
   public static function create(Resource $resource, $class = NULL) {
 
     if (!$class) {

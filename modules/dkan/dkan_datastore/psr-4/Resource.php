@@ -2,32 +2,72 @@
 
 namespace Dkan\Datastore;
 
+/**
+ * Class Resource.
+ */
 class Resource {
+
   private $id;
   private $filePath;
 
+  /**
+   * Resource constructor.
+   */
   public function __construct($id, $file_path) {
     $this->id = $id;
     $this->filePath = $file_path;
   }
 
+  /**
+   * Getter.
+   */
   public function getId() {
     return $this->id;
   }
 
+  /**
+   * Getter.
+   */
   public function getFilePath() {
     return $this->filePath;
   }
 
+  /**
+   * Create a resource from a Resource Node's uuid.
+   *
+   * @param string $uuid
+   *   A node's uuid.
+   *
+   * @return Resource
+   *   Resource.
+   */
   public static function createFromDrupalNodeUuid($uuid) {
     $nid = self::getNidFromUuid($uuid);
     return self::createFromDrupalNodeNid($nid);
   }
 
+  /**
+   * Create a resource from a Resource Node's nid.
+   *
+   * @param string $nid
+   *   A node's nid.
+   *
+   * @return Resource
+   *   Resource.
+   */
   public static function createFromDrupalNodeNid($nid) {
     return self::createFromDrupalNode(node_load($nid));
   }
 
+  /**
+   * Create a resource from a Resource Node.
+   *
+   * @param object $node
+   *   A node.
+   *
+   * @return Resource
+   *   Resource.
+   */
   public static function createFromDrupalNode($node) {
     $id = $node->nid;
     $file_path = self::filePath($node);
@@ -47,6 +87,9 @@ class Resource {
     }
   }
 
+  /**
+   * Private method.
+   */
   private static function filePath($node) {
     if (!empty($node->field_upload)) {
       $drupal_uri = $node->field_upload[LANGUAGE_NONE][0]['uri'];

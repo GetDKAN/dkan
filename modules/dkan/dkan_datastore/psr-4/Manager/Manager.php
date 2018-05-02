@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Datastore.inc.
- */
-
 namespace Dkan\Datastore\Manager;
 
 use Dkan\Datastore\LockableDrupalVariables;
@@ -38,17 +33,32 @@ abstract class Manager implements ManagerInterface {
 
     $this->configurableProperties = [];
 
-    if(!$this->loadState()) {
-      $this->setConfigurableProperties(['delimiter' => ',', 'quote' => '"', 'escape' => '\\']);
+    if (!$this->loadState()) {
+      $this->configurableProperties = [
+        'delimiter' => ',',
+        'quote' => '"',
+        'escape' => '\\'
+      ];
       $this->initialization($resource);
-      $this->saveState();
     }
   }
 
+  /**
+   * Get resource.
+   *
+   * @return Resource
+   *   The resource associated with this datastore.
+   */
   protected function getResource() {
     return $this->resource;
   }
 
+  /**
+   * Get pareser.
+   *
+   * @return CsvParser
+   *   Parser object.
+   */
   protected function getParser() {
     if (!$this->parser) {
       $this->parser = new CsvParser(
@@ -61,8 +71,23 @@ abstract class Manager implements ManagerInterface {
     return $this->parser;
   }
 
-  abstract function initialization(Resource $resource);
+  /**
+   * Initialization.
+   *
+   * This method is called the first time an instance of a
+   * Manager is created.
+   *
+   * This gives specific classes to affect what happens
+   * during construction.
+   *
+   * @param Resource $resource
+   *   Resource.
+   */
+  abstract protected function initialization(Resource $resource);
 
+  /**
+   * {@inheritdoc}
+   */
   public function initializeStorage() {
     $table_name = $this->getTableName();
 
@@ -79,10 +104,13 @@ abstract class Manager implements ManagerInterface {
     }
   }
 
+  /**
+   * Private method.
+   */
   private function getTableSchema() {
     $schema = [];
     $header = $this->getTableHeaders();
-    foreach($header as $field) {
+    foreach ($header as $field) {
       $schema['fields'][$field] = [
         'type' => "varchar",
         'length' => 255,
@@ -91,6 +119,9 @@ abstract class Manager implements ManagerInterface {
     return $schema;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getTableHeaders() {
     $parser = $this->getParser();
 
@@ -120,6 +151,9 @@ abstract class Manager implements ManagerInterface {
     return $header;
   }
 
+  /**
+   * Private method.
+   */
   private function loadState() {
     $state_storage = new LockableDrupalVariables("dkan_datastore");
     $state = $state_storage->get($this->resource->getId());
@@ -139,22 +173,17 @@ abstract class Manager implements ManagerInterface {
     return FALSE;
   }
 
-  private function saveState() {
+  /**
+   * {@inheritdoc}
+   */
+  public function saveState() {
     $state_storage = new LockableDrupalVariables("dkan_datastore");
-    $state = $state_storage->get($this->resource->getId());
-
-    if (!$state) {
-      $state = [];
-    }
-
-    $state['class'] = static::class;
-    $state['storage'] = $this->stateStorage;
-    $state['data_import'] = $this->stateDataImport;
-    $state['configurable_properties'] = $this->getConfigurableProperties();
-
-    $state_storage->set($this->resource->getId(), $state);
+    $state_storage->set($this->resource->getId(), $this->getStatus());
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function import() {
     $status = $this->getStatus();
     if ($status['storage'] == self::STORAGE_UNINITIALIZED) {
@@ -178,8 +207,19 @@ abstract class Manager implements ManagerInterface {
     }
   }
 
-  abstract function storeRecords();
+  /**
+   * Store records.
+   *
+   * Move records from the resource to the datastore.
+   *
+   * @return bool
+   *   Whether the storing process was successful.
+   */
+  abstract protected function storeRecords();
 
+  /**
+   * {@inheritdoc}
+   */
   public function drop() {
     $this->dropTable();
     $this->stateStorage = self::STORAGE_UNINITIALIZED;
@@ -187,32 +227,62 @@ abstract class Manager implements ManagerInterface {
     $this->saveState();
   }
 
+  /**
+   * Drop table.
+   *
+   * @todo Should this be public? Should it be part of the interface?
+   */
   public function dropTable() {
     db_drop_table($this->getTableName());
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function deleteRows() {
     $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
     $this->saveState();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getStatus() {
-    return ['storage' => $this->stateStorage, 'data_import' => $this->stateDataImport];
+    $state = [];
+
+    $state['class'] = static::class;
+    $state['storage'] = $this->stateStorage;
+    $state['data_import'] = $this->stateDataImport;
+    $state['configurable_properties'] = $this->getConfigurableProperties();
+
+    return $state;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getTableName() {
     return "dkan_datastore_{$this->resource->getId()}";
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getConfigurableProperties() {
     return $this->configurableProperties;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function setConfigurableProperties($properties) {
     $this->configurableProperties = $properties;
     $this->saveState();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function numberOfRecordsImported() {
     $table_name = $this->getTableName();
     $query = db_select($table_name, "t");
@@ -220,16 +290,25 @@ abstract class Manager implements ManagerInterface {
     try {
       return $query->countQuery()->execute()->fetchField();
     }
-    catch(\Exception $exception) {
+    catch (\Exception $exception) {
       return 0;
     }
   }
 
+  /**
+   * Set error.
+   *
+   * Adds an error message to the errors array.
+   */
   protected function setError($error) {
     $this->errors[] = $error;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getErrors() {
     return $this->errors;
   }
+
 }
