@@ -38,12 +38,11 @@ abstract class Datastore {
   protected function node($uuid) {
     static $nodes = array();
     if (!isset($node[$uuid])) {
-      $nid = $this->getNid($uuid);
-      if (!$nid) {
-        throw new Exception(t("uuid !uuid not found.", array('!uuid' => $uuid)));
+      if ($nid = $this->getNid($uuid)) {
+        $nodes[$uuid] = node_load($nid);
       }
       else {
-        $nodes[$uuid] = node_load($nid);
+        watchdog('dkan_datastore', 'Could not load, uuid: %uuid does not exist', array('%uuid' => $uuid), WATCHDOG_ERROR);
       }
     }
     return $nodes[$uuid];
