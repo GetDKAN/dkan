@@ -146,7 +146,7 @@ projects:
     download:
       type: git
       url: https://git.drupal.org/project/file_resup.git
-      revision: 6cf030c2c139374c75527221775965ff0242df15
+      revision: fd5aad6bd26ca84303bb07c3f757cd24a5cb5c01
   filefield_sources:
     version: '1.11'
   font_icon_select:
