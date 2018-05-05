@@ -1,0 +1,17 @@
+<?php
+/**
+ * @file
+ * DKAN install file.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Perform actions to set up the site for this profile.
+ *
+ * @see system_install()
+ */
+function dkan_install() {
+  include_once DRUPAL_ROOT . '/core/profiles/standard/standard.install';
+  standard_install();
+}

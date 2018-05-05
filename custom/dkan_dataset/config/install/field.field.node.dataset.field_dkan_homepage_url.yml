@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_dkan_homepage_url
+    - node.type.dataset
+  module:
+    - text
+id: node.dataset.field_dkan_homepage_url
+field_name: field_dkan_homepage_url
+entity_type: node
+bundle: dataset
+label: 'Homepage URL'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text

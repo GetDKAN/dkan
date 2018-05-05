@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_dkan_contact_name
+    - node.type.dataset
+id: node.dataset.field_dkan_contact_name
+field_name: field_dkan_contact_name
+entity_type: node
+bundle: dataset
+label: 'Contact Name'
+description: 'Contact person’s name for the asset. See <a href="http://project-open-data.github.io/schema/#common-core-required-fields">Project Open Data</a> for more info. Name should be formatted as Last, First.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
