@@ -48,7 +48,7 @@
         "drupal/core": "~8.5.2",
         "drupal/admin_toolbar": "1.23",
         "drupal/entity": "1.0-beta3",
-        "drupal/features": "^3.7",
+        "drupal/features": "^3.7"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
@@ -57,7 +57,7 @@
     "authors": [
         {
             "name": "acouch",
-            "email": "acinternets@gmail.com",
+            "email": "acinternets@gmail.com"
         },
         {
           "name": "dafeder",
