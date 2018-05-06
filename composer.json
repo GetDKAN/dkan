@@ -46,7 +46,6 @@
         "oomphinc/composer-installers-extender": "^1.1",
         "drupal-composer/drupal-scaffold": "^2.0.0",
         "drupal/core": "~8.5.2",
-        "drupal/admin_toolbar": "1.23",
         "drupal/entity": "1.0-beta3",
         "drupal/features": "^3.7"
     },
