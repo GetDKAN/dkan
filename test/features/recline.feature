@@ -79,7 +79,7 @@ Feature: Recline
     And I press "edit-submit"
     Then I should not see "File was too large or unavailable for preview."
 
-  @javascript @api @noworkflow
+  @javascript @api @noworkflow @fixme
   Scenario: Viewing graph preview
     Given I am logged in as "John"
     And I am on "/dataset/dataset-01"
