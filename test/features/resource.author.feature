@@ -316,7 +316,7 @@ Feature: Resource
     Then I should see "Last import"
     And I wait for "imported items total"
 
-  @resource_author_16 @datastore @noworkflow @javascript
+  @resource_author_16 @datastore @noworkflow @javascript @fixme
   Scenario: Delete items on datastore of own resource
     Given resources:
       | title       | author   | published | description |
