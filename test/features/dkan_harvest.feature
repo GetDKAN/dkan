@@ -141,7 +141,6 @@ Feature: Dkan Harvest
     And I should see "2016-06-22" in the "Release Date" row
     And I should see "2016-08-02" in the "Modified Date" row
 
-  # Batch screen on these two tests stalls and breaks
   @harvest_09 @fixme @api @harvest
   Scenario: As a user I should have access to see harvest preview information.
     Given users:
@@ -153,8 +152,8 @@ Feature: Dkan Harvest
     When I am on the "Source one" page
     Then I should see the link "Preview"
     And I click "Preview"
-    And I wait for "Harvest now"
-    Then I should see the text "Florida Bike Lanes Harvest"
+    And I should see the text "Harvest now"
+    And I should see the text "Florida Bike Lanes Harvest"
 
   @harvest_10 @api @fixme @harvest
   Scenario: As a user I should be able to refresh the preview on the Harvest Source.
@@ -166,9 +165,9 @@ Feature: Dkan Harvest
     Given The "source_one" source is harvested
     When I am on the "Source one" page
     Then I should see the link "Preview"
-    When  I click "Preview"
-    And I wait for "Harvest now"
-    And I press "Refresh"
+    And I click "Preview"
+    And I should see the text "Harvest now"
+    When I press "Refresh"
     Then The page status should be 'ok'
     And I should see the text "Preview"
 

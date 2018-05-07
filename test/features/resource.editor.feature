@@ -103,7 +103,7 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 02" page
     When I follow "View"
-    When I follow "Manage Datastore"
+    When I click "Manage Datastore"
     And I wait for "Import"
     And I press "Import"
     And I wait for "Delete Items"
@@ -120,7 +120,7 @@ Feature: Resource
       Given I am logged in as "Celeste"
       When I am on "Resource 02" page
       When I follow "View"
-      When I follow "Manage Datastore"
+      When I click "Manage Datastore"
       And I wait for "Import"
       And I press "Import"
       And I wait for "Delete Items"
@@ -140,8 +140,7 @@ Feature: Resource
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 02" page
-    When I follow "View"
-    When I follow "Manage Datastore"
+    When I click "Manage Datastore"
     And I wait for "Import"
     And I press "Import"
     And I wait for "Delete Items"
