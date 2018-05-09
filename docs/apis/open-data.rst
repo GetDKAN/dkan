@@ -28,27 +28,27 @@ Dataset
 .. csv-table::
 	:header: "DKAN Field/Property", "DCAT-AP property", "POD property"
 
-	"title", `dct:title <http://www.w3.org/TR/vocab-dcat/#Property:dataset_title)|[title](http://project-open-data.github.io/schema/#title>`_, "title"
-	"body", `dct:description <http://www.w3.org/TR/vocab-dcat/#Property:dataset_description>`_, `description <http://project-open-data.github.io/schema/#description>`_
-	"field_tags", `dcat:keyword <http://www.w3.org/TR/vocab-dcat/#Property:dataset_keyword>`_, `keyword <http://project-open-data.github.io/schema/#keyword>`_
-	"field_license","", `license <http://project-open-data.github.io/schema/#license>`_
+	"title", `dct:title <https://www.w3.org/TR/vocab-dcat/#Property:dataset_title)|[title](https://project-open-data.github.io/schema/#title>`_, "title"
+	"body", `dct:description <https://www.w3.org/TR/vocab-dcat/#Property:dataset_description>`_, `description <https://project-open-data.github.io/schema/#description>`_
+	"field_tags", `dcat:keyword <https://www.w3.org/TR/vocab-dcat/#Property:dataset_keyword>`_, `keyword <https://project-open-data.github.io/schema/#keyword>`_
+	"field_license","", `license <https://project-open-data.github.io/schema/#license>`_
 	"field_author", "", ""
 	"field_spatial_geographical_area", "", ""
-	 "field_spatial_geographical_cover", `dct:spatial <http://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial>`_, `spatial <http://project-open-data.github.io/schema/#spatial>`_
-	"field_frequency", `dct:accrualPeriodicity <http://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency>`_, `accrualPeriodicity <http://project-open-data.github.io/schema/#accrualPeriodicity>`_
-	"og_group_ref", `dct:publisher <http://www.w3.org/TR/vocab-dcat/#Property:dataset_publisher>`_, `publisher <http://project-open-data.github.io/schema/#publisher>`_
-	"field_temporal_coverage", `dct:temporal <http://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal>`_, `temporal <http://project-open-data.github.io/schema/#temporal>`_
+	 "field_spatial_geographical_cover", `dct:spatial <https://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial>`_, `spatial <https://project-open-data.github.io/schema/#spatial>`_
+	"field_frequency", `dct:accrualPeriodicity <https://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency>`_, `accrualPeriodicity <https://project-open-data.github.io/schema/#accrualPeriodicity>`_
+	"og_group_ref", `dct:publisher <https://www.w3.org/TR/vocab-dcat/#Property:dataset_publisher>`_, `publisher <https://project-open-data.github.io/schema/#publisher>`_
+	"field_temporal_coverage", `dct:temporal <https://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal>`_, `temporal <https://project-open-data.github.io/schema/#temporal>`_
 	"field_granularity", "", ""
-	"field_data_dictionary", "", `dataDictionary <http://project-open-data.github.io/schema/#dataDictionary>`_
-	"field_contact_name", "dcat:contactPoint.vcard:fn", `contactPoint <http://project-open-data.github.io/schema/#contactPoint>`_
-	"field_contact_email", "dcat:contactPoint.vcard:hasEmail", `mbox <http://project-open-data.github.io/schema/#mbox>`_
-	"field_public_access_level", `dct:accessRights <http://udfr.org/docs/onto/dct_accessRights.html>`_, `accessLevel <http://project-open-data.github.io/schema/#accessLevel>`_
+	"field_data_dictionary", "", `dataDictionary <https://project-open-data.github.io/schema/#dataDictionary>`_
+	"field_contact_name", "dcat:contactPoint.vcard:fn", `contactPoint <https://project-open-data.github.io/schema/#contactPoint>`_
+	"field_contact_email", "dcat:contactPoint.vcard:hasEmail", `mbox <https://project-open-data.github.io/schema/#mbox>`_
+	"field_public_access_level", `dct:accessRights <http://udfr.org/docs/onto/dct_accessRights.html>`_, `accessLevel <https://project-open-data.github.io/schema/#accessLevel>`_
 	"field_additional_info", "", ""
-	"field_resources", `dcat:distribution <http://www.w3.org/TR/vocab-dcat/#Property:dataset_distribution>`_, `distribution <http://project-open-data.github.io/schema/#distribution>`_
-	"field_related_content", "", `references <http://project-open-data.github.io/schema/#references>`_
-	"uuid", `dct:identifier <http://www.w3.org/TR/vocab-dcat/#Property:dataset_identifier>`_, `identifier <http://project-open-data.github.io/schema/#identifier>`_
-	"modified_date", `dct:modified <http://www.w3.org/TR/vocab-dcat/#Property:dataset_modified_date>`_, `modified <http://project-open-data.github.io/schema/#modified>`_
-	"release_date", `dct:issued <http://www.w3.org/TR/vocab-dcat/#Property:dataset_release_date>`_, `issued <http://project-open-data.github.io/schema/#issued>`_
+	"field_resources", `dcat:distribution <https://www.w3.org/TR/vocab-dcat/#Property:dataset_distribution>`_, `distribution <https://project-open-data.github.io/schema/#distribution>`_
+	"field_related_content", "", `references <https://project-open-data.github.io/schema/#references>`_
+	"uuid", `dct:identifier <https://www.w3.org/TR/vocab-dcat/#Property:dataset_identifier>`_, `identifier <https://project-open-data.github.io/schema/#identifier>`_
+	"modified_date", `dct:modified <https://www.w3.org/TR/vocab-dcat/#Property:dataset_modified_date>`_, `modified <https://project-open-data.github.io/schema/#modified>`_
+	"release_date", `dct:issued <https://www.w3.org/TR/vocab-dcat/#Property:dataset_release_date>`_, `issued <https://project-open-data.github.io/schema/#issued>`_
 
 The following properties are provided by the Open Data Federal Extras module and have no equivilant in DCAT. They are only relevant to U.S. federal agencies.
 

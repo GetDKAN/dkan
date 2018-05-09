@@ -1040,7 +1040,7 @@ function dkan_dataset_preview_url_arcgis($node) {
   // Get resource API link URL.
   $resource_wrapper = entity_metadata_wrapper('node', $node);
   if ($resource_wrapper->field_link_api->value()) {
-    return 'http://www.arcgis.com/home/webmap/viewer.html?url=' . $resource_wrapper->field_link_api->url->value();
+    return 'https://www.arcgis.com/home/webmap/viewer.html?url=' . $resource_wrapper->field_link_api->url->value();
   }
 }
 
@@ -1280,8 +1280,8 @@ function dkan_dataset_release_date($node) {
 
   // Last time a dataset was harvested is supposedly the time of the last
   // update.
-  if (isset($node->field_harvest_source_issued) &&
-    !empty($node->field_harvest_source_issued->value())) {
+  $issued = $node->field_harvest_source_issued->value();
+  if (isset($node->field_harvest_source_issued) && !empty($issued)) {
     $date = format_date($node->field_harvest_source_issued->value(), 'iso_8601_date');
   }
   else {
