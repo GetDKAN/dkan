@@ -8,14 +8,14 @@
 <header id="header" class="header">
   <div class="branding container">
     <?php if ($logo): ?>
-      <a class="logo navbar-btn pull-left" href="<?php print url($front_page); ?>" title="<?php print t('Home'); ?>">
+      <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
         <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
       </a>
     <?php endif; ?>
     <?php if ($site_name || $site_slogan): ?>
       <div class="site-name-wrapper">
         <?php if ($site_name): ?>
-          <a class="site-name" href="<?php print url($front_page); ?>" title="<?php print t('Home'); ?>">
+          <a class="site-name" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
             <?php print $site_name; ?>
           </a>
         <?php endif; ?>
