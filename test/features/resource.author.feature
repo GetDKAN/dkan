@@ -298,7 +298,7 @@ Feature: Resource
     And I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @resource_author_15 @datastore @noworkflow @javascript
+  @resource_author_15 @datastore @noworkflow @javascript @fixme
   Scenario: Import items on datastore of own resource
     Given resources:
       | title       | author   | published | description |
@@ -339,7 +339,7 @@ Feature: Resource
     # "drop" and "delete" datastore functions and do other refactoring, so will
     # revisit then.
 
-  @resource_author_17 @datastore @noworkflow @javascript
+  @resource_author_17 @datastore @noworkflow @javascript @fixme
   Scenario: Drop datastore of own resource
     Given resources:
       | title       | author   | published | description |
