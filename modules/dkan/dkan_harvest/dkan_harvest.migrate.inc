@@ -438,11 +438,20 @@ class HarvestMigration extends MigrateDKAN {
       // Create all resources and assign them to the dataset.
       $field_resources_value = array();
       foreach ($row->resources as $resource_row) {
-        $resource_node = $this->createResourceNode($resource_row);
-        // TODO add check?
-        $field_resources_value[] = $resource_node->nid;
-      }
 
+        try {
+          $resource_node = $this->createResourceNode($resource_row);
+          $field_resources_value[] = $resource_node->nid;
+        }
+        catch (EntityMetadataWrapperException $emwException) {
+          $message = t(
+            'Cannot create the resource. @exception_message',
+            array(
+              '@exception_message' => $emwException->getMessage(),
+            ));
+          $this->saveMessage($message);
+        }
+      }
       if (!empty($field_resources_value)) {
         foreach ($field_resources_value as $key => $resource_nid) {
           $dataset->field_resources[LANGUAGE_NONE][$key] = array(
