@@ -12,7 +12,7 @@ Feature: Recline
       | Katie   | katie@example.com   | content creator      |
     Given groups:
       | title    | author  | published |
-      | Group 01 | Badmin  | Yes       |
+      | Group 01 | John    | Yes       |
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Katie   | Group 01 | member               | Active            |
