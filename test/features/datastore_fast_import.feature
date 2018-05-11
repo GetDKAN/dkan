@@ -32,7 +32,7 @@ Feature: DKAN Datastore Fast Import
      When I press "Import"
       And I wait for "399 imported items total."
 
-  @datastore
+  @datastore @fixme
   Scenario: As user I want to import files using fast imports
     Given I am logged in as a user with the "site manager" role
       And I am on the resource "Resource Datastore"
@@ -49,7 +49,7 @@ Feature: DKAN Datastore Fast Import
       Then I should not see "Importing"
       And I wait for "399 imported items total."
 
-  @datastore
+  @datastore @fixme
   Scenario: As user I want to set fast imports as default for all the resource with a size over a threshold
     Given I am logged in as a user with the "site manager" role
       And I am on "Datastore Settings" page
@@ -79,7 +79,7 @@ Feature: DKAN Datastore Fast Import
      Then I should not see "Importing"
       And I wait for "File was succesfully enqueued to be imported and will be available in the datastore in a few minutes"
 
-  @datastore
+  @datastore @fixme
   Scenario: As user I want to import resources using "LOAD DATA LOCAL INFILE"
     Given I am logged in as a user with the "site manager" role
       And I am on "Datastore Settings" page
