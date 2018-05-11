@@ -15,22 +15,26 @@ function _dkan_datastore_resource_get_datastore($resource_nid) {
   /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
   $datastore = \Dkan\Datastore\Manager\Factory::create(_dkan_datastore_resource_get_resource($resource_nid));
 
-  if (!$datastore) {
-    services_error("The datastore for Resource {$resource_nid} has not been configured.");
-  }
-
   return $datastore;
 }
 
 function _dkan_datastore_resource_retrieve($resource_nid) {
   /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
   $datastore = _dkan_datastore_resource_get_datastore($resource_nid);
+
+  if (!$datastore) {
+    services_error("The datastore for Resource {$resource_nid} has not been configured.");
+  }
   return $datastore->getStatus();
 }
 
 function _dkan_datastore_resource_import($nid) {
   /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
   $datastore = _dkan_datastore_resource_get_datastore($nid);
+
+  if (!$datastore) {
+    services_error("The datastore for Resource {$resource_nid} has not been configured.");
+  }
 
   $finished = $datastore->import();
   if ($finished) {
@@ -42,14 +46,15 @@ function _dkan_datastore_resource_import($nid) {
 }
 
 function _dkan_datastore_resource_create($resource_nid, $data) {
-
+  $data = _services_arg_value($data, 'data');
   $manager = $data['manager'];
   $configuration = $data['configuration'];
-
+  // return $configuration;
   try {
-    _dkan_datastore_resource_get_datastore($resource_nid);
-    services_error("Configuration for this resource's datastore already exists.");
-    die();
+    if (_dkan_datastore_resource_get_datastore($resource_nid)) {
+      services_error("Configuration for this resource's datastore already exists.");
+      die();
+    }
   }
   catch (\Exception $e) {
     return $e->getMessage();
