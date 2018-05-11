@@ -89,7 +89,7 @@ Feature: Dataset Features
     Then I select "- None -" from "edit-field-public-access-level-und"
     And I should not see "Rights on Project Open Data"
 
-  @dataset_admin_06 @api
+  @dataset_admin_06 @api @fixme
   Scenario: ODSM data.json 1.1 mapping
     Given I am logged in as a user with the "administrator" role
     And I go to "admin/config/services/odsm/edit/data_json_1_1"
