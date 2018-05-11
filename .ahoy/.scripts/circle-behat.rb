@@ -29,7 +29,7 @@ pp files
 composer = ""
 
 files[CIRCLE_NODE_INDEX].each_index do |i|
-  file = Pathname(files[CIRCLE_NODE_INDEX][i]).realpath.to_s
+  file = Pathname('/var/www').join(files[CIRCLE_NODE_INDEX][i]).to_s
   suite = behat_parse_suite(file)
   testCmd = "ahoy dkan test #{file} --suite=#{suite} --format=pretty --out=std --format=junit --out='#{CIRCLE_ARTIFACTS}/junit' #{params} --colors"
   if i > 1

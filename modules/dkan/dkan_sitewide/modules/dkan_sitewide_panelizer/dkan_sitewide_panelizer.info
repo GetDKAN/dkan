@@ -17,4 +17,3 @@ features[variable][] = panelizer_node:page_allowed_layouts_default
 features[variable][] = panelizer_node:page_allowed_types
 features[variable][] = panelizer_node:page_allowed_types_default
 features[variable][] = panelizer_node:page_default
-

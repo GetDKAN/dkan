@@ -102,6 +102,7 @@ Feature: Resource
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 02" page
+    When I follow "View"
     When I click "Manage Datastore"
     And I wait for "Import"
     And I press "Import"
@@ -118,6 +119,7 @@ Feature: Resource
       And I press "Save"
       Given I am logged in as "Celeste"
       When I am on "Resource 02" page
+      When I follow "View"
       When I click "Manage Datastore"
       And I wait for "Import"
       And I press "Import"
@@ -128,7 +130,7 @@ Feature: Resource
       And I wait for "items have been deleted"
       Then "Resource 02" should have no datastore records
 
-  @resource_editor_8 @datastore @noworkflow @javascript
+  @resource_editor_8 @datastore @noworkflow @javascript @fixme
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 02" page
