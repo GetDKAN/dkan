@@ -25,33 +25,33 @@ function dkan_update_7001() {
  */
 function dkan_rename_field($old_field_name, $new_field_name) {
 
-  $messages = array();
+  $messages = [];
 
   // Read field data.
   $old_field = field_read_field($old_field_name);
   if (empty($old_field)) {
-    $messages[] = t('The field %old_field_name does not exist so it cannot be renamed.', array('%old_field_name' => $old_field_name));
+    $messages[] = t('The field %old_field_name does not exist so it cannot be renamed.', ['%old_field_name' => $old_field_name]);
     return $messages;
   }
 
   try {
     // Update {field_config}.
     db_update('field_config')
-      ->fields(array('field_name' => $new_field_name))
+      ->fields(['field_name' => $new_field_name])
       ->condition('id', $old_field['id'])
       ->execute();
 
     // Update {field_config_instance}.
     db_update('field_config_instance')
-      ->fields(array('field_name' => $new_field_name))
+      ->fields(['field_name' => $new_field_name])
       ->condition('field_id', $old_field['id'])
       ->execute();
 
     // The tables that need updating in the form 'old_name' => 'new_name'.
-    $tables = array(
+    $tables = [
       'field_data_' . $old_field_name => 'field_data_' . $new_field_name,
       'field_revision_' . $old_field_name => 'field_revision_' . $new_field_name,
-    );
+    ];
 
     // Iterate through tables to be redefined and renamed.
     foreach ($tables as $old_table => $new_table) {
@@ -63,7 +63,7 @@ function dkan_rename_field($old_field_name, $new_field_name) {
         $new_column_name = $new_field_name . '_' . $column_name;
 
         // If there is an index for the field, drop and then re-add it.
-        $has_index = isset($old_field['indexes'][$column_name]) && ($old_field['indexes'][$column_name] == array($column_name));
+        $has_index = isset($old_field['indexes'][$column_name]) && ($old_field['indexes'][$column_name] == [$column_name]);
         if ($has_index) {
           db_drop_index($old_table, $old_column_name);
         }
@@ -73,7 +73,7 @@ function dkan_rename_field($old_field_name, $new_field_name) {
 
         if ($has_index) {
           db_drop_index($old_table, $new_column_name);
-          db_add_index($old_table, $new_column_name, array($new_column_name));
+          db_add_index($old_table, $new_column_name, [$new_column_name]);
         }
       }
 
@@ -87,10 +87,9 @@ function dkan_rename_field($old_field_name, $new_field_name) {
       // Rename the table.
       db_rename_table($old_table, $new_table);
     }
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     $messages[] = t('The field %old_field_name could not be renamed because there was an error: %error.',
-      array('%old_field_name' => $old_field_name, '%error' => $e->getMessage()));
+      ['%old_field_name' => $old_field_name, '%error' => $e->getMessage()]);
   }
 
   cache_clear_all('*', 'cache_field', TRUE);
@@ -112,7 +111,7 @@ function dkan_update_7002() {
  */
 function dkan_update_7005() {
   db_update('system')
-    ->fields(array('status' => '0'))
+    ->fields(['status' => '0'])
     ->condition('name', 'dkan_default_content')
     ->execute();
 }
@@ -124,8 +123,8 @@ function dkan_update_7005() {
  * we have problem with new fields added on version 12.
  */
 function dkan_update_7006() {
-  module_enable(array('field_hidden'));
-  features_revert(array('dkan_datastore' => array('field_base', 'field_instance')));
+  module_enable(['field_hidden']);
+  features_revert(['dkan_datastore' => ['field_base', 'field_instance']]);
 }
 
 /**
@@ -152,7 +151,7 @@ function dkan_update_7007(&$sandbox) {
     // the groups only when a change on the dataset is detected.
     $original = new stdClass();
     $original->type = 'dataset';
-    $original->og_group_ref = array();
+    $original->og_group_ref = [];
     $dataset = node_load($item->field_dataset_ref_target_id);
     $dataset->original = $original;
     dkan_dataset_sync_groups($dataset);
@@ -190,9 +189,9 @@ function dkan_update_7009() {
  */
 function dkan_update_7010() {
   if (module_exists('dkan_dataset_api')) {
-    module_disable(array('dkan_dataset_api'));
-    drupal_uninstall_modules(array('dkan_dataset_api'));
-    module_enable(array('open_data_schema_map'));
+    module_disable(['dkan_dataset_api']);
+    drupal_uninstall_modules(['dkan_dataset_api']);
+    module_enable(['open_data_schema_map']);
   }
 }
 
@@ -200,7 +199,7 @@ function dkan_update_7010() {
  * Update copyright information.
  */
 function dkan_update_7011() {
-  $settings = variable_get('theme_nuboot_radix_settings', array());
+  $settings = variable_get('theme_nuboot_radix_settings', []);
   if ($settings['copyright']['value'] == 'Powered by <a href="http://nucivic.com/dkan">DKAN</a>, a project of <a href="http://nucivic.com">NuCivic</a>') {
     $settings['copyright']['value'] = t('Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>');
     variable_set('theme_nuboot_radix_settings', $settings);
@@ -256,7 +255,7 @@ function dkan_update_7012() {
  * Remove deprecated test and theme directories.
  */
 function dkan_update_7013() {
-  $deprecated = array(
+  $deprecated = [
     'profiles/dkan/modules/dkan/dkan_dataset/fonts',
     'profiles/dkan/modules/dkan/dkan_dataset/tests',
     'profiles/dkan/modules/dkan/dkan_datastore/tests',
@@ -265,7 +264,7 @@ function dkan_update_7013() {
     'profiles/dkan/modules/dkan/dkan_workflow/test',
     'profiles/dkan/themes/contrib/nuboot_radix',
     'profiles/dkan/themes/contrib/omega',
-  );
+  ];
   foreach ($deprecated as $dir) {
     if (is_dir($dir)) {
       drupal_rmdir($dir);
@@ -298,11 +297,11 @@ function dkan_update_7015() {
  */
 function dkan_update_7016() {
   db_update('bueditor_editors')
-    ->fields(array(
+    ->fields([
       'excludes' => 'edit-log
 edit-menu-description
 *data-dictionary*',
-    ))
+    ])
     ->condition('eid', '5')
     ->execute();
 }
@@ -319,14 +318,22 @@ function dkan_update_7017() {
  * Update language field values to use dashes rather than underscores.
  */
 function dkan_update_7018() {
-  db_update('field_data_field_language')
-    ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
-    ->execute();
-
-  db_update('field_revision_field_language')
-    ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', array(':underscore' => '_', ':dash' => '-'))
-    ->execute();
-
+  if (db_table_exists('field_data_field_language')) {
+    db_update('field_data_field_language')
+      ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', [
+        ':underscore' => '_',
+        ':dash' => '-',
+      ])
+      ->execute();
+  }
+  if (db_table_exists('field_revision_field_language')) {
+    db_update('field_revision_field_language')
+      ->expression('field_language_value', 'replace(field_language_value, :underscore, :dash)', [
+        ':underscore' => '_',
+        ':dash' => '-',
+      ])
+      ->execute();
+  }
 }
 
 /**
@@ -364,17 +371,17 @@ function dkan_update_7020() {
  */
 function dkan_update_7021() {
   $eid = db_select("bueditor_editors", "bue")
-    ->fields("bue", array("eid"))
+    ->fields("bue", ["eid"])
     ->condition("name", "Markdowneditor")
     ->execute()
     ->fetchField();
 
   db_update('bueditor_editors')
-    ->fields(array(
+    ->fields([
       'excludes' => 'edit-log
         edit-menu-description
         *data-dictionary*',
-    ))
+    ])
     ->condition('eid', $eid)
     ->execute();
 }
@@ -418,9 +425,9 @@ function dkan_update_7024(&$context) {
  * Update copyright information.
  */
 function dkan_update_7025() {
-  $settings = variable_get('theme_nuboot_radix_settings', array());
+  $settings = variable_get('theme_nuboot_radix_settings', []);
   if ($settings['copyright']['value'] == 'Powered by <a href="http://getdkan.com/">DKAN</a>, a project of <a href="http://granicus.com">Granicus</a>') {
-    $settings['copyright']['value'] = t('Powered by <a href="https://getdkan.org/">DKAN</a>');
+    $settings['copyright']['value'] = t('Powered by <a href="http://getdkan.org/">DKAN</a>');
     variable_set('theme_nuboot_radix_settings', $settings);
   }
 }
@@ -429,5 +436,10 @@ function dkan_update_7025() {
  * Revert content types dataset to revert og_group_ref on resources.
  */
 function dkan_update_7026() {
-  features_revert(array('dkan_dataset_content_types' => array('field_base', 'field_instance')));
+  features_revert([
+    'dkan_dataset_content_types' => [
+      'field_base',
+      'field_instance',
+    ],
+  ]);
 }
