@@ -88,7 +88,7 @@ abstract class Manager implements ManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function initializeStorage() {
+  private function initializeStorage() {
     $table_name = $this->getTableName();
 
     if (!db_table_exists($table_name)) {
@@ -229,10 +229,8 @@ abstract class Manager implements ManagerInterface {
 
   /**
    * Drop table.
-   *
-   * @todo Should this be public? Should it be part of the interface?
    */
-  public function dropTable() {
+  protected function dropTable() {
     db_drop_table($this->getTableName());
   }
 
@@ -240,6 +238,7 @@ abstract class Manager implements ManagerInterface {
    * {@inheritdoc}
    */
   public function deleteRows() {
+    db_delete($this->getTableName())->execute();
     $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
     $this->saveState();
   }
