@@ -65,11 +65,6 @@ interface ManagerInterface {
   public function numberOfRecordsImported();
 
   /**
-   * Initialize the storage mechanism.
-   */
-  public function initializeStorage();
-
-  /**
    * Get table name.
    *
    * The datastore mechanics are still tied to one type of storage:
@@ -99,7 +94,7 @@ interface ManagerInterface {
   /**
    * Save state.
    *
-   * Move the current state of the datastore manager to persisten storage.
+   * Move the current state of the datastore manager to persistent storage.
    */
   public function saveState();
 
