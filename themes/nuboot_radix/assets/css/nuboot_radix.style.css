@@ -10355,11 +10355,6 @@ h2.pane-title {
   .page-user .radix-layouts-content .pane-content .profile {
     margin-top: 0; }
 
-.radix-layouts-content .pane-title {
-  font-size: 36px;
-  line-height: 42px;
-  margin: 0 0 15px 0; }
-
 .radix-layouts-content .pane-content {
   margin-bottom: 1em; }
 
@@ -10478,7 +10473,7 @@ h2.pane-title {
 
 @media (max-width: 992px) {
   .panel-pane.pane-visualization-embed {
-    padding-bottom: 5em; } }
+    padding-bottom: 10em; } }
 
 @media (max-width: 768px) {
   .panel-dkan-front .panel-hero .panel-col-first,

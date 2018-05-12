@@ -1,26 +1,98 @@
 @media print {
+  body {
+    font-size: 12px; }
+    body h2, body .h2, body .pane-title {
+      font-size: 24px; }
+    body h3, body .h3 {
+      font-size: 21px; }
+    body h4, body .h4 {
+      font-size: 16px; }
   .container {
     width: 100%; }
-  .node-type-dataset .col-md-3 {
+    .container:after {
+      display: none; }
+  #main-wrapper {
+    clear: both; }
+  #footer.footer {
+    padding-bottom: 0;
+    page-break-after: avoid; }
+  .col-md-3 {
     width: 25%;
+    float: left;
+    vertical-align: top; }
+  .col-md-4 {
+    width: 33%;
     float: left; }
-  .node-type-dataset .col-md-9 {
+  .col-md-6 {
+    width: 49%;
+    float: left; }
+  .col-md-8 {
+    width: 66%;
+    float: left; }
+  .col-md-9 {
     width: 75%;
     float: left; }
   .node-type-dataset .node-dataset .resource-list li {
     padding: 0 0 0 45px; }
   #block-dkan-sitewide-dkan-sitewide-search-bar,
-  .breadcrumb,
-  .pane-dkan-sitewide-dkan-sitewide-other-access,
+  .pane-dkan-sitewide-dkan-sitewide-search-bar,
   .pane-dkan-sitewide-dkan-sitewide-social,
+  .breadcrumb,
   .resource-list .links,
-  .tabs--primary {
+  .tabs--primary,
+  .alert,
+  .region-page-bottom,
+  #admin-menu,
+  .field-type-geofield a {
     display: none; }
-  .branding a[href]:after {
+  .pane-dkan-sitewide-dkan-sitewide-license a[href]:last-of-type:after {
+    content: none !important; }
+  .branding a[href]::after,
+  ul.pagination a[href]::after,
+  .view-group-block .views-field-field-image a[href]::after,
+  .resource-list li a[href]::after,
+  .facetapi-facetapi-links li a[href]::after,
+  .pane-facetapi .ctools-collapsible-content li a[href]::after,
+  .pane-dkan-sitewide-dkan-sitewide-other-access .btn-group a[href]::after {
+    content: none !important; }
+  a[href]::after {
+    overflow-wrap: break-word;
+    word-wrap: break-word; }
+  .view-dkan-topics-featured a {
+    text-decoration: none; }
+  .view-dkan-topics-featured .topic-icon a[href]:after {
     content: none !important; }
   .node-type-dataset.panel-region-sidebar .radix-layouts-sidebar h2.pane-title {
     border-color: #dddddd !important; }
-  img, tr, svg, .card-chart {
+  .panel-pane.pane-visualization-embed {
+    padding-bottom: 0; }
+    .panel-pane.pane-visualization-embed .chart-container {
+      max-width: 100%;
+      width: 100% !important;
+      height: auto !important;
+      margin: 0; }
+  .col-md-12 .recline-nvd3 svg {
+    max-width: 670px !important; }
+  .col-md-8 .recline-nvd3 svg {
+    max-width: 446px !important; }
+  .col-md-6 .recline-nvd3 svg {
+    height: 420px !important;
+    max-width: 350px !important; }
+  .col-md-4 .recline-nvd3 svg {
+    max-height: 270px !important;
+    max-width: 220px !important; }
+  .col-md-3 .recline-nvd3 svg {
+    height: 200px !important;
+    max-width: 170px !important; }
+  .panopoly-spotlight-label {
+    background-color: #FFFFFF !important;
+    color: #000000 !important; }
+  .panopoly-spotlight-info {
+    background-color: #000000 !important;
+    color: #FFFFFF !important; }
+  .pane-visualization-embed,
+  .card-chart,
+  img, tr, svg {
     break-inside: avoid; } }
 
 /*# sourceMappingURL=print.css.map */
