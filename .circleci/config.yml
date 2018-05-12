@@ -95,6 +95,7 @@ jobs:
           name: DKAN Initialization
           command: |
             bash dkan-init.sh dkan --deps --build=$DATABASE_URL
+            ahoy drush autoload-rebuild
             ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
             ahoy drush cc all
       - run:
@@ -111,7 +112,6 @@ jobs:
           command: |
             ahoy drush en --yes dkan_harvest_test
             ahoy dkan reinstall --yes
-            ahoy drush autoload-rebuild
       - save_cache:
           key: v1-dkan-{{ .Branch }}
           paths:
