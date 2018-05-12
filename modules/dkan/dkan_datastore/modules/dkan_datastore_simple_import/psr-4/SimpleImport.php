@@ -13,12 +13,12 @@ class SimpleImport extends Manager {
   /**
    * {@inheritdoc}
    */
-  public function initialization(Resource $resource) {}
+  protected function initialization(Resource $resource) {}
 
   /**
    * {@inheritdoc}
    */
-  public function storeRecords() {
+  protected function storeRecords() {
     $number_of_items_imported = $this->numberOfRecordsImported();
     $start = ($number_of_items_imported > 0) ? $number_of_items_imported + 1 : 1;
 
