@@ -298,14 +298,22 @@ function dkan_dataset_get_visualization_entities($uuid) {
  *   The format string (eg, "csv", "html", etc.). Defaults to "data".
  */
 function dkan_dataset_get_resource_format($node) {
+  $format = NULL;
+
   $node_wrapper = entity_metadata_wrapper('node', $node);
   if ($node_wrapper->getBundle() != 'resource') {
-    return FALSE;
+    $format = FALSE;
   }
-  if (isset($node->field_format['und']) && $node_wrapper->field_format->value()->name) {
-    return $node_wrapper->field_format->value()->name;
+  if (!isset($format) && isset($node->field_format['und']) && $node_wrapper->field_format->value()->name) {
+    $format = $node_wrapper->field_format->value()->name;
   }
-  return 'data';
+  if (!isset($format)) {
+    $format = "data";
+  }
+
+  drupal_alter("dkan_dataset_get_resource_format", $format);
+
+  return $format;
 }
 
 /**
