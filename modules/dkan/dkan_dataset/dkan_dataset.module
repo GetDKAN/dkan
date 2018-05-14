@@ -240,14 +240,14 @@ function dkan_dataset_field_extra_fields() {
  * Helper to get Resource nodes linked to a Dataset.
  */
 function dkan_dataset_get_resource_nodes($nid) {
-  $nodes = array();
   $nids = array();
   $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node');
+  $query->fieldCondition('field_dataset_ref', 'target_id', $nid, '=');
 
-  $results = $query
-    ->entityCondition('entity_type', 'node')
-    ->fieldCondition('field_dataset_ref', 'target_id', $nid, '=')
-    ->execute();
+  drupal_alter("dkan_dataset_get_resource_nodes", $query);
+
+  $results = $query->execute();
 
   if ($results) {
     foreach ($results as $node) {
