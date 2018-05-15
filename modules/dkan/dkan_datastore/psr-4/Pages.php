@@ -102,7 +102,7 @@ class Pages {
       $form['actions'] = array('#type' => 'actions');
       $form['actions']['submit'] = array(
         '#type' => 'submit',
-        '#value' => t("Import"),
+        '#value' => t("Schedule Import"),
       );
 
     }
@@ -114,6 +114,8 @@ class Pages {
    * Form Submit.
    */
   public function importFormSubmit($form, &$form_state) {
+    $message = "";
+
     $values = $form_state['values'];
     $resource = $this->getResource();
 
@@ -124,10 +126,10 @@ class Pages {
       $datastore_manager = Factory::create($resource, $class);
 
       if ($datastore_manager) {
-        drupal_set_message("Your datastore manager choice has been saved.");
+        $message = "Your datastore manager choice has been saved.";
       }
       else {
-        drupal_set_message("The datastore manger {$class} could not be initialized.");
+        $message = "The datastore manger {$class} could not be initialized.";
       }
     }
     else {
@@ -145,8 +147,12 @@ class Pages {
       }
 
       $datastore_manager->setConfigurableProperties($configurable_properties);
+      $message = "This resource has been scheduled for import";
+    }
+    $datastore_manager->saveState();
 
-      $datastore_manager->initializeStorage();
+    if (!empty($message)) {
+      drupal_set_message($message);
     }
   }
 
@@ -155,15 +161,16 @@ class Pages {
    */
   private function setStatusInfo($form, ManagerInterface $datastore_manager) {
     $state = $datastore_manager->getStatus();
-
     $records_imported = $datastore_manager->numberOfRecordsImported();
 
     $class = get_class($datastore_manager);
     $strings[] = "<b>Importer:</b> {$class}";
     $strings[] = "<b>Records Imported:</b> {$records_imported}";
 
-    foreach ($state as $s) {
-      $strings[] = $this->datastoreStateToString($s);
+    foreach ($state as $key => $s) {
+      if (in_array($key, ['storage', 'data_import'])) {
+        $strings[] = $this->datastoreStateToString($s);
+      }
     }
 
     $form['status'] = [
