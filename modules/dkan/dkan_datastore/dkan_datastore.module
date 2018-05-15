@@ -453,46 +453,6 @@ function dkan_datastore_node_presave($node) {
 }
 
 /**
- * Implements hook_cron_queue_info().
- */
-function dkan_datastore_cron_queue_info() {
-  $queues['dkan_datastore_queue'] = array(
-    'worker callback' => 'dkan_datastore_queue_import_worker',
-    'time' => 120,
-    'skip on cron' => FALSE,
-  );
-
-  return $queues;
-}
-
-/**
- * Utility function for add a new resource to datastore queue.
- */
-function dkan_datastore_queue_import($uuid) {
-  $item = array(
-    'uuid' => $uuid,
-  );
-  DrupalQueue::get('dkan_datastore_queue')->createItem($item);
-  watchdog('dkan_datastore', 'Added resource %uuid to queue for import into datastore', array('%uuid' => $uuid));
-}
-
-/**
- * Callback used with queue for index content into datastore.
- */
-function dkan_datastore_queue_import_worker($item) {
-  $datastore = dkan_datastore_go($item['uuid']);
-
-  if (empty($datastore)) {
-    watchdog('dkan_datastore', "Failed to instantiate the Datastore for the resource id @uuid",
-      array('@uuid' => $item['uuid']),
-      'error');
-    return FALSE;
-  }
-
-  return $datastore->importByCli();
-}
-
-/**
  * Implements hook_form_alter().
  */
 function dkan_datastore_form_alter(&$form, &$form_state, $form_id) {
