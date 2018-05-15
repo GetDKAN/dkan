@@ -24,16 +24,6 @@ function dkan_dataset_rest_api_services_request_postprocess_alter($controller, $
     $wrapper->og_group_ref->set(array($gids));
     $wrapper->save();
   }
-
-  // Alter service attach file for add automatically the resource to datastore.
-  if ($controller['callback'] == '_node_resource_attach_file') {
-    if (isset($result[0]['uri'])) {
-      $nid = $args[0];
-      $uuid = current(entity_get_uuid_by_id('node', array($nid)));
-
-      dkan_datastore_queue_import($uuid);
-    }
-  }
 }
 
 /**
