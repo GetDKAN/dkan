@@ -3,6 +3,7 @@
 function dkan_datastore_fast_import_dkan_datastore_manager() {
   $info = new \Dkan\Datastore\Manager\Info(
     '\Dkan\Datastore\Manager\FastImport',
+    "fast",
     "Fast Import"
   );
 
