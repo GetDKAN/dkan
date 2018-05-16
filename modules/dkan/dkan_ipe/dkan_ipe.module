@@ -141,7 +141,6 @@ function dkan_ipe_process_panels_add_content_modal(&$vars) {
 function dkan_ipe_panels_pane_content_alter($content, $pane, $args, $contexts) {
   // #2158 Make iframe content resize to available space.
   if (isset($content->type)) {
-    //dpm($content);
     switch ($content->type) {
       case 'custom':
         if (isset($content->content)) {

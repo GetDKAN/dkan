@@ -2,21 +2,32 @@
 // Print Styles
 // --------------------------------------------------
 
-@media print {
-  body {
-    font-size: 12px;
-    h2, .h2, .pane-title {
-      font-size: 24px;
-    }
-    h3, .h3 {
-      font-size: 21px;
-    }
-    h4, .h4 {
-      font-size: 16px;
+@mixin print {
+  h1, h1.print-title {
+    font-size: 36px !important;
+    padding: 20px 0 10px !important;
+    margin: 0 !important;
+    clear: both;
+  }
+  h2, .h2, .pane-title {
+    font-size: 24px;
+  }
+  h3, .h3 {
+    font-size: 21px;
+  }
+  h4, .h4 {
+    font-size: 16px;
+  }
+  .node-type-group,
+  .node-type-dataset,
+  .page-user {
+    .region-content h2.pane-title {
+      margin-top: 0 !important;
     }
   }
   .container {
-    width: 100%;
+    width: 768px !important;
+    font-size: 12px;
     &:after {
       display: none;
     }
@@ -50,6 +61,10 @@
     width: 75%;
     float: left;
   }
+  hr {
+    clear: both;
+  }
+
   // Dataset Layout.
   .node-type-dataset {
     .node-dataset .resource-list li {
@@ -67,6 +82,7 @@
   .alert,
   .region-page-bottom,
   #admin-menu,
+  ul.links,
   .field-type-geofield a, {
     display: none;
   }
@@ -100,6 +116,9 @@
       content: none !important;
     }
   }
+  .font-icon-select-1 {
+    font-family: 'font_icon_select_1';
+  }
 
   // Colors.
   .node-type-dataset.panel-region-sidebar .radix-layouts-sidebar h2.pane-title {
@@ -107,32 +126,31 @@
   }
 
   // Visualizations.
-  .panel-pane.pane-visualization-embed {
+  .pane-visualization-embed {
     padding-bottom: 0;
     .chart-container {
-      max-width: 100%;
+      max-width: 100% !important;
       width: 100% !important;
       height: auto !important;
       margin: 0;
     }
   }
-  //.recline-nvd3 svg { margin: 0; }
 
-  .col-md-12 .recline-nvd3 svg {
+  .col-md-12 .col-md-12.recline-nvd3 svg {
     max-width: 670px !important;
   }
-  .col-md-8 .recline-nvd3 svg {
+  .col-md-8 .col-md-12.recline-nvd3 svg {
     max-width: 446px !important;
   }
-  .col-md-6 .recline-nvd3 svg {
+  .col-md-6 .col-md-12.recline-nvd3 svg {
     height: 420px !important;
     max-width:350px !important;
   }
-  .col-md-4 .recline-nvd3 svg {
+  .col-md-4 .col-md-12.recline-nvd3 svg {
     max-height: 270px !important;
     max-width: 220px !important;
   }
-  .col-md-3 .recline-nvd3 svg {
+  .col-md-3 .col-md-12.recline-nvd3 svg {
     height: 200px !important;
     max-width:170px !important;
   }
@@ -155,4 +173,12 @@
     page-break-inside: avoid;
     break-inside: avoid;
   }
+}
+
+.page-node-print {
+  @include print;
+}
+
+@media print {
+  @include print;
 }
