@@ -1,0 +1,204 @@
+diff --git a/date.module b/date.module
+index 6f849df..a24de96 100644
+--- a/date.module
++++ b/date.module
+@@ -226,69 +226,75 @@ function date_formatter_process($formatter, $entity_type, $entity, $field, $inst
+   $settings = $display['settings'];
+   $field_name = $field['field_name'];
+   $format = date_formatter_format($formatter, $settings, $granularity, $langcode);
+-  if (!isset($field['settings']['tz_handling']) || $field['settings']['tz_handling'] !== 'utc') {
+-    $timezone = isset($item['timezone']) ? $item['timezone'] : '';
+-    $timezone = date_get_timezone($field['settings']['tz_handling'], $timezone);
+-  }
+-  $timezone_db = date_get_timezone_db($field['settings']['tz_handling']);
+-  $db_format = date_type_format($field['type']);
+-  $process = date_process_values($field);
+-  foreach ($process as $processed) {
+-    if (empty($item[$processed])) {
+-      $dates[$processed] = NULL;
++  $timezone_db = '';
++  if (!empty($field['settings']['tz_handling'])) {
++    if (!isset($field['settings']['tz_handling']) || $field['settings']['tz_handling'] !== 'utc') {
++      $timezone = isset($item['timezone']) ? $item['timezone'] : '';
++      $timezone = date_get_timezone($field['settings']['tz_handling'], $timezone);
++      $timezone_db = date_get_timezone_db($field['settings']['tz_handling']);
+     }
+-    else {
+-      // Create a date object with a GMT timezone from the database value.
+-      $dates[$processed] = array();
+
+-      // Check to see if this date was already created by date_field_load().
+-      if (isset($item['db'][$processed])) {
+-        $date = $item['db'][$processed];
++    $db_format = date_type_format($field['type']);
++    $process = date_process_values($field);
++    foreach ($process as $processed) {
++      if (empty($item[$processed])) {
++        $dates[$processed] = NULL;
+       }
+       else {
+-        $date = new DateObject($item[$processed], $timezone_db, $db_format);
+-        $date->limitGranularity($field['settings']['granularity']);
+-      }
++        // Create a date object with a GMT timezone from the database value.
++        $dates[$processed] = array();
+
+-      $dates[$processed]['db']['object'] = $date;
+-      $dates[$processed]['db']['datetime'] = date_format($date, DATE_FORMAT_DATETIME);
+-
+-      date_timezone_set($date, timezone_open($timezone));
+-      $dates[$processed]['local']['object'] = $date;
+-      $dates[$processed]['local']['datetime'] = date_format($date, DATE_FORMAT_DATETIME);
+-      $dates[$processed]['local']['timezone'] = $timezone;
+-      $dates[$processed]['local']['offset'] = date_offset_get($date);
+-
+-      // Format the date, special casing the 'interval' format which doesn't
+-      // need to be processed.
+-      $dates[$processed]['formatted'] = '';
+-      $dates[$processed]['formatted_iso'] = date_format_date($date, 'custom', 'c');
+-      if (is_object($date)) {
+-        if ($format == 'format_interval') {
+-          $dates[$processed]['interval'] = date_format_interval($date);
+-        }
+-        elseif ($format == 'format_calendar_day') {
+-          $dates[$processed]['calendar_day'] = date_format_calendar_day($date);
++        // Check to see if this date was already created by date_field_load().
++        if (isset($item['db'][$processed])) {
++          $date = $item['db'][$processed];
+         }
+-        elseif ($format == 'U' || $format == 'r' || $format == 'c') {
+-          $dates[$processed]['formatted'] = date_format_date($date, 'custom', $format);
+-          $dates[$processed]['formatted_date'] = date_format_date($date, 'custom', $format);
+-          $dates[$processed]['formatted_time'] = '';
+-          $dates[$processed]['formatted_timezone'] = '';
++        else {
++          $date = new DateObject($item[$processed], $timezone_db, $db_format);
++          if (!empty($field['settings']['granularity'])) {
++            $date->limitGranularity($field['settings']['granularity']);
++          }
+         }
+-        elseif (!empty($format)) {
+-          $formats = _get_custom_date_format($date, $format);
+-          $dates[$processed]['formatted'] = $formats['formatted'];
+-          $dates[$processed]['formatted_date'] = $formats['date'];
+-          $dates[$processed]['formatted_time'] = $formats['time'];
+-          $dates[$processed]['formatted_timezone'] = $formats['zone'];
++
++        $dates[$processed]['db']['object'] = $date;
++        $dates[$processed]['db']['datetime'] = date_format($date, DATE_FORMAT_DATETIME);
++
++        date_timezone_set($date, timezone_open($timezone));
++        $dates[$processed]['local']['object'] = $date;
++        $dates[$processed]['local']['datetime'] = date_format($date, DATE_FORMAT_DATETIME);
++        $dates[$processed]['local']['timezone'] = $timezone;
++        $dates[$processed]['local']['offset'] = date_offset_get($date);
++
++        // Format the date, special casing the 'interval' format which doesn't
++        // need to be processed.
++        $dates[$processed]['formatted'] = '';
++        $dates[$processed]['formatted_iso'] = date_format_date($date, 'custom', 'c');
++        if (is_object($date)) {
++          if ($format == 'format_interval') {
++            $dates[$processed]['interval'] = date_format_interval($date);
++          }
++          elseif ($format == 'format_calendar_day') {
++            $dates[$processed]['calendar_day'] = date_format_calendar_day($date);
++          }
++          elseif ($format == 'U' || $format == 'r' || $format == 'c') {
++            $dates[$processed]['formatted'] = date_format_date($date, 'custom', $format);
++            $dates[$processed]['formatted_date'] = date_format_date($date, 'custom', $format);
++            $dates[$processed]['formatted_time'] = '';
++            $dates[$processed]['formatted_timezone'] = '';
++          }
++          elseif (!empty($format)) {
++            $formats = _get_custom_date_format($date, $format);
++            $dates[$processed]['formatted'] = $formats['formatted'];
++            $dates[$processed]['formatted_date'] = $formats['date'];
++            $dates[$processed]['formatted_time'] = $formats['time'];
++            $dates[$processed]['formatted_timezone'] = $formats['zone'];
++          }
+         }
+       }
+     }
+   }
+
+   if (empty($dates['value2'])) {
+-    $dates['value2'] = $dates['value'];
++    $dates['value2'] = !empty($dates['value']) ? $dates['value'] : '';
+   }
+
+   // Allow other modules to alter the date values.
+@@ -344,11 +350,11 @@ function _get_custom_date_format($date, $format) {
+  *   The field array.
+  */
+ function date_granularity($field) {
+-  if (!is_array($field) || !is_array($field['settings']['granularity'])) {
++  if (!is_array($field) || !empty($field['settings']['granularity']) && !is_array($field['settings']['granularity'])) {
+     $granularity = drupal_map_assoc(array('year', 'month', 'day'));
+     $field['settings']['granularity'] = $granularity;
+   }
+-  return array_values(array_filter($field['settings']['granularity']));
++  return !empty($field['settings']['granularity']) ? array_values(array_filter($field['settings']['granularity'])) : '';
+ }
+
+ /**
+@@ -448,8 +454,10 @@ function date_formatter_format($formatter, $settings, $granularity = array(), $l
+   }
+
+   // A selected format might include timezone information.
+-  array_push($granularity, 'timezone');
+-  return date_limit_format($format, $granularity);
++  if (is_array($granularity)) {
++    array_push($granularity, 'timezone');
++    return date_limit_format($format, $granularity);
++  }
+ }
+
+ /**
+diff --git a/date.theme b/date.theme
+index 5cec8b4..8daa5ce 100644
+--- a/date.theme
++++ b/date.theme
+@@ -76,7 +76,7 @@ function theme_date_display_combination($variables) {
+   $add_rdf     = $variables['add_rdf'];
+   $microdata   = $variables['microdata'];
+   $add_microdata = $variables['add_microdata'];
+-  $precision   = date_granularity_precision($field['settings']['granularity']);
++  $precision   = !empty($field['settings']['granularity']) ? date_granularity_precision($field['settings']['granularity']) : '';
+   $show_remaining_days = $variables['show_remaining_days'];
+
+   $output = '';
+@@ -129,27 +129,27 @@ function theme_date_display_combination($variables) {
+       break;
+
+     default:
+-      $date1 = $dates['value']['formatted'];
+-      $date2 = $dates['value2']['formatted'];
++      $date1 = !empty($dates['value']['formatted']) ? $dates['value']['formatted'] : '';
++      $date2 = !empty($dates['value2']['formatted']) ? $dates['value2']['formatted'] : '';
+       break;
+   }
+
+   // Pull the timezone, if any, out of the formatted result and tack it back on
+   // at the end, if it is in the current formatted date.
+-  $timezone = $dates['value']['formatted_timezone'];
++  $timezone = !empty($dates['value']['formatted_timezone']) ? $dates['value']['formatted_timezone'] : '';
+   if ($timezone) {
+     $timezone = ' ' . $timezone;
+   }
+   $date1 = str_replace($timezone, '', $date1);
+   $date2 = str_replace($timezone, '', $date2);
+-  $time1 = preg_replace('`^([\(\[])`', '', $dates['value']['formatted_time']);
++  $time1 = !empty($dates['value']['formatted_time']) ? preg_replace('`^([\(\[])`', '', $dates['value']['formatted_time']) : '';
+   $time1 = preg_replace('([\)\]]$)', '', $time1);
+-  $time2 = preg_replace('`^([\(\[])`', '', $dates['value2']['formatted_time']);
++  $time2 = !empty($dates['value2']['formatted_time']) ? preg_replace('`^([\(\[])`', '', $dates['value2']['formatted_time']) : '';
+   $time2 = preg_replace('([\)\]]$)', '', $time2);
+
+   // A date with a granularity of 'hour' has a time string that is an integer
+   // value. We can't use that to replace time strings in formatted dates.
+-  $has_time_string = date_has_time($field['settings']['granularity']);
++  $has_time_string = !empty($field['settings']['granularity']) ? date_has_time($field['settings']['granularity']) : '';
+   if ($precision == 'hour') {
+     $has_time_string = FALSE;
+   }
