@@ -1,5 +1,5 @@
 name = DKAN Dataset REST API
-description = "REST APIs for DKAN Datasets"
+description = REST APIs for DKAN Datasets
 core = 7.x
 package = DKAN
 dependencies[] = ctools
@@ -9,5 +9,3 @@ dependencies[] = services
 features[ctools][] = services:services:3
 features[features_api][] = api:2
 features[services_endpoint][] = dkan_dataset_api
-mtime = 1417998121
-
