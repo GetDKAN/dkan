@@ -5,6 +5,9 @@
  * Dataset REST API).
  */
 
+/**
+ * Resource definition.
+ */
 function _dkan_datastore_resource_definition() {
   return array(
     'datastore' => array(
@@ -70,7 +73,7 @@ function _dkan_datastore_resource_definition() {
         ),
       ),
       'delete' => array(
-        'help' => 'Drop the datastore for a given resource.',
+        'help' => 'Remove the datastore for a given resource.',
         'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
         'callback' => '_dkan_datastore_resource_delete',
         'args' => array(
@@ -83,6 +86,38 @@ function _dkan_datastore_resource_definition() {
           ),
         ),
         'access callback' => '_dkan_datastore_resource_access',
+      ),
+      'targeted_actions' => array(
+        'drop' => array(
+          'help' => 'Drop a datastore table but keep configuration.',
+          'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
+          'callback' => '_dkan_datastore_resource_drop',
+          'access callback' => '_dkan_datastore_resource_access',
+          'args' => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the node to attach a file to',
+            ),
+          ),
+        ),
+        'import' => array(
+          'help' => 'Queue a datastore for import.',
+          'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
+          'callback' => '_dkan_datastore_resource_import',
+          'access callback' => '_dkan_datastore_resource_access',
+          'args' => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the node to attach a file to',
+            ),
+          ),
+        ),
       ),
     ),
   );
@@ -114,23 +149,6 @@ function _dkan_datastore_resource_retrieve($resource_nid) {
     services_error("The datastore for Resource {$resource_nid} has not been configured.");
   }
   return $datastore->getStatus();
-}
-
-function _dkan_datastore_resource_import($nid) {
-  /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-  $datastore = _dkan_datastore_resource_get_datastore($nid);
-
-  if (!$datastore) {
-    services_error("The datastore for Resource {$resource_nid} has not been configured.");
-  }
-
-  $finished = $datastore->import();
-  if ($finished) {
-    return "Success";
-  }
-  else {
-    return $datastore->getErrors();
-  }
 }
 
 function _dkan_datastore_resource_create($resource_nid, $data) {
@@ -223,6 +241,40 @@ function _dkan_datastore_resource_delete($resource_nid) {
   $datastore->dropState();
 
   return TRUE;
+}
+
+function _dkan_datastore_resource_import($nid) {
+  /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
+  $datastore = _dkan_datastore_resource_get_datastore($nid);
+
+  if (!$datastore) {
+    services_error("The datastore for Resource {$resource_nid} has not been configured.");
+  }
+
+  $finished = $datastore->import();
+  if ($finished) {
+    return TRUE;
+  }
+  else {
+    return $datastore->getErrors();
+  }
+}
+
+function _dkan_datastore_resource_drop($nid) {
+  $datastore = _dkan_datastore_resource_get_datastore($nid);
+
+  if (!$datastore) {
+    services_error("The datastore for Resource {$resource_nid} has not been configured.");
+  }
+
+  $finished = $datastore->drop();
+  if ($finished) {
+    return TRUE;
+  }
+  else {
+    return 'untrue';
+    return $datastore->getErrors();
+  }
 }
 
 function _dkan_datastore_resource_get_class($manager_machine_name) {

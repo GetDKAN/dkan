@@ -233,6 +233,7 @@ abstract class Manager implements ManagerInterface {
     $this->stateStorage = self::STORAGE_UNINITIALIZED;
     $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
     $this->saveState();
+    return TRUE;
   }
 
   /**
