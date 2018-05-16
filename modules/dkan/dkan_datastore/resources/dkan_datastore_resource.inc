@@ -76,9 +76,64 @@ function _dkan_datastore_resource_create($resource_nid, $data) {
         services_error("The configuration property {$property_name} was not set.");
       }
       $datastore->setConfigurableProperties($configuration);
-      return "Success";
+    }
+    // Now get the stored object and return
+    unset($datastore);
+    $datastore = _dkan_datastore_resource_get_datastore($resource_nid);
+
+    if (!$datastore) {
+      services_error("The datastore for Resource {$resource_nid} was not properly configured.");
+    }
+    return $datastore->getStatus();
+  }
+}
+
+function _dkan_datastore_resource_update($resource_nid, $data) {
+  $data = _services_arg_value($data, 'data');
+  $manager = $data['manager'];
+  $configuration = $data['configuration'];
+  // return $configuration;
+  try {
+    $datastore = _dkan_datastore_resource_get_datastore($resource_nid);
+    if (empty($datastore)) {
+      services_error("This resource's datastore is not configured or does not exist.");
     }
   }
+  catch (\Exception $e) {
+    return $e->getMessage();
+  }
+
+  if ($manager) {
+    $class = _dkan_datastore_resource_get_class($manager);
+    $status = $datastore->getStatus();
+    // If the manager class has changed, drop and create a new one.
+    if ($status['class'] != $class) {
+      services_error("You may not change the manager of an existing datastore. Drop the datastore and create a new one to use a different manager.");
+    }
+  }
+
+  $properties = $datastore->getConfigurableProperties();
+  foreach ($properties as $property_name => $default_value) {
+    if (isset($configuration[$property_name])) {
+      $datastore->setConfigurableProperties($configuration);
+    }
+  }
+}
+
+function _dkan_datastore_resource_delete($resource_nid) {
+  try {
+    $datastore = _dkan_datastore_resource_get_datastore($resource_nid);
+    if (empty($datastore)) {
+      services_error("This resource's datastore is not configured or does not exist.");
+    }
+  }
+  catch (\Exception $e) {
+    return $e->getMessage();
+  }
+
+  $datastore->drop();
+
+  return TRUE;
 }
 
 function _dkan_datastore_resource_get_class($manager_machine_name) {

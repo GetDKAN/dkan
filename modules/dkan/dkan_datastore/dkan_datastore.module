@@ -62,67 +62,46 @@ function dkan_datastore_services_resources() {
           ),
           'access callback' => '_dkan_datastore_resource_access',
         ),
-        /*'update' => array(
-          'help' => 'Update a node',
-          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
-          'callback' => '_node_resource_update',
+        'update' => array(
+          'help' => 'Update/modify the datastore for a given resource.',
+          'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
+          'callback' => '_dkan_datastore_resource_update',
           'args' => array(
             array(
               'name' => 'nid',
               'optional' => FALSE,
               'source' => array('path' => 0),
               'type' => 'int',
-              'description' => 'The nid of the node to update',
+              'description' => 'The nid of the resource to configure a datastore for.',
             ),
             array(
-              'name' => 'node',
+              'name' => 'data',
               'optional' => FALSE,
+              'type' => 'string',
               'source' => 'data',
-              'description' => 'The node data to update',
-              'type' => 'array',
+              'description' => 'Configuration data for datastore.',
             ),
           ),
-          'access callback' => '_node_resource_access',
-          'access arguments' => array('update'),
-          'access arguments append' => TRUE,
+          'access callback' => '_dkan_datastore_resource_access',
         ),
-        'delete' => array(
-          'help' => t('Delete a node'),
-          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
-          'callback' => '_node_resource_delete',
-          'args' => array(
-            array(
-              'name' => 'nid',
-              'optional' => FALSE,
-              'source' => array('path' => 0),
-              'type' => 'int',
-              'description' => 'The nid of the node to delete',
-            ),
+      ),
+      'delete' => array(
+        'help' => 'Drop the datastore for a given resource.',
+        'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
+        'callback' => '_dkan_datastore_resource_delete',
+        'args' => array(
+          array(
+            'name' => 'nid',
+            'optional' => FALSE,
+            'source' => array('path' => 0),
+            'type' => 'int',
+            'description' => 'The nid of the resource for which to drop datastore.',
           ),
-          'access callback' => '_node_resource_access',
-          'access arguments' => array('delete'),
-          'access arguments append' => TRUE,
-        ),*/
+        ),
+        'access callback' => '_dkan_datastore_resource_access',
       ),
     ),
   );
-
-  /*return array(
-    'dkan_datastore' => array(
-      'targeted_actions' => array(
-        'import' => array(
-
-        ),
-
-      'actions' => array(
-        'info' => array(
-          'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
-          'callback' => '_dkan_datastore_resource_info',
-          'access callback' => '_dkan_datastore_resource_import_access',
-        ),
-      ),
-    ),
-  );*/
 }
 
 /**
@@ -609,7 +588,9 @@ function dkan_datastore_cron() {
   $storage->returnBin($bin);
 
   if ($current_nid) {
-    print_r(PHP_EOL . "DKAN DATASTORE: Starting Import of Resource {$nid}" . PHP_EOL);
+    if (function_exists('drush_print')) {
+      drush_print(PHP_EOL . "DKAN DATASTORE: Starting Import of Resource {$nid}" . PHP_EOL);
+    }
 
     $resource = Resource::createFromDrupalNodeNid($current_nid);
 
