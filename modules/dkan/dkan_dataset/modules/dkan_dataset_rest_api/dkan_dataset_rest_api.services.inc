@@ -55,6 +55,14 @@ function dkan_dataset_rest_api_default_services_endpoint() {
           'enabled' => '1',
         ),
       ),
+      'targeted_actions' => array(
+        'drop' => array(
+          'enabled' => '1',
+        ),
+        'import' => array(
+          'enabled' => '1',
+        ),
+      ),
     ),
     'node' => array(
       'alias' => 'node',
