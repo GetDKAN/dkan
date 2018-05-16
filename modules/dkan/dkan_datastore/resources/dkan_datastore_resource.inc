@@ -1,4 +1,92 @@
 <?php
+/**
+ * @file
+ * Resource definition and callback for dkan_datastore endpoint (used in
+ * Dataset REST API).
+ */
+
+function _dkan_datastore_resource_definition() {
+  return array(
+    'datastore' => array(
+      'operations' => array(
+        'retrieve' => array(
+          'help' => 'Retrieve information about a datastore',
+          'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
+          'callback' => '_dkan_datastore_resource_retrieve',
+          'args' => array(
+            array(
+              'name' => 'resource_nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the resource the datastore is connected to.',
+            ),
+          ),
+          'access callback' => '_dkan_datastore_resource_access',
+        ),
+        'create' => array(
+          'help' => 'Create a datastore for the given resource.',
+          'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
+          'callback' => '_dkan_datastore_resource_create',
+          'args' => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the resource to configure a datastore for.',
+            ),
+            array(
+              'name' => 'data',
+              'optional' => FALSE,
+              'type' => 'string',
+              'source' => 'data',
+              'description' => 'The machine name of the datastore manager that should be used.',
+            ),
+          ),
+          'access callback' => '_dkan_datastore_resource_access',
+        ),
+        'update' => array(
+          'help' => 'Update/modify the datastore for a given resource.',
+          'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
+          'callback' => '_dkan_datastore_resource_update',
+          'args' => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the resource to configure a datastore for.',
+            ),
+            array(
+              'name' => 'data',
+              'optional' => FALSE,
+              'type' => 'string',
+              'source' => 'data',
+              'description' => 'Configuration data for datastore.',
+            ),
+          ),
+          'access callback' => '_dkan_datastore_resource_access',
+        ),
+      ),
+      'delete' => array(
+        'help' => 'Drop the datastore for a given resource.',
+        'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
+        'callback' => '_dkan_datastore_resource_delete',
+        'args' => array(
+          array(
+            'name' => 'nid',
+            'optional' => FALSE,
+            'source' => array('path' => 0),
+            'type' => 'int',
+            'description' => 'The nid of the resource for which to drop datastore.',
+          ),
+        ),
+        'access callback' => '_dkan_datastore_resource_access',
+      ),
+    ),
+  );
+}
 
 function _dkan_datastore_resource_get_resource($resource_nid) {
   try {
