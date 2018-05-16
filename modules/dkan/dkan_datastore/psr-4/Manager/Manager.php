@@ -184,6 +184,14 @@ abstract class Manager implements ManagerInterface {
   /**
    * {@inheritdoc}
    */
+  public function dropState() {
+    $state_storage = new LockableDrupalVariables("dkan_datastore");
+    $state_storage->delete($this->resource->getId());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function import() {
     $status = $this->getStatus();
     if ($status['storage'] == self::STORAGE_UNINITIALIZED) {

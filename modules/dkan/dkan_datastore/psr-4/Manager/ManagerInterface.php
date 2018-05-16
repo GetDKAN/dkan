@@ -98,4 +98,11 @@ interface ManagerInterface {
    */
   public function saveState();
 
+  /**
+   * Drop state.
+   *
+   * Remove datastore state from persistant storage.
+   */
+  public function dropState();
+
 }

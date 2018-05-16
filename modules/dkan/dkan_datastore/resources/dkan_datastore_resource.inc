@@ -132,6 +132,7 @@ function _dkan_datastore_resource_delete($resource_nid) {
   }
 
   $datastore->drop();
+  $datastore->dropState();
 
   return TRUE;
 }
