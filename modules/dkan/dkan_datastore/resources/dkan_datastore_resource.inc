@@ -155,7 +155,6 @@ function _dkan_datastore_resource_create($resource_nid, $data) {
   $data = _services_arg_value($data, 'data');
   $manager = $data['manager'];
   $configuration = $data['configuration'];
-  // return $configuration;
   try {
     if (_dkan_datastore_resource_get_datastore($resource_nid)) {
       services_error("Configuration for this resource's datastore already exists.");
@@ -198,7 +197,6 @@ function _dkan_datastore_resource_update($resource_nid, $data) {
   $data = _services_arg_value($data, 'data');
   $manager = $data['manager'];
   $configuration = $data['configuration'];
-  // return $configuration;
   try {
     $datastore = _dkan_datastore_resource_get_datastore($resource_nid);
     if (empty($datastore)) {
