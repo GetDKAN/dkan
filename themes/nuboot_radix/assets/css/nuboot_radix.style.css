@@ -10054,6 +10054,11 @@ ul.action-links {
   .radix-layouts-sidebar ul.menu > li > ul.menu li a {
     padding: 10px 15px 10px 30px; }
 
+.print-link:before {
+  font-family: "FontAwesome";
+  content: '\f02f';
+  margin-right: 5px; }
+
 .node-type-dataset .field-name-field-tags {
   margin: 1em 0; }
 

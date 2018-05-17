@@ -68,6 +68,7 @@
 .page-node-print .region-page-bottom,
 .page-node-print #admin-menu,
 .page-node-print ul.links,
+.page-node-print .print-link,
 .page-node-print .field-type-geofield a {
   display: none; }
 
@@ -194,6 +195,7 @@
   .region-page-bottom,
   #admin-menu,
   ul.links,
+  .print-link,
   .field-type-geofield a {
     display: none; }
   .pane-dkan-sitewide-dkan-sitewide-license a[href]:last-of-type:after {

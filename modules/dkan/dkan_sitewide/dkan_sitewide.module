@@ -21,20 +21,9 @@ function dkan_sitewide_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-  // $items['node/%node/print'] = array(
-  //   'title' => 'Print',
-  //   'page arguments' => array(1),
-  //   'access callback' => TRUE,
-  //   'type' => MENU_LOCAL_TASK,
-  //   'weight' => 100,
-  // );
 
   return $items;
 }
-
-// function dkan_sitewide_print_page($node) {
-//   drupal_goto('node/' . $node->nid . '/print');
-// }
 
 /**
  * Callback to make change search path backward compatible.
