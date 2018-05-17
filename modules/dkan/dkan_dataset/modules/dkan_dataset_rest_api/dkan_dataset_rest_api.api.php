@@ -16,7 +16,8 @@
  * @param  $handlers
  *   Array of validation handler functions to call. Handlers should be functions
  *   that accept arguments:
- *     * $node - the node object being validated, not yet saved.
+ *     * $node - the node object being validated, not yet saved. Passed as
+ *               reference.
  *     * $field_name - the field name being validated.
  *     * $info - the info array for the field.
  *

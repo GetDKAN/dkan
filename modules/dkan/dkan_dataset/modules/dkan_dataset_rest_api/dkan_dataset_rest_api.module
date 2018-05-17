@@ -118,7 +118,7 @@ function _dkan_dataset_rest_api_resource_update($nid, $request) {
 
       try {
         field_attach_validate('node', $node);
-        _dkan_dataset_rest_api_field_validation($node);
+        _dkan_dataset_rest_api_validate_fields($node);
       }
       catch (\Exception $e) {
         return services_error($e->getMessage());
@@ -169,7 +169,7 @@ function _dkan_dataset_rest_api_validate_fields($node) {
  * Default validation handler for Dataset REST API
  */
 
-function dkan_dataset_rest_api_validate_field($node, $field_name, $info) {
+function dkan_dataset_rest_api_validate_field(&$node, $field_name, $info) {
   if ($info['required'] == 1 && empty($node->{$field_name})) {
     throw new Exception("Field {$field_name} is required");
   }
