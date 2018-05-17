@@ -4,6 +4,7 @@ core = 7.x
 package = DKAN
 dependencies[] = ctools
 dependencies[] = dkan_dataset
+dependencies[] = dkan_datastore
 dependencies[] = rest_server
 dependencies[] = services
 features[ctools][] = services:services:3
