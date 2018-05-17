@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Test module for DKAN Dataset and child modules.
+ */
+
+ function dkan_dataset_test_dkan_dataset_rest_api_field_validate_alter(&$handlers) {
+   $handlers[] = 'dkan_dataset_test_validation_handler';
+ }
+
+ function dkan_dataset_test_validation_handler(&$node, $field_name, $info) {
+   if ($field_name == "body" && $node->body['und'][0]['value'] == "PHPUNIT Test Dataset Custom Validation") {
+     throw new Exception("Test validation rejection");
+   }
+ }
