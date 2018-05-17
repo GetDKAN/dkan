@@ -68,10 +68,9 @@ class ApiTest extends \PHPUnit_Framework_TestCase {
    */
   public function testCustomValidation() {
     try {
-      module_enable
       $this->client->nodeCreate((object) [
         'title' => 'PHPUNIT Custom Validation',
-        'body' => ['und' => [0 => ['value => "PHPUNIT Test Dataset Custom Validation"']]]
+        'body' => ['und' => [0 => ['value => "PHPUNIT Test Dataset Custom Validation"']]],
         'type' => 'dataset',
       ]);
     }
