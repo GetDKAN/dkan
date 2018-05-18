@@ -1,5 +1,5 @@
 #modalContent {
-  .modal-header { 
+  .modal-header {
     background: $brand-primary;
     h4 {
       color: #fff;
@@ -117,6 +117,9 @@
 }
 .add-content-link-dkan-plugins-button-link-icon-text-button:before {
   content:"\f0c1";
+}
+.add-content-link-dkan-plugins-print-link-icon-text-button:before {
+  content: '\f02f';
 }
 
 img {

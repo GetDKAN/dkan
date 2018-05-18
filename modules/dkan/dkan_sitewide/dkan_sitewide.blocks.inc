@@ -53,10 +53,6 @@ function dkan_sitewide_block_info() {
     'info' => t('Add a Dataset'),
     'cache' => DRUPAL_NO_CACHE,
   );
-  $blocks['dkan_printer_friendly'] = array(
-    'info' => t('Print Link'),
-    'cache' => DRUPAL_NO_CACHE,
-  );
 
   return $blocks;
 }
@@ -123,11 +119,6 @@ function dkan_sitewide_block_view($delta = '') {
       $block['subject'] = t('Add a Dataset');
       $default = dkan_add_front_block();
       $block['content'] = check_markup(variable_get('dkan_sitewide_dkan_add_front_text', $default), variable_get('dkan_sitewide_dkan_add_front_format', 'html'));
-      break;
-
-    case 'dkan_printer_friendly':
-      $block['subject'] = '';
-      $block['content'] = dkan_print_link_block();
       break;
 
   }
@@ -525,23 +516,5 @@ function dkan_add_front_block() {
   $output = '<div class="add content">';
   $output .= t('You can add a !dataset to get a sense of publisher workflow. This form can be customised to require many additional fields. In this demo only the most basic fields are required.', array('!dataset' => l(t('Dataset'), 'node/add/dataset')));
   $output .= '</div>';
-  return $output;
-}
-
-/**
- * Link to printer-friendly version of a node.
- */
-function dkan_print_link_block() {
-  if (arg(0) == 'node' && is_numeric(arg(1))) {
-    $output = l('Print', 'node/' . arg(1) . '/print', array(
-      'attributes' => array(
-        'class' => array('print-link'),
-        'target' => '_blank',
-      ),
-    ));
-  }
-  else {
-    $output = '';
-  }
   return $output;
 }
