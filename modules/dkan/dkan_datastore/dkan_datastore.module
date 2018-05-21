@@ -27,24 +27,24 @@ function dkan_datastore_services_resources() {
 function dkan_datastore_menu() {
 
   // @todo Move somewhere else.
-  $items['node/%dkan_datastore_resource/download'] = array(
+  $items['node/%node/download'] = array(
     'title callback' => 'dkan_datastore_download_title',
     'title arguments' => array(1),
     'page callback' => 'dkan_datastore_download',
     'page arguments' => array(1),
     'access callback' => 'dkan_datastore_download_access',
-    'access arguments' => array('view', 1),
+    'access arguments' => array(1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => '20',
     'type' => MENU_LOCAL_TASK,
   );
 
   // @todo Move somewhere else.
-  $items['node/%dkan_datastore_resource/data'] = array(
+  $items['node/%node/data'] = array(
     'page callback' => 'dkan_datastore_proxy',
     'page arguments' => array(1),
     'access callback' => 'dkan_datastore_download_access',
-    'access arguments' => array('view', 1),
+    'access arguments' => array(1),
     'file' => 'dkan_datastore.pages.inc',
     'type' => MENU_CALLBACK,
   );
@@ -53,8 +53,8 @@ function dkan_datastore_menu() {
     'title' => 'Manage Datastore',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "importForm"),
-    'access callback' => 'dkan_datastore_feeds_access',
-    'access arguments' => array('import', 1),
+    'access callback' => 'dkan_datastore_access',
+    'access arguments' => array(1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => '15',
     'type' => MENU_LOCAL_TASK,
@@ -63,8 +63,8 @@ function dkan_datastore_menu() {
     'title' => 'Import',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "importForm"),
-    'access callback' => 'dkan_datastore_feeds_access',
-    'access arguments' => array('import', 1),
+    'access callback' => 'dkan_datastore_access',
+    'access arguments' => array(1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => 10,
     'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -74,8 +74,8 @@ function dkan_datastore_menu() {
     'title' => 'Drop Datastore',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "dropForm"),
-    'access callback' => 'dkan_datastore_feeds_access',
-    'access arguments' => array('drop', 1),
+    'access callback' => 'dkan_datastore_access',
+    'access arguments' => array(1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => 12,
     'type' => MENU_LOCAL_TASK,
@@ -138,33 +138,19 @@ function dkan_datastore_menu_alter(&$items) {
 /**
  * Access callback for DKAN Datastore operations.
  */
-function dkan_datastore_feeds_access($action, $node) {
-
-  // If $action is not one of the supported actions, return access denied.
-  if (!in_array($action, array('import', 'clear', 'unlock', 'drop'))) {
-    return FALSE;
+function dkan_datastore_access($node) {
+  if ($resource = Resource::createFromDrupalNode($node)) {
+    return $resource->datastoreAccess();
   }
-
-  // All available operations requires the 'manage datastore' permission.
-  if (user_access('manage datastore') && node_access('update', $node) && $node->type == 'resource') {
-    return TRUE;
-  }
-
-  return FALSE;
 }
 
 /**
  * Access callback for Download.
  */
-function dkan_datastore_download_access($action, $resource) {
-  $type = dkan_datastore_node_type();
-  $node = is_object($resource) ? $resource : node_load($resource);
-
-  if ($node->type != $type) {
-    return FALSE;
+function dkan_datastore_download_access($node) {
+  if ($node->type == Resource::resourceContentType()) {
+    return node_access('view', $node);
   }
-
-  return node_access('view', $node);
 }
 
 /**
@@ -428,14 +414,11 @@ function dkan_datastore_file_link_field() {
 
 /**
  * Returns name of node type that the Datastore is attached to.
+ *
+ * DEPRECATED: Use Resource::resourceContentType
  */
 function dkan_datastore_node_type() {
-  static $node_type;
-  if (!$node_type) {
-    $node_type = 'resource';
-    drupal_alter('dkan_datastore_node_type', $node_type);
-  }
-  return $node_type;
+  return Resource::resourceContentType
 }
 
 /**

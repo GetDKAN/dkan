@@ -8,13 +8,21 @@ namespace Dkan\Datastore;
 class Resource {
 
   private $id;
+  private $node;
   private $filePath;
 
   /**
    * Resource constructor.
    */
   public function __construct($id, $file_path) {
+    // Check to make sure node type is correct
+    $node = node_load($id);
+    // No access if content type is not default datastore type (usually resource).
+    if ($node->type != self::resourceContentType()) {
+      throw new Exception("Not a valid content type for datastore; $type expected.");
+    }
     $this->id = $id;
+    $this->node = node_load($id);
     $this->filePath = $file_path;
   }
 
@@ -69,9 +77,25 @@ class Resource {
    *   Resource.
    */
   public static function createFromDrupalNode($node) {
+    // Return false if wrong type.
+    if ($node->type != self::resourceContentType()) {
+      return FALSE;
+    }
     $id = $node->nid;
     $file_path = self::filePath($node);
     return new self($id, $file_path);
+  }
+
+  /**
+   * Get the correct datastore resource content type; usually "resource".
+   */
+  public static function resourceContentType() {
+    static $node_type;
+    if (!$node_type) {
+      $node_type = 'resource';
+      drupal_alter('dkan_datastore_node_type', $node_type);
+    }
+    return $node_type;
   }
 
   /**
@@ -101,6 +125,21 @@ class Resource {
       return $node->field_link_remote_file[LANGUAGE_NONE][0]['uri'];
     }
     throw new \Exception(t("Node !nid doesn't have a proper file path.", array('!nid' => $node->nid)));
+  }
+
+  /**
+   * Datastore manager access
+   */
+  public function manageDatastoreAccess($account = NULL) {
+    global $user;
+    if (!isset($account)) {
+      $account = $user;
+    }
+
+    // All available operations requires the 'manage datastore' permission.
+    if (user_access('manage datastore', $account) && node_access('update', $this->node, $account)) {
+      return TRUE;
+    }
   }
 
 }
