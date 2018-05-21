@@ -12,8 +12,8 @@ $plugin = array(
   'single' => TRUE,
   'edit form' => 'dkan_plugins_print_link_content_type_edit_form',
   'render callback' => 'dkan_plugins_print_link_content_type_render',
+  'required context' => new ctools_context_required(t('Node'), 'node'),
   'category' => array(t('Custom'), -1),
-  'all contexts' => TRUE,
 );
 
 /**
@@ -49,6 +49,7 @@ function dkan_plugins_print_link_content_type_edit_form($form, &$form_state) {
     ),
     '#default_value' => isset($align) ? $align : 'text-center',
   );
+
   return $form;
 }
 
@@ -71,14 +72,16 @@ function dkan_plugins_print_link_content_type_edit_form_submit($form, &$form_sta
 /**
  * Render callback.
  */
-function dkan_plugins_print_link_content_type_render($subtype, $conf, $panel_args, $context = NULL) {
+function dkan_plugins_print_link_content_type_render($subtype, $conf, $panel_args, $context) {
 
   global $base_path;
+  $node = isset($context->data) ? clone $context->data : NULL;
+
   $link   = isset($conf['print_link_title']) ? $conf['print_link_title'] : '';
   $align  = isset($conf['print_link_align']) ? $conf['print_link_align'] : '';
   $output = '';
   $output .= '<p style="text-align:' . $align . ';">';
-  $output .= '<a href="' . $base_path . 'node/' . arg(1) . '/print" ';
+  $output .= '<a href="' . $base_path . 'node/' . $node->nid . '/print" ';
   $output .= 'class="print-link" target="_blank">';
   $output .= $link . '</a></p>';
 
