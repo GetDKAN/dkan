@@ -71,6 +71,7 @@ jobs:
             docker cp .ahoy.yml $(docker-compose ps -q cli):/var/www
             mkdir -p dkan/test/assets/junit
             docker cp dkan $(docker-compose ps -q cli):/var/www
+            ahoy docker xdebug stop
       - run:
           name: Install Drupal
           command: |
