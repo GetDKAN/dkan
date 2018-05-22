@@ -138,18 +138,9 @@ function dkan_datastore_menu_alter(&$items) {
 /**
  * Access callback for DKAN Datastore operations.
  */
-function dkan_datastore_access($node) {
+function dkan_datastore_access($op, $node) {
   if ($resource = Resource::createFromDrupalNode($node)) {
-    return $resource->datastoreAccess();
-  }
-}
-
-/**
- * Access callback for Download.
- */
-function dkan_datastore_download_access($node) {
-  if ($node->type == Resource::resourceContentType()) {
-    return node_access('view', $node);
+    return $resource->datastoreAccess($op);
   }
 }
 

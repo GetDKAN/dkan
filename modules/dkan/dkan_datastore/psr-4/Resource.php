@@ -130,16 +130,27 @@ class Resource {
   /**
    * Datastore manager access
    */
-  public function manageDatastoreAccess($account = NULL) {
+  public function datastoreAccess($op, $account = NULL) {
     global $user;
     if (!isset($account)) {
       $account = $user;
     }
 
-    // All available operations requires the 'manage datastore' permission.
-    if (user_access('manage datastore', $account) && node_access('update', $this->node, $account)) {
-      return TRUE;
+    switch ($op) {
+      case 'view':
+        return node_access('view', $this->node, $account)
+        break;
+
+      case 'drop':
+      case 'import':
+      case 'manage':
+        // All available operations require the 'manage datastore' permission.
+        if (user_access('manage datastore', $account) && node_access('update', $this->node, $account)) {
+          return TRUE;
+        }
+        break;
     }
+
   }
 
 }
