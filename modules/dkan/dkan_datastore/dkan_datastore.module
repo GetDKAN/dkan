@@ -92,10 +92,10 @@ function dkan_datastore_managers_info() {
  */
 function dkan_datastore_resource_link_type($node) {
   $node_wrapper = entity_metadata_wrapper('node', $node);
-  $file_field = dkan_datastore_file_upload_field();
-  $remote_file_field = dkan_datastore_file_link_field();
-  $api_field = dkan_datastore_api_link_field();
-  $type = dkan_datastore_node_type();
+  $file_field = Resource::fileUploadField();
+  $remote_file_field = Resource::fileLinkField();
+  $api_field = Resource::apiLinkField();
+  $type = Resource::resourceContentType();
 
   if ($node->type == $type && $file = $node_wrapper->{$file_field}->value()) {
     $uri = isset($file->uri) ? $file->uri : $file['uri'];

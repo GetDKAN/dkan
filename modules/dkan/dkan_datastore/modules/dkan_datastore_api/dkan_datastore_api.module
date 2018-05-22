@@ -7,6 +7,10 @@
  * TODO: Add search element, investigate caching, add uuids.
  */
 
+ use \Dkan\Datastore\Manager\Manager;
+ use \Dkan\Datastore\Manager\Factory;
+ use \Dkan\Datastore\Resource;
+
 define('DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS', 't');
 
 function dkan_datastore_api_menu() {
@@ -671,9 +675,9 @@ function dkan_datastore_api_sort_clean($sort) {
  * Returns table name or exeption.
  */
 function dkan_datastore_api_tablename($resource_id) {
-  /* @var $datastore DkanDatastoreInterface */
-  $datastore = dkan_datastore_go($resource_id);
-  return $datastore->getTableName();
+  $resource = Resource::createFromDrupalNodeNid($current_nid);
+  $datastore_manager = Factory::create($resource);
+  return $datastore_manager->getTableName();
 }
 
 /**
@@ -842,56 +846,66 @@ function dkan_datastore_api_debug($data_select) {
  * Callback for Data API instructions.
  */
 function dkan_datastore_api_api_page($node) {
-  $datastore = dkan_datastore_go($node->uuid);
-  $status = $datastore->getStatus();
+  if ($resource = Resource::createFromDrupalNode($node)) {
+    $datastore_manager = Factory::create($resource);
+    $status = $datastore_manager->getStatus();
+    switch ($status['data_import']) {
+      case Manager::DATA_IMPORT_DONE:
+        $output = dkan_datastore_api_instructions_output();
+        return $output;
 
-  switch ($status) {
-    case DKAN_DATASTORE_EXISTS:
-      $output = $datastore->apiForm();
-      return $output;
+      case Manager::DATA_IMPORT_UNINITIALIZED:
+      case Manager::DATA_IMPORT_IN_PROGRESS:
+        drupal_set_message(t('You need to add your file to the datastore in order to use the DATA API'));
+        $redirect_path = 'node/' . $node->nid . '/datastore';
+        break;
 
-    case DKAN_DATASTORE_FILE_EXISTS:
-      drupal_set_message(t('You need to add your file to the datastore in order to use the DATA API'));
-      $redirect_path = 'node/' . $node->nid . '/datastore';
-      break;
-
-    default:
-      drupal_set_message(t('This resource can not be added to the datastore'));
-      $redirect_path = 'node/' . $node->nid;
-      break;
+      default:
+        drupal_set_message(t('This resource can not be added to the datastore'));
+        $redirect_path = 'node/' . $node->nid;
+        break;
+    }
+    drupal_goto($redirect_path);
   }
-  drupal_goto($redirect_path);
+}
+
+/**
+ * Output for datastore API instructions.
+ *
+ * @todo Actually generate content, maybe incorporate into datastore clases or
+ *       new class. See original output function: https://git.io/vhJ2V
+ */
+function dkan_datastore_api_instructions_output() {
+  $output = '<h2>' . t('DKAN Datastore API') . '</h2>';
+  return $output;
 }
 
 /**
  * Access callback for Data API instructions.
  */
-function dkan_datastore_api_api_page_access($resource) {
-  return TRUE;
-
-  $status = dkan_datastore_status($resource);
-  if ($status == DKAN_DATASTORE_FILE_EXISTS && !user_access('manage datastore')) {
-    return FALSE;
-  }
-  if ($status != DKAN_DATASTORE_WRONG_TYPE) {
-    $file_field = dkan_datastore_file_upload_field();
-    $link_field = dkan_datastore_file_link_field();
-    $type = dkan_datastore_node_type();
-    $node = is_object($resource) ? $resource : node_load($resource);
-    $upload = '';
-    $link = '';
-    if (isset($node->$file_field) && $node->$file_field) {
-      $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
-    }
-    if (isset($node->{$link_field}) && $node->{$link_field}) {
-      $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
-    }
-    if ($node->type == $type && ($upload || $link)) {
-      return node_access('view', $node);
-    }
-    else {
-      return FALSE;
+function dkan_datastore_api_api_page_access($node) {
+  if ($resource = Resource::createFromDrupalNode($node)) {
+    if ($datastore_manager = Factory::create($resource)) {
+      $status = $datastore_manager->getStatus();
+      if ($status['data_import'] == Manager::DATA_IMPORT_DONE && user_access('manage datastore')) {
+        $type = Resource::resourceContentType();
+        $file_field = Resource::fileUploadField();
+        $link_field = Resource::fileLinkField();
+        $upload = '';
+        $link = '';
+        if (isset($node->$file_field) && $node->$file_field) {
+          $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
+        }
+        if (isset($node->{$link_field}) && $node->{$link_field}) {
+          $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
+        }
+        if ($node->type == $type && ($upload || $link)) {
+          return node_access('view', $node);
+        }
+        else {
+          return FALSE;
+        }
+      }
     }
   }
-  return FALSE;
 }

@@ -99,6 +99,42 @@ class Resource {
   }
 
   /**
+   * Returns name of upload field.
+   */
+  public static function fileUploadField() {
+    static $field;
+    if (!$field) {
+      $field = 'field_upload';
+      drupal_alter('dkan_datastore_file_upload_field', $field);
+    }
+    return $field;
+  }
+
+  /**
+   * Returns name of link api field.
+   */
+  public static function apiLinkField() {
+    static $field;
+    if (!$field) {
+      $field = 'field_link_api';
+      drupal_alter('dkan_datastore_field_link_api', $field);
+    }
+    return $field;
+  }
+
+  /**
+   * Returns name of remote file field.
+   */
+  public static function fileLinkField() {
+    static $field;
+    if (!$field) {
+      $field = 'field_link_remote_file';
+      drupal_alter('dkan_datastore_field_link_remote_file', $field);
+    }
+    return $field;
+  }
+
+  /**
    * Gets nid using uuid.
    */
   private static function getNidFromUuid($uuid) {
