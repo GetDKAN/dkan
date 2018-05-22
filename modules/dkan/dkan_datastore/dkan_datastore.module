@@ -32,8 +32,8 @@ function dkan_datastore_menu() {
     'title arguments' => array(1),
     'page callback' => 'dkan_datastore_download',
     'page arguments' => array(1),
-    'access callback' => 'dkan_datastore_download_access',
-    'access arguments' => array(1),
+    'access callback' => 'dkan_datastore_access',
+    'access arguments' => array('view', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => '20',
     'type' => MENU_LOCAL_TASK,
@@ -43,8 +43,8 @@ function dkan_datastore_menu() {
   $items['node/%node/data'] = array(
     'page callback' => 'dkan_datastore_proxy',
     'page arguments' => array(1),
-    'access callback' => 'dkan_datastore_download_access',
-    'access arguments' => array(1),
+    'access callback' => 'dkan_datastore_access',
+    'access arguments' => array('view', 1),
     'file' => 'dkan_datastore.pages.inc',
     'type' => MENU_CALLBACK,
   );
@@ -54,7 +54,7 @@ function dkan_datastore_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "importForm"),
     'access callback' => 'dkan_datastore_access',
-    'access arguments' => array(1),
+    'access arguments' => array('manage', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => '15',
     'type' => MENU_LOCAL_TASK,
@@ -64,7 +64,7 @@ function dkan_datastore_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "importForm"),
     'access callback' => 'dkan_datastore_access',
-    'access arguments' => array(1),
+    'access arguments' => array('import', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => 10,
     'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -75,7 +75,7 @@ function dkan_datastore_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "dropForm"),
     'access callback' => 'dkan_datastore_access',
-    'access arguments' => array(1),
+    'access arguments' => array('drop', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => 12,
     'type' => MENU_LOCAL_TASK,
@@ -258,25 +258,6 @@ function dkan_datastore_permission() {
 }
 
 /**
- * Implements hook_node_view().
- */
-function dkan_datastore_node_view($node, $view_mode, $langcode) {
-
-  /*$type = dkan_datastore_node_type();
-  if ($node->type == $type) {
-    $status = dkan_datastore_status($node);
-    if (user_access('manage datastore') && $status && $view_mode == 'full') {
-      if ($status == DKAN_DATASTORE_FILE_EXISTS) {
-        drupal_set_message(t('Your file for this resource is not added to the datastore. Click "Manage Datastore" to import file into the datastore.'));
-      }
-      elseif ($status == DKAN_DATASTORE_EXISTS) {
-        drupal_set_message(t('Your file for this resource has been added to the datastore.'));
-      }
-    }
-  }*/
-}
-
-/**
  * Determines if a resource can be imported.
  */
 function dkan_datastore_is_importable($file) {
@@ -409,7 +390,7 @@ function dkan_datastore_file_link_field() {
  * DEPRECATED: Use Resource::resourceContentType
  */
 function dkan_datastore_node_type() {
-  return Resource::resourceContentType
+  return Resource::resourceContentType();
 }
 
 /**

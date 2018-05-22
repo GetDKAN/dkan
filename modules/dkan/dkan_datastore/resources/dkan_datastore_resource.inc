@@ -26,6 +26,8 @@ function _dkan_datastore_resource_definition() {
             ),
           ),
           'access callback' => '_dkan_datastore_resource_access',
+          'access arguments' => array('manage'),
+          'access arguments append' => TRUE,
         ),
         'create' => array(
           'help' => 'Create a datastore for the given resource.',
@@ -48,11 +50,15 @@ function _dkan_datastore_resource_definition() {
             ),
           ),
           'access callback' => '_dkan_datastore_resource_access',
+          'access arguments' => array('manage'),
+          'access arguments append' => TRUE,
         ),
         'update' => array(
           'help' => 'Update/modify the datastore for a given resource.',
           'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
           'callback' => '_dkan_datastore_resource_update',
+          'access arguments' => array('manage'),
+          'access arguments append' => TRUE,
           'args' => array(
             array(
               'name' => 'nid',
@@ -86,6 +92,8 @@ function _dkan_datastore_resource_definition() {
           ),
         ),
         'access callback' => '_dkan_datastore_resource_access',
+        'access arguments' => array('delete'),
+        'access arguments append' => TRUE,
       ),
       'targeted_actions' => array(
         'drop' => array(
@@ -93,6 +101,8 @@ function _dkan_datastore_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
           'callback' => '_dkan_datastore_resource_drop',
           'access callback' => '_dkan_datastore_resource_access',
+          'access arguments' => array('drop'),
+          'access arguments append' => TRUE,
           'args' => array(
             array(
               'name' => 'nid',
@@ -108,6 +118,8 @@ function _dkan_datastore_resource_definition() {
           'file' => array('type' => 'inc', 'module' => 'dkan_datastore', 'name' => 'resources/dkan_datastore_resource'),
           'callback' => '_dkan_datastore_resource_import',
           'access callback' => '_dkan_datastore_resource_access',
+          'access arguments' => array('import'),
+          'access arguments append' => TRUE,
           'args' => array(
             array(
               'name' => 'nid',
@@ -291,6 +303,32 @@ function _dkan_datastore_resource_info() {
   return $info;
 }
 
-function _dkan_datastore_resource_access() {
-  return TRUE;
+function _dkan_datastore_resource_access($op = 'view', $args = array()) {
+  // Make sure we have an object or this all fails, some servers can
+  // mess up the types.
+  if (is_array($args[0])) {
+    $args[0] = (object) $args[0];
+  }
+  elseif (!is_array($args[0]) && !is_object($args[0])) {  //This is to determine if it is just a string happens on node/%NID
+    $args[0] = (object)array('nid' => $args[0]);
+  }
+
+  if ($op != 'create' && !empty($args)) {
+    $node = node_load($args[0]->nid);
+  }
+  elseif ($op == 'create') {
+    if (isset($args[0]->type)) {
+      $node = $args[0]->type;
+      return node_access($op, $node);
+    }
+    else {
+      return services_error(t('Node type is required'), 406);
+    }
+  }
+  if (isset($node->nid) && $node->nid) {
+    return node_access($op, $node);
+  }
+  else {
+    return services_error(t('Node @nid could not be found', array('@nid' => $args[0]->nid)), 404);
+  }
 }

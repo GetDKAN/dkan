@@ -138,10 +138,11 @@ class Resource {
 
     switch ($op) {
       case 'view':
-        return node_access('view', $this->node, $account)
+        return node_access('view', $this->node, $account);
         break;
 
       case 'drop':
+      case 'delete':
       case 'import':
       case 'manage':
         // All available operations require the 'manage datastore' permission.
