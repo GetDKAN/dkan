@@ -130,38 +130,4 @@ function dkan_dataset_update_7003() {
   taxonomy_vocabulary_delete($vocabulary->vid);
 }
 
-/**
- * Make sure revised settings for harvest dates are applied. See #2495.
- */
-function dkan_dataset_update_7004() {
-  features_revert_module('dkan_dataset_content_types');
-
-  // Get a list of harvested datasets.
-  $harvested_nids = db_select('field_data_field_harvest_source_ref', 'hsr')
-    ->fields('hsr', array('entity_id'))
-    ->execute()
-    ->fetchCol();
-
-  // Get a list of all datasets.
-  $dataset_ids = db_select('node', 'n')
-    ->fields('n', array('nid'))
-    ->condition('type', 'dataset')
-    ->execute()
-    ->fetchCol();
-
-  // Process all datasets to clear the harvest dates from non-harvested entries.
-  $count = 0;
-  foreach ($dataset_ids as $nid) {
-    // Delete the entries for non-harvested datasets.
-    if (!in_array($nid, $harvested_nids)) {
-      db_delete('field_data_field_harvest_source_modified')
-      ->condition('entity_id', $nid)
-      ->execute();
-      db_delete('field_data_field_harvest_source_issued')
-      ->condition('entity_id', $nid)
-      ->execute();
-    }
-    $count = $count + 1;
-  }
-  drupal_set_message(t('Removed harvest date values from @var non-harvested datasets.', array('@var' => $count)), 'status');
-}
+// Put any additional update hooks in dkan.install.
