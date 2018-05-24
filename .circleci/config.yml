@@ -61,6 +61,9 @@ jobs:
           name: Setup DKAN
           command: |
             bash dkan-init.sh dkan --deps
+      - restore_cache:
+          keys:
+            - v1-dkan-test-vendor
       - run:
           name: Start containers
           command: |
@@ -95,11 +98,8 @@ jobs:
           name: Install Test Libs
           command: |
             ahoy cd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
+            docker cp $(docker-compose ps -q cli):/var/www/dkan/test/vendor dkan/test/vendor
       - save_cache:
-          key: v1-dkan-{{ .Branch }}
-          paths:
-            - ~/.drush
-            - ~/.composer
       - save_cache:
           key: v1-dkan-test-vendor
           paths:
@@ -109,6 +109,7 @@ jobs:
           command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
       - run:
           name: Copy Assets to Base Image
+          when: on_fail
           command: |
             docker cp $(docker-compose ps -q cli):/var/www/dkan/test/assets assets
       - run:
