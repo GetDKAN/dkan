@@ -1,8 +1,15 @@
 <?php
 
+function dkan_datastore_simple_import_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\Datastore\Manager\SimpleImport\\',
+    drupal_get_path("module", "dkan_datastore_simple_import") . '/src'
+  );
+}
+
 function dkan_datastore_simple_import_dkan_datastore_manager() {
   $info = new \Dkan\Datastore\Manager\Info(
-    '\Dkan\Datastore\Manager\SimpleImport',
+    '\Dkan\Datastore\Manager\SimpleImport\SimpleImport',
     "simple",
     "Simple Import"
   );
