@@ -23,12 +23,6 @@ projects:
     version: '2.3'
     patch:
       2833824: https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch
-  autoload:
-    download:
-      type: git
-      url: https://git.drupal.org/project/autoload.git
-      branch: 7.x-2.x
-      revision: 80ea4d125a2edf1e3c68c5627b3afb4614828a27
   beautytips:
     download:
       type: git
@@ -74,6 +68,8 @@ projects:
     version: '3.3'
   double_field:
     version: '2.5'
+  drafty:
+    version: 1.0-beta4
   draggableviews:
     version: '2.1'
   entity:
@@ -369,8 +365,8 @@ projects:
     patch:
       2360973: https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch
       1512442: https://www.drupal.org/files/issues/1512442-20-workbench_moderation-fix_access_check.patch
-  drafty:
-    version: 1.0-beta4
+  xautoload:
+    version: '4.5'
 libraries:
   chosen:
     download:

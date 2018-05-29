@@ -11,6 +11,13 @@ use \Dkan\Datastore\Manager\ManagerInterface;
 use \Dkan\Datastore\Manager\Factory;
 use \Dkan\Datastore\Resource;
 
+function dkan_datastore_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\Datastore\\',
+    drupal_get_path("module", "dkan_datastore") . '/src'
+  );
+}
+
 /**
  * Implements hook_menu().
  */
