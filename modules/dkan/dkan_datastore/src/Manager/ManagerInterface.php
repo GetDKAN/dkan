@@ -14,6 +14,7 @@ interface ManagerInterface {
   const DATA_IMPORT_IN_PROGRESS = 3;
   const DATA_IMPORT_DONE = 4;
   const DATA_IMPORT_ERROR = 5;
+  const DATA_IMPORT_READY = 6;
 
   /**
    * Drops a datastore.
@@ -24,6 +25,11 @@ interface ManagerInterface {
    * Imports data into a datastore.
    */
   public function import();
+
+  /**
+   * Import time limit.
+   */
+  public function setImportTimelimit($seconds);
 
   /**
    * Delete the rows (records) from the datastore.
