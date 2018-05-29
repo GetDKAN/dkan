@@ -111,7 +111,6 @@ jobs:
           command: |
             ahoy drush en --yes dkan_harvest_test
             ahoy dkan reinstall --yes
-            ahoy drush autoload-rebuild
       - save_cache:
           key: v1-dkan-{{ .Branch }}
           paths:
