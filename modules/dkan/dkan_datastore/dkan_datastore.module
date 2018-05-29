@@ -494,11 +494,12 @@ function dkan_datastore_cron() {
       $already_importing = TRUE;
       break;
     }
-    elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_UNINITIALIZED) {
+    elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_READY) {
       $current_nid = $nid;
       break;
     }
   }
+
   $storage->returnBin($bin);
 
   if ($current_nid) {

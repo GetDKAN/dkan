@@ -95,11 +95,26 @@ class Pages {
       $form = $this->setStatusInfo($form, $datastore_manager);
 
       foreach ($datastore_manager->getConfigurableProperties() as $property => $default_value) {
-        $form["datastore_manager_{$property}"] = [
-          '#type' => 'textfield',
-          '#title' => "{$property}",
-          '#default_value' => $default_value,
-        ];
+        if ($property == "delimiter") {
+          $form["datastore_manager_{$property}"] = array(
+            '#type' => 'select',
+            '#title' => "{$property}",
+            '#options' => array(
+              "," => ",",
+              ";" => ";",
+              "|" => "|",
+              "\t" => "TAB",
+            ),
+            '#default_value' => $default_value,
+          );
+        }
+        else {
+          $form["datastore_manager_{$property}"] = [
+            '#type' => 'textfield',
+            '#title' => "{$property}",
+            '#default_value' => $default_value,
+          ];
+        }
       }
 
       $form['actions'] = array('#type' => 'actions');
