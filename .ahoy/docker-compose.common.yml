@@ -51,7 +51,7 @@ services:
   # Used for all console commands and tools.
   cli:
     hostname: cli
-    image: getdkan/dkan-docker:php5-cli
+    image: getdkan/dkan-docker:php7-cli
     environment:
       - XDEBUG_CONFIG=idekey=PHPSTORM
     env_file:
