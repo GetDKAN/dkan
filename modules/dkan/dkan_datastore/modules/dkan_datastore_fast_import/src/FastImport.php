@@ -1,7 +1,8 @@
 <?php
 
-namespace Dkan\Datastore\Manager;
+namespace Dkan\Datastore\Manager\FastImport;
 
+use Dkan\Datastore\Manager\Manager;
 use Dkan\Datastore\Resource;
 
 /**
@@ -17,7 +18,7 @@ class FastImport extends Manager {
   /**
    * {@inheritdoc}
    */
-  protected function storeRecords() {
+  protected function storeRecords($time_limit = 0) {
     $properties = $this->getConfigurableProperties();
 
     $file_path = $this->getResource()->getFilePath();

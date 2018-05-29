@@ -1,7 +1,9 @@
 <?php
 
-namespace Dkan\Datastore\Manager;
+namespace Dkan\Datastore\Manager\SimpleImport;
 
+use Dkan\Datastore\Manager\Manager;
+use Dkan\Datastore\Manager\ManagerInterface;
 use Dkan\Datastore\CsvParser;
 use Dkan\Datastore\Resource;
 
@@ -18,7 +20,12 @@ class SimpleImport extends Manager {
   /**
    * {@inheritdoc}
    */
-  protected function storeRecords() {
+  protected function storeRecords($time_limit = 0) {
+    $end = 9999999999999999999999999;
+    if ($time_limit > 0) {
+      $end = time() + $time_limit;
+    }
+
     $number_of_items_imported = $this->numberOfRecordsImported();
     $start = ($number_of_items_imported > 0) ? $number_of_items_imported + 1 : 1;
 
@@ -32,9 +39,20 @@ class SimpleImport extends Manager {
 
     $h = fopen($this->getResource()->getFilePath(), 'r');
 
+    $finished = TRUE;
     while ($chunk = fread($h, 32)) {
-      $parser->feed($chunk);
-      $counter = $this->getAndStore($parser, $query, $header, $counter, $start);
+      if (time() < $end) {
+        $parser->feed($chunk);
+        $counter = $this->getAndStore($parser, $query, $header, $counter, $start);
+
+        if ($counter === FALSE) {
+          return ManagerInterface::DATA_IMPORT_ERROR;
+        }
+      }
+      else {
+        $finished = FALSE;
+        break;
+      }
     }
 
     fclose($h);
@@ -48,10 +66,15 @@ class SimpleImport extends Manager {
     }
     catch (\Exception $e) {
       $this->setError($e->getMessage());
-      return FALSE;
+      return ManagerInterface::DATA_IMPORT_ERROR;
     }
 
-    return TRUE;
+    if ($finished) {
+      return ManagerInterface::DATA_IMPORT_DONE;
+    }
+    else {
+      return ManagerInterface::DATA_IMPORT_READY;
+    }
   }
 
   /**
