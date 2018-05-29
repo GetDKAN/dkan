@@ -3,6 +3,3 @@ description = Enable fast import for resources
 core = 7.x
 package = DKAN
 dependencies[] = dkan_datastore
-dependencies[] = autoload
-
-autoload[psr-4][] = Dkan\Datastore\Manager
