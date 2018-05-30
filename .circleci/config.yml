@@ -58,7 +58,7 @@ jobs:
             cd /usr/local/bin
             ln -s /root/.composer/vendor/bin/drush drush
             drush --version
-            ahoy cmd-proxy "php -v"
+            cd dkan && ahoy cmd-proxy "php -v"
       - run:
           name: Setup DKAN
           command: |
