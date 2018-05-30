@@ -57,7 +57,7 @@ jobs:
             composer global require consolidation/cgr
             cgr drush/drush
             drush --version
-            ahoy cmd-proxy "php -v"
+            cd dkan && ahoy cmd-proxy "php -v"
       - run:
           name: Setup DKAN
           command: |
