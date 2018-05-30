@@ -97,7 +97,7 @@ jobs:
       - run:
           name: Install Test Libs
           command: |
-            ahoy cd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
+            ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
             docker cp $(docker-compose ps -q cli):/var/www/dkan/test/vendor dkan/test/vendor
       - save_cache:
           key: v1-dkan-test-vendor
