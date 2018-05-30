@@ -73,8 +73,10 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     $node->field_upload[LANGUAGE_NONE][0] = (array)$file;
     node_save($node);
 
-    /* @var $datastore DkanDatastoreInterface */
-    $datastore = dkan_datastore_go($node->uuid);
+    $resource = \Dkan\Datastore\Resource::createFromDrupalNode($node);
+
+    /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
+    $datastore = \Dkan\Datastore\Manager\Factory::create($resource, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
 
     if ($datastore instanceof DkanDatastoreFeedsImport) {
       // Import it to the datastore.
@@ -97,9 +99,12 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   public static function tearDownAfterClass() {
     $resources = self::getResources();
     foreach ($resources as $resource) {
-      $datastore = dkan_datastore_go($resource['uuid']);
-      /* @var $datastore DkanDatastoreInterface */
+      $r = \Dkan\Datastore\Resource::createFromDrupalNodeUuid($resource['uuid']);
+
+      /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
+      $datastore = \Dkan\Datastore\Manager\Factory::create($r, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
       $datastore->drop();
+
       entity_uuid_delete('node', array($resource['uuid']));
     }
   }
@@ -163,7 +168,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     );
     $params = dkan_datastore_api_get_params($params);
     $result = dkan_datastore_api_query($params);
-    $this->assertEquals($result['result']->records[0]->state_id, 2);
+    $this->assertEquals(2, $result['result']->records[0]->stateid);
   }
 
   /**
@@ -205,12 +210,12 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       'resource_id' => array(
         'gold_prices_states' => self::getUUID('gold_prices_states', self::getResources()),
       ),
-      'sort' => array('gold_prices_states' => array('state_id' => 'desc')),
+      'sort' => array('gold_prices_states' => array('stateid' => 'desc')),
       'limit' => 1
     );
     $params = dkan_datastore_api_get_params($params);
     $result = dkan_datastore_api_query($params);
-    $this->assertEquals(5, $result['result']->records[0]->state_id);
+    $this->assertEquals($result['result']->records[0]->stateid, 5);
   }
 
   /**
@@ -239,13 +244,14 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         'gold_prices' => self::getUUID('gold_prices', self::getResources()),
       ),
       'join' => array(
-        'gold_prices_states' => 'state_id',
-        'gold_prices' => 'state_id',
+        'gold_prices_states' => 'stateid',
+        'gold_prices' => 'stateid',
       ),
       'limit' => 5,
     );
     $params = dkan_datastore_api_get_params($params);
     $result = dkan_datastore_api_query($params);
+
     $this->assertObjectHasAttribute('name', $result['result']->records[0]);
     $this->assertObjectHasAttribute('price', $result['result']->records[0]);
   }
@@ -260,8 +266,8 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
         'gold_prices' => self::getUUID('gold_prices', self::getResources()),
       ),
       'join' => array(
-        'gold_prices_states' => 'state_id',
-        'gold_prices' => 'state_id',
+        'gold_prices_states' => 'stateid',
+        'gold_prices' => 'stateid',
       ),
       'limit' => 5,
       'filters' => array(

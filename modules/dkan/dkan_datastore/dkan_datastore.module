@@ -10,7 +10,11 @@ include_once "dkan_datastore.features.inc";
 use \Dkan\Datastore\Manager\ManagerInterface;
 use \Dkan\Datastore\Manager\Factory;
 use \Dkan\Datastore\Resource;
+use \Dkan\Datastore\LockableDrupalVariables;
 
+/**
+ * Implements hook_xautoload().
+ */
 function dkan_datastore_xautoload($adapter) {
   $adapter->absolute()->addPsr4(
     'Dkan\Datastore\\',
@@ -80,6 +84,9 @@ function dkan_datastore_menu() {
   return $items;
 }
 
+/**
+ * Get managers info.
+ */
 function dkan_datastore_managers_info() {
   return module_invoke_all("dkan_datastore_manager");
 }
@@ -278,25 +285,6 @@ function dkan_datastore_permission() {
 }
 
 /**
- * Implements hook_node_view().
- */
-function dkan_datastore_node_view($node, $view_mode, $langcode) {
-
-  /*$type = dkan_datastore_node_type();
-  if ($node->type == $type) {
-    $status = dkan_datastore_status($node);
-    if (user_access('manage datastore') && $status && $view_mode == 'full') {
-      if ($status == DKAN_DATASTORE_FILE_EXISTS) {
-        drupal_set_message(t('Your file for this resource is not added to the datastore. Click "Manage Datastore" to import file into the datastore.'));
-      }
-      elseif ($status == DKAN_DATASTORE_EXISTS) {
-        drupal_set_message(t('Your file for this resource has been added to the datastore.'));
-      }
-    }
-  }*/
-}
-
-/**
  * Determines if a resource can be imported.
  */
 function dkan_datastore_is_importable($file) {
@@ -476,13 +464,19 @@ function _dkan_datastore_search_redirect() {
   drupal_goto('/search');
 }
 
+/**
+ * Get status.
+ */
 function dkan_datastore_status($node) {
   $datastore = dkan_datastore_go($node->uuid);
   return $datastore->getStatus();
 }
 
+/**
+ * Implements hook_cron().
+ */
 function dkan_datastore_cron() {
-  $storage = new \Dkan\Datastore\LockableDrupalVariables("dkan_datastore");
+  $storage = new LockableDrupalVariables("dkan_datastore");
 
   $bin = $storage->borrowBin();
 
