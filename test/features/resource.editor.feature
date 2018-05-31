@@ -92,7 +92,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @resource_editor_6 @datastore @noworkflow @javascript
+  @resource_editor_6 @datastore @noworkflow @javascript @fixme
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 02" page
