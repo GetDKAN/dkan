@@ -129,3 +129,5 @@ function dkan_dataset_update_7003() {
   $vocabulary = taxonomy_vocabulary_machine_name_load('odfe_theme');
   taxonomy_vocabulary_delete($vocabulary->vid);
 }
+
+// Put any additional update hooks in dkan.install.
