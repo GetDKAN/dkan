@@ -38,7 +38,7 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
   // Hero fieldset.
   $form['hero'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Hero Unit'),
+    '#title' => t('Hero Region'),
     '#group' => 'general',
   );
   // Upload field.
@@ -66,6 +66,16 @@ function nuboot_radix_form_system_theme_settings_alter(&$form, &$form_state) {
     '#required' => FALSE,
     '#default_value' => theme_get_setting('background_option', 'nuboot_radix'),
     '#element_validate' => array('_background_option_setting'),
+  );
+
+// Hero container padding.
+  $form['hero']['hero_padding'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Extra Padding'),
+    '#description' => t('<p>Enter a number to add padding to the top and bottom of the hero container.'),
+    '#required' => FALSE,
+    '#default_value' => theme_get_setting('hero_padding', 'nuboot_radix'),
+    '#element_validate' => array('element_validate_number'),
   );
 
   // Add svg logo option.

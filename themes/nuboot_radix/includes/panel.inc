@@ -65,6 +65,8 @@ function nuboot_radix_preprocess(&$variables, $hook) {
         $variables['path'] = 'none';
       endif;
     endif;
+    $padding = theme_get_setting('hero_padding');
+    $variables['padding'] = isset($padding) ? $padding : '0';
   }
 }
 
