@@ -126,4 +126,3 @@ jobs:
             fi
       - store_artifacts:
           path: /go/src/github.com/dkan/assets
-

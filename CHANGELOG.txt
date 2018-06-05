@@ -1,3 +1,19 @@
+7.x-1.15.1
+----------
+- #2533 #2546 Updates docker-compose to use updated cli container
+- #2542 Add theme setting to adjust hero region height
+- #2531 Add table tags to allowed html
+- #2527 Stop xdebug in web and cli containers for tests
+- #2521 Add custom validation rules to the REST API node creation
+- #2498 Fix the link to installation info on README.md
+- #2463 Update circle setup to use local DEV containers
+- #2485 Check the character length of harvested resource urls
+- #2476 Update getExtension() and createResources() functions
+- #2452 Fix front page link paths on logo and site name
+- #2489 Create variable for map tile url
+- #2492 Security update for file_resup module, upgrade to version 1.5
+- #2358 Fix datastore error reporting when UUID is missing
+
 7.x-1.15
 ----------
 - #2339 Adds a linkchecker to DKAN.
