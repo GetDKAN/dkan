@@ -1,229 +1,122 @@
 version: 2
-## Customize the test machine
-
 jobs:
   build:
-    working_directory: ~/site_build
-    environment:
-      TZ: "/usr/share/zoneinfo/America/New_York"
     parallelism: 5
     docker:
-      - image: circleci/php:5.6.35-apache-node-browsers
-        environment:
-          MYSQL_HOST: "127.0.0.1"
-          DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
-      - image: circleci/mysql:5.5.58-ram
-        command: --secure-file-priv='' --max-allowed-packet=128M --innodb-buffer-pool-size=256M
-        environment:
-          - MYSQL_ROOT_PASSWORD=
-          - MYSQL_USER=drupal
-          - MYSQL_PASSWORD=123
-          - MYSQL_DATABASE=drupal
-      # Selenium image won't start, running via npm install
-      #- image: selenium/standalone-chrome-debug:2.53.1
+      - image: ubuntu:16.04
+    working_directory: /go/src/github.com/dkan
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      AHOY_CMD_PROXY: DOCKER
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: 123
+      MYSQL_DATABASE: drupal
+      DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
     steps:
-      - restore_cache:
-          keys:
-            - v1-dkan-{{ .Branch }}
-            - v1-dkan-test-vendor
+      - checkout
+      - setup_remote_docker
       - run:
-          name: Install Selenium
+          name: Updates etc
           command: |
-            sudo npm install selenium-standalone@latest -g
-            #npm install geckodriver
-            sudo selenium-standalone install
+            apt-get update
+            apt-get upgrade -y
+            apt-get install curl wget ruby php php-mbstring php-curl php-dom -y
       - run:
-          name: Run Selenium
+          name: Install Docker client
           command: |
-            sudo selenium-standalone start
-          background: true
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
       - run:
-          name: Update Packages
-          command: sudo apt-get update
-      - run:
-          name: Install Packages
+          name: Install Docker Compose
           command: |
-            sudo apt-get install -y ruby libpng-dev libmcrypt-dev mysql-client x11vnc
-            sudo gem install git
-#Available Extensions:
-#bcmath bz2 calendar ctype curl dba dom enchant exif fileinfo filter ftp gd gettext gmp hash iconv imap interbase intl json ldap mbstring mcrypt mssql mysql mysqli oci8 odbc opcache pcntl pdo pdo_dblib pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline recode reflection session shmop simplexml snmp soap sockets spl standard sybase_ct sysvmsg sysvsem sysvshm tidy tokenizer wddx xml xmlreader xmlrpc xmlwriter xsl zip
+            set -x
+            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
       - run:
-          name: Install PHP Extensions
-          command: sudo docker-php-ext-install gd json mcrypt mysql mysqli opcache pdo pdo_mysql zip
+          name: Install Ahoy
+          command: |
+            wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy &&
+            chmod +x /usr/local/bin/ahoy
+      - run:
+          name: Install CircleCI CLI
+          command: |
+            curl -o /usr/local/bin/circleci https://circle-downloads.s3.amazonaws.com/releases/build_agent_wrapper/circleci && chmod +x /usr/local/bin/circleci
       - run:
           name: Install Composer
           command: |
-            curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+            curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             composer global require hirak/prestissimo
             echo 'export PATH=~/.composer/vendor/bin:$PATH' >> $BASH_ENV
       - run:
-          name: Edit MySQL Configuration
+          name: Install Drush
           command: |
-            mysql -uroot -e "grant FILE on *.* to 'drupal'@'%'"
-            sudo chmod 777 /etc/mysql/my.cnf
-            sudo echo -e "[client]\nloose-local-infile" >> /etc/mysql/my.cnf
-            sudo chmod 644 /etc/mysql/my.cnf
+            composer global require consolidation/cgr
+            cgr drush/drush
+            drush --version
       - run:
-          name: Adjust PHP Settings
+          name: Setup DKAN
           command: |
-            sudo chmod 777 /usr/local/etc/php/conf.d
-            echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory.ini
-            echo "always_populate_raw_post_data = -1" > /usr/local/etc/php/conf.d/deprecated.ini
-      - checkout
-      - run: php -i
-      - run:
-          name: Setup Apache
-          command : |
-            sudo cp .circleci/tests/circle/circle.conf /etc/apache2/sites-available
-            sudo a2dissite 000-default
-            sudo a2ensite circle.conf
-            sudo a2enmod rewrite
-            sudo service apache2 restart
-      # Ahoy install in dkan-init.sh had problems detecting root user.
-      - run:
-          name: Install Ahoy
-          command: |
-            sudo wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy &&
-            sudo chmod +x /usr/local/bin/ahoy
-      ### Setup DKAN
-      - run:
-          name: DKAN Initialization
-          command: |
-            bash dkan-init.sh dkan --deps --build=$DATABASE_URL
-            ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
-            ahoy drush cc all
-      - run:
-          name: Server Router Background Server Task
-          command: ahoy dkan server
-          background: true
-      - run:
-          name: X11 VNC Background Server Task
-          command: x11vnc -forever -nopw
-          background: true
-
-      - run:
-          name: Enable dkan_harvest_test and reinstall
-          command: |
-            ahoy drush en --yes dkan_harvest_test
-            ahoy dkan reinstall --yes
-      - save_cache:
-          key: v1-dkan-{{ .Branch }}
-          paths:
-            - ~/.drush
-            - ~/.composer
-      - save_cache:
-          key: v1-dkan-test-vendor
-          paths:
-            - dkan/test/vendor
-      # Lint only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
-      - run:
-          name: Run Lint
-          command: |
-            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
-              ahoy dkan lint
-            fi
-      - run:
-          name: Run Parallel Behat Tests
-          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
-      # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
-      - run:
-          name: Run PHPUnit Tests
-          command: |
-            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
-              ahoy dkan unittests
-            fi
-      - store_artifacts:
-          path: ~/site_build/dkan/test/assets
-  build_php71:
-    working_directory: ~/site_build
-    environment:
-      TZ: "/usr/share/zoneinfo/America/New_York"
-    parallelism: 5
-    docker:
-      - image: pythagory/dkan-web:7-latest
-        environment:
-          MYSQL_HOST: "127.0.0.1"
-          DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
-      - image: circleci/mysql:5.5.58-ram
-        command: --secure-file-priv='' --max-allowed-packet=128M --innodb-buffer-pool-size=256M
-        environment:
-          - MYSQL_ROOT_PASSWORD=
-          - MYSQL_USER=drupal
-          - MYSQL_PASSWORD=123
-          - MYSQL_DATABASE=drupal
-      # Selenium image won't start, running via npm install
-      #- image: selenium/standalone-chrome-debug:2.53.1
-    steps:
+            bash dkan-init.sh dkan --deps
       - restore_cache:
           keys:
-            - v1-dkan-{{ .Branch }}
             - v1-dkan-test-vendor
-      # Selenium is already installed, run it
       - run:
-          name: Run Selenium
+          name: Start containers
           command: |
-            sudo selenium-standalone start
-          background: true
-      - checkout
-      - run: php -i
+            cp dkan/.ahoy/docker-compose.common.yml docker-compose.yml
+            cp dkan/.ahoy/mysql.env mysql.env
+            ahoy docker up
+            rm -rf dkan/.ahoy/.docker
+            docker cp .ahoy.yml $(docker-compose ps -q cli):/var/www
+            mkdir -p dkan/test/assets/junit
+            docker cp dkan $(docker-compose ps -q cli):/var/www
       - run:
-          name: Setup Apache
-          command : |
-            sudo cp .circleci/tests/circle/circle.conf /etc/apache2/sites-available
-            sudo a2dissite 000-default
-            sudo a2ensite circle.conf
-            sudo a2enmod rewrite
-            sudo service apache2 restart
-      # Ahoy install in dkan-init.sh had problems detecting root user.
-      - run:
-          name: Install Ahoy
+          name: Install Drupal
           command: |
-            sudo wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy &&
-            sudo chmod +x /usr/local/bin/ahoy
-      ### Setup DKAN
+            ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
+            docker cp $(docker-compose ps -q cli):/var/www/docroot docroot
+            mkdir backups
+            docker cp backups $(docker-compose ps -q cli):/var/www/backups
       - run:
-          name: DKAN Initialization
+          name: Make DKAN
           command: |
-            bash dkan-init.sh dkan --deps --build=$DATABASE_URL
+            ahoy dkan remake
+      - run:
+          name: Install DKAN
+          command: |
+            ahoy dkan reinstall
+      - run:
+          name: Enable modules
+          command: |
             ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
             ahoy drush cc all
       - run:
-          name: Server Router Background Server Task
-          command: ahoy dkan server
-          background: true
-      - run:
-          name: X11 VNC Background Server Task
-          command: x11vnc -forever -nopw
-          background: true
-
-      - run:
-          name: Enable dkan_harvest_test and reinstall
+          name: Install Test Libs
           command: |
-            ahoy drush en --yes dkan_harvest_test
-            ahoy dkan reinstall --yes
-      - save_cache:
-          key: v1-dkan-{{ .Branch }}
-          paths:
-            - ~/.drush
-            - ~/.composer
-      - run:
-          name: Edit MySQL Configuration
-          command: |
-            mysql -uroot -e "grant FILE on *.* to 'drupal'@'%'"
+            ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
+            docker cp $(docker-compose ps -q cli):/var/www/dkan/test/vendor dkan/test/vendor
       - save_cache:
           key: v1-dkan-test-vendor
           paths:
             - dkan/test/vendor
-      # Lint only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
+      - run:
+          name: Run Parallel Behat Tests
+          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
+      - run:
+          name: Copy Assets to Base Image
+          when: on_fail
+          command: |
+            docker cp $(docker-compose ps -q cli):/var/www/dkan/test/assets assets
       - run:
           name: Run Lint
           command: |
             if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
               ahoy dkan lint
             fi
-      - run:
-          name: Run Parallel Behat Tests
-          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
       # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
       - run:
           name: Run PHPUnit Tests
@@ -232,31 +125,4 @@ jobs:
               ahoy dkan unittests
             fi
       - store_artifacts:
-          path: ~/site_build/dkan/test/assets
-
-
-#Workflow to only run PHP 7 build if branch name contains php7
-#TODO - filter to run PHP71 on releases
-workflows:
-  version: 2
-  build_php5:
-    jobs:
-      - build:
-          filters:
-            branches:
-              ignore: /.*php7.*/
-  build_php5_php7:
-    jobs:
-      - build:
-          filters:
-            branches:
-              only: 7.x-1.x
-      - build_php71:
-          requires:
-            - build
-  build_php7:
-    jobs:
-      - build_php71:
-          filters:
-            branches:
-              only: /.*php7.*/
+          path: /go/src/github.com/dkan/assets
