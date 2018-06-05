@@ -5,9 +5,9 @@ require "pp"
 require "base64"
 require "./dkan/.ahoy/.scripts/behat-parse-params"
 
-BEHAT_FOLDER = ENV.has_key?("BEHAT_FOLDER") ? ENV["BEHAT_FOLDER"] : "docroot/profiles/dkan/test"
-ALT_CONFIG_FILE = ENV.has_key?("ALT_CONFIG_FILE") ? ENV["ALT_CONFIG_FILE"] : "behat.local.yml"
-BEHAT_ENV = ENV['HOSTNAME']
+BEHAT_FOLDER = ENV.has_key?("BEHAT_FOLDER") && ENV["BEHAT_FOLDER"] != "" ? ENV["BEHAT_FOLDER"] : "docroot/profiles/dkan/test"
+ALT_CONFIG_FILE = ENV.has_key?("ALT_CONFIG_FILE") && ENV["ALT_CONFIG_FILE"] != "" ? ENV["ALT_CONFIG_FILE"] : "behat.local.yml"
+BEHAT_ENV = ENV.has_key?("HOSTNAME") && ENV["HOSTNAME"] != "" ? ENV["HOSTNAME"] : "cli"
 SKIP_COMPOSER_FLAG="--skip-composer"
 
 if File.exists? "#{BEHAT_FOLDER}/#{ALT_CONFIG_FILE}"
