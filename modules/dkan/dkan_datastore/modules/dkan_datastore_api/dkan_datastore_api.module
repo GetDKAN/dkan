@@ -673,8 +673,10 @@ function dkan_datastore_api_sort_clean($sort) {
  * Returns table name or exeption.
  */
 function dkan_datastore_api_tablename($resource_id) {
-  /* @var $datastore DkanDatastoreInterface */
-  $datastore = dkan_datastore_go($resource_id);
+  $resource = \Dkan\Datastore\Resource::createFromDrupalNodeUuid($resource_id);
+
+  /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
+  $datastore = \Dkan\Datastore\Manager\Factory::create($resource);
   return $datastore->getTableName();
 }
 

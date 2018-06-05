@@ -154,7 +154,7 @@ abstract class Manager implements ManagerInterface {
     $parser->reset();
 
     foreach ($headers as $key => $field) {
-      $new = preg_replace("/[^A-Za-z0-9 ]/", '', $field);
+      $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
       $new = trim($new);
       $new = strtolower($new);
       $new = str_replace(" ", "_", $new);
