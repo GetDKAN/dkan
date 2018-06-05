@@ -2,20 +2,71 @@
 // Print Styles
 // --------------------------------------------------
 
-@media print {
-  .container {
-    width: 100%;
+@mixin print {
+  h1, h1.print-title {
+    font-size: 36px !important;
+    padding: 20px 0 10px !important;
+    margin: 0 !important;
+    clear: both;
   }
+  h2, .h2, .pane-title {
+    font-size: 24px;
+  }
+  h3, .h3 {
+    font-size: 21px;
+  }
+  h4, .h4 {
+    font-size: 16px;
+  }
+  .node-type-group,
+  .node-type-dataset,
+  .page-user {
+    .region-content h2.pane-title {
+      margin-top: 0 !important;
+    }
+  }
+  .container {
+    width: 768px !important;
+    font-size: 12px;
+    &:after {
+      display: none;
+    }
+  }
+  #main-wrapper {
+    clear: both;
+  }
+  #footer.footer {
+    padding-bottom: 0;
+    page-break-after: avoid;
+  }
+
+  .col-md-3 {
+    width: 25%;
+    float: left;
+    vertical-align: top;
+  }
+  .col-md-4 {
+    width: 33%;
+    float: left;
+  }
+  .col-md-6 {
+    width: 49%;
+    float: left;
+  }
+  .col-md-8 {
+    width: 66%;
+    float: left;
+  }
+  .col-md-9 {
+    width: 75%;
+    float: left;
+  }
+  hr {
+    clear: both;
+  }
+
   // Dataset Layout.
   .node-type-dataset {
-    .col-md-3 {
-      width: 25%;
-      float: left;
-    }
-    .col-md-9 {
-      width: 75%;
-      float: left;
-    }
     .node-dataset .resource-list li {
       padding: 0 0 0 45px;
     }
@@ -23,16 +74,52 @@
 
   // Hide elements.
   #block-dkan-sitewide-dkan-sitewide-search-bar,
-  .breadcrumb,
-  .pane-dkan-sitewide-dkan-sitewide-other-access,
+  .pane-dkan-sitewide-dkan-sitewide-search-bar,
   .pane-dkan-sitewide-dkan-sitewide-social,
+  .breadcrumb,
   .resource-list .links,
-  .tabs--primary {
+  .tabs--primary,
+  .alert,
+  .region-page-bottom,
+  .navigation-wrapper,
+  #admin-menu,
+  ul.links,
+  .print-link,
+  .field-type-geofield a, {
     display: none;
   }
 
-  .branding a[href]:after {
+  // Hide link urls.
+  .pane-dkan-sitewide-dkan-sitewide-license a[href]:last-of-type:after {
     content: none !important;
+  }
+  .branding,
+  ul.pagination,
+  .view-group-block .views-field-field-image,
+  .resource-list li,
+  .facetapi-facetapi-links li,
+  .pane-facetapi .ctools-collapsible-content li,
+  .pane-dkan-sitewide-dkan-sitewide-other-access .btn-group {
+    a[href]::after {
+      content: none !important;
+    }
+  }
+
+  a[href]::after {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  .view-dkan-topics-featured  {
+    a {
+      text-decoration: none;
+    }
+    .topic-icon a[href]:after {
+      content: none !important;
+    }
+  }
+  .font-icon-select-1 {
+    font-family: 'font_icon_select_1';
   }
 
   // Colors.
@@ -40,10 +127,60 @@
     border-color: #dddddd !important;
   }
 
+  // Visualizations.
+  .pane-visualization-embed {
+    padding-bottom: 0;
+    .chart-container {
+      max-width: 100% !important;
+      width: 100% !important;
+      height: auto !important;
+      margin: 0;
+    }
+  }
+
+  .col-md-12 .col-md-12.recline-nvd3 svg {
+    max-width: 670px !important;
+  }
+  .col-md-8 .col-md-12.recline-nvd3 svg {
+    max-width: 446px !important;
+  }
+  .col-md-6 .col-md-12.recline-nvd3 svg {
+    height: 420px !important;
+    max-width:350px !important;
+  }
+  .col-md-4 .col-md-12.recline-nvd3 svg {
+    max-height: 270px !important;
+    max-width: 220px !important;
+  }
+  .col-md-3 .col-md-12.recline-nvd3 svg {
+    height: 200px !important;
+    max-width:170px !important;
+  }
+
+  // Spotlight.
+  .panopoly-spotlight-label {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .panopoly-spotlight-info {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+  }
+
   // Breaking.
-  img, tr, svg, .card-chart {
+  .pane-visualization-embed,
+  .card-chart,
+  img, tr, svg {
     -webkit-column-break-inside: avoid;
     page-break-inside: avoid;
     break-inside: avoid;
   }
+}
+
+.page-node-print {
+  @include print;
+}
+
+@media print {
+  @include print;
 }
