@@ -1,6 +1,11 @@
 //
 // Styles for Nodes
 // --------------------------------------------------
+.print-link:before {
+  font-family: $icon-fa;
+  content: '\f02f';
+  margin-right: 5px;
+}
 .node-type-dataset {
   .field-name-field-tags {
     margin: 1em 0;
@@ -211,7 +216,7 @@
   &.no-image {
     padding-left: 15px;
     padding-right: 15px;
-  } 
+  }
 }
 // Blog Page.
 .node-blog {

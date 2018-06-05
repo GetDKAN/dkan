@@ -9759,6 +9759,9 @@ div.datasets-count-preview span {
 .add-content-link-dkan-plugins-button-link-icon-text-button:before {
   content: "\f0c1"; }
 
+.add-content-link-dkan-plugins-print-link-icon-text-button:before {
+  content: '\f02f'; }
+
 img.thumbnail {
   width: 100px;
   height: auto; }
@@ -9804,6 +9807,19 @@ section.col-sm-9 {
 #footer.footer {
   padding: 40px 0;
   margin: 0; }
+
+.iframe-container {
+  position: relative;
+  padding-bottom: 75%;
+  height: 0;
+  overflow: hidden; }
+  .iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%; }
 
 @media all and (max-width: 767px) {
   .container {
@@ -10040,6 +10056,11 @@ ul.action-links {
   margin-left: 0; }
   .radix-layouts-sidebar ul.menu > li > ul.menu li a {
     padding: 10px 15px 10px 30px; }
+
+.print-link:before {
+  font-family: "FontAwesome";
+  content: '\f02f';
+  margin-right: 5px; }
 
 .node-type-dataset .field-name-field-tags {
   margin: 1em 0; }
@@ -10355,11 +10376,6 @@ h2.pane-title {
   .page-user .radix-layouts-content .pane-content .profile {
     margin-top: 0; }
 
-.radix-layouts-content .pane-title {
-  font-size: 36px;
-  line-height: 42px;
-  margin: 0 0 15px 0; }
-
 .radix-layouts-content .pane-content {
   margin-bottom: 1em; }
 
@@ -10478,7 +10494,7 @@ h2.pane-title {
 
 @media (max-width: 992px) {
   .panel-pane.pane-visualization-embed {
-    padding-bottom: 5em; } }
+    padding-bottom: 10em; } }
 
 @media (max-width: 768px) {
   .panel-dkan-front .panel-hero .panel-col-first,
