@@ -54,6 +54,14 @@ function nuboot_radix_preprocess_page(&$variables) {
     $variables['title'] = '';
     unset($variables['page']['content']['system_main']['default_message']);
   }
+  // Print friendly version.
+  if (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == 'print') {
+    module_load_include('inc', 'page_manager', 'plugins/tasks/node_view');
+    $node = node_load(arg(1));
+    $variables['content'] = page_manager_node_view_page($node);
+    $variables['theme_hook_suggestions'][] = 'print';
+    drupal_add_css(drupal_get_path('theme', 'nuboot_radix') . "/assets/css/print.css");
+  }
   // Add external css files.
   $external_css = array(
     '#attached' => array(
