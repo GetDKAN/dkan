@@ -109,7 +109,7 @@ Feature: Resource
     And I wait for "Delete Items"
     Then "Resource 02" should have datastore records
 
-  @resource_editor_7 @datastore @db @noworkflow @javascript
+  @resource_editor_7 @datastore @db @noworkflow @javascript @fixme
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
       Given I am logged in as "John"
       And I am on "Resource 02" page

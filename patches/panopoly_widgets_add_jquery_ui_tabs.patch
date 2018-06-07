@@ -1,11 +1,12 @@
 diff --git a/panopoly_widgets.module b/panopoly_widgets.module
-index d4888b7..ada6628 100644
+index ff40ff2..2f7f6ea 100644
 --- a/panopoly_widgets.module
 +++ b/panopoly_widgets.module
-@@ -100,6 +100,7 @@ function panopoly_widgets_page_build(&$page) {
- 
+@@ -99,6 +99,7 @@ function panopoly_widgets_field_default_field_instances_alter(&$instances) {
+ function panopoly_widgets_page_build(&$page) {
+
    // Add our custom javascript to the footer to override other things.
-   drupal_add_js(drupal_get_path('module', 'panopoly_widgets') . '/panopoly-widgets.js', array('scope' => 'footer'));
 +  drupal_add_library('system', 'ui.tabs');
+   drupal_add_js(drupal_get_path('module', 'panopoly_widgets') . '/panopoly-widgets.js', array('scope' => 'footer'));
    drupal_add_js(drupal_get_path('module', 'panopoly_widgets') . '/panopoly-widgets-spotlight.js', array('scope' => 'footer'));
  }
