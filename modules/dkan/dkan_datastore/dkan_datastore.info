@@ -6,11 +6,9 @@ dependencies[] = entity
 dependencies[] = field_hidden
 dependencies[] = uuid
 dependencies[] = views
-dependencies[] = autoload
+dependencies[] = xautoload
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
 features[field_base][] = field_datastore_status
 features[field_instance][] = node-resource-field_datastore_status
 features[views_view][] = datasets
-
-autoload[psr-4][] = Dkan\Datastore

@@ -37,7 +37,7 @@ Feature: Site managers administer groups
       | Dataset 02 | Group 01  | Katie   | No        | Cost of oil in January     |
       | Dataset 03 | Group 01  | Gabriel | Yes       | Election results           |
 
-  @group_admin_01
+  @group_admin_01 @fixme
   Scenario: Create group
     Given I am logged in as "John"
     And I am on "Groups" page
@@ -51,7 +51,7 @@ Feature: Site managers administer groups
     And I should see "This is a body"
     And I should see the "img" element in the "group block" region
 
-  @group_admin_02
+  @group_admin_02 @fixme
   Scenario: Create group with previous same title
     Given I am logged in as "John"
     And I am on "Groups" page

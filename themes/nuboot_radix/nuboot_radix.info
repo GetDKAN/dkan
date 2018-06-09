@@ -55,4 +55,3 @@ settings[toggle_favicon] = 1
 settings[toggle_main_menu] = 1
 settings[toggle_secondary_menu] = 1
 settings[copyright][format] = 'html'
-
