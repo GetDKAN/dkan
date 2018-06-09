@@ -1,6 +1,6 @@
 <?php
 
-use Dkan\Datastore\Manager\SimpleImport;
+use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 
 /**
  * Class DkanDatastoreTest.
@@ -8,11 +8,10 @@ use Dkan\Datastore\Manager\SimpleImport;
 class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
 
   public function test() {
-    print_r(PHP_EOL);
 
     $resource = new \Dkan\Datastore\Resource("999999", __DIR__ . "/data/countries.csv");
 
-    /* @var $datastore \Dkan\Datastore\Manager\SimpleImport */
+    /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
     $datastore = \Dkan\Datastore\Manager\Factory::create($resource, SimpleImport::class);
 
     $status = $datastore->getStatus();
@@ -40,14 +39,14 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
 
     $status = $datastore->getStatus();
     $this->assertEquals(SimpleImport::STORAGE_INITIALIZED, $status['storage']);
-    $this->assertEquals(SimpleImport::DATA_IMPORT_UNINITIALIZED, $status['data_import']);
+    $this->assertEquals(SimpleImport::DATA_IMPORT_READY, $status['data_import']);
 
     $datastore->drop();
     $this->assertFalse(db_table_exists($datastore->getTableName()));
 
     $status = $datastore->getStatus();
     $this->assertEquals(SimpleImport::STORAGE_UNINITIALIZED, $status['storage']);
-    $this->assertEquals(SimpleImport::DATA_IMPORT_UNINITIALIZED, $status['data_import']);
+    $this->assertEquals(SimpleImport::DATA_IMPORT_READY, $status['data_import']);
   }
 
 }

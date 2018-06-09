@@ -1,0 +1,6 @@
+name = DKAN Dataset test module
+description = Functionality to assist DKAN Dataset testing.
+core = 7.x
+dependencies[] = dkan_dataset
+dependencies[] = dkan_dataset_rest_api
+hidden = TRUE

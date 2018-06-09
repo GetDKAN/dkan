@@ -73,8 +73,10 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     $node->field_upload[LANGUAGE_NONE][0] = (array)$file;
     node_save($node);
 
-    /* @var $datastore DkanDatastoreInterface */
-    $datastore = dkan_datastore_go($node->uuid);
+    $resource = \Dkan\Datastore\Resource::createFromDrupalNode($node);
+
+    /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
+    $datastore = \Dkan\Datastore\Manager\Factory::create($resource, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
 
     if ($datastore instanceof DkanDatastoreFeedsImport) {
       // Import it to the datastore.
@@ -97,9 +99,12 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   public static function tearDownAfterClass() {
     $resources = self::getResources();
     foreach ($resources as $resource) {
-      $datastore = dkan_datastore_go($resource['uuid']);
-      /* @var $datastore DkanDatastoreInterface */
+      $r = \Dkan\Datastore\Resource::createFromDrupalNodeUuid($resource['uuid']);
+
+      /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
+      $datastore = \Dkan\Datastore\Manager\Factory::create($r, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
       $datastore->drop();
+
       entity_uuid_delete('node', array($resource['uuid']));
     }
   }
@@ -163,7 +168,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     );
     $params = dkan_datastore_api_get_params($params);
     $result = dkan_datastore_api_query($params);
-    $this->assertEquals($result['result']->records[0]->state_id, 2);
+    $this->assertEquals(2, $result['result']->records[0]->state_id);
   }
 
   /**
@@ -246,6 +251,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     );
     $params = dkan_datastore_api_get_params($params);
     $result = dkan_datastore_api_query($params);
+
     $this->assertObjectHasAttribute('name', $result['result']->records[0]);
     $this->assertObjectHasAttribute('price', $result['result']->records[0]);
   }
@@ -349,4 +355,3 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
 }
-

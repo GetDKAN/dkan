@@ -42,7 +42,7 @@ commands:
 
       if [ -z "$matches_in_hosts" ];then
         echo "Adding new hosts entry."
-        echo "$host_entry" | sudo tee -a /etc/hosts > /dev/null
+        echo "$host_entry" | tee -a /etc/hosts > /dev/null
       fi
   up:
     cmd: |
@@ -82,11 +82,7 @@ commands:
       if [ "$(ahoy docker proxy-running)" = "1" ]; then
         echo "$(ahoy docker get-slug).$(ahoy docker get-proxy-domain)"
       else
-        if [ -z "$DOCKER_MACHINE_NAME"  ]; then
-          echo "`ahoy docker web-host`"
-        else
-          echo "`docker-machine ip default`"
-        fi
+        echo "`ahoy docker web-host`"
       fi
 
   proxy-up:

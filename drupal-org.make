@@ -74,6 +74,8 @@ projects:
     version: '3.3'
   double_field:
     version: '2.5'
+  drafty:
+    version: 1.0-beta4
   draggableviews:
     version: '2.1'
   entity:
@@ -152,7 +154,7 @@ projects:
     download:
       type: git
       url: https://git.drupal.org/project/file_resup.git
-      revision: 6cf030c2c139374c75527221775965ff0242df15
+      revision: fd5aad6bd26ca84303bb07c3f757cd24a5cb5c01
   filefield_sources:
     version: '1.11'
   font_icon_select:
@@ -376,8 +378,8 @@ projects:
     patch:
       2360973: https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch
       1512442: https://www.drupal.org/files/issues/1512442-20-workbench_moderation-fix_access_check.patch
-  drafty:
-    version: 1.0-beta4
+  xautoload:
+    version: '4.5'
 libraries:
   chosen:
     download:

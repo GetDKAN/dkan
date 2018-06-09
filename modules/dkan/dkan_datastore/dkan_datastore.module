@@ -10,15 +10,16 @@ include_once "dkan_datastore.features.inc";
 use \Dkan\Datastore\Manager\ManagerInterface;
 use \Dkan\Datastore\Manager\Factory;
 use \Dkan\Datastore\Resource;
+use \Dkan\Datastore\LockableDrupalVariables;
 
 /**
- * Implements hook_services_resources().
+ * Implements hook_xautoload().
  */
-function dkan_datastore_services_resources() {
-  module_load_include('inc', 'dkan_datastore', 'resources/dkan_datastore_resource');
-  $resources = array();
-  $resources += _dkan_datastore_resource_definition();
-  return $resources;
+function dkan_datastore_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\Datastore\\',
+    drupal_get_path("module", "dkan_datastore") . '/src'
+  );
 }
 
 /**
@@ -83,6 +84,13 @@ function dkan_datastore_menu() {
   return $items;
 }
 
+function dkan_datastore_managers_info() {
+  return module_invoke_all("dkan_datastore_manager");
+}
+
+/**
+ * Get managers info.
+ */
 function dkan_datastore_managers_info() {
   return module_invoke_all("dkan_datastore_manager");
 }
@@ -281,25 +289,6 @@ function dkan_datastore_permission() {
 }
 
 /**
- * Implements hook_node_view().
- */
-function dkan_datastore_node_view($node, $view_mode, $langcode) {
-
-  /*$type = dkan_datastore_node_type();
-  if ($node->type == $type) {
-    $status = dkan_datastore_status($node);
-    if (user_access('manage datastore') && $status && $view_mode == 'full') {
-      if ($status == DKAN_DATASTORE_FILE_EXISTS) {
-        drupal_set_message(t('Your file for this resource is not added to the datastore. Click "Manage Datastore" to import file into the datastore.'));
-      }
-      elseif ($status == DKAN_DATASTORE_EXISTS) {
-        drupal_set_message(t('Your file for this resource has been added to the datastore.'));
-      }
-    }
-  }*/
-}
-
-/**
  * Determines if a resource can be imported.
  */
 function dkan_datastore_is_importable($file) {
@@ -477,6 +466,71 @@ function dkan_datastore_form_alter(&$form, &$form_state, $form_id) {
  */
 function _dkan_datastore_search_redirect() {
   drupal_goto('/search');
+}
+
+/**
+ * Get status.
+ */
+function dkan_datastore_status($node) {
+  $datastore = dkan_datastore_go($node->uuid);
+  return $datastore->getStatus();
+}
+
+/**
+ * Implements hook_cron().
+ */
+function dkan_datastore_cron() {
+  $storage = new LockableDrupalVariables("dkan_datastore");
+
+  $bin = $storage->borrowBin();
+
+  $already_importing = FALSE;
+
+  $current_nid = NULL;
+  foreach ($bin as $nid => $state) {
+    if ($state['data_import'] == ManagerInterface::DATA_IMPORT_IN_PROGRESS) {
+      $already_importing = TRUE;
+      break;
+    }
+    elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_READY) {
+      $current_nid = $nid;
+      break;
+    }
+  }
+
+  $storage->returnBin($bin);
+
+  if ($current_nid) {
+    print_r(PHP_EOL . "DKAN DATASTORE: Starting Import of Resource {$nid}" . PHP_EOL);
+
+    $resource = Resource::createFromDrupalNodeNid($current_nid);
+
+    /* @var $datastore_manager ManagerInterface */
+    $datastore_manager = Factory::create($resource);
+
+    $finished = $datastore_manager->import();
+
+    if ($finished) {
+      print_r(PHP_EOL . "DKAN DATASTORE: Done Importing Resource {$current_nid}" . PHP_EOL);
+    }
+    else {
+      $general = "DKAN DATASTORE: There was a problem while importing Resource {$current_nid}";
+      $errors = $datastore_manager->getErrors();
+      $error_string = implode(" | ", $errors);
+      $final_error_string = "{$general} - {$error_string}";
+      print_r(PHP_EOL . $final_error_string . PHP_EOL);
+      watchdog("error", $final_error_string);
+    }
+
+  }
+  else {
+    if ($already_importing) {
+      print_r(PHP_EOL . "DKAN DATASTORE: Already Importing {$nid}" . PHP_EOL);
+    }
+    else {
+      print_r(PHP_EOL . "DKAN DATASTORE: No Resources to Import" . PHP_EOL);
+    }
+  }
 }
 
 function dkan_datastore_status($node) {
