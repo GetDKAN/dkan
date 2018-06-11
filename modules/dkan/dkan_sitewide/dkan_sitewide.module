@@ -269,8 +269,8 @@ function dkan_sitewide_preprocess_page(&$variables) {
 }
 
 /**
-* Implements hook_entity_info_alter().
-*/
+ * Implements hook_entity_info_alter().
+ */
 function dkan_sitewide_entity_info_alter(&$entity_info) {
   // Add print view mode.
   $entity_info['node']['view modes']['print'] = array(
