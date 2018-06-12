@@ -11,7 +11,7 @@ use Dkan\Datastore\Manager\ManagerInterface;
 class Pages {
 
   const BATCH_ITERATIONS = 1;
-  const BATCH_TIME_LIMIT = 1;
+  const BATCH_TIME_LIMIT = 5;
 
   private $node;
 
@@ -189,7 +189,7 @@ class Pages {
       'error_message' => t('An error occurred during import.'),
     );
 
-    for ($i = 0; $i < self::BATCH_TIME_LIMIT; $i++) {
+    for ($i = 0; $i < self::BATCH_ITERATIONS; $i++) {
       $batch['operations'][] = [[$this, 'batchProcess'], [$datastore_manager]];
     }
 
