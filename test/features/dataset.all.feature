@@ -23,11 +23,11 @@ Feature: Dataset Features
   @dataset_all_3
   Scenario: Order datasets by "Date changed" by oldest first.
     Given datasets:
-      | title                  |  published | description | date changed  |
-      | Dataset 15 years ago   |  Yes       | Test        | -15 year      |
-      | Dataset 12 years ago   |  Yes       | Test        | -12 year      |
-      | Dataset 11 year ago    |  Yes       | Test        | -11 year      |
-      | Dataset 13 years ago   |  Yes       | Test        | -13 year      |
+      | title                 |  published | description | date changed  |
+      | Dataset 5 years ago   |  Yes       | Test        | -5 year      |
+      | Dataset 2 years ago   |  Yes       | Test        | -2 year      |
+      | Dataset 1 year ago    |  Yes       | Test        | -1 year      |
+      | Dataset 3 years ago   |  Yes       | Test        | -3 year      |
     When I am on "Datasets Search" page
     And I search for "Dataset"
     And I select "Date changed" from "Sort by"
@@ -38,11 +38,11 @@ Feature: Dataset Features
   @dataset_all_4
   Scenario: Order datasets by "Date changed" with newest first.
     Given datasets:
-      | title                |  published | description | date changed  |
-      | Dataset 15 years +   |  Yes       | Test        | +15 year      |
-      | Dataset 12 years +   |  Yes       | Test        | +12 year      |
-      | Dataset 13 years +   |  Yes       | Test        | +13 year      |
-      | Dataset 11 year +    |  Yes       | Test        | +11 year      |
+      | title               |  published | description | date changed  |
+      | Dataset 5 years +   |  Yes       | Test        | +5 year      |
+      | Dataset 2 years +   |  Yes       | Test        | +2 year      |
+      | Dataset 3 years +   |  Yes       | Test        | +3 year      |
+      | Dataset 1 year +    |  Yes       | Test        | +1 year      |
     When I am on "Datasets Search" page
     And I search for "Dataset"
     And I select "Date changed" from "Sort by"
