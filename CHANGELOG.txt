@@ -1,7 +1,3 @@
-7.x-1.x
-----------
-- #2557 Wrap user facing strings with Drupal's t() function.
-
 7.x-1.15.1
 ----------
 - #2533 #2546 Updates docker-compose to use updated cli container
