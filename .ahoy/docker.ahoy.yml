@@ -336,13 +336,15 @@ commands:
       case $args in
         start)
         ahoy docker exec web cp -f ${XDEBUG_FILE} /etc/php5/mods-available/xdebug.ini
-        ahoy docker exec cli cp -f ${XDEBUG_FILE} /etc/php5/mods-available/xdebug.ini
+        ahoy docker exec cli phpenmod xdebug
+        ahoy docker exec cli cp -f ${XDEBUG_FILE} /etc/php/5.6/cli/conf.d/${XDEBUG_FILE}
         ahoy docker compose restart web
         ahoy docker compose restart cli
           ;;
         stop)
         ahoy docker exec web rm -f /etc/php5/mods-available/xdebug.ini
-        ahoy docker exec cli rm -f /etc/php5/mods-available/xdebug.ini
+        ahoy docker exec cli phpdismod xdebug
+        ahoy docker exec cli rm -f /etc/php5/mods-available/${XDEBUG_FILE}
         ahoy docker compose restart web
         ahoy docker compose restart cli
           ;;
