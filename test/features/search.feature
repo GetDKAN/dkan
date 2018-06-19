@@ -77,25 +77,25 @@ Feature: Search
     Then I should see "politics01 (1)" in the "filter by tag" region
 
     # Group
-    Given I press "Reset"
-    When I search for "Test"
+    When I press "Reset"
+    And I search for "Test"
     Then I click "Group 01"
     And I should not see "Dataset 01"
     But I should see "Dataset 02"
 
     # Topics
-    Given I am on the "Topics Search" page
+    When I am on the "Topics Search" page
     Then I should see "edumication" in the "filter by topics" region
     When I click "edumication"
     Then I should not see "Dataset 02"
     But I should see "Dataset 01"
     # Topics redirect
-    Given I visit "topics"
+    When I visit "topics"
     Then I should see "Search"
     And I should not see "Page not found"
 
     # Format
-    Given I am on the "Dataset Search" page
+    When I am on the "Dataset Search" page
     And I fill in "csv 2" for "Search" in the "datasets" region
     Then I should see "csv 2 (1)" in the "filter by resource format" region
     And I fill in "html 2" for "Search" in the "datasets" region
