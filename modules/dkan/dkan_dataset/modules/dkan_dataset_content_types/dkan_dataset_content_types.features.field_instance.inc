@@ -595,7 +595,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'label' => 'Harvest Source Issued',
     'required' => 0,
     'settings' => array(
-      'default_value' => 'now',
+      'default_value' => 'blank',
       'default_value2' => 'same',
       'default_value_code' => '',
       'default_value_code2' => '',
@@ -648,7 +648,7 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'label' => 'Harvest Source Modified',
     'required' => 0,
     'settings' => array(
-      'default_value' => 'now',
+      'default_value' => 'blank',
       'default_value2' => 'same',
       'default_value_code' => '',
       'default_value_code2' => '',

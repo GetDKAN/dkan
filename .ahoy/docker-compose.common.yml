@@ -51,7 +51,7 @@ services:
   # Used for all console commands and tools.
   cli:
     hostname: cli
-    image: nuams/drupal-cli:2016-10-16
+    image: getdkan/dkan-docker:php5-cli
     environment:
       - XDEBUG_CONFIG=idekey=PHPSTORM
     env_file:
@@ -66,10 +66,6 @@ services:
     ports:
       - "8888"
     volumes:
-      # PHP configuration overrides
-      - "./.docker/etc/php5/php-cli.ini:/etc/php5/cli/conf.d/z_php.ini"
-      - "./.docker/etc/php5/xdebug-linux.ini:/etc/php5/xdebug-linux.ini"
-      - "./.docker/etc/php5/xdebug-macos.ini:/etc/php5/xdebug-macos.ini"
       # Host SSH keys mapping. Uncomment one of the lines below based on your setup.
       - ~/.ssh:/.ssh
     labels:
