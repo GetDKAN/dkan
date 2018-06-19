@@ -211,7 +211,7 @@ class Pages {
   }
 
   public function batchFinished($success, $results, $operations) {
-    drupal_set_message("Blah");
+    drupal_set_message("Import finished");
   }
 
   /**

@@ -50,11 +50,12 @@ Feature: Datastore
     And I press "Save"
     And I am on "dataset/dataset-01"
     And I click "Resource 01"
-    Then I wait for "The resource description."
-    When I click "Manage Datastore"
-    Then I wait for ": Status"
-    When I press "Import"
-    And I wait for "Importing: TRUE"
+    And I wait for "The resource description."
+    And I click "Manage Datastore"
+    And I press "Save"
+    And I wait for "Status:"
+    And I press "Import"
+    Then I wait for "Importing: TRUE"
     # API related tests belong somewhere else.
     # When I click "Data API" in the "primary tabs" region
     # Then I wait for "Example Query"
