@@ -28,7 +28,7 @@ Dataset
 .. csv-table::
 	:header: "DKAN Field/Property", "DCAT-AP property", "POD property"
 
-	"title", `dct:title <https://www.w3.org/TR/vocab-dcat/#Property:dataset_title)|[title](https://project-open-data.github.io/schema/#title>`_, "title"
+	"title", `dct:title <https://www.w3.org/TR/vocab-dcat/#Property:dataset_title>`_, `title <https://project-open-data.github.io/schema/#title>`_
 	"body", `dct:description <https://www.w3.org/TR/vocab-dcat/#Property:dataset_description>`_, `description <https://project-open-data.github.io/schema/#description>`_
 	"field_tags", `dcat:keyword <https://www.w3.org/TR/vocab-dcat/#Property:dataset_keyword>`_, `keyword <https://project-open-data.github.io/schema/#keyword>`_
 	"field_license","", `license <https://project-open-data.github.io/schema/#license>`_
