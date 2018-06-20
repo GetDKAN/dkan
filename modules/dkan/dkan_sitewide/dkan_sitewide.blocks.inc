@@ -167,18 +167,23 @@ function dkan_sitewide_data_extent_block() {
       }
       $geojson = drupal_json_encode(leaflet_widget_geojson_feature_collection($features));
       $output = "var dataExtent = " . $geojson;
+
+      $map_tile_url = variable_get("dkan_map_tile_url", 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
       $output .= "; var map = L.map('map');
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('" . $map_tile_url . "', {
         attribution: 'Map data &copy; <a href=\"https://openstreetmap.org\">OpenStreetMap</a>'
         }).addTo(map);
 
         var geojson = L.geoJson(dataExtent).addTo(map);
         map.fitBounds(geojson.getBounds());";
+
       drupal_add_js($output, array(
         'type' => 'inline',
         'scope' => 'footer',
         'weight' => 5,
       ));
+
       return '<div id="map" style="height:250px; width:100%"></div>';
     }
   }

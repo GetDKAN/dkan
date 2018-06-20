@@ -22,10 +22,14 @@ abstract class Manager implements ManagerInterface {
 
   private $parser;
 
+  private $timeLimit;
+
   /**
    * Constructor.
    */
   public function __construct(Resource $resource) {
+    $this->timeLimit = 0;
+
     $this->resource = $resource;
 
     $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
@@ -34,12 +38,21 @@ abstract class Manager implements ManagerInterface {
     $this->configurableProperties = [];
 
     if (!$this->loadState()) {
-      $this->configurableProperties = [
+      $this->setConfigurablePropertiesHelper([
         'delimiter' => ',',
         'quote' => '"',
         'escape' => '\\'
-      ];
+      ]);
       $this->initialization($resource);
+    }
+  }
+
+  public function setImportTimelimit($seconds) {
+    if ($seconds > 0) {
+      $this->timeLimit = $seconds;
+    }
+    else {
+      $this->timeLimit = 0;
     }
   }
 
@@ -141,7 +154,7 @@ abstract class Manager implements ManagerInterface {
     $parser->reset();
 
     foreach ($headers as $key => $field) {
-      $new = preg_replace("/[^A-Za-z0-9 ]/", '', $field);
+      $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
       $new = trim($new);
       $new = strtolower($new);
       $new = str_replace(" ", "_", $new);
@@ -166,7 +179,7 @@ abstract class Manager implements ManagerInterface {
         $this->stateDataImport = $state['data_import'];
       }
       if ($state['configurable_properties']) {
-        $this->setConfigurableProperties($state['configurable_properties']);
+        $this->setConfigurablePropertiesHelper($state['configurable_properties']);
       }
       return TRUE;
     }
@@ -201,18 +214,24 @@ abstract class Manager implements ManagerInterface {
     $this->stateDataImport = self::DATA_IMPORT_IN_PROGRESS;
     $this->saveState();
 
-    if ($this->storeRecords() === TRUE) {
+    $import_state = $this->storeRecords($this->timeLimit);
+    if ($import_state === self::DATA_IMPORT_DONE) {
       $this->stateDataImport = self::DATA_IMPORT_DONE;
       $this->saveState();
-
-      return TRUE;
     }
-    else {
+    elseif ($import_state === self::DATA_IMPORT_ERROR) {
       $this->stateDataImport = self::DATA_IMPORT_ERROR;
       $this->saveState();
-
-      return FALSE;
     }
+    elseif ($import_state === self::DATA_IMPORT_READY) {
+      $this->stateDataImport = self::DATA_IMPORT_READY;
+      $this->saveState();
+    }
+    else {
+      throw new \Exception("An incorrect state was returnd by storeRecords().");
+    }
+
+    return $import_state;
   }
 
   /**
@@ -223,7 +242,7 @@ abstract class Manager implements ManagerInterface {
    * @return bool
    *   Whether the storing process was successful.
    */
-  abstract protected function storeRecords();
+  abstract protected function storeRecords($time_limit = 0);
 
   /**
    * {@inheritdoc}
@@ -231,9 +250,8 @@ abstract class Manager implements ManagerInterface {
   public function drop() {
     $this->dropTable();
     $this->stateStorage = self::STORAGE_UNINITIALIZED;
-    $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
+    $this->stateDataImport = self::DATA_IMPORT_READY;
     $this->saveState();
-    return TRUE;
   }
 
   /**
@@ -248,7 +266,7 @@ abstract class Manager implements ManagerInterface {
    */
   public function deleteRows() {
     db_delete($this->getTableName())->execute();
-    $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
+    $this->stateDataImport = self::DATA_IMPORT_READY;
     $this->saveState();
   }
 
@@ -284,8 +302,13 @@ abstract class Manager implements ManagerInterface {
    * {@inheritdoc}
    */
   public function setConfigurableProperties($properties) {
-    $this->configurableProperties = $properties;
+    $this->setConfigurablePropertiesHelper($properties);
+    $this->stateDataImport = self::DATA_IMPORT_READY;
     $this->saveState();
+  }
+
+  private function setConfigurablePropertiesHelper($properties) {
+    $this->configurableProperties = $properties;
   }
 
   /**

@@ -10,6 +10,17 @@ include_once "dkan_datastore.features.inc";
 use \Dkan\Datastore\Manager\ManagerInterface;
 use \Dkan\Datastore\Manager\Factory;
 use \Dkan\Datastore\Resource;
+use \Dkan\Datastore\LockableDrupalVariables;
+
+/**
+ * Implements hook_xautoload().
+ */
+function dkan_datastore_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\Datastore\\',
+    drupal_get_path("module", "dkan_datastore") . '/src'
+  );
+}
 
 /**
  * Implements hook_services_resources().
@@ -83,6 +94,9 @@ function dkan_datastore_menu() {
   return $items;
 }
 
+/**
+ * Get managers info.
+ */
 function dkan_datastore_managers_info() {
   return module_invoke_all("dkan_datastore_manager");
 }
@@ -418,29 +432,10 @@ function dkan_datastore_node_presave($node) {
 }
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_cron().
  */
-function dkan_datastore_form_alter(&$form, &$form_state, $form_id) {
-  if ($form['#form_id'] == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dkan-datasets-panel-pane-1') {
-    // Redirect reset button to  main search page.
-    $form['reset']['#submit'] = array('_dkan_datastore_search_redirect');
-  }
-}
-
-/**
- * Callback to redirect to search url.
- */
-function _dkan_datastore_search_redirect() {
-  drupal_goto('/search');
-}
-
-function dkan_datastore_status($node) {
-  $datastore = dkan_datastore_go($node->uuid);
-  return $datastore->getStatus();
-}
-
 function dkan_datastore_cron() {
-  $storage = new \Dkan\Datastore\LockableDrupalVariables("dkan_datastore");
+  $storage = new LockableDrupalVariables("dkan_datastore");
 
   $bin = $storage->borrowBin();
 
@@ -452,17 +447,16 @@ function dkan_datastore_cron() {
       $already_importing = TRUE;
       break;
     }
-    elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_UNINITIALIZED) {
+    elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_READY) {
       $current_nid = $nid;
       break;
     }
   }
+
   $storage->returnBin($bin);
 
   if ($current_nid) {
-    if (function_exists('drush_print')) {
-      drush_print(PHP_EOL . "DKAN DATASTORE: Starting Import of Resource {$nid}" . PHP_EOL);
-    }
+    print_r(PHP_EOL . "DKAN DATASTORE: Starting Import of Resource {$nid}" . PHP_EOL);
 
     $resource = Resource::createFromDrupalNodeNid($current_nid);
 

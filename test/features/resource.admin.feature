@@ -80,10 +80,10 @@ Feature: Resource
     Given I am logged in as "John"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
-    Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
+    Then I should see "The datastore does not support"
 
   @noworkflow @datastore @javascript
-  Scenario: Import items on datastore of any resource
+  Scenario: Import items on datastore of any resource and drop
     Given I am logged in as "John"
     And I am on "Resource 02" page
     And I click "Edit"
@@ -91,48 +91,16 @@ Feature: Resource
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     When I click "Manage Datastore"
-    And I wait for "Import"
-    And I press "Import"
-    And I wait for "Delete Items"
-    Then "Resource 02" should have datastore records
-
-  @noworkflow @datastore @javascript
-  Scenario: Delete items on datastore of any resource
-    # Backgorund steps to add a file to a resource
-    Given I am logged in as "John"
-    And I am on "Resource 04" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple1.csv"
+    And I select "Simple Import" from "edit-datastore-managers-selection"
     And I press "Save"
-    And I am on "Resource 04" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete Items"
-    Then "Resource 04" should have datastore records
-    And I click "Delete items"
-    And I press "Delete"
-    And I wait for "items have been deleted"
-    Then "Resource 04" should have no datastore records
-
-  @noworkflow @datastore @javascript
-  Scenario: Drop datastore of any resource
-    # Backgorund steps to add a file to a resource
-    Given I am logged in as "John"
-    And I am on "Resource 04" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple2.csv"
-    And I press "Save"
-    And I am on "Resource 04" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete Items"
-    Then "Resource 04" should have datastore records
+    Then I should see "Status:"
+    When I press "Import"
+    And I wait for "Drop Datastore"
     When I click "Drop Datastore"
     And I press "Drop"
-    Then I should see "Datastore dropped!"
-    And "Resource 04" should have no datastore records
+    Then I should see "Records Imported: 0"
+    Then I should see "Storage: Uninitialized"
+    Then I should see "Data Importing: Ready"
 
   @noworkflow
   Scenario: Add revision to any resource

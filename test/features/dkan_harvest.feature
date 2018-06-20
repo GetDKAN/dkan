@@ -141,7 +141,7 @@ Feature: Dkan Harvest
     And I should see "2016-06-22" in the "Release Date" row
     And I should see "2016-08-02" in the "Modified Date" row
 
-  @harvest_09 @api @harvest
+  @harvest_09 @fixme @api @harvest
   Scenario: As a user I should have access to see harvest preview information.
     Given users:
       | name            | mail                   | roles           |
@@ -155,7 +155,7 @@ Feature: Dkan Harvest
     And I should see the text "Harvest now"
     And I should see the text "Florida Bike Lanes Harvest"
 
-  @harvest_10 @api @harvest
+  @harvest_10 @api @fixme @harvest
   Scenario: As a user I should be able to refresh the preview on the Harvest Source.
     Given users:
       | name            | mail                   | roles           |

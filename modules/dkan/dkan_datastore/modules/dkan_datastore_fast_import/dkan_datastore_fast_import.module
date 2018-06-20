@@ -1,8 +1,15 @@
 <?php
 
+function dkan_datastore_fast_import_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\Datastore\Manager\FastImport\\',
+    drupal_get_path("module", "dkan_datastore_fast_import") . '/src'
+  );
+}
+
 function dkan_datastore_fast_import_dkan_datastore_manager() {
   $info = new \Dkan\Datastore\Manager\Info(
-    '\Dkan\Datastore\Manager\FastImport',
+    '\Dkan\Datastore\Manager\FastImport\FastImport',
     "fast",
     "Fast Import"
   );

@@ -10,6 +10,9 @@ use Dkan\Datastore\Manager\ManagerInterface;
  */
 class Pages {
 
+  const BATCH_ITERATIONS = 1;
+  const BATCH_TIME_LIMIT = 5;
+
   private $node;
 
   /**
@@ -92,17 +95,32 @@ class Pages {
       $form = $this->setStatusInfo($form, $datastore_manager);
 
       foreach ($datastore_manager->getConfigurableProperties() as $property => $default_value) {
-        $form["datastore_manager_{$property}"] = [
-          '#type' => 'textfield',
-          '#title' => "{$property}",
-          '#default_value' => $default_value,
-        ];
+        if ($property == "delimiter") {
+          $form["datastore_manager_{$property}"] = array(
+            '#type' => 'select',
+            '#title' => "{$property}",
+            '#options' => array(
+              "," => ",",
+              ";" => ";",
+              "|" => "|",
+              "\t" => "TAB",
+            ),
+            '#default_value' => $default_value,
+          );
+        }
+        else {
+          $form["datastore_manager_{$property}"] = [
+            '#type' => 'textfield',
+            '#title' => "{$property}",
+            '#default_value' => $default_value,
+          ];
+        }
       }
 
       $form['actions'] = array('#type' => 'actions');
       $form['actions']['submit'] = array(
         '#type' => 'submit',
-        '#value' => t("Schedule Import"),
+        '#value' => t("Import"),
       );
 
     }
@@ -147,13 +165,53 @@ class Pages {
       }
 
       $datastore_manager->setConfigurableProperties($configurable_properties);
-      $message = "This resource has been scheduled for import";
     }
+
     $datastore_manager->saveState();
 
     if (!empty($message)) {
       drupal_set_message($message);
     }
+    else {
+      $this->batchConfiguration($datastore_manager);
+    }
+  }
+
+  private function batchConfiguration($datastore_manager) {
+    /* @var $datastore_manager ManagerInterface */
+    $datastore_manager->setImportTimelimit(self::BATCH_TIME_LIMIT);
+    $batch = array(
+      'operations' => [],
+      'finished' => [$this, 'batchFinished'],
+      'title' => t('Importing.'),
+      'init_message' => t('Starting Import.'),
+      'progress_message' => t('Processed @current out of @total.'),
+      'error_message' => t('An error occurred during import.'),
+    );
+
+    for ($i = 0; $i < self::BATCH_ITERATIONS; $i++) {
+      $batch['operations'][] = [[$this, 'batchProcess'], [$datastore_manager]];
+    }
+
+    batch_set($batch);
+  }
+
+  public function batchProcess($datastore_manager, &$context) {
+    if (!isset($context['sandbox']['progress'])) {
+      $context['sandbox']['progress'] = 0;
+      $context['sandbox']['max'] = 1;
+    }
+    /* @var $datastore_manager ManagerInterface */
+    $datastore_manager->import();
+    $context['sandbox']['progress']++;
+
+    if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+      $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+    }
+  }
+
+  public function batchFinished($success, $results, $operations) {
+    drupal_set_message("Import complete.");
   }
 
   /**
@@ -204,6 +262,9 @@ class Pages {
 
       case ManagerInterface::DATA_IMPORT_ERROR:
         return "<b>Data Importing:</b> Error";
+
+      case ManagerInterface::DATA_IMPORT_READY:
+        return "<b>Data Importing:</b> Ready";
     }
   }
 

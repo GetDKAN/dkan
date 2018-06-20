@@ -151,7 +151,7 @@ commands:
       fi
 
       b64=`echo "payload: $input" | base64 $wrap 0`
-      ahoy cmd-proxy ruby dkan/.ahoy/.scripts/dkan-test.rb "$b64"
+      ahoy cmd-proxy BEHAT_FOLDER=$BEHAT_FOLDER ALT_CONFIG_FILE="ALT_CONFIG_FILE" ruby dkan/.ahoy/.scripts/dkan-test.rb "$b64"
 
   unittests:
     usage: Run phpunit tests

@@ -5,4 +5,3 @@ package = DKAN Features
 dependencies[] = dkan_topics
 dependencies[] = taxonomy_fixtures
 dependencies[] = taxonomy
-
