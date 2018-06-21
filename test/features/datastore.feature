@@ -43,7 +43,7 @@ Feature: Datastore
   Scenario: Adding and Removing items from the datastore
     Given I am logged in as a user with the "site manager" role
     And I am on "dataset/dataset-01"
-    And I click "Resource 01"
+    When I click "Resource 01"
     And I click "Edit"
     And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
@@ -55,19 +55,13 @@ Feature: Datastore
     And I press "Save"
     And I wait for "Status:"
     And I press "Import"
-    Then I wait for "Importing: TRUE"
-    # API related tests belong somewhere else.
-    # When I click "Data API" in the "primary tabs" region
-    # Then I wait for "Example Query"
-    # When I click "Manage Datastore"
-    # Then I wait for "DKAN Datastore Link Importer: Status"
-    When I click "Delete items"
-    And I wait for "The datastore has not been created or it has 0 items."
-    When I click "Manage Datastore"
-    And I wait for "Drop Datastore"
-    And I click "Drop Datastore"
-    Then I wait for "Can't drop the datastore"
-    And I should see "The datastore has not been created."
+    Then I wait for "Data Importing: Done"
+    When I click "Drop Datastore"
+    And I wait for "This operation will destroy the db table"
+    And I press "Drop"
+    And I wait for "has been successfully dropped"
+    Then I should see "Records Imported: 0"
+    And I should see "Data Importing: Ready"
 
   @api @noworkflow @datastore @javascript @fixme
   Scenario: Import a csv tab delimited file.
