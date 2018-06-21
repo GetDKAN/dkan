@@ -247,8 +247,6 @@ function dkan_datastore_api_ctools_plugin_api($owner, $api) {
  */
 function dkan_datastore_api_services_resources() {
 
-  $datastore_node_type = dkan_datastore_node_type();
-
   return array(
     'dkan_datastore_search' => array(
       'index' => array(
