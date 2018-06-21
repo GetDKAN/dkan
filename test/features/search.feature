@@ -8,14 +8,14 @@ Feature: Search
     And pages:
       | name                      | url                                                |
       | Dataset Search            | /search/type/dataset                               |
-      | Dataset Results           | /search/type/dataset?query=Dataset%2001            |
+      | Dataset Results           | /search?query=Dataset%2001                         |
       | Topics Search             | /search/field_topics                               |
       | Topics Redirect           | /topics                                            |
-      | Not valid type search     | /search/type/notvalid                              |
-      | Not valid tags search     | /search/field_tags/notvalid                        |
-      | Not valid topics search   | /search/field_topic/notvalid                       |
-      | Not valid resource search | /search/field_resources%253Afield_format/notvalid  |
-      | Not valid license search  | /search/field_license/notvalid                     |
+      | Not valid type search     | /search?query=%20search%20type%20notvalid          |
+      | Not valid tags search     | /search?query=%20search%20field_tags%20notvalid    |
+      | Not valid topics search   | /search?query=%20search%20field_topic%20notvalid   |
+      | Not valid resource search | /search?query=%20search%20field_resources%25253Afield_format%20notvalid |
+      | Not valid license search  | /search?query=%20search%20field_license%20notvalid |
     Given users:
       | name    | mail                | roles                |
       | Badmin  | admin@example.com   | site manager         |
@@ -59,8 +59,8 @@ Feature: Search
   Scenario: See number of datasets on search page and Reset dataset search filters
     Given I am on the "Dataset Search" page
     When I search for "DKANTest"
-    Then I should see "2 results"
-    And I should see "2" items in the "datasets" region
+    Then I should see "4 results"
+    And I should see "4" items in the "datasets" region
     When I press "Reset"
     Then I should see all published search content
 
@@ -104,7 +104,7 @@ Feature: Search
   @search_04
   Scenario Outline: Forbid XSS injection in search
     Given I am on the "<page>" page
-    Then I should see "Page not found"
+    Then I should see "No results were found. Please try another keyword."
     Examples:
     | page                      |
     | Not valid type search     |

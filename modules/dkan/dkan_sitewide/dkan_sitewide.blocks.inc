@@ -491,7 +491,7 @@ function dkan_sitewide_dataset_search_form($form, $form_state) {
  */
 function dkan_sitewide_dataset_search_form_submit($form, &$form_state) {
   if ($query = $form_state['input']['search']) {
-    drupal_goto('dataset', array('query' => array('query' => $query)));
+    drupal_goto('search', array('query' => array('query' => $query)));
 
   }
 }
