@@ -215,7 +215,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     );
     $params = dkan_datastore_api_get_params($params);
     $result = dkan_datastore_api_query($params);
-    $this->assertEquals($result['result']->records[0]->state_id, 5);
+    $this->assertEquals(5, $result['result']->records[0]->state_id);
   }
 
   /**
@@ -355,4 +355,3 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
   }
 
 }
-
