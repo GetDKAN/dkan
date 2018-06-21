@@ -467,3 +467,50 @@ function dkan_update_7027() {
   }
   drupal_set_message(t('Removed harvest date values from @var non-harvested datasets.', array('@var' => $count)), 'status');
 }
+
+/**
+ * Enable the simple import module.
+ */
+function dkan_update_7028() {
+  module_enable(array('dkan_datastore_simple_import'));
+}
+
+/**
+ * Rename feeds_datastore tables.
+ */
+function dkan_update_7029() {
+  foreach(db_find_tables("feeds_datastore_dkan%") as $table_name) {
+    $new_table_name = str_replace("feeds_datastore_dkan_file", "dkan_datastore", $table_name);
+    $new_table_name = str_replace("feeds_datastore_dkan_link", "dkan_datastore", $new_table_name);
+    db_rename_table($table_name, $new_table_name);
+  }
+}
+
+/**
+ * Generate basic datastore configuration.
+ */
+function dkan_update_7030() {
+  foreach(db_find_tables("dkan_datastore%") as $table_name) {
+    $nid = str_replace("dkan_datastore_", "", $table_name);
+    $resource =  \Dkan\Datastore\Resource::createFromDrupalNodeNid($nid);
+
+    /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
+    $datastore = \Dkan\Datastore\Manager\Factory::create($resource, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
+    $datastore->saveState();
+  }
+}
+
+/**
+ * Update the datastore configuration.
+ */
+function dkan_update_7031() {
+  $storage = new \Dkan\Datastore\LockableDrupalVariables("dkan_datastore");
+  $bin = $storage->borrowBin();
+
+  foreach ($bin as $nid => $state) {
+    $bin[$nid]['data_import'] = \Dkan\Datastore\Manager\ManagerInterface::DATA_IMPORT_DONE;
+    $bin[$nid]['storage'] = \Dkan\Datastore\Manager\ManagerInterface::STORAGE_INITIALIZED;
+  }
+
+  $storage->returnBin($bin);
+}
