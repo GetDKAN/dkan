@@ -23,16 +23,6 @@ function dkan_datastore_xautoload($adapter) {
 }
 
 /**
- * Implements hook_services_resources().
- */
-function dkan_datastore_services_resources() {
-  module_load_include('inc', 'dkan_datastore', 'resources/dkan_datastore_resource');
-  $resources = array();
-  $resources += _dkan_datastore_resource_definition();
-  return $resources;
-}
-
-/**
  * Implements hook_menu().
  */
 function dkan_datastore_menu() {
