@@ -68,10 +68,10 @@ Resource / Distribution
 .. csv-table::
 	:header: "DKAN Field/Property label", "DKAN Field/Property machine name", "DCAT-AP property", "POD property"
 
-	"", , "dcat:accessURL", "accessURL"
-	"", , "dct:conformsTo", "conformsTo"
-	"", , "", "describedBy",
-	"", , "", "describedByType"
+	"", "", "dcat:accessURL", "accessURL"
+	"", "", "dct:conformsTo", "conformsTo"
+	"", "", "", "describedBy"
+	"", "", "", "describedByType"
 	"Description", "body", "dct:description", "description"
 	"Link File || Upload", "field_link_remote_file || field_upload", "dcat:downloadURL", "downloadURL"
 	"Format", "field_format", "", "format"
