@@ -46,6 +46,7 @@ Dataset
 	"Additional Info", "field_additional_info", "", ""
 	"Resources", "field_resources", `dcat:distribution <https://www.w3.org/TR/vocab-dcat/#Property:dataset_distribution>`_, `distribution <https://project-open-data.github.io/v1.1/schema/#distribution>`_
 	"Related Content", "field_related_content", "", `references <https://project-open-data.github.io/v1.1/schema/#references>`_
+	"Data Standard", "field_conforms_to", "", `conformsTo <https://project-open-data.github.io/v1.1/schema/#dataset-conformsTo>`_
 	"", "uuid", `dct:identifier <https://www.w3.org/TR/vocab-dcat/#Property:dataset_identifier>`_, `identifier <https://project-open-data.github.io/v1.1/schema/#identifier>`_
 	"", "modified_date", `dct:modified <https://www.w3.org/TR/vocab-dcat/#Property:dataset_modified_date>`_, `modified <https://project-open-data.github.io/v1.1/schema/#modified>`_
 	"", "release_date", `dct:issued <https://www.w3.org/TR/vocab-dcat/#Property:dataset_release_date>`_, `issued <https://project-open-data.github.io/v1.1/schema/#issued>`_
