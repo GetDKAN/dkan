@@ -19,7 +19,7 @@ class Resource {
     $node = node_load($id);
     // No access if content type is not default datastore type (usually resource).
     if ($node->type != self::resourceContentType()) {
-      throw new Exception("Not a valid content type for datastore; $type expected.");
+      throw new \Exception("Not a valid content type for datastore; $type expected.");
     }
     $this->id = $id;
     $this->node = node_load($id);

@@ -1,15 +1,27 @@
 <?php
 
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
+use Dkan\Datastore\Resource;
 
 /**
  * Class DkanDatastoreTest.
  */
 class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
 
+  private $resource_node;
+
+  protected function setUp() {
+    $node->title = "Datastore Resource Test Object 23523";
+    $node->type = "resource";
+    $node->field_link_remote_file['und'][0]['uri'] = "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv";
+    $node->status = 1;
+    node_save($node);
+    $this->resource_node = node_load($node->nid);
+  }
+
   public function test() {
 
-    $resource = new \Dkan\Datastore\Resource("999999", __DIR__ . "/data/countries.csv");
+    $resource = new Resource($this->resource_node->nid, __DIR__ . "/data/countries.csv");
 
     /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
     $datastore = \Dkan\Datastore\Manager\Factory::create($resource, SimpleImport::class);
@@ -47,6 +59,10 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
     $status = $datastore->getStatus();
     $this->assertEquals(SimpleImport::STORAGE_UNINITIALIZED, $status['storage']);
     $this->assertEquals(SimpleImport::DATA_IMPORT_READY, $status['data_import']);
+  }
+
+  protected function tearDown() {
+    node_delete($this->resource_node->nid);
   }
 
 }
