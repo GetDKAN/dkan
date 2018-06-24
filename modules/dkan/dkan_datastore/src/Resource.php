@@ -160,7 +160,6 @@ class Resource {
       stream_wrapper_restore("http");
       return $node->field_link_remote_file[LANGUAGE_NONE][0]['uri'];
     }
-    throw new \Exception(t("Node !nid doesn't have a proper file path.", array('!nid' => $node->nid)));
   }
 
   /**

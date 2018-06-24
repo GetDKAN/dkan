@@ -28,7 +28,7 @@ function dkan_datastore_xautoload($adapter) {
 function dkan_datastore_menu() {
 
   // @todo Move somewhere else.
-  $items['node/%node/download'] = array(
+  $items['node/%dkan_datastore_resource/download'] = array(
     'title callback' => 'dkan_datastore_download_title',
     'title arguments' => array(1),
     'page callback' => 'dkan_datastore_download',
@@ -41,7 +41,7 @@ function dkan_datastore_menu() {
   );
 
   // @todo Move somewhere else.
-  $items['node/%node/data'] = array(
+  $items['node/%dkan_datastore_resource/data'] = array(
     'page callback' => 'dkan_datastore_proxy',
     'page arguments' => array(1),
     'access callback' => 'dkan_datastore_access',
@@ -142,10 +142,10 @@ function dkan_datastore_menu_alter(&$items) {
 /**
  * Access callback for DKAN Datastore operations.
  */
-function dkan_datastore_access($op, $node) {
-  if ($resource = Resource::createFromDrupalNode($node)) {
-    return $resource->datastoreAccess($op);
-  }
+ function dkan_datastore_access($op, $node) {
+   if ($resource = Resource::createFromDrupalNode($node)) {
+     return $resource->datastoreAccess($op);
+   }
 }
 
 /**
