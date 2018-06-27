@@ -10,7 +10,6 @@ Feature: Resource
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
-      | Badmin  | admin@example.com   | site manager         |
       | Gabriel | gabriel@example.com | content creator      |
       | Jaz     | jaz@example.com     | editor               |
       | Katie   | katie@example.com   | content creator      |
@@ -79,8 +78,12 @@ Feature: Resource
   Scenario: Manage Datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 01" page
+    And I click "Edit"
+    And I click "Remote file"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
+    And I press "Save"
     When I click "Manage Datastore"
-    Then I should see "The datastore does not support"
+    Then I should see "Datastore"
 
   @noworkflow @datastore @javascript
   Scenario: Import items on datastore of any resource and drop

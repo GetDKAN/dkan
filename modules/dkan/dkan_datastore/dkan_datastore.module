@@ -99,7 +99,7 @@ function dkan_datastore_resource_link_type($node) {
   $file_field = Resource::fileUploadField();
   $remote_file_field = Resource::fileLinkField();
   $api_field = Resource::apiLinkField();
-  $type = Resource::resourceContentType();
+  $type = 'resource';
 
   if ($node->type == $type && $file = $node_wrapper->{$file_field}->value()) {
     $uri = isset($file->uri) ? $file->uri : $file['uri'];
@@ -143,9 +143,14 @@ function dkan_datastore_menu_alter(&$items) {
  * Access callback for DKAN Datastore operations.
  */
  function dkan_datastore_access($op, $node) {
-   if ($resource = Resource::createFromDrupalNode($node)) {
-     return $resource->datastoreAccess($op);
+   try {
+     $resource = Resource::createFromDrupalNode($node);
    }
+   catch(\Exception $e) {
+     // die(var_dump(debug_backtrace()));
+     return FALSE;
+   }
+   return TRUE;
 }
 
 /**
@@ -394,7 +399,8 @@ function dkan_datastore_file_link_field() {
  * DEPRECATED: Use Resource::resourceContentType
  */
 function dkan_datastore_node_type() {
-  return Resource::resourceContentType();
+  // return Resource::resourceContentType();
+  return 'resource';
 }
 
 /**
