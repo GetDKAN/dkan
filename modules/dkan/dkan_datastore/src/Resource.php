@@ -59,7 +59,7 @@ class Resource {
     if ($node = node_load($nid)) {
       return self::createFromDrupalNode($node);
     }
-    throw new \Exception('Failed to load resource node.');
+    throw new \Exception(t('Failed to load resource node.'));
   }
 
   /**
@@ -73,47 +73,11 @@ class Resource {
    */
   public static function createFromDrupalNode($node) {
     if ($node->type != 'resource') {
-      throw new \Exception('Invalid node type.');
+      throw new \Exception(t('Invalid node type.'));
     }
     $id = $node->nid;
     $file_path = self::filePath($node);
     return new self($id, $file_path);
-  }
-
-  /**
-   * Returns name of upload field.
-   */
-  public static function fileUploadField() {
-    static $field;
-    if (!$field) {
-      $field = 'field_upload';
-      drupal_alter('dkan_datastore_file_upload_field', $field);
-    }
-    return $field;
-  }
-
-  /**
-   * Returns name of link api field.
-   */
-  public static function apiLinkField() {
-    static $field;
-    if (!$field) {
-      $field = 'field_link_api';
-      drupal_alter('dkan_datastore_field_link_api', $field);
-    }
-    return $field;
-  }
-
-  /**
-   * Returns name of remote file field.
-   */
-  public static function fileLinkField() {
-    static $field;
-    if (!$field) {
-      $field = 'field_link_remote_file';
-      drupal_alter('dkan_datastore_field_link_remote_file', $field);
-    }
-    return $field;
   }
 
   /**

@@ -884,27 +884,28 @@ function dkan_datastore_api_instructions_output() {
  * Access callback for Data API instructions.
  */
 function dkan_datastore_api_api_page_access($node) {
-  if ($resource = Resource::createFromDrupalNode($node)) {
-    if ($datastore_manager = Factory::create($resource)) {
-      $status = $datastore_manager->getStatus();
-      if ($status['data_import'] == Manager::DATA_IMPORT_DONE && user_access('manage datastore')) {
-        $type = Resource::resourceContentType();
-        $file_field = Resource::fileUploadField();
-        $link_field = Resource::fileLinkField();
-        $upload = '';
-        $link = '';
-        if (isset($node->$file_field) && $node->$file_field) {
-          $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
-        }
-        if (isset($node->{$link_field}) && $node->{$link_field}) {
-          $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
-        }
-        if ($node->type == $type && ($upload || $link)) {
-          return node_access('view', $node);
-        }
-        else {
-          return FALSE;
-        }
+  try {
+    $resource = Resource::createFromDrupalNode($node);
+  }
+  catch(\Exception $e) {
+    return FALSE;
+  }
+  if ($datastore_manager = Factory::create($resource)) {
+    $status = $datastore_manager->getStatus();
+    if ($status['data_import'] == Manager::DATA_IMPORT_DONE && user_access('manage datastore')) {
+      $type = 'resource';
+      $file_field = dkan_datastore_file_upload_field();
+      $link_field = dkan_datastore_file_link_field();
+      $upload = '';
+      $link = '';
+      if (isset($node->$file_field) && $node->$file_field) {
+        $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
+      }
+      if (isset($node->{$link_field}) && $node->{$link_field}) {
+        $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
+      }
+      if ($node->type == $type && ($upload || $link)) {
+        return node_access('view', $node);
       }
     }
   }

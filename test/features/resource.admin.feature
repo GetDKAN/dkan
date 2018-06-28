@@ -15,6 +15,7 @@ Feature: Resource
       | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | editor               |
       | Celeste | celeste@example.com | editor               |
+      | Badmin  | admin@example.com   | site manager         |
     Given groups:
       | title    | author  | published |
       | Group 01 | Badmin  | Yes       |
@@ -74,7 +75,7 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @noworkflow
+  @noworkflow @javascript
   Scenario: Manage Datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 01" page

@@ -142,16 +142,36 @@ function dkan_datastore_menu_alter(&$items) {
 /**
  * Access callback for DKAN Datastore operations.
  */
- function dkan_datastore_access($op, $node) {
-   try {
-     $resource = Resource::createFromDrupalNode($node);
-   }
-   catch(\Exception $e) {
-     // die(var_dump(debug_backtrace()));
-     return FALSE;
-   }
-   return TRUE;
+function dkan_datastore_access($op, $node) {
+  try {
+    $resource = Resource::createFromDrupalNode($node);
+  }
+  catch(\Exception $e) {
+    return FALSE;
+  }
+
+  global $user;
+  if (!isset($account)) {
+    $account = $user;
+  }
+
+  switch ($op) {
+    case 'view':
+      return node_access('view', $node, $account);
+      break;
+
+    case 'drop':
+    case 'delete':
+    case 'import':
+    case 'manage':
+      // All available operations require the 'manage datastore' permission.
+      if (user_access('manage datastore', $account) && node_access('update', $node, $account)) {
+        return TRUE;
+      }
+      break;
+  }
 }
+
 
 /**
  * Load node by id or uuid.
@@ -176,17 +196,6 @@ function dkan_datastore_resource_load($id) {
   return FALSE;
 }
 
-/**
- * Access callback for back link.
- */
-function dkan_datastore_back_access($node) {
-  if ($node->type != 'resource') {
-    return FALSE;
-  }
-  else {
-    return node_access('view', $node);
-  }
-}
 
 /**
  * Access callback for 'Add Resource' tab.
