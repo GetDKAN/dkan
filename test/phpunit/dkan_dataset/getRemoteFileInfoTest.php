@@ -61,6 +61,11 @@ Age: 5730';
     $urls[3]['extension'] = 'csv';
     $urls[3]['name'] = "cscpopendata.csv";
 
+    $urls[4]['url'] = "https://developers.google.com/kml/documentation/KML_Samples.kml";
+    $urls[4]['type'] = 'application/vnd.google-earth.kml+xml';
+    $urls[4]['extension'] = 'kml';
+    $urls[4]['name'] = "KML_Samples.kml";
+
     foreach ($urls as $key => $info) {
       $fileInfo = new getRemoteFileInfo($info['url'], 'test', TRUE);
       $this->assertEquals($fileInfo->getType(), $info['type']);
