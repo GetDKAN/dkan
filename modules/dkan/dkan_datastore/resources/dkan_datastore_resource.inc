@@ -282,7 +282,6 @@ function _dkan_datastore_resource_drop($nid) {
     return TRUE;
   }
   else {
-    return 'untrue';
     return $datastore->getErrors();
   }
 }
@@ -326,7 +325,7 @@ function _dkan_datastore_resource_access($op = 'view', $args = array()) {
     }
   }
   if (isset($node->nid) && $node->nid) {
-    return node_access($op, $node);
+    return dkan_datastore_access($op, $node);
   }
   else {
     return services_error(t('Node @nid could not be found', array('@nid' => $args[0]->nid)), 404);
