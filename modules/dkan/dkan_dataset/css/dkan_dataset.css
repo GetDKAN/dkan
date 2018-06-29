@@ -513,6 +513,12 @@ li .heading:hover {
 .label[data-format*=tsv] {
   background-color: #6f5191;
 }
+.label[data-format=kml],
+.label[data-format*=kml],
+.label[data-format=kmz],
+.label[data-format*=kmz] {
+  background-color: #3F6EA5;
+}
 
 .format-label {
   color: transparent;
@@ -612,6 +618,14 @@ li .heading:hover {
 .format-label[data-format=tsv]:before {
   content: "\e900";
   color: #6f5191;
+}
+.format-label[data-format=kml]:before {
+  content: "\e654";
+  color: #3F6EA5;
+}
+.format-label[data-format=kmz]:before {
+  content: "\e655";
+  color: #3F6EA5;
 }
 
 .node-resource .download .format-label {
