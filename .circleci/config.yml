@@ -106,14 +106,14 @@ jobs:
             fi
       # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
       - run:
+          name: Run Parallel Behat Tests
+          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
+      - run:
           name: Run PHPUnit Tests
           command: |
             if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
               ahoy dkan unittests
             fi
-      - run:
-          name: Run Parallel Behat Tests
-          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
       - run:
           name: Copy Assets to Base Image
           when: on_fail
