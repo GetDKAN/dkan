@@ -1159,11 +1159,15 @@ class HarvestMigration extends MigrateDKAN {
           return FALSE;
         }
 
+        // Remove query from effective URL.
+        $parsed = parse_url($remoteFileInfo->getEffectiveUrl());
+        $effective_url = $parsed['scheme'] . '://' . $parsed['host'] . $parsed['path'];
+
         // If the URL is determined to be field_link_remote_file material,
         // use the effective URL unless it is more than 255 characters.
         // More than 255 will give the 'Data too long for column' error.
-        if (strlen($remoteFileInfo->getEffectiveUrl()) < 256) {
-          $resource->url = $remoteFileInfo->getEffectiveUrl();
+        if (strlen($effective_url) < 256) {
+          $resource->url = $effective_url;
         }
         $resource->url_type = 'file';
         $format_detected = $remoteFileInfo->getExtension();
