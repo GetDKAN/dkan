@@ -109,9 +109,9 @@ jobs:
             if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
               ahoy dkan lint
             fi
-      #- run:
-          #name: Run Parallel Behat Tests
-          #command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
+      - run:
+          name: Run Parallel Behat Tests
+          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
       - run:
           name: Copy Assets to Base Image
           when: on_fail
