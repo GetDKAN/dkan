@@ -156,8 +156,13 @@ function _dkan_dataset_rest_api_validate_fields($node) {
   $instances = field_info_instances('node', $node->type);
 
   foreach ($instances as $field_name => $info) {
-    $handlers = array('dkan_dataset_rest_api_validate_field');
+    $handlers = array(
+      'dkan_dataset_rest_api_validate_field_required',
+      'dkan_dataset_rest_api_validate_field_options',
+    );
+
     drupal_alter('dkan_dataset_rest_api_field_validate', $handlers);
+
     foreach($handlers as $function) {
       $function($node, $field_name, $info);
     }
@@ -166,13 +171,18 @@ function _dkan_dataset_rest_api_validate_fields($node) {
 }
 
 /**
- * Default validation handler for Dataset REST API
+ * Default validation handler for Dataset REST API.
  */
-
-function dkan_dataset_rest_api_validate_field(&$node, $field_name, $info) {
+function dkan_dataset_rest_api_validate_field_required(&$node, $field_name, $info) {
   if ($info['required'] == 1 && empty($node->{$field_name})) {
     throw new Exception("Field {$field_name} is required");
   }
+}
+
+/**
+ * Default validation handler for Dataset REST API.
+ */
+function dkan_dataset_rest_api_validate_field_options(&$node, $field_name, $info) {
   if (!empty($node->{$field_name})) {
     $options = _dkan_dataset_rest_api_field_validation_get_options($node, $field_name, $info);
 
