@@ -89,8 +89,7 @@ Feature: Resource
   Scenario: Manage datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    Then I should see "The datastore does not support"
+    Then I should not see "Manage Datastore"
 
   @resource_editor_6 @datastore @noworkflow @javascript
   Scenario: Import and drop items on datastore of resources associated with groups that I am a member of
