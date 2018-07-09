@@ -3,7 +3,7 @@
     The spell check component can return a list of alternative spelling
     suggestions.
 
-    http://wiki.apache.org/solr/SpellCheckComponent
+    https://wiki.apache.org/solr/SpellCheckComponent
  -->
 <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
 

@@ -6,3 +6,36 @@
  */
 
 include_once 'dkan_sitewide_user.features.inc';
+
+/**
+ * Implements hook_user_cancel_methods_alter().
+ */
+function dkan_sitewide_user_user_cancel_methods_alter(&$methods) {
+  // Assigning unpublished content to the anonymous role
+  // will make it visible to anonymous users.
+  unset($methods['user_cancel_reassign']);
+  // Add a custom method.
+  $methods['dkan_sitewide_user_assign_to_admin'] = array(
+    'title' => t('Disable the account and make its content belong to the admin user.'),
+    'description' => t('All contents will be assigned to admin user.'),
+    'access' => user_access('administer users'),
+  );
+}
+
+/**
+ * Implements hook_user_cancel().
+ */
+function dkan_sitewide_user_user_cancel($edit, $account, $method) {
+  switch ($method) {
+    case 'dkan_sitewide_user_assign_to_admin':
+      // Assign nodes to admin user.
+      module_load_include('inc', 'node', 'node.admin');
+      $nodes = db_select('node', 'n')
+        ->fields('n', array('nid'))
+        ->condition('uid', $account->uid)
+        ->execute()
+        ->fetchCol();
+      node_mass_update($nodes, array('uid' => 1));
+      break;
+  }
+}

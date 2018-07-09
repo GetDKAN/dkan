@@ -26,7 +26,7 @@ Feature: DKAN Dataset REST API
     Then I should not see "Resource 02"
     Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
     And I use the "dataset rest api" endpoint to create the nodes:
-      | type     | title            | description | status |
+      | type     | title            | body            | status |
       | resource | Resource 02      | The description | 1      |
     When I am on "Search Resources" page
     Then I should see "Resource 02"
@@ -55,7 +55,7 @@ Feature: DKAN Dataset REST API
     Then I should not see "The description was modified"
     Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
     And I use the "dataset rest api" endpoint to update the node "Resource 01" with:
-      | body |
+      | body                         |
       | The description was modified |
     When I am on "Resource 01" page
     Then I should see "The description was modified"
@@ -75,12 +75,10 @@ Feature: DKAN Dataset REST API
     Then I should not see "Dataset 02"
     Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
     And I use the "dataset rest api" endpoint to create the nodes:
-      | type     | title            | description | status | resource    |
-      | dataset  | Dataset 02       | The description | 1      | Resource 01 |
+      | type     | title            | body            | status |
+      | dataset  | Dataset 02       | The description | 1      |
     When I am on "Search Datasets" page
     Then I should see "Dataset 02"
-    And I am on "/dataset/dataset-02"
-    Then I should see "Resource 01"
 
   @dataset_rest_api_06
   Scenario: Update a Dataset using the 'Dataset REST API' endpoint
@@ -88,7 +86,7 @@ Feature: DKAN Dataset REST API
     Then I should not see "The description was modified"
     Given I use the "dataset rest api" endpoint to login with user "admin" and pass "admin"
     And I use the "dataset rest api" endpoint to update the node "Dataset 01" with:
-      | description |
+      | body                         |
       | The description was modified |
     When I am on "Dataset 01" page
     Then I should see "The description was modified"

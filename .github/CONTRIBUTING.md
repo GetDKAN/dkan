@@ -67,7 +67,7 @@ Pull requests should include sufficient context for a maintainer to open them fo
 ### Pull Request Template
 ```
 ## Description
-ref: NuCivic/[repo]/[issue#]
+ref: GetDKAN/[repo]/[issue#]
 
 ## Acceptance Test
 

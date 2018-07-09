@@ -71,7 +71,7 @@ Where is metadata displayed in DKAN?
 
 When viewing a dataset, you can scroll down the page to the "Dataset Info" section to view its metadata.
 
-The screencap below is an example of metadata for the "Safety Net Clinics" dataset on `HealthData.gov <http://www.healthdata.gov/>`_:
+The screencap below is an example of metadata for the "Safety Net Clinics" dataset on `HealthData.gov <https://www.healthdata.gov/>`_:
 
 .. figure:: ../images/MetadataInDKAN.png
 
@@ -79,7 +79,7 @@ The screencap below is an example of metadata for the "Safety Net Clinics" datas
 
 *An example of how metadata is presented within DKAN.*
 
-*Source: ** http://www.healthdata.gov/dataset/safety-net-clinics
+*Source: ** https://www.healthdata.gov/dataset/safety-net-clinics
 
 
 Open Data Formats
@@ -341,7 +341,7 @@ Follow these simple guidelines to make your data or statistical releases as tidy
 
 5. Numbers in cells should just be numbers. Don’t put commas in them, or stars after them, or anything else. If you need to add an annotation to some rows, use a separate column.
 
-6. Use standard identifiers: e.g. identify countries using [ISO 3166](http://en.wikipedia.org/wiki/ISO_3166) codes rather than names.
+6. Use standard identifiers: e.g. identify countries using [ISO 3166](https://en.wikipedia.org/wiki/ISO_3166) codes rather than names.
 
 7. Don’t use only color or other stylistic cues to encode information. If you want to color cells according to their value, use conditional formatting.
 
@@ -356,13 +356,13 @@ More Data Cleaning Resources
 
 https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html
 
-http://vita.had.co.nz/papers/tidy-data.html
+https://vita.had.co.nz/papers/tidy-data.html
 
 https://en.wikipedia.org/wiki/Data_cleansing
 
 http://www.ats.ucla.edu/stat/sas/library/nesug99/ss123.pdf
 
-http://betterevaluation.org/sites/default/files/data_cleaning.pdf
+https://betterevaluation.org/sites/default/files/data_cleaning.pdf
 
 https://support.office.com/en-us/article/Top-ten-ways-to-clean-your-data-2844b620-677c-47a7-ac3e-c2e157d1db19
 
@@ -378,7 +378,7 @@ https://project-open-data.cio.gov/
 
 https://project-open-data.cio.gov/open-standards/
 
-http://www.data.gov
+https://www.data.gov
 
 Project Open Data is the United States’ official policy regarding open data publishing and metadata standards. The homepage explains the mission and goals of Project Open Data and its participants, and the Open Standards page lists standards, specifications, and formats supporting open data objectives.
 
@@ -405,7 +405,7 @@ List of Civic Data Standards:
 Johns Hopkins University’s GovEx Labs
 *************************************
 
-http://labs.centerforgov.org/open-data/civic-data-standards/
+https://labs.centerforgov.org/open-data/civic-data-standards/
 
 Johns Hopkins University’s GovEx labs’ defines a civic data standard as "an an open, collaboratively developed set of data schematics or semantics which facilitates interoperability between multiple providers and consumers for the public good."
 
@@ -416,7 +416,7 @@ The Open Contracting Partnership
 
 **Open Contracting Data Standard**
 
-http://www.open-contracting.org/data-standard/
+https://www.open-contracting.org/data-standard/
 
 http://standard.open-contracting.org/latest/en/
 
@@ -438,7 +438,7 @@ The Open Data Institute
 
 **Open Data Maturity Model**
 
-http://theodi.org/guides/maturity-model (other guides: http://theodi.org/guides)
+https://theodi.org/guides/maturity-model (other guides: https://theodi.org/guides)
 
 The Open Data Institute is a London-based independent non-profit dedicated to using open data to address today’s global challenges. The Open Data Maturity Model is "a way to assess how well an organisation publishes and consumes open data, and identifies actions for improvement.
 
@@ -449,7 +449,7 @@ Open Knowledge International
 
 **The Open Data Handbook**
 
-http://opendatahandbook.org/guide/en/
+https://opendatahandbook.org/guide/en/
 
 Open Knowledge International is "a worldwide non-profit network of people passionate about openness, using advocacy, technology and training to unlock information and enable people to work with it to create and share knowledge."
 
@@ -460,7 +460,7 @@ The Sunlight Foundation
 
 **Open Data Policy Guidelines**
 
-http://sunlightfoundation.com/opendataguidelines/
+https://sunlightfoundation.com/opendataguidelines/
 
 The Sunlight Foundation is "a nonpartisan nonprofit that advocates for open government globally and uses technology to make government more accountable to all." Their list of open data guidelines addresses what data should be public, how to make data public, and how to implement policy.
 
@@ -507,7 +507,7 @@ The Open Data Substrate
 
 GitHub project to catalog open data standardization efforts
 
-http://open-data-standards.github.io/
+https://open-data-standards.github.io/
 
 "The goal of this industry organization is to provide a forum to quickly establish standards so that Open Data implementors can ensure they are developing Open Data solutions that interoperate. This community-driven initiative to promote vendor interoperability and data portability is derived from a fundamental belief that ‘data is more useful’ when ‘more people can use it’."
 
@@ -529,21 +529,21 @@ The Original 8 Principles of Open Government Data [`Source <https://public.resou
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   **"Government data shall be considered open if it is made public in a way that complies with the principles below:"**
 
-1. `Complete <http://wiki.opengovdata.org/index.php/Talk:OpenDataPrinciples/complete>`_ All public data is made available. **Public data** is data that is not subject to valid privacy, security or privilege limitations.
+1. **Complete** All public data is made available. **Public data** is data that is not subject to valid privacy, security or privilege limitations.
 
-2. `Primary <http://wiki.opengovdata.org/index.php/Talk:OpenDataPrinciples/primary>`_ Data is as collected at the source, with the highest possible level of granularity, not in aggregate or modified forms.
+2. **Primary** Data is as collected at the source, with the highest possible level of granularity, not in aggregate or modified forms.
 
-3. `Timely <http://wiki.opengovdata.org/index.php/Talk:OpenDataPrinciples/timely>`_ Data is made available as quickly as necessary to preserve the value of the data.
+3. **Timely** Data is made available as quickly as necessary to preserve the value of the data.
 
-4. `Accessible <http://wiki.opengovdata.org/index.php/Talk:OpenDataPrinciples/accessible>`_ Data is available to the widest range of users for the widest range of purposes.
+4. **Accessible** Data is available to the widest range of users for the widest range of purposes.
 
-5. `Machine processable <http://wiki.opengovdata.org/index.php/Talk:OpenDataPrinciples/machine_processable>`_ Data is reasonably structured to allow automated processing.
+5. **Machine processable** Data is reasonably structured to allow automated processing.
 
-6. `Non-discriminatory <http://wiki.opengovdata.org/index.php/Talk:OpenDataPrinciples/non-discriminatory>`_ Data is available to anyone, with no requirement of registration.
+6. **Non-discriminatory** Data is available to anyone, with no requirement of registration.
 
-7. `Non-proprietary <http://wiki.opengovdata.org/index.php/Talk:OpenDataPrinciples/non-proprietary>`_ Data is available in a format over which no entity has exclusive control.
+7. **Non-proprietary** Data is available in a format over which no entity has exclusive control.
 
-8. `License-free <http://wiki.opengovdata.org/index.php/Talk:OpenDataPrinciples/license-free>`_ Data is not subject to any copyright, patent, trademark or trade secret regulation. Reasonable privacy, security and privilege restrictions may be allowed.
+8. **License-free** Data is not subject to any copyright, patent, trademark or trade secret regulation. Reasonable privacy, security and privilege restrictions may be allowed.
 
 
 Relevant Reading Materials
