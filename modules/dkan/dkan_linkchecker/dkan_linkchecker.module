@@ -1,0 +1,150 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Link Checker feature.
+ */
+
+include_once 'dkan_linkchecker.features.inc';
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function dkan_linkchecker_preprocess_page(&$vars) {
+  // Add additional css to the report page AND the view edit page.
+  if (arg(2) == 'dkan-linkchecker-report' || arg(4) == 'dkan_linkchecker_reports') {
+    drupal_add_css(drupal_get_path('module', 'dkan_linkchecker') . '/css/linkchecker.css');
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_linkchecker_menu() {
+  $config_parent_normal_path = 'admin/config';
+  $config_plid = db_query("SELECT mlid FROM {menu_links} WHERE link_path = :parent AND menu_name = :menu", array(':parent' => $config_parent_normal_path, ':menu' => 'menu-command-center-menu'))->fetchField();
+
+  $items = array();
+  // Add links to command center menu for site manager access.
+  $items['cc/admin/config/link-checker'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'title' => 'Link Checker Settings',
+    'page callback' => 'drupal_goto',
+    'page arguments' => array('admin/config/content/linkchecker'),
+    'access arguments' => array('administer linkchecker'),
+    'weight' => 10,
+    'type' => MENU_NORMAL_ITEM,
+    'plid' => $config_plid,
+  );
+  $items['cc/admin/config/link-checker/dkan-linkchecker-report'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'title' => 'Broken Links Report',
+    'page callback' => 'drupal_goto',
+    'page arguments' => array('admin/reports/dkan-linkchecker-report'),
+    'access arguments' => array('access broken links report'),
+    'weight' => 11,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_linkchecker_menu_alter(&$items) {
+  // Remove normal linkchecker report link.
+  $items['admin/reports/linkchecker']['access callback'] = FALSE;
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function dkan_linkchecker_views_pre_render(&$view) {
+  if ($view->name == 'dkan_linkchecker_reports') {
+    // Re-write the output of the contact email.
+    foreach ($view->result as $key => $result) {
+      $email = '';
+      // Dataset results.
+      if (isset($result->field_field_contact_email[0]['raw']['value'])) {
+        $email = '<a href="mailto:' . $result->field_field_contact_email[0]['raw']['value'] . '"><i class="fa fa-envelope-square"></i></a> ';
+      }
+      if (isset($result->field_field_contact_name[0]['rendered']['#markup'])) {
+        $result->field_field_contact_name[0]['rendered']['#markup'] = $email . $result->field_field_contact_name[0]['raw']['safe_value'];
+      }
+      // Resource results.
+      if (isset($result->field_field_contact_email_1[0]['raw']['value'])) {
+        $email = '<a href="mailto:' . $result->field_field_contact_email_1[0]['raw']['value'] . '"><i class="fa fa-envelope-square"></i></a> ';
+      }
+      if (isset($result->field_field_contact_name_1[0]['rendered']['#markup'])) {
+        $result->field_field_contact_name_1[0]['rendered']['#markup'] = $email . $result->field_field_contact_name_1[0]['raw']['safe_value'];
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function dkan_linkchecker_views_query_alter(&$view, &$query) {
+  if ($view->name == 'dkan_linkchecker_reports') {
+    switch ($view->exposed_raw_input['field_public_access_level_value']) {
+      case 'public':
+        _access_level_query($view, $query, 'public');
+        break;
+
+      case 'private':
+        _access_level_query($view, $query, 'private');
+        break;
+
+      case 'restricted':
+        _access_level_query($view, $query, 'restricted');
+        break;
+
+      default:
+        break;
+    }
+  }
+}
+
+/**
+ * Create filter for public access level that includes resources.
+ */
+function _access_level_query(&$view, &$query, $level) {
+  // Get the public access level value from the dataset reference field.
+  $join = new views_join();
+  $join->table = 'field_data_field_public_access_level';
+  $join->field = 'entity_id';
+  $join->left_table = 'node_linkchecker_node__field_data_field_dataset_ref';
+  $join->left_field = 'field_dataset_ref_target_id';
+  $join->type = 'LEFT';
+
+  // Do the actual join.
+  $query->table_queue['public_access_level'] = array(
+    'alias' => 'public_access_level',
+    'table' => 'field_data_field_public_access_level',
+    'relationship' => 'node_linkchecker_node__field_data_field_dataset_ref',
+    'join' => $join,
+  );
+
+  // This gathers the dataset results.
+  $query->where[1] = array(
+    'conditions' => array(
+      array(
+        'field' => 'public_access_level.field_public_access_level_value',
+        'value' => $level,
+        'operator' => '=',
+      ),
+    ),
+    'type' => 'OR',
+  );
+
+  $query->table_queue['node_linkchecker_node__field_data_field_public_access_level']['join']->type = 'LEFT';
+  // This gathers the resource results.
+  $query->add_where(1, db_or()->condition(
+    'node_linkchecker_node__field_data_field_public_access_level.field_public_access_level_value', $level));
+  // Add default filters back in.
+  $ignore = array(200, 301, 302);
+  $query->add_where(2, db_and()->condition('linkchecker_link.last_checked', 0, '!=')->condition('linkchecker_link.status', '0', '<>')->condition('linkchecker_link.code', $ignore, 'NOT IN'));
+
+  return $query;
+}

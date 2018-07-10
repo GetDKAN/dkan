@@ -21,9 +21,9 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
+          "downloadURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
           "mediaType": "text/html",
-          "accessURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html"
+          "accessURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html"
         }
       ],
       "identifier": "156",
@@ -34,7 +34,7 @@
         "State",
         "Claims"
       ],
-      "landingPage": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
+      "landingPage": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
       "modified": "2016-04-07",
       "programCode": [
         "009:000"
@@ -65,9 +65,9 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html",
+          "downloadURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html",
           "mediaType": "text/html",
-          "accessURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html"
+          "accessURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html"
         }
       ],
       "identifier": "155",
@@ -87,7 +87,7 @@
         "Publically Available Data File - for download",
         "Chronic Condition"
       ],
-      "landingPage": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html",
+      "landingPage": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html",
       "modified": "2016-04-07",
       "programCode": [
         "009:000"
@@ -118,7 +118,7 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "accessURL": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh.html"
+          "accessURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh.html"
         }
       ],
       "identifier": "154",
@@ -141,7 +141,7 @@
         "Part C",
         "Disproportionate Share Hospitals (DSH)"
       ],
-      "landingPage": "http://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh.html",
+      "landingPage": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh.html",
       "modified": "2016-01-06",
       "programCode": [
         "009:000"
@@ -171,7 +171,7 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "accessURL": "http://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
         }
       ],
       "identifier": "241",
@@ -181,7 +181,7 @@
         "Providers",
         "State"
       ],
-      "landingPage": "http://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
       "modified": "2015-12-16",
       "programCode": [
         "009:000"

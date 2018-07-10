@@ -1,6 +1,6 @@
 # The Visualization Entity
 
-You may also refer to the [Visualization Entity specific ReadTheDocs site.](http://visualization-entity.readthedocs.io/en/latest/)
+You may also refer to the [Visualization Entity specific ReadTheDocs site.](https://visualization-entity.readthedocs.io/en/latest/)
 
 The <a href="https://github.com/GetDKAN/visualization_entity">Visualization Entity</a> module provides a suite of options for creating visualizations in DKAN that used natively or embedded in other sites.
 
@@ -8,16 +8,16 @@ This module is under development. Documentation will be updated as the module is
 
 ### The Visualization Entity module provides the following types of visualizations:
 
-* Charts and Graphs 
+* Charts and Graphs
  * [More information](https://github.com/GetDKAN/visualization_entity_charts) (Under development)
 
 * Choropleth maps
- * [More information]( http://visualization-entity.readthedocs.org/en/latest/create-a-choropleth-visualization/)
+ * [More information]( https://visualization-entity.readthedocs.org/en/latest/create-a-choropleth-visualization/)
 
 * I-Frame embedded content (Coming soon)
 
-* GeoJSON based maps (Coming soon) 
- * [More information](http://visualization-entity.readthedocs.org/en/latest/create-a-geojson-visualization/) 
+* GeoJSON based maps (Coming soon)
+ * [More information](https://visualization-entity.readthedocs.org/en/latest/create-a-geojson-visualization/)
 
 ## How to create a chart:
 
@@ -41,15 +41,15 @@ This module is under development. Documentation will be updated as the module is
 
 ![Choosing the file source][Choosing the file source]
 
-4. Click the ‘Next’ button. If the file or URL loaded properly, you will be able to fill out two fields beneath the title "Define Variables." 
+4. Click the ‘Next’ button. If the file or URL loaded properly, you will be able to fill out two fields beneath the title "Define Variables."
 
-The first one, **Series**, determines the **Y axis**, and the second field, **X-Field**, determines the X axis. In these fields, you may choose the columns that you are going to display. Only the Series field can contain multiple values. 
+The first one, **Series**, determines the **Y axis**, and the second field, **X-Field**, determines the X axis. In these fields, you may choose the columns that you are going to display. Only the Series field can contain multiple values.
 
 If the column names are not displayed properly, check again that your source URL was correct.
 
-5. Click the Next button. 
+5. Click the Next button.
 
-7. Select the type of chart you want to create and click Next once more. At this point, you will see a preview of your chart. 
+7. Select the type of chart you want to create and click Next once more. At this point, you will see a preview of your chart.
 
 ![Selecting your chart type][Selecting your chart type]
 
@@ -63,7 +63,7 @@ If the column names are not displayed properly, check again that your source URL
 
 1. Navigate to the dataset that will be used for the map.
 
-2. Click **Explore Data**. 
+2. Click **Explore Data**.
 
 3. Right-click (ctrl-click on Mac) the **Download** button to copy the URL of the resource file.
 
@@ -75,7 +75,7 @@ If the column names are not displayed properly, check again that your source URL
 
 7. Click Next.
 
-8. If the URL was loaded properly you will be able to select the columns where your geographic data is. It might be in two columns (Latitude and Longitude fields), or in a single field (Geo Point field). If the column names are not displayed properly, check again that your source URL was correct. 
+8. If the URL was loaded properly you will be able to select the columns where your geographic data is. It might be in two columns (Latitude and Longitude fields), or in a single field (Geo Point field). If the column names are not displayed properly, check again that your source URL was correct.
 
 9. Click the ‘Finish’ button
 
@@ -96,9 +96,9 @@ Tables allow you to display a preview of the data as it would be seen when openi
 5. Click Save.
 
 <!-- Images -->
-[Navigating to Structure -> Entity Types -> Visualizations -> Charts]: http://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%204.50.31%20PM.png
-[Alt]: http://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%204.50.31%20PM.png
-[Uploading a file to Charts]: http://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%205.07.22%20PM_0.png
-[Resource name autocomplete]: http://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%205.37.49%20PM.png
-[Choosing the file source]: http://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%205.38.39%20PM.png
-[Selecting your chart type]: http://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%205.53.59%20PM.png
+[Navigating to Structure -> Entity Types -> Visualizations -> Charts]: https://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%204.50.31%20PM.png
+[Alt]: https://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%204.50.31%20PM.png
+[Uploading a file to Charts]: https://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%205.07.22%20PM_0.png
+[Resource name autocomplete]: https://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%205.37.49%20PM.png
+[Choosing the file source]: https://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%205.38.39%20PM.png
+[Selecting your chart type]: https://docs.getdkan.com/sites/default/files/Screen%20Shot%202016-01-21%20at%205.53.59%20PM.png

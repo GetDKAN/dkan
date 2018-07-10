@@ -1,9 +1,70 @@
+7.x-1.15.1
+----------
+- #2533 #2546 Updates docker-compose to use updated cli container
+- #2542 Add theme setting to adjust hero region height
+- #2531 Add table tags to allowed html
+- #2527 Stop xdebug in web and cli containers for tests
+- #2521 Add custom validation rules to the REST API node creation
+- #2498 Fix the link to installation info on README.md
+- #2463 Update circle setup to use local DEV containers
+- #2485 Check the character length of harvested resource urls
+- #2476 Update getExtension() and createResources() functions
+- #2452 Fix front page link paths on logo and site name
+- #2489 Create variable for map tile url
+- #2492 Security update for file_resup module, upgrade to version 1.5
+- #2358 Fix datastore error reporting when UUID is missing
+
+7.x-1.15
+----------
+- #2339 Adds a linkchecker to DKAN.
+- #2409 Allows the services API to be able to consume datasets with the same format given when retrieving a dataset through the API
+- #2434 Disable option to assign content to anonymous user
+- #2431  Fix calls to the empty function that check the return value of a function or method
+- #2405 & #2427 Improve tests
+
+7.x-1.14.7
+----------
+- #2473 Security upgrades to Drupal 7.59 and Media 2.9
+- #2470 Get harvest tests passing
+- #2468 Update urls to use https rather than http
+- #2467 Update command center menu links
+- #2464 Move functions out of the dkan_sitewide_menu.install file
+
+7.x-1.14.6
+----------
+- #2461 Update CONTRIBUTING.md
+- #2456 Remove exra docker dir
+- #2458 Fix the chrome issue
+- #2450 Incorrect Readme Links
+
+7.x-1.14.5
+----------
+- #2435 Update Drupal core to 7.58
+- #2412 Update installation instructions
+
 7.x-1.14.4
 ----------
- - #2409 Bypass form validation in Dataset REST API to allow input to match output
- - #2404 Avoid undefined offset on nuboot_radix/includes/panel.inc line 45
- - #2402 Update Drupal core to 7.57
- - #2375 Improvements to automated tests
+- #2404 Avoid undefined offset on nuboot_radix/includes/panel.inc line 45
+- #2402 Update Drupal core to 7.57
+- #2375 Improvements to automated tests
+
+7.x-1.14.3
+----------
+- #2377 Upgrade entity to 1.9
+
+7.x-1.14.2
+----------
+- #2359 Upgrade filefield_sources to 1.11
+- #2341 Modifies curl settings so url headers and info can be properly acquired with curl
+- #2370 Patch features to add new line after <?php
+- #2346 Updated Help page; can add your company to listing
+- Remove out-dated owners.md file
+- #2345 Site Manager Monthly Maintenance checklist
+- #2347 Moving the "Adding New Content" page to main admin doc tree
+- #2321 Update @resource_all_09 scenario
+- #2327 Add results count to dkan admin views
+- #2337 Pin sphinx to 1.5.6
+- #2332 Remove redundant debug output
 
 7.x-1.14.3
 ----------
@@ -721,7 +782,7 @@ DKAN Dataset:
 
 7.x-1.7  2015-02-20
 -------------------
- - Adds Panels to DKAN for Drag and Drop layouts: http://docs.getdkan.com/dkan-documentation/dkan-users-guide/customize-dkan-pages-layouts-and-components-using-panels
+ - Adds Panels to DKAN for Drag and Drop layouts: https://docs.getdkan.com/dkan-documentation/dkan-users-guide/customize-dkan-pages-layouts-and-components-using-panels
  - Adds Open Data Schema to DKAN https://github.com/NuCivic/open_data_schema_map#open-data-schema-map
  - Adds 'saved states' to Recline data preview
  - DKAN_Datastore: Remove schema patch
@@ -729,7 +790,7 @@ DKAN Dataset:
 DKAN Dataset:
  - Adds Project Open Data v1.1 schema through open_data_schema_map update
  - Adds dkan data.json v1.1 complaint implementation through open_data_schema_map_dkan update
- - Adds Panels implementation for dkan_dataset_groups: http://docs.getdkan.com/dkan-documentation/dkan-users-guide/customize-dkan-pages-layouts-and-components-using-panels
+ - Adds Panels implementation for dkan_dataset_groups: https://docs.getdkan.com/dkan-documentation/dkan-users-guide/customize-dkan-pages-layouts-and-components-using-panels
  - Updates to dkan_dataset stylesheet to make them radix compatible
  - Security updates for several modules
 
@@ -859,7 +920,7 @@ nüBoot Theme:
  - Travis + Github integration for all test suites on every commit
  - Moved issues for all three modules exclusively to dkan's github issues: https://github.com/nuams/dkan/issues/
  - Completed CKAN API Read Compliance with the following API methods: package_list, package_show, site_read, package_revision_list, group_list, resource_show, group_package_show and revision_list
- - Added nuboot theme (http://drupal.org/project/nuboot) as default dkan theme
+ - Added nuboot theme (https://drupal.org/project/nuboot) as default dkan theme
  - Completed 508 compliance on dkan default theme
  - Several bugs fixed.
  - DKAN_Datastore: Moved dkan_datastore development to github: https://github.com/nuams/dkan_datastore

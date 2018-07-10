@@ -71,7 +71,7 @@ function _dkan_dataset_rest_api_resource_create($request) {
 
       try {
         field_attach_validate('node', $node);
-        _dkan_dataset_rest_api_field_validation($node);
+        _dkan_dataset_rest_api_validate_fields($node);
       }
       catch (\Exception $e) {
         return services_error($e->getMessage());
@@ -118,7 +118,7 @@ function _dkan_dataset_rest_api_resource_update($nid, $request) {
 
       try {
         field_attach_validate('node', $node);
-        _dkan_dataset_rest_api_field_validation($node);
+        _dkan_dataset_rest_api_validate_fields($node);
       }
       catch (\Exception $e) {
         return services_error($e->getMessage());
@@ -152,21 +152,33 @@ function _dkan_dataset_rest_api_resource_update($nid, $request) {
  * Currently we are only checking for required fields, and that the
  * values in an options/select list field are valid.
  */
-function _dkan_dataset_rest_api_field_validation($node) {
+function _dkan_dataset_rest_api_validate_fields($node) {
   $instances = field_info_instances('node', $node->type);
 
   foreach ($instances as $field_name => $info) {
-    if ($info['required'] == 1 && empty($node->{$field_name})) {
-      throw new Exception("Field {$field_name} is required");
+    $handlers = array('dkan_dataset_rest_api_validate_field');
+    drupal_alter('dkan_dataset_rest_api_field_validate', $handlers);
+    foreach($handlers as $function) {
+      $function($node, $field_name, $info);
     }
 
-    if (!empty($node->{$field_name})) {
-      $options = _dkan_dataset_rest_api_field_validation_get_options($node, $field_name, $info);
+  }
+}
 
-      // Check that the values match the options.
-      if (!empty($options) && is_array($options)) {
-        _dkan_dataset_rest_api_field_validation_check_field_values_against_options($field_name, $node->{$field_name}, $options);
-      }
+/**
+ * Default validation handler for Dataset REST API
+ */
+
+function dkan_dataset_rest_api_validate_field(&$node, $field_name, $info) {
+  if ($info['required'] == 1 && empty($node->{$field_name})) {
+    throw new Exception("Field {$field_name} is required");
+  }
+  if (!empty($node->{$field_name})) {
+    $options = _dkan_dataset_rest_api_field_validation_get_options($node, $field_name, $info);
+
+    // Check that the values match the options.
+    if (!empty($options) && is_array($options)) {
+      _dkan_dataset_rest_api_field_validation_check_field_values_against_options($field_name, $node->{$field_name}, $options);
     }
   }
 }

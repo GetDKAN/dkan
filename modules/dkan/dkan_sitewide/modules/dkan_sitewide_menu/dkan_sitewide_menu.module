@@ -26,3 +26,74 @@ function dkan_sitewide_menu_menu_alter(&$items) {
   $items['admin/appearance/colorizer']['access arguments'] = array('administer DKAN configuration');
   $items['admin/config/services/odsm/validate/dcat']['access arguments'] = array('administer DKAN configuration');
 }
+
+/**
+ * Clear command center.
+ *
+ * When we upgrade, we need to rebuild
+ * the command center menu completely. This
+ * Deletes all the existing menu links.
+ */
+function _dkan_sitewide_menu_clear_command_center() {
+  $menu_links = menu_load_links('menu-command-center-menu');
+
+  foreach ($menu_links as $menu_link) {
+    menu_link_delete($menu_link['mlid']);
+  }
+}
+
+/**
+ * Setup menu.
+ *
+ * This helper function sets up the
+ * admin_menu_source module's configuration.
+ * We want the content creator and
+ * editor roles to have the "command center"
+ * menu rather than the whole admin
+ * menu in the top bar. We can't rely on the
+ * rid to be the same on every site so not using features.
+ */
+function _dkan_sitewide_menu_setup_admin_menu_source() {
+  $required_roles = array(
+    'administrator',
+    'site manager',
+    'editor',
+    'content creator',
+  );
+  $roles = array_flip(user_roles());
+  $admin_menu_source_settings = array();
+  foreach ($required_roles as $role_name) {
+    if (!isset($roles[$role_name])) {
+      $role = new stdClass();
+      $role->name = $role_name;
+      user_role_save($role);
+      $roles[$role_name] = $role->rid;
+    }
+  }
+
+  $roles = array_flip(user_roles());
+
+  $admin_menu_source_settings = array(
+    $roles['administrator'] => array(
+      'rid' => $roles['administrator'],
+      'source' => '',
+      'weight' => 0,
+    ),
+    $roles['site manager'] => array(
+      'rid' => $roles['site manager'],
+      'source' => 'menu-command-center-menu',
+      'weight' => 1,
+    ),
+    $roles['editor'] => array(
+      'rid' => $roles['editor'],
+      'source' => 'menu-command-center-menu',
+      'weight' => 2,
+    ),
+    $roles['content creator'] => array(
+      'rid' => $roles['content creator'],
+      'source' => 'menu-command-center-menu',
+      'weight' => 3,
+    ),
+  );
+  variable_set('admin_menu_source_settings', $admin_menu_source_settings);
+}

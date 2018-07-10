@@ -14,11 +14,13 @@
     <div class="panel-hero panel-row" <?php print 'style="background-image:' . $path . ';background-color:' . $bg_color . '"'; ?>>
       <div class="<?php print $tint; ?>"></div>
       <div class="container">
-        <div class="panel-col-first">
-          <div class="inside"><?php print $content['hero-first']; ?></div>
-        </div>
-        <div class="panel-col-second">
-          <div class="inside"><?php print $content['hero-second']; ?></div>
+        <div class="hero-wrapper" <?php print 'style="display:table;padding:' . $padding . 'px 0;"'; ?>>
+          <div class="panel-col-first">
+            <div class="inside"><?php print $content['hero-first']; ?></div>
+          </div>
+          <div class="panel-col-second">
+            <div class="inside"><?php print $content['hero-second']; ?></div>
+          </div>
         </div>
       </div>
     </div>

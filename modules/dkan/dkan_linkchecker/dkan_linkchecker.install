@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Additional setup tasks for DKAN Link Checker.
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function dkan_linkchecker_enable() {
+  // Disable the standard linkchecker_reports view to avoid confusion.
+  $list = variable_get('views_defaults');
+  $n = array('linkchecker_reports' => TRUE);
+  $disabled = array_merge($list, $n);
+  variable_set('views_defaults', $disabled);
+}
