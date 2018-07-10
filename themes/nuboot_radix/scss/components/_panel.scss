@@ -59,11 +59,6 @@ h2.pane-title {
   }
 }
 .radix-layouts-content {
-  .pane-title {
-    font-size: 36px;
-    line-height: 42px;
-    margin:0 0 15px 0;
-  }
   .pane-content {
     margin-bottom: 1em;
   }
@@ -187,7 +182,7 @@ h2.pane-title {
   // Data Stories with visualization embeds have a set height.
   // Until the height is dynamic we need to pad it a bit on small screens.
   .panel-pane.pane-visualization-embed {
-    padding-bottom: 5em;
+    padding-bottom: 10em;
   }
 }
 @media (max-width: 768px) {

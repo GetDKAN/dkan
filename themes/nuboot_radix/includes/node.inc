@@ -21,7 +21,8 @@ function nuboot_radix_preprocess_node(&$variables) {
 
     $variables['dataset_list'] = '';
     $variables['group_list'] = NULL;
-    $variables['body'] = empty($wrapper->body->value()) ? '' : $wrapper->body->value->value();
+    $body = $wrapper->body->value();
+    $variables['body'] = empty($body) ? '' : $body;
     $path = drupal_lookup_path('alias', "node/" . $wrapper->getIdentifier());
     $variables['node_url'] = $path ? $path : "node/{$variables['nid']}";
     if ($variables['type'] == 'resource' && $wrapper->field_dataset_ref->count() > 0) {
@@ -32,7 +33,7 @@ function nuboot_radix_preprocess_node(&$variables) {
 
     $groups = og_get_entity_groups('node', $wrapper->value());
     if (!empty($groups['node'])) {
-      $groups = array_map(function($gid) {
+      $groups = array_map(function ($gid) {
         $g_wrapper = entity_metadata_wrapper('node', $gid);
         return $g_wrapper->label();
       }, array_values($groups['node']));

@@ -1,5 +1,5 @@
 diff --git a/panopoly_widgets.features.field_instance.inc b/panopoly_widgets.features.field_instance.inc
-index 62685fd..d5c0b5a 100644
+index 57ea2cd..ba81d06 100644
 --- a/panopoly_widgets.features.field_instance.inc
 +++ b/panopoly_widgets.features.field_instance.inc
 @@ -40,6 +40,20 @@ function panopoly_widgets_field_default_field_instances() {
@@ -44,7 +44,7 @@ index 62685fd..d5c0b5a 100644
          'manualcrop_styles_mode' => 'include',
          'manualcrop_thumblist' => 0,
        ),
-@@ -486,7 +514,9 @@ function panopoly_widgets_field_default_field_instances() {
+@@ -489,7 +517,9 @@ function panopoly_widgets_field_default_field_instances() {
      'widget' => array(
        'active' => 1,
        'module' => 'options',

@@ -5,7 +5,7 @@
  * Template file for node search results.
  */
 ?>
-<article class="node-search-result row" xmlns="http://www.w3.org/1999/html">
+<article class="node-search-result row" xmlns="https://www.w3.org/1999/html">
   <div class="col-md-2 col-lg-1 col-xs-2 icon-container">
     <?php
     print drupal_render($result_icon)

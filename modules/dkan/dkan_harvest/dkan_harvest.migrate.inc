@@ -149,8 +149,8 @@ class HarvestMigration extends MigrateDKAN {
 
     // Disable the logging system of the migration module.
     // The module logs every time the processImport() method is called but we
-    // want to log only once, when the full migration event finishes. If we don't
-    // do that then we are going to get one log record per batch chunk.
+    // want to log only once, when the full migration event finishes. If we
+    // don't do that then we are going to get one log record per batch chunk.
     $this->logHistory = FALSE;
 
     // Initialize results.
@@ -165,7 +165,7 @@ class HarvestMigration extends MigrateDKAN {
       'datasets_created' => 0,
       'datasets_updated' => 0,
       'datasets_failed' => 0,
-      'datasets_orphaned' => 0
+      'datasets_orphaned' => 0,
     );
 
     // Add Field mappings.
@@ -210,7 +210,7 @@ class HarvestMigration extends MigrateDKAN {
             'endtime' => $event_data['end_time'],
             'initialHighwater' => $event_data['initial_highwater'],
             'finalHighwater' => $event_data['final_highwater'],
-            'numprocessed' => $event_data['datasets_processed']
+            'numprocessed' => $event_data['datasets_processed'],
           ))
         ->execute();
     }
@@ -313,8 +313,8 @@ class HarvestMigration extends MigrateDKAN {
     // Check the license field.
     // Convert URI values to license ID values from hook_license_subscribe(),
     // change the value to match the expected key value.
-    // Clients will need to provide a custom hook_license_subscribe() function if
-    // they are using different urls than dkan: (i.e. opendatacommons.org or
+    // Clients will need to provide a custom hook_license_subscribe() function
+    // if they are using different urls than dkan: (i.e. opendatacommons.org or
     // creativecommons.org rather than opendefinition.org)
     if (isset($row->license) && $row->license != '') {
       $licenses = dkan_dataset_content_types_license_subscribe();
@@ -438,11 +438,20 @@ class HarvestMigration extends MigrateDKAN {
       // Create all resources and assign them to the dataset.
       $field_resources_value = array();
       foreach ($row->resources as $resource_row) {
-        $resource_node = $this->createResourceNode($resource_row);
-        // TODO add check?
-        $field_resources_value[] = $resource_node->nid;
-      }
 
+        try {
+          $resource_node = $this->createResourceNode($resource_row);
+          $field_resources_value[] = $resource_node->nid;
+        }
+        catch (EntityMetadataWrapperException $emwException) {
+          $message = t(
+            'Cannot create the resource. @exception_message',
+            array(
+              '@exception_message' => $emwException->getMessage(),
+            ));
+          $this->saveMessage($message);
+        }
+      }
       if (!empty($field_resources_value)) {
         foreach ($field_resources_value as $key => $resource_nid) {
           $dataset->field_resources[LANGUAGE_NONE][$key] = array(
@@ -1150,10 +1159,12 @@ class HarvestMigration extends MigrateDKAN {
           return FALSE;
         }
 
-        // Finally this URL is determined to be field_link_remote_file
-        // material.
-        // Make sure to use the effective URL.
-        $resource->url = $remoteFileInfo->getEffectiveUrl();
+        // If the URL is determined to be field_link_remote_file material,
+        // use the effective URL unless it is more than 255 characters.
+        // More than 255 will give the 'Data too long for column' error.
+        if (strlen($remoteFileInfo->getEffectiveUrl()) < 256) {
+          $resource->url = $remoteFileInfo->getEffectiveUrl();
+        }
         $resource->url_type = 'file';
         $format_detected = $remoteFileInfo->getExtension();
       }

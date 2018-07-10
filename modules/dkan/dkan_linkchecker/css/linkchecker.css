@@ -1,0 +1,21 @@
+.view-dkan-linkchecker-reports {
+  font-family: arial;
+  font-size: 12px;
+  font-weight: normal;
+}
+.view-dkan-linkchecker-reports .views-exposed-form .views-exposed-widget {
+  padding-top: 0;
+}
+.view-dkan-linkchecker-reports th.views-field-nothing {
+  text-align: center;
+}
+.view-dkan-linkchecker-reports td.views-field-nothing a:hover {
+  text-decoration: none;
+}
+.view-dkan-linkchecker-reports td.views-field-nothing a .btn-primary {
+  margin: 2px;
+  padding: 4px 8px;
+}
+.view-dkan-linkchecker-reports .views-field i {
+  font-size: 1.5em;
+}
