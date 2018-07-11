@@ -405,7 +405,7 @@ libraries:
     download:
       type: git
       url: 'https://github.com/josdejong/jsoneditor.git'
-      tag: v5.5.11
+      tag: 5.5.11
   slugify:
     download:
       type: git
