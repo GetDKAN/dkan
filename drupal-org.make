@@ -336,7 +336,7 @@ projects:
   token_tweaks:
     version: 1.x-dev
   uuid:
-    version: '1.0'
+    version: '1.1'
   views:
     version: '3.20'
   views_autocomplete_filters:
