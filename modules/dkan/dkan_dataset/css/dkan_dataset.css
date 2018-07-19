@@ -519,6 +519,13 @@ li .heading:hover {
 .label[data-format*=kmz] {
   background-color: #3F6EA5;
 }
+.label[data-format=ppt],
+.label[data-format*=ppt],
+.label[data-format=pptx],
+.label[data-format*=pptx] {
+  background-color: #CF452C;
+}
+
 
 .format-label {
   color: transparent;
@@ -626,6 +633,11 @@ li .heading:hover {
 .format-label[data-format=kmz]:before {
   content: "\e655";
   color: #3F6EA5;
+}
+.format-label[data-format=ppt]:before,
+.format-label[data-format=pptx]:before {
+  content: "\e682";
+  color: #CF452C;
 }
 
 .node-resource .download .format-label {
