@@ -155,6 +155,42 @@ class GetRemoteFileInfo {
   /**
    * Helper function.
    */
+  function curl_get_contents_partial($url, $limit) {
+    $writefn = function($ch, $chunk) use ($limit, &$datadump) {
+      static $data = '';
+
+      $len = strlen($data) + strlen($chunk);
+      if ($len >= $limit) {
+        $data .= substr($chunk, 0, $limit - strlen($data));
+        $datadump = $data;
+        return -1;
+      }
+      $data .= $chunk;
+      return strlen($chunk);
+    };
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_WRITEFUNCTION, $writefn);
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+    if ($datadump) {
+      $info = $this->parseRequestData($datadump);
+      return $info;
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Helper function.
+   */
   private function getFileInfoHelper($url, $no_body = TRUE) {
     ob_start();
     $ch = curl_init($url);
@@ -163,7 +199,7 @@ class GetRemoteFileInfo {
       curl_setopt($ch, CURLOPT_NOBODY, 1);
     }
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Range: bytes=0-1000"));
+    //curl_setopt($ch, CURLOPT_HTTPHEADER, array("Range: bytes=0-1000")); Not Effective.
 
     $ok = curl_exec($ch);
 
@@ -191,7 +227,10 @@ class GetRemoteFileInfo {
       return $info;
     }
 
-    if ($info = $this->getFileInfoHelper($url, FALSE)) {
+    // if ($info = $this->getFileInfoHelper($url, FALSE)) {
+    //   return $info;
+    // }
+    if ($info = $this->curl_get_contents_partial($url, 500)) {
       return $info;
     }
 
