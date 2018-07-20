@@ -1177,7 +1177,8 @@ class HarvestMigration extends MigrateDKAN {
     $resource->format = isset($format) ? strtolower($format) : $format_detected;
 
     // Title.
-    $resource->title = isset($title) ? $title : $resource->format;
+    $name = isset($title) ? $title : $remoteFileInfo->getName();
+    $resource->title = isset($name) ? $name : $resource->format;
 
     // Created.
     $resource->created = isset($created) ? $created : time();
