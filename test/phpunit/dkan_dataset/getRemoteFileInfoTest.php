@@ -46,10 +46,10 @@ Age: 5730';
     $urls[0]['extension'] = 'csv';
     $urls[0]['name'] = "Hospital_Inpatient_Discharges_by_DRG__Northwest__FY2011.csv";
 
-    $urls[1]['url'] = "https://data.ca.gov/node/1801/download";
+    $urls[1]['url'] = "http://demo.getdkan.com/profiles/dkan/test/phpunit/phpunit_redirect_test.php";
     $urls[1]['type'] = 'text/csv';
     $urls[1]['extension'] = 'csv';
-    $urls[1]['name'] = "uw_supplier_data060518.csv";
+    $urls[1]['name'] = "Polling_Places_Madison_0_0.csv";
 
     $urls[2]['url'] = "https://s3.amazonaws.com/dkan-default-content-files/files/albo.xls";
     $urls[2]['type'] = 'application/vnd.ms-excel';
