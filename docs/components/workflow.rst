@@ -1,19 +1,19 @@
 DKAN Workflow
 =============
 
-Basics
+Introduction
 ------
 For large organizations, it can be difficult to moderate vast amounts of content submitted by a wide range of publishers and agencies.
-
-It is important for site managers and administrators to be able to determine which users are able to add, edit and delete content, as well as which users can view and approve of content under review.
 
 DKAN Workflow is an optional module for `DKAN
 <https://github.com/GetDKAN/dkan>`_ based on the `Workbench
 <https://www.drupal.org/project/workbench>`_ family of modules.
 
+With Workflow, site managers and administrators can determine which users are able to add, edit and delete content, as well as which users can view and approve of content under review.
+
 Workflow creates a moderation queue so that content is published to the live site only after a designated supervisor or group moderator has reviewed and approved it. 
 
-*With Workflow, content exists in three states:*
+**When using DKAN Workflow, content exists in three states:**
 
 * **Draft**  - A saved work in progress.
 * **Needs Review** - The author feels the content is ready to go on public on the live site, and would like the supervisor to review it.
@@ -94,10 +94,11 @@ Additional features:
 **Content Filters:**
 Users can filter through content by *Title*, *Type* (Dataset, Resource, Data Story, etc), and *Groups*.
 
-**Bulk updates:**. Certain operations such as changing content from Needs Review back to Draft can be applied to multiple items at once.
+**Bulk updates:**. 
+Certain operations such as changing content from Needs Review back to Draft can be applied to multiple items at once.
 
 Editing Content
-^^^^^^^^^^^^^^^
+----------------
 
 If you'd like to change the moderation state of an individual node (such as a dataset or
 resource), you can do so while editing the node itself.
