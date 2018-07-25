@@ -78,15 +78,15 @@ When logged in as a user that has been assigned a Workbench role, the "My Workbe
 The My Workbench Moderation Toolbar
 ------------------------------------
 
-   :My content: This tab provides a list of all of the content you've created.
+:My content: This tab provides a list of all of the content you've created.
 
-   :My drafts: Drafts you’ve written and drafts you have permission to view.
+:My drafts: Drafts you’ve written and drafts you have permission to view.
 
-   :Needs review: Content that Needs Review and can either be published to the live site or sent back to Drafts.
+:Needs review: Content that Needs Review and can either be published to the live site or sent back to Drafts.
 
-   :Stale drafts: This tab contains Drafts that have sat for over 72 hours without a change in moderation state. (The "stale drafts" moderation state, as well as "stale reviews," are only visible to Site Managers.)
+:Stale drafts: This tab contains Drafts that have sat for over 72 hours without a change in moderation state. (The "stale drafts" moderation state, as well as "stale reviews," are only visible to Site Managers.)
 
-   :Stale reviews: This tab provides content filed under Needs Review that has sat for over 72 hours without a change in moderation state.
+:Stale reviews: This tab provides content filed under Needs Review that has sat for over 72 hours without a change in moderation state.
 
 Additional features:
 ---------------------
@@ -120,20 +120,20 @@ The three Workflow roles correspond with the three core DKAN `roles and permissi
 
 * **Workflow Contributor = Content Creator**
   
-  Workflow Contributor is the most basic role; users with this role can add content, save as Draft or move it to Needs Review, but cannot publish content directly to the live site. They can only view content that they've created, and cannot modify the content of others.
+Workflow Contributor is the most basic role; users with this role can add content, save as Draft or move it to Needs Review, but cannot publish content directly to the live site. They can only view content that they've created, and cannot modify the content of others.
 
 * **Workflow Moderator = Editor** 
 
-  Workflow Moderator is the middle role, mostly pertaining to moderating specific groups. This role reviews and publishes (or unpublishes) content for their group(s), rather than for the entire site. Workflow Moderators can also view and approve of content that has not yet been assigned to a group.
+Workflow Moderator is the middle role, mostly pertaining to moderating specific groups. This role reviews and publishes (or unpublishes) content for their group(s), rather than for the entire site. Workflow Moderators can also view and approve of content that has not yet been assigned to a group.
 
 * **Workflow Supervisor = Site Manager** 
   
-  Workflow Supervisor is the most powerful role and should only be assigned to highly trusted users. Users with the role of Workbench Supervisor can add, edit, modify, publish, unpublish, moderate or delete _all_ site content. This role is the only role that have access to the "Stale Drafts" and "Stale Review" tabs (more information below).
+Workflow Supervisor is the most powerful role and should only be assigned to highly trusted users. Users with the role of Workbench Supervisor can add, edit, modify, publish, unpublish, moderate or delete _all_ site content. This role is the only role that have access to the "Stale Drafts" and "Stale Review" tabs (more information below).
 
 .. figure:: ../images/workflow/dkan_workflow_autorole.gif
    :scale: 75
 
-   Here is how core roles in DKAN are automatically correlated to Workbench roles and permission
+Here is how core roles in DKAN are automatically correlated to Workbench roles and permissions:
 
 +-------------------------+-------------------------------------+---------------------------------------------+
 | What a user will see    | "My Drafts"                         | "Needs Review"                              |
