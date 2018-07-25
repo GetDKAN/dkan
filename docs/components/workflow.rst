@@ -130,9 +130,6 @@ Workflow Moderator is the middle role, mostly pertaining to moderating specific 
   
 Workflow Supervisor is the most powerful role and should only be assigned to highly trusted users. Users with the role of Workbench Supervisor can add, edit, modify, publish, unpublish, moderate or delete _all_ site content. This role is the only role that have access to the "Stale Drafts" and "Stale Review" tabs (more information below).
 
-.. figure:: ../images/workflow/dkan_workflow_autorole.gif
-   :scale: 75
-
 Here is how core roles in DKAN are automatically correlated to Workbench roles and permissions:
 
 +-------------------------+-------------------------------------+---------------------------------------------+
