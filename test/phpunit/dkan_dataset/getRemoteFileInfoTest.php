@@ -40,6 +40,7 @@ Age: 5730';
    * Run test URLs threw the getRemoteFileInfo class.
    */
   public function testUrls() {
+    global $base_url;
     $urls = [];
     $urls[0]['url'] = 'https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD';
     $urls[0]['type'] = 'text/csv';
@@ -47,11 +48,11 @@ Age: 5730';
     $urls[0]['name'] = "Hospital_Inpatient_Discharges_by_DRG__Northwest__FY2011.csv";
     $urls[0]['effective_url'] = 'https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD';
 
-    $urls[1]['url'] = "http://demo.getdkan.com/profiles/dkan/test/phpunit/phpunit_redirect_test.php?test=33f45be7-970c-4d57-b6e1-e20c80b60588-33f45be7-970c-4d57-b6e1-e20c80b60588-33f45be7-970c-4d57-b6e1-e20c80b60588-33f45be7-970c-4d57-b6e1-e20c80b60588-33f45be7-970c-4d57-b6e1-e20c80b60588";
+    $urls[1]['url'] = $base_url . '/profiles/dkan/test/phpunit/phpunit_redirect_test.php?test=33f45be7-970c-4d57-b6e1-e20c80b60588-33f45be7-970c-4d57-b6e1-e20c80b60588-33f45be7-970c-4d57-b6e1-e20c80b60588-33f45be7-970c-4d57-b6e1-e20c80b60588-33f45be7-970c-4d57-b6e1-e20c80b60588';
     $urls[1]['type'] = 'text/csv';
     $urls[1]['extension'] = 'csv';
-    $urls[1]['name'] = "Polling_Places_Madison_test.csv";
-    $urls[1]['effective_url'] = 'http://demo.getdkan.com/profiles/dkan/test/files/dkan/Polling_Places_Madison_test.csv';
+    $urls[1]['name'] = 'Polling_Places_Madison_test.csv';
+    $urls[1]['effective_url'] = '/profiles/dkan/test/files/dkan/Polling_Places_Madison_test.csv';
 
     $urls[2]['url'] = "https://s3.amazonaws.com/dkan-default-content-files/files/albo.xls";
     $urls[2]['type'] = 'application/vnd.ms-excel';
