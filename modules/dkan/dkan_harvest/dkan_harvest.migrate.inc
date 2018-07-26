@@ -1159,10 +1159,12 @@ class HarvestMigration extends MigrateDKAN {
           return FALSE;
         }
 
-        // If the URL is determined to be field_link_remote_file material,
-        // use the effective URL unless it is more than 255 characters.
+        // If the URL is determined to be a remote file,
+        // check that the URL is no more than 255 characters.
         // More than 255 will give the 'Data too long for column' error.
-        if (strlen($remoteFileInfo->getEffectiveUrl()) < 256) {
+        if (strlen($resource->url) > 255 &&
+          strlen($remoteFileInfo->getEffectiveUrl()) < 256) {
+          // Switch to the effective url if the json url is too long.
           $resource->url = $remoteFileInfo->getEffectiveUrl();
         }
         $resource->url_type = 'file';
@@ -1175,7 +1177,8 @@ class HarvestMigration extends MigrateDKAN {
     $resource->format = isset($format) ? strtolower($format) : $format_detected;
 
     // Title.
-    $resource->title = isset($title) ? $title : $resource->format;
+    $name = isset($title) ? $title : $remoteFileInfo->getName();
+    $resource->title = isset($name) ? $name : $resource->format;
 
     // Created.
     $resource->created = isset($created) ? $created : time();
