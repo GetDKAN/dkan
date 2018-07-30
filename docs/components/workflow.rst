@@ -21,19 +21,18 @@ Workflow creates a moderation queue so that content is published to the live sit
 
 .. figure:: ../images/workflow/dkan_workflow_screenshot.png
 
-The above image displays you see on My Workbench after login. The Workbench navigation bar contains your content, drafts, and more. The "Create Content" menu features a list of content types you can create.
+The above image displays what you see on My Workbench after login. The Workbench navigation bar contains your content, drafts, and more. The "Create Content" menu features a list of content types you can create.
 
 Installation
 ------------
 
-DKAN workflow is included on all out-of-the-box DKAN sites; however, it is not enabled by default. It can be enabled either from the Modules management page or by using drush.
+DKAN Workflow is included on all out-of-the-box DKAN sites; however, it is not enabled by default. It can be enabled either from the Modules management page or by using drush.
 
 .. code-block:: bash
 
    drush en dkan_workflow -y
 
-Enabling DKAN workflow will enable all of the necessary dependencies modules and update site
-user roles (more information available in the `Workflow Roles`_
+Enabling DKAN workflow will automatically enable all other required modules and add the Workflow Supervisor role to all users already assigned the site manager role. (More information available in the `Workflow Roles`_
 section).
 
 You may also see a message instructing you to rebuild permissions. If so, click the "Rebuild permissions" link to update the node access settings.
