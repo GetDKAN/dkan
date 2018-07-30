@@ -172,9 +172,9 @@ Workbench Modules Docs
 
 For more information, please refer to the following documentation:
 
-* `Workbench documentation in drupal.org
+* `Workbench documentation on Drupal.org
   <https://www.drupal.org/documentation/modules/workbench>`_.
-* `Workbench Moderation documentation in drupal.org
+* `Workbench Moderation documentation on Drupal.org
   <https://www.drupal.org/documentation/modules/workbench_moderation>`_.
-* `Workbench Email documentation in drupal.org
+* `Workbench email documentation on Drupal.org
   <https://www.drupal.org/node/2253081>`_.
