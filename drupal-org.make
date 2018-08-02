@@ -315,7 +315,7 @@ projects:
     patch:
       2855634: https://www.drupal.org/files/issues/2855634-23--fix_update_7107_for_different_db.patch
   select_or_other:
-    version: '2.23'
+    version: '2.24'
   services:
     version: '3.20'
   simple_gmap:
