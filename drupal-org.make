@@ -140,10 +140,7 @@ projects:
   file_entity:
     version: 2.21
   file_resup:
-    download:
-      type: git
-      url: https://git.drupal.org/project/file_resup.git
-      revision: fd5aad6bd26ca84303bb07c3f757cd24a5cb5c01
+    version: '1.5'
   filefield_sources:
     version: '1.11'
   font_icon_select:
