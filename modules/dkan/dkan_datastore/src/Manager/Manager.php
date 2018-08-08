@@ -67,7 +67,7 @@ abstract class Manager implements ManagerInterface {
   }
 
   /**
-   * Get pareser.
+   * Get parser.
    *
    * @return CsvParser
    *   Parser object.
@@ -192,6 +192,14 @@ abstract class Manager implements ManagerInterface {
   public function saveState() {
     $state_storage = new LockableDrupalVariables("dkan_datastore");
     $state_storage->set($this->resource->getId(), $this->getStatus());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function dropState() {
+    $state_storage = new LockableDrupalVariables("dkan_datastore");
+    $state_storage->delete($this->resource->getId());
   }
 
   /**

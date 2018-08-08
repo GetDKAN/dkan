@@ -1,4 +1,7 @@
 <?php
+/**
+ * Manager metadata.
+ */
 
 namespace Dkan\Datastore\Manager;
 

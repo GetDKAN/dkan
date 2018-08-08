@@ -23,6 +23,16 @@ function dkan_datastore_xautoload($adapter) {
 }
 
 /**
+ * Implements hook_services_resources().
+ */
+function dkan_datastore_services_resources() {
+  module_load_include('inc', 'dkan_datastore', 'resources/dkan_datastore_resource');
+  $resources = array();
+  $resources += _dkan_datastore_resource_definition();
+  return $resources;
+}
+
+/**
  * Implements hook_menu().
  */
 function dkan_datastore_menu() {
@@ -33,7 +43,7 @@ function dkan_datastore_menu() {
     'title arguments' => array(1),
     'page callback' => 'dkan_datastore_download',
     'page arguments' => array(1),
-    'access callback' => 'dkan_datastore_download_access',
+    'access callback' => 'dkan_datastore_access',
     'access arguments' => array('view', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => '20',
@@ -44,7 +54,7 @@ function dkan_datastore_menu() {
   $items['node/%dkan_datastore_resource/data'] = array(
     'page callback' => 'dkan_datastore_proxy',
     'page arguments' => array(1),
-    'access callback' => 'dkan_datastore_download_access',
+    'access callback' => 'dkan_datastore_access',
     'access arguments' => array('view', 1),
     'file' => 'dkan_datastore.pages.inc',
     'type' => MENU_CALLBACK,
@@ -54,8 +64,8 @@ function dkan_datastore_menu() {
     'title' => 'Manage Datastore',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "importForm"),
-    'access callback' => 'dkan_datastore_feeds_access',
-    'access arguments' => array('import', 1),
+    'access callback' => 'dkan_datastore_access',
+    'access arguments' => array('manage', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => '15',
     'type' => MENU_LOCAL_TASK,
@@ -64,7 +74,7 @@ function dkan_datastore_menu() {
     'title' => 'Import',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "importForm"),
-    'access callback' => 'dkan_datastore_feeds_access',
+    'access callback' => 'dkan_datastore_access',
     'access arguments' => array('import', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => 10,
@@ -75,7 +85,7 @@ function dkan_datastore_menu() {
     'title' => 'Drop Datastore',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('dkan_datastore_pages', 1, "dropForm"),
-    'access callback' => 'dkan_datastore_feeds_access',
+    'access callback' => 'dkan_datastore_access',
     'access arguments' => array('drop', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => 12,
@@ -99,7 +109,7 @@ function dkan_datastore_resource_link_type($node) {
   $file_field = dkan_datastore_file_upload_field();
   $remote_file_field = dkan_datastore_file_link_field();
   $api_field = dkan_datastore_api_link_field();
-  $type = dkan_datastore_node_type();
+  $type = 'resource';
 
   if ($node->type == $type && $file = $node_wrapper->{$file_field}->value()) {
     $uri = isset($file->uri) ? $file->uri : $file['uri'];
@@ -142,34 +152,36 @@ function dkan_datastore_menu_alter(&$items) {
 /**
  * Access callback for DKAN Datastore operations.
  */
-function dkan_datastore_feeds_access($action, $node) {
-
-  // If $action is not one of the supported actions, return access denied.
-  if (!in_array($action, array('import', 'clear', 'unlock', 'drop'))) {
+function dkan_datastore_access($op, $node, $account = NULL) {
+  try {
+    $resource = Resource::createFromDrupalNode($node);
+  }
+  catch(\Exception $e) {
     return FALSE;
   }
 
-  // All available operations requires the 'manage datastore' permission.
-  if (user_access('manage datastore') && node_access('update', $node) && $node->type == 'resource') {
-    return TRUE;
+  global $user;
+  if (!isset($account)) {
+    $account = $user;
   }
 
-  return FALSE;
-}
+  switch ($op) {
+    case 'view':
+      return node_access('view', $node, $account);
+      break;
 
-/**
- * Access callback for Download.
- */
-function dkan_datastore_download_access($action, $resource) {
-  $type = dkan_datastore_node_type();
-  $node = is_object($resource) ? $resource : node_load($resource);
-
-  if ($node->type != $type) {
-    return FALSE;
+    case 'drop':
+    case 'delete':
+    case 'import':
+    case 'manage':
+      // All available operations require the 'manage datastore' permission.
+      if (user_access('manage datastore', $account) && node_access('update', $node, $account)) {
+        return TRUE;
+      }
+      break;
   }
-
-  return node_access('view', $node);
 }
+
 
 /**
  * Load node by id or uuid.
@@ -194,17 +206,6 @@ function dkan_datastore_resource_load($id) {
   return FALSE;
 }
 
-/**
- * Access callback for back link.
- */
-function dkan_datastore_back_access($node) {
-  if ($node->type != 'resource') {
-    return FALSE;
-  }
-  else {
-    return node_access('view', $node);
-  }
-}
 
 /**
  * Access callback for 'Add Resource' tab.
@@ -413,14 +414,12 @@ function dkan_datastore_file_link_field() {
 
 /**
  * Returns name of node type that the Datastore is attached to.
+ *
+ * DEPRECATED: Use Resource::resourceContentType
  */
 function dkan_datastore_node_type() {
-  static $node_type;
-  if (!$node_type) {
-    $node_type = 'resource';
-    drupal_alter('dkan_datastore_node_type', $node_type);
-  }
-  return $node_type;
+  // return Resource::resourceContentType();
+  return 'resource';
 }
 
 /**
@@ -445,31 +444,6 @@ function dkan_datastore_node_presave($node) {
     /*$wrap = entity_metadata_wrapper('node', $node);
     $wrap->field_datastore_status->set(dkan_datastore_status($node));*/
   }
-}
-
-/**
- * Implements hook_form_alter().
- */
-function dkan_datastore_form_alter(&$form, &$form_state, $form_id) {
-  if ($form['#form_id'] == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-dkan-datasets-panel-pane-1') {
-    // Redirect reset button to  main search page.
-    $form['reset']['#submit'] = array('_dkan_datastore_search_redirect');
-  }
-}
-
-/**
- * Callback to redirect to search url.
- */
-function _dkan_datastore_search_redirect() {
-  drupal_goto('/search');
-}
-
-/**
- * Get status.
- */
-function dkan_datastore_status($node) {
-  $datastore = dkan_datastore_go($node->uuid);
-  return $datastore->getStatus();
 }
 
 /**
