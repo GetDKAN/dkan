@@ -56,7 +56,10 @@ class Resource {
    *   Resource.
    */
   public static function createFromDrupalNodeNid($nid) {
-    return self::createFromDrupalNode(node_load($nid));
+    if ($node = node_load($nid)) {
+      return self::createFromDrupalNode($node);
+    }
+    throw new \Exception(t('Failed to load resource node.'));
   }
 
   /**
@@ -69,6 +72,9 @@ class Resource {
    *   Resource.
    */
   public static function createFromDrupalNode($node) {
+    if ($node->type != 'resource') {
+      throw new \Exception(t('Invalid node type.'));
+    }
     $id = $node->nid;
     $file_path = self::filePath($node);
     return new self($id, $file_path);
@@ -101,7 +107,6 @@ class Resource {
       return $node->field_link_remote_file[LANGUAGE_NONE][0]['uri'];
     }
     throw new \Exception(t("Node !nid doesn't have a proper file path.", array('!nid' => $node->nid)));
-
   }
 
 }

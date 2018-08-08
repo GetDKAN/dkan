@@ -90,8 +90,7 @@ Feature: Resource
   Scenario: Manage datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    Then I should see "The datastore does not support"
+    Then I should not see "Manage Datastore"
 
   @resource_editor_6 @datastore @noworkflow @javascript
   Scenario: Import and drop items on datastore of resources associated with groups that I am a member of
@@ -100,21 +99,20 @@ Feature: Resource
     And I click "Edit"
     And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple7.csv"
-    And I press "Save"
-    Given I am logged in as "Celeste"
+    Then I press "Save"
+    When I am logged in as "Celeste"
     And I am on "Resource 02" page
-    When I click "Manage Datastore"
-    And I wait for "Choose a Datastore Manager:"
+    And I click "Manage Datastore"
     And I select "Simple Import" from "edit-datastore-managers-selection"
     And I press "Save"
     Then I should see "Status:"
     When I press "Import"
     And I wait for "Drop Datastore"
-    When I click "Drop Datastore"
+    And I click "Drop Datastore"
     And I press "Drop"
     Then I should see "Records Imported: 0"
-    Then I should see "Storage: Uninitialized"
-    Then I should see "Data Importing: Ready"
+    And I should see "Storage: Uninitialized"
+    And I should see "Data Importing: Ready"
 
   @resource_editor_9 @noworkflow
   Scenario: Add revision to resources associated with groups that I am a member of
