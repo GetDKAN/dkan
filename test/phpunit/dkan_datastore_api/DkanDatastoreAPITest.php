@@ -1,4 +1,7 @@
 <?php
+
+use Dkan\Datastore\Resource;
+
 /**
  * @file
  * Base phpunit tests for HarvestSourceType class.
@@ -73,7 +76,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     $node->field_upload[LANGUAGE_NONE][0] = (array)$file;
     node_save($node);
 
-    $resource = \Dkan\Datastore\Resource::createFromDrupalNode($node);
+    $resource = Resource::createFromDrupalNode($node);
 
     /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
     $datastore = \Dkan\Datastore\Manager\Factory::create($resource, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);

@@ -287,28 +287,12 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_14 @dkanBug @noworkflow
-  Scenario: Manage datastore of own resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    When I click "Edit"
-    And I click "Manage Datastore"
-    Then I should see "The datastore does not support"
-
   @resource_author_15 @datastore @noworkflow @javascript
   Scenario: Import items on datastore of own resource and drop
     Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
+      | title       | author   | published | description | link file |
+      | Resource 01 | Celeste  | Yes       | No          | https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv |
     Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple4.csv"
-    And I press "Save"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
     And I select "Simple Import" from "edit-datastore-managers-selection"

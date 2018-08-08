@@ -90,11 +90,6 @@ jobs:
           command: |
             ahoy dkan reinstall
       - run:
-          name: Enable modules
-          command: |
-            ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
-            ahoy drush cc all
-      - run:
           name: Install Test Libs
           command: |
             ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
@@ -104,14 +99,6 @@ jobs:
           paths:
             - dkan/test/vendor
       - run:
-          name: Run Parallel Behat Tests
-          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
-      - run:
-          name: Copy Assets to Base Image
-          when: on_fail
-          command: |
-            docker cp $(docker-compose ps -q cli):/var/www/dkan/test/assets assets
-      - run:
           name: Run Lint
           command: |
             if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
@@ -119,10 +106,18 @@ jobs:
             fi
       # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
       - run:
+          name: Run Parallel Behat Tests
+          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
+      - run:
           name: Run PHPUnit Tests
           command: |
             if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
               ahoy dkan unittests
             fi
+      - run:
+          name: Copy Assets to Base Image
+          when: on_fail
+          command: |
+            docker cp $(docker-compose ps -q cli):/var/www/dkan/test/assets assets
       - store_artifacts:
           path: /go/src/github.com/dkan/assets
