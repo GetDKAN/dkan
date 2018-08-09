@@ -63,7 +63,7 @@ function dkan_datastore_menu() {
   $items['node/%node/datastore'] = array(
     'title' => 'Manage Datastore',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('dkan_datastore_form', 1),
+    'page arguments' => array('dkan_datastore_pages', 1),
     'access callback' => 'dkan_datastore_access',
     'access arguments' => array('manage', 1),
     'file' => 'dkan_datastore.pages.inc',

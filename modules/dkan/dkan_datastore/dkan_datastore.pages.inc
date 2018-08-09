@@ -55,7 +55,7 @@ function dkan_datastore_add_resource($node) {
 /**
  * Datastore forms menu callback.
  */
-function dkan_datastore_pages($form, &$form_state, $node, $method) {
+function dkan_datastore_pages($form, &$form_state, $node) {
   $form['#node'] = $node;
   $pages = new Pages($node);
   return $pages->loadForm($form, $form_state);
