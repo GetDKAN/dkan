@@ -68,7 +68,7 @@ class Pages {
     }
     $form['datastore_managers_selection'] = array(
       '#type' => 'select',
-      '#title' => t('Choose a Datastore Manager:'),
+      '#title' => t('Change datastore importer:'),
       '#options' => $options,
     );
 
@@ -83,14 +83,19 @@ class Pages {
     $datastore_manager = $this->getDatastoreManager();
     $status = $datastore_manager->getStatus();
 
-    $form += $this->chooseManagerForm($form);
     $form += $this->setStatusInfo($form, $datastore_manager);
+    $form += $this->chooseManagerForm($form);
 
+    $form['import_options'] = [
+      '#type' => 'fieldset',
+      '#title' => t('Import options'),
+      '#collapsible' => FALSE,
+    ];
     foreach ($datastore_manager->getConfigurableProperties() as $property => $default_value) {
       if ($property == "delimiter") {
-        $form["datastore_manager_{$property}"] = array(
+        $form['import_options']["datastore_manager_{$property}"] = array(
           '#type' => 'select',
-          '#title' => "{$property}",
+          '#title' => ucfirst(t("{$property}")),
           '#options' => array(
             "," => ",",
             ";" => ";",
@@ -101,9 +106,9 @@ class Pages {
         );
       }
       else {
-        $form["datastore_manager_{$property}"] = [
+        $form['import_options']["datastore_manager_{$property}"] = [
           '#type' => 'textfield',
-          '#title' => "{$property}",
+          '#title' => ucfirst(t("{$property}")),
           '#default_value' => $default_value,
         ];
       }
@@ -116,7 +121,7 @@ class Pages {
       '#submit' => array('dkan_datastore_form_import_submit'),
     );
 
-    if (in_array($status['data_import'], array(Manager:: DATA_IMPORT_IN_PROGRESS, Manager::DATA_IMPORT_DONE))) {
+    if (in_array($status['data_import'], [Manager:: DATA_IMPORT_IN_PROGRESS, Manager::DATA_IMPORT_DONE])) {
       $form['actions']['drop'] = array(
         '#type' => 'submit',
         '#value' => t("Drop"),
@@ -215,22 +220,20 @@ class Pages {
    */
   private function setStatusInfo($form, ManagerInterface $datastore_manager) {
     $state = $datastore_manager->getStatus();
-    $records_imported = $datastore_manager->numberOfRecordsImported();
+    $stringSubs = [
+      '%class' => get_class($datastore_manager),
+      '%records' => $datastore_manager->numberOfRecordsImported(),
+      '%import' => $this->datastoreStateToString($state['data_import']),
+    ];
 
-    $class = get_class($datastore_manager);
-    $strings[] = "<b>Importer:</b> {$class}";
-    $strings[] = "<b>Records Imported:</b> {$records_imported}";
-
-    foreach ($state as $key => $s) {
-      if (in_array($key, ['storage', 'data_import'])) {
-        $strings[] = $this->datastoreStateToString($s);
-      }
-    }
+    $statusInfo = t("<dt>Importer</dt><dd>%class</dd>", $stringSubs);
+    $statusInfo .= t("<dt>Records Imported</dt><dd>%records</dd>", $stringSubs);
+    $statusInfo .= t("<dt>Data Importing</dt><dd>%import</dd>", $stringSubs);
 
     $form['status'] = [
       '#type' => 'item',
-      '#title' => t('Status:'),
-      '#markup' => "<br>" . implode("<br>", $strings),
+      '#title' => t('Datastore Status'),
+      '#markup' => "<dl>$statusInfo</dl>"
     ];
 
     return $form;
@@ -242,25 +245,25 @@ class Pages {
   private function datastoreStateToString($state) {
     switch ($state) {
       case ManagerInterface::STORAGE_UNINITIALIZED:
-        return "<b>Storage:</b> Uninitialized";
+        return t("Uninitialized");
 
       case ManagerInterface::STORAGE_INITIALIZED:
-        return "<b>Storage:</b> Initialized";
+        return t("Initialized");
 
       case ManagerInterface::DATA_IMPORT_UNINITIALIZED:
-        return "<b>Data Importing:</b> Uninitialized";
+        return t("Uninitialized");
 
       case ManagerInterface::DATA_IMPORT_IN_PROGRESS:
-        return "<b>Data Importing:</b> In Progress";
+        return t("In Progress");
 
       case ManagerInterface::DATA_IMPORT_DONE:
-        return "<b>Data Importing:</b> Done";
+        return t("Done");
 
       case ManagerInterface::DATA_IMPORT_ERROR:
-        return "<b>Data Importing:</b> Error";
+        return t("Error");
 
       case ManagerInterface::DATA_IMPORT_READY:
-        return "<b>Data Importing:</b> Ready";
+        return t("Ready");
     }
   }
 
