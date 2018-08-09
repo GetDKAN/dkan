@@ -58,21 +58,26 @@ class Pages {
    * Create form element for chosing datastore manager. This is currently
    * included in the impoort form and not a separate form page.
    */
-  private function chooseManagerForm($form, $datastore_manager = NULL) {
-    $managers_info = dkan_datastore_managers_info();
-    $class = isset($datastore_manager) ? get_class($datastore_manager) : NULL;
-    $options = [];
+  private function chooseManagerForm($datastore_manager = NULL) {
 
-    /* @var $manager_info \Dkan\Datastore\Manager\Info */
-    foreach ($managers_info as $manager_info) {
-      $options[$manager_info->getClass()] = $manager_info->getLabel();
+    $managers_info = dkan_datastore_managers_info();
+    $form = array();
+    // We only show this if there are multiple managers.
+    if (count($managers_info) > 1) {
+      $class = isset($datastore_manager) ? get_class($datastore_manager) : NULL;
+      $options = [];
+
+      /* @var $manager_info \Dkan\Datastore\Manager\Info */
+      foreach ($managers_info as $manager_info) {
+        $options[$manager_info->getClass()] = $manager_info->getLabel();
+      }
+      $form['datastore_managers_selection'] = array(
+        '#type' => 'select',
+        '#title' => t('Change datastore importer:'),
+        '#options' => $options,
+        '#default_value' => "\\$class",
+      );
     }
-    $form['datastore_managers_selection'] = array(
-      '#type' => 'select',
-      '#title' => t('Change datastore importer:'),
-      '#options' => $options,
-      '#default_value' => "\\$class",
-    );
 
     return $form;
   }
@@ -100,7 +105,7 @@ class Pages {
     $form += $this->setStatusInfo($form, $datastore_manager);
 
     if (in_array($status['data_import'], [Manager::DATA_IMPORT_READY, Manager::DATA_IMPORT_UNINITIALIZED])) {
-      $form += $this->chooseManagerForm($form, $datastore_manager);
+      $form += $this->chooseManagerForm($datastore_manager);
 
       $form['import_options'] = [
         '#type' => 'fieldset',
