@@ -94,10 +94,13 @@ class Resource {
   }
 
   /**
-   * Private method.
+   * Get the full path to a resource's file regardless of whether upload or
+   * remote file.
    */
   private static function filePath($node) {
     if (!empty($node->field_upload)) {
+      // We can't trust that the field_upload array will contain a real uri, so
+      // we need to load the full file object.
       $file = file_load($node->field_upload[LANGUAGE_NONE][0]['fid']);
       $drupal_uri = $file->uri;
       return drupal_realpath($drupal_uri);
