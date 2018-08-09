@@ -78,14 +78,28 @@ class Pages {
   }
 
   /**
-   * Import form.
+   * Loads "drop" or "import" form depending on form_state.
+   */
+  public function loadForm($form, &$form_state) {
+    if (!isset($form_state['storage']) || !isset($form_state['storage']['drop'])) {
+      $form = $this->importForm($form, $form_state);
+    }
+    else {
+      $form = $this->dropForm($form, $form_state);
+    }
+    return $form;
+  }
+
+  /**
+   * Main import form for datastore.
    */
   public function importForm($form, &$form_state) {
-    if (!isset($form_state['storage']['drop'])) {
-      $datastore_manager = $this->getDatastoreManager();
-      $status = $datastore_manager->getStatus();
+    $datastore_manager = $this->getDatastoreManager();
+    $status = $datastore_manager->getStatus();
 
-      $form += $this->setStatusInfo($form, $datastore_manager);
+    $form += $this->setStatusInfo($form, $datastore_manager);
+
+    if (in_array($status['data_import'], [Manager::DATA_IMPORT_READY, Manager::DATA_IMPORT_UNINITIALIZED])) {
       $form += $this->chooseManagerForm($form, $datastore_manager);
 
       $form['import_options'] = [
@@ -121,17 +135,14 @@ class Pages {
         '#type' => 'submit',
         '#value' => t("Import"),
       );
-
-      if (in_array($status['data_import'], [Manager:: DATA_IMPORT_IN_PROGRESS, Manager::DATA_IMPORT_DONE])) {
-        $form['actions']['drop'] = array(
-          '#type' => 'submit',
-          '#value' => t("Drop"),
-          '#submit' => array('dkan_datastore_drop_submit'),
-        );
-      }
     }
-    else {
-      $form = $this->dropForm($form, $form_state);
+
+    if (in_array($status['data_import'], [Manager::DATA_IMPORT_IN_PROGRESS, Manager::DATA_IMPORT_DONE])) {
+      $form['actions']['drop'] = array(
+        '#type' => 'submit',
+        '#value' => t("Drop"),
+        '#submit' => array('dkan_datastore_drop_submit'),
+      );
     }
     return $form;
   }
@@ -225,7 +236,7 @@ class Pages {
   private function setStatusInfo($form, ManagerInterface $datastore_manager) {
     $state = $datastore_manager->getStatus();
     $stringSubs = [
-      '%class' => get_class($datastore_manager),
+      '%class' => $this->formatClassName(get_class($datastore_manager)),
       '%records' => $datastore_manager->numberOfRecordsImported(),
       '%import' => $this->datastoreStateToString($state['data_import']),
     ];
@@ -242,6 +253,20 @@ class Pages {
 
     return $form;
   }
+
+  /**
+   * Format the class name to something prettier
+   */
+   private function formatClassName($classname) {
+     foreach(dkan_datastore_managers_info() as $info) {
+       if ('\\' . $classname == $info->getClass()) {
+         return $info->getLabel();
+       }
+     }
+     // Fallback if this fails for some reason.
+     $nameBits = explode('\\', $classname);
+     return end($nameBits);
+   }
 
   /**
    * Private method.
