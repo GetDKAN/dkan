@@ -26,7 +26,7 @@ function dkan_sitewide_menu() {
 }
 
 /**
- * Callback to make change search path backward compatible.
+ * Callback to make the search path change backward compatible.
  */
 function dkan_sitewide_redirect_to_search() {
   $params = drupal_get_query_parameters();
@@ -34,7 +34,7 @@ function dkan_sitewide_redirect_to_search() {
 }
 
 /**
- * Adds group block to dataset node.
+ * Creates dkan user menu block.
  */
 function dkan_sitewide_user_menu_block() {
   global $user;
