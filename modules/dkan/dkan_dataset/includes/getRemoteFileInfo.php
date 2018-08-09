@@ -155,7 +155,7 @@ class GetRemoteFileInfo {
   /**
    * Helper function - If the server doesn't support HTTP HEAD, download $limit bytes.
    */
-  function curl_get_contents_partial($url, $limit) {
+  private function getPartialContent($url, $limit) {
     $writefn = function($ch, $chunk) use ($limit, &$datadump) {
       static $data = '';
 
@@ -229,7 +229,7 @@ class GetRemoteFileInfo {
     // (i.e. curl_setopt($ch, CURLOPT_HTTPHEADER, array("Range: bytes=0-1000")))
     // So we will need to download a portion of the file (500 bytes) to get the info.
     // Downloading the entire file can cause the harvest to fail with out of memory errors.
-    if ($info = $this->curl_get_contents_partial($url, 500)) {
+    if ($info = $this->getPartialContent($url, 500)) {
       return $info;
     }
 
