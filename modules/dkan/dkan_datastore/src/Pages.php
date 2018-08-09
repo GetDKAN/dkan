@@ -4,6 +4,7 @@ namespace Dkan\Datastore;
 
 use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Manager\ManagerInterface;
+use Dkan\Datastore\Manager\Manager;
 
 /**
  * Class Pages.
@@ -71,12 +72,6 @@ class Pages {
       '#options' => $options,
     );
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t("Save"),
-    );
-
     return $form;
   }
 
@@ -86,43 +81,47 @@ class Pages {
   public function importForm($form, &$form_state) {
 
     $datastore_manager = $this->getDatastoreManager();
+    $status = $datastore_manager->getStatus();
 
-    if (!$datastore_manager) {
-      $form = $this->chooseManagerForm($form);
-    }
-    else {
+    $form += $this->chooseManagerForm($form);
+    $form += $this->setStatusInfo($form, $datastore_manager);
 
-      $form = $this->setStatusInfo($form, $datastore_manager);
-
-      foreach ($datastore_manager->getConfigurableProperties() as $property => $default_value) {
-        if ($property == "delimiter") {
-          $form["datastore_manager_{$property}"] = array(
-            '#type' => 'select',
-            '#title' => "{$property}",
-            '#options' => array(
-              "," => ",",
-              ";" => ";",
-              "|" => "|",
-              "\t" => "TAB",
-            ),
-            '#default_value' => $default_value,
-          );
-        }
-        else {
-          $form["datastore_manager_{$property}"] = [
-            '#type' => 'textfield',
-            '#title' => "{$property}",
-            '#default_value' => $default_value,
-          ];
-        }
+    foreach ($datastore_manager->getConfigurableProperties() as $property => $default_value) {
+      if ($property == "delimiter") {
+        $form["datastore_manager_{$property}"] = array(
+          '#type' => 'select',
+          '#title' => "{$property}",
+          '#options' => array(
+            "," => ",",
+            ";" => ";",
+            "|" => "|",
+            "\t" => "TAB",
+          ),
+          '#default_value' => $default_value,
+        );
       }
+      else {
+        $form["datastore_manager_{$property}"] = [
+          '#type' => 'textfield',
+          '#title' => "{$property}",
+          '#default_value' => $default_value,
+        ];
+      }
+    }
 
-      $form['actions'] = array('#type' => 'actions');
-      $form['actions']['submit'] = array(
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t("Import"),
+      '#submit' => array('dkan_datastore_form_import_submit'),
+    );
+
+    if (in_array($status['data_import'], array(Manager:: DATA_IMPORT_IN_PROGRESS, Manager::DATA_IMPORT_DONE))) {
+      $form['actions']['drop'] = array(
         '#type' => 'submit',
-        '#value' => t("Import"),
+        '#value' => t("Drop"),
+        '#submit' => array('dkan_datastore_form_drop_submit'),
       );
-
     }
 
     return $form;
@@ -143,30 +142,27 @@ class Pages {
       /* @var $datastore_manager \Dkan\Datastore\Manager\ManagerInterface */
       $datastore_manager = Factory::create($resource, $class);
 
-      if ($datastore_manager) {
-        $message = "Your datastore manager choice has been saved.";
-      }
-      else {
+      if (!$datastore_manager) {
         $message = "The datastore manger {$class} could not be initialized.";
+        return;
       }
     }
     else {
       /* @var $datastore_manager \Dkan\Datastore\Manager\ManagerInterface */
       $datastore_manager = Factory::create($resource);
-
-      $configurable_properties = [];
-      foreach ($values as $property_name => $value) {
-        if (substr_count($property_name, "datastore_manager_") > 0) {
-          if (!empty($value)) {
-            $property_name = str_replace("datastore_manager_", "", $property_name);
-            $configurable_properties[$property_name] = $value;
-          }
-        }
-      }
-
-      $datastore_manager->setConfigurableProperties($configurable_properties);
     }
 
+    $configurable_properties = [];
+    foreach ($values as $property_name => $value) {
+      if (substr_count($property_name, "datastore_manager_") > 0) {
+        if (!empty($value)) {
+          $property_name = str_replace("datastore_manager_", "", $property_name);
+          $configurable_properties[$property_name] = $value;
+        }
+      }
+    }
+
+    $datastore_manager->setConfigurableProperties($configurable_properties);
     $datastore_manager->saveState();
 
     if (!empty($message)) {
@@ -211,7 +207,7 @@ class Pages {
   }
 
   public function batchFinished($success, $results, $operations) {
-    drupal_set_message("Import complete.");
+    drupal_set_message("Import finished");
   }
 
   /**

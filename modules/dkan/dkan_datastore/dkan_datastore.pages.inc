@@ -55,23 +55,18 @@ function dkan_datastore_add_resource($node) {
 /**
  * Datastore forms menu callback.
  */
-function dkan_datastore_pages($form, &$form_state, $node, $method) {
+function dkan_datastore_form($form, &$form_state, $node) {
   $form['#node'] = $node;
-  $form['#pages_method'] = $method;
-
   $pages = new Pages($node);
-  return $pages->{$method}($form, $form_state);
+  return $pages->importForm($form, $form_state);
 }
 
-/**
- * Form submit handler.
- */
-function dkan_datastore_pages_submit($form, &$form_state) {
-  $node = $form['#node'];
+function dkan_datastore_form_import_submit($form, &$form_state) {
+  $pages = new Pages($form['#node']);
+  $pages->importFormSubmit($form, $form_state);
+}
 
-  $method = $form['#pages_method'];
-  $submit_method = "{$method}Submit";
-
-  $pages = new Pages($node);
-  $pages->{$submit_method}($form, $form_state);
+function dkan_datastore_form_drop_submit($form, &$form_state) {
+  $pages = new Pages($form['#node']);
+  $pages->dropFormSubmit($form, $form_state);
 }

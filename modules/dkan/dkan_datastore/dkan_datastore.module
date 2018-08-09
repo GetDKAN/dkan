@@ -63,32 +63,11 @@ function dkan_datastore_menu() {
   $items['node/%node/datastore'] = array(
     'title' => 'Manage Datastore',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('dkan_datastore_pages', 1, "importForm"),
+    'page arguments' => array('dkan_datastore_form', 1),
     'access callback' => 'dkan_datastore_access',
     'access arguments' => array('manage', 1),
     'file' => 'dkan_datastore.pages.inc',
     'weight' => '15',
-    'type' => MENU_LOCAL_TASK,
-  );
-  $items['node/%node/datastore/import'] = array(
-    'title' => 'Import',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dkan_datastore_pages', 1, "importForm"),
-    'access callback' => 'dkan_datastore_access',
-    'access arguments' => array('import', 1),
-    'file' => 'dkan_datastore.pages.inc',
-    'weight' => 10,
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-
-  $items['node/%node/datastore/drop'] = array(
-    'title' => 'Drop Datastore',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dkan_datastore_pages', 1, "dropForm"),
-    'access callback' => 'dkan_datastore_access',
-    'access arguments' => array('drop', 1),
-    'file' => 'dkan_datastore.pages.inc',
-    'weight' => 12,
     'type' => MENU_LOCAL_TASK,
   );
   return $items;
@@ -225,12 +204,9 @@ function dkan_add_resource($node) {
 function dkan_datastore_node_insert($node) {
   $type = dkan_datastore_node_type();
   if ($node->type == $type) {
-    if (!isset($node->feeds)) {
-      // Feeds only saves if there is a form present. We want this to work
-      // programmatically as well.
-      feeds_node_prepare($node);
-      feeds_node_update($node);
-    }
+    $resource = Resource::createFromDrupalNode($node);
+    $datastore_manager = Factory::create($resource, 'Dkan\Datastore\Manager\SimpleImport\SimpleImport');
+    $datastore_manager->saveState();
   }
 }
 
