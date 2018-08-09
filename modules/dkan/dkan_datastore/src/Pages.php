@@ -55,11 +55,12 @@ class Pages {
   }
 
   /**
-   * Private method.
+   * Create form element for chosing datastore manager. This is currently
+   * included in the impoort form and not a separate form page.
    */
-  private function chooseManagerForm($form) {
+  private function chooseManagerForm($form, $datastore_manager = NULL) {
     $managers_info = dkan_datastore_managers_info();
-
+    $class = isset($datastore_manager) ? get_class($datastore_manager) : NULL;
     $options = [];
 
     /* @var $manager_info \Dkan\Datastore\Manager\Info */
@@ -70,6 +71,7 @@ class Pages {
       '#type' => 'select',
       '#title' => t('Change datastore importer:'),
       '#options' => $options,
+      '#default_value' => "\\$class",
     );
 
     return $form;
@@ -84,7 +86,7 @@ class Pages {
     $status = $datastore_manager->getStatus();
 
     $form += $this->setStatusInfo($form, $datastore_manager);
-    $form += $this->chooseManagerForm($form);
+    $form += $this->chooseManagerForm($form, $datastore_manager);
 
     $form['import_options'] = [
       '#type' => 'fieldset',
