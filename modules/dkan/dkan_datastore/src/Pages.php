@@ -81,56 +81,58 @@ class Pages {
    * Import form.
    */
   public function importForm($form, &$form_state) {
+    if (!isset($form_state['storage']['drop'])) {
+      $datastore_manager = $this->getDatastoreManager();
+      $status = $datastore_manager->getStatus();
 
-    $datastore_manager = $this->getDatastoreManager();
-    $status = $datastore_manager->getStatus();
+      $form += $this->setStatusInfo($form, $datastore_manager);
+      $form += $this->chooseManagerForm($form, $datastore_manager);
 
-    $form += $this->setStatusInfo($form, $datastore_manager);
-    $form += $this->chooseManagerForm($form, $datastore_manager);
+      $form['import_options'] = [
+        '#type' => 'fieldset',
+        '#title' => t('Import options'),
+        '#collapsible' => FALSE,
+      ];
+      foreach ($datastore_manager->getConfigurableProperties() as $property => $default_value) {
+        if ($property == "delimiter") {
+          $form['import_options']["datastore_manager_{$property}"] = array(
+            '#type' => 'select',
+            '#title' => ucfirst(t("{$property}")),
+            '#options' => array(
+              "," => ",",
+              ";" => ";",
+              "|" => "|",
+              "\t" => "TAB",
+            ),
+            '#default_value' => $default_value,
+          );
+        }
+        else {
+          $form['import_options']["datastore_manager_{$property}"] = [
+            '#type' => 'textfield',
+            '#title' => ucfirst(t("{$property}")),
+            '#default_value' => $default_value,
+          ];
+        }
+      }
 
-    $form['import_options'] = [
-      '#type' => 'fieldset',
-      '#title' => t('Import options'),
-      '#collapsible' => FALSE,
-    ];
-    foreach ($datastore_manager->getConfigurableProperties() as $property => $default_value) {
-      if ($property == "delimiter") {
-        $form['import_options']["datastore_manager_{$property}"] = array(
-          '#type' => 'select',
-          '#title' => ucfirst(t("{$property}")),
-          '#options' => array(
-            "," => ",",
-            ";" => ";",
-            "|" => "|",
-            "\t" => "TAB",
-          ),
-          '#default_value' => $default_value,
+      $form['actions'] = array('#type' => 'actions');
+      $form['actions']['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t("Import"),
+      );
+
+      if (in_array($status['data_import'], [Manager:: DATA_IMPORT_IN_PROGRESS, Manager::DATA_IMPORT_DONE])) {
+        $form['actions']['drop'] = array(
+          '#type' => 'submit',
+          '#value' => t("Drop"),
+          '#submit' => array('dkan_datastore_drop_submit'),
         );
       }
-      else {
-        $form['import_options']["datastore_manager_{$property}"] = [
-          '#type' => 'textfield',
-          '#title' => ucfirst(t("{$property}")),
-          '#default_value' => $default_value,
-        ];
-      }
     }
-
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t("Import"),
-      '#submit' => array('dkan_datastore_form_import_submit'),
-    );
-
-    if (in_array($status['data_import'], [Manager:: DATA_IMPORT_IN_PROGRESS, Manager::DATA_IMPORT_DONE])) {
-      $form['actions']['drop'] = array(
-        '#type' => 'submit',
-        '#value' => t("Drop"),
-        '#submit' => array('dkan_datastore_form_drop_submit'),
-      );
+    else {
+      $form = $this->dropForm($form, $form_state);
     }
-
     return $form;
   }
 
@@ -273,32 +275,16 @@ class Pages {
    * Drop form.
    */
   public function dropForm($form, &$form_state) {
-    /* @var $datastore_manager \Dkan\Datastore\Manager\ManagerInterface */
-    $datastore_manager = $this->getDatastoreManager();
-    if ($datastore_manager) {
-      $state = $datastore_manager->getStatus();
+    $node = $form['#node'];
 
-      if ($state['storage'] == ManagerInterface::STORAGE_INITIALIZED) {
-        $form['drop_info'] = array(
-          '#markup' => "This operation will destroy the db table and all the data previously imported."
-        );
+    $question = t('Are you sure you want to drop this datastore?');
+    $path = 'node/' . $node->nid . '/datastore';
+    $description = t('This operation will destroy the db table and all the data previously imported.');
+    $yes = t('Drop');
+    $no = t('Cancel');
+    $name = 'drop';
 
-        $form['actions'] = array('#type' => 'actions');
-        $form['actions']['submit'] = array(
-          '#type' => 'submit',
-          '#value' => t("Drop"),
-        );
-
-        return $form;
-      }
-      else {
-        drupal_set_message("An uninitialized storage can't be dropped.");
-      }
-    }
-    else {
-      drupal_set_message("Choose a datastore manager.");
-    }
-    drupal_goto("/node/{$this->node->nid}/datastore");
+    return confirm_form($form, $question, $path, $description, $yes, $no, $name);
   }
 
   /**
@@ -311,7 +297,7 @@ class Pages {
 
     $form_state['redirect'] = "node/{$nid}/datastore";
 
-    drupal_set_message("The datastore for node {$nid} has been successfully dropped.");
+    drupal_set_message(t("The datastore for %title has been successfully dropped.", ['%title' => $this->node->title]));
   }
 
   /**
