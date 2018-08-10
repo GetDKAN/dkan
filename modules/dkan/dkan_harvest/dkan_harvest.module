@@ -1460,3 +1460,8 @@ function dkan_harvest_delete_confirmation_submit($form, $form_state) {
 
   dkan_harvest_process_source_datasets($selected_sources, $datasets_op);
 }
+
+function validateDate($date, $format = 'Y-m-d') {
+  $d = DateTime::createFromFormat($format, $date);
+  return $d && $d->format($format) === $date;
+}

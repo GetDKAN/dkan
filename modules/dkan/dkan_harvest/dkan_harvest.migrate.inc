@@ -326,39 +326,39 @@ class HarvestMigration extends MigrateDKAN {
     }
     // Check the modified field.
     // If an ISO Frequency value is given rather than a date, move it, or unset it.
-    $iso_frequency = array (
-      'R/P1D',
-      'R/P1W',
-      'R/P1M',
-      'R/P1Y',
-      'R/PT1S',
-      'irregular',
-      'R/P10Y',
-      'R/P4Y',
-      'R/P2M',
-      'R/P0.5M',
-      'R/P3.5D',
-      'R/P2W',
-      'R/P0.5W',
-      'R/P6M',
-      'R/P2Y',
-      'R/P3Y',
-      'R/P0.33W',
-      'R/P0.33M',
-      'R/P3M',
-      'R/P0.5M',
-      'R/P4M'
-    );
-    if (isset($row->modified) && in_array($row->modified, $iso_frequency)) {
-      // If a frequency value is given, use it in the accrualPeriodicity field if empty.
-      if (!isset($row->accrualPeriodicity)) {
-        $row->accrualPeriodicity = $row->modified;
-        $row->modified = '';
-      }
-      else {
-        $row->modified = '';
-      }
-    }
+    // $iso_frequency = array (
+    //   'R/P1D',
+    //   'R/P1W',
+    //   'R/P1M',
+    //   'R/P1Y',
+    //   'R/PT1S',
+    //   'irregular',
+    //   'R/P10Y',
+    //   'R/P4Y',
+    //   'R/P2M',
+    //   'R/P0.5M',
+    //   'R/P3.5D',
+    //   'R/P2W',
+    //   'R/P0.5W',
+    //   'R/P6M',
+    //   'R/P2Y',
+    //   'R/P3Y',
+    //   'R/P0.33W',
+    //   'R/P0.33M',
+    //   'R/P3M',
+    //   'R/P0.5M',
+    //   'R/P4M'
+    // );
+    // if (isset($row->modified) && in_array($row->modified, $iso_frequency)) {
+    //   // If a frequency value is given, use it in the accrualPeriodicity field if empty.
+    //   if (!isset($row->accrualPeriodicity)) {
+    //     $row->accrualPeriodicity = $row->modified;
+    //     $row->modified = '';
+    //   }
+    //   else {
+    //     $row->modified = '';
+    //   }
+    // }
   }
 
   /**

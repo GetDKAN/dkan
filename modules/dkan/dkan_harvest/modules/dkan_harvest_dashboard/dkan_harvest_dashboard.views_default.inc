@@ -420,18 +420,6 @@ Off|Non-orphans only',
     'multiple_to' => '',
     'show_remaining_days' => 0,
   );
-  /* Field: Content: Harvest Source Modified */
-  $handler->display->display_options['fields']['field_harvest_source_modified']['id'] = 'field_harvest_source_modified';
-  $handler->display->display_options['fields']['field_harvest_source_modified']['table'] = 'field_data_field_harvest_source_modified';
-  $handler->display->display_options['fields']['field_harvest_source_modified']['field'] = 'field_harvest_source_modified';
-  $handler->display->display_options['fields']['field_harvest_source_modified']['settings'] = array(
-    'format_type' => 'iso_8601_date',
-    'fromto' => 'both',
-    'multiple_number' => '',
-    'multiple_from' => '',
-    'multiple_to' => '',
-    'show_remaining_days' => 0,
-  );
   /* Field: Content: Orphan */
   $handler->display->display_options['fields']['field_orphan']['id'] = 'field_orphan';
   $handler->display->display_options['fields']['field_orphan']['table'] = 'field_data_field_orphan';
@@ -486,26 +474,6 @@ Off|Non-orphans only',
     6 => 0,
   );
   $handler->display->display_options['filters']['field_harvest_source_issued_value']['form_type'] = 'date_popup';
-  /* Filter criterion: Content: Harvest Source Modified (field_harvest_source_modified) */
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['id'] = 'field_harvest_source_modified_value';
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['table'] = 'field_data_field_harvest_source_modified';
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['field'] = 'field_harvest_source_modified_value';
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['operator'] = 'between';
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['group'] = 1;
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['operator_id'] = 'field_harvest_source_modified_value_op';
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['label'] = 'Harvest Source Modified';
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['operator'] = 'field_harvest_source_modified_value_op';
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['identifier'] = 'field_harvest_source_modified_value';
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['expose']['remember_roles'] = array(
-    2 => '2',
-    3 => 0,
-    1 => 0,
-    5 => 0,
-    4 => 0,
-    6 => 0,
-  );
-  $handler->display->display_options['filters']['field_harvest_source_modified_value']['form_type'] = 'date_popup';
   /* Filter criterion: Content: Orphan (field_orphan) */
   $handler->display->display_options['filters']['field_orphan_value']['id'] = 'field_orphan_value';
   $handler->display->display_options['filters']['field_orphan_value']['table'] = 'field_data_field_orphan';
@@ -675,14 +643,6 @@ Off|Non-orphans only',
   $handler->display->display_options['fields']['field_harvest_source_modified']['id'] = 'field_harvest_source_modified';
   $handler->display->display_options['fields']['field_harvest_source_modified']['table'] = 'field_data_field_harvest_source_modified';
   $handler->display->display_options['fields']['field_harvest_source_modified']['field'] = 'field_harvest_source_modified';
-  $handler->display->display_options['fields']['field_harvest_source_modified']['settings'] = array(
-    'format_type' => 'iso_8601_date',
-    'fromto' => 'both',
-    'multiple_number' => '',
-    'multiple_from' => '',
-    'multiple_to' => '',
-    'show_remaining_days' => 0,
-  );
   /* Field: Content: Orphan */
   $handler->display->display_options['fields']['field_orphan']['id'] = 'field_orphan';
   $handler->display->display_options['fields']['field_orphan']['table'] = 'field_data_field_orphan';
