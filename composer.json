@@ -5,10 +5,7 @@
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
     "require": {
-        "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
-        "oomphinc/composer-installers-extender": "^1.1",
-        "drupal-composer/drupal-scaffold": "^2.0.0",
         "drupal/jsonb": "1.x-dev",
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
@@ -29,8 +26,6 @@
         }
     ],
     "scripts": {
-        "post-install-cmd": ["@composer drupal-scaffold"],
-        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
         "enable-asset-packagist": "Social\\Composer\\AssetPackagist::execute"
     },
     "autoload": {
@@ -39,15 +34,7 @@
         }
     },
     "extra": {
-        "enable-patching": true,
-        "installer-paths": {
-          "docroot/core": ["type:drupal-core"],
-          "docroot/libraries/{$name}": ["type:drupal-library"],
-          "docroot/modules/contrib/{$name}": ["type:drupal-module"],
-          "docroot/themes/contrib/{$name}": ["type:drupal-theme"],
-          "docroot/profiles/contrib/{$name}": ["type:drupal-profile"],
-          "drush/contrib/{$name}": ["type:drupal-drush"]
-       }
+        "enable-patching": true
     },
     "authors": [
         {
