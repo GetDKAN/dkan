@@ -8,8 +8,7 @@
         "cweagans/composer-patches": "^1.5.0",
         "drupal/jsonb": "1.x-dev",
         "drupal/core": "~8.5.2",
-        "drupal/entity": "1.0-beta3",
-        "drupal/features": "3.x-dev"
+        "drupal/entity": "1.0-beta3"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
