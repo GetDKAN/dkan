@@ -15,3 +15,12 @@
 .page-admin-dkan-harvest-dashboard a.btn-add-source {
   margin: 0px 0px 10px 0px;
 }
+#edit-field-harvest-source-issued-value-wrapper .form-item {
+  float: left;
+}
+#edit-field-harvest-source-issued-value-wrapper .form-item .help-block {
+  display: none;
+}
+#edit-field-harvest-source-issued-value-wrapper .views-widget div {
+  display: inline-block;
+}

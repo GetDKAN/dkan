@@ -86,8 +86,11 @@ class DatajsonHarvestMigration extends HarvestMigration {
     // The issued field is not required. When missing, use the modified field to
     // have consistent dataset display.
     // https://project-open-data.cio.gov/v1.1/schema#issued
-    if (!isset($row->issued)) {
-      $row->issued = $row->modified;
+    if (!isset($row->issued) && isset($row->modified)) {
+      $d = validateDate($row->modified);
+      if ($d) {
+        $row->issued = $row->modified;
+      }
     }
 
     if (property_exists($row, 'accrualPeriodicity')) {
