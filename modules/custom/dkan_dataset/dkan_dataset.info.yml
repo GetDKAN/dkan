@@ -1,0 +1,13 @@
+name: Dataset
+description: 'Provides Dataset content type and related configuration. '
+type: module
+core: 8.x
+dependencies:
+  - field
+  - jsonb
+  - menu_ui
+  - node
+  - path
+  - text
+  - user
+package: DKAN
