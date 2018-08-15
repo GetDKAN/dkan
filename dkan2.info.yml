@@ -1,0 +1,50 @@
+name: DKAN
+description: 'DKAN Open Data Portal'
+type: profile
+core: 8.x
+dependencies:
+  - automated_cron
+  - big_pipe
+  - block
+  - block_content
+  - breakpoint
+  - ckeditor
+  - color
+  - comment
+  - config
+  - contact
+  - contextual
+  - datetime
+  - dblog
+  - dkan_dataset
+  - dynamic_page_cache
+  - editor
+  - features_ui
+  - field_ui
+  - file
+  - help
+  - history
+  - image
+  - menu_link_content
+  - menu_ui
+  - node
+  - options
+  - page_cache
+  - path
+  - quickedit
+  - rdf
+  - search
+  - shortcut
+  - system
+  - taxonomy
+  - toolbar
+  - tour
+  - user
+  - views
+  - views_ui
+themes:
+  - bartik
+  - seven
+package: DKAN
+distribution:
+  name: DKAN

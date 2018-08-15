@@ -14,4 +14,4 @@ description: ''
 help: ''
 new_revision: true
 preview_mode: 1
-display_submitted: false
+display_submitted: true

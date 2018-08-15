@@ -8,3 +8,5 @@ composer.lock
 /tests/reports
 .env.local
 .swp
+/docroot
+.docksal

@@ -3,11 +3,6 @@ status: true
 dependencies:
   config:
     - field.field.node.dataset.body
-    - field.field.node.dataset.field_dkan_contact_email
-    - field.field.node.dataset.field_dkan_contact_name
-    - field.field.node.dataset.field_dkan_homepage_url
-    - field.field.node.dataset.field_dkan_tags
-    - field.field.node.dataset.field_rights
     - node.type.dataset
   module:
     - path
@@ -32,47 +27,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_dkan_contact_email:
-    weight: 124
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_dkan_contact_name:
-    weight: 123
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_dkan_homepage_url:
-    weight: 126
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: text_textfield
-    region: content
-  field_dkan_tags:
-    weight: 122
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
-  field_rights:
-    weight: 125
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
   path:
     type: path
     weight: 30

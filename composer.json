@@ -1,17 +1,19 @@
 {
-    "name": "acouch/dkan",
+    "name": "getdkan/dkan2",
+    "type": "drupal-profile",
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
-    "type": "project",
     "require": {
-       "composer/installers": "^1.2",
-       "drupal-composer/drupal-scaffold":"dev-master",
-       "drupal/core": "8.5.x-dev",
-        "drupal/config_update": "^1.5",
-        "drupal/features": "^3.7"
+        "cweagans/composer-patches": "^1.5.0",
+        "drupal/jsonb": "1.x-dev",
+        "drupal/core": "~8.5.2",
+        "drupal/entity": "1.0-beta3",
+        "drupal/features": "3.x-dev"
     },
     "require-dev": {
-        "burdamagazinorg/thunder-dev-tools": "dev-master",
-        "drupal/coder": "8.2"
+      "burdamagazinorg/thunder-dev-tools": "dev-master",
+      "drupal/coder": "8.2"
     },
     "repositories": [
         {
@@ -23,33 +25,25 @@
             "url": "https://asset-packagist.org"
         }
     ],
-    "license": "GPL2",
     "scripts": {
-        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold"
+        "enable-asset-packagist": "Social\\Composer\\AssetPackagist::execute"
+    },
+    "autoload": {
+        "psr-4": {
+            "Social\\": "src"
+        }
     },
     "extra": {
-        "installer-paths": {
-            "web/core": [
-                "type:drupal-core"
-            ],
-            "web/modules/contrib/{$name}": [
-                "type:drupal-module"
-            ],
-            "web/profiles/contrib/{$name}": [
-                "type:drupal-profile"
-            ],
-            "web/themes/contrib/{$name}": [
-                "type:drupal-theme"
-            ],
-            "drush/contrib/{$name}": [
-                "type:drupal-drush"
-            ]
-        }
+        "enable-patching": true
     },
     "authors": [
         {
             "name": "acouch",
             "email": "acinternets@gmail.com"
+        },
+        {
+          "name": "dafeder",
+          "email": "dafeder@gmail.com"
         }
     ]
 }
