@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_json_metadata
+    - node.type.dataset
+  module:
+    - jsonb
+id: node.dataset.field_json_metadata
+field_name: field_json_metadata
+entity_type: node
+bundle: dataset
+label: 'JSON Metadata'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: json
