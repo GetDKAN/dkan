@@ -7,14 +7,12 @@
     "require": {
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
-        "composer/installers": "^1.0",
         "oomphinc/composer-installers-extender": "^1.1",
         "drupal-composer/drupal-scaffold": "^2.0.0",
-        "drush/drush": "^9.3",
         "drupal/jsonb": "1.x-dev",
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
-        "drupal/features": "^3.7"
+        "drupal/features": "3.x-dev"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
