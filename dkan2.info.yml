@@ -16,6 +16,7 @@ dependencies:
   - contextual
   - datetime
   - dblog
+  - dkan_dataset
   - dynamic_page_cache
   - editor
   - features_ui
