@@ -2,31 +2,30 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.dataset.body
+    - field.field.node.dataset.field_json_metadata
     - node.type.dataset
   module:
+    - jsonb
     - path
-    - text
 id: node.dataset.default
 targetEntityType: node
 bundle: dataset
 mode: default
 content:
-  body:
-    type: text_textarea_with_summary
-    weight: 121
-    settings:
-      rows: 9
-      summary_rows: 3
-      placeholder: ''
-    third_party_settings: {  }
-    region: content
   created:
     type: datetime_timestamp
     weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_json_metadata:
+    weight: 121
+    settings:
+      rows: '5'
+      placeholder: ''
+    third_party_settings: {  }
+    type: jsonb_textarea
+    region: content
   path:
     type: path
     weight: 30

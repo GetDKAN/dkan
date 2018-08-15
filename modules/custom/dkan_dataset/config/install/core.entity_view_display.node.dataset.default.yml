@@ -2,22 +2,22 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.dataset.body
+    - field.field.node.dataset.field_json_metadata
     - node.type.dataset
   module:
-    - text
+    - jsonb
     - user
 id: node.dataset.default
 targetEntityType: node
 bundle: dataset
 mode: default
 content:
-  body:
-    label: hidden
-    type: text_default
+  field_json_metadata:
     weight: 101
+    label: above
     settings: {  }
     third_party_settings: {  }
+    type: jsonb_default
     region: content
   links:
     weight: 100
