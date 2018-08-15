@@ -329,14 +329,4 @@ class Pages {
 
     drupal_set_message(t("The datastore for %title has been successfully dropped.", ['%title' => $this->node->title]));
   }
-
-  /**
-   * Api Form.
-   *
-   * @todo this does not belong here.
-   */
-  public function apiForm($form, &$form_state) {
-    return $this->setupFormCommons($form);
-  }
-
 }
