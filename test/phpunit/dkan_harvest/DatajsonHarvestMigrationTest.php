@@ -105,7 +105,7 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * @depends testDatasetCount
    */
   public function testModified($dataset) {
-    $this->assertEquals(strtotime("2016-07-21"), $dataset->field_harvest_source_modified->value());
+    $this->assertEquals("2016-07-21", $dataset->field_harvest_source_modified->value());
   }
 
   /**
@@ -136,9 +136,9 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * @depends testDatasetCount
    */
   public function testAccrualPeriodicity($dataset) {
-    $optionsList = $dataset->field_frequency->optionsList();
+    $optionsList = array_flip($dataset->field_frequency->optionsList());
     $frequency_key = $dataset->field_frequency->value();
-    $this->assertEquals('Irregularly', $optionsList[$frequency_key]);
+    $this->assertEquals('irregular', $optionsList[$frequency_key]);
   }
 
   /**
