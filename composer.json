@@ -9,7 +9,9 @@
         "drupal/jsonb": "1.x-dev",
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
-        "drupal/config_update": "1.x-dev"
+        "drupal/config_update": "1.x-dev",
+        "fxp/composer-asset-plugin": "^1.4@dev",
+        "bower-asset/json-forms": "dev-master"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
@@ -38,6 +40,14 @@
         "patches": {
             "drupal/config_update": {
                 "Add Drush 9 support": "https://www.drupal.org/files/issues/2018-06-11/drush9-support-2974637-24.patch"
+            }
+        }
+    },
+    "config": {
+        "fxp-asset": {
+            "installer-paths": {
+                "npm-asset-library": "libraries",
+                "bower-asset-library": "libraries"
             }
         }
     },
