@@ -11,7 +11,8 @@
         "drupal/entity": "1.0-beta3",
         "drupal/config_update": "1.x-dev",
         "fxp/composer-asset-plugin": "^1.4@dev",
-        "bower-asset/json-forms": "dev-master"
+        "bower-asset/json-forms": "dev-master",
+        "drupal/features": "3.x-dev"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
@@ -50,6 +51,9 @@
                 "bower-asset-library": "libraries"
             }
         }
+    },
+    "extra": {
+        "enable-patching": true
     },
     "authors": [
         {
