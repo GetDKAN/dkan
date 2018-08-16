@@ -1,3 +1,4 @@
+uuid: 4ce8f828-c223-4b97-ac47-7001c5f39707
 langcode: en
 status: true
 dependencies:
@@ -6,6 +7,8 @@ dependencies:
     - node.type.dataset
   module:
     - jsonb
+_core:
+  default_config_hash: 4iEa2F4AP8-dF6-cgeEWkmmq0O3eNugD9is4hVxFRaw
 id: node.dataset.field_json_metadata
 field_name: field_json_metadata
 entity_type: node

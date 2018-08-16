@@ -1,3 +1,4 @@
+uuid: 5e3e17e3-629b-483e-85f4-c45753147094
 langcode: en
 status: true
 dependencies:
@@ -8,6 +9,8 @@ third_party_settings:
     available_menus:
       - main
     parent: 'main:'
+_core:
+  default_config_hash: U8Z67MeLSdixetl11p515p0nC6ByJVMsjuXO2q46-VQ
 name: Dataset
 type: dataset
 description: ''

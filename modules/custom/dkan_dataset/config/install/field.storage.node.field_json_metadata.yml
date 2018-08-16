@@ -1,9 +1,12 @@
+uuid: edf14998-e922-48db-9f3e-dc5c19ba0579
 langcode: en
 status: true
 dependencies:
   module:
     - jsonb
     - node
+_core:
+  default_config_hash: lnl4EuWfbgtOTuAEI9RsA8daB2ag_F2HHktVC323ifg
 id: node.field_json_metadata
 field_name: field_json_metadata
 entity_type: node

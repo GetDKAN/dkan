@@ -1,11 +1,15 @@
+uuid: 8695164f-04c7-493c-8963-f82f031c7f7a
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.dataset.field_json_metadata
     - node.type.dataset
   module:
     - user
+_core:
+  default_config_hash: pfD8-0aFPrri1eyMDjnjjJPhQp089Go_XCJquZC_iDQ
 id: node.dataset.teaser
 targetEntityType: node
 bundle: dataset
@@ -14,4 +18,5 @@ content:
   links:
     weight: 100
     region: content
-hidden: {  }
+hidden:
+  field_json_metadata: true

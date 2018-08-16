@@ -1,3 +1,4 @@
+uuid: f3e854c0-ee32-438a-bde0-802a501c40b4
 langcode: en
 status: true
 dependencies:
@@ -7,6 +8,8 @@ dependencies:
   module:
     - jsonb
     - path
+_core:
+  default_config_hash: vdw_LVH1spLQJ9G92HwXg50jzX4kNoQxzIL0bpsogLM
 id: node.dataset.default
 targetEntityType: node
 bundle: dataset
