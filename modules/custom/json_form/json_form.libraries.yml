@@ -1,0 +1,21 @@
+json-form:
+  remote: https://github.com/brutusin/json-forms
+  version: VERSION
+  license:
+    name: MIT
+    gpl-compatible: false
+  js:
+    /libraries/json-forms/dist/js/brutusin-json-forms.min.js: { minified: true }
+  css:
+    theme:
+      /libraries/json-forms/dist/css/brutusin-json-forms.min.css: { }
+
+json-form-widget:
+  version: 1.x
+  js:
+    js/json-form-widget.js: {}
+  css:
+    layout:
+      css/json-form-widget.css: {}
+  dependencies:
+    - core/drupalSettings

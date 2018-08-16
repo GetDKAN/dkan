@@ -1,0 +1,25 @@
+{
+    "name": "drupal/json_form",
+    "type": "drupal-module",
+    "description": "Allow using friendly widgets from json form library to save values in JSON.",
+    "homepage": "http://drupal.org/project/json_form",
+    "license": "GPL-2.0+",
+    "authors": [
+      {
+        "name": "Omar Mohamad - El Hassan Lopesino",
+        "homepage": "https://www.drupal.org/u/mistermoper"
+      },
+      {
+        "name": "CRZDEV",
+        "homepage": "https://www.drupal.org/u/crzdev"
+      },
+      {
+        "name": "See other contributors",
+        "homepage":"https://www.drupal.org/node/2902302/committers"
+      }
+    ],
+    "require": {
+        "drupal/field": "~1.0"
+    },
+    "minimum-stability": "dev"
+}
