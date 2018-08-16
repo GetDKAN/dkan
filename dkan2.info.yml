@@ -12,6 +12,7 @@ dependencies:
   - color
   - comment
   - config
+  - config_update_ui
   - contact
   - contextual
   - datetime

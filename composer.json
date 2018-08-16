@@ -8,7 +8,8 @@
         "cweagans/composer-patches": "^1.5.0",
         "drupal/jsonb": "1.x-dev",
         "drupal/core": "~8.5.2",
-        "drupal/entity": "1.0-beta3"
+        "drupal/entity": "1.0-beta3",
+        "drupal/config_update": "1.x-dev"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
@@ -33,7 +34,12 @@
         }
     },
     "extra": {
-        "enable-patching": true
+        "enable-patching": true,
+        "patches": {
+            "drupal/config_update": {
+                "Add Drush 9 support": "https://www.drupal.org/files/issues/2018-06-11/drush9-support-2974637-24.patch"
+            }
+        }
     },
     "authors": [
         {
