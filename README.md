@@ -29,7 +29,8 @@ This is a Drupal 8 _profile_. You will need to create a new composer project in 
         "oomphinc/composer-installers-extender": "^1.1",
         "drupal-composer/drupal-scaffold": "^2.0.0",
         "drush/drush": "^9.3",
-        "getdkan/dkan2": "dev-master"
+        "getdkan/dkan2": "dev-master",
+        "cweagans/composer-patches": "^1.5.0"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
@@ -49,13 +50,13 @@ This is a Drupal 8 _profile_. You will need to create a new composer project in 
 }
 ```
 
-Create an empty folder and add a composer.json file like this one, run `composer install`, and you should have a working docroot. You can now run a normal Drupal installation using the "dkan2" profile. 
+Create an empty folder and add a composer.json file like this one, run `composer install`, and you should have a working docroot. You can now run a normal Drupal installation using the "dkan2" profile.
 
 By the time we do a stable release, this project will be merged into the main DKAN repository and the profile will just be called "dkan." For now, we are using "dkan2" to avoid ambiguity. See the NOTES.md for additional information on this initial phase of development.
 
 ## Development Environment
 
-DKAN has the same minimum requirements as any Drupal 8 project, with one exception: it requires MySQL 5.7. 
+DKAN has the same minimum requirements as any Drupal 8 project, with one exception: it requires MySQL 5.7.
 
 ### Developing with Docksal
 
