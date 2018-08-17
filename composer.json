@@ -44,7 +44,7 @@
       "bower-asset/es5-shim": "*",
       "bower-asset/jquery": "*",
       "bower-asset/json3": "*",
-      "bower-asset/ng-file-upload": "*",
+      "bower-asset/ng-file-upload": "*"
     },
     "authors": [
         {
