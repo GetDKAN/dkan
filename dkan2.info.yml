@@ -20,6 +20,7 @@ dependencies:
   - dkan_dataset
   - dynamic_page_cache
   - editor
+  - features_ui
   - field_ui
   - file
   - help

@@ -49,8 +49,8 @@ This is a Drupal 8 _profile_. You will need to create a new composer project in 
     }
 }
 ```
-
 Create an empty folder and add a composer.json file like this one, run `composer install`, and you should have a working docroot. You can now run a normal Drupal installation using the "dkan2" profile.
+
 
 By the time we do a stable release, this project will be merged into the main DKAN repository and the profile will just be called "dkan." For now, we are using "dkan2" to avoid ambiguity. See the NOTES.md for additional information on this initial phase of development.
 
