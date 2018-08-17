@@ -37,6 +37,15 @@
     "extra": {
         "enable-patching": true
     },
+    "replace": {
+      "bower-asset/angular": "*",
+      "bower-asset/angular-bootstrap": "*",
+      "bower-asset/bootstrap": "*",
+      "bower-asset/es5-shim": "*",
+      "bower-asset/jquery": "*",
+      "bower-asset/json3": "*",
+      "bower-asset/ng-file-upload": "*",
+    },
     "authors": [
         {
             "name": "acouch",

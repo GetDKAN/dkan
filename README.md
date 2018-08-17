@@ -31,12 +31,8 @@ This is a Drupal 8 _profile_. You will need to create a new composer project in 
           "drupal-composer/drupal-scaffold": "^2.0.0",
           "drush/drush": "^9.3",
           "getdkan/dkan2": "dev-master",
-          "cweagans/composer-patches": "^1.5.0"
       },
-      "require-dev": {
-        "burdamagazinorg/thunder-dev-tools": "dev-master",
-        "drupal/coder": "8.2"
-      },
+      "require-dev": { },
       "extra": {
           "enable-patching": true,
           "installer-types": ["bower-asset", "npm-asset"],
