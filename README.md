@@ -8,46 +8,48 @@ This is a Drupal 8 _profile_. You will need to create a new composer project in 
 
 ```json
 {
-    "minimum-stability": "dev",
-    "description": "DKAN Test",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/getdkan/dkan2"
-        },
-        {
-            "type": "composer",
-            "url": "https://packages.drupal.org/8"
-        },
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ],
-    "require": {
-        "composer/installers": "^1.2",
-        "oomphinc/composer-installers-extender": "^1.1",
-        "drupal-composer/drupal-scaffold": "^2.0.0",
-        "drush/drush": "^9.3",
-        "getdkan/dkan2": "dev-master",
-        "cweagans/composer-patches": "^1.5.0"
-    },
-    "require-dev": {
-      "burdamagazinorg/thunder-dev-tools": "dev-master",
-      "drupal/coder": "8.2"
-    },
-    "extra": {
-        "enable-patching": true,
-        "installer-paths": {
-          "docroot/core": ["type:drupal-core"],
-          "docroot/libraries/{$name}": ["type:drupal-library"],
-          "docroot/modules/contrib/{$name}": ["type:drupal-module"],
-          "docroot/themes/contrib/{$name}": ["type:drupal-theme"],
-          "docroot/profiles/{$name}": ["type:drupal-profile"],
-          "drush/contrib/{$name}": ["type:drupal-drush"]
-       }
-    }
-}
+  {
+      "minimum-stability": "dev",
+      "description": "DKAN Test",
+      "repositories": [
+          {
+              "type": "vcs",
+              "url": "https://github.com/getdkan/dkan2"
+          },
+          {
+              "type": "composer",
+              "url": "https://packages.drupal.org/8"
+          },
+          {
+              "type": "composer",
+              "url": "https://asset-packagist.org"
+          }
+      ],
+      "require": {
+          "composer/installers": "^1.2",
+          "oomphinc/composer-installers-extender": "^1.1",
+          "drupal-composer/drupal-scaffold": "^2.0.0",
+          "drush/drush": "^9.3",
+          "getdkan/dkan2": "dev-master",
+          "cweagans/composer-patches": "^1.5.0"
+      },
+      "require-dev": {
+        "burdamagazinorg/thunder-dev-tools": "dev-master",
+        "drupal/coder": "8.2"
+      },
+      "extra": {
+          "enable-patching": true,
+          "installer-types": ["bower-asset", "npm-asset"],
+          "installer-paths": {
+            "docroot/core": ["type:drupal-core"],
+            "docroot/libraries/{$name}": ["type:drupal-library", "type:bower-asset", "type:npm-asset"],
+            "docroot/modules/contrib/{$name}": ["type:drupal-module"],
+            "docroot/themes/contrib/{$name}": ["type:drupal-theme"],
+            "docroot/profiles/{$name}": ["type:drupal-profile"],
+            "drush/contrib/{$name}": ["type:drupal-drush"]
+         }
+      },
+  }
 ```
 Create an empty folder and add a composer.json file like this one, run `composer install`, and you should have a working docroot. You can now run a normal Drupal installation using the "dkan2" profile.
 

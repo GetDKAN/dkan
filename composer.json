@@ -10,7 +10,7 @@
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
         "drupal/config_update": "1.x-dev",
-        "bower-asset/json-forms": "dev-master"
+        "bower-asset/json-form": "1.1.11"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
@@ -35,12 +35,7 @@
         }
     },
     "extra": {
-        "enable-patching": true,
-        "patches": {
-            "drupal/config_update": {
-                "Add Drush 9 support": "https://www.drupal.org/files/issues/2018-06-11/drush9-support-2974637-24.patch"
-            }
-        }
+        "enable-patching": true
     },
     "authors": [
         {
