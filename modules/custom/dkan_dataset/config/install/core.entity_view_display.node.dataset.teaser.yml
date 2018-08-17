@@ -4,7 +4,6 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - field.field.node.dataset.field_json_metadata
     - node.type.dataset
   module:
     - user
@@ -18,5 +17,4 @@ content:
   links:
     weight: 100
     region: content
-hidden:
-  field_json_metadata: true
+hidden: {  }

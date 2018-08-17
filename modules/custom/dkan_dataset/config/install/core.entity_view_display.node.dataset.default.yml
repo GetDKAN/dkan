@@ -6,7 +6,6 @@ dependencies:
     - field.field.node.dataset.field_json_metadata
     - node.type.dataset
   module:
-    - jsonb
     - user
 _core:
   default_config_hash: 3yN7LthkO4yvU7FiPQKTRhDfMBV0Zm1fUtBIqCjia5E
@@ -20,7 +19,7 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: jsonb_default
+    type: basic_string
     region: content
   links:
     weight: 100
