@@ -8,44 +8,51 @@ This is a Drupal 8 _profile_. You will need to create a new composer project in 
 
 ```json
 {
-  {
-      "minimum-stability": "dev",
-      "description": "DKAN Test",
-      "repositories": [
-          {
-              "type": "vcs",
-              "url": "https://github.com/getdkan/dkan2"
-          },
-          {
-              "type": "composer",
-              "url": "https://packages.drupal.org/8"
-          },
-          {
-              "type": "composer",
-              "url": "https://asset-packagist.org"
-          }
-      ],
-      "require": {
-          "composer/installers": "^1.2",
-          "oomphinc/composer-installers-extender": "^1.1",
-          "drupal-composer/drupal-scaffold": "^2.0.0",
-          "drush/drush": "^9.3",
-          "getdkan/dkan2": "dev-master",
-      },
-      "require-dev": { },
-      "extra": {
-          "enable-patching": true,
-          "installer-types": ["bower-asset", "npm-asset"],
-          "installer-paths": {
-            "docroot/core": ["type:drupal-core"],
-            "docroot/libraries/{$name}": ["type:drupal-library", "type:bower-asset", "type:npm-asset"],
-            "docroot/modules/contrib/{$name}": ["type:drupal-module"],
-            "docroot/themes/contrib/{$name}": ["type:drupal-theme"],
-            "docroot/profiles/{$name}": ["type:drupal-profile"],
-            "drush/contrib/{$name}": ["type:drupal-drush"]
-         }
-      },
-  }
+    "minimum-stability": "dev",
+    "description": "DKAN Test",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/getdkan/dkan2"
+        },
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "require": {
+        "composer/installers": "^1.2",
+        "oomphinc/composer-installers-extender": "^1.1",
+        "drupal-composer/drupal-scaffold": "^2.0.0",
+        "drush/drush": "^9.3",
+        "getdkan/dkan2": "dev-json-field",
+        "cweagans/composer-patches": "^1.5.0"
+    },
+    "require-dev": { },
+    "extra": {
+        "enable-patching": true,
+        "installer-paths": {
+          "docroot/core": ["type:drupal-core"],
+          "docroot/libraries/{$name}": ["type:drupal-library"],
+          "docroot/modules/contrib/{$name}": ["type:drupal-module"],
+          "docroot/themes/contrib/{$name}": ["type:drupal-theme"],
+          "docroot/profiles/{$name}": ["type:drupal-profile"],
+          "drush/contrib/{$name}": ["type:drupal-drush"]
+       }
+    },
+    "config": {
+        "fxp-asset": {
+            "installer-paths": {
+                "npm-asset-library": "docroot/libraries",
+                "bower-asset-library": "docroot/libraries"
+            }
+        }
+    }
+}
 ```
 Create an empty folder and add a composer.json file like this one, run `composer install`, and you should have a working docroot. You can now run a normal Drupal installation using the "dkan2" profile.
 
@@ -54,7 +61,7 @@ By the time we do a stable release, this project will be merged into the main DK
 
 ## Development Environment
 
-DKAN has the same minimum requirements as any Drupal 8 project, with one exception: it requires MySQL 5.7.
+DKAN has the same minimum requirements as any Drupal 8 project. You will need composer 1.5 or higher, and must have the `fxp/composer-asset-plugin` package installed **globally** in your environment.
 
 ### Developing with Docksal
 
