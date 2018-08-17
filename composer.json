@@ -10,7 +10,8 @@
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
         "drupal/config_update": "1.x-dev",
-        "bower-asset/json-form": "1.1.11"
+        "fxp/composer-asset-plugin": "^1.4@dev",
+        "bower-asset/json-forms": "dev-master"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
@@ -36,15 +37,6 @@
     },
     "extra": {
         "enable-patching": true
-    },
-    "replace": {
-      "bower-asset/angular": "*",
-      "bower-asset/angular-bootstrap": "*",
-      "bower-asset/bootstrap": "*",
-      "bower-asset/es5-shim": "*",
-      "bower-asset/jquery": "*",
-      "bower-asset/json3": "*",
-      "bower-asset/ng-file-upload": "*"
     },
     "authors": [
         {
