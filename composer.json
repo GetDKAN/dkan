@@ -11,7 +11,8 @@
         "drupal/entity": "1.0-beta3",
         "drupal/config_update": "1.x-dev",
         "fxp/composer-asset-plugin": "^1.4@dev",
-        "bower-asset/json-forms": "dev-master"
+        "bower-asset/json-forms": "dev-master",
+        "camspiers/json-pretty": "dev-master"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
@@ -21,15 +22,8 @@
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
-        },
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
         }
     ],
-    "scripts": {
-        "enable-asset-packagist": "Social\\Composer\\AssetPackagist::execute"
-    },
     "autoload": {
         "psr-4": {
             "Social\\": "src"
