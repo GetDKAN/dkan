@@ -1,0 +1,6 @@
+interra_api.routes:
+  path: '/api/routes.json'
+  defaults:
+    _controller: '\Drupal\interra_api\Controller\ApiController::routes'
+  requirements:
+    _permission: 'access content'

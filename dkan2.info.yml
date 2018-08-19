@@ -20,12 +20,12 @@ dependencies:
   - dkan_dataset
   - dynamic_page_cache
   - editor
-  - features_ui
   - field_ui
   - file
   - help
   - history
   - image
+  - interra_api
   - menu_link_content
   - menu_ui
   - node

@@ -10,4 +10,5 @@ dependencies:
   - path
   - text
   - user
+  - json_form
 package: DKAN
