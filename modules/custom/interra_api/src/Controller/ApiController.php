@@ -17,19 +17,9 @@ class ApiController extends ControllerBase {
   * Returns a render-able array for a test page.
   */
   public function routes( Request $request ) {
-    $response['data'] = 'Some test data to return';
-    $response['method'] = 'GET';
+    $response = getRoutes();
 
     return new JsonResponse( $response );
   }
 }
 
-function getRoutes() {
-}
-
-function getCollections() {
-  return array(
-    'datasets',
-    'organizations',
-  );
-}

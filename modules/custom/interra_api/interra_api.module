@@ -1,2 +1,37 @@
 <?php
+use Drupal\node\Entity\Node;
 
+function getRoutes() {
+  $collections = getCollections();
+  $nodes = array();
+  $output = array();
+  foreach ($collections as $collection) {
+    $nodes[$collection] = getNodesByType($collection);
+  }
+  foreach ($nodes as $type => $items) {
+    foreach ($items as $node) {
+      $uid = $node->uuid();
+      $alias = \Drupal::service('path.alias_manager')->getAliasByPath('/node/'. $node->id());
+      $path =  ltrim($alias, '/');
+      array_push($output[$type] = array($uid => $path));
+
+    }
+  }
+  return $output;
+}
+
+function getCollections() {
+  return array(
+    'dataset',
+    'organization',
+  );
+}
+
+function getNodesByType($type) {
+  $nids = \Drupal::entityQuery('node')
+    ->condition('status', 1)
+    ->condition('type', $type)
+    ->execute();
+  $nodes = Node::loadMultiple($nids);
+  return $nodes;
+}
