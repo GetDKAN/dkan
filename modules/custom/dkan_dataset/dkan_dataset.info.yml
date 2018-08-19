@@ -4,7 +4,7 @@ type: module
 core: 8.x
 dependencies:
   - field
-  - jsonb
+  - json_form
   - menu_ui
   - node
   - path
