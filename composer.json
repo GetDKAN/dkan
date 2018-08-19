@@ -10,8 +10,8 @@
         "oomphinc/composer-installers-extender": "^1.1",
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
-        "bower-asset/json-form": "1.1.11",
-        "drupal/config_update": "1.x-dev"
+        "drupal/config_update": "1.x-dev",
+        "bower-asset/json-forms": "1.6.3"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
