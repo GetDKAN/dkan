@@ -11,11 +11,13 @@
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
         "drupal/config_update": "1.x-dev",
-        "bower-asset/json-forms": "1.6.3"
+        "bower-asset/json-forms": "1.6.3",
+        "drupal/group": "1.x-dev"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
-      "drupal/coder": "8.2"
+      "drupal/coder": "8.2",
+        "drupal/devel": "1.x-dev"
     },
     "repositories": [
         {
