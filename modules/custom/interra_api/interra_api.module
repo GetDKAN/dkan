@@ -1,6 +1,13 @@
 <?php
+
 use Drupal\node\Entity\Node;
 
+/**
+ * Gets "routes" which is an array of the active collections with uuids and paths.
+ *
+ * @return array()
+ *   Active collections. Each collection contains an array of uuids => paths.
+ */
 function getRoutes() {
   $collections = getCollections();
   $nodes = array();
@@ -20,6 +27,12 @@ function getRoutes() {
   return $output;
 }
 
+/**
+ * Gets the collections defined by the current schema. TODO: don't hardcode.
+ *
+ * @return array()
+ *   Active collections.
+ */
 function getCollections() {
   return array(
     'dataset',
@@ -27,6 +40,9 @@ function getCollections() {
   );
 }
 
+/**
+ * Returns all nodes by content type.
+ */
 function getNodesByType($type) {
   $nids = \Drupal::entityQuery('node')
     ->condition('status', 1)
