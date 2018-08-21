@@ -20,6 +20,21 @@ Feature: Dataset Features
       | title               | publisher | author  | published        | description |
       | DKANTest Dataset 01 | Group 01  | John    | Yes              | Test        |
 
+  @dataset_all_2
+  Scenario: Order datasets by "Date created" by oldest first.
+    Given datasets:
+      | title                 |  published | description | date created |
+      | Dataset 15 years ago  |  Yes       | Test        | -15 year     |
+      | Dataset 13 years ago  |  Yes       | Test        | -13 year     |
+      | Dataset 12 years ago  |  Yes       | Test        | -12 year     |
+      | Dataset 11 years ago  |  Yes       | Test        | -11 year     |
+    When I am on "Datasets Search" page
+    And I search for "Dataset"
+    And I select "Date created" from "Sort by"
+    And I select "Asc" from "Order"
+    And I press "Apply"
+    And I should see the first "4" dataset items in "Date created" "Asc" order.
+
   @dataset_all_3
   Scenario: Order datasets by "Date changed" by oldest first.
     Given datasets:
