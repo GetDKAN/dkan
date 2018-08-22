@@ -21,5 +21,16 @@ class ApiController extends ControllerBase {
 
     return new JsonResponse( $response );
   }
+
+  /**
+  * Returns a render-able array for a test page.
+  */
+  public function schema( Request $request ) {
+    $response = array();
+    $response['collections'] = getCollections();
+    $response['schema'] = getFullSchema();
+
+    return new JsonResponse( $response );
+  }
 }
 

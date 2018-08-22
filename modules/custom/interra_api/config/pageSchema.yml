@@ -1,0 +1,50 @@
+dataset:
+  Main:
+    description:
+      type: Text
+    theme:
+      type: Theme
+    keyword:
+      type: Tag
+    distribution:
+      type: Resource
+  Table:
+    issued:
+      type: String
+      label: true
+    identifier:
+      type: String
+      label: true
+    modified:
+      type: String
+      label: true
+    programCode:
+      type: String
+      label: true
+    bureauCode:
+      type: String
+      label: true
+    conformsTo:
+      type: String
+      label: true
+    dataQuality:
+      type: String
+      label: true
+    accessLevel:
+      type: String
+      label: true
+    temporal:
+      type: String
+      label: true
+    rights:
+      type: String
+      label: true
+    describedBy:
+      type: String
+      label: true
+    describedByType:
+      type: String
+      label: true
+    accrualPeriodicity:
+      type: String
+      label: true

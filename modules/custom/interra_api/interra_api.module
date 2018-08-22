@@ -1,9 +1,10 @@
 <?php
 
 use Drupal\node\Entity\Node;
+use Drupal\interra_api\Schema;
 
 /**
- * Gets "routes" which is an array of the active collections with uuids and paths.
+ * Gets "routes" which is an array of the collections with uuids and paths.
  *
  * @return array()
  *   Active collections. Each collection contains an array of uuids => paths.
@@ -25,6 +26,20 @@ function getRoutes() {
     }
   }
   return $output;
+}
+
+/**
+ * Gets the active schema.
+ */
+function getCurrentSchema() {
+  $schema = new Schema('simple');
+  return $schema->getCurrentSchema();
+}
+
+function getFullSchema() {
+  $schema = new Schema('simple');
+  $collections = $schema->config['collections'];
+  return $schema->loadFullSchema();
 }
 
 /**

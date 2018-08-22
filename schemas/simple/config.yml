@@ -1,0 +1,22 @@
+name: Simple Schema
+api: 1
+primaryCollection: dataset
+collections:
+  - dataset
+  - organization
+facets:
+  keyword:
+    label: Tags
+    field: keyword.title
+  theme:
+    label: Category
+    field: theme.title
+  publisher:
+    label: Organization
+    field: publisher.name
+references:
+  dataset:
+      organization: organization
+routeCollections:
+  - dataset
+  - organization
