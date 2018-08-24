@@ -1,6 +1,24 @@
 interra_api.routes:
-  path: '/api/routes.json'
+  path: '/api/v1/routes.json'
   defaults:
-    _controller: '\Drupal\interra_api\Controller\ApiController::routes'
+   { _controller: '\Drupal\interra_api\Controller\ApiController::routes'}
+  requirements:
+    _permission: 'access content'
+interra_api.schema:
+  path: '/api/v1/schema.json'
+  defaults:
+   { _controller: '\Drupal\interra_api\Controller\ApiController::schema'}
+  requirements:
+    _permission: 'access content'
+interra_api.search:
+  path: '/api/v1/search-index.json'
+  defaults:
+   { _controller: '\Drupal\interra_api\Controller\ApiController::search'}
+  requirements:
+    _permission: 'access content'
+interra_api.sitemap:
+  path: '/api/v1/sitemap.json'
+  defaults:
+   { _controller: '\Drupal\interra_api\Controller\ApiController::siteMap'}
   requirements:
     _permission: 'access content'
