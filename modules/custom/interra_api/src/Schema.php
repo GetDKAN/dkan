@@ -10,6 +10,7 @@ class Schema {
   public $config = FALSE;
 
   private $schemaDir = 'profiles/dkan2/schemas';
+  private $interraConfigDir = 'profiles/dkan2/modules/custom/interra_api/config';
 
   function __construct($schema) {
     $this->schema = $schema;
@@ -43,6 +44,11 @@ class Schema {
       $fullSchema[$collection] = $this->dereference($references, $collection, $dereferencedSchema);
     }
     return $fullSchema;
+  }
+
+  public function loadPageSchema() {
+    $file = $this->interraConfigDir . '/pageSchema.yml';
+    return Yaml::decode(file_get_contents($file));
   }
 
   private function loadSchemaFile($collection) {

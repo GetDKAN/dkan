@@ -1,0 +1,17 @@
+siteMap:
+- title: Home
+  loc: "/"
+  children:
+  - title: About
+    loc: "/about"
+  - title: Search
+    loc: "/search"
+  - title: API
+    loc: "/api"
+  - title: Groups
+    loc: "/groups"
+    children:
+    - collections
+siteMapCollections:
+  - organization
+  - dataset
