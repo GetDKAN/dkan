@@ -12,10 +12,9 @@ class SiteMap {
     return Yaml::decode(file_get_contents($this->interraConfigDir . '/siteMap.yml'));
   }
 
-  private function load() {
+  public function load() {
     $config = $this->loadConfig();
-    $siteMap = $config->siteMap;
-    return $siteMap;
+    return $config['siteMap'];
   }
 
 }

@@ -7,7 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\interra_api\Schema;
 use Drupal\interra_api\Search;
-use Drupal\interra_api\Sitemap;
+use Drupal\interra_api\Load;
+use Drupal\interra_api\SiteMap;
 
 /**
 * An ample controller.
@@ -15,16 +16,16 @@ use Drupal\interra_api\Sitemap;
 class ApiController extends ControllerBase {
 
   /**
-  * Returns a render-able array for a test page.
-  */
+   * Returns a render-able array for a test page.
+   */
   public function routes( Request $request ) {
     $response = getRoutes();
     return new JsonResponse( $response );
   }
 
   /**
-  * Returns a render-able array for a test page.
-  */
+   * Returns a render-able array for a test page.
+   */
   public function schema( Request $request ) {
     $response = array();
     $schema = new Schema('simple');
@@ -36,18 +37,18 @@ class ApiController extends ControllerBase {
   }
 
   /**
-  * Returns a render-able array for a test page.
-  */
+   * Returns a render-able array for a test page.
+   */
   public function search( Request $request ) {
     $search = new Search();
     return new JsonResponse( $search->index() );
   }
 
   /**
-  * Returns a render-able array for a test page.
-  */
+   * Returns a render-able array for a test page.
+   */
   public function siteMap( Request $request ) {
-    $siteMap = new siteMap();
+    $siteMap = new SiteMap();
     return new JsonResponse( $siteMap->load() );
   }
 }
