@@ -77,6 +77,13 @@ function dkan_sitewide_panels_views_default_views() {
   $handler->display->display_options['sorts']['changed']['order'] = 'DESC';
   $handler->display->display_options['sorts']['changed']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['changed']['expose']['label'] = 'Date changed';
+  /* Sort criterion: Indexed Node: Date created */
+  $handler->display->display_options['sorts']['created']['id'] = 'created';
+  $handler->display->display_options['sorts']['created']['table'] = 'search_api_index_datasets';
+  $handler->display->display_options['sorts']['created']['field'] = 'created';
+  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
+  $handler->display->display_options['sorts']['created']['exposed'] = TRUE;
+  $handler->display->display_options['sorts']['created']['expose']['label'] = 'Date created';
   /* Sort criterion: Indexed Node: Title */
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'search_api_index_datasets';
@@ -279,7 +286,7 @@ function dkan_sitewide_panels_views_default_views() {
     'page' => 'page',
   );
   $handler->display->display_options['filters']['type']['group'] = 1;
-  /* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
+  /* Filter criterion: Content: Groups audience (og_group_ref) (reference filter) */
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
   $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
