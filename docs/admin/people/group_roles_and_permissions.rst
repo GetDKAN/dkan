@@ -4,80 +4,51 @@
 Group Roles and Permissions
 ===========================
 
-Group roles and permissions
-DKAN standard roles and permissions apply across the entire site, but there are also special permissions that apply to only some parts of the site. That includes Group roles and permissions. You can learn more about Groups and how they work in the Data and Content section.
-
 With large sites there is often a need to have a subset of the content managed by a specific list of users. Think of a large agency or department with sub-departments or programs that produce content. With Groups, you can silo content and users so that the different departments can easily manage and control only the content they are producing.
 
-To keep content organized and in the hands of its owners, and without introducing the risk of inadvertent (and sometimes irreversible) actions, Group-level permissions give users the ability to do things they couldn’t necessarily do on the site outside of the Group.
+Group-level permissions give users the ability to do things they couldn’t necessarily do on the site outside of the Group. Read more about :ref:`group permissions here <group_roles_permissions>`.
 
-About Group roles and permissions
----------------------------------
-
-After adding a new Group, Site Managers can assign Datasets (and their Resources) to that Group. You can also manage the members of a Group, adding new members and giving certain members different roles.
-
-Members of a Group are bound by the permissions of their role and restricted to the content in their Group. As a Site Manager you have access to all Groups and are not limited by the permissions of the Group.
-
-.. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_01.png
-   :alt: An example of a Group of an out-of-the-box DKAN site.
-
-Within Groups there are different levels of access a user can have, which determines another level of permissions. Any user who belongs to a group falls into one of two types: Member or Administrator. Users not in the group are considered Nonmembers.
-
-Nonmember
-~~~~~~~~~
-
-A Nonmember is any user on the site who does not belong to the Group. 
-
-**Permissions:**
-  - Request membership in the Group
-  - View Group members and content.
-
-Member
-~~~~~~
-
-A Member is a basic user within the Group who is mostly adding and editing their own content for the Group. 
-
-**Permissions:**
-  - Add content to the Group
-  - Edit own content within a Group (Content assigned to a Group can only be edited by members of that Group)
-
-Administrator
-~~~~~~~~~~~~~
-
-An Administrator of a Group plays a similar role to that of an editor. They manage the team of users associated with the Group, and can edit any of the content. It's good practice to have only 1 or 2 users in this role for any given Group.
-
-**Permissions:**
-  - Edit all content assigned to the Group (Cannot modify content in other Groups)
-  - Add Group members and assign group roles
+.. _manage_group_members:
 
 Add Group Members
 -----------------
 
-For basic members of a Group, there are two ways that you can add a user to a Group: from the user profile and from the Group page.
+As a site manager, there are two ways that you can add a user to a Group: from the user profile, or from the Group page.
 
-**Add a user by editing their user profile:** This way of adding users to a Group is preferred if you are the Site Manager but not the Group Administrator. The Group Administrator should be aware and approve of incoming members. You can submit a request for a user to a Group by selecting the Groups on the user's profile page.
+**Add a user by editing their user profile:**
 
-By adding a user to a Group from the user's profile page, a request is sent to the Group Administrator on their behalf for the Administrator to approve. Edit the user's profile who you want to add to the Group and scroll to the bottom of the page. In the section Group membership section there are two fields, Your groups and Other groups.
+- Click **People** in the administration menu at the top
 
-- **Your groups:** These are Groups that you are a member of. Users are not automatically added to Groups, so Groups won't appear in this field unless you add yourself to a Group.
+- Click **Edit** on the user's profile who you want to add to the Group
 
-- **Other groups:** These are simply Groups that you are not a member of. As a Site Manager, you can add any user to a Group regardless if you are a member yourself. But the Group names will not automatically appear like in the Your groups field, so you will have to know the name of the Group to enter it in the Other groups field.
+- Scroll to the bottom of the page. In the Group membership section there are two fields, Your groups and Other groups.
 
-Once the right Groups have been selected, click the **Save** button at the bottom to submit the requests.
+  - **Your groups:** These are Groups that you are a member of. Users are not automatically added to Groups, so Groups won't appear in this field unless you add yourself to a Group.
+
+  - **Other groups:** These are simply Groups that you are not a member of. As a Site Manager, you can add any user to a Group regardless if you are a member yourself. But the Group names will not automatically appear like in the Your groups field, so you will have to know the name of the Group to enter it in the Other groups field.
+
+- Once the Groups have been selected, click the **Save** button at the bottom to submit the requests.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_02.png
    :alt: The "Group membership" portion of a user's profile page.
 
-**Add a user from the Group page:** This option is best if you are the Site Manager and the Group Administrator. You can add a user members directly from the main Group page by clicking the **Group** button and clicking the **Add people** link. On the next page, you can add users by pulling up an existing user and optionally choose if a member should be an Administrator member.
+**Add a user from the Group page:**
 
-Begin typing an existing a user and a list of autocomplete options will appear to select from. A user must already have an account to be added to a Group, so if a person needs to be added you should first create a site account for them with the appropriate role.
+- Click the **Group** button at the top of the page
 
-By default a user will only have a Member role in the Group. To give the user an Administrator role and permissions, check the **administrator member** box. To finally create the user, click the **Add users** button at the bottom of the page.
+- Click the **Add people** link.
+
+- Begin typing an existing a user into the **user name** field. A list of autocomplete options will appear to select from. A user must already have an account to be added to a Group, so if a person needs to be added you should first create a site account for them with the appropriate role.
+
+- By default a user will only have a Member role in the Group. If you want the new user to be able to manage the content and users of the group, check the **administrator member** box.
+
+- Finish by clicking the **Add users** button at the bottom of the page.
 
 In the example below, the Site Manager goes to the Group, "Committee on International Affairs". From the Group page the Site Manager adds a new user by typing the user name and choosing the autocomplete selection. In this example, Kim Lee should be an Administrator of the Group so the Site Manager checks the administrator member box.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_03.gif
    :alt: An animated screencap showing the process of adding a new user to a Group.
+
 
 Manage Group members
 --------------------
@@ -154,7 +125,21 @@ In the example below, the Group Administrator (Kim Lee) first finds only members
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_12.gif
    :alt: This animated screencap shows the process of modifying OG user roles.
 
-**Add and remove Datasets from your Group:** In general, your Group members will publish Datasets associated with the Group, so adding will be more common. On occasion, a Dataset may be added to a Group that does not belong and should be removed (though not deleted).
+
+More on Group Membership
+------------------------
+
+Requesting membership and unsubscribing from a Group
+****************************************************
+
+In DKAN, “subscribing” to a Group is synonymous with becoming a member of the Group. Nonmembers can submit a membership request to the Group Administrator to become a Group member. Members have privileges to access and edit Datasets associated to the Group, so membership requires moderation. As a Site Manager, you can join any Group without moderation. Any other role must first submit a request to subscribe and then be approved by the Group Administrator.
+
+Active members, both Members and Administrators, can leave the Group by clicking the *Unsubscribe From Group* link on the Group home page. Once members are removed or leave the Group they no longer have access to the Datasets associated with the Group.
+
+Associating Datasets to specific Groups
+***************************************
+
+In general, your Group members will publish Datasets associated with the Group, so adding will be more common. On occasion, a Dataset may be added to a Group that does not belong and should be removed (though not deleted).
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_13.png
    :alt: This screencap shows what you'll see at the bottom of a Dataset's page when editing it and selecting which Groups it should be assigned to.

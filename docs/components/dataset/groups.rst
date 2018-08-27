@@ -38,50 +38,15 @@ Roles and Permissions
 
 With large sites there is often a need to have special permissions for a group of users to handle a specific set of content. Think of a large agency or department with sub-departments or programs that produce content. On the one hand these users shouldn’t have the ability to manage or edit content for the entire site or other Groups. On the other hand it would be impractical for Editors or Site Managers to handle content for a large number of users. To keep content organized and in the hands of its owners without introducing the risk of inadvertent (and sometimes irreversible) actions, Group-level permissions give users the ability to do things they couldn’t necessarily do on the site outside of the Group.
 
-Within Groups there are different levels of access a user can have, which determines another level of permissions. Any user who belongs to a group falls into one of two types: Member or Administrator. Users not in the group are considered Nonmembers.
+Within Groups there are different levels of access a user can have, which determines another level of permissions. Any user who belongs to a group falls into one of two types: Member or Administrator. Users not in the group are considered Non-members.
 
 :Non-Member: A Non-Member is any user on the site who does not belong to the Group. This role can request membership in the Group and view Group members and content.
 
-:Member: A Member is a basic user within the Group who is mostly adding and editing their own content for the Group. As Datasets are added they can be assigned to a Group. Members of a Group can add Datasets to their Group and edit those Datasets from the Group page. Content within a Group can only be edited by members of that Group, so it’s important to only associate Datasets with Groups that the user belongs to.
+:Member: A Member is a basic user within the Group who is mostly adding and editing their own content for the Group.
 
-:Administrator: An Administrator of a Group plays a similar role to that of an Editor but for their particular Group rather than for the entire site. Conversely, Editors outside of a Group are not able to manage content published within a Group.
+:Administrator: An Administrator is able to add and remove Group members and manage (create/edit/delete) all content within the Group. It’s good practice to have only 1 or 2 users in this role for any given Group.
 
-  Administrators of Groups are able to add and remove Group members and manage (create/edit/delete) all content within the Group. It’s good practice to have only 1 or 2 users in this role for any given Group.
+Managing users
+**************
 
-Adding users
-************
-
-Adding users to a Group is a straightforward process. Click on the "Group" tab on the group page and click "Add people". Begin typing the username of an existing user into the "User name" field and select from the list of autocomplete options. A user must already have an account to be added to a Group, so if a person needs to be added you should first create an account for them with the appropriate role. By default a user will only have a Member role in the Group. To give the user an Administrator role and permissions, check the administrator member box.
-
-Users may also request membership in a Group. If you or the Group Administrator directly add a user to the Group, then you don’t need to add any text in the Request message box. If the user requested membership, then their request message will appear here as part of the member profile (only visible to the Site Manager and Administrator).
-
-:People: Site Managers and Administrators of Groups can edit the Group details as well as the members and their roles. On the People page under the Group tab, you can access the overview of Group members, edit or delete individual member profiles, and take bulk actions on a group of members.
-
-:Remove a user from the Group: If a user is removed from the Group, they can no longer access Datasets added to that Group to edit them. All non-members can see Datasets that belong to a Group, but non-members can’t edit those Datasets.
-
-  You can remove a single user from the Group with the remove link in the far-right column next to the user’s profile details to access and change the details of their profile. Alternatively, you can remove a group of users from the Group with a bulk action by checking off multiple users and selecting the Remove from group option from the drop-down menu in the Operations box.
-
-:Block a user from the Group: You can keep a user from joining a Group by blocking that user. If a user is blocked they won’t see the option to request subscription for the Group. In order to keep a user blocked, that user must technically be a member of the Group, so it’s different from removing a user entirely.
-
-  You can block a single user from the Group with the edit link in the far-right column next to the user’s profile details to access and change the details of their profile. Alternatively, you can block a group of users from the Group with a bulk action by checking off multiple users and selecting the Modify membership status option from the drop-down menu in the Operations box.
-
-:Change the member’s Group role: In general, you shouldn’t need to change a user’s role often. Most users will be added as members and stay members. For any Group it’s best to limit Administrator roles to just one or two people.
-
-  If you need to change a user’s role you can use the edit link in the far-right column next to the user’s profile details to access and change the details of their profile. Alternatively, you can change a Group member’s role for a group of users in the Group with a bulk action by checking off multiple users and selecting the Modify OG member roles option from the drop-down menu in the Operations box.
-
-.. figure:: ../../images/group-members.png
-
-More on Group Membership
-------------------------
-
-Requesting membership and unsubscribing from a Group
-****************************************************
-
-In DKAN, “subscribing” to a Group is synonymous with becoming a member of the Group. Nonmembers can submit a membership request to the Group Administrator to become a Group member. Members have privileges to access and edit Datasets associated to the Group, so membership requires moderation. As a Site Manager, you can join any Group without moderation. Any other role must first submit a request to subscribe and then be approved by the Group Administrator.
-
-Active members, both Members and Administrators, can leave the Group by clicking the *Unsubscribe From Group* link on the Group home page. Once members are removed or leave the Group they no longer have access to the Datasets associated with the Group.
-
-Associating Datasets only to your Group
-***************************************
-
-As users author Datasets, it’s important that they associate Datasets only with Groups that they belong to. Once a Dataset is associated with a Group, that Dataset can only be edited by a person in the Group, either the Administrator or a member who authored the Dataset. So if a nonmember authors a Dataset and then associates it to a Group, the author won’t be able to access and edit that Dataset any longer. The Group Administrator can either remove the Dataset from the Group or add the nonmember to the Group as a Member.
+Read more about :ref:`adding and managing group members here <manage_group_members>`.
