@@ -1,11 +1,10 @@
 7.x-1.15.3
 ----------
-- #2599 Adds additional helper function to get remote file info
 - #2605 Remove group member count and link from the group block
 - #2604 Update select_or_other to 2.24
 - #2601 Update file_resup to 1.5
 - #2418, #2600 & #2606 Documentation updates
-- #2599 Fix for getting remote file info when the server doesn't support HTTP HEAD
+- #2599 Adds additional helper function to get remote file info
 - #2592 CSS updated to add ppt/pptx file icons
 - #2589 Security update for uuid (1.1)
 - #2586 Switch to saving the data.json url by default when harvesting remote files rather than the effective url

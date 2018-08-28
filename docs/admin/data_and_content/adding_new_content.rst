@@ -8,7 +8,7 @@ Content Types in DKAN:
 -----------------------
 
 Dataset
-=============
+^^^^^^^
 Datasets are used to group related pieces of data and their associated metadata. These pieces of data - known as Resources - can then be found under a single url along with descriptions and licensing information.
 
 You can think of Datasets as ‘folders’ for the Resources within. In real life, a typical folder could contain a printed spreadsheet, a PDF of a map, and a CD-ROM within it. In DKAN, you can similarly add a wide number of Resources in various formats to a single Dataset.
@@ -18,7 +18,7 @@ Datasets are assigned to Groups, which helps sort Datasets according to a common
 Admins, Site Managers, Editors and Content Creators can all add Datasets.
 
 Resource
-=============
+^^^^^^^^
 In DKAN, Resources are the files, APIs or links that are being shared within a Dataset.
 
 Resource types include csv, html, xls, json, xlsx, doc, docx, rdf, txt, jpg, png, gif, tiff, pdf, odf, ods, odt, tsv, geojson and xml files.
@@ -30,7 +30,7 @@ Resources can be previewed within your browser in the form of a grid, graph or m
 Admins, Site Managers, Editors and Content Creators can all add Resources.
 
 Group
-=============
+^^^^^^^^
 Groups allow you to group together Datasets under a organization (i.e. Department of Transportation, Department of Education) in order to make it easier for users to browse Datasets by theme.
 
 As a best practice, Datasets and Resources that are added to a Group should share a common publisher.
@@ -40,11 +40,11 @@ Groups also enable you to assign roles and permissions to members of the group. 
 Groups may be added by Admins and Site Managers, but not by Editors or Content Creators.
 
 Page
-=============
+^^^^^^^^
 Pages are used for static content, such as an “About” or “FAQ” page. They may be added by Admins, Site Managers and Editors, but not by Content Creators.
 
 Data Story
-=============
+^^^^^^^^^^
 Data Stories are used for creating blog-like content pertaining to data over time. A real life example would be monthly Data Stories created by the Parks and Recreation Department to use charts and maps to update site visitors on a local tree-planting campaign.
 
 Much like Data Dashboards, Data Stories offer a wide range of possible layouts and can be curated with data visualizations like charts, maps and tables.
@@ -52,7 +52,7 @@ Much like Data Dashboards, Data Stories offer a wide range of possible layouts a
 Admins, Site Managers, Editors and Content Creators can all add Data Stories.
 
 Data Dashboard
-=============
+^^^^^^^^^^^^^^
 The Data Dashboards feature allows you to create pages that bring together various forms of content about a specific subject all in one place.
 
 A real-life example of a data dashboard can be found on any major weather site when looking up the charts, maps and tables from a specific zip code.
@@ -60,7 +60,7 @@ A real-life example of a data dashboard can be found on any major weather site w
 Admins, Site Managers, Editors and Content Creators can all add Data Dashboards.
 
 Harvest Source
-=============
+^^^^^^^^^^^^^^
 A Harvest Source is a content type that allows administrators or Site Managers to "harvest" data from outside sources. To “harvest” data is to use the public feed or API of another data portal to import items from that portal’s catalog into your own.
 
 Harvested datasets are fully imported from an external source onto your DKAN site.  This means that the datasets exist both on the external source and your site - independently from one another, and with all of the same information (including title, metadata, tags, and so on.)
@@ -70,7 +70,7 @@ By importing datasets from external sources, you can provide more open data on y
 Admins and Site Managers can add Harvest Sources, but not Editors or Content Creators.
 
 Visualization
-=============
+^^^^^^^^^^^^^
 Visualizations provide intuitive, understandable displays of data. Visualizing information fulfills a basic need; the need to tell a story.
 
 Visualizations allow users to understand the data from a new perspective, and can be viewed within the site or embedded elsewhere without having to download the data itself. This not only saves time, but also saves memory, bandwidth and hard drive storage space.
@@ -79,17 +79,19 @@ Currently, Charts are the only Visualization type included within out-of-the-box
 
 Admins, Site Managers, and Editors can create Visualizations, but not Content Creators.
 
+===========================
 Where do I add new content?
----------------------------
+===========================
 
 The Add Content menu
-===========================
+---------------------------
 
 The most direct path for creating content is through the **Add content** tab on the Admin Menu toolbar. Select the content type you'd like to add, then complete the fields shown in the following form.
 
 .. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_01.png
    :alt: An image displaying the location of the "Add content" menu on the DKAN navigation bar.
 
+===========================
 The Content Page
 ===========================
 
@@ -180,7 +182,7 @@ There are three ways to import a resource to your DKAN open data catalog:
 CSV files, once added as a Resource, can then be imported to the DKAN Datastore for efficient storage and access. *(recommended)*.
 
 Steps to upload a new resource
-===============================
+------------------------------
 
 1. From the **Admin Menu**, hover over the **Add Content** menu link.
 
@@ -221,7 +223,7 @@ Data Previews only display if the contents of the Resource match the data format
    This image displays where you can enable grid, graph and/or map previews for a Resource.
 
 Data Preview Types:
-===================
+-------------------
 
 **Grids and Graphs:** This type of Data Preview works well with tabular data like CSV or XLS files. Grids appear most similar to a spreadsheet.
 
@@ -230,7 +232,7 @@ Graph previews allow site visitors to select the values from the data that may b
 **Maps:** If the resource contains a Latitude column and a Longitude column (in decimal values - see http://www.earthpoint.us/Convert.aspx), then each record from the data will be displayed as a point on the map. Site visitors can click each point to learn about the data.
 
 External Previews:
-==================
+------------------
 
 Need to use advanced data visualizations from an outside source? Use DKAN External Previews.
 
@@ -276,7 +278,8 @@ Add a Dataset:
 3. Add a license to clarify reuse limitations.
 4. Click the **Next: Add data** button to add at least one Resource.
 5. Follow the steps for adding a Resource.
-8. Click the Save button to finalize the addition.
+6. Click the Save button to finalize the addition.
+
 
 .. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_09.gif
    :alt: This animated screencap shows the process of editing and saving a dataset.
@@ -406,13 +409,14 @@ Unlike other content types, Charts don't automatically collect on a page on your
 .. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_21.gif
    :alt: An animated screencap displaying the Chart creation process in DKAN.
 
+===================================================
 Key information when adjusting your Chart settings:
 ===================================================
 
 - **Query Editor:** The Query Editor field lets you search the contents of the Resource powering your Chart and visualize the most relevant pieces. This function is useful for especially large Datasets. Use this setting to perform a complex search on the data in your Resource and narrow the focus to display on your Chart. It's good for highlighting key insights in the data. Use the same format conventions as in the Resource (ie $0.00, x/y/z) when performing the search.
 
 - **Filter Editor:** Terms add a broad filter to highlight characteristics shared by multiple data points in your Resource. This is adds more focus than visualizing all the contents of a Resource, but is not very overly complex. Use this to draw specific comparisons in your visualization. Add multiple filters to give a specific cross-section within the data.
-  
+
   - **Field:** Create a term to filter the data by first choosing a Field from a column within the Resource. All the columns will appear in a drop-down menu to choose from. Use terms to narrow the view of the data.
 
   - **Filter Type:** Choose from the drop-down list to further specify conditions for the data you’re looking for within the Field you’ve already selected.
@@ -492,7 +496,7 @@ Once the Data Story is added, the content may be altered, rearranged or new cont
    :alt: Examples of data stories in DKAN
 
 Key information when adding a Data Story:
-========================================
+-----------------------------------------
 
 - **Image:** Choose a large, high quality image for your Data Story. This image appears in a large format across the top of the Data Story. Because of the size, you'll need a large image (minimum 900x1200 pixels) with high resolution so that it appears as expected. In Data Stories, these images can only be uploaded; there isn't an option to link directly to an image from the web. First select the image by clicking on the Choose file button and then add the image by clicking the Upload button.
 
@@ -502,20 +506,21 @@ Key information when adding a Data Story:
 
 - **Text editor options:** Use the Body text box for the contents of your Data Story. Use the tools in the text editor to format and style the body of your text. With these tools you can add images, links, quotes, and line breaks directly in the text box.
 
-**Adding Tags and Topics:** 
+**Adding Tags and Topics:**
 You can add Tags and Topics to your Data Story so that it's easy to find in a search and as site visitors browse the content on your DKAN site. Tags are free-form, so they can be newly added in the field and can contain any words.
 
 Think of Tags as keywords either within or related to the content. So if you have a Data Story about chickenpox vaccines in the state of Mississippi you might include a Tag for "chickenpox", "vaccines", "Mississippi" and additionally "public health" and "viruses". By including Tags on your Data Story, the Data Story associated with those terms will appear when the terms are included in a search.
 
 Topics are similar but distinct from Tags. Topics are preset and they act more as a category that content is collected under on your DKAN site. Topics aren't limited to a common data publisher or common metadata; they represent a conceptual relationship between pieces of content. As a Site Manager, you can preset which Topics may be assigned to content.
 
-**Choosing a layout:** 
+**Choosing a layout:**
 Layouts are like templates for the design of a page. In most cases, you would need to have technical experience with code to change the way that content appears on a page and what content is allowed. With DKAN layouts you can choose from a set of layouts pre-made to beautifully combine different content in the same place without needing to touch any code.
 
 Choose the layout for your Data Story and add data, media, text, etc. in the different panels. By default the most basic layout (Boxton) is selected, but choose the layout best fits the types of content you want to include for your Data Story.
 
 Layouts are composed of different regions. Each rectangle and square shown in the different layouts is a region, and each region can contain one or more (or zero) pieces of content. Choosing the right layout is often a matter of trial and error depending on how the content is oriented and how you want it arranged. The regions in a layout are suited better for some content than others; as you add your content you can easily change the layout to meet your needs without losing any of the content.
 
+=======================
 Adding a Data Dashboard
 =======================
 
@@ -537,7 +542,7 @@ Example Data Dashboards can be found on the Dashboards page of demo.getdkan.com.
    :alt: Examples of a Data Dashboard in DKAN
 
 Layouts for Dashboards and Data Stories
-========================================
+---------------------------------------
 
 Layouts are composed of different regions. Each rectangle and square shown in the different layouts is a region, and each region can contain one or more (or zero) pieces of content. Choosing the right layout is often a matter of trial and error depending on how the content is oriented and how you want it arranged. The regions in a layout are suited better for some content than others; as you add your content you can easily change the layout to meet your needs without losing any of the content.
 
@@ -576,7 +581,7 @@ One of the most basic content types on DKAN is a Page. Though the content type i
 Layouts are like templates for the design of a page. In most cases, you would need to have technical experience with code to change the way that content appears on a page and what content is allowed.
 
 With layouts you can choose from a set of layouts pre-made to beautifully combine different content in the same place without needing to touch any code. Choose the layout for your Page and add data, media, text, etc. in the different panels.
-  
+
 By default the most basic layout (Boxton) is selected, but choose the layout best fits the types of content you want to include for your Page. Keep in mind, you can change your layout anytime.
 
 *Creating a menu link:*
@@ -598,7 +603,7 @@ Behind the scenes, Groups add an additional set of roles and permissions that en
 When first adding a new Group, the form has only a few fields. This is the basic information about the Group itself that should tell site visitors what to expect from the Datasets in the Group.
 
 Key information when adding a Group:
-====================================
+------------------------------------
 
 - **Title:** Name your Group to reflect the agency or whoever the common data publisher is for the datasets that will belong to the Group.
 - **Image:** The image here acts like the logo for your Group. It appears on the overview Groups page as well as the individual page of the Group itself. It's best to choose a square image to fit the dimensions of the thumbnail. Whether you choose an image, a logo, or an icon you can use any image that meets the size and file type requirements. As a Site Manager, you may want to add generic icons to the Groups you add if a current logo is unavailable.
