@@ -237,7 +237,7 @@ projects:
       url: https://git.drupal.org/project/multistep.git
       revision: 3b0d40a
   og:
-    version: '2.9'
+    version: '2.10'
     patch:
       1090438: https://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch
       2549071: https://www.drupal.org/files/issues/og_actions-bug-vbo-delete.patch
