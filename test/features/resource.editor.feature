@@ -10,7 +10,7 @@ Feature: Resource
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
       | Badmin  | admin@example.com   | site manager         |
-      | Gabriel | gabriel@example.com | content creator      |
+      | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
       | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | editor               |
@@ -57,10 +57,11 @@ Feature: Resource
     When I am on "Dataset 01" page
     Then I should see "Resource 01 edited"
 
-  @resource_editor_2 @noworkflow
+  @resource_editor_2 @noworkflow @javascript
   Scenario: I should not be able to edit resources of groups that I am not a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 05" page
+    And I hide the admin menu
     Then I should not see "Edit"
 
   @resource_editor_3 @fixme @dkanBug @noworkflow
