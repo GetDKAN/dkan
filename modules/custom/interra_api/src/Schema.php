@@ -26,8 +26,12 @@ class Schema {
     return Yaml::decode(file_get_contents($file));
   }
 
+  public function getActiveCollections() {
+    return $this->config['collections'];
+  }
+
   public function loadFullSchema() {
-    $collections = $this->config['collections'];
+    $collections = $this->getActiveCollections();
     $references = $this->config['references'];
     $fullSchama = array();
     foreach ($collections as $collection) {

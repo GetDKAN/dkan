@@ -9,23 +9,19 @@ use Drupal\interra_api\Schema;
 use Drupal\interra_api\Search;
 use Drupal\interra_api\Load;
 use Drupal\interra_api\SiteMap;
+use Drupal\interra_api\ApiRequest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
 * An ample controller.
 */
 class ApiController extends ControllerBase {
 
-  /**
-   * Returns a render-able array for a test page.
-   */
   public function routes( Request $request ) {
     $response = getRoutes();
     return new JsonResponse( $response );
   }
 
-  /**
-   * Returns a render-able array for a test page.
-   */
   public function schema( Request $request ) {
     $response = array();
     $schema = new Schema('simple');
@@ -36,20 +32,42 @@ class ApiController extends ControllerBase {
     return new JsonResponse( $response );
   }
 
-  /**
-   * Returns a render-able array for a test page.
-   */
   public function search( Request $request ) {
     $search = new Search();
     return new JsonResponse( $search->index() );
   }
 
-  /**
-   * Returns a render-able array for a test page.
-   */
   public function siteMap( Request $request ) {
     $siteMap = new SiteMap();
     return new JsonResponse( $siteMap->load() );
+  }
+
+  public function collection( Request $request ) {
+    $apiRequest = new ApiRequest();
+    $uri = $request->getPathInfo();
+    $path = $apiRequest->getUri($uri);
+    if ($collection = $apiRequest->validateCollectionPath($path)) {
+      $load = new Load();
+      $docs = $load->loadByType($collection);
+      return new JsonResponse( $docs );
+    }
+    else {
+      throw new NotFoundHttpException();
+    }
+  }
+
+  public function doc( Request $request ) {
+    $apiRequest = new ApiRequest();
+    $uri = $request->getPathInfo();
+    $path = $apiRequest->getUri($uri);
+    if ($id = $apiRequest->validateDocPath($path)) {
+      $load = new Load();
+      if ($doc = $load->loadDocById($id)) {
+        return new JsonResponse( $load->formatDoc($doc) );
+      }
+      throw new NotFoundHttpException();
+    }
+    throw new NotFoundHttpException();
   }
 }
 
