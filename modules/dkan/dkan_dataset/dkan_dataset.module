@@ -1295,8 +1295,7 @@ function dkan_dataset_release_date($node) {
  * Return node modified value with ISO 8601 format.
  *
  * For harvested nodes use the value from 'field_harvest_source_modified' as
- * filled by the dkan_harvest. Fallback to the 'changed' node property
- * otherwise.
+ * filled by the dkan_harvest. Otherwise fallback to the node 'changed' property.
  */
 function dkan_dataset_modified_date($node) {
   $node = ($node instanceof EntityMetadataWrapper) ? $node :
@@ -1304,20 +1303,20 @@ function dkan_dataset_modified_date($node) {
 
   if (isset($node->field_harvest_source_modified) &&
     !empty($node->field_harvest_source_modified->value())) {
-    // Check if the value is a valid date or term.
-    $d = validateDate($node->field_harvest_source_modified->value());
-    $terms = array_keys(dkan_dataset_content_types_iso_frecuency_map());
-    // If the value is a term, return the decoded value.
-    if (in_array($node->field_harvest_source_modified->value(), $terms)) {
-      $date = dkan_dataset_content_types_iso2frequency($node->field_harvest_source_modified->value());
-    }
-    // If the value is a date, display it.
-    elseif ($d) {
+    $d = dkan_dataset_validate_date($node->field_harvest_source_modified->value()) ? true : false;
+    // If the harvest source modified value is a date, display it.
+    if ($d) {
       $date = $node->field_harvest_source_modified->value();
     }
-    // If neither a term nor a date value, use the node 'changed' value.
+    // If the harvest source modified value is a repeating interval, decode it.
     else {
-      $date = format_date($node->changed->value(), 'iso_8601_date');
+      try {
+        $r = substr($node->field_harvest_source_modified->value(), 2);
+        $date = dkan_dataset_modified_date_interval($r);
+      }
+      catch (Exception $e) {
+        watchdog('dkan_dataset', 'Invalid harvest modified date');
+      }
     }
   }
   else {
@@ -1371,4 +1370,54 @@ function dkan_dataset_field_formatter_view($entity_type, $entity, $field, $insta
   $element[0]['#markup'] = $markup;
 
   return $element;
+}
+
+/**
+ * Helper function to validate dates.
+ */
+function dkan_dataset_validate_date($date, $format = 'Y-m-d') {
+  $d = DateTime::createFromFormat($format, $date);
+  return $d && $d->format($format) === $date;
+}
+
+/**
+ * Helper function to convert ISO 8601 repeating interval values into plain text.
+ */
+function dkan_dataset_modified_date_interval($int) {
+  $interval = new DateInterval($int);
+  $doPlural = function($nb,$str){return $nb>1?$str.'s':$str;};
+
+  $format = array();
+  if($interval->y !== 0) {
+    $format[] = "%y ".$doPlural($interval->y, "year");
+  }
+  if($interval->m !== 0) {
+    $format[] = "%m ".$doPlural($interval->m, "month");
+  }
+  if($interval->d !== 0) {
+    $format[] = "%d ".$doPlural($interval->d, "day");
+  }
+  if($interval->h !== 0) {
+    $format[] = "%h ".$doPlural($interval->h, "hour");
+  }
+  if($interval->i !== 0) {
+    $format[] = "%i ".$doPlural($interval->i, "minute");
+  }
+  if($interval->s !== 0) {
+    if(!count($format)) {
+      return "less than a minute ago";
+    } else {
+      $format[] = "%s ".$doPlural($interval->s, "second");
+    }
+  }
+
+  // We use the two biggest parts
+  if(count($format) > 1) {
+    $format = array_shift($format)." and ".array_shift($format);
+  } else {
+    $format = array_pop($format);
+  }
+
+  return 'Every ' . $interval->format($format);
+
 }
