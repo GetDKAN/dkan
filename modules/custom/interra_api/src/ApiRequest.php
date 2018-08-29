@@ -22,10 +22,10 @@ class ApiRequest {
    *   The URI for the doc, ie `collections/dataset`.
    */
   public function getUri($relativePath) {
-		$path = '';
-		if (substr($relativePath, 0, strlen($this->apiPath)) == $this->apiPath) {
-			$path = substr($relativePath, strlen($this->apiPath));
-		}
+    $path = '';
+    if (substr($relativePath, 0, strlen($this->apiPath)) == $this->apiPath) {
+      $path = substr($relativePath, strlen($this->apiPath));
+    }
     return $path;
   }
 
