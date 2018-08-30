@@ -1315,7 +1315,9 @@ function dkan_dataset_modified_date($node) {
         $date = dkan_dataset_modified_date_interval($r);
       }
       catch (Exception $e) {
-        watchdog('dkan_dataset', 'Invalid harvest modified date');
+        $date = format_date($node->changed->value(), 'iso_8601_date');
+        $message = t('Invalid harvest modified value in %nid', array('%nid' => $node->label()));
+        watchdog('dkan_dataset', $message);
       }
     }
   }
