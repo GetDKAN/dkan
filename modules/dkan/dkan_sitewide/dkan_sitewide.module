@@ -188,12 +188,11 @@ function dkan_sitewide_update_status_alter(&$projects) {
     }
   }
 
-  $project = 'dkan';
-  $tags = drupal_http_request('https://api.github.com/repos/GetDKAN/' . $project . '/tags');
+  $tags = drupal_http_request('https://api.github.com/repos/GetDKAN/dkan/tags');
   $tags = json_decode($tags->data);
   if (isset($tags->message)) {
     drupal_set_message("Could not get an update from Github on DKAN since github rate limit exceeded.");
-    unset($projects[$project]);
+    unset($projects['dkan']);
     return;
   }
   $dkan_tag = $tags[0]->name;
@@ -203,8 +202,8 @@ function dkan_sitewide_update_status_alter(&$projects) {
   $tag_commit = json_decode($tag_commit->data);
   $tag_date = date("U", strtotime($tag_commit->commit->author->date));
 
-  $current_version = $projects[$project]['existing_version'];
-  // To do: fix this when version info is implemented.
+  $current_version = isset($projects['dkan']) ? $projects['dkan']['existing_version'] : '';
+
   if (!empty($current_version)) {
     if ($current_version == $dkan_tag) {
       $projects[$project]['status'] = UPDATE_CURRENT;
