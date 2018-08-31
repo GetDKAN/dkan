@@ -851,7 +851,7 @@ function dkan_datastore_api_api_page($node) {
     $status = $datastore_manager->getStatus();
     switch ($status['data_import']) {
       case Manager::DATA_IMPORT_DONE:
-        $output = dkan_datastore_api_instructions_output();
+        $output = dkan_datastore_api_instructions_output($node);
         return $output;
 
       case Manager::DATA_IMPORT_UNINITIALIZED:
@@ -871,12 +871,29 @@ function dkan_datastore_api_api_page($node) {
 
 /**
  * Output for datastore API instructions.
- *
- * @todo Actually generate content, maybe incorporate into datastore clases or
- *       new class. See original output function: https://git.io/vhJ2V
  */
-function dkan_datastore_api_instructions_output() {
+function dkan_datastore_api_instructions_output($node) {
+  // TODO: Make a theme function.
   $output = '<h2>' . t('DKAN Datastore API') . '</h2>';
+
+  $url = url('api/action/datastore/search.json', array(
+    'query' => array(
+      'resource_id' => $node->uuid,
+      'limit' => 5,
+    ),
+    'absolute' => TRUE,
+  ));
+
+
+  $output .= t('Access resource data via a web API with powerful query support.');
+  $output .= '<h3>' . t('Resource ID') . '</h3>';
+  $output .= t("The Resource ID for this resource is %id", array('%id' => $node->uuid));
+  $output .= '<h3>' . t('Example Query') . '</h3>';
+  $output .= '<p>' . l($url, $url) . '</p>';
+  $output .= '<p>' . t('Query this datastore and return first five results') . '</p>';
+  $output .= '<h3>' . t('Documentation') . '</h3>';
+  $output .= '<p>' . t('See DKAN API documentation for more details: <a href="https://docs.getdkan.com/en/latest/apis/datastore-api.html">DKAN Datastore API</a>') . '</p>';
+
   return $output;
 }
 
