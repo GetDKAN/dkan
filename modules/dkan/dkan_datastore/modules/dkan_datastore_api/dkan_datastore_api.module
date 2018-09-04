@@ -907,7 +907,7 @@ function dkan_datastore_api_api_page_access($node) {
   catch(\Exception $e) {
     return FALSE;
   }
-  if ($datastore_manager = Factory::create($resource)) {
+  if ($datastore_manager = (new Factory($resource))->get()) {
     $status = $datastore_manager->getStatus();
     if ($status['data_import'] == Manager::DATA_IMPORT_DONE && user_access('manage datastore')) {
       $type = 'resource';

@@ -264,15 +264,6 @@ abstract class Manager implements ManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function deleteRows() {
-    db_delete($this->getTableName())->execute();
-    $this->stateDataImport = self::DATA_IMPORT_READY;
-    $this->saveState();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getStatus() {
     $state = [];
 

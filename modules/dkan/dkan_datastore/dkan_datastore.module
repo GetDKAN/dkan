@@ -204,9 +204,14 @@ function dkan_add_resource($node) {
 function dkan_datastore_node_insert($node) {
   $type = dkan_datastore_node_type();
   if ($node->type == $type) {
-    $resource = Resource::createFromDrupalNode($node);
-    $datastore_manager = Factory::create($resource, 'Dkan\Datastore\Manager\SimpleImport\SimpleImport');
-    $datastore_manager->saveState();
+    try {
+      $resource = Resource::createFromDrupalNode($node);
+      $datastore_manager = (new Factory($resource))->get();
+      $datastore_manager->saveState();
+    }
+    catch (\Exception $e) {
+      drupal_set_message($e->getMessage());
+    }
   }
 }
 
@@ -396,20 +401,6 @@ function dkan_datastore_file_link_field() {
 function dkan_datastore_node_type() {
   // return Resource::resourceContentType();
   return 'resource';
-}
-
-/**
- * Implements hook_feeds_after_import().
- */
-function dkan_datastore_feeds_after_import(FeedsSource $source) {
-  $importer_id = $source->importer->id;
-  $importers = array('dkan_file', 'dkan_link');
-  if (empty($source->exception) && in_array($importer_id, $importers)) {
-    $node = node_load($source->feed_nid);
-    $node = entity_metadata_wrapper('node', $node);
-    $node->field_datastore_status->set(DKAN_DATASTORE_EXISTS);
-    $node->save();
-  }
 }
 
 /**

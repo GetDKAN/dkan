@@ -295,16 +295,15 @@ Feature: Resource
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
-    And I select "Simple Import" from "edit-datastore-managers-selection"
-    And I press "Save"
-    Then I should see "Status:"
+    Then I should see "Status"
     When I press "Import"
-    And I wait for "Drop Datastore"
-    When I click "Drop Datastore"
+    And I wait for "Import Finished"
     And I press "Drop"
-    Then I should see "Records Imported: 0"
-    Then I should see "Storage: Uninitialized"
-    Then I should see "Data Importing: Ready"
+    And I press "Drop"
+    Then I should see "Records Imported"
+    And I should see "0"
+    And I should see "Data Importing"
+    And I should see "Ready"
 
   @resource_author_18 @noworkflow
   Scenario: Add revision to own resource

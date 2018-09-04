@@ -5,7 +5,7 @@
  * Callbacks for datastore pages.
  */
 
-use \Dkan\Datastore\Pages;
+use \Dkan\Datastore\Page\Page;
 
 // Default to 50MB.
 define('MAX_FILE_REMOTE_PROXY_DEFAULT', 1024 * 1024 * 50);
@@ -57,18 +57,20 @@ function dkan_datastore_add_resource($node) {
  */
 function dkan_datastore_pages($form, &$form_state, $node) {
   $form['#node'] = $node;
-  $pages = new Pages($node);
-  return $pages->loadForm($form, $form_state);
+  $page = new Page($node, $form, $form_state);
+  return $page->get();
 }
 
 function dkan_datastore_pages_submit($form, &$form_state) {
-  $pages = new Pages($form['#node']);
-  if (isset($form_state['storage']['drop']) && $form_state['storage']['drop']) {
-    $pages->dropFormSubmit($form, $form_state);
+  $page = new Page($form['#node'], $form, $form_state);
+  $page->submit();
+
+  /*if (isset($form_state['storage']['drop']) && $form_state['storage']['drop']) {
+    $page->dropFormSubmit($form, $form_state);
   }
   else {
-    $pages->importFormSubmit($form, $form_state);
-  }
+    $page->importFormSubmit($form, $form_state);
+  }*/
 }
 
 function dkan_datastore_drop_submit($form, &$form_state) {
