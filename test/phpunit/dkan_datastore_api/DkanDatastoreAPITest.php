@@ -79,7 +79,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     $resource = Resource::createFromDrupalNode($node);
 
     /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-    $datastore = \Dkan\Datastore\Manager\Factory::create($resource, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
+    $datastore = (new \Dkan\Datastore\Manager\Factory($resource))->get();
 
     if ($datastore instanceof DkanDatastoreFeedsImport) {
       // Import it to the datastore.
