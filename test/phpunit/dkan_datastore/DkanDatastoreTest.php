@@ -11,6 +11,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
   private $resource_node;
 
   protected function setUp() {
+    $node = (object) [];
     $node->title = "Datastore Resource Test Object 23523";
     $node->type = "resource";
     $node->field_link_remote_file['und'][0]['uri'] = "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv";
@@ -24,7 +25,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
     $resource = new Resource($this->resource_node->nid, __DIR__ . "/data/countries.csv");
 
     /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
-    $datastore = \Dkan\Datastore\Manager\Factory::create($resource, SimpleImport::class);
+    $datastore = (new \Dkan\Datastore\Manager\Factory($resource))->get();
 
     $status = $datastore->getStatus();
     $this->assertEquals(SimpleImport::STORAGE_UNINITIALIZED, $status['storage']);
@@ -45,9 +46,6 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
       $json);
 
     $this->assertEquals(4, $datastore->numberOfRecordsImported());
-
-    $datastore->deleteRows();
-    $this->assertEquals(0, $datastore->numberOfRecordsImported());
 
     $status = $datastore->getStatus();
     $this->assertEquals(SimpleImport::STORAGE_INITIALIZED, $status['storage']);
