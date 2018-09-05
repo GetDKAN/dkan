@@ -49,7 +49,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
 
     $status = $datastore->getStatus();
     $this->assertEquals(SimpleImport::STORAGE_INITIALIZED, $status['storage']);
-    $this->assertEquals(SimpleImport::DATA_IMPORT_READY, $status['data_import']);
+    $this->assertEquals(SimpleImport::DATA_IMPORT_DONE, $status['data_import']);
 
     $datastore->drop();
     $this->assertFalse(db_table_exists($datastore->getTableName()));
