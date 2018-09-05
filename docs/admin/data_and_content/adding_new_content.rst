@@ -88,9 +88,9 @@ Currently, Charts are the only Visualization type included within out-of-the-box
 
 Admins, Site Managers, and Editors can create Visualizations, but not Content Creators.
 
-===========================
+
 Where do I add new content?
-===========================
+---------------------------
 
 The Add Content menu
 ~~~~~~~~~~~~~~~~~~~~
@@ -415,7 +415,7 @@ Unlike other content types, Charts don't automatically collect on a page on your
 .. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_21.gif
    :alt: An animated screencap displaying the Chart creation process in DKAN.
 
-===================================================
+
 Key information when adjusting your Chart settings:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -525,7 +525,7 @@ Choose the layout for your Data Story and add data, media, text, etc. in the dif
 
 Layouts are composed of different regions. Each rectangle and square shown in the different layouts is a region, and each region can contain one or more (or zero) pieces of content. Choosing the right layout is often a matter of trial and error depending on how the content is oriented and how you want it arranged. The regions in a layout are suited better for some content than others; as you add your content you can easily change the layout to meet your needs without losing any of the content.
 
-=======================
+
 Adding a Data Dashboard
 -----------------------
 
