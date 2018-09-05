@@ -495,7 +495,7 @@ function dkan_update_7030() {
     $resource =  \Dkan\Datastore\Resource::createFromDrupalNodeNid($nid);
 
     /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
-    $datastore = \Dkan\Datastore\Manager\Factory::create($resource, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
+    $datastore = (new \Dkan\Datastore\Manager\Factory($resource))->get();
     $datastore->saveState();
   }
 }

@@ -148,7 +148,7 @@ function _dkan_datastore_resource_get_resource($resource_nid) {
 
 function _dkan_datastore_resource_get_datastore($resource_nid) {
   /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-  $datastore = \Dkan\Datastore\Manager\Factory::create(_dkan_datastore_resource_get_resource($resource_nid));
+  $datastore = (new \Dkan\Datastore\Manager\Factory(_dkan_datastore_resource_get_resource($resource_nid)))->get();
 
   return $datastore;
 }
@@ -185,8 +185,10 @@ function _dkan_datastore_resource_create($resource_nid, $data) {
   else {
     $resource = \Dkan\Datastore\Resource::createFromDrupalNodeNid($resource_nid);
 
+    $factory = new \Dkan\Datastore\Manager\Factory($resource);
+    $factory->setClass($class);
     /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-    $datastore = \Dkan\Datastore\Manager\Factory::create($resource, $class);
+    $datastore = $factory->get();
     $properties = $datastore->getConfigurableProperties();
     foreach ($properties as $property_name => $default_value) {
       if (!isset($configuration[$property_name])) {

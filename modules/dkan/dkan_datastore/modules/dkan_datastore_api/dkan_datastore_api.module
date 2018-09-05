@@ -847,7 +847,7 @@ function dkan_datastore_api_debug($data_select) {
  */
 function dkan_datastore_api_api_page($node) {
   if ($resource = Resource::createFromDrupalNode($node)) {
-    $datastore_manager = Factory::create($resource);
+    $datastore_manager = (new Factory($resource))->get();
     $status = $datastore_manager->getStatus();
     switch ($status['data_import']) {
       case Manager::DATA_IMPORT_DONE:

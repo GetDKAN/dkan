@@ -105,7 +105,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       $r = \Dkan\Datastore\Resource::createFromDrupalNodeUuid($resource['uuid']);
 
       /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-      $datastore = \Dkan\Datastore\Manager\Factory::create($r, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
+      $datastore = (new \Dkan\Datastore\Manager\Factory($r))->get();
       $datastore->drop();
 
       entity_uuid_delete('node', array($resource['uuid']));

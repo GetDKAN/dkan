@@ -443,7 +443,7 @@ function dkan_datastore_cron() {
     $resource = Resource::createFromDrupalNodeNid($current_nid);
 
     /* @var $datastore_manager ManagerInterface */
-    $datastore_manager = Factory::create($resource);
+    $datastore_manager = (new Factory($resource))->get();
 
     $finished = $datastore_manager->import();
 
