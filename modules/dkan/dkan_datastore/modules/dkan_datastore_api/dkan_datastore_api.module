@@ -676,7 +676,7 @@ function dkan_datastore_api_sort_clean($sort) {
  */
 function dkan_datastore_api_tablename($resource_id) {
   $resource = Resource::createFromDrupalNodeUuid($resource_id);
-  $datastore_manager = Factory::create($resource);
+  $datastore_manager = (new Factory($resource))->get();
   return $datastore_manager->getTableName();
 }
 
