@@ -20,7 +20,7 @@ Feature: Content creator and groups
     And I fill in "edit-name" with "Cara"
     And I check the box "administrator member"
     And I press "Add users"
-    Then I should see "Cara is a content creator and should not be able to edit other user's content."
+    Then I should see "Cara was a content creator. In order to be an administrator of this group, and edit content created by other users, Cara was also given the editor role."
 
   @group_cc_02
     Scenario: Assign an editor the group administrator role
