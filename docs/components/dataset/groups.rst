@@ -38,13 +38,13 @@ Roles and Permissions
 
 With large sites there is often a need to have special permissions for a group of users to handle a specific set of content. Think of a large agency or department with sub-departments or programs that produce content. On the one hand these users shouldn’t have the ability to manage or edit content for the entire site or other Groups. On the other hand it would be impractical for Editors or Site Managers to handle content for a large number of users. To keep content organized and in the hands of its owners without introducing the risk of inadvertent (and sometimes irreversible) actions, Group-level permissions give users the ability to do things they couldn’t necessarily do on the site outside of the Group.
 
-Within Groups there are different levels of access a user can have, which determines another level of permissions. Any user who belongs to a group falls into one of two types: Member or Administrator. Users not in the group are considered Non-members.
+Within Groups there are different levels of access a user can have, which determines another level of permissions. Any user who belongs to a group falls into one of two types: Member or Administrator Member. Users not in the group are considered non-members.
 
-:Non-Member: A Non-Member is any user on the site who does not belong to the Group. This role can request membership in the Group and view Group members and content.
+:Non-Member: A non-member is any user on the site who does not belong to the Group. This role can request membership in the Group and view Group content.
 
 :Member: A Member is a basic user within the Group who is mostly adding and editing their own content for the Group.
 
-:Administrator: An Administrator is able to add and remove Group members and manage (create/edit/delete) all content within the Group. It’s good practice to have only 1 or 2 users in this role for any given Group.
+:Administrator Member: An Administrator Member is able to add and remove Group members and manage (create/edit/delete) all content within the Group. It’s good practice to have only 1 or 2 users in this role for any given Group.
 
 Managing users
 **************

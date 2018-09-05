@@ -44,7 +44,7 @@ As a site manager, there are two ways that you can add a user to a Group: from t
 
 - Finish by clicking the **Add users** button at the bottom of the page.
 
-In the example below, the Site Manager goes to the Group, "Committee on International Affairs". From the Group page the Site Manager adds a new user by typing the user name and choosing the autocomplete selection. In this example, Kim Lee should be an Administrator of the Group so the Site Manager checks the administrator member box.
+In the example below, the Site Manager goes to the Group, "Committee on International Affairs". From the Group page the Site Manager adds a new user by typing the user name and choosing the autocomplete selection. In this example, Kim Lee should be an administrator member of the Group so the Site Manager checks the administrator member box.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_03.gif
    :alt: An animated screencap showing the process of adding a new user to a Group.
@@ -67,46 +67,46 @@ You can manage Group members directly from the main Group page by clicking the *
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_05.png
    :alt: This screen is what you'll see when searching for a Group member by name.
 
-**Change a user's role:** As a Site Manager you can change the role of a Group member to either be a regular member or an Administrator. In general there are only one or two Administrators managing the Group, so you won't need to change member roles often. When you do, you can change a member's role directly from their profile.
+**Change a user's role:** As a Site Manager you can change the role of a Group member to either be a regular member or an administrator member. Administrator members have full control of the group, its members, and its content so be sure these are trusted users.
 
-From the Group's home page, click the **Group** button and then the **People** link to manage the Group. Find the member whose role you want to change, either to an Administrator or remove their Administrator status to make them a regular member.
+From the Group's home page, click the **Group** button and then the **People** link to manage the Group members.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_06.gif
    :alt: This animated screencap shows what it looks like when a Site Manager edits a user's membership within a Group.
 
-**Remove or block a member:** You can keep users from adding Datasets to the Group in two ways: blocking a member or removing them from a Group.
+**Remove or block a member:** You can keep users from adding Datasets to the Group in two ways: blocking a member or removing them from the Group.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_07.png
    :alt: This screencap shows Group members and whether they're active or have been blocked.
 
-- **Remove a member:** Removing a member keeps them from adding Datasets to the Group, but these users can later request membership. To remove a member, access the Group overview page where Group members are managed. Find the member you want to remove and click the remove link in the furthest column to the right in the member's row of information.
+- **Remove a member:** Removing a member keeps them from adding content to the Group, but these users can later request membership. To remove a member, access the Group overview page where Group members are managed. Find the member you want to remove and click the remove link in the furthest column to the right in the member's row of information.
 
-- **Block a member:** Blocking a member keeps a member from adding Datasets to the Group, and these users cannot request membership to the Group. To block a member, you'll need to change the status of the member by editing their profile. Find the member you want to block and click the edit link in the furthest column to the right in the member's row of information. From the drop-down Status menu, change the member's status from Active to Blocked.
+- **Block a member:** Blocking a user keeps the user from adding content to the Group, and these users cannot request membership to the Group. To block a member, you'll need to change the status of the member by editing their profile. Find the member you want to block and click the edit link in the furthest column to the right in the member's row of information. From the drop-down Status menu, change the member's status from Active to Blocked.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_08.png
    :alt: This screencap shows what you'll see when editing a user's Group membership.
 
-**Membership requests:** Users may also request Administrator approval to become a member in a Group. When users submit a membership request, they appear in the list of members with a pending status. If you or the Group Administrator directly add a user to the Group, then you don’t need to add any text in the request message box. If the user requested membership, then their request message will appear here as part of the member profile (only visible to the Site Manager and Administrator).
+**Membership requests:** Users may also request to join a group. When users submit a membership request, they appear in the list of members with a pending status. If the user entered a request message, it will appear here as part of the member profile (only visible to the Site Manager and administrator members).
 
 In the example below, a non-member visits the Group's home page and submits a request for membership with a request message. The member and her message will now appear on the list of members on the Group overview page in a pending state.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_09.gif
    :alt: This animated screencap shows the process of a user requesting membership to a Group.
 
-The Administrator or Site Manager can approve the request by changing the user's status from pending to active. To change a member's status, click the edit link in the furthest column to the right in the member's row of information. From the drop-down Status menu, change the member's status from pending to active.
+The Group Administrator or Site Manager can approve the request by changing the user's status from pending to active. To change a member's status, click the edit link in the furthest column to the right in the member's row of information. From the drop-down Status menu, change the member's status from pending to active.
 
 Membership requests don't send alerts to the Group Administrator, so the Administrator needs to check for members with a pending state. You can find members by state and select pending to show only pending members who need approval.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_10.gif
    :alt: This animated screencap shows the process of editing a user's Group membership.
 
-**Bulk actions:** Bulk actions help save time because you can select multiple members and perform the same action rather than taking the same action over and over on single members.
+**Bulk actions:** Bulk actions help save time because you can select multiple members and perform an action on all of them at once rather than performing the action on each member one at a time.
 
-From the Group's home page, click the **Group** button and then the **People** link to manage the Group.
+From the Group's home page, click the **Group** button and then the **People** link to manage the Group members.
 
 Find the members you want perform the action on and check the boxes to the left of the member's name for each member. There are three types of bulk actions: Modify OG user roles, Remove from group, and Modify membership status.
 
-- **Modify OG user roles:** OG user roles refer specifically to Group roles and permissions, which are Member and Administrator. You can change the role of multiple members at the same time with this action. Check all the members whose roles you want to change–for this action, all the members must have the same role to be changed to a new role. Find the drop-down Operations menu, select Modify OG user roles, and click the Execute button. On the next screen you can choose to either add the Administrator role to the selected users or remove the Administrator role to make the users general members. Choose to add or remove the Administrator role and then click the Next button at the bottom of the page and confirm on the next screen.
+- **Modify OG user roles:** OG user roles refer specifically to Group roles and permissions, which are Member and Administrator Member. You can change the role of multiple members at the same time with this action. Check all the members whose roles you want to change–for this action, all the members must have the same role to be changed to a new role. Find the drop-down Operations menu, select Modify OG user roles, and click the Execute button. On the next screen you can choose to either add the Administrator member role to the selected users or remove the Administrator member role to make the users general members. Click the Next button at the bottom of the page and confirm the change on the next screen.
 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_11.png
    :alt: This screencap shows the process of editing OG user roles.
@@ -132,9 +132,9 @@ More on Group Membership
 Requesting membership and unsubscribing from a Group
 ****************************************************
 
-In DKAN, “subscribing” to a Group is synonymous with becoming a member of the Group. Nonmembers can submit a membership request to the Group Administrator to become a Group member. Members have privileges to access and edit Datasets associated to the Group, so membership requires moderation. As a Site Manager, you can join any Group without moderation. Any other role must first submit a request to subscribe and then be approved by the Group Administrator.
+Users can request to join a group by clicking the "Request group membership" link on the group home page. A site manager or administrator member must approve the request for the user to become an active member.
 
-Active members, both Members and Administrators, can leave the Group by clicking the *Unsubscribe From Group* link on the Group home page. Once members are removed or leave the Group they no longer have access to the Datasets associated with the Group.
+Active members, both Members and Administrator members, can leave the Group by clicking the *Unsubscribe From Group* link on the Group home page. Once members are removed or leave the Group they can no longer add content to the Group. Users with the site manager role do not need to be members of a group to add content to the group.
 
 Associating Datasets to specific Groups
 ***************************************
@@ -144,6 +144,6 @@ In general, your Group members will publish Datasets associated with the Group, 
 .. figure:: ../../images/site_manager_playbook/group_roles_and_permissions/group_roles_perms_13.png
    :alt: This screencap shows what you'll see at the bottom of a Dataset's page when editing it and selecting which Groups it should be assigned to.
 
-**Add a Dataset:** Datasets should be added a Group as part of the initial content creation process of the Dataset. As Group members add new content to the site they should associate the Dataset with the Group before finally publishing. Users who created the content can later edit the Dataset to add to a Group, and as a Site Manager you can add any Dataset regardless of the author. Once the Dataset is published and associated with the Group, it will appear on the Group's home page. Read the section on adding a Dataset to find more detail on how to add a Dataset to a Group.
+**Add a Dataset:** Datasets should be added a Group as part of the initial content creation process of the Dataset. As Group members add new content to the site they should associate the Dataset with the Group before finally publishing. Users who created the content can later edit the Dataset to add to a Group, and as a Site Manager you can add any Dataset regardless of the author. Once the Dataset is published and associated with the Group, it will appear on the Group's dataset list. Read the section on adding a Dataset to find more detail on how to add a Dataset to a Group.
 
-**Remove a Dataset:** Though Datasets appear on the Group's home page once a Dataset is published and associated with the Group, they are not managed within the Group. To remove a Dataset, the content author, Group Administrator, or Site Manager needs to edit the Dataset directly and remove the Group associated with the Dataset. Once the Group is removed from the Dataset it will no longer appear on the Group's home page.
+**Remove a Dataset:** Though Datasets appear on the Group's home page once a Dataset is published and associated with the Group, they are not managed within the Group. To remove a Dataset, the content author, Administrator member, or Site Manager needs to edit the Dataset directly and remove the Group associated with the Dataset. Once the Group is removed from the Dataset it will no longer appear on the Group's dataset list.
