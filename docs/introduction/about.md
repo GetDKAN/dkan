@@ -20,7 +20,7 @@ Module names are written in Title Case with no additional styling. Quotes can be
 
 ### Entities and bundles
 
-A specific content type or other entity bundle is written in italics, as in referring to a `dataset` node or a `chloropleth` visualization. Entity types, like "node," require no additional styling.
+A specific content type or other entity bundle is written in italics, as in referring to a _dataset_ node or a _choropleth_ visualization. Entity types, like "node," require no additional styling.
 
 ### Files
 
