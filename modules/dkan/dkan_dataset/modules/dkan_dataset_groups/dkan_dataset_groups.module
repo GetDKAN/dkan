@@ -364,10 +364,17 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
   // also not a 'site manager' then the 'administrator member' OG role is removed.
   // The roles are modified on all the groups the updated user belongs to.
   if (module_exists('og')) {
-
+    if (module_exists('dkan_workflow')) {
+      $r1 = 'Workflow Moderator';
+      $r2 = 'Workflow Supervisor';
+    }
+    else {
+      $r1 = 'editor';
+      $r2 = 'site manager';
+    }
     $rid = dkan_dataset_groups_get_og_rid_by_name('administrator member');
-    $rid1 = user_role_load_by_name('editor');
-    $rid2 = user_role_load_by_name('site manager');
+    $rid1 = user_role_load_by_name($r1);
+    $rid2 = user_role_load_by_name($r2);
     // If the user is not an 'editor' or 'site manager'.
     if (!user_has_role($rid1->rid, $account) && !user_has_role($rid2->rid, $account)) {
       // Get the list of groups where the user has the 'administrator member' role.
@@ -379,7 +386,6 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
         ->condition('o.rid', $rid);
       $result = $query->execute();
 
-      // If any, display a message to the user letting them know about the role update.
       if ($result) {
         $groups = '';
         foreach ($result as $delta => $row) {
@@ -388,9 +394,9 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
             $groups .= ', ';
           }
         }
-
+        // If there are groups, display a message to the user letting them know about the role update.
         if ($groups != '') {
-          drupal_set_message(t('%user no longer has the editor or site manager role so has also been removed as an administrator on the following groups: %groups.', array('%user' => $account->name, '%groups' => $groups)), 'status');
+          drupal_set_message(t('%user no longer has the %role1 or %role2 role so has also been removed as an administrator on the following groups: %groups.', array('%user' => $account->name, '%groups' => $groups, '%role1' => $r1, '%role2' => $r2)), 'status');
         }
       }
 
@@ -403,11 +409,11 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
 
     // If the user IS an editor, and belongs to a group or groups,
     // add the og administrator role if not already set.
+    // Note: Site managers can already edit any content without the group administrator role.
     if (user_has_role($rid1->rid, $account)) {
       // Get the list of groups associated with the user.
       $query = db_select('og_membership', 'm');
-      $query->join('og_users_roles', 'o', 'm.gid = o.gid');
-      $query->join('node', 'n', 'o.gid = n.nid');
+      $query->join('node', 'n', 'm.gid = n.nid');
       $query
         ->fields('n', array('nid', 'title'))
         ->condition('m.entity_type', 'user')
@@ -440,11 +446,52 @@ function dkan_dataset_groups_user_update(&$edit, $account, $category) {
 
             // Display a message to the user.
             if (isset($row->title)) {
-              drupal_set_message(t('%user is an editor so has also been granted the group administrator role for the group: %group.', array('%user' => $account->name, '%group' => $row->title)), 'status');
+              drupal_set_message(t('%user has the %role1 role so has also been granted the group administrator role for the group: %group.', array('%user' => $account->name, '%group' => $row->title, '%role1' => $r1)), 'status');
             }
           }
         }
       }
     }
+  }
+}
+
+/**
+ * Implements hook_og_role_grant().
+ */
+function dkan_dataset_groups_og_role_grant($entity_type, $gid, $uid, $rid) {
+  $user = user_load($uid);
+  $admin = dkan_dataset_groups_get_og_rid_by_name('administrator member');
+  $ok = array('administrator', 'site manager', 'editor', 'Workflow Moderator', 'Workflow Supervisor');
+  // Check to see if a content creator is being granted the group administrator role.
+  // Content creators should not be editing other user's content.
+  // Upgrade the user to an editor or workflow moderator role.
+  if (in_array('content creator', $user->roles)
+    && empty(array_intersect($ok, $user->roles))
+    && $rid == $admin) {
+
+    // Provide account edit link in case user wants to undo the change.
+    $link = l(t('edit the user account'), '/user/' . $uid . '/edit');
+
+    // Prepare message to user.
+    if (module_exists('dkan_workflow')) {
+      $old_role = 'workflow contributor';
+      $new_role = 'workflow moderator';
+      $paired_role = 'editor';
+    }
+    else {
+      $old_role = 'content creator';
+      $new_role = 'editor';
+    }
+    $message = t("<strong>@name</strong> was a @old_role. In order to be an administrator of this group, and edit content created by other users, @name was also given the <strong>@new_role</strong> role. If you would like @name to remain a @old_role, and not administer group content, !edituser to remove the @new_role role.", array('@name' => $user->name, '!edituser' => $link, '@old_role' => $old_role, '@new_role' => $new_role));
+
+    $roles = array($new_role);
+    if (isset($paired_role)) {
+      $roles[] = $paired_role;
+    }
+    foreach($roles as $role) {
+      $update_role = user_role_load_by_name($role);
+      user_multiple_role_edit(array($user->uid), 'add_role', $update_role->rid);
+    }
+    drupal_set_message($message, 'warning');
   }
 }
