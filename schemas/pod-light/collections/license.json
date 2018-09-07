@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "License",
+  "description": "A license for datasets",
+  "type": "object",
+  "required": [
+    "title",
+    "identifier"
+  ],
+  "properties": {
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "identifier": {
+      "type": "string",
+      "title": "Identifier"
+    },
+    "created": {
+      "type": "string",
+      "title": "Created",
+      "format": "date-time"
+    },
+    "modified": {
+      "type": "string",
+      "title": "Modified",
+      "format": "date-time"
+    },
+    "link": {
+      "type": "string",
+      "description": "A link to the license definition",
+      "title": "definition",
+      "format": "uri"
+    }
+  }
+}

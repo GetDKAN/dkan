@@ -1,0 +1,148 @@
+{
+  "title": "Project Open Data Distribution",
+  "type": "object",
+  "required": [
+    "title"
+  ],
+  "properties": {
+    "@type": {
+      "title": "Metadata Context",
+      "description": "IRI for the JSON-LD data type. This should be dcat:Distribution for each Distribution",
+      "default": "dcat:Distribution",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "description": "Human-readable name of the distribution",
+      "type": "string",
+      "minLength": 1
+    },
+    "identifier": {
+      "title": "Identifier",
+      "description": "Distribution identifier",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "description": "Human-readable description of the distribution",
+      "type": "string",
+      "minLength": 1
+    },
+    "fileLocation": {
+      "title": " ",
+      "type": "string"
+    },
+    "format": {
+      "title": "Format",
+      "description": "A human-readable description of the file format of a distribution",
+      "type": "string"
+    },
+    "mediaType": {
+      "title": "Media Type",
+      "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s downloadURL",
+      "pattern": "^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$",
+      "type": "string"
+    },
+    "mediaSize": {
+      "title": "Media Size",
+      "description": "The size of the meida file.",
+      "type": "integer"
+    },
+    "downloadURL": {
+      "title": "Download URL",
+      "description": "URL providing direct access to a downloadable file of a dataset",
+      "type": "string",
+      "format": "uri"
+    },
+    "accessURL": {
+      "title": "Access URL",
+      "description": "URL providing indirect access to a dataset",
+      "type": "string",
+      "format": "uri"
+    },
+    "conformsTo": {
+      "title": "Data Standard",
+      "description": "URL providing indirect access to a dataset",
+      "type": "string",
+      "format": "uri"
+    },
+    "describedBy": {
+      "title": "Data Dictionary",
+      "description": "URL to the data dictionary for the distribution found at the downloadURL",
+      "type": "string",
+      "format": "uri"
+    },
+    "describedByType": {
+      "title": "Data Dictionary Type",
+      "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL",
+      "pattern": "^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$",
+      "type": "string"
+    },
+    "isssued": {
+      "title": "Release Date",
+      "description": "Date of formal issuance.",
+      "type": "string",
+      "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
+    },
+    "schema": {
+      "title": "Schema",
+      "description": "Ref of https://frictionlessdata.io/schemas/table-schema.json",
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "title": "Table Schema Field",
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "description": "A name for this field.",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "description": "A human-readable title.",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "description": "A text description. Markdown is encouraged.",
+                "type": "string"
+              },
+              "type": {
+                "description": "The type for the data.",
+                "enum": [
+                  "string",
+                  "integer",
+                  "number",
+                  "boolean",
+                  "object",
+                  "array",
+                  "date",
+                  "time",
+                  "datetime",
+                  "year",
+                  "yearmonth",
+                  "duration",
+                  "geopoint",
+                  "geojson"
+                ]
+              },
+              "format": {
+                "description": "The format keyword options for `string` are `default`, `email`, `uri`, `binary`, and `uuid`.",
+                "enum": [
+                  "default",
+                  "email",
+                  "uri",
+                  "binary",
+                  "uuid"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
