@@ -1,0 +1,84 @@
+---
+datasets:
+  description:
+    ui:widget: textarea
+  identifier:
+    ui:placeholder: This will be computed from the title if not provided
+  "@type":
+    ui:widget: hidden
+  contactPoint:
+    items:
+      "@type":
+        ui:widget: hidden
+  distribution:
+    items:
+      ui:widget: referenced
+      ui:options:
+        collection: distribution
+  theme:
+    items:
+      ui:widget: referenced
+      ui:options:
+        collection: keyword
+  license:
+    ui:widget: referenced
+    ui:options:
+      collection: license
+  ui:order:
+    - @type
+    - title
+    - identifier
+    - description
+    - distribution
+    - keyword
+    - theme
+    - accessLevel
+    - rights
+    - accrualPeriodicity
+    - bureauCode
+    - describedBy
+    - describedByType
+    - conformsTo
+    - dataQuality
+    - contactPoint
+    - landingPage
+    - language
+    - primaryITInvestmentUII
+    - programCode
+    - publisher
+    - references
+    - spatial
+    - systemOfRecords
+    - temporal
+    - license
+    - isPartOf
+    - issued
+    - modified
+distributions:
+  description:
+    ui:widget: textarea
+  identifier:
+    ui:placeholder: This will be computed from the title if not provided
+  "@type":
+    ui:widget: hidden
+  describedBy:
+    ui:widget: hidden
+  describedByType:
+    ui:widget: hidden
+  conformsTo:
+    ui:widget: hidden
+  mediaType:
+    ui:readonly: true
+  mediaSize:
+    ui:readonly: true
+  accessURL:
+    ui:readonly: true
+  downloadURL:
+    ui:readonly: true
+  fileLocation:
+    ui:widget: distUpload
+organizations:
+  @type:
+    ui:widget: hidden
+  image:
+    ui:widget: image
