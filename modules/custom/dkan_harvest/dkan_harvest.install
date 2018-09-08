@@ -1,0 +1,34 @@
+<?php
+
+function dkan_harvest_schema() {
+  $schema['harvest'] = array(
+    // Example (partial) specification for table "node".
+    'description' => 'The table tracking harvest hashes.',
+    'fields' => [
+      'uuid' => [
+        'description' => 'The primary identifier for an entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ],  
+      'hash' => [
+        'description' => 'The hash of the harvest.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],  
+      'timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp of when event occurred.',
+      ],  
+    ],
+    'primary key' => [
+      'uuid',
+    ]
+  );
+  return $schema;
+}
