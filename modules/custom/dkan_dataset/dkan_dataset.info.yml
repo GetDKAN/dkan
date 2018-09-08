@@ -4,6 +4,8 @@ type: module
 core: 8.x
 dependencies:
   - field
+  - group
+  - gnode
   - json_form
   - menu_ui
   - node
