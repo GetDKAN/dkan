@@ -1,0 +1,29 @@
+uuid: cae4ad88-c7b6-47ed-8cee-2141f3b5ef71
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.keyword.field_json_metadata
+    - taxonomy.vocabulary.keyword
+  module:
+    - text
+id: taxonomy_term.keyword.default
+targetEntityType: taxonomy_term
+bundle: keyword
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_json_metadata:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+hidden: {  }

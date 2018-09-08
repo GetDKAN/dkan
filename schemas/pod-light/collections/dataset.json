@@ -125,7 +125,7 @@
             "minLength": 1
           },
           "fileLocation": {
-            "title": " ",
+            "title": "File location",
             "type": "string"
           },
           "format": {

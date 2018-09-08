@@ -3,7 +3,7 @@
 namespace Drupal\interra_api;
 
 use Drupal\node\Entity\Node;
-use Drupal\interra_api\Schema;
+use Drupal\dkan_schema\Schema;
 use Drupal\interra_api\Load;
 
 /**
@@ -40,7 +40,7 @@ class ApiRequest {
    *   The collection that has been requested if it is valid or FALSE.
    */
   public function validateCollectionPath($path) {
-    $schema = new Schema('simple');
+    $schema = new Schema();
     $collections = $schema->getActiveCollections();
     $items = explode('/', $path);
     if ($items[0] == 'collections') {
@@ -64,7 +64,7 @@ class ApiRequest {
    *   The doc that has been requested if it is valid or FALSE.
    */
   public function validateDocPath($path) {
-    $schema = new Schema('simple');
+    $schema = new Schema();
     $collections = $schema->getActiveCollections();
     $items = explode('/', $path);
     if ($items[0] == 'collections') {

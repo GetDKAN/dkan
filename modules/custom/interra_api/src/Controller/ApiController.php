@@ -5,7 +5,8 @@ namespace Drupal\interra_api\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\interra_api\Schema;
+use Drupal\dkan_schema\Schema;
+use Drupal\interra_api\Interra;
 use Drupal\interra_api\Search;
 use Drupal\interra_api\Load;
 use Drupal\interra_api\SiteMap;
@@ -24,10 +25,11 @@ class ApiController extends ControllerBase {
 
   public function schema( Request $request ) {
     $response = array();
-    $schema = new Schema('simple');
+    $schema = new Schema();
+    $interra = new Interra();
     $response['collections'] = $schema->config['collections'];
     $response['schema'] = $schema->loadFullSchema();
-    $response['pageSchema'] = $schema->loadPageSchema();
+    $response['pageSchema'] = $interra->loadPageSchema();
     $response['facets'] = $schema->config['facets'];
     return new JsonResponse( $response );
   }
@@ -46,6 +48,7 @@ class ApiController extends ControllerBase {
     $apiRequest = new ApiRequest();
     $uri = $request->getPathInfo();
     $path = $apiRequest->getUri($uri);
+    dpm($path);
     if ($collection = $apiRequest->validateCollectionPath($path)) {
       $load = new Load();
       $docs = $load->loadByType($collection);

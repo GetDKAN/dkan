@@ -1,0 +1,9 @@
+uuid: ee101023-5da2-44ba-ba61-9a90ef2e9963
+langcode: en
+status: true
+dependencies: {  }
+name: Keyword
+vid: keyword
+description: ''
+hierarchy: 0
+weight: 0

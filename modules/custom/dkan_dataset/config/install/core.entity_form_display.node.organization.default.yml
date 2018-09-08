@@ -1,0 +1,75 @@
+uuid: bd3eb784-c923-44d4-b89e-26accd2b6772
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.organization.field_json_metadata
+    - node.type.organization
+  module:
+    - json_form
+    - path
+id: node.organization.default
+targetEntityType: node
+bundle: organization
+mode: default
+content:
+  created:
+    type: datetime_timestamp
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_json_metadata:
+    weight: 121
+    settings:
+      json_form: ''
+      show_textarea: false
+      json_form_default_value: ''
+    third_party_settings: {  }
+    type: json_form_field
+    region: content
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 15
+    region: content
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 120
+    region: content
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 16
+    region: content
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    region: content
+    third_party_settings: {  }
+hidden: {  }

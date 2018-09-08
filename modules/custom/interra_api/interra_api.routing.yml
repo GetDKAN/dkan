@@ -22,3 +22,15 @@ interra_api.sitemap:
    { _controller: '\Drupal\interra_api\Controller\ApiController::siteMap'}
   requirements:
     _permission: 'access content'
+interra_api.collecion:
+  path: '/api/v1/collections/{collection}'
+  defaults:
+   { _controller: '\Drupal\interra_api\Controller\ApiController::collection'}
+  requirements:
+    _permission: 'access content'
+interra_api.doc:
+  path: '/api/v1/collections/{collection}/{doc}'
+  defaults:
+   { _controller: '\Drupal\interra_api\Controller\ApiController::doc'}
+  requirements:
+    _permission: 'access content'

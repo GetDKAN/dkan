@@ -1,12 +1,7 @@
 name: 'JSON Form'
 description: 'JSON Form'
 type: module
-# core: 8.x
+core: 8.x
 dependencies:
-  drupal:field
-
-# Information added by Drupal.org packaging script on 2018-02-05
-version: '8.x-1.0-alpha5+4-dev'
-core: '8.x'
-project: 'json_form'
-datestamp: 1517856187
+  - drupal:field
+  - dkan_schema

@@ -8,6 +8,12 @@ collections:
   - keyword
   - license
   - theme
+references:
+  dataset:
+      keyword: keyword
+      license: license
+      theme: theme
+      publisher: organization
 facets:
   keyword:
     label: Tags

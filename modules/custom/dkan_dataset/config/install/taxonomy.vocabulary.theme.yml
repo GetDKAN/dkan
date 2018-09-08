@@ -1,0 +1,9 @@
+uuid: 83945670-af20-4159-9d39-0f716bedaa34
+langcode: en
+status: true
+dependencies: {  }
+name: Theme
+vid: theme
+description: ''
+hierarchy: 0
+weight: 0

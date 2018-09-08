@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\interra_api;
+namespace Drupal\dkan_schema;
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Component\Serialization\Json;
@@ -10,10 +10,9 @@ class Schema {
   public $config = FALSE;
 
   private $schemaDir = 'profiles/dkan2/schemas';
-  private $interraConfigDir = 'profiles/dkan2/modules/custom/interra_api/config';
 
-  function __construct($schema) {
-    $this->schema = $schema;
+  function __construct($schema = '') {
+    $this->schema = $schema ? $schema : dkan_schema_current_schema();
     $this->config = $this->loadConfig();
   }
 
@@ -30,12 +29,33 @@ class Schema {
     return $this->config['collections'];
   }
 
+  public function loadSchema($collection) {
+    return $this->loadSchemaFile($collection);
+  }
+
+  public function prepareForForm($collection) {
+    $schema = json_decode(file_get_contents($this->schemaDir . '/' . $this->schema . '/collections/' . $collection . '.json'));
+    $references = $this->config['references'];
+    // Currently we want to use strings for references. This will get fixed
+    // later in the form definition itself.
+    foreach ($references[$collection] as $reference => $entity) {
+      $schema->properties->{$reference}->type = 'string';
+      unset($schema->properties->{$reference}->items);
+      unset($schema->properties->{$reference}->properties);
+    }
+    return $schema;
+  }
+
+  private function loadSchemaFile($collection) {
+    return Json::decode(file_get_contents($this->schemaDir . '/' . $this->schema . '/collections/' . $collection . '.json'));
+  }
+
   public function loadFullSchema() {
     $collections = $this->getActiveCollections();
     $references = $this->config['references'];
     $fullSchama = array();
     foreach ($collections as $collection) {
-      $dereferencedSchema = Json::decode(file_get_contents($this->schemaDir . '/' . $this->schema . '/collections/' . $collection . '.json'));
+      $dereferencedSchema = $this->loadSchema($collection);
       // Start HACK. TODO: Remove HACK.
       if ($collection == 'dataset') {
         $organization = array(
@@ -48,15 +68,6 @@ class Schema {
       $fullSchema[$collection] = $this->dereference($references, $collection, $dereferencedSchema);
     }
     return $fullSchema;
-  }
-
-  public function loadPageSchema() {
-    $file = $this->interraConfigDir . '/pageSchema.yml';
-    return Yaml::decode(file_get_contents($file));
-  }
-
-  private function loadSchemaFile($collection) {
-    return Json::decode(file_get_contents($this->schemaDir . '/' . $this->schema . '/collections/' . $collection . '.json'));
   }
 
   /**

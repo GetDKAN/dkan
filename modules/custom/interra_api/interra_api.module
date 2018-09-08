@@ -9,7 +9,7 @@ use Drupal\node\Entity\Node;
  *   Active collections. Each collection contains an array of uuids => paths.
  */
 function getRoutes() {
-  $collections = getCollections();
+  $collections = dkan_schema_collections();
   $nodes = array();
   $output = array();
   foreach ($collections as $collection) {
@@ -31,19 +31,6 @@ function getRoutes() {
  */
 function getCurrentSchema() {
   return 'simple';
-}
-
-/**
- * Gets the collections defined by the current schema. TODO: don't hardcode.
- *
- * @return array()
- *   Active collections.
- */
-function getCollections() {
-  return array(
-    'dataset',
-    'organization',
-  );
 }
 
 /**

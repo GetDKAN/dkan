@@ -1,0 +1,29 @@
+uuid: 3a05aa75-b9ef-401d-b73a-dbc9906171e6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.license.field_json_metadata
+    - taxonomy.vocabulary.license
+  module:
+    - text
+id: taxonomy_term.license.default
+targetEntityType: taxonomy_term
+bundle: license
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_json_metadata:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+hidden: {  }
