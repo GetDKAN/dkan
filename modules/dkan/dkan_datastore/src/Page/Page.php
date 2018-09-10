@@ -48,7 +48,13 @@ class Page {
         return $this->dropForm();
       }
 
-      $html = (new Status($manager))->getHtml();
+      $html = "<p>Import the data from a CSV file into a database table to make it accessible through an API.</p>";
+      $this->form['help'] = [
+        '#type' => 'item',
+        '#markup' => $html
+      ];
+
+      $html = (new Status($datastore_manager))->getHtml();
       $this->form['status'] = [
         '#type' => 'item',
         '#title' => t('Datastore Status'),
