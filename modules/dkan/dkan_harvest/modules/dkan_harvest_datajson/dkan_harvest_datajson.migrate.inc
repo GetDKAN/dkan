@@ -111,8 +111,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
             '@value' => $row->modified,
           ));
         $this->saveMessage($message);
-        // Skip this $row.
-        return FALSE;
       }
     }
 
@@ -124,10 +122,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
       if ($d) {
         $row->issued = $row->modified;
       }
-    }
-
-    if (property_exists($row, 'accrualPeriodicity')) {
-      $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
     }
 
     // Process contact name and email.
