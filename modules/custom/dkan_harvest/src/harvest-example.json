@@ -1,0 +1,45 @@
+[{
+	"id": "dkandemo",
+	"source": {
+		"type": "DataJson",
+		"uri": "http://demo.getdkan.com/data.json"
+	},
+	"transforms": [{
+			"Filter": {
+				"keyword": "environment"
+			}
+		}, {
+			"Override": {
+				"publisher.name": "DKAN Demo"
+			}
+		},
+		"DataJsonToDkan"
+	],
+	"load": {
+		"migrate": false,
+		"collectionsToUpdate": ["dataset"],
+		"type": "Dkan8"
+	}
+}, {
+	"id": "dkandemo2",
+	"source": {
+		"type": "DataJson",
+		"uri": "http://demo.getdkan.com/data.json"
+	},
+	"transforms": [{
+			"Filter": {
+				"keyword": "bugdet"
+			}
+		}, {
+			"Override": {
+				"publisher.name": "DKAN Demo"
+			}
+		},
+		"DataJsonToDkan"
+	],
+	"load": {
+		"migrate": true,
+		"collectionsToUpdate": ["dataset"],
+		"type": "Dkan8"
+	}
+}]
