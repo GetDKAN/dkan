@@ -55,7 +55,7 @@ class Harvest {
   }
 
   function extract() {
-    $items = $this->extract->load();
+    $items = $this->extract->run();
     return $items;
   }
 

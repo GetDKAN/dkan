@@ -8,7 +8,7 @@ class DataJsonToDkan extends Transform {
     $this->config = $config;
   }
 
-  function run($items) {
+  function run(&$items) {
     parent::run($items);
   }
 }

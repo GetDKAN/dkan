@@ -9,11 +9,26 @@ class Schema {
 
   public $config = FALSE;
 
-  private $schemaDir = 'profiles/dkan2/schemas';
+  private $dir = '';
+
+  private $schemaDir = 'schemas';
 
   function __construct($schema = '') {
     $this->schema = $schema ? $schema : dkan_schema_current_schema();
     $this->config = $this->loadConfig();
+  }
+
+  private function dir() {
+    if ($this->dir) {
+      return $this->dir;
+    }
+    else {
+      $currentDir = __DIR__;
+      $num = strlen('modules/custom/dkan_schema/src');
+      $basedDir = substr($currentDir, 0, -1 * abs($num));
+      $this->dir = $basedDir . $this->schemaDir . '/' . $this->schema;
+      return $this->dir;
+    }
   }
 
   public function getCurrentSchema() {
@@ -21,7 +36,10 @@ class Schema {
   }
 
   private function loadConfig() {
-    $file = $this->schemaDir . '/' . $this->schema . '/config.yml';
+    $currentDir = __DIR__;
+    $num = strlen('modules/custom/dkan_schema/src');
+    $basedDir = substr($currentDir, 0, -1 * abs($num));
+    $file = $this->dir() . '/config.yml';
     return Yaml::decode(file_get_contents($file));
   }
 
@@ -34,7 +52,7 @@ class Schema {
   }
 
   public function prepareForForm($collection) {
-    $schema = json_decode(file_get_contents($this->schemaDir . '/' . $this->schema . '/collections/' . $collection . '.json'));
+    $schema = json_decode(file_get_contents($this->dir() . '/collections/' . $collection . '.json'));
     $references = $this->config['references'];
     // Currently we want to use strings for references. This will get fixed
     // later in the form definition itself.
@@ -47,7 +65,7 @@ class Schema {
   }
 
   private function loadSchemaFile($collection) {
-    return Json::decode(file_get_contents($this->schemaDir . '/' . $this->schema . '/collections/' . $collection . '.json'));
+    return Json::decode(file_get_contents($this->dir() . '/collections/' . $collection . '.json'));
   }
 
   public function loadFullSchema() {

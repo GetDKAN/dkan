@@ -18,6 +18,8 @@ require_once('Transform/Override.php');
 require_once('Transform/DataJsonToDkan.php');
 require_once('Load.php');
 require_once('Load/Dkan8.php');
+require '../vendor/autoload.php';
+
 
 use Drupal\dkan_schema\Schema;
 use Drupal\dkan_harvest\Harvest;

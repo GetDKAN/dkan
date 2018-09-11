@@ -8,7 +8,7 @@ class Override extends Transform {
     $this->config = $config;
   }
 
-  function run() {
+  function run(&$items) {
     parent::run($items);
     var_dump("run transforming from Override ...");
   }
