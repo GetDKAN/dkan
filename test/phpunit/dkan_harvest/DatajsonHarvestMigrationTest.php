@@ -136,9 +136,9 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * @depends testDatasetCount
    */
   public function testAccrualPeriodicity($dataset) {
-    $optionsList = array_flip($dataset->field_frequency->optionsList());
+    $optionsList = $dataset->field_frequency->optionsList();
     $frequency_key = $dataset->field_frequency->value();
-    $this->assertEquals('irregular', $optionsList[$frequency_key]);
+    $this->assertEquals('Irregularly', $optionsList[$frequency_key]);
   }
 
   /**
