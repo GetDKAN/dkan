@@ -1,5 +1,6 @@
 [{
-	"id": "dkandemo",
+	"sourceId": "dkandemo",
+  "runId": "32341",
 	"source": {
 		"type": "DataJson",
 		"uri": "http://demo.getdkan.com/data.json"
@@ -21,7 +22,8 @@
 		"type": "Dkan8"
 	}
 }, {
-	"id": "dkandemo2",
+	"sourceId": "dkandemo2",
+  "runId": "3234811",
 	"source": {
 		"type": "DataJson",
 		"uri": "http://demo.getdkan.com/data.json"

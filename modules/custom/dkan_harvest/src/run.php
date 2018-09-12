@@ -18,6 +18,9 @@ require_once('Transform/Override.php');
 require_once('Transform/DataJsonToDkan.php');
 require_once('Load.php');
 require_once('Load/Dkan8.php');
+require_once('Log.php');
+require_once('Log/File.php');
+require_once('Log/Stdout.php');
 require '../vendor/autoload.php';
 
 

@@ -10,12 +10,15 @@ abstract class Extract {
 
   protected $uri;
 
-  protected $harvestId;
+  protected $sourceId;
 
-  function __construct($config, $harvest) {
+  protected $log;
+
+  function __construct($config, $harvest, $log) {
     $this->uri = $harvest->source->uri;
     $this->folder = $config->fileLocation . '/dkan_harvest/';
-    $this->harvestId = $harvest->id;
+    $this->sourceId = $harvest->sourceId;
+    $this->log = $log;
   }
 
 	protected function httpRequest($uri) {
@@ -33,7 +36,7 @@ abstract class Extract {
 
 	protected function writeToFile($id, $item) {
 		try {
-      $harvestFolder = $this->folder . '/' . $this->harvestId;
+      $harvestFolder = $this->folder . '/' . $this->sourceId;
       if (!file_exists($harvestFolder)) {
         mkdir($harvestFolder, 0777, true);
       }
@@ -46,16 +49,15 @@ abstract class Extract {
 			fclose($handle);
 		} catch ( Exception $e ) {
       // Let's log.
+
     }
 	}
 
   function run() {
-    var_dump('loading Extract');
     return array();
   }
 
   function cache() {
-    var_dump('loading cache');
   }
 
 }

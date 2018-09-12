@@ -4,10 +4,12 @@ namespace Drupal\dkan_harvest;
 
 abstract class Load {
 
-  private $config;
+  protected  $config;
+  protected $log;
 
-  function __construct($config = NULL) {
+  function __construct($config = NULL, $log) {
     $this->config = $config;
+    $this->log = $log;
   }
 
   function run($items) {

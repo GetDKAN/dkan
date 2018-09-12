@@ -4,12 +4,15 @@ namespace Drupal\dkan_harvest;
 
 abstract class Transform {
 
-  private $config;
+  protected $config;
 
-  private $drupal8 = FALSE;
+  protected $drupal8 = FALSE;
 
-  function __construct($config = NULL) {
+  protected $log;
+
+  function __construct($config = NULL, $log) {
     $this->config = $config;
+    $this->log = $log;
   }
 
   function run(&$items) {

@@ -7,10 +7,16 @@ use GuzzleHttp\Client;
 class DataJson extends Extract {
 
   function run() {
-    var_dump('loading datajson');
+    $this->log->write('DEBUG', 'extract', 'Running DataJson extraction.');
   }
 
+  function readFolder() {
+    $harvestFolder = $this->folder . '/' . $this->sourceId;
+  }
+
+
   function cache() {
+    $this->log->write('DEBUG', 'extract', 'Caching DataJson files.');
 		$data = $this->httpRequest($this->uri);
 		$res = json_decode($data);
 		if ($res->dataset) {
@@ -18,7 +24,6 @@ class DataJson extends Extract {
         $this->writeToFile($dataset->identifier, json_encode($dataset));
 			}
 		}
-    var_dump('loading cache datajon');
   }
 
 }

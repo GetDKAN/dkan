@@ -10,6 +10,9 @@ use Drupal\dkan_harvest\Filter;
 use Drupal\dkan_harvest\Override;
 use Drupal\dkan_harvest\Load;
 use Drupal\dkan_harvest\Dkan8;
+use Drupal\dkan_harvest\Log;
+use Drupal\dkan_harvest\File;
+use Drupal\dkan_harvest\Stdout;
 
 class Harvest {
 
@@ -19,17 +22,24 @@ class Harvest {
 
   public $load;
 
+  public $log;
+
   public function __construct($config) {
     $this->config = $config;
   }
 
   function init($harvest) {
-    var_dump('Initializing harvest: ' . $harvest->id);
-    $extract = "Drupal\\dkan_harvest\\" . $harvest->source->type;
-    $this->extract = new $extract($this->config, $harvest);
+    $logClass = "Drupal\\dkan_harvest\\" . $this->config->log->type;
+    $this->log = new $logClass($this->config->log->debug, $harvest->sourceId, $harvest->runId);
+		$this->log->write('DEBUG', 'init', 'Initializing harvest');
+
+    $extractClass = "Drupal\\dkan_harvest\\" . $harvest->source->type;
+    $this->extract = new $extractClass($this->config, $harvest, $this->log);
+
     $this->transforms = $this->initializeTransforms($harvest->transforms);
-    $load = "Drupal\\dkan_harvest\\" . $harvest->load->type;
-    $this->load = new $load($this->load);
+
+    $loadClass = "Drupal\\dkan_harvest\\" . $harvest->load->type;
+    $this->load = new $loadClass($this->load, $this->log);
   }
 
   function initializeTransforms($transforms) {
@@ -40,11 +50,11 @@ class Harvest {
         $name = array_keys($transform)[0];
         $class = "Drupal\\dkan_harvest\\" . $name;
         $config = $transform[$name];
-        $trans[] = new $class($config);
+        $trans[] = new $class($config, $this->log);
       }
       else {
         $class = "Drupal\\dkan_harvest\\" . $transform;
-        $trans[] = new $class();
+        $trans[] = new $class(NULL, $this->log);
       }
     }
     return $trans;
