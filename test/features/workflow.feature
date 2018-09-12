@@ -434,16 +434,19 @@ Feature:
   Scenario: "View draft" should display the draft dataset and not the published revision.
     And datasets:
       | title         | author      | published | moderation | publisher |
-      | Dataset title | Contributor | Yes       | published  | Group 01  |
-    Given I update the moderation state of "Dataset title" to "Published"
-    Given I am logged in as "Contributor"
+      | Dataset title | Contributor | No        | draft      | Group 01  |
+    Given I am logged in as "Supervisor"
+    And I update the moderation state of "Dataset title" to "Published"
+    And I am logged in as "Contributor"
     And I am on "Dataset title" page
     Then I should see the text "Dataset title"
-    When I click "Edit draft"
+    When I click "New draft"
     And for "title" I enter "Dataset draft title"
+    And for "Description" I enter "Dataset draft body"
     And I press "Finish"
     And I click "View draft"
     Then I should see "Dataset draft title"
+    And I should see "Dataset draft body"
 
   @workflow_20 @api @javascript @harvest
   Scenario: Check harvested datasets are published by default even when dkan_workflow is enabled.
