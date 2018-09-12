@@ -68,6 +68,8 @@ projects:
     version: '3.3'
   double_field:
     version: '2.5'
+  drafty:
+    version: 1.0-rc1
   draggableviews:
     version: '2.1'
   entity:
@@ -357,11 +359,7 @@ projects:
     version: '3.12'
   workbench_moderation:
     version: '3.0'
-    patch:
-      2360973: https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch
-      1512442: https://www.drupal.org/files/issues/1512442-20-workbench_moderation-fix_access_check.patch
-  drafty:
-    version: 1.0-beta4
+    revision: 3fcb1a66e87a539f06664502141abc8f37712929
 libraries:
   chosen:
     download:
