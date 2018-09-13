@@ -9591,11 +9591,6 @@ div.horizontal-tabs {
 #dkan-dataset-form-settings .help-block {
   margin: 5px 20px 10px; }
 
-#views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page .form-group {
-  display: inline-block; }
-  #views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page .form-group input {
-    width: 100px; }
-
 .view-dkan-harvest-dashboard .view-header {
   margin-bottom: 10px; }
 
