@@ -36,6 +36,41 @@ function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
       $form['options']['#access'] = TRUE;
     }
   }
+  if ($form_id == 'resource_node_form') {
+    $allowed = dkan_allowed_extensions();
+    $form['field_upload'][LANGUAGE_NONE][0]['#file_resup_upload_validators']['file_validate_extensions'][0] = $allowed;
+    $form['field_link_remote_file'][LANGUAGE_NONE][0]['#upload_validators']['file_validate_extensions'][0] = $allowed;
+  }
+}
+
+/**
+ * Create default extensions variable from the resource upload field config.
+ */
+function dkan_default_extensions() {
+  $field_config = db_select('field_config_instance', 'f')
+    ->fields('f', array('data'))
+    ->condition('field_name', 'field_upload')
+    ->execute()
+    ->fetchCol();
+
+  $data = unserialize($field_config[0]);
+  $default = $data['settings']['file_extensions'];
+  return $default;
+}
+
+/**
+ * Store allowed file extensions in a variable for UI customization.
+ */
+function dkan_allowed_extensions() {
+  $default = dkan_default_extensions();
+  $custom = variable_get('dkan_custom_extensions');
+  if (isset($custom) && !empty($custom)) {
+    $allowed = $default . ' ' . $custom;
+  }
+  else {
+    $allowed = $default;
+  }
+  return $allowed;
 }
 
 /**
