@@ -90,65 +90,28 @@ Feature: Resource
   Scenario: Manage datastore of resources associated with groups that I am a member of
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
+    Then I should not see "Manage Datastore"
 
-  @resource_editor_6 @datastore @noworkflow @javascript @fixme
-  Scenario: Import items on datastore of resources associated with groups that I am a member of
+  @resource_editor_6 @datastore @noworkflow @javascript
+  Scenario: Import and drop items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 02" page
     And I click "Edit"
     And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple7.csv"
-    And I press "Save"
-    Given I am logged in as "Celeste"
-    And I am on "Resource 02" page
-    When I follow "View"
-    When I click "Manage Datastore"
-    And I wait for "Import"
-    And I press "Import"
-    And I wait for "Delete Items"
-    Then "Resource 02" should have datastore records
-
-  @resource_editor_7 @datastore @db @noworkflow @javascript @fixme
-  Scenario: Delete items on datastore of resources associated with groups that I am a member of
-      Given I am logged in as "John"
-      And I am on "Resource 02" page
-      And I click "Edit"
-      And I click "Remote file"
-      And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple8.csv"
-      And I press "Save"
-      Given I am logged in as "Celeste"
-      When I am on "Resource 02" page
-      When I follow "View"
-      When I click "Manage Datastore"
-      And I wait for "Import"
-      And I press "Import"
-      And I wait for "Delete Items"
-      Then "Resource 02" should have datastore records
-      And I click "Delete items"
-      And I press "Delete"
-      And I wait for "items have been deleted"
-      Then "Resource 02" should have no datastore records
-
-  @resource_editor_8 @datastore @noworkflow @javascript @fixme
-  Scenario: Drop datastore of resources associated with groups that I am a member of
-    Given I am logged in as "John"
-    And I am on "Resource 02" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple9.csv"
-    And I press "Save"
-    Given I am logged in as "Celeste"
+    Then I press "Save"
+    When I am logged in as "Celeste"
     And I am on "Resource 02" page
     When I click "Manage Datastore"
-    And I wait for "Import"
-    And I press "Import"
-    And I wait for "Delete Items"
-    Then "Resource 02" should have datastore records
-    When I click "Drop Datastore"
+    Then I should see "Status"
+    When I press "Import"
+    And I wait for "Done"
     And I press "Drop"
-    Then "Resource 02" should have no datastore records
+    And I press "Drop"
+    Then I should see "Records Imported"
+    And I should see "0"
+    And I should see "Data Importing"
+    And I should see "Ready"
 
   @resource_editor_9 @noworkflow
   Scenario: Add revision to resources associated with groups that I am a member of

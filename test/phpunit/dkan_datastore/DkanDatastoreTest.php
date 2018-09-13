@@ -1,165 +1,68 @@
 <?php
 
-/**
- * @file
- * Base phpunit tests for DkanDatastoreFastImport class.
- */
+use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
+use Dkan\Datastore\Resource;
 
 /**
- * DkanDatastoreFastImport class.
+ * Class DkanDatastoreTest.
  */
 class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
 
-  /**
-   * Test updateFromFileUri.
-   *
-   * @covers DkanDatastore::updateFromFileUri
-   */
-  public function testUpdateFromFileUri() {
-    // Create a stub for the DkanDatastore class.
-    $dkanDatastorestub = $this->getMockBuilder(DkanDatastore::class)
-      ->setMethods(['updateFromFile'])
-      ->disableOriginalConstructor()
-      ->disableOriginalClone()
-      ->getMock();
+  private $resource_node;
 
-    // Configure the stub.
-    $dkanDatastorestub->expects($this->once())
-      ->method('updateFromFile')
-      ->willReturn(TRUE);
-
-    $testfileuri = __DIR__ . '/data/countries.csv';
-    // Calling $stub->doSomething() will now return
-    // 'foo'.
-    $this->assertEquals(TRUE, $dkanDatastorestub->updateFromFileUri($testfileuri));
+  protected function setUp() {
+    $node = (object) [];
+    $node->title = "Datastore Resource Test Object 23523";
+    $node->type = "resource";
+    $node->field_link_remote_file['und'][0]['uri'] = "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv";
+    $node->status = 1;
+    node_save($node);
+    $this->resource_node = node_load($node->nid);
   }
 
-  /**
-   * Test updateFromFileUri when no file is provided.
-   *
-   * @covers DkanDatastore::updateFromFileUri
-   */
-  public function testUpdateFromFileUriNoFile() {
-    // Create a stub for the DkanDatastore class.
-    $dkanDatastorestub = $this->getMockBuilder(DkanDatastore::class)
-      ->setMethods(['updateFromFile'])
-      ->disableOriginalConstructor()
-      ->disableOriginalClone()
-      ->getMock();
+  public function test() {
 
-    // Configure the DkanDatastorestub method.
-    $dkanDatastorestub->expects($this->never())
-      ->method('updateFromFile')
-      ->willReturn(TRUE);
+    $resource = new Resource($this->resource_node->nid, __DIR__ . "/data/countries.csv");
 
-    $this->assertEquals(FALSE, $dkanDatastorestub->updateFromFileUri());
+    /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
+    $datastore = (new \Dkan\Datastore\Manager\Factory($resource))->get();
+
+    $status = $datastore->getStatus();
+    $this->assertEquals(SimpleImport::STORAGE_UNINITIALIZED, $status['storage']);
+    $this->assertEquals(SimpleImport::DATA_IMPORT_UNINITIALIZED, $status['data_import']);
+
+    $datastore->import();
+
+    $status = $datastore->getStatus();
+    $this->assertEquals(SimpleImport::STORAGE_INITIALIZED, $status['storage']);
+    $this->assertEquals(SimpleImport::DATA_IMPORT_DONE, $status['data_import']);
+
+
+    $query = db_select($datastore->getTableName(), "d");
+    $query->fields("d");
+    $results = $query->execute();
+    $results = $results->fetchAllAssoc("country");
+    $json = json_encode($results);
+    $this->assertEquals(
+      "{\"US\":{\"country\":\"US\",\"population\":\"315209000\",\"id\":\"1\",\"timestamp\":\"1359062329\"},\"CA\":{\"country\":\"CA\",\"population\":\"35002447\",\"id\":\"2\",\"timestamp\":\"1359062329\"},\"AR\":{\"country\":\"AR\",\"population\":\"40117096\",\"id\":\"3\",\"timestamp\":\"1359062329\"},\"JP\":{\"country\":\"JP\",\"population\":\"127520000\",\"id\":\"4\",\"timestamp\":\"1359062329\"}}",
+      $json);
+
+    $this->assertEquals(4, $datastore->numberOfRecordsImported());
+
+    $status = $datastore->getStatus();
+    $this->assertEquals(SimpleImport::STORAGE_INITIALIZED, $status['storage']);
+    $this->assertEquals(SimpleImport::DATA_IMPORT_DONE, $status['data_import']);
+
+    $datastore->drop();
+    $this->assertFalse(db_table_exists($datastore->getTableName()));
+
+    $status = $datastore->getStatus();
+    $this->assertEquals(SimpleImport::STORAGE_UNINITIALIZED, $status['storage']);
+    $this->assertEquals(SimpleImport::DATA_IMPORT_UNINITIALIZED, $status['data_import']);
   }
 
-  /**
-   * Test importByCli.
-   *
-   * @covers DkanDatastore::importByCli
-   */
-  public function testImportByCli() {
-    $feedsSourceStub = $this->getMockBuilder(FeedsSource::class)
-      ->setMethods(['import'])
-      ->disableOriginalConstructor()
-      ->disableOriginalClone()
-      ->getMock();
-
-    $feedsSourceStub->expects($this->once())
-      ->method('import')
-      ->willReturn(FEEDS_BATCH_COMPLETE);
-
-    // Create a stub for the DkanDatastore class.
-    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastore::class)
-      ->setMethods(['source', 'setupSourceBackground'])
-      ->disableOriginalConstructor()
-      ->disableOriginalClone()
-      ->getMock();
-
-    // Configure the DkanDatastorestub method.
-    $dkanDatastoreStub->expects($this->once())
-      ->method('source')
-      ->willReturn($feedsSourceStub);
-
-    // Configure the DkanDatastorestub method.
-    $dkanDatastoreStub->expects($this->once())
-      ->method('setupSourceBackground')
-      ->willReturn(TRUE);
-
-    $this->assertEquals(TRUE, $dkanDatastoreStub->importByCli());
-  }
-
-  /**
-   * Test importByCli when Feeds Source preparation fails.
-   *
-   * @covers DkanDatastore::importByCli
-   */
-  public function testImportByCliFailedSourcePreparation() {
-    $feedsSourceStub = $this->getMockBuilder(FeedsSource::class)
-      ->setMethods(['import'])
-      ->disableOriginalConstructor()
-      ->disableOriginalClone()
-      ->getMock();
-
-    $feedsSourceStub->expects($this->never())
-      ->method('import');
-
-    // Create a stub for the DkanDatastore class.
-    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastore::class)
-      ->setMethods(['source', 'setupSourceBackground'])
-      ->disableOriginalConstructor()
-      ->disableOriginalClone()
-      ->getMock();
-
-    // Configure the DkanDatastorestub method.
-    $dkanDatastoreStub->expects($this->once())
-      ->method('source')
-      ->willReturn($feedsSourceStub);
-
-    // Configure the DkanDatastorestub method.
-    $dkanDatastoreStub->expects($this->once())
-      ->method('setupSourceBackground')
-      ->willReturn(FALSE);
-
-    $this->assertEquals(FALSE, $dkanDatastoreStub->importByCli());
-  }
-
-  /**
-   * Test importByCli when the Feed Source import fails.
-   *
-   * @covers DkanDatastore::importByCli
-   */
-  public function testImportByCliFailImport() {
-    $feedsSourceStub = $this->getMockBuilder(FeedsSource::class)
-      ->setMethods(['import'])
-      ->disableOriginalConstructor()
-      ->disableOriginalClone()
-      ->getMock();
-
-    $feedsSourceStub->expects($this->once())
-      ->method('import')
-      ->will($this->throwException(new Exception()));
-
-    // Create a stub for the DkanDatastore class.
-    $dkanDatastoreStub = $this->getMockBuilder(DkanDatastore::class)
-      ->setMethods(['source', 'setupSourceBackground'])
-      ->disableOriginalConstructor()
-      ->disableOriginalClone()
-      ->getMock();
-
-    // Configure the DkanDatastorestub method.
-    $dkanDatastoreStub->expects($this->once())
-      ->method('source')
-      ->willReturn($feedsSourceStub);
-
-    // Configure the DkanDatastorestub method.
-    $dkanDatastoreStub->expects($this->once())
-      ->method('setupSourceBackground')
-      ->willReturn(TRUE);
-
-    $this->assertEquals(FALSE, $dkanDatastoreStub->importByCli());
+  protected function tearDown() {
+    node_delete($this->resource_node->nid);
   }
 
 }
