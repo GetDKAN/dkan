@@ -5,7 +5,7 @@ includes:
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-2.0/visualization_entity.make
 - https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.1/open_data_schema_map.make
 - https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
-- https://raw.githubusercontent.com/NuCivic/recline/7.x-2.0/recline.make
+- https://raw.githubusercontent.com/NuCivic/recline/7.x-2.1/recline.make
 projects:
   admin_menu:
     version: 3.0-rc5
@@ -23,6 +23,12 @@ projects:
     version: '2.3'
     patch:
       2833824: https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch
+  autoload:
+    download:
+      type: git
+      url: https://git.drupal.org/project/autoload.git
+      branch: 7.x-2.x
+      revision: 80ea4d125a2edf1e3c68c5627b3afb4614828a27
   beautytips:
     download:
       type: git
@@ -289,7 +295,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/recline.git
-      tag: 7.x-2.0
+      revision: b219cef673561aa6d4c589b55bbbac330bc92574
   ref_field:
     download:
       type: git
@@ -365,7 +371,11 @@ projects:
     version: '3.12'
   workbench_moderation:
     version: '3.0'
-    revision: 3fcb1a66e87a539f06664502141abc8f37712929
+    patch:
+      2360973: https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch
+      1512442: https://www.drupal.org/files/issues/1512442-20-workbench_moderation-fix_access_check.patch
+  xautoload:
+    version: '5.7'
 libraries:
   chosen:
     download:
