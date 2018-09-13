@@ -50,8 +50,9 @@ Feature: Site Manager administer groups
     And I press "Add users"
     Then I should see "Martin has been added to the group Group A"
     When I am on "Group A" page
-    And I click "Members"
-    Then I should see "Martin" in the "group members" region
+    And I click "Group"
+    And I click "People"
+    Then I should see "Martin"
 
   Scenario: Remove group member from a group as group administrator
     Given I am logged in as "Gabriel"
@@ -61,9 +62,9 @@ Feature: Site Manager administer groups
     And I click "remove" in the "Katie" row
     And I press "Remove"
     Then I should see "The membership was removed"
-    When I am on "Group A" page
-    And I click "Members"
-    Then I should not see "Katie" in the "group members" region
+    And I click "Group"
+    And I click "People"
+    Then I should not see "Katie"
 
   Scenario: I should not be able to edit a group that I am not a member of
     Given I am logged in as "Gabriel"

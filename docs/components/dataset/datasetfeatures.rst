@@ -41,7 +41,12 @@ DKAN provides a widget so that a spatial area can be drawn if desired:
 
 .. figure:: ../../images/spacial-geographical.png
 
-By default the "Data Extent" block utilizes OpenMap's default tiles. DKAN makes the tiles configurable through the Drupal variable `dkan_map_tile_url`.
+.. note::
+
+  By default the "Data Extent" block utilizes OpenMap's default tiles. DKAN makes the tiles configurable through the Drupal variable **dkan_map_tile_url**.
+
+  For example, to set the tiles to use Stamen tiles, run ``drush vset dkan_map_tile_url https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png``
+
 
 Revision History
 ----------------
