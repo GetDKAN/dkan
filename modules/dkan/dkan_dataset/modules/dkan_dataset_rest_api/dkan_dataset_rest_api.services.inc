@@ -40,6 +40,30 @@ function dkan_dataset_rest_api_default_services_endpoint() {
     ),
   );
   $endpoint->resources = array(
+    'datastore' => array(
+      'operations' => array(
+        'retrieve' => array(
+          'enabled' => '1',
+        ),
+        'create' => array(
+          'enabled' => '1',
+        ),
+        'update' => array(
+          'enabled' => '1',
+        ),
+        'delete' => array(
+          'enabled' => '1',
+        ),
+      ),
+      'targeted_actions' => array(
+        'drop' => array(
+          'enabled' => '1',
+        ),
+        'import' => array(
+          'enabled' => '1',
+        ),
+      ),
+    ),
     'node' => array(
       'alias' => 'node',
       'operations' => array(
@@ -79,9 +103,19 @@ function dkan_dataset_rest_api_default_services_endpoint() {
       'actions' => array(
         'login' => array(
           'enabled' => '1',
+          'settings' => array(
+            'services' => array(
+              'resource_api_version' => '1.0',
+            ),
+          ),
         ),
         'logout' => array(
           'enabled' => '1',
+          'settings' => array(
+            'services' => array(
+              'resource_api_version' => '1.0',
+            ),
+          ),
         ),
         'token' => array(
           'enabled' => '1',
