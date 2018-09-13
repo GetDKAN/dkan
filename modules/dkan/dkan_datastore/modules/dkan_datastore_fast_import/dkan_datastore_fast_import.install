@@ -9,5 +9,32 @@
  * Implements hook_enable().
  */
 function dkan_datastore_fast_import_enable() {
-  dkan_datastore_check_database();
+  dkan_datastore_fast_import_check_database();
+}
+
+/**
+ * Check database is set with pdo flags.
+ */
+function dkan_datastore_fast_import_check_database() {
+  global $databases;
+  $target = Database::getConnection()->getTarget();
+  $key = Database::getConnection()->getKey();
+  $database = $databases[$target][$key];
+
+  if (!isset($database['pdo'])) {
+    drupal_set_message(t('Required PDO flags for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE and PDO::MYSQL_ATTR_USE_BUFFERED_QUERY'), 'error', FALSE);
+  }
+  else {
+
+    $infile_enabled = array_key_exists(PDO::MYSQL_ATTR_LOCAL_INFILE, $database['pdo']) && $database['pdo'][PDO::MYSQL_ATTR_LOCAL_INFILE];
+    if (!$infile_enabled) {
+      drupal_set_message(t('Required PDO flag for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_LOCAL_INFILE'), 'error', FALSE);
+    }
+
+    $buffered_query_enabled = array_key_exists(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $database['pdo']) && $database['pdo'][PDO::MYSQL_ATTR_USE_BUFFERED_QUERY];
+    if (!$buffered_query_enabled) {
+      drupal_set_message(t('Required PDO flag for dkan_datastore_fast_import were not found. This module requires PDO::MYSQL_ATTR_USE_BUFFERED_QUERY'), 'error', FALSE);
+    }
+
+  }
 }
