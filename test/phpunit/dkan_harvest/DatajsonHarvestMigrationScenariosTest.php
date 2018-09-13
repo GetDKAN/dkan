@@ -595,7 +595,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test harvest source with resouce that does not have the issued field.
+   * Test harvest source with resource that does not have the issued field.
    *
    * The issued field is not required for the POD dataset. The Harvest should
    * fallback to the modified field value (which is required).
@@ -611,7 +611,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     }, $migrationMap);
     $this->assertEquals(1, count($dest_ids));
     $dataset = entity_metadata_wrapper('node', array_pop($dest_ids));
-    $this->assertEquals($dataset->field_harvest_source_modified->value(),
+    $this->assertEquals(strtotime($dataset->field_harvest_source_modified->value()),
       $dataset->field_harvest_source_issued->value());
   }
 

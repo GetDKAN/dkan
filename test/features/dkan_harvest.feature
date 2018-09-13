@@ -139,7 +139,7 @@ Feature: Dkan Harvest
     And I should see the text "Harvest Source URI"
     And I should see the text "Harvest Source Title"
     And I should see "2016-06-22" in the "Release Date" row
-    And I should see "2016-08-02" in the "Modified Date" row
+    And I should see "2016-08-02" in the "Modified" row
 
   @harvest_09 @fixme @api @harvest
   Scenario: As a user I should have access to see harvest preview information.
@@ -267,7 +267,7 @@ Feature: Dkan Harvest
       | site manager      |
 
   @harvest_16 @api @javascript @harvest
-  Scenario Outline: As user I want to filter harvested datasets by updated date in the harvest administration dashboard
+  Scenario Outline: As user I want to filter harvested datasets by published status in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
@@ -277,12 +277,10 @@ Feature: Dkan Harvest
     And The "source_one" source is harvested
     And I am logged in as a "<role>"
     And I am on the "Harvest Dashboard Datasets" page
-    And I fill in "edit-field-harvest-source-modified-value-min-datepicker-popup-0" with "Friday, January 1, 1999"
-    And I fill in "edit-field-harvest-source-modified-value-max-datepicker-popup-0" with "Friday, January 1, 1999"
+    And I fill in "edit-status" with "0"
     And I press "Apply"
     Then I wait for "No harvested datasets were found"
-    Then I fill in "edit-field-harvest-source-modified-value-min-datepicker-popup-0" with "Friday, January 1, 1999"
-    And I fill in "edit-field-harvest-source-modified-value-max-datepicker-popup-0" with "Friday, December 31, 2100"
+    Then I fill in "edit-status" with "1"
     And I press "Apply"
     Then I wait for "3" seconds
     And I should see a table with a class name "views-table"

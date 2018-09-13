@@ -64,7 +64,6 @@ function dkan_harvest_dashboard_form_alter(&$form, $form_state, $form_id) {
     // Update the way date fields are rendered.
     $date_fields = array(
       'field_harvest_source_issued_value',
-      'field_harvest_source_modified_value',
     );
     $date_placeholders = array(
       'min' => t('From'),
