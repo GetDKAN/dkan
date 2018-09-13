@@ -26,7 +26,7 @@ function dkan_sitewide_menu() {
 }
 
 /**
- * Callback to make change search path backward compatible.
+ * Callback to make the search path change backward compatible.
  */
 function dkan_sitewide_redirect_to_search() {
   $params = drupal_get_query_parameters();
@@ -34,7 +34,7 @@ function dkan_sitewide_redirect_to_search() {
 }
 
 /**
- * Adds group block to dataset node.
+ * Creates dkan user menu block.
  */
 function dkan_sitewide_user_menu_block() {
   global $user;
@@ -113,7 +113,7 @@ function dkan_sitewide_form_alter(&$form, &$form_state, $form_id) {
     $form['#id'] == 'views-exposed-form-dkan-datasets-panel-pane-1') {
     $form['#info']['filter-search_api_views_fulltext']['description'] = '';
     $form['submit']['#title'] = '';
-    $form['query']['#title'] = 'Search';
+    $form['query']['#title'] = t('Search');
     $form['query']['#attributes'] = array('placeholder' => t('Search'));
     $form['query']['#size'] = 60;
   }
@@ -167,7 +167,6 @@ function dkan_sitewide_update_status_alter(&$projects) {
     'beautytips',
     'feeds_field_fetcher',
     'multistep',
-    'file_resup',
     'linkchecker',
   );
   foreach ($up_to_date_projects as $up_to_date_project) {
@@ -266,11 +265,20 @@ function dkan_sitewide_preprocess_page(&$variables) {
   if (isset($variables['is_front']) && $variables['is_front'] == TRUE) {
     drupal_set_title('');
   }
+  // Redirect 404 to search page.
+  $header = drupal_get_http_header("status");
+  if($header == "404 Not Found") {
+    $message = t('The page you requested does not exist or has moved. Try searching the site.');
+    drupal_set_message($message, 'status', FALSE);
+    $query = str_replace('/', ' ', $_SERVER['REQUEST_URI']);
+    unset($_GET['destination']);
+    drupal_goto('search', array('query' => array('query' => $query)));
+  }
 }
 
 /**
-* Implements hook_entity_info_alter().
-*/
+ * Implements hook_entity_info_alter().
+ */
 function dkan_sitewide_entity_info_alter(&$entity_info) {
   // Add print view mode.
   $entity_info['node']['view modes']['print'] = array(

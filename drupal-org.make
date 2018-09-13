@@ -145,10 +145,7 @@ projects:
   file_entity:
     version: 2.21
   file_resup:
-    download:
-      type: git
-      url: https://git.drupal.org/project/file_resup.git
-      revision: fd5aad6bd26ca84303bb07c3f757cd24a5cb5c01
+    version: '1.5'
   filefield_sources:
     version: '1.11'
   font_icon_select:
@@ -324,7 +321,7 @@ projects:
     patch:
       2855634: https://www.drupal.org/files/issues/2855634-23--fix_update_7107_for_different_db.patch
   select_or_other:
-    version: '2.23'
+    version: '2.24'
   services:
     version: '3.20'
   simple_gmap:
@@ -345,7 +342,7 @@ projects:
   token_tweaks:
     version: 1.x-dev
   uuid:
-    version: '1.0'
+    version: '1.1'
   views:
     version: '3.20'
   views_autocomplete_filters:

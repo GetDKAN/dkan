@@ -72,8 +72,9 @@ Feature: Site managers administer groups
     And I press "Add users"
     Then I should see "Katie has been added to the group Group 02"
     When I am on "Group 02" page
-    And I click "Members"
-    Then I should see "Katie" in the "group members" region
+    And I click "Group"
+    And I click "People"
+    Then I should see "Katie"
 
   @group_admin_04
   Scenario: Remove a group member from any group
@@ -85,8 +86,9 @@ Feature: Site managers administer groups
     And I press "Remove"
     Then I should see "The membership was removed"
     And I am on "Group 01" page
-    And I click "Members"
-    And I should not see "Katie" in the "group members" region
+    And I click "Group"
+    And I click "People"
+    And I should not see "Katie"
 
   @group_admin_05
   Scenario: Delete any group

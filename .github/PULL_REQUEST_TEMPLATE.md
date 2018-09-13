@@ -19,6 +19,5 @@ If this PR introduces new functionality, include a user story or stories describ
 ## Reminders
 
 - [ ] There is test for the issue.
-- [ ] CHANGELOG updated.
 - [ ] Coding standards checked.
 - [ ] Review docs.getdkan.com (or in /docs) to see if it still covers the scope of the PR and update if needed.
