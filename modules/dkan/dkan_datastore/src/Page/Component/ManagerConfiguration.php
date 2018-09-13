@@ -4,14 +4,25 @@ namespace Dkan\Datastore\Page\Component;
 
 use Dkan\Datastore\Manager\ManagerInterface;
 
+/**
+ * Class ManagerConfiguration.
+ *
+ * Form component to configure a datastore manager.
+ */
 class ManagerConfiguration {
 
   private $datastoreManager;
 
-  public function __construct(ManagerInterface $datastore_manager) {
-    $this->datastoreManager = $datastore_manager;
+  /**
+   * Constructor.
+   */
+  public function __construct(ManagerInterface $manager) {
+    $this->datastoreManager = $manager;
   }
 
+  /**
+   * Get form.
+   */
   public function getForm() {
     $form = [];
     $form['import_options'] = [
@@ -23,7 +34,9 @@ class ManagerConfiguration {
       if ($property == "delimiter") {
         $form['import_options']["datastore_manager_config_{$property}"] = array(
           '#type' => 'select',
+          // @codingStandardsIgnoreStart
           '#title' => ucfirst(t("{$property}")),
+          // @codingStandardsIgnoreEnd
           '#options' => array(
             "," => ",",
             ";" => ";",
@@ -36,7 +49,9 @@ class ManagerConfiguration {
       else {
         $form['import_options']["datastore_manager_config_{$property}"] = [
           '#type' => 'textfield',
+          // @codingStandardsIgnoreStart
           '#title' => ucfirst(t("{$property}")),
+          // @codingStandardsIgnoreEnd
           '#default_value' => $default_value,
         ];
       }
@@ -45,6 +60,9 @@ class ManagerConfiguration {
     return $form;
   }
 
+  /**
+   * Submit.
+   */
   public function submit($value) {
     $configurable_properties = [];
     foreach ($value as $property_name => $v) {

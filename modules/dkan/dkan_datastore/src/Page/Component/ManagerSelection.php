@@ -6,17 +6,27 @@ use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Manager\ManagerInterface;
 use Dkan\Datastore\Resource;
 
-
+/**
+ * Class ManagerSelection.
+ *
+ * Form component that manages the selection of a datastore manager.
+ */
 class ManagerSelection {
 
   private $resource;
   private $datastoreManager;
 
-  public function __construct(Resource $resource, ManagerInterface $datastore_manager) {
+  /**
+   * Constructor.
+   */
+  public function __construct(Resource $resource, ManagerInterface $manager) {
     $this->resource = $resource;
-    $this->datastoreManager = $datastore_manager;
+    $this->datastoreManager = $manager;
   }
 
+  /**
+   * Get form.
+   */
   public function getForm() {
     $managers_info = dkan_datastore_managers_info();
     $form = array();
@@ -42,15 +52,18 @@ class ManagerSelection {
     return $form;
   }
 
+  /**
+   * Submit.
+   */
   public function submit($values) {
     $class = $values;
 
     $factory = new Factory($this->resource);
     $factory->setClass($class);
 
-    /* @var $datastore_manager \Dkan\Datastore\Manager\ManagerInterface */
-    $datastore_manager = $factory->get();
-    $datastore_manager->saveState();
+    /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
+    $manager = $factory->get();
+    $manager->saveState();
   }
 
 }

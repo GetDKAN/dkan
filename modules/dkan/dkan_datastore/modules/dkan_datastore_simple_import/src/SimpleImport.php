@@ -91,7 +91,6 @@ class SimpleImport extends Manager {
         else {
           $this->setError("Invalid line {$counter} in {$this->getResource()->getFilePath()}");
           return FALSE;
-          break;
         }
 
         if ($counter % 1000 == 0) {

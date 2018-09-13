@@ -133,9 +133,9 @@ function dkan_datastore_menu_alter(&$items) {
  */
 function dkan_datastore_access($op, $node, $account = NULL) {
   try {
-    $resource = Resource::createFromDrupalNode($node);
+    Resource::createFromDrupalNode($node);
   }
-  catch(\Exception $e) {
+  catch (\Exception $e) {
     return FALSE;
   }
 
@@ -147,7 +147,6 @@ function dkan_datastore_access($op, $node, $account = NULL) {
   switch ($op) {
     case 'view':
       return node_access('view', $node, $account);
-      break;
 
     case 'drop':
     case 'delete':
@@ -160,7 +159,6 @@ function dkan_datastore_access($op, $node, $account = NULL) {
       break;
   }
 }
-
 
 /**
  * Load node by id or uuid.
@@ -176,7 +174,6 @@ function dkan_datastore_resource_load($id) {
       $node = entity_uuid_load('node', array($id));
       return ($node) ? reset($node) : FALSE;
     }
-
   }
   catch (Exception $e) {
     return FALSE;
@@ -184,7 +181,6 @@ function dkan_datastore_resource_load($id) {
 
   return FALSE;
 }
-
 
 /**
  * Access callback for 'Add Resource' tab.
@@ -206,8 +202,8 @@ function dkan_datastore_node_insert($node) {
   if ($node->type == $type) {
     try {
       $resource = Resource::createFromDrupalNode($node);
-      $datastore_manager = (new Factory($resource))->get();
-      $datastore_manager->saveState();
+      $manager = (new Factory($resource))->get();
+      $manager->saveState();
     }
     catch (\Exception $e) {
       drupal_set_message($e->getMessage());
@@ -396,10 +392,10 @@ function dkan_datastore_file_link_field() {
 /**
  * Returns name of node type that the Datastore is attached to.
  *
- * DEPRECATED: Use Resource::resourceContentType
+ * @deprecated
+ * Use Resource::resourceContentType.
  */
 function dkan_datastore_node_type() {
-  // return Resource::resourceContentType();
   return 'resource';
 }
 
@@ -442,23 +438,22 @@ function dkan_datastore_cron() {
 
     $resource = Resource::createFromDrupalNodeNid($current_nid);
 
-    /* @var $datastore_manager ManagerInterface */
-    $datastore_manager = (new Factory($resource))->get();
+    /* @var $manager ManagerInterface */
+    $manager = (new Factory($resource))->get();
 
-    $finished = $datastore_manager->import();
+    $finished = $manager->import();
 
     if ($finished) {
       print_r(PHP_EOL . "DKAN DATASTORE: Done Importing Resource {$current_nid}" . PHP_EOL);
     }
     else {
       $general = "DKAN DATASTORE: There was a problem while importing Resource {$current_nid}";
-      $errors = $datastore_manager->getErrors();
+      $errors = $manager->getErrors();
       $error_string = implode(" | ", $errors);
       $final_error_string = "{$general} - {$error_string}";
       print_r(PHP_EOL . $final_error_string . PHP_EOL);
       watchdog("error", $final_error_string);
     }
-
   }
   else {
     if ($already_importing) {
@@ -468,4 +463,5 @@ function dkan_datastore_cron() {
       print_r(PHP_EOL . "DKAN DATASTORE: No Resources to Import" . PHP_EOL);
     }
   }
+
 }

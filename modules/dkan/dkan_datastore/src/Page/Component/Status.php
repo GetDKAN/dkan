@@ -1,14 +1,23 @@
 <?php
+
 namespace Dkan\Datastore\Page\Component;
 
 use Dkan\Datastore\Manager\ManagerInterface;
 
+/**
+ * Class Status.
+ *
+ * Html componet that displays the status of a datastore manager.
+ */
 class Status {
 
   private $datastoreManager;
 
-  public function __construct(ManagerInterface $datastore_manager) {
-    $this->datastoreManager = $datastore_manager;
+  /**
+   * Constructor.
+   */
+  public function __construct(ManagerInterface $manager) {
+    $this->datastoreManager = $manager;
   }
 
   /**
@@ -30,11 +39,11 @@ class Status {
   }
 
   /**
-   * Format the class name to something prettier
+   * Format the class name to something prettier.
    */
   private function formatClassName($classname) {
     /* @var $info \Dkan\Datastore\Manager\Info */
-    foreach(dkan_datastore_managers_info() as $info) {
+    foreach (dkan_datastore_managers_info() as $info) {
       if ('\\' . $classname == $info->getClass()) {
         return $info->getLabel();
       }

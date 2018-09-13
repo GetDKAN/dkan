@@ -61,18 +61,17 @@ function dkan_datastore_pages($form, &$form_state, $node) {
   return $page->get();
 }
 
+/**
+ * Submit handler.
+ */
 function dkan_datastore_pages_submit($form, &$form_state) {
   $page = new Page($form['#node'], $form, $form_state);
   $page->submit();
-
-  /*if (isset($form_state['storage']['drop']) && $form_state['storage']['drop']) {
-    $page->dropFormSubmit($form, $form_state);
-  }
-  else {
-    $page->importFormSubmit($form, $form_state);
-  }*/
 }
 
+/**
+ * Submit handler.
+ */
 function dkan_datastore_drop_submit($form, &$form_state) {
   $form_state['storage']['drop'] = TRUE;
   $form_state['storage']['original_form'] = $form_state['values'];

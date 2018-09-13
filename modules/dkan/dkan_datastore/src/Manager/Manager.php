@@ -41,12 +41,20 @@ abstract class Manager implements ManagerInterface {
       $this->setConfigurablePropertiesHelper([
         'delimiter' => ',',
         'quote' => '"',
-        'escape' => '\\'
+        'escape' => '\\',
       ]);
       $this->initialization($resource);
     }
   }
 
+  /**
+   * Set the time limit.
+   *
+   * The import process will stop if it hits the time limit.
+   *
+   * @param int $seconds
+   *   Number of seconds.
+   */
   public function setImportTimelimit($seconds) {
     if ($seconds > 0) {
       $this->timeLimit = $seconds;
@@ -298,6 +306,9 @@ abstract class Manager implements ManagerInterface {
     $this->saveState();
   }
 
+  /**
+   * Helper.
+   */
   private function setConfigurablePropertiesHelper($properties) {
     $this->configurableProperties = $properties;
   }

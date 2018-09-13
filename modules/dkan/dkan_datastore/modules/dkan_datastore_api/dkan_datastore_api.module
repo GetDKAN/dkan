@@ -7,12 +7,14 @@
  * TODO: Add search element, investigate caching, add uuids.
  */
 
- use Dkan\Datastore\Manager\Manager;
- use Dkan\Datastore\Manager\Factory;
- use Dkan\Datastore\Resource;
+use Dkan\Datastore\Manager\Factory;
+use Dkan\Datastore\Resource;
 
 define('DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS', 't');
 
+/**
+ * Implements hook_menu().
+ */
 function dkan_datastore_api_menu() {
   $items = [];
 
@@ -101,7 +103,7 @@ function normalize_fields($fields, $resources) {
  * For example: table_name.field_name.
  */
 function build_qualified_fields($fields, $alias) {
-  return array_reduce($fields, function ($memo, $field) use ($alias, $excludes) {
+  return array_reduce($fields, function ($memo, $field) use ($alias) {
     if (!dkan_datastore_api_field_excluded($field)) {
       $memo[] = $alias . '.' . normalize_field_name($field);
     }
@@ -193,10 +195,9 @@ function dkan_datastore_api_init() {
   // If the request doesn't have datastore_search, we need to redirect 'q' to
   // 'query' if it does not have /api/action/datastore/search in it.
   if (isset($_GET['resource_id']) && !strpos($_SERVER['REQUEST_URI'], 'datastore_search')) {
-    $request = explode('/', $_SERVER['REQUEST_URI']);
     $query = explode('/', $_GET['q']);
     $query_val = array();
-    foreach ($query as $key => $val) {
+    foreach ($query as $val) {
       $query_val[$val] = 1;
     }
     if (!isset($query_val['api']) && !isset($query_val['action']) && !isset($query_val['datastore'])) {
@@ -291,15 +292,7 @@ function dkan_datastore_api_services_resources() {
 function dkan_datastore_api_datastore_index() {
   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $params = dkan_datastore_api_get_params();
-
-    // Add anonoymous user to hash so refresh after login relaxes query limits.
-    $cache_hash = md5(json_encode($params)) . user_is_anonymous();
-
-    /*if ($cache = cache_get($cache_hash)) {
-      return $cache->data;
-    }*/
     $result = dkan_datastore_api_query($params);
-    //cache_set($cache_hash, $result, 'cache', CACHE_TEMPORARY);
   }
   elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = dkan_datastore_api_multiple_query();
@@ -353,7 +346,7 @@ function dkan_datastore_api_get_params($params = array()) {
  * I decided to wrap it to make easy to decouple it.
  */
 function normalize_field_name($field) {
-  return $field; //feeds_flatstore_processor_safe_name($field);
+  return $field;
 }
 
 /**
@@ -392,8 +385,8 @@ function dkan_datastore_api_query($params) {
       }
 
       $counter = 0;
-      foreach($resource_ids as $alias => $resource_id) {
-        if ($counter >=1 ) {
+      foreach ($resource_ids as $alias => $resource_id) {
+        if ($counter >= 1) {
           $table = dkan_datastore_api_tablename($resource_id);
           dkan_datastore_api_join($data_select, $table, $params['join']);
         }
@@ -676,8 +669,8 @@ function dkan_datastore_api_sort_clean($sort) {
  */
 function dkan_datastore_api_tablename($resource_id) {
   $resource = Resource::createFromDrupalNodeUuid($resource_id);
-  $datastore_manager = (new Factory($resource))->get();
-  return $datastore_manager->getTableName();
+  $manager = (new Factory($resource))->get();
+  return $manager->getTableName();
 }
 
 /**
@@ -800,7 +793,7 @@ function dkan_datastore_api_output($data_select, $results, $table, $fields, $res
   $return = new stdClass();
 
   // Prepare schema.
-  foreach (prepare_fields($fields) as $table_alias => $table_fields) {
+  foreach (prepare_fields($fields) as $table_fields) {
     foreach ($table_fields as $table_field) {
       $field = $schema_fields[$table_field];
       $name = $field['label'];
@@ -847,15 +840,16 @@ function dkan_datastore_api_debug($data_select) {
  */
 function dkan_datastore_api_api_page($node) {
   if ($resource = Resource::createFromDrupalNode($node)) {
-    $datastore_manager = (new Factory($resource))->get();
-    $status = $datastore_manager->getStatus();
+    /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
+    $manager = (new Factory($resource))->get();
+    $status = $manager->getStatus();
     switch ($status['data_import']) {
-      case Manager::DATA_IMPORT_DONE:
+      case $manager::DATA_IMPORT_DONE:
         $output = dkan_datastore_api_instructions_output($node);
         return $output;
 
-      case Manager::DATA_IMPORT_UNINITIALIZED:
-      case Manager::DATA_IMPORT_IN_PROGRESS:
+      case $manager::DATA_IMPORT_UNINITIALIZED:
+      case $manager::DATA_IMPORT_IN_PROGRESS:
         drupal_set_message(t('You need to add your file to the datastore in order to use the DATA API'));
         $redirect_path = 'node/' . $node->nid . '/datastore';
         break;
@@ -884,7 +878,6 @@ function dkan_datastore_api_instructions_output($node) {
     'absolute' => TRUE,
   ));
 
-
   $output .= t('Access resource data via a web API with powerful query support.');
   $output .= '<h3>' . t('Resource ID') . '</h3>';
   $output .= t("The Resource ID for this resource is %id", array('%id' => $node->uuid));
@@ -904,22 +897,23 @@ function dkan_datastore_api_api_page_access($node) {
   try {
     $resource = Resource::createFromDrupalNode($node);
   }
-  catch(\Exception $e) {
+  catch (\Exception $e) {
     return FALSE;
   }
-  if ($datastore_manager = (new Factory($resource))->get()) {
-    $status = $datastore_manager->getStatus();
-    if ($status['data_import'] == Manager::DATA_IMPORT_DONE && user_access('manage datastore')) {
+  /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
+  if ($manager = (new Factory($resource))->get()) {
+    $status = $manager->getStatus();
+    if ($status['data_import'] == $manager::DATA_IMPORT_DONE && user_access('manage datastore')) {
       $type = 'resource';
       $file_field = dkan_datastore_file_upload_field();
       $link_field = dkan_datastore_file_link_field();
       $upload = '';
       $link = '';
       if (isset($node->$file_field) && $node->$file_field) {
-        $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}['und'];
+        $upload = isset($node->{$file_field}[$node->language]) ? $node->{$file_field}[$node->language] : $node->{$file_field}[LANGUAGE_NONE];
       }
       if (isset($node->{$link_field}) && $node->{$link_field}) {
-        $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}['und'];
+        $link = isset($node->{$link_field}[$node->language]) ? $node->{$link_field}[$node->language] : $node->{$link_field}[LANGUAGE_NONE];
       }
       if ($node->type == $type && ($upload || $link)) {
         return node_access('view', $node);

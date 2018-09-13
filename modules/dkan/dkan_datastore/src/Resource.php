@@ -94,8 +94,9 @@ class Resource {
   }
 
   /**
-   * Get the full path to a resource's file regardless of whether upload or
-   * remote file.
+   * Get the full path to a resource's file.
+   *
+   * Regardless of whether it was uploaded or a remote file.
    */
   private static function filePath($node) {
     if (!empty($node->field_upload)) {
