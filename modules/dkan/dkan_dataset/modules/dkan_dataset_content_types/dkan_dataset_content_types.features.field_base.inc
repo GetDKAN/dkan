@@ -273,31 +273,11 @@ function dkan_dataset_content_types_field_default_field_bases() {
     'locked' => 0,
     'module' => 'list',
     'settings' => array(
-      'allowed_values' => array(
-        0 => 'Daily',
-        1 => 'Weekly',
-        2 => 'Monthly',
-        3 => 'Annually',
-        4 => 'Continuously',
-        5 => 'Irregularly',
-        6 => 'Decennial',
-        7 => 'Quadrennial',
-        8 => 'Bimonthly',
-        9 => 'Semiweekly',
-        10 => 'Biweekly',
-        11 => 'Semiannual',
-        12 => 'Biennial',
-        13 => 'Triennial',
-        14 => 'Three times a week',
-        15 => 'Three times a month',
-        16 => 'Quarterly',
-        17 => 'Three times a year',
-        18 => 'Semimonthly',
-      ),
-      'allowed_values_function' => '',
+      'allowed_values' => array(),
+      'allowed_values_function' => 'dkan_dataset_content_types_iso_frecuency_map',
     ),
     'translatable' => 0,
-    'type' => 'list_integer',
+    'type' => 'list_text',
   );
 
   // Exported field_base: 'field_granularity'.
@@ -328,26 +308,18 @@ function dkan_dataset_content_types_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_harvest_source_modified',
-    'indexes' => array(),
-    'locked' => 0,
-    'module' => 'date',
-    'settings' => array(
-      'cache_count' => 4,
-      'cache_enabled' => 0,
-      'granularity' => array(
-        'day' => 'day',
-        'hour' => 'hour',
-        'minute' => 'minute',
-        'month' => 'month',
-        'second' => 0,
-        'year' => 'year',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
       ),
-      'timezone_db' => '',
-      'todate' => '',
-      'tz_handling' => 'none',
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 255,
     ),
     'translatable' => 0,
-    'type' => 'datetime',
+    'type' => 'text',
   );
 
   // Exported field_base: 'field_harvest_source_issued'.
