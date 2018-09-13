@@ -562,7 +562,7 @@ function dkan_update_7029() {
 
   $data['default_value'] = NULL;
   $data['settings'] = '';
-  $data['settings']['settings']['text_processing'] = 0;
+  $data['settings']['text_processing'] = 0;
   $data['settings']['user_register_form'] = FALSE;
   $data['widget']['module'] = 'text';
   $data['widget']['settings'] = '';
@@ -720,7 +720,6 @@ function dkan_update_7030() {
     }
   }
 }
-
 
 /**
  * Enable the simple import module.
