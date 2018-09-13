@@ -83,15 +83,45 @@ class DatajsonHarvestMigration extends HarvestMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
+    // The modified field is required. https://project-open-data.cio.gov/v1.1/schema/#modified.
+    // Check the value when harvesting, it should be a valid ISO 8601 Date.
+    if(isset($row->modified)) {
+      $d = dkan_dataset_validate_date($row->modified) ? true : false;
+      if ($d) {
+        // Valid date, no change.
+      }
+      elseif (substr($row->modified, 0, 2) == 'R/') {
+        try {
+          $v = substr($row->modified, 2);
+          $valid = new DateInterval($v);
+        }
+        catch (Exception $e) {
+          $message = t(
+            'Modified value unknown or bad format (@value)',
+            array(
+              '@value' => $v,
+            ));
+          $this->saveMessage($message);
+        }
+      }
+      else {
+        $message = t(
+          'The modified value is not a valid ISO 8601 Date (@value)',
+          array(
+            '@value' => $row->modified,
+          ));
+        $this->saveMessage($message);
+      }
+    }
+
     // The issued field is not required. When missing, use the modified field to
     // have consistent dataset display.
     // https://project-open-data.cio.gov/v1.1/schema#issued
-    if (!isset($row->issued)) {
-      $row->issued = $row->modified;
-    }
-
-    if (property_exists($row, 'accrualPeriodicity')) {
-      $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
+    if (!isset($row->issued) && isset($row->modified)) {
+      $d = dkan_dataset_validate_date($row->modified) ? true : false;
+      if ($d) {
+        $row->issued = $row->modified;
+      }
     }
 
     // Process contact name and email.

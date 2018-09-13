@@ -1,11 +1,3 @@
-#views-exposed-form-dkan-harvest-datasets-harvest-datasets-source-page {
-  .form-group {
-    display: inline-block;
-    input {
-      width: 100px;
-    }
-  }
-}
 .view-dkan-harvest-dashboard .view-header {
   margin-bottom: 10px;
 }
@@ -19,7 +11,7 @@
       padding: 4px 5px;
     }
   }
-  
+
   h6 {
     background: #eee;
     color: #222;
@@ -37,7 +29,7 @@ div.datasets-count-preview span {
 #harvest_source_summary_uri {
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap;  
+  white-space: nowrap;
 }
 
 // Harvest Errors Page.
