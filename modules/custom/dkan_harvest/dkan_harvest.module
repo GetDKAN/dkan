@@ -1,0 +1,18 @@
+<?php
+
+use Drupal\dkan_harvest\Harvest;
+
+/**
+ * Initialize a harvest.
+ */
+function dkan_harvest_initialize_config() {
+  $public_file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+  $config = new stdClass();
+	$config->destSchema = dkan_schema_current_schema();
+	$config->fileLocation = $public_file_path;
+	$config->log = new stdClasS();
+  $config->log->type = "Stdout";
+  $config->log->debug = TRUE;
+  return $config;
+}
+

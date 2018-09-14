@@ -11,11 +11,13 @@
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
         "drupal/config_update": "1.x-dev",
-        "bower-asset/json-forms": "1.6.3"
+        "bower-asset/json-forms": "1.6.3",
+        "drupal/group": "1.x-dev"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
-      "drupal/coder": "8.2"
+      "drupal/coder": "8.2",
+        "drupal/devel": "1.x-dev"
     },
     "repositories": [
         {
@@ -36,7 +38,16 @@
         }
     },
     "extra": {
-        "enable-patching": true
+        "enable-patching": true,
+        "installer-types": ["bower-asset", "npm-asset"],
+        "installer-paths": {
+            "../../../core": ["type:drupal-core"],
+            "../../../libraries/{$name}": ["type:drupal-library", "type:bower-asset", "type:npm-asset"],
+            "../../../modules/contrib/{$name}": ["type:drupal-module"],
+            "../../../themes/contrib/{$name}": ["type:drupal-theme"],
+            "../../../profiles/contrib/{$name}": ["type:drupal-profile"],
+            "../../../../drush/contrib/{$name}": ["type:drupal-drush"]
+        }
     },
     "authors": [
         {

@@ -3,4 +3,3 @@ type: module
 description: Field type for JSON data validated by schema.
 core: 8.x
 dependencies:
-  - jsonb

@@ -1,0 +1,20 @@
+{
+  "name": "drupal/dkan_harvest",
+  "description": "Grab your data.",
+  "type": "drupal-module",
+  "autoload": {
+    "psr-4": {
+      "Drupal\\dkan-harvest\\": "src/"
+    }
+  },
+  "extra": {
+    "drush": {
+      "services": {
+        "drush.services.yml": "^9"
+      }
+    }
+  },
+	"require": {
+		"guzzlehttp/guzzle": "~6.0"
+	}
+}

@@ -1,0 +1,47 @@
+[{
+	"sourceId": "dkandemo",
+  "runId": "32341",
+	"source": {
+		"type": "DataJson",
+		"uri": "http://demo.getdkan.com/data.json"
+	},
+	"transforms": [{
+			"Filter": {
+				"keyword": "environment"
+			}
+		}, {
+			"Override": {
+				"publisher.name": "DKAN Demo"
+			}
+		},
+		"DataJsonToDkan"
+	],
+	"load": {
+		"migrate": false,
+		"collectionsToUpdate": ["dataset"],
+		"type": "Dkan8"
+	}
+}, {
+	"sourceId": "dkandemo2",
+  "runId": "3234811",
+	"source": {
+		"type": "DataJson",
+		"uri": "http://demo.getdkan.com/data.json"
+	},
+	"transforms": [{
+			"Filter": {
+				"keyword": "bugdet"
+			}
+		}, {
+			"Override": {
+				"publisher.name": "DKAN Demo"
+			}
+		},
+		"DataJsonToDkan"
+	],
+	"load": {
+		"migrate": true,
+		"collectionsToUpdate": ["dataset"],
+		"type": "Dkan8"
+	}
+}]

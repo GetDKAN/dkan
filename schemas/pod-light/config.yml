@@ -1,0 +1,29 @@
+name: Project Open Data Light
+description: Project Open Data based schema that trims some of the POD fat.
+api: 1
+primaryCollection: dataset
+collections:
+  - dataset
+  - organization
+  - keyword
+  - license
+  - theme
+references:
+  dataset:
+      keyword: keyword
+      license: license
+      theme: theme
+      publisher: organization
+facets:
+  keyword:
+    label: Tags
+    field: keyword.title
+  theme:
+    label: Category
+    field: theme.title
+  publisher:
+    label: Organization
+    field: publisher.name
+  distribution:
+    label: Format
+    field: dataset.distribution.format

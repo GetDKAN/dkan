@@ -1,0 +1,139 @@
+<?php
+
+function dkan_harvest_schema() {
+  $schema['harvest_source'] = array(
+    'description' => 'The table tracking harvest sources.',
+    'fields' => [
+      'source_id' => [
+        'description' => 'The primary identifier for an entity. Used to connect the harveset hash to Drupal entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ],
+      'config' => [
+        'description' => 'The id for the harvest run.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => [
+      'source_id',
+    ]
+  );
+  $schema['harvest_run'] = array(
+    'description' => 'The table tracking harvest sources.',
+    'fields' => [
+      'run_id' => [
+        'description' => 'The id for the harvest run.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'source_id' => [
+        'description' => 'The primary identifier for an entity. Used to connect the harveset hash to Drupal entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp of when event occurred.',
+      ],
+      'results' => [
+        'description' => 'The id for the harvest run.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => [
+      'run_id',
+    ]
+  );
+  $schema['harvest_hash'] = array(
+    'description' => 'The table tracking harvest hashes.',
+    'fields' => [
+      'source_id' => [
+        'description' => 'The primary identifier for an entity. Used to connect the harveset hash to Drupal entity.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'run_id' => [
+        'description' => 'The id for the harvest run.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'hash' => [
+        'description' => 'The hash of the harvest.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp of when event occurred.',
+      ],
+    ],
+    'primary key' => [
+      'source_id',
+    ]
+  );
+  $schema['harvest_log'] = array(
+    'description' => 'The log table for harvests.',
+    'fields' => [
+      'source_id' => [
+        'description' => 'The harvest source identifier.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'run_id' => [
+        'description' => 'The id for the harvest run.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'action' => [
+        'description' => 'The action being performed.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'level' => [
+        'description' => 'The log level. Enum: DEBUG, WARNING, ERROR.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'message' => [
+        'description' => 'The log message.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp of when event occurred.',
+      ],
+    ],
+    'primary key' => [
+      'source_id',
+    ]
+  );
+  return $schema;
+}

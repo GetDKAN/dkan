@@ -1,0 +1,8 @@
+{
+  "destSchema": "pod-simple",
+  "fileLocation": "dkan_harvest_test",
+  "log": {
+    "type": "Stdout",
+    "debug": true
+  }
+}

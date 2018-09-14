@@ -1,0 +1,48 @@
+uuid: 3b6c130d-34cf-4a5b-90ad-b688f2573d49
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.keyword.field_json_metadata
+    - taxonomy.vocabulary.keyword
+  module:
+    - json_form
+    - path
+    - text
+id: taxonomy_term.keyword.default
+targetEntityType: taxonomy_term
+bundle: keyword
+mode: default
+content:
+  description:
+    type: text_textarea
+    weight: 2
+    region: content
+    settings:
+      placeholder: ''
+      rows: 5
+    third_party_settings: {  }
+  field_json_metadata:
+    weight: 1
+    settings:
+      json_form: ''
+      show_textarea: false
+      json_form_default_value: ''
+    third_party_settings: {  }
+    type: json_form_field
+    region: content
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

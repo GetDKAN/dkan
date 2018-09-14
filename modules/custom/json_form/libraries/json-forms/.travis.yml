@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - stable
+before_install:
+  - npm install -g bower
+  - npm install rimraf
+before_script:
+  - rm -rf node_modules/json-forms
+script: gulp
+sudo: false

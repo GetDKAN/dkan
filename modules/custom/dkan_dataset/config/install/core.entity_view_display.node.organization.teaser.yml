@@ -1,0 +1,18 @@
+uuid: 6db918a2-92d1-497f-8db3-913202a6ded0
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - node.type.organization
+  module:
+    - user
+id: node.organization.teaser
+targetEntityType: node
+bundle: organization
+mode: teaser
+content:
+  links:
+    weight: 100
+    region: content
+hidden: {  }

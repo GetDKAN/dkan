@@ -1,0 +1,29 @@
+uuid: 3a01b406-282a-4893-b4cb-8a0aca41fe08
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.theme.field_json_metadata
+    - taxonomy.vocabulary.theme
+  module:
+    - text
+id: taxonomy_term.theme.default
+targetEntityType: taxonomy_term
+bundle: theme
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_json_metadata:
+    weight: 1
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+hidden: {  }

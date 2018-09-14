@@ -1,0 +1,12 @@
+<?php
+
+function dkan_schema_current_schema() {
+	$dkan_config = \Drupal::config('dkan_schema.settings');
+  $schema = $dkan_config->get('current');
+  return $schema;
+}
+
+function dkan_schema_get_collections() {
+  $schema = new Schema();
+  return $schema->getActiveCollections();
+}

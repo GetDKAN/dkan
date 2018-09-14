@@ -1,0 +1,25 @@
+uuid: 44da81c5-5d7c-42e7-87cf-9e9dbe2252fb
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.organization.field_json_metadata
+    - node.type.organization
+  module:
+    - user
+id: node.organization.default
+targetEntityType: node
+bundle: organization
+mode: default
+content:
+  field_json_metadata:
+    weight: 101
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden: {  }

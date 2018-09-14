@@ -1,0 +1,11 @@
+name: Schema
+description: 'Provides DKAN schema definitions and APIs. '
+type: module
+core: 8.x
+dependencies:
+  - field
+  - menu_ui
+  - node
+  - path
+  - text
+package: DKAN

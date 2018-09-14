@@ -8,6 +8,7 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Url;
 use Drupal\Component\Utility\Html;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\dkan_schema\Schema;
 
 /**
  * JSON Form widget.
@@ -89,6 +90,9 @@ class JsonFormWidget extends WidgetBase {
       $default_value = !$entity->isNew() ? $item->value : $this->getWidgetDefaultValue($item);
       $selector = '[data-drupal-selector="' . Html::getId('edit-' . $field_name . '-' . $delta . '-value') . '"]';
     }
+    $bundle = $items->getEntity()->bundle();
+    $schema = new Schema();
+    $form_schema = $schema->prepareForForm($bundle);
 
     $element['value'] = $element + [
       '#suffix' => '<div id="' . $identifier . '"></div>',
@@ -103,7 +107,7 @@ class JsonFormWidget extends WidgetBase {
         'drupalSettings' => [
           'jsonFormFieldWidget' => [
             $identifier => [
-              'schema' => json_decode($this->getSetting('json_form')),
+              'schema' => $form_schema,
               'identifier' => $identifier,
               'textarea' => $selector,
             ],
