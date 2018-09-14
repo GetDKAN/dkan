@@ -1,0 +1,5 @@
+services:
+  dkan_harvest:commands:
+    class: \Drupal\dkan_harvest\Commands\DkanHarvestCommands
+    tags:
+      - { name: drush.command }

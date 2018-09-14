@@ -1,6 +1,8 @@
 <?php
 
-namespace Drupal\dkan_harvest;
+namespace Drupal\dkan_harvest\Log;
+
+use Drupal\dkan_harvest\Log;
 
 class File extends Log {
 

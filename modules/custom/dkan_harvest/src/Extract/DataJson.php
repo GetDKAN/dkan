@@ -1,19 +1,23 @@
 <?php
 
-namespace Drupal\dkan_harvest;
+namespace Drupal\dkan_harvest\Extract;
+
+use Drupal\dkan_harvest\Extract;
 
 use GuzzleHttp\Client;
 
 class DataJson extends Extract {
 
   function run() {
+    $items = [];
     $this->log->write('DEBUG', 'extract', 'Running DataJson extraction.');
-  }
-
-  function readFolder() {
     $harvestFolder = $this->folder . '/' . $this->sourceId;
+    // TODO: validation!
+    foreach(glob("$harvestFolder/*.json") as $file) {
+      $items[] = json_decode(file_get_contents($file));
+    }
+    return $items;
   }
-
 
   function cache() {
     $this->log->write('DEBUG', 'extract', 'Caching DataJson files.');

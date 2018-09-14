@@ -37,9 +37,9 @@ $harvests = json_decode(file_get_contents('harvest-example.json'));
 $Harvest = new Harvest($config);
 foreach ($harvests as $harvest) {
   $Harvest->init($harvest);
-  $Harvest->cache();
+  //$Harvest->cache();
   $items = $Harvest->extract();
   $items = $Harvest->transform($items);
-  $Harvest->load($items);
+  //$Harvest->load($items);
 }
 
