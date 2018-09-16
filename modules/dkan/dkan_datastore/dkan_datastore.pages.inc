@@ -5,7 +5,7 @@
  * Callbacks for datastore pages.
  */
 
-use \Dkan\Datastore\Page\Page;
+use Dkan\Datastore\Page\Page;
 
 // Default to 50MB.
 define('MAX_FILE_REMOTE_PROXY_DEFAULT', 1024 * 1024 * 50);

@@ -7,10 +7,10 @@
 
 include_once "dkan_datastore.features.inc";
 
-use \Dkan\Datastore\Manager\ManagerInterface;
-use \Dkan\Datastore\Manager\Factory;
-use \Dkan\Datastore\Resource;
-use \Dkan\Datastore\LockableDrupalVariables;
+use Dkan\Datastore\Manager\ManagerInterface;
+use Dkan\Datastore\Manager\Factory;
+use Dkan\Datastore\Resource;
+use Dkan\Datastore\LockableDrupalVariables;
 
 /**
  * Implements hook_xautoload().

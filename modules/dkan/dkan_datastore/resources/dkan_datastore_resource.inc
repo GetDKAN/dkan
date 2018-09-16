@@ -5,8 +5,8 @@
  * Resource definition and callback for dkan_datastore API endpoints.
  */
 
-use \Dkan\Datastore\Manager\Factory;
-use \Dkan\Datastore\Resource;
+use Dkan\Datastore\Manager\Factory;
+use Dkan\Datastore\Resource;
 
 /**
  * Resource definition.

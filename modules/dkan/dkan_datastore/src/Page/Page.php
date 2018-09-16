@@ -111,8 +111,8 @@ class Page {
           $manager_values[$property_name] = $v;
         }
       }
-      if (!empty($manger_values)) {
-        (new ManagerConfiguration($manager))->submit($value);
+      if (!empty($manager_values)) {
+        (new ManagerConfiguration($manager))->submit($manager_values);
       }
 
       if ($values['submit'] == "Import") {

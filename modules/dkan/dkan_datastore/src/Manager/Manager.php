@@ -67,7 +67,7 @@ abstract class Manager implements ManagerInterface {
   /**
    * Get resource.
    *
-   * @return Resource
+   * @return \Dkan\Datastore\Resource
    *   The resource associated with this datastore.
    */
   protected function getResource() {
@@ -77,7 +77,7 @@ abstract class Manager implements ManagerInterface {
   /**
    * Get parser.
    *
-   * @return CsvParser
+   * @return \Dkan\Datastore\CsvParser
    *   Parser object.
    */
   protected function getParser() {
@@ -101,7 +101,7 @@ abstract class Manager implements ManagerInterface {
    * This gives specific classes to affect what happens
    * during construction.
    *
-   * @param Resource $resource
+   * @param \Dkan\Datastore\Resource $resource
    *   Resource.
    */
   abstract protected function initialization(Resource $resource);

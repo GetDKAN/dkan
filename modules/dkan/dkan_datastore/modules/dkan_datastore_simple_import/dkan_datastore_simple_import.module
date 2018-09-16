@@ -5,7 +5,7 @@
  * DKAN Datastore - Simple Import.
  */
 
-use \Dkan\Datastore\Manager\Info;
+use Dkan\Datastore\Manager\Info;
 
 /**
  * Implements hook_xautoload().

@@ -5,6 +5,11 @@
  * Install functions and update hooks for DKAN profile.
  */
 
+use Dkan\Datastore\Manager\Factory;
+use Dkan\Datastore\Resource;
+use Dkan\Datastore\Manager\ManagerInterface;
+use Dkan\Datastore\LockableDrupalVariables;
+
 /**
  * Reverts dkan_sitewide to add Markdown filter. Sets up roleassign feature.
  */
@@ -457,11 +462,11 @@ function dkan_update_7027() {
     // Delete the entries for non-harvested datasets.
     if (!in_array($nid, $harvested_nids)) {
       db_delete('field_data_field_harvest_source_modified')
-      ->condition('entity_id', $nid)
-      ->execute();
+        ->condition('entity_id', $nid)
+        ->execute();
       db_delete('field_data_field_harvest_source_issued')
-      ->condition('entity_id', $nid)
-      ->execute();
+        ->condition('entity_id', $nid)
+        ->execute();
     }
     $count = $count + 1;
   }
@@ -479,7 +484,7 @@ function dkan_update_7028() {
  * Rename feeds_datastore tables.
  */
 function dkan_update_7029() {
-  foreach(db_find_tables("feeds_datastore_dkan%") as $table_name) {
+  foreach (db_find_tables("feeds_datastore_dkan%") as $table_name) {
     $new_table_name = str_replace("feeds_datastore_dkan_file", "dkan_datastore", $table_name);
     $new_table_name = str_replace("feeds_datastore_dkan_link", "dkan_datastore", $new_table_name);
     db_rename_table($table_name, $new_table_name);
@@ -490,13 +495,13 @@ function dkan_update_7029() {
  * Generate basic datastore configuration.
  */
 function dkan_update_7030() {
-  foreach(db_find_tables("dkan_datastore%") as $table_name) {
+  foreach (db_find_tables("dkan_datastore%") as $table_name) {
     $nid = str_replace("dkan_datastore_", "", $table_name);
-    $resource =  \Dkan\Datastore\Resource::createFromDrupalNodeNid($nid);
+    $resource = Resource::createFromDrupalNodeNid($nid);
 
-    /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
-    $datastore = (new \Dkan\Datastore\Manager\Factory($resource))->get();
-    $datastore->saveState();
+    /* @var $manager \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
+    $manager = (new Factory($resource))->get();
+    $manager->saveState();
   }
 }
 
@@ -504,12 +509,12 @@ function dkan_update_7030() {
  * Update the datastore configuration.
  */
 function dkan_update_7031() {
-  $storage = new \Dkan\Datastore\LockableDrupalVariables("dkan_datastore");
+  $storage = new LockableDrupalVariables("dkan_datastore");
   $bin = $storage->borrowBin();
 
   foreach ($bin as $nid => $state) {
-    $bin[$nid]['data_import'] = \Dkan\Datastore\Manager\ManagerInterface::DATA_IMPORT_DONE;
-    $bin[$nid]['storage'] = \Dkan\Datastore\Manager\ManagerInterface::STORAGE_INITIALIZED;
+    $bin[$nid]['data_import'] = ManagerInterface::DATA_IMPORT_DONE;
+    $bin[$nid]['storage'] = ManagerInterface::STORAGE_INITIALIZED;
   }
 
   $storage->returnBin($bin);
