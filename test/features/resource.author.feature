@@ -287,80 +287,23 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_14 @dkanBug @noworkflow
-  Scenario: Manage datastore of own resource
+  @resource_author_15 @datastore @noworkflow @javascript
+  Scenario: Import items on datastore of own resource and drop
     Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    When I click "Edit"
-    And I click "Manage Datastore"
-    Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
-
-  @resource_author_15 @datastore @noworkflow @javascript @fixme
-  Scenario: Import items on datastore of own resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple4.csv"
-    And I press "Save"
-    And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete items"
-    Then I should see "Last import"
-    And I wait for "imported items total"
-
-  @resource_author_16 @datastore @noworkflow @javascript @fixme
-  Scenario: Delete items on datastore of own resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "John"
-    And I am on "Resource 01" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple5.csv"
-    And I press "Save"
+      | title       | author   | published | description | link file |
+      | Resource 01 | Celeste  | Yes       | No          | https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv |
     Given I am logged in as "Celeste"
     And I am on "Resource 01" page
     When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete Items"
-    And I click "Delete items"
-    And I press "Delete"
-    Then I wait for "items have been deleted"
-    # This test is not really sufficient, but we are going to consolidate the
-    # "drop" and "delete" datastore functions and do other refactoring, so will
-    # revisit then.
-
-  @resource_author_17 @datastore @noworkflow @javascript @fixme
-  Scenario: Drop datastore of own resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "John"
-    And I am on "Resource 01" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple6.csv"
-    And I press "Save"
-    Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete Items"
-    When I click "Drop Datastore"
+    Then I should see "Status"
+    When I press "Import"
+    And I wait for "Import Finished"
     And I press "Drop"
-    Then I should see "Datastore dropped!"
-    And I should see "Your file for this resource is not added to the datastore"
-    When I click "Manage Datastore"
-    Then I wait for "No imported items."
+    And I press "Drop"
+    Then I should see "Records Imported"
+    And I should see "0"
+    And I should see "Data Importing"
+    And I should see "Ready"
 
   @resource_author_18 @noworkflow
   Scenario: Add revision to own resource

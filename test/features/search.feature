@@ -58,9 +58,10 @@ Feature: Search
   @search_02
   Scenario: See number of datasets on search page and Reset dataset search filters
     Given I am on the "Dataset Search" page
-    When I search for "DKANTest"
-    Then I should see "4 results"
-    And I should see "4" items in the "datasets" region
+    And I fill in "DKANTest" for "Search" in the "datasets" region
+    And I press "Apply"
+    Then I should see "2 results"
+    And I should see "2" items in the "datasets" region
     When I press "Reset"
     Then I should see all published search content
 
