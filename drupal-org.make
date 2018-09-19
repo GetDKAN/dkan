@@ -86,6 +86,10 @@ projects:
     version: '1.5'
   entityreference_filter:
     version: '1.7'
+  environment:
+    version: '1.0'
+  environment_indicator:
+    version: '2.9'
   facetapi:
     version: '1.5'
     patch:
