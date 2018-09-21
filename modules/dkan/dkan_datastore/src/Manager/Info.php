@@ -1,7 +1,4 @@
 <?php
-/**
- * Manager metadata.
- */
 
 namespace Dkan\Datastore\Manager;
 
@@ -52,7 +49,7 @@ class Info implements \JsonSerializable {
     return [
       'class' => $this->class,
       'machine_name' => $this->machineName,
-      'label' => $this->label
+      'label' => $this->label,
     ];
   }
 

@@ -40,9 +40,9 @@ class LockableDrupalVariables {
    * Releases the lock set if borrowBin() was called.
    *
    * @param array $bin
-   *   the full bin.
+   *   The full bin.
    */
-  public function returnBin($bin) {
+  public function returnBin(array $bin) {
     variable_set($this->binName, $bin);
 
     $this->releaseLock();

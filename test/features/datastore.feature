@@ -41,27 +41,7 @@ Feature: Datastore
 
   @api @javascript @noworkflow @datastore
   Scenario: Adding and Removing items from the datastore
-    Given I am logged in as a user with the "site manager" role
-    And I am on "dataset/dataset-01"
-    When I click "Resource 01"
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv"
-    And I press "Save"
-    And I am on "dataset/dataset-01"
-    And I click "Resource 01"
-    And I wait for "The resource description."
-    And I click "Manage Datastore"
-    And I press "Save"
-    And I wait for "Status:"
-    And I press "Import"
-    Then I wait for "Data Importing: Done"
-    When I click "Drop Datastore"
-    And I wait for "This operation will destroy the db table"
-    And I press "Drop"
-    And I wait for "has been successfully dropped"
-    Then I should see "Records Imported: 0"
-    And I should see "Data Importing: Ready"
+    # @resource_author_15 captures this scenario.
 
   @api @noworkflow @datastore @javascript @fixme
   Scenario: Import a csv tab delimited file.

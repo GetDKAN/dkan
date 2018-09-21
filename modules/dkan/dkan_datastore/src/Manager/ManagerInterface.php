@@ -32,11 +32,6 @@ interface ManagerInterface {
   public function setImportTimelimit($seconds);
 
   /**
-   * Delete the rows (records) from the datastore.
-   */
-  public function deleteRows();
-
-  /**
    * Get status.
    *
    * The status (state information) is meant to inform the

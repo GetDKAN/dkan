@@ -79,7 +79,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     $resource = Resource::createFromDrupalNode($node);
 
     /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-    $datastore = \Dkan\Datastore\Manager\Factory::create($resource, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
+    $datastore = (new \Dkan\Datastore\Manager\Factory($resource))->get();
 
     if ($datastore instanceof DkanDatastoreFeedsImport) {
       // Import it to the datastore.
@@ -105,7 +105,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       $r = \Dkan\Datastore\Resource::createFromDrupalNodeUuid($resource['uuid']);
 
       /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-      $datastore = \Dkan\Datastore\Manager\Factory::create($r, \Dkan\Datastore\Manager\SimpleImport\SimpleImport::class);
+      $datastore = (new \Dkan\Datastore\Manager\Factory($r))->get();
       $datastore->drop();
 
       entity_uuid_delete('node', array($resource['uuid']));

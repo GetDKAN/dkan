@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @file
+ * DKAN Datastore - Fast Import.
+ */
+
+use Dkan\Datastore\Manager\Info;
+
+/**
+ * Implements hook_xautoload().
+ */
 function dkan_datastore_fast_import_xautoload($adapter) {
   $adapter->absolute()->addPsr4(
     'Dkan\Datastore\Manager\FastImport\\',
@@ -7,8 +17,11 @@ function dkan_datastore_fast_import_xautoload($adapter) {
   );
 }
 
+/**
+ * Implements hook_dkan_datastore_manager().
+ */
 function dkan_datastore_fast_import_dkan_datastore_manager() {
-  $info = new \Dkan\Datastore\Manager\Info(
+  $info = new Info(
     '\Dkan\Datastore\Manager\FastImport\FastImport',
     "fast",
     "Fast Import"
