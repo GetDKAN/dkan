@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @file
+ * DKAN Datastore - Simple Import.
+ */
+
+use Dkan\Datastore\Manager\Info;
+
+/**
+ * Implements hook_xautoload().
+ */
 function dkan_datastore_simple_import_xautoload($adapter) {
   $adapter->absolute()->addPsr4(
     'Dkan\Datastore\Manager\SimpleImport\\',
@@ -7,8 +17,11 @@ function dkan_datastore_simple_import_xautoload($adapter) {
   );
 }
 
+/**
+ * Implements hook_dkan_datastore_manager().
+ */
 function dkan_datastore_simple_import_dkan_datastore_manager() {
-  $info = new \Dkan\Datastore\Manager\Info(
+  $info = new Info(
     '\Dkan\Datastore\Manager\SimpleImport\SimpleImport',
     "simple",
     "Simple Import"

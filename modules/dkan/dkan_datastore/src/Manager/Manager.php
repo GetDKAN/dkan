@@ -41,12 +41,20 @@ abstract class Manager implements ManagerInterface {
       $this->setConfigurablePropertiesHelper([
         'delimiter' => ',',
         'quote' => '"',
-        'escape' => '\\'
+        'escape' => '\\',
       ]);
       $this->initialization($resource);
     }
   }
 
+  /**
+   * Set the time limit.
+   *
+   * The import process will stop if it hits the time limit.
+   *
+   * @param int $seconds
+   *   Number of seconds.
+   */
   public function setImportTimelimit($seconds) {
     if ($seconds > 0) {
       $this->timeLimit = $seconds;
@@ -59,7 +67,7 @@ abstract class Manager implements ManagerInterface {
   /**
    * Get resource.
    *
-   * @return Resource
+   * @return \Dkan\Datastore\Resource
    *   The resource associated with this datastore.
    */
   protected function getResource() {
@@ -69,7 +77,7 @@ abstract class Manager implements ManagerInterface {
   /**
    * Get parser.
    *
-   * @return CsvParser
+   * @return \Dkan\Datastore\CsvParser
    *   Parser object.
    */
   protected function getParser() {
@@ -93,7 +101,7 @@ abstract class Manager implements ManagerInterface {
    * This gives specific classes to affect what happens
    * during construction.
    *
-   * @param Resource $resource
+   * @param \Dkan\Datastore\Resource $resource
    *   Resource.
    */
   abstract protected function initialization(Resource $resource);
@@ -264,15 +272,6 @@ abstract class Manager implements ManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function deleteRows() {
-    db_delete($this->getTableName())->execute();
-    $this->stateDataImport = self::DATA_IMPORT_READY;
-    $this->saveState();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getStatus() {
     $state = [];
 
@@ -307,6 +306,9 @@ abstract class Manager implements ManagerInterface {
     $this->saveState();
   }
 
+  /**
+   * Helper.
+   */
   private function setConfigurablePropertiesHelper($properties) {
     $this->configurableProperties = $properties;
   }

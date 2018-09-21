@@ -95,16 +95,15 @@ Feature: Resource
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
     When I click "Manage Datastore"
-    And I select "Simple Import" from "edit-datastore-managers-selection"
-    And I press "Save"
-    Then I should see "Status:"
+    Then I should see "Status"
     When I press "Import"
-    And I wait for "Drop Datastore"
-    When I click "Drop Datastore"
+    And I wait for "Import Finished"
     And I press "Drop"
-    Then I should see "Records Imported: 0"
-    Then I should see "Storage: Uninitialized"
-    Then I should see "Data Importing: Ready"
+    And I press "Drop"
+    Then I should see "Records Imported"
+    And I should see "0"
+    And I should see "Data Importing"
+    And I should see "Ready"
 
   @noworkflow
   Scenario: Add revision to any resource
