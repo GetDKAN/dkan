@@ -6,8 +6,13 @@ use Drupal\dkan_harvest\Transform;
 
 class DataJsonToDkan extends Transform {
 
-  protected $collections = ['dataset', 'organization', 'keyword', 'license'];
-  protected $collectionsToUpdate = ['organization', 'keyword', 'license'];
+  protected $collections = ['dataset', 'publisher', 'keyword', 'license'];
+  protected $collectionsToUpdate = [
+    'publisher' => 'object',
+    'theme' => 'array',
+    'keyword' => 'array',
+    'license' => 'string',
+  ];
 
   /**
    * Prepares documents by grouping by collection and adding references.
@@ -21,32 +26,62 @@ class DataJsonToDkan extends Transform {
    *   docs.
    */
   function run(&$items) {
-    parent::run($items);
+    //parent::run($items);
+    $this->log->write('DEBUG', 'DataJsonToDkan', 'Running transform from DataJsonToDkan');
     $migrate = FALSE;
-    $docs = $this->collections();
+    $docs = [];
     foreach ($items as $item) {
-      $docs = $this->reference($cols, $item);
+      $docs = $this->reference($docs, $item);
     }
-    return $docs;
+    $items = $docs;
   }
 
   function reference($docs, $item) {
-    foreach ($collectionsToUpdate as $collection) {
-      if ($item->{$collection}) {
-        $docs[$collection][] = $item->{$collection};
-        $item->{$collection} = $this->refernceId($refItem, $collection);
+    foreach ($this->collectionsToUpdate as $collection => $dataType) {
+      if (isset($item->{$collection})) {
+        if ($dataType == 'string') {
+          $doc = $this->prepString($item->{$collection});
+          // Add reference to doc to primary collection, ie dataset.
+          $item->{$collection} = ['dkan-id' => $doc->identifier];
+          // Break docs into buckets of collections.
+          $docs[$collection][$doc->identifier] = $doc;
+        }
+        // For now assuming this is an array of strings.
+        elseif ($dataType == 'array') {
+          foreach ($item->{$collection} as $i) {
+            $doc = $this->prepString($i);
+            // Add references.
+            $item->{$collection}[] = ['dkan-id' => $doc->identifier];
+            // Break docs into buckets of collections.
+            $docs[$collection][$doc->identifier] = $doc;
+          }
+        }
+        elseif ($dataType == 'object') {
+          // TODO: Map this to a schema. For now we know this is a publisher.
+          $doc = $item->{$collection};
+          $doc->identifier = $this->createIdentifier($doc->name);
+          $item->{$collection} = ['dkan-id' => $doc->identifier];
+          $docs[$collection][$doc->identifier] = $doc;
+        }
       }
     }
     $docs['dataset'][] = $item;
     return $docs;
   }
 
-  function referenceId($refItem, $collection) {
-    if ($collection == 'organization') {
-      return $refItem->identifier;
+  function prepString($string) {
+    $doc = (object)[];
+    $doc->title = $string;
+    $doc->identifier = $this->referenceId($doc);
+    return $doc;
+  }
+
+  function referenceId($doc) {
+    if (isset($doc->identifier)) {
+      return $doc->identifier;
     }
     else {
-      return $this->createIdentifier($refItem->title);
+      return $this->createIdentifier($doc->title);
     }
   }
 
@@ -55,3 +90,4 @@ class DataJsonToDkan extends Transform {
   }
 
 }
+

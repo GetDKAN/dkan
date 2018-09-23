@@ -29,8 +29,7 @@ abstract class Extract {
 			$data = (string) $res->getBody();
 			return $data;
 		} catch (RequestException $exception) {
-			var_dump('ooops');
-			var_dump($exception);
+      $this->log->write('ERROR', 'Extract', 'Error reading ' . $uri);
 		}
 	}
 

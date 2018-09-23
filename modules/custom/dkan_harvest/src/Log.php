@@ -9,7 +9,6 @@ abstract class Log {
   protected $id;
   protected $runId;
 
-
   function __construct($debug, $sourceId, $runId) {
     $this->debug = $debug ? TRUE : FALSE;
 		$this->sourceId = $sourceId;
