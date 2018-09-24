@@ -63,8 +63,11 @@ class ApiController extends ControllerBase {
     $uri = $request->getPathInfo();
     $path = $apiRequest->getUri($uri);
     if ($id = $apiRequest->validateDocPath($path)) {
+      $collection = explode('/', $path)[1];
+      $schema = new Schema();
+      $entity = $schema->config['collectionToEntityMap'][$collection];
       $load = new Load();
-      if ($doc = $load->loadDocById($id)) {
+      if ($doc = $load->loadDocById($id, $entity)) {
         $formatted = $load->formatDoc($doc);
         $dereferenced = $load->dereference($formatted);
         return new JsonResponse( $dereferenced );
