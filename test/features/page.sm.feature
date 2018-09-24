@@ -8,18 +8,14 @@ Feature: Page
       | Add Page      | /node/add/page  |
 
   @api @javascript
-  Scenario: Add new page content as Editor
+  Scenario: Site manager role should not see Customize Display link
 
     Given I am logged in as a user with the "site manager" role
     And I am on the "Add Page" page
-    #   When I hover over the admin menu item "Add content"
-    #     And I click "Page"
-      Then I should see "Create Page"
-      When I fill in "Title" with "New Sample Page"
-      And I press "Save"
-      Then I should see "New Sample Page"
-      #  When I wait for "Loading" to disappear
-      And I wait for "1" seconds
-      And I press "Save"
-      And I wait for "Customize this page"
-      Then I should see "Customize this page"
+    Then I should see "Create Page"
+    When I fill in "title" with "My new page"
+    And I hide the admin menu
+    And I select the radio button "Boxton" with the id "edit-layout-radix-boxton"
+    And I press "Save"
+    And I wait for "View"
+    Then I should not see "Customize Display"
