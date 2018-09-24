@@ -105,8 +105,12 @@ class Load {
       if (isset($doc->{$collection})) {
         if ($dataType == 'string') {
           $id = $doc->{$collection}->{'dkan-id'};
-          $refDoc = $this->loadDocById($id, $entity);
-          $doc->{$collection} = $this->formatDoc($refDoc);
+          if ($id) {
+            $refDoc = $this->loadDocById($id, $entity);
+            if ($refDoc) {
+              $doc->{$collection} = $this->formatDoc($refDoc);
+            }
+          }
         }
         // For now assuming this is an array of strings.
         elseif ($dataType == 'array') {
@@ -114,8 +118,12 @@ class Load {
           foreach ($doc->{$collection} as $i) {
             if (isset($i->{'dkan-id'})) {
               $id = $i->{'dkan-id'};
-              $refDoc = $this->loadDocById($id, $entity);
-              $items[] = $this->formatDoc($refDoc);
+              if ($id) {
+                $refDoc = $this->loadDocById($id, $entity);
+                if ($refDoc) {
+                  $items[] = $this->formatDoc($refDoc);
+                }
+              }
             }
           }
           $doc->{$collection} = $items;
@@ -124,8 +132,12 @@ class Load {
           // TODO: Map this to a schema. For now we know this is a publisher.
           $item = $doc->{$collection};
           $id = $item->{'dkan-id'};
-          $refDoc = $this->loadDocById($id, $entity);
-          $doc->{$collection} = $this->formatDoc($refDoc);
+          if ($id) {
+            $refDoc = $this->loadDocById($id, $entity);
+            if ($refDoc) {
+              $doc->{$collection} = $this->formatDoc($refDoc);
+            }
+          }
         }
       }
     }

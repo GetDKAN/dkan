@@ -18,25 +18,10 @@ dataset:
     modified:
       type: String
       label: true
-    programCode:
-      type: String
-      label: true
-    bureauCode:
-      type: String
-      label: true
-    conformsTo:
-      type: String
-      label: true
-    dataQuality:
-      type: String
-      label: true
     accessLevel:
       type: String
       label: true
     temporal:
-      type: String
-      label: true
-    rights:
       type: String
       label: true
     describedBy:
@@ -48,3 +33,72 @@ dataset:
     accrualPeriodicity:
       type: String
       label: true
+  Left:
+    publisher:
+      type: Org
+      labe: false
+    spatial:
+      type: ExtentMap
+      label: true
+    widget:
+      type: Social
+distribution:
+  Main:
+    description:
+      type: Text
+    downloadURL:
+      type: FileDownload
+    accessURL:
+      type: FileDownload
+    widget:
+      type: FilePreview
+      fields:
+        - downloadURL
+        - accessURL
+    schema:
+      type: Schema
+  Table:
+    isssued:
+      type: String
+      label: true
+    identifier:
+      type: String
+      label: true
+    format:
+      type: String
+      label: true
+    fileLocation:
+      type: String
+      label: true
+    mediaType:
+      type: String
+      label: true
+    mediaSize:
+      type: String
+      label: true
+    conformsTo:
+      type: String
+      label: true
+    describedBy:
+      type: String
+    conformsTo:
+      type: String
+      label: true
+    describedBy:
+      type: String
+      label: true
+organization:
+  Main:
+    image:
+      type: Image
+      lable: false
+      float: left
+    description:
+      type: Text
+    widget:
+      type: SearchPage
+      collection: publisher
+      arg: name
+
+
+

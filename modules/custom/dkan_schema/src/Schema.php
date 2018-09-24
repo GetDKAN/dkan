@@ -43,6 +43,14 @@ class Schema {
     return Yaml::decode(file_get_contents($file));
   }
 
+  public function getActiveBundles() {
+    $bundles = [];
+    foreach ($this->config['collections'] as $collection) {
+      $bundles[] = $this->config['collectionToBundleMap'][$collection];
+    }
+    return $bundles;
+  }
+
   public function getActiveCollections() {
     return $this->config['collections'];
   }
@@ -74,15 +82,6 @@ class Schema {
     $fullSchama = array();
     foreach ($collections as $collection) {
       $dereferencedSchema = $this->loadSchema($collection);
-      // Start HACK. TODO: Remove HACK.
-      if ($collection == 'dataset') {
-        $organization = array(
-          'type' => 'object',
-          '$ref' => 'organization.json'
-        );
-        $dereferencedSchema['properties']['organization'] = $organization;
-      }
-      // Done HACK.
       $fullSchema[$collection] = $this->dereference($references, $collection, $dereferencedSchema);
     }
     return $fullSchema;
