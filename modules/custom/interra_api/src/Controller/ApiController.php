@@ -65,7 +65,9 @@ class ApiController extends ControllerBase {
     if ($id = $apiRequest->validateDocPath($path)) {
       $load = new Load();
       if ($doc = $load->loadDocById($id)) {
-        return new JsonResponse( $load->formatDoc($doc) );
+        $formatted = $load->formatDoc($doc);
+        $dereferenced = $load->dereference($formatted);
+        return new JsonResponse( $dereferenced );
       }
       throw new NotFoundHttpException();
     }

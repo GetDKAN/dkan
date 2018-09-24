@@ -6,6 +6,7 @@ use Drupal\dkan_harvest\Transform;
 
 class DataJsonToDkan extends Transform {
 
+  // TODO: This should come from the schema.
   protected $collections = ['dataset', 'publisher', 'keyword', 'license'];
   protected $collectionsToUpdate = [
     'publisher' => 'object',
@@ -48,13 +49,15 @@ class DataJsonToDkan extends Transform {
         }
         // For now assuming this is an array of strings.
         elseif ($dataType == 'array') {
+          $items = [];
           foreach ($item->{$collection} as $i) {
             $doc = $this->prepString($i);
             // Add references.
-            $item->{$collection}[] = ['dkan-id' => $doc->identifier];
+            $items[] = ['dkan-id' => $doc->identifier];
             // Break docs into buckets of collections.
             $docs[$collection][$doc->identifier] = $doc;
           }
+          $item->{$collection} = $items;
         }
         elseif ($dataType == 'object') {
           // TODO: Map this to a schema. For now we know this is a publisher.

@@ -10,10 +10,11 @@ use Drupal\dkan_harvest\DKANHarvest;
 class Dkan8 extends Load {
 
   protected $DKANHarvest;
+  protected $schema;
 
   protected $collectionsToReference = ['publisher', 'keyword', 'theme', 'license'];
 
-  protected $collectionsToBundleMap = [
+  protected $collectionToBundleMap = [
     'publisher' => 'organization',
     'dataset' => 'dataset',
     'keyword' => 'keyword',
@@ -21,7 +22,7 @@ class Dkan8 extends Load {
     'license' => 'license',
   ];
 
-  protected $collectionsToEntityMap = [
+  protected $collectionToEntityMap = [
     'dataset' => 'node',
     'organization' => 'node',
     'publisher' => 'node',
@@ -30,14 +31,15 @@ class Dkan8 extends Load {
     'license' => 'term'
   ];
 
-  protected $collectionsToVocabMap = [
-    'keyword' => 'term',
-    'theme' => 'term',
-    'license' => 'term'
-  ];
-
   function run($docs) {
     $this->DKANHarvest = new DKANHarvest();
+    $currentSchema = dkan_schema_current_schema();
+    $this->schema = new Schema($currentSchema);
+    $primaryBundle = $this->schema->config['primaryCollection'];
+    $this->collectionsToReference = $this->schema->config['refernces'][$primaryBundle];
+    $this->collectionToBundleMap = $this->schema->config['collectionToBundleMap'];
+    $this->collectionToEntityMap = $this->schema->config['collectionToEntityMap'];
+
     $this->log->write('DEBUG', 'Load:run', 'Loading to Dkan8.');
     $cols = $this->config->collectionsToUpdate;
     $results = [];
@@ -75,17 +77,17 @@ class Dkan8 extends Load {
     $oldHash = $this->getHash($doc);
     // NEW: There is no old hash record.
     if (!$oldHash) {
-      if ($this->collectionsToEntityMap[$collection] == 'node') {
+      if ($this->collectionToEntityMap[$collection] == 'node') {
         $this->createNode($collection, $doc);
       } else {
         $this->createTerm($collection, $doc);
       }
-      $bundle = $this->collectionsToBundleMap[$collection];
+      $bundle = $this->collectionToBundleMap[$collection];
       $this->createHashRecord($doc->identifier, $bundle, $this->sourceId, $this->runId, $hash);
       $results[$collection]['created']++;
     // UPDATE: Item exists. Update existing since hashes don't match.
     } elseif (!$this->checkHash($hash, $oldHash)) {
-      if ($this->collectionsToEntityMap[$collection] == 'node') {
+      if ($this->collectionToEntityMap[$collection] == 'node') {
         $this->updateNode($doc);
       } else {
         $this->updateTerm($doc, $collection);
@@ -140,7 +142,7 @@ class Dkan8 extends Load {
   }
 
   function createNode($collection, $doc) {
-    $bundle = $this->collectionsToBundleMap[$collection] ? $this->collectionsToBundleMap[$collection] : $collection;
+    $bundle = $this->collectionToBundleMap[$collection] ? $this->collectionToBundleMap[$collection] : $collection;
     // TODO: Add mapping for required fields.
     $title = isset($doc->title) ? $doc->title : $doc->name;
     $this->log->write('DEBUG', 'saveNode', 'Saving ' . $title);

@@ -14,6 +14,20 @@ references:
       license: license
       theme: theme
       publisher: organization
+collectionToBundleMap:
+  publisher: organization
+  dataset: dataset
+  keyword: keyword
+  theme: theme
+  license: license
+collectionToEntityMap:
+  dataset: node
+  organization: node
+  publisher: node
+  publisher: node
+  keyword: taxonomy_term
+  theme: taxonomy_term
+  license: taxonomy_term
 facets:
   keyword:
     label: Tags
