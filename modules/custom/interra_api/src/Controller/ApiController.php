@@ -31,6 +31,7 @@ class ApiController extends ControllerBase {
     $response['schema'] = $schema->loadFullSchema();
     $response['pageSchema'] = $interra->loadPageSchema();
     $response['facets'] = $schema->config['facets'];
+    $response['map'] = ['organization' => ['name' => 'title']];
     return new JsonResponse( $response );
   }
 
