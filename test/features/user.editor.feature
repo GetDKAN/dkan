@@ -1,8 +1,11 @@
 # time:0m27.25s
-@api @disablecaptcha
+@api @disablecaptcha @smoketest
 Feature: User command center links for editor role.
 
   Background:
+    Given pages:
+      | name          | url           |
+      | Users         | /admin/people |
     Given users:
       | name    | mail                | roles                |
       | Jaz     | jaz@example.com     | editor               |
@@ -31,7 +34,7 @@ Feature: User command center links for editor role.
     Then I hover over the admin menu item "Visualization"
     And I click "Chart"
     Then I should see "Add Chart"
-  
+
   Scenario: Editor role can view admin menu link Content
     Given I am logged in as "Jaz"
     When I click "Content" in the "admin menu" region
@@ -51,7 +54,7 @@ Feature: User command center links for editor role.
     When I hover over the admin menu item "Visualizations"
     And I click "Charts"
     Then I should see "Chart"
-  
+
   @javascript
   Scenario: Editor role can view admin menu links under Site Configuration
     Given I am logged in as "Jaz"
@@ -70,3 +73,9 @@ Feature: User command center links for editor role.
     Then I hover over the admin menu item "Taxonomy"
     And I click "Topics"
     Then I should see "Topics"
+
+  Scenario: Editor should not be able to manage users
+    Given I am logged in as "Jaz"
+    And I am on "Users" page
+    Then I should see "Access denied"
+

@@ -1,4 +1,5 @@
 # time:0m3.96s
+@disablecaptcha @smoketest
 Feature: Administrator role
 
   @api

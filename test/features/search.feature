@@ -1,5 +1,5 @@
 # time:0m22.96s
-@api
+@api @smoketest
 # features/search.feature
 Feature: Search
 

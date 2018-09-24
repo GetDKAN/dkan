@@ -53,7 +53,7 @@ Feature:
       | editor              |
       | site manager        |
 
-  @workflow_02 @ok @globalUser
+  @workflow_02 @globalUser
   Scenario Outline: As a user with any Workflow role, I should be able to access My Workbench.
     Given I am logged in as a user with the "<workbench roles>" role
     When I am on "My Workbench" page
@@ -120,7 +120,7 @@ Feature:
   #     | Workflow Moderator, editor            |
   #     | Workflow Supervisor, site manager     |
 
-  @workflow_04 @ok @javascript @globalUser
+  @workflow_04 @javascript @globalUser
   Scenario: As a user with the Workflow Supervisor role, I should be able to publish stale 'Needs Review' content.
     Given I am logged in as "Contributor"
     And datasets:
@@ -146,7 +146,7 @@ Feature:
     When I press "Publish"
     Then I wait for "Performed Publish on 3 items"
 
-  @workflow_05 @ok @globalUser
+  @workflow_05 @globalUser
   Scenario Outline: As a user with Workflow Roles, I should not be able to see draft contents I did not author in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     Given users:
@@ -168,7 +168,7 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  @workflow_06 @ok @globalUser
+  @workflow_06 @globalUser
   Scenario Outline: As a user with Workflow Roles, I should be able to see draft content I authored in 'My Drafts'
     Given I am logged in as "<user>"
     And datasets:
@@ -186,7 +186,7 @@ Feature:
       | Moderator   |
       | Supervisor  |
 
-  @workflow_07 @ok @globalUser
+  @workflow_07 @globalUser
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Published content I authored in workbench pages
     Given I am logged in as "Contributor"
     And datasets:
@@ -212,7 +212,7 @@ Feature:
       | My Drafts     | Workflow Supervisor, site manager     |
       | Needs Review  | Workflow Supervisor, site manager     |
 
-  @workflow_08 @ok @globalUser
+  @workflow_08 @globalUser
   Scenario Outline: As a user with Workflow Roles, I should not be able to see Needs Review resources I authored in 'My Drafts'
     Given I am logged in as a user with the "<workbench roles>" role
     And datasets:
@@ -232,7 +232,7 @@ Feature:
       | Workflow Moderator, editor            |
       | Workflow Supervisor, site manager     |
 
-  @workflow_09 @ok @globalUser
+  @workflow_09 @globalUser
   Scenario: As a user with the Workflow Contributor, I should be able to see Needs Review contents I authored in 'Needs Review'
     Given I am logged in as "Contributor"
     And datasets:
@@ -247,7 +247,7 @@ Feature:
     And I should see "My Resource"
     And I should see "My Dataset"
 
-  @workflow_10 @ok @globalUser
+  @workflow_10 @globalUser
   Scenario: As a user with the Workflow Contributor, I should not be able to see Needs Review contents I did not author in 'Needs Review'
     Given I am logged in as a user with the "Workflow Contributor" role
     Given users:
@@ -266,7 +266,7 @@ Feature:
     Then I should not see "Not My Resource"
     Then I should not see "Not My Dataset"
 
-  @workflow_11 @ok @globalUser
+  @workflow_11 @globalUser
   Scenario: As a Workflow Moderator, I should be able to see Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -282,7 +282,7 @@ Feature:
     And I am on "Needs Review" page
     Then I should see the text "Not My Dataset"
 
-  @workflow_12 @ok @globalUser
+  @workflow_12 @globalUser
   Scenario: As a Workflow Moderator, I should not be able to see Needs Review datasets I did not author, and which do not belong to my Group, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -300,7 +300,7 @@ Feature:
     And I am on "Needs Review" page
     Then I should not see the text "Not My Dataset"
 
-  @workflow_13 @ok @globalUser
+  @workflow_13 @globalUser
   Scenario: As a Workflow Supervisor, I should be able to see Needs Review content I did not author, regardless whether it belongs to my group or not, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -321,7 +321,7 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  @workflow_14 @ok @globalUser
+  @workflow_14 @globalUser
   Scenario: As a Workflow Supervisor I should be able to see content in the 'Needs Review' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Reviews'
     Given users:
       | name            | roles                                 |
@@ -342,7 +342,7 @@ Feature:
     Then I should see the text "Still Not My Dataset"
     Then I should see the text "Not My Dataset"
 
-  @workflow_15 @ok @globalUser
+  @workflow_15 @globalUser
   Scenario: As a Workflow Supervisor I should be able to see content in the 'Draft' state I did not author, regardless whether it belongs to my group or not, but which were submitted greater than 72 hours before now, in the 'Stale Drafts'
     Given users:
       | name            | roles                                 |
@@ -429,8 +429,7 @@ Feature:
     And I click "Edit"
     Then the checkbox "editor" should be checked
 
-  @workflow_19 @ok
-  # https://jira.govdelivery.com/browse/CIVIC-5348
+  @workflow_19
   Scenario: "View draft" should display the draft dataset and not the published revision.
     And datasets:
       | title         | author      | published | moderation | publisher |
@@ -456,7 +455,7 @@ Feature:
     And The "source_one" source is harvested
     And the content "Florida Bike Lanes Harvest" should be "published"
 
-  @workflow_21 @ok @globalUser
+  @workflow_21 @globalUser
   Scenario: As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
     Given users:
       | name            | roles                                 |
@@ -505,12 +504,10 @@ Feature:
       | name               | url                                  |
       | Datasets           | /search/type/dataset                 |
       | Rebuild perms      | /admin/reports/status/rebuild        |
+      | Clear all caches   | /admin/config/development/performance |
     And datasets:
       | title                 | publisher | author    | published   | description |
       | Dataset Revision Test | Group 01  | Moderator | Yes         | Test        |
-    When I am on the "Datasets" page
-    And I click "Dataset Revision Test"
-    Then I should not see "Revisions"
     Given I am logged in as a user with the "administrator" role
     And I am on the "Dataset Revision Test" page
     When I click "New draft"
@@ -518,9 +515,12 @@ Feature:
     And I click "Publishing options"
     Then I select "Published" from "edit-workbench-moderation-state-new"
     And I press "Finish"
-    Given I am on the "Rebuild perms" page
+    Then I should see "Moderate"
+    Then I am on the "Rebuild perms" page
     And I press "Rebuild permissions"
     And I wait for "Status report"
+    # Then I am on the "Clear all caches" page
+    # And I press "Clear all caches"
     And I click "Log out"
     And I am on the "Datasets" page
     And I click "Dataset Revision Test"

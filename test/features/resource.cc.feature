@@ -13,9 +13,9 @@ Feature: Resource
       | Katie   | katie@example.com   | content creator   |
       | Celeste | celeste@example.com | editor            |
 
-  @resource_author_01 @noworkflow
+  @resource_cc_01 @smoketest_noworkflow
   Scenario: Create resource
-    Given I am logged in as "Katie"
+    Given I am logged in as a user with the "content creator" role
     And I am on the "Content" page
     And I click "Resource"
     ## If you use selenium uncomment this
@@ -25,9 +25,9 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
 
-  @resource_author_02 @noworkflow
+  @resource_cc_02
   Scenario: See warning if full url not given when using the api/url option.
-    Given I am logged in as "Katie"
+    Given I am logged in as a user with the "content creator" role
     And I am on the "Content" page
     And I click "Resource"
     And I fill in "edit-field-link-api-und-0-url" with "api.tiles.mapbox.com/v3/tmcw.map-gdv4cswo/markers.geojson"
@@ -35,9 +35,9 @@ Feature: Resource
     And I press "Save"
     Then I should see "Please enter a full url"
 
-  @resource_author_03 @datastore @noworkflow @javascript
+  @resource_cc_03 @javascript
   Scenario: Create resource with too many sources.
-    Given I am logged in as "Katie"
+    Given I am logged in as a user with the "content creator" role
     And I am on the "Content" page
     And I click "Resource"
     And I click "Remote file"
@@ -49,7 +49,7 @@ Feature: Resource
     Then I should see "Remote file is populated - only one resource type can be used at a time"
     And I should see "API or Website URL is populated - only one resource type can be used at a time"
 
-  @resource_author_04 @noworkflow @javascript
+  @resource_cc_04 @javascript
   Scenario: Edit own resource as content creator
     Given resources:
       | title       | author   | published | description |
@@ -63,7 +63,7 @@ Feature: Resource
     When I am on "User" page
     Then I should see "Resource 01 edited"
 
-  @resource_author_05 @noworkflow
+  @resource_cc_05
   Scenario: Delete own resource
     Given resources:
       | title       | format | author   | published | description |
@@ -75,15 +75,14 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 01 has been deleted"
 
-  @resource_author_06 @dkanBug @noworkflow
+  @resource_cc_06
   Scenario: Change dataset on resource
     Given groups:
       | title    | author  | published |
       | Group 01 | John    | Yes       |
     And group memberships:
-      | user    | group    | role on group        | membership status |
-      | John    | Group 01 | administrator member | Active            |
-      | Katie   | Group 01 | member               | Active            |
+      | user    | group    | role on group  | membership status |
+      | Katie   | Group 01 | member         | Active            |
     And datasets:
       | title      | publisher | author  | published    | description |
       | Dataset 01 | Group 01  | John    | Yes          | Test        |
@@ -101,7 +100,7 @@ Feature: Resource
     Then I should see "Dataset 02" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
 
-  @resource_author_07 @noworkflow
+  @resource_cc_07
   Scenario: Add a resource with no datasets to a dataset with no resource
     Given groups:
       | title    | author  | published |
@@ -127,7 +126,7 @@ Feature: Resource
     Then I should see "Dataset 01" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
 
-  @resource_author_08 @noworkflow
+  @resource_cc_08
   Scenario: Remove a resource with only one dataset from the dataset
     Given groups:
       | title    | author  | published |
@@ -151,7 +150,7 @@ Feature: Resource
     And I should see "Groups were updated on 1 resource(s)"
     And I should not see the link "Back to dataset"
 
-  @resource_author_09 @noworkflow
+  @resource_cc_09
   Scenario: Add a resource with no group to a dataset with group
     Given groups:
       | title    | author  | published |
@@ -174,7 +173,7 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_10 @noworkflow
+  @resource_cc_10
   Scenario: Remove a resource from a dataset with group
     Given groups:
       | title    | author  | published |
@@ -199,7 +198,7 @@ Feature: Resource
     When I am on "Dataset 01" page
     Then I should not see "Resource 01" in the "dataset resource list" region
 
-  @resource_author_11 @noworkflow
+  @resource_cc_11
   Scenario: Add a resource to multiple datasets with groups
     Given groups:
       | title    | author  | published |
@@ -225,7 +224,7 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_12 @noworkflow
+  @resource_cc_12
   Scenario: Remove one dataset with group from resource with multiple datasets
     Given groups:
       | title    | author  | published |
@@ -255,7 +254,7 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_13 @noworkflow
+  @resource_cc_13
   Scenario: Remove all datasets with groups from resource
     Given groups:
       | title    | author  | published |
@@ -287,82 +286,7 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_14 @dkanBug @noworkflow
-  Scenario: Manage datastore of own resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    When I click "Edit"
-    And I click "Manage Datastore"
-    Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
-
-  @resource_author_15 @datastore @noworkflow @javascript @fixme
-  Scenario: Import items on datastore of own resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple4.csv"
-    And I press "Save"
-    And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete items"
-    Then I should see "Last import"
-    And I wait for "imported items total"
-
-  @resource_author_16 @datastore @noworkflow @javascript @fixme
-  Scenario: Delete items on datastore of own resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "John"
-    And I am on "Resource 01" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple5.csv"
-    And I press "Save"
-    Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete Items"
-    And I click "Delete items"
-    And I press "Delete"
-    Then I wait for "items have been deleted"
-    # This test is not really sufficient, but we are going to consolidate the
-    # "drop" and "delete" datastore functions and do other refactoring, so will
-    # revisit then.
-
-  @resource_author_17 @datastore @noworkflow @javascript @fixme
-  Scenario: Drop datastore of own resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 01 | Celeste  | Yes       | No          |
-    Given I am logged in as "John"
-    And I am on "Resource 01" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple6.csv"
-    And I press "Save"
-    Given I am logged in as "Celeste"
-    And I am on "Resource 01" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Delete Items"
-    When I click "Drop Datastore"
-    And I press "Drop"
-    Then I should see "Datastore dropped!"
-    And I should see "Your file for this resource is not added to the datastore"
-    When I click "Manage Datastore"
-    Then I wait for "No imported items."
-
-  @resource_author_18 @noworkflow
+  @resource_cc_18
   Scenario: Add revision to own resource
     Given resources:
       | title       | author   | published | description |
@@ -378,7 +302,7 @@ Feature: Resource
 
   # @todo Add test for URL w/o .csv
   # We need to edit and save to trigger auto type discover
-  @resource_author_19 @javascript
+  @resource_cc_19 @javascript
   Scenario: Remote CSV preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -389,7 +313,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a recline preview
 
-  @resource_author_20 @javascript
+  @resource_cc_20 @javascript
   Scenario: Image preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -400,7 +324,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a image preview
 
-  @resource_author_21
+  @resource_cc_21
   Scenario: ZIP preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -411,7 +335,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a zip preview
 
-  @resource_author_22 @javascript
+  @resource_cc_22 @javascript
   Scenario: XML preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -422,7 +346,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a xml preview
 
-  @resource_author_23
+  @resource_cc_23
   Scenario: JSON preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -433,7 +357,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a json preview
 
-  @resource_author_24
+  @resource_cc_24
   Scenario: GEOJSON preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -444,7 +368,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a geojson preview
 
-  @resource_author_25 @javascript
+  @resource_cc_25 @javascript
   Scenario: Generated CSV preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -455,7 +379,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a recline preview
 
-  @resource_author_26 @noworkflow
+  @resource_cc_26 @javascript
   Scenario: Create resource with a tsv file
     Given I am logged in as "John"
     And I am on the "Content" page
@@ -466,11 +390,12 @@ Feature: Resource
     And I select "tab" from "Delimiter"
     And I press "Save"
     Then I should see "Resource Resource TSV has been created"
+    Then I should see a recline preview
     # Make sure it autodetects the format.
     When I click "Edit"
     Then the "field_format[und][textfield]" field should contain "tsv"
 
-  @resource_author_27 @noworkflow
+  @resource_cc_27 @javascript
   Scenario: Create resource with a tab file
     Given I am logged in as "John"
     And I am on the "Content" page
@@ -481,6 +406,18 @@ Feature: Resource
     And I select "tab" from "Delimiter"
     And I press "Save"
     Then I should see "Resource Resource TAB has been created"
+    Then I should see a recline preview
     # Make sure it autodetects the format.
     When I click "Edit"
     Then the "field_format[und][textfield]" field should contain "tsv"
+
+  @resource_cc_28
+  Scenario: Content Creators and Editors should see publishing options tab but not authored by tab
+    Given I am logged in as a user with the "content creator" role
+    When I visit "node/add/resource"
+    Then I should not see "Authoring information"
+    Then I should see "Publishing options"
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/resource"
+    Then I should not see "Authoring information"
+    Then I should see "Publishing options"
