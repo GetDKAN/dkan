@@ -85,3 +85,5 @@ To run the dev server:
 To build for prod:
 
 ``node cli.js build-site dkan-demo``
+
+This will build the site in ``build/dkan-demo``
