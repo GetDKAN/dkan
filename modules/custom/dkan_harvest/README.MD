@@ -42,16 +42,17 @@ That source config looks like:
 
 About the load configs:
 
-* migrate: whether or not files should be downloaded locally
-* collectionsToUpdate: after the initial harvest you might not want to update anything but datasets.
+* **migrate**: whether or not files should be downloaded locally
+* **collectionsToUpdate**: after the initial harvest you might not want to update anything but datasets.
+* **type**: Here is where we could create a D7 version if desired.
 
 ## Harvest Config
 
 There is also internal configuration for each harvest that is separate from the harvest source:
 
-* log: You can use the ``harvest_log`` table or stdout.
-* destSchema: The destination schema. Should be the current site schema.
-* fileLocation: Where to save the cached files. Defaults to ``sites/default/files``
+* **log**: You can use the ``harvest_log`` table or stdout.
+* **destSchema**: The destination schema. Should be the current site schema.
+* **fileLocation**: Where to save the cached files. Defaults to ``sites/default/files``
 
 ## Drush Commands
 
