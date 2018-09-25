@@ -61,3 +61,27 @@ services:
 ```
 
 You should now be able to bring up the correct containers with `fin start`. Install by running `fin drush site:install dkan2 --db-url=mysql://user:user@db/default`.
+
+## Developing with and Compiling Front End
+
+The current demo uses the Interra catalog front-end. To setup locally:
+
+```
+git clone git@github.com:interra/catalog-generate.git --branch dkan-demo
+```
+
+Either create a new site:
+
+```
+plop
+```
+or use ``dkan-demo``.
+
+To run the dev server: 
+
+1. update the "devUrl" in the config.yml file to your Drupal 8 dkan backend.
+2. run ``node cli.js run-dev-dll; node cli.js run-dev dkan-demo``
+
+To build for prod:
+
+``node cli.js build-site dkan-demo``
