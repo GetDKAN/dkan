@@ -48,12 +48,12 @@ class DkanHarvestCommands extends DrushCommands {
    * Runs harvest.
 	 *
    * @param string $sourceId
-   *   The source to cache.
+   *   The source to run.
    *
    * @command dkan-harvest:run
    *
    * @usage dkan-harvest:run
-   *   List available harvests.
+   *   Runs a harvest from the harvest source.
    */
   public function run($sourceId) {
 		$harvest = $this->DKANHarvest->sourceRead($sourceId);
@@ -68,12 +68,12 @@ class DkanHarvestCommands extends DrushCommands {
    * Reverts harvest.
 	 *
    * @param string $sourceId
-   *   The source to cache.
+   *   The source to revert.
    *
    * @command dkan-harvest:revert
    *
    * @usage dkan-harvest:revert
-   *   List available harvests.
+   *   Removes harvested entities.
    */
   public function revert($sourceId) {
 		$harvest = $this->DKANHarvest->sourceRead($sourceId);
