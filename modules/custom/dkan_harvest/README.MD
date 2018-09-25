@@ -15,28 +15,28 @@ That source config looks like:
 ```json
 
 {
-	"sourceId": "dkandemo",
-	"source": {
-		"type": "DataJson",
-		"uri": "http:\/\/demo.getdkan.com\/data.json"
-	},
-	"transforms": [
-		{
-			"Filter": {
-				"keyword": "environment"
-			}
-		}, {
-			"Override": {
-				"publisher.name": "DKAN Demo"
-			}
-		},
-		"DataJsonToDkan"
-	],
-	"load": {
-		"migrate": false,
-		"collectionsToUpdate": ["dataset", "organization", "license", "theme", "keyword"],
-		"type": "Dkan8"
-	}
+  "sourceId": "dkandemo",
+  "source": {
+    "type": "DataJson",
+    "uri": "http:\/\/demo.getdkan.com\/data.json"
+  },
+  "transforms": [
+    {
+      "Filter": {
+        "keyword": "environment"
+      }
+    }, {
+      "Override": {
+        "publisher.name": "DKAN Demo"
+      }
+    },
+    "DataJsonToDkan"
+  ],
+  "load": {
+    "migrate": false,
+    "collectionsToUpdate": ["dataset", "organization", "license", "theme", "keyword"],
+    "type": "Dkan8"
+  }
 }
 ```
 
