@@ -60,11 +60,11 @@ Age: 5730';
     $urls[2]['name'] = "albo.xls";
     $urls[2]['effective_url'] = 'https://s3.amazonaws.com/dkan-default-content-files/files/albo.xls';
 
-    $urls[3]['url'] = "https://data.chhs.ca.gov/dataset/596b5eed-31de-4fd8-a645-249f3f9b19c4/resource/57da6c9a-41a7-44b0-ab8d-815ff2cd5913/download/cscpopendata.csv";
-    $urls[3]['type'] = 'text/csv';
-    $urls[3]['extension'] = 'csv';
-    $urls[3]['name'] = "cscpopendata.csv";
-    $urls[3]['effective_url'] = 'https://data.chhs.ca.gov/dataset/596b5eed-31de-4fd8-a645-249f3f9b19c4/resource/57da6c9a-41a7-44b0-ab8d-815ff2cd5913/download/cscpopendata.csv';
+    $urls[3]['url'] = "https://data.cdc.gov/api/views/cucp-zsht/rows.xml?accessType=DOWNLOAD";
+    $urls[3]['type'] = 'text/xml';
+    $urls[3]['extension'] = 'xml';
+    $urls[3]['name'] = "rows.xml";
+    $urls[3]['effective_url'] = 'https://data.cdc.gov/api/views/cucp-zsht/rows.xml?accessType=DOWNLOAD';
 
     $urls[4]['url'] = "https://developers.google.com/kml/documentation/KML_Samples.kml";
     $urls[4]['type'] = 'application/vnd.google-earth.kml+xml';
