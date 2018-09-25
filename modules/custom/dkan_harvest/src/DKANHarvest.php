@@ -29,12 +29,12 @@ class DKANHarvest {
    */
   private function read($table, $fields, $id = NULL) {
     $results = $this->readQuery($table, $fields, $id);
-		$items = [];
+    $items = [];
     foreach ($results as $result) {
       foreach($fields as $field) {
         $items[$field] = $result->{$field};
       }
-		}
+    }
     return $items;
   }
 
@@ -53,14 +53,14 @@ class DKANHarvest {
    */
   private function readMultiple($table, $fields, $id = NULL) {
     $results = $this->readQuery($table, $fields, $id = NULL);
-		$items = [];
+    $items = [];
     $item = [];
     foreach ($results as $result) {
       foreach($fields as $field) {
         $item[$field] = $result->{$field};
       }
       $items[] = $item;
-		}
+    }
     return $items;
   }
 
@@ -89,14 +89,14 @@ class DKANHarvest {
     else {
       $query = $this->db->query("SELECT $fieldList FROM {$table}");
     }
-		return $query->fetchAll();
+    return $query->fetchAll();
   }
 
 
   private function delete($table, $id, $val) {
-		$result = $this->db->delete($table)
-			->condition($id, $val)
-			->execute();
+    $result = $this->db->delete($table)
+      ->condition($id, $val)
+      ->execute();
     return $result;
   }
 
@@ -110,39 +110,39 @@ class DKANHarvest {
   }
 
   public function runCreate($sourceId, $results = array()) {
-		$date = date_create();
-		$result = $this->db->insert('harvest_run')
-			->fields([
-				'source_id' => $sourceId,
-				'results' => json_encode($results),
+    $date = date_create();
+    $result = $this->db->insert('harvest_run')
+      ->fields([
+        'source_id' => $sourceId,
+        'results' => json_encode($results),
         'timestamp' => date_timestamp_get($date),
-			])
-			->execute();
+      ])
+      ->execute();
     // Returns autoincrement run id.
     return $result;
-	}
+  }
 
   public function runRead($runId) {
     $items = $this->read('harvest_run', array('source_id', 'results', 'timestamp'), array('run_id' => array(':run_id' => $runId)));
     return $items[0];
-	}
+  }
 
   public function runUpdate($runId, $sourceId, $results) {
-		$date = date_create();
-		$result = $this->db->update('harvest_run')
-			->fields([
-				'source_id' => $sourceId,
-				'results' => json_encode($results),
+    $date = date_create();
+    $result = $this->db->update('harvest_run')
+      ->fields([
+        'source_id' => $sourceId,
+        'results' => json_encode($results),
         'timestamp' => date_timestamp_get($date),
-			])
-			->execute();
+      ])
+      ->execute();
     return $result;
-	}
+  }
 
   public function runDelete($sourceId) {
-		$result = $this->delte('harvest_run', 'run_id', $runId);
+    $result = $this->delte('harvest_run', 'run_id', $runId);
     return $result;
-	}
+  }
 
   //======================================================================
   // Log CRUD
@@ -156,42 +156,42 @@ class DKANHarvest {
   }
 
   public function logCreate($identifier, $run_id, $action, $level, $message) {
-		$date = date_create();
-		$result = $this->db->insert('harvest_log')
-			->fields([
-				'identifier' => $identifier,
-				'run_id' => $run_id,
-				'action' => $action,
-				'level' => $level,
-				'message' => $message,
+    $date = date_create();
+    $result = $this->db->insert('harvest_log')
+      ->fields([
+        'identifier' => $identifier,
+        'run_id' => $run_id,
+        'action' => $action,
+        'level' => $level,
+        'message' => $message,
         'timestamp' => date_timestamp_get($date),
-			])
-			->execute();
+      ])
+      ->execute();
     return $result->log_id;
-	}
+  }
 
   public function logRead($logId) {
     $items = $this->read('harvest_run', $logFields, array('log_id' => array(':log_id' => $logId)));
     return $items[0];
-	}
+  }
 
   public function logUpdate($sourceId, $results) {
-		$date = date_create();
-		$result = $this->db->update('harvest_log')
-			->fields([
-				'source_id' => $sourceId,
-				'results' => $results,
+    $date = date_create();
+    $result = $this->db->update('harvest_log')
+      ->fields([
+        'source_id' => $sourceId,
+        'results' => $results,
         'timestamp' => date_timestamp_get($date),
-			])
-			->execute();
+      ])
+      ->execute();
     return $result;
-	}
+  }
 
   // TODO: Delete by source or run or all.
   public function logDelete($id) {
-		$result = $this->delete('harvest_log', 'id', $id);
+    $result = $this->delete('harvest_log', 'id', $id);
     return $result;
-	}
+  }
 
   //======================================================================
   // Hash CRUD
@@ -205,19 +205,19 @@ class DKANHarvest {
   }
 
   public function hashCreate($identifier, $bundle, $sourceId, $runId, $hash) {
-		$date = date_create();
-		$result = $this->db->insert('harvest_hash')
-			->fields([
-				'identifier' => $identifier,
-				'bundle' => $bundle,
-				'source_id' => $sourceId,
-				'run_id' => $runId,
-				'hash' => $hash,
+    $date = date_create();
+    $result = $this->db->insert('harvest_hash')
+      ->fields([
+        'identifier' => $identifier,
+        'bundle' => $bundle,
+        'source_id' => $sourceId,
+        'run_id' => $runId,
+        'hash' => $hash,
         'timestamp' => date_timestamp_get($date),
-			])
-			->execute();
+      ])
+      ->execute();
     return $result;
-	}
+  }
 
   public function hashGenerate($doc) {
     return hash('sha256', serialize($doc));
@@ -226,7 +226,7 @@ class DKANHarvest {
   public function hashRead($identifier) {
     $items = $this->read('harvest_hash', $this->hashFields, array('identifier' => array(':identifier' => $identifier)));
     return $items;
-	}
+  }
 
   public function hashReadIdsBySource($sourceId) {
     $items = $this->readMultiple('harvest_hash', array('bundle', 'identifier'), array('source_id' => array(':sourceId' => $sourceId)));
@@ -235,24 +235,24 @@ class DKANHarvest {
       $ids[] = array('identifier' => $item['identifier'], 'bundle' => $item['bundle']);
     }
     return $ids;
-	}
+  }
 
   public function hashUpdate($sourceId, $hash) {
-		$date = date_create();
-		$result = $this->db->update('harvest_hash')
-			->fields([
-				'source_id' => $sourceId,
-				'config' => $config,
+    $date = date_create();
+    $result = $this->db->update('harvest_hash')
+      ->fields([
+        'source_id' => $sourceId,
+        'config' => $config,
         'timestamp' => date_timestamp_get($date),
-			])
-			->execute();
+      ])
+      ->execute();
     return $result;
-	}
+  }
 
   public function hashDelete($identifier) {
-		$result = $this->delte('harvest_hash', 'identifier', $identifier);
+    $result = $this->delte('harvest_hash', 'identifier', $identifier);
     return $result;
-	}
+  }
 
   //======================================================================
   // Source CRUD
@@ -264,34 +264,34 @@ class DKANHarvest {
   }
 
   public function sourceCreate($sourceId, $config) {
-		$result = $this->db->insert('harvest_source')
-			->fields([
-				'source_id' => $sourceId,
-				'config' => json_encode($config),
-			])
-			->execute();
+    $result = $this->db->insert('harvest_source')
+      ->fields([
+        'source_id' => $sourceId,
+        'config' => json_encode($config),
+      ])
+      ->execute();
     return $result;
-	}
+  }
 
   public function sourceRead($sourceId) {
     $items = $this->read('harvest_source', array('config'), array('source_id' => array(':source_id' => $sourceId)));
     $config = json_decode($items['config']);
     return $config;
-	}
+  }
 
   public function sourceUpdate($sourceId, $config) {
-		$result = $this->db->update('harvest_source')
-			->fields([
-				'source_id' => $sourceId,
-				'config' => $config,
-			])
-			->execute();
+    $result = $this->db->update('harvest_source')
+      ->fields([
+        'source_id' => $sourceId,
+        'config' => $config,
+      ])
+      ->execute();
     return $result;
-	}
+  }
 
   public function sourceDelete($sourceId) {
-		$result = $this->delete('harvest_source', 'source_id', $sourceId);
+    $result = $this->delete('harvest_source', 'source_id', $sourceId);
     return $result;
-	}
+  }
 
 }

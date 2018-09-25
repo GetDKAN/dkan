@@ -21,15 +21,15 @@ class Dkan8Revert extends Revert {
     $this->log->write('DEBUG', 'revert', 'Reverting harvest ' . $this->sourceId);
     $this->DKANHarvest = new DKANHarvest();
     $ids = $this->DKANHarvest->hashReadIdsBySource($this->sourceId);
-		foreach ($ids as $id) {
+    foreach ($ids as $id) {
       $this->entityDelete($id);
-		}
+    }
   }
 
   function entityDelete($id) {
     $this->log->write('DEBUG', 'revert', 'Reverting harvest item ' . $id['identifier']);
-		$type = $this->collectionsToEntityMap[$id['bundle']];
-		$items = \Drupal::entityTypeManager()->getStorage($type)->loadByProperties(['uuid' => $id['identifier']]);
+    $type = $this->collectionsToEntityMap[$id['bundle']];
+    $items = \Drupal::entityTypeManager()->getStorage($type)->loadByProperties(['uuid' => $id['identifier']]);
     foreach ($items as $item) {
       $item->delete();
     }

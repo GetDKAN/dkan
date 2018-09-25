@@ -21,10 +21,10 @@ abstract class Transform {
 
   function hook($name, &$items) {
     if ($this->drupal8) {
-			$module_handler = \Drupal::moduleHandler();
-			$module_handler
-				->invokeAll('hooks_dkan_harvest_transform_' . $name, $items);
-		}
+      $module_handler = \Drupal::moduleHandler();
+      $module_handler
+        ->invokeAll('hooks_dkan_harvest_transform_' . $name, $items);
+    }
   }
 
 }

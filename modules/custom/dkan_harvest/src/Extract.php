@@ -21,36 +21,36 @@ abstract class Extract {
     $this->log = $log;
   }
 
-	protected function httpRequest($uri) {
-		try {
-		  $client = new Client();
-			$res = $client
-				->get($this->uri);
-			$data = (string) $res->getBody();
-			return $data;
-		} catch (RequestException $exception) {
+  protected function httpRequest($uri) {
+    try {
+      $client = new Client();
+      $res = $client
+        ->get($this->uri);
+      $data = (string) $res->getBody();
+      return $data;
+    } catch (RequestException $exception) {
       $this->log->write('ERROR', 'Extract', 'Error reading ' . $uri);
-		}
-	}
+    }
+  }
 
-	protected function writeToFile($id, $item) {
-		try {
+  protected function writeToFile($id, $item) {
+    try {
       $harvestFolder = $this->folder . '/' . $this->sourceId;
       if (!file_exists($harvestFolder)) {
         mkdir($harvestFolder, 0777, true);
       }
-			$file =  $harvestFolder . '/' . $id . '.json';
-			$handle = fopen($file, 'w');
-			if ( !$handle ) {
+      $file =  $harvestFolder . '/' . $id . '.json';
+      $handle = fopen($file, 'w');
+      if ( !$handle ) {
         throw new Exception('File open failed.');
       }
-			fwrite($handle, $item);
-			fclose($handle);
-		} catch ( Exception $e ) {
+      fwrite($handle, $item);
+      fclose($handle);
+    } catch ( Exception $e ) {
       // Let's log.
 
     }
-	}
+  }
 
   function run() {
     return array();

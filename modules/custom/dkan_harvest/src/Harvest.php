@@ -48,7 +48,7 @@ class Harvest {
   function init($harvest) {
     $logClass = "Drupal\\dkan_harvest\\Log\\" . $this->config->log->type;
     $this->log = new $logClass($this->config->log->debug, $harvest->sourceId, $harvest->runId);
-		$this->log->write('DEBUG', 'init', 'Initializing harvest');
+    $this->log->write('DEBUG', 'init', 'Initializing harvest');
     if (!$this->harvestInitValidate($harvest)) return;
 
     $extractClass = "Drupal\\dkan_harvest\\Extract\\" . $harvest->source->type;

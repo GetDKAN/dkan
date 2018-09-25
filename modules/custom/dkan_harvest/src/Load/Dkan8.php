@@ -163,7 +163,7 @@ class Dkan8 extends Load {
     $this->log->write('DEBUG', 'updateNode', 'Updating ' . $doc->identifier);
     // TODO: Just get nid and then load.
     $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $doc->identifier);
-		$date = date_create();
+    $date = date_create();
     $node->update = date_timestamp_get($date);
     $node->field_json_metadata = json_encode($doc);
     $node->save();
@@ -184,7 +184,7 @@ class Dkan8 extends Load {
 
   function updateTerm($doc) {
     $term = \Drupal::service('entity.repository')->loadEntityByUuid('taxonomy_term', $doc->identifier);
-		$date = date_create();
+    $date = date_create();
     $term->update = date_timestamp_get($date);
     $term->field_json_metadata = json_encode($doc);
     $term->save();

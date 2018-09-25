@@ -10,7 +10,7 @@ use Drupal\dkan_harvest\DKANHarvest;
 class DkanHarvestCommands extends DrushCommands {
 
   function __construct() {
-		$config = dkan_harvest_initialize_config();
+    $config = dkan_harvest_initialize_config();
     $this->Harvest = new Harvest($config);
     $this->DKANHarvest = new DKANHarvest();
   }
@@ -24,12 +24,12 @@ class DkanHarvestCommands extends DrushCommands {
    *   List available harvests.
    */
   public function list() {
-		return $this->DKANHarvest->sourceList();
+    return $this->DKANHarvest->sourceList();
   }
 
   /**
    * Caches harvest.
-	 *
+   *
    * @param string $sourceId
    *   The source to cache.
    *
@@ -39,14 +39,14 @@ class DkanHarvestCommands extends DrushCommands {
    *   Cache harvest source.
    */
   public function cache($sourceId) {
-		$harvest = $this->DKANHarvest->sourceRead($sourceId);
-		$this->Harvest->init($harvest);
+    $harvest = $this->DKANHarvest->sourceRead($sourceId);
+    $this->Harvest->init($harvest);
     $this->Harvest->cache();
   }
 
   /**
    * Runs harvest.
-	 *
+   *
    * @param string $sourceId
    *   The source to run.
    *
@@ -56,9 +56,9 @@ class DkanHarvestCommands extends DrushCommands {
    *   Runs a harvest from the harvest source.
    */
   public function run($sourceId) {
-		$harvest = $this->DKANHarvest->sourceRead($sourceId);
+    $harvest = $this->DKANHarvest->sourceRead($sourceId);
     $harvest->runId = $this->DKANHarvest->runCreate($sourceId);
-		$this->Harvest->init($harvest);
+    $this->Harvest->init($harvest);
     $items = $this->Harvest->extract();
     $items = $this->Harvest->transform($items);
     $this->Harvest->load($items);
@@ -66,7 +66,7 @@ class DkanHarvestCommands extends DrushCommands {
 
   /**
    * Reverts harvest.
-	 *
+   *
    * @param string $sourceId
    *   The source to revert.
    *
@@ -76,9 +76,9 @@ class DkanHarvestCommands extends DrushCommands {
    *   Removes harvested entities.
    */
   public function revert($sourceId) {
-		$harvest = $this->DKANHarvest->sourceRead($sourceId);
+    $harvest = $this->DKANHarvest->sourceRead($sourceId);
     //$harvest->runId = $this->DKANHarvest->runCreate($sourceId);
-		$this->Harvest->init($harvest);
+    $this->Harvest->init($harvest);
     $this->Harvest->revert();
   }
 }
