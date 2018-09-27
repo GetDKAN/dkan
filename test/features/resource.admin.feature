@@ -44,7 +44,7 @@ Feature: Resource
       | Resource 04 | Group 01  | Dataset 01 | Katie    | No        | Yes         |
       | Resource 05 | Group 01  | Dataset 02 | Celeste  | Yes       | Yes         |
 
-  @noworkflow
+  @resource_admin_1 @noworkflow
   Scenario: Edit any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -55,7 +55,7 @@ Feature: Resource
     When I am on "Content" page
     Then I should see "Resource 02 edited"
 
-  @noworkflow
+  @resource_admin_2 @noworkflow
   Scenario: Publish any resource
     Given I am logged in as "John"
     And I am on "Resource 04" page
@@ -66,7 +66,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 04 has been updated"
 
-  @noworkflow
+  @resource_admin_3 @noworkflow
   Scenario: Delete any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -75,7 +75,7 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 02 has been deleted"
 
-  @noworkflow @javascript
+  @resource_admin_4 @noworkflow @javascript
   Scenario: Manage Datastore of any resource
     Given I am logged in as "John"
     And I am on "Resource 01" page
@@ -86,7 +86,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "Datastore"
 
-  @noworkflow @datastore @javascript
+  @resource_admin_5 @noworkflow @datastore @javascript
   Scenario: Import items on datastore of any resource and drop
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -105,7 +105,7 @@ Feature: Resource
     And I should see "Data Importing"
     And I should see "Ready"
 
-  @noworkflow
+  @resource_admin_6 @noworkflow
   Scenario: Add revision to any resource
     Given I am logged in as "John"
     And I am on "Resource 02" page
