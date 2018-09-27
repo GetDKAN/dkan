@@ -54,7 +54,7 @@ class Page {
         '#markup' => $html
       ];
 
-      $html = (new Status($datastore_manager))->getHtml();
+      $html = (new Status($manager))->getHtml();
       $this->form['status'] = [
         '#type' => 'item',
         '#title' => t('Datastore Status'),
