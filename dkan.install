@@ -5,6 +5,11 @@
  * Install functions and update hooks for DKAN profile.
  */
 
+include_once drupal_get_path("module", "dkan_datastore") . "/src/Manager/Factory.php";
+include_once drupal_get_path("module", "dkan_datastore") . "/src/Resource.php";
+include_once drupal_get_path("module", "dkan_datastore") . "/src/Manager/ManagerInterface.php";
+include_once drupal_get_path("module", "dkan_datastore") . "/src/LockableDrupalVariables.php";
+
 use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Resource;
 use Dkan\Datastore\Manager\ManagerInterface;
@@ -717,14 +722,41 @@ function dkan_update_7030() {
   module_enable(array('dkan_datastore_simple_import'));
 }
 
+function _dkan_remove_prefix($prefix, $string) {
+  if (substr($string, 0, strlen($prefix)) == $prefix) {
+    $string = substr($string, strlen($prefix));
+  }
+  return $string;
+}
+
 /**
  * Rename feeds_datastore tables.
  */
 function dkan_update_7031() {
-  foreach (db_find_tables("feeds_datastore_dkan%") as $table_name) {
-    $new_table_name = str_replace("feeds_datastore_dkan_file", "dkan_datastore", $table_name);
-    $new_table_name = str_replace("feeds_datastore_dkan_link", "dkan_datastore", $new_table_name);
-    db_rename_table($table_name, $new_table_name);
+  global $databases;
+
+  $prefix = "";
+
+  if (isset($databases['default']['default']['prefix'])) {
+    $prefix = $databases['default']['default']['prefix'];
+  }
+
+  $possibilities = [
+    "%feeds_datastore_dkan_%",
+    "%feeds_datastore_%",
+  ];
+
+  foreach ($possibilities as $string) {
+    foreach (db_find_tables($string) as $table_name) {
+      $table_name = _dkan_remove_prefix($prefix, $table_name);
+
+      $clean = str_replace("%", "", $string);
+
+      $new_table_name = str_replace("{$clean}file", "dkan_datastore", $table_name);
+      $new_table_name = str_replace("{$clean}link", "dkan_datastore", $new_table_name);
+
+      db_rename_table($table_name, $new_table_name);
+    }
   }
 }
 
@@ -732,7 +764,16 @@ function dkan_update_7031() {
  * Generate basic datastore configuration.
  */
 function dkan_update_7032() {
-  foreach (db_find_tables("dkan_datastore%") as $table_name) {
+  global $databases;
+
+  $prefix = "";
+
+  if (isset($databases['default']['default']['prefix'])) {
+    $prefix = $databases['default']['default']['prefix'];
+  }
+
+  foreach (db_find_tables("%dkan_datastore%") as $table_name) {
+    $table_name = _dkan_remove_prefix($prefix, $table_name);
     $nid = str_replace("dkan_datastore_", "", $table_name);
     $resource = Resource::createFromDrupalNodeNid($nid);
 
