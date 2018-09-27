@@ -1,11 +1,11 @@
 Datastore
 ===============
 
-The Datastore component allow users to parse and save CSV files into database tables, allowing users to query them through a public API.
+When you create a dataset with resources, DKAN is reading the data directly from the resource file or API.
 
-When you create a dataset with resources DKAN is reading this data directly from the file or API you added as a resource.
+The Datastore component provides an option for you to parse CSV files and save the data into database tables. This allows users to query the data through a public API.
 
-To get the fullest functionality possible out of your datasets, you should add your CSV resources to the datastore.
+So by adding your CSV resources to the datastore, you are getting the fullest functionality possible out of your datasets.
 
 Importing Resources
 ---------------
@@ -19,7 +19,7 @@ Configure the Manager
 
 There are many ways to accomplish data querability. DKAN out of the box provides two ways to manage the process. The default manager is called **Simple Import**.
 
-The first step on using the datastore is to configure which manager you would like to use for the resource.
+The first step to use the datastore is to configure which manager you would like to use for the resource.
 
 On the "Manage Datastore" page, choose a datastore manager, and click save.
 
@@ -28,7 +28,7 @@ The **Simple Import** Manager will then need some information regarding the CSV 
 - **delimiter**: the character that encloses the fields in your CSV file.
 - **escape**: the character used to escape other characters in your CSV file.
 
-Enter the character that are used as delimeter, quote and escape characters in your file, then use the "Import" button at the bottom of the page to import the data from your file or API into the datastore.
+Enter the character used for each function (delimeter, quote and escape) in your file, then click the "Import" button at the bottom of the page to import the data from your file or API into the datastore.
 
 Importing
 ^^^^^^^^^^^^^^^
