@@ -157,7 +157,6 @@ abstract class Manager implements ManagerInterface {
         break;
       }
     }
-
     fclose($h);
     $parser->reset();
 
@@ -167,6 +166,10 @@ abstract class Manager implements ManagerInterface {
       $new = strtolower($new);
       $new = str_replace(" ", "_", $new);
       $header[$key] = $new;
+    }
+    
+    if (empty($header)) {
+      throw new \Exception("Unable to get headers from {$this->resource->getFilePath()}");
     }
 
     return $header;
