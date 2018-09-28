@@ -38,6 +38,7 @@ class Page {
    */
   public function get() {
     try {
+      /* @var $resource \Dkan\Datastore\Resource */
       $resource = Resource::createFromDrupalNode($this->node);
 
       /* @var $manager ManagerInterface */
@@ -137,6 +138,8 @@ class Page {
    * Batch event handler.
    */
   public function batchProcess($manager, &$context) {
+    stream_wrapper_restore("https");
+    stream_wrapper_restore("http");
     if (!isset($context['sandbox']['progress'])) {
       $context['sandbox']['progress'] = 0;
       $context['sandbox']['max'] = 1;
