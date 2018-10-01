@@ -4,6 +4,40 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\group\Entity;
 use Drupal\group\Entity\Group;
+use Drupal\dkan_schema\Schema;
+
+/**
+ * Prepares for storage by adding ids.
+ */
+function dkanDatasetPrepareStore($doc, $references, $schema) {
+  $collectionsToUpdate = [
+    'publisher' => 'object',
+    'theme' => 'array',
+    'keyword' => 'array',
+    'license' => 'string',
+  ];
+  foreach ($references as $reference => $entity) {
+    $dataType = $collectionsToUpdate[$reference];
+    if (isset($doc->{$reference})) {
+      if ($dataType == 'string') {
+        $value = $doc->{$reference};
+        $doc->{$reference} = ['dkan-id' => $value];
+      }
+      else if ($dataType == 'array') {
+        $values = explode(',', $doc->{$reference});
+        $doc->{$reference} = [];
+        foreach ($values as $value) {
+          $doc->{$reference}[] = ['dkan-id' => $value];
+        }
+      }
+      else if ($dataType == 'object') {
+        $value = $doc->{$reference};
+        $doc->{$reference} = ['dkan-id' => $value];
+      }
+    }
+  }
+  return $doc;
+}
 
 /**
  * Implements hook_entity_presave().
@@ -11,10 +45,17 @@ use Drupal\group\Entity\Group;
  * Make sure summary and image are populated.
  */
 function dkan_dataset_entity_presave(EntityInterface $entity) {
-  if ($entity->getEntityTypeId() != 'node' || $entity->bundle() != 'dataset') {
+  $schema = new Schema();
+  $entities = array_values($schema->config['collectionToEntityMap']);
+  $bundles = array_values($schema->config['collectionToBundleMap']);
+  if (!in_array($entity->getEntityTypeId(), $entities) || !in_array($entity->bundle(), $bundles)) {
     return;
   }
   $metadata = json_decode($entity->get('field_json_metadata')->value);
+  if ($references = $schema->config['references'][$entity->bundle()]) {
+    $metadata = dkanDatasetPrepareStore($metadata, $references, $schema);
+  }
+  $title = isset($metadata->title) ? $metadata->title : $metadata-name;
   $entity->setTitle($metadata->title);
 
   $created = new DateTime();

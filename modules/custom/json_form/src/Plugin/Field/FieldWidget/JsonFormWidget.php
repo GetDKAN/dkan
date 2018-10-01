@@ -69,6 +69,37 @@ class JsonFormWidget extends WidgetBase {
     return $element;
   }
 
+  // TODO: This should come from the schema.
+  protected $collectionsToUpdate = [
+    'publisher' => 'object',
+    'theme' => 'array',
+    'keyword' => 'array',
+    'license' => 'string',
+  ];
+
+  /**
+   * Removes dkan-id references.
+   */
+  public function prepareForm($doc, $references) {
+    foreach ($references as $reference => $entity) {
+      $dataType = $this->collectionsToUpdate[$reference];
+      if (isset($doc->{$reference})) {
+        if ($dataType == 'string' || $dataType== 'object') {
+          $value = $doc->{$reference}->{'dkan-id'};
+          $doc->{$reference} = $value;
+        }
+        else if ($dataType == 'array') {
+          $values = $doc->{$reference};
+          $doc->{$reference} = [];
+          foreach ($values as $value) {
+            $doc->{$reference}[] = $value->{'dkan-id'};
+          }
+        }
+      }
+    }
+    return json_encode($doc);
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -92,6 +123,12 @@ class JsonFormWidget extends WidgetBase {
     }
     $bundle = $items->getEntity()->bundle();
     $schema = new Schema();
+
+    if ($references = $schema->config['references'][$bundle]) {
+      $default_value = $this->prepareForm(json_decode($default_value), $references);
+    }
+
+
     $form_schema = $schema->prepareForForm($bundle);
 
     $element['value'] = $element + [

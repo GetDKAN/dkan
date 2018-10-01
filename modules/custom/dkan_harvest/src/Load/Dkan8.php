@@ -6,6 +6,7 @@ use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\dkan_harvest\Load;
 use Drupal\dkan_harvest\DKANHarvest;
+use Drupal\dkan_schema\Schema;
 
 class Dkan8 extends Load {
 
