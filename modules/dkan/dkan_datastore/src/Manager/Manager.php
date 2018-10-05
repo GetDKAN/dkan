@@ -32,7 +32,7 @@ abstract class Manager implements ManagerInterface {
 
     $this->resource = $resource;
 
-    $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
+    $this->stateDataImport = self::DATA_IMPORT_READY;
     $this->stateStorage = self::STORAGE_UNINITIALIZED;
 
     $this->configurableProperties = [];
