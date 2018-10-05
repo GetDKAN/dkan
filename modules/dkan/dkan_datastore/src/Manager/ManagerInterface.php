@@ -11,10 +11,11 @@ interface ManagerInterface {
   const STORAGE_INITIALIZED = 1;
 
   const DATA_IMPORT_UNINITIALIZED = 2;
-  const DATA_IMPORT_IN_PROGRESS = 3;
-  const DATA_IMPORT_DONE = 4;
-  const DATA_IMPORT_ERROR = 5;
-  const DATA_IMPORT_READY = 6;
+  const DATA_IMPORT_READY = 3;
+  const DATA_IMPORT_IN_PROGRESS = 4;
+  const DATA_IMPORT_PAUSED = 5;
+  const DATA_IMPORT_DONE = 6;
+  const DATA_IMPORT_ERROR = 7;
 
   /**
    * Drops a datastore.

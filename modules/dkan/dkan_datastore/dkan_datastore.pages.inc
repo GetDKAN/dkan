@@ -77,3 +77,11 @@ function dkan_datastore_drop_submit($form, &$form_state) {
   $form_state['storage']['original_form'] = $form_state['values'];
   $form_state['rebuild'] = TRUE;
 }
+
+/**
+ * Submit handler.
+ */
+function dkan_datastore_stop_submit($form, &$form_state) {
+  drupal_set_message(t("The Import Process will be stopped shortly."));
+  variable_set('dkan_datastore_interrupt', 1);
+}

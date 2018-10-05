@@ -52,7 +52,7 @@ class Page {
       $html = "<p>Import the data from a CSV file into a database table to make it accessible through an API.</p>";
       $this->form['help'] = [
         '#type' => 'item',
-        '#markup' => $html
+        '#markup' => $html,
       ];
 
       $html = (new Status($manager))->getHtml();
@@ -63,7 +63,7 @@ class Page {
       ];
 
       $status = $manager->getStatus();
-      if (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_READY, ManagerInterface::DATA_IMPORT_UNINITIALIZED])) {
+      if (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_READY])) {
 
         $this->form += (new ManagerSelection($resource, $manager))->getForm();
 
@@ -75,11 +75,18 @@ class Page {
           '#value' => t("Import"),
         );
       }
-      elseif (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_IN_PROGRESS, ManagerInterface::DATA_IMPORT_DONE])) {
+      elseif (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_DONE, ManagerInterface::DATA_IMPORT_PAUSED])) {
         $this->form['actions']['drop'] = array(
           '#type' => 'submit',
           '#value' => t("Drop"),
           '#submit' => array('dkan_datastore_drop_submit'),
+        );
+      }
+      elseif (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_IN_PROGRESS])) {
+        $this->form['actions']['stop'] = array(
+          '#type' => 'submit',
+          '#value' => t("Stop"),
+          '#submit' => array('dkan_datastore_stop_submit'),
         );
       }
 

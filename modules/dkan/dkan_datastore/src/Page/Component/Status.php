@@ -65,19 +65,22 @@ class Status {
         return t("Initialized");
 
       case ManagerInterface::DATA_IMPORT_UNINITIALIZED:
-        return t("Uninitialized");
+        return t("Ready");
+
+      case ManagerInterface::DATA_IMPORT_READY:
+        return t("Ready");
 
       case ManagerInterface::DATA_IMPORT_IN_PROGRESS:
         return t("In Progress");
+
+      case ManagerInterface::DATA_IMPORT_PAUSED:
+        return t("Paused");
 
       case ManagerInterface::DATA_IMPORT_DONE:
         return t("Done");
 
       case ManagerInterface::DATA_IMPORT_ERROR:
         return t("Error");
-
-      case ManagerInterface::DATA_IMPORT_READY:
-        return t("Ready");
     }
   }
 

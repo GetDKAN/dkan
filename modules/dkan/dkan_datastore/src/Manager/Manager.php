@@ -32,7 +32,7 @@ abstract class Manager implements ManagerInterface {
 
     $this->resource = $resource;
 
-    $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
+    $this->stateDataImport = self::DATA_IMPORT_READY;
     $this->stateStorage = self::STORAGE_UNINITIALIZED;
 
     $this->configurableProperties = [];
@@ -167,7 +167,7 @@ abstract class Manager implements ManagerInterface {
       $new = str_replace(" ", "_", $new);
       $header[$key] = $new;
     }
-    
+
     if (empty($header)) {
       throw new \Exception("Unable to get headers from {$this->resource->getFilePath()}");
     }
@@ -230,12 +230,12 @@ abstract class Manager implements ManagerInterface {
       $this->stateDataImport = self::DATA_IMPORT_DONE;
       $this->saveState();
     }
-    elseif ($import_state === self::DATA_IMPORT_ERROR) {
-      $this->stateDataImport = self::DATA_IMPORT_ERROR;
+    elseif ($import_state === self::DATA_IMPORT_PAUSED) {
+      $this->stateDataImport = self::DATA_IMPORT_PAUSED;
       $this->saveState();
     }
-    elseif ($import_state === self::DATA_IMPORT_READY) {
-      $this->stateDataImport = self::DATA_IMPORT_READY;
+    elseif ($import_state === self::DATA_IMPORT_ERROR) {
+      $this->stateDataImport = self::DATA_IMPORT_ERROR;
       $this->saveState();
     }
     else {
@@ -260,9 +260,7 @@ abstract class Manager implements ManagerInterface {
    */
   public function drop() {
     $this->dropTable();
-    $this->stateStorage = self::STORAGE_UNINITIALIZED;
-    $this->stateDataImport = self::DATA_IMPORT_READY;
-    $this->saveState();
+    $this->dropState();
   }
 
   /**

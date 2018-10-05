@@ -58,10 +58,10 @@ class FastImport extends Manager {
     }
     catch (\Exception $e) {
       $this->setError($e->getMessage());
-      return FALSE;
+      return self::DATA_IMPORT_ERROR;
     }
 
-    return TRUE;
+    return self::DATA_IMPORT_DONE;
   }
 
 }
