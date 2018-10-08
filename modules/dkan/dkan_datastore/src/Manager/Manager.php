@@ -32,7 +32,7 @@ abstract class Manager implements ManagerInterface {
 
     $this->resource = $resource;
 
-    $this->stateDataImport = self::DATA_IMPORT_READY;
+    $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
     $this->stateStorage = self::STORAGE_UNINITIALIZED;
 
     $this->configurableProperties = [];
@@ -211,6 +211,8 @@ abstract class Manager implements ManagerInterface {
   public function dropState() {
     $state_storage = new LockableDrupalVariables("dkan_datastore");
     $state_storage->delete($this->resource->getId());
+    $this->stateStorage = self::STORAGE_UNINITIALIZED;
+    $this->stateDataImport = self::DATA_IMPORT_UNINITIALIZED;
   }
 
   /**
