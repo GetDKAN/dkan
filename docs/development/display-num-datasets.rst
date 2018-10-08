@@ -137,6 +137,8 @@ Node Counts view:
 
 These two views provide blocks for Dataset, Resource, Topic, and Tag counts.
 
+1a. Clear the Drupal cache.
+
 2. Add Blocks to Home page:
 
 2a: Go to the Panelizer page for the home page. You can find this by finding the "Welcome" page in the content menu and clicking "edit". Replace the "edit" term in the URL with "panelizer". The URL should look like `node/1/panelizer`. 
