@@ -49,7 +49,7 @@ class Page {
         return $this->dropForm();
       }
 
-      $html = "<p>Import the data from a CSV file into a database table to make it accessible through an API.</p>";
+      $html = '<p class="data-explorer-help"><i class="fa fa-info-circle" aria-hidden="true"></i> Import the data from a CSV or TSV file into a database table to make it accessible through an API.</p>';
       $this->form['help'] = [
         '#type' => 'item',
         '#markup' => $html
