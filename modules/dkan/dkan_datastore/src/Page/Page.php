@@ -63,7 +63,7 @@ class Page {
       ];
 
       $status = $manager->getStatus();
-      if (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_READY])) {
+      if (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_READY, ManagerInterface::DATA_IMPORT_UNINITIALIZED])) {
 
         $this->form += (new ManagerSelection($resource, $manager))->getForm();
 
