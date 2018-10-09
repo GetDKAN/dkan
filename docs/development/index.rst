@@ -39,3 +39,4 @@ custom extentions to DKAN. For now, read additional information about:
    license
    modules
    metadatasource
+   custom_file_extensions

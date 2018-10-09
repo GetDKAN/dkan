@@ -132,9 +132,32 @@ function dkan_dataset_form_settings() {
         to create new datasets if this is enabled.'),
     '#default_value' => variable_get('dkan_dataset_form_group_validation', 0),
   );
+  $form['dkan_custom_extensions'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Additional allowed file extensions'),
+    '#prefix' => '<div><hr />' . t('DKAN allows the following file formats when adding resources: !default. To allow additional file extension(s), type them below, separated by a space, and save.', array('!default' => dkan_default_extensions())) . '</div>',
+    '#default_value' => variable_get('dkan_custom_extensions'),
+    '#size' => 60,
+    '#maxlength' => 1024,
+  );
 
   return system_settings_form($form);
 }
+
+/**
+ * Validate dkan_custom_extensions in DKAN Dataset form settings.
+ */
+function dkan_dataset_form_settings_validate($form, &$form_state) {
+  $block = ('php exe js sh jar bat ws wsf cmd msi vb vbs scf scr pif');
+  $form_state['values']['dkan_custom_extensions'] = preg_replace("#[[:punct:]]#", "", $form_state['values']['dkan_custom_extensions']);
+  $custom = explode(' ', $form_state['values']['dkan_custom_extensions']);
+  foreach ($custom as $key => $value) {
+    if (stripos($block, $value) !== false) {
+      form_set_error('dkan_custom_extensions', t('!value can not be added.', array('!value' => $value)));
+    }
+  }
+}
+
 
 /**
  * Create table of available formats.
