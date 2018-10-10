@@ -5,11 +5,6 @@
  * Install functions and update hooks for DKAN profile.
  */
 
-include_once drupal_get_path("module", "dkan_datastore") . "/src/Manager/Factory.php";
-include_once drupal_get_path("module", "dkan_datastore") . "/src/Resource.php";
-include_once drupal_get_path("module", "dkan_datastore") . "/src/Manager/ManagerInterface.php";
-include_once drupal_get_path("module", "dkan_datastore") . "/src/LockableDrupalVariables.php";
-
 use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Resource;
 use Dkan\Datastore\Manager\ManagerInterface;
@@ -741,6 +736,8 @@ function dkan_update_7031() {
     $prefix = $databases['default']['default']['prefix'];
   }
 
+  // I have seen both of these patterns used, I am not sure if it is related
+  // to a version of feeds or not, so we are checking both.
   $possibilities = [
     "%feeds_datastore_dkan_%",
     "%feeds_datastore_%",
@@ -748,6 +745,11 @@ function dkan_update_7031() {
 
   foreach ($possibilities as $string) {
     foreach (db_find_tables($string) as $table_name) {
+
+      // db_find_tables returns full table names with a prefix if
+      // configured. The rest of db functions will work without
+      // explicitely setting the prefix. We need to remove
+      // the prefix for db_rename_table to work correctly.
       $table_name = _dkan_remove_prefix($prefix, $table_name);
 
       $clean = str_replace("%", "", $string);

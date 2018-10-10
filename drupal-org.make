@@ -369,7 +369,7 @@ projects:
       2360973: https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch
       1512442: https://www.drupal.org/files/issues/1512442-20-workbench_moderation-fix_access_check.patch
   xautoload:
-    version: '4.5'
+    version: '5.7'
 libraries:
   chosen:
     download:
