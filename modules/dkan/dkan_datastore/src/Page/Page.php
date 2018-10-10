@@ -152,7 +152,12 @@ class Page {
       $context['sandbox']['max'] = 1;
     }
     /* @var $manager ManagerInterface */
-    $manager->import();
+    $finished = $manager->import();
+
+    if ($finished == ManagerInterface::DATA_IMPORT_PAUSED) {
+      return FALSE;
+    }
+
     $context['sandbox']['progress']++;
 
     if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
@@ -164,7 +169,7 @@ class Page {
    * Batch event handler.
    */
   public function batchFinished($success, $results, $operations) {
-    drupal_set_message(t("Import finished"));
+    drupal_set_message(t("The batch process completed successfully."));
   }
 
   /**
