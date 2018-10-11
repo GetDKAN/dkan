@@ -1,6 +1,10 @@
 // Menu
 // Styles for Menus and Navs
 // --------------------------------------------------
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
 .navigation-wrapper .container {
   overflow: visible;
   .navbar-collapse {
@@ -12,7 +16,7 @@
   margin-left: 10px;
   margin-right: 10px;
 }
-.navbar-default .navbar-collapse, 
+.navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
   padding: 0;
   vertical-align: top;
@@ -224,8 +228,8 @@ a.embed-link {
   margin:1em 0;
   text-decoration: none;
 }
-a.embed-link:hover, 
-a.embed-link:focus, 
+a.embed-link:hover,
+a.embed-link:focus,
 a.embed-link:active {
   color:#fff;
   text-decoration:none;
@@ -252,7 +256,7 @@ ul.action-links {
   }
 }
 
-.btn:active, 
+.btn:active,
 .btn.active {
   @include box-shadow(none);
 }
