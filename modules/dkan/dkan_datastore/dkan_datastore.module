@@ -425,7 +425,7 @@ function dkan_datastore_cron() {
       $already_importing = TRUE;
       break;
     }
-    elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_READY) {
+    elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_READY || $state['data_import'] == ManagerInterface::DATA_IMPORT_PAUSED) {
       $current_nid = $nid;
       break;
     }

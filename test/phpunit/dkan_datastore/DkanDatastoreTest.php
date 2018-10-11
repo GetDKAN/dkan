@@ -38,8 +38,10 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals(SimpleImport::DATA_IMPORT_DONE, $status['data_import']);
 
 
-    $query = db_query("SELECT * FROM {$datastore->getTableName()};");
-    $results = $query->fetchAllAssoc("country");
+    $query = db_select($datastore->getTableName(), "d");
+    $query->fields("d");
+    $results = $query->execute();
+    $results = $results->fetchAllAssoc("country");
     $json = json_encode($results);
     $this->assertEquals(
       "{\"US\":{\"country\":\"US\",\"population\":\"315209000\",\"id\":\"1\",\"timestamp\":\"1359062329\"},\"CA\":{\"country\":\"CA\",\"population\":\"35002447\",\"id\":\"2\",\"timestamp\":\"1359062329\"},\"AR\":{\"country\":\"AR\",\"population\":\"40117096\",\"id\":\"3\",\"timestamp\":\"1359062329\"},\"JP\":{\"country\":\"JP\",\"population\":\"127520000\",\"id\":\"4\",\"timestamp\":\"1359062329 \"}}",
@@ -56,7 +58,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
 
     $status = $datastore->getStatus();
     $this->assertEquals(SimpleImport::STORAGE_UNINITIALIZED, $status['storage']);
-    $this->assertEquals(SimpleImport::DATA_IMPORT_READY, $status['data_import']);
+    $this->assertEquals(SimpleImport::DATA_IMPORT_UNINITIALIZED, $status['data_import']);
   }
 
   protected function tearDown() {

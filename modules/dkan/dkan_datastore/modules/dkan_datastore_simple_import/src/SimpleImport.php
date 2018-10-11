@@ -40,7 +40,12 @@ class SimpleImport extends Manager {
     $h = fopen($this->getResource()->getFilePath(), 'r');
 
     $finished = TRUE;
+    $interrupt = $this->getInterrupt();
     while ($chunk = fread($h, 32)) {
+      if ($interrupt) {
+        $finished = FALSE;
+        break;
+      }
       if (time() < $end) {
         $parser->feed($chunk);
         $counter = $this->getAndStore($parser, $query, $header, $counter, $start);
@@ -52,6 +57,9 @@ class SimpleImport extends Manager {
       else {
         $finished = FALSE;
         break;
+      }
+      if ($counter % 1000 == 0) {
+        $interrupt = $this->getInterrupt();
       }
     }
 
@@ -69,12 +77,31 @@ class SimpleImport extends Manager {
       return ManagerInterface::DATA_IMPORT_ERROR;
     }
 
+    if ($interrupt) {
+      variable_set('dkan_datastore_interrupt', 0);
+    }
+
     if ($finished) {
       return ManagerInterface::DATA_IMPORT_DONE;
     }
     else {
-      return ManagerInterface::DATA_IMPORT_READY;
+      return ManagerInterface::DATA_IMPORT_PAUSED;
     }
+  }
+
+  /**
+   * Get Interrupt.
+   */
+  private function getInterrupt() {
+    $query = db_select("variable", 'v');
+    $query->fields('v', ['value']);
+    $query->condition('name', "dkan_datastore_interrupt");
+    $results = $query->execute();
+    foreach ($results as $result) {
+      $value = unserialize($result->value);
+      return $value;
+    }
+    return 0;
   }
 
   /**

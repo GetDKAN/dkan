@@ -13,7 +13,7 @@ Feature: Resource
       | Katie   | katie@example.com   | content creator   |
       | Celeste | celeste@example.com | editor            |
 
-  @resource_author_01 @noworkflow
+  @resource_author @resource_author_01 @noworkflow
   Scenario: Create resource
     Given I am logged in as "Katie"
     And I am on the "Content" page
@@ -25,7 +25,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 06 has been created"
 
-  @resource_author_02 @noworkflow
+  @resource_author @resource_author_02 @noworkflow
   Scenario: See warning if full url not given when using the api/url option.
     Given I am logged in as "Katie"
     And I am on the "Content" page
@@ -35,7 +35,7 @@ Feature: Resource
     And I press "Save"
     Then I should see "Please enter a full url"
 
-  @resource_author_03 @datastore @noworkflow @javascript
+  @resource_author @resource_author_03 @datastore @noworkflow @javascript
   Scenario: Create resource with too many sources.
     Given I am logged in as "Katie"
     And I am on the "Content" page
@@ -49,7 +49,7 @@ Feature: Resource
     Then I should see "Remote file is populated - only one resource type can be used at a time"
     And I should see "API or Website URL is populated - only one resource type can be used at a time"
 
-  @resource_author_04 @noworkflow @javascript
+  @resource_author @resource_author_04 @noworkflow @javascript
   Scenario: Edit own resource as content creator
     Given resources:
       | title       | author   | published | description |
@@ -63,7 +63,7 @@ Feature: Resource
     When I am on "User" page
     Then I should see "Resource 01 edited"
 
-  @resource_author_05 @noworkflow
+  @resource_author @resource_author_05 @noworkflow
   Scenario: Delete own resource
     Given resources:
       | title       | format | author   | published | description |
@@ -75,7 +75,7 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource 01 has been deleted"
 
-  @resource_author_06 @dkanBug @noworkflow
+  @resource_author @resource_author_06 @dkanBug @noworkflow
   Scenario: Change dataset on resource
     Given groups:
       | title    | author  | published |
@@ -101,7 +101,7 @@ Feature: Resource
     Then I should see "Dataset 02" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
 
-  @resource_author_07 @noworkflow
+  @resource_author @resource_author_07 @noworkflow
   Scenario: Add a resource with no datasets to a dataset with no resource
     Given groups:
       | title    | author  | published |
@@ -127,7 +127,7 @@ Feature: Resource
     Then I should see "Dataset 01" in the "dataset title" region
     And I should see "Resource 01" in the "dataset resource list" region
 
-  @resource_author_08 @noworkflow
+  @resource_author @resource_author_08 @noworkflow
   Scenario: Remove a resource with only one dataset from the dataset
     Given groups:
       | title    | author  | published |
@@ -151,7 +151,7 @@ Feature: Resource
     And I should see "Groups were updated on 1 resource(s)"
     And I should not see the link "Back to dataset"
 
-  @resource_author_09 @noworkflow
+  @resource_author @resource_author_09 @noworkflow
   Scenario: Add a resource with no group to a dataset with group
     Given groups:
       | title    | author  | published |
@@ -174,7 +174,7 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_10 @noworkflow
+  @resource_author @resource_author_10 @noworkflow
   Scenario: Remove a resource from a dataset with group
     Given groups:
       | title    | author  | published |
@@ -199,7 +199,7 @@ Feature: Resource
     When I am on "Dataset 01" page
     Then I should not see "Resource 01" in the "dataset resource list" region
 
-  @resource_author_11 @noworkflow
+  @resource_author @resource_author_11 @noworkflow
   Scenario: Add a resource to multiple datasets with groups
     Given groups:
       | title    | author  | published |
@@ -225,7 +225,7 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_12 @noworkflow
+  @resource_author @resource_author_12 @noworkflow
   Scenario: Remove one dataset with group from resource with multiple datasets
     Given groups:
       | title    | author  | published |
@@ -255,7 +255,7 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_13 @noworkflow
+  @resource_author @resource_author_13 @noworkflow
   Scenario: Remove all datasets with groups from resource
     Given groups:
       | title    | author  | published |
@@ -287,7 +287,7 @@ Feature: Resource
     Then I should see "Resource 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @resource_author_15 @datastore @noworkflow @javascript
+  @resource_author @resource_author_15 @datastore @noworkflow @javascript
   Scenario: Import items on datastore of own resource and drop
     Given resources:
       | title       | author   | published | description | link file |
@@ -305,7 +305,7 @@ Feature: Resource
     And I should see "Data Importing"
     And I should see "Ready"
 
-  @resource_author_18 @noworkflow
+  @resource_author @resource_author_18 @noworkflow
   Scenario: Add revision to own resource
     Given resources:
       | title       | author   | published | description |
@@ -321,7 +321,7 @@ Feature: Resource
 
   # @todo Add test for URL w/o .csv
   # We need to edit and save to trigger auto type discover
-  @resource_author_19 @javascript
+  @resource_author @resource_author_19 @javascript
   Scenario: Remote CSV preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -332,7 +332,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a recline preview
 
-  @resource_author_20 @javascript
+  @resource_author @resource_author_20 @javascript
   Scenario: Image preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -343,7 +343,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a image preview
 
-  @resource_author_21
+  @resource_author @resource_author_21
   Scenario: ZIP preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -354,7 +354,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a zip preview
 
-  @resource_author_22 @javascript
+  @resource_author @resource_author_22 @javascript
   Scenario: XML preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -365,7 +365,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a xml preview
 
-  @resource_author_23
+  @resource_author @resource_author_23
   Scenario: JSON preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -376,7 +376,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a json preview
 
-  @resource_author_24
+  @resource_author @resource_author_24
   Scenario: GEOJSON preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -387,7 +387,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a geojson preview
 
-  @resource_author_25 @javascript
+  @resource_author @resource_author_25 @javascript
   Scenario: Generated CSV preview
     Given resources:
       | title       | author   | published | description | link file |
@@ -398,7 +398,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a recline preview
 
-  @resource_author_26 @noworkflow
+  @resource_author @resource_author_26 @noworkflow
   Scenario: Create resource with a tsv file
     Given I am logged in as "John"
     And I am on the "Content" page
@@ -413,7 +413,7 @@ Feature: Resource
     When I click "Edit"
     Then the "field_format[und][textfield]" field should contain "tsv"
 
-  @resource_author_27 @noworkflow
+  @resource_author @resource_author_27 @noworkflow
   Scenario: Create resource with a tab file
     Given I am logged in as "John"
     And I am on the "Content" page
