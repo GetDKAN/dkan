@@ -279,6 +279,8 @@ projects:
   radix:
     type: theme
     version: '3.6'
+    patch:
+      1: patches/radix-bootstrap.patch
   radix_layouts:
     version: '3.4'
   recline:

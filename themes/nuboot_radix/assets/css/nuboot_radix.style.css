@@ -9826,6 +9826,9 @@ section.col-sm-9 {
     padding-left: 15px;
     padding-right: 15px; } }
 
+.dropdown:hover .dropdown-menu {
+  display: block; }
+
 .navigation-wrapper .container {
   overflow: visible; }
   .navigation-wrapper .container .navbar-collapse {
