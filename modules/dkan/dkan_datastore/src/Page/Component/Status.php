@@ -26,14 +26,14 @@ class Status {
   public function getHtml() {
     $state = $this->datastoreManager->getStatus();
     $stringSubs = [
-      '%class' => $this->formatClassName(get_class($this->datastoreManager)),
-      '%records' => $this->datastoreManager->numberOfRecordsImported(),
-      '%import' => $this->datastoreStateToString($state['data_import']),
+      'class' => $this->formatClassName(get_class($this->datastoreManager)),
+      'records' => $this->datastoreManager->numberOfRecordsImported(),
+      'import' => $this->datastoreStateToString($state['data_import']),
     ];
 
-    $statusInfo = t("<dt>Importer</dt><dd>%class</dd>", $stringSubs);
-    $statusInfo .= t("<dt>Records Imported</dt><dd>%records</dd>", $stringSubs);
-    $statusInfo .= t("<dt>Data Importing</dt><dd>%import</dd>", $stringSubs);
+    $statusInfo ="<dt>" . t("Importer") . "</dt><dd>{$stringSubs['class']}</dd>";
+    $statusInfo .= "<dt>" . t("Records Imported") . "</dt><dd>{$stringSubs['records']}</dd>";
+    $statusInfo .= "<dt>" . t("Data Importing") . "</dt><dd>{$stringSubs['import']}</dd>";
 
     return "<dl>{$statusInfo}</dl>";
   }
@@ -59,28 +59,28 @@ class Status {
   private function datastoreStateToString($state) {
     switch ($state) {
       case ManagerInterface::STORAGE_UNINITIALIZED:
-        return t("Uninitialized");
+        return "<b>" . t("Uninitialized") . "</b>";
 
       case ManagerInterface::STORAGE_INITIALIZED:
-        return t("Initialized");
+        return "<b>" . t("Initialized") . "</b>";
 
       case ManagerInterface::DATA_IMPORT_UNINITIALIZED:
-        return t("Ready");
+        return "<b>" . t("Ready") . "</b>";
 
       case ManagerInterface::DATA_IMPORT_READY:
-        return t("Ready");
+        return "<b>" . t("Ready") . "</b>";
 
       case ManagerInterface::DATA_IMPORT_IN_PROGRESS:
-        return t("In Progress");
+        return "<b>" . t("In Progress") . "</b>";
 
       case ManagerInterface::DATA_IMPORT_PAUSED:
-        return t("Paused");
+        return "<b>" . t("Paused") . ":" . "</b> " . t("The datastore importer is currently paused. It will resume in the background the next time cron runs from drush. See the documentation for more more information.");
 
       case ManagerInterface::DATA_IMPORT_DONE:
-        return t("Done");
+        return "<b>" . t("Done") . "</b>";
 
       case ManagerInterface::DATA_IMPORT_ERROR:
-        return t("Error");
+        return "<b>" . t("Error") . "</b>";
     }
   }
 
