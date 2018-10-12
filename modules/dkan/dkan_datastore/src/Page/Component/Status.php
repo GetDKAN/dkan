@@ -31,7 +31,7 @@ class Status {
       'import' => $this->datastoreStateToString($state['data_import']),
     ];
 
-    $statusInfo ="<dt>" . t("Importer") . "</dt><dd>{$stringSubs['class']}</dd>";
+    $statusInfo = "<dt>" . t("Importer") . "</dt><dd>{$stringSubs['class']}</dd>";
     $statusInfo .= "<dt>" . t("Records Imported") . "</dt><dd>{$stringSubs['records']}</dd>";
     $statusInfo .= "<dt>" . t("Data Importing") . "</dt><dd>{$stringSubs['import']}</dd>";
 
@@ -59,28 +59,29 @@ class Status {
   private function datastoreStateToString($state) {
     switch ($state) {
       case ManagerInterface::STORAGE_UNINITIALIZED:
-        return "<b>" . t("Uninitialized") . "</b>";
+        return t("Uninitialized");
 
       case ManagerInterface::STORAGE_INITIALIZED:
-        return "<b>" . t("Initialized") . "</b>";
+        return t("Initialized");
 
       case ManagerInterface::DATA_IMPORT_UNINITIALIZED:
-        return "<b>" . t("Ready") . "</b>";
+        return t("Ready");
 
       case ManagerInterface::DATA_IMPORT_READY:
-        return "<b>" . t("Ready") . "</b>";
+        return t("Ready");
 
       case ManagerInterface::DATA_IMPORT_IN_PROGRESS:
-        return "<b>" . t("In Progress") . "</b>";
+        return t("In Progress");
 
       case ManagerInterface::DATA_IMPORT_PAUSED:
-        return "<b>" . t("Paused") . ":" . "</b> " . t("The datastore importer is currently paused. It will resume in the background the next time cron runs from drush. See the documentation for more more information.");
+        drupal_set_message(t("The datastore importer is currently paused. It will resume in the background the next time cron runs from drush. See the documentation for more more information."));
+        return t("Paused");
 
       case ManagerInterface::DATA_IMPORT_DONE:
-        return "<b>" . t("Done") . "</b>";
+        return t("Done");
 
       case ManagerInterface::DATA_IMPORT_ERROR:
-        return "<b>" . t("Error") . "</b>";
+        return t("Error");
     }
   }
 

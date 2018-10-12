@@ -249,6 +249,17 @@ function dkan_datastore_node_update($node) {
 }
 
 /**
+ * Implements hook_node_delete().
+ */
+function dkan_datastore_node_delete($node) {
+  if ($node->type == "resource") {
+    /* @var  $manager ManagerInterface */
+    $manager = (new Factory(Resource::createFromDrupalNode($node)))->get();
+    $manager->drop();
+  }
+}
+
+/**
  * Implements hook_permission().
  */
 function dkan_datastore_permission() {
@@ -425,7 +436,8 @@ function dkan_datastore_cron() {
       if ($state['data_import'] == ManagerInterface::DATA_IMPORT_IN_PROGRESS) {
         $already_importing = TRUE;
         break;
-      } elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_READY || $state['data_import'] == ManagerInterface::DATA_IMPORT_PAUSED) {
+      }
+      elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_READY || $state['data_import'] == ManagerInterface::DATA_IMPORT_PAUSED) {
         $current_nid = $nid;
         break;
       }
@@ -445,7 +457,8 @@ function dkan_datastore_cron() {
 
       if ($finished) {
         print_r(PHP_EOL . "DKAN DATASTORE: Done Importing Resource {$current_nid}" . PHP_EOL);
-      } else {
+      }
+      else {
         $general = "DKAN DATASTORE: There was a problem while importing Resource {$current_nid}";
         $errors = $manager->getErrors();
         $error_string = implode(" | ", $errors);
@@ -453,10 +466,12 @@ function dkan_datastore_cron() {
         print_r(PHP_EOL . $final_error_string . PHP_EOL);
         watchdog("error", $final_error_string);
       }
-    } else {
+    }
+    else {
       if ($already_importing) {
         print_r(PHP_EOL . "DKAN DATASTORE: Already Importing {$nid}" . PHP_EOL);
-      } else {
+      }
+      else {
         print_r(PHP_EOL . "DKAN DATASTORE: No Resources to Import" . PHP_EOL);
       }
     }
