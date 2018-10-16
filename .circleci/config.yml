@@ -55,7 +55,7 @@ jobs:
           name: Install Drush
           command: |
             composer global require consolidation/cgr
-            cgr drush/drush
+            cgr drush/drush:9.4.0
             drush --version
       - run:
           name: Setup DKAN
