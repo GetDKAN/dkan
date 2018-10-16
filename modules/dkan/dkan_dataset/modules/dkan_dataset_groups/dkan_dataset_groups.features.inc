@@ -168,6 +168,7 @@ function dkan_dataset_groups_default_search_api_index() {
       "fields" : {
         "author" : { "type" : "integer", "entity_type" : "user" },
         "changed" : { "type" : "date" },
+        "created" : { "type" : "date" },
         "field_resources:body:value" : { "type" : "list\\u003Ctext\\u003E" },
         "field_resources:field_format" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
         "field_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
@@ -232,7 +233,8 @@ function dkan_dataset_groups_default_search_api_index() {
       }
     },
     "enabled" : "1",
-    "read_only" : "0"
+    "read_only" : "0",
+    "rdf_mapping" : []
   }');
   return $items;
 }
@@ -320,11 +322,18 @@ function dkan_dataset_groups_default_search_api_server() {
             "column" : "value",
             "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
+          },
+          "created" : {
+            "table" : "search_api_db_groups_di",
+            "column" : "created",
+            "type" : "date",
+            "boost" : "1.0"
           }
         }
       }
     },
-    "enabled" : "1"
+    "enabled" : "1",
+    "rdf_mapping" : []
   }');
   return $items;
 }

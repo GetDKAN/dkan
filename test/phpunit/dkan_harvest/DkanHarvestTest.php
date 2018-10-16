@@ -68,16 +68,16 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers ::dkan_harvest_migrate_sources()
    */
-  public function test_dkan_harvest_migrate_sources() {
-    $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
-  }
+  // public function test_dkan_harvest_migrate_sources() {
+  //   $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
+  // }
 
   /**
    *
    */
-  public function test_dkan_harvest_rollback_sources() {
-    $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
-  }
+  // public function test_dkan_harvest_rollback_sources() {
+  //   $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
+  // }
 
   /**
    * @covers ::dkan_harvest_get_migration()
@@ -101,9 +101,9 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers ::dkan_harvest_cache_default()
    */
-  public function test_dkan_harvest_cache_sources() {
-    $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
-  }
+  // public function test_dkan_harvest_cache_sources() {
+  //   $this->markTestSkipped('This test should be implemneted by each for each harvest submodule.');
+  // }
 
   /**
    * @covers ::dkan_harvest_cache_default()
@@ -147,9 +147,9 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
   /**
    * @covers ::dkan_harvest_cache_default()
    */
-  public function test_dkan_harvest_cache_default_local_file() {
-    $this->markTestIncomplete('Not implemented yet.');
-  }
+  // public function test_dkan_harvest_cache_default_local_file() {
+  //   $this->markTestIncomplete('Not implemented yet.');
+  // }
 
   /**
    * {@inheritdoc}

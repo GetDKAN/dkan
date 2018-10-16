@@ -26,54 +26,55 @@ Dataset
 *******
 
 .. csv-table::
-	:header: "DKAN Field/Property", "DCAT-AP property", "POD property"
+	:header: "DKAN Field/Property label", "DKAN Field/Property machine name", "DCAT-AP property", "POD property"
 
-	"title", `dct:title <https://www.w3.org/TR/vocab-dcat/#Property:dataset_title)|[title](https://project-open-data.github.io/schema/#title>`_, "title"
-	"body", `dct:description <https://www.w3.org/TR/vocab-dcat/#Property:dataset_description>`_, `description <https://project-open-data.github.io/schema/#description>`_
-	"field_tags", `dcat:keyword <https://www.w3.org/TR/vocab-dcat/#Property:dataset_keyword>`_, `keyword <https://project-open-data.github.io/schema/#keyword>`_
-	"field_license","", `license <https://project-open-data.github.io/schema/#license>`_
-	"field_author", "", ""
-	"field_spatial_geographical_area", "", ""
-	 "field_spatial_geographical_cover", `dct:spatial <https://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial>`_, `spatial <https://project-open-data.github.io/schema/#spatial>`_
-	"field_frequency", `dct:accrualPeriodicity <https://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency>`_, `accrualPeriodicity <https://project-open-data.github.io/schema/#accrualPeriodicity>`_
-	"og_group_ref", `dct:publisher <https://www.w3.org/TR/vocab-dcat/#Property:dataset_publisher>`_, `publisher <https://project-open-data.github.io/schema/#publisher>`_
-	"field_temporal_coverage", `dct:temporal <https://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal>`_, `temporal <https://project-open-data.github.io/schema/#temporal>`_
-	"field_granularity", "", ""
-	"field_data_dictionary", "", `dataDictionary <https://project-open-data.github.io/schema/#dataDictionary>`_
-	"field_contact_name", "dcat:contactPoint.vcard:fn", `contactPoint <https://project-open-data.github.io/schema/#contactPoint>`_
-	"field_contact_email", "dcat:contactPoint.vcard:hasEmail", `mbox <https://project-open-data.github.io/schema/#mbox>`_
-	"field_public_access_level", `dct:accessRights <http://udfr.org/docs/onto/dct_accessRights.html>`_, `accessLevel <https://project-open-data.github.io/schema/#accessLevel>`_
-	"field_additional_info", "", ""
-	"field_resources", `dcat:distribution <https://www.w3.org/TR/vocab-dcat/#Property:dataset_distribution>`_, `distribution <https://project-open-data.github.io/schema/#distribution>`_
-	"field_related_content", "", `references <https://project-open-data.github.io/schema/#references>`_
-	"uuid", `dct:identifier <https://www.w3.org/TR/vocab-dcat/#Property:dataset_identifier>`_, `identifier <https://project-open-data.github.io/schema/#identifier>`_
-	"modified_date", `dct:modified <https://www.w3.org/TR/vocab-dcat/#Property:dataset_modified_date>`_, `modified <https://project-open-data.github.io/schema/#modified>`_
-	"release_date", `dct:issued <https://www.w3.org/TR/vocab-dcat/#Property:dataset_release_date>`_, `issued <https://project-open-data.github.io/schema/#issued>`_
+	"Title", "title", `dct:title <https://www.w3.org/TR/vocab-dcat/#Property:dataset_title>`_, `title <https://project-open-data.github.io/v1.1/schema/#title>`_
+	"Description", "body", `dct:description <https://www.w3.org/TR/vocab-dcat/#Property:dataset_description>`_, `description <https://project-open-data.github.io/v1.1/schema/#description>`_
+	"Tags", "field_tags", `dcat:keyword <https://www.w3.org/TR/vocab-dcat/#Property:dataset_keyword>`_, `keyword <https://project-open-data.github.io/v1.1/schema/#keyword>`_
+	"License", "field_license","", `license <https://project-open-data.github.io/v1.1/schema/#license>`_
+	"Author", "field_author", "", ""
+	"Spatial / Geographical Coverage Area", "field_spatial_geographical_area", "", ""
+	"Spatial / Geographical Coverage Location", "field_spatial_geographical_cover", `dct:spatial <https://www.w3.org/TR/vocab-dcat/#Property:dataset_spatial>`_, `spatial <https://project-open-data.github.io/v1.1/schema/#spatial>`_
+	"Frequency", "field_frequency", `dct:accrualPeriodicity <https://www.w3.org/TR/vocab-dcat/#Property:dataset_frequency>`_, `accrualPeriodicity <https://project-open-data.github.io/v1.1/schema/#accrualPeriodicity>`_
+	"Publisher", "og_group_ref", `dct:publisher <https://www.w3.org/TR/vocab-dcat/#Property:dataset_publisher>`_, `publisher <https://project-open-data.github.io/v1.1/schema/#publisher>`_
+	"Temporal Coverage", "field_temporal_coverage", `dct:temporal <https://www.w3.org/TR/vocab-dcat/#Property:dataset_temporal>`_, `temporal <https://project-open-data.github.io/v1.1/schema/#temporal>`_
+	"Granularity", "field_granularity", "", ""
+	"Data Dictionary", "field_data_dictionary", "", `dataDictionary <https://project-open-data.github.io/v1.1/schema/#dataDictionary>`_
+	"Contact Name", "field_contact_name", "dcat:contactPoint.vcard:fn", `contactPoint <https://project-open-data.github.io/v1.1/schema/#contactPoint>`_
+	"Contact Email", "field_contact_email", "dcat:contactPoint.vcard:hasEmail", `mbox <https://project-open-data.github.io/v1.1/schema/#mbox>`_
+	"Public Access Level", "field_public_access_level", `dct:accessRights <http://udfr.org/docs/onto/dct_accessRights.html>`_, `accessLevel <https://project-open-data.github.io/v1.1/schema/#accessLevel>`_
+	"Additional Info", "field_additional_info", "", ""
+	"Resources", "field_resources", `dcat:distribution <https://www.w3.org/TR/vocab-dcat/#Property:dataset_distribution>`_, `distribution <https://project-open-data.github.io/v1.1/schema/#distribution>`_
+	"Related Content", "field_related_content", "", `references <https://project-open-data.github.io/v1.1/schema/#references>`_
+	"Data Standard", "field_conforms_to", "", `conformsTo <https://project-open-data.github.io/v1.1/schema/#dataset-conformsTo>`_
+	"", "uuid", `dct:identifier <https://www.w3.org/TR/vocab-dcat/#Property:dataset_identifier>`_, `identifier <https://project-open-data.github.io/v1.1/schema/#identifier>`_
+	"", "modified_date", `dct:modified <https://www.w3.org/TR/vocab-dcat/#Property:dataset_modified_date>`_, `modified <https://project-open-data.github.io/v1.1/schema/#modified>`_
+	"", "release_date", `dct:issued <https://www.w3.org/TR/vocab-dcat/#Property:dataset_release_date>`_, `issued <https://project-open-data.github.io/v1.1/schema/#issued>`_
 
 The following properties are provided by the Open Data Federal Extras module and have no equivilant in DCAT. They are only relevant to U.S. federal agencies.
 
 .. csv-table::
-	:header: "DKAN Field/Property", "POD property"
+	:header: "DKAN Field/Property label", "DKAN Field/Property machine name", "POD property"
 
-	"field_odfe_bureau_code", `bureauCode <https://project-open-data.cio.gov/v1.1/schema/#bureauCode>`_
-	"field_odfe_data_quality", `dataQuality <https://project-open-data.cio.gov/v1.1/schema/#dataQuality>`_
-	"field_odfe_investment_uii", `primaryITInvestmentUII <https://project-open-data.cio.gov/v1.1/schema/#primaryITInvestmentUII>`_
-	"field_odfe_program_code", `programCode <https://project-open-data.cio.gov/v1.1/schema/#programCode>`_
-	"field_odfe_system_of_records", `systemOfRecords <https://project-open-data.cio.gov/v1.1/schema/#systemOfRecords>`_
+	"Bureau Code", "field_odfe_bureau_code", `bureauCode <https://project-open-data.cio.gov/v1.1/schema/#bureauCode>`_
+	"Data Quality", "field_odfe_data_quality", `dataQuality <https://project-open-data.cio.gov/v1.1/schema/#dataQuality>`_
+	"Primary IT Investment UII", "field_odfe_investment_uii", `primaryITInvestmentUII <https://project-open-data.cio.gov/v1.1/schema/#primaryITInvestmentUII>`_
+	"Program Code", "field_odfe_program_code", `programCode <https://project-open-data.cio.gov/v1.1/schema/#programCode>`_
+	"System of Records", "field_odfe_system_of_records", `systemOfRecords <https://project-open-data.cio.gov/v1.1/schema/#systemOfRecords>`_
 
 
 Resource / Distribution
 ***********************
 
 .. csv-table::
-	:header: "DKAN Field/Property", "DCAT-AP property", "POD property"
+	:header: "DKAN Field/Property label", "DKAN Field/Property machine name", "DCAT-AP property", "POD property"
 
-	"", "dcat:accessURL", "accessURL"
-	"", "dct:conformsTo", "conformsTo"
-	"", "", "describedBy",
-	"", "", "describedByType"
-	"body", "dct:description", "description"
-	"field_link_remote_file || field_upload", "dcat:downloadURL", "downloadURL"
-	"field_format", "", "format"
-	"field_upload:mime", "dcat:mediaType", "mediaType"
-	"title", "title", "dct:title"
+	"", "", "dcat:accessURL", "accessURL"
+	"", "", "dct:conformsTo", "conformsTo"
+	"", "", "", "describedBy"
+	"", "", "", "describedByType"
+	"Description", "body", "dct:description", "description"
+	"Link File || Upload", "field_link_remote_file || field_upload", "dcat:downloadURL", "downloadURL"
+	"Format", "field_format", "", "format"
+	"", "field_upload:mime", "dcat:mediaType", "mediaType"
+	"Title", "title", "title", "dct:title"

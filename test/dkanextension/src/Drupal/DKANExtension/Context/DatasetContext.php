@@ -129,6 +129,10 @@ class DatasetContext extends RawDKANEntityContext {
     }
 
     switch ($orderby) {
+      case 'Date created':
+        $orderby = 'created';
+        break;
+
       case 'Date changed':
         $orderby = 'changed';
         break;
