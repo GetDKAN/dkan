@@ -29,7 +29,7 @@ Use the **Data Story** content type for narrative content. Narrative content is 
 4. Click Save.
 5. Now add additional content by clicking the + buttons in the regions where you want the new content to display. Learn more about the In-Place Editor (IPE) :ref:`here <using_ipe>`.
 6. Click Save at the bottom of the page.
- 
+
 Data Dashboard
 ***************
 
@@ -49,7 +49,7 @@ Mix videos, images, slide shows, visualizations, text, tables, and maps to most 
 Using the in-place editor (IPE)
 -------------------------------
 
-The In-Place Editor (IPE) interface at its core it is a drag and drop content manager that lets you visually design a layout and place content within that layout. 
+The In-Place Editor (IPE) interface at its core it is a drag and drop content manager that lets you visually design a layout and place content within that layout.
 
 DKAN's customized IPE interface
 ********************************
@@ -68,6 +68,7 @@ Editing existing panels-based content
 
   .. image:: ../images/drag-n-drop.png
 
+
 3. Save changes by clicking the save button at the bottom:
 
 	.. image:: ../images/ipe-save.png
@@ -81,6 +82,16 @@ Adding new panes to Panels-based pages
 3. Select the type of content you would like to add:
 
 	.. image:: ../images/ipe-list.png
+
+
+  .. note::
+
+    - If you are adding a chart, use the **Visualization** pane.
+    - If you are adding a video, use the **Video** pane.
+    - If you want to embed an iframe that is not a video or visualization, wrap the iframe with the .iframe-container class to make it responsive on smaller screens.
+
+    ``<p class="iframe-container"><iframe src="..."></iframe></p>``
+
 
 4. Fill in the form that is presented, click 'Finish'.
 5. Remember to click 'Save' at the bottom when you are done adding content to the page.

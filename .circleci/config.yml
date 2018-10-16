@@ -27,7 +27,7 @@ jobs:
           command: |
             set -x
             VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
       - run:
@@ -104,6 +104,12 @@ jobs:
           paths:
             - dkan/test/vendor
       - run:
+          name: Run Lint
+          command: |
+            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
+              ahoy dkan lint
+            fi
+      - run:
           name: Run Parallel Behat Tests
           command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
       - run:
@@ -111,12 +117,6 @@ jobs:
           when: on_fail
           command: |
             docker cp $(docker-compose ps -q cli):/var/www/dkan/test/assets assets
-      - run:
-          name: Run Lint
-          command: |
-            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
-              ahoy dkan lint
-            fi
       # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
       - run:
           name: Run PHPUnit Tests
@@ -126,4 +126,3 @@ jobs:
             fi
       - store_artifacts:
           path: /go/src/github.com/dkan/assets
-

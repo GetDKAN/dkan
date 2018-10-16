@@ -13,7 +13,7 @@ class DataJsonTest extends PHPUnit_Framework_TestCase {
   public function testDataJson() {
     // TODO: Fix fast or replace data.json test.
     return true;
-    $base_url = 'http://127.0.0.1:8888/';
+    global $base_url;
     $path = 'data.json';
     $file = $base_url . $path;
     $contents = file_get_contents($file);

@@ -153,6 +153,40 @@ class GetRemoteFileInfo {
   }
 
   /**
+   * Helper function - If the server doesn't support HTTP HEAD, download $limit bytes.
+   */
+  private function getPartialContent($url, $limit) {
+    $writefn = function($ch, $chunk) use ($limit, &$datadump) {
+      static $data = '';
+
+      $len = strlen($data) + strlen($chunk);
+      if ($len >= $limit) {
+        $data .= substr($chunk, 0, $limit - strlen($data));
+        $datadump = $data;
+        return -1;
+      }
+      $data .= $chunk;
+      return strlen($chunk);
+    };
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_WRITEFUNCTION, $writefn);
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+    if ($datadump) {
+      $info = $this->parseRequestData($datadump);
+      return $info;
+    }
+
+    return FALSE;
+  }
+
+  /**
    * Helper function.
    */
   private function getFileInfoHelper($url, $no_body = TRUE) {
@@ -163,7 +197,6 @@ class GetRemoteFileInfo {
       curl_setopt($ch, CURLOPT_NOBODY, 1);
     }
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Range: bytes=0-1000"));
 
     $ok = curl_exec($ch);
 
@@ -191,7 +224,12 @@ class GetRemoteFileInfo {
       return $info;
     }
 
-    if ($info = $this->getFileInfoHelper($url, FALSE)) {
+    // If the above did not work that means the server doesn't support HTTP HEAD,
+    // and more often than not the server does not honor the Range header.
+    // (i.e. curl_setopt($ch, CURLOPT_HTTPHEADER, array("Range: bytes=0-1000")))
+    // So we will need to download a portion of the file (500 bytes) to get the info.
+    // Downloading the entire file can cause the harvest to fail with out of memory errors.
+    if ($info = $this->getPartialContent($url, 500)) {
       return $info;
     }
 

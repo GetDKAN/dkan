@@ -2,23 +2,20 @@
 @api
 # features/search.feature
 Feature: Search
-  In order to see a dataset
-  As a website user
-  I need to be able to search for a word
 
   Background:
     Given I am on the homepage
     And pages:
       | name                      | url                                                |
       | Dataset Search            | /search/type/dataset                               |
-      | Dataset Results           | /search/type/dataset?query=Dataset%2001            |
+      | Dataset Results           | /search?query=Dataset%2001                         |
       | Topics Search             | /search/field_topics                               |
       | Topics Redirect           | /topics                                            |
-      | Not valid type search     | /search/type/notvalid                              |
-      | Not valid tags search     | /search/field_tags/notvalid                        |
-      | Not valid topics search   | /search/field_topic/notvalid                       |
-      | Not valid resource search | /search/field_resources%253Afield_format/notvalid  |
-      | Not valid license search  | /search/field_license/notvalid                     |
+      | Not valid type search     | /search?query=%20search%20type%20notvalid          |
+      | Not valid tags search     | /search?query=%20search%20field_tags%20notvalid    |
+      | Not valid topics search   | /search?query=%20search%20field_topic%20notvalid   |
+      | Not valid resource search | /search?query=%20search%20field_resources%25253Afield_format%20notvalid |
+      | Not valid license search  | /search?query=%20search%20field_license%20notvalid |
     Given users:
       | name    | mail                | roles                |
       | Badmin  | admin@example.com   | site manager         |
@@ -30,6 +27,10 @@ Feature: Search
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Gabriel | Group 01 | administrator member | Active            |
+    And "Format" terms:
+      | name   |
+      | csv 2  |
+      | html 2 |
     And "Tags" terms:
       | name         |
       | something01  |
@@ -39,51 +40,71 @@ Feature: Search
       | edumication  |
       | dazzling     |
     And datasets:
-      | title              | publisher | author  | published | tags         | topics      | description |
-      | ooftaya Dataset 01 | Group 02  | Gabriel | Yes       | something01  | edumication | Test 01     |
-      | ooftaya Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
+      | title               | publisher | author  | published | tags         | topics      | description |
+      | DKANTest Dataset 01 | Group 02  | Gabriel | Yes       | something01  | edumication | Test 01     |
+      | DKANTest Dataset 02 | Group 01  | Gabriel | Yes       | politics01   | dazzling    | Test 02     |
+    And resources:
+      | title       | publisher | format | author | published | dataset             | description |
+      | Resource 01 | Group 01  | csv 2  | Badmin | Yes       | DKANTest Dataset 01 |             |
+      | Resource 02 | Group 01  | html 2 | Badmin | Yes       | DKANTest Dataset 02 |             |
 
+  @search_01
   Scenario: Searching datasets
     Given I am on the "Dataset Search" page
     When I search for "Dataset 01"
     Then I should be on the "Dataset Results" page
     And I should see "Dataset 01"
 
-  Scenario: See number of datasets on search page
+  @search_02
+  Scenario: See number of datasets on search page and Reset dataset search filters
     Given I am on the "Dataset Search" page
-    When I search for "ooftaya"
-    Then I should see "2" search results shown on the page
-    And I should see "2 results"
+    When I search for "DKANTest"
+    Then I should see "4 results"
+    And I should see "4" items in the "datasets" region
+    When I press "Reset"
+    Then I should see all published search content
 
-  Scenario: Filter by facet tag
+  @search_03
+  # Sites with long lists of facet items will fail unless you filter first.
+  Scenario: Filter by facets
+    # Tag
     Given I am on the "Dataset Search" page
-    When I search for "Test"
-    Then I click "politics01"
-    And I should not see "Dataset 01"
-    But I should see "Dataset 02"
+    And I fill in "something01" for "Search" in the "datasets" region
+    And I press "Apply"
+    Then I should see "something01 (1)" in the "filter by tag" region
+    And I fill in "politics01" for "Search" in the "datasets" region
+    And I press "Apply"
+    Then I should see "politics01 (1)" in the "filter by tag" region
 
-  Scenario: Filter by facet group
-    Given I am on the "Dataset Search" page
-    When I search for "Test"
+    # Group
+    When I press "Reset"
+    And I search for "Test"
     Then I click "Group 01"
     And I should not see "Dataset 01"
     But I should see "Dataset 02"
 
-  Scenario: View Topics Search Page
-    Given I am on the "Topics Search" page
+    # Topics
+    When I am on the "Topics Search" page
     Then I should see "edumication" in the "filter by topics" region
     When I click "edumication"
     Then I should not see "Dataset 02"
     But I should see "Dataset 01"
-
-  Scenario: Topics redirect
-    Given I visit "topics"
+    # Topics redirect
+    When I visit "topics"
     Then I should see "Search"
     And I should not see "Page not found"
 
+    # Format
+    When I am on the "Dataset Search" page
+    And I fill in "csv 2" for "Search" in the "datasets" region
+    Then I should see "csv 2 (1)" in the "filter by resource format" region
+    And I fill in "html 2" for "Search" in the "datasets" region
+    And I should see "html 2 (1)" in the "filter by resource format" region
+
+  @search_04
   Scenario Outline: Forbid XSS injection in search
     Given I am on the "<page>" page
-    Then I should see "Page not found"
+    Then I should see "No results were found. Please try another keyword."
     Examples:
     | page                      |
     | Not valid type search     |

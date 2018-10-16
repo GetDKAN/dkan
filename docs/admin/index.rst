@@ -35,7 +35,7 @@ Appearance
    :maxdepth: 1
 
    account_access_and_setup
-   adding_new_content
+   data_and_content/adding_new_content
    admin_menu
    appearance
    data_and_content/index
