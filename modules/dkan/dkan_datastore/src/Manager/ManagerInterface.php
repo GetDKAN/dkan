@@ -107,4 +107,6 @@ interface ManagerInterface {
    */
   public function dropState();
 
+  public function getTableSchema();
+
 }

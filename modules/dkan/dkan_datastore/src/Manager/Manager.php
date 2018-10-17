@@ -114,6 +114,7 @@ abstract class Manager implements ManagerInterface {
 
     if (!db_table_exists($table_name)) {
       $schema = $this->getTableSchema();
+
       db_create_table($table_name, $schema);
 
       $this->stateStorage = self::STORAGE_INITIALIZED;
@@ -126,13 +127,14 @@ abstract class Manager implements ManagerInterface {
   }
 
   /**
-   * Private method.
+   * Get table schema.
    */
-  private function getTableSchema() {
+  public function getTableSchema() {
     $schema = [];
     $header = $this->getTableHeaders();
     foreach ($header as $field) {
       $schema['fields'][$field] = [
+        'label' => $field,
         'type' => "varchar",
         'length' => 255,
       ];
