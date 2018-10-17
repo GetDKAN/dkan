@@ -3,7 +3,7 @@ version: "2"
 services:
   web:
     hostname: web
-    image: getdkan/dkan-docker:7-latest
+    image: getdkan/dkan-docker:php7-web
     ports:
       - "80"
       - "443"
