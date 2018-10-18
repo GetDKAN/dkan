@@ -56,7 +56,7 @@ function normalize_fields($fields, $resources) {
       if (is_assoc($fields) && is_string($fields[$alias]) && $fields[$alias] == '*') {
 
         $table = dkan_datastore_api_tablename($id);
-        $schema = drupal_get_schema($table);
+        $schema = dkan_datastore_api_get_schema($id);
         $new_fields = build_qualified_fields(array_keys($schema['fields']), $alias);
 
         // Fields comes with table prefix either using an
@@ -79,7 +79,7 @@ function normalize_fields($fields, $resources) {
       }
       elseif (is_string($fields) && $fields == '*') {
         $table = dkan_datastore_api_tablename($id);
-        $schema = drupal_get_schema($table);
+        $schema = dkan_datastore_api_get_schema($id);
         $new_fields = build_qualified_fields(array_keys($schema['fields']), $alias);
 
         // Fields comes without table prefix and split by commas.
@@ -163,7 +163,7 @@ function schema_fields($resource_ids) {
   foreach ((array) $resource_ids as $id) {
     $table = dkan_datastore_api_tablename($id);
 
-    $schema = drupal_get_schema($table);
+    $schema = dkan_datastore_api_get_schema($id);
     $meta = array('fields' => array());
 
     $meta_fields = array_merge_recursive($meta['fields'], $schema['fields']);
@@ -669,8 +669,18 @@ function dkan_datastore_api_sort_clean($sort) {
  */
 function dkan_datastore_api_tablename($resource_id) {
   $resource = Resource::createFromDrupalNodeUuid($resource_id);
+  /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
   $manager = (new Factory($resource))->get();
-  return $manager->getTableName();
+  $table = $manager->getTableName();
+  return $table;
+}
+
+function dkan_datastore_api_get_schema($resource_id) {
+  $resource = Resource::createFromDrupalNodeUuid($resource_id);
+  /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
+  $manager = (new Factory($resource))->get();
+  $schema = $manager->getTableSchema();
+  return $schema;
 }
 
 /**

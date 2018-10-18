@@ -33,6 +33,11 @@ class LockableDrupalVariables {
     return $bin;
   }
 
+  public function getBin() {
+    $bin = variable_get($this->binName, []);
+    return $bin;
+  }
+
   /**
    * Return bin.
    *
