@@ -54,8 +54,8 @@ class CKANListJSON extends MigrateListJSON {
   public function __construct($list_url, $http_options = array()) {
     parent::__construct($list_url);
     $this->httpOptions = $http_options;
-    $this->page = isset($http_options['page']) ? $http_options['page'] : '';
-    $this->offset = isset($http_options['offset']) ? $http_options['offset'] : '';
+    $this->page = isset($http_options['page']) ? intval($http_options['page']) : 0;
+    $this->offset = isset($http_options['offset']) ? intval($http_options['offset']) : 0;
     $this->ids = isset($http_options['ids']) ? $http_options['ids'] : '';
   }
 
