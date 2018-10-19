@@ -427,8 +427,10 @@ class DkanDatastore extends Datastore implements DatastoreFormInterface {
   public function importByCli() {
     $source = $this->source();
 
-    // Prepare for background process.
-    $source_prepared = $this->setupSourceBackground($source);
+    if (is_object($source)) {
+      // Prepare for background process.
+      $source_prepared = $this->setupSourceBackground($source);
+    }
 
     // Check we got the source up and ready.
     if (!$source_prepared) {
