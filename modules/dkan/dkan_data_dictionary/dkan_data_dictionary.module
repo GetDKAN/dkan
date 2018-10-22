@@ -353,3 +353,18 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
 
   return $elements;
 }
+
+/**
+ * Allowed_values_function config for field_describedby_spec.
+ */
+function dkan_data_dictionary_field_describedby_spec_allowed_values() {
+  $validators = dkan_data_dictionary_validator_info();
+
+  $allowed_values = array();
+
+  foreach ($validators as $validator) {
+    $allowed_values[$validator->getMachineName()] = $validator->getLabel();
+  }
+
+  return $allowed_values;
+}

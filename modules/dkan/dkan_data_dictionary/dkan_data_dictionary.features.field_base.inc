@@ -68,10 +68,8 @@ function dkan_data_dictionary_field_default_field_bases() {
     'locked' => 0,
     'module' => 'list',
     'settings' => array(
-      'allowed_values' => array(
-        'table-schema' => 'Table Schema (FrictionlessData.io)',
-      ),
-      'allowed_values_function' => '',
+      'allowed_values' => array(),
+      'allowed_values_function' => 'dkan_data_dictionary_field_describedby_spec_allowed_values',
     ),
     'translatable' => 0,
     'type' => 'list_text',
