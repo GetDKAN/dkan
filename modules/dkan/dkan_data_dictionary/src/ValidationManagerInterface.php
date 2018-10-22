@@ -36,8 +36,8 @@ interface ValidationManagerInterface {
   public function validate();
 
   /**
-   * Get Validator Label.
+   * Return render array representation of the data dictionary.
    */
-  public static function render($schema);
+  public static function schemaFormatterView($schema, $display_type);
 
 }
