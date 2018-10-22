@@ -1,0 +1,5 @@
+{
+    "require": {
+        "frictionlessdata/tableschema": "^0.1.9"
+    }
+}
