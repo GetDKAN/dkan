@@ -60,13 +60,13 @@ function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state
   drupal_add_css(drupal_get_path('module', 'dkan_data_dictionary') . '/css/dkan_data_dictionary.css');
   $form['#validate'][] = 'dkan_data_dictionary_validate_resource';
 
-  // Add javascript for csv data dictionary schema
+  // Add javascript for csv data dictionary schema.
   $fid = $form['field_describedby_file'][$lang][0]['#default_value']['fid'];
   if ($fid !== 0) {
     $valid = _dkan_data_dictionary_csv_is_schema($fid);
   }
   else {
-    $valid = false;
+    $valid = FALSE;
   }
 
   drupal_add_js(array('dkan_data_dictionary' => array('fileid' => $fid)), 'setting');
@@ -76,7 +76,7 @@ function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state
 }
 
 /**
- * Custom validation function for resource node
+ * Custom validation function for resource node.
  */
 function dkan_data_dictionary_validate_resource($form, &$form_state) {
   $language = $form_state['values']['language'];
@@ -147,9 +147,9 @@ function dkan_data_dictionary_validate_resource($form, &$form_state) {
 
 /**
  *
- * @param integer $fid
+ * @param int $fid
  *
- * @return boolean
+ * @return bool
  */
 function _dkan_data_dictionary_csv_is_schema($fid) {
   $file = file_load($fid);
@@ -158,7 +158,7 @@ function _dkan_data_dictionary_csv_is_schema($fid) {
     $csv = fopen($url, "r");
 
     if ($csv) {
-      $allowed = array('name','title','type','description','format','constraints','rdftype');
+      $allowed = array('name', 'title', 'type', 'description', 'format', 'constraints', 'rdftype');
       $required = array('name');
 
       // Check the first line of the file to be sure all properties are valid.
@@ -201,7 +201,7 @@ function dkan_data_dictionary_node_presave($node) {
       }
     }
     // Was a schema source file provided?
-    else if ($files === 1) {
+    elseif ($files === 1) {
       $fid = $node->field_describedby_file[$lang][0]['fid'];
 
       // If the supplied file is new process it otherwise skip processing.
@@ -219,20 +219,20 @@ function dkan_data_dictionary_node_presave($node) {
             while ($lines[] = fgetcsv($csv)) {
 
               if (count($lines) === 1) {
-                $properties = $lines[count($lines)-1];
+                $properties = $lines[count($lines) - 1];
               }
               else {
-                $current_item = $lines[count($lines)-1];
+                $current_item = $lines[count($lines) - 1];
                 $field = new stdClass();
 
-                foreach($properties as $key => $property) {
+                foreach ($properties as $key => $property) {
                   if (!empty($current_item[$key])) {
-                    if($property !== 'constraints') {
+                    if ($property !== 'constraints') {
                       $field->$property = $current_item[$key];
                     }
                     else {
                       // Constraints require additional processing.
-                       $new_constraint = new stdClass();
+                      $new_constraint = new stdClass();
 
                       $constraints = explode(",", $current_item[$key]);
                       foreach ($constraints as $constraint) {
@@ -297,8 +297,8 @@ function dkan_data_dictionary_libraries_info() {
 }
 
 /**
-* Implements hook_field_formatter_info().
-*/
+ * Implements hook_field_formatter_info().
+ */
 function dkan_data_dictionary_field_formatter_info() {
   return array(
     'text_schema_table' => array(
@@ -361,7 +361,9 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
                   $constraints = (array) $item[$header];
 
                   $column = implode(', ', array_map(
-                    function ($v, $k) { return sprintf("%s = %s", $k, $v); },
+                    function ($v, $k) {
+                      return sprintf("%s = %s", $k, $v);
+                    },
                     $constraints,
                     array_keys($constraints)
                   ));
