@@ -8,6 +8,47 @@
 include_once 'dkan_data_dictionary.features.inc';
 
 /**
+ * Implements hook_xautoload().
+ */
+function dkan_data_dictionary_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\DataDictionary\\',
+    drupal_get_path("module", "dkan_data_dictionary") . '/src'
+  );
+}
+
+/**
+ * Get Validator info.
+ */
+function dkan_data_dictionary_validator_info() {
+  // TODO Add caching.
+  $validatorsInfo = module_invoke_all("dkan_data_dictionary_validator");
+
+  // Allow alteration by third party modules.
+  drupal_alter('dkan_data_dictionary_validator_alter',
+    $validatorsInfo
+  );
+
+  return $validatorsInfo;
+}
+
+/**
+ *
+ */
+function dkan_data_dictionary_validator_load($validator_machinename) {
+  $validator_selected = NULL;
+
+  foreach (dkan_data_dictionary_validator_info() as $validator) {
+    if ($validator->getMachineName() == $validator_machinename) {
+      $validator_selected = $validator;
+      break;
+    }
+  }
+
+  return $validator;
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
 function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state) {
