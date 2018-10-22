@@ -80,14 +80,68 @@ function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state
  */
 function dkan_data_dictionary_validate_resource($form, &$form_state) {
   $language = $form_state['values']['language'];
-  foreach ($form_state['values']['field_describedby_schema'][$language] as $item) {
-    if ($item['value'] !== '{}' && $item['value'] !== '') {
-      $schema = json_decode($item['value']);
 
-      if (json_last_error() !== JSON_ERROR_NONE) {
-        form_set_error('field_describedby_schema', t('JSON Schema provided is not valid JSON.'));
-      }
+  // We expect only one Dictionary type selected.
+  $describedby_spec = $form_state['values']['field_describedby_spec'][$language]['value'];
+
+  // Skip if no data dictionary specification is provided.
+  if (empty($describedby_spec)) {
+    return;
+  }
+
+  $validatorWrapper = dkan_data_dictionary_validator_load($describedby_spec);
+  if (empty($validatorWrapper)) {
+    form_set_error('field_describedby_spec', t('Schema selected cannot be found.'));
+    return;
+  }
+
+  $validationManager = $validatorWrapper->getValidationManager();
+
+  // At this point, a data dictionary schema type is selected and we need the
+  // associated schema content.
+  $schema_provided = FALSE;
+
+  // Use file if uploaded, then check for text field.
+  // Expect a single item to be provided by the file upload and the text field.
+  $schema_textfield = $form_state['values']['field_describedby_schema'][$language]['value'];
+
+  if ($schema_textfield == '{}' && $schema_textfield == '') {
+    $schema_textfield = FALSE;
+  }
+
+  $schema_file = $form_state['values']['field_describedby_file'][$language];
+
+  if (isset($schema_file['fid']) && $schema_file['fid'] == 0) {
+    $schema_file = FALSE;
+  }
+
+  if (!empty($schema_file)) {
+    $schema_provided = TRUE;
+
+    $errors = $validationManager->validateSchema($schema_file);
+
+    foreach ($errors as $error) {
+      $message = t('Schema validation failed with the following error: %error',
+        array('%error' => $error)
+      );
+      form_set_error('field_describedby_file', $message);
     }
+  }
+  elseif (!empty($schema_textfield)) {
+    $schema_provided = TRUE;
+
+    $errors = $validationManager->validateSchema($schema_textfield);
+
+    foreach ($errors as $error) {
+      $message = t('Schema validation failed with the following error: %error',
+        array('%error' => $error)
+      );
+      form_set_error('field_describedby_schema', $message);
+    }
+  }
+
+  if (!$schema_provided) {
+    form_set_error('field_describedby_spec', t('JSON Schema specification provided but not the Schema content.'));
   }
 }
 
