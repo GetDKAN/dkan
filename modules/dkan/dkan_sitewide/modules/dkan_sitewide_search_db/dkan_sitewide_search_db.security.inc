@@ -10,6 +10,8 @@
  */
 function _filter_xss(&$facet) {
   $facet['#markup'] = filter_xss($facet['#markup']);
+  // Reverse encoding of the '&' character.
+  $facet['#markup'] = str_replace('&amp;', '&', $facet['#markup']);
 }
 
 /**
