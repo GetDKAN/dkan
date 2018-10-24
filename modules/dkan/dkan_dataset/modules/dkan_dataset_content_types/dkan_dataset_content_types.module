@@ -139,6 +139,10 @@ function dkan_dataset_content_types_facet_items_alter(&$build, &$settings) {
       if (isset($allowed_values[$key])) {
         $build[$key]['#markup'] = $allowed_values[$key];
       }
+      // If license doesn't have a key, don't list it.
+      else {
+        unset($build[$key]);
+      }
     }
   }
 }
