@@ -92,8 +92,6 @@ projects:
     version: '2.9'
   facetapi:
     version: '1.5'
-    patch:
-      1: patches/cross-site-scripting-facets-156778.patch
   facetapi_bonus:
     version: '1.2'
   facetapi_pretty_paths:
