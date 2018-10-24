@@ -27,13 +27,6 @@
   padding:1em 0;
 }
 
-.views-field-field-image img {
-  // display:block;
-  // height:auto;
-  // margin:0 auto 5px;
-  // max-width:220px;
-  // width:100%;
-}
 .view-front-page-group-list {
   .views-row {
     position: relative;
@@ -51,7 +44,7 @@
   height:auto;
   margin:0 auto;
   max-width:190px;
-  width:100%;  
+  width:100%;
 }
 
 .view-front-page-group-grid {
@@ -98,11 +91,10 @@
       margin: 0 auto 1.5em;
     }
     .field-name-field-image {
-      text-align: center; 
+      text-align: center;
     }
   }
 }
-
 .view-groups-page {
   .views-column {
     float:left;
@@ -213,4 +205,11 @@
       display: none;
     }
   }
+}
+// Responsive grid.
+.views-responsive-grid .views-row {
+  clear: both;
+}
+.view-header {
+  margin-bottom: 1em;
 }

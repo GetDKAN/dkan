@@ -467,3 +467,14 @@ function dkan_update_7027() {
   }
   drupal_set_message(t('Removed harvest date values from @var non-harvested datasets.', array('@var' => $count)), 'status');
 }
+
+/**
+ * Remove deprecated stories view.
+ */
+function dkan_update_7028() {
+  // Check that the view exists.
+  if ($view = views_get_view('stories')) {
+    // Delete the view.
+    views_delete_view($view);
+  }
+}
