@@ -107,6 +107,14 @@ interface ManagerInterface {
    */
   public function dropState();
 
+  /**
+   * Get table schema.
+   */
   public function getTableSchema();
+
+  /**
+   * Change the datastore state from inprogress to ready.
+   */
+  public function reset();
 
 }

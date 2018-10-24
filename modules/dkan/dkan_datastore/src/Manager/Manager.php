@@ -3,7 +3,7 @@
 namespace Dkan\Datastore\Manager;
 
 use Dkan\Datastore\LockableDrupalVariables;
-use Dkan\Datastore\CsvParser;
+use Dkan\Datastore\Parser\Csv;
 use Dkan\Datastore\Resource;
 
 /**
@@ -42,6 +42,7 @@ abstract class Manager implements ManagerInterface {
         'delimiter' => ',',
         'quote' => '"',
         'escape' => '\\',
+        'trailing_delimiter' => FALSE,
       ]);
       $this->initialization($resource);
     }
@@ -77,17 +78,21 @@ abstract class Manager implements ManagerInterface {
   /**
    * Get parser.
    *
-   * @return \Dkan\Datastore\CsvParser
+   * @return \Dkan\Datastore\Parser\Csv
    *   Parser object.
    */
   protected function getParser() {
     if (!$this->parser) {
-      $this->parser = new CsvParser(
+      $this->parser = new Csv(
         $this->configurableProperties['delimiter'],
         $this->configurableProperties['quote'],
         $this->configurableProperties['escape'],
         ["\r", "\n"]
       );
+
+      if ($this->configurableProperties['trailing_delimiter'] == TRUE) {
+        $this->parser->activateTrailingDelimiter();
+      }
     }
     return $this->parser;
   }
@@ -240,6 +245,7 @@ abstract class Manager implements ManagerInterface {
     }
     elseif ($import_state === self::DATA_IMPORT_ERROR) {
       $this->stateDataImport = self::DATA_IMPORT_ERROR;
+      watchdog("dkan_datastore", $this->errors);
       $this->saveState();
     }
     else {
@@ -347,6 +353,14 @@ abstract class Manager implements ManagerInterface {
    */
   public function getErrors() {
     return $this->errors;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function reset() {
+    $this->stateDataImport = $this::DATA_IMPORT_PAUSED;
+    $this->saveState();
   }
 
 }

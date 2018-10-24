@@ -4,7 +4,7 @@ namespace Dkan\Datastore\Manager\SimpleImport;
 
 use Dkan\Datastore\Manager\Manager;
 use Dkan\Datastore\Manager\ManagerInterface;
-use Dkan\Datastore\CsvParser;
+use Dkan\Datastore\Parser\Csv;
 use Dkan\Datastore\Resource;
 
 /**
@@ -107,7 +107,7 @@ class SimpleImport extends Manager {
   /**
    * Private method.
    */
-  private function getAndStore(CsvParser $parser, \InsertQuery $query, $header, $counter, $start) {
+  private function getAndStore(Csv $parser, \InsertQuery $query, $header, $counter, $start) {
     while ($record = $parser->getRecord()) {
       if ($counter >= $start) {
         $values = $record;
@@ -116,7 +116,9 @@ class SimpleImport extends Manager {
           $query->values($values);
         }
         else {
-          $this->setError("Invalid line {$counter} in {$this->getResource()->getFilePath()}");
+          $json_header = json_encode($header);
+          $json_values = json_encode($values);
+          $this->setError("Invalid line {$counter} in {$this->getResource()->getFilePath()}; header: {$json_header} values: {$json_values}");
           return FALSE;
         }
 

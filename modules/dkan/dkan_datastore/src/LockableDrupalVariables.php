@@ -33,6 +33,9 @@ class LockableDrupalVariables {
     return $bin;
   }
 
+  /**
+   * Get bin.
+   */
   public function getBin() {
     $bin = variable_get($this->binName, []);
     return $bin;
@@ -111,11 +114,29 @@ class LockableDrupalVariables {
    */
   private function getLock() {
     $counter = 0;
+    $success = 0;
     do {
       if ($counter >= 1) {
         sleep(1);
       }
-      $success = @mkdir('/tmp/dkan.lock', 0700);
+
+      $query = db_select("variable", 'v');
+      $query->fields('v', ['value']);
+      $query->condition('name', "dkan_datastore_lock");
+      $results = $query->execute();
+
+      $exist = FALSE;
+      foreach ($results as $result) {
+        $exist = TRUE;
+        $value = unserialize($result->value);
+        break;
+      }
+
+      if (!$exist || $value == 0) {
+        variable_set('dkan_datastore_lock', 1);
+        $success = 1;
+      }
+
       $counter++;
     } while (!$success);
   }
@@ -124,7 +145,7 @@ class LockableDrupalVariables {
    * Private method.
    */
   private function releaseLock() {
-    rmdir('/tmp/dkan.lock');
+    variable_set("dkan_datastore_lock", 0);
   }
 
 }

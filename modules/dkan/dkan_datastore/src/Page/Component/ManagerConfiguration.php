@@ -46,6 +46,15 @@ class ManagerConfiguration {
           '#default_value' => $default_value,
         );
       }
+      elseif ($property == "trailing_delimiter") {
+        $form['import_options']["datastore_manager_config_{$property}"] = array(
+          '#type' => 'checkbox',
+          // @codingStandardsIgnoreStart
+          '#title' => ucfirst(t("{$property}")),
+          // @codingStandardsIgnoreEnd
+          '#default_value' => $default_value,
+        );
+      }
       else {
         $form['import_options']["datastore_manager_config_{$property}"] = [
           '#type' => 'textfield',
@@ -68,7 +77,12 @@ class ManagerConfiguration {
     foreach ($value as $property_name => $v) {
       if (!empty($v)) {
         $pname = str_replace("datastore_manager_config_", "", $property_name);
-        $configurable_properties[$pname] = $v;
+        if ($pname == "trailing_delimiter") {
+          $configurable_properties[$pname] = ($v == 1) ? TRUE : FALSE;
+        }
+        else {
+          $configurable_properties[$pname] = $v;
+        }
       }
     }
 

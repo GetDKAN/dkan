@@ -54,8 +54,6 @@ function normalize_fields($fields, $resources) {
     if ((is_string($fields) && $fields == '*') || in_array($alias, array_keys($fields))) {
       // Fields comes with table prefix and fields are not specified.
       if (is_assoc($fields) && is_string($fields[$alias]) && $fields[$alias] == '*') {
-
-        $table = dkan_datastore_api_tablename($id);
         $schema = dkan_datastore_api_get_schema($id);
         $new_fields = build_qualified_fields(array_keys($schema['fields']), $alias);
 
@@ -78,7 +76,6 @@ function normalize_fields($fields, $resources) {
         // from the table schema.
       }
       elseif (is_string($fields) && $fields == '*') {
-        $table = dkan_datastore_api_tablename($id);
         $schema = dkan_datastore_api_get_schema($id);
         $new_fields = build_qualified_fields(array_keys($schema['fields']), $alias);
 
@@ -161,8 +158,6 @@ function schema_fields($resource_ids) {
   $fields = array();
 
   foreach ((array) $resource_ids as $id) {
-    $table = dkan_datastore_api_tablename($id);
-
     $schema = dkan_datastore_api_get_schema($id);
     $meta = array('fields' => array());
 
@@ -675,6 +670,9 @@ function dkan_datastore_api_tablename($resource_id) {
   return $table;
 }
 
+/**
+ * Get the datastore table schema for a resource.
+ */
 function dkan_datastore_api_get_schema($resource_id) {
   $resource = Resource::createFromDrupalNodeUuid($resource_id);
   /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
