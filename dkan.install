@@ -471,7 +471,7 @@ function dkan_update_7027() {
 /**
  * Change field_harvest_source_modified from a datetime to text field. See #2612.
  */
-function dkan_update_7028() {
+function dkan_update_7029() {
   features_revert_module('dkan_dataset_content_types');
 
   // Add format column to harvest_source_modified tables.
@@ -567,7 +567,7 @@ function dkan_update_7028() {
 /**
  * Update field_frequency_value to store ISO code rather than integers.
  */
-function dkan_update_7029() {
+function dkan_update_7030() {
   // Change frequency field_config from list_int to list_text.
   $field_config = db_select('field_config', 'f')
     ->fields('f', array('data'))
