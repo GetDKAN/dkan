@@ -11327,4 +11327,10 @@ img {
 #views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter .help-block {
   display: none; }
 
+.views-responsive-grid .views-row {
+  clear: both; }
+
+.view-header {
+  margin-bottom: 1em; }
+
 /*# sourceMappingURL=nuboot_radix.style.css.map */
