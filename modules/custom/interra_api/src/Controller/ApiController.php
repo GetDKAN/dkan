@@ -77,5 +77,24 @@ class ApiController extends ControllerBase {
     }
     throw new NotFoundHttpException();
   }
+
+  public function subdoc( Request $request ) {
+    $apiRequest = new ApiRequest();
+    $uri = $request->getPathInfo();
+    $path = $apiRequest->getUri($uri);
+    if ($id = $apiRequest->validateDocPath($path)) {
+      $collection = explode('/', $path)[1];
+      $schema = new Schema();
+      $entity = $schema->config['collectionToEntityMap'][$collection];
+      $load = new Load();
+      if ($doc = $load->loadDocById($id, $entity)) {
+        $formatted = $load->formatDoc($doc);
+        $dereferenced = $load->dereference($formatted);
+        return new JsonResponse( $dereferenced );
+      }
+      throw new NotFoundHttpException();
+    }
+    throw new NotFoundHttpException();
+  }
 }
 

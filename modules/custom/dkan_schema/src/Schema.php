@@ -55,6 +55,10 @@ class Schema {
     return $this->config['collections'];
   }
 
+  public function getRouteCollections() {
+    return $this->config['routeCollections'];
+  }
+
   public function loadSchema($collection) {
     return $this->loadSchemaFile($collection);
   }

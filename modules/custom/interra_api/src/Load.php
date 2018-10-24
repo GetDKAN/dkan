@@ -18,6 +18,7 @@ class Load {
     'theme' => 'array',
     'keyword' => 'array',
     'license' => 'string',
+    'distribution' => 'array',
   ];
 
   function __construct() {
@@ -31,18 +32,18 @@ class Load {
   }
 
 
-  public function loadDocs($type = 'dataset', $entity = 'node') {
+  public function loadDocs($bundle = 'dataset', $entity = 'node') {
     if ($entity == 'node') {
       $ids = \Drupal::entityQuery($entity)
         ->condition('status', 1)
-        ->condition('type', $type)
+        ->condition('type', $bundle)
         ->execute();
       return Node::loadMultiple($ids);
     }
     else if ($entity == 'taxonomy_term') {
       $ids = \Drupal::entityQuery($entity)
         //->condition('status', 1)
-        ->condition('vid', $type)
+        ->condition('vid', $bundle)
         ->execute();
       return Term::loadMultiple($ids);
     }
@@ -86,10 +87,37 @@ class Load {
     return json_decode($item);
   }
 
-  public function loadByType($type) {
-    $entity = $this->collectionToEntityMap[$type];
-    $docs = $this->loadDocs($type, $entity);
-    $docs = $this->formatDocs($docs);
+  public function loadByType($bundle) {
+    $entity = $this->collectionToEntityMap[$bundle];
+    // We've found from the schema !collection.field which lets us have a route
+    // for a field.
+    if (substr($entity, 0, 1) == '!') {
+      $entity = substr($entity, 1);
+      $items = explode('.', $entity);
+      $bundle = $items[0];
+      $field = $items[1];
+      $entity = $this->collectionToEntityMap[$bundle];
+      $pdocs = $this->loadDocs($bundle, $entity);
+      $pdocs = $this->formatDocs($pdocs);
+      $fieldType = $this->collectionTypes[$field];
+      $docs = [];
+      foreach ($pdocs as $doc) {
+        if (isset($doc->{$field})) {
+          if ($fieldType == 'array') {
+            foreach ($doc->{$field} as $item) {
+              $docs[] = $item;
+            }
+          }
+          else {
+            $docs[] = $doc->{$field};
+          }
+        }
+      }
+      return $docs;
+    } else {
+      $docs = $this->loadDocs($bundle, $entity);
+      $docs = $this->formatDocs($docs);
+    }
     return $this->derefDocs($docs);
   }
 

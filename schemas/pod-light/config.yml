@@ -4,6 +4,7 @@ api: 1
 primaryCollection: dataset
 collections:
   - dataset
+  - distribution
   - organization
   - keyword
   - license
@@ -24,7 +25,7 @@ collectionToEntityMap:
   dataset: node
   organization: node
   publisher: node
-  publisher: node
+  distribution: !dataset.distribution
   keyword: taxonomy_term
   theme: taxonomy_term
   license: taxonomy_term
@@ -41,3 +42,7 @@ facets:
   distribution:
     label: Format
     field: dataset.distribution.format
+routeCollections:
+  dataset: dataset/[dataset]
+  organization: organization/[organization]
+  distribution: dataset/[dataset]/[distribution]

@@ -34,3 +34,9 @@ interra_api.doc:
    { _controller: '\Drupal\interra_api\Controller\ApiController::doc'}
   requirements:
     _permission: 'access content'
+interra_api.subdoc:
+  path: '/api/v1/collections/{collection}/{doc}/{subdoc}'
+  defaults:
+   { _controller: '\Drupal\interra_api\Controller\ApiController::subdoc'}
+  requirements:
+    _permission: 'access content'
