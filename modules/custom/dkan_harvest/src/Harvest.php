@@ -32,8 +32,8 @@ class Harvest {
 
   private function harvestInitValidate($harvest) {
     if (isset($harvest->sourceId) &&
-      isset($harvest->runId) &&
       isset($harvest->transforms) &&
+      isset($harvest->runId) &&
       isset($harvest->load) &&
       isset($harvest->source) &&
       isset($harvest->source->type) &&
@@ -49,7 +49,7 @@ class Harvest {
     $logClass = "Drupal\\dkan_harvest\\Log\\" . $this->config->log->type;
     $this->log = new $logClass($this->config->log->debug, $harvest->sourceId, $harvest->runId);
     $this->log->write('DEBUG', 'init', 'Initializing harvest');
-    if (!$this->harvestInitValidate($harvest)) return;
+    if (!$this->harvestInitValidate($harvest)) return FALSE;
 
     $extractClass = "Drupal\\dkan_harvest\\Extract\\" . $harvest->source->type;
     $this->extract = new $extractClass($this->config, $harvest, $this->log);
@@ -60,7 +60,8 @@ class Harvest {
     $this->load = new $loadClass($this->log, $harvest->load, $harvest->sourceId, $harvest->runId);
 
     $revertClass = "Drupal\\dkan_harvest\\Revert\\Dkan8Revert";
-    $this->revert = new $revertClass($this->log, $harvest->sourceId, $harvest->runId);
+    $this->revert = new $revertClass($this->log, $harvest->sourceId);
+    return TRUE;
   }
 
   function initializeTransforms($transforms) {

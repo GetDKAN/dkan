@@ -7,7 +7,7 @@ The prototype.
 Currently there is no UI for the harvests. To setup run the following in the database:
 
 ```
-INSERT INTO harvest_source (source_id, config) VALUES ('dkandemo', '{"sourceId":"dkandemo","source":{"type":"DataJson","uri":"http:\/\/demo.getdkan.com\/data.json"},"transforms":[{"Filter":{"keyword":"environment"}},{"Override":{"publisher.name":"DKAN Demo"}},"DataJsonToDkan"],"load":{"migrate":false,"collectionsToUpdate":["dataset"],"type":"Dkan8"}}');
+INSERT INTO harvest_source (source_id, config) VALUES ('dkandemo', '{"sourceId":"dkandemo","source":{"type":"DataJson","uri":"http:\/\/demo.getdkan.com\/data.json"},"transforms":[{"Filter":{"keyword":"environment"}},{"Override":{"publisher.name":"DKAN Demo"}},"DataJsonToDkan"],"load":{"migrate":false,"collectionsToUpdate":["dataset","publisher", "license", "theme", "keyword"],"type":"Dkan8"}}');
 ```
 
 That source config looks like:

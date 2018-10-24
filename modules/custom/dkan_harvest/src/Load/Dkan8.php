@@ -171,7 +171,7 @@ class Dkan8 extends Load {
   }
 
   function createTerm($bundle, $doc) {
-    $this->log->write('DEBUG', 'saveTerm', 'Saving term' . $doc->identifier);
+    $this->log->write('DEBUG', 'saveTerm', 'Saving term ' . $doc->identifier);
     $term = Term::create([
       'name' => $doc->title,
       'vid' => $bundle,

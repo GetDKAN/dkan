@@ -27,23 +27,67 @@ class DataJsonToDkan extends Transform {
    *   docs.
    */
   function run(&$items) {
-    //parent::run($items);
     $this->log->write('DEBUG', 'DataJsonToDkan', 'Running transform from DataJsonToDkan');
     $migrate = FALSE;
     $docs = [];
     foreach ($items as $item) {
       $docs = $this->reference($docs, $item);
     }
+    $docs = $this->addDistIds($docs);
     $items = $docs;
   }
 
+  /**
+   * Adds ids to distributions.
+   */
+  function addDistIds($docs) {
+    foreach ($docs as $collection => $items) {
+      // Add identifiers to distributions.
+      if ($collection == 'dataset') {
+        foreach ($items as $k => $doc) {
+          if (isset($doc->distribution)) {
+            foreach ($doc->distribution as $key => $dist) {
+              if (isset($dist->title)) {
+                $id = $this->slug($doc->identifier . '-' . $dist->title);
+              }
+              else {
+                $id = $this->slug($doc->identifier . '-' . $dist->format);
+              }
+              $doc->distribution[$key]->identifier = $id;
+            }
+          }
+        }
+        $docs['dataset'][$k] = $doc;
+      }
+    }
+    return $docs;
+  }
+
+	function slug($str) {
+		$str = strtolower(trim($str));
+		$str = preg_replace('/[^a-z0-9-]/', '-', $str);
+		$str = preg_replace('/-+/', "-", $str);
+		return $str;
+	}
+
+  /**
+   * This creates identifiers for the referenced items.
+   *
+   * This originally set the 'dkan-id' but that is now done in
+   * dkan_dataset_entity_presave().
+   *
+   * @param array $docs
+   *   docs to add to.
+   * @param object $item
+   *   Individual document for the primary collection, ie dataset.
+   */
   function reference($docs, $item) {
     foreach ($this->collectionsToUpdate as $collection => $dataType) {
       if (isset($item->{$collection})) {
         if ($dataType == 'string') {
           $doc = $this->prepString($item->{$collection});
           // Add reference to doc to primary collection, ie dataset.
-          $item->{$collection} = ['dkan-id' => $doc->identifier];
+          $item->{$collection} = $doc->identifier;
           // Break docs into buckets of collections.
           $docs[$collection][$doc->identifier] = $doc;
         }
@@ -53,17 +97,17 @@ class DataJsonToDkan extends Transform {
           foreach ($item->{$collection} as $i) {
             $doc = $this->prepString($i);
             // Add references.
-            $items[] = ['dkan-id' => $doc->identifier];
+            $items[] = $doc->identifier;
             // Break docs into buckets of collections.
             $docs[$collection][$doc->identifier] = $doc;
           }
-          $item->{$collection} = $items;
+          $item->{$collection} = implode(',', $items);
         }
         elseif ($dataType == 'object') {
           // TODO: Map this to a schema. For now we know this is a publisher.
           $doc = $item->{$collection};
           $doc->identifier = $this->createIdentifier($doc->name);
-          $item->{$collection} = ['dkan-id' => $doc->identifier];
+          $item->{$collection} = $doc->identifier;
           $docs[$collection][$doc->identifier] = $doc;
         }
       }
@@ -89,7 +133,7 @@ class DataJsonToDkan extends Transform {
   }
 
   function createIdentifier($title) {
-    return strtolower(preg_replace('/[^a-zA-Z0-9-_\.]/','', $title));
+    return strtolower(preg_replace('/[^a-zA-Z0-9-_]/','', $title));
   }
 
 }

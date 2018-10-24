@@ -40,8 +40,10 @@ class DkanHarvestCommands extends DrushCommands {
    */
   public function cache($sourceId) {
     $harvest = $this->DKANHarvest->sourceRead($sourceId);
-    $this->Harvest->init($harvest);
-    $this->Harvest->cache();
+    $harvest->runId = 'cache';
+    if ($this->Harvest->init($harvest)) {
+      $this->Harvest->cache();
+    }
   }
 
   /**
@@ -58,10 +60,11 @@ class DkanHarvestCommands extends DrushCommands {
   public function run($sourceId) {
     $harvest = $this->DKANHarvest->sourceRead($sourceId);
     $harvest->runId = $this->DKANHarvest->runCreate($sourceId);
-    $this->Harvest->init($harvest);
-    $items = $this->Harvest->extract();
-    $items = $this->Harvest->transform($items);
-    $this->Harvest->load($items);
+    if ($this->Harvest->init($harvest)) {
+      $items = $this->Harvest->extract();
+      $items = $this->Harvest->transform($items);
+      $this->Harvest->load($items);
+    }
   }
 
   /**
@@ -77,9 +80,10 @@ class DkanHarvestCommands extends DrushCommands {
    */
   public function revert($sourceId) {
     $harvest = $this->DKANHarvest->sourceRead($sourceId);
-    //$harvest->runId = $this->DKANHarvest->runCreate($sourceId);
-    $this->Harvest->init($harvest);
-    $this->Harvest->revert();
+    $harvest->runId = 'revert';
+    if ($this->Harvest->init($harvest)) {
+      $this->Harvest->revert();
+    }
   }
 }
 

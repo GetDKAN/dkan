@@ -48,25 +48,33 @@ function dkan_dataset_entity_presave(EntityInterface $entity) {
   $schema = new Schema();
   $entities = array_values($schema->config['collectionToEntityMap']);
   $bundles = array_values($schema->config['collectionToBundleMap']);
-  if (!in_array($entity->getEntityTypeId(), $entities) || !in_array($entity->bundle(), $bundles)) {
+  $entityType = $entity->getEntityTypeId();
+  if (!in_array($entityType, $entities) || !in_array($entity->bundle(), $bundles)) {
     return;
   }
   $metadata = json_decode($entity->get('field_json_metadata')->value);
   if ($references = $schema->config['references'][$entity->bundle()]) {
     $metadata = dkanDatasetPrepareStore($metadata, $references, $schema);
   }
-  $title = isset($metadata->title) ? $metadata->title : $metadata-name;
-  $entity->setTitle($metadata->title);
+  $title = isset($metadata->title) ? $metadata->title : $metadata->name;
+  if ($entityType == 'node') {
+    $entity->setTitle($title);
+    $created = new DateTime();
+    $created->setTimestamp($entity->getCreatedTime());
+    $metadata->created = $created->format('Y-m-d\TH:i:s');
 
-  $created = new DateTime();
-  $created->setTimestamp($entity->getCreatedTime());
-  $metadata->created = $created->format('Y-m-d\TH:i:s');
+    $changed = new DateTime();
+    $changed->setTimestamp($entity->getChangedTime());
+    $metadata->modified = $changed->format('Y-m-d\TH:i:s');
+  }
+  elseif ($entityType == 'taxonomy_term') {
+    $entity->setName($title);
+  }
 
-  $changed = new DateTime();
-  $changed->setTimestamp($entity->getChangedTime());
-  $metadata->modified = $changed->format('Y-m-d\TH:i:s');
 
-  $metadata->identifier = $entity->uuid();
+  if (!isset($metadata->identifier)) {
+    $metadata->identifier = $entity->uuid();
+  }
 
   $entity->set('field_json_metadata', json_encode($metadata));
 }

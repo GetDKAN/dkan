@@ -8,10 +8,9 @@ abstract class Revert {
   public $sourceId;
   protected $runId;
 
-  function __construct($log, $sourceId, $runId) {
+  function __construct($log, $sourceId) {
     $this->log = $log;
     $this->sourceId = $sourceId;
-    $this->runId = $runId;
   }
 
   function run() {
