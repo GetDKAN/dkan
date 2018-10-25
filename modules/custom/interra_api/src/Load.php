@@ -66,6 +66,26 @@ class Load {
     return NULL;
   }
 
+  public function loadAPIDoc($id, $entity) {
+    if (substr($entity, 0, 1) == '!') {
+      if ($bundle = array_search($entity, $this->collectionToEntityMap)) {
+        $docs = $this->loadByType($bundle);
+        foreach ($docs as $doc) {
+          if (isset($doc->identifier) && $doc->identifier === $id) {
+            return $doc;
+          }
+        }
+      }
+    }
+    else {
+      $doc = $this->loadDocById($id, $entity);
+      $formatted = $this->formatDoc($doc);
+      $dereferenced = $this->dereference($formatted);
+      return $dereferenced;
+    }
+    return NULL;
+  }
+
   public function formatDocs($docs) {
     $index = array();
     foreach($docs as $id => $doc) {

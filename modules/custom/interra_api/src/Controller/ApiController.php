@@ -68,10 +68,8 @@ class ApiController extends ControllerBase {
       $schema = new Schema();
       $entity = $schema->config['collectionToEntityMap'][$collection];
       $load = new Load();
-      if ($doc = $load->loadDocById($id, $entity)) {
-        $formatted = $load->formatDoc($doc);
-        $dereferenced = $load->dereference($formatted);
-        return new JsonResponse( $dereferenced );
+      if ($doc = $load->loadAPIDoc($id, $entity)) {
+        return new JsonResponse( $doc );
       }
       throw new NotFoundHttpException();
     }
