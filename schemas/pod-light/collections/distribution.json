@@ -112,6 +112,7 @@
               },
               "type": {
                 "description": "The type for the data.",
+                "type": "string",
                 "enum": [
                   "string",
                   "integer",

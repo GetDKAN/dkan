@@ -45,7 +45,7 @@ class SiteMap {
           foreach ($doc->distribution as $dist) {
             $dists[] = [
               'title' => $dist->title,
-              'loc' => $item['loc'] . '/' . $dist->identifer
+              'loc' => '/distribution/' . $dist->identifier
             ];
           }
           $item['children'] = $dists;
