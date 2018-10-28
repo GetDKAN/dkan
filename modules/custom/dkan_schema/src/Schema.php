@@ -80,15 +80,25 @@ class Schema {
     return Json::decode(file_get_contents($this->dir() . '/collections/' . $collection . '.json'));
   }
 
-  public function loadFullSchema() {
-    $collections = $this->getActiveCollections();
+  /**
+   * Loads fully dereferenced schema.
+   *
+   * @param string $collection
+   *   Provides ONLY that collection if supplied. Otherwise returns all
+   *   collections.
+   *
+   * @return array
+   *   Fully derefrenced schema.
+   */
+  public function loadFullSchema($collection = NULL) {
+    $collections = $collection ? [$collection] : $this->getActiveCollections();
     $references = $this->config['references'];
     $fullSchama = array();
     foreach ($collections as $collection) {
       $dereferencedSchema = $this->loadSchema($collection);
       $fullSchema[$collection] = $this->dereference($references, $collection, $dereferencedSchema);
     }
-    return $fullSchema;
+    return $collection ? $fullSchema[$collection] : $fullSchema;
   }
 
   /**

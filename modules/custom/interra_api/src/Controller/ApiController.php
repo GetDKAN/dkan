@@ -10,6 +10,7 @@ use Drupal\interra_api\Interra;
 use Drupal\interra_api\Search;
 use Drupal\interra_api\Load;
 use Drupal\interra_api\SiteMap;
+use Drupal\interra_api\Swagger;
 use Drupal\interra_api\ApiRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -43,6 +44,12 @@ class ApiController extends ControllerBase {
   public function siteMap( Request $request ) {
     $siteMap = new SiteMap();
     return new JsonResponse( $siteMap->load() );
+  }
+
+  public function swagger( Request $request ) {
+    $swagger = new Swagger();
+    return new JsonResponse( $swagger->load() );
+    //return new JsonResponse( [] );
   }
 
   public function collection( Request $request ) {

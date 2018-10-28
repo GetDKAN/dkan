@@ -1,9 +1,3 @@
-interra_api.routes:
-  path: '/api/v1/routes.json'
-  defaults:
-   { _controller: '\Drupal\interra_api\Controller\ApiController::routes'}
-  requirements:
-    _permission: 'access content'
 interra_api.schema:
   path: '/api/v1/schema.json'
   defaults:
@@ -20,6 +14,12 @@ interra_api.sitemap:
   path: '/api/v1/sitemap.json'
   defaults:
    { _controller: '\Drupal\interra_api\Controller\ApiController::siteMap'}
+  requirements:
+    _permission: 'access content'
+interra_api.swagger:
+  path: '/api/v1/swagger.json'
+  defaults:
+   { _controller: '\Drupal\interra_api\Controller\ApiController::swagger'}
   requirements:
     _permission: 'access content'
 interra_api.collecion:

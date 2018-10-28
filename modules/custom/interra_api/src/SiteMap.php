@@ -4,6 +4,7 @@ namespace Drupal\interra_api;
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\interra_api\Load;
+use Drupal\dkan_schema\Schema;
 
 class SiteMap {
 
