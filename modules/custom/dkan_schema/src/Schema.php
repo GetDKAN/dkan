@@ -94,9 +94,9 @@ class Schema {
     $collections = $collection ? [$collection] : $this->getActiveCollections();
     $references = $this->config['references'];
     $fullSchama = array();
-    foreach ($collections as $collection) {
-      $dereferencedSchema = $this->loadSchema($collection);
-      $fullSchema[$collection] = $this->dereference($references, $collection, $dereferencedSchema);
+    foreach ($collections as $coll) {
+      $dereferencedSchema = $this->loadSchema($coll);
+      $fullSchema[$coll] = $this->dereference($references, $coll, $dereferencedSchema);
     }
     return $collection ? $fullSchema[$collection] : $fullSchema;
   }
