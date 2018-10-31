@@ -43,8 +43,20 @@ class Schema {
     return Yaml::decode(file_get_contents($file));
   }
 
+  public function getActiveBundles() {
+    $bundles = [];
+    foreach ($this->config['collections'] as $collection) {
+      $bundles[] = $this->config['collectionToBundleMap'][$collection];
+    }
+    return $bundles;
+  }
+
   public function getActiveCollections() {
     return $this->config['collections'];
+  }
+
+  public function getRouteCollections() {
+    return $this->config['routeCollections'];
   }
 
   public function loadSchema($collection) {
@@ -68,24 +80,25 @@ class Schema {
     return Json::decode(file_get_contents($this->dir() . '/collections/' . $collection . '.json'));
   }
 
-  public function loadFullSchema() {
-    $collections = $this->getActiveCollections();
+  /**
+   * Loads fully dereferenced schema.
+   *
+   * @param string $collection
+   *   Provides ONLY that collection if supplied. Otherwise returns all
+   *   collections.
+   *
+   * @return array
+   *   Fully derefrenced schema.
+   */
+  public function loadFullSchema($collection = NULL) {
+    $collections = $collection ? [$collection] : $this->getActiveCollections();
     $references = $this->config['references'];
     $fullSchama = array();
-    foreach ($collections as $collection) {
-      $dereferencedSchema = $this->loadSchema($collection);
-      // Start HACK. TODO: Remove HACK.
-      if ($collection == 'dataset') {
-        $organization = array(
-          'type' => 'object',
-          '$ref' => 'organization.json'
-        );
-        $dereferencedSchema['properties']['organization'] = $organization;
-      }
-      // Done HACK.
-      $fullSchema[$collection] = $this->dereference($references, $collection, $dereferencedSchema);
+    foreach ($collections as $coll) {
+      $dereferencedSchema = $this->loadSchema($coll);
+      $fullSchema[$coll] = $this->dereference($references, $coll, $dereferencedSchema);
     }
-    return $fullSchema;
+    return $collection ? $fullSchema[$collection] : $fullSchema;
   }
 
   /**

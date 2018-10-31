@@ -10,8 +10,7 @@ siteMap:
     loc: "/api"
   - title: Groups
     loc: "/groups"
-    children:
-    - collections
+    children: collections
 siteMapCollections:
   - organization
   - dataset

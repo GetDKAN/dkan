@@ -13,4 +13,5 @@ dependencies:
   - text
   - user
   - json_form
+  - taxonomy
 package: DKAN

@@ -64,16 +64,21 @@ class ApiRequest {
    *   The doc that has been requested if it is valid or FALSE.
    */
   public function validateDocPath($path) {
+    // TODO: sync up w/ routeCollections.
     $schema = new Schema();
     $collections = $schema->getActiveCollections();
     $items = explode('/', $path);
+    // This is a set part of the API.
     if ($items[0] == 'collections') {
       $collection = $items[1];
+      // Check if the top level collection is part of the route.
       if (in_array($collection, $collections)) {
         $d = explode('.', $items[2]);
         $doc = $d[0];
         if (TRUE && $d[1] == 'json') {
           return $doc;
+        }
+        else {
         }
       }
     }

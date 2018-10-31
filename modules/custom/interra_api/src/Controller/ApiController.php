@@ -10,6 +10,7 @@ use Drupal\interra_api\Interra;
 use Drupal\interra_api\Search;
 use Drupal\interra_api\Load;
 use Drupal\interra_api\SiteMap;
+use Drupal\interra_api\Swagger;
 use Drupal\interra_api\ApiRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -31,6 +32,7 @@ class ApiController extends ControllerBase {
     $response['schema'] = $schema->loadFullSchema();
     $response['pageSchema'] = $interra->loadPageSchema();
     $response['facets'] = $schema->config['facets'];
+    $response['map'] = ['organization' => ['name' => 'title']];
     return new JsonResponse( $response );
   }
 
@@ -44,11 +46,16 @@ class ApiController extends ControllerBase {
     return new JsonResponse( $siteMap->load() );
   }
 
+  public function swagger( Request $request ) {
+    $swagger = new Swagger();
+    return new JsonResponse( $swagger->load() );
+    //return new JsonResponse( [] );
+  }
+
   public function collection( Request $request ) {
     $apiRequest = new ApiRequest();
     $uri = $request->getPathInfo();
     $path = $apiRequest->getUri($uri);
-    dpm($path);
     if ($collection = $apiRequest->validateCollectionPath($path)) {
       $load = new Load();
       $docs = $load->loadByType($collection);
@@ -64,9 +71,31 @@ class ApiController extends ControllerBase {
     $uri = $request->getPathInfo();
     $path = $apiRequest->getUri($uri);
     if ($id = $apiRequest->validateDocPath($path)) {
+      $collection = explode('/', $path)[1];
+      $schema = new Schema();
+      $entity = $schema->config['collectionToEntityMap'][$collection];
       $load = new Load();
-      if ($doc = $load->loadDocById($id)) {
-        return new JsonResponse( $load->formatDoc($doc) );
+      if ($doc = $load->loadAPIDoc($id, $entity)) {
+        return new JsonResponse( $doc );
+      }
+      throw new NotFoundHttpException();
+    }
+    throw new NotFoundHttpException();
+  }
+
+  public function subdoc( Request $request ) {
+    $apiRequest = new ApiRequest();
+    $uri = $request->getPathInfo();
+    $path = $apiRequest->getUri($uri);
+    if ($id = $apiRequest->validateDocPath($path)) {
+      $collection = explode('/', $path)[1];
+      $schema = new Schema();
+      $entity = $schema->config['collectionToEntityMap'][$collection];
+      $load = new Load();
+      if ($doc = $load->loadDocById($id, $entity)) {
+        $formatted = $load->formatDoc($doc);
+        $dereferenced = $load->dereference($formatted);
+        return new JsonResponse( $dereferenced );
       }
       throw new NotFoundHttpException();
     }

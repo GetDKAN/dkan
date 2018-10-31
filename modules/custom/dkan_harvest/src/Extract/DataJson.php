@@ -25,7 +25,14 @@ class DataJson extends Extract {
 		$res = json_decode($data);
 		if ($res->dataset) {
 			foreach ($res->dataset as $dataset) {
-        $this->writeToFile($dataset->identifier, json_encode($dataset));
+        if (filter_var($dataset->identifier, FILTER_VALIDATE_URL)) {
+          $i = explode("/", $dataset->identifier);
+          $id = end($i);
+        }
+        else {
+          $id = $dataset->identifier;
+        }
+        $this->writeToFile($id, json_encode($dataset));
 			}
 		}
   }

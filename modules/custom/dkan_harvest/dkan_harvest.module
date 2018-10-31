@@ -16,3 +16,13 @@ function dkan_harvest_initialize_config() {
   return $config;
 }
 
+/**
+ * Implements hook_entity_delete().
+ */
+function dkan_harvest_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
+
+  // Delete the entity's entry harvest has table.
+  db_delete('harvest_hash')
+    ->condition('identifier', $entity->uuid())
+    ->execute();
+}

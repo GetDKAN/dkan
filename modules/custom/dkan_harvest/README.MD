@@ -2,35 +2,26 @@
 
 The prototype.
 
-## Classes
+## Setup
 
-### Harvest
+Currently there is no UI for the harvests. To setup run the following in the database:
 
-Instantiated to run the entire harvest.
+```
+INSERT INTO harvest_source (source_id, config) VALUES ('dkandemo', '{"sourceId":"dkandemo","source":{"type":"DataJson","uri":"http:\/\/demo.getdkan.com\/data.json"},"transforms":[{"Filter":{"keyword":"environment"}},{"Override":{"publisher.name":"DKAN Demo"}},"DataJsonToDkan"],"load":{"migrate":false,"collectionsToUpdate":["dataset","publisher", "license", "theme", "keyword"],"type":"Dkan8"}}');
+```
 
-Example harvest might look like:
-
-$config:
+That source config looks like:
 
 ```json
 
 {
-  "destSchema": "pod-simple",
-  "fileLocation": "/var/www/docroot/sites/default/files"
-}
-```
-
-$harvests:
-
-```json
-
-[{
-  "id": "dkandemo",
+  "sourceId": "dkandemo",
   "source": {
     "type": "DataJson",
-    "uri": "http://demo.getdkan.com/data.json"
+    "uri": "http:\/\/demo.getdkan.com\/data.json"
   },
-  "transforms": [{
+  "transforms": [
+    {
       "Filter": {
         "keyword": "environment"
       }
@@ -43,47 +34,32 @@ $harvests:
   ],
   "load": {
     "migrate": false,
-    "collectionsToUpdate": ["dataset"],
+    "collectionsToUpdate": ["dataset", "organization", "license", "theme", "keyword"],
     "type": "Dkan8"
   }
-}, {
-  "id": "dkandemo2",
-  "source": {
-    "type": "DataJson",
-    "uri": "http://demo.getdkan.com/data.json"
-  },
-  "transforms": [{
-      "Filter": {
-        "keyword": "bugdet"
-      }
-    }, {
-      "Override": {
-        "publisher.name": "DKAN Demo"
-      }
-    },
-    "DataJsonToDkan"
-  ],
-  "load": {
-    "migrate": true,
-    "collectionsToUpdate": ["dataset"],
-    "type": "Dkan8"
-  }
-}]
+}
 ```
 
-```php
+About the load configs:
 
-$Harvest = new Harvest($config);
-foreach ($harvests as $harvest) {
-  // Initialize.
-  $Harvest->init($harvest);
-  // Save remote files locally.
-  $Harvest->cache();
-  // Pull from remote files.
-  $items = $Harvest->extract();
-  // Perform transforms like "filter" and "override" as well as put the json objects into to $node object and field_json_schema.
-  $items = $Harvest->transform($items);
-  // Save to DKAN.
-  $Harvest->load($items);
-}
+* **migrate**: whether or not files should be downloaded locally
+* **collectionsToUpdate**: after the initial harvest you might not want to update anything but datasets.
+* **type**: Here is where we could create a D7 version if desired.
+
+## Harvest Config
+
+There is also internal configuration for each harvest that is separate from the harvest source:
+
+* **log**: You can use the ``harvest_log`` table or stdout.
+* **destSchema**: The destination schema. Should be the current site schema.
+* **fileLocation**: Where to save the cached files. Defaults to ``sites/default/files``
+
+## Drush Commands
+
+| Command | Args |  Notes |
+|-------| ----|-----|
+| dkan-harvest:list | | Lists avaialble harvests.|
+| dkan-harvest:cache | $sourceId  | Caches harvest locally  to file system. |
+| dkan-harvest:run | $sourceId  | Runs harvest. |
+| dkan-harvest:revert | $sourceId  | Reverts harvest. |
 

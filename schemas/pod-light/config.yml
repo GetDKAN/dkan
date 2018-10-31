@@ -4,6 +4,7 @@ api: 1
 primaryCollection: dataset
 collections:
   - dataset
+  - distribution
   - organization
   - keyword
   - license
@@ -14,6 +15,20 @@ references:
       license: license
       theme: theme
       publisher: organization
+collectionToBundleMap:
+  publisher: organization
+  dataset: dataset
+  keyword: keyword
+  theme: theme
+  license: license
+collectionToEntityMap:
+  dataset: node
+  organization: node
+  publisher: node
+  distribution: !dataset.distribution
+  keyword: taxonomy_term
+  theme: taxonomy_term
+  license: taxonomy_term
 facets:
   keyword:
     label: Tags
@@ -27,3 +42,7 @@ facets:
   distribution:
     label: Format
     field: dataset.distribution.format
+routeCollections:
+  dataset: dataset/[dataset]
+  organization: organization/[organization]
+  distribution: dataset/[dataset]/[distribution]
