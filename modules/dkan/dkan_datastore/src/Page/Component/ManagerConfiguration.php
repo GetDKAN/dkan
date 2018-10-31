@@ -31,8 +31,7 @@ class ManagerConfiguration {
       '#collapsible' => FALSE,
     ];
     foreach ($this->datastoreManager->getConfigurableProperties() as $property => $default_value) {
-      $propety_label = str_replace("_", " ", $property);
-      $propety_label = ucfirst($propety_label);
+      $propety_label = ucfirst(str_replace("_", " ", $property));
 
       if ($property == "delimiter") {
         $form['import_options']["datastore_manager_config_{$property}"] = array(

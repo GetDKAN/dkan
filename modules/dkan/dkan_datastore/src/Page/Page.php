@@ -103,7 +103,7 @@ class Page {
 
         $this->form['actions']['advanced']['help'] = [
           '#type' => 'item',
-          '#markup' => 'The "Go to Paused State" option is useful in very specific cases, and should only be used in those special circumstances, in any other instance, it could leave the datastore in an inproper state and cause issues. Use with caution. The main use-case for this option is when a datastore-import-process appears to be in-progress when it is not (No active cron job is importing new records into the datastore). If you are certain that you are in this state, this button will return the datastore import to the paused state for it to continue to be processed in the next cron run.',
+          '#markup' => 'When a datastore import shows an "in-progress" state but is stalled (no active cron job is importing new records into the datastore), the "Go to Paused State" button will return the datastore import to the paused state. It will then continue to be processed in the next cron run. <em>Use this option with caution</em>, as it will cause problems with the datastore if used in any scenario other than the one described above.',
         ];
 
         $this->form['actions']['advanced']['pause'] = array(
