@@ -259,7 +259,7 @@ Request
 
   {
     "type": "resource",
-    "field_dataset_ref": {"und": {"target_id": "75"}},
+    "field_dataset_ref": {"und": [{"target_id": "75"}]},
     "title": "Test Resource"
   }
 
