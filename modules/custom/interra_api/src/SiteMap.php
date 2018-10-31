@@ -15,19 +15,45 @@ class SiteMap {
   }
 
   public function load() {
-    $config = $this->loadConfig();
-    $siteMap = reset($config['siteMap']);
-    array_walk_recursive(
-      $siteMap,
-      function (&$value) {
-        if ($value == 'collections') {
-          $value = $this->buildCollections();
+    $siteMap = [];
+		if ($siteMap = $this->cacheGet()) {
+      return [$siteMap];
+    }
+    else {
+      $config = $this->loadConfig();
+      $siteMap = reset($config['siteMap']);
+      array_walk_recursive(
+        $siteMap,
+        function (&$value) {
+          if ($value == 'collections') {
+            $value = $this->buildCollections();
+          }
         }
-      }
-    );
-
-    return [$siteMap];
+      );
+      $this->cacheSet($siteMap);
+      return [$siteMap];
+    }
   }
+
+  private function cacheGet() {
+		$cid = 'interra_sitemap:' . \Drupal::languageManager()
+			->getCurrentLanguage()
+			->getId();
+		$data = NULL;
+		if ($cache = \Drupal::cache()
+			->get($cid)) {
+			$data = $cache->data;
+		}
+		return $data;
+  }
+
+  private function cacheSet($data) {
+		$cid = 'interra_sitemap:' . \Drupal::languageManager()
+			->getCurrentLanguage()
+			->getId();
+		\Drupal::cache()
+			->set($cid, $data);
+	}
 
   private function buildCollections() {
     $load = new Load();

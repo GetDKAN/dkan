@@ -6,13 +6,20 @@ use Drush\Commands\DrushCommands;
 use Drush\Style\DrushStyle;
 use Drupal\dkan_harvest\Harvest;
 use Drupal\dkan_harvest\DKANHarvest;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class DkanHarvestCommands extends DrushCommands {
+
+  protected $table;
+  protected $output;
 
   function __construct() {
     $config = dkan_harvest_initialize_config();
     $this->Harvest = new Harvest($config);
     $this->DKANHarvest = new DKANHarvest();
+    $this->output = new ConsoleOutput();
+    $this->table = new Table($this->output);
   }
 
   /**
@@ -24,7 +31,14 @@ class DkanHarvestCommands extends DrushCommands {
    *   List available harvests.
    */
   public function list() {
-    return $this->DKANHarvest->sourceList();
+    $items = $this->DKANHarvest->sourceList();
+    foreach ($items['source_id'] as $item) {
+      $rows[$item][] = $item;
+    }
+    $this->table
+      ->setHeaders(array('source id'))
+      ->setRows($rows);
+    $this->table->render();
   }
 
   /**
@@ -63,7 +77,16 @@ class DkanHarvestCommands extends DrushCommands {
     if ($this->Harvest->init($harvest)) {
       $items = $this->Harvest->extract();
       $items = $this->Harvest->transform($items);
-      $this->Harvest->load($items);
+      $results = $this->Harvest->load($items);
+      $rows = [];
+      foreach ($results as $bundle => $count) {
+        $rows[] = [$bundle, $count['created'], $count['updated'], $count['skipped']];
+      }
+      $this->table
+        ->setHeaders(['bundle', 'created', 'updated', 'skipped'])
+        ->setRows($rows);
+      $this->table->render();
+
     }
   }
 

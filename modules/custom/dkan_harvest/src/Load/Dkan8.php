@@ -55,9 +55,9 @@ class Dkan8 extends Load {
         }
       }
     }
-    $resultLog = $this->resultsPrint($results);
-    $this->log->write('INFO', 'Load::run', "Harvest run completed: $resultLog");
+    $this->log->write('DEBUG', 'Load::run', "Harvest run completed: $resultLog");
     $this->DKANHarvest->runUpdate($this->runId, $this->sourceId, $results);
+    return $results;
   }
 
   function resultsPrint($results) {
@@ -73,25 +73,32 @@ class Dkan8 extends Load {
   }
 
   function processCollection($collection, $doc, &$results) {
+    $entity = $this->collectionToEntityMap[$collection];
+    $bundle = $this->collectionToBundleMap[$collection];
     // Generat hash.
     $hash = $this->generateHash($doc);
     $oldHash = $this->getHash($doc);
     // NEW: There is no old hash record.
     if (!$oldHash) {
-      if ($this->collectionToEntityMap[$collection] == 'node') {
-        $this->createNode($collection, $doc);
-      } else {
-        $this->createTerm($collection, $doc);
+      if ($this->entityExists($entity, $doc->identifier)) {
+        $this->updateEntity($entity, $doc);
+        $results[$collection]['updated']++;
       }
-      $bundle = $this->collectionToBundleMap[$collection];
+      else {
+        $this->createEntity($entity, $bundle, $doc);
+        $results[$collection]['created']++;
+      }
       $this->createHashRecord($doc->identifier, $bundle, $this->sourceId, $this->runId, $hash);
-      $results[$collection]['created']++;
     // UPDATE: Item exists. Update existing since hashes don't match.
     } elseif (!$this->checkHash($hash, $oldHash)) {
-      if ($this->collectionToEntityMap[$collection] == 'node') {
-        $this->updateNode($doc);
-      } else {
-        $this->updateTerm($doc, $collection);
+      // Still check if entity exists in case hash is wrong.
+      if ($this->entityExists($entity, $doc->identifier)) {
+        $this->updateEntity($entity, $doc);
+        $results[$collection]['updated']++;
+      }
+      else {
+        $this->createEntity($entity, $bundle, $doc);
+        $results[$collection]['created']++;
       }
       $results[$collection]['updated']++;
     // SKIP: Hash is the same. Nothing changed so skip.
@@ -142,52 +149,62 @@ class Dkan8 extends Load {
     return $distributions;
   }
 
-  function createNode($collection, $doc) {
-    $bundle = $this->collectionToBundleMap[$collection] ? $this->collectionToBundleMap[$collection] : $collection;
-    // TODO: Add mapping for required fields.
-    $title = isset($doc->title) ? $doc->title : $doc->name;
-    $this->log->write('DEBUG', 'saveNode', 'Saving ' . $title);
-    if ($this->migrate) {
-      $doc->distributions = $this->saveFilesLlocally($distributions);
+  function entityExists($entity, $uuid) {
+    $table = $entity == 'node' ? 'node' : 'taxonomy_term_data';
+    $db = \Drupal::database();
+    $query = $db->query("SELECT uuid FROM {$table} WHERE uuid = :uuid", [':uuid' => $uuid]);
+    $r = $query->fetchAll();
+    return $r ? TRUE : FALSE;
+  }
+
+  function createEntity($entity, $bundle, $doc) {
+    if ($entity == 'node') {
+      // TODO: Add mapping for required fields.
+      $title = isset($doc->title) ? $doc->title : $doc->name;
+      $this->log->write('DEBUG', 'saveNode', 'Saving ' . $title);
+      if ($this->migrate) {
+        $doc->distributions = $this->saveFilesLlocally($distributions);
+      }
+      $nodeWrapper = NODE::create([
+        'title' => $title,
+        'type' => $bundle,
+        'uuid' => $doc->identifier,
+        'field_json_metadata' => json_encode($doc)
+      ]);
+      $nodeWrapper->save();
+      return $nodeWrapper->id();
     }
-    $nodeWrapper = NODE::create([
-      'title' => $title,
-      'type' => $bundle,
-      'uuid' => $doc->identifier,
-      'field_json_metadata' => json_encode($doc)
-    ]);
-    $nodeWrapper->save();
-    return $nodeWrapper->id();
+    else if ($entity == 'taxonomy_term') {
+      $this->log->write('DEBUG', 'saveTerm', 'Saving term ' . $doc->identifier);
+      $term = Term::create([
+        'name' => $doc->title,
+        'vid' => $bundle,
+        'uuid' => $doc->identifier,
+        'field_json_metadata' => json_encode($doc)
+      ]);
+      // Save the taxonomy term.
+      $term->save();
+      return $term->id();
+    }
   }
 
-  function updateNode($doc) {
-    $this->log->write('DEBUG', 'updateNode', 'Updating ' . $doc->identifier);
-    // TODO: Just get nid and then load.
-    $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $doc->identifier);
-    $date = date_create();
-    $node->update = date_timestamp_get($date);
-    $node->field_json_metadata = json_encode($doc);
-    $node->save();
-  }
+  function updateEntity($entity, $doc) {
+    if ($entity == 'node') {
+      $this->log->write('DEBUG', 'updateNode', 'Updating ' . $doc->identifier);
+      // TODO: Just get nid and then load.
+      $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $doc->identifier);
+      $date = date_create();
+      $node->update = date_timestamp_get($date);
+      $node->field_json_metadata = json_encode($doc);
+      $node->save();
+    }
+    else if ($entity == 'taxonomy_term') {
+      $term = \Drupal::service('entity.repository')->loadEntityByUuid('taxonomy_term', $doc->identifier);
+      $date = date_create();
+      $term->update = date_timestamp_get($date);
+      $term->field_json_metadata = json_encode($doc);
+      $term->save();
+    }
 
-  function createTerm($bundle, $doc) {
-    $this->log->write('DEBUG', 'saveTerm', 'Saving term ' . $doc->identifier);
-    $term = Term::create([
-      'name' => $doc->title,
-      'vid' => $bundle,
-      'uuid' => $doc->identifier,
-      'field_json_metadata' => json_encode($doc)
-    ]);
-    // Save the taxonomy term.
-    $term->save();
-    return $term->id();
-  }
-
-  function updateTerm($doc) {
-    $term = \Drupal::service('entity.repository')->loadEntityByUuid('taxonomy_term', $doc->identifier);
-    $date = date_create();
-    $term->update = date_timestamp_get($date);
-    $term->field_json_metadata = json_encode($doc);
-    $term->save();
   }
 }

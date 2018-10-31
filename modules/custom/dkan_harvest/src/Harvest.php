@@ -99,7 +99,7 @@ class Harvest {
   }
 
   function load($items) {
-    $this->load->run($items);
+    return $this->load->run($items);
   }
 
   function revert() {

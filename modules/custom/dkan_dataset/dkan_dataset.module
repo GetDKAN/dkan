@@ -71,9 +71,13 @@ function dkan_dataset_entity_presave(EntityInterface $entity) {
     $entity->setName($title);
   }
 
-
+  // If there is no uuid add one.
   if (!isset($metadata->identifier)) {
     $metadata->identifier = $entity->uuid();
+  }
+  // If one exists in the uui it should be the same in the table.
+  else {
+    $entity->set('uuid', $metadata->identifier);
   }
 
   $entity->set('field_json_metadata', json_encode($metadata));

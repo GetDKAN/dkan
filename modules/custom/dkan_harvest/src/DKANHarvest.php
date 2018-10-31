@@ -32,7 +32,7 @@ class DKANHarvest {
     $items = [];
     foreach ($results as $result) {
       foreach($fields as $field) {
-        $items[$field] = $result->{$field};
+        $items[$field][] = $result->{$field};
       }
     }
     return $items;
@@ -225,7 +225,11 @@ class DKANHarvest {
 
   public function hashRead($identifier) {
     $items = $this->read('harvest_hash', $this->hashFields, array('identifier' => array(':identifier' => $identifier)));
-    return $items;
+    $hash = [];
+    foreach ($items as $field => $i) {
+      $hash[$field] = $i[0];
+    }
+    return $hash;
   }
 
   public function hashReadIdsBySource($sourceId) {
@@ -275,7 +279,7 @@ class DKANHarvest {
 
   public function sourceRead($sourceId) {
     $items = $this->read('harvest_source', array('config'), array('source_id' => array(':source_id' => $sourceId)));
-    $config = json_decode($items['config']);
+    $config = json_decode($items['config'][0]);
     return $config;
   }
 

@@ -33,14 +33,30 @@ class DataJsonToDkan extends Transform {
     foreach ($items as $item) {
       $docs = $this->reference($docs, $item);
     }
-    $docs = $this->addDistIds($docs);
+    $docs = $this->prepareDist($docs);
+    $docs = $this->prepareIds($docs);
     $items = $docs;
+  }
+
+  function prepareIds($docs) {
+    foreach ($docs as $collection => $items) {
+      if ($collection == 'dataset') {
+        foreach ($items as $k => $doc) {
+          if (filter_var($doc->identifier, FILTER_VALIDATE_URL)) {
+            $i = explode("/", $doc->identifier);
+            $doc->identifier = end($i);
+            $docs['dataset'][$k] = $doc;
+          }
+        }
+      }
+    }
+    return $docs;
   }
 
   /**
    * Adds ids to distributions.
    */
-  function addDistIds($docs) {
+  function prepareDist($docs) {
     foreach ($docs as $collection => $items) {
       // Add identifiers to distributions.
       if ($collection == 'dataset') {
@@ -51,7 +67,19 @@ class DataJsonToDkan extends Transform {
                 $id = $this->slug($doc->identifier . '-' . $dist->title);
               }
               else {
-                $id = $this->slug($doc->identifier . '-' . $dist->format);
+                if (isset($dist->format)) {
+                  $id = $this->slug($doc->identifier . '-' . $dist->format);
+                  $title = $format;
+                  $doc->distribution[$key]->title = $title;
+                }
+                else if (isset($dist->mediaType)) {
+                  $type = explode("/", $dist->mediaType);
+                  $format = end($type);
+                  $title = $format;
+                  $id = $this->slug($doc->identifier . '-' . $format);
+                  $doc->distribution[$key]->title = $title;
+                  $doc->distribution[$key]->format = $format;
+                }
               }
               $doc->distribution[$key]->identifier = $id;
             }
