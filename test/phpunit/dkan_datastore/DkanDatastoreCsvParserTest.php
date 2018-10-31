@@ -2,355 +2,377 @@
 
 class DkanDatastoreCsvParserTest extends \PHPUnit_Framework_TestCase {
 
-  public function testEmptyString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("");
+  private function parse($string) {
+    $parser = new \Dkan\Datastore\Parser\Csv(',', '"', "\\", ["\r", "\n"]);
+    $parser->feed($string);
     $parser->finish();
+    return $parser;
+  }
+
+  public function testEmptyString() {
+    $parser = $this->parse('');
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
+    $values = [''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testJustDelimiters() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed(",,");
-    $parser->finish();
+    $parser = $this->parse(',,');
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
-    $this->assertEquals("", $record[1]);
-    $this->assertEquals("", $record[2]);
+    $values = ['', '', ''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testEmptyNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("\n");
-    $parser->finish();
+    $parser = $this->parse("\n");
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
+    $values = [''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
-    $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
+    $this->assertNull($parser->getRecord());
   }
 
   public function testJustDelimitersNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed(",,\n,,");
-    $parser->finish();
+    $parser = $this->parse(",,\n,,");
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
-    $this->assertEquals("", $record[1]);
-    $this->assertEquals("", $record[2]);
+    $values = ['', '', ''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
-    $this->assertEquals("", $record[1]);
-    $this->assertEquals("", $record[2]);
+    $values = ['', '', ''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testBlankString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("   ");
-    $parser->finish();
+    $parser = $this->parse('   ');
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
+    $values = [''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testBlankJustDelimiters() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("  ,   ,    ");
-    $parser->finish();
+    $parser = $this->parse('  ,   ,    ');
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
-    $this->assertEquals("", $record[1]);
-    $this->assertEquals("", $record[2]);
+    $values = ['', '', ''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testBlankNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("  \n   ");
-    $parser->finish();
+    $parser = $this->parse("  \n   ");
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
+    $values = [''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
+    $values = [''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testBlankJustDelimitersNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("  ,   ,    \n  ,   ,    ");
-    $parser->finish();
+    $parser = $this->parse("  ,   ,    \n  ,   ,    ");
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
-    $this->assertEquals("", $record[1]);
-    $this->assertEquals("", $record[2]);
+    $values = ['', '', ''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
-    $this->assertEquals("", $record[1]);
-    $this->assertEquals("", $record[2]);
+    $values = ['', '', ''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOther() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("A");
-    $parser->finish();
+    $parser = $this->parse('A');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A", $record[0]);
+    $values = ['A'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherJustDelimiters() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("A,B,C");
-    $parser->finish();
+    $parser = $this->parse('A,B,C');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A", $record[0]);
-    $this->assertEquals("B", $record[1]);
-    $this->assertEquals("C", $record[2]);
+    $values = ['A', 'B', 'C'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("A\nB");
-    $parser->finish();
+    $parser = $this->parse("A\nB");
 
     $record = $parser->getRecord();
-    $this->assertEquals("A", $record[0]);
+    $values = ['A'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("B", $record[0]);
+    $values = ['B'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherJustDelimitersNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("A,B,C\nD,E,F");
-    $parser->finish();
+    $parser = $this->parse("A,B,C\nD,E,F");
 
     $record = $parser->getRecord();
-    $this->assertEquals("A", $record[0]);
-    $this->assertEquals("B", $record[1]);
-    $this->assertEquals("C", $record[2]);
+    $values = ['A', 'B', 'C'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("D", $record[0]);
-    $this->assertEquals("E", $record[1]);
-    $this->assertEquals("F", $record[2]);
+    $values = ['D', 'E', 'F'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherBlank() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("  A B  ");
-    $parser->finish();
+    $parser = $this->parse('  A B  ');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A B", $record[0]);
+    $values = ['A B'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherBlankJustDelimiters() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed(" A B ,B  C , CD");
-    $parser->finish();
+    $parser = $this->parse(' A B ,B  C , CD');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A B", $record[0]);
-    $this->assertEquals("B  C", $record[1]);
-    $this->assertEquals("CD", $record[2]);
+    $values = ['A B', 'B  C', 'CD'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherBlankNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("A B   \n   B  C");
-    $parser->finish();
+    $parser = $this->parse("A B   \n   B  C");
 
     $record = $parser->getRecord();
-    $this->assertEquals("A B", $record[0]);
+    $values = ['A B'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("B  C", $record[0]);
+    $values = ['B  C'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherBlankJustDelimitersNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed(" AB,B C \n D  E,E   F ");
-    $parser->finish();
+    $parser = $this->parse(" AB,B C \n D  E,E   F ");
 
     $record = $parser->getRecord();
-    $this->assertEquals("AB", $record[0]);
-    $this->assertEquals("B C", $record[1]);
+    $values = ['AB', 'B C'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("D  E", $record[0]);
-    $this->assertEquals("E   F", $record[1]);
+    $values = ['D  E', 'E   F'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherBlankEscape() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("  A \\\nB\\,  ");
-    $parser->finish();
+    $parser = $this->parse('  A \\' . "\n" . 'B\,  ');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A \nB,", $record[0]);
+    $values = ["A \nB,"];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherBlankEscapeJustDelimiters() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed(" A \\\\B ,B \\\n C , CD");
-    $parser->finish();
+    $parser = $this->parse(' A \\\B ,B \\' . "\n" . ' C , CD');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A \\B", $record[0]);
-    $this->assertEquals("B \n C", $record[1]);
-    $this->assertEquals("CD", $record[2]);
+    $values = ['A \\B', "B \n C", 'CD'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherBlankEscapeNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("A B \\\n  \n \\,  B  C ");
-    $parser->finish();
+    $parser = $this->parse('A B \\' . "\n  \n" . ' \\,  B  C ');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A B \n", $record[0]);
+    $values = ["A B \n"];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals(",  B  C", $record[0]);
+    $values = [',  B  C'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testOtherBlankEscapeJustDelimitersNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed(" A \\\n B,B C \n \\\\D  E\\,,E   F ");
-    $parser->finish();
+    $parser = $this->parse(' A \\' . "\n" . ' B,B C ' . "\n" . ' \\\D  E\,,E   F ');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A \n B", $record[0]);
-    $this->assertEquals("B C", $record[1]);
+    $values = ["A \n B", 'B C'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("\\D  E,", $record[0]);
-    $this->assertEquals("E   F", $record[1]);
+    $values = ['\D  E,', 'E   F'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testQuotes() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("\"\"");
-    $parser->finish();
+    $parser = $this->parse('""');
 
     $record = $parser->getRecord();
-    $this->assertEquals("", $record[0]);
+    $values = [''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testQuoteDelimiters() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed(" \" A B \" , \" B \n C\"");
-    $parser->finish();
+    $parser = $this->parse('" A B " , " B ' . "\n" . ' C"');
 
     $record = $parser->getRecord();
-    $this->assertEquals(" A B ", $record[0]);
-    $this->assertEquals(" B \n C", $record[1]);
+    $values = [' A B ', " B \n C"];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testQuoteNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed("  \" A B \n\"  \n \", B \\\" C \"");
-    $parser->finish();
+    $parser = $this->parse('  " A B ' . "\n" . '"  ' . "\n" . ' ", B \" C "');
 
     $record = $parser->getRecord();
-    $this->assertEquals(" A B \n", $record[0]);
+    $values = [" A B \n"];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals(", B \" C ", $record[0]);
+    $values = [', B " C '];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testQuoteJustDelimitersNewLineString() {
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed(" \"A \n B\"  , \"B C\" \n \"\\\\D  E,\" , \"E   F\" ");
-    $parser->finish();
+    $parser = $this->parse(' "A '. "\n" . ' B"  , "B C" ' . "\n" . ' "\\\D  E," , "E   F" ');
 
     $record = $parser->getRecord();
-    $this->assertEquals("A \n B", $record[0]);
-    $this->assertEquals("B C", $record[1]);
+    $values = ["A \n B", 'B C'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("\\D  E,", $record[0]);
-    $this->assertEquals("E   F", $record[1]);
+    $values = ['\D  E,', 'E   F'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testDoubleQuoteEscaping() {
-    $string = "\"S \"\"H\"\"\"";
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed($string);
-    $parser->finish();
+    $parser = $this->parse('"S ""H"""');
 
     $record = $parser->getRecord();
-    $this->assertEquals("S \"H\"", $record[0]);
+    $values = ['S "H"'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
-    $string = "\"S \"\"H\"\" S\"";
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed($string);
-    $parser->finish();
+    $this->assertNull($parser->getRecord());
 
-    $record = $parser->getRecord();
-    $this->assertEquals("S \"H\" S", $record[0]);
-
-    $string = "\"\"\"H\"\" S\"";
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed($string);
-    $parser->finish();
+    $parser = $this->parse('"S ""H"" S"');
 
     $record = $parser->getRecord();
-    $this->assertEquals("\"H\" S", $record[0]);
+    $values = ['S "H" S'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
+
+    $parser = $this->parse('"""H"" S"');
+
+    $record = $parser->getRecord();
+    $values = ['"H" S'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
+  /**
+   * Double quote parsing requires looking ahead or back as we process a string.
+   * We went to make sure that when a string is cut in the middle of double
+   * quote scaping, that the parser can still handle it without problems.
+   */
   public function testBrokenLookAhead() {
-    $string1 = "\"S \"";
-    $string2 = "\"H\"\"\"";
+    $string1 = '"S "';
+    $string2 = '"H"""';
     $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
     $parser->feed($string1);
     $parser->feed($string2);
     $parser->finish();
 
     $record = $parser->getRecord();
-    $this->assertEquals("S \"H\"", $record[0]);
+    $values = ['S "H"'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
   }
 
   public function testTrailingDelimiter() {
-    $string = "H,F,\nG,B,";
-    $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
-    $parser->feed($string);
-    $parser->finish();
+    $parser = $this->parse('H,F,' . "\n" . 'G,B,');
 
     $record = $parser->getRecord();
-    $this->assertEquals("H", $record[0]);
-    $this->assertEquals("F", $record[1]);
-    $this->assertEquals("", $record[2]);
+    $values = ['H', 'F', ''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("G", $record[0]);
-    $this->assertEquals("B", $record[1]);
-    $this->assertEquals("", $record[2]);
+    $values = ['G', 'B', ''];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
-    $string = "H,F \nG,B,";
+    $this->assertNull($parser->getRecord());
+
     $parser = new \Dkan\Datastore\Parser\Csv(",", "\"", "\\", ["\r", "\n"]);
     $parser->activateTrailingDelimiter();
-    $parser->feed($string);
+    $parser->feed('H,F ' . "\n" . 'G,B,');
     $parser->finish();
 
     $record = $parser->getRecord();
-    $this->assertEquals("H", $record[0]);
-    $this->assertEquals("F", $record[1]);
-    $this->assertArrayNotHasKey(2, $record);
+    $values = ['H', 'F'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
 
     $record = $parser->getRecord();
-    $this->assertEquals("G", $record[0]);
-    $this->assertEquals("B", $record[1]);
-    $this->assertArrayNotHasKey(2, $record);
+    $values = ['G', 'B'];
+    $this->assertNumberOfFieldsAndValues($record, $values);
+
+    $this->assertNull($parser->getRecord());
+  }
+
+  private function assertNumberOfFieldsAndValues($record, $values) {
+    $this->assertEquals(count($record), count($values));
+
+    foreach ($record as $key => $value) {
+      $this->assertEquals($values[$key], $value);
+    }
   }
 }

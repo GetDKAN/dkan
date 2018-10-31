@@ -13,8 +13,8 @@ class StateMachine {
   private $inputs = [];
   public $transitions = [];
 
-  public $ambigousInputHandler;
-  public $ambigousInputs = [];
+  public $ambiguousInputHandler;
+  public $ambiguousInputs = [];
   public $disambiguated = FALSE;
   public $buffer = [];
 
@@ -31,26 +31,26 @@ class StateMachine {
   }
 
   /**
-   * Set an ambigous input handler.
+   * Set an ambiguous input handler.
    */
-  public function setAmbigousInputHandler($callable) {
-    $this->ambigousInputHandler = $callable;
+  public function setAmbiguousInputHandler($callable) {
+    $this->ambiguousInputHandler = $callable;
   }
 
   /**
-   * Mark inputs as ambigous in the machine.
+   * Mark inputs as ambiguous in the machine.
    */
-  public function addAmbigousInput($input) {
-    if (isset($this->ambigousInputHandler)) {
+  public function addAmbiguousInput($input) {
+    if (isset($this->ambiguousInputHandler)) {
       if (in_array($input, $this->inputs)) {
-        $this->ambigousInputs[] = $input;
+        $this->ambiguousInputs[] = $input;
       }
       else {
         throw new \Exception("Invalid input: {$input}");
       }
     }
     else {
-      throw new \Exception("Declare and ambigous input handler before adding ambigous inputs");
+      throw new \Exception("Declare and ambiguous input handler before adding ambiguous inputs");
     }
   }
 
@@ -105,11 +105,11 @@ class StateMachine {
 
     $this->setCurrentStateIfNotSet();
 
-    if ($this->processPreviouslyFoundAmbigousInputs($input)) {
+    if ($this->processPreviouslyFoundAmbiguousInputs($input)) {
       return;
     }
 
-    if ($this->checkAndCaptureAmbigousInputs($input)) {
+    if ($this->checkAndCaptureAmbiguousInputs($input)) {
       return;
     }
 
@@ -136,13 +136,13 @@ class StateMachine {
   /**
    * Private.
    */
-  private function processPreviouslyFoundAmbigousInputs($input) {
+  private function processPreviouslyFoundAmbiguousInputs($input) {
     if (!empty($this->buffer)) {
       $this->buffer[] = $input;
 
       $buffer = $this->buffer;
       $this->buffer = [];
-      $final_input = call_user_func($this->ambigousInputHandler, $buffer, $this->currentState);
+      $final_input = call_user_func($this->ambiguousInputHandler, $buffer, $this->currentState);
       $buffer[0] = $final_input;
 
       $this->disambiguated = TRUE;
@@ -163,8 +163,8 @@ class StateMachine {
   /**
    * Private.
    */
-  private function checkAndCaptureAmbigousInputs($input) {
-    if (in_array($input, $this->ambigousInputs) && !$this->disambiguated) {
+  private function checkAndCaptureAmbiguousInputs($input) {
+    if (in_array($input, $this->ambiguousInputs) && !$this->disambiguated) {
       $this->buffer[] = $input;
       return TRUE;
     }

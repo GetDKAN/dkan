@@ -12,7 +12,7 @@ use Dkan\Datastore\StateMachine;
  * The state machine driving this parser has 2 states: CAPTURE and ESCAPE.
  * The CAPTURE state can handle non-special characters (anything that is
  * not a delimiter, end-of-record, etc), blank characters, and the escape
- * character. Anything else causes the state machine to throw and exception.
+ * character. Anything else causes the state machine to throw an exception.
  *
  * Effectively, the CAPTURE state lets us know which characters we should be
  * adding to our field.

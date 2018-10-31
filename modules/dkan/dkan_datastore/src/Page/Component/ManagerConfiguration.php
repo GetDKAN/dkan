@@ -31,11 +31,14 @@ class ManagerConfiguration {
       '#collapsible' => FALSE,
     ];
     foreach ($this->datastoreManager->getConfigurableProperties() as $property => $default_value) {
+      $propety_label = str_replace("_", " ", $property);
+      $propety_label = ucfirst($propety_label);
+
       if ($property == "delimiter") {
         $form['import_options']["datastore_manager_config_{$property}"] = array(
           '#type' => 'select',
           // @codingStandardsIgnoreStart
-          '#title' => ucfirst(t("{$property}")),
+          '#title' => t($propety_label),
           // @codingStandardsIgnoreEnd
           '#options' => array(
             "," => ",",
@@ -50,7 +53,7 @@ class ManagerConfiguration {
         $form['import_options']["datastore_manager_config_{$property}"] = array(
           '#type' => 'checkbox',
           // @codingStandardsIgnoreStart
-          '#title' => ucfirst(t("{$property}")),
+          '#title' => t($propety_label),
           // @codingStandardsIgnoreEnd
           '#default_value' => $default_value,
         );
@@ -59,7 +62,7 @@ class ManagerConfiguration {
         $form['import_options']["datastore_manager_config_{$property}"] = [
           '#type' => 'textfield',
           // @codingStandardsIgnoreStart
-          '#title' => ucfirst(t("{$property}")),
+          '#title' => t($propety_label),
           // @codingStandardsIgnoreEnd
           '#default_value' => $default_value,
         ];

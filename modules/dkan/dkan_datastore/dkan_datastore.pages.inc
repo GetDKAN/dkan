@@ -91,12 +91,12 @@ function dkan_datastore_stop_submit($form, &$form_state) {
 /**
  * Submit handler.
  */
-function dkan_datastore_reset_submit($form, &$form_state) {
+function dkan_datastore_go_to_paused_state_submit($form, &$form_state) {
   $node = $form['#node'];
   try {
     /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
     $manager = (new Factory(Resource::createFromDrupalNode($node)))->get();
-    $manager->reset();
+    $manager->goToPausedState();
   }
   catch (\Exception $e) {
     drupal_set_message($e->getMessage());

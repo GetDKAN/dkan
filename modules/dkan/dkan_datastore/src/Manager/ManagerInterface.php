@@ -113,8 +113,8 @@ interface ManagerInterface {
   public function getTableSchema();
 
   /**
-   * Change the datastore state from inprogress to ready.
+   * Change the datastore state to paused.
    */
-  public function reset();
+  public function goToPausedState();
 
 }

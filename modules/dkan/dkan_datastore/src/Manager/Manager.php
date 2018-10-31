@@ -358,7 +358,7 @@ abstract class Manager implements ManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function reset() {
+  public function goToPausedState() {
     $this->stateDataImport = $this::DATA_IMPORT_PAUSED;
     $this->saveState();
   }

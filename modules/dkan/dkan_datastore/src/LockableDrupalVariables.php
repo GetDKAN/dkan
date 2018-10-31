@@ -120,6 +120,13 @@ class LockableDrupalVariables {
         sleep(1);
       }
 
+      // We have to query the variable table directly instead of
+      // using variable_get, b/c this is a global lock that can/will
+      // be set or released in different processes. variable_get
+      // simply check a global variable set earlier in the request.
+      // This global variable does not get updated during the
+      // request even if another process changes the value in
+      // the database.
       $query = db_select("variable", 'v');
       $query->fields('v', ['value']);
       $query->condition('name', "dkan_datastore_lock");

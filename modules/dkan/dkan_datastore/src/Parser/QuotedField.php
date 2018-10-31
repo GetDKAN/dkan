@@ -23,7 +23,7 @@ use Dkan\Datastore\StateMachine;
  * an escape character) until we see the next character in the string.
  *
  * Our state machine implementation solves this by allowing certain inputs to
- * be declared as ambigous, and allowing the class using the state machine (us)
+ * be declared as ambiguous, and allowing the class using the state machine (us)
  * to have a disambiguation character handler.
  *
  * The details of the state machine are simple beyond the previously mentioned
@@ -90,8 +90,8 @@ class QuotedField extends CsvBase {
 
     $this->stateMachine = new StateMachine($states, $inputs);
 
-    $this->stateMachine->setAmbigousInputHandler([$this, "disambiguateInput"]);
-    $this->stateMachine->addAmbigousInput("QUOTE");
+    $this->stateMachine->setAmbiguousInputHandler([$this, "disambiguateInput"]);
+    $this->stateMachine->addAmbiguousInput("QUOTE");
     $this->stateMachine->addInitialState("INITIAL");
     $this->stateMachine->addEndState("END");
 
