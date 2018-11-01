@@ -6,21 +6,6 @@
  */
 
 /**
- * Helper for array_map to sanitize facet markup.
- */
-function _filter_xss(&$facet) {
-  $facet['#markup'] = filter_xss($facet['#markup']);
-}
-
-/**
- * Implements hook_facet_items_alter().
- */
-function dkan_sitewide_search_db_facet_items_alter(&$build, &$settings) {
-  // Apply filter xss to every facet in build.
-  array_map('_filter_xss', $build);
-}
-
-/**
  * Cross references value with available node types.
  *
  * @param string $value

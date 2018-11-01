@@ -42,18 +42,23 @@ Data Story Panels
 /***************************
 Data Story Page
 ***************************/
-.view-stories .view-header {
-  margin-bottom: 1em;
+.view-data-stories .view-content {
+  margin-left: -15px;
+  margin-right: -15px;
 }
-.view-stories .row img {
+.view-data-stories .views-column-1,
+.view-data-stories .views-column-2 {
+  margin-bottom: 2em;
+}
+.view-data-stories .row img {
   width: 100%;
   height: auto;
   margin-top: 1.5em;
 }
-.view-stories .views-field-field-tags {
+.view-data-stories .views-field-field-tags {
   margin: 1em 0 2em;
 }
-.view-stories .more-link {
+.view-data-stories .more-link {
   clear: both;
   display: block;
   font-weight: bold;
