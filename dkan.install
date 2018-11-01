@@ -411,6 +411,7 @@ function dkan_update_7023() {
  * Update default variables.
  */
 function dkan_update_7024(&$context) {
+  require_once('dkan.profile');
   dkan_misc_variables_set($context);
 }
 
