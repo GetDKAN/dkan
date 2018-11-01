@@ -59,7 +59,11 @@ projects:
   data:
     version: 1.x
   date:
-    version: '2.10'
+    download:
+      type: git
+      url: https://git.drupal.org/project/date.git
+      branch: 7.x-2.x
+      revision: a2ef952517f789bfd85659f96a0321a66936661a
   defaultconfig:
     version: 1.0-alpha11
   devel:
