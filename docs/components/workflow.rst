@@ -1,141 +1,110 @@
 DKAN Workflow
 =============
 
-DKAN Workflow is a Workflow implementation for `DKAN
+Introduction
+------
+For large organizations, it can be difficult to moderate vast amounts of content submitted by a wide range of publishers and agencies.
+
+DKAN Workflow is an optional module for `DKAN
 <https://github.com/GetDKAN/dkan>`_ based on the `Workbench
 <https://www.drupal.org/project/workbench>`_ family of modules.
 
-The goal of this component is help various organizations adhere to an editorial
-workflow for metadata publishing by providing:
+With Workflow, site managers and administrators can determine which users are able to add, edit and delete content, as well as which users can view and approve of content under review.
 
-* Content state tracking and revisioning
-* State oriented management UI
-* Access control
+Workflow creates a moderation queue so that content is published to the live site only after a designated supervisor or group moderator has reviewed and approved it. 
+
+**When using DKAN Workflow, content exists in three states:**
+
+* **Draft**  - A saved work in progress.
+* **Needs Review** - The author feels the content is ready to go on public on the live site, and would like the supervisor to review it.
+* **Published** - The content is public and visible on the live site.
 
 .. figure:: ../images/workflow/dkan_workflow_screenshot.png
 
-   DKAN Workflow main administration interface.
+The above image displays what you see on My Workbench after login. The Workbench navigation bar contains your content, drafts, and more. The "Create Content" menu features a list of content types you can create.
 
-Requirements
+Installation
 ------------
 
-The DKAN workflow component comes in the form of three modules:
+DKAN Workflow is included on all out-of-the-box DKAN sites; however, it is not enabled by default. It can be enabled either from the Modules management page or by using drush.
+
+.. code-block:: bash
+
+   drush en dkan_workflow -y
+
+Enabling DKAN workflow will automatically enable all other required modules and add the Workflow Supervisor role to all users already assigned the site manager role. (More information available in the `Workflow Roles`_
+section).
+
+You may also see a message instructing you to rebuild permissions. If so, click the "Rebuild permissions" link to update the node access settings.
+
+.. image:: ../images/rebuild-permissions-message.png
+
+Requirements for DKAN Workflow
+--------------------------------
+The DKAN Workflow component as a whole is comprised of three modules:
 
 * DKAN Workflow
 * DKAN Workflow Permissions
 * Views Workflow List
 
 In addition to these core modules, DKAN Workflow depends on multiple Drupal
-contrib modules
+contrib modules:
 
 * `Workbench <https://www.drupal.org/project/workbench>`_
 * `Workbench Moderation <https://www.drupal.org/project/workbench_moderation>`_
 * `Workbench Email <https://www.drupal.org/project/workbench_email>`_
 * `Drafty <https://www.drupal.org/project/drafty>`_
 
-Outside of the direct Workbench add-ons, DKAN Workflow needs additional Drupal
-contrib modules to provide extra functionality (Menu and link badges, etc).
+Finally, the following Drupal contrib modules provide extra functionality (Menu and link badges, amongst other features):
 
 * `Link Badges <https://www.drupal.org/project/link_badges>`_
 * `Menu Badges <https://www.drupal.org/project/menu_badges>`_
 * `Better Exposed Filters <https://www.drupal.org/project/better_exposed_filters>`_
 
-All those dependencies are declared in the `drupal-org.make
+All of the aforementioned dependencies are declared in the `drupal-org.make
 <https://github.com/GetDKAN/dkan/blob/7.x-1.x/drupal-org.make>`_ file.
 
-Installation
-------------
-DKAN workflow is included in the core DKAN install but it's not enabled by default. It can be enabled either from the Modules management page or by using drush.
-
-.. code-block:: bash
-
-   drush en dkan_workflow -y
-
-Enabling DKAN workflow should enable all the dependencies modules and update the
-user roles (more information available in the `Workflow Roles`_
-section).
-
-You may see a message instructing you to rebuild permissions, click the "Rebuild permissions" link to update the node access settings.
-
-.. image:: ../images/rebuild-permissions-message.png
-
-
-Metadata Moderation States
---------------------------
-
-There are three default moderations states available by default in DKAN:
-
-:Draft: This is the starter state that the metadata (be it dataset or resource) is in
-  when first created by the "Workflow Contributor" ( defined in the `Workflow
-  Roles`_ section). The node can be updated and have multiple iteration (or
-  revision in the Drupal jargon) without the need to change the state. After the
-  author evaluate the content is ready for being reviewed. The node moderation
-  state can be set to "Needs Review".
-
-:Needs Review: When the content author consider the work to be good enough to be reviewed by
-  a Moderator, the node(s) can be set to the *Needs Review*. This will signal to
-  available "Workflow Moderator" users that the data is ready to be looked at by
-  peers (more information in the `Workflow Roles`_ section).
-
-:Published: When the content is judged being ready for public consumption. The qualified
-  moderator (Take a look at the `Workflow Roles`_ section) can set it to the
-  *Published* state. This will make the current revision of the metadata to be
-  accessible by all the site visitor and the dataset/resources will be added to
-  the search index.
-
-Content Moderation UI
-----------------------------
-
-Controlling the moderation state of the various core content types provided by
-DKAN can be done from various places.
 
 My Workbench
-++++++++++++++++++++++++++++
+============
 
-The main moderation interface is available from the *My Workbench* link from the
-navigation bar, or accessible directly via *admin/workbench*.
+When logged in as a user that has been assigned a Workbench role, the "My Workbench" button will be displayed on the site's main navigation toolbar.
+
+"My Workbench" is also accessible directly via *admin/workbench*.
 
 .. image:: ../images/workflow/dkan_workflow_main_interface.png
 
-1. **Moderation Tabs**.
+The My Workbench Moderation Toolbar
+------------------------------------
 
-   :My content: This tab is the only tab without the moderation table and provides quick
-    links to content creation forms.
+:My content: This tab provides a list of all of the content you've created.
 
-   :My drafts: This will display the draft content authored by the logged in user.
+:My drafts: Drafts you’ve written and drafts you have permission to view.
 
-   :Needs review: This will display the content with the moderation state set to *Needs
-    Review* depending on the Workflow role of the current user (This behavior is
-    detailed in the `Workflow Roles`_ section).
+:Needs review: Content that Needs Review and can either be published to the live site or sent back to Drafts.
 
-   :Stale drafts: This moderation tab is equivalent to **My drafts** tabs except that it holds
-    all the *draft* content that was not updated in the last **72 hours**. This
-    tab is **only accessible by Workflow Supervisor** (see `Workflow Roles`_).
+:Stale drafts: This tab contains Drafts that have sat for over 72 hours without a change in moderation state. (The "stale drafts" moderation state, as well as "stale reviews," are only visible to Site Managers.)
 
-   :Stale reviews: This moderation tab is equivalent to **Needs review** tabs except that it
-    holds all the *Needs Review* content that was not updated in the last **48
-    hours**. This tab is **only accessible by Workflow Supervisor** (see
-    `Workflow Roles`_).
+:Stale reviews: This tab provides content filed under Needs Review that has sat for over 72 hours without a change in moderation state.
 
-2. **Content Filters**. Users can filter through the moderated content by *Title*,
-   *Type* (Dataset, Resource, Data Story, etc), and *Groups*.
+Additional features:
+---------------------
 
-3. **Bulk updates**. Certain operations like publishing or rejection can be
-   applied to all or a selected subset of the content available on the
-   moderation tab.
+**Content Filters:**
+Users can filter through content by *Title*, *Type* (Dataset, Resource, Data Story, etc), and *Groups*.
 
-4. **Moderated content Table**. The table will list all the moderated content
-   relevant to the tab currently selected. Supports displaying dataset without
-   resource or with all it's resources published (5), moderated dataset with
-   moderated child resource (6), and even child moderated resource(s) with
-   published parent dataset (7).
+**Bulk updates:**. 
+Certain operations such as changing content from Needs Review back to Draft can be applied to multiple items at once.
 
-Node Edit Page
-++++++++++++++++++++++++++++
+Editing Content
+----------------
 
-Changing the moderation state for individual nodes (be it a dataset or a
-resource) is available via the node edit form at the bottom of the edit page
-under the **Publishing options** sidebar. Authors and reviewers can change the
+If you'd like to change the moderation state of an individual node (such as a dataset or
+resource), you can do so while editing the node itself.
+
+Scroll to the bottom of the node's "Edit" page, and look under under the **Publishing options** sidebar; there, you'll see DKAN Workflow moderation state options. 
+
+Authors and reviewers can change the node's
 moderation state and add a note about the change via the **Moderation notes**
 text area.
 
@@ -145,91 +114,66 @@ text area.
 
 Workflow Roles
 ---------------------------
-DKAN workflow permissions provides 3 Drupal roles:
 
-:Workflow Contributor: This is the lowest level role desgined with "Content Creator" users in mind,
-  with access only to the workflow menu and limited set of admininstration
-  pages. The only transitions granted for this role is from "Draft" to "Needs
-  Review" and the opposite way from "Needs Review" to "Draft". The only tabs
-  available for the "Workflow Contributor" role are the "My Draft" tab and
-  "Needs Review tab". Accros all the tabs, a user with this role have access
-  only to the content that was authored by him/her.
+The three Workflow roles correspond with the three core DKAN `roles and permissions <http://dkan.readthedocs.io/en/latest/components/permissions.html>`_ If a user is given a Workflow role, they must also be granted the corresponding core DKAN role.
 
-:Workflow Moderator: This is a more advanced role desgined for "Editor" role. In addition of all
-  the capabilities of the "Workflow Contributor" role, A "Workflow Moderator"
-  can move content from "Needs review" to "Published". "Workflow Moderator"
-  users have access to all the content that is associated to the same Groups
-  that they belong to (checkout `Organic Groups integration`_ for more
-  information).
+* **Workflow Contributor = Content Creator**
+  
+Workflow Contributor is the most basic role; users with this role can add content, save as Draft or move it to Needs Review, but cannot publish content directly to the live site. They can only view content that they've created, and cannot modify the content of others.
 
-:Workflow Supervisor: This is the role associated with "Site Manager" users. In addition to being
-  able to view and act upon all the content available on all the tabs (more
-  information available in the `Organic Groups integration`_), this role is the
-  only role that have access to the "Stale Drafts" and "Stale Review" tabs.
+* **Workflow Moderator = Editor** 
 
-Automatic User Role Assignment
-++++++++++++++++++++++++++++++
+Workflow Moderator is the middle role, mostly pertaining to moderating specific groups. This role reviews and publishes (or unpublishes) content for their group(s), rather than for the entire site. Workflow Moderators can also view and approve of content that has not yet been assigned to a group.
 
-Users with only workflow roles won't be able to do much in DKAN and need to be
-associated to its equivalent core role. The Roles form on the User edit page
-supports adding the suited core role when only a Workflow role is checked.
+* **Workflow Supervisor = Site Manager** 
+  
+Workflow Supervisor is the most powerful role and should only be assigned to highly trusted users. Users with the role of Workbench Supervisor can add, edit, modify, publish, unpublish, moderate or delete _all_ site content. This role is the only role that have access to the "Stale Drafts" and "Stale Review" tabs (more information below).
 
-.. figure:: ../images/workflow/dkan_workflow_autorole.gif
-   :scale: 75
-
-   Automatic core role assignment with workflow roles.
-
-Organic Groups integration
-++++++++++++++++++++++++++
-
-Content viewing
-~~~~~~~~~~~~~~~
+Here is how core roles in DKAN are automatically correlated to Workbench roles and permissions:
 
 +-------------------------+-------------------------------------+---------------------------------------------+
-| What a user will see    | My drafts                           | Needs review                                |
+| What a user will see    | "My Drafts"                         | "Needs Review"                              |
 +=========================+=====================================+=============================================+
-| Workflow Contributor    | - Only content that they submitted. | * Can see only content they have submitted. |
+| Workflow Contributor    |   Only content that they submitted. |   Can see only content they have submitted. |
 +-------------------------+-------------------------------------+---------------------------------------------+
-| Workflow Moderator      | - The content submitted to their    | - The content submitted to their organic    |
+| Workflow Moderator      |   The content submitted to their    |   The content submitted to their organic    |
 |                         |   organic group.                    |   group.                                    |
-|                         | - Their own content.                | - Thier own content.                        |
+|                         |   Their own content.                |   Their own content.                        |
 +-------------------------+-------------------------------------+---------------------------------------------+
-| Workflow Supervisor     | - Only content that they submitted. | - All the "Needs review" content.           |
+| Workflow Supervisor     |  Only content that they submitted.  |  All the "Needs review" content.            |
 +-------------------------+-------------------------------------+---------------------------------------------+
 
-Emails
-~~~~~~~~~~~~~~~
+Changing Notification Email Settings
+-------------------------------------
 
-For each state transition (for example from *Draft* to *Needs Review*, from
-*Needs Review* to *Draft*, etc) a set of users with workflow roles will be
-notified by an email notification. The users will be selected following those
-rules:
+For each DKAN Workflow moderation state transition (for example from *Draft* to *Needs Review*, from
+*Needs Review* to *Draft*, etc) the users with corresponding Workflow roles will receive a notification via email.
 
-1. Email original content author.
-2. Email "Workflow Moderators" that are members of a group that the content have
-   been associated to.
-3. Email all "Workflow Supervisors".
+There are three scenarios in which one will receive email pertaining to DKAN Workflow:
 
-Emails will have the context triggering the notification with links to the
+1. They are the original content author.
+2. They are a Workflow Moderator of a Group that the content has been assigned to.
+3. They are a Workflow Supervisor, in general.
+
+Emails will display the context that had triggered the notification as well as links to the
 updated content.
 
-Extending DKAN Workflow
------------------------
+Advanced Options
+==============================================
 
 Tweaking the Email template
-+++++++++++++++++++++++++++
-Changing the email template being sent when a moderation operation is applied
-can be done via the *admin/config/workbench/email* configuration page. For more
-in-depth documentation please Review the `Workbench Modules Docs`_.
+---------------------------
+To change DKAN Workflow moderation email templates, go to the *admin/config/workbench/email* configuration page. For more
+in-depth documentation, please review the `Workbench Modules Docs`_.
 
 Workbench Modules Docs
-++++++++++++++++++++++
-For more advanced edge case writing custom code may be needed. For more
-information please refer to the workflow modules documentation.
+-----------------------
 
-* `Workbench documentation in drupal.org
+For more information, please refer to the following documentation:
+
+* `Workbench documentation on Drupal.org
   <https://www.drupal.org/documentation/modules/workbench>`_.
-* `Workbench Moderation documentation in drupal.org
+* `Workbench Moderation documentation on Drupal.org
   <https://www.drupal.org/documentation/modules/workbench_moderation>`_.
-* `Workbench Email documentation in drupal.org
+* `Workbench email documentation on Drupal.org
   <https://www.drupal.org/node/2253081>`_.

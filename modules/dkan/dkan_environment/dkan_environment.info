@@ -1,0 +1,6 @@
+name = DKAN Environment
+description = Basic environments management (Local, Development, Production, etc).
+core = 7.x
+dependencies[] = environment
+dependencies[] = environment_indicator
+

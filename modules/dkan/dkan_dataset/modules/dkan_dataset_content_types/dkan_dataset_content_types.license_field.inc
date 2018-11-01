@@ -64,62 +64,62 @@ function dkan_dataset_content_types_license_subscribed_values() {
 function dkan_dataset_content_types_license_subscribe() {
   return array(
     "cc-by" => array(
-      "label" => "Creative Commons Attribution",
+      "label" => t("Creative Commons Attribution"),
       "uri" => "http://opendefinition.org/licenses/cc-by/",
     ),
     "cc-by-sa" => array(
-      "label" => "Creative Commons Attribution Share-Alike",
+      "label" => t("Creative Commons Attribution Share-Alike"),
       "uri" => "http://opendefinition.org/licenses/cc-by-sa/",
     ),
     "cc-zero" => array(
-      "label" => "Creative Commons CCZero",
+      "label" => t("Creative Commons CCZero"),
       "uri" => "http://opendefinition.org/licenses/cc-zero/",
     ),
     "cc-nc"  => array(
-      "label" => "Creative Commons Non-Commercial (Any)",
+      "label" => t("Creative Commons Non-Commercial (Any)"),
       "uri" => "http://opendefinition.org/licenses/cc-nc/",
     ),
     "cc-by-nc-nd" => array(
-      "label" => "Attribution NonCommercial NoDerivatives 4.0 International",
+      "label" => t("Attribution NonCommercial NoDerivatives 4.0 International"),
       "uri" => "https://creativecommons.org/licenses/by-nc-nd/4.0/",
     ),
     "gfdl" => array(
-      "label" => "GNU Free Documentation License",
+      "label" => t("GNU Free Documentation License"),
       "uri" => "http://opendefinition.org/licenses/gfdl/",
     ),
     "odc-by" => array(
-      "label" => "Open Data Commons Attribution License",
+      "label" => t("Open Data Commons Attribution License"),
       "uri" => "http://opendefinition.org/licenses/odc-by/",
     ),
     "odc-odbl" => array(
-      "label" => "Open Data Commons Open Database License (ODbL)",
+      "label" => t("Open Data Commons Open Database License (ODbL)"),
       "uri" => "http://opendefinition.org/licenses/odc-odbl/",
     ),
     "odc-pddl" => array(
-      "label" => "Open Data Commons Public Domain Dedication and Licence (PDDL)",
+      "label" => t("Open Data Commons Public Domain Dedication and Licence (PDDL)"),
       "uri" => "http://opendefinition.org/licenses/odc-pddl/",
     ),
     "uk-ogl" => array(
-      "label" => "UK Open Government Licence (OGL)",
+      "label" => t("UK Open Government Licence (OGL)"),
       "url" => 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/',
     ),
     "other-at" => array(
-      "label" => "Other (Attribution)",
+      "label" => t("Other (Attribution)"),
     ),
     "other-nc" => array(
-      "label" => "Other (Non-Commercial)",
+      "label" => t("Other (Non-Commercial)"),
     ),
     "other-closed" => array(
-      "label" => "Other (Not Open)",
+      "label" => t("Other (Not Open)"),
     ),
     "other-open" => array(
-      "label" => "Other (Open)",
+      "label" => t("Other (Open)"),
     ),
     "other-pd" => array(
-      "label" => "Other (Public Domain)",
+      "label" => t("Other (Public Domain)"),
     ),
     "notspecified" => array(
-      "label" => "License Not Specified",
+      "label" => t("License Not Specified"),
     ),
   );
 }

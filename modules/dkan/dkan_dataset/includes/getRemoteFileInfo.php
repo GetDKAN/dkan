@@ -64,37 +64,38 @@ class GetRemoteFileInfo {
     $path = parse_url($this->getEffectiveUrl(), PHP_URL_PATH);
     $extension_parsed = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-    if (is_null($this->getType())) {
+    if ($extension_parsed) {
       return $extension_parsed;
     }
+    elseif ($this->getType()) {
+      // Use drupal file mimetypes store.
+      include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+      $mimetype_mappings = file_mimetype_mapping();
+      $mimetype_keys = array_keys($mimetype_mappings['mimetypes'], $this->getType());
 
-    // Use drupal file mimetypes store.
-    include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
-    $mimetype_mappings = file_mimetype_mapping();
-    $mimetype_keys = array_keys($mimetype_mappings['mimetypes'], $this->getType());
+      // If the destination mimetype in unknown to us then default to the
+      // extension as parsed from the url.
+      if (empty($mimetype_keys)) {
+        return $extension_parsed;
+      }
 
-    // If the destination mimetype in unknown to us then default to the
-    // extension as parsed from the url.
-    if (empty($mimetype_keys)) {
-      return $extension_parsed;
+      // Get the candidate extensions from the mimetype_keys.
+      $extensions_lookup = array();
+      foreach ($mimetype_keys as $mimetype_key) {
+        $extensions_lookup = array_merge($extensions_lookup,
+          array_keys($mimetype_mappings['extensions'], $mimetype_key));
+      }
+
+      // If we couldn't find any potential candidates or the extension from the
+      // url matches one of the candidate extensions then use it.
+      if (empty($extensions_lookup) || in_array($extension_parsed, $extensions_lookup)) {
+        return $extension_parsed;
+      }
+
+      // At this point we may have multiple candidate extensions and we couldn't
+      // find the best one. Default to the first element.
+      return array_pop($extensions_lookup);
     }
-
-    // Get the candidate extensions from the mimetype_keys.
-    $extensions_lookup = array();
-    foreach ($mimetype_keys as $mimetype_key) {
-      $extensions_lookup = array_merge($extensions_lookup,
-        array_keys($mimetype_mappings['extensions'], $mimetype_key));
-    }
-
-    // If we couldn't find any potential candidates or the extension from the
-    // url matches one of the candidate extensions then use it.
-    if (empty($extensions_lookup) || in_array($extension_parsed, $extensions_lookup)) {
-      return $extension_parsed;
-    }
-
-    // At this point we may have multiple candidate extensions and we couldn't
-    // find the best one. Default to the first element.
-    return array_pop($extensions_lookup);
   }
 
   /**
@@ -152,6 +153,40 @@ class GetRemoteFileInfo {
   }
 
   /**
+   * Helper function - If the server doesn't support HTTP HEAD, download $limit bytes.
+   */
+  private function getPartialContent($url, $limit) {
+    $writefn = function($ch, $chunk) use ($limit, &$datadump) {
+      static $data = '';
+
+      $len = strlen($data) + strlen($chunk);
+      if ($len >= $limit) {
+        $data .= substr($chunk, 0, $limit - strlen($data));
+        $datadump = $data;
+        return -1;
+      }
+      $data .= $chunk;
+      return strlen($chunk);
+    };
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_WRITEFUNCTION, $writefn);
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+    if ($datadump) {
+      $info = $this->parseRequestData($datadump);
+      return $info;
+    }
+
+    return FALSE;
+  }
+
+  /**
    * Helper function.
    */
   private function getFileInfoHelper($url, $no_body = TRUE) {
@@ -162,7 +197,6 @@ class GetRemoteFileInfo {
       curl_setopt($ch, CURLOPT_NOBODY, 1);
     }
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Range: bytes=0-1000"));
 
     $ok = curl_exec($ch);
 
@@ -190,7 +224,12 @@ class GetRemoteFileInfo {
       return $info;
     }
 
-    if ($info = $this->getFileInfoHelper($url, FALSE)) {
+    // If the above did not work that means the server doesn't support HTTP HEAD,
+    // and more often than not the server does not honor the Range header.
+    // (i.e. curl_setopt($ch, CURLOPT_HTTPHEADER, array("Range: bytes=0-1000")))
+    // So we will need to download a portion of the file (500 bytes) to get the info.
+    // Downloading the entire file can cause the harvest to fail with out of memory errors.
+    if ($info = $this->getPartialContent($url, 500)) {
       return $info;
     }
 

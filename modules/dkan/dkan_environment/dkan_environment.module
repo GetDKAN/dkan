@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * Implements hook_environment().
+ */
+function dkan_environment_environment() {
+  $environments = array();
+
+  $environments['local'] = array(
+    'label' => t('Local'),
+    'description' => t('Local Development Environment.'),
+  );
+
+  $environments['stage'] = array(
+    'label' => t('Stage'),
+    'description' => t('Staging Environment.'),
+  );
+
+  return $environments;
+}
+
+/**
+ * Implements hook_environment_switch().
+ */
+function dkan_environment_environment_switch($target_env, $current_env) {
+  // Declare each optional development-related module
+  $devel_modules = array(
+    'devel',
+  );
+
+  switch ($target_env) {
+    case 'local':
+      module_enable($devel_modules);
+      drupal_set_message('Enabled development modules');
+      return;
+    }
+}

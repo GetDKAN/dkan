@@ -100,11 +100,12 @@ Feature: Site Manager administer groups
   Scenario: View the list of group members
     Given I am logged in as "Gabriel"
     And I am on "Group 01" page
-    When I click "Members" in the "group block" region
-    Then I should see "Gabriel" in the "group members" region
-    And I should see "Katie" in the "group members" region
-    And I should not see "Jaz" in the "group members" region
-    And I should not see "John" in the "group members" region
+    When I click "Group"
+    And I click "People"
+    Then I should see "Gabriel"
+    And I should see "Katie"
+    And I should see "Jaz" in the "Pending" row
+    And I should not see "John"
 
   @group_all_06
   Scenario: Search datasets on group

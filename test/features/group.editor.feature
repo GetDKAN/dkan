@@ -16,11 +16,11 @@ Feature: Site Manager administer groups
       | Groups    | /groups         |
       | Content   | /admin/content/ |
     Given users:
-      | name    | mail                | roles                |
-      | Gabriel | gabriel@example.com | content creator      |
-      | Jaz     | jaz@example.com     | editor               |
-      | Katie   | katie@example.com   | content creator      |
-      | Martin  | martin@example.com  | editor               |
+      | name    | mail                | roles            |
+      | Gabriel | gabriel@example.com | editor           |
+      | Jaz     | jaz@example.com     | editor           |
+      | Katie   | katie@example.com   | content creator  |
+      | Martin  | martin@example.com  | content creator  |
     Given groups:
       | title    | author  | published |
       | Group A  | Gabriel | Yes       |
@@ -30,9 +30,6 @@ Feature: Site Manager administer groups
       | Gabriel | Group A | administrator member | Active            |
       | Katie   | Group A | member               | Active            |
       | Jaz     | Group A | member               | Pending           |
-    And resources:
-      | title    | publisher | format | author | published | description |
-      | GER1     | Group A   | csv    | Katie  | Yes       |             |
 
   Scenario: Edit group as group administrator
     Given I am logged in as "Gabriel"
@@ -53,8 +50,9 @@ Feature: Site Manager administer groups
     And I press "Add users"
     Then I should see "Martin has been added to the group Group A"
     When I am on "Group A" page
-    And I click "Members"
-    Then I should see "Martin" in the "group members" region
+    And I click "Group"
+    And I click "People"
+    Then I should see "Martin"
 
   Scenario: Remove group member from a group as group administrator
     Given I am logged in as "Gabriel"
@@ -64,14 +62,15 @@ Feature: Site Manager administer groups
     And I click "remove" in the "Katie" row
     And I press "Remove"
     Then I should see "The membership was removed"
-    When I am on "Group A" page
-    And I click "Members"
-    Then I should not see "Katie" in the "group members" region
+    And I click "Group"
+    And I click "People"
+    Then I should not see "Katie"
 
-  Scenario: I should not be able to edit a group that I am not a member of
+   @javascript
+   Scenario: I should not be able to edit a group that I am not a member of
     Given I am logged in as "Gabriel"
     When I am on "Group B" page
-    Then I should not see the link "Edit"
+    Then I should not see "Edit"
     And I should not see the link "fa-users"
 
   Scenario: Edit membership status of group member as group administrator
@@ -140,15 +139,22 @@ Feature: Site Manager administer groups
     Then I should see "Total members: 3"
 
   Scenario: View the number of content on group as group administrator
-    Given I am logged in as "Gabriel"
+    Given resources:
+      | title    | publisher | format | author | published | description |
+      | content2 | Group A   | csv    | Katie  | Yes       |             |
+    And I am logged in as "Gabriel"
     And I am on "Group A" page
     And I click "Group"
     When I click "People"
     Then I should see "Total content: 1"
 
+  @debug
   Scenario: Edit resource content created by others on group as editor
-    Given I am logged in as "Martin"
-    And I am on "GER1" page
+    Given resources:
+      | title    | publisher | format | author | published | description |
+      | content1 | Group A   | csv    | Katie  | Yes       |             |
+    And I am logged in as "Gabriel"
+    And I am on "content1" page
     Then I should see "Edit"
 
   Scenario: Show correct number of groups to which user belongs

@@ -15,9 +15,9 @@ Feature: Topics
       | Add Topic      | /admin/structure/taxonomy/dkan_topics/add  |
       | Rebuild perms  | /admin/reports/status/rebuild              |
 
-  @api @javascript
+  @api @javascript @exceeds30seconds
   Scenario: Rebuild Permissions
-    Given I am logged in as a user with the "administrator" role 
+    Given I am logged in as a user with the "administrator" role
     Given I am on the "Rebuild perms" page
     And I press "Rebuild permissions"
     And I wait for "Status report"
@@ -52,4 +52,4 @@ Feature: Topics
     And I check the box "edit-field-topic-icon-und-xe909"
     And I press "Save"
     Then I should see "Created new term Abibliophobia."
-    
+

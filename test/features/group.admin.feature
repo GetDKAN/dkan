@@ -37,7 +37,7 @@ Feature: Site managers administer groups
       | Dataset 02 | Group 01  | Katie   | No        | Cost of oil in January     |
       | Dataset 03 | Group 01  | Gabriel | Yes       | Election results           |
 
-  @group_admin_01
+  @group_admin_01 @fixme
   Scenario: Create group
     Given I am logged in as "John"
     And I am on "Groups" page
@@ -51,7 +51,7 @@ Feature: Site managers administer groups
     And I should see "This is a body"
     And I should see the "img" element in the "group block" region
 
-  @group_admin_02
+  @group_admin_02 @fixme
   Scenario: Create group with previous same title
     Given I am logged in as "John"
     And I am on "Groups" page
@@ -72,8 +72,9 @@ Feature: Site managers administer groups
     And I press "Add users"
     Then I should see "Katie has been added to the group Group 02"
     When I am on "Group 02" page
-    And I click "Members"
-    Then I should see "Katie" in the "group members" region
+    And I click "Group"
+    And I click "People"
+    Then I should see "Katie"
 
   @group_admin_04
   Scenario: Remove a group member from any group
@@ -85,8 +86,9 @@ Feature: Site managers administer groups
     And I press "Remove"
     Then I should see "The membership was removed"
     And I am on "Group 01" page
-    And I click "Members"
-    And I should not see "Katie" in the "group members" region
+    And I click "Group"
+    And I click "People"
+    And I should not see "Katie"
 
   @group_admin_05
   Scenario: Delete any group

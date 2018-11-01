@@ -10,7 +10,7 @@ Feature: Resource
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
       | Badmin  | admin@example.com   | site manager         |
-      | Gabriel | gabriel@example.com | content creator      |
+      | Gabriel | gabriel@example.com | editor               |
       | Jaz     | jaz@example.com     | editor               |
       | Katie   | katie@example.com   | content creator      |
       | Martin  | martin@example.com  | editor               |
@@ -57,10 +57,11 @@ Feature: Resource
     When I am on "Dataset 01" page
     Then I should see "Resource 01 edited"
 
-  @resource_editor_2 @noworkflow
+  @resource_editor_2 @noworkflow @javascript
   Scenario: I should not be able to edit resources of groups that I am not a member of
     Given I am logged in as "Gabriel"
     And I am on "Resource 05" page
+    And I hide the admin menu
     Then I should not see "Edit"
 
   @resource_editor_3 @fixme @dkanBug @noworkflow
@@ -92,7 +93,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
 
-  @resource_editor_6 @datastore @noworkflow @javascript
+  @resource_editor_6 @datastore @noworkflow @javascript @fixme
   Scenario: Import items on datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 02" page
@@ -102,13 +103,14 @@ Feature: Resource
     And I press "Save"
     Given I am logged in as "Celeste"
     And I am on "Resource 02" page
+    When I follow "View"
     When I click "Manage Datastore"
     And I wait for "Import"
     And I press "Import"
     And I wait for "Delete Items"
     Then "Resource 02" should have datastore records
 
-  @resource_editor_7 @datastore @db @noworkflow @javascript
+  @resource_editor_7 @datastore @db @noworkflow @javascript @fixme
   Scenario: Delete items on datastore of resources associated with groups that I am a member of
       Given I am logged in as "John"
       And I am on "Resource 02" page
@@ -118,6 +120,7 @@ Feature: Resource
       And I press "Save"
       Given I am logged in as "Celeste"
       When I am on "Resource 02" page
+      When I follow "View"
       When I click "Manage Datastore"
       And I wait for "Import"
       And I press "Import"
@@ -128,7 +131,7 @@ Feature: Resource
       And I wait for "items have been deleted"
       Then "Resource 02" should have no datastore records
 
-  @resource_editor_8 @datastore @noworkflow @javascript
+  @resource_editor_8 @datastore @noworkflow @javascript @fixme
   Scenario: Drop datastore of resources associated with groups that I am a member of
     Given I am logged in as "John"
     And I am on "Resource 02" page

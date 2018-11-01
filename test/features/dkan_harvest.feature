@@ -18,7 +18,7 @@ Feature: Dkan Harvest
     Then I should see the text "Create Harvest Source"
     And I fill in "Title" with "Source 1"
     And I wait for "2" seconds
-    And I fill in "Source URI" with "http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
+    And I fill in "Source URI" with "https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
     And I select "Project Open Data v1.1 JSON" from "Type"
     And I press "Save"
     And I wait for "2" seconds
@@ -139,9 +139,9 @@ Feature: Dkan Harvest
     And I should see the text "Harvest Source URI"
     And I should see the text "Harvest Source Title"
     And I should see "2016-06-22" in the "Release Date" row
-    And I should see "2016-08-02" in the "Modified Date" row
+    And I should see "2016-08-02" in the "Modified" row
 
-  @harvest_09 @api @harvest
+  @harvest_09 @fixme @api @harvest
   Scenario: As a user I should have access to see harvest preview information.
     Given users:
       | name            | mail                   | roles           |
@@ -155,7 +155,7 @@ Feature: Dkan Harvest
     And I should see the text "Harvest now"
     And I should see the text "Florida Bike Lanes Harvest"
 
-  @harvest_10 @api @harvest
+  @harvest_10 @api @fixme @harvest
   Scenario: As a user I should be able to refresh the preview on the Harvest Source.
     Given users:
       | name            | mail                   | roles           |
@@ -267,7 +267,7 @@ Feature: Dkan Harvest
       | site manager      |
 
   @harvest_16 @api @javascript @harvest
-  Scenario Outline: As user I want to filter harvested datasets by updated date in the harvest administration dashboard
+  Scenario Outline: As user I want to filter harvested datasets by published status in the harvest administration dashboard
     Given users:
       | name            | mail                   | roles           |
       | Site manager    | admin@fakeemail.com    | site manager    |
@@ -277,12 +277,10 @@ Feature: Dkan Harvest
     And The "source_one" source is harvested
     And I am logged in as a "<role>"
     And I am on the "Harvest Dashboard Datasets" page
-    And I fill in "edit-field-harvest-source-modified-value-min-datepicker-popup-0" with "Friday, January 1, 1999"
-    And I fill in "edit-field-harvest-source-modified-value-max-datepicker-popup-0" with "Friday, January 1, 1999"
+    And I fill in "edit-status" with "0"
     And I press "Apply"
     Then I wait for "No harvested datasets were found"
-    Then I fill in "edit-field-harvest-source-modified-value-min-datepicker-popup-0" with "Friday, January 1, 1999"
-    And I fill in "edit-field-harvest-source-modified-value-max-datepicker-popup-0" with "Friday, December 31, 2100"
+    Then I fill in "edit-status" with "1"
     And I press "Apply"
     Then I wait for "3" seconds
     And I should see a table with a class name "views-table"
@@ -332,15 +330,15 @@ Feature: Dkan Harvest
     Given users:
       | name              | mail                     | status | roles             |
       | Site manager      | admin@fakeemail.com      | 1      | site manager      |
-      
+
     And "dkan_topics" terms:
       | name         | field_icon_type  | field_topic_icon   |
       | Topic1       | font             | xe904              |
       | Topic2       | font             | xe97b              |
-      
+
     And harvest sources:
       | title         | machine name  | source uri                                                                 | type               | author       | published | topics                 |
-      | Topics source | topics_source | http://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Topic1, Topic2 |
+      | Topics source | topics_source | https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest.json | datajson_v1_1_json | Site manager | Yes       | Topic1, Topic2 |
 
     And The "topics_source" source is harvested
     And I am logged in as "Site manager"
