@@ -32,7 +32,7 @@ projects:
     patch:
       849232: https://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
   better_exposed_filters:
-    version: '3.5'
+    version: '3.6'
   bueditor:
     version: '1.8'
   bueditor_plus:
@@ -59,7 +59,11 @@ projects:
   data:
     version: 1.x
   date:
-    version: '2.10'
+    download:
+      type: git
+      url: https://git.drupal.org/project/date.git
+      branch: 7.x-2.x
+      revision: a2ef952517f789bfd85659f96a0321a66936661a
   defaultconfig:
     version: 1.0-alpha11
   devel:
@@ -142,7 +146,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.21
+    version: 2.22
   file_resup:
     version: '1.5'
   filefield_sources:
@@ -214,7 +218,7 @@ projects:
     patch:
       2045225: https://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.19
+    version: 2.21
   media_youtube:
     version: '3.7'
   media_vimeo:
@@ -262,7 +266,7 @@ projects:
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.54'
+    version: '1.57'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
@@ -314,9 +318,7 @@ projects:
   search_api:
     version: '1.24'
   search_api_db:
-    version: '1.6'
-    patch:
-      2855634: https://www.drupal.org/files/issues/2855634-23--fix_update_7107_for_different_db.patch
+    version: '1.7'
   select_or_other:
     version: '2.24'
   services:
@@ -339,7 +341,7 @@ projects:
   token_tweaks:
     version: 1.x-dev
   uuid:
-    version: '1.1'
+    version: '1.2'
   views:
     version: '3.20'
   views_autocomplete_filters:
