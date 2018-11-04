@@ -128,7 +128,8 @@ Ministry of Health, Peru                                       http://datos.mins
 National Jury of Elections, Peru                               http://jnedatosabiertos.pe/
 Ministry of Labor, Peru                                        http://datos.trabajo.gob.pe/
 Open Data Windsor Essex, Canada                                http://odwe.ca/
-City of Fredericton, Canada                                    http://data.fredericton.ca)
+City of Fredericton, Canada                                    http://data.fredericton.ca
+São Paulo State's Department of Education, Brazil              https://dados.educacao.sp.gov.br/
 ============================================================== =============
 
 
