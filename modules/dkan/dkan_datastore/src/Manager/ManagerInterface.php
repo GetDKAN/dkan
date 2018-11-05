@@ -107,6 +107,14 @@ interface ManagerInterface {
    */
   public function dropState();
 
+  /**
+   * Get table schema.
+   */
   public function getTableSchema();
+
+  /**
+   * Change the datastore state to paused.
+   */
+  public function goToPausedState();
 
 }

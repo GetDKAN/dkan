@@ -74,7 +74,7 @@ class Status {
         return t("In Progress");
 
       case ManagerInterface::DATA_IMPORT_PAUSED:
-        drupal_set_message(t("The datastore importer is currently paused. It will resume in the background the next time cron runs from drush. See the documentation for more more information."));
+        drupal_set_message(t("The datastore importer is currently paused. It will resume in the background the next time cron runs from drush."));
         return t("Paused");
 
       case ManagerInterface::DATA_IMPORT_DONE:

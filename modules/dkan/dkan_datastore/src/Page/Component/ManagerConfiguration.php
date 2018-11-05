@@ -31,11 +31,13 @@ class ManagerConfiguration {
       '#collapsible' => FALSE,
     ];
     foreach ($this->datastoreManager->getConfigurableProperties() as $property => $default_value) {
+      $propety_label = ucfirst(str_replace("_", " ", $property));
+
       if ($property == "delimiter") {
         $form['import_options']["datastore_manager_config_{$property}"] = array(
           '#type' => 'select',
           // @codingStandardsIgnoreStart
-          '#title' => ucfirst(t("{$property}")),
+          '#title' => t($propety_label),
           // @codingStandardsIgnoreEnd
           '#options' => array(
             "," => ",",
@@ -46,11 +48,20 @@ class ManagerConfiguration {
           '#default_value' => $default_value,
         );
       }
+      elseif ($property == "trailing_delimiter") {
+        $form['import_options']["datastore_manager_config_{$property}"] = array(
+          '#type' => 'checkbox',
+          // @codingStandardsIgnoreStart
+          '#title' => t($propety_label),
+          // @codingStandardsIgnoreEnd
+          '#default_value' => $default_value,
+        );
+      }
       else {
         $form['import_options']["datastore_manager_config_{$property}"] = [
           '#type' => 'textfield',
           // @codingStandardsIgnoreStart
-          '#title' => ucfirst(t("{$property}")),
+          '#title' => t($propety_label),
           // @codingStandardsIgnoreEnd
           '#default_value' => $default_value,
         ];
@@ -68,7 +79,12 @@ class ManagerConfiguration {
     foreach ($value as $property_name => $v) {
       if (!empty($v)) {
         $pname = str_replace("datastore_manager_config_", "", $property_name);
-        $configurable_properties[$pname] = $v;
+        if ($pname == "trailing_delimiter") {
+          $configurable_properties[$pname] = ($v == 1) ? TRUE : FALSE;
+        }
+        else {
+          $configurable_properties[$pname] = $v;
+        }
       }
     }
 

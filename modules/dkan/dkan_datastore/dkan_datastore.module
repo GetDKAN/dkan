@@ -258,8 +258,8 @@ function dkan_datastore_node_delete($node) {
       $manager = (new Factory(Resource::createFromDrupalNode($node)))->get();
       $manager->drop();
     }
-    catch(\Exception $e) {
-      
+    catch (\Exception $e) {
+
     }
   }
 }

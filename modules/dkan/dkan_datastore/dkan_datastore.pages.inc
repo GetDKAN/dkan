@@ -5,6 +5,8 @@
  * Callbacks for datastore pages.
  */
 
+use Dkan\Datastore\Resource;
+use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Page\Page;
 
 // Default to 50MB.
@@ -82,6 +84,21 @@ function dkan_datastore_drop_submit($form, &$form_state) {
  * Submit handler.
  */
 function dkan_datastore_stop_submit($form, &$form_state) {
-  drupal_set_message(t("The Import Process will be stopped shortly."));
+  drupal_set_message(t("Importing will be stopped shortly."));
   variable_set('dkan_datastore_interrupt', 1);
+}
+
+/**
+ * Submit handler.
+ */
+function dkan_datastore_go_to_paused_state_submit($form, &$form_state) {
+  $node = $form['#node'];
+  try {
+    /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
+    $manager = (new Factory(Resource::createFromDrupalNode($node)))->get();
+    $manager->goToPausedState();
+  }
+  catch (\Exception $e) {
+    drupal_set_message($e->getMessage());
+  }
 }

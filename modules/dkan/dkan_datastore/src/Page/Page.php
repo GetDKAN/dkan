@@ -75,7 +75,12 @@ class Page {
           '#value' => t("Import"),
         );
       }
-      elseif (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_DONE, ManagerInterface::DATA_IMPORT_PAUSED])) {
+      elseif (in_array($status['data_import'],
+        [
+          ManagerInterface::DATA_IMPORT_DONE,
+          ManagerInterface::DATA_IMPORT_PAUSED,
+          ManagerInterface::DATA_IMPORT_ERROR,
+        ])) {
         $this->form['actions']['drop'] = array(
           '#type' => 'submit',
           '#value' => t("Drop"),
@@ -87,6 +92,24 @@ class Page {
           '#type' => 'submit',
           '#value' => t("Stop"),
           '#submit' => array('dkan_datastore_stop_submit'),
+        );
+
+        $this->form['actions']['advanced'] = [
+          '#type' => 'fieldset',
+          '#title' => t('Advanced'),
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+        ];
+
+        $this->form['actions']['advanced']['help'] = [
+          '#type' => 'item',
+          '#markup' => 'When a datastore import shows an "in-progress" state but is stalled (no active cron job is importing new records into the datastore), the "Go to Paused State" button will return the datastore import to the paused state. It will then continue to be processed in the next cron run. <em>Use this option with caution</em>, as it will cause problems with the datastore if used in any scenario other than the one described above.',
+        ];
+
+        $this->form['actions']['advanced']['pause'] = array(
+          '#type' => 'submit',
+          '#value' => t("Go to Paused State"),
+          '#submit' => array('dkan_datastore_go_to_paused_state_submit'),
         );
       }
 
@@ -151,8 +174,15 @@ class Page {
       $context['sandbox']['progress'] = 0;
       $context['sandbox']['max'] = 1;
     }
-    /* @var $manager ManagerInterface */
-    $finished = $manager->import();
+
+    try {
+      /* @var $manager ManagerInterface */
+      $finished = $manager->import();
+    }
+    catch (\Exception $e) {
+      $context['sandbox']['progress'] = 1;
+      drupal_set_message($e->getMessage());
+    }
 
     if ($finished == ManagerInterface::DATA_IMPORT_PAUSED) {
       return FALSE;
@@ -169,7 +199,7 @@ class Page {
    * Batch event handler.
    */
   public function batchFinished($success, $results, $operations) {
-    drupal_set_message(t("The batch process completed successfully."));
+    drupal_set_message(t("The batch process completed."));
   }
 
   /**
