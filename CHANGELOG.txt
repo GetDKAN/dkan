@@ -1,3 +1,9 @@
+
+7.x-1.15.5
+---------- 
+ - #2710 Replace data stories page view with a non-search index version
+ - #2712 Remove unused xss code
+
 7.x-1.15.4
 ----------
  - #2701 Update drupal core to 7.60
