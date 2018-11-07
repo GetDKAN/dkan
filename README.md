@@ -10,8 +10,6 @@ DKAN Open Data Portal built on Drupal 8. See NOTES.md for additional information
 * ``curl -O https://raw.githubusercontent.com/GetDKAN/dkan2/master/composer.json``
 * ``composer install``
 
-
-
 ### Developing with Docksal
 
 We currently use [Docksal](https://docksal.io/) for local development. 
@@ -26,6 +24,32 @@ services:
 ```
 * ``fin start``
 * ``fin drush site:install dkan2 --db-url=mysql://user:user@db/default``
+
+### Enable Cors
+
+For local development you will want to enable CORS. Don't do this on production.
+
+* `cp sites/default/default.settings.yml sites/default/settings.yml``
+
+Add the following to the cors section:
+
+```yml
+
+ cors.config:
+    enabled: true
+    # Specify allowed headers, like 'x-allowed-header'.
+    allowedHeaders: ['*']
+    # Specify allowed request methods, specify ['*'] to allow all possible ones.
+    allowedMethods: ['*']
+    # Configure requests allowed from specific origins.
+    allowedOrigins: ['*']
+    # Sets the Access-Control-Expose-Headers header.
+    exposedHeaders: false
+    # Sets the Access-Control-Max-Age header.
+    maxAge: false
+    # Sets the Access-Control-Allow-Credentials header.
+    supportsCredentials: false
+```
 
 ## Developing with and Compiling Front End
 
