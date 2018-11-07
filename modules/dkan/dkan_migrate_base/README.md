@@ -56,7 +56,7 @@ After the initial time the migration is run it will check each dataset and resou
 ```
 
 ##### POD 1.1
-```      
+```
 'title' => 'title',
 'body' => 'description',
 'og_group_ref' => 'group_id',
@@ -117,7 +117,7 @@ After the initial time the migration is run it will check each dataset and resou
 
 ##### Notes
 **publisher POD:** is being mapped to a DKAN group. If that group doesn't exists then is created.
-**field_additional_info:** is a DKAN field that holds json keys that can't be mapped to any other DKAN field. 
+**field_additional_info:** is a DKAN field that holds json keys that can't be mapped to any other DKAN field.
 **open_data_federal_extras:** is a module that can be enabled to add fields that are present in the POD spec but aren't present in DKAN out-of-the-box. By enabling this module you are adding these fields to your DKAN entities (datasets and resources).
 
 ### Resources
@@ -134,8 +134,8 @@ We are accepting issues in the dkan issue thread only -> https://github.com/GetD
 If you can, please cross reference commits in this repo to the corresponding issue in the dkan issue thread. You can do that easily adding this text:
 
 ```
-NuCivic/dkan#issue_id
-``` 
+GetDKAN/dkan#issue_id
+```
 
 to any commit message or comment replacing **issue_id** with the corresponding issue id.
 
