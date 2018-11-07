@@ -483,6 +483,7 @@ function dkan_update_7028() {
     // Delete the view.
     views_delete_view($view);
   }
+}
 
 /**
  * Change field_harvest_source_modified from a datetime to text field. See #2612.
