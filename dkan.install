@@ -725,7 +725,7 @@ function dkan_update_7030() {
 /**
  * Enable the simple import module.
  */
-function dkan_update_7030() {
+function dkan_update_7031() {
   module_enable(array('dkan_datastore_simple_import'));
 }
 
@@ -739,7 +739,7 @@ function _dkan_remove_prefix($prefix, $string) {
 /**
  * Rename feeds_datastore tables.
  */
-function dkan_update_7031() {
+function dkan_update_7032() {
   global $databases;
 
   $prefix = "";
@@ -777,7 +777,7 @@ function dkan_update_7031() {
 /**
  * Generate basic datastore configuration.
  */
-function dkan_update_7032() {
+function dkan_update_7033() {
   global $databases;
 
   $prefix = "";
@@ -800,7 +800,7 @@ function dkan_update_7032() {
 /**
  * Update the datastore configuration.
  */
-function dkan_update_7033() {
+function dkan_update_7034() {
   $storage = new LockableDrupalVariables("dkan_datastore");
   $bin = $storage->borrowBin();
 
