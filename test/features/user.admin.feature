@@ -12,9 +12,36 @@ Feature: User
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
+      | Badmin  | admin@example.com   | site manager         |
       | aadmin  | admin@example.com   | administrator        |
+      | Gabriel | gabriel@example.com | content creator      |
       | Jaz     | jaz@example.com     | editor               |
       | Katie   | katie@example.com   | content creator      |
+      | Martin  | martin@example.com  | editor               |
+      | Celeste | celeste@example.com | editor               |
+    Given groups:
+      | title    | author  | published |
+      | Group 01 | Badmin  | Yes       |
+      | Group 02 | Badmin  | Yes       |
+      | Group 03 | Badmin  | No        |
+    And group memberships:
+      | user    | group    | role on group        | membership status |
+      | Gabriel | Group 01 | administrator member | Active            |
+      | Katie   | Group 01 | member               | Active            |
+      | Jaz     | Group 01 | member               | Pending           |
+      | Admin   | Group 02 | administrator member | Active            |
+      | Celeste | Group 02 | member               | Active            |
+    And "Tags" terms:
+      | name    |
+      | world   |
+      | results |
+    And datasets:
+      | title      | publisher | author  | published        | tags     | description |
+      | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
+      | Dataset 02 | Group 01  | Katie   | No               | world    | Test        |
+      | Dataset 03 | Group 01  | Gabriel | Yes              | results  | Test        |
+      | Dataset 04 | Group 01  | Katie   | Yes              | world    | Test        |
+
 
   Scenario: Edit any user account
     Given I am logged in as "John"

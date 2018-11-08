@@ -46,7 +46,7 @@ Feature: Site Manager administer groups
     And I press "Join"
     Then I should see "Remove pending membership request" in the "group block" region
     When I click "Remove pending membership request" in the "group block" region
-    And I press "Remove"
+    And I press "Unsubscribe"
     Then I should be on the "Group 02" page
     And I should see "Request group membership" in the "group block" region
 
@@ -55,7 +55,7 @@ Feature: Site Manager administer groups
     Given I am logged in as "Katie"
     And I am on "Group 01" page
     When I click "Unsubscribe from group"
-    And I press "Remove"
+    And I press "Unsubscribe"
     Then I should be on the "Group 01" page
     And I should see "Request group membership" in the "group block" region
 

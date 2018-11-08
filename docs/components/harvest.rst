@@ -65,11 +65,18 @@ Click **Harvest Now**. The datasets that were cached will now be imported into y
 
 Harvest Source nodes are viewable by the public and provide some basic metadata to the user.
 
-.. note::
-  Some behaviors of the Topics field on *harvest sources* to be aware of:
+.. warning::
+  Some behaviors of the **Topics** field on harvest sources to be aware of:
 
     - Changing the Topic on the source and re-harvesting will not update the Topic on harvested datasets if nothing else has changed. The Harvester will only re-import a dataset if it detects changes from the source.
     - If you manually add additional topics to a harvested dataset, and there *is* a change at the source, the next time the dataset is harvested your topics will be overwritten.
+
+.. warning::
+  Some behaviors of harvesting **resources** to be aware of:
+
+    - If only an **accessURL** value is given, the url will be saved to the **API or Website URL** field.
+    - If a **downloadURL** value is given, the url will be saved to the **Remote file** field.
+    - The maximum size of a managed file field is 255 characters. It is not possible to increase the size of the field as this would force MySQL to auto-convert the VARCHAR(255) to a SMALLTEXT datatype, which subsequently fails with error 1170 on key length if the column is used as primary key or unique or non-unique index. Therefore the Harvester will check the length of the url and if it exceeds 255 characters, will fall back to using the *effective url* which is the last url in a redirect chain.
 
 Managing Harvest Sources
 ************************

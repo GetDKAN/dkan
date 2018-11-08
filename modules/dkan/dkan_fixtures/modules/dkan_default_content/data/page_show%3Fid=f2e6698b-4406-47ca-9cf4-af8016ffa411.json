@@ -89,7 +89,7 @@
                     "configuration": {
                         "admin_title": "Link to getdkan.org",
                         "title": "",
-                        "body": "Learn more about DKAN: <a href='http://getdkan.org'>getdkan.org</a>",
+                        "body": "Learn more about DKAN: <a href='https://getdkan.org'>getdkan.org</a>",
                         "format": "html",
                         "substitute": 1
                     },

@@ -73,7 +73,7 @@ function nuboot_radix_breadcrumb($variables) {
  */
 function nuboot_radix_facetapi_link_inactive($variables) {
   // Builds accessible markup.
-  // @see http://drupal.org/node/1316580
+  // @see https://drupal.org/node/1316580
   $accessible_vars = array(
     'text' => $variables['text'],
     'active' => FALSE,
@@ -113,7 +113,7 @@ function nuboot_radix_facetapi_link_active($variables) {
   $link_text = ($sanitize) ? check_plain($variables['text']) : $variables['text'];
 
   // Theme function variables fro accessible markup.
-  // @see http://drupal.org/node/1316580
+  // @see https://drupal.org/node/1316580
   $accessible_vars = array(
     'text' => $variables['text'],
     'active' => TRUE,

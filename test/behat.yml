@@ -16,6 +16,7 @@ default:
       - Drupal\DKANExtension\Context\HarvestSourceContext
       - Drupal\DKANExtension\Context\WorkflowContext
       - Drupal\DKANExtension\Context\DatasetAutoFillContext
+      - Drupal\DKANExtension\Context\LinkcheckerContext
       - Drupal\DKANExtension\Context\DatasetContext:
         - fields:
             title: title
@@ -157,7 +158,7 @@ default:
         dataset edit body: "#edit-body"
         dataset resource list: "#data-and-resources"
         dataset spatial: "#edit-field-spatial"
-        dataset title: ".pane-node .pane-title"
+        dataset title: ".pane-node-content .pane-title"
         datasets: ".view-dkan-datasets"
         dropdown_links: ".comment-main .links.inline.dropdown-menu"
         facet container: ".radix-layouts-sidebar"
@@ -178,10 +179,11 @@ default:
         modal: "#modalContent"
         navigation: ".navigation-wrapper"
         other access: ".pane-dkan-sitewide-dkan-sitewide-other-access"
+        page header: ".page-header"
         primary tabs: ".tabs--primary"
         recline preview: ".recline-data-explorer"
         resource groups: "#edit-groups"
-        resource title: ".pane-node .pane-title"
+        resource title: ".pane-node-content .pane-title"
         results: ".view-header"
         right header: "#header-right"
         right sidebar: "#column-right"

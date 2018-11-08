@@ -434,16 +434,19 @@ Feature:
   Scenario: "View draft" should display the draft dataset and not the published revision.
     And datasets:
       | title         | author      | published | moderation | publisher |
-      | Dataset title | Contributor | Yes       | published  | Group 01  |
-    Given I update the moderation state of "Dataset title" to "Published"
-    Given I am logged in as "Contributor"
+      | Dataset title | Contributor | No        | draft      | Group 01  |
+    Given I am logged in as "Supervisor"
+    And I update the moderation state of "Dataset title" to "Published"
+    And I am logged in as "Contributor"
     And I am on "Dataset title" page
     Then I should see the text "Dataset title"
-    When I click "Edit draft"
+    When I click "New draft"
     And for "title" I enter "Dataset draft title"
+    And for "Description" I enter "Dataset draft body"
     And I press "Finish"
     And I click "View draft"
     Then I should see "Dataset draft title"
+    And I should see "Dataset draft body"
 
   @workflow_20 @api @javascript @harvest
   Scenario: Check harvested datasets are published by default even when dkan_workflow is enabled.
@@ -452,7 +455,7 @@ Feature:
       | Administrator      | admin@fakeemail.com      | 1      | administrator     |
     And The "source_one" source is harvested
     And the content "Florida Bike Lanes Harvest" should be "published"
-    
+
   @workflow_21 @ok @globalUser
   Scenario: As a Workflow Moderator, I should be able to see Stale Needs Review datasets I did not author, but which belongs to my Group, in 'Needs Review'
     Given users:
@@ -468,7 +471,7 @@ Feature:
     Given I am logged in as "Moderator"
     And I am on "Stale Reviews" page
     Then I should see the text "Not My Dataset"
-    
+
   @workflow_22 @api @javascript @globalUser
   Scenario: As a user I should be able to see my content back on "My Drafts" section if it was rejected
     # Submit a dataset to Needs Review
@@ -496,7 +499,7 @@ Feature:
     When I am on the "My Drafts" page
     Then I should see "My Draft Dataset"
 
-  @workflow_23 @javascript
+  @workflow_23 @javascript @fixme
   Scenario: As an anonymous user I should see a revisions link when dkan_workflow is enabled.
     Given pages:
       | name               | url                                  |

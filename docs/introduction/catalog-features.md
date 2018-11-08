@@ -2,12 +2,12 @@
 
 ## Project Open Data Compliance
 
-DKAN provides a "data.json" index to satisfy the US federal government's [Project Open Data](http://project-open-data.github.io/) requirements. More information about the "slash data" or "data.json" requirements can be found in POD's [Open Data Catalog Requirements](http://project-open-data.github.io/catalog) and [Common Core Metadata Schema](http://project-open-data.github.io/schema) pages. 
+DKAN provides a "data.json" index to satisfy the US federal government's [Project Open Data](https://project-open-data.github.io/) requirements. More information about the "slash data" or "data.json" requirements can be found in POD's [Open Data Catalog Requirements](https://project-open-data.github.io/catalog) and [Common Core Metadata Schema](https://project-open-data.github.io/schema) pages.
 
-The exact mapping of data (specifically, Drupal data [tokens](https://www.drupal.org/project/token)) from your DKAN site to the data.json index can be customized using the [Open Data Schema Mapper](/dkan-developers/adding-or-update-fields-api-output). 
+The exact mapping of data (specifically, Drupal data [tokens](https://www.drupal.org/project/token)) from your DKAN site to the data.json index can be customized using the [Open Data Schema Mapper](/dkan-developers/adding-or-update-fields-api-output).
 
 ## DCAT-Compliant Markup
-Project Open Data's [schema](http://project-open-data.github.io/schema) is based on the [DCAT open data vocabulary](http://www.w3.org/TR/vocab-dcat/). DKAN also provides RDF endpoints and RDFa markup for all Datasets following the [DCAT specification](http://www.w3.org/TR/vocab-dcat/).
+Project Open Data's [schema](https://project-open-data.github.io/schema) is based on the [DCAT open data vocabulary](https://www.w3.org/TR/vocab-dcat/). DKAN also provides RDF endpoints and RDFa markup for all Datasets following the [DCAT specification](https://www.w3.org/TR/vocab-dcat/).
 
 ## Public Catalog Listing API, Based on CKAN
 

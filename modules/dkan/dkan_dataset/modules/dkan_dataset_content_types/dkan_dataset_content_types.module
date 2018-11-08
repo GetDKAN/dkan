@@ -36,6 +36,41 @@ function dkan_dataset_content_types_form_alter(&$form, &$form_state, $form_id) {
       $form['options']['#access'] = TRUE;
     }
   }
+  if ($form_id == 'resource_node_form') {
+    $allowed = dkan_allowed_extensions();
+    $form['field_upload'][LANGUAGE_NONE][0]['#file_resup_upload_validators']['file_validate_extensions'][0] = $allowed;
+    $form['field_link_remote_file'][LANGUAGE_NONE][0]['#upload_validators']['file_validate_extensions'][0] = $allowed;
+  }
+}
+
+/**
+ * Create default extensions variable from the resource upload field config.
+ */
+function dkan_default_extensions() {
+  $field_config = db_select('field_config_instance', 'f')
+    ->fields('f', array('data'))
+    ->condition('field_name', 'field_upload')
+    ->execute()
+    ->fetchCol();
+
+  $data = unserialize($field_config[0]);
+  $default = $data['settings']['file_extensions'];
+  return $default;
+}
+
+/**
+ * Store allowed file extensions in a variable for UI customization.
+ */
+function dkan_allowed_extensions() {
+  $default = dkan_default_extensions();
+  $custom = variable_get('dkan_custom_extensions');
+  if (isset($custom) && !empty($custom)) {
+    $allowed = $default . ' ' . $custom;
+  }
+  else {
+    $allowed = $default;
+  }
+  return $allowed;
 }
 
 /**
@@ -171,30 +206,31 @@ function dkan_dataset_content_types_preprocess_field(&$vars) {
 
 /**
  * Map of iso frequency ranges to field frequency allowed values.
+ * https://project-open-data.cio.gov/iso8601_guidance/#accrualperiodicity.
  */
 function dkan_dataset_content_types_iso_frecuency_map() {
   return array(
-    'R/P10Y' => 6,
-    'R/P4Y' => 7,
-    'R/P1Y' => 3,
-    'R/P2M' => 8,
-    'R/P0.5M' => 8,
-    'R/P3.5D' => 9,
-    'R/P1D' => 0,
-    'R/P2W' => 10,
-    'R/P0.5W' => 10,
-    'R/P6M' => 11,
-    'R/P2Y' => 12,
-    'R/P3Y' => 13,
-    'R/P0.33W' => 14,
-    'R/P0.33M' => 15,
-    'R/PT1S' => 4,
-    'R/P1M' => 2,
-    'R/P3M' => 16,
-    'R/P0.5M' => 18,
-    'R/P4M' => 17,
-    'R/P1W' => 1,
-    'irregular' => 5,
+    'R/PT1H' => t('Hourly'),
+    'R/P1D' => t('Daily'),
+    'R/P1W' => t('Weekly'),
+    'R/P1M' => t('Monthly'),
+    'R/P1Y' => t('Annually'),
+    'R/PT1S' => t('Continuously'),
+    'irregular' => t('Irregularly'),
+    'R/P10Y' => t('Decennial'),
+    'R/P4Y' => t('Quadrennial'),
+    'R/P2M' => t('Bimonthly'),
+    'R/P0.5M' => t('Semimonthly'),
+    'R/P3.5D' => t('Semiweekly'),
+    'R/P2W' => t('Biweekly'),
+    'R/P0.5W' => t('Biweekly'),
+    'R/P6M' => t('Semiannual'),
+    'R/P2Y' => t('Biennial'),
+    'R/P3Y' => t('Triennial'),
+    'R/P0.33W' => t('Three times a week'),
+    'R/P0.33M' => t('Three times a month'),
+    'R/P4M' => t('Three times a year'),
+    'R/P3M' => t('Quarterly'),
   );
 }
 

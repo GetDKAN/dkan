@@ -10,7 +10,7 @@
         <testsuite name="DKAN Harvest Test Suite">
             <file>dkan_harvest/DatajsonHarvestMigrationTest.php</file>
             <file>dkan_harvest/DatajsonHarvestMigrationScenariosTest.php</file>
-            <file>dkan_harvest/DkanHarvestDataJsonTest.php</file>
+            <!--file>dkan_harvest/DkanHarvestDataJsonTest.php</file-->
             <file>dkan_harvest/DkanHarvestSourcesTest.php</file>
             <file>dkan_harvest/DkanHarvestTest.php</file>
             <file>dkan_harvest/HarvestSourceTest.php</file>

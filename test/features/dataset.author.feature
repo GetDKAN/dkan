@@ -109,8 +109,8 @@ Feature: Dataset Features
   @dataset_author_7 @noworkflow
   Scenario: Add a dataset to group that I am a member of
     Given datasets:
-      | title      | author  | published | description |
-      | Dataset 01 | Katie   | Yes       |             |
+      | title      | author  | published | description | publisher |
+      | Dataset 01 | Katie   | Yes       |             | Group 02  |
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I click "Edit"

@@ -18,12 +18,16 @@ Parameters
    select
 -  **q** (*string*) – fulltext search
 -  **offset** (*int*) – offset this number of rows
--  **limit** (*int*) – maximum number of rows to return (default: 100)
+-  **limit** (*int*) – maximum number of rows to return
 -  **fields** (*array or comma separated string*) – fields to return
    (default: all fields in original order)
 -  **sort** (*string*) – comma separated field names with ordering
 -  **join** (*array*) – array of fields to join from multiple tables
 -  **group\_by** (*array*) – array of fields to group by
+
+.. note::
+
+  If **limit** is not used in a query, 10 records will be returned by default. If **limit** is used, the API allows users to ask for up to 100 records. To get more than 100 records, the API must be used as a user with the **"Perform unlimited index queries"** permission.
 
 Aggregation functions
 ---------------------

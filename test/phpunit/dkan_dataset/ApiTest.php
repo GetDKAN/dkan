@@ -25,6 +25,14 @@ class ApiTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public static function setUpBeforeClass() {
+    // We need this module for the testResourceRedirect test.
+    module_enable(array('dkan_dataset_test'));
+  }
+
+  /**
    * Test required fields.
    */
   public function testRequiredFields() {
@@ -55,4 +63,28 @@ class ApiTest extends \PHPUnit_Framework_TestCase {
     }
   }
 
+  /**
+   * Test options.
+   */
+  public function testCustomValidation() {
+    try {
+      $this->client->nodeCreate((object) [
+        'title' => 'PHPUNIT Custom Validation',
+        'body' => ['und' => [0 => ['value => "PHPUNIT Test Dataset Custom Validation"']]],
+        'type' => 'dataset',
+      ]);
+    }
+    catch (\Exception $e) {
+      $message = $e->getMessage();
+      $this->assertContains("Test validation rejection", $message);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function tearDownAfterClass() {
+    // Clean enabled modules.
+    module_disable(array('dkan_dataset_test'));
+  }
 }
