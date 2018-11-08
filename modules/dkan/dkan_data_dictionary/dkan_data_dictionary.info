@@ -10,7 +10,6 @@ dependencies[] = field_group
 dependencies[] = file
 dependencies[] = list
 dependencies[] = options
-dependencies[] = paragraphs
 dependencies[] = text
 features[ctools][] = field_group:field_group:1
 features[features_api][] = api:2
