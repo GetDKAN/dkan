@@ -103,6 +103,16 @@ function dkan_workflow_node_grants($user, $op) {
 }
 
 /**
+ * Implements hook_workbench_moderation_acces_alter().
+ */
+function dkan_workflow_workbench_moderation_access_alter(&$access, $op, $node) {
+  global $user;
+  if ($op == 'view history' && $user->uid == 0) {
+    $access = 1;
+  }
+} 
+
+/**
  * Implements hook_node_access_records().
  */
 function dkan_workflow_node_access_records($node) {
@@ -110,14 +120,17 @@ function dkan_workflow_node_access_records($node) {
     // It's published, default handling is okay.
     return;
   }
-  $grants[] = array(
-    'realm' => 'dkan_workflow',
-    'gid' => $node->uid,
-    'grant_view' => 1,
-    'grant_update' => 0,
-    'grant_delete' => 0,
-    'priority' => 0,
-  );
+  // Ensure anon user doesn't have access.
+  if ($node->uid != 0) {
+    $grants[] = array(
+      'realm' => 'dkan_workflow',
+      'gid' => $node->uid,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );  
+  }
   return !empty($grants) ? $grants : array();
 }
 
