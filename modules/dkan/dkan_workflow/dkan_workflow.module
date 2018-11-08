@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Code for the NuCivic workflow feature.
+ * Code for the DKAN workflow feature.
  */
 
 include_once 'dkan_workflow.features.inc';
