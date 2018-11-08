@@ -60,7 +60,7 @@ Let's take a closer look at some of the metadata fields available on this form:
 :Author: The Dataset's author, in plain text.
 :Spatial / Geographical Coverage Area: Lets us define what region the data applies to. In this case, the US State of Wisconsin. You can use the map widget to draw an outline around the state borders, or, click the "Add data manually" button if you already have a `GeoJSON <http://geojson.org/>`_ string you can paste in.
 :Spatial / Geographical Coverage Location: The region the data applies to, written in plain text. This can be used instead of or in addition to the **Coverage Area** field.
-:Frequency: How often is this dataset updated? We might expect our list of polling places to be updated every year, so we could select "annually." However, often we don't expect the data to be updated (even in this case, perhaps we plan to post the next version of the data as a _separate_ dataset), in which case we can leave this blank.
+:Frequency: How often is this dataset updated? We might expect our list of polling places to be updated every year, so we could select "annually." However, often we don't expect the data to be updated (even in this case, perhaps we plan to post the next version of the data as a *separate* dataset), in which case we can leave this blank.
 :Temporal Coverage: Like Geographic Coverage, this field lets us give some context to the data, but now for the relevant time period. Here we could enter the year or years for which our polling places data is accurate.
 :Granularity: This is a somewhat open-ended metadata field that lets you describe the granularity or accuracy of your data. For instance: "Year". Note, this field is depreciated in DCAT and Project Open Data, and may be removed from DKAN.
 :Data Dictionary: This should be a URL to a resource that provides some sort of description that helps understanding the data. See `Project Open Data data dictionary <https://project-open-data.github.io/schema/#common-core-required-if-applicable-fields>`_ for more info.
@@ -72,11 +72,5 @@ After you click "Save", the metadata we enter will appear on the page for this D
 Configuration
 --------------
 
-Adding or Removing Allowed Resource File Types
-**********************************************
+Learn how to :doc:`add additional file types to your resources here <../../development/custom_file_extensions>`.
 
-Any type of file can be uploaded to Resources (though only CSV files can be imported to the :doc:`Datastore <../datastore>`.
-
-File types are controlled at "/admin/structure/types/manage/resource/fields/field_upload"
-
-To add or remove file types navigate as an 'administrator' and enter extensions into the "Allowed file extensions" field.

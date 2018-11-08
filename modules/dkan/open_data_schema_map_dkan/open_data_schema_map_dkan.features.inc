@@ -127,7 +127,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'url' => array(
-          'value' => '[node:field-resources:Nth:field-link-api:url] || [node:field-resources:Nth:field_link_remote_file] || [node:field-resources:Nth:field-upload:url]',
+          'value' => '[node:field-resources:Nth:field-link-api:url] || [node:field-resources:Nth:field_link_remote_file:url] || [node:field-resources:Nth:field-upload:url]',
           'type' => '',
         ),
         'description' => array(
@@ -1321,7 +1321,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'accessURL' => array(
-          'value' => '[node:field-resources:Nth:field-link-api:url] || [node:field-resources:Nth:field_link_remote_file] || [node:field-resources:Nth:field-upload:url]',
+          'value' => '[node:field-resources:Nth:field-link-api:url] || [node:field-resources:Nth:field_link_remote_file:url] || [node:field-resources:Nth:field-upload:url]',
           'type' => '',
         ),
         'format' => array(
@@ -1486,7 +1486,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'downloadURL' => array(
-          'value' => '[node:field-resources:Nth:field_link_remote_file] || [node:field-resources:Nth:field-upload:url]',
+          'value' => '[node:field-resources:Nth:field_link_remote_file:url] || [node:field-resources:Nth:field-upload:url]',
           'type' => '',
         ),
         'mediaType' => array(
@@ -1772,7 +1772,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dcat:downloadURL' => array(
-          'value' => '[node:field-resources:Nth:field_link_remote_file] || [node:field-resources:Nth:field-upload:url]',
+          'value' => '[node:field-resources:Nth:field_link_remote_file:url] || [node:field-resources:Nth:field-upload:url]',
           'type' => '',
         ),
         'dcat:mediaType' => array(
@@ -1972,7 +1972,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dcat:downloadURL' => array(
-          'value' => '[node:field-resources:Nth:field_link_remote_file] || [node:field-resources:Nth:field-upload:url]',
+          'value' => '[node:field-resources:Nth:field_link_remote_file:url] || [node:field-resources:Nth:field-upload:url]',
           'type' => '',
         ),
         'dcat:mediaType' => array(
@@ -2167,7 +2167,7 @@ function open_data_schema_map_dkan_open_data_schema_apis_defaults() {
           'type' => '',
         ),
         'dcat:downloadURL' => array(
-          'value' => '[node:field-resources:Nth:field_link_remote_file] || [node:field-resources:Nth:field-upload:url]',
+          'value' => '[node:field-resources:Nth:field_link_remote_file:url] || [node:field-resources:Nth:field-upload:url]',
           'type' => '',
         ),
         'dcat:mediaType' => array(

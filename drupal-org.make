@@ -3,7 +3,7 @@ api: '2'
 core: 7.x
 includes:
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-2.0/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.0/open_data_schema_map.make
+- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.1/open_data_schema_map.make
 - https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
 - https://raw.githubusercontent.com/NuCivic/recline/7.x-2.0/recline.make
 projects:
@@ -32,7 +32,7 @@ projects:
     patch:
       849232: https://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
   better_exposed_filters:
-    version: '3.5'
+    version: '3.6'
   bueditor:
     version: '1.8'
   bueditor_plus:
@@ -59,7 +59,11 @@ projects:
   data:
     version: 1.x
   date:
-    version: '2.10'
+    download:
+      type: git
+      url: https://git.drupal.org/project/date.git
+      branch: 7.x-2.x
+      revision: a2ef952517f789bfd85659f96a0321a66936661a
   defaultconfig:
     version: 1.0-alpha11
   devel:
@@ -68,6 +72,8 @@ projects:
     version: '3.3'
   double_field:
     version: '2.5'
+  drafty:
+    version: 1.0-rc1
   draggableviews:
     version: '2.1'
   entity:
@@ -84,10 +90,12 @@ projects:
     version: '1.5'
   entityreference_filter:
     version: '1.7'
+  environment:
+    version: '1.0'
+  environment_indicator:
+    version: '2.9'
   facetapi:
     version: '1.5'
-    patch:
-      1: patches/cross-site-scripting-facets-156778.patch
   facetapi_bonus:
     version: '1.2'
   facetapi_pretty_paths:
@@ -138,7 +146,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.21
+    version: 2.22
   file_resup:
     version: '1.5'
   filefield_sources:
@@ -210,7 +218,7 @@ projects:
     patch:
       2045225: https://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.19
+    version: 2.21
   media_youtube:
     version: '3.7'
   media_vimeo:
@@ -237,7 +245,7 @@ projects:
       url: https://git.drupal.org/project/multistep.git
       revision: 3b0d40a
   og:
-    version: '2.9'
+    version: '2.10'
     patch:
       1090438: https://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch
       2549071: https://www.drupal.org/files/issues/og_actions-bug-vbo-delete.patch
@@ -250,7 +258,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/open_data_schema_map.git
-      tag: 7.x-2.0
+      tag: 7.x-2.1
   panelizer:
     version: '3.4'
   panels:
@@ -258,7 +266,7 @@ projects:
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.54'
+    version: '1.57'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
@@ -273,6 +281,8 @@ projects:
   radix:
     type: theme
     version: '3.6'
+    patch:
+      1: patches/radix-bootstrap.patch
   radix_layouts:
     version: '3.4'
   recline:
@@ -308,9 +318,7 @@ projects:
   search_api:
     version: '1.24'
   search_api_db:
-    version: '1.6'
-    patch:
-      2855634: https://www.drupal.org/files/issues/2855634-23--fix_update_7107_for_different_db.patch
+    version: '1.7'
   select_or_other:
     version: '2.24'
   services:
@@ -333,7 +341,7 @@ projects:
   token_tweaks:
     version: 1.x-dev
   uuid:
-    version: '1.1'
+    version: '1.2'
   views:
     version: '3.20'
   views_autocomplete_filters:
@@ -357,11 +365,7 @@ projects:
     version: '3.12'
   workbench_moderation:
     version: '3.0'
-    patch:
-      2360973: https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch
-      1512442: https://www.drupal.org/files/issues/1512442-20-workbench_moderation-fix_access_check.patch
-  drafty:
-    version: 1.0-beta4
+    revision: 3fcb1a66e87a539f06664502141abc8f37712929
 libraries:
   chosen:
     download:

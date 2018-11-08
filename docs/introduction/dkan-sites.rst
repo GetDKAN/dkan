@@ -37,6 +37,7 @@ Nebraska                                                https://nebraskamap.gov/
 Louisville, KY                                          https://data.louisvilleky.gov
 OpenOakland                                             http://data.openoakland.org
 DigitalC                                                http://civicinsights.org
+Department of Conservation, Missouri                    https://research.mdc.mo.gov/
 ==================================================      =============
 
 
@@ -76,12 +77,12 @@ Opava Municipality, Czech Republic                      http://kod.opava-city.cz
 Decentralised Administration of Crete, Greece           http://apdkritis.gov.gr/en
 Bosnia and Herzegovina                                  http://opendata.ba
 Belarus                                                 http://opendata.by
-Ukraine                                                 http://data.gov.ua
 Russia                                                  http://data.gov.ru
 Moscow Region, Russia                                   http://data.mosreg.ru
 Instituto Politécnico de Bragança, Portugal             http://observatoriottm.ipb.pt
 Barcelona Provicial Diputation, Spain                   https://dadesobertes.diba.cat/
 Düsseldorf, Germany                                     https://opendata.duesseldorf.de/
+The Republic of Cyprus                                  http://www.data.gov.cy/
 ==================================================      =============
 
 
@@ -128,7 +129,7 @@ Ministry of Health, Peru                                       http://datos.mins
 National Jury of Elections, Peru                               http://jnedatosabiertos.pe/
 Ministry of Labor, Peru                                        http://datos.trabajo.gob.pe/
 Open Data Windsor Essex, Canada                                http://odwe.ca/
-City of Fredericton, Canada                                    http://data.fredericton.ca)
+São Paulo State's Department of Education, Brazil              https://dados.educacao.sp.gov.br/
 ============================================================== =============
 
 
@@ -146,4 +147,5 @@ Namibia                                            http://www.namopendata.com/de
 South Africa                                       http://data.gov.za
 Local Development Research Initiative, Kenya       http://transformagriculture.org
 Sayada, Tunisia                                    http://opendata.sayada.tn/fr
+Edo, Nigeria                                       http://data.edostate.gov.ng/
 ==============================================     =============
