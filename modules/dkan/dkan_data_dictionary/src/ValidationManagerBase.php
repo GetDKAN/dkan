@@ -21,45 +21,23 @@ abstract class ValidationManagerBase implements ValidationManagerInterface {
   }
 
   /**
-   * Get Validator.
-   */
-  public function getValidatorInfo() {
-    return $this->validatorInfo;
-  }
-
-  /**
    *
    */
-  public function init($schema, $data) {
-    $this->setSchema($schema);
-    $this->setData($data);
+  public function initialize(Resource $resource) {
+    $this->resource = $resource;
+    $this->schema = $resource->getDataDictSchema();
+    $this->data = $resource->getFilePath();
 
-    $this->postInit();
-  }
-
-  /**
-   * @throws Exception
-   */
-  public function postInit() {
     foreach (array('schema', 'data') as $param) {
       if (empty($this->$param)) {
         throw new \Exception(format_string("Empty param: !s", array('!s' => $param)));
+
       }
-    }
   }
 
-  /**
-   *
-   */
-  public function setSchema($schema) {
-    $this->schema = $schema;
+    // Create associated validation report.
+    $this->initValidationReport($resource);
   }
 
-  /**
-   *
-   */
-  public function setData($data) {
-    $this->data = $data;
-  }
-
+  abstract protected function initValidationReport(Resource $resource);
 }

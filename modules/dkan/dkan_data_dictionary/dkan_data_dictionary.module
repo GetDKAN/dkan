@@ -7,6 +7,100 @@
 
 include_once 'dkan_data_dictionary.features.inc';
 
+use Dkan\DataDictionary\Resource;
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_data_dictionary_menu() {
+  $items = array();
+
+  // $items['node/%node/dictionary'] = array(
+  // 'title' => 'Validation',
+  // 'page callback' => 'drupal_get_form',
+  // 'page arguments' => array('dkan_data_dictionary_pages', 1),
+  // 'access callback' => 'dkan_data_dictionary_access',
+  // 'access arguments' => array('view', 1),
+  // 'file' => 'dkan_data_dictionary.pages.inc',
+  // 'weight' => '15',
+  // 'type' => MENU_LOCAL_TASK,
+  // );.
+  $items['node/%node/dictionary/reports'] = array(
+    'title' => 'Validation',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_data_dictionary_resource_report_form', 1),
+    'access callback' => 'dkan_data_dictionary_access',
+    'access arguments' => array('view', 1),
+    'file' => 'dkan_data_dictionary.pages.inc',
+    'weight' => '15',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  // $items['node/%node/dictionary/validate'] = array(
+  // 'title' => 'Validation',
+  // 'page callback' => 'drupal_get_form',
+  // 'page arguments' => array('dkan_data_dictionary_pages', 1),
+  // 'access callback' => 'dkan_data_dictionary_access',
+  // 'access arguments' => array('view', 1),
+  // 'file' => 'dkan_data_dictionary.pages.inc',
+  // 'weight' => '15',
+  // 'type' => MENU_LOCAL_TASK,
+  // );.
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_data_dictionary_permission() {
+  return array(
+    'view data_dictionary report' => array(
+      'title' => t('view data_dictionary report'),
+    ),
+
+    'validate data_dictionary' => array(
+      'title' => t('validate resource against data_dictionary'),
+    ),
+
+    'manage data_dictionary settings' => array(
+      'title' => t('manage data_dictionary settings'),
+    ),
+  );
+}
+
+/**
+ * Access callback for DKAN data_dictionary operations.
+ */
+function dkan_data_dictionary_access($op, $node, $account = NULL) {
+  try {
+    Resource::createFromDrupalNode($node);
+  }
+  catch (\Exception $e) {
+    return FALSE;
+  }
+
+  global $user;
+  if (!isset($account)) {
+    $account = $user;
+  }
+
+  switch ($op) {
+    case 'view':
+      return node_access('view', $node, $account);
+
+    case 'drop':
+    case 'delete':
+    case 'import':
+    case 'manage':
+      // All available operations require the 'manage data_dictionary' permission.
+      if (user_access('manage data_dictionary', $account) && node_access('update', $node, $account)) {
+        return TRUE;
+      }
+      break;
+  }
+}
+
 /**
  * Implements hook_xautoload().
  */
@@ -82,7 +176,7 @@ function dkan_data_dictionary_validate_resource($form, &$form_state) {
   $language = $form_state['values']['language'];
 
   // We expect only one Dictionary type selected.
-  $describedby_spec = $form_state['values']['field_describedby_spec'][$language]['value'];
+  $describedby_spec = $form_state['values']['field_describedby_spec'][$language][0]['value'];
 
   // Skip if no data dictionary specification is provided.
   if (empty($describedby_spec)) {
@@ -103,22 +197,23 @@ function dkan_data_dictionary_validate_resource($form, &$form_state) {
 
   // Use file if uploaded, then check for text field.
   // Expect a single item to be provided by the file upload and the text field.
-  $schema_textfield = $form_state['values']['field_describedby_schema'][$language]['value'];
+  $schema_textfield = $form_state['values']['field_describedby_schema'][$language][0]['value'];
 
   if ($schema_textfield == '{}' && $schema_textfield == '') {
     $schema_textfield = FALSE;
   }
 
-  $schema_file = $form_state['values']['field_describedby_file'][$language];
+  $schema_file = $form_state['values']['field_describedby_file'][$language][0];
 
   if (isset($schema_file['fid']) && $schema_file['fid'] == 0) {
     $schema_file = FALSE;
   }
 
   if (!empty($schema_file)) {
+    $schema_file = file_load($schema_file['fid']);
     $schema_provided = TRUE;
 
-    $errors = $validationManager->validateSchema($schema_file);
+    $errors = $validationManager->validateSchema($schema_file->uri);
 
     foreach ($errors as $error) {
       $message = t('Schema validation failed with the following error: %error',
@@ -328,7 +423,14 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
   $elements = array();
 
   foreach ($items as $delta => $item) {
-    $elements[$delta] = $validationManager::schemaFormatterView($item['value'], $display['type']);
+    try {
+      $elements[$delta] = $validationManager::schemaFormatterView($item['value'], $display['type']);
+    }
+    catch (\Exception $execption) {
+      watchdog('dkan_data_dictionary', 'Formatter view exception: @message', $execption->getMessage(), WATCHDOG_ERROR);
+      // TODO better error reporting.
+      $elements[$delta] = array();
+    }
   }
 
   return $elements;

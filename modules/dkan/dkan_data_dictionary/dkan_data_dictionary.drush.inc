@@ -50,29 +50,13 @@ function drush_dkan_data_dictionary_dkan_validate_resource($nid) {
 
   // Get Data.
   $resource = Resource::createFromDrupalNodeNid($nid);
-  $data = $resource->getFilePath();
 
   // TODO add check.
   $manager = $validatorWrapper->getValidationManager();
+  $manager->initialize($resource);
 
-  $manager->init($schema, $data);
-
-  $count = 1;
   $step = 20;
-  while (TRUE) {
-    $index = $count + $step;
-    drush_print("validating rows " . $count . " -> " . $index);
-    list($output, $errors) = $manager->validateChunk($step);
+  $manager->validate($step);
 
-    if (!empty($errors)) {
-      drush_print("errors found: ..");
-      drush_print_table($errors);
-    }
-
-    if (count($output) < $step) {
-      break;
-    }
-
-    $count = $count + $step;
-  }
+  var_dump($manager->getValidationReport());
 }

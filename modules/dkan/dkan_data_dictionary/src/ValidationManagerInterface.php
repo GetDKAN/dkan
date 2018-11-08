@@ -13,11 +13,6 @@ interface ValidationManagerInterface {
   public function __construct(ValidatorInfo $validatorInfo);
 
   /**
-   * Get Validator Label.
-   */
-  public function getValidatorInfo();
-
-  /**
    * Validate schema.
    *
    * @param string $schema
@@ -28,12 +23,17 @@ interface ValidationManagerInterface {
   /**
    *
    */
-  public function init($schema, $data);
+  public function initialize(Resource $resource);
 
   /**
    * Get Validator Label.
    */
   public function validate();
+
+  /**
+   * Get Validator Label.
+   */
+  public function validateChunk($chunk_size);
 
   /**
    * Return render array representation of the data dictionary.

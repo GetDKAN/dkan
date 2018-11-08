@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Data Dictionary Mock module.
+ */
+
+use Dkan\DataDictionary\ValidatorInfo;
+
+/**
+ * Implements hook_xautoload().
+ */
+function dkan_data_dictionary_mock_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\DataDictionary\\',
+    drupal_get_path("module", "dkan_data_dictionary_mock") . '/src'
+  );
+}
+
+/**
+ * Implements hook_dkan_data_dictionary_validator().
+ */
+function dkan_data_dictionary_mock_dkan_data_dictionary_validator() {
+  $validatorInfo = new ValidatorInfo(
+    'Dkan\DataDictionary\MockValidationManager',
+    'mockvalidator',
+    'Mock'
+  );
+
+  return $validatorInfo;
+}

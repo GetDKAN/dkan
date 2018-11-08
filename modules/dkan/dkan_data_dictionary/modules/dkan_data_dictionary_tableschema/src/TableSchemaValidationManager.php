@@ -6,15 +6,16 @@ namespace Dkan\DataDictionary;
 // include_once 'sites/all/libraries/tableschema-php/vendor/autoload.php';
 use frictionlessdata\tableschema\Schema;
 use frictionlessdata\tableschema\Table;
-use frictionlessdata\tableschema\Exceptions\SchemaLoadException;
-use frictionlessdata\tableschema\Exceptions\SchemaValidationFailedException;
 use frictionlessdata\tableschema\Exceptions\DataSourceException;
+use frictionlessdata\tableschema\Exceptions\SchemaValidationError;
+use frictionlessdata\tableschema\Exceptions\FieldValidationException;
 
 /**
  *
  */
 class TableSchemaValidationManager extends ValidationManagerBase {
-  private $errors = array();
+
+  protected $validationReport;
 
   /**
    * Get Validator Label.
@@ -31,25 +32,55 @@ class TableSchemaValidationManager extends ValidationManagerBase {
   /**
    * @throws Exception
    */
-  public function postInit() {
-    parent::postInit();
+  public function initialize(Resource $resource) {
+    parent::initialize($resource);
 
     $this->table = new Table($this->data, $this->schema);
+    // Make sure table is valid.
+    $this->table->valid();
 
-    // Reset state.
-    $this->errors = array();
+    // Limit only to csv files with a single table.
+    $this->validationReport->addTable(
+      basename($this->resource->getFilePath()),
+      $this->table->headers()
+    );
+  }
+
+  /**
+   *
+   */
+  protected function initValidationReport(Resource $resource) {
+    $source = $resource->getFilePath();
+    $schema = "table-schema";
+    $this->validationReport = new ValidationReport($source, $schema);
   }
 
   /**
    * Get Validator Label.
    */
   public function validate($step = 20) {
+    $count = 0;
+
     while (TRUE) {
       list($output, $errors) = $this->validateChunk($step);
+
+      $count = $count + count($output);
+
       if (count($output) < $step) {
         break;
       }
     }
+
+    // Validation done.
+    $this->validationReport->updateTableRowCount(
+      basename($this->resource->getFilePath()),
+      $count
+    );
+
+    //TODO update time.
+
+    // Write validation record to the supporting backend.
+    $this->validationReport->write($this->resource);
   }
 
   /**
@@ -63,22 +94,46 @@ class TableSchemaValidationManager extends ValidationManagerBase {
       try {
         $rows[] = $this->table->current();
       }
-      catch (DataSourceException $exception) {
+      catch (SchemaValidationError $exception) {
+        // TODO support fixeld exception as well.
         $errors[] = array(
-          "code" => "",
-          "row-number" => $this->table->key(),
-          "message" => $exception->getMessage(),
+          'row-number' => $this->table->key(),
+          // TODO fix this?
+          'code' =>  -1,
+          'message' => $exception->getMessage(),
         );
+        $this->validationReport->logTableError(
+          file_uri_target($this->resource->getFilePath()),
+          $this->table->key(),
+          // TODO fix this?
+          -1,
+          $exception->getMessage()
+        );
+      }
+      catch (FieldValidationException $exception) {
+        foreach($exception->validationErrors as $error) {
+          $errors[] = array(
+            'row-number' => $this->table->key(),
+            'code' =>  $error->code,
+            'message' => "{$error->extraDetails['field']}: {$error->extraDetails['error']}",
+          );
+
+          $this->validationReport->logTableError(
+            basename($this->resource->getFilePath()),
+            $this->table->key(),
+            $error->code,
+            "{$error->extraDetails['field']}: {$error->extraDetails['error']}"
+          );
+        }
       }
 
       $this->table->next();
+
       if (count($rows) == $chunk_size) {
         break;
       }
     }
 
-    // Save the errors.
-    $this->errors = array_merge($this->errors, $errors);
     return array($rows, $errors);
   }
 
@@ -90,16 +145,11 @@ class TableSchemaValidationManager extends ValidationManagerBase {
    *
    * @param mixed $display_type
    *   Type of user facing display.
+   *
+   * @throws
    */
   public static function schemaFormatterView($discriptor, $display_type) {
-
-    try {
-      $schema = new Schema($discriptor);
-    }
-    catch (\Exception $execption) {
-      // Can be a empty schema to a invalide schema, display nothing.
-      return array();
-    }
+    $schema = new Schema($discriptor);
 
     if ($display_type == 'text_schema_table') {
       $headers = array();
@@ -114,7 +164,6 @@ class TableSchemaValidationManager extends ValidationManagerBase {
         'required' => 'Required',
       );
 
-
       // Build our collection of unique table headers.
       $fields = $schema->fields();
 
@@ -123,12 +172,11 @@ class TableSchemaValidationManager extends ValidationManagerBase {
         $headers[$key] = array('data' => t(ucfirst($value)), 'class' => array('json-schema-item', 'json-schema-' . $key));
       }
 
-      // foreach ($schema->fields() as $field) {
-        // $item = (array) $field;
-        // $new_keys = array_keys($item);
-        // $headers = array_merge($headers, array_diff($new_keys, $headers));
-      // }
-
+      // Foreach ($schema->fields() as $field) {
+      // $item = (array) $field;
+      // $new_keys = array_keys($item);
+      // $headers = array_merge($headers, array_diff($new_keys, $headers));
+      // }.
       // Check the set of values for each field description against all table headers.
       foreach ($fields as $field) {
         $row = array();
@@ -177,7 +225,6 @@ class TableSchemaValidationManager extends ValidationManagerBase {
 
       }
 
-
       return array(
         '#theme' => 'table',
         '#header' => $headers,
@@ -193,4 +240,10 @@ class TableSchemaValidationManager extends ValidationManagerBase {
     }
   }
 
+  /**
+   *
+   */
+  public function getValidationReport() {
+    return $this->validationReport;
+  }
 }
