@@ -621,16 +621,14 @@ function dkan_dataset_content_types_field_default_field_instances() {
   // Exported field_instance: 'node-dataset-field_harvest_source_modified'.
   $field_instances['node-dataset-field_harvest_source_modified'] = array(
     'bundle' => 'dataset',
-    'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'text',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 15,
+        'weight' => 9,
       ),
       'search_result' => array(
         'label' => 'above',
@@ -650,16 +648,25 @@ function dkan_dataset_content_types_field_default_field_instances() {
     'label' => 'Harvest Source Modified',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
+      'default_value' => 'blank',
+      'default_value2' => 'same',
+      'default_value_code' => '',
+      'default_value_code2' => '',
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
+      'module' => 'date',
       'settings' => array(
-        'size' => 60,
+        'increment' => 15,
+        'input_format' => 'm/d/Y - H:i:s',
+        'input_format_custom' => '',
+        'label_position' => 'above',
+        'no_fieldset' => 0,
+        'text_parts' => array(),
+        'year_range' => '-3:+3',
       ),
-      'type' => 'text_textfield',
+      'type' => 'date_text',
       'weight' => 32,
     ),
   );
