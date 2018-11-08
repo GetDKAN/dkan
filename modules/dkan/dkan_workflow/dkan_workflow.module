@@ -107,6 +107,7 @@ function dkan_workflow_node_grants($user, $op) {
  */
 function dkan_workflow_workbench_moderation_access_alter(&$access, $op, $node) {
   global $user;
+  // Allow anon users to see revision history.
   if ($op == 'view history' && $user->uid == 0) {
     $access = 1;
   }
