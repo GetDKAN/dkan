@@ -48,6 +48,40 @@ function dkan_datastore_back($node) {
 }
 
 /**
+ * Callback for download tab.
+ */
+function dkan_datastore_download($node) {
+  $node_wrapper = entity_metadata_wrapper('node', $node);
+  $link_type = dkan_datastore_resource_link_type($node);
+  $url = $link_type['url'];
+  $type = $link_type['type'];
+
+  if ($type == 'upload') {
+    return drupal_goto($url);
+  }
+  elseif ($type == 'remote') {
+    $size = isset($node_wrapper->field_link_remote_file->value()['filesize']) ? (int) $node_wrapper->field_link_remote_file->value()['filesize'] : 0;
+
+    // dkan_datastore_proxy() loads the file locally which has a big memory footprint.
+    // If the file is too large we don't want to proxy.
+    $max = (int) variable_get('dkan_datastore_max_file_remote_proxy_size', MAX_FILE_REMOTE_PROXY_DEFAULT);
+    if ($size > $max) {
+      drupal_goto($url);
+    }
+    else {
+      dkan_datastore_proxy($node);
+    }
+  }
+  elseif ($type == 'link') {
+    return drupal_goto($url);
+  }
+  else {
+    drupal_set_message(t('No download available for this resource'));
+    return '';
+  }
+}
+
+/**
  * Callback for 'Add Resouce' tab.
  */
 function dkan_datastore_add_resource($node) {
