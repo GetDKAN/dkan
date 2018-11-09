@@ -358,15 +358,19 @@ function dkan_datastore_theme() {
  * @ingroup themeable
  */
 function theme_dkan_datastore_status_formatter(array $variables) {
-  $status = dkan_datastore_status($variables['item']['entity']);
-  if ($status === DKAN_DATASTORE_FILE_EXISTS) {
-    $title = t('A file has been uploaded but not added to the datastore');
-    return '<span class="circle false" title="' . $title . '">' . t('Data ready to be added') . '</span>';
+  $node = $variables['item']['entity'];
+  try {
+    $resource = \Dkan\Datastore\Resource::createFromDrupalNode($node);
+
+    /* @var $manager ManagerInterface */
+    $manager = (new Factory($resource))->get();
+    $status = $manager->getStatus();
+    $string = \Dkan\Datastore\Page\Component\Status::datastoreStateToString($status['data_import']);
+    return '<span class="circle true">' . t($string) . '</span>';
   }
-  elseif ($status === DKAN_DATASTORE_EXISTS) {
-    return '<span class="circle true">' . t('Datastore enabled') . '</span>';
+  catch (\Exception $e) {
+    return '<span class="circle true">' . t('Datastore disabled') . '</span>';
   }
-  return '<span class="circle na">' . t('Correct file type not attached to resource') . '</span>';
 }
 
 /**
