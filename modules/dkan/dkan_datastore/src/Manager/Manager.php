@@ -90,7 +90,7 @@ abstract class Manager implements ManagerInterface {
         ["\r", "\n"]
       );
 
-      if ($this->configurableProperties['trailing_delimiter'] == TRUE) {
+      if (isset($this->configurableProperties['trailing_delimiter']) && $this->configurableProperties['trailing_delimiter'] == TRUE) {
         $this->parser->activateTrailingDelimiter();
       }
     }
