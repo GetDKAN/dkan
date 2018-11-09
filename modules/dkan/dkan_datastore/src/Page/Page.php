@@ -199,7 +199,6 @@ class Page {
    * Batch event handler.
    */
   public function batchFinished($success, $results, $operations) {
-    drupal_set_message(t("The batch process completed."));
   }
 
   /**
