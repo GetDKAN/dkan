@@ -178,6 +178,13 @@ class Page {
     try {
       /* @var $manager ManagerInterface */
       $finished = $manager->import();
+      if ($finished == ManagerInterface::DATA_IMPORT_ERROR) {
+        $general = "DKAN DATASTORE: There was a problem while importing the Resource";
+        $errors = $manager->getErrors();
+        $error_string = implode(" | ", $errors);
+        $final_error_string = "{$general} - {$error_string}";
+        drupal_set_message($final_error_string);
+      }
     }
     catch (\Exception $e) {
       $context['sandbox']['progress'] = 1;
