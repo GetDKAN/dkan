@@ -28,7 +28,7 @@ class Status {
     $stringSubs = [
       'class' => $this->formatClassName(get_class($this->datastoreManager)),
       'records' => $this->datastoreManager->numberOfRecordsImported(),
-      'import' => $this->datastoreStateToString($state['data_import']),
+      'import' => self::datastoreStateToString($state['data_import']),
     ];
 
     $statusInfo = "<dt>" . t("Importer") . "</dt><dd>{$stringSubs['class']}</dd>";
@@ -56,7 +56,7 @@ class Status {
   /**
    * Private method.
    */
-  private function datastoreStateToString($state) {
+  public static function datastoreStateToString($state) {
     switch ($state) {
       case ManagerInterface::STORAGE_UNINITIALIZED:
         return t("Uninitialized");
