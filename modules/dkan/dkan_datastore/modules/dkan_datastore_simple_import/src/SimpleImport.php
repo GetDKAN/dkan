@@ -116,9 +116,16 @@ class SimpleImport extends Manager {
           $query->values($values);
         }
         else {
+          $header_count = count($header);
+          $values_count = count($values);
           $json_header = json_encode($header);
           $json_values = json_encode($values);
-          $this->setError("Invalid line {$counter} in {$this->getResource()->getFilePath()}; header: {$json_header} values: {$json_values}");
+
+          $message = "";
+          if ($header_count != $values_count) {
+            $message = "The number of values ($values_count) does not match the number of columns ($header_count). ";
+          }
+          $this->setError($message . "Invalid line {$counter} in {$this->getResource()->getFilePath()}; header({$header_count}): {$json_header} values({$values_count}): {$json_values}");
           return FALSE;
         }
 
