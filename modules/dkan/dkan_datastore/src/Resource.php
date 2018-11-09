@@ -103,11 +103,20 @@ class Resource {
       // We can't trust that the field_upload array will contain a real uri, so
       // we need to load the full file object.
       $file = file_load($node->field_upload[LANGUAGE_NONE][0]['fid']);
+      $filemime = $file->filemime;
+      if (!in_array($filemime, ["text/csv", "text/tsv"])) {
+        throw new \Exception("Incorrect filemime {$filemime}.");
+      }
+
       $drupal_uri = $file->uri;
       return drupal_realpath($drupal_uri);
     }
     if (isset($node->field_link_remote_file[LANGUAGE_NONE][0]['fid'])) {
       $file = file_load($node->field_link_remote_file[LANGUAGE_NONE][0]['fid']);
+      $filemime = $file->filemime;
+      if (!in_array($filemime, ["text/csv", "text/tsv", "text/psv"])) {
+        throw new \Exception("Incorrect filemime {$filemime}.");
+      }
       stream_wrapper_restore("https");
       stream_wrapper_restore("http");
       return $file->uri;
