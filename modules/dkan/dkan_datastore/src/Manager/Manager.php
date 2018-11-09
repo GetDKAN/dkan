@@ -140,8 +140,7 @@ abstract class Manager implements ManagerInterface {
     foreach ($header as $field) {
       $schema['fields'][$field] = [
         'label' => $field,
-        'type' => "varchar",
-        'length' => 255,
+        'type' => "text",
       ];
     }
     return $schema;
