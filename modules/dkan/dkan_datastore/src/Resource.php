@@ -113,9 +113,10 @@ class Resource {
     }
     if (isset($node->field_link_remote_file[LANGUAGE_NONE][0]['fid'])) {
       $file = file_load($node->field_link_remote_file[LANGUAGE_NONE][0]['fid']);
-      $filemime = $file->filemime;
-      if (!in_array($filemime, ["text/csv", "text/tsv", "text/psv"])) {
-        throw new \Exception("This filemime type ({$filemime}) can be added as a resource, but cannot be imported to our datastore.");
+      if ($filemime = $file->filemime) {
+        if (!in_array($filemime, ["text/csv", "text/tsv", "text/psv"])) {
+          throw new \Exception("This filemime type ({$filemime}) can be added as a resource, but cannot be imported to our datastore.");
+        }
       }
       stream_wrapper_restore("https");
       stream_wrapper_restore("http");
