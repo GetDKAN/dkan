@@ -105,7 +105,7 @@ class Resource {
       $file = file_load($node->field_upload[LANGUAGE_NONE][0]['fid']);
       $filemime = $file->filemime;
       if (!in_array($filemime, ["text/csv", "text/tsv"])) {
-        throw new \Exception("{$filemime} files are not supported by the datastore.");
+        throw new \Exception("This filemime type ({$filemime}) can be added as a resource, but cannot be imported to our datastore.");
       }
 
       $drupal_uri = $file->uri;
@@ -115,7 +115,7 @@ class Resource {
       $file = file_load($node->field_link_remote_file[LANGUAGE_NONE][0]['fid']);
       $filemime = $file->filemime;
       if (!in_array($filemime, ["text/csv", "text/tsv", "text/psv"])) {
-        throw new \Exception("{$filemime} files are not supported by the datastore.");
+        throw new \Exception("This filemime type ({$filemime}) can be added as a resource, but cannot be imported to our datastore.");
       }
       stream_wrapper_restore("https");
       stream_wrapper_restore("http");
