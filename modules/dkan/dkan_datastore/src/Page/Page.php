@@ -183,12 +183,12 @@ class Page {
         $errors = $manager->getErrors();
         $error_string = implode(" | ", $errors);
         $final_error_string = "{$general} - {$error_string}";
-        drupal_set_message($final_error_string);
+        drupal_set_message($final_error_string, 'error');
       }
     }
     catch (\Exception $e) {
       $context['sandbox']['progress'] = 1;
-      drupal_set_message($e->getMessage());
+      drupal_set_message($e->getMessage(), 'error');
     }
 
     if ($finished == ManagerInterface::DATA_IMPORT_PAUSED) {
