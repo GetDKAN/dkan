@@ -97,7 +97,7 @@ Feature: Resource
     When I click "Manage Datastore"
     Then I should see "Status"
     When I press "Import"
-    And I wait for "The batch process completed."
+    And I wait for "Done"
     And I press "Drop"
     And I press "Drop"
     Then I should see "Records Imported"
