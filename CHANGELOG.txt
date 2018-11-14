@@ -1,6 +1,17 @@
+7.x-1.16
+----------
+ - #2179 Refactor Datastore Importer
+ - #2627 Add support for ISO-8106 duration values in "modified" when harvesting
+ - #2729 Update recline to 2.1
+ - #2713 CSV Parser Improvements: trailing commas & escape chars
+ - #2740 Fix dkan_workflow anonymous access to revisions and unpublished content
+ - #2724 Update contrib modules: better_exposed_filters, file_entity, media, panopoly_widgets, search_api_db, uuid, date: fixes issue 2843367
+ - #2718 Update odsm_dkan token values for remote file
+ - #2707 DKAN workflow documentation updates
+ - #2723 Include dkan.profile to prevent undefined function in update
 
 7.x-1.15.5
----------- 
+----------
  - #2710 Replace data stories page view with a non-search index version
  - #2712 Remove unused xss code
 

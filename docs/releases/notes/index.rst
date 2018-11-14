@@ -7,6 +7,8 @@ Release notes here will be identical to the releases kept in the `Github reposit
 .. toctree::
    :maxdepth: 1
 
+   1.16 <1.16>
+   1.15.5 <1.15.5>
    1.15.4 <1.15.4>
    1.15.3 <1.15.3>
    1.15.2 <1.15.2>
