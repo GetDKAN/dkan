@@ -7,7 +7,7 @@ DKAN Open Data Portal built on Drupal 8. See NOTES.md for additional information
 ### Install DKAN codebase:
 
 * ``mkdir "dkan8"``
-* ``curl -O https://raw.githubusercontent.com/GetDKAN/dkan2/master/composer.json``
+* ``curl https://raw.githubusercontent.com/GetDKAN/dkan2/master/composer-default.json -o composer.json``
 * ``composer install``
 
 ### Developing with Docksal
