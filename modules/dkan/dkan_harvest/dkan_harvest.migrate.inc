@@ -258,8 +258,8 @@ class HarvestMigration extends MigrateDKAN {
 
     // Disable any rules passed in the arguments array
     // Most probably in the processImport() method.
-    if (module_exists('rules') &&
-      !empty(variable_get('dkan_harvest_disable_rules', array()))) {
+    $disable_rules = variable_get('dkan_harvest_disable_rules', array());
+    if (module_exists('rules') && !empty($disable_rules)) {
       // Make sure that we only alter the status of already enabled rules.
       $rules = db_select('rules_config', 'rc')
         ->fields('rc', array('name'))
@@ -759,7 +759,8 @@ class HarvestMigration extends MigrateDKAN {
     // in a previous harvest migrate.
     // Get rows marked with HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE
     // and part of the imported datasets imported.
-    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
+    $id_list = $this->getIdList();
+    if (is_array($id_list) && !empty($id_list)) {
       $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
         ->fields('map')
         ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE)
@@ -836,7 +837,8 @@ class HarvestMigration extends MigrateDKAN {
     $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
       ->fields('map')
       ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE, '<>');
-    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
+    $id_list = $this->getIdList();
+    if (is_array($this->getIdList()) && !empty($id_list)) {
       foreach ($this->map->getSourceKeyMap() as $key_name) {
         $query = $query->condition("map.$key_name", $this->getIdList(), 'NOT IN');
       }
