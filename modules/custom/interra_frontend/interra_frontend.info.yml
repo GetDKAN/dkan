@@ -1,0 +1,7 @@
+name: Interra Front End
+description: 'Routes Drupal to the Interra Front End.'
+type: module
+core: 8.x
+dependencies:
+  - drupal:field
+package: DKAN

@@ -1,0 +1,15 @@
+uuid: ae1c99f5-db41-4e1b-9bbd-5d307120d0b0
+name: 'DKAN Open Data Catalog'
+mail: admin@example.com
+slogan: ''
+page:
+  403: ''
+  404: ''
+  front: /home
+admin_compact_mode: false
+weight_select_max: 100
+langcode: en
+default_langcode: en
+_core:
+  default_config_hash: yXadRE77Va-G6dxhd2kPYapAvbnSvTF6hO4oXiOEynI
+
