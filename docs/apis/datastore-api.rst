@@ -69,7 +69,7 @@ above syntax, it also accepts an alternative format:
 
 ::
 
-    ...&sort=field1,field2 desc
+    ...&sort[field1]=desc
 
 Multiple queries
 ----------------
@@ -242,7 +242,7 @@ Simple query example
 
 ::
 
-    http://EXAMPLE.COM/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[country]=AR,US&fields=country,population,timestamp&sort[country]=asc
+    http://EXAMPLE.COM/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[country]=AR,US&fields[]=country&fields[]=population,timestamp&sort[country]=asc
 
 Returns the country, population, and timestamp fields for US and AR from
 dataset 1 sorting by the country in ascending order.
@@ -253,7 +253,7 @@ Text Search
 Requests with the 'query' argument will search the listed fields within
 the dataset::
 
-    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&&fields=country,population&query=US
+    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&&fields[]=country&fields[]=population&query=US
 
 This will return the country and population from US.
 
