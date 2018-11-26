@@ -788,11 +788,14 @@ function dkan_update_7033() {
   foreach (db_find_tables("%dkan_datastore%") as $table_name) {
     $table_name = _dkan_remove_prefix($prefix, $table_name);
     $nid = str_replace("dkan_datastore_", "", $table_name);
-    $resource = Resource::createFromDrupalNodeNid($nid);
+    try {
+      $resource = Resource::createFromDrupalNodeNid($nid);
 
-    /* @var $manager \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
-    $manager = (new Factory($resource))->get();
-    $manager->saveState();
+      /* @var $manager \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
+      $manager = (new Factory($resource))->get();
+      $manager->saveState();
+    }
+    catch( \Exception $e) {}
   }
 }
 
