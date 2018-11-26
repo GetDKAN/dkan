@@ -911,7 +911,7 @@ function dkan_datastore_api_api_page_access($node) {
   /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
   if ($manager = (new Factory($resource))->get()) {
     $status = $manager->getStatus();
-    if ($status['data_import'] == $manager::DATA_IMPORT_DONE && user_access('manage datastore')) {
+    if ($status['data_import'] == $manager::DATA_IMPORT_DONE) {
       $type = 'resource';
       $file_field = dkan_datastore_file_upload_field();
       $link_field = dkan_datastore_file_link_field();
