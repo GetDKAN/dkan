@@ -534,8 +534,8 @@ function dkan_update_7029() {
   $data = unserialize($field_config[0]);
 
   $data['indexes']['format'][0] = 'format';
-  $data['settings'] = '';
-  $data['settings']['max_length'] = '255';
+  $data['settings'] = array();
+  $data['settings'] = array('max_length' => '255');
   $data['foreign keys']['format']['table'] = 'filter_format';
   $data['foreign keys']['format']['columns']['format'] = 'format';
 
@@ -561,12 +561,11 @@ function dkan_update_7029() {
   $data = unserialize($field_config[0]);
 
   $data['default_value'] = NULL;
-  $data['settings'] = '';
-  $data['settings']['text_processing'] = 0;
-  $data['settings']['user_register_form'] = FALSE;
+  $data['settings'] = array();
+  $data['settings']= array('text_processing' => 0, 'user_register_form' => FALSE);
   $data['widget']['module'] = 'text';
-  $data['widget']['settings'] = '';
-  $data['widget']['settings']['size'] = 60;
+  $data['widget']['settings'] = array();
+  $data['widget']['settings'] = array('size' => 60);
   $data['widget']['type'] = 'text_textfield';
 
   $data = serialize($data);
