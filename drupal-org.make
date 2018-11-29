@@ -140,6 +140,7 @@ projects:
     version: '1.6'
     patch:
       2887897: https://www.drupal.org/files/issues/added_missing_isset_calls-2887897-2.patch
+      3016830: https://www.drupal.org/files/issues/2018-11-28/undefined-index-classes-3016830-0.patch
   field_hidden:
     version: '1.7'
   field_reference_delete:
