@@ -1,5 +1,5 @@
 Display Number of Datasets, Topics or Other Items
-=========================================
+=================================================
 
 Datasets, resources, tags and topics in DKAN are created using Drupal's content types and vocabularies. This means that we can use many of the Drupal modules and tools to extend the site display and functionality.
 
@@ -9,10 +9,10 @@ The following recipe will use Views and Panals modules to create some simple sit
 
 .. figure:: https://user-images.githubusercontent.com/512243/46543802-ca9d8700-c88f-11e8-9824-0cd7f7e52934.png
 
-Steps
------
+Step 1
+------
 
-1. Go to `admin/structure/views/import` and import the following two views:
+- Go to `admin/structure/views/import` and import the following two views:
 
 Terms Count View:
 
@@ -137,13 +137,16 @@ Node Counts view:
 
 These two views provide blocks for Dataset, Resource, Topic, and Tag counts.
 
-1a. Clear the Drupal cache.
+- Clear the Drupal cache.
 
-2. Add Blocks to Home page:
+Step 2
+------
 
-2a: Go to the Panelizer page for the home page. You can find this by finding the "Welcome" page in the content menu and clicking "edit". Replace the "edit" term in the URL with "panelizer". The URL should look like `node/1/panelizer`. 
-2b: Click "content" in the default view mode.
-2c: Click the gear Icon under "Triplet First Column" and "Add Content"
+Add Blocks to Home page:
+^^^^^^^^^^^^^^^^^^^^^^^^
+- Go to the Panelizer page for the home page. You can find this by finding the "Welcome" page in the content menu and clicking "edit". Replace the "edit" term in the URL with "panelizer". The URL should look like `node/1/panelizer`.
+- Click "content" in the default view mode.
+- Click the gear Icon under "Triplet First Column" and "Add Content"
 
 .. figure:: https://user-images.githubusercontent.com/512243/46544377-68458600-c891-11e8-8498-08d0086bb2a7.png
 
@@ -153,4 +156,4 @@ Click "Views" in the left column and then "Node Counts"
 
 Select "Dataset Block" as the display. Click "Finish" and then "Save" on the panelizer page.
 
-2d: Repeat the process for the other types of statistics you want to add. To add Topics or Tags statistics select "Term Counts" instead of "Node Counts".
+- Repeat the process for the other types of statistics you want to add. To add Topics or Tags statistics select "Term Counts" instead of "Node Counts".
