@@ -11,9 +11,9 @@ function dkan_environment_environment() {
     'description' => t('Local Development Environment.'),
   );
 
-  $environments['stage'] = array(
-    'label' => t('Stage'),
-    'description' => t('Staging Environment.'),
+  $environments['test'] = array(
+    'label' => t('Test'),
+    'description' => t('Test/Staging Environment.'),
   );
 
   return $environments;
