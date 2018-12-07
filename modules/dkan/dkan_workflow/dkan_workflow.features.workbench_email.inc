@@ -118,28 +118,27 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'to_name' => 'draft',
       'author' => 0,
       'automatic' => 1,
-      'subject' => '[site:name] Status of [node:content-type] “[node:title]”',
+      'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A moderator has changed [node:content-type],  [node:title], moderation state from [workbench-email:email-transition].
+A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
-For more details, view your [node:content-type] at [node:url]. 
+For more details, view [node:content-type] at [node:url].
 
-To modify the moderation state of a Dataset , click “Edit” and click the ‘Moderate’ button at the top of the screen.
-To modify the moderation state of a Resource, Blog, or a page  scroll to the bottom of the page to find the “Publishing Options” menu tab.
-You can access your full Workbench dashboard by logging in and clicking “My Workbench” on the left-hand side of the blue site navigation bar. 
+There are three moderation states for content in DKAN: Draft, Needs Review and Published. Content that has been pushed from Needs Review back to Draft may be edited and submitted once more for review.
 
-Content you have created, whether published or unpublished, is listed under “My Content.”
+To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
 
-“My Drafts” displays all pieces of content that you have created and saved as drafts, and “Needs Review” displays all of the content that you’ve created that needs review by an editor, group manager or site administrator.
-',
-      'author' => 0,
-      'automatic' => 1,
+To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+
+For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Supervisor',
     ),
     'needs_review:published:original author' => array(
       'from_name' => 'needs_review',
       'to_name' => 'published',
+      'author' => 1,
+      'automatic' => 1,
       'subject' => '[site:name] Status of [node:content-type] “[node:title]”',
       'message' => '[user:name],
 
