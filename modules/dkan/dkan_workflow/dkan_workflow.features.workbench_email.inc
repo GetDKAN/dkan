@@ -223,8 +223,20 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'to_name' => 'needs_review',
       'author' => 0,
       'automatic' => 1,
-      'subject' => NULL,
-      'message' => NULL,
+      'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
+      'message' => '[user:name],
+
+A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+
+For more details, view [node:content-type] at [node:url].
+
+There are three moderation states for content in DKAN: Draft, Needs Review and Published.
+
+To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+
+To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+
+For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Moderator',
     ),
     'published:needs_review:Workflow Supervisor' => array(
