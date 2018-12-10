@@ -18,11 +18,11 @@ function dkan_workflow_workbench_email_export() {
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
-There are three moderation states for content in DKAN: Draft, Needs Review and Published. To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+There are three moderation states for content in DKAN: Draft, Needs Review and Published. To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -37,13 +37,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published. Items that are not reviewed within 72 hours are filed under "Stale Reviews."
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -58,13 +58,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published. Items that are not reviewed within 72 hours are filed under "Stale Reviews."
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -85,7 +85,7 @@ For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published. If your draft has been pushed from Needs Review back to Draft, you may edit and submit it once more for review.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -100,13 +100,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published. Content that has been pushed from Needs Review back to Draft may be edited and submitted once more for review.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -121,13 +121,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published. Content that has been pushed from Needs Review back to Draft may be edited and submitted once more for review.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -142,13 +142,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - [node:content-type] "[node:title]" is now published',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published. If you\'ve published content but wish to remove it from the site, you can change its status back to "Draft" or consult a Moderator or Site Manager.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab. Removing the checkmark from the "Publish" box un-publishes content, keeping it on the site but removing it from public view.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -163,13 +163,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - [node:content-type] "[node:title]" is now published',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
-There are three moderation states for content in DKAN: Draft, Needs Review and Published. If you\'ve published content but wish to remove it from the site, you can change its status back to "Draft" or see the below instructions on how to un-publish it.
+There are three moderation states for content in DKAN: Draft, Needs Review and Published. If you\'ve published content but wish to remove it from the site, you will need to un-publish it.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab. Removing the checkmark from the "Publish" box un-publishes content, keeping it on the site but removing it from public view.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. Under the moderation options is an "Unpublish" link that will let you set the state back to "Draft".
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -184,13 +184,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - [node:content-type] "[node:title]" is now published',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
-There are three moderation states for content in DKAN: Draft, Needs Review and Published. If you\'ve published content but wish to remove it from the site, you can change its status back to "Draft" or see the below instructions on how to un-publish it.
+There are three moderation states for content in DKAN: Draft, Needs Review and Published. If you\'ve published content but wish to remove it from the site, you will need to un-publish it.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab. Removing the checkmark from the "Publish" box un-publishes content, keeping it on the site but removing it from public view.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. Under the moderation options is an "Unpublish" link that will let you set the state back to "Draft".
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -205,13 +205,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -226,13 +226,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
@@ -247,13 +247,13 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published.
 
-To change the moderation state of a Dataset that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. For a Resource, Blog or Page, scroll to the bottom of the page to find the "Publishing Options" menu tab.
+To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
 To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
 
