@@ -1063,7 +1063,7 @@ function dkan_dataset_preview_url_cartodb($node) {
     $resource_file_url = file_create_url($resource_wrapper->field_upload->value()->uri);
   }
   elseif ($resource_wrapper->field_link_remote_file->value()) {
-    $resource_file_url = $resource_wrapper->field_link_remote_file->value()->uri;
+    $resource_file_url = $resource_wrapper->field_link_remote_file->value()['uri'];
   }
   if ($resource_file_url) {
     return sprintf($pattern, $resource_file_url);
