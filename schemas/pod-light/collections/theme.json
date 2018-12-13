@@ -18,6 +18,14 @@
       "type": "string",
       "title": "Identifier"
     },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "image": {
+      "title": "image",
+      "type": "string"
+    },  
     "created": {
       "type": "string",
       "title": "Created",
