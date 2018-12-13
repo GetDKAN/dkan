@@ -99,6 +99,18 @@ organization:
       type: SearchPage
       collection: publisher
       arg: name
+theme:
+  Main:
+    image:
+      type: Image
+      lable: false
+      float: left
+    description:
+      type: Text
+    widget:
+      type: SearchPage
+      collection: theme
+      arg: title
 
 
 
