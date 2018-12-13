@@ -18,7 +18,7 @@ function dkan_workflow_workbench_email_export() {
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -37,7 +37,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -58,7 +58,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -79,7 +79,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Workbench Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -100,7 +100,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -121,7 +121,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -142,7 +142,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - [node:content-type] "[node:title]" is now published',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -163,7 +163,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - [node:content-type] "[node:title]" is now published',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -184,7 +184,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - [node:content-type] "[node:title]" is now published',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -205,7 +205,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -226,7 +226,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
@@ -247,7 +247,7 @@ For assistance or support, please contact a Site Manager or an administrator fro
       'subject' => 'Workbench moderation update ([site:name]) - Status of [node:content-type] "[node:title]" has changed.',
       'message' => '[user:name],
 
-A Moderator or Supervisor on [site:name] has changed the status of the [node:content-type] "[node:title]" from [workbench-email:email-transition].
+The status of the [node:content-type] "[node:title]" has been changed from [workbench-email:email-transition].
 
 For more details, view [node:content-type] at [node:url].
 
