@@ -357,9 +357,10 @@ function dkan_datastore_api_query($params) {
     if (empty($resource_ids)) {
       throw new \Exception("The resource_id is a required parameter.");
     }
-
-    $alias = array_shift(array_keys($resource_ids));
-    $resource_id = array_shift(array_values($resource_ids));
+    $keys = array_keys($resource_ids);
+    $values = array_values($resource_ids);
+    $alias = array_shift($keys);
+    $resource_id = array_shift($values);
 
     $alias = is_string($alias) ? $alias : DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS;
     $table = dkan_datastore_api_tablename($resource_id);
@@ -707,14 +708,17 @@ function dkan_datastore_api_sort(&$data_select, $sort, $alias) {
   else {
     $columns = $sort;
   }
-
-  $key = end(array_values($sort));
+  $vs = array_values($sort);
+  $ks = array_keys($sort);
+  $key = end($vs);
   if (!in_array($key, ['desc', 'asc'])) {
     $columns = $key;
-    $alias = end(array_keys($sort));
+    $alias = end($ks);
   }
-  foreach ($columns as $field => $order) {
-    $data_select->orderBy($alias . '.' . $field, $order);
+  if (!empty($columns)) {
+    foreach ($columns as $field => $order) {
+      $data_select->orderBy($alias . '.' . $field, $order);
+    }
   }
 }
 
