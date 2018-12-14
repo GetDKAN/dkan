@@ -24,7 +24,7 @@ For more details, view [node:content-type] at [node:url].
 
 There are three moderation states for content in DKAN: Draft, Needs Review and Published. To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'original author',
@@ -45,7 +45,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Moderator',
@@ -66,7 +66,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Supervisor',
@@ -87,7 +87,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'original author',
@@ -108,7 +108,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Moderator',
@@ -129,7 +129,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the topr.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Supervisor',
@@ -150,7 +150,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'original author',
@@ -171,7 +171,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. Under the moderation options is an "Unpublish" link that will let you set the state back to "Draft".
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Moderator',
@@ -192,7 +192,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen. Under the moderation options is an "Unpublish" link that will let you set the state back to "Draft".
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Supervisor',
@@ -213,7 +213,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'original author',
@@ -234,7 +234,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Moderator',
@@ -255,7 +255,7 @@ There are three moderation states for content in DKAN: Draft, Needs Review and P
 
 To change the moderation state of content that you\'ve created or have permission to edit, click "Edit" and click the "Moderate" button located at the top of the screen.
 
-To access your Workbench dashboard, log in and click "My Workbench" on the primary site navigation bar.
+To access your Workbench dashboard, log in and click "My Workbench" from the administration menu at the top.
 
 For assistance or support, please contact a Site Manager or an administrator from your organization.',
       'role' => 'Workflow Supervisor',
