@@ -833,18 +833,21 @@ function dkan_datastore_api_resource_help() {
  * Returns sql statement for debug purposes.
  */
 function dkan_datastore_api_debug($data_select) {
-  if (method_exists($data_select, 'preExecute')) {
-    $data_select->preExecute();
+  if (is_object($data_select) && $data_select instanceof SelectQueryInterface) {
+    if (method_exists($data_select, 'preExecute')) {
+      $data_select->preExecute();
+    }
+    $sql = (string)$data_select;
+    $quoted = array();
+    $connection = Database::getConnection();
+    foreach ((array)$data_select->arguments() as $key => $val) {
+      $quoted[$key] = $connection->quote($val);
+    }
+    $sql = strtr($sql, $quoted);
+    $sql = str_replace('\n', ' ', $sql);
+    return (string)$sql;
   }
-  $sql = (string) $data_select;
-  $quoted = array();
-  $connection = Database::getConnection();
-  foreach ((array) $data_select->arguments() as $key => $val) {
-    $quoted[$key] = $connection->quote($val);
-  }
-  $sql = strtr($sql, $quoted);
-  $sql = str_replace('\n', ' ', $sql);
-  return (string) $sql;
+  return "";
 }
 
 /**
