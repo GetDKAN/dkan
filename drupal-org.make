@@ -296,7 +296,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/recline.git
-      revision: b219cef673561aa6d4c589b55bbbac330bc92574
+      revision: 6c7c6ad19940a96adf2927d8b819c5f34d976f87
   ref_field:
     download:
       type: git
