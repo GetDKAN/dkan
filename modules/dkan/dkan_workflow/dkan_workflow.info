@@ -33,6 +33,7 @@ features[workbench_email][] = needs_review:draft::workflow supervisor
 features[workbench_email][] = needs_review:published::original author
 features[workbench_email][] = needs_review:published::workflow moderator
 features[workbench_email][] = needs_review:published::workflow supervisor
+features[workbench_email][] = published:needs_review::original author
 features[workbench_email][] = published:needs_review::workflow moderator
 features[workbench_email][] = published:needs_review::workflow supervisor
 features[workbench_moderation_states][] = draft
