@@ -61,7 +61,7 @@ This will typically be a person handling the content on a frequent basis. Someon
 
 **Permissions:**
 
-* Create page, dataset, resource, data story, and data dashboard content.
+* Create dataset, resource, data story, and data dashboard content.
 * Create chart visualizations.
 * Edit, delete, and manage versions of content added by other users.
 * Add and view files to site library.
