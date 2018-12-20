@@ -10,7 +10,7 @@ Feature: Page
   @api @javascript
   Scenario: Add new page content as Editor
 
-    Given I am logged in as a user with the "editor" role
+    Given I am logged in as a user with the "site manager" role
     And I am on the "Add Page" page
     #   When I hover over the admin menu item "Add content"
     #     And I click "Page"
