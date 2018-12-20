@@ -168,9 +168,7 @@ abstract class Manager implements ManagerInterface {
 
     foreach ($headers as $key => $field) {
       $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
-      $new = trim($new);
-      $new = strtolower($new);
-      $new = str_replace(" ", "_", $new);
+      $new = dkan_datastore_safe_name($new);
       $header[$key] = $new;
     }
 
