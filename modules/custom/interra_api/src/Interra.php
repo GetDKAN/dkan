@@ -9,10 +9,8 @@ class Interra {
 
   public $config = FALSE;
 
-  private $interraConfigDir = 'profiles/dkan2/modules/custom/interra_api/config';
-
   public function loadPageSchema() {
-    $file = $this->interraConfigDir . '/pageSchema.yml';
+    $file = __DIR__ . '/../config/pageSchema.yml';
     return Yaml::decode(file_get_contents($file));
   }
 

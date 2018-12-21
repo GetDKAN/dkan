@@ -8,10 +8,9 @@ use Drupal\dkan_schema\Schema;
 
 class SiteMap {
 
-  private $interraConfigDir = 'profiles/dkan2/modules/custom/interra_api/config';
-
   private function loadConfig() {
-    return Yaml::decode(file_get_contents($this->interraConfigDir . '/siteMap.yml'));
+    $file = __DIR__ . '/../config/siteMap.yml';
+    return Yaml::decode(file_get_contents($file));
   }
 
   public function load() {

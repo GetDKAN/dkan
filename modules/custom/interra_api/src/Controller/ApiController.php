@@ -33,23 +33,30 @@ class ApiController extends ControllerBase {
     $response['pageSchema'] = $interra->loadPageSchema();
     $response['facets'] = $schema->config['facets'];
     $response['map'] = ['organization' => ['name' => 'title']];
-    return new JsonResponse( $response );
+    return $this->response($response );
   }
 
   public function search( Request $request ) {
     $search = new Search();
-    return new JsonResponse( $search->index() );
+    return $this->response($search->index());
+  }
+
+  public function response ( $resp ) {
+    $response = new JsonResponse( $resp );
+    $response->headers->set('Access-Control-Allow-Origin', '*');
+    $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, DELETE');
+    $response->headers->set('Access-Control-Allow-Headers', 'Authorization');
+    return $response;
   }
 
   public function siteMap( Request $request ) {
     $siteMap = new SiteMap();
-    return new JsonResponse( $siteMap->load() );
+    return $this->response($siteMap->load());
   }
 
   public function swagger( Request $request ) {
     $swagger = new Swagger();
-    return new JsonResponse( $swagger->load() );
-    //return new JsonResponse( [] );
+    return $this->response($swagger->load());
   }
 
   public function collection( Request $request ) {
@@ -59,7 +66,7 @@ class ApiController extends ControllerBase {
     if ($collection = $apiRequest->validateCollectionPath($path)) {
       $load = new Load();
       $docs = $load->loadByType($collection);
-      return new JsonResponse( $docs );
+      return $this->response($docs);
     }
     else {
       throw new NotFoundHttpException();
@@ -76,7 +83,7 @@ class ApiController extends ControllerBase {
       $entity = $schema->config['collectionToEntityMap'][$collection];
       $load = new Load();
       if ($doc = $load->loadAPIDoc($id, $entity)) {
-        return new JsonResponse( $doc );
+        return $this->response($doc);
       }
       throw new NotFoundHttpException();
     }
@@ -95,7 +102,7 @@ class ApiController extends ControllerBase {
       if ($doc = $load->loadDocById($id, $entity)) {
         $formatted = $load->formatDoc($doc);
         $dereferenced = $load->dereference($formatted);
-        return new JsonResponse( $dereferenced );
+        return $this->response($dereferenced);
       }
       throw new NotFoundHttpException();
     }
