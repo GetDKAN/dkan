@@ -75,7 +75,7 @@ projects:
   devel:
     version: '1.5'
   diff:
-    version: '3.3'
+    version: '3.4'
   double_field:
     version: '2.5'
   drafty:
@@ -107,9 +107,7 @@ projects:
   facetapi_pretty_paths:
     version: '1.4'
   features:
-    version: '2.10'
-    patch:
-      2765721: https://www.drupal.org/files/issues/features-blank-line-after-php-tag-2765721-0.patch
+    version: '2.11'
   features_roles_permissions:
     version: '1.2'
   feeds:
@@ -181,7 +179,7 @@ projects:
     patch:
       1568162: https://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch
   honeypot:
-    version: '1.24'
+    version: '1.25'
   image_url_formatter:
     version: '1.4'
   imagecache_actions:
@@ -201,7 +199,7 @@ projects:
       url: https://github.com/GetDKAN/leaflet_draw_widget.git
       revision: 5a5f8faf664aeca02371f6692307580d9fab9116
   libraries:
-    version: '2.3'
+    version: '2.5'
   link:
     version: '1.5'
   link_badges:
@@ -239,7 +237,7 @@ projects:
   menu_block:
     version: '2.7'
   migrate:
-    version: '2.10'
+    version: '2.11'
     patch:
       1989492: https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch
   migrate_extras:
@@ -278,7 +276,7 @@ projects:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.54'
+    version: '1.57'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -323,7 +321,7 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.24'
+    version: '1.25'
   search_api_db:
     version: '1.7'
   select_or_other:
