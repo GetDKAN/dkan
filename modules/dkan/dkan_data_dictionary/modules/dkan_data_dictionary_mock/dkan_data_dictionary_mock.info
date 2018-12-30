@@ -1,6 +1,0 @@
-name = DKAN Data Dictionary
-description = Data Dictionary at the resource level for DKAN, with JSON schema.
-core = 7.x
-package = DKAN
-version = 7.x-1.0
-dependencies[] = dkan_data_dictionary
