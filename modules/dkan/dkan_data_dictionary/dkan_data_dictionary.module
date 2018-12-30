@@ -1,0 +1,438 @@
+<?php
+
+/**
+ * @file
+ * Code for the DKAN Data Dictionary feature.
+ */
+
+include_once 'dkan_data_dictionary.features.inc';
+
+use Dkan\DataDictionary\Resource;
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_data_dictionary_menu() {
+  $items = array();
+
+  $items['node/%node/dictionary/reports'] = array(
+    'title' => 'Validation',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dkan_data_dictionary_resource_report_form', 1),
+    'access callback' => 'dkan_data_dictionary_access',
+    'access arguments' => array('view', 1),
+    'file' => 'dkan_data_dictionary.pages.inc',
+    'weight' => '15',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_data_dictionary_permission() {
+  return array(
+    'view data_dictionary report' => array(
+      'title' => t('view data_dictionary report'),
+    ),
+
+    'validate data_dictionary' => array(
+      'title' => t('validate resource against data_dictionary'),
+    ),
+
+    'manage data_dictionary settings' => array(
+      'title' => t('manage data_dictionary settings'),
+    ),
+  );
+}
+
+/**
+ * Access callback for DKAN data_dictionary operations.
+ */
+function dkan_data_dictionary_access($op, $node, $account = NULL) {
+  try {
+    Resource::createFromDrupalNode($node);
+  }
+  catch (\Exception $e) {
+    return FALSE;
+  }
+
+  global $user;
+  if (!isset($account)) {
+    $account = $user;
+  }
+
+  switch ($op) {
+    case 'view':
+      return node_access('view', $node, $account);
+
+    case 'drop':
+    case 'delete':
+    case 'import':
+    case 'manage':
+      // All available operations require the 'manage data_dictionary' permission.
+      if (user_access('manage data_dictionary', $account) && node_access('update', $node, $account)) {
+        return TRUE;
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_xautoload().
+ */
+function dkan_data_dictionary_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\DataDictionary\\',
+    drupal_get_path("module", "dkan_data_dictionary") . '/src'
+  );
+}
+
+/**
+ * Get dictionaries info.
+ */
+function dkan_data_dictionary_dictionaries_info() {
+  // TODO Add caching.
+  $dictionariesInfo = module_invoke_all("dkan_data_dictionaries");
+
+  // Allow alteration by third party modules.
+  drupal_alter('dkan_data_dictionaries_alter',
+    $dictionariesInfo
+  );
+
+  dpm($dictionariesInfo);
+
+  return $dictionariesInfo;
+}
+
+/**
+ *
+ */
+function dkan_data_dictionary_dictionary_load($dkan_datadict_machinename) {
+  $dkan_datadict_selected = NULL;
+
+  foreach (dkan_data_dictionary_dictionaries_info() as $dkan_datadict) {
+    if ($dkan_datadict->getMachineName() == $dkan_datadict_machinename) {
+      $dkan_datadict_selected = $dkan_datadict;
+      break;
+    }
+  }
+
+  return $dkan_datadict;
+}
+
+/**
+ *
+ */
+function dkan_data_dictionary_validate($dkan_datadict_machinename, $schema_descriptor) {
+  $valid = FALSE;
+  $errors = array();
+
+  $dataDictionary = dkan_data_dictionary_dictionary_load($dkan_datadict_machinename);
+
+  if (empty($dataDictionary)) {
+    $errors[] = t('Schema selected cannot be found.');
+    return array($valid, $errors);
+  }
+
+  $dataDictionaryManager = $dataDictionary->getDataDictionaryManager();
+  $errors = $dataDictionaryManager->validateSchema($schema_descriptor);
+
+  if (empty($errors)) {
+    $valid = TRUE;
+  }
+
+  return array($valid, $errors);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state) {
+  $lang = $form['language']['#value'];
+
+  // Load jsoneditor libray and attach to resource form.
+  $form['#attached']['libraries_load'][] = array('jsoneditor');
+  $form['#attached']['js'][] = drupal_get_path('module', 'dkan_data_dictionary') . '/js/editor.js';
+  drupal_add_css(drupal_get_path('module', 'dkan_data_dictionary') . '/css/dkan_data_dictionary.css');
+  $form['#validate'][] = 'dkan_data_dictionary_validate_resource';
+
+  // Add javascript for csv data dictionary schema.
+  $fid = $form['field_describedby_file'][$lang][0]['#default_value']['fid'];
+  if ($fid !== 0) {
+    $valid = _dkan_data_dictionary_csv_is_schema($fid);
+  }
+  else {
+    $valid = FALSE;
+  }
+
+  drupal_add_js(array('dkan_data_dictionary' => array('fileid' => $fid)), 'setting');
+  drupal_add_js(array('dkan_data_dictionary' => array('valid' => $valid)), 'setting');
+  drupal_add_js(drupal_get_path('module', 'dkan_data_dictionary') . '/js/dkan_data_dictionary.js');
+
+}
+
+/**
+ * Custom validation function for resource node.
+ */
+function dkan_data_dictionary_validate_resource($form, &$form_state) {
+  $language = $form_state['values']['language'];
+
+  // We expect only one Dictionary type selected.
+  $describedby_spec = $form_state['values']['field_describedby_spec'][$language][0]['value'];
+
+  // Skip if no data dictionary specification is selected.
+  if (empty($describedby_spec)) {
+    return;
+  }
+
+  // At this point, a data dictionary schema type is selected and we need the
+  // associated schema content. Use file if uploaded, then check for text
+  // field. Expect a single item to be provided by the file upload and the
+  // text field.
+  $schema_textfield = $form_state['values']['field_describedby_schema'][$language][0]['value'];
+
+  if ($schema_textfield == '{}' && $schema_textfield == '') {
+    $schema_textfield = FALSE;
+  }
+
+  $schema_file = $form_state['values']['field_describedby_file'][$language][0];
+
+  if (isset($schema_file['fid']) && $schema_file['fid'] == 0) {
+    $schema_file = FALSE;
+  }
+
+  if (empty($schema_file) && empty($schema_textfield)) {
+    form_set_error('field_describedby_spec', t('JSON Schema specification selected but no Schema provided.'));
+    return;
+  }
+  elseif (!empty($schema_file)) {
+    $schema_file = file_load($schema_file['fid']);
+
+    list($valid, $errors) = dkan_data_dictionary_validate($describedby_spec, $schema_file->uri);
+    $form_item = 'field_describedby_file';
+  }
+  elseif (!empty($schema_textfield)) {
+    list($valid, $errors) = dkan_data_dictionary_validate($describedby_spec, $schema_textfield);
+    $form_item = 'field_describedby_schema';
+  }
+
+  if ($valid != TRUE) {
+    foreach ($errors as $error) {
+      form_set_error($form_item, $error);
+    }
+  }
+}
+
+/**
+ *
+ * @param int $fid
+ *
+ * @return bool
+ */
+function _dkan_data_dictionary_csv_is_schema($fid) {
+  $file = file_load($fid);
+  if ($file->filemime === 'text/csv' && $file->filesize > 0) {
+    $url = drupal_realpath($file->uri);
+    $csv = fopen($url, "r");
+
+    if ($csv) {
+      $allowed = array('name', 'title', 'type', 'description', 'format', 'constraints', 'rdftype');
+      $required = array('name');
+
+      // Check the first line of the file to be sure all properties are valid.
+      $properties = fgetcsv($csv);
+      $invalid = array_diff(array_map('strtolower', $properties), $allowed);
+      $missing = array_diff($required, array_map('strtolower', $properties));
+
+      // Attempt to read the next line - check for at least one row of values.
+      $data = fgetcsv($csv);
+      fclose($csv);
+
+      if ($invalid || $missing || !$data) {
+        return FALSE;
+      }
+
+      return TRUE;
+
+    }
+    else {
+      return FALSE;
+    }
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function dkan_data_dictionary_node_presave($node) {
+  if ($node->type === 'resource') {
+    $lang = $node->language;
+    $files = (isset($node->field_describedby_file[$lang][0]['fid'])) ? count($node->field_describedby_file[$lang]) : 0;
+    $original_fid = (isset($node->original->field_describedby_file[$lang][0]['fid'])) ? $node->original->field_describedby_file[$lang][0]['fid'] : 0;
+
+    // If there is no schema file attached see if there was once before.
+    if ($files === 0 && $original_fid != 0) {
+      if (_dkan_data_dictionary_csv_is_schema($original_fid)) {
+        // If a valid schema file was previously supplied but removed -
+        // the JSON Schema field must also be emptied.
+        $node->field_describedby_schema[$lang][0]['value'] = '{}';
+      }
+    }
+    // Was a schema source file provided?
+    elseif ($files === 1) {
+      $fid = $node->field_describedby_file[$lang][0]['fid'];
+
+      // If the supplied file is new process it otherwise skip processing.
+      if ($fid != $original_fid) {
+
+        // If the supplied file is a CSV and isn't empty.
+        if (_dkan_data_dictionary_csv_is_schema($fid)) {
+          $file = file_load($fid);
+          $url = drupal_realpath($file->uri);
+          $csv = fopen($url, "r");
+
+          if ($csv) {
+            $fields = array();
+
+            while ($lines[] = fgetcsv($csv)) {
+
+              if (count($lines) === 1) {
+                $properties = $lines[count($lines) - 1];
+              }
+              else {
+                $current_item = $lines[count($lines) - 1];
+                $field = new stdClass();
+
+                foreach ($properties as $key => $property) {
+                  if (!empty($current_item[$key])) {
+                    if ($property !== 'constraints') {
+                      $field->$property = $current_item[$key];
+                    }
+                    else {
+                      // Constraints require additional processing.
+                      $new_constraint = new stdClass();
+
+                      $constraints = explode(",", $current_item[$key]);
+                      foreach ($constraints as $constraint) {
+                        $parts = explode(":", $constraint);
+                        $new_constraint->$parts[0] = $parts[1];
+                      }
+
+                      $field->$property = $new_constraint;
+
+                    }
+                  }
+                }
+
+                $fields[] = $field;
+
+              }
+            }
+
+            // If we ended up with at least one valid field update JSON Schema.
+            if (count($fields) != 0) {
+              $json = new stdClass();
+              $json->fields = $fields;
+              $schema = json_encode($json);
+              $node->field_describedby_schema[$lang][0]['value'] = $schema;
+            }
+
+            fclose($csv);
+          }
+          else {
+            drupal_set_message(t('Unable to open the supplied schema file.'));
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function dkan_data_dictionary_libraries_info() {
+  $libraries = array();
+  $libraries['jsoneditor'] = array(
+    'name' => 'JSONEditor',
+    'vendor url' => 'https://github.com/josdejong/jsoneditor',
+    'download url' => 'https://github.com/josdejong/jsoneditor/archive/master.zip',
+    'path' => '',
+    'version arguments' => array(
+      'file' => 'package.json',
+      'pattern' => '/"version": "(\d+\.\d+\.\d+)"/',
+    ),
+    'files' => array(
+      'js' => array(
+        'dist/jsoneditor.min.js',
+      ),
+      'css' => array(
+        'dist/jsoneditor.min.css',
+      ),
+    ),
+  );
+  return $libraries;
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function dkan_data_dictionary_field_formatter_info() {
+  return array(
+    'text_schema_table' => array(
+      'label' => t('Schema Table'),
+      'field types' => array('text_long'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $resource = entity_metadata_wrapper($entity_type, $entity);
+
+  $describedby_spec = $resource->field_describedby_spec->value();
+
+  $dataDictionary = dkan_data_dictionary_dictionary_load($describedby_spec);
+
+  if (empty($dataDictionary)) {
+    return array();
+  }
+
+  $dataDictionaryManager = $dataDictionary->getDataDictionaryManager();
+
+  $settings = $display['settings'];
+  $elements = array();
+
+  foreach ($items as $delta => $item) {
+    try {
+      $elements[$delta] = $dataDictionaryManager::schemaFormatterView($item['value'], $display['type']);
+    }
+    catch (\Exception $execption) {
+      watchdog('dkan_data_dictionary', 'Formatter view exception: @message', array('@message' => $execption->getMessage()), WATCHDOG_ERROR);
+      // TODO better error reporting.
+      $elements[$delta] = array();
+    }
+  }
+
+  return $elements;
+}
+
+/**
+ * Allowed_values_function config for field_describedby_spec.
+ */
+function dkan_data_dictionary_field_describedby_spec_allowed_values() {
+  $dictionaries = dkan_data_dictionary_dictionaries_info();
+
+  $allowed_values = array();
+
+  foreach ($dictionaries as $dicctionary) {
+    $allowed_values[$dicctionary->getMachineName()] = $dicctionary->getLabel();
+  }
+
+  return $allowed_values;
+}

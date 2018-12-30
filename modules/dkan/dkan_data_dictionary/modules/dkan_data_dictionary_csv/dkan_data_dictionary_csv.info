@@ -1,0 +1,6 @@
+name = CSV DKAN Data Dictionary
+description = CSV Data Dictionary for DKAN resources.
+core = 7.x
+package = DKAN
+version = 7.x-1.0
+dependencies[] = dkan_data_dictionary
