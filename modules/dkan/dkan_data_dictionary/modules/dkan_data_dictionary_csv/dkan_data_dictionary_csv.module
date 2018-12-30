@@ -5,7 +5,7 @@
  * Code for the DKAN Data Dictionary csv module.
  */
 
-use Dkan\DataDictionary\DataDictionaryInfo;
+use Dkan\DataDictionary\CsvDataDictionary;
 
 /**
  * Implements hook_xautoload().
@@ -21,11 +21,7 @@ function dkan_data_dictionary_csv_xautoload($adapter) {
  * Implements hook_dkan_data_dictionary_validator().
  */
 function dkan_data_dictionary_csv_dkan_data_dictionaries() {
-  $dataDictionaryInfo = new DataDictionaryInfo(
-    'Dkan\DataDictionary\CsvDataDictionaryManager',
-    'csvdatadict',
-    'CSV'
-  );
+  $dataDictionary = new CsvDataDictionary('csvdatadict', 'CSV', array('csv'));
 
-  return array('csvdatadict' => $dataDictionaryInfo);
+  return array('csvdatadict' => $dataDictionary);
 }

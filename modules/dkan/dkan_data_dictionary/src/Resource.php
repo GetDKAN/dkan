@@ -28,7 +28,6 @@ class Resource {
    * Getter.
    */
   public function getDataDictSchemaType() {
-    // @TODO add Exception throw.
     return $this->nodeMetadataWrapper->field_describedby_spec->value();
   }
 

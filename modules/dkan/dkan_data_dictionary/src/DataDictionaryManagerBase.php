@@ -7,15 +7,16 @@ namespace Dkan\DataDictionary;
  */
 abstract class DataDictionaryManagerBase implements DataDictionaryManagerInterface {
 
-  protected $dataDictionaryInfo;
+  protected $dataDictionary;
   protected $schema;
   protected $data;
+  protected $validationReport;
 
   /**
-   * @param DataDictionaryInfo dataDictionaryInfo Validator struct.
+   * @param DataDictionary dataDictionary Validator struct.
    */
-  public function __construct(DataDictionaryInfo $dataDictionaryInfo) {
-    $this->dataDictionaryInfo = $dataDictionaryInfo;
+  public function __construct(DataDictionaryBase $dataDictionary) {
+    $this->dataDictionary = $dataDictionary;
   }
 
   /**
@@ -29,11 +30,10 @@ abstract class DataDictionaryManagerBase implements DataDictionaryManagerInterfa
     foreach (array('schema', 'data') as $param) {
       if (empty($this->$param)) {
         throw new \Exception(format_string("Empty param: !s", array('!s' => $param)));
-
       }
     }
 
-    // Create associated validation report.
+    // Create the associated validation report.
     $this->initValidationReport($resource);
   }
 
@@ -41,5 +41,12 @@ abstract class DataDictionaryManagerBase implements DataDictionaryManagerInterfa
    *
    */
   abstract protected function initValidationReport(Resource $resource);
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getValidationReport() {
+    return $this->validationReport;
+  }
 
 }

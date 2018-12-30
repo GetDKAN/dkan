@@ -10,15 +10,7 @@ interface DataDictionaryManagerInterface {
   /**
    * Constructor.
    */
-  public function __construct(DataDictionaryInfo $dataDictionaryInfo);
-
-  /**
-   * Validate schema.
-   *
-   * @param string $schema
-   *   schema content or file path.
-   */
-  public static function validateSchema($schema);
+  public function __construct(DataDictionaryBase $dataDictionary);
 
   /**
    * Setup.
@@ -31,13 +23,8 @@ interface DataDictionaryManagerInterface {
   public function validate();
 
   /**
-   * Run the validation on a chunk.
+   * Run the validation on limited number of records (chunk) from the data.
    */
   public function validateChunk($chunk_size);
-
-  /**
-   * Return render array representation of the data dictionary.
-   */
-  public static function schemaFormatterView($schema, $display_type);
 
 }

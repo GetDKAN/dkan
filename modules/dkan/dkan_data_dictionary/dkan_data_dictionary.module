@@ -41,10 +41,6 @@ function dkan_data_dictionary_permission() {
     'validate data_dictionary' => array(
       'title' => t('validate resource against data_dictionary'),
     ),
-
-    'manage data_dictionary settings' => array(
-      'title' => t('manage data_dictionary settings'),
-    ),
   );
 }
 
@@ -53,9 +49,21 @@ function dkan_data_dictionary_permission() {
  */
 function dkan_data_dictionary_access($op, $node, $account = NULL) {
   try {
-    Resource::createFromDrupalNode($node);
+    $resource = Resource::createFromDrupalNode($node);
+    $dataDict_machinename = $resource->getDataDictSchemaType();
+    $dataDict = dkan_data_dictionary_dictionary_load($dataDict_machinename);
+
+    if (!$dataDict->hasManager()) {
+      return FALSE;
+    }
   }
   catch (\Exception $e) {
+    watchdog(
+      'dkan_data_dictionary',
+      'Failed to instanciate Resource object from node "@nid"',
+      array('@nid' => $node->nid),
+      WATCHDOG_ERROR
+    );
     return FALSE;
   }
 
@@ -66,17 +74,14 @@ function dkan_data_dictionary_access($op, $node, $account = NULL) {
 
   switch ($op) {
     case 'view':
-      return node_access('view', $node, $account);
+      // TODO.
+      return user_access('view data_dictionary report', $account)
+        && node_access('view', $node, $account);
 
-    case 'drop':
-    case 'delete':
-    case 'import':
     case 'manage':
-      // All available operations require the 'manage data_dictionary' permission.
-      if (user_access('manage data_dictionary', $account) && node_access('update', $node, $account)) {
-        return TRUE;
-      }
-      break;
+      // Validation operations require the 'manage data_dictionary' permission.
+      return user_access('validate data_dictionary', $account)
+        && node_access('update', $node, $account);
   }
 }
 
@@ -101,8 +106,6 @@ function dkan_data_dictionary_dictionaries_info() {
   drupal_alter('dkan_data_dictionaries_alter',
     $dictionariesInfo
   );
-
-  dpm($dictionariesInfo);
 
   return $dictionariesInfo;
 }
@@ -137,8 +140,7 @@ function dkan_data_dictionary_validate($dkan_datadict_machinename, $schema_descr
     return array($valid, $errors);
   }
 
-  $dataDictionaryManager = $dataDictionary->getDataDictionaryManager();
-  $errors = $dataDictionaryManager->validateSchema($schema_descriptor);
+  $errors = $dataDictionary->validateSchema($schema_descriptor);
 
   if (empty($errors)) {
     $valid = TRUE;
@@ -403,14 +405,12 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
     return array();
   }
 
-  $dataDictionaryManager = $dataDictionary->getDataDictionaryManager();
-
   $settings = $display['settings'];
   $elements = array();
 
   foreach ($items as $delta => $item) {
     try {
-      $elements[$delta] = $dataDictionaryManager::schemaFormatterView($item['value'], $display['type']);
+      $elements[$delta] = $dataDictionary::schemaFormatterView($item['value'], $display['type']);
     }
     catch (\Exception $execption) {
       watchdog('dkan_data_dictionary', 'Formatter view exception: @message', array('@message' => $execption->getMessage()), WATCHDOG_ERROR);
