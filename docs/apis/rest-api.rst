@@ -704,3 +704,4 @@ Known issues
   * Datasets and other content nodes can only be queried via node id or other entity. UUID support pending.
   * There is currently no way to request a previous revision of a dataset or resource.
   * Upon attaching a file to a resource via the API, DKAN will immediately import this file to the Datastore if it is a valid CSV. This may not always be the desired behavior; more control over datastore behavior should be available to API clients.
+  * Greater-than (>) and lesser-than (<) operations are not currently supported in queries. Equals (=) however should always work.
