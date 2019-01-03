@@ -153,7 +153,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.22
+    version: 2.25
   file_resup:
     version: '1.5'
   filefield_sources:
@@ -239,7 +239,7 @@ projects:
   menu_block:
     version: '2.8'
   migrate:
-    version: '2.10'
+    version: '2.11'
     patch:
       1989492: https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch
   migrate_extras:
