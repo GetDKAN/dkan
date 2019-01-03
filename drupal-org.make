@@ -8,7 +8,7 @@ includes:
 - https://raw.githubusercontent.com/NuCivic/recline/7.x-2.1/recline.make
 projects:
   admin_menu:
-    version: 3.0-rc5
+    version: 3.0-rc6
   admin_menu_source:
     version: '1.1'
     patch:
@@ -142,7 +142,7 @@ projects:
       2887897: https://www.drupal.org/files/issues/added_missing_isset_calls-2887897-2.patch
       3016830: https://www.drupal.org/files/issues/2018-11-28/undefined-index-classes-3016830-0.patch
   field_hidden:
-    version: '1.7'
+    version: '1.8'
   field_reference_delete:
     download:
       full_version: 7.x-1.0-beta1
