@@ -237,7 +237,7 @@ projects:
   menu_block:
     version: '2.8'
   migrate:
-    version: '2.11'
+    version: '2.10'
     patch:
       1989492: https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch
   migrate_extras:
