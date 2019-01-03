@@ -8,7 +8,7 @@ includes:
 - https://raw.githubusercontent.com/NuCivic/recline/7.x-2.1/recline.make
 projects:
   admin_menu:
-    version: 3.0-rc6
+    version: 3.0-rc5
   admin_menu_source:
     version: '1.1'
     patch:
