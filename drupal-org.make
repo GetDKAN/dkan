@@ -107,9 +107,7 @@ projects:
   facetapi_pretty_paths:
     version: '1.4'
   features:
-    version: '2.10'
-    patch:
-      2765721: https://www.drupal.org/files/issues/features-blank-line-after-php-tag-2765721-0.patch
+    version: '2.11'
   features_roles_permissions:
     version: '1.2'
   feeds:
