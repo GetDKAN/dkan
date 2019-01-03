@@ -1,7 +1,6 @@
 7.x-1.16
 ----------
- - #2758 Update contrib modules: diff, features, file_entity, honeypot, libraries, panopoly_images, search_api
- - #2179 Refactor Datastore Importer
+- #2179 Refactor Datastore Importer
  - #2627 Add support for ISO-8106 duration values in "modified" when harvesting
  - #2729 Update recline to 2.1
  - #2713 CSV Parser Improvements: trailing commas & escape chars

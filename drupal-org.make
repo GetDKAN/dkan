@@ -235,9 +235,9 @@ projects:
   menu_badges:
     version: '1.3'
   menu_block:
-    version: '2.7'
+    version: '2.8'
   migrate:
-    version: '2.10'
+    version: '2.11'
     patch:
       1989492: https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch
   migrate_extras:
@@ -271,12 +271,12 @@ projects:
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.57'
+    version: '1.58'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.57'
+    version: '1.58'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -321,7 +321,7 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.24'
+    version: '1.25'
   search_api_db:
     version: '1.7'
   select_or_other:
@@ -333,9 +333,9 @@ projects:
   strongarm:
     version: '2.0'
   tablefield:
-    version: '3.1'
+    version: '3.2'
   taxonomy_menu:
-    version: '1.5'
+    version: '1.6'
   taxonomy_fixtures:
     download:
       type: git
