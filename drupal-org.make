@@ -75,7 +75,7 @@ projects:
   devel:
     version: '1.5'
   diff:
-    version: '3.3'
+    version: '3.4'
   double_field:
     version: '2.5'
   drafty:
@@ -181,7 +181,7 @@ projects:
     patch:
       1568162: https://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch
   honeypot:
-    version: '1.24'
+    version: '1.25'
   image_url_formatter:
     version: '1.4'
   imagecache_actions:
@@ -201,7 +201,7 @@ projects:
       url: https://github.com/GetDKAN/leaflet_draw_widget.git
       revision: 5a5f8faf664aeca02371f6692307580d9fab9116
   libraries:
-    version: '2.3'
+    version: '2.5'
   link:
     version: '1.5'
   link_badges:
@@ -278,7 +278,7 @@ projects:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.54'
+    version: '1.58'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
