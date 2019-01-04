@@ -783,9 +783,10 @@ class HarvestMigration extends MigrateDKAN {
           $dataset_emw = entity_metadata_wrapper('node', $dataset_nid);
           $related_count = 0;
 
-          // Unpublish attached resources.
+          // Publish attached resources.
           if (isset($dataset_emw->field_resources)) {
             foreach ($dataset_emw->field_resources->getIterator() as $delta => $resource_emw) {
+              $resource_emw->field_orphan->set(0);
               $resource_emw->status->set(1);
               $resource_emw->save();
               $related_count++;
@@ -800,6 +801,7 @@ class HarvestMigration extends MigrateDKAN {
           }
 
           // Publish the dataset.
+          $dataset_emw->field_orphan->set(0);
           $dataset_emw->status->set(1);
           $dataset_emw->save();
 
