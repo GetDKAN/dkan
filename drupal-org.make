@@ -75,7 +75,7 @@ projects:
   devel:
     version: '1.5'
   diff:
-    version: '3.3'
+    version: '3.4'
   double_field:
     version: '2.5'
   drafty:
@@ -142,7 +142,7 @@ projects:
       2887897: https://www.drupal.org/files/issues/added_missing_isset_calls-2887897-2.patch
       3016830: https://www.drupal.org/files/issues/2018-11-28/undefined-index-classes-3016830-0.patch
   field_hidden:
-    version: '1.7'
+    version: '1.8'
   field_reference_delete:
     download:
       full_version: 7.x-1.0-beta1
@@ -153,7 +153,7 @@ projects:
       2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
       2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
   file_entity:
-    version: 2.22
+    version: 2.25
   file_resup:
     version: '1.5'
   filefield_sources:
@@ -181,7 +181,7 @@ projects:
     patch:
       1568162: https://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch
   honeypot:
-    version: '1.24'
+    version: '1.25'
   image_url_formatter:
     version: '1.4'
   imagecache_actions:
@@ -201,7 +201,7 @@ projects:
       url: https://github.com/GetDKAN/leaflet_draw_widget.git
       revision: 5a5f8faf664aeca02371f6692307580d9fab9116
   libraries:
-    version: '2.3'
+    version: '2.5'
   link:
     version: '1.5'
   link_badges:
@@ -237,9 +237,9 @@ projects:
   menu_badges:
     version: '1.3'
   menu_block:
-    version: '2.7'
+    version: '2.8'
   migrate:
-    version: '2.10'
+    version: '2.11'
     patch:
       1989492: https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch
   migrate_extras:
@@ -273,12 +273,12 @@ projects:
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.57'
+    version: '1.58'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.54'
+    version: '1.58'
   path_breadcrumbs:
     version: '3.3'
   pathauto:
@@ -323,7 +323,7 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.24'
+    version: '1.25'
   search_api_db:
     version: '1.7'
   select_or_other:
@@ -335,9 +335,9 @@ projects:
   strongarm:
     version: '2.0'
   tablefield:
-    version: '3.1'
+    version: '3.2'
   taxonomy_menu:
-    version: '1.5'
+    version: '1.6'
   taxonomy_fixtures:
     download:
       type: git
