@@ -99,7 +99,7 @@ class TableSchemaDataDictionary extends DataDictionaryBase {
               break;
           }
 
-          $row[] = array('data' => $column, 'class' => array('json-schema-item', 'json-schema-' . $header_key));
+          $row[] = array('data' => $column, 'class' => array('dkan-datadict-item', 'dkan-datadict-' . $header_key));
 
         }
 
@@ -110,7 +110,7 @@ class TableSchemaDataDictionary extends DataDictionaryBase {
         '#theme' => 'table',
         '#header' => $headers,
         '#rows' => $rows,
-        '#attributes' => array('class' => array('json-schema')),
+        '#attributes' => array('class' => array('dkan-datadict', 'json-schema')),
       );
 
     }
