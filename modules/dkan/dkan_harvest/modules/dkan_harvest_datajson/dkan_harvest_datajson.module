@@ -377,9 +377,11 @@ function dkan_harvest_datajson_prepare_item_id($identifier) {
   if (filter_var($identifier, FILTER_VALIDATE_URL)) {
     $identifier = parse_url($identifier, PHP_URL_PATH);
     $frag = explode('/', $identifier);
-    // Does not produce "Strict warning: Only variables should be passed by
-    // reference" like end(explode('/', $identifier));.
-    $identifier = $frag[count($frag) - 1];
+
+    // Return the last non empty URL Path element.
+    $frag = array_filter($frag);
+    $identifier = end($frag);
   }
+
   return $identifier;
 }
