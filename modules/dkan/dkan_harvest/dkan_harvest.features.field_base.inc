@@ -143,7 +143,7 @@ function dkan_harvest_field_default_field_bases() {
     'settings' => array(
       'allow_machine_changes' => 0,
       'complete_path_label' => 'Complete path',
-      'machine_description' => 'A URL-safe version of the text. It may only contain lowercase letters, numbers and underscores. Leave blank to re-generate.',
+      'machine_description' => 'A URL-safe version of the text. It may only contain lowercase letters, numbers and underscores and may not exceed 31 characters. Leave blank to re-generate.',
       'machine_label' => 'Machine Name',
       'max_length' => 31,
       'replace_pattern' => '(-|--|<[^<>]+>|[^/a-z0-9-_]|/)+',
