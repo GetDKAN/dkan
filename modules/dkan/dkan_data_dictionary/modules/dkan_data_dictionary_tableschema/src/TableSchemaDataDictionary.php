@@ -58,12 +58,8 @@ class TableSchemaDataDictionary extends DataDictionaryBase {
         $headers[$key] = array('data' => t(ucfirst($value)), 'class' => array('json-schema-item', 'json-schema-' . $key));
       }
 
-      // Foreach ($schema->fields() as $field) {
-      // $item = (array) $field;
-      // $new_keys = array_keys($item);
-      // $headers = array_merge($headers, array_diff($new_keys, $headers));
-      // }.
-      // Check the set of values for each field description against all table headers.
+      // Check the set of values for each field description against all table
+      // headers.
       foreach ($fields as $field) {
         $row = array();
 
@@ -95,7 +91,7 @@ class TableSchemaDataDictionary extends DataDictionaryBase {
               break;
 
             case 'required':
-              $column = $field->$header_key() ? 'true' : 'false';
+              $column = $field->$header_key() ? t('True') : t('False');
               break;
 
             default:
@@ -108,7 +104,6 @@ class TableSchemaDataDictionary extends DataDictionaryBase {
         }
 
         $rows[] = $row;
-
       }
 
       return array(
@@ -122,7 +117,7 @@ class TableSchemaDataDictionary extends DataDictionaryBase {
     else {
       // If the supplied value isn't valid JSON or it is valid JSON but
       // isn't a schema containing fields - simply output the raw text.
-      return array('#markup' => $item['value']);
+      return array('#markup' => $descriptor);
     }
   }
 
