@@ -21,7 +21,7 @@ function dkan_data_dictionary_csv_xautoload($adapter) {
  * Implements hook_dkan_data_dictionary_validator().
  */
 function dkan_data_dictionary_csv_dkan_data_dictionaries() {
-  $dataDictionary = new CsvDataDictionary('csvdatadict', 'CSV', array('csv'));
+  $dataDictionary = new CsvDataDictionary('dkan_data_dictionary_csv_plain', 'Plain CSV (No validation)', array('csv'));
 
-  return array('csvdatadict' => $dataDictionary);
+  return array('dkan_data_dictionary_csv_plain' => $dataDictionary);
 }
