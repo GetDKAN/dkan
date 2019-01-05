@@ -34,20 +34,13 @@ class CsvDataDictionary extends DataDictionaryBase {
 
   /**
    * {@inheritdoc}
-   *
-   * @param mixed $descriptor
-   *   Schema source, can anything that file_get_content() reads.
-   *
-   * @param mixed $display_type
-   *   Type of user facing display.
-   *
-   * @throws
    */
-  public static function schemaFormatterView($descriptor, $display_type) {
-    if ($display_type == 'text_schema_table') {
+  public static function dictionaryFormatterView($langcode, $item, $display) {
+    if ($display['type'] == 'table_data_dictionary') {
+      $reader = NULL;
+      $descriptor = $item['value'];
       $is_file = filter_var($descriptor, FILTER_VALIDATE_URL);
 
-      $reader = NULL;
       try {
         if ($is_file) {
           $reader = Reader::createFromPath($descriptor, 'r');

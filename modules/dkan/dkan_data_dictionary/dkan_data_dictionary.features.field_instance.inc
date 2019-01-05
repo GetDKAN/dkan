@@ -96,7 +96,7 @@ function dkan_data_dictionary_field_default_field_instances() {
         'label' => 'above',
         'module' => 'dkan_data_dictionary',
         'settings' => array(),
-        'type' => 'text_schema_table',
+        'type' => 'table_data_dictionary',
         'weight' => 24,
       ),
       'search_result' => array(

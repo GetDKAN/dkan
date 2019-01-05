@@ -49,11 +49,11 @@ function dkan_data_dictionary_tableschema_xautoload($adapter) {
  */
 function dkan_data_dictionary_tableschema_dkan_data_dictionaries() {
   $dataDictionary = new TableSchemaDataDictionary(
-    'tableschemadatadict',
+    'dkan_data_dictionary_tableschema_validation',
     'TableSchema',
     array('json'),
     'Dkan\DataDictionary\TableSchemaDataDictionaryManager'
   );
 
-  return array('tableschemadatadict' => $dataDictionary);
+  return array('dkan_data_dictionary_tableschema_validation' => $dataDictionary);
 }

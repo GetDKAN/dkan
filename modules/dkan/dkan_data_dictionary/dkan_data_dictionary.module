@@ -384,9 +384,9 @@ function dkan_data_dictionary_libraries_info() {
  */
 function dkan_data_dictionary_field_formatter_info() {
   return array(
-    'text_schema_table' => array(
-      'label' => t('Schema Table'),
-      'field types' => array('text_long'),
+    'table_data_dictionary' => array(
+      'label' => t('Data Dictionary Table'),
+      'field types' => array('text', 'text_long'),
     ),
   );
 }
@@ -395,6 +395,8 @@ function dkan_data_dictionary_field_formatter_info() {
  * Implements hook_field_formatter_view().
  */
 function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $elements = array();
+
   $resource = entity_metadata_wrapper($entity_type, $entity);
 
   $describedby_spec = $resource->field_describedby_spec->value();
@@ -405,18 +407,8 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
     return array();
   }
 
-  $settings = $display['settings'];
-  $elements = array();
-
   foreach ($items as $delta => $item) {
-    try {
-      $elements[$delta] = $dataDictionary::schemaFormatterView($item['value'], $display['type']);
-    }
-    catch (\Exception $execption) {
-      watchdog('dkan_data_dictionary', 'Formatter view exception: @message', array('@message' => $execption->getMessage()), WATCHDOG_ERROR);
-      // TODO better error reporting.
-      $elements[$delta] = array();
-    }
+    $elements[$delta] = $dataDictionary::dictionaryFormatterView($langcode, $item, $display);
   }
 
   return $elements;

@@ -34,10 +34,10 @@ class TableSchemaDataDictionary extends DataDictionaryBase {
    *
    * @throws
    */
-  public static function schemaFormatterView($discriptor, $display_type) {
-    $schema = new Schema($discriptor);
+  public static function dictionaryFormatterView($langcode, $item, $display) {
+    $schema = new Schema($item['value']);
 
-    if ($display_type == 'text_schema_table') {
+    if ($display['type'] == 'table_data_dictionary') {
       $headers = array();
       $rows = array();
 

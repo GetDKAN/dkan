@@ -102,9 +102,10 @@ abstract class DataDictionaryBase implements \JsonSerializable {
   abstract public static function validateSchema($schema);
 
   /**
-   * Return render array representation of the data dictionary.
+   * Build a renderable array for a field value. Called during
+   * hook_field_formatter_view().
    */
-  abstract public static function schemaFormatterView($schema, $display_type);
+  abstract public static function dictionaryFormatterView($langcode, $item, $display);
 
   /**
    * {@inheritdoc}
