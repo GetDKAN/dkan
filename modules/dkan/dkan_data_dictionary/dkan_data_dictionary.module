@@ -153,27 +153,9 @@ function dkan_data_dictionary_validate($dkan_datadict_machinename, $schema_descr
  * Implements hook_form_FORM_ID_alter().
  */
 function dkan_data_dictionary_form_resource_node_form_alter(&$form, &$form_state) {
-  $lang = $form['language']['#value'];
-
-  // Load jsoneditor libray and attach to resource form.
-  $form['#attached']['libraries_load'][] = array('jsoneditor');
-  $form['#attached']['js'][] = drupal_get_path('module', 'dkan_data_dictionary') . '/js/editor.js';
-  drupal_add_css(drupal_get_path('module', 'dkan_data_dictionary') . '/css/dkan_data_dictionary.css');
-  $form['#validate'][] = 'dkan_data_dictionary_validate_resource';
-
-  // Add javascript for csv data dictionary schema.
-  $fid = $form['field_describedby_file'][$lang][0]['#default_value']['fid'];
-  if ($fid !== 0) {
-    $valid = _dkan_data_dictionary_csv_is_schema($fid);
+  if ($form['#id'] == 'resource-node-form') {
+    $form['#validate'][] = 'dkan_data_dictionary_validate_resource';
   }
-  else {
-    $valid = FALSE;
-  }
-
-  drupal_add_js(array('dkan_data_dictionary' => array('fileid' => $fid)), 'setting');
-  drupal_add_js(array('dkan_data_dictionary' => array('valid' => $valid)), 'setting');
-  drupal_add_js(drupal_get_path('module', 'dkan_data_dictionary') . '/js/dkan_data_dictionary.js');
-
 }
 
 /**
