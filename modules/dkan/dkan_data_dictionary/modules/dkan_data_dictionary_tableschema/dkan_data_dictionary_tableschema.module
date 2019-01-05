@@ -8,32 +8,6 @@
 use Dkan\DataDictionary\TableSchemaDataDictionary;
 
 /**
- * Implements hook_libraries_info().
- */
-// Function dkan_data_dictionary_tableschema_libraries_info() {
-// $libraries = array();
-// $libraries['tableschema-php'] = array(
-// 'name' => 'Table Schema',
-// 'vendor url' => 'https://github.com/frictionlessdata/tableschema-php',
-// 'download url' => 'https://github.com/frictionlessdata/tableschema-php/archive/v0.1.9.zip',
-// 'version' => 'v0.1.9',
-// 'xautoload' => function ($adapter) {
-// [>* @var \Drupal\xautoload\Adapter\LocalDirectoryAdapter $adapter <]
-// // Scan sites/all/libraries/ruebenkraut/composer.json to look for
-// // autoload information.
-// $adapter->composerJson('composer.json');
-// // $adapter->composerDir('vendor/composer');
-// },
-// // 'xautoload' => function($adapter) {
-// // [>* @var \Drupal\xautoload\Adapter\LocalDirectoryAdapter $adapter <]
-// // // Scan sites/all/libraries/ruebenkraut/composer.json to look for
-// // // autoload information.
-// // $adapter->add('frictionlessdata\tableschema\\', 'src');
-// // },.
-// );.
-// Return $libraries;
-// }.
-/**
  * Implements hook_xautoload().
  */
 

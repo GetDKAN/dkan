@@ -354,32 +354,6 @@ function dkan_data_dictionary_node_presave($node) {
 }
 
 /**
- * Implements hook_libraries_info().
- */
-function dkan_data_dictionary_libraries_info() {
-  $libraries = array();
-  $libraries['jsoneditor'] = array(
-    'name' => 'JSONEditor',
-    'vendor url' => 'https://github.com/josdejong/jsoneditor',
-    'download url' => 'https://github.com/josdejong/jsoneditor/archive/master.zip',
-    'path' => '',
-    'version arguments' => array(
-      'file' => 'package.json',
-      'pattern' => '/"version": "(\d+\.\d+\.\d+)"/',
-    ),
-    'files' => array(
-      'js' => array(
-        'dist/jsoneditor.min.js',
-      ),
-      'css' => array(
-        'dist/jsoneditor.min.css',
-      ),
-    ),
-  );
-  return $libraries;
-}
-
-/**
  * Implements hook_field_formatter_info().
  */
 function dkan_data_dictionary_field_formatter_info() {
