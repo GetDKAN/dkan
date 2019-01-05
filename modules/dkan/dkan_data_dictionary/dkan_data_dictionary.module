@@ -111,7 +111,7 @@ function dkan_data_dictionary_dictionaries_info() {
 }
 
 /**
- *
+ * Load Data Dictionary from machine name.
  */
 function dkan_data_dictionary_dictionary_load($dkan_datadict_machinename) {
   $dkan_datadict_selected = NULL;
@@ -127,20 +127,27 @@ function dkan_data_dictionary_dictionary_load($dkan_datadict_machinename) {
 }
 
 /**
- *
+ * Validate a data dictionary.
  */
-function dkan_data_dictionary_validate($dkan_datadict_machinename, $schema_descriptor) {
+function dkan_data_dictionary_validate($dkan_datadict_machinename, $dict_descriptor) {
   $valid = FALSE;
   $errors = array();
 
   $dataDictionary = dkan_data_dictionary_dictionary_load($dkan_datadict_machinename);
 
   if (empty($dataDictionary)) {
+    watchdog(
+      'dkan_data_dictionary',
+      'Failed to load Data Dictionary "@data_dict"',
+      array('@data_dict' => $dkan_datadict_machinename),
+      WATCHDOG_ERROR
+    );
+
     $errors[] = t('Schema selected cannot be found.');
     return array($valid, $errors);
   }
 
-  $errors = $dataDictionary->validateSchema($schema_descriptor);
+  $errors = $dataDictionary->validateSchema($dict_descriptor);
 
   if (empty($errors)) {
     $valid = TRUE;
@@ -372,7 +379,7 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
   if (empty($dataDictionary)) {
     watchdog(
       'dkan_data_dictionary',
-      'Failed to load DataDictionaryBase object for node "@nid" with describedby_spec "describedby_spec"',
+      'Failed to load DataDictionaryBase object for node "@nid" with describedby_spec "@describedby_spec"',
       array('@nid' => $entity->nid, '@describedby_spec' => $describedby_spec),
       WATCHDOG_ERROR
     );

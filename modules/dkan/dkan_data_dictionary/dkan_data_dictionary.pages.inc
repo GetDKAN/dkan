@@ -17,7 +17,12 @@ function dkan_data_dictionary_resource_report_form($form, &$form_state, $node) {
     $form = $validateForm->buildForm($form, $form_state);
   }
   catch (\Exception $exception) {
-    // TODO add watchdog entry.
+    watchdog(
+      'dkan_data_dictionary',
+      'Failed to build form "@form_id".',
+      array('@form_id' => $form['#id']),
+      WATCHDOG_ERROR
+    );
   }
 
   return $form;
