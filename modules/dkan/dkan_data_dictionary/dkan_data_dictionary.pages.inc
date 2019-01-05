@@ -4,7 +4,7 @@
  * @file
  */
 
-use Dkan\DataDictionary\Page\ResourceValidateForm;
+use Dkan\DataDictionary\Page\ResourceDataDictionaryValidationForm;
 
 /**
  * Data_dictionary forms menu callback.
@@ -13,7 +13,7 @@ function dkan_data_dictionary_resource_report_form($form, &$form_state, $node) {
   $form_state['node'] = $node;
 
   try {
-    $validateForm = new ResourceValidateForm($node);
+    $validateForm = new ResourceDataDictionaryValidationForm($node);
     $form = $validateForm->buildForm($form, $form_state);
   }
   catch (\Exception $exception) {
@@ -27,6 +27,6 @@ function dkan_data_dictionary_resource_report_form($form, &$form_state, $node) {
  * Submit handler.
  */
 function dkan_data_dictionary_resource_report_form_submit($form, &$form_state) {
-  $validateForm = new ResourceValidateForm($form_state['node']);
+  $validateForm = new ResourceDataDictionaryValidationForm($form_state['node']);
   return $validateForm->submitForm($form, $form_state);
 }

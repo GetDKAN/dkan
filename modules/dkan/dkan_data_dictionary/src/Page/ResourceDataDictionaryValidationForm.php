@@ -11,7 +11,7 @@ use Dkan\DataDictionary\ValidationReport;
  * Generates the page that we use to manage the movement of resources
  * into the datastore.
  */
-class ResourceValidateForm implements FormInterface {
+class ResourceDataDictionaryValidationForm implements FormInterface {
 
   const BATCH_ITERATIONS = 1;
   const BATCH_TIME_LIMIT = 5;
