@@ -53,7 +53,7 @@ function dkan_data_dictionary_access($op, $node, $account = NULL) {
     $dataDict_machinename = $resource->getDataDictSchemaType();
     $dataDict = dkan_data_dictionary_dictionary_load($dataDict_machinename);
 
-    if (!$dataDict->hasManager()) {
+    if ($dataDict instanceof DataDictionaryBase && !$dataDict->hasManager()) {
       return FALSE;
     }
   }
@@ -123,7 +123,7 @@ function dkan_data_dictionary_dictionary_load($dkan_datadict_machinename) {
     }
   }
 
-  return $dkan_datadict;
+  return $dkan_datadict_selected;
 }
 
 /**
@@ -375,9 +375,25 @@ function dkan_data_dictionary_field_formatter_view($entity_type, $entity, $field
 
   $describedby_spec = $resource->field_describedby_spec->value();
 
+  if (empty($describedby_spec)) {
+    watchdog(
+      'dkan_data_dictionary',
+      'field_describedby_spec empty, no data dictionary to display.',
+      array(),
+      WATCHDOG_DEBUG
+    );
+    return array();
+  }
+
   $dataDictionary = dkan_data_dictionary_dictionary_load($describedby_spec);
 
   if (empty($dataDictionary)) {
+    watchdog(
+      'dkan_data_dictionary',
+      'Failed to load DataDictionaryBase object for node "@nid" with describedby_spec "describedby_spec"',
+      array('@nid' => $entity->nid, '@describedby_spec' => $describedby_spec),
+      WATCHDOG_ERROR
+    );
     return array();
   }
 
