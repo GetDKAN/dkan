@@ -1377,7 +1377,23 @@ function dkan_dataset_field_formatter_view($entity_type, $entity, $field, $insta
 /**
  * Helper function to validate dates.
  */
-function dkan_dataset_validate_date($date, $format = 'Y-m-d') {
+function dkan_dataset_validate_date($date) {
+  // Check for partial date elements.
+  $parts = explode("-",$date);
+  $count = count($parts);
+  switch ($count) {
+    case '1':
+      $format = 'Y';
+      break;
+
+    case '2':
+      $format = 'Y-m';
+      break;
+
+    default:
+      $format = 'Y-m-d';
+      break;
+  }
   $d = DateTime::createFromFormat($format, $date);
   return $d && $d->format($format) === $date;
 }
