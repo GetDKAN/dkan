@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DKTL_CHOWN: False
+      DRUPAL_VERSION: V8
+    steps:
+      - checkout
+      - run:
+          name: Package DKAN
+          command: |
+            mkdir /home/circleci/dkan2
+            mv /home/circleci/project/* /home/circleci/dkan2
+      - run:
+          name: Install DKTL
+          command: |
+            cd ~
+            git clone https://github.com/GetDKAN/dkan-tools.git
+            chmod 777 ./dkan-tools/bin/dktl
+            export PATH=$PATH:~/dkan-tools/bin
+            which dktl
+      - run:
+          name: Make DKAN
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            cd ~/project
+            cp -r ~/dkan2/cypress .
+            cp -r ~/dkan2/cypress.json .
+            dktl init
+            dktl drupal:get 8.6.4
+            dktl drupal:make
+      - run:
+          name: Install site
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            dktl drush site-install dkan2 -y --notify
+      - run:
+          name: Run tests
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            dktl test:cypress
