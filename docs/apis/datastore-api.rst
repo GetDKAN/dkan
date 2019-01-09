@@ -34,8 +34,8 @@ Aggregation functions
 
 -  **sum** (*string*) – field to compute the sum
 -  **avg** (*string*) – field to compute the average
--  **min** (*string*) – field to compute the maximum
--  **max** (*string*) – field to compute the minimum
+-  **min** (*string*) – field to compute the minimum
+-  **max** (*string*) – field to compute the maximum
 -  **std** (*string*) – field to compute the standard deviation
 -  **variance** (*string*) – field to compute the variance
 
