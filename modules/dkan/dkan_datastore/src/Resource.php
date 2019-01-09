@@ -104,7 +104,7 @@ class Resource {
       // we need to load the full file object.
       $file = file_load($node->field_upload[LANGUAGE_NONE][0]['fid']);
       $filemime = $file->filemime;
-      if (!in_array($filemime, ["text/csv", "text/tsv"])) {
+      if (!in_array($filemime, ["text/csv", "text/tsv", "text/tab-separated-values"])) {
         throw new \Exception("This filemime type ({$filemime}) can be added as a resource, but cannot be imported to our datastore.");
       }
 
@@ -114,7 +114,7 @@ class Resource {
     if (isset($node->field_link_remote_file[LANGUAGE_NONE][0]['fid'])) {
       $file = file_load($node->field_link_remote_file[LANGUAGE_NONE][0]['fid']);
       if ($filemime = $file->filemime) {
-        if (!in_array($filemime, ["text/csv", "text/tsv", "text/psv"])) {
+        if (!in_array($filemime, ["text/csv", "text/tsv", "text/psv", "text/tab-separated-values"])) {
           throw new \Exception("This filemime type ({$filemime}) can be added as a resource, but cannot be imported to our datastore.");
         }
       }
