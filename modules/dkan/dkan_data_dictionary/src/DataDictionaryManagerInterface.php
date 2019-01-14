@@ -10,15 +10,10 @@ interface DataDictionaryManagerInterface {
   /**
    * Constructor.
    */
-  public function __construct(DataDictionaryBase $dataDictionary);
+  public function __construct(DataDictionaryBase $dataDictionary, Resource $resource);
 
   /**
-   * Setup.
-   */
-  public function initialize(Resource $resource);
-
-  /**
-   * Get Validator Label.
+   * Validate the resource againts it's associated schema.
    */
   public function validate();
 
@@ -26,5 +21,10 @@ interface DataDictionaryManagerInterface {
    * Run the validation on limited number of records (chunk) from the data.
    */
   public function validateChunk($chunk_size);
+
+  /**
+   * Getter for the schema label to be used in the report.
+   */
+  public static function getSchema();
 
 }

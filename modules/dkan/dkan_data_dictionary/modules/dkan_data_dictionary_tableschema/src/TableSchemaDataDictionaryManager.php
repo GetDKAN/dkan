@@ -93,4 +93,11 @@ class TableSchemaDataDictionaryManager extends DataDictionaryManagerBase {
 
     return array($rows, $errors);
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSchema() {
+    return 'table-schema';
+  }
 }

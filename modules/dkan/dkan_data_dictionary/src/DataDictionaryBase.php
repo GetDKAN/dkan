@@ -32,8 +32,8 @@ abstract class DataDictionaryBase implements \JsonSerializable {
   /**
    * Getter.
    */
-  public function getDataDictionaryManager() {
-    return new $this->managerClass($this);
+  public function getDataDictionaryManager(Resource $resource) {
+    return new $this->managerClass($this, $resource);
   }
 
   /**
