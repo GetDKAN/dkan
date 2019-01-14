@@ -3,7 +3,7 @@
 namespace Dkan\DataDictionary\Page;
 
 use Dkan\DataDictionary\Resource;
-use Dkan\DataDictionary\ValidationReport;
+use Dkan\DataDictionary\ValidationReportControllerD7;
 
 /**
  * Class Page.
@@ -35,15 +35,21 @@ class ResourceDataDictionaryValidationForm implements FormInterface {
     );
 
     try {
-      $json = ValidationReport::loadJson($this->resource);
+      $controller = new ValidationReportControllerD7();
+      $vrs = $controller->load(array(), array('entity_id' => $this->resource->getIdentifier()));
 
-      if (empty($json)) {
+      $vr = NULL;
+      if (!empty($vrs)) {
+        $vr = array_pop($vrs);
+      }
+
+      if (empty($vr)) {
         $form['container']['report'] = array(
           '#markup' => t("No Reports Found."),
         );
       }
       else {
-        $report = ValidationReport::reportFormatterView($json);
+        $report = $vr->reportFormatterView();
         $form['container']['report'] = $report;
       }
 
@@ -89,14 +95,6 @@ class ResourceDataDictionaryValidationForm implements FormInterface {
    */
   public function submitForm(array &$form, array $form_state) {
     try {
-      $describedby_spec = $this->resource->getDataDictSchemaType();
-      $validatorWrapper = dkan_data_dictionaries_load($describedby_spec);
-      $manager = $validatorWrapper->getDataDictionaryManager();
-
-      $manager->initialize($this->resource);
-
-      // TODO Support batch time limit.
-      // $manager->setImportTimelimit(self::BATCH_TIME_LIMIT);.
       $batch = array(
         'operations' => [],
         'finished' => [$this, 'batchFinished'],
@@ -131,10 +129,8 @@ class ResourceDataDictionaryValidationForm implements FormInterface {
 
     if (!isset($context['sandbox']['manager'])) {
       $describedby_spec = $resource->getDataDictSchemaType();
-      $validatorWrapper = dkan_data_dictionaries_load($describedby_spec);
-      $manager = $validatorWrapper->getDataDictionaryManager();
-
-      $manager->initialize($resource);
+      $validatorWrapper = dkan_data_dictionary_dictionary_load($describedby_spec);
+      $manager = $validatorWrapper->getDataDictionaryManager($this->resource);
 
       $context['sandbox']['manager'] = $manager;
     }
