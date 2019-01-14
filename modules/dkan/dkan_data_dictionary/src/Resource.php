@@ -5,30 +5,20 @@ namespace Dkan\DataDictionary;
 /**
  * Class Resource.
  */
-class Resource {
-
-  protected $id;
-  protected $nodeMetadataWrapper;
+class Resource extends \EntityDrupalWrapper {
 
   /**
    * Resource constructor.
    */
   public function __construct($id) {
-    $this->id = $id;
-
-    // Create the metadata Wrapper.
-    $this->nodeMetadataWrapper = entity_metadata_wrapper('node', $this->id);
-
-    if (empty($this->nodeMetadataWrapper)) {
-      throw new \Exception(t('Failed to load resource node.'));
-    }
+    parent::__construct('node', $id);
   }
 
   /**
    * Getter.
    */
   public function getDataDictSchemaType() {
-    return $this->nodeMetadataWrapper->field_describedby_spec->value();
+    return $this->field_describedby_spec->value();
   }
 
   /**
@@ -36,8 +26,8 @@ class Resource {
    */
   public function getDataDictSchema() {
     // @TODO add Exception throw.
-    if (!empty($this->nodeMetadataWrapper->field_describedby_file->value())) {
-      $schema_file = $this->nodeMetadataWrapper->field_describedby_file->value();
+    if (!empty($this->field_describedby_file->value())) {
+      $schema_file = $this->field_describedby_file->value();
       $wrapper = file_stream_wrapper_get_instance_by_uri($schema_file['uri']);
 
       $realpath = FALSE;
@@ -49,8 +39,8 @@ class Resource {
       }
       return $realpath;
     }
-    elseif (!empty($this->nodeMetadataWrapper->field_describedby_schema->value())) {
-      $schema_text = $this->nodeMetadataWrapper->field_describedby_schema->value();
+    elseif (!empty($this->field_describedby_schema->value())) {
+      $schema_text = $this->field_describedby_schema->value();
       return $schema_text;
     }
 
@@ -62,21 +52,21 @@ class Resource {
    * Getter.
    */
   public function getId() {
-    return $this->nodeMetadataWrapper->getIdentifier();
+    return $this->getIdentifier();
   }
 
   /**
    * Getter.
    */
   public function getUUID() {
-    return $this->nodeMetadataWrapper->uuid->value();
+    return $this->uuid->value();
   }
 
   /**
    * Getter.
    */
   public function getVUUID() {
-    return $this->nodeMetadataWrapper->vuuid->value();
+    return $this->vuuid->value();
   }
 
   /**
@@ -84,17 +74,17 @@ class Resource {
    */
   public function getFilePath() {
     // @TODO add Exception throw.
-    if (!empty($this->nodeMetadataWrapper->field_upload->value())) {
-      $file = $this->nodeMetadataWrapper->field_upload->value();
+    if (!empty($this->field_upload->value())) {
+      $file = $this->field_upload->value();
       $wrapper = file_stream_wrapper_get_instance_by_uri($file->uri);
       return $wrapper->realpath();
     }
-    elseif (!empty($this->nodeMetadataWrapper->field_link_remote_file->value())) {
-      $file = $this->nodeMetadataWrapper->field_link_remote_file->value();
+    elseif (!empty($this->field_link_remote_file->value())) {
+      $file = $this->field_link_remote_file->value();
       return $file->uri;
     }
 
-    throw new \Exception(t("Node !nid doesn't have a proper file path.", array('!nid' => $node->nid)));
+    throw new \Exception(t("Node !nid doesn't have a proper file path.", array('!nid' => $this->getIdentifier())));
   }
 
   /**
