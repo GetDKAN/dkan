@@ -2,82 +2,100 @@
 
 /**
  * @file
+ */
+
+define('DKAN_DATA_DICTIONARY_VALIDATION_REPORT_TABLE', 'dkan_data_dictionary_validation_report');
+
+/**
+ * @file
  * Install, update and uninstall functions for the dkan_data_dictionary module.
  */
 
 /**
  * Implements hook_schema().
  */
-// Function dkan_data_dictionary_schema() {
-  // $schema = array();
-  // $schema['dkan_data_dictionary'] = array(
-    // 'description' => '',.
-    // 'fields' => array(
-      // 'validation_id' => array(
-        // 'type' => 'serial',
-        // 'unsigned' => TRUE,
-        // 'not null' => TRUE,
-        // 'description' => 'Primary Key: Unique Validation ID.',
-      // ),.
-      // 'nid' => array(
-        // 'description' => 'The primary identifier for a node.',
-        // 'type' => 'serial',
-        // 'unsigned' => TRUE,
-        // 'not null' => TRUE,
-      // ),.
-      // 'vid' => array(
-        // 'description' => 'The current {node_revision}.vid version identifier.',
-        // 'type' => 'int',
-        // 'unsigned' => TRUE,
-        // 'not null' => FALSE,
-        // 'default' => NULL,
-      // ),.
-      // 'time' => array(
-        // 'description' => 'The Unix timestamp when the validation was executed.',
-        // 'type' => 'int',
-        // 'not null' => TRUE,
-        // 'default' => 0,
-      // ),.
-      // 'source' => array(
-        // 'description' => 'Path or URI where this table was loaded from.'
-        // 'type' => 'string',
-        // 'size' => 'small',
-      // ),.
-      // 'valid' => array(
-        // 'type' => 'booloan',
-        // 'not null' => TRUE,
-        // 'description' => 'Raw validation report in JSON.',
-      // ),.
-      // 'report' => array(
-        // 'type' => 'text',
-        // 'not null' => TRUE,
-        // 'size' => 'big',
-        // 'description' => 'Raw validation report in JSON.',
-      // ),
-    // ),.
-    // 'indexes' => array(
-      // 'node_changed'        => array('changed'),
-      // 'node_created'        => array('created'),
-      // 'node_frontpage'      => array('promote', 'status', 'sticky', 'created'),
-      // 'node_status_type'    => array('status', 'type', 'nid'),
-      // 'node_title_type'     => array('title', array('type', 4)),
-      // 'node_type'           => array(array('type', 4)),
-      // 'uid'                 => array('uid'),
-      // 'tnid'                => array('tnid'),
-      // 'translate'           => array('translate'),
-      // 'language'            => array('language'),
-    // ),.
-    // 'foreign keys' => array(
-      // 'node_id' => array(
-        // 'table' => 'node',
-        // 'columns' => array('nid' => 'nid'),
-      // ),
-      // 'node_revision' => array(
-        // 'table' => 'node_revision',
-        // 'columns' => array('vid' => 'vid'),
-      // ),
-    // ),.
-    // 'primary key' => array('validation_id'),
-  // );.
-  // Return $schema;
-// }.
+function dkan_data_dictionary_schema() {
+  $schema = array();
+
+  $schema['dkan_data_dictionary_validation_report'] = dkan_data_dictionary_schema_validation_report();
+
+  return $schema;
+}
+
+/**
+ *
+ */
+function dkan_data_dictionary_schema_validation_report() {
+  return array(
+    'description' => 'Validation Reports',
+    'fields' => array(
+      'vrid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique Validation ID',
+      ),
+      'entity_type' => array(
+        'description' => 'The entity type this data is attached to',
+        'type' => 'varchar',
+        'length' => '128',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'bundle' => array(
+        'description' => 'The field instance bundle to which this row belongs, used when deleting a field instance',
+        'type' => 'varchar',
+        'length' => '128',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'deleted' => array(
+        'description' => 'A boolean indicating whether this data item has been deleted',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'entity_id' => array(
+        'description' => 'The entity id this data is attached to',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'revision_id' => array(
+        'description' => 'The entity revision id this data is attached to, or NULL if the entity type is not versioned',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => 'The users.uid that triggered the validation.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the validation report was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'report_valid' => array(
+        'description' => 'Validation overall status.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'report' => array(
+        'description' => 'Raw validation report in JSON.',
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('vrid', 'entity_type', 'entity_id', 'revision_id', 'deleted'),
+    // TODO.
+    'indexes' => array(),
+  );
+}
