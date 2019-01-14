@@ -2,46 +2,54 @@
 
 namespace Dkan\DataDictionary;
 
-define('VALIDATIONREPORT_DIR', 'public://validation_report');
-
 /**
- *
+ * @class ValidationReport
  */
 class ValidationReport implements \JsonSerializable {
 
-  protected $source;
-  protected $schema;
-  protected $datapackage;
+  protected $metadata = array();
   protected $tables = array();
 
   /**
    *
    */
-  public function __construct($source, $schema, $datapackage = NULL) {
-    // Source required.
-    if (empty($source)) {
-      throw new \Exception(format_string("Empty param: !s", array('!s' => 'source')));
-    }
-    $this->source = $source;
+  public function __construct($metadata = NULL) {
 
-    // Schema required.
-    if (empty($schema)) {
-      throw new \Exception(format_string("Empty param: !s", array('!s' => 'schema')));
+    if (!empty($metadata)) {
+      $this->updateMetadata($metadata);
     }
-    $this->schema = $schema;
-
-    $this->datapackage = $datapackage;
   }
 
   /**
    *
    */
-  public function addTable($table_name, $headers, $format = 'inline', $row_count = 1) {
+  public function updateMetadata(\stdClass $metadata) {
+    $metadata_props = array(
+      'created',
+      'uid',
+      'revision_id',
+      'entity_id',
+      'bundle',
+      'entity_type',
+      'vrid',
+    );
+
+    foreach ($metadata_props as $prop) {
+      if (isset($metadata->$prop)) {
+        $this->metadata[$prop] = $metadata->$prop;
+      }
+    }
+  }
+
+  /**
+   *
+   */
+  public function addTable($table_name, $source, $schema, $datapackage, $headers, $format = 'inline', $row_count = 1) {
 
     $this->tables[$table_name] = array(
-      'source' => $this->source,
-      'schema' => $this->schema,
-      'datapackage' => $this->datapackage,
+      'source' => $source,
+      'schema' => $schema,
+      'datapackage' => $datapackage,
       'time' => 0,
       'valid' => TRUE,
       'error-count' => 0,
@@ -96,57 +104,7 @@ class ValidationReport implements \JsonSerializable {
   /**
    *
    */
-  public function write(Resource $resource) {
-    // TODO update to write to DB.
-    $destination_dir = VALIDATIONREPORT_DIR;
-
-    if (!file_prepare_directory($destination_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
-      // TODO change this to exception.
-      watchdog('ValidationReport', 'Unable to prepare cache directory @dir', array('@dir' => $destination_dir), WATCHDOG_ERROR);
-      return;
-    }
-
-    file_unmanaged_save_data(json_encode($this), self::getReportDestination($resource), FILE_EXISTS_REPLACE);
-  }
-
-  /**
-   *
-   */
-  public function jsonSerialize() {
-    $time = 0;
-    $valid = TRUE;
-    $error_count = 0;
-    $table_count = count($this->tables);
-
-    foreach ($this->tables as $table) {
-      $time = $time + $table['time'];
-      $error_count = $error_count + $table['error-count'];
-      $valid = $valid && $table['valid'];
-    }
-
-    $report['valid'] = $valid;
-    $report['error-count'] = $error_count;
-    $report['table-count'] = $table_count;
-
-    $report['tables'] = $this->tables;
-
-    return $report;
-  }
-
-  /**
-   *
-   */
-  public static function loadJson(Resource $resource) {
-    $dest = self::getReportDestination($resource);
-
-    return @file_get_contents($dest);
-  }
-
-  /**
-   *
-   */
-  public static function reportFormatterView($json) {
-    $report = json_decode($json, TRUE);
+  public function reportFormatterView() {
     $container = array(
       '#type' => 'container',
     );
@@ -155,9 +113,12 @@ class ValidationReport implements \JsonSerializable {
       '#markup' => t('Valid'),
     );
 
-    if (!$report['valid']) {
+    if (!$this->getReportStatus()) {
       $status = array(
-        '#markup' => t('Invalid CSV (@error_count errors)', array('@error_count' => $report['error-count'])),
+        '#markup' => t(
+          'Invalid CSV (@error_count errors)',
+          array('@error_count' => $this->getReportErrorCount())
+        ),
       );
     }
 
@@ -167,7 +128,7 @@ class ValidationReport implements \JsonSerializable {
       '#type' => 'container',
     );
 
-    foreach ($report['tables'] as $table_key => $table_data) {
+    foreach ($this->tables as $table_key => $table_data) {
       $table_info = array(
         '#markup' => t('@table_name (@status, @error_count / @row_count)',
         array(
@@ -198,9 +159,87 @@ class ValidationReport implements \JsonSerializable {
   /**
    *
    */
-  public static function getReportDestination(Resource $resource) {
-    $destination_dir = VALIDATIONREPORT_DIR;
-    return $destination_dir . '/' . $resource->getVUUID() . '.json';
+  public function jsonSerialize() {
+    $report['time'] = $this->getReportTime();
+    $report['valid'] = $this->getReportStatus();
+    $report['error-count'] = $this->getReportErrorCount();
+    $report['table-count'] = count($this->tables);
+
+    $report['tables'] = $this->tables;
+
+    return $report;
+  }
+
+  /**
+   *
+   */
+  public function jsonUnserialize($json) {
+    $json_decoded = json_decode($json, TRUE);
+
+    if (!empty($json_decoded['tables'])) {
+      $this->tables = $json_decoded['tables'];
+    }
+  }
+
+  /**
+   *
+   */
+  public function updateMetadataFromResource(Resource $resource) {
+    $account = $GLOBALS['user'];
+
+    $this->metadata = array(
+      'entity_type' => 'node',
+      'bundle' => $resource->getBundle(),
+      'entity_id' => $resource->getIdentifier(),
+      'revision_id' => $resource->value()->vid,
+      'uid' => $account->uid,
+      'created' => time(),
+    );
+  }
+
+  /**
+   *
+   */
+  public function getReportTime() {
+    $time = 0;
+    foreach ($this->tables as $table) {
+      $time = $time + $table['time'];
+    }
+
+    return $time;
+  }
+
+  /**
+   *
+   */
+  public function getReportSource() {
+    return $this->source;
+  }
+
+  /**
+   *
+   */
+  public function getReportStatus() {
+    $valid = TRUE;
+
+    foreach ($this->tables as $table) {
+      $valid = $valid && $table['valid'];
+    }
+
+    return $valid;
+  }
+
+  /**
+   *
+   */
+  public function getReportErrorCount() {
+    $error_count = 0;
+
+    foreach ($this->tables as $table) {
+      $error_count = $error_count + $table['error-count'];
+    }
+
+    return $error_count;
   }
 
 }
