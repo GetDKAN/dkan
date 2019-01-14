@@ -23,4 +23,3 @@ features[field_group][] = group_describedby|node|resource|form
 features[field_instance][] = node-resource-field_describedby_file
 features[field_instance][] = node-resource-field_describedby_schema
 features[field_instance][] = node-resource-field_describedby_spec
-project path = profiles/dkan/modules/dkan

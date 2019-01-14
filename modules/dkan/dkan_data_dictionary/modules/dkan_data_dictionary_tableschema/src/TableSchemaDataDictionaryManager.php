@@ -2,73 +2,42 @@
 
 namespace Dkan\DataDictionary;
 
-// @TODO fix autoloaoding for libraries.
-// include_once 'sites/all/libraries/tableschema-php/vendor/autoload.php';
 use frictionlessdata\tableschema\Schema;
 use frictionlessdata\tableschema\Table;
 use frictionlessdata\tableschema\Exceptions\DataSourceException;
 use frictionlessdata\tableschema\Exceptions\SchemaValidationError;
 use frictionlessdata\tableschema\Exceptions\FieldValidationException;
 
-/**
- *
- */
 class TableSchemaDataDictionaryManager extends DataDictionaryManagerBase {
+
+  protected $table;
 
   /**
    * {@inheritdoc}
-   *
-   * @throws Exception().
    */
-  public function initialize(Resource $resource) {
-    parent::initialize($resource);
+  public function __construct(DataDictionaryBase $dataDictionary, Resource $resource) {
+    parent::__construct($dataDictionary, $resource);
 
     $this->table = new Table($this->data, $this->schema);
     // Make sure table is valid.
     $this->table->valid();
 
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function preValidate() {
+    parent::preValidate();
+    // Setup the validation report object.
     // Limit only to csv files with a single table.
     $this->validationReport->addTable(
       basename($this->resource->getFilePath()),
+      $this->resource->getFilePath(),
+      $this->getSchema(),
+      NULL,
       $this->table->headers()
     );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function initValidationReport(Resource $resource) {
-    $source = $resource->getFilePath();
-    $schema = "table-schema";
-    $this->validationReport = new ValidationReport($source, $schema);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validate($step = 20) {
-    $count = 0;
-
-    while (TRUE) {
-      list($output, $errors) = $this->validateChunk($step);
-
-      $count = $count + count($output);
-
-      if (count($output) < $step) {
-        break;
-      }
-    }
-
-    // Validation done.
-    $this->validationReport->updateTableRowCount(
-      basename($this->resource->getFilePath()),
-      $count
-    );
-
-    //TODO update time.
-
-    // Write validation record to the supporting backend.
-    $this->validationReport->write($this->resource);
   }
 
   /**

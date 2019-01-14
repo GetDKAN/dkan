@@ -10,7 +10,6 @@ use Dkan\DataDictionary\TableSchemaDataDictionary;
 /**
  * Implements hook_xautoload().
  */
-
 function dkan_data_dictionary_tableschema_xautoload($adapter) {
   $adapter->absolute()->addPsr4(
     'Dkan\DataDictionary\\',
