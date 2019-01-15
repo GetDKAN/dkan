@@ -32,28 +32,59 @@ function dkan_data_dictionary_drush_command() {
  */
 function drush_dkan_data_dictionary_dkan_validate_resource($nid) {
 
-  $nodemw = entity_metadata_wrapper('node', $nid);
+  $resource = new Resource($nid);
 
-  $validator_spec = $nodemw->field_describedby_spec->value();
-  $validatorWrapper = dkan_data_dictionary_validator_load($validator_spec);
+  $datadict_machine_name = $resource->getDataDictSchemaSpec();
 
-  // Get Schema.
-  $schema = NULL;
+  if (empty($datadict_machine_name)) {
+    $message = t(
+      "Node \"@node_title\" [@node_id] does not have a Data Dictionary Spec set.",
+      array(
+        '@node_title' => $resource->label(),
+        '@node_id' => $resource->getIdentifier(),
+      )
+    );
+    return drush_log($message, 'error');
+  }
 
-  $describedby_file = $nodemw->field_describedby_file->value();
-  if (!empty($describedby_file)) {
-    // TODO load file.
+  $dataDict = dkan_data_dictionary_dictionary_load($datadict_machine_name);
+
+  if (empty($dataDict)) {
+    $message = t(
+      "Failed to load the Data Dictionary Spec \"@datadict_machine_name\" associated to node \"@node_title\" [@node_id].",
+      array(
+        '@node_title' => $resource->label(),
+        '@node_id' => $resource->getIdentifier(),
+        '@datadict_machine_name' => $datadict_machine_name,
+      )
+    );
+    return drush_log($message, 'error');
+  }
+
+  $schema = $resource->getDataDictSchema();
+
+  if (empty($schema)) {
+    $message = t("Data Dictionary associated to node \"@node_title\" [@node_id] is empty.",
+      array(
+        '@node_title' => $resource->label(),
+        '@node_id' => $resource->getIdentifier(),
+      )
+    );
+    return drush_log($message, 'error');
+  }
+
+  if(!$dataDict->hasManager()) {
+    $message = t("Data Dictionary associated to node \"@node_title\" [@node_id] does not support data validation.",
+      array(
+        '@node_title' => $resource->label(),
+        '@node_id' => $resource->getIdentifier(),
+      )
+    );
+    return drush_log($message, 'error');
   }
   else {
-    $schema = $nodemw->field_describedby_schema->value();
+    $manager = $dataDict->getDataDictionaryManager($resource);
   }
-
-  // Get Data.
-  $resource = Resource::createFromDrupalNodeNid($nid);
-
-  // TODO add check.
-  $manager = $validatorWrapper->getDataDictionaryManager();
-  $manager->initialize($resource);
 
   $step = 20;
   $manager->validate($step);
