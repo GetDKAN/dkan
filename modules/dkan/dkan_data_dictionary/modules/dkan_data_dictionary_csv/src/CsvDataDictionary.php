@@ -78,7 +78,7 @@ class CsvDataDictionary extends DataDictionaryBase {
         '#theme' => 'table',
         '#header' => $headers,
         '#rows' => $rows,
-        '#attributes' => array('class' => array('dkan-datadict', 'json-schema')),
+        '#attributes' => array('class' => array('dkan-datadict', 'dkan-data-dictionary-csv-plain')),
       );
     }
     else {
