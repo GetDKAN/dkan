@@ -11,13 +11,13 @@
 function dkan_data_dictionary_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_describedby_file'.
-  $field_bases['field_describedby_file'] = array(
+  // Exported field_base: 'field_describedby_schema_upload'.
+  $field_bases['field_describedby_schema_upload'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_describedby_file',
+    'field_name' => 'field_describedby_schema_upload',
     'indexes' => array(
       'fid' => array(
         0 => 'fid',
@@ -34,13 +34,13 @@ function dkan_data_dictionary_field_default_field_bases() {
     'type' => 'file',
   );
 
-  // Exported field_base: 'field_describedby_schema'.
-  $field_bases['field_describedby_schema'] = array(
+  // Exported field_base: 'field_describedby_schema_text'.
+  $field_bases['field_describedby_schema_text'] = array(
     'active' => 1,
     'cardinality' => 1,
     'deleted' => 0,
     'entity_types' => array(),
-    'field_name' => 'field_describedby_schema',
+    'field_name' => 'field_describedby_schema_text',
     'indexes' => array(
       'format' => array(
         0 => 'format',

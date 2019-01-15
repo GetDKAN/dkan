@@ -54,7 +54,7 @@ class ResourceDataDictionaryValidationForm implements FormInterface {
       }
 
       $validate = array();
-      if (empty($this->resource->getDataDictSchemaType())
+      if (empty($this->resource->getDataDictSchemaSpec())
       || empty($this->resource->getDataDictSchema())) {
         // TODO improve. add link to docs?
         $validate = array(
@@ -85,7 +85,7 @@ class ResourceDataDictionaryValidationForm implements FormInterface {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, array $form_state) {
-    if (empty($describedby_spec = $this->resource->getDataDictSchemaType())
+    if (empty($describedby_spec = $this->resource->getDataDictSchemaSpec())
       || empty($describedby_schema = $this->resource->getDataDictSchema())) {
     }
   }
@@ -128,7 +128,7 @@ class ResourceDataDictionaryValidationForm implements FormInterface {
     }
 
     if (!isset($context['sandbox']['manager'])) {
-      $describedby_spec = $resource->getDataDictSchemaType();
+      $describedby_spec = $resource->getDataDictSchemaSpec();
       $validatorWrapper = dkan_data_dictionary_dictionary_load($describedby_spec);
       $manager = $validatorWrapper->getDataDictionaryManager($this->resource);
 

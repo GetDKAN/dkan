@@ -11,8 +11,8 @@
 function dkan_data_dictionary_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-resource-field_describedby_file'.
-  $field_instances['node-resource-field_describedby_file'] = array(
+  // Exported field_instance: 'node-resource-field_describedby_schema_upload'.
+  $field_instances['node-resource-field_describedby_schema_upload'] = array(
     'bundle' => 'resource',
     'deleted' => 0,
     'description' => '',
@@ -38,8 +38,8 @@ function dkan_data_dictionary_field_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_describedby_file',
-    'label' => 'File',
+    'field_name' => 'field_describedby_schema_upload',
+    'label' => 'Schema Upload',
     'required' => 0,
     'settings' => array(
       'description_field' => 0,
@@ -84,8 +84,8 @@ function dkan_data_dictionary_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-resource-field_describedby_schema'.
-  $field_instances['node-resource-field_describedby_schema'] = array(
+  // Exported field_instance: 'node-resource-field_describedby_schema_text'.
+  $field_instances['node-resource-field_describedby_schema_text'] = array(
     'bueditor_profile' => -1,
     'bundle' => 'resource',
     'default_value' => NULL,
@@ -113,8 +113,8 @@ function dkan_data_dictionary_field_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_describedby_schema',
-    'label' => 'Schema',
+    'field_name' => 'field_describedby_schema_text',
+    'label' => 'Schema Text',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -134,11 +134,6 @@ function dkan_data_dictionary_field_default_field_instances() {
   // Exported field_instance: 'node-resource-field_describedby_spec'.
   $field_instances['node-resource-field_describedby_spec'] = array(
     'bundle' => 'resource',
-    'default_value' => array(
-      0 => array(
-        'value' => 'table-schema',
-      ),
-    ),
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -181,8 +176,8 @@ function dkan_data_dictionary_field_default_field_instances() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('File');
-  t('Schema');
+  t('Schema Upload');
+  t('Schema Text');
   t('Specification');
 
   return $field_instances;

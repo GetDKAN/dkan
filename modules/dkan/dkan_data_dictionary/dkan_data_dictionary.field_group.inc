@@ -14,21 +14,21 @@ function dkan_data_dictionary_field_group_info() {
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
-  $field_group->identifier = 'group_describedby_schema_file|node|resource|form';
-  $field_group->group_name = 'group_describedby_schema_file';
+  $field_group->identifier = 'group_describedby_schema_upload|node|resource|form';
+  $field_group->group_name = 'group_describedby_schema_upload';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'resource';
   $field_group->mode = 'form';
   $field_group->parent_name = 'group_describedby_schema_source';
   $field_group->data = array(
-    'label' => 'File Upload or URL',
+    'label' => 'Schema File Upload',
     'weight' => '41',
     'children' => array(
-      0 => 'field_describedby_file',
+      0 => 'field_describedby_schema_upload',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
-      'label' => 'File Upload or URL',
+      'label' => 'Schema File Upload',
       'instance_settings' => array(
         'required_fields' => 1,
         'classes' => '',
@@ -37,35 +37,35 @@ function dkan_data_dictionary_field_group_info() {
       'formatter' => 'closed',
     ),
   );
-  $field_groups['group_describedby_schema_file|node|resource|form'] = $field_group;
+  $field_groups['group_describedby_schema_upload|node|resource|form'] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
   $field_group->api_version = 1;
-  $field_group->identifier = 'group_describedby_schema_json|node|resource|form';
-  $field_group->group_name = 'group_describedby_schema_json';
+  $field_group->identifier = 'group_describedby_schema_text|node|resource|form';
+  $field_group->group_name = 'group_describedby_schema_text';
   $field_group->entity_type = 'node';
   $field_group->bundle = 'resource';
   $field_group->mode = 'form';
   $field_group->parent_name = 'group_describedby_schema_source';
   $field_group->data = array(
-    'label' => 'JSON Schema',
+    'label' => 'Schema Text',
     'weight' => '42',
     'children' => array(
-      0 => 'field_describedby_schema',
+      0 => 'field_describedby_schema_text',
     ),
     'format_type' => 'htab',
     'format_settings' => array(
-      'label' => 'JSON Schema',
+      'label' => 'Schema Text',
       'instance_settings' => array(
         'required_fields' => 1,
-        'classes' => 'group-conformsto-schema-json field-group-htab',
+        'classes' => 'group-conformsto-schema-text field-group-htab',
         'description' => '',
       ),
       'formatter' => 'closed',
     ),
   );
-  $field_groups['group_describedby_schema_json|node|resource|form'] = $field_group;
+  $field_groups['group_describedby_schema_text|node|resource|form'] = $field_group;
 
   $field_group = new stdClass();
   $field_group->disabled = FALSE; /* Edit this to true to make a default field_group disabled initially */
@@ -80,8 +80,8 @@ function dkan_data_dictionary_field_group_info() {
     'label' => 'Schema Source',
     'weight' => '35',
     'children' => array(
-      0 => 'group_describedby_schema_file',
-      1 => 'group_describedby_schema_json',
+      0 => 'group_describedby_schema_upload',
+      1 => 'group_describedby_schema_text',
     ),
     'format_type' => 'htabs',
     'format_settings' => array(
@@ -127,8 +127,8 @@ function dkan_data_dictionary_field_group_info() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Data Dictionary');
-  t('File Upload or URL');
-  t('JSON Schema');
+  t('Schema File Upload');
+  t('Schema Text');
   t('Schema Source');
 
   return $field_groups;

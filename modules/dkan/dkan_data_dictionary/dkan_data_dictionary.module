@@ -50,7 +50,7 @@ function dkan_data_dictionary_permission() {
 function dkan_data_dictionary_access($op, $node, $account = NULL) {
   try {
     $resource = Resource::createFromDrupalNode($node);
-    $dataDict_machinename = $resource->getDataDictSchemaType();
+    $dataDict_machinename = $resource->getDataDictSchemaSpec();
     $dataDict = dkan_data_dictionary_dictionary_load($dataDict_machinename);
 
     if ($dataDict instanceof DataDictionaryBase && !$dataDict->hasManager()) {
@@ -183,31 +183,31 @@ function dkan_data_dictionary_validate_resource($form, &$form_state) {
   // associated schema content. Use file if uploaded, then check for text
   // field. Expect a single item to be provided by the file upload and the
   // text field.
-  $schema_textfield = $form_state['values']['field_describedby_schema'][$language][0]['value'];
+  $schema_textfield = $form_state['values']['field_describedby_schema_text'][$language][0]['value'];
 
-  if ($schema_textfield == '{}' && $schema_textfield == '') {
+  if (empty($schema_textfield)) {
     $schema_textfield = FALSE;
   }
 
-  $schema_file = $form_state['values']['field_describedby_file'][$language][0];
+  $schema_file = $form_state['values']['field_describedby_schema_upload'][$language][0];
 
   if (isset($schema_file['fid']) && $schema_file['fid'] == 0) {
     $schema_file = FALSE;
   }
 
   if (empty($schema_file) && empty($schema_textfield)) {
-    form_set_error('field_describedby_spec', t('JSON Schema specification selected but no Schema provided.'));
+    form_set_error('field_describedby_spec', t('A Data Dictionary Specification is selected but no Schema provided.'));
     return;
   }
   elseif (!empty($schema_file)) {
     $schema_file = file_load($schema_file['fid']);
 
     list($valid, $errors) = dkan_data_dictionary_validate($describedby_spec, $schema_file->uri);
-    $form_item = 'field_describedby_file';
+    $form_item = 'field_describedby_schema_upload';
   }
   elseif (!empty($schema_textfield)) {
     list($valid, $errors) = dkan_data_dictionary_validate($describedby_spec, $schema_textfield);
-    $form_item = 'field_describedby_schema';
+    $form_item = 'field_describedby_schema_text';
   }
 
   if ($valid != TRUE) {

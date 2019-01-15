@@ -17,7 +17,7 @@ class Resource extends \EntityDrupalWrapper {
   /**
    * Getter.
    */
-  public function getDataDictSchemaType() {
+  public function getDataDictSchemaSpec() {
     return $this->field_describedby_spec->value();
   }
 
@@ -26,8 +26,8 @@ class Resource extends \EntityDrupalWrapper {
    */
   public function getDataDictSchema() {
     // @TODO add Exception throw.
-    if (!empty($this->field_describedby_file->value())) {
-      $schema_file = $this->field_describedby_file->value();
+    if (!empty($this->field_describedby_schema_upload->value())) {
+      $schema_file = $this->field_describedby_schema_upload->value();
       $wrapper = file_stream_wrapper_get_instance_by_uri($schema_file['uri']);
 
       $realpath = FALSE;
@@ -39,8 +39,8 @@ class Resource extends \EntityDrupalWrapper {
       }
       return $realpath;
     }
-    elseif (!empty($this->field_describedby_schema->value())) {
-      $schema_text = $this->field_describedby_schema->value();
+    elseif (!empty($this->field_describedby_schema_text->value())) {
+      $schema_text = $this->field_describedby_schema_text->value();
       return $schema_text;
     }
 
