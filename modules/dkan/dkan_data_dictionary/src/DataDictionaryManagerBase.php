@@ -43,19 +43,21 @@ abstract class DataDictionaryManagerBase implements DataDictionaryManagerInterfa
   public function validate($step = 20) {
     $this->preValidate();
 
-    $count = 0;
+    $errors_all = array();
+    $rows_checked_all = 0;
 
     while (TRUE) {
-      list($output, $errors) = $this->validateChunk($step);
+      list($rows_checked, $errors) = $this->validateChunk($step);
 
-      $count = $count + count($output);
+      $errors_all = array_merge($errors_all, $errors);
+      $rows_checked_all = $rows_checked + $rows_checked_all;
 
-      if (count($output) < $step) {
+      if ($rows_checked < $step) {
         break;
       }
     }
 
-    $this->postValidate($count);
+    $this->postValidate($rows_checked_all);
   }
 
   /**

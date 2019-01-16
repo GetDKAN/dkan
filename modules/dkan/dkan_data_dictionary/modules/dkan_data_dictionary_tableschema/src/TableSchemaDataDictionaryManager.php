@@ -44,12 +44,14 @@ class TableSchemaDataDictionaryManager extends DataDictionaryManagerBase {
    * {@inheritdoc}
    */
   public function validateChunk($chunk_size = 20) {
-    $rows = array();
+    $rows_checked = 0;
     $errors = array();
 
     while ($this->table->valid()) {
       try {
-        $rows[] = $this->table->current();
+        // The current method will return the current row if it validate
+        // against the schema or will throw various types of exceptions if not.
+        $this->table->current();
       }
       catch (SchemaValidationError $exception) {
         // TODO support fixeld exception as well.
@@ -84,14 +86,16 @@ class TableSchemaDataDictionaryManager extends DataDictionaryManagerBase {
         }
       }
 
+      // Update the row counter and move the array pointer to the next element.
+      $rows_checked++;
       $this->table->next();
 
-      if (count($rows) == $chunk_size) {
+      if ($rows_checked == $chunk_size) {
         break;
       }
     }
 
-    return array($rows, $errors);
+    return array($rows_checked, $errors);
   }
 
   /**
