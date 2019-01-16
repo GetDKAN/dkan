@@ -98,7 +98,9 @@ class ValidationReport implements \JsonSerializable {
    *
    */
   public function updateTableRowCount($table_name, $row_count) {
-    $this->tables[$table_name]['row-count'] = $row_count;
+    if (isset($this->tables[$table_name])) {
+      $this->tables[$table_name]['row-count'] = $row_count;
+    }
   }
 
   /**
