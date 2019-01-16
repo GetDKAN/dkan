@@ -126,3 +126,7 @@ dependencies[] = dkan_datastore_simple_import
 dependencies[] = dkan_datastore_api
 dependencies[] = open_data_schema_map_dkan
 dependencies[] = visualization_entity_charts_dkan
+
+dependencies[] = dkan_data_dictionary
+dependencies[] = dkan_data_dictionary_tableschema
+dependencies[] = dkan_data_dictionary_csv
