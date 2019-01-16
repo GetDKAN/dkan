@@ -111,20 +111,36 @@ class ValidationReport implements \JsonSerializable {
       '#type' => 'container',
     );
 
-    $status = array(
-      '#markup' => t('Valid'),
+    $metadata_container = array(
+      '#markup' => t(
+        'Validation done on @date by user @user_name (@uid).',
+        array(
+          '@date' => format_date($this->metadata['created']),
+          '@user_name' => user_load($this->metadata['uid'])->name,
+          '@uid' => $this->metadata['uid'],
+        )
+      ),
+    );
+
+    $status_container = array(
+      '#markup' => t('Validation overall status: Success.'),
     );
 
     if (!$this->getReportStatus()) {
-      $status = array(
+      $status_container = array(
         '#markup' => t(
-          'Invalid CSV (@error_count errors)',
-          array('@error_count' => $this->getReportErrorCount())
+          'Validation overall status: @status (@rows_total row(s) processed, @error_count error(s) reported).',
+          array(
+            '@status' => $this->getReportStatus() ? t("Valid") : t("Invalid"),
+            '@rows_total' => $this->getReportRowsCount(),
+            '@error_count' => $this->getReportErrorCount(),
+          )
         ),
       );
     }
 
-    $container['status'] = $status;
+    $container['metadata'] = $metadata_container;
+    $container['status'] = $status_container;
 
     $tables = array(
       '#type' => 'container',
@@ -132,13 +148,14 @@ class ValidationReport implements \JsonSerializable {
 
     foreach ($this->tables as $table_key => $table_data) {
       $table_info = array(
-        '#markup' => t('@table_name (@status, @error_count / @row_count)',
-        array(
-          '@table_name' => $table_key,
-          '@status' => $table_data['valid'] ? "Valid" : "Invalid",
-          '@error_count' => $table_data['error-count'],
-          '@row_count' => $table_data['row-count'],
-        )
+        '#markup' => t(
+          'Table @table_name status: @status (@row_count row(s) processed, @error_count error(s) reported).',
+          array(
+            '@table_name' => $table_key,
+            '@status' => $table_data['valid'] ? t("Valid") : t("Invalid"),
+            '@error_count' => $table_data['error-count'],
+            '@row_count' => $table_data['row-count'],
+          )
         ),
       );
 
@@ -239,6 +256,19 @@ class ValidationReport implements \JsonSerializable {
 
     foreach ($this->tables as $table) {
       $error_count = $error_count + $table['error-count'];
+    }
+
+    return $error_count;
+  }
+
+  /**
+   *
+   */
+  public function getReportRowsCount() {
+    $error_count = 0;
+
+    foreach ($this->tables as $table) {
+      $error_count = $error_count + $table['row-count'];
     }
 
     return $error_count;
