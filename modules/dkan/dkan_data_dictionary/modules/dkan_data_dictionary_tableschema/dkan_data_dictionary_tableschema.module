@@ -23,7 +23,7 @@ function dkan_data_dictionary_tableschema_xautoload($adapter) {
 function dkan_data_dictionary_tableschema_dkan_data_dictionaries() {
   $dataDictionary = new TableSchemaDataDictionary(
     'dkan_data_dictionary_tableschema_validation',
-    'TableSchema',
+    'TableSchema JSON',
     array('json'),
     'Dkan\DataDictionary\TableSchemaDataDictionaryManager'
   );
