@@ -73,7 +73,7 @@ function drush_dkan_data_dictionary_dkan_validate_resource($nid) {
     return drush_log($message, 'error');
   }
 
-  if(!$dataDict->hasManager()) {
+  if (!$dataDict->hasManager()) {
     $message = t("Data Dictionary associated to node \"@node_title\" [@node_id] does not support data validation.",
       array(
         '@node_title' => $resource->label(),
