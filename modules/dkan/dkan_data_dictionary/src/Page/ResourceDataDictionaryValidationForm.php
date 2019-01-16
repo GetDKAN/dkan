@@ -40,7 +40,8 @@ class ResourceDataDictionaryValidationForm implements FormInterface {
 
       $vr = NULL;
       if (!empty($vrs)) {
-        $vr = array_pop($vrs);
+        // Get the most recent Validation Report.
+        $vr = $vrs[max(array_keys($vrs))];
       }
 
       if (empty($vr)) {
