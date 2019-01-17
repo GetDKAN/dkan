@@ -15,7 +15,7 @@ abstract class DataDictionaryBase implements \JsonSerializable {
   protected $allowedFileExtensions;
 
   /**
-   *
+   * Throws \Exception.
    */
   public function __construct($machine_name, $label, array $allowed_file_types = array(), $managerClass = NULL) {
     $this->label = $label;

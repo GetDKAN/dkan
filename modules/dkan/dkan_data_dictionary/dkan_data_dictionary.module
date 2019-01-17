@@ -59,7 +59,7 @@ function dkan_data_dictionary_supported_bundles() {
  */
 function dkan_data_dictionary_access($op, $node, $account = NULL) {
   if (!in_array($node->type, dkan_data_dictionary_supported_bundles())) {
-      watchdog(
+    watchdog(
         'dkan_data_dictionary',
         "Node \"@node_title\" [@nid] does not support Data Dictionaries.",
         array(
@@ -68,7 +68,7 @@ function dkan_data_dictionary_access($op, $node, $account = NULL) {
         ),
         WATCHDOG_DEBUG
       );
-      return FALSE;
+    return FALSE;
   }
 
   try {
