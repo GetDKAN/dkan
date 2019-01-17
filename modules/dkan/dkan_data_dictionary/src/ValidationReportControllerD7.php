@@ -250,8 +250,6 @@ class ValidationReportControllerD7 implements ValidationReportControllerInterfac
       'revision_id' => $resource->value()->vid,
       'uid' => $account->uid,
       'created' => time(),
-      'report_time' => $report->getReportTime(),
-      'report_source' => $report->getReportSource(),
       'report_valid' => $report->getReportStatus(),
       'report' => json_encode($report),
     );

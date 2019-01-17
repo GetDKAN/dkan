@@ -231,13 +231,6 @@ class ValidationReport implements \JsonSerializable {
   /**
    *
    */
-  public function getReportSource() {
-    return $this->source;
-  }
-
-  /**
-   *
-   */
   public function getReportStatus() {
     $valid = TRUE;
 
