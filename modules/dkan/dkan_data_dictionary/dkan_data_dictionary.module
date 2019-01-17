@@ -8,6 +8,7 @@
 include_once 'dkan_data_dictionary.features.inc';
 
 use Dkan\DataDictionary\Resource;
+use Dkan\DataDictionary\DataDictionaryBase;
 
 /**
  * Implements hook_menu().
@@ -45,22 +46,77 @@ function dkan_data_dictionary_permission() {
 }
 
 /**
+ *
+ */
+function dkan_data_dictionary_supported_bundles() {
+  return array(
+    'resource',
+  );
+}
+
+/**
  * Access callback for DKAN data_dictionary operations.
  */
 function dkan_data_dictionary_access($op, $node, $account = NULL) {
+  if (!in_array($node->type, dkan_data_dictionary_supported_bundles())) {
+      watchdog(
+        'dkan_data_dictionary',
+        "Node \"@node_title\" [@nid] does not support Data Dictionaries.",
+        array(
+          '@nid' => $node->nid,
+          '@node_title' => $node->title,
+        ),
+        WATCHDOG_DEBUG
+      );
+      return FALSE;
+  }
+
   try {
     $resource = Resource::createFromDrupalNode($node);
     $dataDict_machinename = $resource->getDataDictSchemaSpec();
     $dataDict = dkan_data_dictionary_dictionary_load($dataDict_machinename);
 
-    if ($dataDict instanceof DataDictionaryBase && !$dataDict->hasManager()) {
+    if (empty($dataDict)) {
+      watchdog(
+        'dkan_data_dictionary',
+        "Node \"@node_title\" [@nid] Data Dictionary specification is empty.",
+        array(
+          '@nid' => $node->nid,
+          '@nid' => $node->title,
+        ),
+        WATCHDOG_DEBUG
+      );
+      return FALSE;
+    }
+    elseif (!($dataDict instanceof DataDictionaryBase)) {
+      watchdog(
+        'dkan_data_dictionary',
+        "Node \"@node_title\" [@nid] Data Dictionary is not an instance of DataDictionaryBase.",
+        array(
+          '@nid' => $node->nid,
+          '@nid' => $node->title,
+        ),
+        WATCHDOG_DEBUG
+      );
+      return FALSE;
+    }
+    elseif (!$dataDict->hasManager()) {
+      watchdog(
+        'dkan_data_dictionary',
+        "Node \"@node_title\" [@nid] Data Dictionary does not have a Validation Manager.",
+        array(
+          '@nid' => $node->nid,
+          '@nid' => $node->title,
+        ),
+        WATCHDOG_DEBUG
+      );
       return FALSE;
     }
   }
   catch (\Exception $e) {
     watchdog(
       'dkan_data_dictionary',
-      'Failed to instanciate Resource object from node "@nid"',
+      "Failed to instanciate Resource object from node \"@nid\"",
       array('@nid' => $node->nid),
       WATCHDOG_ERROR
     );
