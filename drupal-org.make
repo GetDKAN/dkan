@@ -112,28 +112,6 @@ projects:
       2765721: https://www.drupal.org/files/issues/features-blank-line-after-php-tag-2765721-0.patch
   features_roles_permissions:
     version: '1.2'
-  feeds:
-    download:
-      type: git
-      url: https://git.drupal.org/project/feeds.git
-      branch: 7.x-2.x
-      revision: d312f4f66e98cc12b8462cd13874184589017f72
-    patch:
-      1127696: https://www.drupal.org/files/issues/1127696-137.patch
-  feeds_field_fetcher:
-    download:
-      type: git
-      url: https://git.drupal.org/project/feeds_field_fetcher.git
-      branch: 7.x-1.x
-      revision: 6725b86
-    patch:
-      2315425: https://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch
-      2829416: https://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch
-  feeds_flatstore_processor:
-    download:
-      type: git
-      url: https://github.com/GetDKAN/feeds_flatstore_processor.git
-      revision: 82b2a05bd133dbf870bdf09f1c0a45711f1432e3
   field_group:
     version: '1.6'
   field_group_table:

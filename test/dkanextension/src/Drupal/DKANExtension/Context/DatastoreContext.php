@@ -43,17 +43,13 @@ class DatastoreContext extends RawDKANContext {
     foreach ($result as $n) {
       if (!empty($n->nid)) {
         $node = node_load($n->nid);
-        $importer_ids = feeds_get_importer_ids($node->type);
-        foreach ($importer_ids as $importer_id) {
-          $source = feeds_source($importer_id, $node->nid);
-          $table_name = feeds_flatstore_processor_table_name($source->id, $source->feed_nid);
-          $has_file = dkan_datastore_file_field($node);
-          $wrapper = entity_metadata_wrapper('node', $node);
-          $status = ($has_file) ? DKAN_DATASTORE_FILE_EXISTS : DKAN_DATASTORE_EMPTY;
-          $wrapper->field_datastore_status->set($status);
-          $wrapper->save();
-          $this->dropTable($table_name);
-        }
+        $table_name = "dkan_datastore_" . $n->nid;
+        $has_file = dkan_datastore_file_field($node);
+        $wrapper = entity_metadata_wrapper('node', $node);
+        $status = ($has_file) ? 1 : 0;
+        $wrapper->field_datastore_status->set($status);
+        $wrapper->save();
+        $this->dropTable($table_name);
       }
     }
   }
@@ -111,7 +107,7 @@ class DatastoreContext extends RawDKANContext {
     $nid = $this->getNidByTitle($title);
     $status = dkan_datastore_records($nid);
     if (!empty($status)) {
-      throw new \Exception($title . ' has datastore records.'); 
+      throw new \Exception($title . ' has datastore records.');
     }
   }
 
@@ -122,7 +118,7 @@ class DatastoreContext extends RawDKANContext {
     $nid = $this->getNidByTitle($title);
     $status = dkan_datastore_records($nid);
     if (empty($status)) {
-      throw new \Exception($title . ' has no datastore records.'); 
+      throw new \Exception($title . ' has no datastore records.');
     }
   }
 
@@ -140,10 +136,7 @@ class DatastoreContext extends RawDKANContext {
    * Drop a datastore table
    */
   private function dropTable($table_name){
-    $table = data_get_table($table_name);
-    if($table) {
-      $table->drop();
-    } elseif (db_table_exists($table_name)) {
+    if (db_table_exists($table_name)) {
       db_drop_table($table_name);
     }
   }
