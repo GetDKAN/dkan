@@ -812,3 +812,24 @@ function dkan_update_7034() {
 
   $storage->returnBin($bin);
 }
+
+/**
+ * Disable feeds modules.
+ */
+function dkan_update_7035() {
+  $records = array(
+    'feeds',
+    'feeds_import',
+    'feeds_news',
+    'feeds_ui',
+    'feeds_tests',
+    'feeds_field_fetcher',
+    'feeds_flatstore_processor'
+  );
+  foreach ($records as $record) {
+    db_update('system')
+      ->fields(array('status' => '0',))
+      ->condition ('name', 'feeds%', 'LIKE')
+      ->execute();
+  }
+}
