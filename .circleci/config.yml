@@ -37,8 +37,7 @@ jobs:
           name: Run tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            circleci tests glob "dkan/tests/phpunit/**/*.php" | circleci tests split --split-by=filesize
-
+            circleci tests glob dkan/test/phpunit/*/*.php | circleci tests split --split-by=filesize
 
 
 
