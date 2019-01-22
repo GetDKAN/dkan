@@ -39,7 +39,8 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             bash -c "
             TESTFILES=$(circleci tests glob dkan/test/phpunit/*/*.php | circleci tests split --split-by=filesize)
-            dktl test:phpunit -- ${TESTFILES}
+            echo ${TESTFILES}
+            dktl test:phpunit
             "
 
 
