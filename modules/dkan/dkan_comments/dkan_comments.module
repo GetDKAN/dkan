@@ -1,0 +1,235 @@
+<?php
+/**
+ * @file
+ * Code for the DKAN Comments module.
+ */
+
+include_once 'dkan_comments.features.inc';
+
+
+/**
+ * Comment is archived.
+ */
+define('COMMENT_ARCHIVED', 1);
+
+/**
+ * Comment is unarchived.
+ */
+define('COMMENT_UNARCHIVED', 0);
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_comments_menu() {
+  $items['comment/%/archive'] = array(
+    'title' => 'Archive',
+    'page callback' => 'dkan_comments_archive',
+    'page arguments' => array(
+      1,
+    ),
+    'access arguments' => array(
+      'administer comments',
+    ),
+    'weight' => 3,
+  );
+  $items['comment/%/unarchive'] = array(
+    'title' => 'Unarchive',
+    'page callback' => 'dkan_comments_unarchive',
+    'page arguments' => array(
+      1,
+    ),
+    'access arguments' => array(
+      'administer comments',
+    ),
+    'weight' => 4,
+  );
+  $items['admin/content/comment/archive'] = array(
+    'title' => 'Archived comments',
+    'title callback' => 'dkan_comments_archived_count',
+    'page arguments' => array('archived'),
+    'access arguments' => array('administer comments'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function dkan_comments_menu_alter(&$items) {
+  $items['admin/content/comment/approval']['title callback'] = 'dkan_comments_count_unpublished';
+}
+
+/**
+ * Returns a menu title which includes the number of archived comments.
+ */
+function dkan_comments_archived_count() {
+  $count = db_query('SELECT COUNT(entity_id) FROM {field_data_comment_archived} WHERE comment_archived_value = :status', array(
+    ':status' => COMMENT_ARCHIVED,
+  ))->fetchField();
+  return t('Archived comments (@count)', array('@count' => $count));
+}
+
+/**
+ * Menu callback; archive specified comment.
+ *
+ * @param $cid
+ *   A comment identifier.
+ */
+function dkan_comments_archive($cid) {
+  if (!isset($_GET['token']) || !drupal_valid_token($_GET['token'], "comment/{$cid}/archive")) {
+    return MENU_ACCESS_DENIED;
+  }
+  if ($comment = comment_load($cid)) {
+    $comment->status = COMMENT_NOT_PUBLISHED;
+    $comment->comment_archived[LANGUAGE_NONE][0]['value'] = COMMENT_ARCHIVED;
+    comment_save($comment);
+    drupal_set_message(t('Comment archived.'));
+    drupal_goto('node/' . $comment->nid);
+  }
+  return MENU_NOT_FOUND;
+}
+
+/**
+ * Menu callback; unarchive specified comment.
+ *
+ * @param $cid
+ *   A comment identifier.
+ */
+function dkan_comments_unarchive($cid) {
+  if (!isset($_GET['token']) || !drupal_valid_token($_GET['token'], "comment/{$cid}/unarchive")) {
+    return MENU_ACCESS_DENIED;
+  }
+  if ($comment = comment_load($cid)) {
+    $comment->status = COMMENT_NOT_PUBLISHED;
+    $comment->comment_archived[LANGUAGE_NONE][0]['value'] = COMMENT_UNARCHIVED;
+    comment_save($comment);
+    drupal_set_message(t('Comment unarchived.'));
+    drupal_goto('node/' . $comment->nid);
+  }
+  return MENU_NOT_FOUND;
+}
+
+/**
+ * Implements hook_comment_view_alter().
+ */
+function dkan_comments_comment_view_alter(&$build) {
+  if ($build['#node']->comment == COMMENT_NODE_OPEN) {
+    if (user_access('administer comments') && user_access('post comments')) {
+      $comment = $build['#comment'];
+      if ($comment->status == COMMENT_NOT_PUBLISHED && $comment->comment_archived[LANGUAGE_NONE][0]['value'] == COMMENT_UNARCHIVED) {
+        $build['links']['comment']['#links']['comment-archive'] = array(
+          'title' => t('archive'),
+          'href' => "comment/{$comment->cid}/archive",
+          'html' => true,
+          'query' => array(
+            'token' => drupal_get_token("comment/{$comment->cid}/archive"),
+          ),
+        );
+      } else if ($comment->comment_archived[LANGUAGE_NONE][0]['value'] == COMMENT_ARCHIVED) {
+        unset($build['links']['comment']['#links']['comment-approve']);
+        $build['links']['comment']['#links']['comment-unarchive'] = array(
+          'title' => t('unarchive'),
+          'href' => "comment/{$comment->cid}/unarchive",
+          'html' => true,
+          'query' => array(
+            'token' => drupal_get_token("comment/{$comment->cid}/unarchive"),
+          ),
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function dkan_comments_form_alter(&$form, &$form_state, $form_id) {
+  if (strpos($form_id, 'comment_node_') === 0) {
+    if (!user_access('administer comments') || !user_access('post comments')) {
+      $form['comment_archived']['#access'] = FALSE;
+    }
+  }
+}
+
+/**
+ * Helper function for adding comment_archived field to every content type.
+ */
+function _comment_archived_field_create($info) {
+  // Create the field if needed.
+  if (!field_read_field('comment_archived', array(
+    'include_inactive' => true,
+  ))) {
+    $field = array(
+      'field_name' => 'comment_archived',
+      'type' => 'list_boolean',
+      'entity_types' => array(
+        'comment',
+      ),
+      'settings' => array(
+        'allowed_values' => array(
+          0 => '',
+          1 => '',
+        ),
+        'allowed_values_function' => '',
+      ),
+      'active' => 1,
+      'cardinality' => 1,
+    );
+    field_create_field($field);
+  }
+
+  // Create the instance if needed.
+  if (!field_read_instance('comment', 'comment_archived', 'comment_node_' . $info->type, array(
+    'include_inactive' => true,
+  ))) {
+    field_attach_create_bundle('comment', 'comment_node_' . $info->type);
+
+    // Attaches the body field by default.
+    $instance = array(
+      'field_name' => 'comment_archived',
+      'label' => 'Archived',
+      'entity_type' => 'comment',
+      'required' => 0,
+      'bundle' => 'comment_node_' . $info->type,
+      'default_value' => array(
+        0 => array(
+          'value' => 0,
+        ),
+      ),
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => 0,
+        ),
+      ),
+      'settings' => array(
+        'user_register_form' => false,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(
+          'display_label' => 1,
+        ),
+        'type' => 'options_onoff',
+        'weight' => 1,
+      ),
+    );
+    field_create_instance($instance);
+  }
+}
+
+/**
+ * Overrides tab title with number of unapproved comments that are unarchived.
+ */
+function dkan_comments_count_unpublished() {
+  $count = db_query('SELECT COUNT(cid) FROM {comment} c LEFT JOIN {field_data_comment_archived} a ON c.cid = a.entity_id WHERE c.status = :status AND a.comment_archived_value = :archived', array(
+    ':status' => COMMENT_NOT_PUBLISHED,
+    ':archived' => COMMENT_UNARCHIVED,
+  ))->fetchField();
+  return t('Unapproved comments (@count)', array('@count' => $count));
+}

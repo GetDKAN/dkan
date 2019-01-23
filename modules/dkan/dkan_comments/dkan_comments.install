@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for DKAN Comments module.
+ */
+
+/**
+ * Implements hook_modules_enabled().
+ * Adds comment_archived field to every content type in the site.
+ */
+function dkan_comments_modules_enabled($modules) {
+  if (in_array('dkan_comments', $modules)) {
+    node_types_rebuild();
+    foreach (node_type_get_types() as $type => $info) {
+      _comment_archived_field_create($info);
+    }
+  }
+}
+
+/**
+ * Implements hook_enable().
+ * Disable admin_views_comment view in favour of the new custom
+ * comments administration UI.
+ */
+function dkan_comments_enable() {
+  $views_status = variable_get('views_defaults', array());
+  $views_status['admin_views_comment'] = TRUE;
+  variable_set('views_defaults', $views_status);
+  if (function_exists('views_invalidate_cache')) {
+    views_invalidate_cache();
+  }
+}

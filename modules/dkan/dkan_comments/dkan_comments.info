@@ -1,0 +1,10 @@
+name = DKAN Comments
+description = Provide custom functionality for comments.
+core = 7.x
+package = DKAN
+dependencies[] = views
+dependencies[] = comment
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[views_view][] = dkan_comments_administration
+features_exclude[dependencies][ctools] = ctools
