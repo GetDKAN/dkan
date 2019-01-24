@@ -150,6 +150,19 @@ function dkan_comments_form_alter(&$form, &$form_state, $form_id) {
       $form['comment_archived']['#access'] = FALSE;
     }
   }
+  if ($form_id == 'views_exposed_form') {
+    if (!isset($form_state['input']['comment_status'])) {
+      if ($form['#id'] == 'views-exposed-form-dkan-comments-administration-system-1') {
+        $form_state['input']['comment_status'] = 'published';
+      }
+      if ($form['#id'] == 'views-exposed-form-dkan-comments-administration-system-2') {
+        $form_state['input']['comment_status'] = 'unpublished';
+      }
+      if ($form['#id'] == 'views-exposed-form-dkan-comments-administration-system-3') {
+        $form_state['input']['comment_status'] = 'archived';
+      }
+    }
+  }
 }
 
 /**
