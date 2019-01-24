@@ -233,3 +233,43 @@ function dkan_comments_count_unpublished() {
   ))->fetchField();
   return t('Unapproved comments (@count)', array('@count' => $count));
 }
+
+/**
+ * Implements hook_action_info().
+ */
+function dkan_comments_action_info() {
+  return array(
+    'dkan_comments_archive_comment_vbo' => array(
+      'type' => 'comment',
+      'label' => t('Archive comment'),
+      'behavior' => array('changes_property'),
+      'configurable' => false,
+      'vbo_configurable' => false,
+      'triggers' => array('any'),
+    ),
+    'dkan_comments_unarchive_comment_vbo' => array(
+      'type' => 'comment',
+      'label' => t('Unarchive comment'),
+      'behavior' => array('changes_property'),
+      'configurable' => false,
+      'vbo_configurable' => false,
+      'triggers' => array('any'),
+    ),
+  );
+}
+
+/**
+ * VBO function for archiving comments.
+ */
+function dkan_comments_archive_comment_vbo(&$comment, $context) {
+  $comment->comment_archived[LANGUAGE_NONE][0]['value'] = COMMENT_ARCHIVED;
+  $comment->status = COMMENT_NOT_PUBLISHED;
+}
+
+/**
+ * VBO function for unarchiving comments.
+ */
+function dkan_comments_unarchive_comment_vbo(&$comment, $context) {
+  $comment->comment_archived[LANGUAGE_NONE][0]['value'] = COMMENT_UNARCHIVED;
+  $comment->status = COMMENT_NOT_PUBLISHED;
+}
