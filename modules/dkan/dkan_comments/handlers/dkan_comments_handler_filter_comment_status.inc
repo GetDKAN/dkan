@@ -12,7 +12,7 @@ class dkan_comments_handler_filter_comment_status extends views_handler_filter_e
    * The form field to show when this filter is exposed.
    */
   function value_form(&$form, &$form_state) {
-    $form['field_data_comment_archived']['comment_status'] = array(
+    $form['value'] = array(
       '#type' => 'select',
       '#options' => array(
         'published' => 'Published',
@@ -21,8 +21,6 @@ class dkan_comments_handler_filter_comment_status extends views_handler_filter_e
       ),
       '#default_value' => $this->value,
     );
-
-    $form['value'] = array();
   }
 
   /**
