@@ -876,3 +876,13 @@ function dkan_update_7039() {
       ->execute();
   }
 }
+
+/** 
+ * Enable new search feature
+ */
+function dkan_update_7040() {
+  // check that the core modules are still enabled
+  if (module_exists('dkan_sitewide_search_db') && module_exists('dkan_sitewide_panels')) {
+    module_enable(array('dkan_dataset_search'));
+  }
+}
