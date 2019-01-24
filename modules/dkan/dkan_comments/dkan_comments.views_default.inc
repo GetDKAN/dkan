@@ -260,16 +260,28 @@ function dkan_comments_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
   $handler->display->display_options['filters']['title']['expose']['identifier'] = 'nodeTitle';
   $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
-  /* Filter criterion: Comment: Approved */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'comment';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = 'All';
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['status']['expose']['label'] = 'Published';
-  $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['remember'] = TRUE;
+  /* Filter criterion: Comment: Comment publish status. */
+  $handler->display->display_options['filters']['comment_status']['id'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['table'] = 'field_data_comment_archived';
+  $handler->display->display_options['filters']['comment_status']['field'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['operator_id'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['identifier'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
 
   /* Display: Approved Comments */
   $handler = $view->new_display('system', 'Approved Comments', 'system_1');
@@ -412,16 +424,29 @@ function dkan_comments_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
   $handler->display->display_options['filters']['title']['expose']['identifier'] = 'nodeTitle';
   $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
-  /* Filter criterion: Comment: Approved */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'comment';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = '1';
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['status']['expose']['label'] = 'Published';
-  $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['remember'] = TRUE;
+  /* Filter criterion: Comment: Comment publish status. */
+  $handler->display->display_options['filters']['comment_status']['id'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['table'] = 'field_data_comment_archived';
+  $handler->display->display_options['filters']['comment_status']['field'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['value'] = 'published';
+  $handler->display->display_options['filters']['comment_status']['group'] = 1;
+  $handler->display->display_options['filters']['comment_status']['expose']['operator_id'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['identifier'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
   $handler->display->display_options['path'] = 'admin/content/comment';
 
   /* Display: Unpublished */
@@ -561,22 +586,27 @@ function dkan_comments_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['label'] = 'Posted in';
   $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
   $handler->display->display_options['filters']['title']['expose']['identifier'] = 'nodeTitle';
-  /* Filter criterion: Comment: Approved */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'comment';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = '0';
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['status']['expose']['label'] = 'Published';
-  $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['remember'] = TRUE;
-  /* Filter criterion: Comment: Archived (comment_archived) */
-  $handler->display->display_options['filters']['comment_archived_value']['id'] = 'comment_archived_value';
-  $handler->display->display_options['filters']['comment_archived_value']['table'] = 'field_data_comment_archived';
-  $handler->display->display_options['filters']['comment_archived_value']['field'] = 'comment_archived_value';
-  $handler->display->display_options['filters']['comment_archived_value']['value'] = array(
-    0 => '0',
+  /* Filter criterion: Comment: Comment publish status. */
+  $handler->display->display_options['filters']['comment_status']['id'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['table'] = 'field_data_comment_archived';
+  $handler->display->display_options['filters']['comment_status']['field'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['value'] = 'unpublished';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator_id'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['identifier'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
   );
   $handler->display->display_options['path'] = 'admin/content/comment/approval';
 
@@ -711,24 +741,498 @@ function dkan_comments_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
   $handler->display->display_options['filters']['title']['expose']['identifier'] = 'nodeTitle';
   $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
-  /* Filter criterion: Comment: Approved */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'comment';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = '0';
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator_id'] = '';
-  $handler->display->display_options['filters']['status']['expose']['label'] = 'Published';
-  $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['remember'] = TRUE;
-  /* Filter criterion: Comment: Archived (comment_archived) */
-  $handler->display->display_options['filters']['comment_archived_value']['id'] = 'comment_archived_value';
-  $handler->display->display_options['filters']['comment_archived_value']['table'] = 'field_data_comment_archived';
-  $handler->display->display_options['filters']['comment_archived_value']['field'] = 'comment_archived_value';
-  $handler->display->display_options['filters']['comment_archived_value']['value'] = array(
-    1 => '1',
+  /* Filter criterion: Comment: Comment publish status. */
+  $handler->display->display_options['filters']['comment_status']['id'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['table'] = 'field_data_comment_archived';
+  $handler->display->display_options['filters']['comment_status']['field'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['value'] = 'archived';
+  $handler->display->display_options['filters']['comment_status']['group'] = 1;
+  $handler->display->display_options['filters']['comment_status']['expose']['operator_id'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['identifier'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
   );
   $handler->display->display_options['path'] = 'admin/content/comment/archive';
+
+  /* Display: Approved data export */
+  $handler = $view->new_display('views_data_export', 'Approved data export', 'views_data_export_approved_comments');
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+  $handler->display->display_options['style_options']['provide_file'] = 0;
+  $handler->display->display_options['style_options']['parent_sort'] = 0;
+  $handler->display->display_options['style_options']['quote'] = 1;
+  $handler->display->display_options['style_options']['trim'] = 0;
+  $handler->display->display_options['style_options']['replace_newlines'] = 0;
+  $handler->display->display_options['style_options']['newline_token'] = '1';
+  $handler->display->display_options['style_options']['header'] = 1;
+  $handler->display->display_options['style_options']['keep_html'] = 0;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Comment: Title */
+  $handler->display->display_options['fields']['subject']['id'] = 'subject';
+  $handler->display->display_options['fields']['subject']['table'] = 'comment';
+  $handler->display->display_options['fields']['subject']['field'] = 'subject';
+  /* Field: Comment: Comment */
+  $handler->display->display_options['fields']['comment_body']['id'] = 'comment_body';
+  $handler->display->display_options['fields']['comment_body']['table'] = 'field_data_comment_body';
+  $handler->display->display_options['fields']['comment_body']['field'] = 'comment_body';
+  $handler->display->display_options['fields']['comment_body']['label'] = 'Body';
+  /* Field: Comment: Author */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'comment';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['relationship'] = 'nid';
+  $handler->display->display_options['fields']['title']['label'] = 'Posted in';
+  $handler->display->display_options['fields']['title']['alter']['max_length'] = '16';
+  $handler->display->display_options['fields']['title']['alter']['trim'] = TRUE;
+  /* Field: Comment: Updated date */
+  $handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['table'] = 'comment';
+  $handler->display->display_options['fields']['timestamp']['field'] = 'changed';
+  $handler->display->display_options['fields']['timestamp']['label'] = 'Updated';
+  $handler->display->display_options['fields']['timestamp']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['timestamp']['date_format'] = 'time ago';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Comment: Title */
+  $handler->display->display_options['filters']['subject']['id'] = 'subject';
+  $handler->display->display_options['filters']['subject']['table'] = 'comment';
+  $handler->display->display_options['filters']['subject']['field'] = 'subject';
+  $handler->display->display_options['filters']['subject']['operator'] = 'contains';
+  $handler->display->display_options['filters']['subject']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['subject']['expose']['operator_id'] = 'subject_op';
+  $handler->display->display_options['filters']['subject']['expose']['label'] = 'Title';
+  $handler->display->display_options['filters']['subject']['expose']['operator'] = 'subject_op';
+  $handler->display->display_options['filters']['subject']['expose']['identifier'] = 'subject';
+  $handler->display->display_options['filters']['subject']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['subject']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_items'] = '10';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_min_chars'] = '0';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_field'] = 'subject';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_raw_suggestion'] = 1;
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_raw_dropdown'] = 1;
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_dependent'] = 0;
+  /* Filter criterion: User: Name */
+  $handler->display->display_options['filters']['uid']['id'] = 'uid';
+  $handler->display->display_options['filters']['uid']['table'] = 'users';
+  $handler->display->display_options['filters']['uid']['field'] = 'uid';
+  $handler->display->display_options['filters']['uid']['relationship'] = 'uid';
+  $handler->display->display_options['filters']['uid']['value'] = '';
+  $handler->display->display_options['filters']['uid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['uid']['expose']['operator_id'] = 'uid_op';
+  $handler->display->display_options['filters']['uid']['expose']['label'] = 'Author';
+  $handler->display->display_options['filters']['uid']['expose']['operator'] = 'uid_op';
+  $handler->display->display_options['filters']['uid']['expose']['identifier'] = 'author';
+  $handler->display->display_options['filters']['uid']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['uid']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  /* Filter criterion: Content: Title */
+  $handler->display->display_options['filters']['title']['id'] = 'title';
+  $handler->display->display_options['filters']['title']['table'] = 'node';
+  $handler->display->display_options['filters']['title']['field'] = 'title';
+  $handler->display->display_options['filters']['title']['relationship'] = 'nid';
+  $handler->display->display_options['filters']['title']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['label'] = 'Posted in';
+  $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['identifier'] = 'nodeTitle';
+  $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_items'] = '10';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_min_chars'] = '0';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_field'] = 'title';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_raw_suggestion'] = 1;
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_raw_dropdown'] = 1;
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_dependent'] = 0;
+  /* Filter criterion: Comment: Comment publish status. */
+  $handler->display->display_options['filters']['comment_status']['id'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['table'] = 'field_data_comment_archived';
+  $handler->display->display_options['filters']['comment_status']['field'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['value'] = 'published';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator_id'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['identifier'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['path'] = 'approved_comments.csv';
+  $handler->display->display_options['displays'] = array(
+    'system_1' => 'system_1',
+    'default' => 0,
+    'system_2' => 0,
+    'system_3' => 0,
+  );
+
+  /* Display: Unpublished data export */
+  $handler = $view->new_display('views_data_export', 'Unpublished data export', 'views_data_export_unpublished_comments');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Unpublished Comments';
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+  $handler->display->display_options['style_options']['provide_file'] = 0;
+  $handler->display->display_options['style_options']['parent_sort'] = 0;
+  $handler->display->display_options['style_options']['quote'] = 1;
+  $handler->display->display_options['style_options']['trim'] = 0;
+  $handler->display->display_options['style_options']['replace_newlines'] = 0;
+  $handler->display->display_options['style_options']['newline_token'] = '1';
+  $handler->display->display_options['style_options']['header'] = 1;
+  $handler->display->display_options['style_options']['keep_html'] = 0;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Comment: Title */
+  $handler->display->display_options['fields']['subject']['id'] = 'subject';
+  $handler->display->display_options['fields']['subject']['table'] = 'comment';
+  $handler->display->display_options['fields']['subject']['field'] = 'subject';
+  /* Field: Comment: Comment */
+  $handler->display->display_options['fields']['comment_body']['id'] = 'comment_body';
+  $handler->display->display_options['fields']['comment_body']['table'] = 'field_data_comment_body';
+  $handler->display->display_options['fields']['comment_body']['field'] = 'comment_body';
+  $handler->display->display_options['fields']['comment_body']['label'] = 'Body';
+  /* Field: Comment: Author */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'comment';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['relationship'] = 'nid';
+  $handler->display->display_options['fields']['title']['label'] = 'Posted in';
+  $handler->display->display_options['fields']['title']['alter']['max_length'] = '16';
+  $handler->display->display_options['fields']['title']['alter']['trim'] = TRUE;
+  /* Field: Comment: Updated date */
+  $handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['table'] = 'comment';
+  $handler->display->display_options['fields']['timestamp']['field'] = 'changed';
+  $handler->display->display_options['fields']['timestamp']['label'] = 'Updated';
+  $handler->display->display_options['fields']['timestamp']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['timestamp']['date_format'] = 'time ago';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Comment: Title */
+  $handler->display->display_options['filters']['subject']['id'] = 'subject';
+  $handler->display->display_options['filters']['subject']['table'] = 'comment';
+  $handler->display->display_options['filters']['subject']['field'] = 'subject';
+  $handler->display->display_options['filters']['subject']['operator'] = 'contains';
+  $handler->display->display_options['filters']['subject']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['subject']['expose']['operator_id'] = 'subject_op';
+  $handler->display->display_options['filters']['subject']['expose']['label'] = 'Title';
+  $handler->display->display_options['filters']['subject']['expose']['operator'] = 'subject_op';
+  $handler->display->display_options['filters']['subject']['expose']['identifier'] = 'subject';
+  $handler->display->display_options['filters']['subject']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['subject']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_items'] = '10';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_min_chars'] = '0';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_field'] = 'subject';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_raw_suggestion'] = 1;
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_raw_dropdown'] = 1;
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_dependent'] = 0;
+  /* Filter criterion: User: Name */
+  $handler->display->display_options['filters']['uid']['id'] = 'uid';
+  $handler->display->display_options['filters']['uid']['table'] = 'users';
+  $handler->display->display_options['filters']['uid']['field'] = 'uid';
+  $handler->display->display_options['filters']['uid']['relationship'] = 'uid';
+  $handler->display->display_options['filters']['uid']['value'] = '';
+  $handler->display->display_options['filters']['uid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['uid']['expose']['operator_id'] = 'uid_op';
+  $handler->display->display_options['filters']['uid']['expose']['label'] = 'Author';
+  $handler->display->display_options['filters']['uid']['expose']['operator'] = 'uid_op';
+  $handler->display->display_options['filters']['uid']['expose']['identifier'] = 'author';
+  $handler->display->display_options['filters']['uid']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['uid']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  /* Filter criterion: Content: Title */
+  $handler->display->display_options['filters']['title']['id'] = 'title';
+  $handler->display->display_options['filters']['title']['table'] = 'node';
+  $handler->display->display_options['filters']['title']['field'] = 'title';
+  $handler->display->display_options['filters']['title']['relationship'] = 'nid';
+  $handler->display->display_options['filters']['title']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['label'] = 'Posted in';
+  $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['identifier'] = 'nodeTitle';
+  $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_items'] = '10';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_min_chars'] = '0';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_field'] = 'title';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_raw_suggestion'] = 1;
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_raw_dropdown'] = 1;
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_dependent'] = 0;
+  /* Filter criterion: Comment: Comment publish status. */
+  $handler->display->display_options['filters']['comment_status']['id'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['table'] = 'field_data_comment_archived';
+  $handler->display->display_options['filters']['comment_status']['field'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['value'] = 'unpublished';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator_id'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['identifier'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['path'] = 'unpublished_comments.csv';
+  $handler->display->display_options['displays'] = array(
+    'system_2' => 'system_2',
+    'default' => 0,
+    'system_1' => 0,
+    'system_3' => 0,
+  );
+  $handler->display->display_options['sitename_title'] = 0;
+
+  /* Display: Archived data export */
+  $handler = $view->new_display('views_data_export', 'Archived data export', 'views_data_export_archived_comments');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Archived Comments';
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['style_plugin'] = 'views_data_export_csv';
+  $handler->display->display_options['style_options']['provide_file'] = 0;
+  $handler->display->display_options['style_options']['parent_sort'] = 0;
+  $handler->display->display_options['style_options']['quote'] = 1;
+  $handler->display->display_options['style_options']['trim'] = 0;
+  $handler->display->display_options['style_options']['replace_newlines'] = 0;
+  $handler->display->display_options['style_options']['newline_token'] = '1';
+  $handler->display->display_options['style_options']['header'] = 1;
+  $handler->display->display_options['style_options']['keep_html'] = 0;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Comment: Title */
+  $handler->display->display_options['fields']['subject']['id'] = 'subject';
+  $handler->display->display_options['fields']['subject']['table'] = 'comment';
+  $handler->display->display_options['fields']['subject']['field'] = 'subject';
+  /* Field: Comment: Comment */
+  $handler->display->display_options['fields']['comment_body']['id'] = 'comment_body';
+  $handler->display->display_options['fields']['comment_body']['table'] = 'field_data_comment_body';
+  $handler->display->display_options['fields']['comment_body']['field'] = 'comment_body';
+  $handler->display->display_options['fields']['comment_body']['label'] = 'Body';
+  /* Field: Comment: Author */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'comment';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['relationship'] = 'nid';
+  $handler->display->display_options['fields']['title']['label'] = 'Posted in';
+  $handler->display->display_options['fields']['title']['alter']['max_length'] = '16';
+  $handler->display->display_options['fields']['title']['alter']['trim'] = TRUE;
+  /* Field: Comment: Updated date */
+  $handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
+  $handler->display->display_options['fields']['timestamp']['table'] = 'comment';
+  $handler->display->display_options['fields']['timestamp']['field'] = 'changed';
+  $handler->display->display_options['fields']['timestamp']['label'] = 'Updated';
+  $handler->display->display_options['fields']['timestamp']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['timestamp']['date_format'] = 'time ago';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Comment: Title */
+  $handler->display->display_options['filters']['subject']['id'] = 'subject';
+  $handler->display->display_options['filters']['subject']['table'] = 'comment';
+  $handler->display->display_options['filters']['subject']['field'] = 'subject';
+  $handler->display->display_options['filters']['subject']['operator'] = 'contains';
+  $handler->display->display_options['filters']['subject']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['subject']['expose']['operator_id'] = 'subject_op';
+  $handler->display->display_options['filters']['subject']['expose']['label'] = 'Title';
+  $handler->display->display_options['filters']['subject']['expose']['operator'] = 'subject_op';
+  $handler->display->display_options['filters']['subject']['expose']['identifier'] = 'subject';
+  $handler->display->display_options['filters']['subject']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['subject']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_items'] = '10';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_min_chars'] = '0';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_field'] = 'subject';
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_raw_suggestion'] = 1;
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_raw_dropdown'] = 1;
+  $handler->display->display_options['filters']['subject']['expose']['autocomplete_dependent'] = 0;
+  /* Filter criterion: User: Name */
+  $handler->display->display_options['filters']['uid']['id'] = 'uid';
+  $handler->display->display_options['filters']['uid']['table'] = 'users';
+  $handler->display->display_options['filters']['uid']['field'] = 'uid';
+  $handler->display->display_options['filters']['uid']['relationship'] = 'uid';
+  $handler->display->display_options['filters']['uid']['value'] = '';
+  $handler->display->display_options['filters']['uid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['uid']['expose']['operator_id'] = 'uid_op';
+  $handler->display->display_options['filters']['uid']['expose']['label'] = 'Author';
+  $handler->display->display_options['filters']['uid']['expose']['operator'] = 'uid_op';
+  $handler->display->display_options['filters']['uid']['expose']['identifier'] = 'author';
+  $handler->display->display_options['filters']['uid']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['uid']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  /* Filter criterion: Content: Title */
+  $handler->display->display_options['filters']['title']['id'] = 'title';
+  $handler->display->display_options['filters']['title']['table'] = 'node';
+  $handler->display->display_options['filters']['title']['field'] = 'title';
+  $handler->display->display_options['filters']['title']['relationship'] = 'nid';
+  $handler->display->display_options['filters']['title']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['label'] = 'Posted in';
+  $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['identifier'] = 'nodeTitle';
+  $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_items'] = '10';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_min_chars'] = '0';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_field'] = 'title';
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_raw_suggestion'] = 1;
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_raw_dropdown'] = 1;
+  $handler->display->display_options['filters']['title']['expose']['autocomplete_dependent'] = 0;
+  /* Filter criterion: Comment: Comment publish status. */
+  $handler->display->display_options['filters']['comment_status']['id'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['table'] = 'field_data_comment_archived';
+  $handler->display->display_options['filters']['comment_status']['field'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['value'] = 'archived';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator_id'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['comment_status']['expose']['operator'] = 'comment_status_op';
+  $handler->display->display_options['filters']['comment_status']['expose']['identifier'] = 'comment_status';
+  $handler->display->display_options['filters']['comment_status']['expose']['required'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember'] = TRUE;
+  $handler->display->display_options['filters']['comment_status']['expose']['remember_roles'] = array(
+    2 => '2',
+    3 => 0,
+    1 => 0,
+    5 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    4 => 0,
+    6 => 0,
+  );
+  $handler->display->display_options['path'] = 'archived_comments.csv';
+  $handler->display->display_options['displays'] = array(
+    'system_3' => 'system_3',
+    'default' => 0,
+    'system_1' => 0,
+    'system_2' => 0,
+  );
+  $handler->display->display_options['sitename_title'] = 0;
   $export['dkan_comments_administration'] = $view;
 
   return $export;
