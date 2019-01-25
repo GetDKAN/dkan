@@ -6,3 +6,4 @@
  */
 
 include_once 'dkan_dataset_search.features.inc';
+include_once 'dkan_dataset_search.security.inc';
