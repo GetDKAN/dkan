@@ -56,7 +56,6 @@ function dkan_sitewide_search_db_default_search_api_index() {
         "changed" : { "type" : "date" },
         "created" : { "type" : "date" },
         "field_author" : { "type" : "string" },
-        "field_dkan_ispartof_ref" : { "type" : "integer", "entity_type" : "node" },
         "field_harvest_source_ref" : { "type" : "integer", "entity_type" : "node" },
         "field_license" : { "type" : "string" },
         "field_resources:body:value" : { "type" : "list\\u003Ctext\\u003E" },
@@ -124,8 +123,7 @@ function dkan_sitewide_search_db_default_search_api_index() {
       }
     },
     "enabled" : "1",
-    "read_only" : "0",
-    "rdf_mapping" : []
+    "read_only" : "0"
   }');
   return $items;
 }
@@ -233,29 +231,22 @@ function dkan_sitewide_search_db_default_search_api_server() {
             "type" : "string",
             "boost" : "1.0"
           },
-          "field_harvest_source_ref" : {
-            "table" : "search_api_db_datasets",
-            "column" : "field_harvest_source_ref",
-            "type" : "integer",
-            "boost" : "1.0"
-          },
-          "field_dkan_ispartof_ref" : {
-            "table" : "search_api_db_datasets",
-            "column" : "field_dkan_ispartof_ref",
-            "type" : "integer",
-            "boost" : "1.0"
-          },
           "field_topic" : {
             "table" : "search_api_db_datasets_field_topic",
             "column" : "value",
             "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
+          },
+          "field_harvest_source_ref" : {
+            "table" : "search_api_db_datasets",
+            "column" : "field_harvest_source_ref",
+            "type" : "integer",
+            "boost" : "1.0"
           }
         }
       }
     },
-    "enabled" : "1",
-    "rdf_mapping" : []
+    "enabled" : "1"
   }');
   return $items;
 }

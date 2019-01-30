@@ -95,46 +95,8 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:author'] = $facet;
-
-  $facet = new stdClass();
-  $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
-  $facet->api_version = 1;
-  $facet->name = 'search_api@datasets:block:field_dkan_ispartof_ref';
-  $facet->searcher = 'search_api@datasets';
-  $facet->realm = 'block';
-  $facet->facet = 'field_dkan_ispartof_ref';
-  $facet->enabled = TRUE;
-  $facet->settings = array(
-    'weight' => 0,
-    'widget' => 'facetapi_links',
-    'filters' => array(),
-    'active_sorts' => array(
-      'active' => 'active',
-      'count' => 'count',
-      'display' => 'display',
-    ),
-    'sort_weight' => array(
-      'active' => -50,
-      'count' => -49,
-      'display' => -48,
-    ),
-    'sort_order' => array(
-      'active' => 3,
-      'count' => 3,
-      'display' => 4,
-    ),
-    'empty_behavior' => 'none',
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
-    'soft_limit' => 20,
-    'nofollow' => 1,
-    'show_expanded' => 0,
-  );
-  $export['search_api@datasets:block:field_dkan_ispartof_ref'] = $facet;
 
   $facet = new stdClass();
   $facet->disabled = FALSE; /* Edit this to true to make a default facet disabled initially */
@@ -256,8 +218,6 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'regex' => 0,
     'show_minimum_items' => 2,
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:field_license'] = $facet;
 
@@ -318,8 +278,6 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:field_resources:field_format'] = $facet;
 
@@ -380,8 +338,6 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:field_tags'] = $facet;
 
@@ -442,8 +398,6 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:og_group_ref'] = $facet;
 
@@ -504,8 +458,6 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:search_api_language'] = $facet;
 
@@ -566,8 +518,6 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:search_api_viewed'] = $facet;
 
@@ -628,8 +578,6 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     'nofollow' => 1,
     'show_expanded' => 0,
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:title'] = $facet;
 
@@ -701,8 +649,6 @@ function dkan_sitewide_search_db_facetapi_default_facet_settings() {
     ),
     'submit_realm' => 'Save and go back to realm settings',
     'rewrite_items' => 1,
-    'facet_more_text' => 'Show more',
-    'facet_fewer_text' => 'Show fewer',
   );
   $export['search_api@datasets:block:type'] = $facet;
 
