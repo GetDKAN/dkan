@@ -323,20 +323,6 @@ function dkan_comments_views_default_views() {
         'log' => 0,
       ),
     ),
-    'action::views_bulk_operations_modify_action' => array(
-      'selected' => 1,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 1,
-      'skip_permission_check' => 0,
-      'override_label' => 1,
-      'label' => 'Change value',
-      'settings' => array(
-        'show_all_tokens' => 1,
-        'display_values' => array(
-          '_all_' => '_all_',
-        ),
-      ),
-    ),
     'action::comment_unpublish_action' => array(
       'selected' => 1,
       'postpone_processing' => 0,
@@ -487,20 +473,6 @@ function dkan_comments_views_default_views() {
         'log' => 0,
       ),
     ),
-    'action::views_bulk_operations_modify_action' => array(
-      'selected' => 1,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 1,
-      'skip_permission_check' => 0,
-      'override_label' => 1,
-      'label' => 'Change value',
-      'settings' => array(
-        'show_all_tokens' => 1,
-        'display_values' => array(
-          '_all_' => '_all_',
-        ),
-      ),
-    ),
     'action::comment_publish_action' => array(
       'selected' => 1,
       'postpone_processing' => 0,
@@ -638,20 +610,6 @@ function dkan_comments_views_default_views() {
       'label' => 'Delete',
       'settings' => array(
         'log' => 0,
-      ),
-    ),
-    'action::views_bulk_operations_modify_action' => array(
-      'selected' => 1,
-      'postpone_processing' => 0,
-      'skip_confirmation' => 1,
-      'skip_permission_check' => 0,
-      'override_label' => 1,
-      'label' => 'Change value',
-      'settings' => array(
-        'show_all_tokens' => 1,
-        'display_values' => array(
-          '_all_' => '_all_',
-        ),
       ),
     ),
     'action::dkan_comments_unarchive_comment_vbo' => array(
