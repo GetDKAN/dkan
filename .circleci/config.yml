@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    parallelism: 4
     machine:
       image: circleci/classic:latest
     environment:
@@ -18,7 +17,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone -b exit https://github.com/GetDKAN/dkan-tools.git
+            git clone -b exit-status https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
       - run:
           name: Install site
@@ -28,20 +27,18 @@ jobs:
             dktl init
             mv ~/dkan .
             dktl make
-            bash -c "
             dktl drush site-install -y
-            exit 0
-            "
-
       - run:
           name: Run tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            bash -c "
-            TESTFILES=$(circleci tests glob dkan/test/phpunit/*/*.php | circleci tests split --split-by=filesize)
-            echo ${TESTFILES}
             dktl test:phpunit
-            "
+
+#    parallelism: 4
+#            bash -c "
+#           TESTFILES=$(circleci tests glob dkan/test/phpunit/*/*.php | circleci tests split --split-by=filesize)
+#            echo ${TESTFILES}
+#            "
 
 
 
