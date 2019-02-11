@@ -27,7 +27,7 @@ jobs:
             dktl init
             mv ~/dkan .
             dktl make
-            dktl drush site-install -y
+            PHP_OPTIONS="-d sendmail_path=`which true`" dktl drush site-install -y
       - run:
           name: Run tests
           command: |
