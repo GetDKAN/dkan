@@ -35,7 +35,7 @@ jobs:
             pwd
             cd ~/project
             dktl test:init
-            dktl test:phpunit
+            dktl test:phpunit --debug
 
 #    parallelism: 4
 #            bash -c "
