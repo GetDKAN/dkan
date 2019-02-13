@@ -32,9 +32,9 @@ jobs:
           name: Run tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-	    pwd
-	    cd ~/project
-	    dktl test:init
+            pwd
+            cd ~/project
+            dktl test:init
             dktl test:phpunit
 
 #    parallelism: 4
