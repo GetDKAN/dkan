@@ -35,7 +35,7 @@ jobs:
             pwd
             ls -l
             dktl test:init
-            dktl test:phpunit --debug phpunit/dkan_dataset/ApiTest.php
+            dktl test:phpunit --debug phpunit/dkan_workflow/DkanWorkflowTest.php
 
 #    parallelism: 4
 #            bash -c "
