@@ -35,7 +35,7 @@ jobs:
             pwd
             ls -l
             dktl test:init
-            dktl test:behat --stop-on-failure
+            dktl test:behat
 #            dktl test:phpunit --debug phpunit/dkan_workflow/DkanWorkflowTest.php
 
 #    parallelism: 4
