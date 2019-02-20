@@ -1,3 +1,15 @@
+7.x-1.16.3
+----------
+ - #2832 Security updates for link and restws
+ - #2816 Fix resource titles when harvesting from Socrata - use the format when a title is not available
+
+7.x-1.16.2
+----------
+ - #2805 Update Drupal Core to 7.63
+ - #2800 Update Drupal Core to 7.62
+ - #2792 Fix text/tab-separated-values file mime types to work with the datastore
+ - #2793 Fix documentation on aggregation functions min and max.
+
 7.x-1.16.1
 ----------
  - #2778 Add check for partial date elements when running harvest
