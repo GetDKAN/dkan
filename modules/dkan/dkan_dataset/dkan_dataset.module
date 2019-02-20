@@ -1378,6 +1378,12 @@ function dkan_dataset_field_formatter_view($entity_type, $entity, $field, $insta
  * Helper function to validate dates.
  */
 function dkan_dataset_validate_date($date) {
+  // Check if we have a date with time info (2019-02-18T10:12:26.685485).
+  $parts = explode("T",$date);
+  $count = count($parts);
+  if ($count > 1) {
+    $date = $parts[0];
+  }
   // Check for partial date elements.
   $parts = explode("-",$date);
   $count = count($parts);
