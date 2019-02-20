@@ -203,7 +203,7 @@ projects:
   libraries:
     version: '2.5'
   link:
-    version: '1.5'
+    version: '1.6'
   link_badges:
     version: '1.1'
   link_iframe_formatter:
@@ -314,7 +314,7 @@ projects:
   rules:
     version: '2.11'
   restws:
-    version: '2.7'
+    version: '2.8'
   roleassign:
     version: '1.2'
   safeword:
