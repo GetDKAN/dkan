@@ -141,8 +141,9 @@ function dkan_sitewide_resource_additional_block($nid = '') {
     $upload = !$upload && isset($node->field_upload['und'][0]) ? $node->field_upload['und'][0] : $upload;
 
     if (($file = $link) || ($file = $upload)) {
+      $filesize = isset($node->field_link_remote_file[$lang][0]) ? 'unknown' : format_size($file['filesize']);
       $file_info[] = array(t('mimetype'), $file['filemime']);
-      $file_info[] = array(t('filesize'), format_size($file['filesize']));
+      $file_info[] = array(t('filesize'), $filesize);
       $file_info[] = array(t('resource type'), 'file upload');
       $file_info[] = array(t('timestamp'), date('M d, Y', $file['timestamp']));
       return theme('table',
