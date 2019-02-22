@@ -11,7 +11,7 @@
 function dkan_dataset_drush_command() {
   $items['dkan-dataset-prune-revisions'] = array(
     'aliases' => array('ddpr'),
-    'description' => 'Description',
+    'description' => 'Prune duplicate revisions from resource changes.',
     'options' => array(
       'revision-max' => 'Max revisions to remove in one run of the command.',
       'node-max' => 'Max number of nodes to prune.',
