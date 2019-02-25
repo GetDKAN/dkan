@@ -11,7 +11,6 @@ use Dkan\Datastore\LockableDrupalVariables;
  * Implements hook_drush_command().
  */
 function dkan_datastore_drush_command() {
-DKAN_DATASORE_TABLE_NAME="  
   
   // Run harvest operation on the source passed as argument.
   $items['dkan-datastore-delete-config'] = array(
@@ -20,10 +19,6 @@ DKAN_DATASORE_TABLE_NAME="
     'arguments' => array(
       'resource_nid' => "Resource NID"
     ),
-  );
-  $items['dkan-datastore-prune-tables'] = array(
-    'description' => 'Remove datastore tables that are not tied to a node.',
-    'callback' => 'drush_dkan_datastore_prune_tables'
   );
   return $items;
 }
