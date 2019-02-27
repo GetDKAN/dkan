@@ -280,7 +280,7 @@ projects:
   panopoly_images:
     version: '1.58'
   path_breadcrumbs:
-    version: '3.3'
+    version: '3.4'
   pathauto:
     version: '1.3'
   r4032login:
@@ -329,7 +329,7 @@ projects:
   select_or_other:
     version: '2.24'
   services:
-    version: '3.20'
+    version: '3.22'
   simple_gmap:
     version: '1.4'
   strongarm:
