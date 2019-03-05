@@ -311,18 +311,18 @@ function dkan_harvest_cache_source_batch_op($harvest_source, $harvest_updatetime
     $harvest_cache = $harvest_source->cache($harvest_updatetime);
     if ($harvest_cache) {
       $message = t('Harvest cache for source "@source_name" completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
-      array(
-        '@source_name' => $harvest_source->label,
-        '@cache_processed' => $harvest_cache->getProcessedCount(),
-        '@cache_failed' => $harvest_cache->getFailedCount(),
-        '@cache_saved' => $harvest_cache->getSavedCount(),
-        '@cache_filtered' => $harvest_cache->getFilteredCount(),
-        '@cache_excluded' => $harvest_cache->getExcludedCount(),
-        '@cache_defaulted' => $harvest_cache->getDefaultedCount(),
-        '@cache_overridden' => $harvest_cache->getOverriddenCount(),
-      )
-    );
-    dkan_harvest_log($message, 'success');
+        array(
+          '@source_name' => $harvest_source->label,
+          '@cache_processed' => $harvest_cache->getProcessedCount(),
+          '@cache_failed' => $harvest_cache->getFailedCount(),
+          '@cache_saved' => $harvest_cache->getSavedCount(),
+          '@cache_filtered' => $harvest_cache->getFilteredCount(),
+          '@cache_excluded' => $harvest_cache->getExcludedCount(),
+          '@cache_defaulted' => $harvest_cache->getDefaultedCount(),
+          '@cache_overridden' => $harvest_cache->getOverriddenCount(),
+        )
+      );
+      dkan_harvest_log($message, 'success');
     }
   }
   else {
