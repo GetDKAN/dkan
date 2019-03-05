@@ -305,15 +305,16 @@ function dkan_harvest_page_preview($node) {
  *   The context associated with the batch process.
  */
 function dkan_harvest_cache_source_batch_op($harvest_source, $harvest_updatetime = NULL, array &$context = array()) {
-  $source = urlExists($harvest_source->uri) ? urlExists($harvest_source->uri) : FALSE;
+  $source = dkan_harvest_url_exists($harvest_source->uri) ? dkan_harvest_url_exists($harvest_source->uri) : FALSE;
   if ($source) {
     $harvest_cache = $harvest_source->cache($harvest_updatetime);
   }
   
   if (!$harvest_cache) {
-    $message = t('Harvest cache for source "@source_name" failed! The harvest source uri is not accessible.',
+    $message = t('Harvest cache for source "@source_name" failed! @source_uri is not accessible.',
       array(
         '@source_name' => $harvest_source->label,
+        '@source_uri' => $harvest_source->uri,
       ));
     dkan_harvest_log($message, 'error');
   }
@@ -1464,11 +1465,11 @@ function dkan_harvest_delete_confirmation_submit($form, $form_state) {
   dkan_harvest_process_source_datasets($selected_sources, $datasets_op);
 }
 
-function urlExists($url=NULL) {  
+function dkan_harvest_url_exists($url=NULL) {  
     if($url == NULL) return false;  
     $ch = curl_init($url);  
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);  
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);  
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);  
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);  
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  
     $data = curl_exec($ch);  
     $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);  
