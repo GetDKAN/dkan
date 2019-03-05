@@ -330,7 +330,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     // source.
     $this->assertEquals(1, count($migrationEmptyMessage));
     $messageEntry = end($migrationEmptyMessage);
-    $this->assertEquals("Items to import is 0. Looks like source is missing. All the content previously harvested will be unpublished.", $messageEntry->message);
+    $this->assertEquals("Items to import is 0. Looks like source is missing. No updates can be made at this time.", $messageEntry->message);
   }
 
   /**
