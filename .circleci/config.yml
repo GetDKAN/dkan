@@ -44,7 +44,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
-            dktl test:phpunit $(cd dkan/test; circleci tests glob phpunit/**/*Test.php | circleci tests split --split-by=filesize)
+            dktl test:phpunit
 
 workflows:
   version: 2
