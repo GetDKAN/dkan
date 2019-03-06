@@ -7,6 +7,8 @@ jobs:
     environment:
       DKTL_CHOWN: False
     steps:
+      - attach_workspace:
+        at: ~
       - checkout
       - run:
           name: Package DKAN
