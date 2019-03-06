@@ -45,6 +45,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
+            dktl restore:db
             (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize ) | while read file; do dktl test:behat $file; done
 
 
