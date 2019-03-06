@@ -6,9 +6,10 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_CHOWN: False
+    working_directory: ~
     steps:
       - attach_workspace:
-          at: ~
+          at: .
       - checkout
       - run:
           name: Package DKAN
@@ -44,7 +45,7 @@ jobs:
             echo ~
             ls -l ~
       - persist_to_workspace:
-          root: ~
+          root: .
           paths:
             - bin
             - dkan-tools
