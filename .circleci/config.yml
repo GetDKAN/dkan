@@ -44,12 +44,12 @@ jobs:
             echo ~
             ls -l ~
             
-      # - persist_to_workspace:
-      #     root: /tmp/workspace
-      #     paths:
-      #       - dkan
-      #       - docroot
-      #       - src
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - bin
+            - dkan-tools
+            - project
 
   unit_test:
     machine:
@@ -60,12 +60,17 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          name: Run unit tests
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd /tmp/workspace
-            ls -l
-#            dktl test:phpunit
+        name: Where am I
+        command: |
+          pwd
+          ls -l
+          ls -l /tmp/workspace
+          
+      # - run:
+      #     name: Run unit tests
+      #     command: |
+      #       export PATH=$PATH:~/dkan-tools/bin
+      #       dktl test:phpunit
 
 workflows:
   version: 2
