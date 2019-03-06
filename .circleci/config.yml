@@ -16,7 +16,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone -b exit-status https://github.com/GetDKAN/dkan-tools.git
+            git clone https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
       - run:
           name: Install site
