@@ -1,5 +1,25 @@
 version: 2
 
+references:
+  install_site: &install_site
+    run:
+      name: Install site
+      command: |
+        export PATH=$PATH:~/dkan-tools/bin
+        cd ~/project
+        dktl init
+        mv ~/dkan .
+        dktl make
+        dktl drush site-install -y || true
+
+  install_tests: &install_tests
+    run:
+      name: Install tests
+      command: |
+        export PATH=$PATH:~/dkan-tools/bin
+        cd ~/project
+        dktl test:init
+
 jobs:
   build:
     machine:
@@ -19,27 +39,6 @@ jobs:
             cd ~
             git clone -b docker-compose-error https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
-      - run:
-          name: Prepare site
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/project
-            dktl init
-            mv ~/dkan .
-            dktl make
-      - run:
-          name: Install tests
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/project
-            dktl test:init
-      - run:
-          name: Where Am I
-          command: |
-            pwd
-            ls -l
-            echo ~
-            ls -l ~
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -61,12 +60,8 @@ jobs:
             pwd
             ls -l
             ls -l ~
-      - run:
-          name: Install site
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            dktl drush site-install -y || true
-
+      - *install_site
+      - *install_tests
       - run:
           name: Run unit tests
           command: |
