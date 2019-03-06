@@ -20,14 +20,13 @@ jobs:
             git clone -b docker-compose-error https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
       - run:
-          name: Install site
+          name: Prepare site
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
             dktl init
             mv ~/dkan .
             dktl make
-            dktl drush site-install -y || true
       - run:
           name: Install tests
           command: |
@@ -61,7 +60,13 @@ jobs:
           command: |
             pwd
             ls -l
-            ls -l *          
+            ls -l ~
+      - run:
+          name: Install site
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            dktl drush site-install -y || true
+
       - run:
           name: Run unit tests
           command: |
