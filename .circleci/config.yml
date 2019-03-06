@@ -5,6 +5,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_CHOWN: False
+    parallelism: 2
     steps:
       - checkout
       - run:
@@ -27,14 +28,6 @@ jobs:
             mv ~/dkan .
             dktl make
             dktl drush site-install -y || true
-  test:
-    machine:
-      image: circleci/classic:latest
-    environment:
-      TEST_RESULTS: /tmp/test-results
-      DKTL_CHOWN: False
-    parallelism: 2
-    steps:
       - run:
           name: Run tests
           command: |
@@ -45,7 +38,6 @@ jobs:
             ls -l
             dktl test:init
             circleci tests glob dkan/test/features/*.feature | circleci tests split --split-by=filesize | while read file; do echo $file; done
-
 
 
 
