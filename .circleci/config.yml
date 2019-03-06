@@ -4,7 +4,6 @@ jobs:
     machine:
       image: circleci/classic:latest
     environment:
-      TEST_RESULTS: /tmp/test-results
       DKTL_CHOWN: False
     steps:
       - checkout
@@ -28,21 +27,25 @@ jobs:
             mv ~/dkan .
             dktl make
             dktl drush site-install -y || true
+  test:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DKTL_CHOWN: False
+    parallelism: 2
+    steps:
       - run:
           name: Run tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             pwd
+            cd ~/project
+            pwd
             ls -l
             dktl test:init
-            dktl test:behat
-#            dktl test:phpunit --debug phpunit/dkan_workflow/DkanWorkflowTest.php
+            circleci tests glob dkan/test/features/*.feature | circleci tests split --split-by=filesize | while read file; do echo $file; done
 
-#    parallelism: 4
-#            bash -c "
-#           TESTFILES=$(circleci tests glob dkan/test/phpunit/*/*.php | circleci tests split --split-by=filesize)
-#            echo ${TESTFILES}
-#            "
 
 
 
