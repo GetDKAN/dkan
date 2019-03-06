@@ -43,6 +43,7 @@ jobs:
           root: /home/circleci
           paths:
             - bin
+            - dkan
             - dkan-tools
             - project
 
