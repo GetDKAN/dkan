@@ -57,7 +57,7 @@ jobs:
       DKTL_CHOWN: False
     steps:
       - attach_workspace:
-          at: ~
+          at: /home/circleci
       - run:
           name: Where am I
           command: |
