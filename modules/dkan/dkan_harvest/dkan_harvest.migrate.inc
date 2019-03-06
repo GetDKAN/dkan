@@ -147,12 +147,6 @@ class HarvestMigration extends MigrateDKAN {
       $this->dkanHarvestSourceNode = NULL;
     }
 
-    // Disable the logging system of the migration module.
-    // The module logs every time the processImport() method is called but we
-    // want to log only once, when the full migration event finishes. If we
-    // don't do that then we are going to get one log record per batch chunk.
-    $this->logHistory = FALSE;
-
     // Initialize results.
     $this->migrationResults = array(
       'process_type' => 0,
@@ -183,9 +177,24 @@ class HarvestMigration extends MigrateDKAN {
    * Implementation of MigrationBase::beginProcess().
    */
   protected function beginProcess($newStatus) {
+    // We need to take over the logID generation happening on
+    // parent::beginProcess() to accomodate the batch operation. Instead of
+    // generating a new logID for each run we check if we have it already set.
+    $this->logHistory = FALSE;
 
     // Begin process.
     parent::beginProcess($newStatus);
+
+    if (!isset($this->logID)) {
+      $this->logID = db_insert('migrate_log')
+        ->fields(array(
+          'machine_name' => $this->machineName,
+          'process_type' => $newStatus,
+          'starttime' => round(microtime(TRUE) * 1000),
+          'initialHighwater' => $this->getHighwater(),
+        ))
+        ->execute();
+    }
 
     // If an import if being run then update the results.
     if ($this->processing) {
@@ -202,18 +211,20 @@ class HarvestMigration extends MigrateDKAN {
   public function logEvent($event_data) {
     // First add record on the 'migrate_log' table.
     try {
+      if (!isset($this->logID)) {
       $this->logID = db_insert('migrate_log')
         ->fields(array(
-            'machine_name' => $this->machineName,
-            'process_type' => $event_data['process_type'],
-            'starttime' => $event_data['start_time'],
-            'endtime' => $event_data['end_time'],
-            'initialHighwater' => $event_data['initial_highwater'],
-            'finalHighwater' => $event_data['final_highwater'],
-            'numprocessed' => $event_data['datasets_processed'],
-          ))
+          'machine_name' => $this->machineName,
+          'process_type' => $event_data['process_type'],
+          'starttime' => $event_data['start_time'],
+          'endtime' => $event_data['end_time'],
+          'initialHighwater' => $event_data['initial_highwater'],
+          'finalHighwater' => $event_data['final_highwater'],
+          'numprocessed' => $event_data['datasets_processed'],
+        ))
         ->execute();
     }
+  }
     catch (PDOException $e) {
       Migration::displayMessage(t('Could not log event for migration !name',
         array('!name' => $this->machineName)));
@@ -236,6 +247,31 @@ class HarvestMigration extends MigrateDKAN {
     catch (PDOException $e) {
       Migration::displayMessage(t('Could not log event for migration !name',
         array('!name' => $this->machineName)));
+    }
+  }
+
+  /**
+   * Implementation of MigrationBase::endProcess().
+   */
+  public function endProcess() {
+    parent::endProcess();
+
+    // Complete the log record.
+    if ($this->logID) {
+      try {
+        db_merge('migrate_log')
+          ->key(array('mlid' => $this->logID))
+          ->fields(array(
+            'endtime' => round(microtime(TRUE) * 1000),
+            'finalhighwater' => $this->getHighwater(),
+            'numprocessed' => $this->total_processed,
+          ))
+          ->execute();
+      }
+      catch (PDOException $e) {
+        Migration::displayMessage(t('Could not log operation on migration !name - possibly MigrationBase::beginProcess() was not called',
+        array('!name' => $this->machineName)));
+      }
     }
   }
 

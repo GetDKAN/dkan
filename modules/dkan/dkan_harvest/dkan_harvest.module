@@ -408,8 +408,17 @@ function dkan_harvest_cache_sources_in_batch(array $harvest_sources = array(), $
  */
 function dkan_harvest_migrate_source_batch_op($harvest_source, array $options = array(), array &$context = array()) {
 
-  // Load migration.
-  $migration = $harvest_source->getMigration();
+  // Load migration from context or create an new instance if this is the first
+  // run.
+  $migration = NULL;
+
+  if (!empty($context['migration'])) {
+    $migration = $context['migration'];
+  }
+  else {
+    $migration = $harvest_source->getMigration();
+  }
+
   if (!$migration) {
     // The migration could not be loaded. Display a message and
     // mark the batch operation as finished.
@@ -429,8 +438,10 @@ function dkan_harvest_migrate_source_batch_op($harvest_source, array $options = 
   // Save results on context so they are available if this batch operation is run again.
   $context['results'] = $updated_results;
 
-  // Mark the batch operation finished as default.
+  // Mark the batch operation finished and unset the migration object as
+  // default.
   $context['finished'] = 1;
+  unset($context['migration']);
 
   // Check if the harvest process is completed or if we need to continue with more
   // migrations.
@@ -458,6 +469,7 @@ function dkan_harvest_migrate_source_batch_op($harvest_source, array $options = 
       // Calculate the progress value.
       if ($datasets_count > 0) {
         $context['finished'] = $datasets_processed_in_total / $datasets_count;
+        $context['migration'] = $migration;
       }
     }
   }
