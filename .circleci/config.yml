@@ -75,10 +75,12 @@ jobs:
       - *install_site
       - *install_tests
       - run:
-          name: Run unit tests
+          name: Run behat tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize ) | while read file; do dktl test:behat $file; done
+            exit_status=0
+            (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize ) | while read file; do if ! dktl test:behat $file; then exit_status=$?; fi; done
+            exit $exit_status
 
 workflows:
   version: 2
@@ -91,7 +93,3 @@ workflows:
       - behat_test:
           requires:
             - build
-
-
-
-
