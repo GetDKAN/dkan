@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   build:
     machine:
@@ -6,6 +7,8 @@ jobs:
     environment:
       DKTL_CHOWN: False
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - checkout
       - run:
           name: Package DKAN
@@ -33,18 +36,36 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
             dktl test:init
+      - run:
+          name: Where Am I
+          command: |
+            pwd
+            ls -l
+            echo ~
+            ls -l ~
+            
+      # - persist_to_workspace:
+      #     root: /tmp/workspace
+      #     paths:
+      #       - dkan
+      #       - docroot
+      #       - src
+
   unit_test:
     machine:
       image: circleci/classic:latest
     environment:
       DKTL_CHOWN: False
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
           name: Run unit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/project
-            dktl test:phpunit
+            cd /tmp/workspace
+            ls -l
+#            dktl test:phpunit
 
 workflows:
   version: 2
