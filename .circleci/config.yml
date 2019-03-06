@@ -5,7 +5,6 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_CHOWN: False
-    parallelism: 3
     steps:
       - checkout
       - run:
@@ -34,19 +33,34 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
             dktl test:init
+  unit_test:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      DKTL_CHOWN: False
+    steps:
       - run:
           name: Run unit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
-            dktl test:phpunit $(cd dkan/test; circleci tests glob phpunit/*/*.php | circleci tests split --split-by=filesize)
-      - run:
-          name: Run behat tests
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/project
-            dktl restore:db
-            (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize ) | while read file; do dktl test:behat $file; done
+            dktl test:phpunit $(cd dkan/test; circleci tests glob phpunit/**/*Test.php | circleci tests split --split-by=filesize)
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - unit_test:
+          requires:
+            - build
+
+      # - run:
+      #     name: Run behat tests
+      #     command: |
+      #       export PATH=$PATH:~/dkan-tools/bin
+      #       cd ~/project
+      #       (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize ) | while read file; do dktl test:behat $file; done
 
 
 
