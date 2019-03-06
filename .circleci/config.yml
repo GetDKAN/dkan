@@ -27,7 +27,7 @@ jobs:
             dktl init
             mv ~/dkan .
             dktl make
-            dktl drush site-install -y || true
+#            dktl drush site-install -y || true
       - run:
           name: Run tests
           command: |
@@ -37,7 +37,7 @@ jobs:
             pwd
             ls -l
             dktl test:init
-            circleci tests glob dkan/test/features/*.feature | circleci tests split --split-by=filesize | while read file; do echo $file; done
+            (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize) | while read file; do echo $file; done
 
 
 
