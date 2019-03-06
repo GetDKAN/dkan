@@ -44,6 +44,11 @@ jobs:
             echo ~
             ls -l ~
             
+      - run:
+          name: Persist
+          command: |
+            mv bin dkan-tools project /tmp/workspace
+
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
