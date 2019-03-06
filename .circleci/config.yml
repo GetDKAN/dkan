@@ -55,12 +55,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci
-      - run:
-          name: Where am I
-          command: |
-            pwd
-            ls -l
-            ls -l ~
       - *install_site
       - *install_tests
       - run:
@@ -68,6 +62,23 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             dktl test:phpunit
+
+  behat_test:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      DKTL_CHOWN: False
+    parallelism: 3
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - *install_site
+      - *install_tests
+      - run:
+          name: Run unit tests
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize ) | while read file; do dktl test:behat $file; done
 
 workflows:
   version: 2
@@ -77,13 +88,9 @@ workflows:
       - unit_test:
           requires:
             - build
-
-      # - run:
-      #     name: Run behat tests
-      #     command: |
-      #       export PATH=$PATH:~/dkan-tools/bin
-      #       cd ~/project
-      #       (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize ) | while read file; do dktl test:behat $file; done
+      - behat_test:
+          requires:
+            - build
 
 
 
