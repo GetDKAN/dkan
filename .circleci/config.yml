@@ -7,8 +7,6 @@ jobs:
     environment:
       DKTL_CHOWN: False
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - run:
           name: Package DKAN
@@ -43,14 +41,8 @@ jobs:
             ls -l
             echo ~
             ls -l ~
-            
-      - run:
-          name: Persist
-          command: |
-            mv bin dkan-tools project /tmp/workspace
-
       - persist_to_workspace:
-          root: /tmp/workspace
+          root: ~
           paths:
             - bin
             - dkan-tools
@@ -63,14 +55,13 @@ jobs:
       DKTL_CHOWN: False
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: ~
       - run:
         name: Where am I
         command: |
           pwd
           ls -l
-          ls -l /tmp/workspace
-          
+          ls -l *          
       # - run:
       #     name: Run unit tests
       #     command: |
