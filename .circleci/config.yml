@@ -7,14 +7,12 @@ jobs:
     environment:
       DKTL_CHOWN: False
     steps:
-      # - attach_workspace:
-      #     at: /home/circleci
       - checkout
       - run:
           name: Package DKAN
           command: |
-            mkdir /home/circleci/dkan
-            mv /home/circleci/project/* /home/circleci/dkan
+            mkdir ~/dkan
+            mv ~/project/* ~/dkan
       - run:
           name: Install DKTL
           command: |
@@ -44,7 +42,7 @@ jobs:
             echo ~
             ls -l ~
       - persist_to_workspace:
-          root: /home/circleci
+          root: ~
           paths:
             - bin
             - dkan-tools
@@ -57,18 +55,18 @@ jobs:
       DKTL_CHOWN: False
     steps:
       - attach_workspace:
-          at: /home/circleci
+          at: ~
       - run:
           name: Where am I
           command: |
             pwd
             ls -l
             ls -l *          
-      # - run:
-      #     name: Run unit tests
-      #     command: |
-      #       export PATH=$PATH:~/dkan-tools/bin
-      #       dktl test:phpunit
+      - run:
+          name: Run unit tests
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            dktl test:phpunit
 
 workflows:
   version: 2
