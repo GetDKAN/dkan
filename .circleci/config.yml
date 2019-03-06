@@ -59,11 +59,11 @@ jobs:
       - attach_workspace:
           at: ~
       - run:
-        name: Where am I
-        command: |
-          pwd
-          ls -l
-          ls -l *          
+          name: Where am I
+          command: |
+            pwd
+            ls -l
+            ls -l *          
       # - run:
       #     name: Run unit tests
       #     command: |
