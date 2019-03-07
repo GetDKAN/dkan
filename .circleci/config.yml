@@ -79,8 +79,10 @@ jobs:
           name: Run behat tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
+            test_list=$(mktemp)
             exit_status=0
-            (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize ) | while read file; do if ! dktl test:behat $file; then exit_status=1; echo "FAILED SCENARIO"; fi; done
+            (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list
+            while read file; do if ! dktl test:behat $file; then exit_status=1; echo "FAILED SCENARIO: $file"; fi; done < $test_list
             echo "exit_status = $exit_status";
             exit $exit_status
 
