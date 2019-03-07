@@ -38,6 +38,7 @@ jobs:
       - run:
           name: Make site
           command: |
+            export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
             dktl init
             mv ~/dkan .
