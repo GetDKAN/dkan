@@ -20,11 +20,11 @@ function dkan_datastore_drush_command() {
     ),
   );
 
-  // Delete ghost datastore tables.
-  $items['dkan-datastore-delete-ghost-tables'] = array(
-    'aliases' => array('dkan-datastore-dgt'),
-    'description' => 'Delete ghost datastore tables if they exist.',
-    'callback' => 'dkan_datastore_drush_delete_ghost_tables',
+  // Drop orphan datastore tables.
+  $items['dkan-datastore-drop-orphan-tables'] = array(
+    'aliases' => array('dkan-datastore-dot'),
+    'description' => 'Drop orphan datastore tables if they exist.',
+    'callback' => 'dkan_datastore_drush_drop_orphan_tables',
   );
 
   return $items;
@@ -42,13 +42,13 @@ function dkan_datastore_drush_delete_config($resource_id) {
 }
 
 /**
- * Delete ghost datastore tables.
+ * Drop orphan datastore tables.
  */
-function dkan_datastore_drush_delete_ghost_tables() {
+function dkan_datastore_drush_drop_orphan_tables() {
   $query = db_query('SHOW TABLES');
   $result = $query->fetchAll();
   $nids = [];
-  $ghosts = 0;
+  $orphans = 0;
   foreach ($result as $record) {
     $t = (array)$record;
     $db = key($t);
@@ -59,22 +59,22 @@ function dkan_datastore_drush_delete_ghost_tables() {
     }
   }
   if (!empty($nids)) {
-    drush_print("Looking through " . implode(', ', $nids));
+    drush_print("Checking for the following nodes " . implode(', ', $nids));
     $to_truncate = [];
     foreach ($nids as $nid) {
       $query = db_query('SELECT nid FROM {node} WHERE nid = :nid', array(':nid' => $nid));
       $result = $query->fetchAll();
       if (count($result) < 1) {
         $to_truncate[] = 'feeds_datastore_dkan_file_' . $nid;
-        $ghosts++;
+        $orphans++;
       }
     }
-    drush_print("Ghost tables found: $ghosts");
+    drush_print("Orphan tables found: $orphans");
     foreach ($to_truncate as $table) {
       $query = db_drop_table($table);
-      drush_print("Deleted ghost table $table");
+      drush_print("Deleted orphan table $table");
     }
   } else {
-    drush_print("There is currently no datastore tables.");
+    drush_print("There are currently no datastore tables on this site.");
   }
 }
