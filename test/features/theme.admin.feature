@@ -22,7 +22,7 @@ Feature: Theme
     And I attach the drupal file "dkan/dkan_logo.png" to "files[logo_upload]"
     And I wait for the file upload to finish
     When I press "Save configuration"
-    Then I wait for "10" seconds
+    Then I wait for "30" seconds
     Then I should see "The configuration options have been saved"
 
   @noworkflow @customizable
@@ -33,7 +33,7 @@ Feature: Theme
     And I attach the drupal file "dkan/dkan_hero.jpg" to "files[hero_file]"
     And I wait for the file upload to finish
     When I press "Save configuration"
-    Then I wait for "10" seconds
+    Then I wait for "30" seconds
     Then I should see "The configuration options have been saved"
 
   @noworkflow @fixme
@@ -46,5 +46,5 @@ Feature: Theme
     And I fill in "Slogan" with "slogan test"
     And I fill in "E-mail address" with "test@example.com"
     When I press "Save configuration"
-    Then I wait for "10" seconds
+    Then I wait for "30" seconds
     Then I should see "The configuration options have been saved"
