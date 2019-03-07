@@ -6,20 +6,13 @@ references:
       name: Install site
       command: |
         export PATH=$PATH:~/dkan-tools/bin
-        cd ~/project
-        dktl init
-        mv ~/dkan .
-        dktl make
         dktl install
-        dktl drush user-password admin --password=admin
-#        dktl drush site-install -y || true
         
   install_tests: &install_tests
     run:
       name: Install tests
       command: |
         export PATH=$PATH:~/dkan-tools/bin
-        cd ~/project
         dktl test:init
 
 jobs:
@@ -28,6 +21,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_CHOWN: False
+      DKTL_NO_PTY: True
     steps:
       - checkout
       - run:
@@ -41,6 +35,13 @@ jobs:
             cd ~
             git clone -b docker-compose-error https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
+      - run:
+          name: Make site
+          command: |
+            cd ~/project
+            dktl init
+            mv ~/dkan .
+            dktl make
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -54,6 +55,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_CHOWN: False
+      DKTL_NO_PTY: True
     steps:
       - attach_workspace:
           at: /home/circleci
@@ -70,6 +72,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_CHOWN: False
+      DKTL_NO_PTY: True
     parallelism: 3
     steps:
       - attach_workspace:
