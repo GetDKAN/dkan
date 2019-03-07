@@ -6,6 +6,10 @@ references:
       name: Install site
       command: |
         export PATH=$PATH:~/dkan-tools/bin
+        cd ~/project
+        dktl init
+        mv ~/dkan .
+        dktl make
         dktl install
         
   install_tests: &install_tests
@@ -35,14 +39,6 @@ jobs:
             cd ~
             git clone -b docker-compose-error https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
-      - run:
-          name: Make site
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/project
-            dktl init
-            mv ~/dkan .
-            dktl make
       - persist_to_workspace:
           root: /home/circleci
           paths:
