@@ -721,7 +721,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    * Test Harvest Source.
    */
   public static function getAlternativeTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_alternative.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_alternative.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
@@ -752,7 +753,8 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    * Test Harvest Source.
    */
   public static function getNoResourceTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_no_resources.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_no_resources.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
@@ -767,14 +769,16 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    * Test Harvest Source.
    */
   public static function getResourceSchemeless() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_schemeless_resource.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_schemeless_resource.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getResourceTemporal() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_temporal.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_temporal.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
