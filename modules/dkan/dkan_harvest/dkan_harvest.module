@@ -307,7 +307,7 @@ function dkan_harvest_page_preview($node) {
 function dkan_harvest_cache_source_batch_op($harvest_source, $harvest_updatetime = NULL, array &$context = array()) {
   // Check that the source uri is available.
   $source = dkan_harvest_url_exists($harvest_source->uri);
-  if ($source) { 
+  if ($source) {
     $harvest_cache = $harvest_source->cache($harvest_updatetime);
     if ($harvest_cache) {
       $message = t('Harvest cache for source "@source_name" completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
@@ -1466,18 +1466,21 @@ function dkan_harvest_delete_confirmation_submit($form, $form_state) {
   dkan_harvest_process_source_datasets($selected_sources, $datasets_op);
 }
 
-function dkan_harvest_url_exists($url=NULL) {  
-    if($url == NULL) return false;  
-    $ch = curl_init($url);  
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60);  
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);  
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  
-    $data = curl_exec($ch);  
-    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);  
-    curl_close($ch);
-    if($httpcode>=200 && $httpcode<300){  
-        return true;  
-    } else {  
-        return false;  
-    }  
+/**
+ * Helper function to see if a URL exists.
+ */
+function dkan_harvest_url_exists($url = NULL) {
+  if ($url == NULL) return false;
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $data = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  if ($httpcode >= 200 && $httpcode < 300) {
+    return true;
+  } else {
+    return false;
+  }
 }
