@@ -10,8 +10,9 @@ references:
         dktl init
         mv ~/dkan .
         dktl make
-        dktl drush site-install -y || true
+        dktl install
         dktl drush user-password admin --password=admin
+#        dktl drush site-install -y || true
         
   install_tests: &install_tests
     run:
