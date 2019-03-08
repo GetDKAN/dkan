@@ -228,11 +228,11 @@ function _comment_archived_field_create($info) {
  * Overrides tab title with number of unapproved comments that are unarchived.
  */
 function dkan_comments_count_unpublished() {
-  $count = db_query('SELECT COUNT(cid) FROM {comment} c LEFT JOIN {field_data_comment_archived} a ON c.cid = a.entity_id WHERE c.status = :status AND a.comment_archived_value = :archived', array(
+  $count = db_query('SELECT COUNT(cid) FROM {comment} c LEFT JOIN {field_data_comment_archived} a ON c.cid = a.entity_id WHERE (c.status = :status AND a.comment_archived_value IS NULL) OR a.comment_archived_value = :archived', array(
     ':status' => COMMENT_NOT_PUBLISHED,
     ':archived' => COMMENT_UNARCHIVED,
   ))->fetchField();
-  return t('Unapproved comments (@count)', array('@count' => $count));
+  return t('Unpublished comments (@count)', array('@count' => $count));
 }
 
 /**
