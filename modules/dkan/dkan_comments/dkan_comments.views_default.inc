@@ -877,6 +877,8 @@ function dkan_comments_views_default_views() {
     'system_2' => 0,
     'system_3' => 0,
   );
+  $handler->display->display_options['use_batch'] = 'batch';
+  $handler->display->display_options['segment_size'] = '100';
 
   /* Display: Unpublished data export */
   $handler = $view->new_display('views_data_export', 'Unpublished data export', 'views_data_export_unpublished_comments');
@@ -1034,6 +1036,8 @@ function dkan_comments_views_default_views() {
     'system_3' => 0,
   );
   $handler->display->display_options['sitename_title'] = 0;
+  $handler->display->display_options['use_batch'] = 'batch';
+  $handler->display->display_options['segment_size'] = '100';
 
   /* Display: Archived data export */
   $handler = $view->new_display('views_data_export', 'Archived data export', 'views_data_export_archived_comments');
@@ -1192,6 +1196,8 @@ function dkan_comments_views_default_views() {
   );
   $handler->display->display_options['sitename_title'] = 0;
   $export['dkan_comments_administration'] = $view;
+  $handler->display->display_options['use_batch'] = 'batch';
+  $handler->display->display_options['segment_size'] = '100';
 
   return $export;
 }
