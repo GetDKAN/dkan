@@ -49,6 +49,7 @@ function dkan_comments_menu() {
     'page arguments' => array('archived'),
     'access arguments' => array('administer comments'),
     'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
   );
   return $items;
 }
