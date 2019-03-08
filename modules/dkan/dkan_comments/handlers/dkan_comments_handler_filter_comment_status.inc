@@ -46,7 +46,10 @@ class dkan_comments_handler_filter_comment_status extends views_handler_filter_e
     switch ($this->value) {
       case 'unpublished':
         $this->query->add_where($this->options['group'], 'comment.status', 0, '=');
-        $this->query->add_where($this->options['group'], $data_field, 0, '=');
+        $this->query->add_where($this->options['group'], $data_field, NULL, 'IS NULL');
+
+        $this->query->group_operator = 'OR';
+        $this->query->add_where(0, $data_field, 0, '=');
         break;
       case 'archived':
         $this->query->add_where($this->options['group'], 'comment.status', 0, '=');
