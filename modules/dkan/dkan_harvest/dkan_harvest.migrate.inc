@@ -78,6 +78,11 @@ class HarvestMigration extends MigrateDKAN {
 
     parent::__construct($arguments);
 
+    // We need to take over the logID generation happening on
+    // parent::beginProcess() to accomodate the batch operation. Instead of
+    // generating a new logID for each run we check if we have it already set.
+    $this->logHistory = FALSE;
+
     $this->dkanHarvestSource = $arguments['dkan_harvest_source'];
 
     // SourceList options.
@@ -177,11 +182,6 @@ class HarvestMigration extends MigrateDKAN {
    * Implementation of MigrationBase::beginProcess().
    */
   protected function beginProcess($newStatus) {
-    // We need to take over the logID generation happening on
-    // parent::beginProcess() to accomodate the batch operation. Instead of
-    // generating a new logID for each run we check if we have it already set.
-    $this->logHistory = FALSE;
-
     // Begin process.
     parent::beginProcess($newStatus);
 
@@ -1378,6 +1378,16 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function getLogId() {
     return $this->logID;
+  }
+
+  /**
+   * Setter for the $logID variable.
+   *
+   * Update migration log ID. Useful to log tracking when triggered from with
+   * external process like batch APIs.
+   */
+  public function setLogId($logID) {
+    $this->logID = $logID;
   }
 
   /**
