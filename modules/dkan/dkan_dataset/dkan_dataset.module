@@ -553,10 +553,12 @@ function dkan_dataset_node_update($node) {
           if (!$harvest) {
             $item = array(
               'dataset' => $dataset,
-              'message' => 'Update to resource \'' . $node->title . '\'',
+              'message' => 'Update to resource \'' . $resource->title . '\'',
               'user' => $user->uid,
             );
-            dkan_dataset_dataset_changelog_run($item);
+            if ($item) {
+              dkan_dataset_dataset_changelog_run($item);
+            }
           }
         }
       }
