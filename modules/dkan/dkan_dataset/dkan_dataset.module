@@ -550,15 +550,19 @@ function dkan_dataset_node_update($node) {
             ->condition('entity_id', $dataset)
             ->execute()
             ->fetchAll();
-          if (!$harvest) {
+          // Skip the dataset_changelog on default content as datasets are created after resources.
+          $default = db_select('migrate_map_dkan_default_content_resources', 'd')
+            ->fields('d', array('destid1'))
+            ->condition('destid1', $resource->getIdentifier())
+            ->execute()
+            ->fetchAll();
+          if (!$harvest && !$default) {
             $item = array(
               'dataset' => $dataset,
               'message' => 'Update to resource \'' . $resource->title . '\'',
               'user' => $user->uid,
             );
-            if ($item) {
-              dkan_dataset_dataset_changelog_run($item);
-            }
+            dkan_dataset_dataset_changelog_run($item);
           }
         }
       }
