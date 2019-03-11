@@ -37,7 +37,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone -b docker-compose-error https://github.com/GetDKAN/dkan-tools.git
+            git clone https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
       - persist_to_workspace:
           root: /home/circleci
@@ -84,7 +84,6 @@ jobs:
             exit_status=0
             (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list
             while read file; do if ! dktl test:behat $file; then exit_status=1; echo "FAILED SCENARIO: $file"; fi; done < $test_list
-            echo "exit_status = $exit_status";
             exit $exit_status
 
 workflows:
