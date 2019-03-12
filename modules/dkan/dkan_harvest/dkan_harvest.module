@@ -305,29 +305,34 @@ function dkan_harvest_page_preview($node) {
  *   The context associated with the batch process.
  */
 function dkan_harvest_cache_source_batch_op($harvest_source, $harvest_updatetime = NULL, array &$context = array()) {
-  $harvest_cache = $harvest_source->cache($harvest_updatetime);
-
-  if (!$harvest_cache) {
-    $message = t('Harvest cache for source "@source_name" failed!',
-      array(
-        '@source_name' => $harvest_source->label,
-      ));
-    dkan_harvest_log($message, 'error');
+  // Check that the source uri is available.
+  $source = dkan_harvest_url_exists($harvest_source->uri);
+  if ($source) {
+    $harvest_cache = $harvest_source->cache($harvest_updatetime);
+    if ($harvest_cache) {
+      $message = t('Harvest cache for source "@source_name" completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
+        array(
+          '@source_name' => $harvest_source->label,
+          '@cache_processed' => $harvest_cache->getProcessedCount(),
+          '@cache_failed' => $harvest_cache->getFailedCount(),
+          '@cache_saved' => $harvest_cache->getSavedCount(),
+          '@cache_filtered' => $harvest_cache->getFilteredCount(),
+          '@cache_excluded' => $harvest_cache->getExcludedCount(),
+          '@cache_defaulted' => $harvest_cache->getDefaultedCount(),
+          '@cache_overridden' => $harvest_cache->getOverriddenCount(),
+        )
+      );
+      dkan_harvest_log($message, 'success');
+    }
   }
   else {
-    $message = t('Harvest cache for source "@source_name" completed (processed @cache_processed, failed @cache_failed, saved @cache_saved : (filtered @cache_filtered, excluded @cache_excluded, defaulted @cache_defaulted, overridden @cache_overridden)).',
+    // Avoid mass orphaning of the datasets. Log an error instead.
+    $message = t('Harvest cache for source "@source_name" failed! @source_uri is not accessible.',
       array(
         '@source_name' => $harvest_source->label,
-        '@cache_processed' => $harvest_cache->getProcessedCount(),
-        '@cache_failed' => $harvest_cache->getFailedCount(),
-        '@cache_saved' => $harvest_cache->getSavedCount(),
-        '@cache_filtered' => $harvest_cache->getFilteredCount(),
-        '@cache_excluded' => $harvest_cache->getExcludedCount(),
-        '@cache_defaulted' => $harvest_cache->getDefaultedCount(),
-        '@cache_overridden' => $harvest_cache->getOverriddenCount(),
-      )
-    );
-    dkan_harvest_log($message, 'success');
+        '@source_uri' => $harvest_source->uri,
+      ));
+    dkan_harvest_log($message, 'error');
   }
 }
 
@@ -1459,4 +1464,23 @@ function dkan_harvest_delete_confirmation_submit($form, $form_state) {
   $datasets_op = $form_state['values']['dataset_op'];
 
   dkan_harvest_process_source_datasets($selected_sources, $datasets_op);
+}
+
+/**
+ * Helper function to see if a URL exists.
+ */
+function dkan_harvest_url_exists($url = NULL) {
+  if ($url == NULL) return false;
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $data = curl_exec($ch);
+  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+  if ($httpcode >= 200 && $httpcode < 300) {
+    return true;
+  } else {
+    return false;
+  }
 }
