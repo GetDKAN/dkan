@@ -73,7 +73,7 @@ projects:
   defaultconfig:
     version: 1.0-alpha11
   devel:
-    version: '1.5'
+    version: '1.7'
   diff:
     version: '3.4'
   double_field:
@@ -351,6 +351,8 @@ projects:
     version: '1.2'
   views:
     version: '3.20'
+    patch:
+      2885660: https://www.drupal.org/files/issues/2018-06-28/2885660-13.patch
   views_autocomplete_filters:
     version: '1.2'
     patch:
