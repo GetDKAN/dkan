@@ -542,6 +542,7 @@ function dkan_dataset_node_update($node) {
       $resource = entity_metadata_wrapper('node', $node);
       $datasets = $resource->field_dataset_ref->raw();
       if (count($datasets)) {
+        $queue = DrupalQueue::get('dataset_changelog');
         foreach ($datasets as $dataset) {
           // Determine if the resource is part of a harvest.
           // Skip the dataset_changelog update if harvesting since every resource is updated.
@@ -562,7 +563,7 @@ function dkan_dataset_node_update($node) {
               'message' => 'Update to resource \'' . $resource->title . '\'',
               'user' => $user->uid,
             );
-            dkan_dataset_dataset_changelog_run($item);
+            $queue->createItem($item);
           }
         }
       }
