@@ -40,22 +40,20 @@ function dkan_harvest_datajson_harvest_source_types() {
  *   A harvest cache object.
  */
 function dkan_harvest_datajson_cache(HarvestSource $source, $harvest_updatetime) {
-  // This is needed for remote uri.
-  $context = stream_context_create(
-    array(
-      'http' => array(
-        'timeout' => 36000,
-      ),
-      'https' => array(
-        'timeout' => 36000,
-      ),
-    )
-  );
-
-  $remote = @file_get_contents($source->uri, 0, $context);
-
-  if ($remote) {
-    // Some file begins with 'efbbbf' to mark the beginning of the file (The
+  $ch = curl_init($source->uri);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $remote = curl_exec($ch);
+  if ($remote === false) {
+    $error = 'Curl error: ' . curl_error($ch);
+    $message = t('Harvest cache for "@source_uri" failed! "@error".',
+      array(
+        '@error' => $error,
+        '@source_uri' => $source->uri,
+      ));
+    dkan_harvest_log($message, 'error');
+  }
+  elseif ($remote) {
+    // Some files begin with 'efbbbf' to mark the beginning of the file (The
     // byte-order mark). (binary level) here we detect it and we remove it,
     // basically it's the first 3 characters.
     if (0 === strpos(bin2hex($remote), 'efbbbf')) {
