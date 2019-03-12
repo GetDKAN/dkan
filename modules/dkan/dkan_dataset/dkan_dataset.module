@@ -551,13 +551,7 @@ function dkan_dataset_node_update($node) {
             ->condition('entity_id', $dataset)
             ->execute()
             ->fetchAll();
-          // Skip the dataset_changelog on default content as datasets are created after resources.
-          $default = db_select('migrate_map_dkan_default_content_resources', 'd')
-            ->fields('d', array('destid1'))
-            ->condition('destid1', $resource->getIdentifier())
-            ->execute()
-            ->fetchAll();
-          if (!$harvest && !$default) {
+          if (!$harvest) {
             $item = array(
               'dataset' => $dataset,
               'message' => 'Update to resource \'' . $resource->title . '\'',
