@@ -1,0 +1,5 @@
+services:
+  dkan_dummy_content:commands:
+    class: \Drupal\dkan_dummy_content\Commands
+    tags:
+      - { name: drush.command }

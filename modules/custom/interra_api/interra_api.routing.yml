@@ -1,7 +1,13 @@
 interra_api.schema:
   path: '/api/v1/schema.json'
   defaults:
-   { _controller: '\Drupal\interra_api\Controller\ApiController::schema'}
+   { _controller: '\Drupal\interra_api\Controller\ApiController::schemas'}
+  requirements:
+    _permission: 'access content'
+interra_api.schema_single:
+  path: '/api/v1/schema/{schema_name}'
+  defaults:
+    { _controller: '\Drupal\interra_api\Controller\ApiController::schema'}
   requirements:
     _permission: 'access content'
 interra_api.search:

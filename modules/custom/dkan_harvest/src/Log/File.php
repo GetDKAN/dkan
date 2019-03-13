@@ -2,8 +2,6 @@
 
 namespace Drupal\dkan_harvest\Log;
 
-use Drupal\dkan_harvest\Log;
-
 class File extends Log {
 
   function write($level, $action, $message) {

@@ -2,11 +2,9 @@
 
 namespace Drupal\dkan_harvest\Load;
 
-use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
-use Drupal\dkan_harvest\Load;
-use Drupal\dkan_harvest\DKANHarvest;
 use Drupal\dkan_schema\Schema;
+use Drupal\dkan_api\Controller\Dataset;
 
 class Dkan8 extends Load {
 
@@ -32,8 +30,15 @@ class Dkan8 extends Load {
     'license' => 'term'
   ];
 
+  protected $fileHelper;
+
+  public function __construct($log, $config, $sourceId, $runId) {
+    parent::__construct($log, $config, $sourceId, $runId);
+    $this->fileHelper = new FileHelper();
+  }
+
   function run($docs) {
-    $this->DKANHarvest = new DKANHarvest();
+    $this->DKANHarvest = new Cruder();
     $currentSchema = dkan_schema_current_schema();
     $this->schema = new Schema($currentSchema);
     $primaryBundle = $this->schema->config['primaryCollection'];
@@ -55,7 +60,7 @@ class Dkan8 extends Load {
         }
       }
     }
-    $this->log->write('DEBUG', 'Load::run', "Harvest run completed: $resultLog");
+    $this->log->write('DEBUG', 'Load::run', "Harvester run completed: $resultLog");
     $this->DKANHarvest->runUpdate($this->runId, $this->sourceId, $results);
     return $results;
   }
@@ -162,17 +167,8 @@ class Dkan8 extends Load {
       // TODO: Add mapping for required fields.
       $title = isset($doc->title) ? $doc->title : $doc->name;
       $this->log->write('DEBUG', 'saveNode', 'Saving ' . $title);
-      if ($this->migrate) {
-        $doc->distributions = $this->saveFilesLlocally($distributions);
-      }
-      $nodeWrapper = NODE::create([
-        'title' => $title,
-        'type' => $bundle,
-        'uuid' => $doc->identifier,
-        'field_json_metadata' => json_encode($doc)
-      ]);
-      $nodeWrapper->save();
-      return $nodeWrapper->id();
+      $myDataset = new Dataset();
+      return $myDataset->storeDataset($doc);
     }
     else if ($entity == 'taxonomy_term') {
       $this->log->write('DEBUG', 'saveTerm', 'Saving term ' . $doc->identifier);
@@ -191,12 +187,8 @@ class Dkan8 extends Load {
   function updateEntity($entity, $doc) {
     if ($entity == 'node') {
       $this->log->write('DEBUG', 'updateNode', 'Updating ' . $doc->identifier);
-      // TODO: Just get nid and then load.
-      $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $doc->identifier);
-      $date = date_create();
-      $node->update = date_timestamp_get($date);
-      $node->field_json_metadata = json_encode($doc);
-      $node->save();
+      $myDataset = new Dataset();
+      $myDataset->storeDataset($doc);
     }
     else if ($entity == 'taxonomy_term') {
       $term = \Drupal::service('entity.repository')->loadEntityByUuid('taxonomy_term', $doc->identifier);
@@ -207,4 +199,25 @@ class Dkan8 extends Load {
     }
 
   }
+
+  function saveDatasetFilesLocally(&$doc) {
+    if (isset($doc->distribution)) {
+      foreach ($doc->distribution as $n => $distribution) {
+        if (isset($distribution->downloadURL)) {
+          $defaultSchemeDir = $this->fileHelper->defaultSchemeDirectory();
+          $targetDir = $defaultSchemeDir . '/distribution';
+          $this->fileHelper->prepareDir($targetDir);
+          if ($result = $this->fileHelper->retrieveFile($distribution->downloadURL, $targetDir, FALSE)) {
+            $doc->distribution[$n]->downloadURL = $this->fileHelper->fileCreate($distribution->downloadURL);
+          }
+        }
+      }
+    }
+  }
+
+  protected function saveItem($item) {
+    // TODO: Implement saveItem() method.
+  }
+
+
 }

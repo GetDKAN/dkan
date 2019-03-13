@@ -11,35 +11,48 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Package DKAN
-          command: |
-            mkdir /home/circleci/dkan2
-            mv /home/circleci/project/* /home/circleci/dkan2
-      - run:
           name: Install DKTL
           command: |
             cd ~
-            git clone https://github.com/GetDKAN/dkan-tools.git
+            git clone --single-branch --branch dkan2 https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
+      - run:
+          name: Initialize Project
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            cd ~/project
+            dktl init
+      - run:
+          name: Get Drupal
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            cd ~/project
+            dktl get 8.6.9
       - run:
           name: Make DKAN
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
-            cp -r ~/dkan2/cypress .
-            cp -r ~/dkan2/cypress.json .
-            dktl init
-            dktl drupal:get 8.6.4
-            dktl drupal:make
+            sudo chmod 777 src/make/composer.json
+            sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/getdkan/dkan2\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
+            dktl make
       - run:
           name: Install site
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl drush site-install dkan2 -y --notify
+            dktl install
+
       - run:
-          name: Run tests
+          name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl test:cypress
+            dktl dkan:test-phpunit
+
+      - run:
+          name: Run cypress tests
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            dktl dkan:test-cypress
+

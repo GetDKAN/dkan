@@ -1,78 +1,52 @@
-# DKAN 8.x-2.x Prototype
+# DKAN for Drupal 8 - [Alpha](https://en.wikipedia.org/wiki/Software_release_life_cycle)
 
-DKAN Open Data Portal built on Drupal 8. See NOTES.md for additional information.
+DKAN Open Data Portal/Catalog built on Drupal 8.
+
+As a piece of software in its Alpha cycle, the code is continuously changing and in very active development.
+
+## Features
+
+- Harvesting of data from external catalogs that provider a data.json
+- Dataset metadata and resources
+- Web service API endpoints to work with datasets
+- Integration with a decoupled front end: Provided by [Interra](https://github.com/interra) 
+
+## Requirements
+
+1) Install [dkan-tools](https://github.com/GetDKAN/dkan-tools). The ``dkan2`` branch contains the most up-to-date code to work with DKAN for Drupal 8. 
+1) Set an environment variable called ``DRUPAL_VERSION`` with a value of ``V8``.
+    1) On the command line, enter ``export DRUPAL_VERSION=V8`` or set in ``.bashrc``
+1) Setup and start the proxy:
+    1) Add `dkan` to `/etc/hosts`
+    1) Start the proxy: 
+    ``docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy`` 
+
 
 ## Installation
 
-### Install DKAN codebase:
+1) Create a directory for your project: ``mkdir <directory-name> && cd <directory-name>``
+1) Initialize your project with dkan-tools: ``dktl init``
+1) Get Drupal: ``dktl get <drupal-version>``
+1) Get Drupal dependencies, and install DKAN: ``dktl make``
+1) Install DKAN: ``dktl install``
+1) Access the site: ``dktl drush uli --uri=dkan.local``
 
-* ``mkdir "dkan8"``
-* ``curl https://raw.githubusercontent.com/GetDKAN/dkan2/master/composer-default.json -o composer.json``
-* ``composer install``
+## Dummy Content
 
-### Developing with Docksal
+If you would like some content in the catalog, run the drush command ``dkan-dummy-content:create``. This command required Drush 9.
 
-We currently use [Docksal](https://docksal.io/) for local development. 
+## Graphical User Interface (GUI)
 
-* ``fin init``
-* Add the following to your docksal:
+DKAN for Drupal 8 is trying to work with independent pieces that can be used no only by us but any other open data catalog. With that goal, we are working with a decoupled React application as the frontend for DKAN.
 
-```yaml
-services:
-  db:
-    image: docksal/db:1.2-mysql-5.7
-```
-* ``fin start``
-* ``fin drush site:install dkan2 --db-url=mysql://user:user@db/default``
+The [React App's](https://github.com/interra/data-catalog-frontend) README contains instruction on how to work with DKAN.
 
-### Enable Cors
+### React App Embedded in Drupal
 
-For local development you will want to enable CORS. Don't do this on production.
+DKAN comes with an integration module that allows the React App driving the frontend to be embedded in Drupal.
 
-* `cp sites/default/default.settings.yml sites/default/settings.yml``
-
-Add the following to the cors section:
-
-```yml
-
- cors.config:
-    enabled: true
-    # Specify allowed headers, like 'x-allowed-header'.
-    allowedHeaders: ['*']
-    # Specify allowed request methods, specify ['*'] to allow all possible ones.
-    allowedMethods: ['*']
-    # Configure requests allowed from specific origins.
-    allowedOrigins: ['*']
-    # Sets the Access-Control-Expose-Headers header.
-    exposedHeaders: false
-    # Sets the Access-Control-Max-Age header.
-    maxAge: false
-    # Sets the Access-Control-Allow-Credentials header.
-    supportsCredentials: false
-```
-
-## Developing with and Compiling Front End
-
-The current demo uses the Interra catalog front-end. To setup locally:
-
-```
-git clone git@github.com:interra/catalog-generate.git --branch dkan-demo
-```
-
-Either create a new site:
-
-```
-plop
-```
-or use ``dkan-demo``.
-
-To run the dev server: 
-
-* update the "devUrl" in the config.yml file to your Drupal 8 dkan backend.
-* run ``node cli.js run-dev-dll; node cli.js run-dev dkan-demo``
-
-To build for prod:
-
-* ``node cli.js build-site dkan-demo``
-
-This will build the site in ``build/dkan-demo``
+To get the integration working follow these steps:
+1) Place the source for the Interra ``data-catalog-frontend`` in side of your ``docroot`` directory.
+1) Follow the instructions in the README of ``data-catalog-frontend``, but instead of runnig the development server at the end, build a copy with ``npm run build``
+1) Enable the integration module ``interra_frontend``
+1) Change the sites configuration to point the homepage (``/``) to ``/home``

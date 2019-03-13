@@ -1,8 +1,9 @@
-name: Harvest
-description: 'Provides DKAN Harvest. '
+name: Harvester
+description: 'Provides DKAN Harvester. '
 type: module
 core: 8.x
 dependencies:
+  - dkan_schema
   - field
   - menu_ui
   - node

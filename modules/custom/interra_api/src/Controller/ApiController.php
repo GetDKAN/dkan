@@ -3,6 +3,8 @@
 namespace Drupal\interra_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\dkan_schema\SchemaRetriever;
+use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\dkan_schema\Schema;
@@ -13,6 +15,8 @@ use Drupal\interra_api\SiteMap;
 use Drupal\interra_api\Swagger;
 use Drupal\interra_api\ApiRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
+use Dkan\Datastore\Resource;
 
 /**
 * An ample controller.
@@ -24,7 +28,7 @@ class ApiController extends ControllerBase {
     return new JsonResponse( $response );
   }
 
-  public function schema( Request $request ) {
+  public function schemas( Request $request ) {
     $response = array();
     $schema = new Schema();
     $interra = new Interra();
@@ -34,6 +38,19 @@ class ApiController extends ControllerBase {
     $response['facets'] = $schema->config['facets'];
     $response['map'] = ['organization' => ['name' => 'title']];
     return $this->response($response );
+  }
+
+  public function schema($schema_name) {
+      $provider = new Provider(new SchemaRetriever());
+      try {
+          $schema = $provider->retrieve($schema_name);
+      }
+      catch (\Exception $e) {
+          return $this->response($e->getMessage());
+      }
+      $response = $this->response(json_decode($schema));
+      $response->headers->set("Content-Type", "application/schema+json");
+      return $response;
   }
 
   public function search( Request $request ) {
@@ -63,6 +80,7 @@ class ApiController extends ControllerBase {
     $apiRequest = new ApiRequest();
     $uri = $request->getPathInfo();
     $path = $apiRequest->getUri($uri);
+
     if ($collection = $apiRequest->validateCollectionPath($path)) {
       $load = new Load();
       $docs = $load->loadByType($collection);
@@ -77,12 +95,35 @@ class ApiController extends ControllerBase {
     $apiRequest = new ApiRequest();
     $uri = $request->getPathInfo();
     $path = $apiRequest->getUri($uri);
+
     if ($id = $apiRequest->validateDocPath($path)) {
       $collection = explode('/', $path)[1];
       $schema = new Schema();
       $entity = $schema->config['collectionToEntityMap'][$collection];
       $load = new Load();
       if ($doc = $load->loadAPIDoc($id, $entity)) {
+
+        if ($collection == "dataset") {
+          $node = $load->loadDocById($id);
+          $database = \Drupal::service('dkan_datastore.database');
+          $resource = new Resource($node->id(), $doc->distribution[0]->downloadURL);
+          $provider = new \Dkan\Datastore\Manager\InfoProvider();
+          $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
+          $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), new \Drupal\dkan_datastore\Storage\Variable());
+          $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
+          /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
+          $datastore = $factory->get();
+
+          if ($datastore) {
+            $headers = $datastore->getTableHeaders();
+            $doc->columns = $headers;
+            $doc->datastore_statistics = [
+              'rows' => $datastore->numberOfRecordsImported(),
+              'columns' => count($headers)
+            ];
+          }
+        }
+
         return $this->response($doc);
       }
       throw new NotFoundHttpException();

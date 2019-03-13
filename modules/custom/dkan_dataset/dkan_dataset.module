@@ -10,7 +10,7 @@ use Drupal\dkan_schema\Schema;
  * Prepares for storage by adding ids.
  */
 function dkanDatasetPrepareStore($doc, $references, $schema) {
-  $collectionsToUpdate = [
+  /*$collectionsToUpdate = [
     'publisher' => 'object',
     'theme' => 'array',
     'keyword' => 'array',
@@ -35,7 +35,7 @@ function dkanDatasetPrepareStore($doc, $references, $schema) {
         $doc->{$reference} = ['dkan-id' => $value];
       }
     }
-  }
+  }*/
   return $doc;
 }
 
@@ -100,7 +100,11 @@ function dkan_dataset_group_sync(EntityInterface $entity) {
       ->loadByProperties(['uuid' => $metadata->organization]);
     $group = current($groups);
     $entity->groupSynced = TRUE;
-    $group->addContent($entity, $pluginId);
+
+    // @todo create group if it does not exist.
+    if (is_object($group)) {
+      $group->addContent($entity, $pluginId);
+    }
   }
 }
 

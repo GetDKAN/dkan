@@ -1,0 +1,7 @@
+name: DKAN Dummy Content
+description: 'DKAN Dummy Content.'
+type: module
+core: 8.x
+dependencies:
+  - dkan_harvest
+package: DKAN
