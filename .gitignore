@@ -11,3 +11,4 @@ composer.lock
 .swp
 /docroot
 .docksal
+.idea

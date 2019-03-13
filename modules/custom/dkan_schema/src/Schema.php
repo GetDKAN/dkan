@@ -9,37 +9,21 @@ class Schema {
 
   public $config = FALSE;
 
-  private $dir = '';
-
-  private $schemaDir = 'schemas';
-
-  function __construct($schema = '') {
-    $this->schema = $schema ? $schema : dkan_schema_current_schema();
+  function __construct() {
     $this->config = $this->loadConfig();
-  }
-
-  private function dir() {
-    if ($this->dir) {
-      return $this->dir;
-    }
-    else {
-      $currentDir = __DIR__;
-      $num = strlen('modules/custom/dkan_schema/src');
-      $basedDir = substr($currentDir, 0, -1 * abs($num));
-      $this->dir = $basedDir . $this->schemaDir . '/' . $this->schema;
-      return $this->dir;
-    }
   }
 
   public function getCurrentSchema() {
     return $this->schema;
   }
 
+  private function dir() {
+      $schema_retriever =  new SchemaRetriever();
+      return $schema_retriever->getSchemaDirectory();
+  }
+
   private function loadConfig() {
-    $currentDir = __DIR__;
-    $num = strlen('modules/custom/dkan_schema/src');
-    $basedDir = substr($currentDir, 0, -1 * abs($num));
-    $file = $this->dir() . '/config.yml';
+    $file =  $this->dir() . '/config.yml';
     return Yaml::decode(file_get_contents($file));
   }
 

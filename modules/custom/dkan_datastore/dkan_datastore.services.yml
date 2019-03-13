@@ -1,0 +1,4 @@
+services:
+  dkan_datastore.database:
+    class: Drupal\dkan_datastore\Storage\Database
+    arguments: ['@database']

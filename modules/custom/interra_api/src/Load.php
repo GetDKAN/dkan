@@ -2,6 +2,7 @@
 
 namespace Drupal\interra_api;
 
+use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\dkan_schema\Schema;
 use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
@@ -22,8 +23,7 @@ class Load {
   ];
 
   function __construct() {
-    $currentSchema = dkan_schema_current_schema();
-    $schema = new Schema($currentSchema);
+    $schema = new Schema();
     $this->schema = $schema;
     $this->primaryCollection = $schema->config['primaryCollection'];
     $this->collectionToBundleMap = $schema->config['collectionToBundleMap'];
@@ -108,6 +108,18 @@ class Load {
   }
 
   public function loadByType($bundle) {
+    if ($bundle == "organization") {
+      $store = new DrupalNodeDataset();
+      $datasets = $store->retrieveAll();
+      $organizations = [];
+      foreach ($datasets as $json) {
+        $dataset = json_decode($json);
+        if (isset($dataset->publisher)) {
+          $organizations[$dataset->publisher->name] = $dataset->publisher;
+        }
+      }
+      return array_values($organizations);
+    }
     $entity = $this->collectionToEntityMap[$bundle];
     // We've found from the schema !collection.field which lets us have a route
     // for a field.

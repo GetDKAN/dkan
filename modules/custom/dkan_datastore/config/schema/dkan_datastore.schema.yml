@@ -1,0 +1,8 @@
+# Schema for the configuration files of the DKAN Datastore module.
+
+dkan_datastore.keyvalue:
+  type: config_object
+  mapping:
+    data:
+      type: text
+      label: Serialized KeyValue Store

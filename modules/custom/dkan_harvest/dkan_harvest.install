@@ -1,6 +1,7 @@
 <?php
 
 function dkan_harvest_schema() {
+
   $schema['harvest_source'] = array(
     'description' => 'The table tracking harvest sources.',
     'fields' => [
@@ -20,6 +21,7 @@ function dkan_harvest_schema() {
       'source_id',
     ]
   );
+
   $schema['harvest_run'] = array(
     'description' => 'The table tracking harvest sources.',
     'fields' => [
@@ -51,6 +53,7 @@ function dkan_harvest_schema() {
       'run_id',
     ]
   );
+
   $schema['harvest_hash'] = array(
     'description' => 'The table tracking harvest hashes.',
     'fields' => [
@@ -61,22 +64,8 @@ function dkan_harvest_schema() {
         'not null' => TRUE,
         'default' => '',
       ],
-      'bundle' => [
-        'description' => 'The the bundle for the hash.',
-        'type' => 'varchar',
-        'length' => 32,
-        'not null' => TRUE,
-        'default' => 'dataset',
-      ],
       'source_id' => [
         'description' => 'The primary identifier for an entity. Used to connect the harveset hash to Drupal entity.',
-        'type' => 'varchar',
-        'length' => 32,
-        'not null' => TRUE,
-        'default' => '',
-      ],
-      'run_id' => [
-        'description' => 'The id for the harvest run.',
         'type' => 'varchar',
         'length' => 32,
         'not null' => TRUE,
@@ -100,6 +89,7 @@ function dkan_harvest_schema() {
       'identifier',
     ]
   );
+
   $schema['harvest_log'] = array(
     'description' => 'The log table for harvests.',
     'fields' => [
@@ -107,20 +97,6 @@ function dkan_harvest_schema() {
         'description' => 'The id for the log entry.',
         'type' => 'serial',
         'not null' => TRUE,
-      ],
-      'identifier' => [
-        'description' => 'The uuid for a dataset or open data entity.',
-        'type' => 'varchar',
-        'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
-      ],
-      'run_id' => [
-        'description' => 'The id for the harvest run.',
-        'type' => 'varchar',
-        'length' => 32,
-        'not null' => TRUE,
-        'default' => '',
       ],
       'action' => [
         'description' => 'The action being performed.',
@@ -154,5 +130,6 @@ function dkan_harvest_schema() {
       'log_id',
     ]
   );
+
   return $schema;
 }

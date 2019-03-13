@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "harvest-plan",
+  "type": "object",
+  "title": "Harvest Plan",
+  "required": [
+    "identifier",
+    "source",
+    "transforms",
+    "load"
+  ],
+  "properties": {
+    "identifier": {
+      "type": "string",
+      "title": "The plan's identifier",
+      "pattern": "^(.*)$"
+    },
+    "source": {
+      "type": "object",
+      "title": "The Source to harvest",
+      "required": [
+        "type",
+        "uri"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "Class utilized to extract the data from the source."
+        },
+        "uri": {
+          "type": "string",
+          "title": "The URL or Location of the Source",
+          "examples": [
+            "http://demo.getdkan.com/data.json"
+          ]
+        }
+      }
+    },
+    "transforms": {
+      "type": "array",
+      "title": "The Transforms for the Harvest",
+      "additionalProperties": false,
+      "items": {
+        "anyOf": [
+          {
+            "type": [
+              "object"
+            ],
+            "title": "The Items Schema",
+            "properties": {
+              "Filter": {
+                "type": "object",
+                "title": "The Filter to use on the harvest"
+              },
+              "Override": {
+                "type": "object",
+                "title": "The Filter to use on the harvest"
+              }
+            }
+          },
+          {
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "load": {
+      "type": "object",
+      "title": "The Load settings for the Harvest",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "migrate": {
+          "type": "boolean",
+          "title": "Whether or not to fully pull in the source",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        "collectionsToUpdate": {
+          "type": "array",
+          "title": "The Collections from the source to update in the catalog",
+            "description":"These collection should be defined i the active schema. ",
+          "items": {
+            "type": "string",
+            "examples": [
+              "dataset",
+              "organization",
+              "license",
+              "theme",
+              "keyword"
+            ],
+            "pattern": "^(.*)$"
+          }
+        },
+        "type": {
+          "type": "string",
+          "title": "Class utilized to load the harvested data."
+        }
+      }
+    }
+  }
+}

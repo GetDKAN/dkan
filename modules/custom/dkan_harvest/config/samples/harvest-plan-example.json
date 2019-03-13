@@ -1,0 +1,14 @@
+{
+	"sourceId": "dkandemo",
+	"source": {
+		"type": "DataJson",
+		"uri": "http://demo.getdkan.com/data.json"
+	},
+	"transforms": [],
+	"load": {
+		"migrate": false,
+		"update": false,
+		"collectionsToUpdate": ["dataset"],
+		"type": "Dataset"
+	}
+}
