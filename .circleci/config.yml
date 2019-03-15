@@ -70,7 +70,7 @@ jobs:
     environment:
       DKTL_CHOWN: False
       DKTL_NO_PTY: True
-    parallelism: 3
+#    parallelism: 3
     steps:
       - attach_workspace:
           at: /home/circleci
@@ -92,9 +92,9 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - unit_test:
-          requires:
-            - build
+      # - unit_test:
+      #     requires:
+      #       - build
       - behat_test:
           requires:
             - build
