@@ -70,7 +70,7 @@ jobs:
     environment:
       DKTL_CHOWN: False
       DKTL_NO_PTY: True
-    parallelism: 4
+    # parallelism: 4
     steps:
       - attach_workspace:
           at: /home/circleci
