@@ -84,6 +84,8 @@ jobs:
             exit_status=0
             (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list
             while read file; do if ! dktl test:behat $file; then exit_status=1; echo "FAILED SCENARIO: $file"; fi; done < $test_list
+            ls -l /var/www/dkan/test
+            ls -l /var/www/dkan/test/assets
             exit $exit_status
       - store_artifacts:
          path: /var/www/dkan/test/assets
