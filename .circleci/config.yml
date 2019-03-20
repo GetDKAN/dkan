@@ -70,7 +70,7 @@ jobs:
     environment:
       DKTL_CHOWN: False
       DKTL_NO_PTY: True
-#    parallelism: 4
+    parallelism: 4
     steps:
       - attach_workspace:
           at: /home/circleci
@@ -83,7 +83,13 @@ jobs:
             test_list=$(mktemp)
             exit_status=0
             (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list
-            while read file; do if ! dktl test:behat $file; then exit_status=1; echo "FAILED SCENARIO: $file"; fi; done < $test_list
+            while read file; do 
+              if ! dktl test:behat $file; then
+                exit_status=1;
+                echo "FAILED SCENARIO: $file";
+              fi;
+              ls -l dkan/test/assets/junit || true;
+            done < $test_list
             exit $exit_status
       - store_artifacts:
          path: ~/project/dkan/test/assets
