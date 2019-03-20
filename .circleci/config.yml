@@ -88,12 +88,17 @@ jobs:
                 exit_status=1;
                 echo "FAILED SCENARIO: $file";
               fi;
+              if [ -f dkan/tests/assets/junit/dkan.xml ]; then
+                mv dkan/tests/assets/junit/dkan.xml dkan/tests/assets/junit/$(basename $file .feature).xml
+              fi
               ls -l dkan/test/assets/junit || true;
             done < $test_list
             exit $exit_status
       - store_artifacts:
          path: ~/project/dkan/test/assets
-         
+      - store_test_results:
+         path: ~/project/dkan/test/assets/junit
+
 workflows:
   version: 2
   build_and_test:
