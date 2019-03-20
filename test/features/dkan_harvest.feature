@@ -7,7 +7,7 @@ Feature: Dkan Harvest
       | Source one | /harvest_source/source-one |
       | Source two | /harvest_source/source-two |
 
-  @harvest_01 @api @javascript
+  @harvest_01 @api @javascript @fixme
   Scenario: As a site manager I should be able to add a harvest source.
     Given users:
       | name              | mail                     | status | roles             |
