@@ -88,8 +88,8 @@ jobs:
                 exit_status=1;
                 echo "FAILED SCENARIO: $file";
               fi;
-              if [ -f dkan/tests/assets/junit/dkan.xml ]; then
-                mv dkan/tests/assets/junit/dkan.xml dkan/tests/assets/junit/$(basename $file .feature).xml
+              if [ -f dkan/test/assets/junit/dkan.xml ]; then
+                mv dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/$(basename $file .feature).xml
               fi
               ls -l dkan/test/assets/junit || true;
             done < $test_list
