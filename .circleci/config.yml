@@ -62,9 +62,10 @@ jobs:
           name: Run unit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl test:phpunit --log-junit ~/project/dkan/test/assets/junit/phpunit.xml
+            dktl docker:compose exec -T cli mkdir dkan/test/assets/junit/phpunit
+            dktl test:phpunit --log-junit ~/project/dkan/test/assets/junit/phpunit/phpunit.xml
       - store_test_results:
-         path: ~/project/dkan/test/assets/junit/phpunit.xml
+         path: ~/project/dkan/test/assets/junit
 
   behat_test:
     machine:
@@ -82,6 +83,7 @@ jobs:
           name: Run behat tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
+            dktl docker:compose exec -T cli mkdir dkan/test/assets/junit/features
             test_list=$(mktemp)
             exit_status=0
             (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list
@@ -95,7 +97,7 @@ jobs:
               fi;
               if [ -f dkan/test/assets/junit/dkan.xml ]; then
                 base="$(basename $file .feature)"
-                dktl docker:compose exec -T cli mv dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/${base}.xml </dev/null
+                dktl docker:compose exec -T cli mv dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/features/${base}.xml </dev/null
               fi
             done < $test_list
             exit $exit_status
