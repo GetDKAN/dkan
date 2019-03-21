@@ -89,7 +89,7 @@ jobs:
                 echo "FAILED SCENARIO: $file";
               fi;
               if [ -f dkan/test/assets/junit/dkan.xml ]; then
-                cp dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/$(basename $file .feature).xml
+                dktl docker:compose exec cli cp dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/$(basename $file .feature).xml
               fi
               ls -l dkan/test/assets/junit || true;
             done < $test_list
