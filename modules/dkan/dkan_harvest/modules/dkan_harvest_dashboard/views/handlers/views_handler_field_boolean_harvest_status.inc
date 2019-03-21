@@ -10,6 +10,7 @@ class views_handler_field_boolean_harvest_status extends views_handler_field {
   const STATUS_FINISHED_NO_ERRORS = 1;
   const STATUS_FINISHED_WITH_ERRORS = 2;
   const STATUS_IN_PROGRESS = 3;
+  const STATUS_NEW = 4;
 
   /**
    * {@inheritdoc}
@@ -61,6 +62,11 @@ class views_handler_field_boolean_harvest_status extends views_handler_field {
       'translatable' => TRUE,
     );
 
+    $options['status_new'] = array(
+      'default' => 'New',
+      'translatable' => TRUE,
+    );
+
     return $options;
   }
 
@@ -104,6 +110,13 @@ class views_handler_field_boolean_harvest_status extends views_handler_field {
       '#default_value' => $this->options['status_failed'],
     );
 
+    $form['status_new'] = array(
+      '#weight' => $weight++,
+      '#type' => 'textfield',
+      '#title' => t('Status when harvest is still new and was never executed'),
+      '#default_value' => $this->options['status_new'],
+    );
+
     parent::options_form($form, $form_state);
   }
 
@@ -121,31 +134,37 @@ class views_handler_field_boolean_harvest_status extends views_handler_field {
         ':entity_id' => $values->nid,
       ));
 
-    $result_array = $result->fetchAssoc();
+    if (empty($result)) {
+      watchdog('dkan_harvest_dashboard', "Failed to machine name from \"field_dkan_harvest_machine_name_machine\" table.", array(), WATCHDOG_ERROR);
+      return self::STATUS_UNKNOWN;
+    }
 
-    // Should not happen.
-    if (empty($result_array)) {
+    $machine_name = $result->fetchField();
+
+    if (empty($machine_name)) {
+      // Should not have happened.
       watchdog('dkan_harvest_dashboard', "HarvestSource machine_name not found.", array(), WATCHDOG_ERROR);
       return self::STATUS_UNKNOWN;
     }
 
-    $machine_name = array_pop($result_array);
-
     $harvest_source = new HarvestSource($machine_name);
 
     // Check the current status of the migration.
-    $query_migrate_status = db_query("SELECT status  FROM {migrate_status} WHERE machine_name = :migration_machine_name  LIMIT 1",
-      array(
-        ':migration_machine_name' => $harvest_source->getMigrationMachineName(),
-      ));
-    $result_status = $query_migrate_status->fetchAssoc();
+    $result = db_query(
+      "SELECT status FROM {migrate_status} WHERE machine_name = :migration_machine_name  LIMIT 1",
+      array(':migration_machine_name' => $harvest_source->getMigrationMachineName())
+    );
 
-    if (empty($result_status)) {
-      watchdog('dkan_harvest_dashboard', "Failed to query migration status .", array(), WATCHDOG_ERROR);
+    if (empty($result)) {
+      watchdog(
+        'dkan_harvest_dashboard', "Failed to query migration status from \"@table\" table.",
+        array('@table' => 'migrate_status'),
+        WATCHDOG_ERROR
+      );
       return self::STATUS_UNKNOWN;
     }
 
-    $migration_status = array_pop($result_status);
+    $migration_status = $result->fetchField();
 
     switch ($migration_status) {
       case MigrationBase::STATUS_IDLE:
@@ -160,60 +179,92 @@ class views_handler_field_boolean_harvest_status extends views_handler_field {
         return self::STATUS_UNKNOWN;
     }
 
-    // Migration is idle. Get the latest migration status.
-    // Get the latest mlid from the message table.
-    $query_migrate_log = db_query("SELECT mlid FROM {migrate_log} WHERE machine_name = :migration_machine_name ORDER BY mlid DESC LIMIT 1",
-      array(
-        ':migration_machine_name' => $harvest_source->getMigrationMachineName(),
-      ));
+    // Confirmed the migration is idle, work from the mlid to get the error
+    // messages and failed dataset counts.
+    $result = db_query(
+      "SELECT mlid FROM {migrate_log} WHERE machine_name = :migration_machine_name ORDER BY mlid DESC LIMIT 1",
+      array(':migration_machine_name' => $harvest_source->getMigrationMachineName())
+    );
 
-    $result_migrate_log = $query_migrate_log->fetchAssoc();
-
-    if (empty($result_migrate_log)) {
-      watchdog('dkan_harvest_dashboard', "MLID not found.", array(), WATCHDOG_ERROR);
+    if (empty($result)) {
+      watchdog('dkan_harvest_dashboard', "Failed to query migration mlid from \"migrate_log\" table.", array(), WATCHDOG_ERROR);
       return self::STATUS_UNKNOWN;
     }
 
-    // Get rid of the array.
-    $mlid = array_pop($result_migrate_log);
+    $mlid = $result->fetchField();
+
+    if (empty($mlid)) {
+      // No MLID in the log table. Assume the Harvest Migration never executed
+      // and still new.
+      return self::STATUS_NEW;
+    }
 
     $harvest_source_migration = dkan_harvest_get_migration($harvest_source);
+    $mapTable = $harvest_source_migration->getMap()->getMapTable();
     $messageTable = $harvest_source_migration->getMap()->getMessageTable();
     $logTable = $harvest_source_migration->getMap()->getLogTable();
 
-    // Let's see if we got errors during the last migration.
-    $query_message_table = db_query("SELECT COUNT(*) FROM {$messageTable} WHERE mlid = :mlid AND level = :error_level",
+    // Fetch the number of error message recorded during the latest Harvest
+    // Migration.
+    $result = db_query("SELECT COUNT(*) FROM {$messageTable} WHERE mlid = :mlid AND level = :error_level",
       array(
         ':mlid' => $mlid,
         ':error_level' => MigrationBase::MESSAGE_ERROR,
       ));
-    $result_message_table = $query_message_table->fetchAssoc();
 
-    // Let's see if we didn't get errors during the last migration but failed.
-    $query_log_table = db_query("SELECT failed FROM {$logTable} WHERE mlid = :mlid",
-      array(
-        ':mlid' => $mlid,
-      ));
-    $result_log_table = $query_log_table->fetchField();
-
-    if (empty($result_message_table)) {
-      // I'm confused. This should no happen.
-      watchdog('dkan_harvest_dashboard', "Result for error message not found.", array(), WATCHDOG_ERROR);
+    if (empty($result)) {
+      watchdog(
+        'dkan_harvest_dashboard', "Failed to query migration messages from \"@table\" table.",
+        array('@table' => $messageTable),
+        WATCHDOG_ERROR
+      );
       return self::STATUS_UNKNOWN;
     }
 
-    $errors_count = array_pop($result_message_table);
+    $errors_count = $result->fetchField();
 
-    if ($errors_count == 0 && $result_log_table == 0) {
-      return self::STATUS_FINISHED_NO_ERRORS;
+    // Fetch the number of failed datasets during the last migration.
+    $result = db_query(
+      "SELECT failed FROM {$logTable} WHERE mlid = :mlid",
+      array(':mlid' => $mlid)
+    );
+
+    if (empty($result)) {
+      watchdog(
+        'dkan_harvest_dashboard', "Failed to query failed dataset count from \"@table\" table.",
+        array('@table' => $logTable),
+        WATCHDOG_ERROR
+      );
+      return self::STATUS_UNKNOWN;
     }
-    elseif ($errors_count > 0 || $result_log_table > 0) {
+
+    $failed_count = $result->fetchField();
+
+    $result = db_query("SELECT count(*) FROM {$mapTable}", array());
+
+    if (empty($result)) {
+      watchdog(
+        'dkan_harvest_dashboard', "Failed to query tracked datasets from \"@table\" table.",
+        array('@table' => $mapTable),
+        WATCHDOG_ERROR
+      );
+      return self::STATUS_UNKNOWN;
+    }
+
+    $total_count = $result->fetchField();
+
+    if ($failed_count >= $total_count) {
+      return self::STATUS_FAILED;
+    }
+    elseif ($errors_count > 0 || $failed_count > 0) {
       return self::STATUS_FINISHED_WITH_ERRORS;
     }
-    else {
-      // At this point we should've been out. Return UNKNOWN.
-      return self::STATUS_UNKNOWN;
+    elseif ($errors_count == 0 && $failed_count == 0) {
+      return self::STATUS_FINISHED_NO_ERRORS;
     }
+
+    // At this point we should've been out. Return UNKNOWN.
+    return self::STATUS_UNKNOWN;
   }
 
   /**
@@ -235,11 +286,12 @@ class views_handler_field_boolean_harvest_status extends views_handler_field {
       case self::STATUS_FAILED:
         return filter_xss_admin($this->options['status_failed']);
 
-      case self::STATUS_FAILED:
-        return filter_xss_admin($this->options['status_failed']);
+      case self::STATUS_NEW:
+        return filter_xss_admin($this->options['status_new']);
 
+      case self::STATUS_UNKNOWN:
       default:
-        return t('N/A');
+        return filter_xss_admin($this->options['status_unknown']);
     }
   }
 
