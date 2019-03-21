@@ -4,7 +4,7 @@
 /**
  * Handler class implementation for Dkan Harvest Migration date field.
  */
-class views_handler_field_boolean_harvest_status extends views_handler_field {
+class views_handler_field_harvest_status extends views_handler_field {
 
   const STATUS_UNKNOWN = -1;
   const STATUS_FAILED = 0;
