@@ -62,7 +62,9 @@ jobs:
           name: Run unit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl test:phpunit
+            dktl test:phpunit --log-junit dkan/test/assets/junit/phpunit.xml
+      - store_test_results:
+         path: ~/project/dkan/test/assets/junit/phpunit.xml
 
   behat_test:
     machine:
@@ -70,7 +72,7 @@ jobs:
     environment:
       DKTL_CHOWN: False
       DKTL_NO_PTY: True
-    parallelism: 3
+    parallelism: 5
     steps:
       - attach_workspace:
           at: /home/circleci
