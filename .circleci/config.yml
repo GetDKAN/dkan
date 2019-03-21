@@ -93,7 +93,7 @@ jobs:
               fi;
               if [ -f dkan/test/assets/junit/dkan.xml ]; then
                 base="$(basename $file .feature)"
-                dktl docker:compose exec cli mv dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/${base}.xml
+                dktl docker:compose exec cli mv dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/${base}.xml </dev/null
                 echo "saved dkan.xml"
               fi
               echo "END FEATURE FILE: $file"
