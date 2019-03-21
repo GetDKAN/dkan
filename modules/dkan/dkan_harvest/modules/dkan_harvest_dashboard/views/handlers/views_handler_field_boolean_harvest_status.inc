@@ -1,4 +1,5 @@
 <?php
+// @codingStandardsIgnoreFile
 
 /**
  * Handler class implementation for Dkan Harvest Migration date field.
