@@ -86,14 +86,17 @@ jobs:
             echo "TESTING FEATURES:"
             cat $test_list
             while read file; do 
+              echo "FEATURE FILE: $file"
               if ! dktl test:behat $file; then
                 exit_status=1;
                 echo "FAILED FEATURE: $file";
               fi;
               if [ -f dkan/test/assets/junit/dkan.xml ]; then
+                saved_xml=$(basename 
                 dktl docker:compose exec cli mv dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/$(basename $file .feature).xml
                 echo "saved dkan.xml"
               fi
+              echo "END FEATURE FILE: $file"
             done < $test_list
             exit $exit_status
       - store_artifacts:
