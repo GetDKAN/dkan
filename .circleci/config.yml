@@ -62,7 +62,7 @@ jobs:
           name: Run unit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl test:phpunit --log-junit dkan/test/assets/junit/phpunit.xml
+            dktl test:phpunit --log-junit ~/project/dkan/test/assets/junit/phpunit.xml
       - store_test_results:
          path: ~/project/dkan/test/assets/junit/phpunit.xml
 
@@ -72,7 +72,7 @@ jobs:
     environment:
       DKTL_CHOWN: False
       DKTL_NO_PTY: True
-    parallelism: 5
+    parallelism: 3
     steps:
       - attach_workspace:
           at: /home/circleci
