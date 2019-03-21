@@ -63,7 +63,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             dktl docker:compose exec -T cli mkdir dkan/test/assets/junit/phpunit
-            dktl test:phpunit --log-junit ~/project/dkan/test/assets/junit/phpunit/phpunit.xml
+            dktl test:phpunit --log-junit dkan/test/assets/junit/phpunit/phpunit.xml
       - store_test_results:
          path: ~/project/dkan/test/assets/junit
 
