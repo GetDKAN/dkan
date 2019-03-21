@@ -46,7 +46,7 @@ function dkan_harvest_dashboard_views_data() {
     'title' => t('Harvest Migrate Status'),
     'help' => t('Status of the last harvest migration'),
     'field' => array(
-      'handler' => 'views_handler_field_boolean_harvest_status',
+      'handler' => 'views_handler_field_harvest_status',
       'click sortable' => TRUE,
     ),
   );
