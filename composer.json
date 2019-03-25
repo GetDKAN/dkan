@@ -17,7 +17,6 @@
         "fmizzell/json-schema-provider": "dev-master",
         "fmizzell/harvest": "dev-master",
         "fmizzell/maquina": "dev-master",
-        "twig/twig": "1.35.4",
         "guzzlehttp/guzzle" : "6.3"
     },
     "require-dev": {
