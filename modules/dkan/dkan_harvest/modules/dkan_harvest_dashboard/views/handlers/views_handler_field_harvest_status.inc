@@ -6,12 +6,12 @@
  */
 class views_handler_field_harvest_status extends views_handler_field {
 
-  const STATUS_UNKNOWN = -1;
-  const STATUS_FAILED = 0;
-  const STATUS_FINISHED_NO_ERRORS = 1;
-  const STATUS_FINISHED_WITH_ERRORS = 2;
-  const STATUS_IN_PROGRESS = 3;
-  const STATUS_NEW = 4;
+  const STATUS_UNKNOWN = 'views_handler_field_harvest_status_unknown';
+  const STATUS_FAILED = 'views_handler_field_harvest_status_failed';
+  const STATUS_FINISHED_NO_ERRORS = 'views_handler_field_harvest_status_finished_no_errors';
+  const STATUS_FINISHED_WITH_ERRORS = 'views_handler_field_harvest_status_finished_with_errors';
+  const STATUS_IN_PROGRESS = 'views_handler_field_harvest_status_in_progress';
+  const STATUS_NEW = 'views_handler_field_harvest_status_new';
 
   /**
    * {@inheritdoc}
@@ -38,32 +38,32 @@ class views_handler_field_harvest_status extends views_handler_field {
   public function option_definition() {
     $options = parent::option_definition();
 
-    $options['status_finished_no_errors'] = array(
+    $options[self::STATUS_FINISHED_NO_ERRORS] = array(
       'default' => 'Finished',
       'translatable' => TRUE,
     );
 
-    $options['status_finished_with_errors'] = array(
+    $options[self::STATUS_FINISHED_WITH_ERRORS] = array(
       'default' => 'Finished with errors',
       'translatable' => TRUE,
     );
 
-    $options['status_in_progress'] = array(
+    $options[self::STATUS_IN_PROGRESS] = array(
       'default' => 'In progress',
       'translatable' => TRUE,
     );
 
-    $options['status_unknown'] = array(
+    $options[self::STATUS_UNKNOWN] = array(
       'default' => 'Unknown',
       'translatable' => TRUE,
     );
 
-    $options['status_failed'] = array(
+    $options[self::STATUS_FAILED] = array(
       'default' => 'Failed',
       'translatable' => TRUE,
     );
 
-    $options['status_new'] = array(
+    $options[self::STATUS_NEW] = array(
       'default' => 'New',
       'translatable' => TRUE,
     );
@@ -76,46 +76,46 @@ class views_handler_field_harvest_status extends views_handler_field {
    */
   public function options_form(&$form, &$form_state) {
     $weight = 10;
-    $form['status_finished_no_errors'] = array(
+    $form[self::STATUS_FINISHED_NO_ERRORS] = array(
       '#weight' => $weight++,
       '#type' => 'textfield',
       '#title' => t('Status when no errors found'),
-      '#default_value' => $this->options['status_finished_no_errors'],
+      '#default_value' => $this->options[self::STATUS_FINISHED_NO_ERRORS],
     );
 
-    $form['status_finished_with_errors'] = array(
+    $form[self::STATUS_FINISHED_WITH_ERRORS] = array(
       '#weight' => $weight++,
       '#type' => 'textfield',
       '#title' => t('Status when one or multiple error(s) found'),
-      '#default_value' => $this->options['status_finished_with_errors'],
+      '#default_value' => $this->options[self::STATUS_FINISHED_WITH_ERRORS],
     );
 
-    $form['status_in_progress'] = array(
+    $form[self::STATUS_IN_PROGRESS] = array(
       '#weight' => $weight++,
       '#type' => 'textfield',
       '#title' => t('Status when a Harvest is in progress'),
-      '#default_value' => $this->options['status_in_progress'],
+      '#default_value' => $this->options[self::STATUS_IN_PROGRESS],
     );
 
-    $form['status_unknown'] = array(
+    $form[self::STATUS_UNKNOWN] = array(
       '#weight' => $weight++,
       '#type' => 'textfield',
       '#title' => t('Status not known'),
-      '#default_value' => $this->options['status_unknown'],
+      '#default_value' => $this->options[self::STATUS_UNKNOWN],
     );
 
-    $form['status_failed'] = array(
+    $form[self::STATUS_FAILED] = array(
       '#weight' => $weight++,
       '#type' => 'textfield',
       '#title' => t('Status when harvest failed'),
-      '#default_value' => $this->options['status_failed'],
+      '#default_value' => $this->options[self::STATUS_FAILED],
     );
 
-    $form['status_new'] = array(
+    $form[self::STATUS_NEW] = array(
       '#weight' => $weight++,
       '#type' => 'textfield',
       '#title' => t('Status when harvest is still new and was never executed'),
-      '#default_value' => $this->options['status_new'],
+      '#default_value' => $this->options[self::STATUS_NEW],
     );
 
     parent::options_form($form, $form_state);
@@ -271,28 +271,51 @@ class views_handler_field_harvest_status extends views_handler_field {
   /**
    * {@inheritdoc}
    */
+  public function tokenize_value($value, $row_index = NULL) {
+    $token = NULL;
+
+    if ($value != '[dkan_harvest_harvest_status_id]') {
+      $token = parent::tokenize_value($value, $row_index);
+    }
+    else {
+      // Reverse generate the token.
+      $status_id = FALSE;
+      $status_label = $this->view->style_plugin->render_tokens[$row_index]['[dkan_harvest_harvest_status]'];
+
+      if (!empty($status_label)) {
+        $token = array_search($status_label, $this->options, TRUE);
+      }
+
+      if (empty($token)) {
+        // Fallback to the parent method.
+        $token = parent::tokenize_value($value, $row_index);
+      }
+    }
+
+    return $token;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function render($values) {
     $value = $this->get_value($values);
+    return $this->sanitize_value($this->options[$value]);
+  }
 
-    switch ($value) {
-      case self::STATUS_FINISHED_NO_ERRORS:
-        return filter_xss_admin($this->options['status_finished_no_errors']);
+  /**
+   * {@inheritdoc}
+   */
+  public function document_self_tokens(&$tokens) {
+    $tokens['[' . $this->options['id'] . '_id' . ']'] = t('The fixed ID of the option.');
+  }
 
-      case self::STATUS_FINISHED_WITH_ERRORS:
-        return filter_xss_admin($this->options['status_finished_with_errors']);
-
-      case self::STATUS_IN_PROGRESS:
-        return filter_xss_admin($this->options['status_in_progress']);
-
-      case self::STATUS_FAILED:
-        return filter_xss_admin($this->options['status_failed']);
-
-      case self::STATUS_NEW:
-        return filter_xss_admin($this->options['status_new']);
-
-      case self::STATUS_UNKNOWN:
-      default:
-        return filter_xss_admin($this->options['status_unknown']);
+  /**
+   * {@inheritdoc}
+   */
+  public function add_self_tokens(&$tokens, $item) {
+    if (!empty($tokens['[dkan_harvest_harvest_status]'])) {
+      $tokens['[dkan_harvest_harvest_status_id]'] = array_search($tokens['[dkan_harvest_harvest_status]'], $this->options, TRUE);;
     }
   }
 
