@@ -23,6 +23,7 @@ function dkan_harvest_drush_command() {
       'limit' => 'Limit on the length of each migration. Check migrate doc for more about this option.',
       'instrument' => 'Capture performance information (timer, memory, or all). Check migrate doc for more about this option.',
       'idlist' => 'A comma delimited list of ids to import or rollback. Check migrate doc for more about this option.',
+      'feedback' => 'Time period to print progress messages during migrations.',
     ),
     'drupal dependencies' => array('dkan_harvest'),
   );
@@ -52,6 +53,7 @@ function dkan_harvest_drush_command() {
       'limit' => 'Limit on the length of each migration. Check migrate doc for more about this option.',
       'instrument' => 'Capture performance information (timer, memory, or all). Check migrate doc for more about this option.',
       'idlist' => 'A comma delimited list of ids to import or rollback. Check migrate doc for more about this option.',
+      'feedback' => 'Time period to print progress messages during migrations.',
     ),
     'drupal dependencies' => array('dkan_harvest'),
   );
@@ -159,7 +161,7 @@ function dkan_harvest_drush_command_cache($source_machine_name = NULL) {
  *   Source machine name to migrate.
  */
 function dkan_harvest_drush_command_migrate($source_machine_name = NULL) {
-  $supported_options = array('limit', 'skiphash', 'instrument', 'idlist');
+  $supported_options = array('limit', 'skiphash', 'instrument', 'idlist', 'feedback');
   $options = array();
 
   // Gather harvest migration options. If parsing the arguments fails just relay
@@ -183,6 +185,14 @@ function dkan_harvest_drush_command_migrate($source_machine_name = NULL) {
   else {
     drush_log("Running the harvest migration on all the available sources.", 'notice');
     $sources = dkan_harvest_sources_definition();
+  }
+
+  // If there is no feedback option set, set it to 5 min.
+  if (!isset($options['feedback']) || !isset($options['feedback']['value'])) {
+    $options['feedback']['value'] = 360;
+  }
+  if (!isset($options['feedback']['unit'])) {
+    $options['feedback']['unit'] = 'seconds';
   }
 
   foreach ($sources as $source) {
@@ -386,6 +396,29 @@ function dkan_harvest_get_option_skiphash($options) {
 function dkan_harvest_get_option_idlist($options) {
   if ($idlist = drush_get_option('idlist', FALSE)) {
     $options['idlist'] = $idlist;
+  }
+  return $options;
+}
+
+/**
+ * Helper function to parse the 'feedback' option.
+ *
+ * This is taken from migrate.drush.inc.
+ */
+function dkan_harvest_get_option_feedback($options) {
+  $feedback = drush_get_option('feedback');
+  if ($feedback) {
+    $parts = explode(' ', $feedback);
+    $options['feedback']['value'] = $parts[0];
+    $options['feedback']['unit'] = isset($parts[1]) ? $parts[1] : 'seconds';
+    if ($options['feedback']['unit'] != 'seconds' &&
+      $options['feedback']['unit'] != 'second' &&
+      $options['feedback']['unit'] != 'items' &&
+      $options['feedback']['unit'] != 'item') {
+      drush_set_error(NULL, dt("Invalid feedback frequency unit '!unit'",
+        array('!unit' => $options['feedback']['unit'])));
+      return;
+    }
   }
   return $options;
 }
