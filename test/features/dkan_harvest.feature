@@ -7,7 +7,7 @@ Feature: Dkan Harvest
       | Source one | /harvest_source/source-one |
       | Source two | /harvest_source/source-two |
 
-  @harvest_01 @api @javascript
+  @harvest_01 @api @javascript @fixme
   Scenario: As a site manager I should be able to add a harvest source.
     Given users:
       | name              | mail                     | status | roles             |
@@ -21,7 +21,7 @@ Feature: Dkan Harvest
     And I fill in "Source URI" with "https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
     And I select "Project Open Data v1.1 JSON" from "Type"
     And I press "Save"
-    And I wait for "2" seconds
+    And I wait for "10" seconds
     Then I should see the success message "Harvest Source Source 1 has been created."
 
   @harvest_02 @api @javascript
