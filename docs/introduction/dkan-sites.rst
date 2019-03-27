@@ -130,6 +130,7 @@ National Jury of Elections, Peru                               http://jnedatosab
 Ministry of Labor, Peru                                        http://datos.trabajo.gob.pe/
 Open Data Windsor Essex, Canada                                http://odwe.ca/
 São Paulo State's Department of Education, Brazil              https://dados.educacao.sp.gov.br/
+La Paz, Bolivia                                                https://datosabiertos.cedla.org/
 ============================================================== =============
 
 
