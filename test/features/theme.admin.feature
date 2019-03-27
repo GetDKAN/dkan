@@ -13,6 +13,12 @@ Feature: Theme
       | Site Manager | sitemanager@example.com | site manager |
 
   @noworkflow
+    Scenario: Dummy scenario because behat errors if there is no scenario in a feature file
+    Given I am logged in as "John"
+    And I am on "Settings" page
+    Then I should see "Logo image settings"
+    
+  @noworkflow @fixme
   Scenario: Add custom logo
     Given I am logged in as "John"
     And I am on "Settings" page
@@ -25,7 +31,7 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
-  @noworkflow @customizable
+  @noworkflow @customizable @fixme
   Scenario: Add custom hero image
     Given I am logged in as "John"
     And I am on "Settings" page
