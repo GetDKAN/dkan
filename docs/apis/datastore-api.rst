@@ -38,6 +38,7 @@ Aggregation functions
 -  **max** (*string*) – field to compute the maximum
 -  **std** (*string*) – field to compute the standard deviation
 -  **variance** (*string*) – field to compute the variance
+-  **count** (*string*) – field to compute the count
 
 URL format
 ----------
