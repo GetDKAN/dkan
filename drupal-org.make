@@ -245,7 +245,7 @@ projects:
   migrate_extras:
     version: '2.5'
   module_filter:
-    version: '2.1'
+    version: '2.2'
   multistep:
     download:
       type: git
