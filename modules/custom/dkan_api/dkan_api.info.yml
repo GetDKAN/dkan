@@ -4,4 +4,5 @@ type: module
 core: 8.x
 dependencies:
   - dkan_dataset
+  - basic_auth
 package: DKAN

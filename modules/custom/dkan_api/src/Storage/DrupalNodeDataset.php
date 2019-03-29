@@ -55,11 +55,13 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
         $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $id);
     }
 
+    /* @var $node \Drupal\node\NodeInterface */
     if ($node) {    // update existing node
       $node->field_json_metadata = json_encode($data);
       $node->save();
-      return $node->id();
-    } else {    // create new node
+      return $node->uuid();
+    }
+    else {    // create new node
       $title = isset($data->title) ? $data->title : $data->name;
       $nodeWrapper = NODE::create([
         'title' => $title,
@@ -68,7 +70,7 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
         'field_json_metadata' => json_encode($data)
       ]);
       $nodeWrapper->save();
-      return $nodeWrapper->id();
+      return $nodeWrapper->uuid();
     }
 
     return NULL;
