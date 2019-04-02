@@ -161,7 +161,7 @@ projects:
   font_icon_select:
     download:
       type: git
-      url: https://git.drupal.org/sandbox/wolffereast/2319993.git
+      url: https://github.com/GetDKAN/font_icon_select.git
       branch: 7.x-1.x
   fontyourface:
     version: '2.8'
