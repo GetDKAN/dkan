@@ -9600,7 +9600,8 @@ div.horizontal-tabs {
   border-style: solid;
   margin-top: 15px; }
   .pane-dkan-harvest-harvest-source-summary .summary-details div {
-    padding: 4px 5px; }
+    padding: 4px 5px;
+    word-wrap: break-word; }
 
 .pane-dkan-harvest-harvest-source-summary h6 {
   background: #eee;
