@@ -281,3 +281,13 @@ coule be when the cache is wiped manually, or when the cache lifetime ends.
 
 All this options can be configured at
 ``admin/config/development/performance``
+
+Fields format
+~~~~~~~~~~~~~
+
+Before DKAN 1.16, the field names were displayed just as they were in the CSV
+file imported into the datastore, but with the 1.16 version of the Datastore, all
+the fields are displayed in lower case and with spaces transformed into underscores,
+so, for example, if your CSV file has a column name called `School Year`, now
+after you import the file to the datastore you'll have to access it using `school_year`
+as the field name.

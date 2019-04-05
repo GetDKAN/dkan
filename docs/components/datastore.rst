@@ -132,3 +132,35 @@ Troubleshoot
 ************
 
 - If you get an error like ``SQLSTATE[28000]: invalid authorization specification: 1045 access denied for user 'drupal'@'%' (using password: yes)`` you will need to grant FILE permissions to your MYSQL user. To do so use this command: ``GRANT FILE ON *.* TO 'user-name'``
+
+Important notes when upgrading from DKAN version previous to 1.16
+-----------------------------------------------------------------
+
+Field names
+***********
+
+On previous versions of the datastore, the field names were imported just as they
+were in the CSV files. Starting on DKAN 1.16, the field names are stored in the
+datastore in lower case and with the spaces transformed into underscores, so if
+your CSV file has a column name called `School Year`, now after you import the
+file into the datastore you'll be able to access it using `school_year` as the field name.
+
+Empty values
+************
+
+On previous versions of DKAN, when there was a cell with an empty value on a CSV
+file, that value got imported as NULL into the datastore. After importing a file
+to the datastore with DKAN 1.16, those empty values are kept as empty strings
+and not as NULL values anymore.
+
+Use of feeds
+************
+
+With DKAN 1.16 we stopped using feeds as a method for importing into the datastore,
+so it is important that if you have any implementation that still relies on Datastore
+and feeds, you reimplement that to use the new importers.
+
+Also, it is important to note that when you upgrade from a previous DKAN version,
+you'll have to enable one of the new importers modules (DKAN Datastore Simple Import
+or DKAN Datastore Fast Import), otherwise you may get issues because there are not
+enabled importers.
