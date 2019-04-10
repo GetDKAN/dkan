@@ -14,7 +14,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone --single-branch --branch dkan2 https://github.com/GetDKAN/dkan-tools.git
+            git clone --single-branch --branch master https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
