@@ -40,7 +40,7 @@ function dkan_workflow_enable() {
   // Enable moderation for dkan_workflow enabled content types upon install.
   // This config is kept persistant using the hook_strongarm_alter().
   // Default dkan content types with moderation.
-  $dkan_workflow_content_types = array('dataset', 'resource', 'feedback');
+  $dkan_workflow_content_types = array('dataset', 'resource');
 
   foreach ($dkan_workflow_content_types as $type) {
     $var_name = 'node_options_' . $type;
