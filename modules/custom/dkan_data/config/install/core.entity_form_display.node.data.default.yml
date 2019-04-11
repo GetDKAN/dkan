@@ -3,17 +3,17 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.dataset.field_json_metadata
-    - node.type.dataset
+    - field.field.node.data.field_data_type
+    - field.field.node.data.field_json_metadata
+    - node.type.data
   module:
     - json_form
     - path
 _core:
-  default_config_hash: vdw_LVH1spLQJ9G92HwXg50jzX4kNoQxzIL0bpsogLM
-id: node.dataset.default
+  default_config_hash: _twixbNO8WQ9cYUaH_K8QjPwyTPCwpn9WxQYEIE-3JY
+id: node.data.default
 targetEntityType: node
-bundle: dataset
-cuddle: now
+bundle: data
 mode: default
 content:
   created:
@@ -22,6 +22,14 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_data_type:
+    weight: 122
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   field_json_metadata:
     weight: 121
     settings:

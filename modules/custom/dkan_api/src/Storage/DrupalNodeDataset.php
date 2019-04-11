@@ -8,7 +8,7 @@ use Contracts\BulkRetriever;
 
 class DrupalNodeDataset implements Storage, BulkRetriever {
   protected function getType() {
-    return 'dataset';
+    return 'data';
   }
 
   public function retrieve(string $id): ?string {
@@ -57,6 +57,7 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
 
     /* @var $node \Drupal\node\NodeInterface */
     if ($node) {    // update existing node
+      $node->field_data_type = "dataset";
       $node->field_json_metadata = json_encode($data);
       $node->save();
       return $node->uuid();
@@ -65,8 +66,9 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
       $title = isset($data->title) ? $data->title : $data->name;
       $nodeWrapper = NODE::create([
         'title' => $title,
-        'type' => 'dataset',
+        'type' => 'data',
         'uuid' => $id,
+        'field_data_type' => 'dataset',
         'field_json_metadata' => json_encode($data)
       ]);
       $nodeWrapper->save();
