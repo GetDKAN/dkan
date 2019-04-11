@@ -8,6 +8,7 @@ use Maquina\Feeder;
 
 class SqlParser
 {
+
   public static function validate(string $sql): bool {
     $machine = self::getMachine();
     try {
@@ -19,30 +20,34 @@ class SqlParser
     }
   }
 
-  private static function getMachine() {
+  public static function getMachine() {
+    $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ*';
 
-    $machine = new MachineOfMachines('select_start');
+    $machine = new MachineOfMachines('select');
     $machine->addEndState("end");
 
-    $machine->addMachine('select', mb::s('SELECT * FROM'));
-    $machine->addMachine('select_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_-',  mb::ONE_OR_MORE));
+    $machine->addMachine('select', mb::s('[SELECT'));
+    $machine->addMachine('select_var', mb::bh($letters,mb::ONE_OR_MORE));
+    $machine->addMachine('select_from', mb::s('FROM'));
+    $machine->addMachine('table_var', mb::bh($letters,mb::ONE_OR_MORE));
+    $machine->addMachine('closing_bracket', mb::bh(' ', mb::ZERO_OR_MORE));
     $machine->addMachine("where", self::getWhereMachine());
     $machine->addMachine("order_by", self::getOrderByMachine());
     $machine->addMachine("limit", self::getLimitMachine());
 
-
-    $machine->addTransition('select_start', ["["], "select");
     $machine->addTransition('select', [" "], "select_var");
-    $machine->addTransition('select_var', ["]"], "select_end");
-    $machine->addTransition('select_end', [";"], "end");
+    $machine->addTransition('select_var', [" "], "select_from");
+    $machine->addTransition('select_var', [","], "select_var");
+    $machine->addTransition('select_from', [" "], "table_var");
+    $machine->addTransition('table_var', [",", ", ", " ,", " , "], "table_var");
+    $machine->addTransition('table_var', ["]"], "closing_bracket");
+    $machine->addTransition('closing_bracket', ["["], "where");
+    $machine->addTransition('closing_bracket', [";"], "end");
+    $machine->addTransition('where', [";"], "end");
 
-    $machine->addTransition('select_end', ["["], "where");
-    $machine->addTransition('where', ["]"], "where_end");
-    $machine->addTransition('where_end', [";"], "end");
-
-    $machine->addTransition('where_end', ["["], "order_by");
-    $machine->addTransition('order_by', ["]"], "order_by_end");
-    $machine->addTransition('order_by_end', [";"], "end");
+    $machine->addTransition('where', ["["], "order_by");
+    $machine->addTransition('order_by', ["["], "limit");
+    $machine->addTransition('order_by', [";"], "end");
 
     $machine->addTransition('order_by_end', ["["], "limit");
     $machine->addTransition('limit', ["]"], "limit_end");
@@ -52,21 +57,22 @@ class SqlParser
   }
 
   private static function getWhereMachine() {
-    $machine = new MachineOfMachines('where');
-    $machine->addEndState("quoted_string");
+    $machine = new MachineOfMachines('where_start');
+    $machine->addEndState("where_end");
 
-    $machine->addMachine('where', mb::s('WHERE'));
-    $machine->addMachine('where_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',  mb::ONE_OR_MORE));
-    $machine->addMachine("equal", mb::s("LIKE"));
-    $machine->addMachine("quoted_string", self::getQuotedStringMachine());
+    $machine->addMachine('where_start', mb::s('WHERE'));
+    $machine->addMachine('where_column', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_',  mb::ONE_OR_MORE));
+    $machine->addMachine("equal", mb::bh("LIKE= ",  mb::ONE_OR_MORE));
+    $machine->addMachine('where_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"',  mb::ONE_OR_MORE));
+    //$machine->addMachine("quoted_string", self::getQuotedStringMachine());
     $machine->addMachine("and", mb::s("AND"));
 
-
-    $machine->addTransition('where', [" "], "where_var");
-    $machine->addTransition('where_var', [" "], "equal");
-    $machine->addTransition('equal', [" "], "quoted_string");
-    $machine->addTransition('quoted_string', [" "], "and");
-    $machine->addTransition('and', [" "], "where_var");
+    $machine->addTransition('where_start', [" "], "where_column");
+    $machine->addTransition('where_column', [" "], "equal");
+    $machine->addTransition('equal', ['"'], "where_var");
+    $machine->addTransition('where_var', [']'], "where_end");
+    $machine->addTransition('where_var', [' '], "and");
+    $machine->addTransition('and', [' '], "where_column");
 
     return $machine;
   }
@@ -85,14 +91,14 @@ class SqlParser
 
   private static function getOrderByMachine() {
     $machine = new MachineOfMachines('order');
-    $machine->addEndState("order_var");
+    $machine->addEndState("order_end");
 
     $machine->addMachine('order', mb::s('ORDER BY'));
-    $machine->addMachine('order_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',  mb::ONE_OR_MORE));
+    $machine->addMachine('order_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_ ',  mb::ONE_OR_MORE));
 
     $machine->addTransition('order', [" "], "order_var");
-    $machine->addTransition('order_var', [","], "space");
-    $machine->addTransition('space', [" "], "order_var");
+    $machine->addTransition('order_var', [","], "order_var");
+    $machine->addTransition('order_var', ["]"], "order_end");
 
     return $machine;
   }
@@ -101,7 +107,6 @@ class SqlParser
     $machine = new MachineOfMachines('limit');
     $machine->addEndState("numeric1");
     $machine->addEndState("numeric2");
-
     $machine->addMachine('limit', mb::s('LIMIT'));
     $machine->addMachine('offset', mb::s('OFFSET'));
     $machine->addMachine('numeric1', mb::bh('0123456789'));
@@ -112,6 +117,7 @@ class SqlParser
     $machine->addTransition('offset', [" "], "numeric2");
 
     return $machine;
+
   }
 
 }
