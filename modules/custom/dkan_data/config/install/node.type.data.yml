@@ -1,4 +1,4 @@
-uuid: 8231af66-1822-4471-ac1c-d418aeaca6e6
+uuid: 5e3e17e3-629b-483e-85f4-c45753147094
 langcode: en
 status: true
 dependencies:
@@ -9,8 +9,10 @@ third_party_settings:
     available_menus:
       - main
     parent: 'main:'
-name: Organization
-type: organization
+_core:
+  default_config_hash: U8Z67MeLSdixetl11p515p0nC6ByJVMsjuXO2q46-VQ
+name: Data
+type: data
 description: ''
 help: ''
 new_revision: true

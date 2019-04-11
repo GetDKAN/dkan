@@ -4,17 +4,19 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - node.type.dataset
+    - field.field.node.data.field_json_metadata
+    - node.type.data
   module:
     - user
 _core:
-  default_config_hash: pfD8-0aFPrri1eyMDjnjjJPhQp089Go_XCJquZC_iDQ
-id: node.dataset.teaser
+  default_config_hash: BRfpqtPXozgoJkIFvt1ILU8LCEipUEIzu_21usIPl3s
+id: node.data.teaser
 targetEntityType: node
-bundle: dataset
+bundle: data
 mode: teaser
 content:
   links:
     weight: 100
     region: content
-hidden: {  }
+hidden:
+  field_json_metadata: true

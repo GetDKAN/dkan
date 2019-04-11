@@ -1,14 +1,16 @@
-uuid: e7709266-3bb4-4d85-8628-be228e826242
+uuid: 2e5e2a84-2931-4a90-90da-4d274817d495
 langcode: en
 status: true
 dependencies:
   module:
-    - taxonomy
-id: taxonomy_term.field_json_metadata
-field_name: field_json_metadata
-entity_type: taxonomy_term
-type: string_long
+    - node
+id: node.field_data_type
+field_name: field_data_type
+entity_type: node
+type: string
 settings:
+  max_length: 255
+  is_ascii: false
   case_sensitive: false
 module: core
 locked: false
@@ -17,4 +19,3 @@ translatable: true
 indexes: {  }
 persist_with_no_fields: false
 custom_storage: false
-
