@@ -361,8 +361,6 @@ projects:
       2317351: https://www.drupal.org/files/issues/views_autocomplete_filters-content-pane-2317351-4.patch
   views_bulk_operations:
     version: '3.5'
-  views_data_export:
-    version: '3.2'
   views_responsive_grid:
     version: '1.3'
   visualization_entity:
