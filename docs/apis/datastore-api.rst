@@ -174,7 +174,7 @@ Response
           ]
         }
       }
-    }7
+    }
 
 Response formats
 ----------------
@@ -277,17 +277,12 @@ on further requests.
 
 Since Datastore API uses the Drupal cache system under the hood, the
 Datastore API cache will be cleared at the same time as the rest of the Drupal cache. This
-coule be when the cache is wiped manually, or when the cache lifetime ends.
+could be when the cache is wiped manually, or when the cache lifetime ends.
 
-All this options can be configured at
+These options can be configured at
 ``admin/config/development/performance``
 
-Fields format
-~~~~~~~~~~~~~
+Field Names
+~~~~~~~~~~~
 
-Before DKAN 1.16, the field names were displayed just as they were in the CSV
-file imported into the datastore, but with the 1.16 version of the Datastore, all
-the fields are displayed in lower case and with spaces transformed into underscores,
-so, for example, if your CSV file has a column name called `School Year`, now
-after you import the file to the datastore you'll have to access it using `school_year`
-as the field name.
+Read about changes to the Datastore field names when `upgrading to DKAN 7.x-1.16 <../components/datastore.html#important-notes-when-upgrading-dkan-from-previous-versions-to-7-x-1-16>`_
