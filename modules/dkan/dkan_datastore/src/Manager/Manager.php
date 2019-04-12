@@ -245,6 +245,7 @@ abstract class Manager implements ManagerInterface {
     if ($import_state === self::DATA_IMPORT_DONE) {
       $this->stateDataImport = self::DATA_IMPORT_DONE;
       $this->saveState();
+      module_invoke_all('datastore_post_import', $this->resource);
     }
     elseif ($import_state === self::DATA_IMPORT_PAUSED) {
       $this->stateDataImport = self::DATA_IMPORT_PAUSED;
