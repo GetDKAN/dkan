@@ -143,6 +143,16 @@ abstract class Manager implements ManagerInterface {
         'type' => "text",
       ];
     }
+
+    $schema['fields']['entry_id'] = [
+      'label' => 'entry_id',
+      'type' => 'serial',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+    ];
+    $schema['primary key'] = [
+      '0' => 'entry_id',
+    ];
     return $schema;
   }
 
