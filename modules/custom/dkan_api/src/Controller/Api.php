@@ -22,7 +22,6 @@ abstract class Api extends ControllerBase {
     return new JsonResponse(json_decode($json_string), 200, ["Access-Control-Allow-Origin" => "*"]);
   }
 
-
   public function get($uuid) {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
@@ -42,15 +41,31 @@ abstract class Api extends ControllerBase {
 
     /* @var $request \Symfony\Component\HttpFoundation\Request */
     $request = \Drupal::request();
+    $uri = $request->getRequestUri();
     $data = $request->getContent();
+
+    // If resource already exists, return HTTP 409 Conflict and existing uri.
+    $params = json_decode($data, TRUE);
+    if (isset($params['identifier'])) {
+      $uuid = $params['identifier'];
+      $existing = \Drupal::entityQuery('node')
+        ->condition('uuid', $uuid)
+        ->execute();
+      if ($existing) {
+        return new JsonResponse(
+          (object) ["endpoint" => "{$uri}/{$uuid}"], 409);
+      }
+    }
 
     try {
       $uuid = $engine->post($data);
-      $uri = $request->getRequestUri();
-      return new JsonResponse((object)["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid]);
+      return new JsonResponse(
+        (object) ["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid],
+        201
+      );
     }
     catch (\Exception $e) {
-      return new JsonResponse((object)["message" => $e->getMessage()], 406);
+      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
     }
   }
 
@@ -62,13 +77,21 @@ abstract class Api extends ControllerBase {
     $request = \Drupal::request();
     $data = $request->getContent();
 
+    $existing = \Drupal::entityQuery('node')
+      ->condition('uuid', $uuid)
+      ->execute();
+
     try {
       $engine->put($uuid, $data);
       $uri = $request->getRequestUri();
-      return new JsonResponse((object)["endpoint" => "{$uri}", "identifier" => $uuid]);
+      return new JsonResponse(
+        (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
+        // If a new resource is created, inform the user agent via 201 Created.
+        empty($existing) ? 201 : 200
+      );
     }
     catch (\Exception $e) {
-      return new JsonResponse((object)["message" => $e->getMessage()], 406);
+      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
     }
   }
 
@@ -77,12 +100,12 @@ abstract class Api extends ControllerBase {
     $engine = $this->getEngine();
 
     $engine->delete($uuid);
-    return new JsonResponse((object)["message" => "Dataset {$uuid} has been deleted."], 200);
+    return new JsonResponse((object) ["message" => "Dataset {$uuid} has been deleted."], 200);
   }
 
   public function getEngine() {
     $storage = $this->getStorage();
     return new Sae($storage, $this->getJsonSchema());
   }
-}
 
+}
