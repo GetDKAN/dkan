@@ -4,6 +4,7 @@ namespace Drupal\dkan_datastore\Controller;
 
 use Dkan\Datastore\Manager\IManager;
 use Dkan\Datastore\Resource;
+use Drupal\dkan_datastore\Util;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\dkan_datastore\SqlParser;
 
@@ -16,7 +17,7 @@ class Datastore {
       $uuid = $this->getUuidFromSelect($select);
 
       try {
-        $manager = $this->getDatastoreManager($uuid);
+        $manager = Util::getDatastoreManager($uuid);
 
         /* @todo This is bad we should respect the levels of abstraction.
          * The manager should not assume what the storage mechanism looks like
@@ -59,25 +60,5 @@ class Datastore {
     $pieces = explode("FROM", $select);
     return trim(end($pieces));
   }
-
-  private function getDatastoreManager($uuid) : IManager {
-    $database = \Drupal::service('dkan_datastore.database');
-
-    $dataset = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
-
-    $metadata = json_decode($dataset->field_json_metadata->value);
-    $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
-
-    $provider = new \Dkan\Datastore\Manager\InfoProvider();
-    $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
-
-    $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), new \Drupal\dkan_datastore\Storage\Variable());
-    $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
-
-    return  $factory->get();
-
-  }
-
-
 
 }
