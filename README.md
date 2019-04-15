@@ -29,7 +29,7 @@ As a piece of software in its Alpha cycle, the code is continuously changing and
 1) Get Drupal: ``dktl get <drupal-version>``
 1) Get Drupal dependencies, and install DKAN: ``dktl make``
 1) Install DKAN: ``dktl install``
-1) Access the site: ``dktl drush uli --uri=dkan.local``
+1) Access the site: ``dktl drush uli --uri=dkan``
 
 ## Dummy Content
 
