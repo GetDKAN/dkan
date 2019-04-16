@@ -255,8 +255,29 @@ class DatajsonHarvestMigration extends HarvestMigration {
         $url = $resource_row_data->accessURL;
       }
 
+      $format = $resource_row_data->format;
+
+      if (empty($format)) {
+        // If mediayType is defined, then get the right format based on that mimetype.
+        if (!empty($resource_row_data->mediaType)) {
+          include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+          $mimetype_mappings = file_mimetype_mapping();
+          $mimetype_keys = array_keys($mimetype_mappings['mimetypes'], $resource_row_data->mediaType);
+          // Get the candidate extensions from the mimetype_keys.
+          $extensions_lookup = array();
+          foreach ($mimetype_keys as $mimetype_key) {
+            $extensions_lookup = array_merge($extensions_lookup, array_keys($mimetype_mappings['extensions'], $mimetype_key));
+          }
+          if (!empty($extensions_lookup)) {
+            $format = array_pop($extensions_lookup);
+          } else {
+            $format = '';
+          }
+        }
+      }
+
       $resource = $this->prepareResourceHelper($url,
-        $resource_row_data->format,
+        $format,
         $resource_row_data->title,
         NULL,
         $resource_row_data->description);
