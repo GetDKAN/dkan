@@ -37,7 +37,7 @@ class DkanDatastoreCommands extends DrushCommands {
       }
 
       $this->output->writeln("Got entity {$entity->id()}.");
-      if ($entity->getType() == "dataset") {
+      if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
         $this->output->writeln("And it is a dataset.");
         $dataset = $entity;
 
@@ -100,7 +100,9 @@ class DkanDatastoreCommands extends DrushCommands {
       }
 
       $this->output->writeln("Got entity {$entity->id()}.");
-      if ($entity->getType() == "dataset") {
+
+      if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
+
         $this->output->writeln("And it is a dataset.");
         $dataset = $entity;
 

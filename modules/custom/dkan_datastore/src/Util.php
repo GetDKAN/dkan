@@ -3,6 +3,16 @@
 
 namespace Drupal\dkan_datastore;
 
+use Dkan\Datastore\Manager\IManager;
+use Dkan\Datastore\Resource;
+use Dkan\Datastore\Manager\InfoProvider;
+use Dkan\Datastore\Manager\Info;
+use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
+use Dkan\Datastore\LockableBinStorage;
+use Dkan\Datastore\Manager\Factory;
+use Dkan\Datastore\Locker;
+use Drupal\dkan_datastore\Storage\Variable;
+
 
 class Util
 {
@@ -15,11 +25,11 @@ class Util
     $metadata = json_decode($dataset->field_json_metadata->value);
     $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
 
-    $provider = new \Dkan\Datastore\Manager\InfoProvider();
-    $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
+    $provider = new InfoProvider();
+    $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
 
-    $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), new \Drupal\dkan_datastore\Storage\Variable());
-    $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
+    $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), new Variable());
+    $factory = new Factory($resource, $provider, $bin_storage, $database);
 
     return  $factory->get();
   }
