@@ -2,3 +2,13 @@ services:
   dkan_datastore.database:
     class: Drupal\dkan_datastore\Storage\Database
     arguments: ['@database']
+  dkan_datastore.sql_parser:
+    class: Drupal\dkan_datastore\SqlParser
+  dkan_datastore.variable:
+    class: Drupal\dkan_datastore\Storage\Variable
+    arguments: ['@config.factory']
+    # todo: is this supposed to be a single instance or new instance each time?
+    # assuming new instance each time for now.
+    shared: false
+    
+

@@ -51,7 +51,7 @@ class DkanDatastoreCommands extends DrushCommands {
         $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
         $this->output->writeln("Provider set.");
 
-        $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), new \Drupal\dkan_datastore\Storage\Variable());
+        $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
         $this->output->writeln("Bin Storage is set.");
 
         $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
@@ -116,7 +116,7 @@ class DkanDatastoreCommands extends DrushCommands {
         $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
         $this->output->writeln("Provider set.");
 
-        $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), new \Drupal\dkan_datastore\Storage\Variable());
+        $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
         $this->output->writeln("Bin Storage is set.");
 
         $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
