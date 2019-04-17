@@ -28,7 +28,7 @@ class Util
     $provider = new InfoProvider();
     $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
 
-    $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), new Variable());
+    $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
     $factory = new Factory($resource, $provider, $bin_storage, $database);
 
     return  $factory->get();

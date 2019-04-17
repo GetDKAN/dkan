@@ -2,12 +2,20 @@
 namespace Drupal\dkan_datastore\Storage;
 
 use Dkan\Datastore\Storage\IKeyValue;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 class Variable implements IKeyValue {
 
-  private $store = [];
+  protected $store = [];
+  
+  /**
+   * Config Factory
+   * @var ConfigFactoryInterface 
+   */
+  protected $configFactory;
 
-  public function __construct() {
+  public function __construct(ConfigFactoryInterface $configFactory) {
+    $this->configFactory = $configFactory;
     $store = $this->getAll();
     if ($store) {
       $this->store = $store;
@@ -23,15 +31,17 @@ class Variable implements IKeyValue {
     return isset($this->store[$key])? $this->store[$key] : $default;
   }
 
-  private function getAll() {
-    $config = \Drupal::config('dkan_datastore.keyvalue');
-    $all = $config->get('data');
+  protected function getAll() {
+    $all = $this->configFactory
+            ->get('dkan_datastore.keyvalue')
+            ->get('data');
     return unserialize($all);
   }
 
-  private function pushAll() {
+  protected function pushAll() {
     $serialized = serialize($this->store);
-    $config = \Drupal::service('config.factory')->getEditable('dkan_datastore.keyvalue');
+    $config = $this->configFactory
+            ->getEditable('dkan_datastore.keyvalue');
     $config->set('data', $serialized)->save();
   }
 }
