@@ -30,6 +30,15 @@ dkan_api.dataset_put:
     _auth: [ 'basic_auth' ]
   requirements:
     _permission: 'post put delete datasets through the api'
+dkan_api.dataset_patch:
+  path: '/api/v1/dataset/{uuid}'
+  methods: [PATCH]
+  defaults:
+    { _controller: '\Drupal\dkan_api\Controller\Dataset::patch'}
+  options:
+    _auth: [ 'basic_auth' ]
+  requirements:
+    _permission: 'post put delete datasets through the api'
 dkan_api.dataset_delete:
   path: '/api/v1/dataset/{uuid}'
   methods: [DELETE]

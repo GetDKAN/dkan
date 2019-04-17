@@ -77,6 +77,11 @@ abstract class Api extends ControllerBase {
     $request = \Drupal::request();
     $data = $request->getContent();
 
+    $obj = json_decode($data);
+    if (isset($obj->identifier) && $obj->identifier != $uuid) {
+      return new JsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
+    }
+
     $existing = \Drupal::entityQuery('node')
       ->condition('uuid', $uuid)
       ->execute();
@@ -88,6 +93,39 @@ abstract class Api extends ControllerBase {
         (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
         // If a new resource is created, inform the user agent via 201 Created.
         empty($existing) ? 201 : 200
+      );
+    }
+    catch (\Exception $e) {
+      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
+    }
+  }
+
+  public function patch($uuid) {
+    /* @var $engine \Sae\Sae */
+    $engine = $this->getEngine();
+
+    /* @var $request \Symfony\Component\HttpFoundation\Request */
+    $request = \Drupal::request();
+    $data = $request->getContent();
+
+    $obj = json_decode($data);
+    if (isset($obj->identifier) && $obj->identifier != $uuid) {
+      return new JsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
+    }
+
+    $existing = \Drupal::entityQuery('node')
+      ->condition('uuid', $uuid)
+      ->execute();
+
+    if (!$existing) {
+      return new JsonResponse((object) ["message" => "Resource not found"], 404);
+    }
+
+    try {
+      $engine->patch($uuid, $data);
+      $uri = $request->getRequestUri();
+      return new JsonResponse(
+        (object) ["endpoint" => "{$uri}", "identifier" => $uuid], 200
       );
     }
     catch (\Exception $e) {
