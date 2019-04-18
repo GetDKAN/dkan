@@ -10,6 +10,7 @@
         "oomphinc/composer-installers-extender": "^1.1",
         "drupal/entity": "1.0.0-rc1",
         "drupal/config_update": "1.x-dev",
+	"fmizzell/json_form": "dev-8.x-1.x",
         "bower-asset/json-forms": "1.6.3",
         "drupal/group": "1.x-dev",
         "fmizzell/sae" : "dev-master",
@@ -32,7 +33,11 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        }
+        },
+	{
+	    "type": "vcs",
+            "url": "https://github.com/fmizzell/json_form"
+	}
     ],
     "scripts": {
         "enable-asset-packagist": "Social\\Composer\\AssetPackagist::execute"
