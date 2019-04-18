@@ -22,6 +22,14 @@ Email](https://www.drupal.org/project/workbench_email) for email notifications.)
 
 This module is disabled by default in a new DKAN installation. After either enabling or disabling DKAN Workflow and its dependencies, you will need to [rebuild content permissions](https://docs.acquia.com/articles/rebuilding-node-access-permissions). If logged in as an admin you should see a message telling you this with a link to the form to do so.
 
+## Default Email Config
+The email text will no longer be included as part of this module. This will allow site managers to edit the messages and not loose changes if the feature is reverted. If you would like to start with the standard defaults you can run the following commands:
+
+```
+dktl dc exec cli bash
+drush sql-cli < docroot/profiles/dkan/modules/dkan/dkan_workflow/default_workbench_emails.sql
+```
+
 ## Known issues:
 
 * Transitions config and Emails templates for "Original Author" could not be
