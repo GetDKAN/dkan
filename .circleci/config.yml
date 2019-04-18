@@ -36,7 +36,7 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
             sudo chmod 777 src/make/composer.json
-            sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/getdkan/dkan2\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
+            sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
             dktl make
       - run:
           name: Install site
