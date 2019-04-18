@@ -6,7 +6,6 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_CHOWN: False
       DRUPAL_VERSION: V8
     steps:
       - checkout
@@ -14,7 +13,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone --single-branch --branch master https://github.com/GetDKAN/dkan-tools.git
+            git clone --single-branch --branch better-chown https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
@@ -22,37 +21,43 @@ jobs:
           name: Initialize Project
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/project
+            mkdir ~/sandbox
+            cd ~/sandbox
             dktl init
       - run:
           name: Get Drupal
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/project
+            cd ~/sandbox
             dktl get 8.6.14
       - run:
           name: Make DKAN
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/project
+            cd ~/sandbox
             sudo chmod 777 src/make/composer.json
             sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
             dktl make
+            rm -rf ./docroot/profiles/contrib/dkan2
+            mv ~/project ./docroot/profiles/contrib/dkan2
+            ls -lha ./docroot/profiles/contrib/dkan2
       - run:
           name: Install site
           command: |
             export PATH=$PATH:~/dkan-tools/bin
+            cd ~/sandbox
             dktl install
-
       - run:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl dkan:test-phpunit
-
+            cd ~/sandbox
+            dktl xdebug:start
+            dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
           name: Run cypress tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
+            cd ~/sandbox
             dktl dkan:test-cypress
 
