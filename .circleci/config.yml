@@ -83,6 +83,8 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             dktl docker:compose exec -T cli mkdir dkan/test/assets/junit/features
+            cd dkan/modules/dkan/dkan_workflow
+            dktl drush sql-cli < default_workbench_emails.sql
             test_list=$(mktemp)
             exit_status=0
             (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list

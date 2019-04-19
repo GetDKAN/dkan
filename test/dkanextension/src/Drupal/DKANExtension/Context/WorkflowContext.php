@@ -34,9 +34,7 @@ class WorkflowContext extends RawDKANContext {
       'link_badges',
     ));
 
-    if (module_exists('dkan_feeedback')) {
-      features_revert(array('dkan_feedback'));
-    }
+
     drupal_flush_all_caches();
     node_access_rebuild(TRUE);
   }
