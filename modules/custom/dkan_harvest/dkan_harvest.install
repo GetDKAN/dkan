@@ -7,7 +7,7 @@ function dkan_harvest_schema() {
     'fields' => [
       'source_id' => [
         'description' => 'The primary identifier for an entity. Used to connect the harveset source to Drupal entity.',
-        'type' => 'varchar',
+        'type' => 'varchar_ascii',
         'length' => 32,
         'not null' => TRUE,
       ],
@@ -32,7 +32,7 @@ function dkan_harvest_schema() {
       ],
       'source_id' => [
         'description' => 'The primary identifier for an entity. Used to connect the harveset hash to Drupal entity.',
-        'type' => 'varchar',
+        'type' => 'varchar_ascii',
         'length' => 32,
         'not null' => TRUE,
         'default' => '',
@@ -59,21 +59,21 @@ function dkan_harvest_schema() {
     'fields' => [
       'identifier' => [
         'description' => 'The uuid for a dataset or open data entity.',
-        'type' => 'varchar',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
       ],
       'source_id' => [
         'description' => 'The primary identifier for an entity. Used to connect the harveset hash to Drupal entity.',
-        'type' => 'varchar',
+        'type' => 'varchar_ascii',
         'length' => 32,
         'not null' => TRUE,
         'default' => '',
       ],
       'hash' => [
         'description' => 'The hash of the harvest.',
-        'type' => 'varchar',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
@@ -100,21 +100,21 @@ function dkan_harvest_schema() {
       ],
       'action' => [
         'description' => 'The action being performed.',
-        'type' => 'varchar',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
       ],
       'level' => [
         'description' => 'The log level. Enum: DEBUG, WARNING, ERROR.',
-        'type' => 'varchar',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
       ],
       'message' => [
         'description' => 'The log message.',
-        'type' => 'varchar',
+        'type' => 'varchar_ascii',
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
