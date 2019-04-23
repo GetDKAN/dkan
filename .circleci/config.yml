@@ -59,5 +59,9 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
+            dktl drush dkan-dummy-content:create
             dktl dkan:test-cypress
-
+      - store_artifacts:
+          path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/screenshots
+      - store_test_results:
+          path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/videos
