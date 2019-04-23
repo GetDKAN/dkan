@@ -379,7 +379,7 @@ Feature: Resource
     And I press "Save"
     Then I should see a recline preview
 
-  @resource_cc_26 @javascript
+  @resource_cc_26 @javascript @fixme
   Scenario: Create resource with a tsv file
     Given I am logged in as "John"
     And I am on the "Content" page
@@ -395,7 +395,7 @@ Feature: Resource
     When I click "Edit"
     Then the "field_format[und][textfield]" field should contain "tsv"
 
-  @resource_cc_27 @javascript
+  @resource_cc_27 @javascript @fixme
   Scenario: Create resource with a tab file
     Given I am logged in as "John"
     And I am on the "Content" page

@@ -55,12 +55,17 @@ Feature: Resource
   @resource_sm_04
   Scenario: Manage Datastore of any resource
     Given resources:
-      | title       | author   | published | description |
-      | Resource 04 | Katie    | Yes       | None        |
-    Given I am logged in as "John"
+      | title       | format | author   | published | description |
+      | Resource 04 | csv    | Katie    | Yes       | Test        |
+    Given I am logged in as "Katie"
+    And I am on "Resource 04" page
+    When I click "Edit"
+    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple7.csv"
+    And I press "Save"
+    Then I am logged in as "John"
     And I am on "Resource 04" page
     When I click "Manage Datastore"
-    Then I should see "There is nothing to manage! You need to upload or link to a file in order to use the datastore."
+    Then I should see "Datastore Status"
 
   @resource_sm_05 @datastore @javascript
   Scenario: Import items on datastore of any resource

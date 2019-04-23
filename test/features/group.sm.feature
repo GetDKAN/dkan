@@ -24,7 +24,7 @@ Feature: Site managers administer groups
       | Katie   | Group 01 | member               | Active            |
       | Jaz     | Group 01 | member               | Pending           |
 
-  @group_sm_01 @javascript
+  @group_sm_01 @javascript @fixme
   Scenario: Create group
     Given I am logged in as "John"
     And I am on "Groups" page
