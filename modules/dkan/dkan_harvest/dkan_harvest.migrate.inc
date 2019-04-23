@@ -401,6 +401,7 @@ class HarvestMigration extends MigrateDKAN {
     // be created. Also, we need the dataset to be created first
     // so the sync of groups work properly.
     $this->createResources($dataset, $row);
+    $this->createExtendedMetadata($dataset, $row);
 
     // Add group.
     $this->prepareGroup($dataset, $row);
@@ -503,6 +504,18 @@ class HarvestMigration extends MigrateDKAN {
       }
     }
     migrate_instrument_stop('HarvestMigration->createResources');
+  }
+
+  /**
+   * Create extended metadata paragraphs in datasets. This is used for custom
+   * fields and therefore has no specific logic here in the base class.
+   *
+   * @param object $dataset
+   *   Entity where resources are going to be added.
+   * @param object $row
+   *   Migration row.
+   */
+  public function createExtendedMetadata(&$dataset, stdClass &$row) {
   }
 
   /**
