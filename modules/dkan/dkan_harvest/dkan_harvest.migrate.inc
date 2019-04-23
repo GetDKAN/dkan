@@ -687,7 +687,7 @@ class HarvestMigration extends MigrateDKAN {
     // Check if sourceCount is 0.
     // Show and add an error to the message table.
     if ($this->sourceCount() == 0) {
-      $message = t('Items to import is 0. Looks like source is missing. All the content previously harvested will be unpublished.');
+      $message = t('Items to import is 0. Looks like source is missing. No updates can be made at this time.');
       self::displayMessage($message, 'error');
       $this->saveMessage($message);
     }
@@ -783,9 +783,10 @@ class HarvestMigration extends MigrateDKAN {
           $dataset_emw = entity_metadata_wrapper('node', $dataset_nid);
           $related_count = 0;
 
-          // Unpublish attached resources.
+          // Publish attached resources.
           if (isset($dataset_emw->field_resources)) {
             foreach ($dataset_emw->field_resources->getIterator() as $delta => $resource_emw) {
+              $resource_emw->field_orphan->set(0);
               $resource_emw->status->set(1);
               $resource_emw->save();
               $related_count++;
@@ -800,6 +801,7 @@ class HarvestMigration extends MigrateDKAN {
           }
 
           // Publish the dataset.
+          $dataset_emw->field_orphan->set(0);
           $dataset_emw->status->set(1);
           $dataset_emw->save();
 
@@ -1144,12 +1146,11 @@ class HarvestMigration extends MigrateDKAN {
       // page.
       if (!is_null($remoteFileInfo->getType())
         && !in_array($remoteFileInfo->getExtension(), $html_extensions)) {
-
         // Check if this file extension is allowed for field_link_remote_file.
-        $link_field = field_info_instance('node', 'field_link_remote_file', 'resource');
         // Reduce everything to lowercase to support files with uppercase
         // extensions.
-        $file_extensions = array_map('strtolower', explode(' ', $link_field['settings']['file_extensions']));
+        $file_extensions = array_map('strtolower', explode(' ', dkan_allowed_extensions()));
+
         // Reject if the extension is not allowed.
         if (!in_array($remoteFileInfo->getExtension(), $file_extensions)) {
           $message = t('Resource remote url (@url) extension (@extension) not allowed',
@@ -1179,8 +1180,7 @@ class HarvestMigration extends MigrateDKAN {
     $resource->format = isset($format) ? strtolower($format) : $format_detected;
 
     // Title.
-    $name = isset($title) ? $title : $remoteFileInfo->getName();
-    $resource->title = isset($name) ? $name : $resource->format;
+    $resource->title = isset($title) ? $title : $resource->format;
 
     // Created.
     $resource->created = isset($created) ? $created : time();

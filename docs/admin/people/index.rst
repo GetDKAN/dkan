@@ -13,4 +13,3 @@ Data and content management can't be done alone. Site Managers handle all the us
    adding_new_users
    user_management
    group_roles_and_permissions
-   dkan_workflow

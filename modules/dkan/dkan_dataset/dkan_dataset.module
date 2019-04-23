@@ -544,12 +544,21 @@ function dkan_dataset_node_update($node) {
       if (count($datasets)) {
         $queue = DrupalQueue::get('dataset_changelog');
         foreach ($datasets as $dataset) {
-          $item = array(
-            'dataset' => $dataset,
-            'message' => 'Update to resource \'' . $node->title . '\'',
-            'user' => $user->uid,
-          );
-          $queue->createItem($item);
+          // Determine if the resource is part of a harvest.
+          // Skip the dataset_changelog update if harvesting since every resource is updated.
+          $harvest = db_select('field_data_field_harvest_source_ref', 'r')
+            ->fields('r', array('entity_id'))
+            ->condition('entity_id', $dataset)
+            ->execute()
+            ->fetchAll();
+          if (!$harvest) {
+            $item = array(
+              'dataset' => $dataset,
+              'message' => 'Update to resource \'' . $resource->title . '\'',
+              'user' => $user->uid,
+            );
+            $queue->createItem($item);
+          }
         }
       }
       break;
@@ -1063,7 +1072,7 @@ function dkan_dataset_preview_url_cartodb($node) {
     $resource_file_url = file_create_url($resource_wrapper->field_upload->value()->uri);
   }
   elseif ($resource_wrapper->field_link_remote_file->value()) {
-    $resource_file_url = $resource_wrapper->field_link_remote_file->value()->uri;
+    $resource_file_url = $resource_wrapper->field_link_remote_file->value()['uri'];
   }
   if ($resource_file_url) {
     return sprintf($pattern, $resource_file_url);
@@ -1377,7 +1386,29 @@ function dkan_dataset_field_formatter_view($entity_type, $entity, $field, $insta
 /**
  * Helper function to validate dates.
  */
-function dkan_dataset_validate_date($date, $format = 'Y-m-d') {
+function dkan_dataset_validate_date($date) {
+  // Check if we have a date with time info (2019-02-18T10:12:26.685485).
+  $parts = explode("T",$date);
+  $count = count($parts);
+  if ($count > 1) {
+    $date = $parts[0];
+  }
+  // Check for partial date elements.
+  $parts = explode("-",$date);
+  $count = count($parts);
+  switch ($count) {
+    case '1':
+      $format = 'Y';
+      break;
+
+    case '2':
+      $format = 'Y-m';
+      break;
+
+    default:
+      $format = 'Y-m-d';
+      break;
+  }
   $d = DateTime::createFromFormat($format, $date);
   return $d && $d->format($format) === $date;
 }

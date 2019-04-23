@@ -302,7 +302,8 @@ class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
    * Test Harvest Source.
    */
   public static function getOriginalTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_original.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_original.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
