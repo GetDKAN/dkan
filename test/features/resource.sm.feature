@@ -69,8 +69,11 @@ Feature: Resource
 
   @resource_sm_05 @datastore @javascript
   Scenario: Import items on datastore of any resource and drop
+    Given resources:
+      | title       | author   | published | description |
+      | Resource 05 | Katie    | No        | None        |
     Given I am logged in as "John"
-    And I am on "Resource 02" page
+    And I am on "Resource 05" page
     And I click "Edit"
     And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"

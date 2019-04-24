@@ -11,6 +11,7 @@ Feature: Theme
       | name         | mail                    | roles         |
       | John         | john@example.com        | site manager  |
 
+  @theme_01 @fixme
   Scenario: Add custom logo
     Given I am logged in as "John"
     And I am on "Settings" page
@@ -23,6 +24,7 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
+  @theme_02 @fixme
   Scenario: Add custom hero image
     Given I am logged in as "John"
     And I am on "Settings" page
@@ -33,6 +35,7 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
+  @theme_03
   Scenario: Add custom site information
     Given I am logged in as "John"
     And I hide the admin menu
@@ -45,6 +48,7 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
+  @theme_04
   Scenario: Site manager role can configure custom fonts
     Given I am logged in as "John"
     When I hover over the admin menu item "Site Configuration"
