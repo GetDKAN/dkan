@@ -13,7 +13,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone --single-branch --branch better-chown https://github.com/GetDKAN/dkan-tools.git
+            git clone --single-branch --depth 1 https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
@@ -59,6 +59,8 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
+            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
+            dktl drush user-add-role api_user testuser
             dktl drush dkan-dummy-content:create
             dktl dkan:test-cypress
       - store_artifacts:
