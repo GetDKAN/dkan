@@ -70,7 +70,7 @@ Feature: Resource
     And I press "Delete"
     Then I should see "Resource Resource 04 has been deleted"
 
-  @resource_editor_6 @datastore @javascript @fixme
+  @resource_editor_6 @datastore @javascript
   Scenario: Manage the datastore of resources associated with groups that I am a member of
     Given resources:
       | title       | publisher | format | author   | published | description |
@@ -86,11 +86,10 @@ Feature: Resource
     When I click "Manage Datastore"
     And I wait for "Import"
     And I press "Import"
-    And I wait for "Drop Datastore"
-    Then "Resource 06" should have datastore records
-    When I click "Drop Datastore"
+    And I wait for "Done"
+    When I press "Drop"
     And I press "Drop"
-    Then "Resource 06" should have no datastore records
+    Then I wait for "Ready"
 
   @resource_editor_9
   Scenario: Add revision to resources associated with groups that I am a member of

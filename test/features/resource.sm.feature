@@ -68,44 +68,25 @@ Feature: Resource
     Then I should see "Datastore Status"
 
   @resource_sm_05 @datastore @javascript
-  Scenario: Import items on datastore of any resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 05 | Katie    | Yes       | None        |
+  Scenario: Import items on datastore of any resource and drop
     Given I am logged in as "John"
-    And I am on "Resource 05" page
+    And I am on "Resource 02" page
     And I click "Edit"
     And I click "Remote file"
     And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple.csv"
     And I press "Save"
-    And I am on "Resource 05" page
     When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Drop Datastore"
-    Then "Resource 05" should have datastore records
-
-  @resource_sm_06 @datastore @javascript
-  Scenario: Drop datastore of any resource
-    Given resources:
-      | title       | author   | published | description |
-      | Resource 06 | Katie    | Yes       | None        |
-    Given I am logged in as "John"
-    And I am on "Resource 06" page
-    And I click "Edit"
-    And I click "Remote file"
-    And I fill in "edit-field-link-remote-file-und-0-filefield-dkan-remotefile-url" with "https://s3.amazonaws.com/dkan-default-content-files/files/datastore-simple2.csv"
-    And I press "Save"
-    And I am on "Resource 06" page
-    When I click "Manage Datastore"
-    And I press "Import"
-    And I wait for "Drop Datastore"
-    Then "Resource 06" should have datastore records
-    When I click "Drop Datastore"
+    Then I should see "Status"
+    When I press "Import"
+    And I wait for "Done"
     And I press "Drop"
-    Then I should see "Datastore dropped!"
-    And "Resource 06" should have no datastore records
+    And I press "Drop"
+    Then I should see "Records Imported"
+    And I should see "0"
+    And I should see "Data Importing"
+    And I should see "Ready"
 
-  @resource_sm_07
+  @resource_sm_06
   Scenario: Add revision to any resource
     Given resources:
       | title       | author   | published | description |
@@ -118,9 +99,9 @@ Feature: Resource
     And I press "Save"
     Then I should see "Resource Resource 07 edited has been updated"
     When I click "Revisions"
-    Then I should see "Revisions allow you to track differences between multiple versions of your content"
+    Then I should see "This is the published revision"
 
-  @resource_sm_08 @fixme
+  @resource_sm_07 @fixme
     #TODO: There is an issue where an admin, when clicking revert, gets a access unauthorized response.
     #     See: https://github.com/GetDKAN/dkan/issues/793
   Scenario: Revert any resource revision
