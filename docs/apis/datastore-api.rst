@@ -38,6 +38,7 @@ Aggregation functions
 -  **max** (*string*) – field to compute the maximum
 -  **std** (*string*) – field to compute the standard deviation
 -  **variance** (*string*) – field to compute the variance
+-  **count** (*string*) – field to compute the count
 
 URL format
 ----------
@@ -174,7 +175,7 @@ Response
           ]
         }
       }
-    }7
+    }
 
 Response formats
 ----------------
@@ -277,7 +278,12 @@ on further requests.
 
 Since Datastore API uses the Drupal cache system under the hood, the
 Datastore API cache will be cleared at the same time as the rest of the Drupal cache. This
-coule be when the cache is wiped manually, or when the cache lifetime ends.
+could be when the cache is wiped manually, or when the cache lifetime ends.
 
-All this options can be configured at
+These options can be configured at
 ``admin/config/development/performance``
+
+Field Names
+~~~~~~~~~~~
+
+Read about changes to the Datastore field names when `upgrading to DKAN 7.x-1.16 <../components/datastore.html#important-notes-when-upgrading-dkan-from-previous-versions-to-7-x-1-16>`_

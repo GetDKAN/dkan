@@ -131,4 +131,42 @@ To import a resource using Fast Import, follow the instructions previously given
 Troubleshoot
 ************
 
-- If you get an error like ``SQLSTATE[28000]: invalid authorization specification: 1045 access denied for user 'drupal'@'%' (using password: yes)`` you will need to grant FILE permissions to your MYSQL user. To do so use this command: ``GRANT FILE ON *.* TO 'user-name'``
+- If you get an error like 
+
+.. code-block:: php
+
+  SQLSTATE[28000]: invalid authorization specification: 1045 access denied for user 
+  'drupal'@'%' (using password: yes)
+  
+you will need to grant FILE permissions to your MYSQL user. To do so use this command: ``GRANT FILE ON *.* TO 'user-name'``
+
+Important notes when upgrading DKAN from previous versions to 7.x-1.16
+----------------------------------------------------------------------
+
+Field names
+***********
+
+Prior to the DKAN 7.x-1.16 release, the datastore field names matched the column headers exactly as they
+were in the CSV file used to create the datastore. This has changed in the 7.x-1.16 version of 
+the Datastore, now the fields are transformed into lower case and spaces are replaced with underscores.
+For example, if your CSV file has a column name titled ``School Year``, after importing the file 
+to the datastore you will have to access it using ``school_year`` as the field name.
+
+Empty values
+************
+
+On previous versions of DKAN, when there was a cell with an empty value in a CSV
+file, that value would be imported as NULL into the datastore. After importing a file
+to the datastore with DKAN 7.x-1.16 or later, those empty values are kept as empty strings
+and not as NULL values anymore.
+
+Use of feeds
+************
+
+Use of the feeds module as a method for importing data into the datastore has been deprecated in DKAN 7.x-1.16.
+It is important that if you have any implementations that still rely on feeds, you will need to refactor that 
+code to use the new 'Simple Import', or add the patched version of feeds from 7.x-1.15.5 to your
+`/src/make/drupal.make` file.
+
+Also, it is important to note that when you upgrade from a previous version of DKAN, DKAN Datastore Fast Import
+will not be enabled by default. If you were previously using that option you will need to re-enable the module.

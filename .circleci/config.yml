@@ -1,129 +1,118 @@
 version: 2
+
+references:
+  install_site: &install_site
+    run:
+      name: Install site
+      command: |
+        export PATH=$PATH:~/dkan-tools/bin
+        cd ~/project
+        dktl init
+        mv ~/dkan .
+        dktl make
+        dktl install
+        
+  install_tests: &install_tests
+    run:
+      name: Install tests
+      command: |
+        export PATH=$PATH:~/dkan-tools/bin
+        dktl test:init
+
 jobs:
   build:
-    parallelism: 5
-    docker:
-      - image: ubuntu:16.04
-    working_directory: /go/src/github.com/dkan
+    machine:
+      image: circleci/classic:latest
     environment:
-      TEST_RESULTS: /tmp/test-results
-      AHOY_CMD_PROXY: DOCKER
-      MYSQL_ROOT_PASSWORD: ""
-      MYSQL_USER: drupal
-      MYSQL_PASSWORD: 123
-      MYSQL_DATABASE: drupal
-      DATABASE_URL: "mysql://drupal:123@127.0.0.1:3306/drupal"
+      DKTL_CHOWN: False
+      DKTL_NO_PTY: True
     steps:
       - checkout
-      - setup_remote_docker
       - run:
-          name: Updates etc
+          name: Package DKAN
           command: |
-            apt-get update
-            apt-get upgrade -y
-            apt-get install curl wget ruby php php-mbstring php-curl php-dom -y
+            mkdir ~/dkan
+            mv ~/project/* ~/dkan
       - run:
-          name: Install Docker client
+          name: Install DKTL
           command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
-      - run:
-          name: Install Docker Compose
-          command: |
-            set -x
-            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
-      - run:
-          name: Install Ahoy
-          command: |
-            wget -q https://github.com/devinci-code/ahoy/releases/download/1.1.0/ahoy-`uname -s`-amd64 -O /usr/local/bin/ahoy &&
-            chmod +x /usr/local/bin/ahoy
-      - run:
-          name: Install CircleCI CLI
-          command: |
-            curl -o /usr/local/bin/circleci https://circle-downloads.s3.amazonaws.com/releases/build_agent_wrapper/circleci && chmod +x /usr/local/bin/circleci
-      - run:
-          name: Install Composer
-          command: |
-            curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-            composer global require hirak/prestissimo
-            echo 'export PATH=~/.composer/vendor/bin:$PATH' >> $BASH_ENV
-      - run:
-          name: Install Drush
-          command: |
-            composer global require drush/drush:8.0.2
-            cd /usr/local/bin
-            ln -s /root/.composer/vendor/bin/drush drush
-            drush --version
-      - run:
-          name: Setup DKAN
-          command: |
-            bash dkan-init.sh dkan --deps
-      - restore_cache:
-          keys:
-            - v1-dkan-test-vendor
-      - run:
-          name: Start containers
-          command: |
-            cp dkan/.ahoy/docker-compose.common.yml docker-compose.yml
-            cp dkan/.ahoy/mysql.env mysql.env
-            ahoy docker up
-            rm -rf dkan/.ahoy/.docker
-            docker cp .ahoy.yml $(docker-compose ps -q cli):/var/www
-            mkdir -p dkan/test/assets/junit
-            docker cp dkan $(docker-compose ps -q cli):/var/www
-      - run:
-          name: Install Drupal
-          command: |
-            ahoy dkan drupal-rebuild mysql://drupal:123@127.0.0.1:3306/drupal
-            docker cp $(docker-compose ps -q cli):/var/www/docroot docroot
-            mkdir backups
-            docker cp backups $(docker-compose ps -q cli):/var/www/backups
-      - run:
-          name: Make DKAN
-          command: |
-            ahoy dkan remake
-      - run:
-          name: Install DKAN
-          command: |
-            ahoy dkan reinstall
-      - run:
-          name: Enable modules
-          command: |
-            ahoy drush --yes en dkan_harvest dkan_harvest_datajson dkan_harvest_dashboard
-            ahoy drush cc all
-      - run:
-          name: Install Test Libs
-          command: |
-            ahoy cmd-proxy bash dkan/.ahoy/.scripts/composer-install.sh docroot/profiles/dkan/test
-            docker cp $(docker-compose ps -q cli):/var/www/dkan/test/vendor dkan/test/vendor
-      - save_cache:
-          key: v1-dkan-test-vendor
+            cd ~
+            git clone https://github.com/GetDKAN/dkan-tools.git
+            chmod 777 ./dkan-tools/bin/dktl
+      - persist_to_workspace:
+          root: /home/circleci
           paths:
-            - dkan/test/vendor
+            - bin
+            - dkan
+            - dkan-tools
+            - project
+
+  unit_test:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      DKTL_CHOWN: False
+      DKTL_NO_PTY: True
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - *install_site
+      - *install_tests
       - run:
-          name: Run Lint
+          name: Run unit tests
           command: |
-            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
-              ahoy dkan lint
-            fi
+            export PATH=$PATH:~/dkan-tools/bin
+            dktl test:phpunit --log-junit dkan/test/assets/junit/phpunit/phpunit.xml
+      - store_test_results:
+         path: ~/project/docroot/dkan/test/assets/junit
+
+  behat_test:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      DKTL_CHOWN: False
+      DKTL_NO_PTY: True
+    parallelism: 3
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - *install_site
+      - *install_tests
       - run:
-          name: Run Parallel Behat Tests
-          command: ruby dkan/.ahoy/.scripts/circle-behat.rb docroot/profiles/dkan/test/features
-      - run:
-          name: Copy Assets to Base Image
-          when: on_fail
+          name: Run behat tests
           command: |
-            docker cp $(docker-compose ps -q cli):/var/www/dkan/test/assets assets
-      # Unit Tests only on 1st parallel instance. Deploy: blocks until parallelism is done, so doing it this way.
-      - run:
-          name: Run PHPUnit Tests
-          command: |
-            if [ "$CIRCLE_NODE_INDEX" -eq "0" ]; then
-              ahoy dkan unittests
-            fi
+            export PATH=$PATH:~/dkan-tools/bin
+            dktl docker:compose exec -T cli mkdir dkan/test/assets/junit/features
+            test_list=$(mktemp)
+            exit_status=0
+            (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list
+            echo "TESTING FEATURES:"
+            cat $test_list
+            while read file; do 
+              echo "FEATURE FILE: $file"
+              if ! dktl test:behat $file; then
+                exit_status=1;
+                echo "FAILED FEATURE: $file";
+              fi;
+              if [ -f dkan/test/assets/junit/dkan.xml ]; then
+                base="$(basename $file .feature)"
+                dktl docker:compose exec -T cli mv dkan/test/assets/junit/dkan.xml dkan/test/assets/junit/features/${base}.xml </dev/null
+              fi
+            done < $test_list
+            exit $exit_status
       - store_artifacts:
-          path: /go/src/github.com/dkan/assets
+         path: ~/project/dkan/test/assets
+      - store_test_results:
+         path: ~/project/dkan/test/assets/junit
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - unit_test:
+          requires:
+            - build
+      - behat_test:
+          requires:
+            - build
