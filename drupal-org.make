@@ -161,7 +161,7 @@ projects:
   font_icon_select:
     download:
       type: git
-      url: https://git.drupal.org/sandbox/wolffereast/2319993.git
+      url: https://github.com/GetDKAN/font_icon_select.git
       branch: 7.x-1.x
   fontyourface:
     version: '2.8'
@@ -245,7 +245,7 @@ projects:
   migrate_extras:
     version: '2.5'
   module_filter:
-    version: '2.1'
+    version: '2.2'
   multistep:
     download:
       type: git
@@ -329,13 +329,13 @@ projects:
   select_or_other:
     version: '2.24'
   services:
-    version: '3.22'
+    version: '3.24'
   simple_gmap:
     version: '1.4'
   strongarm:
     version: '2.0'
   tablefield:
-    version: '3.2'
+    version: '3.4'
   taxonomy_menu:
     version: '1.6'
   taxonomy_fixtures:
@@ -353,6 +353,7 @@ projects:
     version: '3.21'
     patch:
       2885660: https://www.drupal.org/files/issues/2018-06-28/2885660-13.patch
+      2543562: https://www.drupal.org/files/issues/views-use_query_group_operator_for_main_group-2543562-2.patch
   views_autocomplete_filters:
     version: '1.2'
     patch:
