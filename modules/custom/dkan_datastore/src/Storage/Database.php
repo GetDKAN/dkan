@@ -4,6 +4,8 @@ namespace Drupal\dkan_datastore\Storage;
 
 use Dkan\Datastore\Storage\Database\Query\Insert;
 use Dkan\Datastore\Storage\IDatabase;
+use Drupal\dkan_datastore\Query;
+
 
 class Database implements IDatabase
 {
@@ -43,6 +45,40 @@ class Database implements IDatabase
       }
       $q->execute();
     }
+  }
+
+  public function query(Query $query): array
+  {
+    $db_query = $this->connection->select($query->thing, 't');
+    $db_query->fields('t', $query->properties);
+
+    foreach ($query->conditions as $property => $value) {
+      $db_query->condition($property, $value, "LIKE");
+    }
+
+    foreach ($query->sort['ASC'] as $property) {
+      $db_query->orderBy($property);
+    }
+
+    foreach ($query->sort['DESC'] as $property) {
+      $db_query->orderBy($property, 'DESC');
+    }
+
+    if ($query->limit) {
+      if ($query->offset) {
+        $db_query->range($query->offset, $query->limit);
+      }
+      else {
+        $db_query->range(1, $query->limit);
+      }
+    }
+    elseif ($query->offset) {
+      $db_query->range($query->limit);
+    }
+
+    $result = $db_query->execute()->fetchAll();
+
+    return $result;
   }
 
 }
