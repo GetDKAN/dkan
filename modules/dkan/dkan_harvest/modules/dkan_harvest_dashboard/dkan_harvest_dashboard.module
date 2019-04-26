@@ -100,31 +100,6 @@ function dkan_harvest_dashboard_form_alter(&$form, $form_state, $form_id) {
 }
 
 /**
- * Implements hook_preprocess_views_view_table().
- */
-function dkan_harvest_dashboard_preprocess_views_view_table(&$vars) {
-  // Override the dashboard status table classes.
-  if ($vars['view']->name == 'dkan_harvest_dashboard'
-  && isset($vars['fields']['dkan_harvest_harvest_status'])) {
-    foreach ($vars['rows'] as $index => $row) {
-      switch ($row['dkan_harvest_harvest_status']) {
-        case 'N/A':
-          $vars['field_classes']['dkan_harvest_harvest_status'][$index] .= ' alert-warning';
-          break;
-
-        case 'ERROR':
-          $vars['field_classes']['dkan_harvest_harvest_status'][$index] .= ' alert-danger';
-          break;
-
-        case 'OK':
-          $vars['field_classes']['dkan_harvest_harvest_status'][$index] .= ' alert-success';
-          break;
-      }
-    }
-  }
-}
-
-/**
  * Implements hook_views_bulk_operations_form_alter().
  */
 function dkan_harvest_dashboard_views_bulk_operations_form_alter(&$form, &$form_state, $vbo) {
