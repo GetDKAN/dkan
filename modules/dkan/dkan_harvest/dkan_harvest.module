@@ -415,6 +415,7 @@ function dkan_harvest_migrate_source_batch_op($harvest_source, array $options = 
 
   // Load migration.
   $migration = $harvest_source->getMigration();
+
   if (!$migration) {
     // The migration could not be loaded. Display a message and
     // mark the batch operation as finished.
@@ -423,8 +424,23 @@ function dkan_harvest_migrate_source_batch_op($harvest_source, array $options = 
     return;
   }
 
+  // Update the migration log ID if available from context.
+  $logID = FALSE;
+
+  if (isset($context['sandbox']['logID'])) {
+    $logID = $context['sandbox']['logID'];
+    $migration->setLogId($logID);
+  }
+
   // Process migration.
   $migration_status = $migration->processImport($options);
+
+  // Update the context logID.
+  if ($logID == FALSE) {
+    $logID = $migration->getLogId();
+    $context['sandbox']['logID'] = $logID;
+  }
+
   // Grab the migration results from the previous pass on this batch operation (if any).
   $old_migration_results = isset($context['results']) ? $context['results'] : array();
   // Get the results from the current migration.
@@ -434,7 +450,7 @@ function dkan_harvest_migrate_source_batch_op($harvest_source, array $options = 
   // Save results on context so they are available if this batch operation is run again.
   $context['results'] = $updated_results;
 
-  // Mark the batch operation finished as default.
+  // Mark the batch operation finished by default.
   $context['finished'] = 1;
 
   // Check if the harvest process is completed or if we need to continue with more

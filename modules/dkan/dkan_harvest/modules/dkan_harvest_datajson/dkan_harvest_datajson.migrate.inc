@@ -276,14 +276,17 @@ class DatajsonHarvestMigration extends HarvestMigration {
         }
       }
 
-      $resource = $this->prepareResourceHelper($url,
+      list($status, $return) = $this->prepareResourceHelper($url,
         $format,
         $resource_row_data->title,
         NULL,
         $resource_row_data->description);
 
-      if ($resource) {
-        $resources[] = $resource;
+      if ($status == TRUE) {
+        $resources[] = $return;
+      }
+      else {
+        $this->reportMessage($return);
       }
     }
 
