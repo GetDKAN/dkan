@@ -133,12 +133,6 @@ class HarvestMigration extends MigrateDKAN {
 
     $result = $query->execute();
 
-    if (!isset($result['node'])) {
-      // Something is wrong.
-      $message = t('Cannot look-up the harvest source Node ID');
-      $this->reportMessage($message);
-    }
-
     // This should be set when running the harvest with a harvest source node.
     // Add a check to support the phpunit tests that run from nodeless harvest
     // source object.
@@ -150,6 +144,9 @@ class HarvestMigration extends MigrateDKAN {
     else {
       $this->dkanHarvestSourceNid = FALSE;
       $this->dkanHarvestSourceNode = NULL;
+      // Something is wrong.
+      $message = t('Cannot look-up the harvest source Node ID');
+      $this->reportMessage($message);
     }
 
     // Initialize results.

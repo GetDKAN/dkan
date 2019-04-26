@@ -326,11 +326,21 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     }
 
     // Message table assertions.
-    // We expect one new message from this test when harvesting the empty
-    // source.
-    $this->assertEquals(1, count($migrationEmptyMessage));
-    $messageEntry = end($migrationEmptyMessage);
-    $this->assertEquals("Items to import is 0. Looks like source is missing. No updates can be made at this time.", $messageEntry->message);
+    // We expect 2 new message from this test when harvesting the empty
+    // source:
+    $expectedEntries = array(
+      'Items to import is 0. Looks like source is missing. No updates can be made at this time.',
+      'Cannot look-up the harvest source Node ID',
+    );
+
+    $this->assertEquals(count($expectedEntries), count($migrationEmptyMessage));
+
+    $loggedEntries = array_map(function($item) {
+      return $item->message;
+    },$migrationEmptyMessage);
+
+    // Use array_values to avoid assertion being scued by the index.
+    $this->assertEquals(array_values($expectedEntries), array_values($loggedEntries));
   }
 
   /**
@@ -370,9 +380,12 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     /*
      * Test message table.
      */
-    // Harvesting the empty source will add a new error message.
+    // Harvesting the empty source will add 3 new error message.
+    // 1- "Cannot lookup the harvest source Node ID".
+    // 2- "MigrateException Illegal offset type in isset or empty".
+    // 3- "Illegal offset type in isset or empty".
     $this->assertNotEquals($migrationErrorMessage, $migrationEmptyMessage);
-    $this->assertEquals(count($migrationErrorMessage) + 1, count($migrationEmptyMessage));
+    $this->assertEquals(count($migrationErrorMessage) + 3, count($migrationEmptyMessage));
   }
 
   /**
