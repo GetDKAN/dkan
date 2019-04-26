@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
-use Drupal\dkan_datastore\Controller\Datastore;
+use Drupal\dkan_datastore\Controller\Api;
 use Dkan\PhpUnit\DkanTestBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\dkan_datastore\SqlParser;
 
 /**
- * @coversDefaultClass \Drupal\dkan_datastore\Controller\Datastore
+ * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
  * @group dkan
  * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
@@ -42,7 +42,7 @@ class DatastoreTest extends DkanTestBase {
                 [
                     'SELECT * FROM abc',
                     'WHERE def = "hij" AND klm = "nop"',
-                    'ORDER BY qrs ASC',
+                    'ORDER BY qrs',
                 ]
             ],
             [
@@ -50,7 +50,7 @@ class DatastoreTest extends DkanTestBase {
                 [
                     'SELECT * FROM abc',
                     'WHERE def = "hij" AND klm = "nop"',
-                    'ORDER BY qrs, tuv ASC',
+                    'ORDER BY qrs, tuv',
                 ]
             ],
             [
@@ -58,7 +58,7 @@ class DatastoreTest extends DkanTestBase {
                 [
                     'SELECT * FROM abc',
                     'WHERE def = "hij" AND klm = "nop"',
-                    'ORDER BY qrs, tuv DESC ASC',
+                    'ORDER BY qrs, tuv DESC',
                     'LIMIT 1 OFFSET 2',
                 ]
             ],
@@ -75,12 +75,12 @@ class DatastoreTest extends DkanTestBase {
     public function testExplode($sqlString, $expected) {
 
         // mock with little changed
-        $mock = $this->getMockBuilder(Datastore::class)
+        $mock = $this->getMockBuilder(Api::class)
                 ->disableOriginalConstructor()
                 ->setMethods(null)
                 ->getMock();
 
-        $actual =$this->invokeProtectedMethod($mock, 'explode', $sqlString);
+        $actual = $this->invokeProtectedMethod($mock, 'explode', $sqlString);
 
         $this->assertArrayEquals($expected, $actual);
     }
@@ -103,7 +103,7 @@ class DatastoreTest extends DkanTestBase {
      */
     public function testGetUuidFromSelect($select, $expected) {
                 // mock with little changed
-        $mock = $this->getMockBuilder(Datastore::class)
+        $mock = $this->getMockBuilder(Api::class)
                 ->disableOriginalConstructor()
                 ->setMethods(null)
                 ->getMock();

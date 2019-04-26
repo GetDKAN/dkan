@@ -51,15 +51,16 @@ class SqlParser
    * @return \Maquina\StateMachine\IStateMachine
    */
   public function getMachine() {
-    $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ*';
+    $alphanumeric = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $acceptable_for_vars = $alphanumeric . "*-_";
 
     $machine = $this->newMachineOfMachine('select');
     $machine->addEndState("end");
 
     $machine->addMachine('select', mb::s('[SELECT'));
-    $machine->addMachine('select_var', mb::bh($letters,mb::ONE_OR_MORE));
+    $machine->addMachine('select_var', mb::bh($acceptable_for_vars,mb::ONE_OR_MORE));
     $machine->addMachine('select_from', mb::s('FROM'));
-    $machine->addMachine('table_var', mb::bh($letters,mb::ONE_OR_MORE));
+    $machine->addMachine('table_var', mb::bh($acceptable_for_vars,mb::ONE_OR_MORE));
     $machine->addMachine('closing_bracket', mb::bh(' ', mb::ZERO_OR_MORE));
     $machine->addMachine("where", self::getWhereMachine());
     $machine->addMachine("order_by", self::getOrderByMachine());
@@ -97,7 +98,7 @@ class SqlParser
     $machine->addMachine('where_start', mb::s('WHERE'));
     $machine->addMachine('where_column', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_',  mb::ONE_OR_MORE));
     $machine->addMachine("equal", mb::bh("LIKE= ",  mb::ONE_OR_MORE));
-    $machine->addMachine('where_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"',  mb::ONE_OR_MORE));
+    $machine->addMachine('where_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"%',  mb::ONE_OR_MORE));
     //$machine->addMachine("quoted_string", self::getQuotedStringMachine());
     $machine->addMachine("and", mb::s("AND"));
 
@@ -136,11 +137,14 @@ class SqlParser
     $machine->addEndState("order_end");
 
     $machine->addMachine('order', mb::s('ORDER BY'));
-    $machine->addMachine('order_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_ ',  mb::ONE_OR_MORE));
+    $machine->addMachine('order_var', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',  mb::ONE_OR_MORE));
+    $machine->addMachine('order_sort', mb::bh('DEASC',  mb::ONE_OR_MORE));
 
     $machine->addTransition('order', [" "], "order_var");
     $machine->addTransition('order_var', [","], "order_var");
+    $machine->addTransition('order_var', [" "], "order_sort");
     $machine->addTransition('order_var', ["]"], "order_end");
+    $machine->addTransition('order_sort', ["]"], "order_end");
 
     return $machine;
   }
