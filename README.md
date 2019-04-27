@@ -10,6 +10,7 @@ As a piece of software in its Alpha cycle, the code is continuously changing and
 - Dataset metadata and resources
 - Web service API endpoints to work with datasets
 - Integration with a decoupled front end: Provided by [Interra](https://github.com/interra) 
+- A datastore to store CSV files and make them queryable through an SQL endpoint.
 
 ## Requirements
 
