@@ -24,8 +24,7 @@ class Search {
   public function index() {
     $datasets = [];
 
-    $dataset_api = new Dataset();
-    $api_engine = $dataset_api->getEngine();
+    $api_engine = $this->getDatasetEngine();
     $array_of_json_strings = $api_engine->get();
     $json_string = "[" . implode(",", $array_of_json_strings) . "]";
     $array = json_decode($json_string);
@@ -35,6 +34,18 @@ class Search {
     }
 
     return $this->formatDocs($datasets);
+  }
+
+   /**
+   * Get the engine from the Datset Controller.
+   *
+   * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
+   * @return \Sae\Sae
+   */
+  protected function getDatasetEngine() {
+    /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
+      $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
+      return $dataset_controller->getEngine();
   }
 
 }

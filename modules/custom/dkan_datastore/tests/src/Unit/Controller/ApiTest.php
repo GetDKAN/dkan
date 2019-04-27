@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
 use Drupal\dkan_datastore\Controller\Api;
-use Dkan\PhpUnit\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\dkan_datastore\SqlParser;
@@ -11,9 +11,8 @@ use Drupal\dkan_datastore\SqlParser;
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
  * @group dkan
- * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
-class DatastoreTest extends DkanTestBase {
+class ApiTest extends DkanTestBase {
 
     public function dataTestExplode() {
 
@@ -67,7 +66,7 @@ class DatastoreTest extends DkanTestBase {
 
     /**
      * Tests explode().
-     * 
+     *
      * @param string $sqlString
      * @param mixed $expected
      * @dataProvider dataTestExplode
@@ -84,19 +83,19 @@ class DatastoreTest extends DkanTestBase {
 
         $this->assertArrayEquals($expected, $actual);
     }
-    
-    
+
+
     public function dataTestGetUuidFromSelect() {
         return [
             // tests garbage in/out at the same time
             ['foobar','foobar'],
             ['something from foo','something from foo'],
             ['something FROM foo','foo'],
-            ['SELECT something FROM foo WHERE BAR=1','foo WHERE BAR=1'], 
+            ['SELECT something FROM foo WHERE BAR=1','foo WHERE BAR=1'],
         ];
     }
     /**
-     * 
+     *
      * @param type $select
      * @param type $expected
      * @dataProvider dataTestGetUuidFromSelect

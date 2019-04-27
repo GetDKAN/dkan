@@ -1,18 +1,19 @@
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.6/phpunit.xsd"
-    bootstrap="/var/www/docroot/core/tests/bootstrap.php"
+    bootstrap="../../../core/tests/bootstrap.php"
     colors="true"
-    stopOnFailure="true"
+    stopOnFailure="false"
     configuration="core"
-    stopOnError="true"
+    stopOnError="false"
     verbose="true">
 
     <testsuites>
         <testsuite name="DKAN Test Suite">
-            <directory>modules/custom/interra_api/tests/src/Unit/ApiRequestTest.php</directory>
-            <directory>modules/custom/dkan_harvest/tests/src/Unit/Dkan8Test.php</directory>
-            <directory >modules/custom/dkan_datastore/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_api/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_common/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_datastore/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_harvest/tests/src/Unit</directory>
         </testsuite>
     </testsuites>
 
@@ -31,7 +32,18 @@
     <filter>
         <!-- whitelist needed for code coverage generation to work -->
         <whitelist>
+            <directory>modules/custom/dkan_api/src</directory>
+            <directory>modules/custom/dkan_common/src</directory>
             <directory>modules/custom/dkan_datastore/src</directory>
+            <directory>modules/custom/dkan_harvest/src</directory>
+      <!-- By definition test classes have no tests. -->
+      <exclude>
+        <directory>modules/custom/dkan_common/src/Tests</directory>
+        <directory suffix="Test.php">./</directory>
+        <directory suffix="TestBase.php">./</directory>
+        <!-- TBD: skip the drush commands for now -->
+        <directory suffix="Commands.php">./</directory>
+      </exclude>
         </whitelist>
     </filter>
 </phpunit>

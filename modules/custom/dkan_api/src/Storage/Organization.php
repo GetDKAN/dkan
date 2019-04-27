@@ -2,23 +2,32 @@
 
 namespace Drupal\dkan_api\Storage;
 
-use Sae\Contracts\Storage;
-use Sae\Contracts\BulkRetriever;
+use Harvest\Storage\Storage;
 
-class Organization implements Storage, BulkRetriever
-{
-  private $datasetStorage;
+/**
+ * Organization.
+ */
+class Organization implements Storage {
+  protected $datasetStorage;
 
-  public function __construct()
-  {
-    $this->datasetStorage = new DrupalNodeDataset();
+  /**
+   * Constructor.
+   *
+   * @todo makes more snse to have this class extend DrupalNodeDataset instead of injecting it.
+   * @param \Drupal\dkan_api\Storage\DrupalNodeDataset $datasetStorage
+   *   Injected Nodeset.
+   */
+  public function __construct(DrupalNodeDataset $datasetStorage) {
+    $this->datasetStorage = $datasetStorage;
   }
 
-  public function retrieveAll()
-  {
+  /**
+   * {@inheritdoc}
+   */
+  public function retrieveAll():array {
     $organizations = [];
     $datasets = json_decode($this->datasetStorage->retrieveAll());
-    foreach($datasets as $dataset) {
+    foreach ($datasets as $dataset) {
       if ($organization = $dataset->organization) {
         $organizations[$organization] = $organization;
       }
@@ -27,18 +36,24 @@ class Organization implements Storage, BulkRetriever
     return json_encode($values);
   }
 
-  public function retrieve($id)
-  {
+  /**
+   * {@inheritdoc}
+   */
+  public function retrieve(string $id): string {
     // TODO: Implement retrieve() method.
   }
 
-  public function store($data, $id = null)
-  {
+  /**
+   * {@inheritdoc}
+   */
+  public function store(string $data, string $id = NULL): string {
     // TODO: Implement store() method.
   }
 
-  public function remove($id)
-  {
+  /**
+   * {@inheritdoc}
+   */
+  public function remove(string $id) {
     // TODO: Implement remove() method.
   }
 

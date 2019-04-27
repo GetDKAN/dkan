@@ -23,7 +23,8 @@ class Reverter {
 
     $uuids = array_keys($this->hashStorage->retrieveAll());
 
-    $datastore_storage = new DrupalNodeDataset();
+    /** @var DrupalNodeDataset $datastore_storage */
+    $datastore_storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
 
     $counter = 0;
     foreach ($uuids as $uuid) {

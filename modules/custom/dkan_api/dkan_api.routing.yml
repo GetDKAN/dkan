@@ -55,4 +55,3 @@ dkan_api.organization_get:
     { _controller: '\Drupal\dkan_api\Controller\Organization::getAll'}
   requirements:
     _access: 'TRUE'
-
