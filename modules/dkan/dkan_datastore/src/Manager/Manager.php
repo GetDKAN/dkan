@@ -143,6 +143,16 @@ abstract class Manager implements ManagerInterface {
         'type' => "text",
       ];
     }
+
+    $schema['fields']['entry_id'] = [
+      'label' => 'entry_id',
+      'type' => 'serial',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+    ];
+    $schema['primary key'] = [
+      '0' => 'entry_id',
+    ];
     return $schema;
   }
 
@@ -235,6 +245,7 @@ abstract class Manager implements ManagerInterface {
     if ($import_state === self::DATA_IMPORT_DONE) {
       $this->stateDataImport = self::DATA_IMPORT_DONE;
       $this->saveState();
+      module_invoke_all('datastore_post_import', $this->resource);
     }
     elseif ($import_state === self::DATA_IMPORT_PAUSED) {
       $this->stateDataImport = self::DATA_IMPORT_PAUSED;
