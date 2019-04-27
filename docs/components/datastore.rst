@@ -140,17 +140,20 @@ Troubleshoot
 
 you will need to grant FILE permissions to your MYSQL user. To do so use this command: ``GRANT FILE ON *.* TO 'user-name'``
 
-Important notes when upgrading DKAN from previous versions to 7.x-1.16
+
+Important notes when upgrading DKAN to 7.x-1.16 from previous versions
 ----------------------------------------------------------------------
+.. warning::
+  Be sure to read the following breaking changes if you have code that depends on the datastore API.
 
 Field names
 ***********
 
 Prior to the DKAN 7.x-1.16 release, the datastore field names matched the column headers exactly as they
 were in the CSV file used to create the datastore. This has changed in the 7.x-1.16 version of
-the Datastore, now the fields are transformed into lower case and spaces are replaced with underscores.
+the Datastore, now the field names are transformed into lower case and spaces are replaced with underscores.
 For example, if your CSV file has a column name titled ``School Year``, after importing the file
-to the datastore you will have to access it using ``school_year`` as the field name.
+to the datastore you will need to access it using ``school_year`` as the field name.
 
 Empty values
 ************
@@ -158,7 +161,7 @@ Empty values
 On previous versions of DKAN, when there was a cell with an empty value in a CSV
 file, that value would be imported as NULL into the datastore. After importing a file
 to the datastore with DKAN 7.x-1.16 or later, those empty values are kept as empty strings
-and not as NULL values anymore.
+and not as NULL values.
 
 Use of feeds
 ************
@@ -174,14 +177,17 @@ will not be enabled by default. If you were previously using that option you wil
 DKAN Datastore tables
 *********************
 
-On previous versions of DKAN, the import to datastore was done via feeds module, which produced
-tables with the field `feeds_flatstore_entry_id` as primary key. Starting on 1.16 feeds is not used
-anymore so the new primary key for the DKAN datastore tables is a serial field called `entry_id`. Anyways,
-all existing datastore tables are not changed by default, so you have two options:
+On previous versions of DKAN, the import process was done via the feeds module, which produced
+tables with the field `feeds_flatstore_entry_id` as the primary key. Starting in 7.x-1.16, 
+the feeds module has been replaced by **DKAN Datastore Simple Import**, and the new primary key for the DKAN datastore tables 
+is a serial field called `entry_id`. 
 
-1) you can just drop datastore for each resource and reimport them: this will drop the
-corresponding table and on the reimport the new table will be created using the new schema.
-2) create a hook update in some of your modules and add this code inside:
+NOTE: If you are upgrading, existing datastore tables will NOT be updated automatically. 
+
+You have two options:
+
+1. You can drop the datastore for each resource and re-import: this will delete the corresponding table and importing will create the table using the new schema.
+2. Create a hook update in a custom module and add the following code:
 
 .. code-block:: php
 
@@ -200,6 +206,6 @@ corresponding table and on the reimport the new table will be created using the 
     );
   }
 
-That code looks for all the dkan_datastore tables in your database, drops the primary key,
-drops the field `feeds_flatstore_entry_id` and adds the new field `entry_id` as primary key
+This code will look for all of the dkan_datastore tables in your database, drop the primary key,
+drop the field `feeds_flatstore_entry_id` and add the new field `entry_id` as the primary key
 for each table.
