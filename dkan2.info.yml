@@ -18,6 +18,7 @@ dependencies:
   - datetime
   - dblog
   - dkan_api
+  - dkan_common
   - dkan_data
   - dkan_datastore
   - dkan_dummy_content

@@ -3,6 +3,7 @@ description: 'Provides DKAN Harvester. '
 type: module
 core: 8.x
 dependencies:
+  - dkan_common
   - dkan_schema
   - field
   - menu_ui

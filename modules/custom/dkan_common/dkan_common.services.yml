@@ -1,0 +1,4 @@
+services:
+    dkan.factory:
+        class: Drupal\dkan_common\Service\Factory
+

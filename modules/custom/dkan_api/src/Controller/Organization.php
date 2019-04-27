@@ -2,10 +2,15 @@
 
 namespace Drupal\dkan_api\Controller;
 
-class Organization extends Api
-{
-  protected function getJsonSchema()
-  {
+/**
+ *
+ */
+class Organization extends Api {
+
+  /**
+   *
+   */
+  protected function getJsonSchema() {
     "
     {
       \"title\": \"Organization\",
@@ -24,9 +29,12 @@ class Organization extends Api
     ";
   }
 
-  protected function getStorage()
-  {
-    return new \Drupal\dkan_api\Storage\Organization();
+  /**
+   * @return Drupal\dkan_api\Storage\Organization
+   */
+  protected function getStorage() {
+    return $this->container
+      ->get('dkan_api.storage.organization');
   }
 
 }

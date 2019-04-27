@@ -2,10 +2,9 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Storage;
 
-use Dkan\PhpUnit\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_datastore\Storage\Variable;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Config\Config;
 
@@ -16,200 +15,203 @@ use Drupal\Core\Config\Config;
  */
 class VariableTest extends DkanTestBase {
 
-    public function dataTestConstruct() {
+  /**
+   *
+   */
+  public function dataTestConstruct() {
 
-        return [
-            [['foo'], ['foo']], // successfull getAll
-            [FALSE, []], // unsuccessfull getAll
-        ];
-    }
+    return [
+        // Successfull getAll.
+        [['foo'], ['foo']],
+        // Unsuccessfull getAll.
+        [FALSE, []],
+    ];
+  }
 
-    /**
-     * 
-     * @dataProvider dataTestConstruct
-     * @param type $getAll
-     * @param type $expectedStore
-     */
-    public function testConstruct($getAll, $expectedStore) {
+  /**
+   *
+   * @dataProvider dataTestConstruct
+   * @param mixed $getAll
+   * @param mixed $expectedStore
+   */
+  public function testConstruct($getAll, $expectedStore) {
 
-        $mockConfigInterface = $this->createMock(ConfigFactoryInterface::class);
+    $mockConfigInterface = $this->createMock(ConfigFactoryInterface::class);
 
+    $mock = $this->getMockBuilder(Variable::class)
+      ->setMethods([
+        'getAll',
+      ])
+      // Defer calling constructor.
+      ->disableOriginalConstructor()
+      ->getMock();
 
-        $mock = $this->getMockBuilder(Variable::class)
-                ->setMethods([
-                    'getAll'
-                ])
-                // defer calling constructor
-                ->disableOriginalConstructor()
-                ->getMock();
+    $mock->expects($this->once())
+      ->method('getAll')
+      ->willReturn($getAll);
 
+    // Assert.
+    $mock->__construct($mockConfigInterface);
 
-        $mock->expects($this->once())
-                ->method('getAll')
-                ->willReturn($getAll);
+    $actualConfigFactory = $this->accessProtectedProperty($mock, 'configFactory');
+    $actualStore = $this->accessProtectedProperty($mock, 'store');
 
-        //Assert
+    $this->assertSame($mockConfigInterface, $actualConfigFactory);
+    $this->assertEquals($actualStore, $expectedStore);
+  }
 
-        $mock->__construct($mockConfigInterface);
+  /**
+   *
+   */
+  public function testSet() {
 
-        $actualConfigFactory = $this->accessProtectedProperty($mock, 'configFactory');
-        $actualStore = $this->accessProtectedProperty($mock, 'store');
+    // Setup.
+    $mock = $this->getMockBuilder(Variable::class)
+      ->setMethods([
+        'pushAll',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-        $this->assertSame($mockConfigInterface, $actualConfigFactory);
-        $this->assertEquals($actualStore, $expectedStore);
-    }
+    $testKey = uniqid('foo');
+    $testValue = uniqid('bar');
 
-    public function testSet() {
+    // Expect.
+    $mock->expects($this->once())
+      ->method('pushAll');
 
-        // setup
-        $mock = $this->getMockBuilder(Variable::class)
-                ->setMethods([
-                    'pushAll'
-                ])
-                ->disableOriginalConstructor()
-                ->getMock();
+    // Assert.
+    $mock->set($testKey, $testValue);
+    $store = $this->accessProtectedProperty($mock, 'store');
+    $this->assertEquals($testValue, $store[$testKey]);
+  }
 
-        $testKey = uniqid('foo');
-        $testValue = uniqid('bar');
+  /**
+   * Data provider for testGet.
+   *
+   * @return array Array of arguments.
+   */
+  public function dataTestGet() {
 
-        // expect
-
-        $mock->expects($this->once())
-                ->method('pushAll');
-
-        // assert
-        $mock->set($testKey, $testValue);
-        $store = $this->accessProtectedProperty($mock, 'store');
-        $this->assertEquals($testValue, $store[$testKey]);
-    }
-
-    /**
-     * Data provider for testGet.
-     * 
-     * @return array Array of arguments.
-     */
-    public function dataTestGet() {
-
-        $store = [
-            'exists' => 'foobar',
-        ];
-        return [
+    $store = [
+      'exists' => 'foobar',
+    ];
+    return [
             [$store, 'exists', NULL, 'foobar'],
             [$store, 'exists', 'default', 'foobar'],
             [$store, 'notexists', NULL, NULL],
             [$store, 'notexists', 'default', 'default'],
-        ];
-    }
+    ];
+  }
 
-    /**
-     * Tests get().
-     * 
-     * @param array $store
-     * @param string $key
-     * @param mixed $default
-     * @param mixed $expected
-     * @dataProvider dataTestGet
-     */
-    public function testGet(array $store, $key, $default, $expected) {
+  /**
+   * Tests get().
+   *
+   * @param array $store
+   * @param string $key
+   * @param mixed $default
+   * @param mixed $expected
+   *
+   * @dataProvider dataTestGet
+   */
+  public function testGet(array $store, $key, $default, $expected) {
 
-        // setup
-        $mock = $this->getMockBuilder(Variable::class)
-                ->setMethods(NULL)
-                ->disableOriginalConstructor()
-                ->getMock();
+    // Setup.
+    $mock = $this->getMockBuilder(Variable::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
-        $this->writeProtectedProperty($mock, 'store', $store);
+    $this->writeProtectedProperty($mock, 'store', $store);
 
-        // assert
-        $actual = $mock->get($key, $default);
-        $this->assertEquals($expected, $actual);
-    }
+    // Assert.
+    $actual = $mock->get($key, $default);
+    $this->assertEquals($expected, $actual);
+  }
 
-    /**
-     * Tests getAll().
-     */
-    public function testGetAll() {
+  /**
+   * Tests getAll().
+   */
+  public function testGetAll() {
 
-        //setup
-        $mock = $this->getMockBuilder(Variable::class)
-                ->setMethods(NULL)
-                ->disableOriginalConstructor()
-                ->getMock();
+    // Setup.
+    $mock = $this->getMockBuilder(Variable::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
-        $mockConfigFactory = $this->getMockBuilder(ConfigFactoryInterface::class)
-                ->setMethods(['get'])
-                ->getMockForAbstractClass();
+    $mockConfigFactory = $this->getMockBuilder(ConfigFactoryInterface::class)
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
 
-        $mockImmutableConfig = $this->getMockBuilder(ImmutableConfig::class)
-                ->setMethods(['get'])
-                ->disableOriginalConstructor()
-                ->getMock();
+    $mockImmutableConfig = $this->getMockBuilder(ImmutableConfig::class)
+      ->setMethods(['get'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-        $this->writeProtectedProperty($mock, 'configFactory', $mockConfigFactory);
+    $this->writeProtectedProperty($mock, 'configFactory', $mockConfigFactory);
 
-        $expected = ['foo' => 'bar'];
+    $expected = ['foo' => 'bar'];
 
-        // expects
+    // Expects.
+    $mockConfigFactory->expects($this->once())
+      ->method('get')
+      ->with('dkan_datastore.keyvalue')
+      ->willReturn($mockImmutableConfig);
 
-        $mockConfigFactory->expects($this->once())
-                ->method('get')
-                ->with('dkan_datastore.keyvalue')
-                ->willReturn($mockImmutableConfig);
+    $mockImmutableConfig->expects($this->once())
+      ->method('get')
+      ->with('data')
+      ->willReturn(serialize($expected));
 
-        $mockImmutableConfig->expects($this->once())
-                ->method('get')
-                ->with('data')
-                ->willReturn(serialize($expected));
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'getAll');
 
-        // assert
-        $actual = $this->invokeProtectedMethod($mock, 'getAll');
+    $this->assertArrayEquals($actual, $expected);
+  }
 
-        $this->assertArrayEquals($actual, $expected);
-    }
+  /**
+   * Tests pushAll().
+   */
+  public function testPushAll() {
+    // Setup.
+    $mock = $this->getMockBuilder(Variable::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
-    /**
-     * Tests pushAll().
-     */
-    public function testPushAll() {
-        //setup
-        $mock = $this->getMockBuilder(Variable::class)
-                ->setMethods(NULL)
-                ->disableOriginalConstructor()
-                ->getMock();
+    $mockConfigFactory = $this->getMockBuilder(ConfigFactoryInterface::class)
+      ->setMethods(['getEditable'])
+      ->getMockForAbstractClass();
 
-        $mockConfigFactory = $this->getMockBuilder(ConfigFactoryInterface::class)
-                ->setMethods(['getEditable'])
-                ->getMockForAbstractClass();
+    $mockConfig = $this->getMockBuilder(Config::class)
+      ->setMethods([
+        'set',
+        'save',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-        $mockConfig = $this->getMockBuilder(Config::class)
-                ->setMethods([
-                    'set',
-                    'save',
-                ])
-                ->disableOriginalConstructor()
-                ->getMock();
+    $store = ['foo' => 'bar'];
+    $this->writeProtectedProperty($mock, 'configFactory', $mockConfigFactory);
+    $this->writeProtectedProperty($mock, 'store', $store);
 
-        $store = ['foo' => 'bar'];
-        $this->writeProtectedProperty($mock, 'configFactory', $mockConfigFactory);
-        $this->writeProtectedProperty($mock, 'store', $store);
+    // Expects.
+    $mockConfigFactory->expects($this->once())
+      ->method('getEditable')
+      ->with('dkan_datastore.keyvalue')
+      ->willReturn($mockConfig);
 
-        // expects
+    $mockConfig->expects($this->once())
+      ->method('set')
+      ->with('data', serialize($store))
+      ->willReturnSelf();
 
-        $mockConfigFactory->expects($this->once())
-                ->method('getEditable')
-                ->with('dkan_datastore.keyvalue')
-                ->willReturn($mockConfig);
+    $mockConfig->expects($this->once())
+      ->method('save');
 
-        $mockConfig->expects($this->once())
-                ->method('set')
-                ->with('data', serialize($store))
-                ->willReturnSelf();
-
-        $mockConfig->expects($this->once())
-                ->method('save');
-
-        // assert
-        $actual = $this->invokeProtectedMethod($mock, 'pushAll');
-    }
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'pushAll');
+  }
 
 }

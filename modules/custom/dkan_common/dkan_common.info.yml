@@ -1,0 +1,5 @@
+name: DKAN Common
+description: 'Common dkan utilities and function.'
+type: module
+core: 8.x
+package: DKAN

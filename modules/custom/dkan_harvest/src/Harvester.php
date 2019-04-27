@@ -5,17 +5,20 @@ namespace Drupal\dkan_harvest;
 use Drupal\dkan_harvest\Log\MakeItLog;
 use Drupal\dkan_harvest\Storage\Run;
 
+
 class Harvester {
   use MakeItLog;
 
-  private $harvestPlan;
+  protected $harvestPlan;
 
-  private $factory;
+  protected $etlFactory;
+
+  protected $harvestFactory;
 
   public function __construct($harvest_plan) {
     $this->harvestPlan = $harvest_plan;
 
-    $this->factory = new EtlWorkerFactory($harvest_plan);
+    $this->etlFactory = new EtlWorkerFactory($harvest_plan);
 
     return $this->validateHarvestPlan();
   }
@@ -32,7 +35,7 @@ class Harvester {
   }
 
   private function extract() {
-    $extract = $this->factory->get('extract');
+    $extract = $this->etlFactory->get('extract');
 
     if ($this->logger) {
       $extract->setLogger($this->logger);
@@ -43,7 +46,7 @@ class Harvester {
   }
 
   private function transform($items) {
-    $transforms = $this->factory->get("transforms");
+    $transforms = $this->etlFactory->get("transforms");
     foreach ($transforms as $transform) {
       if ($this->logger) {
         $transform->setLogger($this->logger);
@@ -54,7 +57,7 @@ class Harvester {
   }
 
   private function load($items) {
-    $load = $this->factory->get('load');
+    $load = $this->etlFactory->get('load');
     if ($this->logger) {
       $load->setLogger($this->logger);
     }

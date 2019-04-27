@@ -7,10 +7,21 @@ use Harvest\Load\Load;
 class Dataset extends Load {
 
   protected function saveItem($item) {
-    $dataset_controller = new \Drupal\dkan_api\Controller\Dataset();
-    /* @var $enginer \Sae\Sae */
-    $engine = $dataset_controller->getEngine();
+
+    $engine = $this->getDatasetEngine();
     $engine->post(json_encode($item));
+  }
+
+  /**
+   * Get the engine from the Datset Controller.
+   * 
+   * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
+   * @return \Sae\Sae
+   */
+  protected function getDatasetEngine() {
+    /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
+      $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
+      return $dataset_controller->getEngine();
   }
 
 }

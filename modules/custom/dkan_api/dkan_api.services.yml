@@ -1,0 +1,17 @@
+services:
+    dkan_api.controller.dataset:
+        # todo this is used a few places to get the Sae instance from `getEngine()`
+        # should not be using inner workings of controller to get data
+        # consider refactoring to use a more generic service instead.
+        class: \Drupal\dkan_api\Controller\Dataset
+        arguments: ['@service_container']
+    dkan_api.storage.drupal_node_dataset:
+        class: \Drupal\dkan_api\Storage\DrupalNodeDataset
+        arguments:
+            - '@entity_type.manager'
+            - '@dkan_api.storage.theme_value_referencer'
+    dkan_api.storage.organization:
+        class: \Drupal\dkan_api\Storage\Organization
+        arguments: ['@dkan_api.storage.drupal_node_dataset']
+    dkan_api.storage.theme_value_referencer:
+        class: \Drupal\dkan_api\Storage\ThemeValueReferencer

@@ -84,7 +84,8 @@ class ApiController extends ControllerBase
 
     if (in_array($collection, $valid_collections)) {
 
-      $storage = new DrupalNodeDataset();
+      /** @var DrupalNodeDataset $storage */
+      $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
       $data = $storage->retrieveAll();
 
       if ($collection == "dataset") {
@@ -141,7 +142,8 @@ class ApiController extends ControllerBase
 
       if ($collection == "dataset") {
 
-        $storage = new DrupalNodeDataset();
+        /** @var DrupalNodeDataset $storage */
+        $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
         $data = $storage->retrieve($uuid);
         $dataset = json_decode($data);
         $dataset = $this->addDatastoreMetadata($dataset);
