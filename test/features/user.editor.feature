@@ -1,8 +1,11 @@
 # time:0m27.25s
-@api @disablecaptcha
+@api @disablecaptcha @smoketest
 Feature: User command center links for editor role.
 
   Background:
+    Given pages:
+      | name          | url           |
+      | Users         | /admin/people |
     Given users:
       | name    | mail                | roles                |
       | Jaz     | jaz@example.com     | editor               |
@@ -68,3 +71,9 @@ Feature: User command center links for editor role.
     Then I hover over the admin menu item "Taxonomy"
     And I click "Topics"
     Then I should see "Topics"
+
+  Scenario: Editor should not be able to manage users
+    Given I am logged in as "Jaz"
+    And I am on "Users" page
+    Then I should see "Access denied"
+

@@ -1,5 +1,5 @@
 # time:0m26s
-@api @javascript @disablecaptcha
+@api @javascript @disablecaptcha @customizable
 Feature: Theme
 
   Background:
@@ -8,17 +8,10 @@ Feature: Theme
       | Appearance    | /admin/appearance                       |
       | Settings      | /admin/appearance/settings/nuboot_radix |
     Given users:
-      | name    | mail                | roles                |
-      | John    | john@example.com    | administrator         |
-      | Site Manager | sitemanager@example.com | site manager |
+      | name         | mail                    | roles         |
+      | John         | john@example.com        | site manager  |
 
-  @noworkflow
-    Scenario: Dummy scenario because behat errors if there is no scenario in a feature file
-    Given I am logged in as "John"
-    And I am on "Settings" page
-    Then I should see "Logo image settings"
-    
-  @noworkflow @fixme
+  @theme_01 @fixme
   Scenario: Add custom logo
     Given I am logged in as "John"
     And I am on "Settings" page
@@ -31,7 +24,7 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
-  @noworkflow @customizable @fixme
+  @theme_02 @fixme
   Scenario: Add custom hero image
     Given I am logged in as "John"
     And I am on "Settings" page
@@ -42,9 +35,9 @@ Feature: Theme
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
 
-  @noworkflow @fixme
+  @theme_03
   Scenario: Add custom site information
-    Given I am logged in as "Site Manager"
+    Given I am logged in as "John"
     And I hide the admin menu
     Then I am on "Settings" page
     And I should see "E-mail address"
@@ -54,3 +47,12 @@ Feature: Theme
     When I press "Save configuration"
     Then I wait for "3" seconds
     Then I should see "The configuration options have been saved"
+
+  @theme_04
+  Scenario: Site manager role can configure custom fonts
+    Given I am logged in as "John"
+    When I hover over the admin menu item "Site Configuration"
+    Then I hover over the admin menu item "Appearance"
+    And I click "Fonts"
+    Then I should see "No fonts enabled yet, please enable some fonts first."
+

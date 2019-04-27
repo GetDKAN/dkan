@@ -9,34 +9,19 @@ Feature: User
       | John          | /users/john   |
       | Katie         | /users/katie  |
     Given users:
-      | name    | mail                | roles                | pass     |
-      | John    | john@example.com    | site manager         | johnpass |
-      | Badmin  | admin@example.com   | site manager         | pass     |
-      | Gabriel | gabriel@example.com | content creator      | pass     |
-      | Jaz     | jaz@example.com     | editor               | pass     |
-      | Katie   | katie@example.com   | content creator      | pass     |
-      | Martin  | martin@example.com  | editor               | pass     |
-      | Celeste | celeste@example.com | editor               | pass     |
+      | name    | mail                | roles             | pass     |
+      | John    | john@example.com    | site manager      | johnpass |
+      | Katie   | katie@example.com   | content creator   | pass     |
     Given groups:
       | title    | author  | published |
-      | Group 01 | Badmin  | Yes       |
-      | Group 02 | Badmin  | Yes       |
-      | Group 03 | Badmin  | No        |
+      | Group 01 | John    | Yes       |
     And group memberships:
-      | user    | group    | role on group        | membership status |
-      | Gabriel | Group 01 | administrator member | Active            |
-      | Katie   | Group 01 | member               | Active            |
-      | Jaz     | Group 01 | member               | Pending           |
-      | Admin   | Group 02 | administrator member | Active            |
-      | Celeste | Group 02 | member               | Active            |
-    And "Tags" terms:
-      | name    |
-      | world   |
-      | results |
+      | user    | group    | role on group   | membership status |
+      | Katie   | Group 01 | member          | Active            |
     And datasets:
-      | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Katie   | Yes              | world    | Test        |
-      | Dataset 02 | Group 01  | Katie   | Yes              | world    | Test        |
+      | title      | publisher | author  | published  |description |
+      | Dataset 01 | Group 01  | Katie   | Yes        |Test        |
+      | Dataset 02 | Group 01  | Katie   | Yes        |Test        |
 
   @user_all_01 @login
   Scenario: Login
@@ -101,3 +86,15 @@ Feature: User
     And I am on "Katie" page
     Then I should see "Group 01" in the "user profile" region
     And I should not see "Group 02"
+
+  @user_all_09 @api
+  Scenario: Edit own user account
+    Given I am logged in as "Katie"
+    And I am on "Katie" page
+    When I follow "Edit"
+    And I fill in "About" with "This is my profile"
+    And I press "Save"
+    Then I should see "The changes have been saved"
+    Given I am an anonymous user
+    When I am on "Katie" page
+    Then I should see "This is my profile" in the "user profile" region

@@ -24,22 +24,21 @@ Your tests should run from the VM and use your host machine as a Selenium server
  - **@datastore** Drops the table after testing
  - **@deleteTempUsers** Delete any tempusers that were created outside of 'Given users'
  - **@disablecaptcha** Disables captcha config if it is enabled, then restores config after the test
- - **@dkanBug** label only
+ - **@dkanBug** label only - deprecated
  - **@enableFastImport** Enables fast import
  - **@enableDKAN_Workflow** Enables dkan_workflow
- - **@fixme** label only
+ - **@fixme** label only indicating test needs work
  - **@globalUser** Populates the global user with the current user
  - **@harvest** Creates harvest sources for testing then rolls back to pre-harvest state
  - **@javascript** switches the current Mink session to Selenium2
  - **@mail** Setup the testing mail system, then restore original mail system
- - **@no-group** Tests content with no group assignment (skip on sites where group is required)
+ - **@no-group** Tests content with no group assignment
  - **@no-main-menu** used to skip tests that requires a link in the main menu
- - **@noworkflow** label only
- - **@ok** label only
  - **@pod_json_valid** label only
  - **@pod_json_odfe** label only
  - **@remove_ODFE** Disables ODFE
- - **@testBug** label only
+ - **@smoketest** label only, used for spot check testing
+ - **@smoketest_noworkflow** label only (run on sites not using dkan_workflow)
  - **@timezone** Sets the timezone for tests and restores the timezone afterwards.
  - **@Topics** label only
 

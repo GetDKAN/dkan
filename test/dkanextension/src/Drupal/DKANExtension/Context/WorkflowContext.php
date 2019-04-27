@@ -62,6 +62,7 @@ class WorkflowContext extends RawDKANContext {
     // Clean users and disable modules.
     entity_delete_multiple('user', $users_to_delete);
     module_disable(array_values($modules_to_disable));
+    // features_revert(array('dkan_permissions'));
     drupal_flush_all_caches();
     node_access_rebuild(TRUE);
   }
