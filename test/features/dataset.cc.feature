@@ -1,12 +1,6 @@
 # time:2m56.53s
-@api @disablecaptcha
+@api @disablecaptcha @smoketest_noworkflow
 Feature: Dataset Features
-  In order to realize a named business value
-  As an explicit system actor
-  I want to gain some beneficial outcome which furthers the goal
-
-  Additional text...
-
 
   Background:
     Given pages:
@@ -18,25 +12,21 @@ Feature: Dataset Features
     Given users:
       | name    | mail                | roles                |
       | John    | john@example.com    | site manager         |
-      | Jaz     | jaz@example.com     | editor               |
       | Katie   | katie@example.com   | content creator      |
     Given groups:
       | title    | author | published |
-      | Group 01 | Jaz    | Yes       |
-      | Group 02 | Jaz    | Yes       |
+      | Group 01 | John   | Yes       |
+      | Group 02 | John   | Yes       |
       | Group 03 | John   | Yes       |
     And group memberships:
       | user    | group    | role on group        | membership status |
       | Katie   | Group 01 | member               | Active            |
       | Katie   | Group 02 | member               | Active            |
-      | Jaz     | Group 01 | member               | Active            |
-      | Jaz     | Group 02 | member               | Active            |
 
-  @dataset_author_1 @noworkflow
+  @dataset_cc_1
   Scenario: Create dataset as content creator
     Given I am logged in as "Katie"
     And I am on "Add Dataset" page
-    Then I should not see "Authoring information"
     And I fill-in the following:
       | title           | Test Dataset      |
       | description     | Test description  |
@@ -44,7 +34,7 @@ Feature: Dataset Features
     And I press "Next: Add data"
     Then I should see "Test Dataset has been created"
 
-  @dataset_author_2 @noworkflow
+  @dataset_cc_2
   Scenario: Save using Additional Info
     Given I am logged in as "Katie"
     And I am on "Add Dataset" page
@@ -60,7 +50,7 @@ Feature: Dataset Features
     Then I should see "Test Dataset"
     And I should see "Test description"
 
-  @dataset_author_3 @noworkflow
+  @dataset_cc_3
   Scenario: Edit own dataset as a content creator
     Given datasets:
       | title      | author  | published | description | publisher |
@@ -74,7 +64,7 @@ Feature: Dataset Features
     When I am on "My Content" page
     Then I should see "Dataset 01 edited"
 
-  @dataset_author_4 @noworkflow
+  @dataset_cc_4
   Scenario: Seeing the License
     Given datasets:
       | title      | author  | published | description | publisher |
@@ -89,12 +79,20 @@ Feature: Dataset Features
     And I click "Creative Commons Attribution"
     Then I should see "Attribution — You must give appropriate credit, provide a link to the license"
 
-  @dataset_author_5 @fixme @noworkflow
-  # TODO: Needs definition. How can a data contributor unpublish content?
+  @dataset_cc_5
   Scenario: Unpublish own dataset as a content creator
-    Given I am on the homepage
+    Given datasets:
+      | title      | author  | published | description | publisher |
+      | Dataset 01 | Katie   | Yes       |             | Group 01  |
+    Given I am logged in as "Katie"
+    And I am on "Dataset 01" page
+    When I click "Edit"
+    #And I click "Publishing options"
+    And I uncheck the box "Published"
+    And I press "Finish"
+    Then I should see "Dataset Dataset 01 has been updated."
 
-  @dataset_author_6 @noworkflow
+  @dataset_cc_6
   Scenario: Delete own dataset as content creator
     Given datasets:
       | title      | author  | published | description | publisher |
@@ -106,7 +104,7 @@ Feature: Dataset Features
     And I press "Delete"
     Then I should see "Dataset 01 has been deleted"
 
-  @dataset_author_7 @noworkflow
+  @dataset_cc_7
   Scenario: Add a dataset to group that I am a member of
     Given datasets:
       | title      | author  | published | description | publisher |
@@ -120,14 +118,14 @@ Feature: Dataset Features
     When I am on "Group 01" page
     Then I should see "Dataset 01" in the "content" region
 
-  @dataset_author_8 @noworkflow
+  @dataset_cc_8
   Scenario: Add a resource with no dataset to a dataset with no resource
     Given datasets:
       | title      | author  | published | description | publisher |
       | Dataset 01 | Katie   | Yes       |             | Group 01  |
     Given resources:
       | title       | author   | published | description |
-      | Resource 01 | Jaz      | Yes       | No          |
+      | Resource 01 | John     | Yes       | No          |
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I click "Edit"
@@ -142,14 +140,14 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @dataset_author_9 @noworkflow
+  @dataset_cc_9
   Scenario: Remove a resource with only one dataset from the dataset
     Given datasets:
       | title      | author  | published | description | publisher |
       | Dataset 01 | Katie   | Yes       |             | Group 01  |
     Given resources:
       | title       | author   | published | description |
-      | Resource 01 | Jaz      | Yes       | No          |
+      | Resource 01 | John     | Yes       | No          |
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I click "Edit"
@@ -166,14 +164,14 @@ Feature: Dataset Features
     When I am on "Resource 01" page
     Then I should not see the link "Back to dataset"
 
-  @dataset_author_10 @noworkflow
+  @dataset_cc_10
   Scenario: Add a resource with no group to a dataset with group
     Given datasets:
       | title      | author  | published | description | publisher |
       | Dataset 01 | Katie   | Yes       |             | Group 01  |
     Given resources:
       | title       | author   | published | description |
-      | Resource 01 | Jaz      | Yes       | No          |
+      | Resource 01 | John     | Yes       | No          |
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I click "Edit"
@@ -185,14 +183,14 @@ Feature: Dataset Features
   # NOTE: Datasets and resources associated through the 'Background' steps cannot be used here
   #       because the URL of the resources change based on the datasets where they are added
   #       so going back to a resource page after the dataset association is modified throws an error.
-  @dataset_author_11 @noworkflow
+  @dataset_cc_11
   Scenario: Remove a resource from a dataset with group
     Given datasets:
       | title      | author  | published | description | publisher |
       | Dataset 01 | Katie   | Yes       |             | Group 01  |
     Given resources:
       | title       | author   | published | description |
-      | Resource 01 | Jaz      | Yes       | No          |
+      | Resource 01 | John     | Yes       | No          |
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I click "Edit"
@@ -207,14 +205,14 @@ Feature: Dataset Features
     Then I should see "Dataset 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @dataset_author_12 @noworkflow
+  @dataset_cc_12
   Scenario: Add group to a dataset with resources
     Given datasets:
       | title      | author  | published | description | publisher |
       | Dataset 01 | Katie   | Yes       |             | Group 01  |
     Given resources:
       | title       | author   | published | description | dataset    |
-      | Resource 01 | Jaz      | Yes       | No          | Dataset 01 |
+      | Resource 01 | John     | Yes       | No          | Dataset 01 |
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I click "Edit"
@@ -223,14 +221,14 @@ Feature: Dataset Features
     Then I should see "Dataset 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @dataset_author_13 @noworkflow
+  @dataset_cc_13
   Scenario: Remove group from dataset with resources
     Given datasets:
       | title      | author  | published | description | publisher           |
       | Dataset 01 | Katie   | Yes       |             | Group 01, Group 02  |
     Given resources:
       | title       | author   | published | description | dataset    |
-      | Resource 01 | Jaz      | Yes       | No          | Dataset 01 |
+      | Resource 01 | John     | Yes       | No          | Dataset 01 |
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I click "Edit"
@@ -239,14 +237,14 @@ Feature: Dataset Features
     Then I should see "Dataset 01 has been updated"
     And I should see "Groups were updated on 1 resource(s)"
 
-  @dataset_author_14 @noworkflow @javascript
-  Scenario: Add group and resource to a dataset on the same edition
+  @dataset_cc_14 @javascript
+  Scenario: Add group and resource to a dataset on the same edit
     Given datasets:
       | title      | author  | published | description | publisher |
       | Dataset 01 | Katie   | Yes       |             | Group 01  |
     Given resources:
       | title       | author   | published | description |
-      | Resource 01 | Jaz      | Yes       | No          |
+      | Resource 01 | John     | Yes       | No          |
     Given I am logged in as "Katie"
     And I am on "Dataset 01" page
     When I click "Edit"
@@ -257,35 +255,28 @@ Feature: Dataset Features
     And I should see "Groups were updated on 1 resource(s)"
     And I should see "Resource 01" in the "dataset resource list" region
 
-  @dataset_author_15 @noworkflow
+  @dataset_cc_15
   Scenario: Site Managers should see groups they are not member of
     Given I am logged in as "John"
     When I visit "node/add/dataset"
     Then I should see the "Group 01" groups option
     And I should see the "Group 02" groups option
 
-  @dataset_author_16 @noworkflow
+  @dataset_cc_16
   Scenario: Content Creators should only see the groups they are member of
     Given I am logged in as "Katie"
     When I visit "node/add/dataset"
     Then I should see the "Group 02" groups option
     And I should not see the "Group 03" groups option
 
-  @dataset_author_17 @noworkflow
-  Scenario: Editors should only see the groups they are member of
-    Given I am logged in as "Jaz"
-    When I visit "node/add/dataset"
-    Then I should see the "Group 02" groups option
-    And I should not see the "Group 03" groups option
-
-  @dataset_author_18 @noworkflow
+  @dataset_cc_18
   Scenario: Site Managers should see authoring information and publishing options
     Given I am logged in as "John"
     When I visit "node/add/dataset"
     Then I should see "Authoring information"
     And I should see "Publishing options"
 
-  @dataset_author_19 @noworkflow
+  @dataset_cc_19
   Scenario: Content Creators not part of a group should see publishing options
     Given users:
       | name    | mail                | roles                |
@@ -298,12 +289,13 @@ Feature: Dataset Features
     Then I should not see "Authoring information"
     Then I should see "Publishing options"
 
-  @dataset_author_20 @noworkflow
-  Scenario: Content Creators who are part of a group should not see authoring information
-    Given I am logged in as "Katie"
+  @dataset_cc_20
+  Scenario: Content Creators and Editors should see publishing options tab but not authored by tab
+    Given I am logged in as a user with the "content creator" role
     When I visit "node/add/dataset"
-    Then I should not see "Authoring information"
-    Then I should see "Publishing options"
-    When I visit "node/add/resource"
-    Then I should not see "Authoring information"
-    Then I should see "Publishing options"
+    Then I should not see "Authored by"
+    Then I should see "Published"
+    Given I am logged in as a user with the "editor" role
+    When I visit "node/add/dataset"
+    Then I should not see "Authored by"
+    Then I should see "Published"

@@ -250,16 +250,19 @@ function dkan_dataset_groups_node_presave($node) {
         $file = new stdClass();
         $file->filename = 'group.png';
         $file->timestamp = REQUEST_TIME;
-        $file->uri = $source;
+        $file->uri = DRUPAL_ROOT . "/" . $source;
         $file->filemime = file_get_mimetype($source);
         $file->uid = 1;
         $file->status = 1;
-        $file = file_copy($file, 'public://', FILE_EXISTS_REPLACE);
-        $fid = $file->fid;
-
-        // Set group image fid.
-        $node->field_image[$node->language][0]['fid'] = (string) $fid;
-        $node->field_image[$node->language][0]['alt'] = t('Default group image');
+        if($file = file_copy($file, 'public://', FILE_EXISTS_REPLACE)) {
+          $fid = $file->fid;
+          // Set group image fid.
+          $node->field_image[$node->language][0]['fid'] = (string) $fid;
+          $node->field_image[$node->language][0]['alt'] = t('Default group image');
+        }
+        else {
+          watchdog("warning", "File {$source} could not be copied.");
+        }
       }
     }
   }
