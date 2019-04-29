@@ -4,7 +4,6 @@ namespace Drupal\dkan_harvest;
 
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\dkan_harvest\Log\MakeItLog;
-use Drupal\dkan_harvest\Storage\Hash;
 use Harvest\Storage\Storage;
 
 class Reverter {
