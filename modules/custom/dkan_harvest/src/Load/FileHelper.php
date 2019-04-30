@@ -9,11 +9,11 @@ class FileHelper implements IFileHelper {
   }
 
   public function retrieveFile($url, $destination = NULL, $managed = FALSE) {
-    system_retrieve_file($url, $destination, $managed, FILE_EXISTS_REPLACE);
+    return system_retrieve_file($url, $destination, $managed, FILE_EXISTS_REPLACE);
   }
 
   public function fileCreate($uri) {
-    file_create_url($uri);
+    return file_create_url($uri);
   }
 
   public function defaultSchemeDirectory() {
