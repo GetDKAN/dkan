@@ -4,6 +4,7 @@ namespace Drupal\dkan_harvest\Commands;
 
 use Harvest\EtlWorkerFactory;
 use Harvest\Harvester;
+use Harvest\Storage\Storage;
 use Sae\Sae;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -28,21 +29,21 @@ class DkanHarvestCommands extends DrushCommands {
    *   List available harvests.
    */
   public function index() {
-    $source = new Source();
-    $items = $source->index();
+    $store = $this->getPlanStorage();
+    $items = $store->retrieveAll();
 
     $rows = [];
 
-    if (isset($items['source_id'])) {
-      foreach ($items['source_id'] as $item) {
-        $rows[$item][] = $item;
-      }
+
+    foreach (array_keys($items) as $id) {
+      $rows[] = [$id];
     }
+
 
     $table = new Table(new ConsoleOutput());
 
     $table
-      ->setHeaders(array('source id'))
+      ->setHeaders(array('plan id'))
       ->setRows($rows);
 
     $table->render();
@@ -54,10 +55,12 @@ class DkanHarvestCommands extends DrushCommands {
    * @command dkan-harvest:register
    */
   public function register($config) {
-    $source = new Source();
+    $storage = $this->getPlanStorage();
+
     $schema_path = DRUPAL_ROOT . "/" . drupal_get_path("module", "dkan_harvest") . "/schema/schema.json";
     $schema = file_get_contents($schema_path);
-    $engine = new Sae($source, $schema);
+
+    $engine = new Sae($storage, $schema);
     $engine->setIdGenerator(new IdGenerator($config));
     $engine->post($config);
   }
@@ -68,10 +71,12 @@ class DkanHarvestCommands extends DrushCommands {
    * @command dkan-harvest:deregister
    */
   public function deregister($id) {
-    $source = new Source();
+    $storage = $this->getPlanStorage();
+
     $schema_path = DRUPAL_ROOT . "/" . drupal_get_path("module", "dkan_harvest") . "/schema/schema.json";
     $schema = file_get_contents($schema_path);
-    $engine = new Sae($source, $schema);
+
+    $engine = new Sae($storage, $schema);
     $engine->delete($id);
   }
 
@@ -165,9 +170,16 @@ class DkanHarvestCommands extends DrushCommands {
   }
 
   private function getHarvestPlan($sourceId) {
-    $source = new Source();
-    $harvest_plan = $source->retrieve($sourceId);
+    $storage = $this->getPlanStorage();
+    $harvest_plan = $storage->retrieve($sourceId);
     return json_decode($harvest_plan);
+  }
+
+  private function getPlanStorage(): Storage {
+    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+    $folder = "{$path}/dkan_harvest/plans";
+    $store = new File($folder);
+    return $store;
   }
 }
 
