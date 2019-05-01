@@ -68,8 +68,8 @@ class FileHelper implements IFileHelper {
    *
    */
   public function fileDelete($uri) {
-    if (file_esists($uri)) {
-      unlink($uir);
+    if (file_exists($uri)) {
+      unlink($uri);
     }
   }
 
