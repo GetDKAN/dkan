@@ -4,8 +4,9 @@ declare(strict_types = 1);
 
 namespace Drupal\dkan_api\Storage;
 
-use Drupal\node\Entity\Node;
-
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Component\Uuid\Php;
+use Drupal\Core\Queue\QueueFactory;
 use stdClass;
 
 /**
@@ -14,6 +15,39 @@ use stdClass;
  * @package Drupal\dkan_api\Storage
  */
 class ThemeValueReferencer {
+
+  /**
+   * The entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * The uuid service.
+   *
+   * @var Drupal\Component\Uuid\Php
+   */
+  protected $uuidService;
+
+  /**
+   * The queue service.
+   *
+   * @var Drupal\Core\Queue\QueueFactory
+   */
+  protected $queueService;
+
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Injected entity type manager.
+   */
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Php $uuidService, QueueFactory $queueService) {
+    $this->entityTypeManager = $entityTypeManager;
+    $this->uuidService= $uuidService;
+    $this->queueService = $queueService;
+  }
 
   /**
    * Returns the uuid references for all themes values.
@@ -53,7 +87,7 @@ class ThemeValueReferencer {
    *   string containing uuid, or NULL.
    */
   protected function referenceSingle(string $theme) {
-    $nodes = \Drupal::entityTypeManager()
+    $nodes = $this->entityTypeManager
       ->getStorage('node')
       ->loadByProperties([
         'field_data_type' => "theme",
@@ -81,18 +115,20 @@ class ThemeValueReferencer {
     // Create theme json.
     $data = new stdClass();
     $data->title = $theme;
-    $data->identifier = \Drupal::service('uuid')->generate();
+    $data->identifier = $this->uuidService->generate();
     $data->created = $today;
     $data->modified = $today;
 
     // Create new data node for this theme.
-    $node = NODE::create([
-      'title' => $theme,
-      'type' => 'data',
-      'uuid' => $data->identifier,
-      'field_data_type' => 'theme',
-      'field_json_metadata' => json_encode($data),
-    ]);
+    $node = $this->entityTypeManager
+      ->getStorage('node')
+      ->create([
+        'title' => $theme,
+        'type' => 'data',
+        'uuid' => $data->identifier,
+        'field_data_type' => 'theme',
+        'field_json_metadata' => json_encode($data),
+      ]);
     $node->save();
 
     return $node->uuid();
@@ -129,7 +165,7 @@ class ThemeValueReferencer {
    *   The theme value.
    */
   protected function dereferenceSingle(string $str) {
-    $nodes = \Drupal::entityTypeManager()
+    $nodes = $this->entityTypeManager
       ->getStorage('node')
       ->loadByProperties([
         'field_data_type' => "theme",
@@ -139,6 +175,48 @@ class ThemeValueReferencer {
       return $node->title->value;
     }
     return $str;
+  }
+
+  /**
+   * Queue potentially orphan themes for processing.
+   *
+   * @param string $old
+   *   Json string of item being replaced.
+   * @param string $new
+   *   Json string of item doing the replacing.
+   */
+  public function checkOrphanThemes(string $old, string $new = "{}") {
+    $themes_removed = $this->themesRemoved($old, $new);
+
+    $orphan_theme_queue = $this->queueService->get('orphan_theme_processor');
+    foreach ($themes_removed as $theme_removed) {
+      // @Todo: Only add to the queue when uuid doesn't already exists in it.
+      $orphan_theme_queue->createItem($theme_removed);
+    }
+  }
+
+  /**
+   * Returns an array of theme uuid(s) being removed as the data changes.
+   *
+   * @param string $old
+   *   Json string of item being replaced.
+   * @param string $new
+   *   Json string of item doing the replacing.
+   *
+   * @return array
+   *   Array of theme uuid(s).
+   */
+  public function themesRemoved(string $old, string $new = "{}"): array {
+    $old_data = json_decode($old);
+    if (!isset($old_data->theme)) {
+      // No theme to potentially delete nor check for orphan.
+      return [];
+    }
+    $old_themes = $old_data->theme;
+    $new_data = json_decode($new);
+    $new_themes = $new_data->theme ?? [];
+
+    return array_diff($old_themes, $new_themes);
   }
 
 }

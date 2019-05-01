@@ -4,7 +4,6 @@ namespace Drupal\dkan_api\Storage;
 
 use Harvest\Storage\Storage;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\dkan_api\Storage\ThemeValueReferencer;
 
 /**
  * DrupalNodeDataset.
@@ -17,8 +16,10 @@ class DrupalNodeDataset implements Storage {
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
-  
+
   /**
+   * Theme Value Referencer.
+   *
    * @var Drupal\dkan_api\Storage\ThemeValueReferencer
    */
   protected $themeValueReferencer;
@@ -26,9 +27,9 @@ class DrupalNodeDataset implements Storage {
   /**
    * Constructor.
    *
-   * @param EntityTypeManagerInterface $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
-   * @param ThemeValueReferencer $themeValueReferencer
+   * @param \Drupal\dkan_api\Storage\ThemeValueReferencer $themeValueReferencer
    *   Injected theme value referencer.
    */
   public function __construct(
@@ -96,6 +97,10 @@ class DrupalNodeDataset implements Storage {
   public function remove(string $id) {
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
+      // Check for orphan theme references.
+      $this->themeValueReferencer->checkOrphanThemes(
+        $node->field_json_metadata->value
+      );
       return $node->delete();
     }
   }
@@ -123,7 +128,13 @@ class DrupalNodeDataset implements Storage {
     // update existing node
     if ($node) {
       $node->field_data_type = "dataset";
-      $node->field_json_metadata = json_encode($data);
+      $new_data = json_encode($data);
+      // Check for orphan theme references.
+      $this->themeValueReferencer->checkOrphanThemes(
+        $node->field_json_metadata->value,
+        $new_data
+      );
+      $node->field_json_metadata = $new_data;
       $node->save();
       return $node->uuid();
     }
@@ -163,6 +174,9 @@ class DrupalNodeDataset implements Storage {
     return current($nodes);
   }
 
+  /**
+   * Helper function.
+   */
   protected function themeDereferenced($json) {
     $data = json_decode($json);
     if (isset($data->theme)) {
