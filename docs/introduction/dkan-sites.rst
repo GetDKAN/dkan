@@ -150,3 +150,29 @@ Local Development Research Initiative, Kenya       http://transformagriculture.o
 Sayada, Tunisia                                    http://opendata.sayada.tn/fr
 Edo, Nigeria                                       http://data.edostate.gov.ng/
 ==============================================     =============
+
+Pacific Islands
+---------------
+
+==============================================     =============
+Organization                                       URL
+==============================================     =============
+American Samoa                                     https://americansamoa-data.sprep.org
+Cook Islands                                       https://cookislands-data.sprep.org
+Federated States of Micronesia                     https://fsm-data.sprep.org
+Fiji                                               https://fiji-data.sprep.org
+Kiribati                                           https://kiribati-data.sprep.org
+Republic of the Marshall Islands                   https://rmi-data.sprep.org
+Nauru                                              https://nauru-data.sprep.org
+New Caledonia                                      https://newcaledonia-data.sprep.org
+Niue                                               https://niue-data.sprep.org
+Palau                                              https://palau-data.sprep.org
+Papua New Guinea                                   https://png-data.sprep.org
+Samoa                                              https://samoa-data.sprep.org
+Solomon Islands                                    https://solomonislands-data.sprep.org
+Tonga                                              https://tonga-data.sprep.org
+Tuvalu                                             https://tuvalu-data.sprep.org
+Vanuatu                                            https://vanuatu-data.sprep.org
+
+Pacific Environment Data Portal                    https://pacific-data.sprep.org
+==============================================     =============
