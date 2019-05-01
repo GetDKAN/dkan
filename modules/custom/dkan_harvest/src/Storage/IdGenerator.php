@@ -2,15 +2,25 @@
 
 namespace Drupal\dkan_harvest\Storage;
 
+use Contracts\IdGenerator as ContractsIdGenerator;
 
-class IdGenerator implements \Contracts\IdGenerator {
+/**
+ *
+ */
+class IdGenerator implements ContractsIdGenerator {
 
-  private $data;
+  protected  $data;
 
+  /**
+   *
+   */
   public function __construct($json) {
     $this->data = json_decode($json);
   }
 
+  /**
+   *
+   */
   public function generate() {
     return isset($this->data->identifier) ? $this->data->identifier : NULL;
   }

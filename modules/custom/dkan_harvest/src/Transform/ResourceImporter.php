@@ -3,30 +3,14 @@
 namespace Drupal\dkan_harvest\Transform;
 
 use Harvest\Transform\Transform;
-use Drupal\dkan_harvest\Load\FileHelper;
+use Drupal\dkan_harvest\Load\FileHelperTrait;
 
 /**
  * Defines a transform that saves the resources from a dataset.
  */
 class ResourceImporter extends Transform {
 
-  /**
-   * The file helper object.
-   *
-   * @var Drupal\dkan_harvest\Load\FileHelper
-   */
-  protected $fileHelper;
-
-  /**
-   * ResourceImporter constructor.
-   *
-   * @param object $harvest_plan
-   *   JSON decoded harvest plan.
-   */
-  public function __construct($harvest_plan) {
-    parent::__construct($harvest_plan);
-    $this->fileHelper = new FileHelper();
-  }
+  use FileHelperTrait;
 
   /**
    * {@inheritdoc}
@@ -113,14 +97,17 @@ class ResourceImporter extends Transform {
   public function saveFile($url, $dataset_id) {
 
     $targetDir = 'public://distribution/' . $dataset_id;
-    $this->fileHelper->prepareDir($targetDir);
+
+    $fileHelper = $this->getFileHelper();
+
+    $fileHelper->prepareDir($targetDir);
 
     // Abort if file can't be saved locally.
-    if (!$path = $this->fileHelper->retrieveFile($url, $targetDir)) {
+    if (!($path = $fileHelper->retrieveFile($url, $targetDir))) {
       return FALSE;
     }
 
-    return $this->fileHelper->fileCreate($path);
+    return $fileHelper->fileCreate($path);
   }
 
 }

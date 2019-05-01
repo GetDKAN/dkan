@@ -1,9 +1,17 @@
 <?php
 
 /**
- * Implements hook_entity_delete().
+ * @file
  */
-function dkan_harvest_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
+
+/**
+ * Implements hook_entity_delete().
+ */use Drupal\Core\Entity\EntityInterface;
+
+/**
+ *
+ */
+function dkan_harvest_entity_delete(EntityInterface $entity) {
 
   // Delete the entity's entry harvest has table.
   db_delete('harvest_hash')

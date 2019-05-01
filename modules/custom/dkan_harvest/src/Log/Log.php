@@ -2,6 +2,9 @@
 
 namespace Drupal\dkan_harvest\Log;
 
+/**
+ *
+ */
 abstract class Log {
 
   protected $debug;
@@ -11,23 +14,33 @@ abstract class Log {
   protected $sourceId;
   protected $runId;
 
-  function __construct($debug, $sourceId, $runId) {
+  /**
+   *
+   */
+  public function __construct($debug, $sourceId, $runId) {
     $this->debug = $debug ? TRUE : FALSE;
     $this->sourceId = $sourceId;
     $this->runId = $runId;
   }
 
-  abstract function write($level, $action, $message);
+  /**
+   *
+   */
+  abstract public function write($level, $action, $message);
 
-  function logEntry($level, $action, $message) {
-    $date = date_create();
-    return array(
+  /**
+   *
+   */
+  public function logEntry($level, $action, $message) {
+    return [
       'source_id' => $this->sourceId,
       'run_id' => $this->runId,
       'action' => $action,
       'level' => $level,
       'message' => $message,
-      'timestamp' => date_timestamp_get($date),
-    );
+    // Use microtime?
+      'timestamp' => \Drupal::time()->getCurrentTime(),
+    ];
   }
+
 }

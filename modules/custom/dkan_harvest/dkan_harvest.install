@@ -1,8 +1,15 @@
 <?php
 
+/**
+ * @file
+ */
+
+/**
+ *
+ */
 function dkan_harvest_schema() {
 
-  $schema['harvest_source'] = array(
+  $schema['harvest_source'] = [
     'description' => 'The table tracking harvest sources.',
     'fields' => [
       'source_id' => [
@@ -19,10 +26,10 @@ function dkan_harvest_schema() {
     ],
     'primary key' => [
       'source_id',
-    ]
-  );
+    ],
+  ];
 
-  $schema['harvest_run'] = array(
+  $schema['harvest_run'] = [
     'description' => 'The table tracking harvest sources.',
     'fields' => [
       'run_id' => [
@@ -51,10 +58,10 @@ function dkan_harvest_schema() {
     ],
     'primary key' => [
       'run_id',
-    ]
-  );
+    ],
+  ];
 
-  $schema['harvest_hash'] = array(
+  $schema['harvest_hash'] = [
     'description' => 'The table tracking harvest hashes.',
     'fields' => [
       'identifier' => [
@@ -87,10 +94,10 @@ function dkan_harvest_schema() {
     ],
     'primary key' => [
       'identifier',
-    ]
-  );
+    ],
+  ];
 
-  $schema['harvest_log'] = array(
+  $schema['harvest_log'] = [
     'description' => 'The log table for harvests.',
     'fields' => [
       'log_id' => [
@@ -128,8 +135,8 @@ function dkan_harvest_schema() {
     ],
     'primary key' => [
       'log_id',
-    ]
-  );
+    ],
+  ];
 
   return $schema;
 }

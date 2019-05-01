@@ -13,11 +13,12 @@ use Drupal\dkan_harvest\Log\Stdout;
 use Drupal\dkan_harvest\Reverter;
 use Drupal\dkan_harvest\Storage\File;
 use Drupal\dkan_harvest\Storage\IdGenerator;
-use Drupal\dkan_harvest\Storage\Source;
 
 use Drush\Commands\DrushCommands;
-use Drush\Style\DrushStyle;
 
+/**
+ *
+ */
 class DkanHarvestCommands extends DrushCommands {
 
   /**
@@ -34,16 +35,14 @@ class DkanHarvestCommands extends DrushCommands {
 
     $rows = [];
 
-
     foreach (array_keys($items) as $id) {
       $rows[] = [$id];
     }
 
-
     $table = new Table(new ConsoleOutput());
 
     $table
-      ->setHeaders(array('plan id'))
+      ->setHeaders(['plan id'])
       ->setRows($rows);
 
     $table->render();
@@ -105,7 +104,7 @@ class DkanHarvestCommands extends DrushCommands {
 
     /* @var $extract \Drupal\dkan_harvest\Extract\Extract */
     $extract = $factory->get('extract');
-    $extract->setLogger(new Stdout(true, $harvest_plan->sourceId,"cache"));
+    $extract->setLogger(new Stdout(TRUE, $harvest_plan->sourceId, "cache"));
     $extract->cache();
   }
 
@@ -133,13 +132,12 @@ class DkanHarvestCommands extends DrushCommands {
     $run_storage = new File($run_folder);
 
     $harvester = new Harvester($harvest_plan, $item_storage, $hash_storage, $run_storage);
-    $harvester->setLogger(new Stdout(true, $sourceId,"run"));
+    $harvester->setLogger(new Stdout(TRUE, $sourceId, "run"));
 
     $results = $harvester->harvest();
 
     $rows = [];
     $rows[] = [$results['created'], $results['updated'], $results['skipped']];
-
 
     $table = new Table(new ConsoleOutput());
     $table->setHeaders(['created', 'updated', 'skipped'])->setRows($rows);
@@ -169,17 +167,23 @@ class DkanHarvestCommands extends DrushCommands {
     $output->write("{$count} items reverted for the '{$sourceId}' harvest plan.");
   }
 
+  /**
+   *
+   */
   private function getHarvestPlan($sourceId) {
     $storage = $this->getPlanStorage();
     $harvest_plan = $storage->retrieve($sourceId);
     return json_decode($harvest_plan);
   }
 
+  /**
+   *
+   */
   private function getPlanStorage(): Storage {
     $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
     $folder = "{$path}/dkan_harvest/plans";
     $store = new File($folder);
     return $store;
   }
-}
 
+}

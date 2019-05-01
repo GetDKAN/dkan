@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_harvest\Unit\Transform;
 
-use Dkan\PhpUnit\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_harvest\Transform\ResourceImporter;
 use Drupal\dkan_harvest\Load\IFileHelper;
 
@@ -43,7 +43,7 @@ EOF;
 
     return [
       [[$originalDataset], $originalDataset, $expected[0]],
-      [[$originalDataset], $modifiedDataset, $expected[1]]
+      [[$originalDataset], $modifiedDataset, $expected[1]],
     ];
 
   }
@@ -67,7 +67,7 @@ EOF;
     $resourceImporterStub->method('updateDistributions')
       ->willReturn($modifiedDataset);
 
-    // Assert
+    // Assert.
     $resourceImporterStub->run($datasets);
     $this->assertEquals($expected, $datasets[0]->distribution[0]->downloadURL);
 
@@ -129,10 +129,34 @@ EOF;
     $resourceImporterStub->method('updateDownloadUrl')
       ->willReturn($dist);
 
-    // Assert
+    // Assert.
     $actualDataset = $this->invokeProtectedMethod($resourceImporterStub, 'updateDistributions', $dataset);
     $this->assertEquals($expected, $actualDataset->distribution[0]->downloadURL);
 
+  }
+
+  /**
+   * Tests updateDistributions when there are no distribution data.
+   */
+  public function testUpdateDistributionsNoDistributions() {
+    // Setup.
+    $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
+      ->setMethods(['updateDownloadUrl'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $dataset = (object) [
+      'distribution' => NULL,
+    ];
+
+    // Expect.
+    $resourceImporterStub->expects($this->never())
+      ->method('updateDownloadUrl');
+
+    // Assert.
+    $actual = $this->invokeProtectedMethod($resourceImporterStub, 'updateDistributions', $dataset);
+
+    $this->assertSame($dataset, $actual);
   }
 
   /**
@@ -189,58 +213,126 @@ EOF;
     $resourceImporterStub->method('saveFile')
       ->willReturn($url);
 
-    // Assert
+    // Assert.
     $actualDist = $this->invokeProtectedMethod($resourceImporterStub, 'updateDownloadUrl', $dataset, $dist);
     $this->assertEquals($expected, $actualDist->downloadURL);
 
   }
 
   /**
-   * Data provider for testSaveFile.
    *
-   * @return array Array of arguments.
    */
-  public function dataTestSaveFile() {
+  public function testUpdateDownloadUrlNoDownloadUrl() {
 
-    return [
-      ["data1.csv", "testid1", TRUE, "http://localhost/site/default/files/distribution/testid1/data1.csv"],
-      ["data2.csv", "testid2", FALSE, FALSE],
+    // Create ResourceImporter stub.
+    $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
+      ->setMethods(['saveFile'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $dataset = (object) [];
+    $dist    = (object) [
+      'downloadURL' => NULL,
     ];
 
+    $resourceImporterStub->expects($this->never())
+      ->method('saveFile');
+
+    // Assert.
+    $actualDist = $this->invokeProtectedMethod($resourceImporterStub, 'updateDownloadUrl', $dataset, $dist);
+    $this->assertSame($dist, $actualDist);
   }
 
   /**
    * Tests the ResourceImporter::saveFile() method.
-   *
-   * @dataProvider dataTestSaveFile
-   *
-   * @param string $filename
-   * @param string $datasetId
-   * @param bool $isUrlValid
-   * @param string $expected
    */
-  public function testSaveFile($filename, $datasetId, $isUrlValid, $expected) {
+  public function testSaveFile() {
+    $url        = "url://to/csv.file";
+    $datasetId  = "testid1";
+    $isUrlValid = "url://to/new/file?";
+    $expected   = TRUE;
 
     // Create FileHelper stub.
-    $fileHelperStub = $this->createMock(IFileHelper::class);
-    $fileHelperStub->method('prepareDir')
-      ->willReturn(TRUE);
-    $fileHelperStub->method('retrieveFile')
+    $fileHelperStub = $this->getMockBuilder(IFileHelper::class)
+      ->setMethods([
+        'prepareDir',
+        'retrieveFile',
+        'fileCreate',
+      ])
+      ->getMockForAbstractClass();
+
+    $fileHelperStub->expects($this->once())
+      ->method('prepareDir')
+      ->with('public://distribution/' . $datasetId);
+
+    $fileHelperStub->expects($this->once())
+      ->method('retrieveFile')
+      ->with($url, 'public://distribution/' . $datasetId)
       ->willReturn($isUrlValid);
-    $fileHelperStub->method('fileCreate')
-      ->willReturn("http://localhost/site/default/files/distribution/$datasetId/$filename");
+
+    $fileHelperStub->expects($this->once())
+      ->method('fileCreate')
+      ->with($isUrlValid)
+      ->willReturn($expected);
 
     // Create ResourceImporter stub.
     $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
-      ->setMethods(NULL)
+      ->setMethods(['getFileHelper'])
       ->disableOriginalConstructor()
       ->getMock();
-    $this->writeProtectedProperty($resourceImporterStub, 'fileHelper', $fileHelperStub);
+
+    $resourceImporterStub->expects($this->once())
+      ->method('getFileHelper')
+      ->willReturn($fileHelperStub);
 
     // Assert.
-    $actual = $resourceImporterStub->saveFile("http://example.com/dist/$filename", $datasetId);
+    $actual = $resourceImporterStub->saveFile($url, $datasetId);
     $this->assertEquals($expected, $actual);
+  }
 
+  /**
+   * Tests the ResourceImporter::saveFile() method if File is not retrieved.
+   */
+  public function testSaveFileNoFileRetrieved() {
+    $url        = "url://to/csv.file";
+    $datasetId  = "testid1";
+    $isUrlValid = NULL;
+    $expected   = FALSE;
+
+    // Create FileHelper stub.
+    $fileHelperStub = $this->getMockBuilder(IFileHelper::class)
+      ->setMethods([
+        'prepareDir',
+        'retrieveFile',
+        'fileCreate',
+      ])
+      ->getMockForAbstractClass();
+
+    $fileHelperStub->expects($this->once())
+      ->method('prepareDir')
+      ->with('public://distribution/' . $datasetId);
+
+    $fileHelperStub->expects($this->once())
+      ->method('retrieveFile')
+      ->with($url, 'public://distribution/' . $datasetId)
+      ->willReturn($isUrlValid);
+
+    $fileHelperStub->expects($this->never())
+      ->method('fileCreate');
+
+    // Create ResourceImporter stub.
+    $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
+      ->setMethods(['getFileHelper'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $resourceImporterStub->expects($this->once())
+      ->method('getFileHelper')
+      ->willReturn($fileHelperStub);
+
+    // Assert.
+    $actual = $resourceImporterStub->saveFile($url, $datasetId);
+    $this->assertEquals($expected, $actual);
   }
 
 }

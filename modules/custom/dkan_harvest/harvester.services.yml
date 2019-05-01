@@ -1,5 +1,0 @@
-services:
-    dkan_harvest.factory:
-        class: Drupal\dkan_harvest\Service\Factory
-        
-        
