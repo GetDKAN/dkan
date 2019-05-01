@@ -15,3 +15,7 @@ services:
         arguments: ['@dkan_api.storage.drupal_node_dataset']
     dkan_api.storage.theme_value_referencer:
         class: \Drupal\dkan_api\Storage\ThemeValueReferencer
+        arguments:
+            - '@entity_type.manager'
+            - '@uuid'
+            - '@queue'
