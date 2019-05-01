@@ -2,10 +2,14 @@
 
 namespace Drupal\dkan_harvest\Transform;
 
-
+/**
+ *
+ */
 class DataJsonToDkan extends DrupalModuleHook {
 
-  // TODO: This should come from the schema.
+  /**
+   * TODO: This should come from the schema.
+   */
   protected $collections = ['dataset', 'publisher', 'keyword', 'license'];
   protected $collectionsToUpdate = [
     'publisher' => 'object',
@@ -25,7 +29,7 @@ class DataJsonToDkan extends DrupalModuleHook {
    *   Array of $docs with the collections as first level keys and referenced
    *   docs.
    */
-  function run(&$items) {
+  public function run(&$items) {
     $this->log->write('DEBUG', 'DataJsonToDkan', 'Running transform from DataJsonToDkan');
     $migrate = FALSE;
     $docs = [];
@@ -37,7 +41,10 @@ class DataJsonToDkan extends DrupalModuleHook {
     $items = $docs;
   }
 
-  function prepareIds($docs) {
+  /**
+   *
+   */
+  public function prepareIds($docs) {
     foreach ($docs as $collection => $items) {
       if ($collection == 'dataset') {
         foreach ($items as $k => $doc) {
@@ -55,7 +62,7 @@ class DataJsonToDkan extends DrupalModuleHook {
   /**
    * Adds ids to distributions.
    */
-  function prepareDist($docs) {
+  public function prepareDist($docs) {
     foreach ($docs as $collection => $items) {
       // Add identifiers to distributions.
       if ($collection == 'dataset') {
@@ -71,7 +78,7 @@ class DataJsonToDkan extends DrupalModuleHook {
                   $title = $format;
                   $doc->distribution[$key]->title = $title;
                 }
-                else if (isset($dist->mediaType)) {
+                elseif (isset($dist->mediaType)) {
                   $type = explode("/", $dist->mediaType);
                   $format = end($type);
                   $title = $format;
@@ -90,12 +97,15 @@ class DataJsonToDkan extends DrupalModuleHook {
     return $docs;
   }
 
-	function slug($str) {
-		$str = strtolower(trim($str));
-		$str = preg_replace('/[^a-z0-9-]/', '-', $str);
-		$str = preg_replace('/-+/', "-", $str);
-		return $str;
-	}
+  /**
+   *
+   */
+  public function slug($str) {
+    $str = strtolower(trim($str));
+    $str = preg_replace('/[^a-z0-9-]/', '-', $str);
+    $str = preg_replace('/-+/', "-", $str);
+    return $str;
+  }
 
   /**
    * This creates identifiers for the referenced items.
@@ -108,7 +118,7 @@ class DataJsonToDkan extends DrupalModuleHook {
    * @param object $item
    *   Individual document for the primary collection, ie dataset.
    */
-  function reference($docs, $item) {
+  public function reference($docs, $item) {
     foreach ($this->collectionsToUpdate as $collection => $dataType) {
       if (isset($item->{$collection})) {
         if ($dataType == 'string') {
@@ -143,14 +153,20 @@ class DataJsonToDkan extends DrupalModuleHook {
     return $docs;
   }
 
-  function prepString($string) {
-    $doc = (object)[];
+  /**
+   *
+   */
+  public function prepString($string) {
+    $doc = (object) [];
     $doc->title = $string;
     $doc->identifier = $this->referenceId($doc);
     return $doc;
   }
 
-  function referenceId($doc) {
+  /**
+   *
+   */
+  public function referenceId($doc) {
     if (isset($doc->identifier)) {
       return $doc->identifier;
     }
@@ -159,9 +175,11 @@ class DataJsonToDkan extends DrupalModuleHook {
     }
   }
 
-  function createIdentifier($title) {
-    return strtolower(preg_replace('/[^a-zA-Z0-9-_]/','', $title));
+  /**
+   *
+   */
+  public function createIdentifier($title) {
+    return strtolower(preg_replace('/[^a-zA-Z0-9-_]/', '', $title));
   }
 
 }
-

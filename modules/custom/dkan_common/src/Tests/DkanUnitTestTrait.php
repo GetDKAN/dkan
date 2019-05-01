@@ -4,6 +4,7 @@ namespace Drupal\dkan_common\Tests;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Trait to sideload some utilities into other Unit tests.
@@ -109,4 +110,19 @@ trait DkanUnitTestTrait {
       ->getMockForAbstractClass();
   }
 
+  /**
+   * Creates and set an actual service container for those pesky instances where
+   * static \Drupal methods are used.
+   *
+   * @param array $keyValue Key => service array.
+   * @return ContainerBuilder
+   */
+  protected function setActualContainer(array $keyValue) {
+    $container = new ContainerBuilder();
+    foreach($keyValue as $key=>$value){
+      $container->set($key, $value);
+    }
+    \Drupal::setContainer($container);
+    return $container;
+  }
 }

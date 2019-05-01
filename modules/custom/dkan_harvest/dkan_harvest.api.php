@@ -5,7 +5,6 @@
  * API examples for dkan_harvest.
  */
 
-
 /**
  * Allows overwriding of items during a transoform.
  *
@@ -14,11 +13,10 @@
  *   - override
  *   - def
  *   - excldue
- *   - datajsontodkan
+ *   - datajsontodkan.
  *
  * @param array &$items
  *   Array of datasets or items to override.
- *
  */
 function hook_dkan_harvest_transform_TRANSFORM_NAME(&$items) {
   foreach ($items as $item) {
