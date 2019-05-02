@@ -90,7 +90,7 @@ class DatasetTest extends DkanTestBase {
     // Expect.
     $mockContainer->expects($this->once())
       ->method('get')
-      ->with('dkan_schema.json_schema_provider')
+      ->with('dkan_schema.schema_retriever')
       ->willReturn($mockProvider);
 
     $mockProvider->expects($this->once())

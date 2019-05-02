@@ -1,43 +1,6 @@
 <?php
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\group\Entity;
-use Drupal\group\Entity\Group;
-use Drupal\dkan_schema\Schema;
-
-/**
- * Prepares for storage by adding ids.
- */
-function dkanDatasetPrepareStore($doc, $references, $schema) {
-  /*$collectionsToUpdate = [
-    'publisher' => 'object',
-    'theme' => 'array',
-    'keyword' => 'array',
-    'license' => 'string',
-  ];
-  foreach ($references as $reference => $entity) {
-    $dataType = $collectionsToUpdate[$reference];
-    if (isset($doc->{$reference})) {
-      if ($dataType == 'string') {
-        $value = $doc->{$reference};
-        $doc->{$reference} = ['dkan-id' => $value];
-      }
-      else if ($dataType == 'array') {
-        $values = explode(',', $doc->{$reference});
-        $doc->{$reference} = [];
-        foreach ($values as $value) {
-          $doc->{$reference}[] = ['dkan-id' => $value];
-        }
-      }
-      else if ($dataType == 'object') {
-        $value = $doc->{$reference};
-        $doc->{$reference} = ['dkan-id' => $value];
-      }
-    }
-  }*/
-  return $doc;
-}
 
 /**
  * Implements hook_entity_presave().
@@ -45,17 +8,15 @@ function dkanDatasetPrepareStore($doc, $references, $schema) {
  * Make sure summary and image are populated.
  */
 function dkan_data_entity_presave(EntityInterface $entity) {
-  $schema = new Schema();
-  $entities = array_values($schema->config['collectionToEntityMap']);
-  $bundles = array_values($schema->config['collectionToBundleMap']);
-  $entityType = $entity->getEntityTypeId();
-  if (!in_array($entityType, $entities) || !in_array($entity->bundle(), $bundles)) {
+
+  if ($entity->bundle() != "data") {
     return;
   }
+
+  $entityType = $entity->getEntityTypeId();
+
   $metadata = json_decode($entity->get('field_json_metadata')->value);
-  if ($references = $schema->config['references'][$entity->bundle()]) {
-    $metadata = dkanDatasetPrepareStore($metadata, $references, $schema);
-  }
+
   $title = isset($metadata->title) ? $metadata->title : $metadata->name;
   if ($entityType == 'node') {
     $entity->setTitle($title);
@@ -66,9 +27,6 @@ function dkan_data_entity_presave(EntityInterface $entity) {
     $changed = new DateTime();
     $changed->setTimestamp($entity->getChangedTime());
     $metadata->modified = $changed->format('Y-m-d\TH:i:s');
-  }
-  elseif ($entityType == 'taxonomy_term') {
-    $entity->setName($title);
   }
 
   // If there is no uuid add one.
@@ -81,46 +39,4 @@ function dkan_data_entity_presave(EntityInterface $entity) {
   }
 
   $entity->set('field_json_metadata', json_encode($metadata));
-}
-
-function dkan_data_entity_insert(EntityInterface $entity) {
-  if ($entity->getEntityTypeId() != 'node' || $entity->bundle() != 'dataset') {
-    return;
-  }
-  dkan_data_group_sync($entity);
-}
-
-function dkan_data_group_sync(EntityInterface $entity) {
-  $metadata = json_decode($entity->get('field_json_metadata')->value);
-  // Assign to group
-  if ($metadata->organization && !$entity->groupSynced) {
-    $pluginId = 'group_node:' . $entity->bundle();
-    $groups = \Drupal::entityTypeManager()
-      ->getStorage('group')
-      ->loadByProperties(['uuid' => $metadata->organization]);
-    $group = current($groups);
-    $entity->groupSynced = TRUE;
-
-    // @todo create group if it does not exist.
-    if (is_object($group)) {
-      $group->addContent($entity, $pluginId);
-    }
-  }
-}
-
-function dkan_data_form_node_dataset_edit_form_alter(&$form, FormStateInterface $form_state) {
-  $form['actions']['submit']['#submit'][] = 'dkan_dataset_node_form_submit';
-  dkan_data_form_node_dataset_form_alter($form, $form_state);
-}
-
-function dkan_data_form_node_dataset_form_alter(&$form, FormStateInterface $form_state) {
-  $form['title']['#access'] = FALSE;
-}
-
-function dkan_data_node_form_submit(&$form, FormStateInterface $form_state) {
-  $values = $form_state->getValues();
-  if (isset($values['nid'])) {
-    $node = \Drupal\node\Entity\Node::load($values['nid']);
-    dkan_data_group_sync($node);
-  }
 }

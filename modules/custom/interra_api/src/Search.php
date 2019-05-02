@@ -2,7 +2,6 @@
 
 namespace Drupal\interra_api;
 
-use Drupal\dkan_api\Controller\Dataset;
 use Drupal\interra_api\Controller\ApiController;
 
 class Search {

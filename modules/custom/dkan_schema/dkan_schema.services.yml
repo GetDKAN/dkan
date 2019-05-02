@@ -3,9 +3,3 @@ services:
         class: \Drupal\dkan_schema\SchemaRetriever
         # always return new instance.
         shared: false
-    # instance of JsonSchemaProvider\Provider with 
-    # \Drupal\dkan_schema\SchemaRetriever
-    dkan_schema.json_schema_provider:
-        class: JsonSchemaProvider\Provider
-        arguments: ['@dkan_schema.schema_retriever']
-        shared: false
