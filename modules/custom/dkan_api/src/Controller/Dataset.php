@@ -43,7 +43,7 @@ class Dataset extends Api {
 
     /** @var \JsonSchemaProvider\Provider $provider */
     $provider = $this->container
-      ->get('dkan_schema.json_schema_provider');
+      ->get('dkan_schema.schema_retriever');
     return $provider->retrieve('dataset');
   }
 

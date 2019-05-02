@@ -25,23 +25,20 @@ use Dkan\Datastore\Resource;
 class ApiController extends ControllerBase
 {
 
-  public function routes(Request $request)
-  {
-    $response = getRoutes();
-    return new JsonResponse($response);
-  }
-
   public function schemas(Request $request)
   {
-    $response = array();
-    $schema = new Schema();
-    $interra = new Interra();
-    $response['collections'] = $schema->config['collections'];
-    $response['schema'] = $schema->loadFullSchema();
-    $response['pageSchema'] = $interra->loadPageSchema();
-    $response['facets'] = $schema->config['facets'];
-    $response['map'] = ['organization' => ['name' => 'title']];
-    return $this->response($response);
+    $provider = new Provider(new SchemaRetriever());
+    try {
+      $schema = $provider->retrieve('dataset');
+    } catch (\Exception $e) {
+      return $this->response($e->getMessage());
+    }
+
+    $data = ['dataset' => json_decode($schema)];
+
+    $response = $this->response($data);
+    $response->headers->set("Content-Type", "application/schema+json");
+    return $response;
   }
 
   public function schema($schema_name)
@@ -61,15 +58,6 @@ class ApiController extends ControllerBase
   {
     $search = new Search();
     return $this->response($search->index());
-  }
-
-  public function response($resp)
-  {
-    $response = new JsonResponse($resp);
-    $response->headers->set('Access-Control-Allow-Origin', '*');
-    $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, DELETE');
-    $response->headers->set('Access-Control-Allow-Headers', 'Authorization');
-    return $response;
   }
 
   public function collection($collection)
@@ -205,6 +193,15 @@ class ApiController extends ControllerBase
     }
 
     return $dataset;
+  }
+
+  protected function response($resp)
+  {
+    $response = new JsonResponse($resp);
+    $response->headers->set('Access-Control-Allow-Origin', '*');
+    $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, DELETE');
+    $response->headers->set('Access-Control-Allow-Headers', 'Authorization');
+    return $response;
   }
 
 }

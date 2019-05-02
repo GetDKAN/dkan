@@ -6,7 +6,7 @@ use Contracts\Retriever;
 
 class SchemaRetriever implements Retriever {
 
-        private $directory;
+    private $directory;
 
     public function __construct()
     {
@@ -15,11 +15,7 @@ class SchemaRetriever implements Retriever {
 
     public function getAllIds() {
         return [
-          'dataset',
-            'organization',
-            'theme',
-            'keyword',
-            'distribution'
+          'dataset'
         ];
     }
 

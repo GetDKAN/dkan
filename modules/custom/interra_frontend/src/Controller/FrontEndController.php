@@ -43,8 +43,7 @@ class FrontEndController extends ControllerBase {
   }
 
   public function buildPage ( Request $request ) {
-    $path =  ltrim($request->getPathInfo(), '/');
-    $page = new InterraPage($this->chunkId, $path);
+    $page = new InterraPage();
     return new Response( $page->build() );
   }
 }
