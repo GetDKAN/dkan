@@ -98,7 +98,7 @@ class DrupalNodeDataset implements Storage {
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
       // Check for orphan theme references.
-      $this->themeValueReferencer->checkOrphanThemes(
+      $this->themeValueReferencer->processDeletedThemes(
         $node->field_json_metadata->value
       );
       return $node->delete();
@@ -130,7 +130,7 @@ class DrupalNodeDataset implements Storage {
       $node->field_data_type = "dataset";
       $new_data = json_encode($data);
       // Check for orphan theme references.
-      $this->themeValueReferencer->checkOrphanThemes(
+      $this->themeValueReferencer->processDeletedThemes(
         $node->field_json_metadata->value,
         $new_data
       );

@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\dkan_api\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Component\Uuid\Php;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Queue\QueueFactory;
 use stdClass;
 
@@ -26,7 +26,7 @@ class ThemeValueReferencer {
   /**
    * The uuid service.
    *
-   * @var Drupal\Component\Uuid\Php
+   * @var Drupal\Component\Uuid\UuidInterface
    */
   protected $uuidService;
 
@@ -43,7 +43,7 @@ class ThemeValueReferencer {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Php $uuidService, QueueFactory $queueService) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, UuidInterface $uuidService, QueueFactory $queueService) {
     $this->entityTypeManager = $entityTypeManager;
     $this->uuidService= $uuidService;
     $this->queueService = $queueService;
@@ -66,10 +66,15 @@ class ThemeValueReferencer {
     foreach ($data->theme as $theme) {
       $uuid = $this->referenceSingle($theme);
       if (!$uuid) {
-        $uuid = $this->generateUuid($theme);
+        $uuid = $this->createThemeReference($theme);
       }
       // Return the existing or generated uuid, if not keep the original value.
-      $themes[] = $uuid ?: $theme;
+      if ($uuid) {
+        $themes[] = $uuid;
+      }
+      else {
+        $themes[] = $theme;
+      }
     }
     return $themes;
   }
@@ -109,7 +114,7 @@ class ThemeValueReferencer {
    * @return string
    *   The new theme data item's uuid.
    */
-  protected function generateUuid(string $theme) {
+  protected function createThemeReference(string $theme) {
     $today = date('Y-m-d');
 
     // Create theme json.
@@ -152,7 +157,12 @@ class ThemeValueReferencer {
       $themes[] = $this->dereferenceSingle($theme);
     }
 
-    return !empty($themes) ? $themes : NULL;
+    if (!empty($themes)) {
+      return $themes;
+    }
+    else {
+      return NULL;
+    }
   }
 
   /**
@@ -178,14 +188,17 @@ class ThemeValueReferencer {
   }
 
   /**
-   * Queue potentially orphan themes for processing.
+   * Queue deleted themes for processing, as they may be orphans.
    *
    * @param string $old
    *   Json string of item being replaced.
    * @param string $new
    *   Json string of item doing the replacing.
+   *
+   * @return int
+   *   The number of items queued for processing.
    */
-  public function checkOrphanThemes(string $old, string $new = "{}") {
+  public function processDeletedThemes(string $old, string $new = "{}") {
     $themes_removed = $this->themesRemoved($old, $new);
 
     $orphan_theme_queue = $this->queueService->get('orphan_theme_processor');
@@ -213,8 +226,14 @@ class ThemeValueReferencer {
       return [];
     }
     $old_themes = $old_data->theme;
+
     $new_data = json_decode($new);
-    $new_themes = $new_data->theme ?? [];
+    if (!isset($new_data->theme)) {
+      $new_themes = [];
+    }
+    else {
+      $new_themes = $new_data->theme;
+    }
 
     return array_diff($old_themes, $new_themes);
   }
