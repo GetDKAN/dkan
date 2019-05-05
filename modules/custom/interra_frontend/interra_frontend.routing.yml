@@ -28,7 +28,7 @@ interra_frontend.groups:
    { _controller: '\Drupal\interra_frontend\Controller\FrontEndController::groups'}
   requirements:
     _permission: 'access content'
-interra_frontend.groups:
+interra_frontend.organizations:
   path: '/organization/{id}'
   defaults:
    { _controller: '\Drupal\interra_frontend\Controller\FrontEndController::org'}

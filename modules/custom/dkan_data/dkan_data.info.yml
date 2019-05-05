@@ -1,18 +1,14 @@
-name: Dataset
-description: 'Provides Dataset content type and related configuration. '
+name: Data
+description: 'Provides a Data content type and related configuration. '
 type: module
 core: 8.x
 dependencies:
   - dkan_schema
   - field
-  - group
-  - gnode
+  - node
   - json_form
   - menu_ui
-  - node
   - path
   - text
   - user
-  - json_form
-  - taxonomy
 package: DKAN
