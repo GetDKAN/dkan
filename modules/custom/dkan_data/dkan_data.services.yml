@@ -1,0 +1,5 @@
+services:
+  dkan_data.config_overrider:
+    class: \Drupal\dkan_data\ConfigurationOverrider
+    tags:
+      - {name: config.factory.override, priority: 5}

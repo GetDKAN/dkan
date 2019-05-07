@@ -2,15 +2,26 @@
 
 namespace Drupal\dkan_datastore\Commands;
 
+use Dkan\Datastore\Manager\Factory;
+use Dkan\Datastore\Locker;
+use Dkan\Datastore\LockableBinStorage;
+use Dkan\Datastore\Manager\Info;
+use Dkan\Datastore\Manager\InfoProvider;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\Resource;
 
+/**
+ *
+ */
 class DkanDatastoreCommands extends DrushCommands {
 
   protected $output;
 
+  /**
+   *
+   */
   public function __construct() {
     $this->output = new ConsoleOutput();
   }
@@ -27,7 +38,6 @@ class DkanDatastoreCommands extends DrushCommands {
     $database = \Drupal::service('dkan_datastore.database');
     $this->output->writeln("Database instance created.");
 
-
     try {
       $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
 
@@ -47,16 +57,15 @@ class DkanDatastoreCommands extends DrushCommands {
         $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
         $this->output->writeln("And created a resource.");
 
-        $provider = new \Dkan\Datastore\Manager\InfoProvider();
-        $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
+        $provider = new InfoProvider();
+        $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
         $this->output->writeln("Provider set.");
 
-        $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
+        $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
         $this->output->writeln("Bin Storage is set.");
 
-        $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
+        $factory = new Factory($resource, $provider, $bin_storage, $database);
         $this->output->writeln("Factory is set.");
-
 
         /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
         $datastore = $factory->get();
@@ -72,7 +81,7 @@ class DkanDatastoreCommands extends DrushCommands {
         $this->output->writeln("We can not work with non-dataset entities.");
       }
     }
-    catch(\Exception $e) {
+    catch (\Exception $e) {
       $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
       $this->output->writeln($e->getMessage());
     }
@@ -87,9 +96,8 @@ class DkanDatastoreCommands extends DrushCommands {
    * @command dkan-datastore:drop
    */
   public function drop($uuid) {
-    $database =  \Drupal::service('dkan_datastore.database');
+    $database = \Drupal::service('dkan_datastore.database');
     $this->output->writeln("Database instance created.");
-
 
     try {
       $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
@@ -112,16 +120,15 @@ class DkanDatastoreCommands extends DrushCommands {
         $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
         $this->output->writeln("And created a resource.");
 
-        $provider = new \Dkan\Datastore\Manager\InfoProvider();
-        $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
+        $provider = new InfoProvider();
+        $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
         $this->output->writeln("Provider set.");
 
-        $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
+        $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
         $this->output->writeln("Bin Storage is set.");
 
-        $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
+        $factory = new Factory($resource, $provider, $bin_storage, $database);
         $this->output->writeln("Factory is set.");
-
 
         /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
         $datastore = $factory->get();
@@ -137,11 +144,10 @@ class DkanDatastoreCommands extends DrushCommands {
         $this->output->writeln("We can not work with non-dataset entities.");
       }
     }
-    catch(\Exception $e) {
+    catch (\Exception $e) {
       $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
       $this->output->writeln($e->getMessage());
     }
   }
 
 }
-

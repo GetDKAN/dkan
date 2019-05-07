@@ -13,14 +13,15 @@ use Drupal\dkan_harvest\Storage\File;
 
 use Drush\Commands\DrushCommands;
 
-
+/**
+ *
+ */
 class Commands extends DrushCommands {
 
   /**
    * Create dummy content.
    *
    * @command dkan-dummy-content:create
-   *
    */
   public function create() {
 
@@ -39,13 +40,12 @@ class Commands extends DrushCommands {
     $run_storage = new File($run_folder);
 
     $harvester = new Harvester($harvest_plan, $item_storage, $hash_storage, $run_storage);
-    $harvester->setLogger(new Stdout(true, "dummy", "run"));
+    $harvester->setLogger(new Stdout(TRUE, "dummy", "run"));
 
     $results = $harvester->harvest();
 
     $rows = [];
     $rows[] = [$results['created'], $results['updated'], $results['skipped']];
-
 
     $table = new Table(new ConsoleOutput());
     $table->setHeaders(['created', 'updated', 'skipped'])->setRows($rows);
@@ -69,5 +69,5 @@ class Commands extends DrushCommands {
     $output = new ConsoleOutput();
     $output->write("{$count} items reverted for the 'dummy' harvest plan.");
   }
-}
 
+}

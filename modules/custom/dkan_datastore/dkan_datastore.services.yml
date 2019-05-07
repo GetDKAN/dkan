@@ -10,5 +10,3 @@ services:
     # todo: is this supposed to be a single instance or new instance each time?
     # assuming new instance each time for now.
     shared: false
-    
-

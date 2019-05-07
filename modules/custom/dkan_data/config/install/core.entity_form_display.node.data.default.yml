@@ -10,7 +10,7 @@ dependencies:
     - json_form
     - path
 _core:
-  default_config_hash: _twixbNO8WQ9cYUaH_K8QjPwyTPCwpn9WxQYEIE-3JY
+  default_config_hash: XUF7rshmx-Q17HcczdSSt8-HDS3hQtgY-wpX7wKI3Hg
 id: node.data.default
 targetEntityType: node
 bundle: data
@@ -18,22 +18,14 @@ mode: default
 content:
   created:
     type: datetime_timestamp
-    weight: 10
+    weight: 1
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_data_type:
-    weight: 122
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_json_metadata:
-    weight: 121
+    weight: 6
     settings:
-      json_form: "{\n  \"title\": \"Datasets\",\n  \"description\": \"A simple dataset.\",\n  \"type\": \"object\",\n  \"required\": [\n    \"title\"\n  ],\n  \"properties\": {\n    \"title\": {\n      \"type\": \"string\",\n      \"title\": \"Title\"\n    },\n    \"identifier\": {\n      \"type\": \"string\",\n      \"title\": \"Identifier\",\n      \"description\": \"Unique identifier for dataset.\"\n    },\n    \"description\": {\n      \"type\": \"string\",\n      \"title\": \"Description\"\n    },\n    \"organization\": {\n      \"type\": \"string\",\n      \"title\": \"Organization\"\n    },\n    \"created\": {\n      \"type\": \"string\",\n      \"title\": \"Created\",\n      \"format\": \"date-time\"\n    },\n    \"modified\": {\n      \"type\": \"string\",\n      \"title\": \"Modified\",\n      \"format\": \"date-time\"\n    },\n    \"resources\": {\n      \"type\": \"array\",\n      \"title\": \"Resources\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"title\": {\n            \"type\": \"string\",\n            \"title\": \"Title\"\n          },\n          \"uri\": {\n            \"type\": \"string\",\n            \"title\": \"URI\"\n          },\n          \"type\": {\n            \"type\": \"string\",\n            \"title\": \"Type\",\n            \"enum\": [\n              \"csv\",\n              \"html\",\n              \"xls\"\n            ]\n          }\n        }\n      }\n    }\n  }\n}"
+      json_form: ''
       json_form_default_value: ''
       show_textarea: 0
     third_party_settings: {  }
@@ -41,7 +33,7 @@ content:
     region: content
   path:
     type: path
-    weight: 30
+    weight: 4
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -49,38 +41,32 @@ content:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 15
+    weight: 2
     region: content
     third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 120
+    weight: 5
     region: content
     third_party_settings: {  }
   sticky:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 16
+    weight: 3
     region: content
-    third_party_settings: {  }
-  title:
-    type: string_textfield
-    weight: -5
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 0
     settings:
       match_operator: CONTAINS
       size: 60
       placeholder: ''
     region: content
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  field_data_type: true
+  title: true

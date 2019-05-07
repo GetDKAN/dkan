@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Drupal\dkan_datastore;
 
 use Dkan\Datastore\Manager\IManager;
@@ -11,12 +10,15 @@ use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\LockableBinStorage;
 use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Locker;
-use Drupal\dkan_datastore\Storage\Variable;
 
+/**
+ *
+ */
+class Util {
 
-class Util
-{
-
+  /**
+   *
+   */
   public static function getDatastoreManager($uuid) : IManager {
     $database = \Drupal::service('dkan_datastore.database');
 
@@ -31,7 +33,7 @@ class Util
     $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
     $factory = new Factory($resource, $provider, $bin_storage, $database);
 
-    return  $factory->get();
+    return $factory->get();
   }
 
 }

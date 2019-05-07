@@ -1,7 +1,5 @@
 <?php
-/**
- * @group dkan
- */
+
 namespace Drupal\Tests\dkan_datastore\Functional;
 
 use Drupal\dkan_datastore\Storage\Database;
@@ -11,9 +9,11 @@ use Dkan\Datastore\Storage\Database\Query\Insert;
 /**
  * @group dkan
  */
-class DatabaseTest extends BrowserTestBase
-{
+class DatabaseTest extends BrowserTestBase {
 
+  /**
+   *
+   */
   public function testCreateInsertDrop() {
     $store = new Database(\Drupal::database());
     $schema = [
@@ -22,9 +22,9 @@ class DatabaseTest extends BrowserTestBase
           'type' => 'text',
         ],
         'last' => [
-          'type' => 'text'
-        ]
-      ]
+          'type' => 'text',
+        ],
+      ],
     ];
     $store->tableCreate("dkan_datastore_test", $schema);
 
@@ -33,7 +33,7 @@ class DatabaseTest extends BrowserTestBase
     $data->values = [
       ['Gerardo', 'Gonzalez'],
       ['Jeanette', 'Day'],
-      ['Aaron', 'Couch']
+      ['Aaron', 'Couch'],
     ];
 
     $store->insert($data);
