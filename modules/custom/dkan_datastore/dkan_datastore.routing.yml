@@ -5,4 +5,3 @@ dkan_datastore.query:
     { _controller: '\Drupal\dkan_datastore\Controller\Api::runQuery'}
   requirements:
     _access: 'TRUE'
-

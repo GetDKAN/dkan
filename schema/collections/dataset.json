@@ -91,19 +91,12 @@
     "distribution": {
       "title": "Distribution",
       "description": "A container for the array of Distribution objects",
-      "anyOf": [
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/distribution",
-            "minItems": 1,
-            "uniqueItems": true
-          }
-        },
-        {
-          "type": "null"
-        }
-      ]
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/distribution",
+        "minItems": 1,
+        "uniqueItems": true
+      }
     },
     "issued": {
       "title": "Release Date",
@@ -123,20 +116,13 @@
     "theme": {
       "title": "Category",
       "description": "Main thematic category of the dataset.",
-      "anyOf": [
-        {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
-          "minItems": 1,
-          "uniqueItems": true
-        },
-        {
-          "type": "null"
-        }
-      ]
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
     },
     "license": {
       "title": "License",

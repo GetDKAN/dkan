@@ -3,34 +3,29 @@
 namespace Drupal\interra_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\dkan_datastore\Util;
 use Drupal\dkan_schema\SchemaRetriever;
 use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\dkan_schema\Schema;
-use Drupal\interra_api\Interra;
 use Drupal\interra_api\Search;
-use Drupal\interra_api\SiteMap;
-use Drupal\interra_api\Swagger;
-use Drupal\interra_api\ApiRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
-use Dkan\Datastore\Resource;
 
 /**
-* An ample controller.
-*/
-class ApiController extends ControllerBase
-{
+ * An ample controller.
+ */
+class ApiController extends ControllerBase {
 
-  public function schemas(Request $request)
-  {
+  /**
+   *
+   */
+  public function schemas(Request $request) {
     $provider = new Provider(new SchemaRetriever());
     try {
       $schema = $provider->retrieve('dataset');
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->response($e->getMessage());
     }
 
@@ -41,12 +36,15 @@ class ApiController extends ControllerBase
     return $response;
   }
 
-  public function schema($schema_name)
-  {
+  /**
+   *
+   */
+  public function schema($schema_name) {
     $provider = new Provider(new SchemaRetriever());
     try {
       $schema = $provider->retrieve($schema_name);
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->response($e->getMessage());
     }
     $response = $this->response(json_decode($schema));
@@ -54,25 +52,29 @@ class ApiController extends ControllerBase
     return $response;
   }
 
-  public function search(Request $request)
-  {
+  /**
+   *
+   */
+  public function search(Request $request) {
     $search = new Search();
     return $this->response($search->index());
   }
 
-  public function collection($collection)
-  {
+  /**
+   *
+   */
+  public function collection($collection) {
     $valid_collections = [
       'dataset',
       'organization',
-      'theme'
+      'theme',
     ];
 
     $collection = str_replace(".json", "", $collection);
 
     if (in_array($collection, $valid_collections)) {
 
-      /** @var DrupalNodeDataset $storage */
+      /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $storage */
       $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
       $data = $storage->retrieveAll();
 
@@ -85,7 +87,8 @@ class ApiController extends ControllerBase
         }
 
         return $this->response($decoded);
-      } elseif ($collection == "theme") {
+      }
+      elseif ($collection == "theme") {
         $themes = [];
         foreach ($data as $dataset_json) {
           $dataset = json_decode($dataset_json);
@@ -99,7 +102,8 @@ class ApiController extends ControllerBase
         ksort($themes);
 
         return $this->response(array_values($themes));
-      } elseif ($collection == "organization") {
+      }
+      elseif ($collection == "organization") {
         $organizations = [];
         foreach ($data as $dataset_json) {
           $dataset = json_decode($dataset_json);
@@ -113,15 +117,18 @@ class ApiController extends ControllerBase
 
         return $this->response(array_values($organizations));
       }
-    } else {
+    }
+    else {
       throw new NotFoundHttpException();
     }
   }
 
-  public function doc($collection, $doc)
-  {
+  /**
+   *
+   */
+  public function doc($collection, $doc) {
     $valid_collections = [
-      'dataset'
+      'dataset',
     ];
 
     $uuid = str_replace(".json", "", $doc);
@@ -130,28 +137,33 @@ class ApiController extends ControllerBase
 
       if ($collection == "dataset") {
 
-        /** @var DrupalNodeDataset $storage */
+        /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $storage */
         $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
         $data = $storage->retrieve($uuid);
         $dataset = json_decode($data);
         $dataset = $this->addDatastoreMetadata($dataset);
         return $this->response(self::modifyDataset($dataset));
-      } else {
+      }
+      else {
         return $this->response([]);
       }
-    } else {
+    }
+    else {
       throw new NotFoundHttpException();
     }
   }
 
-  public static function modifyDataset($dataset)
-  {
+  /**
+   *
+   */
+  public static function modifyDataset($dataset) {
     foreach ($dataset->distribution as $key2 => $distro) {
       $format = str_replace("text/", "", $distro->mediaType);
       if ($format == "csv") {
         $distro->format = $format;
         $dataset->distribution[$key2] = $distro;
-      } else {
+      }
+      else {
         unset($dataset->distribution[$key2]);
       }
     }
@@ -167,19 +179,24 @@ class ApiController extends ControllerBase
     return $dataset;
   }
 
-  public static function objectifyStringsArray(array $array)
-  {
+  /**
+   *
+   */
+  public static function objectifyStringsArray(array $array) {
     $objects = [];
     foreach ($array as $string) {
       $identifier = str_replace(" ", "", $string);
       $identifier = strtolower($identifier);
 
-      $objects[] = (object)['identifier' => $identifier, 'title' => $string];
+      $objects[] = (object) ['identifier' => $identifier, 'title' => $string];
     }
 
     return $objects;
   }
 
+  /**
+   *
+   */
   private function addDatastoreMetadata($dataset) {
     $manager = Util::getDatastoreManager($dataset->identifier);
 
@@ -188,15 +205,17 @@ class ApiController extends ControllerBase
       $dataset->columns = $headers;
       $dataset->datastore_statistics = [
         'rows' => $manager->numberOfRecordsImported(),
-        'columns' => count($headers)
+        'columns' => count($headers),
       ];
     }
 
     return $dataset;
   }
 
-  protected function response($resp)
-  {
+  /**
+   *
+   */
+  protected function response($resp) {
     $response = new JsonResponse($resp);
     $response->headers->set('Access-Control-Allow-Origin', '*');
     $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, DELETE');
@@ -205,4 +224,3 @@ class ApiController extends ControllerBase
   }
 
 }
-

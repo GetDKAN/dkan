@@ -9,19 +9,28 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 class Api implements ContainerInjectionInterface {
 
   /**
    * Service container.
    *
-   * @var ContainerInterface
+   * @var \Symfony\Component\DependencyInjection\ContainerInterface
    */
   protected $container;
 
+  /**
+   *
+   */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
   }
 
+  /**
+   *
+   */
   public function runQuery($query_string) {
 
     $parser = $this->container->get('dkan_datastore.sql_parser');
@@ -38,6 +47,9 @@ class Api implements ContainerInjectionInterface {
     }
   }
 
+  /**
+   *
+   */
   protected function getQueryObject($query_string) {
 
     $object = new Query();
@@ -95,11 +107,17 @@ class Api implements ContainerInjectionInterface {
     return $object;
   }
 
+  /**
+   *
+   */
   protected function getDatabase(): Database {
     return $this->container
       ->get('dkan_datastore.database');
   }
 
+  /**
+   *
+   */
   protected function explode(string $queryStr) {
     $pieces = explode("]", $queryStr);
     foreach ($pieces as $key => $piece) {
@@ -109,11 +127,17 @@ class Api implements ContainerInjectionInterface {
     return $pieces;
   }
 
+  /**
+   *
+   */
   protected function getUuidFromSelect(string $select) {
     $pieces = explode("FROM", $select);
     return trim(end($pieces));
   }
 
+  /**
+   *
+   */
   protected function getPropertiesFromSelect(string $select) {
     $properties = [];
     $pieces = explode("FROM", $select);
@@ -131,6 +155,9 @@ class Api implements ContainerInjectionInterface {
     }
   }
 
+  /**
+   *
+   */
   protected function getPropertiesAndValuesFromWhere(string $where) {
     $result = [];
     $where = str_replace("WHERE", "", $where);
@@ -145,6 +172,9 @@ class Api implements ContainerInjectionInterface {
     return $result;
   }
 
+  /**
+   *
+   */
   protected function getSortInfo(string $sort) {
     $sort_info = ['ASC' => [], 'DESC' => []];
 
@@ -162,6 +192,9 @@ class Api implements ContainerInjectionInterface {
     return $sort_info;
   }
 
+  /**
+   *
+   */
   protected function getRangeInfo(string $range) {
     $info = ['limit' => NULL, 'offset' => NULL];
     $pieces = explode(" ", $range);
@@ -183,4 +216,5 @@ class Api implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static($container);
   }
+
 }

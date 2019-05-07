@@ -2,9 +2,6 @@
 
 namespace Drupal\field_example\Plugin\Field\FieldType;
 
-use Drupal\Core\Field\FieldItemBase;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\TypedData\DataDefinition;
 use Drupal\jsonb\Plugin\Field\FieldType\JsonItem;
 
 /**

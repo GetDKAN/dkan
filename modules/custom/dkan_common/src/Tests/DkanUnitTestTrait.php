@@ -114,15 +114,18 @@ trait DkanUnitTestTrait {
    * Creates and set an actual service container for those pesky instances where
    * static \Drupal methods are used.
    *
-   * @param array $keyValue Key => service array.
-   * @return ContainerBuilder
+   * @param array $keyValue
+   *   Key => service array.
+   *
+   * @return \Symfony\Component\DependencyInjection\ContainerBuilder
    */
   protected function setActualContainer(array $keyValue) {
     $container = new ContainerBuilder();
-    foreach($keyValue as $key=>$value){
+    foreach ($keyValue as $key => $value) {
       $container->set($key, $value);
     }
     \Drupal::setContainer($container);
     return $container;
   }
+
 }

@@ -45,7 +45,7 @@ class ThemeValueReferencer {
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager, UuidInterface $uuidService, QueueFactory $queueService) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->uuidService= $uuidService;
+    $this->uuidService = $uuidService;
     $this->queueService = $queueService;
   }
 

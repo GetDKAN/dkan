@@ -3,7 +3,6 @@
 namespace Drupal\dkan_common\Service;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sae\Sae;
 use Contracts\Storage as ContractsStorageInterface;
@@ -17,7 +16,6 @@ use Contracts\Storage as ContractsStorageInterface;
  * @codeCoverageIgnore
  */
 class Factory {
-
 
   /**
    * Creates a new json response.

@@ -31,7 +31,7 @@ class JsonTableFormatter extends FormatterBase {
       $elements[$delta] = [
         '#type' => 'table',
       ];
-      foreach($metadata as $key => $value) {
+      foreach ($metadata as $key => $value) {
         $elements[$delta]['#rows'][] = ['key' => $key, 'value' => (string) $value];
       }
     }

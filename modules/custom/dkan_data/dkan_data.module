@@ -1,11 +1,32 @@
 <?php
 
+/**
+ * @file
+ */
+
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
+ * Implements hook_node_load().
+ */
+function dkan_data_node_load(array $entities) {
+
+  foreach ($entities as $entity) {
+    if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
+      $metadata = json_decode($entity->get('field_json_metadata')->value);
+      if (isset($metadata->theme)) {
+        $referencer = Drupal::service("dkan_api.storage.theme_value_referencer");
+        $metadata->theme = $referencer->dereference($metadata);
+        $entity->set('field_json_metadata', json_encode($metadata));
+      }
+    }
+  }
+
+}
+
+/**
  * Implements hook_entity_presave().
- *
- * Make sure summary and image are populated.
  */
 function dkan_data_entity_presave(EntityInterface $entity) {
 
@@ -20,6 +41,9 @@ function dkan_data_entity_presave(EntityInterface $entity) {
   $title = isset($metadata->title) ? $metadata->title : $metadata->name;
   if ($entityType == 'node') {
     $entity->setTitle($title);
+    if (empty($entity->field_data_type->value)) {
+      $entity->field_data_type->value = "dataset";
+    }
     $created = new DateTime();
     $created->setTimestamp($entity->getCreatedTime());
     $metadata->created = $created->format('Y-m-d\TH:i:s');
@@ -38,5 +62,21 @@ function dkan_data_entity_presave(EntityInterface $entity) {
     $entity->set('uuid', $metadata->identifier);
   }
 
+  if (isset($metadata->theme)) {
+    $referencer = Drupal::service("dkan_api.storage.theme_value_referencer");
+    $metadata->theme = $referencer->reference($metadata);
+  }
+
   $entity->set('field_json_metadata', json_encode($metadata));
+}
+
+/**
+ * Implements hook_entity_bundle_field_info_alter().
+ */
+function dkan_data_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
+  if ($bundle === 'data') {
+    if (isset($fields['field_json_metadata'])) {
+      $fields['field_json_metadata']->addConstraint('ProperJson', []);
+    }
+  }
 }
