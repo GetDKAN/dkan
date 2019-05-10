@@ -172,6 +172,8 @@ projects:
       2816837: https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch
   globalredirect:
     version: '1.6'
+    patch:
+      3053515: https://www.drupal.org/files/issues/2019-05-08/globalredirect-3053515-is-dir-external-check.patch
   gravatar:
     download:
       type: git
