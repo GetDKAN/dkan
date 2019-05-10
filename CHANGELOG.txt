@@ -1,3 +1,53 @@
+7.x-1.16.10
+----------
+ - #2874 Security update for Drupal to 7.67 (SA-CORE-2019-007)
+ - #2730 Behat test improvements
+ - #2862 Add primary key to datastore tables. Create hook_datastore_post_import to allow users to execute actions right after data has been imported into the datastore.
+ - #2842 Fix harvest migration message logging for batched migrations
+
+7.x-1.16.9
+----------
+ - #2864 Tablefield security update
+ - #2864 Drupal core security update
+ - #2863 Use the data.json mediaType value to assign the resource extension during Harvest if the format is not given.
+ - #2809 Remove 'Feedback' from the list of content types managed by DKAN Workflow
+ - #2809 Apply patch to views to fix a bug on set_group_operator when using hook_views_query_alter
+ - #2809 Remove user picture from comment.tpl.php
+ - #2860 Document new datastore behavior
+ - #2852 Add 'count' to the list of functions supported by the Datastore API
+
+7.x-1.16.8
+----------
+ - #2854 Wrap words on harvest summary sidebar.
+ - #2856 Switch to forked version of font_icon_select module.
+ - #2858 Security Upgrade of Services to 3.24.
+
+7.x-1.16.7
+----------
+ - #2780 Run tests with dktl.
+ - #2853 Security Upgrade of Module Filter to 2.2.
+
+7.x-1.16.6
+----------
+ - #2848 Upgrade Drupal to 7.65
+ - #2812 Use ISO 8601 Date Format for Temporal Coverage
+
+7.x-1.16.5
+----------
+ - #2846 Update for views 7.x-3.21 and ctools 7.x-1.15
+ - #2824 Handle missing harvest source with a warning rather than mass un-publishing of content.
+ - #2840 Skip the dataset_changelog step when harvesting, datasets always get a new revision with out it
+ - #2839 Add drush command for deleting orphaned data tables drush dkan-datastore-drop-orphan-tables
+ - #2828 Implement the --feedback flag when harvesting to avoid SSH time outs during long harvests
+
+7.x-1.16.4
+----------
+ - #2837 Security updates for the services and path_breadcrumbs contrib modules
+ - #2834 Add drush command drush ddpr to reduce duplicate dataset revisions from the same timestamp to a single revision.
+ - #2830 Add patch to workbench_moderation to avoid deadlock on update
+ - #2821 Declare file size of remote files as 'unknown' since the value given can be inaccurate
+ - #2823 Update dkan_dataset_validate_date() function to work on additional date formats
+
 7.x-1.16.3
 ----------
  - #2832 Security updates for link and restws
