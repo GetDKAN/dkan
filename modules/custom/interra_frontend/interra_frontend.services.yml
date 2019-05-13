@@ -1,0 +1,5 @@
+services:
+    interra_frontend.interra_page:
+        class: Drupal\interra_frontend\InterraPage
+        shared: false
+

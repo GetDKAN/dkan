@@ -3,15 +3,19 @@
 namespace Drupal\dkan_datastore;
 
 use Drupal\dkan_data\ConfigurationOverrider;
-use PHPUnit\Framework\TestCase;
+use Drupal\dkan_common\Tests\DkanTestBase;
+use Drupal\dkan_schema\SchemaRetriever;
 
 /**
  * Configuration Overrider Test.
  */
-class ConfigurationOverriderTest extends TestCase {
+class ConfigurationOverriderTest extends DkanTestBase {
 
   /**
+   * Data provider for testOverrider.
    *
+   * @return array
+   *   Array of arguments.
    */
   public function dataTestOverrider() {
     $return = [
@@ -37,9 +41,16 @@ class ConfigurationOverriderTest extends TestCase {
   }
 
   /**
+   * Tests loadOverrides.
+   *
+   * @param array $input
+   *   Input.
+   * @param array $expected
+   *   Expected.
+   *
    * @dataProvider dataTestOverrider
    */
-  public function testOverrider($input, $expected) {
+  public function testOverrider(array $input, array $expected) {
 
     $overrider = $this->getMockBuilder(ConfigurationOverrider::class)
       ->setMethods([
@@ -57,7 +68,38 @@ class ConfigurationOverriderTest extends TestCase {
   }
 
   /**
-   *
+   * Tests getSchema().
+   */
+  public function testGetSchema() {
+    // Setup.
+    $mock = $this->getMockBuilder(ConfigurationOverrider::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mockSchemaRetriever = $this->getMockBuilder(SchemaRetriever::class)
+      ->setMethods(['retrieve'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $this->setActualContainer([
+      'dkan_schema.schema_retriever' => $mockSchemaRetriever,
+    ]);
+
+    $expected = '{"json":"schema"}';
+
+    // Expect.
+    $mockSchemaRetriever->expects($this->once())
+      ->method('retrieve')
+      ->with('dataset')
+      ->willReturn($expected);
+
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'getSchema');
+    $this->assertSame($expected, $actual);
+  }
+
+  /**
+   * Tests various inherited methods that don't (yet) have implementation.
    */
   public function testInheritedMethods() {
     $overrider = new ConfigurationOverrider();

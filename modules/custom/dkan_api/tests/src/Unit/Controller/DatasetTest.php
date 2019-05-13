@@ -5,7 +5,7 @@ namespace Drupal\Tests\dkan_api\Unit\Controller;
 use Drupal\dkan_api\Controller\Dataset;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
-use JsonSchemaProvider\Provider;
+use Contracts\Retriever;
 
 /**
  * Tests Drupal\dkan_api\Controller\Dataset.
@@ -71,10 +71,9 @@ class DatasetTest extends DkanTestBase {
   public function testGetJsonSchema() {
 
     // Setup.
-    $mockProvider = $this->getMockBuilder(Provider::class)
-      ->disableOriginalConstructor()
+    $mockRetriever = $this->getMockBuilder(Retriever::class)
       ->setMethods(['retrieve'])
-      ->getMock();
+      ->getMockForAbstractClass();
 
     $mockContainer = $this->getMockContainer();
 
@@ -91,9 +90,9 @@ class DatasetTest extends DkanTestBase {
     $mockContainer->expects($this->once())
       ->method('get')
       ->with('dkan_schema.schema_retriever')
-      ->willReturn($mockProvider);
+      ->willReturn($mockRetriever);
 
-    $mockProvider->expects($this->once())
+    $mockRetriever->expects($this->once())
       ->method('retrieve')
       ->with('dataset')
       ->willReturn($expected);

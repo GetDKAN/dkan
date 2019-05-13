@@ -3,6 +3,8 @@ description: 'Interra API.'
 type: module
 core: 8.x
 dependencies:
+  - dkan_common
   - dkan_data
   - dkan_datastore
+  - dkan_schema
 package: DKAN
