@@ -1,0 +1,7 @@
+services:
+    interra_api.service.dataset_modifier:
+        class: Drupal\interra_api\Service\DatasetModifier
+    interra_api.search:
+        class: Drupal\interra_api\Search
+        shared: false
+        

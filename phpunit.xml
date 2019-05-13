@@ -12,9 +12,12 @@
         <testsuite name="DKAN Test Suite">
             <directory>modules/custom/dkan_api/tests/src/Unit</directory>
             <directory>modules/custom/dkan_common/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_data/tests/src/Unit</directory>
             <directory>modules/custom/dkan_datastore/tests/src/Unit</directory>
             <directory>modules/custom/dkan_harvest/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_data/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_schema/tests/src/Unit</directory>
+            <directory>modules/custom/interra_api/tests/src/Unit</directory>
+            <directory>modules/custom/interra_frontend/tests/src/Unit</directory>
         </testsuite>
     </testsuites>
 
@@ -35,17 +38,20 @@
         <whitelist>
             <directory>modules/custom/dkan_api/src</directory>
             <directory>modules/custom/dkan_common/src</directory>
+            <directory>modules/custom/dkan_data/src</directory>
             <directory>modules/custom/dkan_datastore/src</directory>
             <directory>modules/custom/dkan_harvest/src</directory>
-            <directory>modules/custom/dkan_data/src</directory>
-            <!-- By definition test classes have no tests. -->
-            <exclude>
-                <directory>modules/custom/dkan_common/src/Tests</directory>
-                <directory suffix="Test.php">./</directory>
-                <directory suffix="TestBase.php">./</directory>
-                <!-- TBD: skip the drush commands for now -->
-                <directory suffix="Commands.php">./</directory>
-            </exclude>
+            <directory>modules/custom/dkan_schema/src</directory>
+            <directory>modules/custom/interra_api/src</directory>
+            <directory>modules/custom/interra_frontend/src</directory>
+      <!-- By definition test classes have no tests. -->
+      <exclude>
+        <directory>modules/custom/dkan_common/src/Tests</directory>
+        <directory suffix="Test.php">./</directory>
+        <directory suffix="TestBase.php">./</directory>
+        <!-- TBD: skip the drush commands for now -->
+        <directory suffix="Commands.php">./</directory>
+      </exclude>
         </whitelist>
     </filter>
 </phpunit>

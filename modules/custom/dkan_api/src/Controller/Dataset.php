@@ -41,10 +41,10 @@ class Dataset extends Api {
    */
   protected function getJsonSchema() {
 
-    /** @var \JsonSchemaProvider\Provider $provider */
-    $provider = $this->container
+    /** @var \Drupal\dkan_schema\SchemaRetriever $retriever */
+    $retriever = $this->container
       ->get('dkan_schema.schema_retriever');
-    return $provider->retrieve('dataset');
+    return $retriever->retrieve('dataset');
   }
 
 }

@@ -4,7 +4,6 @@ namespace Drupal\dkan_data;
 
 use Drupal\Core\Config\ConfigFactoryOverrideInterface;
 use Drupal\Core\Config\StorageInterface;
-use Drupal\dkan_schema\SchemaRetriever;
 
 /**
  *
@@ -38,12 +37,15 @@ class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
   }
 
   /**
+   * Get Schema.
    *
+   * @return string|null
+   *   Schema.
    */
   protected function getSchema() {
-    // @codeCoverageIgnoreStart
-    return (new SchemaRetriever())->retrieve("dataset");
-    // @codeCoverageIgnoreEnd
+    /** @var \Drupal\dkan_schema\SchemaRetriever $schemaRetriever */
+    $schemaRetriever = \Drupal::service('dkan_schema.schema_retriever');
+    return $schemaRetriever->retrieve("dataset");
   }
 
   /**

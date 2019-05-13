@@ -9,7 +9,11 @@ use Contracts\Retriever;
  */
 class SchemaRetriever implements Retriever {
 
-  private $directory;
+  /**
+   *
+   * @var string
+   */
+  protected $directory;
 
   /**
    *
@@ -30,16 +34,6 @@ class SchemaRetriever implements Retriever {
   /**
    *
    */
-  public function retrieve(string $id): ?string {
-    if (in_array($id, $this->getAllIds())) {
-      return file_get_contents($this->directory . "/collections/{$id}.json");
-    }
-    throw new \Exception("Schema {$id} not found.");
-  }
-
-  /**
-   *
-   */
   public function getSchemaDirectory() {
     return $this->directory;
   }
@@ -47,18 +41,55 @@ class SchemaRetriever implements Retriever {
   /**
    *
    */
-  private function findSchemaDirectory() {
-    // Look at the root of drupal.
-    if (file_exists(DRUPAL_ROOT . "/schema")) {
-      $this->directory = DRUPAL_ROOT . "/schema";
+  public function retrieve(string $id): ?string {
+
+    $filename = $this->getSchemaDirectory() . "/collections/{$id}.json";
+
+    if (
+            in_array($id, $this->getAllIds())
+            && is_readable($filename)
+        ) {
+      return file_get_contents($filename);
     }
-    // Otherwise we will use our default schema.
-    elseif (file_exists(__DIR__ . "/../../../../schema")) {
-      $this->directory = __DIR__ . "/../../../../schema";
+    throw new \Exception("Schema {$id} not found.");
+  }
+
+  /**
+   *
+   */
+  protected function findSchemaDirectory() {
+
+    $drupalRoot = \Drupal::service('app.root');
+
+    if (is_dir($drupalRoot . "/schema")) {
+      $this->directory = $drupalRoot . "/schema";
+    }
+    elseif (
+      ($directory = $this->getDefaultSchemaDirectory())
+       && is_dir($directory)
+    ) {
+      $this->directory = $directory;
     }
     else {
-      throw new \Exception("No schema found.");
+      throw new \Exception("No schema directory found.");
     }
+  }
+
+  /**
+   * Determine default location of schema folder for dkan2 profile.
+   *
+   * @todo There may be easier way to do this and without hardcoding paths.
+   *
+   * @return string path.
+   */
+  protected function getDefaultSchemaDirectory() {
+
+    // Try to determine root `info.yml` of dkan profile.
+    /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
+    $extensionList = \Drupal::service('extension.list.profile');
+    $infoFile = $extensionList->getPathname('dkan2');
+
+    return dirname($infoFile) . '/schema';
   }
 
 }
