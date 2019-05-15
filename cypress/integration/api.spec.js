@@ -31,10 +31,11 @@ context('API', () => {
         }
     }
 
+    let endpoint = 'http://dkan/api/v1/dataset';
     let user_credentials = {
         user: 'testuser',
         pass: '2jqzOAnXS9mmcLasy'
-    }
+    };
     let json1              = json();
     let json2              = json();
     let jsonShouldNotExist = json();
@@ -46,13 +47,13 @@ context('API', () => {
     before(function() {
         cy.request({
             method: 'POST',
-            url: 'http://dkan/api/v1/dataset',
+            url: endpoint,
             auth: user_credentials,
             body: json1
         })
         cy.request({
             method: 'POST',
-            url: 'http://dkan/api/v1/dataset',
+            url: endpoint,
             auth: user_credentials,
             body: json2
         })
@@ -60,7 +61,7 @@ context('API', () => {
 
     context('GET requests', () => {
         it('GET a single dataset', () => {
-            cy.request("http://dkan/api/v1/dataset/" + json1.identifier).then((response) => {
+            cy.request(endpoint + '/' + json1.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.identifier).eql(json1.identifier)
                 expect(response.body.title).eql(json1.title)
@@ -69,7 +70,7 @@ context('API', () => {
 
         it('GET a non-existent dataset', () => {
             cy.request({
-                url: "http://dkan/api/v1/dataset/" + jsonShouldNotExist.identifier,
+                url: endpoint + '/' + jsonShouldNotExist.identifier,
                 failOnStatusCode: false
             }).then((response) => {
                 expect(response.status).eql(404)
@@ -77,7 +78,7 @@ context('API', () => {
         })
 
         it('GET all datasets', () => {
-            cy.request("http://dkan/api/v1/dataset").then((response) => {
+            cy.request(endpoint).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body[response.body.length - 1].identifier).eql(json2.identifier)
                 expect(response.body[response.body.length - 1].title).eql(json2.title)
@@ -91,7 +92,7 @@ context('API', () => {
         it('POST fails without basic auth', () => {
             cy.request({
                 method: 'POST',
-                url: 'http://dkan/api/v1/dataset',
+                url: endpoint,
                 body: jsonPost,
                 failOnStatusCode: false
             }).then((response) => {
@@ -102,7 +103,7 @@ context('API', () => {
         it('POST fails with no payload, or empty payload', () => {
             cy.request({
                 method: 'POST',
-                url: 'http://dkan/api/v1/dataset',
+                url: endpoint,
                 auth: user_credentials,
                 body: {
                 },
@@ -113,7 +114,7 @@ context('API', () => {
 
             cy.request({
                 method: 'POST',
-                url: 'http://dkan/api/v1/dataset',
+                url: endpoint,
                 auth: user_credentials,
                 failOnStatusCode: false
             }).then((response) => {
@@ -124,7 +125,7 @@ context('API', () => {
         it('POST creates a dataset', () => {
             cy.request({
                 method: 'POST',
-                url: 'http://dkan/api/v1/dataset',
+                url: endpoint,
                 auth: user_credentials,
                 body: jsonPost
             }).then((response) => {
@@ -133,7 +134,7 @@ context('API', () => {
                 expect(response.body.identifier).eql(jsonPost.identifier)
             })
             // Verify expected title.
-            cy.request("http://dkan/api/v1/dataset/" + jsonPost.identifier).then((response) => {
+            cy.request(endpoint + '/' + jsonPost.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.title).eql(jsonPost.title)
             })
@@ -142,7 +143,7 @@ context('API', () => {
         it('POST fails on existing dataset', () => {
             cy.request({
                 method: 'POST',
-                url: 'http://dkan/api/v1/dataset',
+                url: endpoint,
                 auth: user_credentials,
                 body: {
                     title: jsonShouldNotExist.title,
@@ -155,7 +156,7 @@ context('API', () => {
                 expect(response.body.endpoint).eql("/api/v1/dataset/" + jsonPost.identifier)
             })
             // Verify this data is unchanged.
-            cy.request("http://dkan/api/v1/dataset/" + jsonPost.identifier).then((response) => {
+            cy.request(endpoint + '/' + jsonPost.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.title).eql(jsonPost.title)
                 expect(response.body.description).eql(jsonPost.description)
@@ -168,7 +169,7 @@ context('API', () => {
         it('PUT fails without basic auth', () => {
             cy.request({
                 method: 'PUT',
-                url: 'http://dkan/api/v1/dataset/' + jsonShouldNotExist.identifier,
+                url: endpoint + '/' + jsonShouldNotExist.identifier,
                 body: jsonShouldNotExist,
                 failOnStatusCode: false
             }).then((response) => {
@@ -179,7 +180,7 @@ context('API', () => {
         it('PUT fails with no payload, or empty payload', () => {
             cy.request({
                 method: 'PUT',
-                url: 'http://dkan/api/v1/dataset/' + jsonShouldNotExist.identifier,
+                url: endpoint + '/' + jsonShouldNotExist.identifier,
                 auth: user_credentials,
                 body: {
                 },
@@ -190,7 +191,7 @@ context('API', () => {
 
             cy.request({
                 method: 'PUT',
-                url: 'http://dkan/api/v1/dataset/' + jsonShouldNotExist.identifier,
+                url: endpoint + '/' + jsonShouldNotExist.identifier,
                 auth: user_credentials,
                 failOnStatusCode: false
             }).then((response) => {
@@ -201,7 +202,7 @@ context('API', () => {
         it('PUT fails to modify the identifier', () => {
             cy.request({
                 method: 'PUT',
-                url: 'http://dkan/api/v1/dataset/' + json1.identifier,
+                url: endpoint + '/' + json1.identifier,
                 auth: user_credentials,
                 body: jsonShouldNotExist,
                 failOnStatusCode: false
@@ -213,7 +214,7 @@ context('API', () => {
         it('PUT updates an existing dataset', () => {
             cy.request({
                 method: 'PUT',
-                url: 'http://dkan/api/v1/dataset/' + json1.identifier,
+                url: endpoint + '/' + json1.identifier,
                 auth: user_credentials,
                 body: {
                     title: json1.title + ", updated by PUT",
@@ -227,7 +228,7 @@ context('API', () => {
                 expect(response.body.identifier).eql(json1.identifier)
             })
             // Verify expected title.
-            cy.request('http://dkan/api/v1/dataset/' + json1.identifier).then((response) => {
+            cy.request(endpoint + '/' + json1.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.title).eql(json1.title + ", updated by PUT")
                 expect(response.body.description).eql("Description updated by PUT")
@@ -237,7 +238,7 @@ context('API', () => {
         it('PUT creates a dataset, if non-existent', () => {
             cy.request({
                 method: 'PUT',
-                url: 'http://dkan/api/v1/dataset/' + jsonPut.identifier,
+                url: endpoint + '/' + jsonPut.identifier,
                 auth: user_credentials,
                 body: jsonPut
             }).then((response) => {
@@ -245,7 +246,7 @@ context('API', () => {
                 expect(response.body.endpoint).eql("/api/v1/dataset/" + jsonPut.identifier)
             })
             // Verify data is as expected.
-            cy.request('http://dkan/api/v1/dataset/' + jsonPut.identifier).then((response) => {
+            cy.request(endpoint + '/' + jsonPut.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.title).eql(jsonPut.title)
                 expect(response.body.description).eql(jsonPut.description)
@@ -258,7 +259,7 @@ context('API', () => {
         it('PATCH fails without basic auth', () => {
             cy.request({
                 method: 'PATCH',
-                url: 'http://dkan/api/v1/dataset/' + jsonShouldNotExist.identifier,
+                url: endpoint + '/' + jsonShouldNotExist.identifier,
                 body: jsonShouldNotExist,
                 failOnStatusCode: false
             }).then((response) => {
@@ -269,7 +270,7 @@ context('API', () => {
         it('PATCH fails for non-existent dataset', () => {
             cy.request({
                 method: 'PATCH',
-                url: 'http://dkan/api/v1/dataset/' + jsonShouldNotExist.identifier,
+                url: endpoint + '/' + jsonShouldNotExist.identifier,
                 auth: user_credentials,
                 body: jsonShouldNotExist,
                 failOnStatusCode: false
@@ -281,7 +282,7 @@ context('API', () => {
         it('PATCH fails to modify the identifier', () => {
             cy.request({
                 method: 'PATCH',
-                url: 'http://dkan/api/v1/dataset/' + json2.identifier,
+                url: endpoint + '/' + json2.identifier,
                 auth: user_credentials,
                 body: {
                     title: "Title Updated By PATCH",
@@ -296,7 +297,7 @@ context('API', () => {
         it('PATCH - empty payload', () => {
             cy.request({
                 method: 'PATCH',
-                url: 'http://dkan/api/v1/dataset/' + json2.identifier,
+                url: endpoint + '/' + json2.identifier,
                 auth: user_credentials,
                 body: { },
                 failOnStatusCode: false
@@ -304,7 +305,7 @@ context('API', () => {
                 expect(response.status).eql(200)
             })
             // Verify data is as expected.
-            cy.request('http://dkan/api/v1/dataset/' + json2.identifier).then((response) => {
+            cy.request(endpoint + '/' + json2.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.title).eql(json2.title)
                 expect(response.body.description).eql(json2.description)
@@ -315,7 +316,7 @@ context('API', () => {
         it('PATCH - basic case', () => {
             cy.request({
                 method: 'PATCH',
-                url: 'http://dkan/api/v1/dataset/' + json2.identifier,
+                url: endpoint + '/' + json2.identifier,
                 auth: user_credentials,
                 body: {
                     description: "Description updated by PATCH."
@@ -324,7 +325,7 @@ context('API', () => {
                 expect(response.status).eql(200)
             })
             // Verify expected title.
-            cy.request('http://dkan/api/v1/dataset/' + json2.identifier).then((response) => {
+            cy.request(endpoint + '/' + json2.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.description).eql("Description updated by PATCH.")
             })
@@ -333,7 +334,7 @@ context('API', () => {
         it('PATCH modifies array elements (add, remove, edit)', () => {
             cy.request({
                 method: 'PATCH',
-                url: 'http://dkan/api/v1/dataset/' + json2.identifier,
+                url: endpoint + '/' + json2.identifier,
                 auth: user_credentials,
                 body: {
                     keyword: ["firsttag", "third", "fourthtag"]
@@ -342,7 +343,7 @@ context('API', () => {
                 expect(response.status).eql(200)
             })
             // Verify expected data: added, removed, edited and left unchanged.
-            cy.request('http://dkan/api/v1/dataset/' + json2.identifier).then((response) => {
+            cy.request(endpoint + '/' + json2.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.keyword).to.contain("firsttag")
                 expect(response.body.keyword).to.not.contain("secondtag")
@@ -354,7 +355,7 @@ context('API', () => {
         it('PATCH modifies object properties (add, remove, edit)', () => {
             cy.request({
                 method: 'PATCH',
-                url: 'http://dkan/api/v1/dataset/' + json2.identifier,
+                url: endpoint + '/' + json2.identifier,
                 auth: user_credentials,
                 body: {
                     contactPoint: {
@@ -369,7 +370,7 @@ context('API', () => {
                 expect(response.body.identifier).eql(json2.identifier)
             })
             // Verify expected data: added, removed, edited and left unchanged.
-            cy.request('http://dkan/api/v1/dataset/' + json2.identifier).then((response) => {
+            cy.request(endpoint + '/' + json2.identifier).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.contactPoint["fn"]).eql("Contact's name updated by PATCH")
                 expect(response.body.contactPoint["@type"]).to.be.undefined
@@ -383,7 +384,7 @@ context('API', () => {
         it('DELETE fails without basic authentication', () => {
             cy.request({
                 method: 'DELETE',
-                url: 'http://dkan/api/v1/dataset/' + jsonPost.identifier,
+                url: endpoint + '/' + jsonPost.identifier,
                 failOnStatusCode: false
             }).then((response) => {
                 expect(response.status).eql(401)
@@ -393,13 +394,13 @@ context('API', () => {
         it('DELETE existing datasets', () => {
             cy.request({
                 method: 'DELETE',
-                url: 'http://dkan/api/v1/dataset/' + jsonPost.identifier,
+                url: endpoint + '/' + jsonPost.identifier,
                 auth: user_credentials
             }).then((response) => {
                 expect(response.status).eql(200)
             })
             cy.request({
-                url: "http://dkan/api/v1/dataset/" + jsonPost.identifier,
+                url: endpoint + '/' + jsonPost.identifier,
                 failOnStatusCode: false
             }).then((response) => {
                 expect(response.status).eql(404)
@@ -407,13 +408,13 @@ context('API', () => {
 
             cy.request({
                 method: 'DELETE',
-                url: 'http://dkan/api/v1/dataset/' + jsonPut.identifier,
+                url: endpoint + '/' + jsonPut.identifier,
                 auth: user_credentials
             }).then((response) => {
                 expect(response.status).eql(200)
             })
             cy.request({
-                url: "http://dkan/api/v1/dataset/" + jsonPut.identifier,
+                url: endpoint + '/' + jsonPut.identifier,
                 failOnStatusCode: false
             }).then((response) => {
                 expect(response.status).eql(404)
@@ -425,12 +426,12 @@ context('API', () => {
     after(function() {
         cy.request({
             method: 'DELETE',
-            url: 'http://dkan/api/v1/dataset/' + json1.identifier,
+            url: endpoint + '/' + json1.identifier,
             auth: user_credentials
         })
         cy.request({
             method: 'DELETE',
-            url: 'http://dkan/api/v1/dataset/' + json2.identifier,
+            url: endpoint + '/' + json2.identifier,
             auth: user_credentials
         })
     })
