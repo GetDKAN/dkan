@@ -53,9 +53,9 @@ function dkan_datastore_drush_drop_orphan_tables() {
     $t = (array)$record;
     $db = key($t);
     $table = $record->{$db};
-    if (strpos($table, 'datastore_dkan') !== false) {
-      // Removes 'feeds_datastore_dkan_file_';
-      $nids[] = substr($table, 26);
+    if (strpos($table, 'dkan_datastore') !== false) {
+      // Removes 'dkan_datastore_';
+      $nids[] = substr($table, 15);
     }
   }
   if (!empty($nids)) {
@@ -65,7 +65,7 @@ function dkan_datastore_drush_drop_orphan_tables() {
       $query = db_query('SELECT nid FROM {node} WHERE nid = :nid', array(':nid' => $nid));
       $result = $query->fetchAll();
       if (count($result) < 1) {
-        $to_truncate[] = 'feeds_datastore_dkan_file_' . $nid;
+        $to_truncate[] = 'dkan_datastore_' . $nid;
         $orphans++;
       }
     }

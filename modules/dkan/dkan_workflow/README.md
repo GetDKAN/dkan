@@ -34,3 +34,5 @@ This module is disabled by default in a new DKAN installation. After either enab
 
 We are working on improving this documentation. Please let us know if you have
 any questions in the meantime.
+
+If in any point you want to reimport the workbench email default templates into your site, all you need to do is implement a hook_update_N and execute the function `dkan_workflow_import_email_defaults()` in there.
