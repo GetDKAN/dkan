@@ -82,6 +82,8 @@ function dkan_workflow_enable() {
   }
   variable_set('roleassign_roles', $roleassign_roles);
 
+  // Import workbench email defaults.
+  dkan_workflow_import_email_defaults();
 }
 
 /**

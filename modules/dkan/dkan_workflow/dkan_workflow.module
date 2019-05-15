@@ -100,7 +100,7 @@ function dkan_workflow_menu() {
 function dkan_workflow_node_grants($user, $op) {
   $grants['dkan_workflow'] = array($user->uid);
   return $grants;
-} 
+}
 
 /**
  * Implements hook_node_access_records().
@@ -119,7 +119,7 @@ function dkan_workflow_node_access_records($node) {
       'grant_update' => 0,
       'grant_delete' => 0,
       'priority' => 0,
-    );  
+    );
   }
   return !empty($grants) ? $grants : array();
 }
@@ -450,4 +450,21 @@ function dkan_workflow_mail_alter(&$message) {
     $dkan_email_proxy = new DkanWorkflowEmailProxy($message);
     $message['send'] = $dkan_email_proxy->send();
   }
+}
+
+/**
+ * Helper function for importing workbench email defaults.
+ */
+function dkan_workflow_import_email_defaults() {
+  module_load_include('inc', 'dkan_workflow', 'dkan_workflow.features.workbench_email');
+  $items = dkan_workflow_workbench_email_export();
+  if (is_array($items)) {
+    foreach ($items as $machine_name => $transition) {
+      $role = workbench_email_get_role_by_name($transition['role']);
+      $subject = !empty($transition['subject']) ? $transition['subject'] : NULL;
+      $message = !empty($transition['message']) ? $transition['message'] : NULL;
+      workbench_email_save((object) $transition, $role->rid, $subject, $message, $transition['author'], $transition['automatic']);
+    }
+  }
+  drupal_static_reset('workbench_email');
 }
