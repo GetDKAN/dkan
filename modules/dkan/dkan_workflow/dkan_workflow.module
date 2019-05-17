@@ -46,12 +46,12 @@ function dkan_workflow_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   // Add child links for workbench tasks.
-  $items['admin/workbench/drafts-unpublished-nodes'] = array(
+  $items['admin/workbench/unpublished-nodes'] = array(
     'menu_name' => 'menu-command-center-menu',
-    'link_path' => 'admin/workbench/drafts-unpublished-nodes',
-    'router_path' => 'admin/workbench/drafts-unpublished-nodes',
-    'title' => 'Unpublished nodes drafts',
-    'description' => 'Unpublished nodes drafts',
+    'link_path' => 'admin/workbench/unpublished-nodes',
+    'router_path' => 'admin/workbench/unpublished-nodes',
+    'title' => 'Unpublished nodes',
+    'description' => 'Unpublished nodes',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
     'weight' => 0,

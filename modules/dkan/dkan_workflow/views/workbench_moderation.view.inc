@@ -129,9 +129,9 @@ $handler->display->display_options['filters']['is_current']['table'] = 'workbenc
 $handler->display->display_options['filters']['is_current']['field'] = 'is_current';
 
 /* Display: Drafts page */
-$handler = $view->new_display('page', 'Unpublished nodes drafts page', 'unpublished_node_drafts_page');
+$handler = $view->new_display('page', 'Unpublished nodes page', 'unpublished_node_drafts_page');
 $handler->display->display_options['defaults']['title'] = FALSE;
-$handler->display->display_options['title'] = 'Unpublished nodes drafts';
+$handler->display->display_options['title'] = 'Unpublished nodes';
 $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
 $handler->display->display_options['defaults']['empty'] = FALSE;
 /* No results behavior: Global: Text area */
@@ -295,7 +295,7 @@ $handler->display->display_options['filters']['og_group_ref_target_id_entityrefe
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['reference_display'] = 'entity_reference_groups_list:entityreference_1';
 $handler->display->display_options['path'] = 'admin/workbench/drafts-unpublished-nodes';
 $handler->display->display_options['menu']['type'] = 'tab';
-$handler->display->display_options['menu']['title'] = 'Unpublished nodes drafts';
+$handler->display->display_options['menu']['title'] = 'Unpublished nodes';
 $handler->display->display_options['menu']['weight'] = '20';
 $handler->display->display_options['menu']['context'] = 0;
 $handler->display->display_options['menu']['context_only_inline'] = 0;
@@ -973,8 +973,8 @@ $handler->display->display_options['menu']['weight'] = '50';
 $handler->display->display_options['menu']['context'] = 0;
 $handler->display->display_options['menu']['context_only_inline'] = 0;
 
-/* Display: Unpublished nodes drafts Badge */
-$handler = $view->new_display('menu_badge', 'Unpublished nodes drafts Badge', 'unpublished_nodes_drafts_badge');
+/* Display: Unpublished nodes Badge */
+$handler = $view->new_display('menu_badge', 'Unpublished nodes Badge', 'unpublished_nodes_drafts_badge');
 $handler->display->display_options['use_more_always'] = FALSE;
 $handler->display->display_options['group_by'] = TRUE;
 $handler->display->display_options['access']['type'] = 'none';

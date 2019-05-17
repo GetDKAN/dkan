@@ -16,7 +16,7 @@ function dkan_workflow_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'menu_badges_tab_callbacks';
   $strongarm->value = array(
-    'admin/workbench/drafts-unpublished-nodes' => array(
+    'admin/workbench/unpublished-nodes' => array(
       'callback' => 'menu_badges_execute_view',
       'key' => 'views_workbench_moderation_unpublished_nodes_drafts_badge',
       'arguments' => array(
