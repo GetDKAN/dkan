@@ -293,7 +293,7 @@ $handler->display->display_options['filters']['og_group_ref_target_id_entityrefe
   169051924 => 0,
 );
 $handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['reference_display'] = 'entity_reference_groups_list:entityreference_1';
-$handler->display->display_options['path'] = 'admin/workbench/drafts-unpublished-nodes';
+$handler->display->display_options['path'] = 'admin/workbench/unpublished-nodes';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'Unpublished nodes';
 $handler->display->display_options['menu']['weight'] = '20';
