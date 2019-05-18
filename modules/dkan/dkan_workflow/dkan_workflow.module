@@ -46,6 +46,17 @@ function dkan_workflow_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   // Add child links for workbench tasks.
+  $items['admin/workbench/unpublished-nodes'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/unpublished-nodes',
+    'router_path' => 'admin/workbench/unpublished-nodes',
+    'title' => 'Unpublished nodes',
+    'description' => 'Unpublished nodes',
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 0,
+    'type' => MENU_NORMAL_ITEM,
+  );
   $items['admin/workbench/drafts-active'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/workbench/drafts-active',
@@ -54,7 +65,7 @@ function dkan_workflow_menu() {
     'description' => 'My drafts',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
-    'weight' => 0,
+    'weight' => 1,
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/workbench/needs-review-active'] = array(
@@ -65,7 +76,7 @@ function dkan_workflow_menu() {
     'description' => 'Needs review',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
-    'weight' => 1,
+    'weight' => 2,
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/workbench/drafts-stale'] = array(
@@ -76,7 +87,7 @@ function dkan_workflow_menu() {
     'description' => 'Stale drafts',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
-    'weight' => 2,
+    'weight' => 3,
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/workbench/needs-review-stale'] = array(
@@ -87,7 +98,7 @@ function dkan_workflow_menu() {
     'description' => 'Stale reviews',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
-    'weight' => 3,
+    'weight' => 4,
     'type' => MENU_NORMAL_ITEM,
   );
 

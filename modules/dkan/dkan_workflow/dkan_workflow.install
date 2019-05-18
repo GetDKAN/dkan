@@ -139,3 +139,10 @@ function dkan_workflow_disable() {
 
   variable_set('roleassign_roles', $roleassign_roles);
 }
+
+/**
+ * Revert variable for dkan_workflow.
+ */
+function dkan_workflow_update_7001() {
+  features_revert(['dkan_workflow' => ['variable']]);
+}
