@@ -1,3 +1,11 @@
+7.x-1.16.11
+----------
+ - #2876 Update the datastore lock code to use drupal functions
+ - #2879 Update dkan_workflow to add option to delete unpublished nodes
+ - #2880 Fix drush command that deletes orphaned datastore tables
+ - #2870 Remove workflow emails from dkan_workflow
+ - #2878 Remove hard-coded access to revisions for anonymous users
+ 
 7.x-1.16.10
 ----------
  - #2874 Security update for Drupal to 7.67 (SA-CORE-2019-007)
