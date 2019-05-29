@@ -2,8 +2,11 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
+use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Drupal\dkan_datastore\Controller\Api;
 use Drupal\dkan_common\Tests\DkanTestBase;
+use Drupal\dkan_datastore\Query;
+use Drupal\dkan_datastore\SqlParser;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
@@ -12,56 +15,56 @@ use Drupal\dkan_common\Tests\DkanTestBase;
 class ApiTest extends DkanTestBase {
 
   /**
-   *
+   * Data provider.
    */
-  public function dataTestExplode() {
+  public function dataTest() {
+
+    $o1 = new Query();
+    $o1->setThingToRetrieve("dkan_datastore_1");
+
+    $o2 = clone $o1;
+    $o2->filterByProperty('city');
+    $o2->filterByProperty('state');
+
+    $o3 = clone $o2;
+    $o3->conditionByIsEqualTo('def', 'hij');
+    $o3->conditionByIsEqualTo('klm', 'nop');
+
+    $o4 = clone $o2;
+    $o4->sortByAscending('qrs');
+
+    $o5 = clone $o2;
+    $o5->sortByDescending('qrs');
+
+    $o6 = clone $o2;
+    $o6->limitTo(4);
+    $o6->offsetBy(5);
 
     return [
-    // Invalid but should still pass.
-            ['foobar', []],
-            [
-              '[SELECT * FROM abc];',
-                ['SELECT * FROM abc'],
-            ],
-            [
-              '[SELECT * FROM abc][WHERE def LIKE "hij"];',
-                [
-                  'SELECT * FROM abc',
-                  'WHERE def LIKE "hij"',
-                ],
-            ],
-            [
-              '[SELECT * FROM abc][WHERE def = "hij" AND klm = "nop"];',
-                [
-                  'SELECT * FROM abc',
-                  'WHERE def = "hij" AND klm = "nop"',
-                ],
-            ],
-            [
-              '[SELECT * FROM abc][WHERE def = "hij" AND klm = "nop"][ORDER BY qrs];',
-                [
-                  'SELECT * FROM abc',
-                  'WHERE def = "hij" AND klm = "nop"',
-                  'ORDER BY qrs',
-                ],
-            ],
-            [
-              '[SELECT * FROM abc][WHERE def = "hij" AND klm = "nop"][ORDER BY qrs, tuv];',
-                [
-                  'SELECT * FROM abc',
-                  'WHERE def = "hij" AND klm = "nop"',
-                  'ORDER BY qrs, tuv',
-                ],
-            ],
-            [
-              '[SELECT * FROM abc][WHERE def = "hij" AND klm = "nop"][ORDER BY qrs, tuv DESC][LIMIT 1 OFFSET 2];',
-                [
-                  'SELECT * FROM abc',
-                  'WHERE def = "hij" AND klm = "nop"',
-                  'ORDER BY qrs, tuv DESC',
-                  'LIMIT 1 OFFSET 2',
-                ],
-            ],
+      [
+        '[SELECT * FROM abc];',
+        $o1,
+      ],
+      [
+        '[SELECT city,state FROM abc];',
+        $o2,
+      ],
+      [
+        "[SELECT city,state FROM abc][WHERE def = 'hij' AND klm = 'nop'];",
+        $o3,
+      ],
+      [
+        "[SELECT city,state FROM abc][ORDER BY qrs ASC];",
+        $o4,
+      ],
+      [
+        "[SELECT city,state FROM abc][ORDER BY qrs DESC];",
+        $o5,
+      ],
+      [
+        "[SELECT city,state FROM abc][LIMIT 4 OFFSET 5];",
+        $o6,
+      ],
     ];
   }
 
@@ -69,52 +72,32 @@ class ApiTest extends DkanTestBase {
    * Tests explode().
    *
    * @param string $sqlString
+   *   A sql string.
    * @param mixed $expected
+   *   The object that the getQueryObject function should return.
    *
-   * @dataProvider dataTestExplode
+   * @dataProvider dataTest
    */
-  public function testExplode($sqlString, $expected) {
-
-    // Mock with little changed.
-    $mock = $this->getMockBuilder(Api::class)
+  public function testGetQueryObject($sqlString, $expected) {
+    $controller = $this->getMockBuilder(Api::class)
       ->disableOriginalConstructor()
-      ->setMethods(NULL)
+      ->setMethods(['getDatastoreManager'])
       ->getMock();
 
-    $actual = $this->invokeProtectedMethod($mock, 'explode', $sqlString);
-
-    $this->assertArrayEquals($expected, $actual);
-  }
-
-  /**
-   *
-   */
-  public function dataTestGetUuidFromSelect() {
-    return [
-            // Tests garbage in/out at the same time.
-            ['foobar', 'foobar'],
-            ['something from foo', 'something from foo'],
-            ['something FROM foo', 'foo'],
-            ['SELECT something FROM foo WHERE BAR=1', 'foo WHERE BAR=1'],
-    ];
-  }
-
-  /**
-   *
-   * @param mixed $select
-   * @param mixed $expected
-   * @dataProvider dataTestGetUuidFromSelect
-   */
-  public function testGetUuidFromSelect($select, $expected) {
-    // Mock with little changed.
-    $mock = $this->getMockBuilder(Api::class)
+    $manager = $this->getMockBuilder(SimpleImport::class)
       ->disableOriginalConstructor()
-      ->setMethods(NULL)
+      ->setMethods(['getTableName'])
       ->getMock();
 
-    $actual = $this->invokeProtectedMethod($mock, 'getUuidFromSelect', $select);
+    $manager->expects($this->once())->method('getTableName')->willReturn("dkan_datastore_1");
 
-    $this->assertEquals($expected, $actual);
+    $controller->expects($this->once())->method("getDatastoreManager")->willReturn($manager);
+
+    $parser = new SqlParser();
+    $parser->validate($sqlString);
+    $object = $this->invokeProtectedMethod($controller, 'getQueryObject', $parser->getValidatingMachine());
+
+    $this->assertEquals(json_encode($expected), json_encode($object));
   }
 
 }
