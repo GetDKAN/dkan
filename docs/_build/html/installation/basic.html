@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Installation Basics &#8212; DKAN2 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Local Development Environment" href="local-dev.html" />
+    <link rel="prev" title="Installation" href="index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">DKAN2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">DKAN Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Installation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installation Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="local-dev.html">Local Development Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../components/index.html">Major Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">DKAN Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About this documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Installation</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="local-dev.html" title="next chapter">Local Development Environment</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="installation-basics">
+<h1>Installation Basics<a class="headerlink" href="#installation-basics" title="Permalink to this headline">¶</a></h1>
+<p>Before getting started, it’s recommended that you familiarize yourself
+with:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://docs.drush.org/en/master/">Drush, the command line tool</a></p></li>
+<li><p><a class="reference external" href="https://www.drupal.org/documentation/install">Drupal’s installation
+process</a></p></li>
+<li><p><a class="reference external" href="https://www.drupal.org/upgrade">Drupal’s upgrade process</a></p></li>
+<li><p><a class="reference external" href="https://www.drupal.org/node/1089736#distributions-vs-installation-profiles">Drupal profiles and
+distributions</a></p></li>
+</ul>
+<p>What you will find in the main <a class="reference external" href="https://github.com/GetDKAN/dkan2">DKAN
+Repository</a> is a Drupal
+<em>installation profile</em>. To set up a working website using DKAN, you will
+need to acquire or build a full DKAN distribution of Drupal.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><a class="reference external" href="https://github.com/GetDKAN/dkan-tools">DKAN Tools</a> is project
+containing commands and tools <a class="reference external" href="https://civicactions.com/dkan/">CivicActions</a> uses for our own implementations and
+deployments.</p>
+</div>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="operating-environment">
+<h3>Operating Environment<a class="headerlink" href="#operating-environment" title="Permalink to this headline">¶</a></h3>
+<p>DKAN is based on Drupal software and – generally – runs anywhere
+Drupal is supported. This document assumes installation on a Linux-based
+Apache webserver using MySQL as a back-end database (aka LAMP server).
+For other environments, please see our Alternative Environment Support.</p>
+<ul class="simple">
+<li><p>MySQL: minimum version 5.0.15+ with PDO</p></li>
+<li><p>before installation, please create one MySQL database and associated
+user.</p></li>
+<li><p>PHP: minimum version 5.3.x</p></li>
+<li><p>Apache: minimum version 2.x</p></li>
+<li><p>Git</p></li>
+</ul>
+</div>
+<div class="section" id="hardware">
+<h3>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h3>
+<p>DKAN has been successfully tested in limited-resource environments, such
+as Amazon’s “micro” AWS instance, for development.</p>
+<ul class="simple">
+<li><p>Minimum RAM: 1GB for development, 2GB or more recommended for
+production.</p></li>
+<li><p>Minimum Disk: 64M for base installation, recommended 1GB or more for
+production.</p></li>
+</ul>
+<p>DKAN is based on Drupal and follows the same basic installation
+procedure as any Drupal distribution. More information about various
+requirements can be located in the <a class="reference external" href="https://www.drupal.org/documentation/install">Drupal Installation
+Guide</a>.</p>
+</div>
+</div>
+<div class="section" id="pre-installation">
+<h2>Pre Installation<a class="headerlink" href="#pre-installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-fully-made-version">
+<h3>Using fully made version<a class="headerlink" href="#using-fully-made-version" title="Permalink to this headline">¶</a></h3>
+<p>…</p>
+</div>
+<div class="section" id="build-your-own">
+<h3>Build your own<a class="headerlink" href="#build-your-own" title="Permalink to this headline">¶</a></h3>
+<p>This “builds” a full DKAN website codebase from the bleeding-edge
+development version of DKAN, by downloading Drupal and all the
+additional modules that DKAN needs to run. You may want to use this
+method to get recent changes that have not yet been included in an
+official release, or to use a branch or forked version of the DKAN
+profile.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">rsync</span></code> is used to copy the DKAN profile inside the Drupal
+<code class="docutils literal notranslate"><span class="pre">/profiles</span></code> folder. You may wish to modify this process to fit your
+own development practices.</p>
+<p>Requires drush version 9.x.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
+$ cd dkan
+$ drush make --prepare-install drupal-org-core.make webroot --yes
+$ rsync -av . webroot/profiles/dkan --exclude webroot
+$ drush -y make --no-core --contrib-destination=./ drupal-org.make webroot/profiles/dkan --no-recursion
+$ cd webroot
+</pre></div>
+</div>
+<p>You can also build from a specific release of DKAN by checkout out the
+correct tag after cloning. For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
+$ git checkout tags/7.x-1.11
+...
+</pre></div>
+</div>
+<p>The automated software builder will download and configure the latest
+version of DKAN and prepare it for installation. When complete, proceed
+to “Installing the DKAN Software” section below.</p>
+<p>Note before proceeding: Recline previews require <a class="reference external" href="https://www.drupal.org/getting-started/clean-urls#enabling-7">clean
+URLs</a></p>
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Once you’ve downloaded the DKAN software, it’s time to install it. If
+you’ve previously installed Drupal, this process will be very similar.</p>
+<div class="section" id="with-drush">
+<h3>With drush<a class="headerlink" href="#with-drush" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ drush site-install dkan --db-url=&quot;mysql://DBUSER:DBPASS@localhost/DBNAME&quot;
+</pre></div>
+</div>
+<p>You can add the <code class="docutils literal notranslate"><span class="pre">--verbose</span></code> switch if you want to see every step. The
+installation should end with <code class="docutils literal notranslate"><span class="pre">drush</span></code> creating an admin account with a
+random password, which will be output in a message to the terminal.</p>
+</div>
+</div>
+<div class="section" id="install-for-development">
+<h2>Install for development<a class="headerlink" href="#install-for-development" title="Permalink to this headline">¶</a></h2>
+<p>This method is particularly useful for people who want to work on the
+DKAN project itself, as it preserves Git versioning information in every
+profile, theme and module directory. The core developers use this method
+when developing and testing DKAN.</p>
+<div class="section" id="grab-development-version">
+<h3>Grab Development version<a class="headerlink" href="#grab-development-version" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
+$ cd dkan
+</pre></div>
+</div>
+</div>
+<div class="section" id="build-dkan">
+<h3>Build dkan<a class="headerlink" href="#build-dkan" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ drush make --prepare-install drupal-org-core.make webroot --yes
+$ rsync -av . webroot/profiles/dkan --exclude webroot
+$ drush -y make --no-core --working-copy --contrib-destination=./ drupal-org.make webroot/profiles/dkan --no-recursion --concurrency=3
+$ cd webroot
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/installation/basic.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

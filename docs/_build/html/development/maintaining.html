@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Updating and Maintaining DKAN &#8212; DKAN2 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="License" href="../license.html" />
+    <link rel="prev" title="Extending and Customizing DKAN" href="customize.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">DKAN2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">DKAN Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../components/index.html">Major Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">DKAN Community</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Development</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="customize.html">Extending and Customizing DKAN</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Updating and Maintaining DKAN</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About this documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Development</a><ul>
+      <li>Previous: <a href="customize.html" title="previous chapter">Extending and Customizing DKAN</a></li>
+      <li>Next: <a href="../license.html" title="next chapter">License</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="updating-and-maintaining-dkan">
+<h1>Updating and Maintaining DKAN<a class="headerlink" href="#updating-and-maintaining-dkan" title="Permalink to this headline">¶</a></h1>
+<p>There are several strategies for maintaining your DKAN site. Maintaining
+a DKAN site does not differ substantially from <a class="reference external" href="https://www.drupal.org/documentation/build/distributions">maintaining other Drupal
+distributions</a>.</p>
+<p>Drupal distributions consist of a script that runs at the time of the
+installation as well as a set of modules, themes, and libraries that
+exist at <code class="docutils literal notranslate"><span class="pre">profiles/MY_DISTRIBUTION</span></code> directory. These modules, themes,
+and libraries work the same as any other modules, themes, or libraries
+that are added to Drupal sites. They are packaged together in the
+<code class="docutils literal notranslate"><span class="pre">profiles</span></code> directory to make it easier to install and maintain.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><a class="reference external" href="https://github.com/GetDKAN/dkan-tools">DKAN Tools</a> is project
+containing commands and tools that <a class="reference external" href="https://civicactions.com/dkan/">CivicActions</a> uses for our own implementations and
+deployments.</p>
+</div>
+<div class="section" id="filesystem-conventions">
+<h2>Filesystem Conventions<a class="headerlink" href="#filesystem-conventions" title="Permalink to this headline">¶</a></h2>
+<p>With Drupal’s inheritance model mentioned above, it should not be
+necessary to place custom code or modules in the <code class="docutils literal notranslate"><span class="pre">profiles/contrib/dkan2</span></code>
+directory. Additional modules, themes, or libraries, or newer versions
+of ones already present in <code class="docutils literal notranslate"><span class="pre">profiles/contrib/dkan2</span></code>, can be placed in
+<code class="docutils literal notranslate"><span class="pre">modules</span></code>, <code class="docutils literal notranslate"><span class="pre">themes</span></code>, or <code class="docutils literal notranslate"><span class="pre">libraries</span></code>. This will make maintaining your
+DKAN site much easier.</p>
+<p>If it is necessary or expedient to overwrite files in the
+<code class="docutils literal notranslate"><span class="pre">profiles/contrib/dkan2</span></code> directory, it is recommended to keep a
+<a class="reference external" href="https://ariejan.net/2009/10/26/how-to-create-and-apply-a-patch-with-git/">patch</a>
+of the changes. A patch will make it possible to re-apply changes once a
+newer version of DKAN is added to the ‘profiles/contrib/dkan2’ directory.</p>
+</div>
+<div class="section" id="primary-maintenance-tasks">
+<h2>Primary Maintenance Tasks<a class="headerlink" href="#primary-maintenance-tasks" title="Permalink to this headline">¶</a></h2>
+<p>By “maintenance” we mean three specific tasks</p>
+<ul class="simple">
+<li><p><strong>Upgrading</strong> DKAN to receive new features and bug-fixes</p></li>
+<li><p><strong>Adding</strong> additional modules or features</p></li>
+<li><p><strong>Overriding</strong> current modules or functionally</p></li>
+</ul>
+</div>
+<div class="section" id="getting-dkan-updates">
+<h2>Getting DKAN Updates<a class="headerlink" href="#getting-dkan-updates" title="Permalink to this headline">¶</a></h2>
+<p>DKAN uses Drupal versioning standards, with one modification. <em>Minor</em>
+upgrades to DKAN are released approximately every 4-6 weeks. For
+instance, a minor release would move from DKAN 8.x-1.11 to 8.x-1.12.
+Starting with version 8.x-1.12, we are adding <em>patch</em> releases for
+security and bug fixes. For instance, the first patch release between
+8.x-1.12 and 8.x-1.13 will be 8.x-1.12.1.</p>
+<p>Please note <em>you can not use</em> <code class="docutils literal notranslate"><span class="pre">drush</span> <span class="pre">up</span></code> <em>with DKAN</em>. This is because
+DKAN is not packaged on Drupal.org.</p>
+<div class="section" id="basic-upgrades">
+<h3>Basic Upgrades<a class="headerlink" href="#basic-upgrades" title="Permalink to this headline">¶</a></h3>
+<p>placeholder</p>
+</div>
+<div class="section" id="using-drush-make">
+<h3>Using drush make<a class="headerlink" href="#using-drush-make" title="Permalink to this headline">¶</a></h3>
+<p>placeholder</p>
+</div>
+</div>
+<div class="section" id="advanced-workflows">
+<h2>Advanced Workflows<a class="headerlink" href="#advanced-workflows" title="Permalink to this headline">¶</a></h2>
+<p>placeholder</p>
+<div class="section" id="overriding-current-dkan-modules-or-functionality">
+<h3>Overriding current DKAN modules or functionality<a class="headerlink" href="#overriding-current-dkan-modules-or-functionality" title="Permalink to this headline">¶</a></h3>
+<p>Drupal has an inheritance model that makes it easy to override modules
+added to distributions as well as the functionality of other modules.</p>
+<p>Note that moving to a different location for an existing, installed
+module will require a <a class="reference external" href="https://www.drupal.org/project/registry_rebuild">Registry
+Rebuild</a> to prompt
+Drupal to refresh all module paths.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/development/maintaining.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
