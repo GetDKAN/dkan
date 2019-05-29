@@ -350,7 +350,7 @@ projects:
   token_tweaks:
     version: 1.x-dev
   uuid:
-    version: '1.2'
+    version: '1.3'
   views:
     version: '3.21'
     patch:
