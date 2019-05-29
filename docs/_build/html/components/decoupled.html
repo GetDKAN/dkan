@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Decoupled Front-end &#8212; DKAN2 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Guide" href="../api/index.html" />
+    <link rel="prev" title="Topics" href="topics.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../index.html">DKAN2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">DKAN Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Major Components</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dataset.html">Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datastore.html">Datastore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="harvest.html">Harvester</a></li>
+<li class="toctree-l2"><a class="reference internal" href="topics.html">Topics</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Decoupled Front-end</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">DKAN Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About this documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Major Components</a><ul>
+      <li>Previous: <a href="topics.html" title="previous chapter">Topics</a></li>
+      <li>Next: <a href="../api/index.html" title="next chapter">API Guide</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="decoupled-front-end">
+<h1>Decoupled Front-end<a class="headerlink" href="#decoupled-front-end" title="Permalink to this headline">¶</a></h1>
+<p>DKAN2 uses a <a class="reference external" href="https://github.com/interra/data-catalog-frontend">React front-end</a> built with <a class="reference external" href="https://github.com/facebook/create-react-app">Create React App</a>.</p>
+<div class="section" id="using-the-app">
+<h2>Using the App<a class="headerlink" href="#using-the-app" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Assuming the app has been cloned into your Docroot</p></li>
+<li><p>Configure the <code class="docutils literal notranslate"><span class="pre">.env.development</span></code> and <code class="docutils literal notranslate"><span class="pre">.env.production</span></code> files to point to the backend urls.</p></li>
+<li><p>Install the dependencies with <a class="reference external" href="https://www.npmjs.com/">npm</a>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">data-catalog-frontend</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">install</span></code></p></li>
+</ul>
+</li>
+<li><p>Run the server: <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">start</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="available-scripts">
+<h2>Available Scripts<a class="headerlink" href="#available-scripts" title="Permalink to this headline">¶</a></h2>
+<p>In the project directory, you can run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">start</span>
+</pre></div>
+</div>
+<p>Runs the app in the development mode.</p>
+<p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> to view it in the browser.</p>
+<p>The page will reload if you make edits.</p>
+<p>You will also see any lint errors in the console.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">test</span>
+</pre></div>
+</div>
+<p>Launches the test runner in the interactive watch mode.</p>
+<p>See the section about <a class="reference external" href="https://facebook.github.io/create-react-app/docs/running-tests">running tests</a> for more information.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">run</span> <span class="n">build</span>
+</pre></div>
+</div>
+<p>Builds the app for production to the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder.</p>
+<p>It correctly bundles React in production mode and optimizes the build for the best performance.</p>
+<p>The build is minified and the filenames include the hashes.</p>
+<p>Your app is ready to be deployed!</p>
+<p>See the section about <a class="reference external" href="https://facebook.github.io/create-react-app/docs/deployment">deployment</a> for more information.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">run</span> <span class="n">eject</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this is a one-way operation. Once you <cite>eject</cite>, you can’t go back!</p>
+</div>
+<p>If you aren’t satisfied with the build tool and configuration choices, you can <cite>eject</cite> at any time. This command will remove the single build dependency from your project.</p>
+<p>Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except <cite>eject</cite> will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.</p>
+<p>You don’t have to ever use <cite>eject</cite>. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.</p>
+</div>
+<div class="section" id="learn-more">
+<h2>Learn More<a class="headerlink" href="#learn-more" title="Permalink to this headline">¶</a></h2>
+<p>You can learn more in the <a class="reference external" href="https://facebook.github.io/create-react-app/docs/getting-started">Create React App documentation</a> .</p>
+<p>To learn React, check out the <a class="reference external" href="https://reactjs.org/">React documentation</a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://facebook.github.io/create-react-app/docs/code-splitting">Code Splitting</a></p></li>
+<li><p><a class="reference external" href="https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size">Analyzing the Bundle Size</a></p></li>
+<li><p><a class="reference external" href="https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app">Making a Progressive Web App</a></p></li>
+<li><p><a class="reference external" href="https://facebook.github.io/create-react-app/docs/advanced-configuration">Advanced Configuration</a></p></li>
+<li><p><a class="reference external" href="https://facebook.github.io/create-react-app/docs/deployment">Deployment</a></p></li>
+<li><p><a class="reference external" href="https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify">npm run build fails to minify</a></p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/components/decoupled.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
