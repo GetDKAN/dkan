@@ -8,7 +8,7 @@ use Contracts\Offsetter;
 use Contracts\Limiter;
 
 /**
- *
+ * Query class.
  */
 class Query implements Sorter, Conditioner, Offsetter, Limiter {
   public $thing;
@@ -19,49 +19,52 @@ class Query implements Sorter, Conditioner, Offsetter, Limiter {
   public $offset = NULL;
 
   /**
+   * Set the identifier of what is being retrieved.
    *
+   * In the case of things being retrieved from a SQL database,
+   * a table name would be the identifier.
    */
   public function setThingToRetrieve($id) {
     $this->thing = $id;
   }
 
   /**
-   *
+   * Properties to be retrieved.
    */
   public function filterByProperty($property) {
     $this->properties[] = $property;
   }
 
   /**
-   *
+   * Retrieve only objects with properties of certain values.
    */
   public function conditionByIsEqualTo(string $property, string $value) {
     $this->conditions[$property] = $value;
   }
 
   /**
-   *
+   * Get a specific number of records.
    */
   public function limitTo(int $number_of_items) {
     $this->limit = $number_of_items;
   }
 
   /**
-   *
+   * Offset where we start getting records.
    */
   public function offsetBy(int $offset) {
     $this->offset = $offset;
   }
 
   /**
-   *
+   * Sort records by the given property in ascending order.
    */
   public function sortByAscending(string $property) {
     $this->sort['ASC'][] = $property;
   }
 
   /**
-   *
+   * Sort records by the given property in descending order.
    */
   public function sortByDescending(string $property) {
     $this->sort['DESC'][] = $property;

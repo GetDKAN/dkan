@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_datastore\Controller;
 
+use Dkan\Datastore\Manager\Manager;
 use Drupal\dkan_datastore\Query;
 use Drupal\dkan_datastore\Storage\Database;
 use Drupal\dkan_datastore\Util;
@@ -10,7 +11,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- *
+ * Api class.
  */
 class Api implements ContainerInjectionInterface {
 
@@ -22,24 +23,25 @@ class Api implements ContainerInjectionInterface {
   protected $container;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
   }
 
   /**
-   *
+   * Method called by the router.
    */
   public function runQuery($query_string) {
 
     $parser = $this->container->get('dkan_datastore.sql_parser');
 
     if ($parser->validate($query_string) === TRUE) {
-
-      $query_object = $this->getQueryObject($query_string);
+      $state_machine = $parser->getValidatingMachine();
+      $query_object = $this->getQueryObject($state_machine);
       $database = $this->getDatabase();
       $result = $database->query($query_object);
+
       return new JsonResponse($result);
     }
     else {
@@ -48,67 +50,137 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Private.
    */
-  protected function getQueryObject($query_string) {
+  protected function getQueryObject($state_machine) {
 
-    $object = new Query();
-
-    $query_pieces = $this->explode($query_string);
-
-    $select = array_shift($query_pieces);
-    $uuid = $this->getUuidFromSelect($select);
-    $properties = $this->getPropertiesFromSelect($select);
-
-    $where = array_shift($query_pieces);
-    if ($where) {
-      $properties_and_values = $this->getPropertiesAndValuesFromWhere($where);
-      foreach ($properties_and_values as $property => $value) {
-        $object->conditionByIsEqualTo($property, $value);
-      }
-    }
-
-    $sort = array_shift($query_pieces);
-    if ($sort) {
-      $sort_info = $this->getSortInfo($sort);
-      foreach ($sort_info['ASC'] as $property) {
-        $object->sortByAscending($property);
-      }
-      foreach ($sort_info['DESC'] as $property) {
-        $object->sortByDescending($property);
-      }
-    }
-
-    $range = array_shift($query_pieces);
-    if ($range) {
-      $range_info = $this->getRangeInfo($range);
-      if (!empty($range_info['limit'])) {
-        $object->limitTo($range_info['limit']);
-      }
-      if (!empty($range_info['offset'])) {
-        $object->offsetBy($range_info['offset']);
-      }
-    }
-
+    $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
     try {
-      $manager = Util::getDatastoreManager($uuid);
-
-      $table = $manager->getTableName();
-      $object->setThingToRetrieve($table);
+      $manager = $this->getDatastoreManager($uuid);
     }
     catch (\Exception $e) {
       return new JsonResponse("No datastore.");
     }
 
-    foreach ($properties as $p) {
-      $object->filterByProperty($p);
-    }
+    $object = new Query();
+    $table = $manager->getTableName();
+    $object->setThingToRetrieve($table);
+    $this->setQueryObjectSelect($object, $state_machine->gsm('select'));
+    $this->setQueryObjectWhere($object, $state_machine->gsm('where'));
+    $this->setQueryObjectOrderBy($object, $state_machine->gsm('order_by'));
+    $this->setQueryObjectLimit($object, $state_machine->gsm('limit'));
 
     return $object;
   }
 
   /**
-   *
+   * Private.
+   */
+  private function setQueryObjectSelect(Query $object, $state_machine) {
+    $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_var_all'));
+    if (empty($strings)) {
+      $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_var'));
+      foreach ($strings as $property) {
+        $object->filterByProperty($property);
+      }
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function setQueryObjectWhere(Query $object, $state_machine) {
+    $properties = $this->getStringsFromStringMachine($state_machine->gsm('where_column'));
+    $values = $this->getStringsFromStringMachine($state_machine->gsm('quoted_string')->gsm('string'));
+
+    foreach ($properties as $index => $property) {
+      $value = $values[$index];
+      if ($value) {
+        $object->conditionByIsEqualTo($property, $value);
+      }
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function setQueryObjectOrderBy(Query $object, $state_machine) {
+    $properties = $this->getStringsFromStringMachine($state_machine->gsm('order_var'));
+
+    $direction = $this->getStringsFromStringMachine($state_machine->gsm('order_asc'));
+    if (!empty($direction)) {
+      foreach ($properties as $property) {
+        $object->sortByAscending($property);
+      }
+    }
+    else {
+      foreach ($properties as $property) {
+        $object->sortByDescending($property);
+      }
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function setQueryObjectLimit(Query $object, $state_machine) {
+    $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
+    if (!empty($limit)) {
+      $object->limitTo($limit[0]);
+    }
+
+    $offset = $this->getStringsFromStringMachine($state_machine->gsm('numeric2'));
+    if (!empty($offset)) {
+      $object->offsetBy($offset[0]);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function getUuidFromSelect($machine) {
+    $strings = $this->getStringsFromStringMachine($machine);
+    if (empty($strings)) {
+      throw new \Exception("No UUID given");
+    }
+    return $strings[0];
+  }
+
+  /**
+   * Private.
+   */
+  private function getStringsFromStringMachine($machine) {
+    $strings = [];
+    $current_string = "";
+    $array = [];
+    foreach ($machine->execution as $item) {
+      $array[] = $item;
+    }
+    $array = array_reverse($array);
+
+    foreach ($array as $states_or_input) {
+      if (is_array($states_or_input)) {
+        $states = $states_or_input;
+        if (in_array(0, $states) && !empty($current_string)) {
+          $strings[] = $current_string;
+          $current_string = "";
+        }
+      }
+      else {
+        $input = $states_or_input;
+        $current_string .= $input;
+      }
+    }
+
+    if (!empty($current_string)) {
+      $strings[] = $current_string;
+    }
+
+    return $strings;
+  }
+
+  /**
+   * Private.
    */
   protected function getDatabase(): Database {
     return $this->container
@@ -116,96 +188,10 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Private.
    */
-  protected function explode(string $queryStr) {
-    $pieces = explode("]", $queryStr);
-    foreach ($pieces as $key => $piece) {
-      $pieces[$key] = str_replace("[", "", $piece);
-    }
-    array_pop($pieces);
-    return $pieces;
-  }
-
-  /**
-   *
-   */
-  protected function getUuidFromSelect(string $select) {
-    $pieces = explode("FROM", $select);
-    return trim(end($pieces));
-  }
-
-  /**
-   *
-   */
-  protected function getPropertiesFromSelect(string $select) {
-    $properties = [];
-    $pieces = explode("FROM", $select);
-    $first = array_shift($pieces);
-    $properties_string = str_replace("SELECT", "", $first);
-    if (substr_count($properties_string, "*") > 0) {
-      return $properties;
-    }
-    else {
-      $dirty_properties = explode(",", $properties_string);
-      foreach ($dirty_properties as $p) {
-        $properties[] = trim($p);
-      }
-      return $properties;
-    }
-  }
-
-  /**
-   *
-   */
-  protected function getPropertiesAndValuesFromWhere(string $where) {
-    $result = [];
-    $where = str_replace("WHERE", "", $where);
-    $conditions = explode("AND", $where);
-    foreach ($conditions as $cond) {
-      $pieces = explode("=", $cond);
-      if (count($pieces) == 1) {
-        $pieces = explode("LIKE", $cond);
-      }
-      $result[$pieces[0]] = trim(str_replace('"', "", $pieces[1]));
-    }
-    return $result;
-  }
-
-  /**
-   *
-   */
-  protected function getSortInfo(string $sort) {
-    $sort_info = ['ASC' => [], 'DESC' => []];
-
-    $pieces = explode(" ", $sort);
-
-    $sort_order = "ASC";
-    if (count($pieces) == 4) {
-      $sort_order = end($pieces);
-    }
-
-    foreach (explode(",", $pieces[2]) as $property) {
-      $sort_info[$sort_order][] = trim($property);
-    }
-
-    return $sort_info;
-  }
-
-  /**
-   *
-   */
-  protected function getRangeInfo(string $range) {
-    $info = ['limit' => NULL, 'offset' => NULL];
-    $pieces = explode(" ", $range);
-    if (count($pieces) == 4) {
-      $info['limit'] = $pieces[1];
-      $info['offset'] = $pieces[3];
-    }
-    elseif (count($pieces) == 2) {
-      $info['limit'] = $pieces[1];
-    }
-    return $info;
+  protected function getDatastoreManager(string $uuid): Manager {
+    return Util::getDatastoreManager($uuid);
   }
 
   /**
