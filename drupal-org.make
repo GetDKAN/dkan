@@ -337,7 +337,7 @@ projects:
   strongarm:
     version: '2.0'
   tablefield:
-    version: '3.4'
+    version: '3.5'
   taxonomy_menu:
     version: '1.6'
   taxonomy_fixtures:
@@ -350,7 +350,7 @@ projects:
   token_tweaks:
     version: 1.x-dev
   uuid:
-    version: '1.2'
+    version: '1.3'
   views:
     version: '3.21'
     patch:
