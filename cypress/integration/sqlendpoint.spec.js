@@ -47,7 +47,7 @@ context('SQL Endpoint', () => {
 
     context('WHERE', () => {
         it('Single condition', () => {
-            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name LIKE "Farah"];`
+            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name = 'Farah'];`
             cy.request(query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(11)
@@ -55,7 +55,7 @@ context('SQL Endpoint', () => {
         })
 
         it('Multiple conditions', () => {
-            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name LIKE "Farah" AND dist_name LIKE "Farah"];`
+            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name = 'Farah' AND dist_name = 'Farah'];`
             cy.request(query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(1)
@@ -65,17 +65,9 @@ context('SQL Endpoint', () => {
     })
 
     context('ORDER BY', () => {
-        it('Ascending', () => {
-            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name LIKE "%25"][ORDER BY prov_name];`
-            cy.request(query).then((response) => {
-                expect(response.status).eql(200)
-                expect(response.body.length).eql(399)
-                expect(response.body[0].prov_name).eql("Badakhshan")
-            })
-        })
 
         it('Ascending explicit', () => {
-            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name LIKE "%25"][ORDER BY prov_name ASC];`
+            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][ORDER BY prov_name ASC];`
             cy.request(query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(399)
@@ -84,7 +76,7 @@ context('SQL Endpoint', () => {
         })
 
         it('Descending explicit', () => {
-            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name LIKE "%25"][ORDER BY prov_name DESC];`
+            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][ORDER BY prov_name DESC];`
             cy.request(query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(399)
@@ -96,7 +88,7 @@ context('SQL Endpoint', () => {
 
     context('LIMIT and OFFSET', () => {
         it('Limit only', () => {
-            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name LIKE "%25"][ORDER BY prov_name][LIMIT 5];`
+            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][ORDER BY prov_name ASC][LIMIT 5];`
             cy.request(query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(5)
@@ -105,7 +97,7 @@ context('SQL Endpoint', () => {
         })
 
         it('Limit and offset', () => {
-            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][WHERE prov_name LIKE "%25"][ORDER BY prov_name ASC][LIMIT 5 OFFSET 100];`
+            let query = endpoint + `[SELECT * FROM ${dataset_identifier}][ORDER BY prov_name ASC][LIMIT 5 OFFSET 100];`
             cy.request(query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(5)
