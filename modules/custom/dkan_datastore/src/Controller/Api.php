@@ -152,11 +152,7 @@ class Api implements ContainerInjectionInterface {
   private function getStringsFromStringMachine($machine) {
     $strings = [];
     $current_string = "";
-    $array = [];
-    foreach ($machine->execution as $item) {
-      $array[] = $item;
-    }
-    $array = array_reverse($array);
+    $array = $machine->execution;
 
     foreach ($array as $states_or_input) {
       if (is_array($states_or_input)) {
