@@ -1,9 +1,9 @@
 <?php
 
-namespace Dkan\Datastore\Page\Component;
+namespace Drupal\Dkan\Datastore\Page\Component;
 
 use Dkan\Datastore\Manager\Factory;
-use Dkan\Datastore\Manager\ManagerInterface;
+use Dkan\Datastore\Manager\IManager;
 use Dkan\Datastore\Resource;
 
 /**
@@ -19,7 +19,7 @@ class ManagerSelection {
   /**
    * Constructor.
    */
-  public function __construct(Resource $resource, ManagerInterface $manager) {
+  public function __construct(Resource $resource, IManager $manager) {
     $this->resource = $resource;
     $this->datastoreManager = $manager;
   }
@@ -61,7 +61,7 @@ class ManagerSelection {
     $factory = new Factory($this->resource);
     $factory->setClass($class);
 
-    /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
+    /* @var $manager \Dkan\Datastore\Manager\IManager */
     $manager = $factory->get();
     $manager->saveState();
   }

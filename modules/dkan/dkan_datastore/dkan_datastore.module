@@ -17,8 +17,13 @@ use Dkan\Datastore\LockableDrupalVariables;
  */
 function dkan_datastore_xautoload($adapter) {
   $adapter->absolute()->addPsr4(
-    'Dkan\Datastore\\',
+    'Drupal\Dkan\Datastore\\',
     drupal_get_path("module", "dkan_datastore") . '/src'
+  );
+
+  $adapter->absolute()->addPsr4(
+    'Dkan\Datastore\\',
+    drupal_get_path("module", "dkan_datastore") . '/vendor/fmizzell/datastore/src'
   );
 }
 
@@ -434,7 +439,7 @@ function dkan_datastore_node_presave($node) {
  */
 function dkan_datastore_cron() {
   if (drupal_is_cli()) {
-    $storage = new LockableDrupalVariables("dkan_datastore");
+    $storage = \Drupal\Dkan\Datastore\Util::getBinStorage();
 
     $bin = $storage->borrowBin();
 
@@ -442,11 +447,11 @@ function dkan_datastore_cron() {
 
     $current_nid = NULL;
     foreach ($bin as $nid => $state) {
-      if ($state['data_import'] == ManagerInterface::DATA_IMPORT_IN_PROGRESS) {
+      if ($state['data_import'] == \Dkan\Datastore\Manager\IManager::DATA_IMPORT_IN_PROGRESS) {
         $already_importing = TRUE;
         break;
       }
-      elseif ($state['data_import'] == ManagerInterface::DATA_IMPORT_READY || $state['data_import'] == ManagerInterface::DATA_IMPORT_PAUSED) {
+      elseif ($state['data_import'] == \Dkan\Datastore\Manager\IManager::DATA_IMPORT_READY || $state['data_import'] == \Dkan\Datastore\Manager\IManager::DATA_IMPORT_PAUSED) {
         $current_nid = $nid;
         break;
       }
@@ -459,8 +464,8 @@ function dkan_datastore_cron() {
 
       $resource = Resource::createFromDrupalNodeNid($current_nid);
 
-      /* @var $manager ManagerInterface */
-      $manager = (new Factory($resource))->get();
+      /* @var $manager \Dkan\Datastore\Manager\IManager */
+      $manager = \Drupal\Dkan\Datastore\Util::getManager($resource);
 
       $finished = $manager->import();
 

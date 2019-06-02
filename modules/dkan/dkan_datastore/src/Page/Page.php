@@ -1,13 +1,15 @@
 <?php
 
-namespace Dkan\Datastore\Page;
+namespace Drupal\Dkan\Datastore\Page;
 
+use Dkan\Datastore\Manager\IManager;
 use Dkan\Datastore\Resource;
 use Dkan\Datastore\Manager\Factory;
-use Dkan\Datastore\Manager\ManagerInterface;
-use Dkan\Datastore\Page\Component\ManagerConfiguration;
-use Dkan\Datastore\Page\Component\ManagerSelection;
-use Dkan\Datastore\Page\Component\Status;
+
+use Drupal\Dkan\Datastore\Page\Component\ManagerConfiguration;
+use Drupal\Dkan\Datastore\Page\Component\ManagerSelection;
+use Drupal\Dkan\Datastore\Page\Component\Status;
+use Drupal\Dkan\Datastore\Util;
 
 /**
  * Class Page.
@@ -41,8 +43,8 @@ class Page {
       /* @var $resource \Dkan\Datastore\Resource */
       $resource = Resource::createFromDrupalNode($this->node);
 
-      /* @var $manager ManagerInterface */
-      $manager = (new Factory($resource))->get();
+      /* @var $manager IManager */
+      $manager = Util::getManager($resource);
 
       // The drop button was pressed. Lets confirmed.
       if (isset($this->formState['storage']) && isset($this->formState['storage']['drop'])) {
@@ -63,7 +65,7 @@ class Page {
       ];
 
       $status = $manager->getStatus();
-      if (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_READY, ManagerInterface::DATA_IMPORT_UNINITIALIZED])) {
+      if (in_array($status['data_import'], [IManager::DATA_IMPORT_READY, IManager::DATA_IMPORT_UNINITIALIZED])) {
 
         $this->form += (new ManagerSelection($resource, $manager))->getForm();
 
@@ -77,9 +79,9 @@ class Page {
       }
       elseif (in_array($status['data_import'],
         [
-          ManagerInterface::DATA_IMPORT_DONE,
-          ManagerInterface::DATA_IMPORT_PAUSED,
-          ManagerInterface::DATA_IMPORT_ERROR,
+          IManager::DATA_IMPORT_DONE,
+          IManager::DATA_IMPORT_PAUSED,
+          IManager::DATA_IMPORT_ERROR,
         ])) {
         $this->form['actions']['drop'] = array(
           '#type' => 'submit',
@@ -87,7 +89,7 @@ class Page {
           '#submit' => array('dkan_datastore_drop_submit'),
         );
       }
-      elseif (in_array($status['data_import'], [ManagerInterface::DATA_IMPORT_IN_PROGRESS])) {
+      elseif (in_array($status['data_import'], [IManager::DATA_IMPORT_IN_PROGRESS])) {
         $this->form['actions']['stop'] = array(
           '#type' => 'submit',
           '#value' => t("Stop"),
@@ -128,8 +130,8 @@ class Page {
   public function submit() {
     $resource = Resource::createFromDrupalNode($this->node);
 
-    /* @var $manager ManagerInterface */
-    $manager = (new Factory($resource))->get();
+    /* @var $manager IManager */
+    $manager = Util::getManager($resource);
 
     $values = $this->formState['values'];
 
@@ -139,7 +141,7 @@ class Page {
         (new ManagerSelection($resource, $manager))->submit($value);
 
         // The manager got configured we have to reload it.
-        $manager = (new Factory($resource))->get();
+        $manager = Util::getManager($resource);
       }
 
       $manager_values = [];
@@ -176,9 +178,9 @@ class Page {
     }
 
     try {
-      /* @var $manager ManagerInterface */
+      /* @var $manager IManager */
       $finished = $manager->import();
-      if ($finished == ManagerInterface::DATA_IMPORT_ERROR) {
+      if ($finished == IManager::DATA_IMPORT_ERROR) {
         $general = "DKAN DATASTORE: There was a problem while importing the Resource";
         $errors = $manager->getErrors();
         $error_string = implode(" | ", $errors);
@@ -191,7 +193,7 @@ class Page {
       drupal_set_message($e->getMessage(), 'error');
     }
 
-    if ($finished == ManagerInterface::DATA_IMPORT_PAUSED) {
+    if ($finished == IManager::DATA_IMPORT_PAUSED) {
       return FALSE;
     }
 
@@ -211,7 +213,7 @@ class Page {
   /**
    * Setting up the batch process for importing a file.
    */
-  private function batchConfiguration(ManagerInterface $manager) {
+  private function batchConfiguration(IManager $manager) {
     $manager->setImportTimelimit(self::BATCH_TIME_LIMIT);
 
     $batch = array(
@@ -249,7 +251,7 @@ class Page {
   /**
    * Form Submit.
    */
-  private function dropFormSubmit(ManagerInterface $manager) {
+  private function dropFormSubmit(IManager $manager) {
     $manager->drop();
     $this->formState['redirect'] = "node/{$this->node->nid}/datastore";
     drupal_set_message(t("The datastore for %title has been successfully dropped.", ['%title' => $this->node->title]));

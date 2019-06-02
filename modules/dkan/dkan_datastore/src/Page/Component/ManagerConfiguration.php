@@ -1,8 +1,8 @@
 <?php
 
-namespace Dkan\Datastore\Page\Component;
+namespace Drupal\Dkan\Datastore\Page\Component;
 
-use Dkan\Datastore\Manager\ManagerInterface;
+use Dkan\Datastore\Manager\IManager;
 
 /**
  * Class ManagerConfiguration.
@@ -16,7 +16,7 @@ class ManagerConfiguration {
   /**
    * Constructor.
    */
-  public function __construct(ManagerInterface $manager) {
+  public function __construct(IManager $manager) {
     $this->datastoreManager = $manager;
   }
 

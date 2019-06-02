@@ -7,7 +7,7 @@
 
 use Dkan\Datastore\Resource;
 use Dkan\Datastore\Manager\Factory;
-use Dkan\Datastore\Page\Page;
+use Drupal\Dkan\Datastore\Page\Page;
 
 // Default to 50MB.
 define('MAX_FILE_REMOTE_PROXY_DEFAULT', 1024 * 1024 * 50);

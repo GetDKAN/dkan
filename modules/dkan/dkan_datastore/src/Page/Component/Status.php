@@ -1,8 +1,8 @@
 <?php
 
-namespace Dkan\Datastore\Page\Component;
+namespace Drupal\Dkan\Datastore\Page\Component;
 
-use Dkan\Datastore\Manager\ManagerInterface;
+use Dkan\Datastore\Manager\IManager;
 
 /**
  * Class Status.
@@ -16,7 +16,7 @@ class Status {
   /**
    * Constructor.
    */
-  public function __construct(ManagerInterface $manager) {
+  public function __construct(IManager $manager) {
     $this->datastoreManager = $manager;
   }
 
@@ -58,29 +58,29 @@ class Status {
    */
   public static function datastoreStateToString($state) {
     switch ($state) {
-      case ManagerInterface::STORAGE_UNINITIALIZED:
+      case IManager::STORAGE_UNINITIALIZED:
         return t("Uninitialized");
 
-      case ManagerInterface::STORAGE_INITIALIZED:
+      case IManager::STORAGE_INITIALIZED:
         return t("Initialized");
 
-      case ManagerInterface::DATA_IMPORT_UNINITIALIZED:
+      case IManager::DATA_IMPORT_UNINITIALIZED:
         return t("Ready");
 
-      case ManagerInterface::DATA_IMPORT_READY:
+      case IManager::DATA_IMPORT_READY:
         return t("Ready");
 
-      case ManagerInterface::DATA_IMPORT_IN_PROGRESS:
+      case IManager::DATA_IMPORT_IN_PROGRESS:
         return t("In Progress");
 
-      case ManagerInterface::DATA_IMPORT_PAUSED:
+      case IManager::DATA_IMPORT_PAUSED:
         drupal_set_message(t("The datastore importer is currently paused. It will resume in the background the next time cron runs from drush."));
         return t("Paused");
 
-      case ManagerInterface::DATA_IMPORT_DONE:
+      case IManager::DATA_IMPORT_DONE:
         return t("Done");
 
-      case ManagerInterface::DATA_IMPORT_ERROR:
+      case IManager::DATA_IMPORT_ERROR:
         return t("Error");
     }
   }

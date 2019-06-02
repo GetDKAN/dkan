@@ -856,7 +856,7 @@ function dkan_datastore_api_debug($data_select) {
 function dkan_datastore_api_api_page($node) {
   if ($resource = Resource::createFromDrupalNode($node)) {
     /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
-    $manager = (new Factory($resource))->get();
+    $manager = \Drupal\Dkan\Datastore\Util::getManager($resource);
     $status = $manager->getStatus();
     switch ($status['data_import']) {
       case $manager::DATA_IMPORT_DONE:
@@ -916,7 +916,7 @@ function dkan_datastore_api_api_page_access($node) {
     return FALSE;
   }
   /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
-  if ($manager = (new Factory($resource))->get()) {
+  if ($manager = \Drupal\Dkan\Datastore\Util::getManager($resource)) {
     $status = $manager->getStatus();
     if ($status['data_import'] == $manager::DATA_IMPORT_DONE) {
       $type = 'resource';
