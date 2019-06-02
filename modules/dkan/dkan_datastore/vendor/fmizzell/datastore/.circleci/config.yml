@@ -1,0 +1,26 @@
+version: 2.0
+jobs:
+  build:
+    environment:
+      CC_TEST_REPORTER_ID: 0efde97d116493a523a0fc017c7705d73ffc623ede16311cda76150f76220373
+    docker:
+      - image: circleci/php:7-cli-node-browsers-legacy
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Setup dependencies
+          command: |
+            sudo composer self-update
+            composer install -n --prefer-dist
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Run tests
+          command: |
+            ./cc-test-reporter before-build
+            vendor/bin/phpunit --testsuite all --coverage-clover clover.xml
+            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?

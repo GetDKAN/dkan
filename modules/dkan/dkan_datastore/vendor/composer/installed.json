@@ -1,0 +1,40 @@
+[
+    {
+        "name": "fmizzell/datastore",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/fmizzell/datastore.git",
+            "reference": "5bbedca4759047ec8662294233c05007aa5a9e31"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/fmizzell/datastore/zipball/5bbedca4759047ec8662294233c05007aa5a9e31",
+            "reference": "5bbedca4759047ec8662294233c05007aa5a9e31",
+            "shasum": ""
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^7.4"
+        },
+        "time": "2019-02-27T00:17:26+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Dkan\\Datastore\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-3.0-only"
+        ],
+        "authors": [
+            {
+                "name": "fmizzell",
+                "email": "fmizzell.dev@gmail.com"
+            }
+        ],
+        "description": "A Drupal-independent version of DKAN's datastore."
+    }
+]

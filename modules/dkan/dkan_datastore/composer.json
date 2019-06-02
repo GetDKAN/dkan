@@ -1,0 +1,12 @@
+{
+    "name": "dkan/datastore",
+    "require": {
+        "fmizzell/datastore": "dev-master"
+    },
+    "authors": [
+        {
+            "name": "fmizzell",
+            "email": "fmizzell.dev@gmail.com"
+        }
+    ]
+}
