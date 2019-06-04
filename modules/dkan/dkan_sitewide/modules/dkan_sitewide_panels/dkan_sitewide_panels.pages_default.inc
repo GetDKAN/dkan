@@ -491,7 +491,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     ),
   );
   $display->cache = array();
-  $display->title = '';
+  $display->title = '%node:title - %node:field-dataset-ref';
   $display->uuid = '346ac7da-4f98-4c21-96f3-a47b9eb0f238';
   $display->storage_type = 'page_manager';
   $display->storage_id = 'node_view__resource';
@@ -596,7 +596,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $pane->uuid = '0a064176-26e9-4fae-93e5-a25209e00a01';
   $display->content['new-0a064176-26e9-4fae-93e5-a25209e00a01'] = $pane;
   $display->panels['header'][0] = 'new-0a064176-26e9-4fae-93e5-a25209e00a01';
-  $display->hide_title = PANELS_TITLE_PANE;
+  $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
   $export['node_view__resource'] = $handler;
@@ -646,7 +646,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
     ),
   );
   $display->cache = array();
-  $display->title = '';
+  $display->title = '%node:title';
   $display->uuid = '7a09b6f7-196b-421c-a080-418d6588fed2';
   $display->storage_type = 'page_manager';
   $display->storage_id = 'node_view_panel_context';
@@ -792,7 +792,7 @@ function dkan_sitewide_panels_default_page_manager_handlers() {
   $pane->uuid = 'a3d3ba71-c2c5-4eb0-8ac8-77b7709264a8';
   $display->content['new-a3d3ba71-c2c5-4eb0-8ac8-77b7709264a8'] = $pane;
   $display->panels['sidebar'][4] = 'new-a3d3ba71-c2c5-4eb0-8ac8-77b7709264a8';
-  $display->hide_title = PANELS_TITLE_PANE;
+  $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
   $export['node_view_panel_context'] = $handler;
