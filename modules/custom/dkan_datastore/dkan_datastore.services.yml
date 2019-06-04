@@ -4,9 +4,16 @@ services:
     arguments: ['@database']
   dkan_datastore.sql_parser:
     class: Drupal\dkan_datastore\SqlParser
-  dkan_datastore.variable:
+  dkan_datastore.storage.variable:
     class: Drupal\dkan_datastore\Storage\Variable
     arguments: ['@config.factory']
     # todo: is this supposed to be a single instance or new instance each time?
     # assuming new instance each time for now.
     shared: false
+  dkan_datastore.manager.datastore_manager_builder:
+    class: Drupal\dkan_datastore\Manager\DatastoreManagerBuilder
+    arguments: ['@service_container']
+    shared: false
+  dkan_datastore.manager.deferred_import_queuer:
+    class: Drupal\dkan_datastore\Manager\DeferredImportQueuer
+

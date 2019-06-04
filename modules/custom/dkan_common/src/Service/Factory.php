@@ -65,13 +65,4 @@ class Factory {
     return new Sae($storage, $jsonSchema);
   }
 
-  /**
-   * {@inheritdoc}
-   *
-   * @codeCoverageIgnore
-   */
-  public static function create(ContainerInterface $container) {
-    return new static($container);
-  }
-
 }
