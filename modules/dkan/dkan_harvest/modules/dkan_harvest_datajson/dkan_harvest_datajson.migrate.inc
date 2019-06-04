@@ -204,7 +204,9 @@ class DatajsonHarvestMigration extends HarvestMigration {
           }
         }
 
-        $value = $value_date->getTimestamp();
+        if ($value_date) {
+          $value = $value_date->getTimestamp();
+        }
       }
 
       if (isset($date[0])) {
