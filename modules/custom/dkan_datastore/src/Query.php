@@ -17,6 +17,7 @@ class Query implements Sorter, Conditioner, Offsetter, Limiter {
   public $sort = ['ASC' => [], 'DESC' => []];
   public $limit = NULL;
   public $offset = NULL;
+  public $count = FALSE;
 
   /**
    * Set the identifier of what is being retrieved.
@@ -68,6 +69,10 @@ class Query implements Sorter, Conditioner, Offsetter, Limiter {
    */
   public function sortByDescending(string $property) {
     $this->sort['DESC'][] = $property;
+  }
+
+  public function count() {
+    $this->count = TRUE;
   }
 
 }

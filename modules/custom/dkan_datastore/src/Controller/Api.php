@@ -77,12 +77,20 @@ class Api implements ContainerInjectionInterface {
    * Private.
    */
   private function setQueryObjectSelect(Query $object, $state_machine) {
+    $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_count_all'));
+    if (!empty($strings)) {
+      $object->count();
+      return;
+    }
+
     $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_var_all'));
-    if (empty($strings)) {
-      $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_var'));
-      foreach ($strings as $property) {
-        $object->filterByProperty($property);
-      }
+    if (!empty($strings)) {
+      return;
+    }
+
+    $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_var'));
+    foreach ($strings as $property) {
+      $object->filterByProperty($property);
     }
   }
 

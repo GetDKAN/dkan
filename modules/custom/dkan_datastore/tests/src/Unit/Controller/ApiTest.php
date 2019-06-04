@@ -40,10 +40,17 @@ class ApiTest extends DkanTestBase {
     $o6->limitTo(4);
     $o6->offsetBy(5);
 
+    $o7 = clone $o1;
+    $o7->count();
+
     return [
       [
         '[SELECT * FROM abc];',
         $o1,
+      ],
+      [
+        '[SELECT COUNT(*) FROM abc];',
+        $o7,
       ],
       [
         '[SELECT city,state FROM abc];',

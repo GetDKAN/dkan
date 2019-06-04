@@ -98,6 +98,10 @@ class Database implements IDatabase {
       $db_query->range($query->limit);
     }
 
+    if ($query->count) {
+      $db_query = $db_query->countQuery();
+    }
+
     $result = $db_query->execute()->fetchAll();
 
     return $result;
