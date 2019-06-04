@@ -100,15 +100,18 @@ class SqlParser {
 
     $machine->addMachine('select_start', mb::s('SELECT'));
     $machine->addMachine('select_var_all', mb::s("*"));
+    $machine->addMachine('select_count_all', mb::s("COUNT(*)"));
     $machine->addMachine('select_var', mb::bh($acceptable_for_vars, mb::ONE_OR_MORE));
     $machine->addMachine('select_from', mb::s('FROM'));
     $machine->addMachine('table_var', mb::bh($acceptable_for_vars, mb::ONE_OR_MORE));
 
     $machine->addTransition('select_start', [" "], "select_var");
     $machine->addTransition('select_start', [" "], "select_var_all");
+    $machine->addTransition('select_start', [" "], "select_count_all");
     $machine->addTransition('select_var', [" "], "select_from");
     $machine->addTransition('select_var', [","], "select_var");
     $machine->addTransition('select_var_all', [" "], "select_from");
+    $machine->addTransition('select_count_all', [" "], "select_from");
     $machine->addTransition('select_from', [" "], "table_var");
 
     return $machine;
