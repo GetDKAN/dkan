@@ -3,7 +3,6 @@
 namespace Drupal\interra_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\dkan_datastore\Util;
 use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -105,7 +104,7 @@ class ApiController extends ControllerBase {
         foreach ($data as $dataset_json) {
           $dataset = json_decode($dataset_json);
 
-          if ($dataset->theme && is_array($dataset->theme)) {
+          if (isset($dataset->theme) && is_array($dataset->theme)) {
             $theme = $datasetModifier->objectifyStringsArray($dataset->theme);
             $themes[$theme[0]->identifier] = $theme[0];
           }
@@ -120,7 +119,7 @@ class ApiController extends ControllerBase {
         foreach ($data as $dataset_json) {
           $dataset = json_decode($dataset_json);
 
-          if ($dataset->publisher) {
+          if (isset($dataset->publisher)) {
             $organizations[$dataset->publisher->name] = $dataset->publisher;
           }
         }
@@ -252,7 +251,13 @@ class ApiController extends ControllerBase {
    * @return \Dkan\Datastore\Manager\IManager
    */
   protected function getDatastoreManager($uuid) {
-    return Util::getDatastoreManager($uuid);
+
+    /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilder $managerBuilder */
+    $managerBuilder = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
+
+    $manager = $managerBuilder->buildFromUuid($uuid);
+
+    return $manager;
   }
 
 }
