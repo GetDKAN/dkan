@@ -144,7 +144,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
     // Process Temporal Coverage. The mapping are defined in the base main
     // class, we just need to set the properties.
     if (isset($row->temporal)) {
-      $date = [];
+      $date = $row->temporal;
       if (strpos($row->temporal, '/')) {
         $date = explode("/", $row->temporal);
       }
@@ -204,9 +204,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
           }
         }
 
-        if ($value_date) {
-          $value = $value_date->getTimestamp();
-        }
+        $value = $value_date->getTimestamp();
       }
 
       if (isset($date[0])) {
