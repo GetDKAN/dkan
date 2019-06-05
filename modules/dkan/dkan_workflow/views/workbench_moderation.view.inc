@@ -128,7 +128,7 @@ $handler->display->display_options['filters']['is_current']['id'] = 'is_current'
 $handler->display->display_options['filters']['is_current']['table'] = 'workbench_moderation_node_history';
 $handler->display->display_options['filters']['is_current']['field'] = 'is_current';
 
-/* Display: Drafts page */
+/* Display: Unpublished nodes page */
 $handler = $view->new_display('page', 'Unpublished nodes page', 'unpublished_node_drafts_page');
 $handler->display->display_options['defaults']['title'] = FALSE;
 $handler->display->display_options['title'] = 'Unpublished nodes';
@@ -190,13 +190,6 @@ $handler->display->display_options['fields']['vid']['relationship'] = 'nid';
 $handler->display->display_options['fields']['vid']['exclude'] = TRUE;
 $handler->display->display_options['defaults']['filter_groups'] = FALSE;
 $handler->display->display_options['defaults']['filters'] = FALSE;
-/* Filter criterion: User: Current */
-$handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['table'] = 'users';
-$handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid_1';
-$handler->display->display_options['filters']['uid_current']['value'] = '1';
-$handler->display->display_options['filters']['uid_current']['group'] = 1;
 /* Filter criterion: Workbench Moderation: Current */
 $handler->display->display_options['filters']['is_current']['id'] = 'is_current';
 $handler->display->display_options['filters']['is_current']['table'] = 'workbench_moderation_node_history';
@@ -1016,12 +1009,6 @@ $handler->display->display_options['filters']['state']['value'] = array(
   'draft' => 'draft',
 );
 $handler->display->display_options['filters']['state']['group'] = 1;
-/* Filter criterion: User: Current */
-$handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['table'] = 'users';
-$handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
-$handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
-$handler->display->display_options['filters']['uid_current']['value'] = '1';
 /* Filter criterion: Content: Published */
 $handler->display->display_options['filters']['status']['id'] = 'status';
 $handler->display->display_options['filters']['status']['table'] = 'node';
