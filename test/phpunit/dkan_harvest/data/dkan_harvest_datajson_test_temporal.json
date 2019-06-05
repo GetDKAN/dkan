@@ -194,6 +194,49 @@
         "Medicare"
       ],
       "title": "UPIN Group File"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Ambulance Fee Schedule public use files for calendar years 2004 through December 31, 2016 are located in the Downloads section below.",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "downloadURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
+          "mediaType": "text/html",
+          "accessURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html"
+        }
+      ],
+      "identifier": "309",
+      "keyword": [
+        "Publically Available Data File - for download",
+        "Ambulatory",
+        "Providers",
+        "State",
+        "Claims"
+      ],
+      "landingPage": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
+      "modified": "2016-04-07",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "2005-2016",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Test"
     }
   ]
 }

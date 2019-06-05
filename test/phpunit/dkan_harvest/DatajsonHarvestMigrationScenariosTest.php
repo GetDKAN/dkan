@@ -564,6 +564,10 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
         'value' => "2000-01-15T00:45:00Z",
         'value2' => "2010-01-15T00:06:00Z",
       ),
+      'Test' => array(
+        'value' => "2005-01-01 00:00:00",
+        'value2' => "2016-12-31 00:00:00",
+      ),
     );
 
     // Harvest the faulty source.
