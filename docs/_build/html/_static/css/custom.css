@@ -1,8 +1,10 @@
-body,
-div.sphinxsidebar h3, div.sphinxsidebar h4,
-div.admonition p.admonition-title,
-div.body h1, div.body h2, div.body h3, div.body h4, div.body h5, div.body h6 {
-  font-family: 'Lato',-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700|Varela+Round&display=swap');
+
+pre, tt, code { 
+  color: #E74C3C;
+  padding: 2px 5px;
+  background-color: #fafafa;
+  border: solid 1px #e1e4e5;
 }
 a, a.reference {
   color: #0071bc;
@@ -24,7 +26,9 @@ h3 {
 div.body h3 {
   font-size: 140%;
 }
-
+div.body {
+  border-left: 1px solid #eee;
+}
 div.sphinxsidebarwrapper p.logo {
   margin: -1rem 0 1rem 0;
   text-align: left;
@@ -34,6 +38,9 @@ div.sphinxsidebarwrapper h3 {
 }
 div.sphinxsidebarwrapper #searchbox h3 {
   display: block;
+}
+strong {
+  font-weight: 900;
 }
 #searchbox {
   border-top: 1px solid #ddd;
@@ -68,17 +75,58 @@ div.sphinxsidebar li.toctree-l1.current ul {
   margin-left: 0;
   padding-left: 1rem;
 }
+div.sphinxsidebar li.toctree-l1.current ul ul {
+  border-left: none;
+}
+div.admonition {
+  border: none;
+}
 div.admonition p.admonition-title {
+  display: block;
+  color: white;
+  margin: -10px -30px 10px;
+  padding-left: 30px;
   font-size: 1rem;
   font-weight: bold;
   line-height: 2rem;
 }
-div.admonition {
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
-  border-left-width: 5px;
+div.admonition p.admonition-title:before {
+  font-family: "Font Awesome 5 Free";
+  content:"\f05a";
+  padding-right: .5rem;
 }
+div.admonition.warning p.admonition-title:before {
+  content: "\f071";
+}
+div.admonition.note p.admonition-title {
+  background: #0071bc;
+}
+div.admonition.tip p.admonition-title {
+  background: #42b983;
+}
+div.admonition.warning p.admonition-title {
+  background: #f0b37e;
+}
+
+table.align-center {
+  margin-left: 0;
+}
+.slack:before {
+  font-family: "Font Awesome 5 Brands";
+  content:"\f198";
+  padding-right: .5rem;
+}
+.github:before {
+  font-family: "Font Awesome 5 Brands";
+  content:"\f09b";
+  padding-right: .5rem;
+}
+.medium:before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f23a";
+  padding-right: .5rem;
+}
+
 @media screen and (min-width: 876px) {
   div.document {
     width: 100%;

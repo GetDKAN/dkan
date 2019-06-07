@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/all.min.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
@@ -25,69 +26,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
-  <div class="document">
-    
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="index.html">
-              <img class="logo" src="_static/logo.png" alt="Logo"/>
-            </a></p>
-<h1 class="logo"><a href="index.html">DKAN2</a></h1>
+  
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction/index.html">DKAN Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation/index.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="components/index.html">Major Components</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="community/index.html">DKAN Community</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development/index.html">Development</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">About this documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#file-types">File types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#images">Images</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#text-conventions">Text conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#building-this-documentation">Building this documentation</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="license.html" title="previous chapter">License</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
+    <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           
@@ -114,11 +55,11 @@
 </div>
 <div class="section" id="entities-and-bundles">
 <h3>Entities and bundles<a class="headerlink" href="#entities-and-bundles" title="Permalink to this headline">¶</a></h3>
-<p>A specific content type or other entity bundle is written in italics, as in referring to a _dataset_ node or a _choropleth_ visualization. Entity types, like “node,” require no additional styling.</p>
+<p>A specific content type or other entity bundle is written in italics, as in referring to a <em>dataset</em> node or a <em>choropleth</em> visualization. Entity types, like “node,” require no additional styling.</p>
 </div>
 <div class="section" id="files">
 <h3>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h3>
-<p>Filenames are written as inline code as in this example: <cite>thisfile.txt</cite> will do the trick.</p>
+<p>Filenames are written as inline code as in this example: <code class="docutils literal notranslate"><span class="pre">thisfile.txt</span></code> will do the trick.</p>
 </div>
 <div class="section" id="terminal-commands">
 <h3>Terminal commands<a class="headerlink" href="#terminal-commands" title="Permalink to this headline">¶</a></h3>
@@ -130,7 +71,7 @@ $ ../then.this --one
 </div>
 <div class="section" id="code-blocks">
 <h3>Code blocks<a class="headerlink" href="#code-blocks" title="Permalink to this headline">¶</a></h3>
-<p>Code blocks are also expressed as… code blocks:</p>
+<p>Code blocks are also expressed as. “.. code blocks::”</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="x">/**</span>
 <span class="x">* Adds declared endpoint to list.</span>
 <span class="x">*</span>
@@ -145,8 +86,8 @@ $ ../then.this --one
 </div>
 <div class="section" id="code-objects">
 <h3>Code objects<a class="headerlink" href="#code-objects" title="Permalink to this headline">¶</a></h3>
-<p>When referring to <strong>`$variables`</strong>, <strong>`function_names()`</strong> and <strong>`classNames`</strong> inline, use bold inline code style. This can be achieved in markdown like this:</p>
-<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="x">**``This text``** will be code-styled and bold</span>
+<p>When referring to <code class="docutils literal notranslate"><span class="pre">$variables</span></code>, <code class="docutils literal notranslate"><span class="pre">function_names()</span></code> and <code class="docutils literal notranslate"><span class="pre">classNames</span></code> inline, use inline code style. This can be achieved in markdown like this:</p>
+<div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="x">``This text`` will be code-styled</span>
 </pre></div>
 </div>
 </div>
@@ -157,7 +98,7 @@ $ ../then.this --one
 <div class="section" id="sphinx">
 <h3>Sphinx<a class="headerlink" href="#sphinx" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="http://www.sphinx-doc.org/en/1.5.1/">Sphinx</a> is the Python application that generates the HTML from the documentation markup.</p>
-<p>To work on sphinx documentation locally, install the Sphinx Python tools. This requires having the <cite>easy_install</cite> tool in your environment.</p>
+<p>To work on sphinx documentation locally, install the Sphinx Python tools. This requires having the <code class="docutils literal notranslate"><span class="pre">easy_install</span></code> tool in your environment.</p>
 <p>Install pip (the python package manager):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo easy_install pip
 </pre></div>
@@ -200,8 +141,80 @@ $ sudo pip install -r requirements.txt
           
         </div>
       </div>
-    <div class="clearer"></div>
-  </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">DKAN2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components/index.html">Major Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community/index.html">DKAN Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development/index.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">About this documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#file-types">File types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#images">Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#text-conventions">Text conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modules">Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#entities-and-bundles">Entities and bundles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#files">Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#terminal-commands">Terminal commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-blocks">Code blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-objects">Code objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-this-documentation">Building this documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sphinx">Sphinx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auto-build-server">Auto-build server</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="license.html" title="previous chapter">License</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
     <div class="footer">
       &copy;2019.
       

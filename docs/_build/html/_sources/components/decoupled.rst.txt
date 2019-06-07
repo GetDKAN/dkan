@@ -3,17 +3,21 @@ Decoupled Front-end
 
 DKAN2 uses a `React front-end <https://github.com/interra/data-catalog-frontend>`_ built with `Create React App <https://github.com/facebook/create-react-app>`_.
 
+The `frontend components <https://github.com/interra/data-catalog-components>`_ can be viewed here: https://interra.github.io/data-catalog-components
+
 Using the App
 -------------
 
-- Assuming the app has been cloned into your Docroot
+DKAN comes with an integration module that allows the React App driving the frontend to be embedded in Drupal.
+
+To get the integration working follow these steps:
+
+- Place the source for the Interra `data-catalog-frontend <https://github.com/interra/data-catalog-frontend>`_ inside of your ``docroot`` directory.
 - Configure the ``.env.development`` and ``.env.production`` files to point to the backend urls.
-- Install the dependencies with `npm <https://www.npmjs.com/>`_:
-
-  - ``cd data-catalog-frontend``
-  - ``npm install``
-
-- Run the server: ``npm start``
+- Install the dependencies with `npm <https://www.npmjs.com/>`_: ``cd data-catalog-frontend`` and ``npm install``
+- Build: ``npm run build``
+- Enable the integration module ``drush en interra_frontend``
+- Change the sites configuration to point the homepage (``/``) to ``/home``
 
 
 Available Scripts

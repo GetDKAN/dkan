@@ -9,6 +9,6 @@ components that make up DKAN.
 
    Dataset <dataset>
    Datastore <datastore>
-   Harvester <harvest>
+   Harvest <harvest>
    Topics <topics>
    Decoupled Front-end <decoupled>

@@ -43,9 +43,9 @@
       "items": {
         "anyOf": [
           {
-            "type": [
+            "type": 
               "object"
-            ],
+            ,
             "title": "The Items Schema",
             "properties": {
               "Filter": {
@@ -60,6 +60,9 @@
           },
           {
             "type": "string"
+          },
+          {
+            "type": "null"
           }
         ]
       }
