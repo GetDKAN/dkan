@@ -90,7 +90,7 @@ html_theme = 'alabaster'
 #
 html_theme_options = {
     "logo_name" : "false",
-    "fixed_sidebar" : "true",
+    "fixed_sidebar" : "false",
     "github_repo" : "GetDKAN/dkan2",
     "sidebar_width" : "20%",
     "tip_bg" : "#cbedd3",
@@ -99,10 +99,10 @@ html_theme_options = {
     "note_border" : "#5faaea",
     "important_bg" : "#e5f1fb",
     "important_border" : "#5faaea",
-    "warn_bg" : "#FFF8D1",
-    "warn_border" : "#e7c000",
+    "warn_bg" : "#ffedcc",
+    "warn_border" : "#f0b37e",
     "font_family" : "'Lato', Roboto, Droid Sans, Helvetica Neue, sans-serif",
-    "head_font_family" : "'Lato', Roboto, Droid Sans, Helvetica Neue, sans-serif"
+    "head_font_family" : "'Varela Round', 'Lato', Roboto, Droid Sans, Helvetica Neue, sans-serif"
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -113,7 +113,9 @@ html_logo = '_static/images/logo.png'
 html_favicon = '_static/images/favicon.ico'
 
 def setup(app):
-    app.add_stylesheet('css/custom.css')
+    #app.add_stylesheet('css/custom.css')
+    app.add_css_file('css/custom.css'),
+    app.add_css_file('css/all.min.css')
 
 # -- Options for HTMLHelp output ------------------------------------------
 

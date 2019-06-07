@@ -5,11 +5,10 @@ This is the central site for technical/developer documentation of DKAN2.
 DKAN2 is a Drupal 8-based open data portal and catalog.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :hidden: 
    :caption: Contents:
 
-   introduction/index
    installation/index
    components/index
    api/index

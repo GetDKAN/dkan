@@ -24,12 +24,12 @@ Module names are written in Title Case with no additional styling. Quotes can be
 Entities and bundles
 ~~~~~~~~~~~~~~~~~~~~
 
-A specific content type or other entity bundle is written in italics, as in referring to a _dataset_ node or a _choropleth_ visualization. Entity types, like "node," require no additional styling.
+A specific content type or other entity bundle is written in italics, as in referring to a *dataset* node or a *choropleth* visualization. Entity types, like "node," require no additional styling.
 
 Files
 ~~~~~
 
-Filenames are written as inline code as in this example: `thisfile.txt` will do the trick.
+Filenames are written as inline code as in this example: ``thisfile.txt`` will do the trick.
 
 Terminal commands
 ~~~~~~~~~~~~~~~~~
@@ -45,7 +45,7 @@ Terminal commands should be expressed in a full code block, with each line start
 Code blocks
 ~~~~~~~~~~~
 
-Code blocks are also expressed as... code blocks:
+Code blocks are also expressed as. ".. code blocks::"
 
 .. code-block:: php
 
@@ -63,11 +63,11 @@ Code blocks are also expressed as... code blocks:
 Code objects
 ~~~~~~~~~~~~
 
-When referring to **`$variables`**, **`function_names()`** and **`classNames`** inline, use bold inline code style. This can be achieved in markdown like this:
+When referring to ``$variables``, ``function_names()`` and ``classNames`` inline, use inline code style. This can be achieved in markdown like this:
 
 .. code-block:: php
 
-  **``This text``** will be code-styled and bold
+  ``This text`` will be code-styled
 
 
 Building this documentation
@@ -80,7 +80,7 @@ Sphinx
 
 `Sphinx <http://www.sphinx-doc.org/en/1.5.1/>`_ is the Python application that generates the HTML from the documentation markup.
 
-To work on sphinx documentation locally, install the Sphinx Python tools. This requires having the `easy_install` tool in your environment.
+To work on sphinx documentation locally, install the Sphinx Python tools. This requires having the ``easy_install`` tool in your environment.
 
 Install pip (the python package manager):
 

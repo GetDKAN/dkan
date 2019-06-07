@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/all.min.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
@@ -17,7 +18,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Harvester" href="harvest.html" />
+    <link rel="next" title="Harvest" href="harvest.html" />
     <link rel="prev" title="Dataset" href="dataset.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -26,8 +27,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
-  <div class="document">
-    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="datastore">
+<h1>Datastore<a class="headerlink" href="#datastore" title="Permalink to this headline">¶</a></h1>
+<p>When you create a dataset with resources, DKAN is reading the data directly from the resource file or API.</p>
+<p>The Datastore component provides an option for you to parse CSV or TSV files and save the data into database tables. This allows users to query the data through a public API.</p>
+<p>So by adding your CSV resources to the datastore, you are getting the fullest functionality possible out of your datasets.</p>
+<div class="section" id="drush-commands">
+<h2>Drush Commands<a class="headerlink" href="#drush-commands" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 16%" />
+<col style="width: 48%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Args</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>dkan-datastore:import</p></td>
+<td><p>$uuid</p></td>
+<td><p>import file to the datastore</p></td>
+</tr>
+<tr class="row-odd"><td><p>dkan-datastore:drop</p></td>
+<td><p>$uuid</p></td>
+<td><p>drop the datastore table</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
@@ -45,12 +91,14 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">DKAN Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Major Components</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="dataset.html">Dataset</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Datastore</a></li>
-<li class="toctree-l2"><a class="reference internal" href="harvest.html">Harvester</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Datastore</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#drush-commands">Drush Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="harvest.html">Harvest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="topics.html">Topics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="decoupled.html">Decoupled Front-end</a></li>
 </ul>
@@ -68,7 +116,7 @@
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Major Components</a><ul>
       <li>Previous: <a href="dataset.html" title="previous chapter">Dataset</a></li>
-      <li>Next: <a href="harvest.html" title="next chapter">Harvester</a></li>
+      <li>Next: <a href="harvest.html" title="next chapter">Harvest</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -93,23 +141,8 @@
 
         </div>
       </div>
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
-
-          <div class="body" role="main">
-            
-  <div class="section" id="datastore">
-<h1>Datastore<a class="headerlink" href="#datastore" title="Permalink to this headline">¶</a></h1>
-</div>
-
-
-          </div>
-          
-        </div>
-      </div>
-    <div class="clearer"></div>
-  </div>
+      <div class="clearer"></div>
+    </div>
     <div class="footer">
       &copy;2019.
       

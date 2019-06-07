@@ -3,8 +3,9 @@ Welcome!
 
 We're excited you're here. There are several ways you can get involved with DKAN, but be sure to review our :doc:`Code of Conduct <code-of-conduct>`.
 
-Slack
-~~~~~~
+.. raw:: html
+
+    <h2 class="slack">Slack</h2> 
 
 Join the `DKAN Slack community! <https://dkan.slack.com/>`_
 
@@ -16,14 +17,17 @@ This community resource is for DKAN developers and users to share how they're us
 - Complete your profile (bio/photo).
 - Join as many or as few channels as you'd like (you'll see descriptions for each channel detailing its purpose).
 
-Connect
-~~~~~~~~~~~~
+.. raw:: html
+
+    <h2 class="medium">Connect</h2>
+    
 - `Follow the DKAN Blog on Medium <https://medium.com/dkan-blog>`_
 - `Follow @getDKAN on Twitter <https://twitter.com/getdkan>`_
 - `Attend DKAN Events <https://www.eventbrite.com/o/dkan-14793986036>`_
 
-GitHub
-~~~~~~
+.. raw:: html
+
+    <h2 class="github">Github</h2>
 
 For developers and contributors:
 
