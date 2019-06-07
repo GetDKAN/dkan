@@ -14,6 +14,9 @@ services:
     class: Drupal\dkan_datastore\Manager\DatastoreManagerBuilder
     arguments: ['@service_container']
     shared: false
+  dkan_datastore.manager.datastore_manager_builder_helper:
+    class: Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper
+    arguments: ['@service_container']
   dkan_datastore.manager.deferred_import_queuer:
     class: Drupal\dkan_datastore\Manager\DeferredImportQueuer
 
