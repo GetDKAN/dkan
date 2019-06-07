@@ -44,13 +44,6 @@ function dkan_data_entity_presave(EntityInterface $entity) {
     if (empty($entity->field_data_type->value)) {
       $entity->field_data_type->value = "dataset";
     }
-    $created = new DateTime();
-    $created->setTimestamp($entity->getCreatedTime());
-    $metadata->created = $created->format('Y-m-d\TH:i:s');
-
-    $changed = new DateTime();
-    $changed->setTimestamp($entity->getChangedTime());
-    $metadata->modified = $changed->format('Y-m-d\TH:i:s');
   }
 
   // If there is no uuid add one.
