@@ -11038,6 +11038,12 @@ dt,
 dd {
   border-top: 1px solid #ddd; }
 
+.datastore-status dt {
+  padding: 8px 5px 8px 25px; }
+
+.datastore-status dl {
+  border-bottom: 1px solid #ddd; }
+
 .item-list .pagination li:first-child > span,
 .item-list .pagination li:first-child > a {
   border-radius: 4px 0 0 4px; }

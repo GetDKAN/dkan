@@ -49,7 +49,8 @@ class Page {
         return $this->dropForm();
       }
 
-      $html = '<p class="data-explorer-help"><i class="fa fa-info-circle" aria-hidden="true"></i> Import the data from a CSV or TSV file into a database table to make it accessible through an API.</p>';
+      $html = t('<p><h3>Datastore:</h3> Import data from a <strong>CSV</strong> or <strong>TSV</strong> file into a database table to make it accessible through an API.</p>
+               <p class="data-explorer-help"><i class="fa fa-info-circle" aria-hidden="true"></i> <strong>Important</strong> Confirm that your column names adhere to the <a href="https://dev.mysql.com/doc/refman/8.0/en/identifiers.html" target="_blank">MySQL idendifier specifications</a> and that your file is UTF8 encoded if your data includes special characters.</p>');
       $this->form['help'] = [
         '#type' => 'item',
         '#markup' => $html,
@@ -59,7 +60,7 @@ class Page {
       $this->form['status'] = [
         '#type' => 'item',
         '#title' => t('Datastore Status'),
-        '#markup' => "<dl>{$html}</dl>",
+        '#markup' => "<dl class=\"datastore-status\">{$html}</dl>",
       ];
 
       $status = $manager->getStatus();
