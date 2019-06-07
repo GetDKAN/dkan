@@ -10,7 +10,7 @@
  *
  * @class DkanHarvestSourcesTest
  */
-class DkanHarvestSourcesTest extends \PHPUnit_Framework_TestCase {
+class DkanHarvestSourcesTest extends \PHPUnit\Framework\TestCase {
 
   static $setUpBeforeClassModuleDisabled = FALSE;
 

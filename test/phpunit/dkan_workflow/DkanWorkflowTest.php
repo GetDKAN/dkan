@@ -9,7 +9,7 @@ module_load_include('module', 'dkan_workflow');
 /**
  * Base dkan_workflow unit test class.
  */
-class DkanWorkflowBaseTest extends PHPUnit_Framework_TestCase {
+class DkanWorkflowBaseTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * Verify that email errors get removed from messages.

@@ -1,6 +1,6 @@
 <?php
 
-class DkanDatastoreCsvParserTest extends \PHPUnit_Framework_TestCase {
+class DkanDatastoreCsvParserTest extends \PHPUnit\Framework\TestCase {
 
   private function parse($string) {
     $parser = new \Dkan\Datastore\Parser\Csv(',', '"', "\\", ["\r", "\n"]);

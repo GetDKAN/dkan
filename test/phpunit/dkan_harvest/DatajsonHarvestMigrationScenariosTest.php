@@ -12,7 +12,7 @@ include_once __DIR__ . '/includes/HarvestSourceDataJsonStub.php';
  *
  * @class DatajsonHarvestMigrationTest
  */
-class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
+class DatajsonHarvestMigrationScenariosTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * Track nodes created during a test run that are not handled by migrations.

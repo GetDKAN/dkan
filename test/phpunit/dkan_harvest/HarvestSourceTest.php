@@ -10,7 +10,7 @@ include_once __DIR__ . '/includes/HarvestSourceTestStub.php';
 /**
  *
  */
-class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
+class HarvestSourceTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * Status of dkan_harvest_test.

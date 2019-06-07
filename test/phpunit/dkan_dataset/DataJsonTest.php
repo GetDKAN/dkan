@@ -5,7 +5,7 @@
  *
  * Tests for landingPage key in /data.json file datasets.
  */
-class DataJsonTest extends PHPUnit_Framework_TestCase {
+class DataJsonTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * Verify data.json exists.

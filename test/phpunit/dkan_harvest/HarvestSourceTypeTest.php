@@ -5,7 +5,7 @@
  * Base phpunit tests for HarvestSourceType class.
  */
 
-class HarvestSourceTypeTest extends \PHPUnit_Framework_TestCase {
+class HarvestSourceTypeTest extends \PHPUnit\Framework\TestCase {
 
   // dkan_harvest_test status.
   public static $dkanHarvestTestBeforClassStatus = TRUE;

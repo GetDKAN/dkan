@@ -12,7 +12,7 @@ use dkanDataset\getRemoteFileInfo;
  *
  * @class GetRemoteFileInfoTest
  */
-class GetRemoteFileInfoTest extends PHPUnit_Framework_TestCase {
+class GetRemoteFileInfoTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * Helper method for the test data.

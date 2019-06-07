@@ -8,7 +8,7 @@
 /**
  * POD Validation check.
  */
-class PodValidationTest extends PHPUnit_Framework_TestCase {
+class PodValidationTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * Set up dataset json.

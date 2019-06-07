@@ -11,6 +11,7 @@ use Dkan\Datastore\Manager\ManagerInterface;
 use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Resource;
 use Dkan\Datastore\LockableDrupalVariables;
+use Drupal\Dkan\Datastore\Util;
 
 /**
  * Implements hook_xautoload().
@@ -207,7 +208,7 @@ function dkan_datastore_node_insert($node) {
   if ($node->type == $type) {
     try {
       $resource = Resource::createFromDrupalNode($node);
-      $manager = (new Factory($resource))->get();
+      $manager = Util::getManager($resource);
       $manager->saveState();
     }
     catch (\Exception $e) {
@@ -260,7 +261,8 @@ function dkan_datastore_node_delete($node) {
   if ($node->type == "resource") {
     try {
       /* @var  $manager ManagerInterface */
-      $manager = (new Factory(Resource::createFromDrupalNode($node)))->get();
+      $resource = Resource::createFromDrupalNode($node);
+      $manager = Util::getManager($resource);
       $manager->drop();
     }
     catch (\Exception $e) {

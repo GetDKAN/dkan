@@ -9,7 +9,7 @@ include_once __DIR__ . '/includes/HarvestSourceDataJsonStub.php';
 /**
  *
  */
-class HarvestCacheTest extends PHPUnit_Framework_TestCase {
+class HarvestCacheTest extends \PHPUnit\Framework\TestCase {
 
   public $processed = array(
     array(

@@ -12,7 +12,7 @@ class DKANMigrateBaseTestSetup
     }
 }
 
-class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
+class DKANMigrateBaseTest  extends \PHPUnit\Framework\TestCase
 {
     public static function setUpBeforeClass()
     {
@@ -384,7 +384,7 @@ class DKANMigrateBaseTest  extends PHPUnit_Framework_TestCase
     }
 }
 
-class DKANMigrateBaseTestUnit extends PHPUnit_Framework_TestCase
+class DKANMigrateBaseTestUnit extends \PHPUnit\Framework\TestCase
 {
     public function setup() {
         include "dkan_migrate_base.module";

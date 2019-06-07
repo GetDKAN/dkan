@@ -12,7 +12,7 @@ include_once __DIR__ . '/includes/HarvestSourceDataJsonStub.php';
  *
  * @class DatajsonHarvestMigrationTest
  */
-class DatajsonHarvestMigrationTest extends PHPUnit_Framework_TestCase {
+class DatajsonHarvestMigrationTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * {@inheritdoc}

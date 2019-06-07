@@ -10,7 +10,7 @@ use DKAN\Client;
 /**
  * Class ApiTest.
  */
-class ApiTest extends \PHPUnit_Framework_TestCase {
+class ApiTest extends \PHPUnit\Framework\TestCase {
 
   private $client;
 

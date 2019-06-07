@@ -12,7 +12,7 @@ include_once drupal_get_path('module', 'dkan_harvest') . '/dkan_harvest.migrate.
  *
  * @class PrepareResourceHelperTest
  */
-class PrepareResourceHelperTest extends PHPUnit_Framework_TestCase {
+class PrepareResourceHelperTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * Helper method for the test data.

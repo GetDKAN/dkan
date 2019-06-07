@@ -5,7 +5,7 @@
  *
  * @class ReclineEmbedCacheTest
  */
-class ReclineEmbedCacheTest extends PHPUnit_Framework_TestCase {
+class ReclineEmbedCacheTest extends \PHPUnit\Framework\TestCase {
 
   protected $cacheSettings;
 

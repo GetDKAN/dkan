@@ -6,7 +6,7 @@
         }
     ],
     "require": {
-        "phpunit/phpunit": "5.7.*",
+        "phpunit/phpunit": "7.5.12",
         "behat/behat": "3.1.*@dev",
         "devinci/devinci-behat-extension": "dev-master",
         "myplanetdigital/function_mock": "dev-master",
@@ -25,7 +25,7 @@
     "config": {
         "bin-dir": "bin/",
         "platform": {
-          "php": "5.6.23"
+          "php": "7.1"
         }
     }
 }

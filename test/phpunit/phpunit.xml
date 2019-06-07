@@ -1,6 +1,5 @@
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         syntaxCheck="false"
          bootstrap="boot.php"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -45,9 +44,18 @@
             <file>open_data_schema_map/PodValidationTest.php</file>
         </testsuite>
     </testsuites>
-
     <php>
         <ini name="display_errors" value="true"/>
         <includePath>.</includePath>
     </php>
+    <filter>
+        <whitelist>
+            <directory suffix=".module">../../modules/dkan</directory>
+            <directory suffix=".php">../../modules/dkan</directory>
+            <directory suffix=".inc">../../modules/dkan</directory>
+            <exclude>
+                <directory>.../../modules/dkan/dkan_datastore/vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

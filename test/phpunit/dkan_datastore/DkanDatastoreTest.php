@@ -6,7 +6,7 @@ use Dkan\Datastore\Resource;
 /**
  * Class DkanDatastoreTest.
  */
-class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
+class DkanDatastoreTest extends \PHPUnit\Framework\TestCase {
 
   private $resource_node;
 
@@ -25,7 +25,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
     $resource = new Resource($this->resource_node->nid, __DIR__ . "/data/countries.csv");
 
     /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
-    $datastore = (new \Dkan\Datastore\Manager\Factory($resource))->get();
+    $datastore = \Drupal\Dkan\Datastore\Util::getManager($resource);
 
     $status = $datastore->getStatus();
     $this->assertEquals(SimpleImport::STORAGE_UNINITIALIZED, $status['storage']);
@@ -44,7 +44,7 @@ class DkanDatastoreTest extends \PHPUnit_Framework_TestCase {
     $results = $results->fetchAllAssoc("country");
     $json = json_encode($results);
     $this->assertEquals(
-      "{\"US\":{\"country\":\"US\",\"population\":\"315209000\",\"id\":\"1\",\"timestamp\":\"1359062329\",\"entry_id\":\"1\"},\"CA\":{\"country\":\"CA\",\"population\":\"35002447\",\"id\":\"2\",\"timestamp\":\"1359062329\",\"entry_id\":\"2\"},\"AR\":{\"country\":\"AR\",\"population\":\"40117096\",\"id\":\"3\",\"timestamp\":\"1359062329\",\"entry_id\":\"3\"},\"JP\":{\"country\":\"JP\",\"population\":\"127520000\",\"id\":\"4\",\"timestamp\":\"1359062329\",\"entry_id\":\"4\"}}",
+      "{\"US\":{\"country\":\"US\",\"population\":\"315209000\",\"id\":\"1\",\"timestamp\":\"1359062329\"},\"CA\":{\"country\":\"CA\",\"population\":\"35002447\",\"id\":\"2\",\"timestamp\":\"1359062329\"},\"AR\":{\"country\":\"AR\",\"population\":\"40117096\",\"id\":\"3\",\"timestamp\":\"1359062329\"},\"JP\":{\"country\":\"JP\",\"population\":\"127520000\",\"id\":\"4\",\"timestamp\":\"1359062329 \"}}",
       $json);
 
     $this->assertEquals(4, $datastore->numberOfRecordsImported());

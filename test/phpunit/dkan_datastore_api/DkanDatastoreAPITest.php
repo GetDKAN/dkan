@@ -1,12 +1,13 @@
 <?php
 
 use Dkan\Datastore\Resource;
+use Drupal\Dkan\Datastore\Util;
 
 /**
  * @file
  * Base phpunit tests for HarvestSourceType class.
  */
-class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
+class DkanDatastoreAPITest extends \PHPUnit\Framework\TestCase {
 
   /**
    * {@inheritdoc}
@@ -79,21 +80,9 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
     $resource = Resource::createFromDrupalNode($node);
 
     /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-    $datastore = (new \Dkan\Datastore\Manager\Factory($resource))->get();
+    $datastore = Util::getManager($resource);
+    $datastore->import();
 
-    if ($datastore instanceof DkanDatastoreFeedsImport) {
-      // Import it to the datastore.
-      $importerId = 'dkan_file';
-      $source = feeds_source($importerId, $node->nid);
-      $config = array(
-        'process_in_background' => TRUE,
-      );
-      $source->importer->addConfig($config);
-      while (FEEDS_BATCH_COMPLETE != $source->import());
-    }
-    else {
-      $datastore->import();
-    }
   }
 
   /**
@@ -105,7 +94,7 @@ class DkanDatastoreAPITest extends \PHPUnit_Framework_TestCase {
       $r = \Dkan\Datastore\Resource::createFromDrupalNodeUuid($resource['uuid']);
 
       /* @var $datastore \Dkan\Datastore\Manager\ManagerInterface */
-      $datastore = (new \Dkan\Datastore\Manager\Factory($r))->get();
+      $datastore = Util::getManager($r);
       $datastore->drop();
 
       entity_uuid_delete('node', array($resource['uuid']));

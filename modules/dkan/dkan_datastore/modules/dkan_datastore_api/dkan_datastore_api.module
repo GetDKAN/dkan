@@ -9,6 +9,7 @@
 
 use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Resource;
+use Drupal\Dkan\Datastore\Util;
 
 define('DKAN_DATASTORE_API_DEFAULT_TABLE_ALIAS', 't');
 
@@ -666,7 +667,7 @@ function dkan_datastore_api_sort_clean($sort) {
 function dkan_datastore_api_tablename($resource_id) {
   $resource = Resource::createFromDrupalNodeUuid($resource_id);
   /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
-  $manager = (new Factory($resource))->get();
+  $manager = Util::getManager($resource);
   $table = $manager->getTableName();
   return $table;
 }
@@ -677,7 +678,7 @@ function dkan_datastore_api_tablename($resource_id) {
 function dkan_datastore_api_get_schema($resource_id) {
   $resource = Resource::createFromDrupalNodeUuid($resource_id);
   /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
-  $manager = (new Factory($resource))->get();
+  $manager = Util::getManager($resource);
   $schema = $manager->getTableSchema();
   return $schema;
 }
@@ -856,7 +857,7 @@ function dkan_datastore_api_debug($data_select) {
 function dkan_datastore_api_api_page($node) {
   if ($resource = Resource::createFromDrupalNode($node)) {
     /* @var $manager \Dkan\Datastore\Manager\ManagerInterface */
-    $manager = \Drupal\Dkan\Datastore\Util::getManager($resource);
+    $manager = Util::getManager($resource);
     $status = $manager->getStatus();
     switch ($status['data_import']) {
       case $manager::DATA_IMPORT_DONE:

@@ -20,7 +20,7 @@ module_load_include('module', 'dkan_workflow');
 /**
  * Unit tests for dkan_workflow_mail_alter.
  */
-class DkanWorkflowMailAlterTest extends PHPUnit_Framework_TestCase {
+class DkanWorkflowMailAlterTest extends \PHPUnit\Framework\TestCase {
 
   /**
    * Overrides parent::setUp().

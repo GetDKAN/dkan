@@ -7,7 +7,7 @@
 /**
  * Test MigrateDataJsonDatasetBase::deleteDuplicateDatasets().
  */
-class TestMigrateDataJsonDatabaseDeleteDuplicates extends \PHPUnit_Framework_TestCase {
+class TestMigrateDataJsonDatabaseDeleteDuplicates extends \PHPUnit\Framework\TestCase {
   protected $migration;
   protected $row;
   protected $dataset1;
