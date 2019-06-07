@@ -7,13 +7,17 @@ use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\node\NodeStorageInterface;
 use Drupal\dkan_api\Storage\ThemeValueReferencer;
+use Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper;
+use Drupal\dkan_datastore\Manager\DeferredImportQueuer;
+use Dkan\Datastore\Resource;
+use Psr\Log\LoggerInterface;
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * Tests Drupal\dkan_api\Storage\DrupalNodeDataset.
  *
  * @coversDefaultClass \Drupal\dkan_api\Storage\DrupalNodeDataset
  * @group dkan_api
- * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
 class DrupalNodeDatasetTest extends DkanTestBase {
 
@@ -89,6 +93,112 @@ class DrupalNodeDatasetTest extends DkanTestBase {
 
     $this->assertEquals($expected, $actual);
   }
+
+  /**
+   * Tests EnqueueDeferredImport().
+   */
+  public function testEnqueueDeferredImport() {
+    // Setup.
+    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mockBuilderHelper = $this->getMockBuilder(DatastoreManagerBuilderHelper::class)
+      ->setMethods(['newResourceFromEntity'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mockDeferredImporter = $this->getMockBuilder(DeferredImportQueuer::class)
+      ->setMethods(['createDeferredResourceImport'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $this->setActualContainer([
+      'dkan_datastore.manager.datastore_manager_builder_helper' => $mockBuilderHelper,
+      'dkan_datastore.manager.deferred_import_queuer'    => $mockDeferredImporter,
+    ]);
+
+    $mockResource = $this->createMock(Resource::class);
+    $uuid         = uniqid('foo');
+    $expected     = 42;
+
+    // Expect.
+    $mockBuilderHelper->expects($this->once())
+      ->method('newResourceFromEntity')
+      ->with($uuid)
+      ->willReturn($mockResource);
+
+    $mockDeferredImporter->expects($this->once())
+      ->method('createDeferredResourceImport')
+      ->with($uuid, $mockResource)
+      ->willReturn($expected);
+
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
+    $this->assertEquals($expected, $actual);
+  }
+
+  /**
+   * Tests EnqueueDeferredImport().
+   */
+  public function testEnqueueDeferredImportOnException() {
+    // Setup.
+    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+      ->setMethods(['getLogger'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mockBuilderHelper = $this->getMockBuilder(DatastoreManagerBuilderHelper::class)
+      ->setMethods(['newResourceFromEntity'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mockDeferredImporter = $this->getMockBuilder(DeferredImportQueuer::class)
+      ->setMethods(['createDeferredResourceImport'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $this->setActualContainer([
+      'dkan_datastore.manager.datastore_manager_builder_helper' => $mockBuilderHelper,
+      'dkan_datastore.manager.deferred_import_queuer'    => $mockDeferredImporter,
+    ]);
+
+    $mockLogger = $this->getMockBuilder(LoggerInterface::class)
+    ->setMethods(['log'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
+    $uuid         = uniqid('foo');
+    $exceptionMessage     = 'something went fubar.';
+
+    // Expect.
+    $mockBuilderHelper->expects($this->once())
+      ->method('newResourceFromEntity')
+      ->with($uuid)
+      ->willThrowException(new \Exception($exceptionMessage));
+
+    $mockDeferredImporter->expects($this->never())
+      ->method('createDeferredResourceImport');
+
+    $mock->expects($this->once())
+      ->method('getLogger')
+      ->with('dkan_api')
+      ->willReturn($mockLogger);
+
+    $mockLogger->expects($this->exactly(2))
+      ->method('log')
+      ->withConsecutive(
+        [RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " .$exceptionMessage],
+          // value of trace may change depending of debugger so just assume it's a string.
+          [RfcLogLevel::DEBUG, $this->isType('string')]
+        );
+
+    // Assert.
+   $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
+
+  }
+
+
 
   /**
    * Placeholder.

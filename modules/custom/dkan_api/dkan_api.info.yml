@@ -6,4 +6,5 @@ dependencies:
   - dkan_data
   - basic_auth
   - dkan_common
+  - dkan_datastore
 package: DKAN
