@@ -1,0 +1,5 @@
+dkan_common.admin_config_dkan:
+  route_name: dkan_common.admin_config_dkan
+  title: DKAN
+  parent: system.admin_config
+  description: Modify DKAN configuration.

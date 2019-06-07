@@ -87,6 +87,7 @@ class ApiController extends ControllerBase {
 
       /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $storage */
       $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
+      $storage->setSchema('dataset');
       $data = $storage->retrieveAll();
 
       if ($collection == "dataset") {
@@ -172,6 +173,8 @@ class ApiController extends ControllerBase {
     $uuid = str_replace(".json", "", $doc);
     /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $storage */
     $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
+    $storage->setSchema('dataset');
+
     /** @var \Drupal\interra_api\Service\DatasetModifier $datasetModifuer */
     $datasetModifier = \Drupal::service('interra_api.service.dataset_modifier');
     $data            = $storage->retrieve($uuid);

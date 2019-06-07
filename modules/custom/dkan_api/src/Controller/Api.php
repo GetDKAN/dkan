@@ -6,9 +6,18 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * Class Api.
  *
+ * @package Drupal\dkan_api\Controller
  */
 abstract class Api extends ControllerBase {
+
+  /**
+   * Represents the data type passed via the HTTP request url schema_id slug.
+   *
+   * @var string
+   */
+  protected $schemaId;
 
   /**
    * Drupal service container.
@@ -25,7 +34,7 @@ abstract class Api extends ControllerBase {
   protected $dkanFactory;
 
   /**
-   *
+   * Api constructor.
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
@@ -33,21 +42,26 @@ abstract class Api extends ControllerBase {
   }
 
   /**
-   *
+   * Gets the json schema object.
    */
   abstract protected function getJsonSchema();
 
   /**
-   *
+   * Gets the storage object.
    */
   abstract protected function getStorage();
 
   /**
    * Get all.
    *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
-  public function getAll() {
+  public function getAll($schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
 
     $datasets = $this->getEngine()
       ->get();
@@ -73,10 +87,15 @@ abstract class Api extends ControllerBase {
    *
    * @param string $uuid
    *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response.
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
-  public function get($uuid) {
+  public function get($uuid, $schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
+
     try {
 
       $data = $this->getEngine()
@@ -98,9 +117,15 @@ abstract class Api extends ControllerBase {
   /**
    * Implements POST method.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
-  public function post() {
+  public function post($schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
+
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 
@@ -142,10 +167,15 @@ abstract class Api extends ControllerBase {
    *
    * @param string $uuid
    *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
-  public function put($uuid) {
+  public function put($uuid, $schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
+
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 
@@ -184,10 +214,15 @@ abstract class Api extends ControllerBase {
    *
    * @param string $uuid
    *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
-  public function patch($uuid) {
+  public function patch($uuid, $schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
+
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 
@@ -229,10 +264,13 @@ abstract class Api extends ControllerBase {
    *
    * @param string $uuid
    *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
-  public function delete($uuid) {
+  public function delete($uuid, $schema_id = 'dataset') {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 
@@ -242,9 +280,10 @@ abstract class Api extends ControllerBase {
   }
 
   /**
-   * Get isntance of.
+   * Get SAE instance.
    *
    * @return \Sae\Sae
+   *   Service Api Engine
    */
   public function getEngine() {
 

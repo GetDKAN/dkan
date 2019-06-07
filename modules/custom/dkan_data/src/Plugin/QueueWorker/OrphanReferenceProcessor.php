@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\dkan_api\Plugin\QueueWorker;
+namespace Drupal\dkan_data\Plugin\QueueWorker;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -10,15 +10,17 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Verifies if a theme is orphaned, then deletes it.
+ * Verifies if a dataset property reference is orphaned, then deletes it.
  *
  * @QueueWorker(
- *   id = "orphan_theme_processor",
- *   title = @Translation("Task Worker: Verify then delete orphaned theme"),
+ *   id = "orphan_reference_processor",
+ *   title = @Translation("Task Worker: Check for orphaned property reference"),
  *   cron = {"time" = 15}
  * )
+ *
+ * @codeCoverageIgnore
  */
-class OrphanThemeProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
    * The entity type manager service.
@@ -59,29 +61,47 @@ class OrphanThemeProcessor extends QueueWorkerBase implements ContainerFactoryPl
   /**
    * {@inheritdoc}
    */
-  public function processItem($uuid) {
+  public function processItem($data) {
+    $property_id = $data[0];
+    $uuid = $data[1];
+
+    // Search datasets using this uuid for this property id.
     $datasets = $this->entityTypeManager->getStorage('node')
       ->loadByProperties([
         'field_data_type' => 'dataset',
       ]);
-
     foreach ($datasets as $dataset) {
-      $data = json_decode($dataset->field_json_metadata->value);
-      $themes = $data->theme ?? [];
-      if (in_array($uuid, $themes)) {
+      $data = json_decode($dataset->referenced_metadata);
+      $value = $data->{$property_id};
+      // Check if uuid is found either directly or in an array.
+      $uuid_is_value = $uuid == $value;
+      $uuid_found_in_array = is_array($value) && in_array($uuid, $value);
+      if ($uuid_is_value || $uuid_found_in_array) {
         // Uuid found in use, abort.
         return;
       }
     }
 
-    // Theme uuid not found in any dataset, safe to delete.
-    $themes = $this->entityTypeManager->getStorage('node')
+    // Value reference uuid not found in any dataset, therefore safe to delete.
+    $this->deleteReference($property_id, $uuid);
+  }
+
+  /**
+   * Deletes a reference.
+   *
+   * @param string $property_id
+   *   The property id.
+   * @param string $uuid
+   *   The uuid.
+   */
+  protected function deleteReference(string $property_id, string $uuid) {
+    $references = $this->entityTypeManager->getStorage('node')
       ->loadByProperties([
-        'field_data_type' => 'theme',
+        'field_data_type' => $property_id,
         'uuid' => $uuid,
       ]);
-    if (FALSE !== ($theme = reset($themes))) {
-      $theme->delete();
+    if (FALSE !== ($reference = reset($references))) {
+      $reference->delete();
     }
   }
 
