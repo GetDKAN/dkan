@@ -12,6 +12,7 @@ context('Home', () => {
       'Public Safety',
       'Transportation'
     ]
+
     for (var key in topics) {
       var value = topics[key]
       var index = parseInt(key) + 1

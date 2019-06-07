@@ -41,6 +41,7 @@ class Reverter {
     /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $datastore_storage */
     // Cannot use DI here since this class is called by a non drupal package.
     $datastore_storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
+    $datastore_storage->setSchema('dataset');
 
     $counter = 0;
     foreach ($uuids as $uuid) {

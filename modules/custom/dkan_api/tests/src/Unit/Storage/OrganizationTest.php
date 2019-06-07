@@ -39,7 +39,7 @@ class OrganizationTest extends DkanTestBase {
    */
   public function testRemainingMethods() {
 
-    $this->markTestIncomplete('Review of other methods in ' . DrupalNodeDataset::class . ' pending reivew of refactor.');
+    $this->markTestIncomplete('Review of other methods in ' . DrupalNodeDataset::class . ' pending review of refactor.');
   }
 
 }

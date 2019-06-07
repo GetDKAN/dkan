@@ -6,7 +6,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\node\NodeStorageInterface;
-use Drupal\dkan_api\Storage\ThemeValueReferencer;
 use Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper;
 use Drupal\dkan_datastore\Manager\DeferredImportQueuer;
 use Dkan\Datastore\Resource;
@@ -26,21 +25,16 @@ class DrupalNodeDatasetTest extends DkanTestBase {
    */
   public function testConstruct() {
     $mockEntityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
-    $mockThemeValueReferencer = $this->createMock(ThemeValueReferencer::class);
     $mock = $this->getMockBuilder(DrupalNodeDataset::class)
       ->disableOriginalConstructor()
       ->getMock();
 
     // Assert.
-    $mock->__construct($mockEntityTypeManager, $mockThemeValueReferencer);
+    $mock->__construct($mockEntityTypeManager);
 
     $this->assertSame(
             $mockEntityTypeManager,
             $this->readAttribute($mock, 'entityTypeManager')
-    );
-    $this->assertSame(
-            $mockThemeValueReferencer,
-            $this->readAttribute($mock, 'themeValueReferencer')
     );
   }
 
@@ -205,7 +199,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
    */
   public function testRemainingMethods() {
 
-    $this->markTestIncomplete('Review of other methods in ' . DrupalNodeDataset::class . ' pending reivew of refactor.');
+    $this->markTestIncomplete('Review of other methods in ' . DrupalNodeDataset::class . ' pending review of refactor.');
   }
 
 }

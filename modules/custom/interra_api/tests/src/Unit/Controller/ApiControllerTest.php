@@ -378,6 +378,7 @@
 
       $mockDrupalNodeDataset = $this->getMockBuilder(Storage::class)
         ->setMethods([
+          'setSchema',
         'retrieve',
         ])
         ->getMockForAbstractClass();
