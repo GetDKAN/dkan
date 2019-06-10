@@ -19,18 +19,7 @@ class RouteProvider {
    */
   public function getPropertyList() {
     $list = \Drupal::config('dkan_data.settings')->get('property_list');
-    if ($list) {
-      // Trim and split list on newlines whether Windows, MacOS or Linux.
-      return preg_split(
-        '/\s*\r\n\s*|\s*\r\s*|\s*\n\s*/',
-        trim($list),
-        -1,
-        PREG_SPLIT_NO_EMPTY
-      );
-    }
-    else {
-      return [];
-    }
+    return array_values(array_filter($list));
   }
 
   /**
