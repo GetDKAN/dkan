@@ -1,6 +1,7 @@
 <?php
 
 namespace Dkan\Datastore;
+use Dkan\Datastore\Locker;
 
 /**
  * Class LockableDrupalVariables.
@@ -8,12 +9,14 @@ namespace Dkan\Datastore;
 class LockableDrupalVariables {
 
   private $binName;
+  private $locker;
 
   /**
    * LockableDrupalVariables constructor.
    */
   public function __construct($bin_name) {
     $this->binName = $bin_name;
+    $this->locker = new Locker();
   }
 
   /**
@@ -26,7 +29,7 @@ class LockableDrupalVariables {
    *   All of the variables in this bin.
    */
   public function borrowBin() {
-    $this->getLock();
+    $this->locker->getLock();
 
     $bin = variable_get($this->binName, []);
 
@@ -53,7 +56,7 @@ class LockableDrupalVariables {
   public function returnBin(array $bin) {
     variable_set($this->binName, $bin);
 
-    $this->releaseLock();
+    $this->locker->releaseLock();
   }
 
   /**
@@ -65,13 +68,13 @@ class LockableDrupalVariables {
    *   The variable's value.
    */
   public function set($id, $data) {
-    $this->getLock();
+    $this->locker->getLock();
 
     $bin = variable_get($this->binName, []);
     $bin[$id] = $data;
     variable_set($this->binName, $bin);
 
-    $this->releaseLock();
+    $this->locker->releaseLock();
   }
 
   /**
@@ -84,11 +87,11 @@ class LockableDrupalVariables {
    *   The variable's value.
    */
   public function get($id) {
-    $this->getLock();
+    $this->locker->getLock();
 
     $bin = variable_get($this->binName, []);
 
-    $this->releaseLock();
+    $this->locker->releaseLock();
 
     return isset($bin[$id]) ? $bin[$id] : NULL;
   }
@@ -100,40 +103,13 @@ class LockableDrupalVariables {
    *   The id of the variable.
    */
   public function delete($id) {
-    $this->getLock();
+    $this->locker->getLock();
 
     $bin = variable_get($this->binName, []);
     unset($bin[$id]);
     variable_set($this->binName, $bin);
 
-    $this->releaseLock();
-  }
-
-  /**
-   * Private method.
-   */
-  private function getLock() {
-    $delay = variable_get('dkan_datastore_lock_delay', 5);
-    $timeout = variable_get('dkan_datastore_lock_timeout', 60);
-    $name = 'dkan_datastore_lock';
-
-    $lock = lock_acquire($name, $timeout)
-    || (
-      !lock_wait($name, $delay)
-      && lock_acquire($name, $timeout)
-    );
-    if (!$lock) {
-      watchdog('dkan_datastore_lock_timeout', "Failed to get datastore variable lock, wait delay exceeded.", array(),WATCHDOG_CRITICAL);
-      throw new Exception("Failed to get datastore variable lock, wait delay exceeded.");
-    }
-  }
-
-  /**
-   * Private method.
-   */
-  private function releaseLock() {
-    $name = 'dkan_datastore_lock';
-    lock_release($name);
+    $this->locker->releaseLock();
   }
 
 }
