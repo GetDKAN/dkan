@@ -382,15 +382,17 @@ class ValueReferencerTest extends DkanTestBase {
 
     $this->writeProtectedProperty($mock, 'configService', $mockConfigService);
 
-    $list = "theme
-    some property     
-    yet another property
-    
-    ";
+    $list = [
+      "contactPoint" => "contactPoint",
+      "theme" => "theme",
+      "keyword" => "keyword",
+      "other properties" => 0,
+      "not interested in" => 0,
+    ];
     $expected = [
-      'theme',
-      'some property',
-      'yet another property',
+      "contactPoint",
+      "theme",
+      "keyword",
     ];
 
     // Expect.
