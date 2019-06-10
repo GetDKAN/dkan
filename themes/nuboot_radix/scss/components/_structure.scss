@@ -275,7 +275,14 @@ dt,
 dd {
   border-top: 1px solid $border;
 }
-
+.datastore-status {
+  dt {
+    padding: 8px 5px 8px 25px;
+  }
+  dl {
+    border-bottom: 1px solid $border;
+  }
+}
 .item-list .pagination {
   li:first-child > span,
   li:first-child > a {
