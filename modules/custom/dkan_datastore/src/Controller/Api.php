@@ -23,10 +23,18 @@ class Api implements ContainerInjectionInterface {
   protected $container;
 
   /**
+   * Factory to generate various dkan classes.
+   *
+   * @var \Drupal\dkan_common\Service\Factory
+   */
+  protected $dkanFactory;
+
+  /**
    * Constructor.
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
+    $this->dkanFactory = $container->get('dkan.factory');
   }
 
   /**
@@ -40,12 +48,33 @@ class Api implements ContainerInjectionInterface {
       $state_machine = $parser->getValidatingMachine();
       $query_object = $this->getQueryObject($state_machine);
       $database = $this->getDatabase();
-      $result = $database->query($query_object);
 
-      return new JsonResponse($result);
+      try {
+        $result = $database->query($query_object);
+      }
+      catch(\Exception $e) {
+        return $this->dkanFactory
+        ->newJsonResponse(
+          "Querying a datastore that does not exist.",
+          500,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
+      }
+
+      return $this->dkanFactory
+        ->newJsonResponse(
+          $result,
+          200,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
     }
     else {
-      return new JsonResponse("Invalid query string.");
+      return $this->dkanFactory
+        ->newJsonResponse(
+          "Invalid query string.",
+          500,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
     }
   }
 
@@ -59,7 +88,12 @@ class Api implements ContainerInjectionInterface {
       $manager = $this->getDatastoreManager($uuid);
     }
     catch (\Exception $e) {
-      return new JsonResponse("No datastore.");
+      return $this->dkanFactory
+        ->newJsonResponse(
+          "No datastore.",
+          500,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
     }
 
     $object = new Query();
