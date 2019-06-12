@@ -1,10 +1,9 @@
 {
   "identifier": "dummy",
   "source": {
-    "type": "\\Harvest\\Extract\\DataJson",
-    "uri": "http://demo.getdkan.com/data.json"
+    "type": "\\Harvest\\Extract\\LocalDataJson",
+    "uri": "/dummy.json"
   },
-  "transforms": [],
   "load": {
     "migrate": false,
     "collectionsToUpdate": ["dataset"], "type": "\\Drupal\\dkan_harvest\\Load\\Dataset"
