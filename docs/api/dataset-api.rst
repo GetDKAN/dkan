@@ -4,7 +4,7 @@ Dataset API
 GET
 ---
 
-GET is used to request data from the data catalog. No authentification is needed. 
+GET is used to request data from the data catalog. No authentication is needed. 
 
 .. code-block::
 
@@ -26,6 +26,8 @@ GET is used to request data from the data catalog. No authentification is needed
 Log In
 ------
 
+For actions that require authentication, the user must also have the 'API User' role. This gives the user permission to post, put, and delete datasets through the api.
+
 .. code-block::
 
     POST http://docker:32774/api/dataset/user/login
@@ -33,8 +35,8 @@ Log In
     Accept: application/json
 
     {
-      "username": "admin",
-      "password": "admin"
+      "username": "{username}",
+      "password": "{password}"
     }
 
 
