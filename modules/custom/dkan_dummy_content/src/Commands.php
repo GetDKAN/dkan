@@ -29,6 +29,9 @@ class Commands extends DrushCommands {
     $harvest_plan_json = file_get_contents($harvest_plan_file_path);
     $harvest_plan = json_decode($harvest_plan_json);
 
+    $path = drupal_get_path('module', 'dkan_dummy_content');
+    $harvest_plan->source->uri = $path . $harvest_plan->source->uri;
+
     $sourceId = "dummy";
     $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
     $item_folder = "{$path}/dkan_harvest/{$sourceId}";

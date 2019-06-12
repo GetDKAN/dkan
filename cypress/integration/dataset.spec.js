@@ -11,9 +11,6 @@ context('Dataset', () => {
     })
   
     it('I see the release and update date, identifier, and contact information.', () => {
-      let today = new Date().toISOString().slice(0, 10);
-      today = today.toString();
-
       var keys = [
         "Publisher",
         "Identifier",
@@ -29,7 +26,7 @@ context('Dataset', () => {
         'demo.getdkan.com',
         '5dc1cfcf-8028-476c-a020-f58ec6dd621c',
         '2013-02-10',
-        today,
+        '2019-06-06',
         'Gray, Stefanie',
         'mailto:datademo@example.com',
         'public',
