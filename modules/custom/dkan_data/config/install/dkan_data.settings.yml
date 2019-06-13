@@ -2,6 +2,7 @@ property_list:
   'theme': 'theme'
   'keyword': 'keyword'
   'publisher' : 'publisher'
+  'distribution': 'distribution'
   'contactPoint': 0
   '@type': 0
   'title': 0
@@ -11,7 +12,6 @@ property_list:
   'accrualPeriodicity': 0
   'describedBy': 0
   'describedByType': 0
-  'distribution': 0
   'issued': 0
   'license': 0
   'modified': 0
