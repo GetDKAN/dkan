@@ -412,6 +412,7 @@ function dkan_harvest_cache_sources_in_batch(array $harvest_sources = array(), $
  *   The context associated with the batch process.
  */
 function dkan_harvest_migrate_source_batch_op($harvest_source, array $options = array(), array &$context = array()) {
+  $_SESSION['dkan_harvest_running'] = TRUE;
 
   // Load migration.
   $migration = $harvest_source->getMigration();
@@ -488,6 +489,7 @@ function dkan_harvest_migrate_source_batch_op($harvest_source, array $options = 
     dkan_harvest_message_cleanup($harvest_source, $updated_results);
     // Log migration event on log tables.
     $migration->logEvent($updated_results);
+    unset($_SESSION['dkan_harvest_running']);
   }
 }
 
