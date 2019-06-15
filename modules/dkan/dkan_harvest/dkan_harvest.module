@@ -54,6 +54,31 @@ function dkan_harvest_preprocess_page(&$vars) {
 }
 
 /**
+ * Implement hook_preprocess_status_messages().
+ */
+function dkan_harvest_preprocess_status_messages(&$variables) {
+  // Hide messages if running harvest.
+  if ((isset($_SESSION['dkan_harvest_running'])
+      && $_SESSION['dkan_harvest_running'] === TRUE)
+      || current_path() === 'admin/dkan/harvest/dashboard'
+  ) {
+    if (isset($_SESSION['messages'])) {
+      foreach ($_SESSION['messages'] as $type => $messages) {
+        if ($type == 'status') {
+          foreach ($messages as $key => $message) {
+            if (preg_match('/cannot be imported to our datastore/', $message)) {
+              unset($_SESSION['messages'][$type][$key]);
+            } elseif (preg_match('/Groups were updated on/', $message)) {
+              unset($_SESSION['messages'][$type][$key]);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
  * Theme function to create harvest source summary block.
  */
 function theme_dkan_harvest_source_summary(&$vars) {
