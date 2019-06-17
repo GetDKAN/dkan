@@ -47,9 +47,8 @@ The status page can be found under DKAN --> Periodic Updates --> Status (`/admin
 If the "Enable periodic updates" checkbox from Settings is not marked, then you'll get a message saying "Periodic updates are disabled.". If it is marked but no manifest has been uploaded, then you'll get a message saying "No manifest was found.".
 If the updates are enabled and a valid manifest is uploaded, then you'll see a list of the elements included in the manifest file, that list includes:
 
-  - the node UUID,
-  - the File URL,
+  - the Destination Resource ID: this shows the resource UUID specified in the manifest but it is also a link to the resource node when applicable,
+  - the Source File URL,
   - the Update frequency,
-  - the Status: this represents the messages generated on each update, it will tell you wether the resource has been updated, if the process finished correctly or if/what errors were produced
-  - the Last update date: this is the date in which the resource was last updated via periodic updates
-  - a link to view the resource.
+  - the Status: this represents the messages generated on each update, it will tell you wether the resource has been updated, if the process finished correctly or if/what errors were produced,
+  - the Last update date: this is the date in which the resource was last updated via periodic updates.
