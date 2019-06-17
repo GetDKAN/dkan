@@ -13,7 +13,7 @@ The module requires a CSV file to execute the updates, this file is known as "th
 Periodic Updates Settings
 -------------------------
 
-You can find the periodic updates settings under DKAN --> Periodic Updates (`/admin/dkan/periodic-updates`).
+You can find the periodic updates settings under DKAN --> Periodic Updates --> Settings (`/admin/dkan/periodic-updates`).
 The settings for this module includes:
 
   - Periodic updates state
