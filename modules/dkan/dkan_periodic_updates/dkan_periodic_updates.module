@@ -29,8 +29,8 @@ function dkan_periodic_updates_menu() {
     'access arguments' => ['administer periodic updates'],
     'type' => MENU_NORMAL_ITEM,
   ];
-  $items['admin/dkan/periodic-updates/manifest'] = [
-    'title' => t('Manifest'),
+  $items['admin/dkan/periodic-updates/settings'] = [
+    'title' => t('Settings'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
   ];
   $items['admin/dkan/periodic-updates/status'] = [
