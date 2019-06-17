@@ -312,7 +312,7 @@ function dkan_periodic_updates_state() {
     if ($file) {
       $handle = fopen($file->uri, 'r');
       $headers = fgetcsv($handle, 0, ',');
-      $table_headers = [t('UUID'), t('File URL'), t('Update frequency'), t('Status'), t('Last update'), ''];
+      $table_headers = [t('Destination Resource ID'), t('Source File URL'), t('Update frequency'), t('Status'), t('Last update')];
 
       while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
         $resource_data = array_combine($headers, $data);
@@ -332,9 +332,9 @@ function dkan_periodic_updates_state() {
         }
 
         $nid = entity_get_id_by_uuid('node', [$resource_data['resource_id']]);
-        $link = t('No node could be found.');
+        $destination = $resource_data['resource_id'];
         if ($nid = $nid[$resource_data['resource_id']]) {
-          $link = l(t('View resource.'), 'node/' . $nid);
+          $destination = l($destination, 'node/' . $nid);
         }
         switch ($resource_data['frequency']) {
           case 'monthly':
@@ -344,7 +344,7 @@ function dkan_periodic_updates_state() {
           default:
             $frequency = 'daily';
         }
-        $table_rows[] = [$resource_data['resource_id'], $resource_data['file_url'], $frequency, $status, $last_updated, $link];
+        $table_rows[] = [$destination, $resource_data['file_url'], $frequency, $status, $last_updated];
       }
       fclose($handle);
       $output['state'] = [
