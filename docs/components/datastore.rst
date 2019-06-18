@@ -193,7 +193,7 @@ You have two options:
 
   $tables = db_query("show tables like 'dkan_datastore_%'")->fetchAll();
   foreach($tables as $key => $value) {
-    $table_name = $value->{'Tables_in_drupal (dkan_datastore_%)'};
+    $table_name = reset($value);
     db_drop_primary_key($table_name);
     db_drop_field($table_name, 'feeds_flatstore_entry_id');
     db_add_field($table_name, 'entry_id',
