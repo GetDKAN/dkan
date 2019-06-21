@@ -43,6 +43,8 @@ context('API', () => {
     let jsonPut            = json();
     let jsonPatch          = json();
 
+    let uuidRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
+
     // Create two datasets with random uuid.
     before(function() {
         cy.request({
@@ -84,6 +86,49 @@ context('API', () => {
                 expect(response.body[response.body.length - 1].title).eql(json2.title)
                 expect(response.body[response.body.length - 2].identifier).eql(json1.identifier)
                 expect(response.body[response.body.length - 2].title).eql(json1.title)
+            })
+        })
+    })
+
+    context('Dereference methods', () => {
+        it('bad query parameter)', () => {
+            cy.request(endpoint + '/' + json1.identifier + '?values=foobar').then((response) => {
+                expect(response.body.keyword).eql(json1.keyword)
+            })
+        })
+
+        it('data (default)', () => {
+            cy.request(endpoint + '/' + json1.identifier).then((response) => {
+                expect(response.body.keyword).eql(json1.keyword)
+            })
+        })
+
+        it('data (explicit)', () => {
+            cy.request(endpoint + '/' + json1.identifier + '?values=data').then((response) => {
+                expect(response.body.keyword).eql(json1.keyword)
+            })
+        })
+
+        it('identifier', () => {
+            cy.request(endpoint + '/' + json1.identifier + '?values=identifier').then((response) => {
+                expect(response.body.keyword).not.eql(json1.keyword)
+                expect(response.body.keyword.length).eql(json1.keyword.length)
+                expect(response.body.keyword[0]).to.match(uuidRegex)
+                expect(response.body.keyword[1]).to.match(uuidRegex)
+                expect(response.body.keyword[2]).to.match(uuidRegex)
+            })
+        })
+
+        it('data+identifier', () => {
+            cy.request(endpoint + '/' + json1.identifier + '?values=both').then((response) => {
+                expect(response.body.keyword).not.eql(json1.keyword)
+                expect(response.body.keyword.length).eql(json1.keyword.length)
+                expect(response.body.keyword[0].identifier).to.match(uuidRegex)
+                expect(response.body.keyword[0].data).eql(json1.keyword[0])
+                expect(response.body.keyword[1].identifier).to.match(uuidRegex)
+                expect(response.body.keyword[1].data).eql(json1.keyword[1])
+                expect(response.body.keyword[2].identifier).to.match(uuidRegex)
+                expect(response.body.keyword[2].data).eql(json1.keyword[2])
             })
         })
     })

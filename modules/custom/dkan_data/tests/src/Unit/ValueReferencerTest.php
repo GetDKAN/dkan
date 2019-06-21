@@ -571,11 +571,12 @@ class ValueReferencerTest extends DkanTestBase {
     $mockNode = $this->createMock(NodeInterface::class);
     $uuid = uniqid('some-property-uuid-');
     $expected = "Some Property Value";
-    $mockNode->field_json_metadata = (object) ['value' => '{"data": "Some Property Value"}'];
+    $mockNode->field_json_metadata = (object) ['value' => '{"uuid": "'.$uuid.'", "data": "Some Property Value"}'];
 
     return [
-      ['someProperty', $uuid, [$mockNode], $expected],
-      ['someProperty', $uuid, [], $uuid],
+      ['someProperty', $uuid, [$mockNode], 1, $expected],
+      ['someProperty', $uuid, [$mockNode], 2, (object) ['uuid' => $uuid, 'data' => $expected]],
+      ['someProperty', $uuid, [], 0, $uuid],
     ];
   }
 
@@ -588,12 +589,14 @@ class ValueReferencerTest extends DkanTestBase {
    *   The uuid.
    * @param array $nodes
    *   The expected $nodes array internally.
+   * @param int $dereferenceMethod
+   *   The dereference method, seeking identifier or data.
    * @param string $expected
    *   The expected return value of dereferenceSingle.
    *
    * @dataProvider dataTestDereferenceSingle
    */
-  public function testDereferenceSingle(string $property_id, string $uuid, array $nodes, $expected) {
+  public function testDereferenceSingle(string $property_id, string $uuid, array $nodes, int $dereferenceMethod, $expected) {
     // Setup.
     $mock = $this->getMockBuilder(ValueReferencer::class)
       ->setMethods(NULL)
@@ -623,6 +626,7 @@ class ValueReferencerTest extends DkanTestBase {
         'uuid'           => $uuid,
       ])
       ->willReturn($nodes);
+    $this->writeProtectedProperty($mock, 'dereferenceMethod', $dereferenceMethod);
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'dereferenceSingle', $property_id, $uuid);
@@ -673,6 +677,31 @@ class ValueReferencerTest extends DkanTestBase {
 
     // Assert.
     $this->assertEquals($expected, $mock->dereference($data));
+  }
+
+  /**
+   * Tests skipping the dereferencing.
+   */
+  public function testDereferenceSkipping() {
+    // Setup.
+    $mock = $this->getMockBuilder(ValueReferencer::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $uuid1 = uniqid('uuid1-');
+    $uuid2 = uniqid('uuid2-');
+    $data = (object) [
+      'property to be dereferenced' => $uuid1,
+      'another to dereference' => $uuid2,
+      'other property' => 'Some other value',
+    ];
+    // DEREFERENCE_OUTPUT_IDENTIFIER
+    $method = 1;
+
+    // Assert the dereferencing left the data unchanged, with identifiers.
+    $actual = $this->invokeProtectedMethod($mock, 'dereference', $data, $method);
+    $this->assertEquals($data, $actual);
   }
 
   /**
@@ -824,6 +853,41 @@ class ValueReferencerTest extends DkanTestBase {
 
     // Assert.
     $this->invokeProtectedMethod($mock, 'processReferencesInUpdatedDataset', $old, $new);
+  }
+
+  /**
+   * Provides data to test testSetDereferenceMethod.
+   */
+  public function dataSetDereferenceMethod() {
+    return [
+      [
+        0, 0,
+      ],
+      [
+        1, 1,
+      ],
+      [
+        2, 2,
+      ],
+    ];
+  }
+
+  /**
+   * Tests the setDereferenceMethod function.
+   *
+   * @dataProvider dataSetDereferenceMethod
+   */
+  public function testSetDereferenceMethod(int $method, int $expected) {
+    // Setup.
+    $mock = $this->getMockBuilder(ValueReferencer::class)
+      ->disableOriginalConstructor()
+      ->setMethods(NULL)
+      ->getMock();
+
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'setDereferenceMethod', $method);
+    $this->assertEquals($method, $actual);
+    $this->assertEquals($method, $this->accessProtectedProperty($mock, 'dereferenceMethod'));
   }
 
 }
