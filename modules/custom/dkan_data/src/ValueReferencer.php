@@ -18,6 +18,34 @@ use stdClass;
 class ValueReferencer {
 
   /**
+   * Indicates that dereferencing outputs data, the default case.
+   *
+   * @var int
+   */
+  const DEREFERENCE_OUTPUT_DATA = 0;
+
+  /**
+   * Indicates that dereferencing outputs the identifier (uuid).
+   *
+   * @var int
+   */
+  const DEREFERENCE_OUTPUT_IDENTIFIER = 1;
+
+  /**
+   * Indicates that dereferencing outputs both the data and its uuid.
+   *
+   * @var int
+   */
+  const DEREFERENCE_OUTPUT_BOTH = 2;
+
+  /**
+   * Store the dereferencing method for current request.
+   *
+   * @var int
+   */
+  protected $dereferenceMethod;
+
+  /**
    * The entity type manager service.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -207,15 +235,34 @@ class ValueReferencer {
   }
 
   /**
+   * Setter for dereferencing method.
+   *
+   * @param int $method
+   *
+   * @return int
+   */
+  protected function setDereferenceMethod(int $method) {
+    return $this->dereferenceMethod = $method;
+  }
+
+  /**
    * Replaces value references in a dataset with with their actual values.
    *
    * @param \stdClass $data
    *   The json metadata object.
+   * @param int $method
+   *   Represents the dereferencing method, data, identifier or both.
    *
    * @return mixed
    *   Modified json metadata object.
    */
-  public function dereference(stdClass $data) {
+  public function dereference(stdClass $data, int $method = self::DEREFERENCE_OUTPUT_DATA) {
+    // Skip data dereferencing when only seeking identifiers.
+    if ($method == self::DEREFERENCE_OUTPUT_IDENTIFIER) {
+      return $data;
+    }
+
+    $this->setDereferenceMethod($method);
     // Cycle through the dataset properties we seek to dereference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -272,7 +319,7 @@ class ValueReferencer {
    * @param string $str
    *   Either a uuid or an actual json value.
    *
-   * @return string
+   * @return stdClass|string
    *   The data from this reference.
    */
   protected function dereferenceSingle(string $property_id, string $uuid) {
@@ -285,7 +332,12 @@ class ValueReferencer {
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
-        return $metadata->data;
+        if ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_BOTH) {
+          return $metadata;
+        }
+        else {
+          return $metadata->data;
+        }
       }
     }
     // If str was not found, it's unlikely it was a uuid to begin with. It was

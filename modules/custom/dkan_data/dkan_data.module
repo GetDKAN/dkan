@@ -6,6 +6,7 @@
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\dkan_data\ValueReferencer;
 
 /**
  * Implements hook_node_load().
@@ -20,11 +21,34 @@ function dkan_data_node_load(array $entities) {
       // Dereference dataset properties.
       $metadata_obj = json_decode($metadata_string);
       $referencer = Drupal::service("dkan_data.value_referencer");
-      $metadata_obj = $referencer->dereference($metadata_obj);
+      $metadata_obj = $referencer->dereference($metadata_obj, dereferencing_method());
       $entity->set('field_json_metadata', json_encode($metadata_obj));
     }
   }
 
+}
+
+/**
+ * Helps select the dereferencing method.
+ *
+ * @return int
+ *   One of the int constants from class ValueReferencer:
+ *     - DEREFERENCE_OUTPUT_DATA = 0 (default case)
+ *     - DEREFERENCE_OUTPUT_IDENTIFIER = 1
+ *     - DEREFERENCE_OUTPUT_BOTH = 2
+ */
+function dereferencing_method() : int {
+  // Selection based on API's http request query parameters.
+  $params = Drupal::request()->query->all();
+  if (isset($params['values']) && $params['values'] == 'both') {
+    return ValueReferencer::DEREFERENCE_OUTPUT_BOTH;
+  }
+  if (isset($params['values']) && $params['values'] == 'identifier') {
+    return ValueReferencer::DEREFERENCE_OUTPUT_IDENTIFIER;
+  }
+
+  // Default case.
+  return ValueReferencer::DEREFERENCE_OUTPUT_DATA;
 }
 
 /**
