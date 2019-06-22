@@ -183,48 +183,56 @@ function dkan_periodic_updates_cron() {
   $active = variable_get('dkan_periodic_updates_status');
   if ($active) {
     $file = variable_get('dkan_periodic_updates_manifest');
-    $file = file_load($file);
-    if ($file) {
-      $to_update = [];
-      $today = new DateTime("now");
-      $handle = fopen($file->uri, 'r');
-      $headers = fgetcsv($handle, 0, ',');
+    $to_update = dkan_periodic_updates_get_items_to_update($file);
+    if (!empty($to_update)) {
+      dkan_periodic_updates_execute_update($to_update);
+    }
+  }
+}
 
-      while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
-        $resource_data = array_combine($headers, $data);
-        $last_update = variable_get('dkan_periodic_updates_' . $resource_data['resource_id'], '');
-        // If the last update date is present for the resource, then check for
-        // its frequency to see if it should be updated.
-        if (!empty($last_update)) {
-          $time_passed = $today->diff($last_update);
-          switch ($resource_data['frequency']) {
-            case 'monthly':
-              if ($time_passed->days >= 28) {
-                $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
-              }
-              break;
-            case 'weekly':
-              if ($time_passed->days >= 7) {
-                $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
-              }
-              break;
-            default:
-              if ($time_passed->days >= 1) {
-                $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
-              }
-          }
-        }
-        // If there is no last update date, then add the resource to list of
-        // resource to import.
-        else {
-          $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+function dkan_periodic_updates_get_items_to_update($file) {
+  $file = file_load($file);
+  if ($file) {
+    $to_update = [];
+    $today = new DateTime("now");
+    $handle = fopen($file->uri, 'r');
+    $headers = fgetcsv($handle, 0, ',');
+
+    while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+      $resource_data = array_combine($headers, $data);
+      $last_update = variable_get('dkan_periodic_updates_' . $resource_data['resource_id'], '');
+      // If the last update date is present for the resource, then check for
+      // its frequency to see if it should be updated.
+      if (!empty($last_update)) {
+        $time_passed = $today->diff($last_update);
+        switch ($resource_data['frequency']) {
+          case 'monthly':
+            if ($time_passed->days >= 28) {
+              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+            }
+            break;
+          case 'weekly':
+            if ($time_passed->days >= 7) {
+              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+            }
+            break;
+          default:
+            if ($time_passed->days >= 1) {
+              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+            }
         }
       }
-      fclose($handle);
-      dkan_periodic_updates_execute_update($to_update);
-    } else {
-      watchdog('dkan_periodic_updates', 'No manifest found.');
+      // If there is no last update date, then add the resource to list of
+      // resource to import.
+      else {
+        $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+      }
     }
+    fclose($handle);
+    return $to_update;
+  } else {
+    watchdog('dkan_periodic_updates', 'No manifest found.');
+    return [];
   }
 }
 
