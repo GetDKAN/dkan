@@ -3,6 +3,8 @@
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\Resource;
 
+module_load_include('module', 'dkan_periodic_updates');
+
 /**
  * Class DkanPeriodicUpdatesTest.
  */
