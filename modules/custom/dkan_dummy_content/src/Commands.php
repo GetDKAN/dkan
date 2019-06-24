@@ -2,13 +2,10 @@
 
 namespace Drupal\dkan_dummy_content;
 
-use Harvest\Harvester;
+use Drupal\dkan_harvest\Drush\Helper;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Helper\Table;
-
-use Drupal\dkan_harvest\Log\Stdout;
-use Drupal\dkan_harvest\Reverter;
 use Drupal\dkan_harvest\Storage\File;
 
 use Drush\Commands\DrushCommands;
@@ -17,6 +14,7 @@ use Drush\Commands\DrushCommands;
  *
  */
 class Commands extends DrushCommands {
+  use Helper;
 
   /**
    * Create dummy content.
@@ -24,35 +22,9 @@ class Commands extends DrushCommands {
    * @command dkan-dummy-content:create
    */
   public function create() {
-
-    $harvest_plan_file_path = drupal_get_path("module", "dkan_dummy_content") . "/harvest_plan.json";
-    $harvest_plan_json = file_get_contents($harvest_plan_file_path);
-    $harvest_plan = json_decode($harvest_plan_json);
-
-    $path = drupal_get_path('module', 'dkan_dummy_content');
-    $harvest_plan->source->uri = $path . $harvest_plan->source->uri;
-
-    $sourceId = "dummy";
-    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    $item_folder = "{$path}/dkan_harvest/{$sourceId}";
-    $hash_folder = "{$path}/dkan_harvest/{$sourceId}-hash";
-    $run_folder = "{$path}/dkan_harvest/{$sourceId}-run";
-
-    $item_storage = new File($item_folder);
-    $hash_storage = new File($hash_folder);
-    $run_storage = new File($run_folder);
-
-    $harvester = new Harvester($harvest_plan, $item_storage, $hash_storage, $run_storage);
-    $harvester->setLogger(new Stdout(TRUE, "dummy", "run"));
-
-    $results = $harvester->harvest();
-
-    $rows = [];
-    $rows[] = [$results['created'], $results['updated'], $results['skipped']];
-
-    $table = new Table(new ConsoleOutput());
-    $table->setHeaders(['created', 'updated', 'skipped'])->setRows($rows);
-    $table->render();
+    $harvester = $this->getHarvester("dummy");
+    $result = $harvester->harvest();
+    $this->renderResult($result);
   }
 
   /**
@@ -71,6 +43,18 @@ class Commands extends DrushCommands {
 
     $output = new ConsoleOutput();
     $output->write("{$count} items reverted for the 'dummy' harvest plan.");
+  }
+
+  private function getHarvestPlan() {
+    $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content');
+
+    $plan_path = $module_path . "/harvest_plan.json";
+    $json = file_get_contents($plan_path);
+    $plan = json_decode($json);
+
+    $plan->extract->uri = "file://" . $module_path . $plan->extract->uri;
+
+    return $plan;
   }
 
 }

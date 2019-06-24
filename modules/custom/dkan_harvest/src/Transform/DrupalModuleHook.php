@@ -2,13 +2,12 @@
 
 namespace Drupal\dkan_harvest\Transform;
 
-use Harvest\Transform\Transform;
+use Harvest\ETL\Transform\Transform;
 
 /**
  *
  */
 class DrupalModuleHook extends Transform {
-
 
   protected $harvestPlan;
 
@@ -22,21 +21,19 @@ class DrupalModuleHook extends Transform {
   /**
    *
    */
-  public function run(&$items) {
-    $this->hook($items);
+  public function run($item) {
+    return $this->hook($item);
   }
 
   /**
-   *
+   * @codeCoverageIgnore
    */
-  public function hook(&$items) {
+  public function hook($item) {
     $module_handler = \Drupal::moduleHandler();
-    $new_items = $module_handler
-      ->invokeAll('dkan_harvest_transform', [$items, $this->harvestPlan]);
+    $new_item = $module_handler
+      ->invokeAll('dkan_harvest_transform', [$item, $this->harvestPlan]);
 
-    if ($new_items && !empty($new_items)) {
-      $items = $new_items;
-    }
+    return $new_item;
   }
 
 }

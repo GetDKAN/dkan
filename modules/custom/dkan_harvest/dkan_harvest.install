@@ -97,46 +97,5 @@ function dkan_harvest_schema() {
     ],
   ];
 
-  $schema['harvest_log'] = [
-    'description' => 'The log table for harvests.',
-    'fields' => [
-      'log_id' => [
-        'description' => 'The id for the log entry.',
-        'type' => 'serial',
-        'not null' => TRUE,
-      ],
-      'action' => [
-        'description' => 'The action being performed.',
-        'type' => 'varchar_ascii',
-        'length' => 191,
-        'not null' => TRUE,
-        'default' => '',
-      ],
-      'level' => [
-        'description' => 'The log level. Enum: DEBUG, WARNING, ERROR.',
-        'type' => 'varchar_ascii',
-        'length' => 191,
-        'not null' => TRUE,
-        'default' => '',
-      ],
-      'message' => [
-        'description' => 'The log message.',
-        'type' => 'varchar_ascii',
-        'length' => 191,
-        'not null' => TRUE,
-        'default' => '',
-      ],
-      'timestamp' => [
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-        'description' => 'Unix timestamp of when event occurred.',
-      ],
-    ],
-    'primary key' => [
-      'log_id',
-    ],
-  ];
-
   return $schema;
 }

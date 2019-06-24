@@ -42,8 +42,8 @@ EOF;
     $expected[] = 'http://localhost/site/default/files/distribution/testid/test.csv';
 
     return [
-      [[$originalDataset], $originalDataset, $expected[0]],
-      [[$originalDataset], $modifiedDataset, $expected[1]],
+      [$originalDataset, $originalDataset, $expected[0]],
+      [$originalDataset, $modifiedDataset, $expected[1]],
     ];
 
   }
@@ -57,20 +57,20 @@ EOF;
    * @param object $modifiedDataset
    * @param string $expected
    */
-  public function testRun($datasets, $modifiedDataset, $expected) {
+  public function testRun($dataset, $modifiedDataset, $expected) {
 
     // Create ResourceImporter stub.
     $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
-      ->setMethods(['updateDistributions'])
+      ->setMethods(['updateDistributions', 'testEnvironment'])
       ->disableOriginalConstructor()
       ->getMock();
     $resourceImporterStub->method('updateDistributions')
       ->willReturn($modifiedDataset);
+    $resourceImporterStub->method('testEnvironment')->willReturn(TRUE);
 
     // Assert.
-    $resourceImporterStub->run($datasets);
-    $this->assertEquals($expected, $datasets[0]->distribution[0]->downloadURL);
-
+    $dataset = $resourceImporterStub->run($dataset);
+    $this->assertEquals($expected, $dataset->distribution[0]->downloadURL);
   }
 
   /**

@@ -15,7 +15,7 @@
         "fmizzell/sae" : "dev-master",
         "fmizzell/datastore" : "dev-master",
         "fmizzell/json-schema-provider": "dev-master",
-        "fmizzell/harvest": "0.0.0",
+        "fmizzell/harvest": "0.1.2",
         "fmizzell/maquina": "dev-master",
         "guzzlehttp/guzzle" : "6.3"
     },
