@@ -68,12 +68,12 @@ context('Search', () => {
   */
   it('Sort results alphabetically', () => {
     cy.get('.search-list li:nth-child(1) a > h2')
-     .should('have.text', 'U.S. Tobacco Usage Statistics')
+     .should('contain', 'Florida Bike Lanes')
     cy.get('select').select('Alphabetical')
     cy.get('.search-list li:nth-child(1) a > h2')
-     .should('have.text', 'Afghanistan Election Districts')
+     .should('contain', 'Afghanistan Election Districts')
     cy.get('.search-list li:nth-child(2) a > h2')
-     .should('have.text', 'Crime Data for the Ten Most Populous Cities in the U.S.')
+     .should('contain', 'Crime Data for the Ten Most Populous Cities in the U.S.')
     cy.get('.search-list li:nth-child(3) a > h2')
      .should('contain', 'Florida Bike Lanes')
   })

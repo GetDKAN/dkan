@@ -26,9 +26,7 @@ class Factory {
    * @return \Drupal\dkan_harvest\Reverter Reverter
    */
   public function newReverter($sourceId, Storage $hash_storage) {
-
     return new Reverter($sourceId, $hash_storage);
-
   }
 
 }

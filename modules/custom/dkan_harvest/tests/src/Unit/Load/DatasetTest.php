@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_harvest\Unit\Extract;
 
+use Contracts\Mock\Storage\Memory;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_harvest\Load\Dataset;
 use Sae\Sae;
@@ -13,6 +14,27 @@ use Sae\Sae;
  * @group dkan_harvest
  */
 class DatasetTest extends DkanTestBase {
+
+  public function test() {
+    $load = $this->getMockBuilder(Dataset::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getDatasetEngine'])
+      ->getMock();
+
+    $storage = new Memory();
+    $storage->store("This is a string", "1");
+    $this->assertEquals(1, count($storage->retrieveAll()));
+
+    $engine = new Sae($storage, "{
+  \"\$schema\": \"http://json-schema.org/draft-07/schema#\",
+  \"title\": \"Yep\",
+  \"type\": \"string\"");
+
+    $load->method('getDatasetEngine')->willReturn($engine);
+    $load->removeItem("1");
+
+    $this->assertEquals(0, count($storage->retrieveAll()));
+  }
 
   /**
    * Tests saveItem().
@@ -41,14 +63,6 @@ class DatasetTest extends DkanTestBase {
 
     // Assert.
     $this->invokeProtectedMethod($mock, 'saveItem', $item);
-  }
-
-  /**
-   *
-   */
-  public function testGetDatasetEngine() {
-
-    $this->markTestSkipped("Need to refactor to use DI");
   }
 
 }

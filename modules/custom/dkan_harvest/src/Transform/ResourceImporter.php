@@ -2,7 +2,8 @@
 
 namespace Drupal\dkan_harvest\Transform;
 
-use Harvest\Transform\Transform;
+use Drupal\Core\Site\Settings;
+use Harvest\ETL\Transform\Transform;
 use Drupal\dkan_harvest\Load\FileHelperTrait;
 
 /**
@@ -15,11 +16,20 @@ class ResourceImporter extends Transform {
   /**
    * {@inheritdoc}
    */
-  public function run(&$datasets) {
-    // Loop through datasets.
-    foreach ($datasets as $dataset_key => $dataset) {
-      $datasets[$dataset_key] = $this->updateDistributions($dataset);
+  public function run($dataset) {
+    $this->testEnvironment();
+    return $this->updateDistributions($dataset);
+  }
+
+  /**
+   * @codeCoverageIgnore
+   */
+  protected function testEnvironment() {
+    $setting = Settings::get('file_public_base_url');
+    if (!isset($setting) || empty($setting)) {
+      throw new \Exception("file_public_base_url should be set.");
     }
+    return TRUE;
   }
 
   /**
