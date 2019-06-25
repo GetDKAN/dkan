@@ -181,10 +181,8 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
     $downloadUrl = 'http://foo.bar';
 
     $datasetValue = (object) [
-      'distribution' => [
-        (object) [
-          'downloadURL' => $downloadUrl,
-        ],
+      'data' =>  [
+        'downloadURL' => $downloadUrl,
       ],
     ];
 
@@ -232,10 +230,15 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
       [json_encode([
           'distribution' => [
             [
-              'downloadUrl' => null,
+              'downloadURL' => null,
             ]
           ]
         ])],
+      [json_encode([
+        'data' => [
+          'downloadURL' => null,
+        ]
+      ])],
     ];
   }
 
