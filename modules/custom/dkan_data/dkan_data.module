@@ -18,6 +18,7 @@ function dkan_data_node_load(array $entities) {
       // Temporarily save the raw json metadata, for later use.
       $metadata_string = $entity->get('field_json_metadata')->value;
       $entity->referenced_metadata = $metadata_string;
+
       // Dereference dataset properties.
       $metadata_obj = json_decode($metadata_string);
       $referencer = Drupal::service("dkan_data.value_referencer");
@@ -38,6 +39,12 @@ function dkan_data_node_load(array $entities) {
  *     - DEREFERENCE_OUTPUT_BOTH = 2
  */
 function dereferencing_method() : int {
+  $allowed_methods = [
+    ValueReferencer::DEREFERENCE_OUTPUT_DATA,
+    ValueReferencer::DEREFERENCE_OUTPUT_IDENTIFIER,
+    ValueReferencer::DEREFERENCE_OUTPUT_BOTH,
+  ];
+
   // Selection based on API's http request query parameters.
   $params = Drupal::request()->query->all();
   if (isset($params['values']) && $params['values'] == 'both') {
@@ -45,6 +52,12 @@ function dereferencing_method() : int {
   }
   if (isset($params['values']) && $params['values'] == 'identifier') {
     return ValueReferencer::DEREFERENCE_OUTPUT_IDENTIFIER;
+  }
+
+  // Selection based on static variable.
+  $method = drupal_static('dkan_data_dereference_method');
+  if (isset($method) && in_array($method, $allowed_methods)) {
+    return $method;
   }
 
   // Default case.

@@ -11,6 +11,8 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\Resource;
+use Drupal\dkan_data\ValueReferencer;
+use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
  * @codeCoverageIgnore
@@ -20,7 +22,7 @@ class DkanDatastoreCommands extends DrushCommands {
   protected $output;
 
   /**
-   *
+   * Constructor for DkanDatastoreCommands.
    */
   public function __construct() {
     $this->output = new ConsoleOutput();
@@ -38,62 +40,40 @@ class DkanDatastoreCommands extends DrushCommands {
    * @command dkan-datastore:import
    */
   public function import($uuid, $deferred = FALSE) {
-    $database = \Drupal::service('dkan_datastore.database');
-    $this->output->writeln("Database instance created.");
-
     try {
+      // Load metadata with both identifier and data for this request.
+      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
+      $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
+      $distributions = $this->getDistributionsFromUuid($nodeStorage, $uuid);
 
-      $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
-
-      if (!isset($entity)) {
-        $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
-        return;
-      }
-
-      $this->output->writeln("Got entity {$entity->id()}.");
-      if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
-
-        $this->output->writeln("And it is a dataset.");
-        $dataset = $entity;
-
-        $metadata = json_decode($dataset->field_json_metadata->value);
-        $this->output->writeln("Got the metadata.");
-
-        $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
-        $this->output->writeln("And created a resource.");
+      foreach ($distributions as $dist) {
+        // Use this distribution's nid to decorate the dkan_datastore sql table.
+        $dist_nodes = $nodeStorage->loadByProperties(['uuid' => $dist->identifier]);
+        $dist_node = reset($dist_nodes);
+        if (!$dist_node) {
+          $this->output->writeln("Unable to find thus skipping distribution node {$dist->identifier}.");
+          continue;
+        }
+        $resource = new Resource($dist_node->id(), $dist->data->downloadURL);
 
         // Handle the command differently if deferred.
         if (!empty($deferred)) {
-          $this->output->writeln("Using deferred processing. Items will be pocessed by queue.");
           /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
           $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
           $queueId = $deferredImporter->createDeferredResourceImport($uuid, $resource);
           $this->output->writeln("New queue (ID:{$queueId}) was created for `{$uuid}`");
         }
         else {
+          $database = \Drupal::service('dkan_datastore.database');
           $provider = new InfoProvider();
           $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
-          $this->output->writeln("Provider set.");
-
           $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
-          $this->output->writeln("Bin Storage is set.");
-
           $factory = new Factory($resource, $provider, $bin_storage, $database);
-          $this->output->writeln("Factory is set.");
 
           /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
           $datastore = $factory->get();
-          $this->output->writeln("Got a datastore.");
-
           $datastore->import();
-
-          $status = $datastore->getStatus();
-
-          $this->output->writeln(json_encode($status));
         }
-      }
-      else {
-        $this->output->writeln("We can not work with non-dataset entities.");
       }
     }
     catch (\Exception $e) {
@@ -111,58 +91,77 @@ class DkanDatastoreCommands extends DrushCommands {
    * @command dkan-datastore:drop
    */
   public function drop($uuid) {
-    $database = \Drupal::service('dkan_datastore.database');
-    $this->output->writeln("Database instance created.");
-
     try {
-      $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
+      // Load metadata with both identifier and data for this request.
+      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
+      $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
+      $distributions = $this->getDistributionsFromUuid($nodeStorage, $uuid);
 
-      if (!isset($entity)) {
-        $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
-        return;
-      }
-
-      $this->output->writeln("Got entity {$entity->id()}.");
-
-      if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
-
-        $this->output->writeln("And it is a dataset.");
-        $dataset = $entity;
-
-        $metadata = json_decode($dataset->field_json_metadata->value);
-        $this->output->writeln("Got the metadata.");
-
-        $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
-        $this->output->writeln("And created a resource.");
+      foreach ($distributions as $dist) {
+        // Use this distribution's nid to decorate the dkan_datastore sql table.
+        $dist_nodes = $nodeStorage->loadByProperties(['uuid' => $dist->identifier]);
+        $dist_node = reset($dist_nodes);
+        if (!$dist_node) {
+          $this->output->writeln("Unable to find thus skipping distribution node {$dist->identifier}.");
+          continue;
+        }
+        $resource = new Resource($dist_node->id(), $dist->data->downloadURL);
 
         $provider = new InfoProvider();
         $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
-        $this->output->writeln("Provider set.");
-
         $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
-        $this->output->writeln("Bin Storage is set.");
-
+        $database = \Drupal::service('dkan_datastore.database');
         $factory = new Factory($resource, $provider, $bin_storage, $database);
-        $this->output->writeln("Factory is set.");
 
         /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
         $datastore = $factory->get();
-        $this->output->writeln("Got a datastore.");
-
         $datastore->drop();
-
-        $status = $datastore->getStatus();
-
-        $this->output->writeln(json_encode($status));
-      }
-      else {
-        $this->output->writeln("We can not work with non-dataset entities.");
       }
     }
     catch (\Exception $e) {
       $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
       $this->output->writeln($e->getMessage());
     }
+  }
+
+  /**
+   * Get one or more distributions (aka resources) from a uuid.
+   *
+   * @param \Drupal\Core\Entity\EntityStorageInterface $nodeStorage
+   * @param string $uuid
+   *
+   * @return array
+   */
+  protected function getDistributionsFromUuid(EntityStorageInterface $nodeStorage, $uuid) {
+    $nodes = $nodeStorage->loadByProperties([
+      'uuid' => $uuid,
+      'type' => 'data',
+    ]);
+    $node = reset($nodes);
+    if (!$node) {
+      $this->output->writeln("We were not able to load a data node with uuid {$uuid}.");
+      return [];
+    }
+    // Verify data is of expected type.
+    $expectedTypes = [
+      'dataset',
+      'distribution',
+    ];
+    if (!isset($node->field_data_type->value) || !in_array($node->field_data_type->value, $expectedTypes)) {
+      $this->output->writeln("Data not among expected types: " . implode(" ", $expectedTypes));
+      return [];
+    }
+    // Standardize whether single resource object or several in a dataset.
+    $metadata = json_decode($node->field_json_metadata->value);
+    $distributions = [];
+    if ($node->field_data_type->value == 'dataset') {
+      $distributions = $metadata->distribution;
+    }
+    if ($node->field_data_type->value == 'distribution') {
+      $distributions[] = $metadata;
+    }
+
+    return $distributions;
   }
 
 }
