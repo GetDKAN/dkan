@@ -56,6 +56,8 @@ class ApiTest extends DkanTestBase {
    */
   public function testGetAll() {
 
+    $schema_id = uniqid('schema_');
+
     $flattened = [
       json_encode('foo'),
       json_encode([]),
@@ -109,7 +111,7 @@ class ApiTest extends DkanTestBase {
       ->willReturn($mockJsonResponse);
 
     // Assert.
-    $actual = $mock->getAll();
+    $actual = $mock->getAll($schema_id);
 
     $this->assertSame($mockJsonResponse, $actual);
 
@@ -122,6 +124,7 @@ class ApiTest extends DkanTestBase {
 
     // Setup.
     $uuid = 'foobar123';
+    $schema_id = uniqid('schema_');
 
     $data = (object) ['foo' => 'bar'];
     $dataEncoded = json_encode($data);
@@ -165,7 +168,7 @@ class ApiTest extends DkanTestBase {
       ->willReturn($mockJsonResponse);
 
     // Assert.
-    $actual = $mock->get($uuid);
+    $actual = $mock->get($uuid, $schema_id);
 
     $this->assertSame($mockJsonResponse, $actual);
   }
@@ -177,6 +180,7 @@ class ApiTest extends DkanTestBase {
 
     // Setup.
     $uuid = 'foobar123';
+    $schema_id = uniqid('schema_');
 
     $exceptionMessage = __METHOD__ . " exception message";
     // Can't mock this. has to be an actual exception for the throw to work.
@@ -222,7 +226,7 @@ class ApiTest extends DkanTestBase {
       ->willReturn($mockJsonResponse);
 
     // Assert.
-    $actual = $mock->get($uuid);
+    $actual = $mock->get($uuid, $schema_id);
 
     $this->assertSame($mockJsonResponse, $actual);
   }

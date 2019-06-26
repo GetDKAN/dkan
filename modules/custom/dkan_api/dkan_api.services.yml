@@ -9,6 +9,3 @@ services:
         class: \Drupal\dkan_api\Storage\DrupalNodeDataset
         arguments:
             - '@entity_type.manager'
-    dkan_api.storage.organization:
-        class: \Drupal\dkan_api\Storage\Organization
-        arguments: ['@dkan_api.storage.drupal_node_dataset']
