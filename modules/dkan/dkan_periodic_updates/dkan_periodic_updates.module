@@ -84,9 +84,15 @@ function dkan_periodic_updates_form($form, &$form_state) {
   $prev_file = variable_get('dkan_periodic_updates_manifest');
   if ($prev_file) {
     $file = file_load($prev_file);
-    $prev_file_name = $file->filename;
-    $url = file_create_url($file->uri);
-    $message = '<p>Current manifest: <a href="' . $url . '">' . $prev_file_name . '</a></p>';
+    if ($file) {
+      $prev_file_name = $file->filename;
+      $url = file_create_url($file->uri);
+      $message = '<p>Current manifest: <a href="' . $url . '">' . $prev_file_name . '</a></p>';
+    }
+    else {
+      $message = '<p>Manifest was removed</p>';
+      variable_del('dkan_periodic_updates_manifest');
+    }
   }
   $form['manifest-file']['manifest']['text'] = array(
     '#markup' => $message,
