@@ -347,7 +347,7 @@ function dkan_periodic_updates_state() {
 
         $nid = entity_get_id_by_uuid('node', [$resource_data['resource_id']]);
         $destination = $resource_data['resource_id'];
-        if ($nid = $nid[$resource_data['resource_id']]) {
+        if ($nid && $nid = $nid[$resource_data['resource_id']]) {
           $destination = l($destination, 'node/' . $nid);
         }
         switch ($resource_data['frequency']) {
