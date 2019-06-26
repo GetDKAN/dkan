@@ -368,13 +368,13 @@ function dkan_periodic_updates_state() {
       ];
     } else {
       $output['state'] = [
-        '#markup' => '<p>' . t('No manifest was found.') . '</p>',
+        '#markup' => '<p class="alert alert-warning">' . t('No manifest was found.') . '</p>',
       ];
     }
   }
   else {
     $output['state'] = [
-      '#markup' => '<p>' . t('Periodic updates are disabled.') . '</p>',
+      '#markup' => '<p class="alert alert-warning">' . t('Periodic updates are disabled.') . '</p>',
     ];
   }
 
