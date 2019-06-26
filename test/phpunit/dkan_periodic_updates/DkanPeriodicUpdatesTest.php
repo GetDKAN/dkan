@@ -116,7 +116,7 @@ class DkanPeriodicUpdatesTest extends \PHPUnit_Framework_TestCase {
     // Updates disabled.
     variable_set('dkan_periodic_updates_status', FALSE);
     $result = dkan_periodic_updates_state();
-    $message_disabled = '<p>Periodic updates are disabled.</p>';
+    $message_disabled = '<p class="alert alert-warning">Periodic updates are disabled.</p>';
     $this->assertEquals($message_disabled, $result['state']['#markup']);
   }
 
@@ -125,7 +125,7 @@ class DkanPeriodicUpdatesTest extends \PHPUnit_Framework_TestCase {
     variable_set('dkan_periodic_updates_status', TRUE);
     variable_del('dkan_periodic_updates_manifest');
     $result = dkan_periodic_updates_state();
-    $message_no_manifest = '<p>No manifest was found.</p>';
+    $message_no_manifest = '<p class="alert alert-warning">No manifest was found.</p>';
     $this->assertEquals($message_no_manifest, $result['state']['#markup']);
   }
 
