@@ -33,13 +33,10 @@ class Commands extends DrushCommands {
    * @command dkan-dummy-content:remove
    */
   public function remove() {
-    $sourceId = "dummy";
-    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    $hash_folder = "{$path}/dkan_harvest/{$sourceId}-hash";
-    $hash_storage = new File($hash_folder);
+    $harvester = $this->getHarvester("dummy");
+    $result = $harvester->revert();
 
-    $reverter = new Reverter($sourceId, $hash_storage);
-    $count = $reverter->run();
+    $count = $result;
 
     $output = new ConsoleOutput();
     $output->write("{$count} items reverted for the 'dummy' harvest plan.");

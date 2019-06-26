@@ -33,7 +33,7 @@ To register a new harvest source, pass in the config argument as JSON:
 
 .. code-block::
 
-    dkan-harvest:register '{"identifier":"dkandemo","source":{"type":"\\Harvest\\Extract\\DataJson","uri":"http:\/\/demo.getdkan.com\/data.json"},"transforms":[{"Filter":{"keyword":"environment"}},{"Override":{"publisher.name":"DKAN Demo"}},"\\Drupal\\dkan_harvest\\Transform\\DataJsonToDkan"],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
+    dkan-harvest:register '{"identifier":"dkandemo","source":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"http:\/\/demo.getdkan.com\/data.json"},"transforms":[{"Filter":{"keyword":"environment"}},{"Override":{"publisher.name":"DKAN Demo"}},"\\Drupal\\dkan_harvest\\Transform\\DataJsonToDkan"],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
     ...
 
 That source config looks like:
@@ -47,20 +47,9 @@ That source config looks like:
         "uri": "http:\/\/demo.getdkan.com\/data.json"
       },
       "transforms": [
-        {
-          "Filter": {
-            "keyword": "environment"
-          }
-        }, {
-          "Override": {
-            "publisher.name": "DKAN Demo"
-          }
-        },
         "\\Drupal\\dkan_harvest\\Transform\\DataJsonToDkan"
       ],
       "load": {
-        "migrate": false,
-        "collectionsToUpdate": ["dataset", "organization", "license", "theme", "keyword"],
         "type": "\\Drupal\\dkan_harvest\\Load\\Dataset"
       }
     }
@@ -74,14 +63,12 @@ That source config looks like:
       - **type**: Class utilized to extract the data from the source. Required.
       - **uri**: The URL or Location of the Source. Required.
 
-    * **transforms**: Required.
+    * **transforms**:
 
       - **type**: Class utilized to transform the data OR null.
 
     * **load**: Required.
 
-      - **migrate**: whether or not files should be downloaded locally.
-      - **collectionsToUpdate**: after the initial harvest you might not want to update anything but datasets.
       - **type**: Class utilized to load the harvested data. Required.
 
 
@@ -98,7 +85,7 @@ Project Open Data (as well as most metadata APIs) includes many fields that are 
 Transforms
 ----------
 
-The transform options include four multi-value fields to help you fine tune the results of your harvest.
+The transform classes will help you fine tune the results of your harvest.
 
 :Filters: Filters restrict the datasets imported by a particular field. For instance, if you are harvesting a data.json source and want only to harvest health-related datasets, you might add a filter with "keyword" in the first text box, and "heatlh" in the second.
 :Excludes: Excludes are the inverse of filters. For example, if you know there is one publisher listed on the source whose datasets you do **not** want to bring into your data portal, you might add "publisher.name" with value "Governor's Office of Untidy Data"
