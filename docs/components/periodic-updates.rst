@@ -1,10 +1,10 @@
 DKAN Periodic Updates
 =====================
 
-The DKAN Periodic Updates module provides the user the ability to execute automated updates on existing resources in a daily, weekly or monthly basis. It also provides a UI in which you can check at the status of the updates.
+The DKAN Periodic Updates module provides the user the ability to execute automated updates on existing resources on a daily, weekly or monthly basis. It also provides a UI in which you can check at the status of the updates.
 The module requires a CSV file to execute the updates, this file is known as "the manifest", when you upload it and enable the updates, this is what happens:
 
-- The manifest is evaluated on every cron run to determine what resources needs to be updated (based on the frequency defined in the manifest and the "last update" date).
+- The manifest is evaluated on every cron run to determine which resources need to be updated (based on the frequency defined in the manifest and the "last update" date).
 - For each resource that needs an update, the system will:
   - Download the file URL specified in the manifest (or link it, according to which file field is used on the corresponding resource).
   - Update the resource node to use the new file.
@@ -14,7 +14,7 @@ Periodic Updates Settings
 -------------------------
 
 You can find the periodic updates settings under DKAN --> Periodic Updates --> Settings (`/admin/dkan/periodic-updates`).
-The settings for this module includes:
+The settings for this module include:
 
   - Periodic updates state
   - Manifest for periodic updates
@@ -22,13 +22,13 @@ The settings for this module includes:
 1- Periodic updates state
 *************************
 
-To turn periodic updates on you need to be in the Periodic Updates page, once there you should mark the option "Enable periodic updates" and click on "Save settings". You'll also need to upload a valid manifest in the section "Manifest for periodic updates", otherwise the updates cannot be executed.
-If you already have a manifest in the system but need to pause the periodic updates, all you need to do is unmark the option "Enable periodic updates" and save settings.
+Enable periodic updates by checking the "Enable periodic updates" box on the Periodic Updates page, and click on "Save settings". You'll also need to upload a valid manifest in the section "Manifest for periodic updates", otherwise the updates cannot be executed.
+If you already have a manifest in the system but need to pause the periodic updates, all you need to do is uncheck the option "Enable periodic updates" and save settings.
 
 2- Manifest for periodic updates
 ********************************
 
-The manifest is a CSV file in which you define all the resources that need to be updated periodically in the system, this file should contain the following column names:
+The manifest is a CSV file in which you define all of the resources that need to be updated periodically in the system, this file should contain the following column names:
 
 ``resource_id,frequency,file_url``
 
@@ -43,7 +43,7 @@ Note: for the periodic updates to be executed you need to have uploaded a valid 
 Periodic Updates Status
 -------------------------
 
-The status page can be found under DKAN --> Periodic Updates --> Status (`/admin/dkan/periodic-updates/status`). In this page you'll get information about all the resources specified in the manifest.
+The status page can be found under DKAN --> Periodic Updates --> Status (`/admin/dkan/periodic-updates/status`). In this page you'll get information about the resources specified in the manifest.
 If the "Enable periodic updates" checkbox from Settings is not marked, then you'll get a message saying "Periodic updates are disabled.". If it is marked but no manifest has been uploaded, then you'll get a message saying "No manifest was found.".
 If the updates are enabled and a valid manifest is uploaded, then you'll see a list of the elements included in the manifest file, that list includes:
 
