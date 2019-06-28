@@ -557,6 +557,8 @@ Response
       "vuuid": "ac1c1aa3-f6ee-4f76-a2f9-6510d9504680"
   }
 
+.. _datastore-rest-examples:
+
 Check the datastore status for a resource
 =========================================
 
