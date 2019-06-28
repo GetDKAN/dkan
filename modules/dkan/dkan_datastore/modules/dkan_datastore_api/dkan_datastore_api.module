@@ -401,7 +401,7 @@ function dkan_datastore_api_query($params) {
       dkan_datastore_api_use_indexes($data_select, $table, $params['query']);
     }
 
-    $count = dkan_datastore_api_count($data_select);
+    $count = dkan_datastore_api_count($table);
     $results = $data_select->execute();
 
     return dkan_datastore_api_output($data_select, $results, $table, $params['fields'], $resource_ids, $count, $params['limit']);
@@ -438,10 +438,10 @@ function dkan_datastore_api_multiple_query($queries = NULL) {
 /**
  * Retrieves count given fully query without paging limit.
  */
-function dkan_datastore_api_count($data_select) {
-  $query = clone($data_select);
-  $count = $query->range()->countQuery()->execute()->fetchField();
-  return $count;
+function dkan_datastore_api_count($table) {
+  $query = db_query("select count(*) as total from $table");
+  $total = $query->fetchField();
+  return $total;
 }
 
 /**
