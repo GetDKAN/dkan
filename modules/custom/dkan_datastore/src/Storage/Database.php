@@ -5,10 +5,9 @@ namespace Drupal\dkan_datastore\Storage;
 use Drupal\Core\Database\Connection;
 use Dkan\Datastore\Storage\Database\Query\Insert;
 use Dkan\Datastore\Storage\IDatabase;
-use Drupal\dkan_datastore\Query;
 
 /**
- *
+ * @codeCoverageIgnore
  */
 class Database implements IDatabase {
   private $connection;

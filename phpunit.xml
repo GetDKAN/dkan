@@ -16,6 +16,7 @@
             <directory>modules/custom/dkan_datastore/tests/src/Unit</directory>
             <directory>modules/custom/dkan_harvest/tests/src/Unit</directory>
             <directory>modules/custom/dkan_schema/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_sql_endpoint/tests/src/Unit</directory>
             <directory>modules/custom/interra_api/tests/src/Unit</directory>
             <directory>modules/custom/interra_frontend/tests/src/Unit</directory>
         </testsuite>
@@ -42,6 +43,7 @@
             <directory>modules/custom/dkan_datastore/src</directory>
             <directory>modules/custom/dkan_harvest/src</directory>
             <directory>modules/custom/dkan_schema/src</directory>
+            <directory>modules/custom/dkan_sql_endpoint/src</directory>
             <directory>modules/custom/interra_api/src</directory>
             <directory>modules/custom/interra_frontend/src</directory>
       <!-- By definition test classes have no tests. -->

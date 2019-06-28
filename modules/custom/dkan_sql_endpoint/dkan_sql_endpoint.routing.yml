@@ -1,7 +1,7 @@
-dkan_datastore.query:
+dkan_sql_endpoint.api:
   path: '/api/v1/sql/{query_string}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_datastore\Controller\Api::runQuery'}
+    { _controller: '\Drupal\dkan_sql_endpoint\Controller\Api::runQuery'}
   requirements:
     _access: 'TRUE'

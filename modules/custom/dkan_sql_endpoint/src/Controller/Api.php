@@ -1,12 +1,11 @@
 <?php
 
-namespace Drupal\dkan_datastore\Controller;
+namespace Drupal\dkan_sql_endpoint\Controller;
 
 use Dkan\Datastore\Manager\Manager;
-use Drupal\dkan_datastore\Query;
+use Drupal\dkan_datastore\Storage\Query;
 use Drupal\dkan_datastore\Storage\Database;
 use Drupal\dkan_datastore\Util;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -31,6 +30,8 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Constructor.
+   *
+   * @codeCoverageIgnore
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
@@ -42,7 +43,7 @@ class Api implements ContainerInjectionInterface {
    */
   public function runQuery($query_string) {
 
-    $parser = $this->container->get('dkan_datastore.sql_parser');
+    $parser = $this->getParser();
 
     if ($parser->validate($query_string) === TRUE) {
       $state_machine = $parser->getValidatingMachine();
@@ -53,28 +54,13 @@ class Api implements ContainerInjectionInterface {
         $result = $database->query($query_object);
       }
       catch(\Exception $e) {
-        return $this->dkanFactory
-        ->newJsonResponse(
-          "Querying a datastore that does not exist.",
-          500,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
+        $this->response("Querying a datastore that does not exist.", 500);
       }
 
-      return $this->dkanFactory
-        ->newJsonResponse(
-          $result,
-          200,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
+      return $this->response($result, 200);
     }
     else {
-      return $this->dkanFactory
-        ->newJsonResponse(
-          "Invalid query string.",
-          500,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
+      return $this->response("Invalid query string.", 500);
     }
   }
 
@@ -88,12 +74,7 @@ class Api implements ContainerInjectionInterface {
       $manager = $this->getDatastoreManager($uuid);
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse(
-          "No datastore.",
-          500,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
+      return $this->response("No datastore.", 500);
     }
 
     $object = new Query();
@@ -219,6 +200,8 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Private.
+   *
+   * @codeCoverageIgnore
    */
   protected function getDatabase(): Database {
     return $this->container
@@ -227,9 +210,30 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Private.
+   *
+   * @codeCoverageIgnore
    */
   protected function getDatastoreManager(string $uuid): Manager {
     return Util::getDatastoreManager($uuid);
+  }
+
+  /**
+   * @codeCoverageIgnore
+   */
+  protected function response($message, $code) {
+    return $this->dkanFactory
+      ->newJsonResponse(
+        $message,
+        $code,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
+  }
+
+  /**
+   * @codeCoverageIgnore
+   */
+  protected function getParser() {
+    return $this->container->get('dkan_sql_endpoint.sql_parser');
   }
 
   /**

@@ -2,8 +2,6 @@ services:
   dkan_datastore.database:
     class: Drupal\dkan_datastore\Storage\Database
     arguments: ['@database']
-  dkan_datastore.sql_parser:
-    class: Drupal\dkan_datastore\SqlParser
   dkan_datastore.storage.variable:
     class: Drupal\dkan_datastore\Storage\Variable
     arguments: ['@config.factory']
