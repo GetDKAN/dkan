@@ -3,10 +3,12 @@
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
-use Drupal\dkan_datastore\Controller\Api;
+use Drupal\dkan_datastore\Storage\Database;
+use Drupal\dkan_sql_endpoint\Controller\Api;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_datastore\Query;
-use Drupal\dkan_datastore\SqlParser;
+use Drupal\dkan_datastore\Storage\Query;
+use SqlParser\SqlParser;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
@@ -105,6 +107,29 @@ class ApiTest extends DkanTestBase {
     $object = $this->invokeProtectedMethod($controller, 'getQueryObject', $parser->getValidatingMachine());
 
     $this->assertEquals(json_encode($expected), json_encode($object));
+  }
+
+  public function testRunQuery() {
+    $controller = $this->getMockBuilder(Api::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getParser', 'getDatabase', 'getQueryObject', 'response'])
+      ->getMock();
+
+    $controller->method('getParser')->willReturn(new SqlParser());
+    $controller->method('getQueryObject')->willReturn(new Query());
+    $controller->method('response')->willReturn(new JsonResponse([], 200));
+
+    $database = $this->getMockBuilder(Database::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['query'])
+      ->getMock();
+
+    $database->method('query')->willReturn([]);
+
+    $controller->method('getDatabase')->willReturn($database);
+
+    $response = $controller->runQuery('[SELECT * FROM abc];');
+    $this->assertTrue(is_object($response));
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_datastore;
+namespace Drupal\dkan_datastore\Storage;
 
 use Contracts\Sorter;
 use Contracts\Conditioner;

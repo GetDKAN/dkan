@@ -1,23 +1,24 @@
 <?php
 
-namespace Drupal\dkan_datastore\Commands;
+namespace Drupal\dkan_datastore\Drush;
 
 use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Locker;
 use Dkan\Datastore\LockableBinStorage;
 use Dkan\Datastore\Manager\Info;
 use Dkan\Datastore\Manager\InfoProvider;
-use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\Resource;
 use Drupal\dkan_data\ValueReferencer;
 use Drupal\Core\Entity\EntityStorageInterface;
 
+use Drush\Commands\DrushCommands;
+
 /**
  * @codeCoverageIgnore
  */
-class DkanDatastoreCommands extends DrushCommands {
+class Commands extends DrushCommands {
 
   protected $output;
 

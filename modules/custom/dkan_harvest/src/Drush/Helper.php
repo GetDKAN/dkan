@@ -11,6 +11,11 @@ use Harvest\Storage\Storage;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
+/**
+ * Trait Helper
+ *
+ * @codeCoverageIgnore
+ */
 trait Helper
 {
   /**

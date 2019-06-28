@@ -22,6 +22,7 @@ dependencies:
   - dkan_data
   - dkan_datastore
   - dkan_dummy_content
+  - dkan_sql_endpoint
   - dynamic_page_cache
   - editor
   - field_ui
