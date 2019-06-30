@@ -3,8 +3,9 @@
 Datastore API
 =============
 
-DKAN offers a Datastore API as a custom endpoint for the Drupal Services
-module.
+DKAN offers a Datastore API as a custom endpoint for the Drupal Services module.
+
+To import and otherwise control individual resources in the Datastore, use the datastore functions in the :ref:`Dataset REST API <datastore-rest-examples>`.
 
 This API is designed to be as compatible as possible with the `CKAN
 Datastore API <http://ckan.readthedocs.org/en/latest/maintaining/datastore.html>`_.
