@@ -19,6 +19,8 @@ The DKAN Dataset API module is only a light wrapper around the `Services module 
 
 The Sessions module also `has a thriving community on the Drupal Stack Exchange <http://drupal.stackexchange.com/questions/tagged/services>`_.
 
+By visiting */admin/structure/services/list/dkan_dataset_api/resources*, you can inspect every resource made available by default via the Dataset REST API.
+
 ************
 Server Types
 ************
@@ -458,12 +460,10 @@ Request
 
 .. code-block:: bash
 
-  GET http://docker:32774/api/dataset/node/76
+  GET /api/dataset/node/76
   Accept: application/json
   X-CSRF-Token: XBWI44XD33XBIANLpyK-rtvRa0N5OcaC03qLx0VQsP4
   Cookie: SESSd14344a17ca11d13bda8baf612c0efa5=OBoeXKMQx3zmaZrS_v3FOP7_Ze66fYA61TGhtm9s0Qk
-
-  None
 
 .. note::
 
@@ -556,6 +556,82 @@ Response
       "vid": "118",
       "vuuid": "ac1c1aa3-f6ee-4f76-a2f9-6510d9504680"
   }
+
+.. _datastore-rest-examples:
+
+Check the datastore status for a resource
+=========================================
+
+This and the following two examples allow you to control the datastore for a particular resource. 
+
+Request
+-------
+
+.. code-block:: bash
+
+  GET /api/dataset/datastore/21 HTTP/1.1
+  Content-Type: application/json
+  X-CSRF-Token: SbKKNwXWRpBmTPVylBoWQA7SEg6DI0-n_e1Sx8g6GPg
+  Accept: */*
+  cookie: SSESS22474bf3c2765681586dfeb396a82796=PrtS2ZEX9SBBLfNYNF6pwF94Lt0M9AEuhp4vYQ9J3nA
+
+Response
+--------
+
+.. code-block:: bash
+
+  ---
+  class: Dkan\Datastore\Manager\SimpleImport\SimpleImport
+  storage: 0
+  data_import: 2
+  configurable_properties:
+      delimiter: ,
+      quote: "
+      escape: \
+      trailing_delimiter: false
+
+.. note::
+
+  Currently this endpoint returns plain text in YAML format; a later version will return propper JSON or XML.
+
+Import resource file into datastore
+===================================
+
+Request
+-------
+
+.. code-block:: bash
+
+  POST /api/dataset/datastore/21/import HTTP/1.1
+  Content-Type: application/json
+  X-CSRF-Token: ftdT-Kpj4jg-UliwMml5-ZaxMFdRHnsFyIPbE9ACeg8
+  cookie: SSESS22474bf3c2765681586dfeb396a82796=PrtS2ZEX9SBBLfNYNF6pwF94Lt0M9AEuhp4vYQ9J3nA
+
+Response
+--------
+
+.. code-block:: bash
+  
+  ---
+  - true
+
+Remove datastore table and record
+=================================
+
+.. code-block:: bash
+
+  DELETE /api/dataset/datastore/21 HTTP/1.1
+  Content-Type: application/json
+  X-CSRF-Token: ftdT-Kpj4jg-UliwMml5-ZaxMFdRHnsFyIPbE9ACeg8
+  cookie: SSESS22474bf3c2765681586dfeb396a82796=PrtS2ZEX9SBBLfNYNF6pwF94Lt0M9AEuhp4vYQ9J3nA
+
+Response
+--------
+
+.. code-block:: bash
+  
+  ---
+  - true
 
 **************
 Testing it out
