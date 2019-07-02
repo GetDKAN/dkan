@@ -439,8 +439,8 @@ function dkan_datastore_api_multiple_query($queries = NULL) {
  * Retrieves count given fully query without paging limit.
  */
 function dkan_datastore_api_count($data_select) {
-  $query = db_query("select count(*) as total from $data_select");
-  $count = $query->fetchField();
+  $query = clone($data_select);
+  $count = $query->range()->execute()->rowCount();
   return $count;
 }
 
