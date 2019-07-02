@@ -8,7 +8,7 @@ use Dkan\Datastore\Manager\Info;
 use Dkan\Datastore\Manager\InfoProvider;
 use Dkan\Datastore\LockableBinStorage;
 use Dkan\Datastore\Manager\Factory as DatastoreManagerFactory;
-use Dkan\Datastore\Locker;
+use Locker\Locker;
 use Drupal\dkan_datastore\Storage\Database as DatastoreDatabase;
 use Dkan\Datastore\Storage\IKeyValue;
 use Drupal\Core\Entity\EntityInterface;

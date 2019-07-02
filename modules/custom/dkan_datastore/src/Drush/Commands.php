@@ -3,7 +3,7 @@
 namespace Drupal\dkan_datastore\Drush;
 
 use Dkan\Datastore\Manager\Factory;
-use Dkan\Datastore\Locker;
+use Locker\Locker;
 use Dkan\Datastore\LockableBinStorage;
 use Dkan\Datastore\Manager\Info;
 use Dkan\Datastore\Manager\InfoProvider;
@@ -11,7 +11,6 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\Resource;
 use Drupal\dkan_data\ValueReferencer;
-use Drupal\Core\Entity\EntityStorageInterface;
 
 use Drush\Commands\DrushCommands;
 
@@ -44,36 +43,13 @@ class Commands extends DrushCommands {
     try {
       // Load metadata with both identifier and data for this request.
       drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
-      $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
-      $distributions = $this->getDistributionsFromUuid($nodeStorage, $uuid);
 
-      foreach ($distributions as $dist) {
-        // Use this distribution's nid to decorate the dkan_datastore sql table.
-        $dist_nodes = $nodeStorage->loadByProperties(['uuid' => $dist->identifier]);
-        $dist_node = reset($dist_nodes);
-        if (!$dist_node) {
-          $this->output->writeln("Unable to find thus skipping distribution node {$dist->identifier}.");
-          continue;
-        }
-        $resource = new Resource($dist_node->id(), $dist->data->downloadURL);
-
-        // Handle the command differently if deferred.
+      foreach ($this->getDistributionsFromUuid($uuid) as $distribution) {
         if (!empty($deferred)) {
-          /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
-          $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
-          $queueId = $deferredImporter->createDeferredResourceImport($uuid, $resource);
-          $this->output->writeln("New queue (ID:{$queueId}) was created for `{$uuid}`");
+          $this->queueImport($uuid, $this->getResource($distribution));
         }
         else {
-          $database = \Drupal::service('dkan_datastore.database');
-          $provider = new InfoProvider();
-          $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
-          $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
-          $factory = new Factory($resource, $provider, $bin_storage, $database);
-
-          /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
-          $datastore = $factory->get();
-          $datastore->import();
+          $this->processImport($distribution);
         }
       }
     }
@@ -95,34 +71,58 @@ class Commands extends DrushCommands {
     try {
       // Load metadata with both identifier and data for this request.
       drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
-      $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
-      $distributions = $this->getDistributionsFromUuid($nodeStorage, $uuid);
 
-      foreach ($distributions as $dist) {
-        // Use this distribution's nid to decorate the dkan_datastore sql table.
-        $dist_nodes = $nodeStorage->loadByProperties(['uuid' => $dist->identifier]);
-        $dist_node = reset($dist_nodes);
-        if (!$dist_node) {
-          $this->output->writeln("Unable to find thus skipping distribution node {$dist->identifier}.");
-          continue;
-        }
-        $resource = new Resource($dist_node->id(), $dist->data->downloadURL);
-
-        $provider = new InfoProvider();
-        $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
-        $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
-        $database = \Drupal::service('dkan_datastore.database');
-        $factory = new Factory($resource, $provider, $bin_storage, $database);
-
-        /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
-        $datastore = $factory->get();
-        $datastore->drop();
+      foreach ($this->getDistributionsFromUuid($uuid) as $distribution) {
+        $this->processDrop($distribution);
       }
     }
     catch (\Exception $e) {
       $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
       $this->output->writeln($e->getMessage());
     }
+  }
+
+  private function queueImport($uuid, $resource) {
+    /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
+    $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
+    $queueId = $deferredImporter->createDeferredResourceImport($uuid, $resource);
+    $this->output->writeln("New queue (ID:{$queueId}) was created for `{$uuid}`");
+  }
+
+  private function processImport($distribution) {
+    $datastore = $this->getDatastore($this->getResource($distribution));
+    $datastore->import();
+  }
+
+  private function processDrop($distribution) {
+    $datastore = $this->getDatastore($this->getResource($distribution));
+    $datastore->drop();
+  }
+
+  private function getResource($distribution) {
+    $distribution_node = $this->getDistributionNode($distribution);
+    return new Resource($distribution_node->id(), $distribution->data->downloadURL);
+  }
+
+  private function getDistributionNode($distribution) {
+    $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
+    $dist_nodes = $nodeStorage->loadByProperties(['uuid' => $distribution->identifier]);
+    $dist_node = reset($dist_nodes);
+    if (!$dist_node) {
+      throw new \Exception("Unable to find thus skipping distribution node {$distribution->identifier}.");
+    }
+    return $dist_node;
+  }
+
+  private function getDatastore($resource) {
+    $provider = new InfoProvider();
+    $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
+    $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
+    $database = \Drupal::service('dkan_datastore.database');
+    $factory = new Factory($resource, $provider, $bin_storage, $database);
+
+    /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
+    return $factory->get();
   }
 
   /**
@@ -133,7 +133,8 @@ class Commands extends DrushCommands {
    *
    * @return array
    */
-  protected function getDistributionsFromUuid(EntityStorageInterface $nodeStorage, $uuid) {
+  protected function getDistributionsFromUuid($uuid) {
+    $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
     $nodes = $nodeStorage->loadByProperties([
       'uuid' => $uuid,
       'type' => 'data',
