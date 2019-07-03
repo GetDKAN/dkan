@@ -1,4 +1,6 @@
 # DKAN for Drupal 8 - [Alpha](https://en.wikipedia.org/wiki/Software_release_life_cycle)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7a93219b8ae65a83f095/maintainability)](https://codeclimate.com/github/GetDKAN/dkan2/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/7a93219b8ae65a83f095/test_coverage)](https://codeclimate.com/github/GetDKAN/dkan2/test_coverage)
 
 DKAN Open Data Portal/Catalog built on Drupal 8.
 
