@@ -1,0 +1,7 @@
+dkan_datastore.dataset_with_summary:
+  path: '/api/v1/datastore/{uuid}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_datastore\Controller\Api::datasetWithSummary'}
+  requirements:
+    _permission: 'access content'
