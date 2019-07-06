@@ -91,7 +91,7 @@ context('API', () => {
     })
 
     context('Dereference methods', () => {
-        it('bad query parameter)', () => {
+        it('bad query parameter', () => {
             cy.request(endpoint + '/' + json1.identifier + '?values=foobar').then((response) => {
                 expect(response.body.keyword).eql(json1.keyword)
             })
