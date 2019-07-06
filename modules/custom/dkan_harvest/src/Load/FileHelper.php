@@ -26,7 +26,16 @@ class FileHelper implements IFileHelper {
    *
    */
   public function retrieveFile($url, $destination = NULL, $managed = FALSE) {
-    return system_retrieve_file($url, $destination, $managed, FILE_EXISTS_REPLACE);
+    if (substr_count($url, "file://") > 0) {
+      $content = file_get_contents($url);
+      $pieces = parse_url($url);
+      $path = explode("/", $pieces['path']);
+      $filename = end($path);
+      return file_save_data($content, $destination . "/{$filename}", $managed, FILE_EXISTS_REPLACE);
+    }
+    else {
+      return system_retrieve_file($url, $destination, $managed, FILE_EXISTS_REPLACE);
+    }
   }
 
   /**
