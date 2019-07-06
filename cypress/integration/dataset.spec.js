@@ -18,8 +18,7 @@ context('Dataset', () => {
         "Last Update",
         "Contact",
         "Contact E-mail",
-        "Public Access Level",
-        "Homepage URL"
+        "Public Access Level"
       ]
   
       var values = [
@@ -29,8 +28,7 @@ context('Dataset', () => {
         '2019-06-06',
         'Gray, Stefanie',
         'mailto:datademo@example.com',
-        'public',
-        'http://demo.getdkan.com/dataset/gold-prices-london-1950-2008-monthly'
+        'public'
       ]
   
       keys.forEach((value, index) => {
@@ -42,7 +40,7 @@ context('Dataset', () => {
   
     it('I see the file is available to download', () => {
       cy.get('.resource > svg').should('have.attr', 'class', 'dkan-icon')
-      cy.get('.resource > a').should('have.attr', 'href', 'http://demo.getdkan.com/sites/default/files/data_0.csv')
+      cy.get('.resource > a').should('have.attr', 'href', 'http://dkan/sites/default/files/distribution/5dc1cfcf-8028-476c-a020-f58ec6dd621c/data_0.csv')
     })
   
     it('I see the tags.', () => {

@@ -117,7 +117,12 @@ class ResourceImporter extends Transform {
       return FALSE;
     }
 
-    return $fileHelper->fileCreate($path);
+    if (is_object($path)) {
+      return file_create_url($path->uri->value);
+    }
+    else {
+      return $fileHelper->fileCreate($path);
+    }
   }
 
 }

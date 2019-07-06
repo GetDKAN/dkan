@@ -1,0 +1,400 @@
+"lon","lat","Unit_Type","Dist_Name","Prov_Name","Dari_Dist","Dari_Prov","Dist_ID","Prov_ID"
+61.33,32.4,"District","Qala-e-Kah","Farah","قلعه کاه","فراه",3106,31
+62.06,32.49,"District","Pusht Rod","Farah","پشت رود","فراه",3105,31
+61.37,32.11,"District","Shib Koh","Farah","َشیب کوه","فراه",3107,31
+62.23,32.24,"Provincial_Center","Farah","Farah","فراه","فراه",3101,31
+61.83,31.32,"District","Kang","Nimroz","کنگ","نیمروز",3402,34
+62.04,30.91,"Provincial_Center","Zaranj","Nimroz","زرنج","نیمروز",3401,34
+62.88,32.21,"District","Bakwa","Farah","بکواه","فراه",3102,31
+65.17,30.12,"District","Reg","Kandahar","ریگ","کندهار",3309,33
+66.17,30.99,"District","Spin Boldak","Kandahar","سپین بولدک","کندهار",3311,33
+65.16,31.07,"District","Panj wayi","Kandahar","پنجوائی","کندهار",3304,33
+64.99,31.58,"District","Maywand","Kandahar","میوند","کندهار",3308,33
+65.71,31.51,"Provincial_Center","Kandahar","Kandahar","کندهار","کندهار",3301,33
+65.4,31.64,"District","Zheray","Kandahar","ژړۍ","کندهار",3303,33
+66.55,31.52,"District","Arghistan","Kandahar","ارغستان","کندهار",3312,33
+67.25,31.45,"District","Maruf","Kandahar","معروف","کندهار",3316,33
+65.2,32.04,"District","Ghorak","Kandahar","غورک","کندهار",3315,33
+65.5,32.01,"District","Khakrez","Kandahar","خاکریز","کندهار",3307,33
+65.64,31.76,"District","Arghandab","Kandahar","ارغنداب","کندهار",3302,33
+65.78,31.21,"District","Daman","Kandahar","دامان","کندهار",3305,33
+65.71,32.39,"District","Nesh","Kandahar","نیش","کندهار",3314,33
+66.01,32.08,"District","Shah Wali Kot","Kandahar","شاه ولی کوت","کندهار",3306,33
+66.34,32.38,"District","Miyanshin","Kandahar","میان شین","کندهار",3313,33
+65.47,32.58,"District","Dehrawud","Uruzgan","دهراود","ارزگان",2304,23
+65.48,32.92,"District","Shahid-e-Hassas","Uruzgan","شهید حساس","ارزگان",2303,23
+65.92,32.68,"Provincial_Center","Tirin Kot","Uruzgan","تیرینکوت","ارزگان",2301,23
+66.26,32.93,"District","Chora","Uruzgan","چوره","ارزگان",2302,23
+66.69,33,"District","Khas Uruzgan","Uruzgan","خاص ارزگان","ارزگان",2305,23
+66.52,31.91,"District","Tarnak Wa Jaldak","Zabul","ترنک و جلدک","زابل",2404,24
+66.51,32.18,"District","Mizan","Zabul","میزان","زابل",2403,24
+67.39,31.72,"District","Atghar","Zabul","اتغر","زابل",2409,24
+66.69,32.61,"District","Day chopan","Zabul","دای چوپان","زابل",2408,24
+66.99,32.51,"District","Arghandab","Zabul","ارغنداب","زابل",2402,24
+67,32.21,"Provincial_Center","Qalat","Zabul","قلات","زابل",2401,24
+69.78,33.32,"District","Mando Zayi","Khost","مندوزائی","خوست",2605,26
+67.18,32.86,"District","Kakar","Zabul","کاکړ","زابل",2407,24
+67.39,32.5,"District","Shah Joy","Zabul","شاه جوی","زابل",2406,24
+67.16,31.92,"District","Shinkay","Zabul","شینکی","زابل",2405,24
+67.57,32.22,"District","Naw Bahar","Zabul","نوبهار","زابل",2411,24
+67.11,33.52,"District","Ajrestan","Ghazni","اجرستان","غزنی",1116,11
+67.24,33.3,"District","Malestan","Ghazni","مالستان","غزنی",1117,11
+67.65,32.71,"District","Gelan","Ghazni","گیلان","غزنی",1118,11
+67.78,32.94,"District","Muqur","Ghazni","مقر","غزنی",1114,11
+67.46,33.14,"District","Jaghuri","Ghazni","جاغوری","غزنی",1113,11
+68.06,32.88,"District","Ab Band","Ghazni","آب بند","غزنی",1115,11
+68.35,33.06,"District","Giro","Ghazni","گیرو","غزنی",1111,11
+67.99,33.22,"District","Qarabagh","Ghazni","قره باغ","غزنی",1110,11
+68.45,33.31,"District","Andar","Ghazni","اندړ","غزنی",1105,11
+68.21,33.41,"District","Waghaz","Ghazni","واغظ","غزنی",1104,11
+68.3,33.56,"District","Wali Muhammad-e- Shahid","Ghazni","ولی محمد شهید","غزنی",1103,11
+68.07,33.53,"District","Jaghatu","Ghazni","جغتو","غزنی",1109,11
+68.15,33.7,"District","Rashidan","Ghazni","رشیدان","غزنی",1108,11
+68.65,33.47,"District","Deh Yak","Ghazni","ده یک","غزنی",1106,11
+68.44,33.53,"Provincial_Center","Ghazni","Ghazni","غزنی","غزنی",1101,11
+68.67,33.68,"District","Zana Khan","Ghazni","زنه خان","غزنی",1107,11
+68.42,33.68,"District","Khwaja Umari","Ghazni","خواجه عمری","غزنی",1102,11
+67.77,31.82,"District","Shomulzay","Zabul","شملزائی","زابل",2410,24
+67.74,33.85,"District","Nawur","Ghazni","ناور","غزنی",1112,11
+67.9,32.33,"District","Nawa","Ghazni","ناوه","غزنی",1119,11
+68.31,31.91,"District","Turwo (Tarwe","Paktika","تروه","پکتیکا",2519,25
+68.83,31.93,"District","Wor Mamay","Paktika","وړ ممی","پکتیکا",2514,25
+68.33,32.25,"District","Waza Khah","Paktika","وازه خواه","پکتیکا",2513,25
+68.13,32.56,"District","Dila","Paktika","دیله","پکتیکا",2518,25
+68.48,32.85,"District","Zarghun Shahr","Paktika","زرغون شهر","پکتیکا",2505,25
+68.48,32.67,"District","Jani Khel","Paktika","جانی خیل","پکتیکا",2512,25
+68.66,32.92,"District","Yahya Khel","Paktika","یحی خیل","پکتیکا",2506,25
+68.81,32.89,"District","Omna","Paktika","اومنه","پکتیکا",2507,25
+69.28,32.71,"District","Bermel (Burmul","Paktika","برمل","پکتیکا",2515,25
+69.4,32.98,"District","Gian","Paktika","گیان","پکتیکا",2516,25
+69.19,32.98,"District","Urgun","Paktika","ارگون","پکتیکا",2510,25
+69.33,33.16,"District","Ziruk","Paktika","زیړوک","پکتیکا",2517,25
+69.24,33.21,"District","Nika","Paktika","نیکه","پکتیکا",2511,25
+69.04,33.06,"District","Sar Hawzeh(Rawzeh","Paktika","سرروضه(سرحوضه","پکتیکا",2504,25
+68.65,33.05,"District","Yosuf Khel","Paktika","یوسف خیل","پکتیکا",2503,25
+68.73,33.2,"Provincial_Center","Sharan","Paktika","شرن","پکتیکا",2501,25
+68.89,33.3,"District","Mata Khan","Paktika","متاخان","پکتیکا",2502,25
+69.49,33.16,"District","Spera","Khost","سپیره","خوست",2611,26
+69.73,33.19,"District","Tani","Khost","تنی","خوست",2606,26
+69.53,33.31,"District","Shamal (Shamul","Khost","شمل","خوست",2610,26
+69.94,33.2,"District","Gurbuz","Khost","گربز","خوست",2607,26
+70,33.34,"Provincial_Center","Khost(Matun","Khost","خوست ( متون ","خوست",2601,26
+69.68,33.38,"District","Nadir Shah Kot","Khost","نادرشاه کوت","خوست",2604,26
+70.08,33.53,"District","Bak","Khost","باک","خوست",2612,26
+70.08,33.64,"District","Jaji Maydan","Khost","جاجی میدان","خوست",2613,26
+69.91,33.54,"District","Sabri","Khost","صبری","خوست",2602,26
+69.67,33.57,"District","Musa Khel","Khost","موسی خیل","خوست",2603,26
+69.66,33.49,"District","Qalandar","Khost","قلندر","خوست",2609,26
+69.91,33.79,"District","Dand wa Patan","Paktya","دند پتان","پکتیا",1211,12
+69.8,33.78,"District","Chamkani","Paktya","څمکنی","پکتیا",1210,12
+69.79,33.66,"District","Jani Khel","Paktya","جانی خیل","پکتیا",1209,12
+69.67,33.98,"District","Ali Khel (Jaji","Paktya","علی خیل (جاجی","پکتیا",1208,12
+69.63,33.82,"District","Lija Ahmad Khel","Paktya","لجه احمد خیل","پکتیا",1207,12
+69.34,33.77,"District","Ahmadaba","Paktya","احمد آبا","پکتیا",1203,12
+69.48,33.71,"District","Sayed Karam","Paktya","سیدکرم","پکتیا",1202,12
+69.41,33.37,"District","Zadran","Paktya","حّدران","پکتیا",1206,12
+69.37,33.45,"District","Shawak","Paktya","شواک","پکتیا",1205,12
+69.04,33.42,"District","Zurmat","Paktya","زُرمت","پکتیا",1204,12
+68.89,33.69,"District","Kharwar","Logar","خروار","لوگر",506,5
+69.24,33.6,"Provincial_Center","Gardez","Paktya","گردیز","پکتیا",1201,12
+69.63,34.11,"District","Azra","Logar","ازره","لوگر",507,5
+69.27,34,"District","Khoshi","Logar","خوشی","لوگر",502,5
+68.92,33.82,"District","Charkh","Logar","چرخ","لوگر",505,5
+68.89,33.93,"District","Baraki Barak","Logar","برکی برک","لوگر",504,5
+69.05,33.97,"Provincial_Center","Pul-e- Alam","Logar","پل علم","لوگر",501,5
+69.18,34.21,"District","Mohammad Agha","Logar","محمدآغه","لوگر",503,5
+68.76,34.32,"District","Nerkh","Wardak","نرخ","وردک",403,4
+68.82,34.44,"Provincial_Center","Maydan Shahr","Wardak","میدان شهر","وردک",401,4
+68.58,34.53,"District","Jalrez","Wardak","جلریز","وردک",402,4
+68.66,33.92,"District","Saydabad","Wardak","سید آباد","وردک",407,4
+68.36,33.84,"District","Jaghatu","Wardak","جغتو","وردک",409,4
+68.49,34.11,"District","Chak","Wardak","چک","وردک",406,4
+68.31,34.22,"District","Day Mirdad","Wardak","دایمیرداد","وردک",405,4
+68.19,34.53,"District","Hesa Awal-e- Behsud","Wardak","حصه اول بهسود","وردک",404,4
+67.69,34.4,"District","Markaz-e-Behsud","Wardak","مدکز بهسود","وردک",408,4
+69.77,34.28,"District","Hesarak","Nangarhar","حصارک","ننگرهار",610,6
+69.98,34.19,"District","Sherzad","Nangarhar","شیرزاد","ننگرهار",611,6
+70.12,34.23,"District","Khowgiani","Nangarhar","خوگیانی","ننگرهار",604,6
+70.44,34.09,"District","Deh Bala","Nangarhar","ده بالا","ننگرهار",613,6
+70.37,34.29,"District","Chaparhar","Nangarhar","چپر هار","ننگرهار",605,6
+70.28,34.39,"District","Surkh Rod","Nangarhar","سرخ رود","ننگرهار",603,6
+70.46,34.42,"Provincial_Center","Jalalabad","Nangarhar","جلال آباد","ننگرهار",601,6
+70.66,34.06,"District","Achin","Nangarhar","اچین","ننگرهار",617,6
+70.6,34.15,"District","Kot","Nangarhar","کوټ","ننگرهار",614,6
+70.83,34.06,"District","Nazian","Nangarhar","نازیان","ننگرهار",621,6
+70.8,34.21,"District","Shinwar","Nangarhar","شینوار","ننگرهار",618,6
+70.57,34.27,"District","Rodat","Nangarhar","رودات","ننگرهار",606,6
+70.96,34.1,"District","Dur Baba","Nangarhar","دربابا","ننگرهار",622,6
+71,34.21,"District","Muhmand Dara","Nangarhar","مهمند دره","ننگرهار",619,6
+66.27,33.4,"District","Gizab","Daykundi","گیزاب","دایکندی",2205,22
+66.08,33.76,"Provincial_Center","Nili","Daykundi","نیلی","دایکندی",2201,22
+66.94,33.83,"District","Miramor","Daykundi","میرامور","دایکندی",2209,22
+66.47,33.71,"District","Shahristan","Daykundi","شهرستان","دایکندی",2206,22
+66.3,34.07,"District","Ashtarlay","Daykundi","اشترلی","دایکندی",2202,22
+66.97,34.15,"District","Waras","Bamyan","ورث","بامیان",1007,10
+66.93,34.42,"District","Panjab","Bamyan","پنجاب","بامیان",1004,10
+67.68,34.79,"Provincial_Center","Bamyan","Bamyan","بامیان","بامیان",1001,10
+67.61,35.12,"District","Sayghan","Bamyan","سیغان","بامیان",1002,10
+68.63,34.77,"District","Surkhe Parsa","Parwan","سرخ پارسا","پروان",310,3
+68.94,34.55,"District","Paghman","Kabul","پغمان","کابل",104,1
+69.07,34.39,"District","Chahar Asyab","Kabul","چهار آسیاب","کابل",105,1
+69.22,34.37,"District","Musayi","Kabul","موسهی","کابل",106,1
+69.15,34.52,"Capital","Kabul","Kabul","کابل","کابل",101,1
+69.34,34.48,"District","Bagrami","Kabul","بگرامی","کابل",107,1
+69.43,34.37,"District","Khak-e- Jabbar","Kabul","خاک جبار","کابل",112,1
+69.31,34.67,"District","Deh Sabz","Kabul","ده سبز","کابل",102,1
+69.18,34.76,"District","Kalakan","Kabul","کلکان","کابل",109,1
+69.12,34.73,"District","Mir Bacha Kot","Kabul","میر بچه کوت","کابل",110,1
+69.04,34.66,"District","Shakardara","Kabul","شکردره","کابل",103,1
+69,34.75,"District","Guldara","Kabul","گلدره","کابل",111,1
+69.02,34.79,"District","Farza","Kabul","فرزه","کابل",115,1
+69.02,34.85,"District","Estalef","Kabul","استالف","کابل",114,1
+69.18,34.85,"District","Qarabagh","Kabul","قره باغ","کابل",108,1
+69.14,34.99,"Provincial_Center","Chaharikar","Parwan","چاریکار","پروان",301,3
+69.47,34.76,"District","Koh-e- Safi","Parwan","کوه صافی","پروان",308,3
+69.33,34.92,"District","Bagram","Parwan","بگرام","پروان",304,3
+69.27,35.05,"District","Sayd Khel","Parwan","سیدخیل","پروان",305,3
+69.19,35.12,"District","Jabalussaraj","Parwan","جبل السراج","پروان",302,3
+69.7,34.53,"District","Surobi","Kabul","سروبی","کابل",113,1
+69.34,35.14,"District","Hesa Awal-e- Kohestan","Kapisa","حصه اول کوهستان","کاپیسا",207,2
+71.02,34.33,"District","Lal Pur","Nangarhar","لعل پور","ننگرهار",620,6
+70.87,34.45,"District","Goshta","Nangarhar","گوشته","ننگرهار",616,6
+70.51,34.44,"District","Behsud","Nangarhar","بهسود","ننگرهار",602,6
+70.66,34.44,"District","Kama","Nangarhar","کامه","ننگرهار",607,6
+70.61,34.56,"District","Kuz Kunar","Nangarhar","کوز کنر","ننگرهار",608,6
+70.59,34.71,"District","Dara-e-Nur","Nangarhar","دره نور","ننگرهار",609,6
+69.33,35.07,"District","Hisa Duwum-e- Kohestan","Kapisa","حصه دوم کوهستان","کاپیسا",204,2
+69.42,35,"Provincial_Center","Mahmud-e- Raqi","Kapisa","محمود راقی","کاپیسا",201,2
+69.47,35.11,"District","Koh Band","Kapisa","کوه بند","کاپیسا",203,2
+69.65,35.05,"District","Nejrab","Kapisa","نجراب","کاپیسا",202,2
+69.68,34.79,"District","Tagab","Kapisa","تگاب","کاپیسا",205,2
+69.81,34.93,"District","Alasay","Kapisa","اله سای","کاپیسا",206,2
+70,35.04,"District","Daulat Shah","Laghman","دولت شاه","لغمان",705,7
+70.08,34.83,"District","Alishang","Laghman","قرغه ئی","لغمان",702,7
+70.17,34.53,"District","Qarghayi","Laghman","علینگار","لغمان",703,7
+70.09,34.65,"Provincial_Center","Mehtarlam","Laghman","مهتر لام","لغمان",701,7
+70.41,34.82,"District","Alingar","Laghman","علیشنگ","لغمان",704,7
+69.41,35.22,"District","Onaba(Anawa","Panjsher","عنابه","پنجشیر",806,8
+69.48,35.27,"District","Rukha","Panjsher","رخه","پنجشیر",803,8
+69.77,35.24,"District","Dara","Panjsher","دره","پنجشیر",804,8
+70.38,35.22,"District","Du Ab","Nuristan","دو آب","نورستان",1403,14
+70.73,34.69,"District","Nurgal","Kunar","نورگل","کنر ها",1314,13
+70.94,34.61,"District","Khas Kunar","Kunar","خاص کنر","کنر ها",1309,13
+71.12,34.75,"District","Sarkani","Kunar","سرکانی","کنر ها",1304,13
+70.87,34.74,"District","Chawkay","Kunar","چوکی","کنر ها",1308,13
+71,34.8,"District","Narang","Kunar","نرنگ","کنر ها",1303,13
+71.23,34.86,"District","Marawara","Kunar","مره وره","کنر ها",1305,13
+70.7,34.96,"District","Chapa Dara","Kunar","چپه دره","کنر ها",1313,13
+71.13,34.87,"Provincial_Center","Asad Abad","Kunar","اسد آباد","کنر ها",1301,13
+70.92,34.95,"District","Dara-e-Pech","Kunar","دره پیچ","کنر ها",1307,13
+71.08,35,"District","Wata Pur","Kunar","وته پور","کنر ها",1302,13
+71.23,35.04,"District","Shigal wa shel tan","Kunar","شیگل وشلتن","کنر ها",1306,13
+71.44,35,"District","Dangam","Kunar","دانگام","کنر ها",1310,13
+71.54,35.27,"District","Nari","Kunar","ناړی","کنر ها",1315,13
+71.38,35.07,"District","Bar Kunar","Kunar","برکنر","کنر ها",1311,13
+71.33,35.23,"District","Ghazi Abad","Kunar","غازی آباد","کنر ها",1312,13
+70.8,35.18,"District","Wama","Nuristan","واما","نورستان",1405,14
+70.47,35.07,"District","Nurgaram","Nuristan","نورگرام","نورستان",1404,14
+71.03,35.23,"District","Waygal","Nuristan","وایگل","نورستان",1406,14
+71.31,35.48,"District","Kamdesh","Nuristan","کامدیش","نورستان",1407,14
+70.28,34.09,"District","Pachier Agam","Nangarhar","پچیراگام","ننگرهار",612,6
+62.91,31.74,"District","Khash Rod","Nimroz","خاش رود","نیمروز",3405,34
+62.44,31.32,"District","Chakhansur","Nimroz","چخانسور","نیمروز",3404,34
+62.08,30.16,"District","Chahar Burjak","Nimroz","چاربرجک","نیمروز",3403,34
+63.17,29.88,"District","Deh shu","Hilmand","دیشو","هلمند",3213,32
+63.48,30.83,"District","Reg(khan Neshin","Hilmand","ریگ ( خان شین ","هلمند",3212,32
+64.17,30.31,"District","Garm Ser","Hilmand","گرم سیر","هلمند",3209,32
+63.79,31.58,"District","Nad-e-Ali","Hilmand","نادعلی","هلمند",3203,32
+64.21,31.33,"District","Nawa-e-Barak Zaiy","Hilmand","ناوه بارکزائی","هلمند",3204,32
+64.54,31.46,"Provincial_Center","Lashkar Gah","Hilmand","لشکرگاه","هلمند",3201,32
+63.95,32.1,"District","Wa Sher","Hilmand","واشیر","هلمند",3208,32
+64.61,31.83,"District","Nahr-e-Saraj","Hilmand","نهر سراج","هلمند",3202,32
+64.47,32.47,"District","Naw Zad","Hilmand","نوزاد","هلمند",3207,32
+64.74,32.47,"District","Musa Qaleh","Hilmand","موسی قلعه","هلمند",3206,32
+65,32.12,"District","Sangin","Hilmand","سنگین","هلمند",3205,32
+65.04,32.48,"District","Kajaki","Hilmand","کجکی","هلمند",3210,32
+69.51,35.37,"Provincial_Center","Bazarak","Panjsher","بازارک","پنجشیر",801,8
+69.3,35.29,"District","Shutul","Panjsher","شتل","پنجشیر",802,8
+66.04,30.17,"District","Shor Abak","Kandahar","شور آبک","کندهار",3310,33
+68.95,32.39,"District","Gomal","Paktika","گومل","پکتیکا",2508,25
+61.33,31.72,"District","Lash-e-Juwayn","Farah","لاش جوین","فراه",3108,31
+70.19,33.38,"District","Tere Zayi","Khost","تری زائی","خوست",2608,26
+71.25,35.77,"District","Barg-e- Matal","Nuristan","برک متال","نورستان",1408,14
+70.8,35.41,"Provincial_Center","Poruns","Nuristan","پرونس","نورستان",1401,14
+70.25,35.4,"District","Mandol","Nuristan","مندول","نورستان",1402,14
+70.04,35.65,"District","Parian","Panjsher","پریان","پنجشیر",807,8
+69.78,35.43,"District","Khenj (Hes-e- Awal","Panjsher","حصه اول (خنج","پنجشیر",805,8
+69.15,35.28,"District","Salang","Parwan","سالنگ","پروان",306,3
+68.97,35.12,"District","Shinwari","Parwan","شینواری","پروان",303,3
+68.79,35.01,"District","Syah Gerd","Parwan","( سیاه گرد (غوربند","پروان",307,3
+68.42,34.95,"District","Shekh  Ali","Parwan","شیخ علی","پروان",309,3
+68.04,34.92,"District","Shibar","Bamyan","شیبر","بامیان",1005,10
+67.78,35.36,"District","Kahmard","Bamyan","کهمرد","بامیان",1006,10
+66.95,34.98,"District","Yakawlang","Bamyan","یکاولنگ","بامیان",1003,10
+66.27,34.6,"District","Lal Wa Sarjangal","Ghor","لعل و سرجنگل","غور",2108,21
+65.91,34.19,"District","Sang-e-Takht","Daykundi","سنگ تخت","دایکندی",2207,22
+65.75,33.9,"District","Khadir","Daykundi","خدیر","دایکندی",2203,22
+65.72,33.54,"District","kiti","Daykundi","کیتی","دایکندی",2204,22
+65.62,33.21,"District","Kajran","Daykundi","کجران","دایکندی",2208,22
+65.04,33.01,"District","Baghran","Hilmand","باغران","هلمند",3211,32
+62.75,32.77,"District","Bala Buluk","Farah","بالا بلوک","فراه",3103,31
+63.59,32.64,"District","Gulestan","Farah","گلستان","فراه",3109,31
+62.07,32.76,"District","Khak-e-Safed","Farah","خاک سفید","فراه",3104,31
+61.25,33.01,"District","Anar Dara","Farah","انار دره","فراه",3111,31
+69.05,32.75,"District","Sarobi","Paktika","سروبی","پکتیکا",2509,25
+70.76,34.29,"District","Bati Kot","Nangarhar","بټی کوټ","ننگرهار",615,6
+61.57,35.13,"District","Gulran","Hirat","گلران","هرات",3008,30
+61.17,34.61,"District","Kohsan","Hirat","کوهسان","هرات",3014,30
+62.24,35,"District","Kushk","Hirat","کشک","هرات",3003,30
+62.63,34.89,"District","Kushk-e-Kohna","Hirat","کشک کهنه","هرات",3013,30
+61.15,34.18,"District","Ghoryan","Hirat","غوریان","هرات",3009,30
+61.82,34.37,"District","Zinda Jan","Hirat","زنده جان","هرات",3004,30
+62,33.71,"District","Adraskan","Hirat","ادرسکن","هرات",3010,30
+62.75,34.18,"District","Pashtun  Zarghun","Hirat","پشتون زرغون","هرات",3006,30
+63.28,33.84,"District","Farsi","Hirat","فرسی","هرات",3011,30
+63.25,34.36,"District","Obe","Hirat","اوبه","هرات",3012,30
+63.96,34.45,"District","Chisht-e-Sharif","Hirat","چشت شریف","هرات",3016,30
+62.66,34.5,"District","Karukh","Hirat","کرُخ","هرات",3007,30
+62.18,34.37,"Provincial_Center","Hirat","Hirat","هرات","هرات",3001,30
+62.18,34.47,"District","Injil","Hirat","انجیل","هرات",3002,30
+62.04,34.04,"District","Guzara","Hirat","گذره","هرات",3005,30
+63.11,35.17,"District","Muqur","Badghis","مقر","بادغیس",2902,29
+62.9,34.93,"District","Ab Kamari","Badghis","آب کمری","بادغیس",2903,29
+63.58,34.82,"District","Qadis","Badghis","قادیس","بادغیس",2904,29
+64.34,35,"District","Jawand","Badghis","جوند","بادغیس",2905,29
+63.47,35.47,"District","Bala Murghab","Badghis","مرغاب","بادغیس",2906,29
+63.78,35.72,"District","Ghormach","Badghis","غورماچ","بادغیس",2907,29
+64.28,35.96,"District","Almar","Faryab","المار","فاریاب",2805,28
+64.92,35.33,"District","Kohistan","Faryab","کوهستان","فاریاب",2807,28
+65.28,35.63,"District","Garziwan","Faryab","گرزیوان","فاریاب",2808,28
+65.45,35.88,"District","Bil Cheragh","Faryab","بلچراغ","فاریاب",2809,28
+64.78,35.81,"District","Pashtun kot","Faryab","پشتون کوت","فاریاب",2803,28
+64.79,35.94,"Provincial_Center","Maymana","Faryab","میمنه","فاریاب",2801,28
+64.97,36.06,"District","Khwaja Sabzposh","Faryab","خواجه سبزپوش","فاریاب",2802,28
+64.82,36.25,"District","Shirin Tagab","Faryab","شیرین تگاب","فاریاب",2804,28
+65.06,36.54,"District","Dawlat Abad","Faryab","دولت آباد","فاریاب",2810,28
+64.96,36.79,"District","Qaram Qol","Faryab","قرم قل","فاریاب",2812,28
+64.94,37.04,"District","Qorghan","Faryab","قرغان","فاریاب",2814,28
+65.23,37.11,"District","Khan-e-Chahar Bagh","Faryab","خان چارباغ","فاریاب",2813,28
+65.37,36,"District","Darz Ab","Jawzjan","درز آب","جوزجان",2711,27
+65.36,36.21,"District","Qush Tepa","Jawzjan","قوش تیپه","جوزجان",2704,27
+65.75,36.59,"Provincial_Center","Shiberghan","Jawzjan","شبرغان","جوزجان",2701,27
+65.29,36.85,"District","Andkhoy","Faryab","اندخوی","فاریاب",2811,28
+65.61,36.95,"District","Khwaja Du Koh","Jawzjan","خواجه دوکوه","جوزجان",2703,27
+66.13,36.78,"District","Khanaqa","Jawzjan","خانقا","جوزجان",2706,27
+66.33,36.7,"District","Fayz Abad","Jawzjan","فیض آباد","جوزجان",2705,27
+66.33,37.05,"District","Mardyan","Jawzjan","مردیان","جوزجان",2708,27
+66.21,36.9,"District","Aqcha","Jawzjan","آقچه","جوزجان",2707,27
+65.99,37.06,"District","Mingajik","Jawzjan","منگجک","جوزجان",2702,27
+66.09,37.29,"District","Qarqin","Jawzjan","قرقین","جوزجان",2709,27
+65.72,37.31,"District","Khamyab","Jawzjan","خم آب(خمیاب","جوزجان",2710,27
+63.67,33.58,"District","Saghar","Ghor","ساغر","غور",2110,21
+64.38,33.48,"District","Taywarah","Ghor","تیوره","غور",2106,21
+63.71,34.01,"District","Tolak","Ghor","تولک","غور",2109,21
+64.34,34.1,"District","Shahrak","Ghor","شهرک","غور",2105,21
+65.01,34.12,"District","Du Lina","Ghor","دو لینه","غور",2103,21
+65.12,35.12,"District","Chahar Sadra","Ghor","چار صد ره","غور",2102,21
+65.33,34.72,"Provincial_Center","Chaghcharan","Ghor","چغچران","غور",2101,21
+65.75,34.58,"District","Dawlat Yar","Ghor","دولت یار","غور",2104,21
+66.85,37.26,"District","Shor Tepa","Balkh","شور تیپه","بلخ",1803,18
+67.36,37.19,"Town","Sharak-e-Hayratan","Balkh","شهرک حیرتان","بلخ",1811,18
+67.55,37.13,"District","Kaldar","Balkh","کلدار","بلخ",1810,18
+66.8,37.06,"District","Dawlat Abad","Balkh","دولت آباد","بلخ",1804,18
+67.74,36.81,"District","Khulm","Balkh","خلم","بلخ",1809,18
+67.34,36.63,"District","Marmul","Balkh","مارمل","بلخ",1808,18
+67.24,36.37,"District","Chahar Kent","Balkh","چار کنت","بلخ",1807,18
+67.01,36.64,"District","Deh Dadi","Balkh","دهدادی","بلخ",1806,18
+66.89,36.82,"District","Balkh","Balkh","بلخ","بلخ",1805,18
+66.64,36.83,"District","Chahar Bolak","Balkh","چار بولک","بلخ",1812,18
+66.6,36.52,"District","Chemtal","Balkh","چمتال","بلخ",1813,18
+66.86,36.3,"District","Sholgareh","Balkh","شولگره","بلخ",1814,18
+66.92,36.01,"District","Kishindeh","Balkh","کشنده","بلخ",1815,18
+66.73,35.85,"District","Zari","Balkh","زاری","بلخ",1816,18
+67.58,36.46,"District","Feroz Nakhchir","Samangan","فیروز نخچیر","سمنگان",1903,19
+67.28,35.68,"District","Darah Suf-e-Bala","Samangan","درۀ صوف بالا","سمنگان",1905,19
+67.82,35.64,"District","Ruy-e-Du Ab","Samangan","روی دو آب","سمنگان",1907,19
+68.12,35.99,"District","Khuram wa Sarbagh","Samangan","خرم وسارباغ","سمنگان",1906,19
+66.06,36.28,"Provincial_Center","Sar-e-Pul","Sar-e-Pul","سرپل","سرپل",2001,20
+65.71,36.15,"District","Sayad","Sar-e-Pul","صیاد","سرپل",2002,20
+66.23,36.02,"District","Sozma Qala","Sar-e-Pul","سوزمه قلعه","سرپل",2004,20
+66.45,36.06,"District","Gosfandi","Sar-e-Pul","گوسفندی","سرپل",2005,20
+66.34,35.84,"District","Sang(SanCharak","Sar-e-Pul","سان چارک (سنگ چارک","سرپل",2007,20
+66.6,35.46,"District","Balkh Ab","Sar-e-Pul","بلخاب","سرپل",2006,20
+65.94,35.44,"District","Kohistanat","Sar-e-Pul","کوهستانات","سرپل",2003,20
+68.36,36.9,"District","Qala-e-Zal","Kunduz","قلعه ذال","کندز",1703,17
+68.57,36.65,"District","Chahar Darah","Kunduz","چهار دره","کندز",1704,17
+68.85,37.11,"District","Imam Saheb","Kunduz","امام صاحب","کندز",1702,17
+69.16,36.96,"District","Dasht-e-Archi","Kunduz","دشت ارچی","کندز",1707,17
+68.86,36.8,"Provincial_Center","Kunduz","Kunduz","کندز","کندز",1701,17
+68.88,36.53,"District","Ali Abad","Kunduz","علی آباد","کندز",1705,17
+69.1,36.6,"District","Khan Abad","Kunduz","خان آباد","کندز",1706,17
+68.62,36.33,"District","Baghlan-e-jadid","Baghlan","بغلان جدید","بغلان",902,9
+69.16,36.24,"District","Burka","Baghlan","بورکه (برکه","بغلان",910,9
+68.46,35.82,"District","Dahana-e-Ghory","Baghlan","دهنه غوری","بغلان",903,9
+68.67,36.01,"Provincial_Center","Pul-e- khumri","Baghlan","پلخمری","بغلان",901,9
+68.67,35.62,"District","Dushi","Baghlan","دوشی","بغلان",904,9
+69.03,36,"District","Nahrin","Baghlan","نهرین","بغلان",905,9
+69.29,35.97,"District","Khwaja Hejran","Baghlan","خواجه هجران","بغلان",909,9
+69.18,35.62,"District","Andarab","Baghlan","اندراب","بغلان",908,9
+68.97,35.47,"District","Khenjan","Baghlan","خنجان","بغلان",907,9
+68.38,35.28,"District","Tala wa barfak","Baghlan","تاله وبرفک","بغلان",906,9
+69.57,36.23,"District","Guzargah-e- Nur","Baghlan","گذرگاه نور","بغلان",914,9
+69.68,36.14,"District","Firing Wa Gharu","Baghlan","فرنگ غارو","بغلان",915,9
+69.36,35.74,"District","Deh Salah","Baghlan","ده صلاح","بغلان",912,9
+69.39,36.37,"District","Ishkamish","Takhar","اشکمش","تخار",1615,16
+69.56,36.5,"District","Chal","Takhar","چال","تخار",1605,16
+69.71,36.47,"District","Namak Ab","Takhar","نمک آب","تخار",1606,16
+69.96,36.47,"District","Farkhar","Takhar","فرخار","تخار",1607,16
+69.34,36.61,"District","Bangi","Takhar","بنگی","تخار",1604,16
+69.4,36.83,"District","Baharak","Takhar","بهارک","تخار",1603,16
+69.57,36.93,"District","Hazar Sumuch","Takhar","هزار سموچ","تخار",1602,16
+69.61,36.74,"Provincial_Center","Taloqan","Takhar","تالقان","تخار",1601,16
+69.91,36.79,"District","Kalafgan","Takhar","کلفگان","تخار",1608,16
+69.82,37.11,"District","Rostaq","Takhar","رستاق","تخار",1609,16
+69.5,37.2,"District","Dasht-e-Qala","Takhar","دشت قلعه","تخار",1613,16
+69.58,37.34,"District","Khwaja Bahawuddin","Takhar","خواجه بهاوالدین","تخار",1612,16
+69.5,37.45,"District","Darqad","Takhar","درقد","تخار",1617,16
+69.67,37.46,"District","Yangi Qala","Takhar","ینگی قلعه","تخار",1611,16
+69.88,37.45,"District","Chah Ab","Takhar","چاه آب","تخار",1610,16
+70.14,37.34,"District","Shahr-e-Buzorg","Badakhshan","شهر بزرگ","بدخشان",1508,15
+70.38,37.53,"District","Yawan","Badakhshan","یاوان","بدخشان",1507,15
+70.67,37.66,"District","Raghistan","Badakhshan","راغستان","بدخشان",1506,15
+70.39,37.84,"District","Khwahan","Badakhshan","خواهان","بدخشان",1517,15
+70.69,37.94,"District","Kof Ab","Badakhshan","کوف آب","بدخشان",1516,15
+70.37,37.31,"District","Yaftal-e-Sufla","Badakhshan","یفتل سفلی","بدخشان",1502,15
+70.66,37.42,"District","Kohistan","Badakhshan","کوهستان","بدخشان",1505,15
+70.65,38.21,"District","Shaki","Badakhshan","شکی","بدخشان",1525,15
+70.91,38.23,"District","Darwaz","Badakhshan","درواز","بدخشان",1524,15
+71.15,38.13,"District","Darwaz-e-Balla","Badakhshan","درواز بالا","بدخشان",1515,15
+71.24,37.6,"District","Shighnan","Badakhshan","شغنان","بدخشان",1514,15
+70.82,37.27,"District","Arghanj Khwa","Badakhshan","ارغنچخواه","بدخشان",1504,15
+70.61,37.22,"Provincial_Center","Faiz Abad","Badakhshan","فیض آباد","بدخشان",1501,15
+71.16,37.1,"District","Shuhada","Badakhshan","شهدا","بدخشان",1513,15
+70.73,36.94,"District","Khash","Badakhshan","خاش","بدخشان",1511,15
+70.43,37.06,"District","Argo","Badakhshan","ارگو","بدخشان",1503,15
+70.47,36.87,"District","Darayem","Badakhshan","درایم","بدخشان",1510,15
+70.4,36.77,"District","Teshkan","Badakhshan","تشکان","بدخشان",1509,15
+70.9,37.03,"District","Baharak","Badakhshan","بهارک","بدخشان",1512,15
+71.18,36.76,"District","Warduj","Badakhshan","وردوج","بدخشان",1522,15
+70.91,36.74,"District","Jorm","Badakhshan","جرم","بدخشان",1521,15
+71.34,36.43,"District","Zebak","Badakhshan","زیباک","بدخشان",1527,15
+71.46,36.85,"District","Ishkashem","Badakhshan","اشکاشم","بدخشان",1523,15
+73.35,37.06,"District","Wakhan","Badakhshan","واخان","بدخشان",1528,15
+70.77,35.93,"District","Koran wa Monjan","Badakhshan","کران ومنجان","بدخشان",1526,15
+70.79,36.44,"District","Yamgan","Badakhshan","یمگان","بدخشان",1520,15
+70.13,36.77,"District","Keshem","Badakhshan","کشم","بدخشان",1518,15
+70.35,36.48,"District","Tagab","Badakhshan","تگاب","بدخشان",1519,15
+69.4,37.02,"District","Khwaja Ghar","Takhar","خواجه غار","تخار",1614,16
+69.67,35.9,"District","Khowst wa Fereng","Baghlan","خوست وفرنگ","بغلان",913,9
+69.56,35.58,"District","Pul-e-Hesar","Baghlan","پل حصار","بغلان",911,9
+67.87,36.38,"District","Hazrat-e- Sultan","Samangan","حضرت سلطان","سمنگان",1902,19
+67.35,36.03,"District","Darah Suf-e- Payin","Samangan","درۀ صوف پائین","سمنگان",1904,19
+67.99,36.21,"Provincial_Center","Aybak","Samangan","ایبک","سمنگان",1901,19
+70.14,36.1,"District","Warsaj","Takhar","ورسج","تخار",1616,16
+63.86,33.14,"District","Pur Chaman","Farah","پُرچمن","فراه",3110,31
+62.38,33.25,"District","Shindand","Hirat","شیندند","هرات",3015,30
+63.12,34.81,"Provincial_Center","Qala-e-Naw","Badghis","قلعه نو","بادغیس",2901,29
+65.09,33.59,"District","Pasaband","Ghor","پسابند","غور",2107,21
+64.28,35.64,"District","Qaysar","Faryab","قیصار","فاریاب",2806,28
+67.12,36.71,"Provincial_Center","Mazar-e-Sharif","Balkh","مزار شریف","بلخ",1801,18
+67.18,36.84,"District","Nahr-e- Shahi","Balkh","نهر شاهی","بلخ",1802,18
