@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
+use Dkan\Datastore\Resource;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Dkan\Datastore\Manager\IManager;
 use Drupal\Core\Queue\SuspendQueueException;
@@ -144,11 +145,11 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * @return \Dkan\Datastore\Manager\IManager
    */
   protected function getManager($resourceId, string $filePath, array $importConfig) {
-    /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilder $managerBuilder */
-    $managerBuilder = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
+    /** @var \Drupal\dkan_datastore\Manager\Builder $managerBuilder */
+    $managerBuilder = \Drupal::service('dkan_datastore.manager.builder');
 
     /** @var \Dkan\Datastore\Manager\IManager $manager */
-    $manager = $managerBuilder->setResourceFromFilePath($resourceId, $filePath)
+    $manager = $managerBuilder->setResource(new Resource($resourceId, $filePath))
       ->build();
 
     // Forward config if applicable.

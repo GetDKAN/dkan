@@ -6,7 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\node\NodeStorageInterface;
-use Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper;
+use Drupal\dkan_datastore\Manager\Helper;
 use Drupal\dkan_datastore\Manager\DeferredImportQueuer;
 use Dkan\Datastore\Resource;
 use Psr\Log\LoggerInterface;
@@ -98,7 +98,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockBuilderHelper = $this->getMockBuilder(DatastoreManagerBuilderHelper::class)
+    $mockBuilderHelper = $this->getMockBuilder(Helper::class)
       ->setMethods(['newResourceFromEntity'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -142,7 +142,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockBuilderHelper = $this->getMockBuilder(DatastoreManagerBuilderHelper::class)
+    $mockBuilderHelper = $this->getMockBuilder(Helper::class)
       ->setMethods(['newResourceFromEntity'])
       ->disableOriginalConstructor()
       ->getMock();

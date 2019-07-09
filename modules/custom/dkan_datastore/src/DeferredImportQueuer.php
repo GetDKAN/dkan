@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_datastore\Manager;
+namespace Drupal\dkan_datastore;
 
 use Dkan\Datastore\Resource;
 

@@ -2,12 +2,16 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
-use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
+use Dkan\Datastore\Manager;
+use Dkan\Datastore\Resource;
+use Drupal\dkan_datastore\Manager\Helper;
 use Drupal\dkan_datastore\Storage\Database;
 use Drupal\dkan_sql_endpoint\Controller\Api;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_datastore\Storage\Query;
+
 use SqlParser\SqlParser;
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -22,7 +26,6 @@ class ApiTest extends DkanTestBase {
   public function dataTest() {
 
     $o1 = new Query();
-    $o1->setThingToRetrieve("dkan_datastore_1");
 
     $o2 = clone $o1;
     $o2->filterByProperty('city');
@@ -93,14 +96,11 @@ class ApiTest extends DkanTestBase {
       ->setMethods(['getDatastoreManager'])
       ->getMock();
 
-    $manager = $this->getMockBuilder(SimpleImport::class)
+    $manager = $this->getMockBuilder(Manager::class)
       ->disableOriginalConstructor()
-      ->setMethods(['getTableName'])
       ->getMock();
 
-    $manager->expects($this->once())->method('getTableName')->willReturn("dkan_datastore_1");
-
-    $controller->expects($this->once())->method("getDatastoreManager")->willReturn($manager);
+    $controller->method("getDatastoreManager")->willReturn($manager);
 
     $parser = new SqlParser();
     $parser->validate($sqlString);
@@ -110,18 +110,28 @@ class ApiTest extends DkanTestBase {
   }
 
   public function testRunQuery() {
+
+    $helper = $this->getMockBuilder(Helper::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getResourceFromEntity'])
+      ->getMock();
+
+    $helper->method('getResourceFromEntity')->willReturn(new Resource("1", "blah"));
+
     $controller = $this->getMockBuilder(Api::class)
       ->disableOriginalConstructor()
-      ->setMethods(['getParser', 'getDatabase', 'getQueryObject', 'response'])
+      ->setMethods(['getParser', 'getDatabase', 'getQueryObject', 'response', 'getDatastoreManagerBuilderHelper'])
       ->getMock();
 
     $controller->method('getParser')->willReturn(new SqlParser());
     $controller->method('getQueryObject')->willReturn(new Query());
     $controller->method('response')->willReturn(new JsonResponse([], 200));
+    $controller->method('getDatastoreManagerBuilderHelper')->willReturn($helper);
+
 
     $database = $this->getMockBuilder(Database::class)
       ->disableOriginalConstructor()
-      ->setMethods(['query'])
+      ->setMethods(['query', 'setResource'])
       ->getMock();
 
     $database->method('query')->willReturn([]);

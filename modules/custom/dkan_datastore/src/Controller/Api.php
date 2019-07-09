@@ -36,7 +36,7 @@ class Api extends ControllerBase {
   /**
    * Datastore manager builder.
    *
-   * @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilder
+   * @var \Drupal\dkan_datastore\Manager\Builder
    */
   protected $managerBuilder;
 
@@ -48,7 +48,7 @@ class Api extends ControllerBase {
     $this->dkanFactory = $container->get('dkan.factory');
     $this->storage = $container->get('dkan_api.storage.drupal_node_dataset');
     $this->storage->setSchema('dataset');
-    $this->managerBuilder = $container->get('dkan_datastore.manager.datastore_manager_builder');
+    $this->managerBuilder = $container->get('dkan_datastore.manager.builder');
   }
 
   /**
@@ -83,12 +83,15 @@ class Api extends ControllerBase {
         $dist_uuid = $uuid;
       }
       // Add columns and datastore_statistics to dataset.
-      $manager = $this->managerBuilder->buildFromUuid($dist_uuid);
+      $this->managerBuilder->setResourceFromUUid($dist_uuid);
+      $manager = $this->managerBuilder->build();
       if ($manager) {
-        $headers = $manager->getTableHeaders();
+        // @todo add getSchema to Schemed interface.
+        $schema = $manager->getStorage()->getSchema();
+        $headers = array_keys($schema['fields']);
         $data->columns = $headers;
         $data->datastore_statistics = [
-          'rows' => $manager->numberOfRecordsImported(),
+          'rows' => $manager->getStorage()->count(),
           'columns' => count($headers),
         ];
       }

@@ -180,7 +180,7 @@ class DrupalNodeDataset implements Storage {
 
     try {
       // Using \Drupal::service() to avoid overloading constructor with single use dependencies.
-      /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper $managerBuilderHelper */
+      /** @var \Drupal\dkan_datastore\Manager\Helper $managerBuilderHelper */
       $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder_helper');
 
       $resource = $managerBuilderHelper->newResourceFromEntity($uuid);

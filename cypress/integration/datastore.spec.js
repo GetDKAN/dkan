@@ -25,7 +25,7 @@ context('Datastore Api', () => {
         it('statistics', () => {
             cy.request(endpoint + '/' + dataset_identifier + '?values=both').then((response) => {
                 expect(response.status).eql(200);
-                expect(response.body.datastore_statistics.rows).eql('399');
+                expect(response.body.datastore_statistics.rows).eql(399);
                 expect(response.body.datastore_statistics.columns).eql(9)
             })
         })
