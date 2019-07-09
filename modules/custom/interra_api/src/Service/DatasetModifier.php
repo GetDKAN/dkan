@@ -4,6 +4,7 @@ namespace Drupal\interra_api\Service;
 
 /**
  * Refactor of some static methods out of the Interra API controller.
+ * @codeCoverageIgnore
  */
 class DatasetModifier {
 

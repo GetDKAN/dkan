@@ -2,15 +2,11 @@
 
 namespace Drupal\dkan_datastore\Drush;
 
-use Dkan\Datastore\Manager\Factory;
-use Locker\Locker;
-use Dkan\Datastore\LockableBinStorage;
-use Dkan\Datastore\Manager\Info;
-use Dkan\Datastore\Manager\InfoProvider;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
-use Dkan\Datastore\Resource;
+use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_data\ValueReferencer;
+use Dkan\Datastore\Resource;
+
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 use Drush\Commands\DrushCommands;
 
@@ -115,14 +111,10 @@ class Commands extends DrushCommands {
   }
 
   private function getDatastore($resource) {
-    $provider = new InfoProvider();
-    $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
-    $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
-    $database = \Drupal::service('dkan_datastore.database');
-    $factory = new Factory($resource, $provider, $bin_storage, $database);
-
-    /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
-    return $factory->get();
+    /** @var  $builder  Builder */
+    $builder = \Drupal::service('dkan_datastore.manager.builder');
+    $builder->setResource($resource);
+    return $builder->build();
   }
 
   /**

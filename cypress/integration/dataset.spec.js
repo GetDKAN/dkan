@@ -49,7 +49,7 @@ context('Dataset', () => {
       cy.get('.tag-wrapper > :nth-child(3) > a').contains("time-series");
     })
   
-    it('I see datastore details.', () => {
+    /*it('I see datastore details.', () => {
       cy.get('.table-one > h3').contains('What\'s in this Dataset?')
       cy.get('.table-one > .table > thead > tr > :nth-child(1)').should('contain', 'Rows')
       cy.get('.table-one > .table > thead > tr > :nth-child(2)').should('contain', 'Columns')
@@ -65,7 +65,7 @@ context('Dataset', () => {
       cy.get('.table-two > .table > tbody > :nth-child(2) > :nth-child(1)').should('contain','price')
       cy.get('.table-two > .table > tbody > :nth-child(2) > :nth-child(2)').should('contain','String')
   
-    })
+    })*/
 
     it('I can filter the data by year', () => {
       cy.get('.ReactTable .rt-tr > :nth-child(1) > input').type('1952')

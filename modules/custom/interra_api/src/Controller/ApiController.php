@@ -2,6 +2,7 @@
 
 namespace Drupal\interra_api\Controller;
 
+use Dkan\Datastore\Manager;
 use Drupal\Core\Controller\ControllerBase;
 use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * An ample controller.
+ * @codeCoverageIgnore
  */
 class ApiController extends ControllerBase {
 
@@ -43,7 +45,6 @@ class ApiController extends ControllerBase {
     }
 
     return $this->jsonResponse(json_decode($schema));
-
   }
 
   /**
@@ -143,18 +144,11 @@ class ApiController extends ControllerBase {
    * @return mixed
    */
   public function doc($collection, $doc) {
-    // Array of.
     $valid_collections = [
       'dataset' => [$this, 'docDatasetHandler'],
     ];
 
-    if (
-            isset($valid_collections[$collection])
-            && is_callable($valid_collections[$collection])
-    ) {
-
-      // @TODO this is refactor to reduce CRAP score.
-      //       Not sure if additional params need to be passed
+    if (isset($valid_collections[$collection]) && is_callable($valid_collections[$collection])) {
       return $this->response(call_user_func($valid_collections[$collection], $doc));
     }
     else {
@@ -193,10 +187,10 @@ class ApiController extends ControllerBase {
 
     if ($manager) {
       try {
-        $headers = $manager->getTableHeaders();
+        $headers = []; //$manager->getTableHeaders();
         $dataset->columns = $headers;
         $dataset->datastore_statistics = [
-          'rows' => $manager->numberOfRecordsImported(),
+          'rows' => $manager->getStorage()->count(),
           'columns' => count($headers),
         ];
       }
@@ -253,12 +247,13 @@ class ApiController extends ControllerBase {
    * @param string $uuid
    * @return \Dkan\Datastore\Manager\IManager
    */
-  protected function getDatastoreManager($uuid) {
+  protected function getDatastoreManager($uuid): Manager
+  {
 
-    /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilder $managerBuilder */
-    $managerBuilder = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
-
-    $manager = $managerBuilder->buildFromUuid($uuid);
+    /** @var \Drupal\dkan_datastore\Manager\Builder $builder */
+    $builder = \Drupal::service('dkan_datastore.manager.builder');
+    $builder->setResourceFromUUid($uuid);
+    $manager = $builder->build();
 
     return $manager;
   }

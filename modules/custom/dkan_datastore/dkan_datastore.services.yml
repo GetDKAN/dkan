@@ -1,5 +1,5 @@
 services:
-  dkan_datastore.database:
+  dkan_datastore.storage.database:
     class: Drupal\dkan_datastore\Storage\Database
     arguments: ['@database']
   dkan_datastore.storage.variable:
@@ -8,13 +8,13 @@ services:
     # todo: is this supposed to be a single instance or new instance each time?
     # assuming new instance each time for now.
     shared: false
-  dkan_datastore.manager.datastore_manager_builder:
-    class: Drupal\dkan_datastore\Manager\DatastoreManagerBuilder
-    arguments: ['@service_container']
+  dkan_datastore.manager.builder:
+    class: Drupal\dkan_datastore\Manager\Builder
+    arguments: ['@dkan_datastore.manager.helper']
     shared: false
-  dkan_datastore.manager.datastore_manager_builder_helper:
-    class: Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper
-    arguments: ['@service_container']
-  dkan_datastore.manager.deferred_import_queuer:
-    class: Drupal\dkan_datastore\Manager\DeferredImportQueuer
+  dkan_datastore.manager.helper:
+    class: Drupal\dkan_datastore\Manager\Helper
+    arguments: ['@entity.repository', '@dkan_datastore.storage.database', '@dkan_datastore.storage.variable']
+  dkan_datastore.deferred_import_queuer:
+    class: Drupal\dkan_datastore\DeferredImportQueuer
 

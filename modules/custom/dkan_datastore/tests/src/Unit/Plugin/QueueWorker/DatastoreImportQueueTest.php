@@ -2,8 +2,10 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Plugin\QueueWorker;
 
+use Dkan\Datastore\Manager;
+use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Plugin\QueueWorker\DatastoreImportQueue;
-use Drupal\dkan_datastore\Manager\DatastoreManagerBuilder;
+use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Dkan\Datastore\Manager\IManager;
@@ -488,18 +490,18 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockManagerBuilder = $this->getMockBuilder(DatastoreManagerBuilder::class)
+    $mockManagerBuilder = $this->getMockBuilder(Builder::class)
       ->setMethods([
-        'setResourceFromFilePath',
+        'setResource',
         'build',
       ])
       ->disableOriginalConstructor()
       ->getMock();
     $this->setActualContainer([
-      'dkan_datastore.manager.datastore_manager_builder' => $mockManagerBuilder,
+      'dkan_datastore.manager.builder' => $mockManagerBuilder,
     ]);
 
-    $mockManager = $this->getMockBuilder(IManager::class)
+    $mockManager = $this->getMockBuilder(Manager::class)
       ->setMethods([
         'setConfigurableProperties',
         'setImportTimelimit',
@@ -514,8 +516,8 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     // expect
     $mockManagerBuilder->expects($this->once())
-      ->method('setResourceFromFilePath')
-      ->with($resourceId, $filePath)
+      ->method('setResource')
+      ->with(new Resource($resourceId, $filePath))
       ->willReturnSelf();
 
     $mockManagerBuilder->expects($this->once())

@@ -3,7 +3,7 @@
 namespace Drupal\interra_api;
 
 /**
- *
+ * @codeCoverageIgnore 
  */
 class Search {
 

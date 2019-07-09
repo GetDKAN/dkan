@@ -2,11 +2,12 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
-use Dkan\Datastore\Manager\Manager;
-use Drupal\dkan_datastore\Storage\Query;
+use Dkan\Datastore\Manager;
+use Drupal\dkan_datastore\Manager\Helper;
 use Drupal\dkan_datastore\Storage\Database;
-use Drupal\dkan_datastore\Util;
+use Drupal\dkan_datastore\Storage\Query;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Maquina\StateMachine\MachineOfMachines;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -45,41 +46,49 @@ class Api implements ContainerInjectionInterface {
 
     $parser = $this->getParser();
 
-    if ($parser->validate($query_string) === TRUE) {
-      $state_machine = $parser->getValidatingMachine();
-      $query_object = $this->getQueryObject($state_machine);
-      $database = $this->getDatabase();
-
-      try {
-        $result = $database->query($query_object);
-      }
-      catch(\Exception $e) {
-        $this->response("Querying a datastore that does not exist.", 500);
-      }
-
-      return $this->response($result, 200);
-    }
-    else {
+    if ($parser->validate($query_string) === FALSE) {
       return $this->response("Invalid query string.", 500);
     }
+
+    $state_machine = $parser->getValidatingMachine();
+
+    try {
+      $query_object = $this->getQueryObject($state_machine);
+    }
+    catch (\Exception $e) {
+      return $this->response("No datastore.", 500);
+    }
+
+    /** @var  $database Database */
+    $database = $this->getDatabase();
+    $database->setResource($this->getResource($state_machine));
+
+    try {
+      $result = $database->query($query_object);
+    }
+    catch(\Exception $e) {
+      $this->response("Querying a datastore that does not exist.", 500);
+    }
+
+    return $this->response($result, 200);
+
+  }
+
+  private function getResource(MachineOfMachines $state_machine) {
+    $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
+    return $this->getDatastoreManagerBuilderHelper()->getResourceFromEntity($uuid);
+  }
+
+  protected function getDatastoreManagerBuilderHelper(): Helper
+  {
+    return $this->container->get('dkan_datastore.manager.helper');
   }
 
   /**
    * Private.
    */
   protected function getQueryObject($state_machine) {
-
-    $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
-    try {
-      $manager = $this->getDatastoreManager($uuid);
-    }
-    catch (\Exception $e) {
-      return $this->response("No datastore.", 500);
-    }
-
     $object = new Query();
-    $table = $manager->getTableName();
-    $object->setThingToRetrieve($table);
     $this->setQueryObjectSelect($object, $state_machine->gsm('select'));
     $this->setQueryObjectWhere($object, $state_machine->gsm('where'));
     $this->setQueryObjectOrderBy($object, $state_machine->gsm('order_by'));
@@ -205,7 +214,7 @@ class Api implements ContainerInjectionInterface {
    */
   protected function getDatabase(): Database {
     return $this->container
-      ->get('dkan_datastore.database');
+      ->get('dkan_datastore.storage.database');
   }
 
   /**
@@ -214,7 +223,7 @@ class Api implements ContainerInjectionInterface {
    * @codeCoverageIgnore
    */
   protected function getDatastoreManager(string $uuid): Manager {
-    return Util::getDatastoreManager($uuid);
+    return $this->container->get("dkan_datastore.manager.builder")->buildFromUuid($uuid);
   }
 
   /**

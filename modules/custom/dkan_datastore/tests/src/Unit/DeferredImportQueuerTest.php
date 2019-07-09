@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\dkan_datastore\Unit\Manager;
+namespace Drupal\Tests\dkan_datastore\Unit;
 
-use Drupal\dkan_datastore\Manager\DeferredImportQueuer;
+use Drupal\dkan_datastore\DeferredImportQueuer;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Queue\QueueInterface;
 
 /**
- * @coversDefaultClass Drupal\dkan_datastore\Manager\DeferredImportQueuer
+ * @coversDefaultClass Drupal\dkan_datastore\DeferredImportQueuer
  * @group dkan_datastore
  */
 class DeferredImportQueuerTest extends DkanTestBase {
