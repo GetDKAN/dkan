@@ -1,0 +1,296 @@
+openapi: 3.0.1
+info:
+  title: DKAN API Documentation
+  version: Alpha
+    # description: Description goes here.
+    # license:
+    # name: Apache 2.0
+  # url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: Datasets
+      # description:
+      # externalDocs:
+      # description:
+    # url:
+  - name: Properties
+    description: organizations, resources, tags and themes.
+      # externalDocs:
+      # description:
+    # url:
+  - name: SQL Query
+      # description:
+      # externalDocs:
+      # description:
+    # url:
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+paths:
+  /api/v1/dataset:
+    get:
+      summary: Get all datasets
+      # description:
+      tags:
+        - Datasets
+      responses:
+        200:
+          description: Ok
+    post:
+      summary: Create a dataset
+      # description:
+      tags:
+        - Datasets
+      security:
+        - basicAuth: []
+      responses:
+        201:
+          description: Created
+        409:
+          description: Resource already exists
+        406:
+          description: Something went wrong
+  /api/v1/dataset/{uuid}:
+    get:
+      summary: Get a dataset
+      # description:
+      tags:
+        - Datasets
+      parameters:
+        - name: "uuid"
+          in: "path"
+          description: "Dataset uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        404:
+          description: Resource not found
+    put:
+      summary: Replace a dataset
+      # description:
+      tags:
+        - Datasets
+      security:
+        - basicAuth: []
+      parameters:
+        - name: "uuid"
+          in: "path"
+          description: "Dataset uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        201:
+          description: Created
+        409:
+          description: Identifier cannot be modified
+        406:
+          description: Something went wrong
+    patch:
+      summary: Update a dataset
+      # description:
+      tags:
+        - Datasets
+      security:
+        - basicAuth: []
+      parameters:
+        - name: "uuid"
+          in: "path"
+          description: "Dataset uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        404:
+          description: Resource not found
+        409:
+          description: Identifier cannot be modified
+        406:
+          description: Something went wrong
+    delete:
+      summary: Delete a dataset
+      # description:
+      tags:
+        - Datasets
+      security:
+        - basicAuth: []
+      parameters:
+        - name: "uuid"
+          in: "path"
+          description: "Dataset uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Dataset has been deleted
+  /api/v1/{property}:
+    get:
+      summary: Get properties
+      # description:
+      tags:
+        - Properties
+      parameters:
+        - name: "property"
+          in: "path"
+          description: "Dataset property"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+    post:
+      summary: Create a property
+      # description:
+      tags:
+        - Properties
+      security:
+        - basicAuth: []
+      parameters:
+        - name: "property"
+          in: "path"
+          description: "Dataset property"
+          required: true
+          schema:
+            type: string
+      responses:
+        201:
+          description: Created
+        409:
+          description: Resource already exists
+        406:
+          description: Something went wrong
+  /api/v1/{property}/{uuid}:
+    get:
+      summary: Get a property
+      # description:
+      tags:
+        - Properties
+      parameters:
+        - name: "property"
+          in: "path"
+          description: "Dataset property"
+          required: true
+          schema:
+            type: string
+        - name: "uuid"
+          in: "path"
+          description: "Organization uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        404:
+          description: Resource not found
+    put:
+      summary: Replace a property
+      # description:
+      tags:
+        - Properties
+      security:
+        - basicAuth: []
+      parameters:
+        - name: "property"
+          in: "path"
+          description: "Dataset property"
+          required: true
+          schema:
+            type: string
+        - name: "uuid"
+          in: "path"
+          description: "Organization uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        201:
+          description: Created
+        409:
+          description: Identifier cannot be modified
+        406:
+          description: Something went wrong
+    patch:
+      summary: Update a property
+      # description:
+      tags:
+        - Properties
+      security:
+        - basicAuth: []
+      parameters:
+        - name: "property"
+          in: "path"
+          description: "Dataset property"
+          required: true
+          schema:
+            type: string
+        - name: "uuid"
+          in: "path"
+          description: "Organization uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        404:
+          description: Resource not found
+        409:
+          description: Identifier cannot be modified
+        406:
+          description: Something went wrong
+    delete:
+      summary: Delete a property
+      # description:
+      tags:
+        - Properties
+      security:
+        - basicAuth: []
+      parameters:
+        - name: "property"
+          in: "path"
+          description: "Dataset property"
+          required: true
+          schema:
+            type: string
+        - name: "uuid"
+          in: "path"
+          description: "Organization uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Organization has been deleted
+  /api/v1/sql/{query}:
+    get:
+      summary: Query resources in datastore
+      description: Interact with resources in the datastore using an SQL-like syntax.
+      tags:
+        - SQL Query
+      parameters:
+        - name: "query"
+          in: "path"
+          description: "SQL query"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+        # 500:
+        #   description: Querying a datastore that does not exist
+        500:
+          description: Invalid query string
