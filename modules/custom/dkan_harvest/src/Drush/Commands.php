@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Drush\Commands\DrushCommands;
 
 /**
- *
+ * @codeCoverageIgnore
  */
 class Commands extends DrushCommands {
   use Helper;
@@ -90,6 +90,23 @@ class Commands extends DrushCommands {
     $this->getStorage($id, "run")->store(json_encode($result), time());
 
     $this->renderResult($result);
+  }
+
+  /**
+   * Runs all pending harvests.
+   *
+   * @command dkan-harvest:run-all
+   *
+   * @usage dkan-harvest:run-all
+   *   Runs all pending harvests.
+   */
+  public function runAll() {
+
+    $ids = array_keys($this->getPlanStorage()->retrieveAll());
+
+    foreach($ids as $id){
+        $this->run($id);
+    }
   }
 
   /**
