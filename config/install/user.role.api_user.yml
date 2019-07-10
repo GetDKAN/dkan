@@ -4,6 +4,6 @@ dependencies: {  }
 id: api_user
 label: 'API User'
 weight: 2
-is_admin: null
+is_admin: false
 permissions:
   - 'post put delete datasets through the api'
