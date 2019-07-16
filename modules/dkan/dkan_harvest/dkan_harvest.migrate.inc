@@ -333,7 +333,7 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function processImport(array $options = array()) {
     if (!$this->dkanHarvestSource->getCacheDir()) {
-      $message = t('Looks like source is missing and cache does not exist. No updates can be made at this time.');
+      $message = t('Looks like the source is missing and a cache does not exist. No updates can be made at this time.');
       self::displayMessage($message, 'error');
       $this->reportMessage($message);
       return FALSE;
