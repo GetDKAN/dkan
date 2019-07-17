@@ -1,3 +1,5 @@
+.. _frontend:
+
 Decoupled Front-end
 ===================
 

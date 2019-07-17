@@ -43,7 +43,8 @@ jobs:
               sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/$CIRCLE_PR_USERNAME/dkan2\"},{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_PR_BRANCH\"}}" > src/make/composer.json
             fi'
             cat src/make/composer.json
-            dktl make
+            dktl make --frontend
+            dktl updatedrush -y
             rm -rf ./docroot/profiles/contrib/dkan2
             mv ~/project ./docroot/profiles/contrib/dkan2
             ls -lha ./docroot/profiles/contrib/dkan2
