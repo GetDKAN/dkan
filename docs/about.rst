@@ -80,28 +80,32 @@ Sphinx
 
 `Sphinx <http://www.sphinx-doc.org/en/1.5.1/>`_ is the Python application that generates the HTML from the documentation markup.
 
-To work on sphinx documentation locally, install the Sphinx Python tools. This requires having the ``easy_install`` tool in your environment.
+To work on sphinx documentation locally, install Sphinx using `the instructions in the documentation <http://www.sphinx-doc.org/en/master/usage/installation.html>`_. Then install the `pip package manager <https://pip.pypa.io/en/stable/installing/>`_.
 
-Install pip (the python package manager):
+For easiest install on Debian/Ubuntu systems, try:
+
+.. code-block:: bash
+
+    $ sudo apt install python3-pip
+
+For mac, homebrew is reccomended:
+
+.. code-block:: bash
+
+    $ brew install pip3
+
+You may also want to try installing with `easy_install`:
 
 .. code-block:: bash
 
     $ sudo easy_install pip
 
-
-Then install sphinx
-
-.. code-block:: bash
-
-    $ sudo pip install sphinx
-
-
-Install the dependencies for this project. Make sure you are in the `/docs` directory:
+Install the dependencies for this project. Make sure you are in the `/docs` directory. If your pip executable is actually `pip3`, substitue that for `pip` in the example below:
 
 .. code-block:: bash
   
     $ cd docs
-    $ sudo pip install -r requirements.txt
+    $ pip install -r requirements.txt
 
 
 Now you should be able to build the Sphinx site by typing
@@ -120,7 +124,7 @@ If you install the `sphinx-autobuild package` with pip, you can run a server tha
 
 .. code-block:: bash
 
-    $ sudo pip install sphinx-autobuild
+    $ pip install sphinx-autobuild
 
 
 ...then, from the /docs directory, run:
