@@ -68,7 +68,7 @@
                         "context": "panelizer",
                         "override_title": 1,
                         "override_title_text": "Welcome to DKAN",
-                        "override_title_heading": "h2"
+                        "override_title_heading": "h1"
                     },
                     "cache": [],
                     "style": {
