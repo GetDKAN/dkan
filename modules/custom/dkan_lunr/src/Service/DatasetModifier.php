@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\interra_api\Service;
+namespace Drupal\dkan_lunr\Service;
 
 /**
  * Refactor of some static methods out of the Interra API controller.
@@ -15,16 +15,9 @@ class DatasetModifier {
    */
   public function modifyDataset(\stdClass $dataset) {
     // @todo validate json via schema first?
-    foreach ($dataset->distribution as $key => $distro) {
-      $format = str_replace("text/", "", $distro->mediaType);
-      if ($format === "csv") {
-        $distro->format = $format;
-        $dataset->distribution[$key] = $distro;
-      }
-      else {
-        unset($dataset->distribution[$key]);
-      }
-    }
+
+    $only_csvs = array_filter($dataset->distribution, [$this, "isCsv"]);
+    $dataset->distribution = array_map([$this, "addFormat"], $only_csvs);
 
     if (isset($dataset->theme) && is_array($dataset->theme)) {
       $dataset->theme = $this->objectifyStringsArray($dataset->theme);
@@ -35,6 +28,19 @@ class DatasetModifier {
     }
 
     return $dataset;
+  }
+
+  private function isCsv($distribution) {
+    return $this->getFormat($distribution) === "csv";
+  }
+
+  private function addFormat($distribution) {
+    $distribution->format = $this->getFormat($distribution);
+    return $distribution;
+  }
+
+  private function getFormat($distribution) {
+    return str_replace("text/", "", $distribution->mediaType);
   }
 
   /**

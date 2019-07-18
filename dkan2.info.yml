@@ -22,6 +22,7 @@ dependencies:
   - dkan_data
   - dkan_datastore
   - dkan_dummy_content
+  - dkan_lunr
   - dkan_sql_endpoint
   - dynamic_page_cache
   - editor
@@ -30,7 +31,6 @@ dependencies:
   - help
   - history
   - image
-  - interra_api
   - interra_frontend
   - menu_link_content
   - menu_ui

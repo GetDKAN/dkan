@@ -1,0 +1,7 @@
+dkan_lunr.search:
+  path: '/api/v1/search-index.json'
+  defaults:
+   { _controller: '\Drupal\dkan_lunr\Controller\ApiController::search'}
+  requirements:
+    _permission: 'access content'
+
