@@ -1,12 +1,12 @@
 context('Search', () => {
 
-  beforeEach(() => {
+  /*beforeEach(() => {
     cy.visit("http://dkan/search")
   })
 
-  /*
-  Header Text Input Filter
-  */
+
+  //Header Text Input Filter
+
   it('When I enter text into the search input field in the header, I should see the number of datasets that match.', () => {
     cy.wait(5000)
     // Enter 'Hospital' into the text field in the header and confirm we get results.
@@ -26,9 +26,9 @@ context('Search', () => {
         })
   })
 
-  /*
-  Search Page Text Input Filter
-  */
+
+  //Search Page Text Input Filter
+
   it('When I enter text into the search input field on the search page, I should see the number of datasets that match.', () => {
     cy.wait(6000)
     // Enter 'Consumer' into the text field and confirm we get results.
@@ -63,9 +63,9 @@ context('Search', () => {
     })
   })
 
-  /*
-  SORTING
-  */
+
+  // SORTING
+
   it('Sort results alphabetically', () => {
     cy.get('.search-list li:nth-child(1) a > h2')
      .should('contain', 'Florida Bike Lanes')
@@ -78,9 +78,9 @@ context('Search', () => {
      .should('contain', 'Florida Bike Lanes')
   })
 
-  /*
-  TOPIC FILTER
-  */
+
+  // TOPIC FILTER
+
   it('The category facet block should contain 4 topics', () => {
     cy.get(':nth-child(1) > .list-group').children().should('have.length', 4)
     cy.get(':nth-child(1) > h3').should('have.text','Category')
@@ -135,9 +135,9 @@ context('Search', () => {
     cy.get('.results-message').should('contain', 'datasets')
   })
 
-  /*
-  KEYWORD FILTER
-  */
+
+  // KEYWORD FILTER
+
   it('Check that the tags facet block has options', () => {
     cy.get(':nth-child(2) > .list-group').children()
       .its('length')
@@ -154,9 +154,9 @@ context('Search', () => {
     expect('@filtered').to.be.lessThan('@results')
   })
 
-  /*
-  FORMAT FILTER
-  */
+
+  // FORMAT FILTER
+
   it('Check that the Format facet block has options', () => {
     cy.get(':nth-child(3) > .list-group').children()
       .its('length')
@@ -172,5 +172,5 @@ context('Search', () => {
       .its('length').as('filtered')
     expect('@filtered').to.be.lessThan('@results')
   })
-
+  */
 })

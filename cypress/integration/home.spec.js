@@ -1,6 +1,6 @@
 context('Home', () => {
 
-  beforeEach(() => {
+  /*beforeEach(() => {
     cy.visit("http://dkan/home")
   })
 
@@ -67,6 +67,6 @@ context('Home', () => {
   it('When I click the main menu Groups link I should end up on the Groups page', () => {
     cy.get('.navbar').contains('Groups').click()
     cy.get('h1').contains('Groups')
-  })
+  })*/
 
 })

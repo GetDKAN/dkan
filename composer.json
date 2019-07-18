@@ -16,6 +16,7 @@
         "fmizzell/json-schema-provider": ">=0.0.2",
         "fmizzell/sae" : ">=1.0.1",
         "fmizzell/sql-parser": ">=1.0.1",
+        "getdkan/lunr.php": ">=1.0.0",
         "guzzlehttp/guzzle" : "6.3",
         "oomphinc/composer-installers-extender": "^1.1"
     },

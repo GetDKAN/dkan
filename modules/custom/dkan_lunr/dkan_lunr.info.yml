@@ -1,0 +1,5 @@
+name: Lunr
+description: 'PHP Lunr index generator and endpoint.'
+type: module
+core: 8.x
+package: DKAN
