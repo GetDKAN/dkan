@@ -10740,7 +10740,7 @@ h2.pane-title {
 .search-result .group-membership {
   font-size: 0.9em;
   font-style: italic;
-  color: #999;
+  color: #767676;
   margin-bottom: 0.5em; }
   .search-result .group-membership:before {
     content: "\e981";
