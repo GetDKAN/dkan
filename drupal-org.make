@@ -3,7 +3,7 @@ api: '2'
 core: 7.x
 includes:
 - https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-2.0/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.2/open_data_schema_map.make
+- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.3/open_data_schema_map.make
 - https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
 - https://raw.githubusercontent.com/NuCivic/recline/7.x-2.1/recline.make
 projects:
