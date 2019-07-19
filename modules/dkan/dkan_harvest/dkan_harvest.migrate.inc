@@ -332,6 +332,12 @@ class HarvestMigration extends MigrateDKAN {
    * Add support for harvest migration specific checks and options.
    */
   public function processImport(array $options = array()) {
+    if (!$this->dkanHarvestSource->getCacheDir()) {
+      $message = t('Looks like the source is missing and a cache does not exist. No updates can be made at this time.');
+      self::displayMessage($message, 'error');
+      $this->reportMessage($message);
+      return FALSE;
+    }
     // Add any extra Harvest Migration Arguments.
     $this->arguments = array_merge($this->arguments, $options);
     return parent::processImport($options);
@@ -1333,7 +1339,7 @@ class HarvestMigration extends MigrateDKAN {
 
   /**
    * {@inheritdoc}
-   * 
+   *
    * Override to make sure to use the mlid for all the log messages being saved
    * from the queue or display in case we don't have the Migration Log ID
    * (mlid).
