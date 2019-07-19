@@ -10740,7 +10740,7 @@ h2.pane-title {
 .search-result .group-membership {
   font-size: 0.9em;
   font-style: italic;
-  color: #767676;
+  color: #595959;
   margin-bottom: 0.5em; }
   .search-result .group-membership:before {
     content: "\e981";
@@ -10811,7 +10811,7 @@ h4 {
 a {
   color: #002245; }
   a:hover {
-    color: #005B9D; }
+    color: #145b98; }
 
 p,
 p:last-child {
