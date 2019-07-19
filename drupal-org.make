@@ -187,12 +187,7 @@ projects:
   image_url_formatter:
     version: '1.4'
   imagecache_actions:
-    version: '1.9'
-    type: module
-    download:
-      type: git
-      url: https://git.drupal.org/project/imagecache_actions.git
-      revision: cd19d2a
+    version: '1.10'
   job_scheduler:
     version: 2.0
   jquery_update:
