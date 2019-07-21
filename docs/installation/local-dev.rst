@@ -3,7 +3,7 @@
 Local development environment
 =============================
 
-For either working on a project locally or working on the core DKAN software and libraries, using a standardized, `docker <https://www.docker.com/>`_-based local environment is recommended. Our `DKAN Tools <https://github/GetDKAN/dkan-tools>`_ command-line utility will work on Mac or Linux to create containers for the various services needed by DKAN. This will ensure you have the same setup as DKAN's core developers, and that your environment is very close to that of our continuous integration tools.
+For either working on a project locally or working on the core DKAN software and libraries, using a standardized, `docker <https://www.docker.com/>`_-based local environment is recommended. Our `DKAN Tools <https://github.com/getdkan/dkan-tools>`_ command-line utility will work on Mac or Linux to create containers for the various services needed by DKAN. This will ensure you have the same setup as DKAN's core developers, and that your environment is very close to that of our continuous integration tools.
 
 It is possible, though not reccomended, to use DKAN Tools without docker and using your system's native webserver, php, and database tools; see the DKAN Tools documentation.
 
@@ -18,12 +18,12 @@ To get DKAN working on your computer with our toolset you will need the followin
 * `Git <https://git-scm.com/downloads>`_
 * `Docker CE <https://www.docker.com/community-edition#/download>`_ (recommended version: 17.12.1-ce)
 * `Docker Compose <https://docs.docker.com/compose/install/>`_ (recommended version: 1.19.0)
-* `dkan-tools <https://github/GetDKAN/dkan-tools>`_ 
+* `dkan-tools <https://github.com/getdkan/dkan-tools>`_ 
 
 Starting a new project
 ----------------------
 
-Follow instructions in the `README <https://github/GetDKAN/dkan-tools>`_ to get dkan-tools working on your system. The dkan-tools README is still focused on Drupal 7 ("DKAN 1") usage. While the basic installation instructions are the same for either scenario, installing and working with DKAN requires the following steps.  
+Follow instructions in the `README <https://github.com/getdkan/dkan-tools>`_ to get dkan-tools working on your system. The dkan-tools README is still focused on Drupal 7 ("DKAN 1") usage. While the basic installation instructions are the same for either scenario, installing and working with DKAN requires the following steps.  
 
 1. 
 
