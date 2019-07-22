@@ -70,3 +70,13 @@ To see your public data portal, however, you will need to set up the `React <htt
       $ docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
 
 The output of this command will tell you what URL to visit to see the DKAN frontend.
+
+Dummy content
+~~~~~~~~~~~~~
+To populate your site with example content, and then remove it:
+
+::
+
+      $ drush dkan-dummy-content:create
+      $ drush dkan-dummy-content:remove
+      ...
