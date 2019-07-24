@@ -101,8 +101,6 @@ Central and South America
 ============================================================== =============
 Organization                                                   URL
 ============================================================== =============
-
-
 El Salvador                                                    http://datoselsalvador.org
 Buenos Aires, Argentina                                        http://dkan.puertasdebuenosaires.com
 Rosario, Argentina                                             http://datos.rosario.gob.ar
@@ -125,6 +123,7 @@ Europe
 ==================================================      =============
 Organization                                            URL
 ==================================================      =============
+Tirana, Albania                                         https://opendata.tirana.al/
 Cambridgeshire, UK                                      http://opendata.cambridgeshireinsight.org.uk
 Marine Scotland, UK                                     http://marinedata.scotland.gov.uk
 Detail Data Northern Ireland, UK                        http://data.nicva.org
