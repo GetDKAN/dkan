@@ -68,7 +68,7 @@
                         "context": "panelizer",
                         "override_title": 1,
                         "override_title_text": "Welcome to DKAN",
-                        "override_title_heading": "h2"
+                        "override_title_heading": "h1"
                     },
                     "cache": [],
                     "style": {
@@ -130,7 +130,7 @@
                     "configuration": {
                         "button_link_title": "Click Here",
                         "button_link_url": "about",
-                        "button_color": "#0A77BD",
+                        "button_color": "#3B3B3B",
                         "button_align": "text-left",
                         "override_title": 0,
                         "override_title_text": "",
