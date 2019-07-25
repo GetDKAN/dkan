@@ -249,7 +249,7 @@ div.vertical-tabs #edit-path-alias {
   padding-top: 0;
 }
 .view-dkan-datasets .view-header {
-  color: #c9c9c9;
+  color: #767676;
   font-size: 32px;
   font-weight: bold;
   margin-bottom: 15px;
@@ -476,7 +476,7 @@ li .heading:hover {
 }
 .label[data-format=csv],
 .label[data-format*=csv] {
-  background-color: #dfb100;
+  background-color: #645900;
 }
 .label[data-format=xls],
 .label[data-format*=xls] {
@@ -484,7 +484,7 @@ li .heading:hover {
 }
 .label[data-format=zip],
 .label[data-format*=zip] {
-  background-color: #686868;
+  background-color: #595959;
 }
 .label[data-format=api],
 .label[data-format*=api] {
