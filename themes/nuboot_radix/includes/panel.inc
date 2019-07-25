@@ -35,9 +35,6 @@ function nuboot_radix_hero_file_uri() {
  * Set up variables for the front page.
  */
 function nuboot_radix_preprocess(&$variables, $hook) {
-  // Panel heading tag.
-  $variables['title_heading'] = 'h2';
-
   // Front page vars.
   $front_url = drupal_get_normal_path(variable_get('site_frontpage', 'node'));
   $front_nid = NULL;
@@ -56,7 +53,7 @@ function nuboot_radix_preprocess(&$variables, $hook) {
       $background_option = theme_get_setting('background_option');
       if (empty($background_option)) :
         $variables['tint'] = 'no-tint';
-        $variables['bg_color'] = '#005e9a';
+        $variables['bg_color'] = '#005B9D';
         $variables['path'] = 'none';
       else :
         $uri = '';
