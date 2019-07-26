@@ -1,13 +1,13 @@
 openapi: 3.0.1
 info:
-  title: DKAN API Documentation
+  title: API Documentation
   version: Alpha
     # description: Description goes here.
     # license:
     # name: Apache 2.0
   # url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
-  - name: Datasets
+  - name: Dataset
       # description:
       # externalDocs:
       # description:
@@ -33,7 +33,7 @@ paths:
       summary: Get all datasets
       # description:
       tags:
-        - Datasets
+        - Dataset
       responses:
         200:
           description: Ok
@@ -41,7 +41,7 @@ paths:
       summary: Create a dataset
       # description:
       tags:
-        - Datasets
+        - Dataset
       security:
         - basicAuth: []
       responses:
@@ -53,10 +53,10 @@ paths:
           description: Something went wrong
   /api/v1/dataset/{uuid}:
     get:
-      summary: Get a dataset
+      summary: Get this dataset
       # description:
       tags:
-        - Datasets
+        - Dataset
       parameters:
         - name: "uuid"
           in: "path"
@@ -73,7 +73,7 @@ paths:
       summary: Replace a dataset
       # description:
       tags:
-        - Datasets
+        - Dataset
       security:
         - basicAuth: []
       parameters:
@@ -96,7 +96,7 @@ paths:
       summary: Update a dataset
       # description:
       tags:
-        - Datasets
+        - Dataset
       security:
         - basicAuth: []
       parameters:
@@ -119,7 +119,7 @@ paths:
       summary: Delete a dataset
       # description:
       tags:
-        - Datasets
+        - Dataset
       security:
         - basicAuth: []
       parameters:
