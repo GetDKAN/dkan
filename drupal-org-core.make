@@ -15,3 +15,5 @@ projects:
       2844358: 'https://www.drupal.org/files/issues/drupal_bug_multiple_values_select_states.patch'
       # When trying to create a table that already exists but is empty, recreate the table rather than throwing a DatabaseSchemaObjectExistsException
       1551132: 'https://www.drupal.org/files/issues/1551132-drupal-reinstall-schema-empty-tables-87-D7.patch'
+      # Core entity_get_controller gets a NULL controller class (dkan_management#107)
+      1982810: https://www.drupal.org/files/issues/2018-05-03/1982810-20.patch
