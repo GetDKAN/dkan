@@ -9,19 +9,23 @@ use Dkan\Datastore\Resource;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 use Drush\Commands\DrushCommands;
+use Drupa\dkan_datastore\Service\Datastore;
+use Drupal\Core\Logger\LoggerChannelInterface;
 
 /**
  * @codeCoverageIgnore
  */
 class Commands extends DrushCommands {
 
-  protected $output;
+  protected $datastoreService;
+  protected $logger;
 
   /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct() {
-    $this->output = new ConsoleOutput();
+    $this->datastoreService = \Drupal::service('dkan_datastore.service');
+    $this->logger = \Drupal::service('dkan_datastore.logger_channel');
   }
 
   /**
@@ -36,22 +40,16 @@ class Commands extends DrushCommands {
    * @command dkan-datastore:import
    */
   public function import($uuid, $deferred = FALSE) {
+
     try {
       // Load metadata with both identifier and data for this request.
       drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
 
-      foreach ($this->getDistributionsFromUuid($uuid) as $distribution) {
-        if (!empty($deferred)) {
-          $this->queueImport($uuid, $this->getResource($distribution));
-        }
-        else {
-          $this->processImport($distribution);
-        }
-      }
+      $this->datastoreService->import($uuid, $deferred);
     }
     catch (\Exception $e) {
-      $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
-      $this->output->writeln($e->getMessage());
+      $this->logger->error("We were not able to load the entity with uuid {$uuid}");
+      $this->logger->debug($e->getMessage());
     }
   }
 
@@ -67,95 +65,11 @@ class Commands extends DrushCommands {
     try {
       // Load metadata with both identifier and data for this request.
       drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
-
-      foreach ($this->getDistributionsFromUuid($uuid) as $distribution) {
-        $this->processDrop($distribution);
-      }
+$this->datastoreService->drop($uuid);
     }
     catch (\Exception $e) {
-      $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
-      $this->output->writeln($e->getMessage());
+      $this->logger->error("We were not able to load the entity with uuid {$uuid}");
+      $this->logger->debug($e->getMessage());
     }
   }
-
-  private function queueImport($uuid, $resource) {
-    /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
-    $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
-    $queueId = $deferredImporter->createDeferredResourceImport($uuid, $resource);
-    $this->output->writeln("New queue (ID:{$queueId}) was created for `{$uuid}`");
-  }
-
-  private function processImport($distribution) {
-    $datastore = $this->getDatastore($this->getResource($distribution));
-    $datastore->import();
-  }
-
-  private function processDrop($distribution) {
-    $datastore = $this->getDatastore($this->getResource($distribution));
-    $datastore->drop();
-  }
-
-  private function getResource($distribution) {
-    $distribution_node = $this->getDistributionNode($distribution);
-    return new Resource($distribution_node->id(), $distribution->data->downloadURL);
-  }
-
-  private function getDistributionNode($distribution) {
-    $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
-    $dist_nodes = $nodeStorage->loadByProperties(['uuid' => $distribution->identifier]);
-    $dist_node = reset($dist_nodes);
-    if (!$dist_node) {
-      throw new \Exception("Unable to find thus skipping distribution node {$distribution->identifier}.");
-    }
-    return $dist_node;
-  }
-
-  private function getDatastore($resource) {
-    /** @var  $builder  Builder */
-    $builder = \Drupal::service('dkan_datastore.manager.builder');
-    $builder->setResource($resource);
-    return $builder->build();
-  }
-
-  /**
-   * Get one or more distributions (aka resources) from a uuid.
-   *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $nodeStorage
-   * @param string $uuid
-   *
-   * @return array
-   */
-  protected function getDistributionsFromUuid($uuid) {
-    $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
-    $nodes = $nodeStorage->loadByProperties([
-      'uuid' => $uuid,
-      'type' => 'data',
-    ]);
-    $node = reset($nodes);
-    if (!$node) {
-      $this->output->writeln("We were not able to load a data node with uuid {$uuid}.");
-      return [];
-    }
-    // Verify data is of expected type.
-    $expectedTypes = [
-      'dataset',
-      'distribution',
-    ];
-    if (!isset($node->field_data_type->value) || !in_array($node->field_data_type->value, $expectedTypes)) {
-      $this->output->writeln("Data not among expected types: " . implode(" ", $expectedTypes));
-      return [];
-    }
-    // Standardize whether single resource object or several in a dataset.
-    $metadata = json_decode($node->field_json_metadata->value);
-    $distributions = [];
-    if ($node->field_data_type->value == 'dataset') {
-      $distributions = $metadata->distribution;
-    }
-    if ($node->field_data_type->value == 'distribution') {
-      $distributions[] = $metadata;
-    }
-
-    return $distributions;
-  }
-
 }

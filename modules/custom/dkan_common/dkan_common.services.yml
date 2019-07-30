@@ -1,3 +1,5 @@
 services:
     dkan.factory:
         class: Drupal\dkan_common\Service\Factory
+    dkan.json_util:
+        class: Drupal\dkan_common\Service\JsonUtil

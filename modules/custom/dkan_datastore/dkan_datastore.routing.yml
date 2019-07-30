@@ -2,6 +2,29 @@ dkan_datastore.dataset_with_summary:
   path: '/api/v1/datastore/{uuid}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_datastore\Controller\Api::datasetWithSummary'}
+    _controller: '\Drupal\dkan_datastore\Controller\Api::datasetWithSummary'
+  requirements:
+    _permission: 'access content'
+dkan_datastore.import_deferred:
+  path: '/api/v1/datastore/import/{uuid}/deferred'
+  methods: [PUT]
+  defaults:
+    _controller: '\Drupal\dkan_datastore\Controller\Api::import'
+    deferred: true
+  requirements:
+    _permission: 'access content'
+dkan_datastore.import:
+  path: '/api/v1/datastore/import/{uuid}'
+  methods: [PUT]
+  defaults:
+    _controller: '\Drupal\dkan_datastore\Controller\Api::import'
+    deferred: false
+  requirements:
+    _permission: 'access content'
+dkan_datastore.delete:
+  path: '/api/v1/datastore/{uuid}'
+  methods: [DELETE]
+  defaults:
+    _controller: '\Drupal\dkan_datastore\Controller\Api::delete'
   requirements:
     _permission: 'access content'
