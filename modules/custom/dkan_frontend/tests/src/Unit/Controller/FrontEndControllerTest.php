@@ -7,7 +7,7 @@ use Drupal\dkan_common\Tests\DkanTestBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Drupal\interra_frontend\InterraPage;
+use Drupal\interra_frontend\Page;
 use Drupal\dkan_common\Service\Factory;
 
 /**
@@ -77,7 +77,7 @@ class FrontEndControllerTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockInterraPage = $this->getMockBuilder(InterraPage::class)
+    $mockInterraPage = $this->getMockBuilder(Page::class)
       ->setMethods(['build'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -120,7 +120,7 @@ class FrontEndControllerTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockInterraPage = $this->getMockBuilder(InterraPage::class)
+    $mockInterraPage = $this->getMockBuilder(Page::class)
       ->setMethods(['build'])
       ->disableOriginalConstructor()
       ->getMock();
