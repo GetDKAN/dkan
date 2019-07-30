@@ -8,12 +8,38 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 use Drush\Commands\DrushCommands;
+use \Drupal\dkan_harvest\Service\Factory as HarvestFactory;
+use Drupal\dkan_harvest\Service\Harvest as HarvestService;
+use Drupal\Core\Logger\LoggerChannelInterface;
 
 /**
  * @codeCoverageIgnore
  */
 class Commands extends DrushCommands {
-  use Helper;
+
+    /**
+     *
+     * @var HarvestFactory
+     */
+    protected $harvestFactory;
+    
+    /**
+     *
+     * @var HarvestService 
+     */
+    protected $harvestService;
+    /**
+     *
+     * @var LoggerChannelInterface
+     */
+    protected $logger;
+
+    public function __construct() {
+        //@todo passing via arguments doesn't seem play well with drush.services.yml
+        $this->harvestFactory = \Drupal::service('dkan_harvest.factory');
+        $this->harvestService = \Drupal::service('dkan_harvest.service');
+        $this->logger = \Drupal::service('dkan_harvest.logger_channel');
+    }
 
   /**
    * Lists avaialble harvests.
@@ -24,47 +50,44 @@ class Commands extends DrushCommands {
    *   List available harvests.
    */
   public function index() {
-    $rows = array_map(function($id) {
+    // each row needs to be an array for display.
+    $rows = array_map(
+      function($id) {
       return [$id];
-    }, array_keys($this->getPlanStorage()->retrieveAll()));
-
+    },
+      $this->harvestService->getAllHarvestIds()
+      );
     (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
   }
 
-  /**
-   * Register a new harvest.
-   *
-   * @command dkan-harvest:register
-   */
-  public function register($harvest_plan) {
-    $plan = json_decode($harvest_plan);
-
-    if ($plan == null) {
-      $message = "The harvest plan is not valid json.";
-    }
-    else {
-      try {
-        Factory::validateHarvestPlan($plan);
-        $this->getPlanStorage()->store($harvest_plan, $plan->identifier);
-        $message = "Succesfully registered the {$plan->identifier} harvest.";
-      } catch (\Exception $e) {
-        $message = $e->getMessage();
-      }
+    /**
+     * Register a new harvest.
+     *
+     * @command dkan-harvest:register
+     */
+    public function register($harvest_plan) {
+        try {
+            $plan       = json_decode($harvest_plan);
+            $identifier = $this->harvestService
+                    ->registerHarvest($plan);
+            $this->logger->notice("Succesfully registered the {$identifier} harvest.");
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            $this->logger->debug($e->getTraceAsString());
+        }
     }
 
-    (new ConsoleOutput())->write($message . PHP_EOL);
-  }
-
-  /**
-   * Deregister a harvest.
-   *
-   * @command dkan-harvest:deregister
-   */
+    /**
+     * Deregister a harvest.
+     *
+     * @command dkan-harvest:deregister
+     */
   public function deregister($id) {
     try {
-      $this->revert($id);
-      $this->getPlanStorage()->remove($id);
-      $message = "Succesfully deregistered the {$id} harvest.";
+      if($this->harvestService->deregisterHarvest($id))
+      {
+        $message = "Succesfully deregistered the {$id} harvest.";
+      }
     }
     catch(\Exception $e) {
       $message = $e->getMessage();
@@ -85,9 +108,8 @@ class Commands extends DrushCommands {
    *   Runs a harvest.
    */
   public function run($id) {
-    $result = $this->getHarvester($id)->harvest();
-
-    $this->getStorage($id, "run")->store(json_encode($result), time());
+    $result = $this->harvestService
+            ->runHarvest($id);
 
     $this->renderResult($result);
   }
@@ -102,7 +124,8 @@ class Commands extends DrushCommands {
    */
   public function runAll() {
 
-    $ids = array_keys($this->getPlanStorage()->retrieveAll());
+    $ids = $this->harvestService
+            ->getAllHarvestIds();;
 
     foreach($ids as $id){
         $this->run($id);
@@ -120,9 +143,10 @@ class Commands extends DrushCommands {
    * @command dkan-harvest:info
    */
   public function info($id, $run_id = null) {
-    $runs = $this->getStorage($id, 'run')->retrieveAll();
 
     if (!isset($run_id)) {
+      $runs = $this->harvestService
+              ->getAllHarvestRunInfo($id);
       $table = new Table(new ConsoleOutput());
       $table->setHeaders(["{$id} runs"]);
       foreach (array_keys($runs) as $run_id) {
@@ -131,7 +155,9 @@ class Commands extends DrushCommands {
       $table->render();
     }
     else {
-      $result = json_decode($runs[$run_id]);
+      $run = $this->harvestService
+              ->getHarvestRunInfo($id, $run_id);
+      $result = json_decode($run);
       print_r($result);
     }
 
@@ -149,14 +175,12 @@ class Commands extends DrushCommands {
    *   Removes harvested entities.
    */
   public function revert($id) {
-    $result = $this->getHarvester($id)->revert();
+
+    $result = $this->harvestService
+            ->revertHarvest($id);
+
     (new ConsoleOutput())->write("{$result} items reverted for the '{$id}' harvest plan." . PHP_EOL);
   }
 
-  /**
-   *
-   */
-  private function getHarvestPlan($id) {
-    return json_decode($this->getPlanStorage()->retrieve($id));
-  }
+ 
 }

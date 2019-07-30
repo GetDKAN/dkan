@@ -17,4 +17,14 @@ services:
     arguments: ['@entity.repository', '@dkan_datastore.storage.database', '@dkan_datastore.storage.variable']
   dkan_datastore.deferred_import_queuer:
     class: Drupal\dkan_datastore\DeferredImportQueuer
+  dkan_datastore.service:
+      class: \Drupal\dkan_datastore\Service\Datastore
+      arguments:
+          - '@entity_type.manager'
+          - '@dkan_datastore.logger_channel'
+          - '@dkan_datastore.manager.helper'
+          - '@dkan.json_util'
+  dkan_datastore.logger_channel:
+    parent: logger.channel_base
+    arguments: ['dkan_datastore']
 

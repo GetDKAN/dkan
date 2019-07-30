@@ -1,0 +1,35 @@
+dkan_harvest.index:
+  path: '/api/v1/harvest'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_harvest\Controller\Api::index'}
+  requirements:
+    _permission: 'access content'
+dkan_harvest.register:
+  path: '/api/v1/harvest'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\dkan_harvest\Controller\Api::register'}
+  requirements:
+    _permission: 'access content'
+dkan_harvest.run:
+  path: '/api/v1/harvest/run/{id}'
+  methods: [PUT]
+  defaults:
+    { _controller: '\Drupal\dkan_harvest\Controller\Api::run'}
+  requirements:
+    _permission: 'access content'
+dkan_harvest.info:
+  path: '/api/v1/harvest/info/{id}/{run_id}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_harvest\Controller\Api::infoRun'}
+  requirements:
+    _permission: 'access content'
+dkan_harvest.info_index:
+  path: '/api/v1/harvest/info/{id}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_harvest\Controller\Api::info'}
+  requirements:
+    _permission: 'access content'
