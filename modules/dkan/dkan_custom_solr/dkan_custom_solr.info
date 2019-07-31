@@ -1,0 +1,5 @@
+name = DKAN Custom Solr Server
+description = Solr Search Settings for Local Environments.
+core = 7.x
+package = DKAN
+dependencies[] = search_api_solr
