@@ -41,3 +41,4 @@ custom extentions to DKAN. For now, read additional information about:
    metadatasource
    custom_file_extensions
    display-num-datasets
+   local-solr
