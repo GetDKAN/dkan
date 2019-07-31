@@ -79,21 +79,21 @@ Telangana Open Data, India                              http://data.telangana.go
 Canada
 -------
 
-==============================================                 =============
-Organization                                                   URL
-==============================================                 =============
-Open Data Windsor Essex, Canada                                http://odwe.ca/
-==================================================             =============
+==============================================     =============
+Organization                                       URL
+==============================================     =============
+Open Data Windsor Essex, Canada                    http://odwe.ca/
+==============================================     =============
 
 The Caribbean
 --------------
 
-==============================================                 =============
-Organization                                                   URL
-==============================================                 =============
-Jamaica                                                        http://data.gov.jm
-Saint Lucia                                                    http://data.govt.lc
-==================================================             =============
+==============================================     =============
+Organization                                       URL
+==============================================     =============
+Jamaica                                            http://data.gov.jm
+Saint Lucia                                        http://data.govt.lc
+==============================================     =============
 
 Central and South America
 -------------------------
@@ -120,47 +120,48 @@ La Paz, Bolivia                                                https://datosabie
 Europe
 -------
 
-==================================================      =============
-Organization                                            URL
-==================================================      =============
-Tirana, Albania                                         https://opendata.tirana.al/
-Cambridgeshire, UK                                      http://opendata.cambridgeshireinsight.org.uk
-Marine Scotland, UK                                     http://marinedata.scotland.gov.uk
-Detail Data Northern Ireland, UK                        http://data.nicva.org
-UK Financial Conduct Authority                          Internal site - no public access
-Bank of England                                         Internal site - no public access
-Bonn, Germany                                           https://opendata.bonn.de
-Cologne, Germany                                        https://offenedaten-koeln.de
-Mülheim an der Ruhr, Germany                            https://geo.muelheim-ruhr.de
-Bielefeld University, Germany                           https://dszbo-portal.uni-bielefeld.de
-Wuppertal, Germany                                      https://offenedaten-wuppertal.de
-RNV, Germany                                            http://opendata.rnv-online.de
-KDZV Frechen Rhein Erft Rur, Germany                    http://offenedaten.kdvz-frechen.de
-Montpellier, France                                     http://data.montpellier3m.fr
-Italy                                                   http://dati.gov.it
-Genova, Italy                                           http://dati.comune.genova.it
-Pompeii, Italy                                          http://open.pompeiisites.org
-Formia, Italy                                           http://dati.comune.formia.lt.it
-Torino, Italy                                           http://aperto.comune.torino.it
-Confiscati Bene, Italy                                  http://www.confiscatibene.it
-Donneche Contano, Italy                                 http://donnechecontano.it
-Data Hub, Hungary                                       http://data-hub.hu
-Ministry of Finance, Czech Republic                     http://data.mfcr.cz
-Ministry of Defence, Czech Republic                     http://data.army.cz
-Ministry of Regional Development, Czech Republic        http://data.mmr.cz
-Czech Telecommunications Office, Czech Republic         http://data.ctu.cz
-Děčín Municipality, Czech Republic                      http://data.mmdecin.cz
-Opava Municipality, Czech Republic                      http://kod.opava-city.cz
-Decentralised Administration of Crete, Greece           http://apdkritis.gov.gr/en
-Bosnia and Herzegovina                                  http://opendata.ba
-Belarus                                                 http://opendata.by
-Russia                                                  http://data.gov.ru
-Moscow Region, Russia                                   http://data.mosreg.ru
-Instituto Politécnico de Bragança, Portugal             http://observatoriottm.ipb.pt
-Barcelona Provicial Diputation, Spain                   https://dadesobertes.diba.cat/
-Düsseldorf, Germany                                     https://opendata.duesseldorf.de/
-The Republic of Cyprus                                  http://www.data.gov.cy/
-==================================================      =============
+====================================================================== =============
+Organization                                                           URL
+====================================================================== =============
+Tirana, Albania                                                        https://opendata.tirana.al/
+Cambridgeshire, UK                                                     http://opendata.cambridgeshireinsight.org.uk
+Marine Scotland, UK                                                    http://marinedata.scotland.gov.uk
+Detail Data Northern Ireland, UK                                       http://data.nicva.org
+UK Financial Conduct Authority                                         Internal site - no public access
+Bank of England                                                        Internal site - no public access
+INPTDAT (Leibniz Institute for Plasma Science and Technology), Germany https://www.inptdat.de
+Bonn, Germany                                                          https://opendata.bonn.de
+Cologne, Germany                                                       https://offenedaten-koeln.de
+Mülheim an der Ruhr, Germany                                           https://geo.muelheim-ruhr.de
+Bielefeld University, Germany                                          https://dszbo-portal.uni-bielefeld.de
+Wuppertal, Germany                                                     https://offenedaten-wuppertal.de
+RNV, Germany                                                           http://opendata.rnv-online.de
+KDZV Frechen Rhein Erft Rur, Germany                                   http://offenedaten.kdvz-frechen.de
+Montpellier, France                                                    http://data.montpellier3m.fr
+Italy                                                                  http://dati.gov.it
+Genova, Italy                                                          http://dati.comune.genova.it
+Pompeii, Italy                                                         http://open.pompeiisites.org
+Formia, Italy                                                          http://dati.comune.formia.lt.it
+Torino, Italy                                                          http://aperto.comune.torino.it
+Confiscati Bene, Italy                                                 http://www.confiscatibene.it
+Donneche Contano, Italy                                                http://donnechecontano.it
+Data Hub, Hungary                                                      http://data-hub.hu
+Ministry of Finance, Czech Republic                                    http://data.mfcr.cz
+Ministry of Defence, Czech Republic                                    http://data.army.cz
+Ministry of Regional Development, Czech Republic                       http://data.mmr.cz
+Czech Telecommunications Office, Czech Republic                        http://data.ctu.cz
+Děčín Municipality, Czech Republic                                     http://data.mmdecin.cz
+Opava Municipality, Czech Republic                                     http://kod.opava-city.cz
+Decentralised Administration of Crete, Greece                          http://apdkritis.gov.gr/en
+Bosnia and Herzegovina                                                 http://opendata.ba
+Belarus                                                                http://opendata.by
+Russia                                                                 http://data.gov.ru
+Moscow Region, Russia                                                  http://data.mosreg.ru
+Instituto Politécnico de Bragança, Portugal                            http://observatoriottm.ipb.pt
+Barcelona Provicial Diputation, Spain                                  https://dadesobertes.diba.cat/
+Düsseldorf, Germany                                                    https://opendata.duesseldorf.de/
+The Republic of Cyprus                                                 http://www.data.gov.cy/
+====================================================================== =============
 
 Oceania / Pacific Islands
 ---------------
@@ -186,6 +187,5 @@ Solomon Islands                                    https://solomonislands-data.s
 Tonga                                              https://tonga-data.sprep.org
 Tuvalu                                             https://tuvalu-data.sprep.org
 Vanuatu                                            https://vanuatu-data.sprep.org
-
 Pacific Environment Data Portal                    https://pacific-data.sprep.org
 ==============================================     =============
