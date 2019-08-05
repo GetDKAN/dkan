@@ -29,7 +29,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl get 8.7.4
+            dktl get 8.7.5
       - run:
           name: Make DKAN
           command: |
@@ -43,7 +43,7 @@ jobs:
               sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/$CIRCLE_PR_USERNAME/dkan2\"},{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"vcs\",\"url\":\"https://github.com/civicactions/lunr.php\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_PR_BRANCH\"}}" > src/make/composer.json
             fi'
             cat src/make/composer.json
-            dktl make --frontend
+            dktl make
             dktl updatedrush -y
             rm -rf ./docroot/profiles/contrib/dkan2
             mv ~/project ./docroot/profiles/contrib/dkan2
