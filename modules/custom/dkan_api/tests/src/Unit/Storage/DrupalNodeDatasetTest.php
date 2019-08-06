@@ -192,14 +192,54 @@ class DrupalNodeDatasetTest extends DkanTestBase {
 
   }
 
-
-
   /**
    * Placeholder.
    */
   public function testRemainingMethods() {
 
     $this->markTestIncomplete('Review of other methods in ' . DrupalNodeDataset::class . ' pending review of refactor.');
+  }
+
+  /**
+   * @param mixed $input
+   * @param $expected
+   *
+   * @dataProvider dataTestFilterHtml
+   */
+  public function testFilterHtml($input, $expected) {
+    // Setup.
+    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+      ->setMethods([
+        'htmlPurifier',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    // Expects.
+    $mock->expects($this->any())
+      ->method('htmlPurifier')
+      ->willReturn("purified");
+
+    // Asserts.
+    $actual = $this->invokeProtectedMethod($mock, 'filterHtml', $input);
+    $this->assertEquals($expected, $actual);
+  }
+
+  public function dataTestFilterHtml() {
+    return [
+      "Test with integer" => [
+        0, 0,
+      ],
+      "Test with string" => [
+        "Test string", "purified",
+      ],
+      "Test with array" => [
+        ["one" => "two", "three" => "four"], ["one" => "purified", "three" => "purified"],
+      ],
+      'Test with stdClass' => [
+        (object) ['key' => 'value'], (object) ['key' => "purified"],
+      ]
+    ];
   }
 
 }

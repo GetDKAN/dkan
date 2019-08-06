@@ -5,6 +5,7 @@ namespace Drupal\dkan_api\Storage;
 use Harvest\Storage\Storage;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\RfcLogLevel;
+use HTMLPurifier;
 
 /**
  * DrupalNodeDataset.
@@ -126,6 +127,7 @@ class DrupalNodeDataset implements Storage {
     }
 
     $data = json_decode($data);
+    $data = $this->filterHtml($data);
 
     if (!$id && isset($data->identifier)) {
       $id = $data->identifier;
@@ -213,6 +215,51 @@ class DrupalNodeDataset implements Storage {
     // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);
+  }
+
+  /**
+   * Recursively filter the metadata object and all its properties.
+   *
+   * @param mixed $input
+   *   Unfiltered input.
+   *
+   * @return mixed
+   *   Filtered output.
+   */
+  protected function filterHtml($input) {
+    switch (gettype($input)) {
+      case "string":
+        return $this->htmlPurifier($input);
+
+      case "array":
+      case "object":
+        foreach ($input as $key => &$value) {
+          $value = $this->filterHtml($value);
+        }
+        return $input;
+
+      default:
+        // Leave integers, floats or boolean unchanged.
+        return $input;
+    }
+  }
+
+  /**
+   * Run a string through HTMLPurifier.
+   *
+   * Extracted to facilitate unit-testing because of the "new".
+   *
+   * @param string $input
+   *   Unfiltered string.
+   *
+   * @return string
+   *   Filtered string.
+   *
+   * @codeCoverageIgnore
+   */
+  protected function htmlPurifier(string $input) {
+    $filter = new HTMLPurifier();
+    return $filter->purify($input);
   }
 
 }
