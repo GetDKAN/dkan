@@ -5,27 +5,27 @@ namespace Drupal\dkan_harvest\Transform;
 use Harvest\ETL\Transform\Transform;
 
 /**
- *
+ * Class.
  */
 class DrupalModuleHook extends Transform {
 
+  /**
+   * Harvest plan.
+   *
+   * @var string
+   */
   protected $harvestPlan;
 
   /**
-   *
-   */
-  public function __construct($harvest_plan) {
-    parent::__construct($harvest_plan);
-  }
-
-  /**
-   *
+   * Public.
    */
   public function run($item) {
     return $this->hook($item);
   }
 
   /**
+   * Hook.
+   *
    * @codeCoverageIgnore
    */
   public function hook($item) {

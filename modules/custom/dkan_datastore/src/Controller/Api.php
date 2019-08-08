@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @codeCoverageIgnore
  */
 class Api extends ControllerBase {
-use \Drupal\dkan_common\Util\RequestTrait;
+  use \Drupal\dkan_common\Util\RequestTrait;
   /**
    * Drupal service container.
    *
@@ -41,11 +41,11 @@ use \Drupal\dkan_common\Util\RequestTrait;
    */
   protected $managerBuilder;
 
-    /**
-     * Datastore Service.
-     *
-     * @var \Drupa\dkan_datastore\Service\Datastore
-     */
+  /**
+   * Datastore Service.
+   *
+   * @var \Drupa\dkan_datastore\Service\Datastore
+   */
   protected $datastoreService;
 
   /**
@@ -139,7 +139,8 @@ use \Drupal\dkan_common\Util\RequestTrait;
       return $this->dkanFactory
         ->newJsonResponse(
           (object) ["endpoint" => $this->getCurrentRequestUri(), "identifier" => $uuid],
-          200, // assume always new even if this is a PUT?
+      // Assume always new even if this is a PUT?
+          200,
           ["Access-Control-Allow-Origin" => "*"]
         );
     }
@@ -159,13 +160,12 @@ use \Drupal\dkan_common\Util\RequestTrait;
    *
    * @param string $uuid
    *   The uuid of a dataset.
-   *
    */
   public function delete($uuid) {
     try {
-        $this->datastoreService->drop($uuid);
-        return $this->dkanFactory
-            ->newJsonResponse(
+      $this->datastoreService->drop($uuid);
+      return $this->dkanFactory
+        ->newJsonResponse(
               (object) ["endpoint" => $this->getCurrentRequestUri(), "identifier" => $uuid],
               200,
               ["Access-Control-Allow-Origin" => "*"]
@@ -181,4 +181,5 @@ use \Drupal\dkan_common\Util\RequestTrait;
         );
     }
   }
+
 }

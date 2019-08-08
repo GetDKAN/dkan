@@ -220,7 +220,7 @@ EOF;
   }
 
   /**
-   *
+   * Public.
    */
   public function testUpdateDownloadUrlNoDownloadUrl() {
 

@@ -82,17 +82,21 @@ class ValueReferencerTest extends DkanTestBase {
       ->getMock();
 
     $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->setMethods([
-        'getStorage',
-      ])
+      ->setMethods(
+              [
+                'getStorage',
+              ]
+          )
       ->getMockForAbstractClass();
 
     $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
 
     $mockNodeStorage = $this->getMockBuilder(EntityStorageInterface::class)
-      ->setMethods([
-        'loadByProperties',
-      ])
+      ->setMethods(
+              [
+                'loadByProperties',
+              ]
+          )
       ->getMockForAbstractClass();
 
     // Expect.
@@ -103,10 +107,12 @@ class ValueReferencerTest extends DkanTestBase {
 
     $mockNodeStorage->expects($this->once())
       ->method('loadByProperties')
-      ->with([
-        'field_data_type' => $property_id,
-        'title'           => md5(json_encode($data)),
-      ])
+      ->with(
+              [
+                'field_data_type' => $property_id,
+                'title'           => md5(json_encode($data)),
+              ]
+          )
       ->willReturn($nodes);
 
     // Assert.
@@ -126,30 +132,38 @@ class ValueReferencerTest extends DkanTestBase {
 
     $mockUuidInterface = $this->getMockBuilder(UuidInterface::class)
       ->disableOriginalConstructor()
-      ->setMethods([
-        'generate',
-      ])
+      ->setMethods(
+              [
+                'generate',
+              ]
+          )
       ->getMockForAbstractClass();
     $this->writeProtectedProperty($mock, 'uuidService', $mockUuidInterface);
 
     $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->setMethods([
-        'getStorage',
-      ])
+      ->setMethods(
+              [
+                'getStorage',
+              ]
+          )
       ->getMockForAbstractClass();
     $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
 
     $mockNodeStorage = $this->getMockBuilder(EntityStorageInterface::class)
-      ->setMethods([
-        'create',
-      ])
+      ->setMethods(
+              [
+                'create',
+              ]
+          )
       ->getMockForAbstractClass();
 
     $mockEntityInterface = $this->getMockBuilder(EntityInterface::class)
-      ->setMethods([
-        'save',
-        'uuid',
-      ])
+      ->setMethods(
+              [
+                'save',
+                'uuid',
+              ]
+          )
       ->getMockForAbstractClass();
 
     $property_id = uniqid('some-property-');
@@ -169,13 +183,15 @@ class ValueReferencerTest extends DkanTestBase {
       ->willReturn($mockNodeStorage);
     $mockNodeStorage->expects($this->once())
       ->method('create')
-      ->with([
-        'title' => md5(json_encode($value)),
-        'type' => 'data',
-        'uuid' => $uuid,
-        'field_data_type' => $property_id,
-        'field_json_metadata' => json_encode($data),
-      ])
+      ->with(
+              [
+                'title' => md5(json_encode($value)),
+                'type' => 'data',
+                'uuid' => $uuid,
+                'field_data_type' => $property_id,
+                'field_json_metadata' => json_encode($data),
+              ]
+          )
       ->willReturn($mockEntityInterface);
     $mockEntityInterface->expects($this->once())
       ->method('save')
@@ -274,15 +290,15 @@ class ValueReferencerTest extends DkanTestBase {
     $mock->expects($this->exactly(3))
       ->method('referenceSingle')
       ->withConsecutive(
-        [$property_id, $values[0]],
-        [$property_id, $values[1]],
-        [$property_id, $values[2]]
-      )
+              [$property_id, $values[0]],
+              [$property_id, $values[1]],
+              [$property_id, $values[2]]
+          )
       ->willReturnOnConsecutiveCalls(
-        $referenceSingle[0],
-        $referenceSingle[1],
-        $referenceSingle[2]
-      );
+              $referenceSingle[0],
+              $referenceSingle[1],
+              $referenceSingle[2]
+          );
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'referenceMultiple', $property_id, $values);
@@ -313,10 +329,10 @@ class ValueReferencerTest extends DkanTestBase {
       ],
       'data is an array' => [
         $property_id,
-        ['some value'],
-        [$uuid],
+      ['some value'],
+      [$uuid],
         NULL,
-        [$uuid],
+      [$uuid],
       ],
     ];
   }
@@ -445,13 +461,13 @@ class ValueReferencerTest extends DkanTestBase {
     $mock->expects($this->exactly(2))
       ->method('referenceProperty')
       ->withConsecutive(
-        [$properties_list[0], $data->{$properties_list[0]}],
-        [$properties_list[1], $data->{$properties_list[1]}]
-      )
+              [$properties_list[0], $data->{$properties_list[0]}],
+              [$properties_list[1], $data->{$properties_list[1]}]
+          )
       ->willReturnOnConsecutiveCalls(
-        $uuid1,
-        $uuid2
-      );
+              $uuid1,
+              $uuid2
+          );
 
     // Assert.
     $this->assertEquals($expected, $mock->reference($data));
@@ -477,10 +493,10 @@ class ValueReferencerTest extends DkanTestBase {
       ],
       'dereferencing an array of uuid' => [
         $property_id,
-        [$uuid1, $uuid2],
-        [$value1_retrieved, $value2_retrieved],
+      [$uuid1, $uuid2],
+      [$value1_retrieved, $value2_retrieved],
         NULL,
-        [$value1_retrieved, $value2_retrieved],
+      [$value1_retrieved, $value2_retrieved],
       ],
     ];
   }
@@ -549,15 +565,15 @@ class ValueReferencerTest extends DkanTestBase {
     $mock->expects($this->exactly(3))
       ->method('dereferenceSingle')
       ->withConsecutive(
-        [$property_id, $uuids[0]],
-        [$property_id, $uuids[1]],
-        [$property_id, $uuids[2]]
-      )
+              [$property_id, $uuids[0]],
+              [$property_id, $uuids[1]],
+              [$property_id, $uuids[2]]
+          )
       ->willReturnOnConsecutiveCalls(
-        $dereferenceSingle[0],
-        $dereferenceSingle[1],
-        $dereferenceSingle[2]
-      );
+              $dereferenceSingle[0],
+              $dereferenceSingle[1],
+              $dereferenceSingle[2]
+          );
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'dereferenceMultiple', $property_id, $uuids);
@@ -571,7 +587,7 @@ class ValueReferencerTest extends DkanTestBase {
     $mockNode = $this->createMock(NodeInterface::class);
     $uuid = uniqid('some-property-uuid-');
     $expected = "Some Property Value";
-    $mockNode->field_json_metadata = (object) ['value' => '{"uuid": "'.$uuid.'", "data": "Some Property Value"}'];
+    $mockNode->field_json_metadata = (object) ['value' => '{"uuid": "' . $uuid . '", "data": "Some Property Value"}'];
 
     return [
       ['someProperty', $uuid, [$mockNode], 1, $expected],
@@ -603,15 +619,19 @@ class ValueReferencerTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
     $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->setMethods([
-        'getStorage',
-      ])
+      ->setMethods(
+              [
+                'getStorage',
+              ]
+          )
       ->getMockForAbstractClass();
     $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
     $mockNodeStorage = $this->getMockBuilder(EntityStorageInterface::class)
-      ->setMethods([
-        'loadByProperties',
-      ])
+      ->setMethods(
+              [
+                'loadByProperties',
+              ]
+          )
       ->getMockForAbstractClass();
 
     // Expect.
@@ -621,10 +641,12 @@ class ValueReferencerTest extends DkanTestBase {
       ->willReturn($mockNodeStorage);
     $mockNodeStorage->expects($this->once())
       ->method('loadByProperties')
-      ->with([
-        'field_data_type' => $property_id,
-        'uuid'           => $uuid,
-      ])
+      ->with(
+              [
+                'field_data_type' => $property_id,
+                'uuid'           => $uuid,
+              ]
+          )
       ->willReturn($nodes);
     $this->writeProtectedProperty($mock, 'dereferenceMethod', $dereferenceMethod);
 
@@ -667,13 +689,13 @@ class ValueReferencerTest extends DkanTestBase {
     $mock->expects($this->exactly(2))
       ->method('dereferenceProperty')
       ->withConsecutive(
-        [$properties_list[0], $uuid1],
-        [$properties_list[1], $uuid2]
-      )
+              [$properties_list[0], $uuid1],
+              [$properties_list[1], $uuid2]
+          )
       ->willReturnOnConsecutiveCalls(
-        'Some value',
-        'Yet another value'
-      );
+              'Some value',
+              'Yet another value'
+          );
 
     // Assert.
     $this->assertEquals($expected, $mock->dereference($data));
@@ -696,7 +718,7 @@ class ValueReferencerTest extends DkanTestBase {
       'another to dereference' => $uuid2,
       'other property' => 'Some other value',
     ];
-    // DEREFERENCE_OUTPUT_IDENTIFIER
+    // DEREFERENCE_OUTPUT_IDENTIFIER.
     $method = 1;
 
     // Assert the dereferencing left the data unchanged, with identifiers.
@@ -713,7 +735,7 @@ class ValueReferencerTest extends DkanTestBase {
         "some string", "",
       ],
       [
-        ['some', 'array'], [],
+      ['some', 'array'], [],
       ],
     ];
   }
@@ -818,11 +840,13 @@ class ValueReferencerTest extends DkanTestBase {
   public function testProcessReferencesInUpdatedDataset() {
     // Setup.
     $mock = $this->getMockBuilder(ValueReferencer::class)
-      ->setMethods([
-        'getPropertyList',
-        'emptyPropertyOfSameType',
-        'processReferencesInUpdatedProperty',
-      ])
+      ->setMethods(
+              [
+                'getPropertyList',
+                'emptyPropertyOfSameType',
+                'processReferencesInUpdatedProperty',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMock();
 

@@ -12,7 +12,7 @@ class VariableTest extends BrowserTestBase {
   protected $strictConfigSchema = FALSE;
 
   /**
-   *
+   * Public.
    */
   public function testInstantiation() {
     // todo: service container is not initialised properly in browser testcase.
@@ -21,7 +21,7 @@ class VariableTest extends BrowserTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testInMemoryRetrieval() {
     $store = new Variable(\Drupal::service('config.factory'));;
@@ -30,7 +30,7 @@ class VariableTest extends BrowserTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testConfigRetrieval() {
     $store = new Variable(\Drupal::service('config.factory'));;
@@ -43,7 +43,7 @@ class VariableTest extends BrowserTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testObjectStorage() {
     $store = new Variable(\Drupal::service('config.factory'));;

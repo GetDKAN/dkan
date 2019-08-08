@@ -6,12 +6,12 @@ use Symfony\Component\Validator\Context\ExecutionContext;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ * Class.
  */
 class ProperJsonValidatorTest extends TestCase {
 
   /**
-   *
+   * Public.
    */
   public function testValidationSuccess() {
     $validator = $this->getMockBuilder(ProperJsonValidator::class)
@@ -33,7 +33,7 @@ class ProperJsonValidatorTest extends TestCase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testValidationFailure() {
     $validator = $this->getMockBuilder(ProperJsonValidator::class)
@@ -42,12 +42,14 @@ class ProperJsonValidatorTest extends TestCase {
 
     $validator->expects($this->once())
       ->method("isProper")
-      ->willReturn([
-        'valid' => FALSE,
-        'errors' => [
-          ['message' => "yep"],
-        ],
-      ]);
+      ->willReturn(
+              [
+                'valid' => FALSE,
+                'errors' => [
+              ['message' => "yep"],
+                ],
+              ]
+          );
 
     $context = $this->getMockBuilder(ExecutionContext::class)
       ->setMethods(["addViolation"])

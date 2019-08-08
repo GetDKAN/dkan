@@ -43,9 +43,11 @@ class SchemaRetrieverTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
     // Assert.
-    $this->assertEquals($mock->getAllIds(), [
-      'dataset',
-    ]);
+    $this->assertEquals(
+          $mock->getAllIds(), [
+            'dataset',
+          ]
+      );
   }
 
   /**
@@ -72,22 +74,22 @@ class SchemaRetrieverTest extends DkanTestBase {
   public function dataTestRetrieveException() {
 
     return [
-        // Not valid id.
-        [
-          'foo-id-not-valid',
-            [],
-          'directory',
-          NULL,
-            [],
-        ],
-        // Not readable.
-        [
-          'foo-not-readable',
-            ['foo-not-readable'],
-          'directory',
-          NULL,
-            [],
-        ],
+      // Not valid id.
+      [
+        'foo-id-not-valid',
+          [],
+        'directory',
+        NULL,
+          [],
+      ],
+      // Not readable.
+      [
+        'foo-not-readable',
+          ['foo-not-readable'],
+        'directory',
+        NULL,
+          [],
+      ],
     ];
   }
 
@@ -106,10 +108,12 @@ class SchemaRetrieverTest extends DkanTestBase {
   public function testRetrieveException(string $id, array $allIds, string $directory, $vfsPermissions, array $vfsStructure) {
     // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-      ->setMethods([
-        'getSchemaDirectory',
-        'getAllIds',
-      ])
+      ->setMethods(
+              [
+                'getSchemaDirectory',
+                'getAllIds',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -136,10 +140,12 @@ class SchemaRetrieverTest extends DkanTestBase {
   public function testRetrieve() {
     // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-      ->setMethods([
-        'getSchemaDirectory',
-        'getAllIds',
-      ])
+      ->setMethods(
+              [
+                'getSchemaDirectory',
+                'getAllIds',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -149,7 +155,7 @@ class SchemaRetrieverTest extends DkanTestBase {
     $allIds         = [$id];
     $vfsPermissions = 0777;
     $vfsStructure   = [
-        // Need to trim off `/` for vfs.
+      // Need to trim off `/` for vfs.
       'foo' => [
         'collections' => [
           "{$id}.json" => $expected,
@@ -183,13 +189,17 @@ class SchemaRetrieverTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $vfs = vfsStream::setup(uniqid('vfs'), NULL, [
-      'schema' => [],
-    ]);
+    $vfs = vfsStream::setup(
+          uniqid('vfs'), NULL, [
+            'schema' => [],
+          ]
+      );
 
-    $this->setActualContainer([
-      'app.root' => $vfs->url(),
-    ]);
+    $this->setActualContainer(
+          [
+            'app.root' => $vfs->url(),
+          ]
+      );
 
     $expected = $vfs->url() . '/schema';
 
@@ -212,13 +222,17 @@ class SchemaRetrieverTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $vfs = vfsStream::setup(uniqid('vfs'), NULL, [
-      'schema' => [],
-    ]);
+    $vfs = vfsStream::setup(
+          uniqid('vfs'), NULL, [
+            'schema' => [],
+          ]
+      );
 
-    $this->setActualContainer([
-      'app.root' => uniqid('/foo-this-is-not-valid'),
-    ]);
+    $this->setActualContainer(
+          [
+            'app.root' => uniqid('/foo-this-is-not-valid'),
+          ]
+      );
 
     $expected = $vfs->url();
 
@@ -242,13 +256,17 @@ class SchemaRetrieverTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $vfs = vfsStream::setup(uniqid('vfs'), NULL, [
-      'schema' => [],
-    ]);
+    $vfs = vfsStream::setup(
+          uniqid('vfs'), NULL, [
+            'schema' => [],
+          ]
+      );
 
-    $this->setActualContainer([
-      'app.root' => uniqid('/foo-this-is-not-valid'),
-    ]);
+    $this->setActualContainer(
+          [
+            'app.root' => uniqid('/foo-this-is-not-valid'),
+          ]
+      );
 
     $this->setExpectedException(\Exception::class, "No schema directory found.");
 
@@ -279,9 +297,11 @@ class SchemaRetrieverTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    $this->setActualContainer([
-      'extension.list.profile' => $mockExtensionList,
-    ]);
+    $this->setActualContainer(
+          [
+            'extension.list.profile' => $mockExtensionList,
+          ]
+      );
 
     // Expects.
     $mockExtensionList->expects($this->once())

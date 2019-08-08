@@ -1,0 +1,37 @@
+version: 2
+plugins:
+  phpcodesniffer:
+    enabled: true
+    config:
+      standard: "Drupal,DrupalPractice"
+exclude_patterns:
+ - "cypress/"
+ - "config/"
+ - "db/"
+ - "dist/"
+ - "docs/"
+ - "features/"
+ - "**/node_modules/"
+ - "script/"
+ - "**/spec/"
+ - "**/test/"
+ - "**/tests/"
+ - "Tests/"
+ - "**/vendor/"
+ - "**/*_test.go"
+ - "**/*.d.ts"
+ - "**/*.yml"
+ - "**/*.json"
+ - "*.md"
+ - "**/*.md"
+ - "*.install"
+ - "*.profile"
+ - "*.module"
+ - "*.xml"
+ - "**/*.xml"
+ - "**/*.install"
+ - "**/*.profile"
+ - "**/*.module"
+ - ".circleci/"
+ - ".gitignore"
+  

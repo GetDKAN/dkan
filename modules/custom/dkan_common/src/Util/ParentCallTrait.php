@@ -9,8 +9,6 @@ namespace Drupal\dkan_common\Util;
  *
  *  In subject under test, instead of using `parent::method($arg1, $arg2)`,
  *  use `$this->parentCall('method',$arg1, $arg2)`
- *
- * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
 trait ParentCallTrait {
 

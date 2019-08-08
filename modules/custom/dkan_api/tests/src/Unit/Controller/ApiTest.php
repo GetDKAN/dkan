@@ -40,14 +40,14 @@ class ApiTest extends DkanTestBase {
     $mock->__construct($mockContainer);
 
     $this->assertSame(
-            $mockContainer,
-            $this->readAttribute($mock, 'container')
-    );
+          $mockContainer,
+          $this->readAttribute($mock, 'container')
+      );
 
     $this->assertSame(
-            $mockDkanFactory,
-            $this->readAttribute($mock, 'dkanFactory')
-    );
+          $mockDkanFactory,
+          $this->readAttribute($mock, 'dkanFactory')
+      );
 
   }
 
@@ -67,15 +67,17 @@ class ApiTest extends DkanTestBase {
     // This is a bit iffy but should be close enough.
     $unflattened = [
       'foo',
-        [],
-        // Peculiarities of json encode.
+      [],
+      // Peculiarities of json encode.
       (object) ['foo' => 'bar'],
     ];
 
     $mock = $this->getMockBuilder(Api::class)
-      ->setMethods([
-        'getEngine',
-      ])
+      ->setMethods(
+              [
+                'getEngine',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -104,10 +106,10 @@ class ApiTest extends DkanTestBase {
     $mockDkanFactory->expects($this->once())
       ->method('newJsonResponse')
       ->with(
-                    $unflattened,
-          200,
-          ["Access-Control-Allow-Origin" => "*"]
-                    )
+              $unflattened,
+              200,
+              ["Access-Control-Allow-Origin" => "*"]
+          )
       ->willReturn($mockJsonResponse);
 
     // Assert.
@@ -130,9 +132,11 @@ class ApiTest extends DkanTestBase {
     $dataEncoded = json_encode($data);
 
     $mock = $this->getMockBuilder(Api::class)
-      ->setMethods([
-        'getEngine',
-      ])
+      ->setMethods(
+              [
+                'getEngine',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -161,10 +165,10 @@ class ApiTest extends DkanTestBase {
     $mockDkanFactory->expects($this->once())
       ->method('newJsonResponse')
       ->with(
-                    $data,
-          200,
-          ["Access-Control-Allow-Origin" => "*"]
-                    )
+              $data,
+              200,
+              ["Access-Control-Allow-Origin" => "*"]
+          )
       ->willReturn($mockJsonResponse);
 
     // Assert.
@@ -187,9 +191,11 @@ class ApiTest extends DkanTestBase {
     $expectedException = new \Exception($exceptionMessage);
 
     $mock = $this->getMockBuilder(Api::class)
-      ->setMethods([
-        'getEngine',
-      ])
+      ->setMethods(
+              [
+                'getEngine',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -220,9 +226,9 @@ class ApiTest extends DkanTestBase {
     $mockDkanFactory->expects($this->once())
       ->method('newJsonResponse')
       ->with(
-                    (object) ["message" => $exceptionMessage],
-                    404
-                    )
+              (object) ["message" => $exceptionMessage],
+              404
+          )
       ->willReturn($mockJsonResponse);
 
     // Assert.

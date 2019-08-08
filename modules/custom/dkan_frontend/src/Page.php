@@ -3,14 +3,17 @@
 namespace Drupal\dkan_frontend;
 
 /**
- *
+ * Class.
  */
 class Page {
 
   /**
+   * Build.
    *
-   * @TODO /data-catalog-frontend/build/index.html may not always exist.
-   * @return string|boolean false if file doesn't exist.
+   * @return string|bool
+   *   False if file doesn't exist.
+   *
+   * @todo /data-catalog-frontend/build/index.html may not always exist.
    */
   public function build($name) {
     if ($name == 'home') {

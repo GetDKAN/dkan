@@ -10,39 +10,41 @@ use Drupal\Core\Config\Config;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Storage\Variable
- * @group dkan_datastore
- * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
+ * @group              dkan_datastore
+ * @author             Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
 class VariableTest extends DkanTestBase {
 
   /**
-   *
+   * Public.
    */
   public function dataTestConstruct() {
 
     return [
-        // Successfull getAll.
-        [['foo'], ['foo']],
-        // Unsuccessfull getAll.
-        [FALSE, []],
+      // Successfull getAll.
+      [['foo'], ['foo']],
+      // Unsuccessfull getAll.
+      [FALSE, []],
     ];
   }
 
   /**
    *
    * @dataProvider dataTestConstruct
-   * @param mixed $getAll
-   * @param mixed $expectedStore
+   * @param        mixed $getAll
+   * @param        mixed $expectedStore
    */
   public function testConstruct($getAll, $expectedStore) {
 
     $mockConfigInterface = $this->createMock(ConfigFactoryInterface::class);
 
     $mock = $this->getMockBuilder(Variable::class)
-      ->setMethods([
-        'getAll',
-      ])
-      // Defer calling constructor.
+      ->setMethods(
+              [
+                'getAll',
+              ]
+          )
+        // Defer calling constructor.
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -61,15 +63,17 @@ class VariableTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testSet() {
 
     // Setup.
     $mock = $this->getMockBuilder(Variable::class)
-      ->setMethods([
-        'pushAll',
-      ])
+      ->setMethods(
+              [
+                'pushAll',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -97,10 +101,10 @@ class VariableTest extends DkanTestBase {
       'exists' => 'foobar',
     ];
     return [
-            [$store, 'exists', NULL, 'foobar'],
-            [$store, 'exists', 'default', 'foobar'],
-            [$store, 'notexists', NULL, NULL],
-            [$store, 'notexists', 'default', 'default'],
+          [$store, 'exists', NULL, 'foobar'],
+          [$store, 'exists', 'default', 'foobar'],
+          [$store, 'notexists', NULL, NULL],
+          [$store, 'notexists', 'default', 'default'],
     ];
   }
 
@@ -185,10 +189,12 @@ class VariableTest extends DkanTestBase {
       ->getMockForAbstractClass();
 
     $mockConfig = $this->getMockBuilder(Config::class)
-      ->setMethods([
-        'set',
-        'save',
-      ])
+      ->setMethods(
+              [
+                'set',
+                'save',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMock();
 

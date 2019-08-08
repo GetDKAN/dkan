@@ -6,7 +6,7 @@ use Dkan\Datastore\Storage\IKeyValue;
 use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
- *
+ * Class.
  */
 class Variable implements IKeyValue {
 
@@ -20,7 +20,7 @@ class Variable implements IKeyValue {
   protected $configFactory;
 
   /**
-   *
+   * Public.
    */
   public function __construct(ConfigFactoryInterface $configFactory) {
     $this->configFactory = $configFactory;
@@ -31,7 +31,7 @@ class Variable implements IKeyValue {
   }
 
   /**
-   *
+   * Public.
    */
   public function set($key, $value) {
     $this->store[$key] = $value;
@@ -39,7 +39,7 @@ class Variable implements IKeyValue {
   }
 
   /**
-   *
+   * Public.
    */
   public function get($key, $default = NULL) {
     return isset($this->store[$key]) ? $this->store[$key] : $default;

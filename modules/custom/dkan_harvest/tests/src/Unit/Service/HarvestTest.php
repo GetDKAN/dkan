@@ -26,9 +26,9 @@ class HarvestTest extends DkanTestBase {
    * Tests __Construct().
    */
   public function testConstruct() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Harvest::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -36,8 +36,7 @@ class HarvestTest extends DkanTestBase {
     $mockJsonUtil = $this->createMock(JsonUtil::class);
     $mockTime     = $this->createMock(TimeInterface::class);
 
-
-    // assert
+    // Assert.
     $mock->__construct($mockFactory, $mockJsonUtil, $mockTime);
     $this->assertSame($mockFactory, $this->readAttribute($mock, 'factory'));
     $this->assertSame($mockJsonUtil, $this->readAttribute($mock, 'jsonUtil'));
@@ -49,9 +48,9 @@ class HarvestTest extends DkanTestBase {
    */
   public function testGetAllHarvestIds() {
 
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Harvest::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -72,7 +71,7 @@ class HarvestTest extends DkanTestBase {
     ];
     $expected  = array_keys($retrieved);
 
-    // expect
+    // Expect.
     $mockFactory->expects($this->once())
       ->method('getPlanStorage')
       ->willReturn($mockStorage);
@@ -81,7 +80,7 @@ class HarvestTest extends DkanTestBase {
       ->method('retrieveAll')
       ->willReturn($retrieved);
 
-    // assert
+    // Assert.
     $actual = $mock->getAllHarvestIds();
     $this->assertEquals($expected, $actual);
   }
@@ -91,14 +90,14 @@ class HarvestTest extends DkanTestBase {
    */
   public function testRegisterHarvest() {
 
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Harvest::class)
-      ->setMethods([  'validateHarvestPlan'])
+      ->setMethods(['validateHarvestPlan'])
       ->disableOriginalConstructor()
       ->getMock();
 
     $mockFactory = $this->getMockBuilder(HarvestFactory::class)
-      ->setMethods([ 'getPlanStorage'      ])
+      ->setMethods(['getPlanStorage'])
       ->disableOriginalConstructor()
       ->getMock();
     $this->writeProtectedProperty($mock, 'factory', $mockFactory);
@@ -114,11 +113,11 @@ class HarvestTest extends DkanTestBase {
     ];
     $encodedPlan = json_encode($plan);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('validateHarvestPlan')
       ->with($plan)
-      ->willReturn(true);
+      ->willReturn(TRUE);
 
     $mockFactory->expects($this->once())
       ->method('getPlanStorage')
@@ -129,7 +128,7 @@ class HarvestTest extends DkanTestBase {
       ->with($encodedPlan, $identifier)
       ->willReturn($identifier);
 
-    // assert
+    // Assert.
     $actual = $mock->registerHarvest($plan);
     $this->assertEquals($identifier, $actual);
   }
@@ -139,14 +138,14 @@ class HarvestTest extends DkanTestBase {
    */
   public function testDeregisterHarvest() {
 
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Harvest::class)
       ->setMethods(['revertHarvest'])
       ->disableOriginalConstructor()
       ->getMock();
 
     $mockFactory = $this->getMockBuilder(HarvestFactory::class)
-      ->setMethods([       'getPlanStorage'      ])
+      ->setMethods(['getPlanStorage'])
       ->disableOriginalConstructor()
       ->getMock();
     $this->writeProtectedProperty($mock, 'factory', $mockFactory);
@@ -157,9 +156,9 @@ class HarvestTest extends DkanTestBase {
       ->getMockForAbstractClass();
 
     $id       = uniqid('foo');
-    $expected = true;
+    $expected = TRUE;
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('revertHarvest')
       ->with($id);
@@ -173,7 +172,7 @@ class HarvestTest extends DkanTestBase {
       ->with($id)
       ->willReturn($expected);
 
-    // assert
+    // Assert.
     $actual = $mock->deregisterHarvest($id);
     $this->assertEquals($expected, $actual);
   }
@@ -183,9 +182,9 @@ class HarvestTest extends DkanTestBase {
    */
   public function testRevertHarvest() {
 
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Harvest::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -201,8 +200,8 @@ class HarvestTest extends DkanTestBase {
       ->getMock();
 
     $id       = uniqid('foo');
-    $expected = true;
-    // expect
+    $expected = TRUE;
+    // Expect.
     $mockFactory->expects($this->once())
       ->method('getHarvester')
       ->with($id)
@@ -212,7 +211,7 @@ class HarvestTest extends DkanTestBase {
       ->method('revert')
       ->willReturn($expected);
 
-    // assert
+    // Assert.
     $actual = $mock->revertHarvest($id);
     $this->assertEquals($expected, $actual);
   }
@@ -222,9 +221,9 @@ class HarvestTest extends DkanTestBase {
    */
   public function testRunHarvest() {
 
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Harvest::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -255,10 +254,10 @@ class HarvestTest extends DkanTestBase {
 
     $id              = uniqid('foo');
     $currentTime     = 123456;
-    $expected        = true;
+    $expected        = TRUE;
     $encodedExpected = json_encode($expected);
 
-    // expect
+    // Expect.
     $mockFactory->expects($this->once())
       ->method('getHarvester')
       ->with($id)
@@ -281,7 +280,7 @@ class HarvestTest extends DkanTestBase {
       ->method('store')
       ->with($encodedExpected, $currentTime);
 
-    // assert
+    // Assert.
     $actual = $mock->runHarvest($id);
     $this->assertEquals($expected, $actual);
   }
@@ -305,18 +304,19 @@ class HarvestTest extends DkanTestBase {
       [
         'invalidRunId',
         [],
-        false
+        FALSE
       ],
     ];
   }
 
   /**
    * Tests getHarvestRunInfo().
+   *
    * @dataProvider dataGetHarvestRunInfo
    */
   public function testGetHarvestRunInfo(string $runId, array $allRuns, $expected) {
 
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Harvest::class)
       ->setMethods(['getAllHarvestRunInfo'])
       ->disableOriginalConstructor()
@@ -324,13 +324,13 @@ class HarvestTest extends DkanTestBase {
 
     $id = 'foobar';
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('getAllHarvestRunInfo')
       ->with($id)
       ->willReturn($allRuns);
 
-    // assert
+    // Assert.
     $actual = $mock->getHarvestRunInfo($id, $runId);
     $this->assertEquals($expected, $actual);
   }
@@ -340,9 +340,9 @@ class HarvestTest extends DkanTestBase {
    */
   public function testgetAllHarvestRunInfo() {
 
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Harvest::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -369,8 +369,7 @@ class HarvestTest extends DkanTestBase {
     $retrieved = ['{some json like string validity not important}'];
     $expected  = ['same deal as above'];
 
-
-    // expect
+    // Expect.
     $mockFactory->expects($this->once())
       ->method('getStorage')
       ->with($id, 'run')
@@ -385,7 +384,7 @@ class HarvestTest extends DkanTestBase {
       ->with($retrieved)
       ->willReturn($expected);
 
-    // assert
+    // Assert.
     $actual = $mock->getAllHarvestRunInfo($id);
     $this->assertEquals($expected, $actual);
   }

@@ -47,18 +47,22 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('entity_type.manager')
-    );
+          $configuration,
+          $plugin_id,
+          $plugin_definition,
+          $container->get('entity_type.manager')
+      );
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function processItem($data) {
@@ -67,9 +71,11 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
 
     // Search datasets using this uuid for this property id.
     $datasets = $this->entityTypeManager->getStorage('node')
-      ->loadByProperties([
-        'field_data_type' => 'dataset',
-      ]);
+      ->loadByProperties(
+              [
+                'field_data_type' => 'dataset',
+              ]
+          );
     foreach ($datasets as $dataset) {
       $data = json_decode($dataset->referenced_metadata);
       $value = $data->{$property_id};
@@ -96,10 +102,12 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    */
   protected function deleteReference(string $property_id, string $uuid) {
     $references = $this->entityTypeManager->getStorage('node')
-      ->loadByProperties([
-        'field_data_type' => $property_id,
-        'uuid' => $uuid,
-      ]);
+      ->loadByProperties(
+              [
+                'field_data_type' => $property_id,
+                'uuid' => $uuid,
+              ]
+          );
     if (FALSE !== ($reference = reset($references))) {
       $reference->delete();
     }

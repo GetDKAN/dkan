@@ -4,9 +4,8 @@ namespace Drupal\dkan_harvest\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use \Drupal\dkan_common\Util\RequestTrait;
+use Drupal\dkan_common\Util\RequestTrait;
 use Drupal\dkan_harvest\Service\Harvest as HarvestService;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\dkan_common\Service\Factory as DkanFactory;
 
 /**
@@ -27,20 +26,23 @@ class Api extends ControllerBase {
   protected $container;
 
   /**
+   * Harvest.
    *
-   * @var HarvestService
+   * @var \Drupal\dkan_harvest\Service\Harvest
    */
   protected $harvestService;
 
   /**
+   * Logger.
    *
-   * @var LoggerChannelInterface
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
   protected $logger;
 
   /**
+   * Dkan Factory.
    *
-   * @var DkanFactory
+   * @var \Drupal\dkan_common\Service\Factory
    */
   protected $dkanFactory;
 
@@ -64,7 +66,7 @@ class Api extends ControllerBase {
   }
 
   /**
-   * List harvest ids
+   * List harvest ids.
    */
   public function index() {
 
@@ -74,19 +76,20 @@ class Api extends ControllerBase {
         ->getAllHarvestIds();
 
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             $rows,
             200,
             ["Access-Control-Allow-Origin" => "*"]
       );
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
             500
-      );
+          );
     }
   }
 
@@ -96,31 +99,32 @@ class Api extends ControllerBase {
   public function register() {
     try {
 
-      // post data normally.
+      // Post data normally.
       $harvest_plan = $this->getCurrentRequestContent();
       $plan         = json_decode($harvest_plan);
       $identifier   = $this->harvestService
         ->registerHarvest($plan);
 
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               "endpoint"   => $this->getCurrentRequestUri(),
-              "identifier" => $identifier
+              "identifier" => $identifier,
             ],
             200,
             [
-              "Access-Control-Allow-Origin" => "*"
+              "Access-Control-Allow-Origin" => "*",
             ]
       );
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
             500
-      );
+          );
     }
   }
 
@@ -135,22 +139,23 @@ class Api extends ControllerBase {
         ->deregisterHarvest($id);
 
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               "endpoint"   => $this->getCurrentRequestUri(),
-              "identifier" => $id
+              "identifier" => $id,
             ],
             200,
             ["Access-Control-Allow-Origin" => "*"]
       );
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
             500
-      );
+          );
     }
   }
 
@@ -167,7 +172,7 @@ class Api extends ControllerBase {
         ->runHarvest($id);
 
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               "endpoint"   => $this->getCurrentRequestUri(),
               "identifier" => $id,
@@ -176,14 +181,15 @@ class Api extends ControllerBase {
             200,
             ["Access-Control-Allow-Origin" => "*"]
       );
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
             500
-      );
+          );
     }
   }
 
@@ -197,25 +203,24 @@ class Api extends ControllerBase {
 
     try {
 
-
-        $response = array_keys($this->harvestService
-          ->getAllHarvestRunInfo($id));
-
+      $response = array_keys($this->harvestService
+        ->getAllHarvestRunInfo($id));
 
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             $response,
             200,
             ["Access-Control-Allow-Origin" => "*"]
       );
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
             500
-      );
+          );
     }
   }
 
@@ -225,29 +230,30 @@ class Api extends ControllerBase {
    * @param string $id
    *   The harvest id.
    * @param string $run_id
-   *   The run's id
+   *   The run's id.
    */
   public function infoRun($id, $run_id) {
 
     try {
 
-        $response = $this->harvestService
-          ->getHarvestRunInfo($id, $run_id);
+      $response = $this->harvestService
+        ->getHarvestRunInfo($id, $run_id);
 
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             $response,
             200,
             ["Access-Control-Allow-Origin" => "*"]
       );
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
             500
-      );
+          );
     }
   }
 
@@ -264,25 +270,26 @@ class Api extends ControllerBase {
         ->revertHarvest($id);
 
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               "endpoint"   => $this->getCurrentRequestUri(),
               "identifier" => $id,
-              'result'     => $result
+              'result'     => $result,
             ],
             200,
             [
-              "Access-Control-Allow-Origin" => "*"
+              "Access-Control-Allow-Origin" => "*",
             ]
       );
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->dkanFactory
-          ->newJsonResponse(
+        ->newJsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
             500
-      );
+          );
     }
   }
 

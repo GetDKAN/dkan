@@ -10,15 +10,23 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * Class.
+ */
 class DocsTest extends DkanTestBase {
 
+  /**
+   * Public.
+   */
   public function testConstruct() {
     // Setup.
     $mock = $this->getMockBuilder(Docs::class)
       ->disableOriginalConstructor()
-      ->setMethods([
-        'getJsonFromYmlFile',
-      ])
+      ->setMethods(
+              [
+                'getJsonFromYmlFile',
+              ]
+          )
       ->getMock();
 
     $mockContainer = $this->getMockContainer();
@@ -28,26 +36,28 @@ class DocsTest extends DkanTestBase {
     $mockYmlSerializer = $this->createMock(SerializerInterface::class);
     $mockStorage = $this->getMockBuilder(DrupalNodeDataset::class)
       ->disableOriginalConstructor()
-      ->setMethods([
-        'setSchema',
-      ])
+      ->setMethods(
+              [
+                'setSchema',
+              ]
+          )
       ->getMock();
 
     // Expect.
     $mockContainer->expects($this->exactly(4))
       ->method('get')
       ->withConsecutive(
-        ['module_handler'],
-        ['dkan.factory'],
-        ['serialization.yaml'],
-        ['dkan_api.storage.drupal_node_dataset']
-      )
+              ['module_handler'],
+              ['dkan.factory'],
+              ['serialization.yaml'],
+              ['dkan_api.storage.drupal_node_dataset']
+          )
       ->willReturnOnConsecutiveCalls(
-        $mockModuleHandler,
-        $mockDkanFactory,
-        $mockYmlSerializer,
-        $mockStorage
-      );
+              $mockModuleHandler,
+              $mockDkanFactory,
+              $mockYmlSerializer,
+              $mockStorage
+          );
     $mock->expects($this->once())
       ->method('getJsonFromYmlFile')
       ->with()
@@ -56,24 +66,27 @@ class DocsTest extends DkanTestBase {
     // Assert.
     $mock->__construct($mockContainer);
     $this->assertSame(
-      $mockModuleHandler,
-      $this->readAttribute($mock, 'moduleHandler')
-    );
+          $mockModuleHandler,
+          $this->readAttribute($mock, 'moduleHandler')
+      );
     $this->assertSame(
-      $mockDkanFactory,
-      $this->readAttribute($mock, 'dkanFactory')
-    );
+          $mockDkanFactory,
+          $this->readAttribute($mock, 'dkanFactory')
+      );
     $this->assertSame(
-      $mockYmlSerializer,
-      $this->readAttribute($mock, 'ymlSerializer')
-    );
+          $mockYmlSerializer,
+          $this->readAttribute($mock, 'ymlSerializer')
+      );
     $this->assertSame(
-      $mockStorage,
-      $this->readAttribute($mock, 'storage')
-    );
+          $mockStorage,
+          $this->readAttribute($mock, 'storage')
+      );
 
   }
 
+  /**
+   * Public.
+   */
   public function testGetComplete() {
     // Setup.
     $mock = $this->getMockBuilder(Docs::class)
@@ -86,7 +99,7 @@ class DocsTest extends DkanTestBase {
       "info" => [
         "title" => "Test API",
       ]
-    ];
+      ];
     $this->writeProtectedProperty($mock, 'spec', $test);
 
     $mockJsonResponse = $this->createMock(JsonResponse::class);
@@ -102,16 +115,21 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($mockJsonResponse, $actual);
   }
 
+  /**
+   * Public.
+   */
   public function testGetDatasetSpecific() {
     // Setup.
     $mock = $this->getMockBuilder(Docs::class)
       ->disableOriginalConstructor()
-      ->setMethods([
-        'removeSpecOperations',
-        'removeSpecPaths',
-        'replaceDistributions',
-        'sendResponse',
-      ])
+      ->setMethods(
+              [
+                'removeSpecOperations',
+                'removeSpecPaths',
+                'replaceDistributions',
+                'sendResponse',
+              ]
+          )
       ->getMock();
 
     $someUuid = uniqid('uuid_');
@@ -143,8 +161,11 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($mockJsonResponse, $actual);
   }
 
+  /**
+   * Public.
+   */
   public function testSendResponse() {
-    // Setup
+    // Setup.
     $mock = $this->getMockBuilder(Docs::class)
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
@@ -159,20 +180,20 @@ class DocsTest extends DkanTestBase {
 
     $data = '{}';
 
-    // Expect
+    // Expect.
     $mockDkanFactory->expects($this->once())
       ->method('newJsonResponse')
       ->with(
-        $data,
-        200,
-        [
-          'Content-type' => 'application/json',
-          'Access-Control-Allow-Origin' => '*',
-        ]
-      )
+              $data,
+              200,
+              [
+                'Content-type' => 'application/json',
+                'Access-Control-Allow-Origin' => '*',
+              ]
+          )
       ->willReturn($mockJsonResponse);
 
-    // Asset
+    // Asset.
     $actual = $mock->sendResponse($data);
     $this->assertSame($mockJsonResponse, $actual);
   }
@@ -183,23 +204,25 @@ class DocsTest extends DkanTestBase {
   public function dataTestRemoveSpecOperations() {
     return [
       'Removing `foo` resulting empty path' => [
-        ['paths' => [
-            'pathWithOnlyFoo' => [
-              'foo' => 'one',
-            ],
-            'pathWithBothFooAndBar' => [
-              'bar' => 'two',
-              'foo' => 'three',
-            ],
-          ]
+      [
+    'paths' => [
+      'pathWithOnlyFoo' => [
+        'foo' => 'one',
+      ],
+      'pathWithBothFooAndBar' => [
+        'bar' => 'two',
+        'foo' => 'three',
+      ],
+    ]
+      ],
+      ['foo'],
+      [
+      'paths' => [
+        'pathWithBothFooAndBar' => [
+          'bar' => 'two',
         ],
-        ['foo'],
-        ['paths' => [
-            'pathWithBothFooAndBar' => [
-              'bar' => 'two',
-            ],
-          ]
-        ]
+      ]
+      ]
       ],
     ];
   }
@@ -222,18 +245,25 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($expected, $actual);
   }
 
+  /**
+   * Public.
+   */
   public function testRemoveSpecPaths() {
     // Setup.
     $mock = $this->getMockBuilder(Docs::class)
       ->disableOriginalConstructor()
       ->getMock();
-    $test = ['paths' => [
+    $test = [
+    'paths' => [
       'keep' => [],
       'remove' => [],
-    ]];
-    $expected = ['paths' => [
+    ]
+  ];
+    $expected = [
+    'paths' => [
       'keep' => [],
-    ]];
+    ]
+  ];
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'removeSpecPaths', $test, ['remove']);

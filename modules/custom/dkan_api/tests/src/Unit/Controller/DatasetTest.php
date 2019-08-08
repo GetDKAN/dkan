@@ -43,9 +43,9 @@ class DatasetTest extends DkanTestBase {
     $mock->__construct($mockContainer);
 
     $this->assertSame(
-            $mockDataset,
-            $this->readAttribute($mock, 'nodeDataset')
-    );
+          $mockDataset,
+          $this->readAttribute($mock, 'nodeDataset')
+      );
   }
 
   /**

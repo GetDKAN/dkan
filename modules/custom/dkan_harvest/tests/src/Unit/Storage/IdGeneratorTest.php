@@ -14,7 +14,7 @@ use Drupal\dkan_harvest\Storage\IdGenerator;
 class IdGeneratorTest extends DkanTestBase {
 
   /**
-   *
+   * Public.
    */
   public function testConstruct() {
     // Setup.
@@ -45,7 +45,7 @@ class IdGeneratorTest extends DkanTestBase {
 
   /**
    *
-   * @param \stdClass $data
+   * @param object $data
    * @param mixed $expected
    *
    * @dataProvider dataTestGenerate

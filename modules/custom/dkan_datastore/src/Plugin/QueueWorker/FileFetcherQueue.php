@@ -34,14 +34,14 @@ class FileFetcherQueue extends QueueWorkerBase {
 
     // Queue is self calling and should keep going until complete.
     return $queue->createItem([
-        'uuid'              => $uuid,
+      'uuid'              => $uuid,
         // Resource id is used to create table.
         // and has to be same as original.
-        'resource_id'       => $resourceId,
-        'file_identifier'   => $this->sanitizeString($actualFilePath),
-        'file_path'         => $actualFilePath,
-        'import_config'     => $importConfig,
-        'file_is_temporary' => $this->isFileTemporary($actualFilePath),
+      'resource_id'       => $resourceId,
+      'file_identifier'   => $this->sanitizeString($actualFilePath),
+      'file_path'         => $actualFilePath,
+      'import_config'     => $importConfig,
+      'file_is_temporary' => $this->isFileTemporary($actualFilePath),
     ]);
   }
 
@@ -76,7 +76,8 @@ class FileFetcherQueue extends QueueWorkerBase {
       $this->fileCopy($source, $dest);
 
       return $tmpFile;
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       // Failed to get the file.
       throw new SuspendQueueException("Unable to fetch {$filePath} for resource {$uuid}. Reason: " . $e->getMessage(), 0, $e);
     }
@@ -147,7 +148,7 @@ class FileFetcherQueue extends QueueWorkerBase {
   }
 
   /**
-   * returns the temporary directory used by drupal.
+   * Returns the temporary directory used by drupal.
    *
    * @return string
    */
@@ -162,7 +163,7 @@ class FileFetcherQueue extends QueueWorkerBase {
    */
   public function getImporterQueue(): QueueInterface {
     return \Drupal::service('queue')
-        ->get('dkan_datastore_import_queue');
+      ->get('dkan_datastore_import_queue');
   }
 
   /**

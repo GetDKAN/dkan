@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
- * @group dkan
+ * @group              dkan
  */
 class ApiTest extends DkanTestBase {
 
@@ -109,6 +109,9 @@ class ApiTest extends DkanTestBase {
     $this->assertEquals(json_encode($expected), json_encode($object));
   }
 
+  /**
+   * Public.
+   */
   public function testRunQuery() {
 
     $helper = $this->getMockBuilder(Helper::class)
@@ -127,7 +130,6 @@ class ApiTest extends DkanTestBase {
     $controller->method('getQueryObject')->willReturn(new Query());
     $controller->method('response')->willReturn(new JsonResponse([], 200));
     $controller->method('getDatastoreManagerBuilderHelper')->willReturn($helper);
-
 
     $database = $this->getMockBuilder(Database::class)
       ->disableOriginalConstructor()

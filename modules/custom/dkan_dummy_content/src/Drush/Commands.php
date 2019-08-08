@@ -2,15 +2,12 @@
 
 namespace Drupal\dkan_dummy_content\Drush;
 
-use Drupal\Core\Site\Settings;
+use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Drupal\dkan_harvest\Drush\Helper;
 
-use Symfony\Component\Console\Output\ConsoleOutput;
-
-use Drush\Commands\DrushCommands;
-
 /**
- *
+ * Class.
  */
 class Commands extends DrushCommands {
   use Helper;
@@ -43,6 +40,9 @@ class Commands extends DrushCommands {
     $output->write("{$count} items reverted for the 'dummy' harvest plan.");
   }
 
+  /**
+   * Private.
+   */
   private function getHarvestPlan() {
     $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content');
 
@@ -55,6 +55,9 @@ class Commands extends DrushCommands {
     return $plan;
   }
 
+  /**
+   * Private.
+   */
   private function createDummyJson() {
     $dummy_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/dummy.template.json";
     $content = file_get_contents($dummy_template);
@@ -62,6 +65,9 @@ class Commands extends DrushCommands {
     file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/dummy.json", $new);
   }
 
+  /**
+   * Private.
+   */
   private function detokenize($content) {
     $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/files";
     return str_replace("<!*path*!>", $absolute_module_path, $content);

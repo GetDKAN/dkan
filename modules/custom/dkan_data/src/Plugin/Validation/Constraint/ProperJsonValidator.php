@@ -6,11 +6,13 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- *
+ * Class.
  */
 class ProperJsonValidator extends ConstraintValidator {
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function validate($items, Constraint $constraint) {
@@ -26,6 +28,7 @@ class ProperJsonValidator extends ConstraintValidator {
    * Is proper JSON?
    *
    * @param string $value
+   *   Value.
    */
   protected function isProper($value) {
     // @codeCoverageIgnoreStart

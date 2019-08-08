@@ -22,6 +22,8 @@ use Drupal\Core\Form\FormStateInterface;
 class JsonSchemaFormWidget extends WidgetBase {
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
@@ -34,7 +36,7 @@ class JsonSchemaFormWidget extends WidgetBase {
       '#size' => 7,
       '#maxlength' => 7,
       '#element_validate' => [
-        [$this, 'validate'],
+      [$this, 'validate'],
       ],
     ];
     return ['value' => $element];

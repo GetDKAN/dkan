@@ -54,12 +54,12 @@ class DatastoreImportQueue extends QueueWorkerBase {
         break;
 
       case IManager::DATA_IMPORT_ERROR:
-        
+
         $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error.");
         // @TODO fall through to cleanup on error. maybe should not so we can inspect issues further?
 
       case IManager::DATA_IMPORT_DONE:
-        
+
         $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
 
         // cleanup.
@@ -70,10 +70,10 @@ class DatastoreImportQueue extends QueueWorkerBase {
   }
 
   /**
-   * 
    * Sanitise input data for item processing.
-   * 
+   *
    * @param array $data
+   *
    * @return array
    */
   protected function sanitizeData(array $data): array {
@@ -96,10 +96,14 @@ class DatastoreImportQueue extends QueueWorkerBase {
   /**
    * Update and validate the state of the queue on success/pause.
    *
-   * @param array $data The state of the queue.
-   * @param IManager $manager Import manager
+   * @param array $data
+   *   The state of the queue.
+   * @param \Dkan\Datastore\Manager\IManager $manager
+   *   Import manager.
+   *
    * @return array Data with updated state info.
-   * @throws SuspendQueueException If the state is invalid.
+   *
+   * @throws \Drupal\Core\Queue\SuspendQueueException If the state is invalid.
    */
   protected function refreshQueueState(array $data, IManager $manager): array {
     // Update the state as it were.
@@ -108,7 +112,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
     // Try to detect if import is stalled.
     // it shouldn't go backwards but just in case..
     if ($newRowsDone - $data['rows_done'] <= 0) {
-      $data['import_fail_count'] ++;
+      $data['import_fail_count']++;
       $this->log(RfcLogLevel::WARNING, "Import for {$data['uuid']} seemd to be lagging behind {$data['import_fail_count']} times. Rows done:{$data['rows_done']} vs {$newRowsDone}");
     }
 
@@ -118,7 +122,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
       throw new SuspendQueueException("Import for {$data['uuid']}[{$data['file_path']}] appears to have stalled past allowed limits.");
     }
 
-    // otherwise we can keep going.
+    // Otherwise we can keep going.
     $data['queue_iteration']++;
     $data['rows_done'] = $newRowsDone;
 
@@ -181,7 +185,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
       'delimiter' => ",",
       'quote'     => '"',
       'escape'    => "\\",
-      ], $importConfig);
+    ], $importConfig);
 
     return $sanitized;
   }
@@ -204,8 +208,8 @@ class DatastoreImportQueue extends QueueWorkerBase {
    */
   protected function requeue(array $data) {
     return \Drupal::service('queue')
-        ->get($this->getPluginId())
-        ->createItem($data);
+      ->get($this->getPluginId())
+      ->createItem($data);
   }
 
 }

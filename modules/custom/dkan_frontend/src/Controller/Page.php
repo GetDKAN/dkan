@@ -18,7 +18,7 @@ class Page extends ControllerBase {
   }
 
   /**
-   * Private.
+   * Private..
    */
   private function buildPage($name) {
     $page        = \Drupal::service('dkan_frontend.page');
