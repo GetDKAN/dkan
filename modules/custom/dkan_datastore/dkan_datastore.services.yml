@@ -27,4 +27,3 @@ services:
   dkan_datastore.logger_channel:
     parent: logger.channel_base
     arguments: ['dkan_datastore']
-

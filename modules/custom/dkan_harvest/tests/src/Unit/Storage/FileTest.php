@@ -15,7 +15,7 @@ use Drupal\dkan_harvest\Load\IFileHelper;
 class FileTest extends DkanTestBase {
 
   /**
-   *
+   * Public.
    */
   public function setUp() {
     parent::setUp();
@@ -34,7 +34,7 @@ class FileTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testConstruct() {
     // Setup.
@@ -67,7 +67,7 @@ class FileTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testRetrieve() {
     // Setup.
@@ -101,7 +101,7 @@ class FileTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testStore() {
     // Setup.
@@ -133,7 +133,7 @@ class FileTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testRemove() {
     // Setup.
@@ -164,7 +164,7 @@ class FileTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testRetrieveAll() {
     // Setup.
@@ -226,7 +226,7 @@ class FileTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testRetrieveAllNoFiles() {
     // Setup.

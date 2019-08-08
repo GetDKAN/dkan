@@ -49,6 +49,8 @@ class Docs implements ContainerInjectionInterface {
   protected $storage;
 
   /**
+   * Inherited.
+   *
    * @{inheritdocs}
    *
    * @codeCoverageIgnore
@@ -123,18 +125,22 @@ class Docs implements ContainerInjectionInterface {
    */
   public function getDatasetSpecific(string $uuid) {
     // Keep only the GET requests.
-    $spec = $this->removeSpecOperations($this->spec, [
-      'post',
-      'put',
-      'patch',
-      'delete',
-    ]);
+    $spec = $this->removeSpecOperations(
+          $this->spec, [
+            'post',
+            'put',
+            'patch',
+            'delete',
+          ]
+      );
     // Remove GET dataset collection endpoint as well as property-related ones.
-    $spec = $this->removeSpecPaths($spec, [
-      '/api/v1/dataset',
-      '/api/v1/{property}',
-      '/api/v1/{property}/{uuid}',
-    ]);
+    $spec = $this->removeSpecPaths(
+          $spec, [
+            '/api/v1/dataset',
+            '/api/v1/{property}',
+            '/api/v1/{property}/{uuid}',
+          ]
+      );
     // Remove the security schemes.
     unset($spec['components']);
     // Remove required parameters, since now part of path.
@@ -167,14 +173,14 @@ class Docs implements ContainerInjectionInterface {
   public function sendResponse(string $jsonSpec) {
     return $this->dkanFactory
       ->newJsonResponse(
-        $jsonSpec,
-        200,
-        [
-          'Content-type' => 'application/json',
-          'Access-Control-Allow-Origin' => '*',
-        ],
-        TRUE
-      );
+              $jsonSpec,
+              200,
+              [
+                'Content-type' => 'application/json',
+                'Access-Control-Allow-Origin' => '*',
+              ],
+              TRUE
+          );
   }
 
   /**

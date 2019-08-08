@@ -8,23 +8,28 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Drush\Commands\DrushCommands;
 
 /**
+ * Class.
+ *
  * @codeCoverageIgnore
  */
 class Commands extends DrushCommands {
 
   /**
+   * Harvest Factory.
    *
    * @var \Drupal\dkan_harvest\Service\Factory
    */
   protected $harvestFactory;
 
   /**
+   * Harvest.
    *
    * @var \Drupal\dkan_harvest\Service\Harvest
    */
   protected $harvestService;
 
   /**
+   * Logger.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
    */

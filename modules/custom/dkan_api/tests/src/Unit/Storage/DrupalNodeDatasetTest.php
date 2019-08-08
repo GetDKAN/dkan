@@ -33,9 +33,9 @@ class DrupalNodeDatasetTest extends DkanTestBase {
     $mock->__construct($mockEntityTypeManager);
 
     $this->assertSame(
-            $mockEntityTypeManager,
-            $this->readAttribute($mock, 'entityTypeManager')
-    );
+          $mockEntityTypeManager,
+          $this->readAttribute($mock, 'entityTypeManager')
+      );
   }
 
   /**
@@ -107,10 +107,12 @@ class DrupalNodeDatasetTest extends DkanTestBase {
       ->setMethods(['createDeferredResourceImport'])
       ->disableOriginalConstructor()
       ->getMock();
-    $this->setActualContainer([
-      'dkan_datastore.manager.datastore_manager_builder_helper' => $mockBuilderHelper,
-      'dkan_datastore.manager.deferred_import_queuer'    => $mockDeferredImporter,
-    ]);
+    $this->setActualContainer(
+          [
+            'dkan_datastore.manager.datastore_manager_builder_helper' => $mockBuilderHelper,
+            'dkan_datastore.manager.deferred_import_queuer'    => $mockDeferredImporter,
+          ]
+      );
 
     $mockResource = $this->createMock(Resource::class);
     $uuid         = uniqid('foo');
@@ -152,18 +154,20 @@ class DrupalNodeDatasetTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $this->setActualContainer([
-      'dkan_datastore.manager.datastore_manager_builder_helper' => $mockBuilderHelper,
-      'dkan_datastore.manager.deferred_import_queuer'    => $mockDeferredImporter,
-    ]);
+    $this->setActualContainer(
+          [
+            'dkan_datastore.manager.datastore_manager_builder_helper' => $mockBuilderHelper,
+            'dkan_datastore.manager.deferred_import_queuer'    => $mockDeferredImporter,
+          ]
+      );
 
     $mockLogger = $this->getMockBuilder(LoggerInterface::class)
-    ->setMethods(['log'])
+      ->setMethods(['log'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    $uuid         = uniqid('foo');
-    $exceptionMessage     = 'something went fubar.';
+    $uuid             = uniqid('foo');
+    $exceptionMessage = 'something went fubar.';
 
     // Expect.
     $mockBuilderHelper->expects($this->once())
@@ -182,13 +186,13 @@ class DrupalNodeDatasetTest extends DkanTestBase {
     $mockLogger->expects($this->exactly(2))
       ->method('log')
       ->withConsecutive(
-        [RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " .$exceptionMessage],
-          // value of trace may change depending of debugger so just assume it's a string.
-          [RfcLogLevel::DEBUG, $this->isType('string')]
-        );
+              [RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " . $exceptionMessage],
+              // Value of trace may change depending of debugger so just assume it's a string.
+              [RfcLogLevel::DEBUG, $this->isType('string')]
+          );
 
     // Assert.
-   $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
+    $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
 
   }
 
@@ -209,9 +213,11 @@ class DrupalNodeDatasetTest extends DkanTestBase {
   public function testFilterHtml($input, $expected) {
     // Setup.
     $mock = $this->getMockBuilder(DrupalNodeDataset::class)
-      ->setMethods([
-        'htmlPurifier',
-      ])
+      ->setMethods(
+              [
+                'htmlPurifier',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -225,6 +231,9 @@ class DrupalNodeDatasetTest extends DkanTestBase {
     $this->assertEquals($expected, $actual);
   }
 
+  /**
+   * Public.
+   */
   public function dataTestFilterHtml() {
     return [
       "Test with integer" => [
@@ -234,12 +243,12 @@ class DrupalNodeDatasetTest extends DkanTestBase {
         "Test string", "purified",
       ],
       "Test with array" => [
-        ["one" => "two", "three" => "four"], ["one" => "purified", "three" => "purified"],
+      ["one" => "two", "three" => "four"], ["one" => "purified", "three" => "purified"],
       ],
       'Test with stdClass' => [
         (object) ['key' => 'value'], (object) ['key' => "purified"],
       ]
-    ];
+      ];
   }
 
 }

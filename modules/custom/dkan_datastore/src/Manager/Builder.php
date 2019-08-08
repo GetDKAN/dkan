@@ -6,7 +6,6 @@ use CsvParser\Parser\Csv;
 use Dkan\Datastore\Manager;
 use Dkan\Datastore\Resource;
 
-
 /**
  * Builder.
  *
@@ -47,6 +46,9 @@ class Builder {
     return $this;
   }
 
+  /**
+   * Public.
+   */
   public function setResourceFromUUid(string $uuid) {
     $this->resource = $this->helper->getResourceFromEntity($uuid);
     return $this;
@@ -69,4 +71,5 @@ class Builder {
 
     return new Manager($resource, $this->helper->getDatabaseForResource($resource), Csv::getParser());
   }
+
 }

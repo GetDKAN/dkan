@@ -20,6 +20,8 @@ use Drupal\Core\Field\FieldItemListInterface;
 class JsonTableFormatter extends FormatterBase {
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {

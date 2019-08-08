@@ -4,4 +4,3 @@ dkan_lunr.search:
    { _controller: '\Drupal\dkan_lunr\Controller\ApiController::search'}
   requirements:
     _permission: 'access content'
-

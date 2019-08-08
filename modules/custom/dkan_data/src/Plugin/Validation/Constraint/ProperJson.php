@@ -17,6 +17,8 @@ class ProperJson extends Constraint {
 
   /**
    * The message that will be shown if the value is not an integer.
+   *
+   * @var string
    */
   public $notProper = '%value is not proper JSON';
 

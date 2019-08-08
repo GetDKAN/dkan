@@ -10,7 +10,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Dkan\Datastore\Resource;
 use Drupal\node\Entity\Node;
 
-
 /**
  * Factory class to instantiate classes that are needed to build the manager.
  *
@@ -34,6 +33,9 @@ class Helper {
     $this->database = $database;
   }
 
+  /**
+   * Public.
+   */
   public function getResourceFromEntity($uuid): Resource {
     $node = $this->loadNodeByUuid($uuid);
     return $this->newResource($node->id(), $this->getResourceFilePathFromNode($node));
@@ -44,10 +46,11 @@ class Helper {
    *
    * @param int $id
    * @param string $filePath
-   * @return Resource
+   *
+   * @return \Dkan\Datastore\Resource
    */
   public function newResource($id, $filePath) {
-      return new Resource($id, $filePath);
+    return new Resource($id, $filePath);
   }
 
   /**
@@ -62,7 +65,7 @@ class Helper {
 
   /**
    *
-   * @param EntityInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    * @return string
    * @throws \Exception if validation of entity or data fails.
    */
@@ -91,12 +94,11 @@ class Helper {
     throw new \Exception("Invalid metadata information or missing file information.");
   }
 
-
   /**
    * @param string $uuid
    *   The UUID of the entity.
    *
-   * @return EntityInterface
+   * @return \Drupal\Core\Entity\EntityInterface
    *
    * @throws \Exception
    */

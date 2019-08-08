@@ -6,11 +6,13 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- *
+ * Class.
  */
 class RouteProvider {
 
   /**
+   * Get property list.
+   *
    * @return array
    *   list of json properties being considered from DKAN json property api
    *   config value.
@@ -23,6 +25,8 @@ class RouteProvider {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function routes() {
@@ -62,19 +66,16 @@ class RouteProvider {
   }
 
   /**
-   * @param string $path
-   * @param string $datasetMethod
-   * @param string $httpVerb
-   * @return Route
+   * Private.
    */
   protected function routeHelper(string $schema, string $path, string $httpVerb, string $datasetMethod) : Route {
     $route = new Route(
-      $path,
-      [
-        '_controller' => '\Drupal\dkan_api\Controller\Dataset::' . $datasetMethod,
-        'schema_id' => $schema,
-      ]
-    );
+          $path,
+          [
+            '_controller' => '\Drupal\dkan_api\Controller\Dataset::' . $datasetMethod,
+            'schema_id' => $schema,
+          ]
+      );
     $route->setMethods([$httpVerb]);
     return $route;
   }

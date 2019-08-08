@@ -20,18 +20,18 @@ class ConfigurationOverriderTest extends DkanTestBase {
   public function dataTestOverrider() {
     $return = [
       "core.entity_form_display.node.data.default" =>
-        [
-          'content' =>
-            [
-              'field_json_metadata' =>
-                [
-                  'settings' =>
-                    [
-                      'json_form' => '{"type": "object"}',
-                    ],
-                ],
-            ],
-        ],
+      [
+        'content' =>
+          [
+            'field_json_metadata' =>
+              [
+                'settings' =>
+                  [
+                    'json_form' => '{"type": "object"}',
+                  ],
+              ],
+          ],
+      ],
     ];
 
     return [
@@ -53,9 +53,11 @@ class ConfigurationOverriderTest extends DkanTestBase {
   public function testOverrider(array $input, array $expected) {
 
     $overrider = $this->getMockBuilder(ConfigurationOverrider::class)
-      ->setMethods([
-        'getSchema',
-      ])
+      ->setMethods(
+              [
+                'getSchema',
+              ]
+          )
       ->getMock();
 
     if (!empty($input)) {
@@ -81,9 +83,11 @@ class ConfigurationOverriderTest extends DkanTestBase {
       ->setMethods(['retrieve'])
       ->disableOriginalConstructor()
       ->getMock();
-    $this->setActualContainer([
-      'dkan_schema.schema_retriever' => $mockSchemaRetriever,
-    ]);
+    $this->setActualContainer(
+          [
+            'dkan_schema.schema_retriever' => $mockSchemaRetriever,
+          ]
+      );
 
     $expected = '{"json":"schema"}';
 

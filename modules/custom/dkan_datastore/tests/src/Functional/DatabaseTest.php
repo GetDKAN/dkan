@@ -12,7 +12,7 @@ use Dkan\Datastore\Storage\Database\Query\Insert;
 class DatabaseTest extends BrowserTestBase {
 
   /**
-   *
+   * Public.
    */
   public function testCreateInsertDrop() {
     $store = new Database(\Drupal::database());

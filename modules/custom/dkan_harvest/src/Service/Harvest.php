@@ -2,11 +2,7 @@
 
 namespace Drupal\dkan_harvest\Service;
 
-use Drupal\dkan_harvest\Storage\File;
 use Harvest\ETL\Factory as EtlFactory;
-use Harvest\Harvester;
-use Harvest\ResultInterpreter;
-use Harvest\Storage\Storage;
 use Drupal\dkan_harvest\Service\Factory as HarvestFactory;
 use Drupal\dkan_common\Service\JsonUtil;
 use Drupal\Component\Datetime\TimeInterface;
@@ -17,24 +13,29 @@ use Drupal\Component\Datetime\TimeInterface;
 class Harvest {
 
   /**
+   * Factory.
    *
-   * @var HarvestFactory
+   * @var \Drupal\dkan_harvest\Service\Factory
    */
   protected $factory;
 
   /**
+   * JsonUtil.
    *
-   * @var JsonUtil
+   * @var \Drupal\dkan_common\Service\JsonUtil
    */
   protected $jsonUtil;
 
   /**
+   * Time.
    *
-   * @var TimeInterface
+   * @var \Drupal\Component\Datetime\TimeInterface
    */
   protected $time;
 
-
+  /**
+   * Public.
+   */
   public function __construct(HarvestFactory $factory, JsonUtil $jsonUtil, TimeInterface $time) {
     $this->factory = $factory;
     $this->jsonUtil = $jsonUtil;
@@ -43,7 +44,9 @@ class Harvest {
 
   /**
    * Get all available harvests.
+   *
    * @return array
+   *   All ids.
    */
   public function getAllHarvestIds() {
 
@@ -56,43 +59,57 @@ class Harvest {
 
   /**
    * Register a new harvest plan.
-   * 
-   * @param \stdClass $plan usually an \stdClass representation.
-   * @return string identifier.
-   * @throws \Exception exceptions may be thrown if validation fails.
+   *
+   * @param object $plan
+   *   usually an \stdClass representation.
+   *
+   * @return string
+   *   Identifier.
+   *
+   * @throws \Exception
+   *   Exceptions may be thrown if validation fails.
    */
-  public function registerHarvest(\stdClass $plan) {
+  public function registerHarvest($plan) {
 
     $this->validateHarvestPlan($plan);
     return $this->factory
-        ->getPlanStorage()
-        ->store(json_encode($plan), $plan->identifier);
+      ->getPlanStorage()
+      ->store(json_encode($plan), $plan->identifier);
   }
 
   /**
    * Deregister harvest.
-   * 
+   *
    * @param string $id
+   *   Id.
+   *
    * @return bool
+   *   Boolean.
    */
   public function deregisterHarvest(string $id) {
     $this->revertHarvest($id);
     return $this->factory
-        ->getPlanStorage()
-        ->remove($id);
+      ->getPlanStorage()
+      ->remove($id);
   }
 
+  /**
+   * Public.
+   */
   public function revertHarvest($id) {
     return $this->factory
-        ->getHarvester($id)
-        ->revert();
+      ->getHarvester($id)
+      ->revert();
   }
 
+  /**
+   * Public.
+   */
   public function runHarvest($id) {
     $result = $this->factory
       ->getHarvester($id)
       ->harvest();
-    // store result of the run.
+    // Store result of the run.
     $this->factory
       ->getStorage($id, "run")
       ->store(json_encode($result), $this->time->getCurrentTime());
@@ -101,33 +118,38 @@ class Harvest {
   }
 
   /**
-   *      *
-   * @param mixed $id
-   * @param mixed $runId
-   * @return mixed FALSE if no matching runID is found.
+   * Get Harvest Run Info.
+   *
+   * @return mixed
+   *   FALSE if no matching runID is found.
    */
   public function getHarvestRunInfo($id, $runId) {
     $allRuns = $this->getAllHarvestRunInfo($id);
     return isset($allRuns[$runId]) ? $allRuns[$runId] : FALSE;
   }
 
+  /**
+   * Public.
+   */
   public function getAllHarvestRunInfo($id) {
     return $this->jsonUtil
-        ->decodeArrayOfJson(
+      ->decodeArrayOfJson(
           $this->factory
-          ->getStorage($id, 'run')
-          ->retrieveAll()
+            ->getStorage($id, 'run')
+            ->retrieveAll()
     );
   }
 
   /**
    * Proxy to Etl Factory to validate harvest plan.
-   * 
-   * @todo is calling a static class.
-   * @param \stdClass $plan
-   * @return bool Throws exceptions instead of false it seems.
+   *
+   * @param object $plan
+   *   Plan.
+   *
+   * @return bool
+   *   Throws exceptions instead of false it seems.
    */
-  public function validateHarvestPlan(\stdClass $plan) {
+  public function validateHarvestPlan($plan) {
     return EtlFactory::validateHarvestPlan($plan);
   }
 

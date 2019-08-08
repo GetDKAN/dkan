@@ -10,8 +10,10 @@ namespace Drupal\dkan_harvest\Load;
 trait FileHelperTrait {
 
   /**
+   * Private.
    *
    * @return IFileHelper
+   *   FileHelper.
    */
   protected function getFileHelper() {
     return \Drupal::service('dkan_harvest.file_helper');

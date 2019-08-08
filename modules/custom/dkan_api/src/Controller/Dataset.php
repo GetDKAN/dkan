@@ -12,12 +12,15 @@ class Dataset extends Api {
   use \Drupal\dkan_common\Util\ParentCallTrait;
 
   /**
+   * Dataset.
    *
    * @var \Drupal\dkan_api\Storage\DrupalNodeDataset
    */
   protected $nodeDataset;
 
   /**
+   * Inherited.
+   *
    * {@inheritdocs}.
    */
   public function __construct(ContainerInterface $container) {
@@ -28,7 +31,8 @@ class Dataset extends Api {
   /**
    * Get Storage.
    *
-   * @return \Drupal\dkan_api\Storage\DrupalNodeDataset Dataset
+   * @return \Drupal\dkan_api\Storage\DrupalNodeDataset
+   *   Dataset
    */
   protected function getStorage() {
     if (!isset($this->schemaId)) {
@@ -55,7 +59,7 @@ class Dataset extends Api {
       // @codeCoverageIgnoreEnd
     }
 
-    /** @var \Drupal\dkan_schema\SchemaRetriever $retriever */
+    /* @var \Drupal\dkan_schema\SchemaRetriever $retriever */
     $retriever = $this->container
       ->get('dkan_schema.schema_retriever');
     return $retriever->retrieve('dataset');

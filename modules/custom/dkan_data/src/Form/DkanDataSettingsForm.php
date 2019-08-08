@@ -14,6 +14,8 @@ use Drupal\Core\Form\FormStateInterface;
 class DkanDataSettingsForm extends ConfigFormBase {
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
@@ -23,6 +25,8 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function getFormId() {
@@ -30,6 +34,8 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
@@ -46,6 +52,8 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
+   * Retrieve schema properties.
+   *
    * @return array
    *   List of schema properties' title and description.
    */
@@ -70,6 +78,8 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {

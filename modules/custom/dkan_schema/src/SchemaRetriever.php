@@ -5,25 +5,26 @@ namespace Drupal\dkan_schema;
 use Contracts\Retriever;
 
 /**
- *
+ * Class.
  */
 class SchemaRetriever implements Retriever {
 
   /**
+   * Directory.
    *
    * @var string
    */
   protected $directory;
 
   /**
-   *
+   * Public.
    */
   public function __construct() {
     $this->findSchemaDirectory();
   }
 
   /**
-   *
+   * Public.
    */
   public function getAllIds() {
     return [
@@ -32,30 +33,29 @@ class SchemaRetriever implements Retriever {
   }
 
   /**
-   *
+   * Public.
    */
   public function getSchemaDirectory() {
     return $this->directory;
   }
 
   /**
-   *
+   * Public.
    */
   public function retrieve(string $id): ?string {
 
     $filename = $this->getSchemaDirectory() . "/collections/{$id}.json";
 
-    if (
-            in_array($id, $this->getAllIds())
-            && is_readable($filename)
-        ) {
+    if (in_array($id, $this->getAllIds())
+          && is_readable($filename)
+      ) {
       return file_get_contents($filename);
     }
     throw new \Exception("Schema {$id} not found.");
   }
 
   /**
-   *
+   * Private.
    */
   protected function findSchemaDirectory() {
 
@@ -64,10 +64,9 @@ class SchemaRetriever implements Retriever {
     if (is_dir($drupalRoot . "/schema")) {
       $this->directory = $drupalRoot . "/schema";
     }
-    elseif (
-      ($directory = $this->getDefaultSchemaDirectory())
-       && is_dir($directory)
-    ) {
+    elseif (($directory = $this->getDefaultSchemaDirectory())
+          && is_dir($directory)
+      ) {
       $this->directory = $directory;
     }
     else {
@@ -80,11 +79,10 @@ class SchemaRetriever implements Retriever {
    *
    * @todo There may be easier way to do this and without hardcoding paths.
    *
-   * @return string path.
+   * @return string
+   *   Path.
    */
   protected function getDefaultSchemaDirectory() {
-
-    // Try to determine root `info.yml` of dkan profile.
     /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
     $extensionList = \Drupal::service('extension.list.profile');
     $infoFile = $extensionList->getPathname('dkan2');

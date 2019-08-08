@@ -27,14 +27,14 @@ class FrontEndControllerTest extends DkanTestBase {
   public function dataMethodsThatJustCallBuildPage() {
 
     return [
-        ['about'],
-        ['home'],
-        ['search'],
-        ['api'],
-        ['groups'],
-        ['org'],
-        ['dataset'],
-        ['distribution'],
+      ['about'],
+      ['home'],
+      ['search'],
+      ['api'],
+      ['groups'],
+      ['org'],
+      ['dataset'],
+      ['distribution'],
     ];
   }
 
@@ -87,10 +87,12 @@ class FrontEndControllerTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $this->setActualContainer([
-      'interra_frontend.interra_page' => $mockInterraPage,
-      'dkan.factory'                  => $mockFactory,
-    ]);
+    $this->setActualContainer(
+          [
+            'interra_frontend.interra_page' => $mockInterraPage,
+            'dkan.factory'                  => $mockFactory,
+          ]
+      );
 
     $mockRequest = $this->createMock(Request::class);
     $mockResponse = $this->createMock(Response::class);
@@ -130,10 +132,12 @@ class FrontEndControllerTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $this->setActualContainer([
-      'interra_frontend.interra_page' => $mockInterraPage,
-      'dkan.factory'                  => $mockFactory,
-    ]);
+    $this->setActualContainer(
+          [
+            'interra_frontend.interra_page' => $mockInterraPage,
+            'dkan.factory'                  => $mockFactory,
+          ]
+      );
 
     $mockRequest = $this->createMock(Request::class);
 

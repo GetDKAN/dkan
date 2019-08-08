@@ -65,11 +65,12 @@ class Commands extends DrushCommands {
     try {
       // Load metadata with both identifier and data for this request.
       drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
-$this->datastoreService->drop($uuid);
+      $this->datastoreService->drop($uuid);
     }
     catch (\Exception $e) {
       $this->logger->error("We were not able to load the entity with uuid {$uuid}");
       $this->logger->debug($e->getMessage());
     }
   }
+
 }

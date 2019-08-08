@@ -8,8 +8,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Trait to sideload some utilities into other Unit tests.
- *
- * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
 trait DkanUnitTestTrait {
 
@@ -111,6 +109,8 @@ trait DkanUnitTestTrait {
   }
 
   /**
+   * Set actual container.
+   *
    * Creates and set an actual service container for those pesky instances where
    * static \Drupal methods are used.
    *
@@ -118,6 +118,7 @@ trait DkanUnitTestTrait {
    *   Key => service array.
    *
    * @return \Symfony\Component\DependencyInjection\ContainerBuilder
+   *   Container builder.
    */
   protected function setActualContainer(array $keyValue) {
     $container = new ContainerBuilder();

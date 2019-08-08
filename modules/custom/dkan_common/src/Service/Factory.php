@@ -2,11 +2,10 @@
 
 namespace Drupal\dkan_common\Service;
 
+use Contracts\Storage as ContractsStorageInterface;
+use Sae\Sae;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Sae\Sae;
-use Contracts\Storage as ContractsStorageInterface;
 
 /**
  * Factory to generate DKAN API responses.
