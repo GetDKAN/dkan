@@ -19,11 +19,9 @@ class DeferredImportQueuerTest extends DkanTestBase {
   public function testCreateDeferredResourceImport() {
     // Setup.
     $mock = $this->getMockBuilder(DeferredImportQueuer::class)
-      ->setMethods(
-              [
-              'getQueue'
-              ]
-          )
+      ->setMethods([
+        'getQueue',
+      ])
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -88,11 +86,9 @@ class DeferredImportQueuerTest extends DkanTestBase {
   public function testCreateDeferredResourceImportOnException() {
     // Setup.
     $mock = $this->getMockBuilder(DeferredImportQueuer::class)
-      ->setMethods(
-              [
-              'getQueue'
-              ]
-          )
+      ->setMethods([
+        'getQueue',
+      ])
       ->disableOriginalConstructor()
       ->getMock();
 

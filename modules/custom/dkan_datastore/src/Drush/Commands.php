@@ -2,17 +2,14 @@
 
 namespace Drupal\dkan_datastore\Drush;
 
-use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_data\ValueReferencer;
-use Dkan\Datastore\Resource;
 
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 use Drush\Commands\DrushCommands;
-use Drupa\dkan_datastore\Service\Datastore;
-use Drupal\Core\Logger\LoggerChannelInterface;
 
 /**
+ * Drush commands for controlling the datastore.
+ *
  * @codeCoverageIgnore
  */
 class Commands extends DrushCommands {

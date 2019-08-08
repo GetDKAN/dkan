@@ -34,7 +34,10 @@ class Helper {
   }
 
   /**
-   * Public.
+   * Given a Drupal node UUID, will create a resource object.
+   *
+   * @param string $uuid
+   *   The UUID for a resource node.
    */
   public function getResourceFromEntity($uuid): Resource {
     $node = $this->loadNodeByUuid($uuid);
@@ -45,16 +48,25 @@ class Helper {
    * Creates a new resource object.
    *
    * @param int $id
+   *   ID for new resource.
    * @param string $filePath
+   *   Filepath for new resource.
    *
    * @return \Dkan\Datastore\Resource
+   *   A full resource object for the datastore.
    */
   public function newResource($id, $filePath) {
     return new Resource($id, $filePath);
   }
 
   /**
+   * Sets the resource for the database object.
+   *
+   * This will allow the object to provide the correct database table for
+   * storage.
+   *
    * @return \Drupal\dkan_datastore\Storage\Database
+   *   A datastore database storage object.
    *
    * @codeCoverageIgnore
    */
@@ -64,10 +76,16 @@ class Helper {
   }
 
   /**
+   * Given a resource node object, return the path to the resource file.
    *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
+   * @param \Drupal\node\Entity\Node $node
+   *   A Drupal node entity (should be of resource type).
+   *
    * @return string
-   * @throws \Exception if validation of entity or data fails.
+   *   File path.
+   *
+   * @throws \Exception
+   *   Throws exception if validation of entity or data fails.
    */
   private function getResourceFilePathFromNode(Node $node): string {
 
@@ -95,10 +113,13 @@ class Helper {
   }
 
   /**
+   * Load a node object by its UUID.
+   *
    * @param string $uuid
    *   The UUID of the entity.
    *
    * @return \Drupal\Core\Entity\EntityInterface
+   *   A node object.
    *
    * @throws \Exception
    */

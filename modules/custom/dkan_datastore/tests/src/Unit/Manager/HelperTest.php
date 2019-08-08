@@ -2,15 +2,10 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Manager;
 
-use Dkan\Datastore\Manager;
-use Dkan\Datastore\Resource;
-use Drupal\Core\Entity\Entity;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemList;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\DataType\FieldItem;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_datastore\Manager\Helper;
 use Drupal\dkan_datastore\Storage\Database;
 use Drupal\node\Entity\Node;

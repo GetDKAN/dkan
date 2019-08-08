@@ -34,21 +34,20 @@ class DatastoreTest extends DkanTestBase {
     $mockDatastoreHelper   = $this->createMock(DatastoreHelper::class);
 
     // Assert.
-
     $mock->__construct($mockEntityTypeManager, $mockLogger, $mockDatastoreHelper);
 
     $this->assertSame(
-          $mockEntityTypeManager,
-          $this->readAttribute($mock, 'entityTypeManager')
-      );
+            $mockEntityTypeManager,
+            $this->readAttribute($mock, 'entityTypeManager')
+    );
     $this->assertSame(
-          $mockLogger,
-          $this->readAttribute($mock, 'logger')
-      );
+            $mockLogger,
+            $this->readAttribute($mock, 'logger')
+    );
     $this->assertSame(
-          $mockDatastoreHelper,
-          $this->readAttribute($mock, 'helper')
-      );
+            $mockDatastoreHelper,
+            $this->readAttribute($mock, 'helper')
+    );
   }
 
   /**
@@ -57,14 +56,12 @@ class DatastoreTest extends DkanTestBase {
   public function testImportNonDeferred() {
     // Setup.
     $mock = $this->getMockBuilder(Datastore::class)
-      ->setMethods(
-              [
-                'getDistributionsFromUuid',
-                'queueImport',
-                'getResource',
-                'processImport',
-              ]
-          )
+      ->setMethods([
+        'getDistributionsFromUuid',
+        'queueImport',
+        'getResource',
+        'processImport',
+      ])
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -103,14 +100,12 @@ class DatastoreTest extends DkanTestBase {
   public function testImportDeferred() {
     // Setup.
     $mock = $this->getMockBuilder(Datastore::class)
-      ->setMethods(
-              [
-                'getDistributionsFromUuid',
-                'queueImport',
-                'getResource',
-                'processImport',
-              ]
-          )
+      ->setMethods([
+        'getDistributionsFromUuid',
+        'queueImport',
+        'getResource',
+        'processImport',
+      ])
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -153,12 +148,10 @@ class DatastoreTest extends DkanTestBase {
   public function testDrop() {
     // Setup.
     $mock = $this->getMockBuilder(Datastore::class)
-      ->setMethods(
-              [
-                'getDistributionsFromUuid',
-                'processDrop',
-              ]
-          )
+      ->setMethods([
+        'getDistributionsFromUuid',
+        'processDrop',
+      ])
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -198,11 +191,9 @@ class DatastoreTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $this->setActualContainer(
-          [
-            'dkan_datastore.manager.deferred_import_queuer' => $mockDeferredImportQueuer,
-          ]
-      );
+    $this->setActualContainer([
+      'dkan_datastore.manager.deferred_import_queuer' => $mockDeferredImportQueuer,
+    ]);
 
     $mockLogger = $this->getMockBuilder(LoggerChannelInterface::class)
       ->setMethods(['notice'])
@@ -315,12 +306,10 @@ class DatastoreTest extends DkanTestBase {
       ->getMock();
 
     $mockHelper = $this->getMockBuilder(DatastoreHelper::class)
-      ->setMethods(
-              [
-                'loadNodeByUuid',
-                'newResource',
-              ]
-          )
+      ->setMethods([
+        'loadNodeByUuid',
+        'newResource',
+      ])
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -337,11 +326,11 @@ class DatastoreTest extends DkanTestBase {
     $identifier   = uniqid('identifier');
     $downloadURL  = uniqid('downloadURL');
     $distribution = (object) [
-                  'identifier' => $identifier,
-                  'data'       => (object) [
-                    'downloadURL' => $downloadURL,
-                  ]
-      ];
+      'identifier' => $identifier,
+      'data'       => (object) [
+        'downloadURL' => $downloadURL,
+      ],
+    ];
 
     // Expect.
     $mockHelper->expects($this->once())
@@ -374,27 +363,22 @@ class DatastoreTest extends DkanTestBase {
       ->getMock();
 
     $mockBuilder = $this->getMockBuilder(Builder::class)
-      ->setMethods(
-              [
-                'setResource',
-                'build',
-              ]
-          )
+      ->setMethods([
+        'setResource',
+        'build',
+      ])
       ->disableOriginalConstructor()
       ->getMock();
 
-    $this->setActualContainer(
-          [
-            'dkan_datastore.manager.builder' => $mockBuilder,
-          ]
-      );
+    $this->setActualContainer([
+      'dkan_datastore.manager.builder' => $mockBuilder,
+    ]);
 
     $mockResource = $this->createMock(Resource::class);
 
     $mockDatastoreManager = $this->createMock(Manager::class);
 
     // Expect.
-
     $mockBuilder->expects($this->once())
       ->method('setResource')
       ->with($mockResource)

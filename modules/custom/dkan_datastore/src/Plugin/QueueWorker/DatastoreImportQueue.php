@@ -27,9 +27,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
   const STALL_LIMIT = 5;
 
   /**
-   * {@inheritdocs}.
-   *
-   * @todo refactor to reduce CRAP score.
+   * {@inheritdoc}
    */
   public function processItem($data) {
 
@@ -73,8 +71,10 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * Sanitise input data for item processing.
    *
    * @param array $data
+   *   Incoming data array.
    *
    * @return array
+   *   Sanatized version of data array.
    */
   protected function sanitizeData(array $data): array {
 
@@ -101,9 +101,11 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * @param \Dkan\Datastore\Manager\IManager $manager
    *   Import manager.
    *
-   * @return array Data with updated state info.
+   * @return array
+   *   Data with updated state info.
    *
-   * @throws \Drupal\Core\Queue\SuspendQueueException If the state is invalid.
+   * @throws SuspendQueueException
+   *   If the state is invalid.
    */
   protected function refreshQueueState(array $data, IManager $manager): array {
     // Update the state as it were.
@@ -130,23 +132,31 @@ class DatastoreImportQueue extends QueueWorkerBase {
   }
 
   /**
-   * Perfoms cleanup based on iput data.
+   * Perfoms cleanup based on input data.
+   *
+   * @todo Document more clearly cleanup/sanitize.
    *
    * @param array $data
+   *   Data array to clean up.
    */
   protected function cleanup(array $data) {
     if ($data['file_is_temporary']) {
-      \Drupal::service('file_system')
-        ->unlink($data['file_path']);
+      \Drupal::service('file_system')->unlink($data['file_path']);
     }
   }
 
   /**
+   * Create a datastore manager object.
    *
    * @param mixed $resourceId
+   *   Node ID for resource node.
    * @param string $filePath
+   *   File path for resource.
    * @param array $importConfig
+   *   Import configuration. @todo Document better.
+   *
    * @return \Dkan\Datastore\Manager\IManager
+   *   Datastore manager object.
    */
   protected function getManager($resourceId, string $filePath, array $importConfig) {
     /** @var \Drupal\dkan_datastore\Manager\Builder $managerBuilder */
@@ -168,15 +178,14 @@ class DatastoreImportQueue extends QueueWorkerBase {
   /**
    * Fixes some default import config.
    *
-   * $importConfig has the following valid defaults:
-   *
-   * - 'delimiter' => ",",
-   * - 'quote'     => '"',
-   * - 'escape'    => "\\",
-   *
    * @param array $importConfig
+   *   Import configuration array containging:
+   *   - delimiter:  CSV delimiter (",")
+   *   - quote:  Field wrapper ('"')
+   *   - escape  Escape character ("\\")
    *
-   * @return array Sanitised properties.
+   * @return array
+   *   Sanitised properties.
    *
    * @todo this kind of validation should be moved to datastore manager.
    */
@@ -191,7 +200,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
   }
 
   /**
-   *
+   * Log a datastore event.
    */
   protected function log($level, $message, array $context = []) {
     $this->getLogger($this->getPluginId())
@@ -202,9 +211,12 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * Requeues the job with extra state information.
    *
    * @param array $data
-   *   queue data.
+   *   Queue data.
    *
    * @return mixed
+   *   Queue ID or false if unsuccessfull.
+   *
+   * @todo: Clarify return value. Documentation suggests it should return ID.
    */
   protected function requeue(array $data) {
     return \Drupal::service('queue')

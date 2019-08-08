@@ -1,24 +1,27 @@
-@import url('https://fonts.googleapis.com/css?family=Lato:400,700|Varela+Round&display=swap');
-
-pre, tt, code { 
-  color: #E74C3C;
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700|Varela+Round&display=swap'); pre,
+tt,
+code {
+  color: #e74c3c;
   padding: 2px 5px;
   background-color: #fafafa;
   border: solid 1px #e1e4e5;
 }
-a, a.reference {
+a,
+a.reference {
   color: #0071bc;
   border: none;
 }
-a:hover, a.reference:hover {
+a:hover,
+a.reference:hover {
   color: #205493;
   border-bottom: 1px solid #205493;
 }
 h1.logo {
   display: none;
 }
-h1,h2 { 
-  color: #0071bc 
+h1,
+h2 {
+  color: #0071bc
 }
 h3 {
   color: #112e51;
@@ -92,7 +95,7 @@ div.admonition p.admonition-title {
 }
 div.admonition p.admonition-title:before {
   font-family: "Font Awesome 5 Free";
-  content:"\f05a";
+  content: "\f05a";
   padding-right: .5rem;
 }
 div.admonition.warning p.admonition-title:before {
@@ -113,12 +116,12 @@ table.align-center {
 }
 .slack:before {
   font-family: "Font Awesome 5 Brands";
-  content:"\f198";
+  content: "\f198";
   padding-right: .5rem;
 }
 .github:before {
   font-family: "Font Awesome 5 Brands";
-  content:"\f09b";
+  content: "\f09b";
   padding-right: .5rem;
 }
 .medium:before {
