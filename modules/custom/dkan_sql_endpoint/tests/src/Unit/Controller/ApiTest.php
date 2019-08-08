@@ -123,7 +123,13 @@ class ApiTest extends DkanTestBase {
 
     $controller = $this->getMockBuilder(Api::class)
       ->disableOriginalConstructor()
-      ->setMethods(['getParser', 'getDatabase', 'getQueryObject', 'response', 'getDatastoreManagerBuilderHelper'])
+      ->setMethods([
+        'getParser',
+        'getDatabase',
+        'getQueryObject',
+        'response',
+        'getDatastoreManagerBuilderHelper',
+      ])
       ->getMock();
 
     $controller->method('getParser')->willReturn(new SqlParser());

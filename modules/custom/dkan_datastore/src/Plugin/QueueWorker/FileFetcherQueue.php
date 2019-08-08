@@ -18,7 +18,7 @@ use Drupal\Core\Queue\QueueInterface;
 class FileFetcherQueue extends QueueWorkerBase {
 
   /**
-   * {@inheritdocs}.
+   * {@inheritdoc}
    */
   public function processItem($data) {
     $uuid         = $data['uuid'];
@@ -46,16 +46,18 @@ class FileFetcherQueue extends QueueWorkerBase {
   }
 
   /**
-   * Tests if the file want to use is usable attempt to make it usable.
+   * Tests if the file we want to use is usable; attempt to make it usable.
    *
    * @param string $uuid
-   *   UUID.
+   *   UUID for resource node.
    * @param string $filePath
-   *   file.
+   *   File path.
    *
-   * @return string usable file path,
+   * @return string
+   *   Usable file path,
    *
-   * @throws \Exception If fails to get a usable file.
+   * @throws \Exception
+   *   Throws exception if fails to get a usable file.
    */
   protected function fetchFile(string $uuid, string $filePath): string {
 
@@ -84,21 +86,36 @@ class FileFetcherQueue extends QueueWorkerBase {
   }
 
   /**
+   * Create PHP SplFileObject to work with files.
    *
    * @param string $filePath
-   * @param string $filePath
+   *   Path to file we want to load as SplFileObject.
+   * @param string $mode
+   *   An fopen file mode.
+   *
    * @return \SplFileObject
+   *   An SplFileObject.
+   *
+   * @see \SplFileObject::__construct()
+   * @see \fopen()
    */
   protected function getFileObject($filePath, $mode = 'r') {
     return new \SplFileObject($filePath, $mode);
   }
 
   /**
+   * Copy using source and destination SplFileObjects.
    *
    * @param \SplFileObject $source
+   *   Source file.
    * @param \SplFileObject $dest
+   *   File object with destination path.
+   *
    * @return int
-   * @throws RuntimeException If either read or write fails
+   *   Total bytes written.
+   *
+   * @throws RuntimeException
+   *   If either read or write fails.
    */
   protected function fileCopy(\SplFileObject $source, \SplFileObject $dest) {
 
@@ -131,6 +148,7 @@ class FileFetcherQueue extends QueueWorkerBase {
    *   UUID.
    *
    * @return string
+   *   Temporary file path.
    */
   protected function getTemporaryFile(string $uuid): string {
     return $this->getTemporaryDirectory() . '/dkan-resource-' . $this->sanitizeString($uuid);
@@ -140,8 +158,10 @@ class FileFetcherQueue extends QueueWorkerBase {
    * Determine if the file is in the temporary fetched file.
    *
    * @param string $filePath
+   *   File path to test.
    *
    * @return bool
+   *   True if $filepath is a temporary path, false if not.
    */
   protected function isFileTemporary(string $filePath): bool {
     return 0 === strpos($filePath, $this->getTemporaryDirectory() . '/dkan-resource-');
@@ -151,6 +171,7 @@ class FileFetcherQueue extends QueueWorkerBase {
    * Returns the temporary directory used by drupal.
    *
    * @return string
+   *   Path to temporary directory.
    */
   protected function getTemporaryDirectory() {
     return file_directory_temp();
@@ -160,6 +181,7 @@ class FileFetcherQueue extends QueueWorkerBase {
    * Get the queue for the datastore_import.
    *
    * @return \Drupal\Core\Queue\QueueInterface
+   *   Queue object.
    */
   public function getImporterQueue(): QueueInterface {
     return \Drupal::service('queue')
@@ -167,9 +189,13 @@ class FileFetcherQueue extends QueueWorkerBase {
   }
 
   /**
+   * Remove non-lowercase-alphanumeric characters.
    *
    * @param string $string
+   *   String to sanatize.
+   *
    * @return string
+   *   Sanatized string.
    */
   protected function sanitizeString($string) {
     return preg_replace('~[^a-z0-9]+~', '_', strtolower($string));

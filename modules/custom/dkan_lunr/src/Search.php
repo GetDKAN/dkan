@@ -94,7 +94,6 @@ class Search {
 
     $build->addPipeline('LunrPHP\LunrDefaultPipelines::trimmer');
     $build->addPipeline('LunrPHP\LunrDefaultPipelines::stop_word_filter');
-
     $datasets = $this->getDatasets();
     foreach ($datasets as $dataset) {
       $doc = [];
@@ -120,7 +119,7 @@ class Search {
    */
   public function docs() {
     $datasets = [];
-    /**@var Service\DatasetModifier $dataset_modifier */
+    /* @var Service\DatasetModifier $dataset_modifier */
     $dataset_modifier = \Drupal::service('dkan_lunr.dataset_modifier');
     foreach ($this->getDatasets() as $dataset) {
       $datasets[] = $dataset_modifier->modifyDataset($dataset);
@@ -147,7 +146,7 @@ class Search {
    *   Array of dataset objects.
    */
   protected function getDatasets() {
-    /**@var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
+    /* @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
     $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
 
     // Engine returns array of json strings.

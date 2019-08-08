@@ -4,9 +4,7 @@ namespace Drupal\Tests\dkan_datastore\Unit\Plugin\QueueWorker;
 
 use Drupal\dkan_datastore\Plugin\QueueWorker\FileFetcherQueue;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Dkan\Datastore\Resource;
 use Drupal\Core\Queue\QueueInterface;
-use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Queue\SuspendQueueException;
 
 /**
@@ -110,13 +108,11 @@ class FileFetcherQueueTest extends DkanTestBase {
       ->getMock();
 
     $mockSource = $this->getMockBuilder(\SplFileObject::class)
-      ->setMethods(
-              [
-                'isFile',
-              ]
-          )
-        // Throws logicexception otherwise
-        // see https://stackoverflow.com/a/24425928
+      ->setMethods([
+        'isFile',
+      ])
+      // Throws logicexception otherwise
+      // see https://stackoverflow.com/a/24425928
       ->setConstructorArgs(['php://memory'])
       ->getMock();
 
@@ -177,12 +173,10 @@ class FileFetcherQueueTest extends DkanTestBase {
       ->getMock();
 
     $mockSource = $this->getMockBuilder(\SplFileObject::class)
-      ->setMethods(
-              [
-                'isFile',
-              ]
-          )
-        // Throws logicexception otherwise.
+      ->setMethods([
+        'isFile',
+      ])
+      // Throws logicexception otherwise.
       ->setConstructorArgs(['php://memory'])
       ->getMock();
 
@@ -191,7 +185,6 @@ class FileFetcherQueueTest extends DkanTestBase {
     $isFile   = TRUE;
 
     // Expect.
-
     $mock->expects($this->once())
       ->method('getFileObject')
       ->with($filePath)
@@ -232,7 +225,6 @@ class FileFetcherQueueTest extends DkanTestBase {
     $exceptionMessage = 'something went wrong';
 
     // Expect.
-
     $mock->expects($this->once())
       ->method('getFileObject')
       ->with($filePath)
@@ -254,23 +246,19 @@ class FileFetcherQueueTest extends DkanTestBase {
       ->getMock();
 
     $mockSource = $this->getMockBuilder(\SplFileObject::class)
-      ->setMethods(
-              [
-                'valid',
-                'fread',
-              ]
-          )
-        // Throws logicexception otherwise
-        // see https://stackoverflow.com/a/24425928
+      ->setMethods([
+        'valid',
+        'fread',
+      ])
+      // Throws logicexception otherwise
+      // see https://stackoverflow.com/a/24425928
       ->setConstructorArgs(['php://memory'])
       ->getMock();
 
     $mockDest = $this->getMockBuilder(\SplFileObject::class)
-      ->setMethods(
-              [
-              'fwrite'
-              ]
-          )
+      ->setMethods([
+        'fwrite',
+      ])
       ->setConstructorArgs(['php://memory'])
       ->getMock();
 
@@ -294,10 +282,10 @@ class FileFetcherQueueTest extends DkanTestBase {
       ->method('valid')
         // 2 valid loop, one to exit.
       ->willReturnOnConsecutiveCalls(
-              TRUE,
-              TRUE,
-              FALSE
-          );
+        TRUE,
+        TRUE,
+        FALSE
+    );
 
     $mockSource->expects($this->exactly(2))
       ->method('fread')
@@ -334,24 +322,20 @@ class FileFetcherQueueTest extends DkanTestBase {
       ->getMock();
 
     $mockSource = $this->getMockBuilder(\SplFileObject::class)
-      ->setMethods(
-              [
-                'valid',
-                'fread',
-                'getPath',
-              ]
-          )
-        // Throws logicexception otherwise
-        // see https://stackoverflow.com/a/24425928
+      ->setMethods([
+        'valid',
+        'fread',
+        'getPath',
+      ])
+      // Throws logicexception otherwise
+      // see https://stackoverflow.com/a/24425928
       ->setConstructorArgs(['php://memory'])
       ->getMock();
 
     $mockDest = $this->getMockBuilder(\SplFileObject::class)
-      ->setMethods(
-              [
-              'fwrite'
-              ]
-          )
+      ->setMethods([
+        'fwrite',
+      ])
       ->setConstructorArgs(['php://memory'])
       ->getMock();
 
@@ -359,7 +343,6 @@ class FileFetcherQueueTest extends DkanTestBase {
     $read = FALSE;
 
     // Expect.
-
     $mockSource->expects($this->once())
       ->method('valid')
       ->willReturn(TRUE);
@@ -393,14 +376,12 @@ class FileFetcherQueueTest extends DkanTestBase {
       ->getMock();
 
     $mockSource = $this->getMockBuilder(\SplFileObject::class)
-      ->setMethods(
-              [
-                'valid',
-                'fread',
-              ]
-          )
-        // Throws logicexception otherwise
-        // see https://stackoverflow.com/a/24425928
+      ->setMethods([
+        'valid',
+        'fread',
+      ])
+      // Throws logicexception otherwise
+      // see https://stackoverflow.com/a/24425928
       ->setConstructorArgs(['php://memory'])
       ->getMock();
 
@@ -414,8 +395,8 @@ class FileFetcherQueueTest extends DkanTestBase {
       ->setConstructorArgs(['php://memory'])
       ->getMock();
 
-    $path  = uniqid('path');
-    $read  = uniqid('read');
+    $path = uniqid('path');
+    $read = uniqid('read');
     $write = 0;
 
     // Expect.
@@ -485,16 +466,16 @@ class FileFetcherQueueTest extends DkanTestBase {
     $tmpDir = uniqid('/temp/foo');
     return [
       [
-      $tmpDir . uniqid('/dkan-resource-'),
-      $tmpDir,
-      TRUE
+        $tmpDir . uniqid('/dkan-resource-'),
+        $tmpDir,
+        TRUE,
       ],
       [
-      $tmpDir . uniqid('/not-true'),
-      $tmpDir,
-      FALSE
-      ]
-      ];
+        $tmpDir . uniqid('/not-true'),
+        $tmpDir,
+        FALSE,
+      ],
+    ];
   }
 
   /**

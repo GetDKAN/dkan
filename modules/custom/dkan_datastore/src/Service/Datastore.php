@@ -13,26 +13,12 @@ use Dkan\Datastore\Resource;
  */
 class Datastore {
 
-  /**
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
   protected $entityTypeManager;
-
-  /**
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
   protected $logger;
-
-  /**
-   *
-   * @var \Drupal\dkan_datastore\Manager\Helper
-   */
   protected $helper;
 
   /**
-   * Public.
+   * Constructor for datastore service.
    */
   public function __construct(
             EntityTypeManagerInterface $entityTypeManager,
@@ -45,7 +31,12 @@ class Datastore {
   }
 
   /**
-   * Public.
+   * Start import process for a resource, provided by UUID.
+   *
+   * @param string $uuid
+   *   UUID for resource node.
+   * @param bool $deferred
+   *   Send to the queue for later? Will import immediately if FALSE.
    */
   public function import($uuid, $deferred = FALSE) {
     foreach ($this->getDistributionsFromUuid($uuid) as $distribution) {
@@ -59,7 +50,11 @@ class Datastore {
   }
 
   /**
-   * Public.
+   * Drop all datastores for a given node.
+   *
+   * @param string $uuid
+   *   UUID for resource or dataset node. If dataset, will drop datastore for
+   *   all connected resources.
    */
   public function drop($uuid) {
 
@@ -69,9 +64,14 @@ class Datastore {
   }
 
   /**
+   * Queue a resource for import.
    *
+   * @param string $uuid
+   *   Resource node UUID.
+   * @param Dkan\Datastore\Resource $resource
+   *   Datastore resource object.
    */
-  protected function queueImport($uuid, $resource) {
+  protected function queueImport($uuid, Resource $resource) {
     /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
     $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
     $queueId          = $deferredImporter->createDeferredResourceImport($uuid, $resource);
@@ -79,7 +79,10 @@ class Datastore {
   }
 
   /**
+   * Start a datastore import process for a distribution object.
    *
+   * @param object $distribution
+   *   Metadata distribution object decoded from JSON. Must have an $identifier.
    */
   protected function processImport($distribution) {
     $datastore = $this->getDatastore($this->getResource($distribution));
@@ -87,7 +90,10 @@ class Datastore {
   }
 
   /**
+   * Drop a datastore for a given distribution object.
    *
+   * @param object $distribution
+   *   Metadata distribution object decoded from JSON. Must have an $identifier.
    */
   protected function processDrop($distribution) {
     $datastore = $this->getDatastore($this->getResource($distribution));
@@ -95,7 +101,13 @@ class Datastore {
   }
 
   /**
+   * Create a datastore Resource object from distribution metadata.
    *
+   * @param object $distribution
+   *   Metadata distribution object decoded from JSON. Must have an $identifier.
+   *
+   * @return Dkan\Datastore\Resource
+   *   Resource object.
    */
   protected function getResource($distribution) {
     $distribution_node = $this->helper
@@ -106,10 +118,16 @@ class Datastore {
   }
 
   /**
+   * Build a datastore Manager from a resource object.
    *
+   * @param Dkan\Datastore\Resource $resource
+   *   Datastore resource object.
+   *
+   * @return Dkan\Datastore\Manager
+   *   Datastore manager object.
    */
-  protected function getDatastore($resource) {
-    /** @var  $builder  Builder */
+  protected function getDatastore(Resource $resource) {
+    /* @var  $builder  Builder */
     $builder = \Drupal::service('dkan_datastore.manager.builder');
     $builder->setResource($resource);
     return $builder->build();
@@ -118,10 +136,11 @@ class Datastore {
   /**
    * Get one or more distributions (aka resources) from a uuid.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $nodeStorage
    * @param string $uuid
+   *   Dataset node UUID.
    *
-   * @return array
+   * @return object
+   *   Distribution metadata object decoded from JSON.
    */
   protected function getDistributionsFromUuid($uuid) {
 

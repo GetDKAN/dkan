@@ -7,7 +7,6 @@ use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Plugin\QueueWorker\DatastoreImportQueue;
 use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\Core\Queue\QueueWorkerBase;
 use Dkan\Datastore\Manager\IManager;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
@@ -263,7 +262,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
           'queue_iteration'   => 0,
           'rows_done'         => 0,
           'import_fail_count' => 0,
-        ])
+        ]),
       ],
       // With all optional fields, should be identical.
       [
@@ -326,7 +325,6 @@ class DatastoreImportQueueTest extends DkanTestBase {
    */
   public function testRefreshQueueStateIfStalling() {
     // Setup.
-
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods(['log'])
       ->disableOriginalConstructor()
@@ -378,7 +376,6 @@ class DatastoreImportQueueTest extends DkanTestBase {
    */
   public function testRefreshQueueStateIfStalled() {
     // Setup.
-
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods(['log'])
       ->disableOriginalConstructor()
@@ -489,7 +486,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
     // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods([
-        'sanitizeImportConfig'
+        'sanitizeImportConfig',
       ])
       ->disableOriginalConstructor()
       ->getMock();

@@ -4,11 +4,7 @@ namespace Drupal\Tests\dkan_harvest\Unit\Service;
 
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_harvest\Service\Harvest;
-use Drupal\dkan_harvest\Load\IFileHelper;
-use Drupal\dkan_harvest\Storage\File;
-use Harvest\ETL\Factory as EtlFactory;
 use Harvest\Harvester;
-use Harvest\ResultInterpreter;
 use Harvest\Storage\Storage;
 use Drupal\dkan_harvest\Service\Factory as HarvestFactory;
 use Drupal\dkan_common\Service\JsonUtil;
@@ -69,7 +65,7 @@ class HarvestTest extends DkanTestBase {
       uniqid('aaa') => '',
       uniqid('bbb') => '',
     ];
-    $expected  = array_keys($retrieved);
+    $expected = array_keys($retrieved);
 
     // Expect.
     $mockFactory->expects($this->once())
@@ -109,7 +105,7 @@ class HarvestTest extends DkanTestBase {
 
     $identifier  = uniqid('foo');
     $plan        = (object) [
-        'identifier' => $identifier
+      'identifier' => $identifier,
     ];
     $encodedPlan = json_encode($plan);
 
@@ -299,7 +295,7 @@ class HarvestTest extends DkanTestBase {
         [
           'validRunId' => 'foo',
         ],
-        'foo'
+        'foo',
       ],
       [
         'invalidRunId',
@@ -354,7 +350,7 @@ class HarvestTest extends DkanTestBase {
 
     $mockFactory = $this->getMockBuilder(HarvestFactory::class)
       ->setMethods([
-        'getStorage'
+        'getStorage',
       ])
       ->disableOriginalConstructor()
       ->getMock();

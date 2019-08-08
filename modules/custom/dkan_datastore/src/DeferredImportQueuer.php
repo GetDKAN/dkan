@@ -17,9 +17,12 @@ class DeferredImportQueuer {
    * @param string $uuid
    *   Usually UUID of resource being imported or simple job identifier.
    * @param \Dkan\Datastore\Resource $resource
+   *   Datastore resource object.
    * @param array $importConfig
+   *   Import configuration. @todo Document better.
    *
-   * @return mixed ID of queue item created or false on failure.
+   * @return mixed
+   *   ID of queue item created or false on failure.
    *
    * @throws \RuntimeException
    */
@@ -47,6 +50,7 @@ class DeferredImportQueuer {
    * @codeCoverageIgnore
    *
    * @return \Drupal\Core\Queue\QueueInterface
+   *   Queue object.
    */
   protected function getQueue() {
     return \Drupal::queue('dkan_datastore_file_fetcher_queue');
