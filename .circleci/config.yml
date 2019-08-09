@@ -49,18 +49,18 @@ jobs:
             mv ~/project ./docroot/profiles/contrib/dkan2
             ls -lha ./docroot/profiles/contrib/dkan2
       - run:
-          name: Install site
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl install
-      - run:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
+      - run:
+          name: Install site
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            cd ~/sandbox
+            dktl install
       - run:
           name: Run cypress tests
           command: |
