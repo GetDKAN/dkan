@@ -236,5 +236,4 @@ class ApiTest extends DkanTestBase {
 
     $this->assertSame($mockJsonResponse, $actual);
   }
-
 }
