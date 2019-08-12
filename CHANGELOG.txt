@@ -11,7 +11,7 @@
  - #2918 Avoid importing/orphaning when harvest cache is not present for unavailable sources.
  - #2919 Security update for imagecache_actions
  
- 7.x-1.16.12
+7.x-1.16.12
 ------------
  - #2892 Harvest support range dates separated by dashes
  - #2894 Remove user field on unpublished nodes tab on workbench moderation UI.
@@ -19,7 +19,7 @@
  - #2893 Update Open Data Schema Map to 7.x-2.2
  - #2885 Security update for uuid and tablefield modules
  
- 7.x-1.16.11
+7.x-1.16.11
 ------------
  - #2876 Update the datastore lock code to use drupal functions
  - #2879 Update dkan_workflow to add option to delete unpublished nodes
