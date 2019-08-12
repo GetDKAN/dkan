@@ -323,8 +323,6 @@ projects:
     version: '1.25'
   search_api_db:
     version: '1.7'
-  search_api_solr:
-    version: '1.14'
   select_or_other:
     version: '2.24'
   services:
