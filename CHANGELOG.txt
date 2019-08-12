@@ -1,5 +1,26 @@
-7.x-1.16.11
-----------
+7.x-1.16.14
+-----------
+ - #2940 Update Open Data Schema Map to 7.x-2.4
+ - #2935 Add documentation for DKAN custom solr
+ - #2931 Add patch for NULL controller class
+ - #2921 Fix gaps in WCAG compliance
+
+7.x-1.16.13
+-----------
+ - #2928 Update ODSM to 7.x-2.3 to fix broken RDF/JSON links
+ - #2918 Avoid importing/orphaning when harvest cache is not present for unavailable sources.
+ - #2919 Security update for imagecache_actions
+ 
+ 7.x-1.16.12
+------------
+ - #2892 Harvest support range dates separated by dashes
+ - #2894 Remove user field on unpublished nodes tab on workbench moderation UI.
+ - #2889 Make Page Title reflect dataset/resource content
+ - #2893 Update Open Data Schema Map to 7.x-2.2
+ - #2885 Security update for uuid and tablefield modules
+ 
+ 7.x-1.16.11
+------------
  - #2876 Update the datastore lock code to use drupal functions
  - #2879 Update dkan_workflow to add option to delete unpublished nodes
  - #2880 Fix drush command that deletes orphaned datastore tables
@@ -7,7 +28,7 @@
  - #2878 Remove hard-coded access to revisions for anonymous users
  
 7.x-1.16.10
-----------
+-----------
  - #2874 Security update for Drupal to 7.67 (SA-CORE-2019-007)
  - #2730 Behat test improvements
  - #2862 Add primary key to datastore tables. Create hook_datastore_post_import to allow users to execute actions right after data has been imported into the datastore.
