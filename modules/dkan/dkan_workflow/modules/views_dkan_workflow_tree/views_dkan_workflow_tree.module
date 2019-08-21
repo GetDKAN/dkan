@@ -67,6 +67,10 @@ function views_dkan_workflow_tree_views_api() {
 function views_dkan_workflow_tree_action_info() {
   $info = array();
   foreach (workbench_moderation_state_labels() as $key => $label) {
+    // When 'behavior' is empty VBO sets 'changes_property' as its default value,
+    // that fires a node_save at the end of the process but it was messing the
+    // workbench moderation functionality so here we need to set it to another
+    // value and let workbench_moderation handle the access check.
     $info['views_dkan_workflow_tree_set_moderation_state_action_' . $key] = array(
       'type' => 'node',
       'label' => t("Workflow set moderation state !state", array('!state' => $label)),
@@ -77,6 +81,7 @@ function views_dkan_workflow_tree_action_info() {
         'workbench_moderation_transition',
       ),
       'callback' => 'views_dkan_workflow_tree_set_state_action',
+      'behavior' => ['update_property'],
       'parameters' => array('state' => $key),
       'configurable' => FALSE,
     );
