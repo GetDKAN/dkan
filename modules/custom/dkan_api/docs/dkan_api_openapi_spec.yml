@@ -1,279 +1,407 @@
-openapi: 3.0.1
+openapi: 3.0.2
 info:
   title: API Documentation
   version: Alpha
-    # description: Description goes here.
-    # license:
-    # name: Apache 2.0
-  # url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-tags:
-  - name: Dataset
-      # description:
-      # externalDocs:
-      # description:
-    # url:
-  - name: Properties
-    description: organizations, resources, tags and themes.
-      # externalDocs:
-      # description:
-    # url:
-  - name: SQL Query
-      # description:
-      # externalDocs:
-      # description:
-    # url:
 components:
   securitySchemes:
     basicAuth:
       type: http
       scheme: basic
+  parameters:
+    datasetUuid:
+      name: uuid
+      in: path
+      description: A dataset uuid
+      required: true
+      schema:
+        type: string
+      example: 11111111-1111-4111-1111-111111111111
+    property:
+      name: property
+      in: path
+      description: Property of a dataset
+      required: true
+      schema:
+        type: string
+      example: keyword
+    propertyUuid:
+      name: uuid
+      in: path
+      description: A property uuid
+      required: true
+      schema:
+        type: string
+      example: PROPERTY-UUID
+    query:
+      name: query
+      in: path
+      description: SQL query
+      required: true
+      schema:
+        type: string
+      example: '[SELECT * FROM DATASTORE-UUID];'
+    datastoreUuid:
+      name: uuid
+      in: path
+      description: A datastore uuid
+      required: true
+      schema:
+        type: string
+      example: DATASTORE-UUID
+    harvestId:
+      name: id
+      in: path
+      description: A harvest identifier
+      required: true
+      schema:
+        type: string
+      example: HARVEST-ID
+    harvestRunId:
+      name: run_id
+      in: path
+      description: A harvest run identifier
+      required: true
+      schema:
+        type: string
+      example: HARVEST-RUN-ID
+  schemas:
+    # @TODO: Load directly from dkan2's schema/collections/dataset.json schema
+    Dataset:
+      type: object
+      required:
+        - title
+        - description
+        - identifier
+        - accessLevel
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        identifier:
+          type: string
+        accessLevel:
+          type: string
+          enum:
+            - public
+            - restricted public
+            - non-public
 paths:
   /api/v1/dataset:
     get:
       summary: Get all datasets
-      # description:
       tags:
         - Dataset
       responses:
-        200:
+        '200':
           description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
     post:
       summary: Create a dataset
-      # description:
       tags:
         - Dataset
       security:
         - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dataset'
+            example:
+              title: UPDATED Title for 111111
+              description: UPDATED Description for 111111
+              identifier: 11111111-1111-4111-1111-111111111111
+              accessLevel: public
       responses:
-        201:
+        '201':
           description: Created
-        409:
-          description: Resource already exists
-        406:
-          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
   /api/v1/dataset/{uuid}:
     get:
       summary: Get this dataset
-      # description:
       tags:
         - Dataset
       parameters:
-        - name: "uuid"
-          in: "path"
-          description: "Dataset uuid"
+        - name: uuid
+          in: path
+          description: A dataset uuid
           required: true
           schema:
             type: string
+          example: c9e2d352-e24c-4051-9158-f48127aa5692
       responses:
-        200:
+        '200':
           description: Ok
-        404:
-          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
     put:
       summary: Replace a dataset
-      # description:
       tags:
         - Dataset
       security:
         - basicAuth: []
       parameters:
-        - name: "uuid"
-          in: "path"
-          description: "Dataset uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/datasetUuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dataset'
+            example:
+              title: UPDATED Title for 111111
+              description: UPDATED Description for 111111
+              identifier: 11111111-1111-4111-1111-111111111111
+              accessLevel: public
       responses:
-        200:
+        '200':
           description: Ok
-        201:
-          description: Created
-        409:
-          description: Identifier cannot be modified
-        406:
-          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
     patch:
       summary: Update a dataset
-      # description:
       tags:
         - Dataset
       security:
         - basicAuth: []
       parameters:
-        - name: "uuid"
-          in: "path"
-          description: "Dataset uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/datasetUuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              # Only a subset of Dataset schema
+              type: object
+            example:
+              theme:
+                - Some New Theme
       responses:
-        200:
+        '200':
           description: Ok
-        404:
-          description: Resource not found
-        409:
-          description: Identifier cannot be modified
-        406:
-          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
     delete:
       summary: Delete a dataset
-      # description:
       tags:
         - Dataset
       security:
         - basicAuth: []
       parameters:
-        - name: "uuid"
-          in: "path"
-          description: "Dataset uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/datasetUuid'
       responses:
-        200:
+        '200':
           description: Dataset has been deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
   /api/v1/{property}:
     get:
       summary: Get properties
-      # description:
       tags:
         - Properties
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/property'
       responses:
-        200:
+        '200':
           description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - identifier
+                  properties:
+                    identifier:
+                      type: string
     post:
       summary: Create a property
-      # description:
       tags:
         - Properties
       security:
         - basicAuth: []
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/property'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+              properties:
+                identifier:
+                  type: string
       responses:
-        201:
+        '201':
           description: Created
-        409:
-          description: Resource already exists
-        406:
-          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
   /api/v1/{property}/{uuid}:
     get:
       summary: Get a property
-      # description:
       tags:
         - Properties
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
-        - name: "uuid"
-          in: "path"
-          description: "Organization uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/propertyUuid'
       responses:
-        200:
+        '200':
           description: Ok
-        404:
-          description: Resource not found
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - identifier
+                properties:
+                  identifier:
+                    type: string
     put:
       summary: Replace a property
-      # description:
       tags:
         - Properties
       security:
         - basicAuth: []
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
-        - name: "uuid"
-          in: "path"
-          description: "Organization uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/propertyUuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+              properties:
+                identifier:
+                  type: string
       responses:
-        200:
+        '200':
           description: Ok
-        201:
-          description: Created
-        409:
-          description: Identifier cannot be modified
-        406:
-          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
     patch:
       summary: Update a property
-      # description:
       tags:
         - Properties
       security:
         - basicAuth: []
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
-        - name: "uuid"
-          in: "path"
-          description: "Organization uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/propertyUuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              # Only a subset of Property schema
+              type: object
       responses:
-        200:
+        '200':
           description: Ok
-        404:
-          description: Resource not found
-        409:
-          description: Identifier cannot be modified
-        406:
-          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
     delete:
       summary: Delete a property
-      # description:
       tags:
         - Properties
       security:
         - basicAuth: []
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
-        - name: "uuid"
-          in: "path"
-          description: "Organization uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/propertyUuid'
       responses:
-        200:
-          description: Organization has been deleted
+        '200':
+          description: Property has been deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
   /api/v1/sql/{query}:
     get:
       summary: Query resources in datastore
@@ -281,16 +409,246 @@ paths:
       tags:
         - SQL Query
       parameters:
-        - name: "query"
-          in: "path"
-          description: "SQL query"
+        - $ref: '#/components/parameters/query'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /api/v1/harvest:
+    get:
+      summary: Get all harvest identifiers
+      tags:
+        - Harvest
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+    post:
+      summary: Register a new harvest
+      tags:
+        - Harvest
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
+  /api/v1/harvest/info/{id}:
+    get:
+      summary: List previous runs for a harvest id
+      tags:
+        - Harvest
+      parameters:
+        - $ref: '#/components/parameters/harvestId'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /api/v1/harvest/info/{id}/{run_id}:
+    get:
+      summary: Information about a specific previous harvest run
+      tags:
+        - Harvest
+      parameters:
+        - $ref: '#/components/parameters/harvestId'
+        - $ref: '#/components/parameters/harvestRunId'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/harvest/run/{id}:
+    put:
+      summary: Runs a harvest
+      tags:
+        - Harvest
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/harvestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                  - result
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
+                  result:
+                    type: string
+  /api/v1/datastore/{uuid}:
+    get:
+      summary: Return a dataset with datastore headers and statistics
+      tags:
+        - Datastore
+      parameters:
+        - $ref: '#/components/parameters/datastoreUuid'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+    delete:
+      summary: Drop a datastore
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/datastoreUuid'
+      responses:
+        '200':
+          description: Dataset has been deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+  /api/v1/datastore/import/{uuid}:
+    put:
+      summary: Datastore import
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/datastoreUuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
+  /api/v1/datastore/import/{uuid}/deferred:
+    put:
+      summary: Deferred datastore import
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/datastoreUuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
+  /api/v1/docs:
+    get:
+      summary: Complete json documentation
+      tags:
+        - Documentation
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/docs/{uuid}:
+    get:
+      summary: Dataset-specific json documentation
+      tags:
+        - Documentation
+      parameters:
+        - name: uuid
+          in: path
+          description: A dataset uuid
           required: true
           schema:
             type: string
+          example: c9e2d352-e24c-4051-9158-f48127aa5692
       responses:
-        200:
+        '200':
           description: Ok
-        # 500:
-        #   description: Querying a datastore that does not exist
-        500:
-          description: Invalid query string
+          content:
+            application/json:
+              schema:
+                type: object
