@@ -1,41 +1,48 @@
 DKAN Feedback
 =============
 
-The DKAN Feedback module allows users and visitors to add feedback on published datasets and resources. Although this module is not available within out-of-the-box DKAN, it can be installed using `drush
-make <https://github.com/NuCivic/nucivic-process/wiki/Using-drush-make-in-individual-modules>`_. 
+The `DKAN Feedback <https://github.com/GetDKAN/dkan_feedback>`_ module allows site visitors to give feedback on published datasets. 
+This module is not included in `DKAN <https://github.com/GetDKAN/dkan>`_ core, but it can be added as an additional feature.
 
-You can view the DKAN Feedback module on Github at `https://github.com/GetDKAN/dkan_feedback <https://github.com/GetDKAN/dkan_feedback>`_.
-
-Once published, individual pieces of feedback can be "upvoted" or "downvoted" by site visitors in order to bring the most relevant site comments to the top of the list.
-
-A full listing of site feedback is located at ``/feedback``, with multiple search and sort options provided. On the primary Feedback page, feedback is published from newest to oldest by default regardless of how it has been upvoted or downvoted.
-
-If the `Workflow module <https://docs.getdkan.com/en/latest/components/workflow.html>`_ has been installed, unpublished feedback nodes can be viewed in one location for efficient moderation at ``/admin/workbench/unpublished-nodes``.
-
-For a live example of how the Feedback module is used within DKAN, please see `HealthData.gov's Feedback page <https://healthdata.gov/feedback>`_.
-
-Requirements
-*************
-
-- Full installation of core DKAN 7.x.1.x. and all external dependencies outside of core DKAN encapsulated in the ``dkan_feedback.make`` file. 
-- Necessary dependencies include `Rate <https://www.drupal.org/project/rate>`_, the `Voting API <https://www.drupal.org/project/votingapi>`_, and `Captcha <https://www.drupal.org/project/captcha>`_ to avoid spam feedback.
 
 Installation
 ------------
 
-This module needs to be built using `drush make <https://github.com/NuCivic/nucivic-process/wiki/Using-drush-make-in-individual-modules>`_ before being enabled. If you download only the DKAN Feedback module itself, you will miss key dependencies for required modules and libraries.
+**Requirements**
 
-To install:
-************
+- Full installation of core DKAN >=7.x-1.13. 
+- Dependencies include `Captcha <https://www.drupal.org/project/captcha>`_, `Custom Publishing Options <https://www.drupal.org/project/custom_pub>`_, `Rate <https://www.drupal.org/project/rate>`_, `reCAPTCHA <https://www.drupal.org/project/recaptcha>`_, and `Voting API <https://www.drupal.org/project/votingapi>`_.
 
-```
-  cd <path to modules directory>
-  git clone https://github.com/NuCivic/dkan_feedback
-  drush make --no-core <path to modules directory>/dkan_feedback/dkan_feedback.make
+
+.. code-block:: bash
+
+  cd sites/all/modules/contrib
+  git clone https://github.com/GetDKAN/dkan_feedback
+  drush make --no-core sites/all/modules/contrib/dkan_feedback/dkan_feedback.make
   drush en dkan_feedback
-```
+
+
+Usage
+-----
+
+Once enabled, a "Feedback" menu item will be added to the main menu. Clicking this link will display a list of all published feedback.
+
+Besides giving feedback, visitors can also "up vote" or "down-vote" feedback provided by other users, and leave comments on published feedback.
+
+Multiple search and sort options are provided on the primary Feedback page, by default, feedback is listed from newest to oldest.
+
+
+Administration
+--------------
+
+As feedback does not require authentication, it is important for site managers to stay on top of new entries, captcha is not fool-proof. 
+
+From the administration menu, a site manager can access the feedback and comment administration dashboards to bulk publish, unpublish, or archive
+feedback and comment content. For agencies that are required to NOT delete content, the 'Archive' option allows site managers to avoid 
+repeated moderation of the same unpublished content.
+
 
 Providing feedback on DKAN Feedback
-------------------------------
+-----------------------------------
 
-Please feel free to submit contributions, bug reports or enhancement requests on Github at `https://github.com/GetDKAN/dkan_feedback <https://github.com/GetDKAN/dkan_feedback>`.
+Submit contributions, bug reports or enhancement requests on Github at `https://github.com/GetDKAN/dkan_feedback <https://github.com/GetDKAN/dkan_feedback>`_.
