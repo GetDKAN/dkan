@@ -5,7 +5,9 @@ When you create a dataset with resources, DKAN is reading the data directly from
 
 The Datastore component provides an option for you to parse **CSV** or **TSV** files and save the data into database tables. This allows users to query the data through a public API.
 
-So by adding your CSV resources to the datastore, you are getting the fullest functionality possible out of your datasets.
+In turn, by adding your CSV resources to the datastore, you are getting the fullest functionality possible out of your datasets.
+
+**Note:** CSVs must be in UTF-8 format. If you're having trouble uploading a CSV file to the datastore, please make sure that you've exported it in UTF-8 format.
 
 Importing Resources
 -------------------
@@ -66,7 +68,7 @@ To remove all records from the datastore:
 DKAN Fast Import Manager
 ------------------------
 .. warning::
-  The *FastImport* Manager only works with files hosted in the web server and with a properly configured mysql client and server.
+  The *FastImport* Manager is disabled by default and only works with files hosted in the web server and with a properly configured mysql client and server.
 
 DKAN provides a second manager: *FastImport*.
 
