@@ -4,15 +4,15 @@ DKAN Feedback
 The `DKAN Feedback <https://github.com/GetDKAN/dkan_feedback>`_ module allows site visitors to give feedback on published datasets. 
 This module is not included in `DKAN <https://github.com/GetDKAN/dkan>`_ core, but it can be added as an additional feature.
 
-
-Installation
-------------
-
 **Requirements**
 
 - Full installation of core DKAN >=7.x-1.13. 
 - Dependencies include `Captcha <https://www.drupal.org/project/captcha>`_, `Custom Publishing Options <https://www.drupal.org/project/custom_pub>`_, `Rate <https://www.drupal.org/project/rate>`_, `reCAPTCHA <https://www.drupal.org/project/recaptcha>`_, and `Voting API <https://www.drupal.org/project/votingapi>`_.
 
+Installation
+------------
+
+**Using drush make**
 
 .. code-block:: bash
 
@@ -21,6 +21,12 @@ Installation
   drush make --no-core sites/all/modules/contrib/dkan_feedback/dkan_feedback.make
   drush en dkan_feedback
 
+**Manual installation**
+
+- Download the zip file from https://github.com/GetDKAN/dkan_feedback
+- Unzip the file in ``/sites/all/modules/contrib``
+- Download all dependent contrib modules from the Requirements list above and add them to ``/sites/all/modules/contrib``
+- ``drush en dkan_feedback -y``
 
 Usage
 -----
