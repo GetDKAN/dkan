@@ -187,7 +187,7 @@ projects:
   image_url_formatter:
     version: '1.4'
   imagecache_actions:
-    version: '1.10'
+    version: '1.11'
   job_scheduler:
     version: 2.0
   jquery_update:
