@@ -812,3 +812,14 @@ function dkan_update_7034() {
 
   $storage->returnBin($bin);
 }
+
+/**
+ * Disable feeds modules.
+ */
+function dkan_update_7035() {
+  # Deprecating feeds modules as they are no longer used in dkan_datastore.
+  if( module_exists('feeds')) {
+    module_disable(array('feeds', 'feeds_field_fetcher', 'feeds_flatstore_processor'));
+    drupal_uninstall_modules(array('feeds', 'feeds_field_fetcher', 'feeds_flatstore_processor'));
+  }
+}
