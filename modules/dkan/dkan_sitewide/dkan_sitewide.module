@@ -165,7 +165,6 @@ function dkan_sitewide_update_status_alter(&$projects) {
   $up_to_date_projects = array(
     'gravatar',
     'beautytips',
-    'feeds_field_fetcher',
     'multistep',
     'linkchecker',
   );
