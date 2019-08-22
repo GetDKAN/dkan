@@ -24,6 +24,7 @@ described inside the Datasets section, all this functionality is provided by the
    federal-extras
    search
    theme
+   Periodic Updates <periodic-updates>
    Roles and Permissions <permissions>
    Storytelling <storytelling>
    Open Data Schema Map <open-data-schema>
