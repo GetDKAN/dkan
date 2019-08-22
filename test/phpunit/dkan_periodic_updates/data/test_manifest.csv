@@ -1,0 +1,5 @@
+resource_id,frequency,file_url
+c65c08d9-43c8-45a4-a49d-29e714ce2ebb,daily,https://s3.amazonaws.com/dkan-default-content-files/district_centerpoints_small.csv
+d7ccef48-5c8c-432c-94c8-17cee9c4ed37,weekly,https://s3.amazonaws.com/dkan-default-content-files/files/Polling_Places_Madison_0.csv
+fe4b712b-c570-4e0b-aeeb-67d9789a196e,monthly,https://s3.amazonaws.com/dkan-default-content-files/files/last_transactions.xlsx
+non-existing-uuid,something,https://s3.amazonaws.com/dkan-default-content-files/files/last_transactions.xlsx

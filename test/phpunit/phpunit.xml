@@ -44,6 +44,9 @@
         <testsuite name="Open Data Schema Map Test Suite">
             <file>open_data_schema_map/PodValidationTest.php</file>
         </testsuite>
+        <testsuite name="DKAN Periodic Updates Test Suite">
+            <file>dkan_periodic_updates/DkanPeriodicUpdatesTest.php</file>
+        </testsuite>
     </testsuites>
 
     <php>

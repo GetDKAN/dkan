@@ -1,0 +1,6 @@
+name = DKAN Periodic Updates
+description = DKAN module for executing periodic updates to resources.
+core = 7.x
+package = DKAN
+dependencies[] = dkan_dataset
+dependencies[] = dkan_datastore
