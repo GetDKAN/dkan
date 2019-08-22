@@ -1,0 +1,465 @@
+<?php
+
+/**
+ * @file
+ * Code for dkan_periodic_updates module.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function dkan_periodic_updates_permission()
+{
+  return [
+    'administer periodic updates' => [
+      'title' => t('administer periodic updates')
+    ],
+  ];
+}
+
+/**
+ * Implements hook_menu().
+ */
+function dkan_periodic_updates_menu() {
+  $items = [];
+  $items['admin/dkan/periodic-updates'] = [
+    'title' => t('Periodic updates'),
+    'description' => t('Form for uploading periodic updates manifest.'),
+    'page callback' => 'dkan_periodic_updates',
+    'access arguments' => ['administer periodic updates'],
+    'type' => MENU_NORMAL_ITEM,
+  ];
+  $items['admin/dkan/periodic-updates/settings'] = [
+    'title' => t('Settings'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  ];
+  $items['admin/dkan/periodic-updates/status'] = [
+    'title' => t('Status'),
+    'page callback' => 'dkan_periodic_updates_state',
+    'access arguments' => ['administer periodic updates'],
+    'type' => MENU_LOCAL_TASK,
+  ];
+  return $items;
+}
+
+
+/**
+ * Page callback for admin/dkan/periodic-updates.
+ */
+function dkan_periodic_updates() {
+  $output = [];
+  $output['periodic-updates-status'] = drupal_get_form('dkan_periodic_updates_status_form');
+  $output['periodic-updates-manifest'] = drupal_get_form('dkan_periodic_updates_form');
+  return $output;
+}
+
+/**
+ * Form for periodic updates manifest.
+ */
+function dkan_periodic_updates_form($form, &$form_state) {
+  $form['manifest-file'] = [
+    '#type' => 'fieldset',
+    '#title' => 'Manifest for periodic updates',
+  ];
+  $form['manifest-file']['info'] = [
+    '#markup' => '<p>' . t('The manifest file should contain the following column names: resource_id, frequency and file_url. The allowed frequency values are daily, weekly, or monthly. If left blank, the frequency will default to daily.') . '</p>',
+  ];
+  $form['manifest-file']['manifest'] = [
+    '#type' => 'managed_file',
+    '#title' => 'Upload manifest file',
+    '#upload_location' => 'public://manifest/',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('csv'),
+    ),
+  ];
+  $form['manifest-file']['submit'] = [
+    '#type' => 'submit',
+    '#id' => 'add-manifest-file',
+    '#value' => t('Add file'),
+  ];
+
+  // Current manifest file.
+  $prev_file_name = '- None -';
+  $message = '<p>Current manifest: ' . $prev_file_name . '</p>';
+  $prev_file = variable_get('dkan_periodic_updates_manifest');
+  if ($prev_file) {
+    $file = file_load($prev_file);
+    if ($file) {
+      $prev_file_name = $file->filename;
+      $url = file_create_url($file->uri);
+      $message = '<p>Current manifest: <a href="' . $url . '">' . $prev_file_name . '</a></p>';
+    }
+    else {
+      $message = '<p>Manifest was removed</p>';
+      variable_del('dkan_periodic_updates_manifest');
+    }
+  }
+  $form['manifest-file']['manifest']['text'] = array(
+    '#markup' => $message,
+  );
+
+  return $form;
+}
+
+/**
+ * Validate function for periodic updates manifest form.
+ */
+function dkan_periodic_updates_form_validate($form, &$form_state) {
+  $standard_headers = ['resource_id', 'frequency', 'file_url'];
+
+  $file = file_load($form_state['values']['manifest']);
+  if ($file) {
+    $handle = fopen($file->uri, 'r');
+    $headers = fgetcsv($handle);
+    fclose($handle);
+    foreach ($headers as $header) {
+      if (!in_array($header, $standard_headers)) {
+        $error = $error . '<br> • ' . print_r($header, TRUE);
+      }
+    }
+    if (!empty($error)) {
+      form_set_error('file', 'Your file contains improper headings, please edit the following: ' . $error);
+    }
+  } else {
+    form_set_error('file', 'Please choose a data file to upload.');
+  }
+}
+
+/**
+ * Submit function for periodic updates manifest form.
+ */
+function dkan_periodic_updates_form_submit($form, &$form_state) {
+  $data = new stdClass();
+  $data->file = $form_state['values']['manifest'];
+
+  // Save file permanently. It's saved temporally as a default.
+  $file = file_load($data->file);
+  $file->status = FILE_STATUS_PERMANENT;
+  file_save($file);
+  drupal_set_message($file->filename . ' has been added.', 'status', FALSE);
+  $manifest_file = variable_get('dkan_periodic_updates_manifest');
+  if ($manifest_file) {
+    file_delete(file_load($manifest_file));
+  }
+  variable_set('dkan_periodic_updates_manifest', $data->file);
+}
+
+/**
+ * Form for periodic updates status.
+ */
+function dkan_periodic_updates_status_form($form, &$form_state) {
+  // Activate periodic updates.
+  $form['periodic-updates'] = [
+    '#type' => 'fieldset',
+    '#title' => 'Periodic updates state',
+  ];
+  $form['periodic-updates']['info'] = [
+    '#markup' => '<p>' . t('Once you upload a valid manifest and enable periodic updates, the updates will be evaluated and executed as specified on every cron run.') . '</p>',
+  ];
+  $form['periodic-updates']['periodic_update_status'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Enable periodic updates.'),
+    '#default_value' => variable_get('dkan_periodic_updates_status', 0),
+  ];
+  $form['periodic-updates']['submit'] = [
+    '#type' => 'submit',
+    '#id' => 'save-periodic-updates-settings',
+    '#value' => t('Save settings'),
+  ];
+
+  return $form;
+}
+
+/**
+ * Submit function for periodic updates status form.
+ */
+function dkan_periodic_updates_status_form_submit($form, &$form_state) {
+  variable_set('dkan_periodic_updates_status', $form_state['values']['periodic_update_status']);
+  drupal_set_message(t("Periodic updates settings have been saved."));
+  $manifest = variable_get('dkan_periodic_updates_manifest');
+  if (!$manifest) {
+    drupal_set_message(t('Please upload a valid manifest.'), 'warning');
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function dkan_periodic_updates_cron() {
+  $active = variable_get('dkan_periodic_updates_status');
+  if ($active) {
+    $file = variable_get('dkan_periodic_updates_manifest');
+    $to_update = dkan_periodic_updates_get_items_to_update($file);
+    if (!empty($to_update)) {
+      dkan_periodic_updates_execute_update($to_update);
+    }
+  }
+}
+
+function dkan_periodic_updates_get_items_to_update($file) {
+  $file = file_load($file);
+  if ($file) {
+    $to_update = [];
+    $today = new DateTime("now");
+    $handle = fopen($file->uri, 'r');
+    $headers = fgetcsv($handle, 0, ',');
+
+    while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+      $resource_data = array_combine($headers, $data);
+      $last_update = variable_get('dkan_periodic_updates_' . $resource_data['resource_id'], '');
+      // If the last update date is present for the resource, then check for
+      // its frequency to see if it should be updated.
+      if (!empty($last_update)) {
+        $time_passed = $today->diff($last_update);
+        switch ($resource_data['frequency']) {
+          case 'monthly':
+            if ($time_passed->days >= 28) {
+              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+            }
+            break;
+          case 'weekly':
+            if ($time_passed->days >= 7) {
+              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+            }
+            break;
+          default:
+            if ($time_passed->days >= 1) {
+              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+            }
+        }
+      }
+      // If there is no last update date, then add the resource to list of
+      // resource to import.
+      else {
+        $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+      }
+    }
+    fclose($handle);
+    return $to_update;
+  } else {
+    watchdog('dkan_periodic_updates', 'No manifest found.');
+    return [];
+  }
+}
+
+/**
+ * Helper function to execute periodic update to resources.
+ */
+function dkan_periodic_updates_execute_update($resources) {
+  module_load_include('inc', 'dkan_datastore', 'resources/dkan_datastore_resource');
+  if (!empty($resources)) {
+    foreach ($resources as $uuid => $file_url) {
+      $nids = entity_get_id_by_uuid('node', [$uuid]);
+      if (empty($nids)) {
+        watchdog('dkan_periodic_updates', 'There is no node with UUID !uuid.', ['!uuid' => $uuid], WATCHDOG_WARNING);
+        variable_set('dkan_periodic_updates_message_' . $uuid, 'No node found for the UUID specified.');
+      } else {
+        foreach ($nids as $nid) {
+          $node = node_load($nid);
+          $updated = FALSE;
+          $proceed_with_import = FALSE;
+          if ($node) {
+            $file = FALSE;
+            if (!empty($node->field_upload)) {
+              $file = dkan_periodic_updates_create_file($file_url, TRUE, $nid);
+              if ($file) {
+                $node->field_upload[LANGUAGE_NONE][0]['fid'] = $file->fid;
+              }
+              else {
+                watchdog('dkan_periodic_updates', 'File for node !uuid could not be retrieved.', ['!uuid' => $uuid], WATCHDOG_WARNING);
+                variable_set('dkan_periodic_updates_message_' . $uuid, 'File could not be retrieved.');
+              }
+            }
+            else {
+              if (!empty($node->field_link_remote_file)) {
+                $file = dkan_periodic_updates_create_file($file_url);
+                $node->field_link_remote_file[LANGUAGE_NONE][0]['fid'] = $file->fid;
+              }
+            }
+            if ($file) {
+              dkan_periodic_updates_impersonate_user($node);
+              variable_set('dkan_periodic_updates_' . $uuid, new DateTime("now"));
+              $updated = TRUE;
+              if ($file->filemime === 'text/csv' || $file->filemime === 'text/tab-separated-values') {
+                $proceed_with_import = TRUE;
+              }
+            }
+
+            if ($updated && $proceed_with_import) {
+              variable_set('dkan_periodic_updates_message_' . $uuid, "Importing to datastore.");
+              $import = FALSE;
+              try {
+                _dkan_datastore_resource_drop($node->nid);
+                $import = _dkan_datastore_resource_import($node->nid);
+              } catch (\Exception $e) {
+                $message = 'Error importing to the datastore: ' . htmlspecialchars($e->getMessage());
+                watchdog('error', $message, [], WATCHDOG_ERROR);
+                variable_set('dkan_periodic_updates_message_' . $uuid, $message);
+              }
+              if ($import) {
+                watchdog('dkan_periodic_updates', 'Updated resource with UUID !uuid and nid !nid.', ['!uuid' => $uuid, '!nid' => $nid], WATCHDOG_INFO);
+                variable_del('dkan_periodic_updates_message_' . $uuid);
+              }
+            }
+          } else {
+            watchdog('dkan_periodic_updates', 'Node with nid !nid not found.', ['!nid' => $nid], WATCHDOG_WARNING);
+            variable_set('dkan_periodic_updates_message_' . $uuid, 'Node with nid ' . $nid . ' was not found.');
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Page callback for periodic updates status page.
+ */
+function dkan_periodic_updates_state() {
+  $active = variable_get('dkan_periodic_updates_status');
+  $output = [];
+  $output['info'] = [
+    '#markup' => '<p>' . t('The updates are evaluated on every cron run. If a resource from your manifest hasn\'t been updated yet, it may be updated on the next cron run.') . '</p>',
+  ];
+  if ($active) {
+    $file = variable_get('dkan_periodic_updates_manifest');
+    $file = file_load($file);
+    if ($file) {
+      $handle = fopen($file->uri, 'r');
+      $headers = fgetcsv($handle, 0, ',');
+      $table_headers = [t('Destination Resource ID'), t('Source File URL'), t('Update frequency'), t('Status'), t('Last update')];
+
+      while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+        $resource_data = array_combine($headers, $data);
+        $last_updated = variable_get('dkan_periodic_updates_' . $resource_data['resource_id'], '');
+        $status = variable_get('dkan_periodic_updates_message_' . $resource_data['resource_id'], '');
+        if (empty($last_updated)) {
+          $last_updated = ' - ';
+          if (empty($status)) {
+            $status = t('Resource hasn\'t been updated.');
+          }
+        }
+        else {
+          $last_updated = date_format($last_updated, 'Y/m/d H:i:s');
+          if (empty($status)) {
+            $status = t('No errors found.');
+          }
+        }
+
+        $nid = entity_get_id_by_uuid('node', [$resource_data['resource_id']]);
+        $destination = $resource_data['resource_id'];
+        if ($nid && $nid = $nid[$resource_data['resource_id']]) {
+          $destination = l($destination, 'node/' . $nid);
+        }
+        switch ($resource_data['frequency']) {
+          case 'monthly':
+          case 'weekly':
+            $frequency = $resource_data['frequency'];
+            break;
+          default:
+            $frequency = 'daily';
+        }
+        $table_rows[] = [$destination, $resource_data['file_url'], $frequency, $status, $last_updated];
+      }
+      fclose($handle);
+      $output['state'] = [
+        '#theme' => 'table',
+        '#header' => $table_headers,
+        '#rows' => $table_rows,
+      ];
+    } else {
+      $output['state'] = [
+        '#markup' => '<p class="alert alert-warning">' . t('No manifest was found.') . '</p>',
+      ];
+    }
+  }
+  else {
+    $output['state'] = [
+      '#markup' => '<p class="alert alert-warning">' . t('Periodic updates are disabled.') . '</p>',
+    ];
+  }
+
+  return $output;
+}
+
+/**
+ * Helper function to get file contents.
+*/
+function dkan_periodic_updates_curl_get_contents($url, $path) {
+  $url = preg_replace('/ /', '%20', $url);
+  $fp = fopen($path, 'w');
+
+  $ch = curl_init($url);
+  curl_setopt($ch, CURLOPT_FILE, $fp);
+
+  $data = curl_exec($ch);
+
+  curl_close($ch);
+  fclose($fp);
+
+  return $data;
+}
+
+/**
+ * Helper function to create managed files using a file_url.
+ */
+function dkan_periodic_updates_create_file($file_url, $download = FALSE, $nid = '') {
+  if ($download) {
+    $dir = 'public://' . $nid;
+    $option = is_dir($dir) ? FILE_MODIFY_PERMISSIONS : FILE_CREATE_DIRECTORY;
+    if (file_prepare_directory($dir, $option)) {
+      $file_name = drupal_basename($file_url);
+      // Copy file locally.
+      $status = dkan_periodic_updates_curl_get_contents($file_url, $dir . '/' . $file_name);
+      if ($status) {
+        // If copied correctly, create file in database.
+        $match = file_scan_directory($dir, '/' . $file_name . '/');
+        if (!empty($match)) {
+          $file = $match[$dir . '/' . $file_name];
+          $uri = $file->uri;
+
+          $preexisting_files = file_load_multiple(array(), array('uri' => $uri));
+          if ($preexisting_files) {
+            $file = reset($preexisting_files);
+            $file->uri = $uri;
+            return file_save($file);
+          }
+          else {
+            $file->status = FILE_STATUS_PERMANENT;
+            $file->filemime = file_get_mimetype($uri);
+            return file_save($file);
+          }
+        }
+      }
+    }
+  }
+  else {
+    $files = file_load_multiple(array(), array('uri' => $file_url));
+    $file = reset($files);
+    if (!$file) {
+      $file = file_save((object)[
+        'filename' => drupal_basename($file_url),
+        'uri' => $file_url,
+        'status' => FILE_STATUS_PERMANENT,
+        'filemime' => file_get_mimetype($file_url),
+      ]);
+    }
+    return $file;
+  }
+  return FALSE;
+}
+
+/**
+ * Helper function to impersonate node author user before saving node.
+ */
+function dkan_periodic_updates_impersonate_user($node) {
+  global $user;
+  $original_user = $user;
+  $old_state = drupal_save_session();
+  drupal_save_session(FALSE);
+  $user = user_load($node->uid);
+  // Pretend to be node author to save changes.
+  node_save($node);
+  // Go back to original user.
+  $user = $original_user;
+  drupal_save_session($old_state);
+}
