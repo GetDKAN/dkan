@@ -2,6 +2,9 @@ openapi: 3.0.2
 info:
   title: API Documentation
   version: Alpha
+tags:
+  - name: Dataset
+  - name: Query
 components:
   securitySchemes:
     basicAuth:
@@ -89,6 +92,7 @@ components:
 paths:
   /api/v1/dataset:
     get:
+      operationId: dataset-get-all
       summary: Get all datasets
       tags:
         - Dataset
@@ -102,6 +106,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Dataset'
     post:
+      operationId: dataset-create
       summary: Create a dataset
       tags:
         - Dataset
@@ -135,6 +140,7 @@ paths:
                     type: string
   /api/v1/dataset/{uuid}:
     get:
+      operationId: dataset-get
       summary: Get this dataset
       tags:
         - Dataset
@@ -154,6 +160,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Dataset'
     put:
+      operationId: dataset-put
       summary: Replace a dataset
       tags:
         - Dataset
@@ -188,6 +195,7 @@ paths:
                   identifier:
                     type: string
     patch:
+      operationId: dataset-patch
       summary: Update a dataset
       tags:
         - Dataset
@@ -221,6 +229,7 @@ paths:
                   identifier:
                     type: string
     delete:
+      operationId: dataset-delete
       summary: Delete a dataset
       tags:
         - Dataset
@@ -242,6 +251,7 @@ paths:
                     type: string
   /api/v1/{property}:
     get:
+      operationId: property-get-all
       summary: Get properties
       tags:
         - Properties
@@ -262,6 +272,7 @@ paths:
                     identifier:
                       type: string
     post:
+      operationId: property-create
       summary: Create a property
       tags:
         - Properties
@@ -297,6 +308,7 @@ paths:
                     type: string
   /api/v1/{property}/{uuid}:
     get:
+      operationId: property-get
       summary: Get a property
       tags:
         - Properties
@@ -316,6 +328,7 @@ paths:
                   identifier:
                     type: string
     put:
+      operationId: property-put
       summary: Replace a property
       tags:
         - Properties
@@ -351,6 +364,7 @@ paths:
                   identifier:
                     type: string
     patch:
+      operationId: property-patch
       summary: Update a property
       tags:
         - Properties
@@ -382,6 +396,7 @@ paths:
                   identifier:
                     type: string
     delete:
+      operationId: property-delete
       summary: Delete a property
       tags:
         - Properties
@@ -404,6 +419,7 @@ paths:
                     type: string
   /api/v1/sql/{query}:
     get:
+      operationId: datastore-query
       summary: Query resources in datastore
       description: Interact with resources in the datastore using an SQL-like syntax.
       tags:
@@ -421,6 +437,7 @@ paths:
                   type: object
   /api/v1/harvest:
     get:
+      operationId: harvest-get-all
       summary: Get all harvest identifiers
       tags:
         - Harvest
@@ -434,6 +451,7 @@ paths:
                 items:
                   type: object
     post:
+      operationId: harvest-register
       summary: Register a new harvest
       tags:
         - Harvest
@@ -462,6 +480,7 @@ paths:
                     type: string
   /api/v1/harvest/info/{id}:
     get:
+      operationId: harvest-info
       summary: List previous runs for a harvest id
       tags:
         - Harvest
@@ -478,6 +497,7 @@ paths:
                   type: object
   /api/v1/harvest/info/{id}/{run_id}:
     get:
+      operationId: harvest-run-info
       summary: Information about a specific previous harvest run
       tags:
         - Harvest
@@ -493,6 +513,7 @@ paths:
                 type: object
   /api/v1/harvest/run/{id}:
     put:
+      operationId: harvest-run
       summary: Runs a harvest
       tags:
         - Harvest
@@ -526,6 +547,7 @@ paths:
                     type: string
   /api/v1/datastore/{uuid}:
     get:
+      operationId: datastore-get
       summary: Return a dataset with datastore headers and statistics
       tags:
         - Datastore
@@ -541,6 +563,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Dataset'
     delete:
+      operationId: datastore-delete
       summary: Drop a datastore
       tags:
         - Datastore
@@ -562,6 +585,7 @@ paths:
                     type: string
   /api/v1/datastore/import/{uuid}:
     put:
+      operationId: datastore-import
       summary: Datastore import
       tags:
         - Datastore
@@ -592,6 +616,7 @@ paths:
                     type: string
   /api/v1/datastore/import/{uuid}/deferred:
     put:
+      operationId: datastore-deferred-import
       summary: Deferred datastore import
       tags:
         - Datastore
@@ -622,6 +647,7 @@ paths:
                     type: string
   /api/v1/docs:
     get:
+      operationId: docs-get
       summary: Complete json documentation
       tags:
         - Documentation
@@ -634,6 +660,7 @@ paths:
                 type: object
   /api/v1/docs/{uuid}:
     get:
+      operationId: docs-get-dataset-specific
       summary: Dataset-specific json documentation
       tags:
         - Documentation
