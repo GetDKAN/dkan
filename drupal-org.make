@@ -104,6 +104,8 @@ projects:
     version: '1.5'
   facetapi_bonus:
     version: '1.2'
+    patch:
+      2938545: https://www.drupal.org/files/issues/2018-09-04/non-countable-2938545-5.patch
   facetapi_pretty_paths:
     version: '1.4'
   features:
