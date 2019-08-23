@@ -345,9 +345,8 @@ projects:
   uuid:
     version: '1.3'
   views:
-    version: '3.21'
+    version: '3.23'
     patch:
-      2885660: https://www.drupal.org/files/issues/2018-06-28/2885660-13.patch
       2543562: https://www.drupal.org/files/issues/views-use_query_group_operator_for_main_group-2543562-2.patch
   views_autocomplete_filters:
     version: '1.2'
