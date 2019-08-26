@@ -311,7 +311,7 @@ projects:
   role_export:
     version: '1.0'
   rules:
-    version: '2.11'
+    version: '2.12'
   restws:
     version: '2.8'
   roleassign:
