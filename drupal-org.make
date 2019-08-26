@@ -220,7 +220,7 @@ projects:
   media:
     version: 2.23
   media_youtube:
-    version: '3.7'
+    version: '3.8'
   media_vimeo:
     version: '2.1'
     patch:
