@@ -21,3 +21,4 @@ package-lock.json
 .ahoy/docker-sync.yml
 .docker-sync
 .ahoy/docker-compose.proxyconf.yml
+.vscode
