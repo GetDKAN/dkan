@@ -218,7 +218,7 @@ projects:
     patch:
       2045225: https://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.21
+    version: 2.23
   media_youtube:
     version: '3.7'
   media_vimeo:
