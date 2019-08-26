@@ -240,6 +240,7 @@ projects:
     version: '2.11'
     patch:
       1989492: https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch
+      3027630: https://www.drupal.org/files/issues/2019-01-22/3027630-migrate-php72-count-2.patch
   migrate_extras:
     version: '2.5'
   module_filter:
