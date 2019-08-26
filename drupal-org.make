@@ -147,12 +147,7 @@ projects:
     download:
       full_version: 7.x-1.0-beta1
   fieldable_panels_panes:
-    version: '1.11'
-    patch:
-      2825835: https://www.drupal.org/files/issues/2825835.patch
-      2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
-      2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
-      3019270: https://www.drupal.org/files/issues/2018-12-10/2848997-cant-access-admin-too-many-redirects.patch
+    version: '1.13'
   file_entity:
     version: 2.25
   file_resup:
