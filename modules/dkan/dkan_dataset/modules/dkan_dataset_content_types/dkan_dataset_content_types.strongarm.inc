@@ -190,9 +190,6 @@ function dkan_dataset_content_types_strongarm() {
         'title' => array(
           'weight' => '3',
         ),
-        'feeds' => array(
-          'weight' => '0',
-        ),
         'path' => array(
           'weight' => '9',
         ),
