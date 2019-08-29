@@ -34,9 +34,9 @@ projects:
       type: git
       url: https://git.drupal.org/project/beautytips.git
       branch: 7.x-2.x
-      revision: f9a8b5b
+      revision: 5e8a425d
     patch:
-      849232: https://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
+      849232: https://www.drupal.org/files/issues/2019-08-29/include-excanvas-via-libraries-api-d7-849232-15_0.patch
       3063738: https://www.drupal.org/files/issues/2019-06-24/php72count-3063738-1.patch
   better_exposed_filters:
     version: '3.6'
