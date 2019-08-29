@@ -10,15 +10,22 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class RouteProvider {
 
+  private $appRoot;
+
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}
+   * Constructor.
+   */
+  public function __construct(string $appRoot) {
+    $this->appRoot = $appRoot;
+  }
+
+  /**
+   * Routes.
    */
   public function routes() {
     $routes = new RouteCollection();
 
-    $base = \Drupal::service('app.root') . "/data-catalog-frontend/public";
+    $base = $this->appRoot . "/data-catalog-frontend/public";
     $possible_pages = $this->expandDirectories($base);
 
     foreach ($possible_pages as $possible_page) {
@@ -47,8 +54,8 @@ class RouteProvider {
   /**
    * Public.
    */
-  public static function getNameFromPath($path) {
-    $base = \Drupal::service('app.root') . "/data-catalog-frontend/public/";
+  public  function getNameFromPath($path) {
+    $base = $this->appRoot . "/data-catalog-frontend/public/";
     $sub = str_replace($base, "", $path);
     return str_replace("/", "__", $sub);
   }
@@ -82,7 +89,7 @@ class RouteProvider {
    * @return \Symfony\Component\Routing\Route
    *   Route.
    */
-  protected function routeHelper(string $path, string $name) : Route {
+  private function routeHelper(string $path, string $name) : Route {
     $route = new Route(
           "/$path",
           [

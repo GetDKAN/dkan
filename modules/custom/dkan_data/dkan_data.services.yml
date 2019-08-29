@@ -1,8 +1,8 @@
 services:
-  dkan_data.config_overrider:
-    class: \Drupal\dkan_data\ConfigurationOverrider
-    tags:
-      - {name: config.factory.override, priority: 5}
+  dkan_data.storage:
+    class: \Drupal\dkan_data\Storage\Data
+    arguments:
+      - '@entity_type.manager'
   dkan_data.value_referencer:
     class: \Drupal\dkan_data\ValueReferencer
     arguments:
@@ -10,3 +10,7 @@ services:
       - '@uuid'
       - '@config.factory'
       - '@queue'
+  dkan_data.config_overrider:
+    class: \Drupal\dkan_data\ConfigurationOverrider
+    tags:
+      - {name: config.factory.override, priority: 5}

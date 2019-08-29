@@ -2,52 +2,60 @@
 
 namespace Drupal\dkan_api\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
+use Sae\Sae;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\dkan_data\Storage\Data;
+use Drupal\dkan_schema\SchemaRetriever;
 
 /**
  * Class Api.
  */
-abstract class Api extends ControllerBase {
+class Api implements ContainerInjectionInterface {
 
   /**
-   * Represents the data type passed via the HTTP request url schema_id slug.
+   * Request stack.
    *
-   * @var string
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
-  protected $schemaId;
+  private $requestStack;
 
   /**
-   * Drupal service container.
+   * Storage.
    *
-   * @var \Symfony\Component\DependencyInjection\ContainerInterface
+   * @var \Drupal\dkan_data\Storage\Data
    */
-  protected $container;
+  private $storage;
 
   /**
-   * Factory to generate various dkan classes.
+   * Schema retriever.
    *
-   * @var \Drupal\dkan_common\Service\Factory
+   * @var \Drupal\dkan_schema\SchemaRetriever
    */
-  protected $dkanFactory;
+  private $schemaRetriever;
 
   /**
-   * Api constructor.
+   * Inherited.
+   *
+   * {@inheritDoc}
    */
-  public function __construct(ContainerInterface $container) {
-    $this->container = $container;
-    $this->dkanFactory = $container->get('dkan.factory');
+  public static function create(ContainerInterface $container) {
+    return new Api($container->get('request_stack'),
+      $container->get('dkan_schema.schema_retriever'),
+      $container->get('dkan_data.storage')
+    );
   }
 
   /**
-   * Gets the json schema object.
+   * Constructor.
    */
-  abstract protected function getJsonSchema();
-
-  /**
-   * Gets the storage object.
-   */
-  abstract protected function getStorage();
+  public function __construct(RequestStack $requestStack, SchemaRetriever $schemaRetriever, Data $storage) {
+    $this->requestStack = $requestStack;
+    $this->schemaRetriever = $schemaRetriever;
+    $this->storage = $storage;
+  }
 
   /**
    * Get all.
@@ -59,25 +67,22 @@ abstract class Api extends ControllerBase {
    *   The json response.
    */
   public function getAll($schema_id) {
-    $this->schemaId = $schema_id;
 
-    $datasets = $this->getEngine()
-      ->get();
+    $datasets = $this->getEngine($schema_id)->get();
 
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
-          function ($json_string) {
-              return json_decode($json_string);
-          },
-          $datasets
-      );
+      function ($json_string) {
+          return json_decode($json_string);
+      },
+      $datasets
+    );
 
-    return $this->dkanFactory
-      ->newJsonResponse(
-              $unflattened,
-              200,
-              ["Access-Control-Allow-Origin" => "*"]
-          );
+    return new JsonResponse(
+      $unflattened,
+      200,
+      ["Access-Control-Allow-Origin" => "*"]
+    );
   }
 
   /**
@@ -92,23 +97,20 @@ abstract class Api extends ControllerBase {
    *   The json response.
    */
   public function get($uuid, $schema_id) {
-    $this->schemaId = $schema_id;
 
     try {
 
-      $data = $this->getEngine()
+      $data = $this->getEngine($schema_id)
         ->get($uuid);
 
-      return $this->dkanFactory
-        ->newJsonResponse(
-                json_decode($data),
-                200,
-                ["Access-Control-Allow-Origin" => "*"]
-            );
+      return new JsonResponse(
+        json_decode($data),
+        200,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse((object) ["message" => $e->getMessage()], 404);
+      return new JsonResponse((object) ["message" => $e->getMessage()], 404);
     }
   }
 
@@ -122,42 +124,39 @@ abstract class Api extends ControllerBase {
    *   The json response.
    */
   public function post($schema_id) {
-    $this->schemaId = $schema_id;
 
     /* @var $engine \Sae\Sae */
-    $engine = $this->getEngine();
+    $engine = $this->getEngine($schema_id);
 
     /* @var $request \Symfony\Component\HttpFoundation\Request */
-    $request = \Drupal::request();
-    $uri = $request->getRequestUri();
-    $data = $request->getContent();
+    $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
+    $data = $this->requestStack->getCurrentRequest()->getContent();
 
     // If resource already exists, return HTTP 409 Conflict and existing uri.
     $params = json_decode($data, TRUE);
     if (isset($params['identifier'])) {
       $uuid = $params['identifier'];
-      $existing = \Drupal::entityQuery('node')
-        ->condition('uuid', $uuid)
-        ->execute();
-      if ($existing) {
-        return $this->dkanFactory
-          ->newJsonResponse(
-                  (object) ["endpoint" => "{$uri}/{$uuid}"], 409
-              );
+      try {
+        $this->storage->retrieve($uuid);
+
+        return new JsonResponse(
+            (object) ["endpoint" => "{$uri}/{$uuid}"], 409
+        );
+      }
+      catch (\Exception $e) {
+
       }
     }
 
     try {
       $uuid = $engine->post($data);
-      return $this->dkanFactory
-        ->newJsonResponse(
-                (object) ["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid],
-                201
-            );
+      return new JsonResponse(
+          (object) ["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid],
+          201
+      );
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
+      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
     }
   }
 
@@ -173,40 +172,51 @@ abstract class Api extends ControllerBase {
    *   The json response.
    */
   public function put($uuid, $schema_id) {
-    $this->schemaId = $schema_id;
-
     /* @var $engine \Sae\Sae */
-    $engine = $this->getEngine();
+    $engine = $this->getEngine($schema_id);
 
-    /* @var $request \Symfony\Component\HttpFoundation\Request */
-    $request = \Drupal::request();
-    $data = $request->getContent();
+    $data = $this->requestStack->getCurrentRequest()->getContent();
 
     $obj = json_decode($data);
     if (isset($obj->identifier) && $obj->identifier != $uuid) {
-      return $this->dkanFactory
-        ->newJsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
+      return $this->getResponse(["message" => "Identifier cannot be modified"], 409);
     }
 
-    $existing = \Drupal::entityQuery('node')
-      ->condition('uuid', $uuid)
-      ->execute();
+    $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 
     try {
-      $engine->put($uuid, $data);
-      $uri = $request->getRequestUri();
-
-      // If a new resource is created, inform the user agent via 201 Created.
-      return $this->dkanFactory
-        ->newJsonResponse(
-          (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
-          empty($existing) ? 201 : 200
-        );
+      if ($this->objectExists($uuid)) {
+        $engine->put($uuid, $data);
+        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 200);
+      }
+      else {
+        $engine->post($data);
+        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 201);
+      }
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
+      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
     }
+  }
+
+  /**
+   * Private.
+   */
+  private function objectExists($uuid) {
+    try {
+      $this->storage->retrieve($uuid);
+      return TRUE;
+    }
+    catch (\Exception $e) {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function getResponse(array $message, int $code) {
+    return new JsonResponse((object) $message, $code);
   }
 
   /**
@@ -221,41 +231,43 @@ abstract class Api extends ControllerBase {
    *   The json response.
    */
   public function patch($uuid, $schema_id) {
-    $this->schemaId = $schema_id;
 
     /* @var $engine \Sae\Sae */
-    $engine = $this->getEngine();
+    $engine = $this->getEngine($schema_id);
 
-    /* @var $request \Symfony\Component\HttpFoundation\Request */
-    $request = \Drupal::request();
-    $data = $request->getContent();
-
-    $obj = json_decode($data);
-    if (isset($obj->identifier) && $obj->identifier != $uuid) {
-      return $this->dkanFactory
-        ->newJsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
-    }
-
-    $existing = \Drupal::entityQuery('node')
-      ->condition('uuid', $uuid)
-      ->execute();
-
-    if (!$existing) {
-      return $this->dkanFactory
-        ->newJsonResponse((object) ["message" => "Resource not found"], 404);
-    }
+    $data = $this->requestStack->getCurrentRequest()->getContent();
 
     try {
-      $engine->patch($uuid, $data);
-      $uri = $request->getRequestUri();
-      return $this->dkanFactory
-        ->newJsonResponse(
-                (object) ["endpoint" => "{$uri}", "identifier" => $uuid], 200
-            );
+      $this->checkData($uuid, $data);
+      if ($this->objectExists($uuid)) {
+        $engine->patch($uuid, $data);
+        $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
+        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 200);
+      }
+      else {
+        return $this->getResponse(["message" => "No data with the identifier {$uuid} was found."], 404);
+      }
+    }
+    catch (InvalidPayloadException $e) {
+      return $this->getResponse(["message" => $e->getMessage()], 409);
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
+      return $this->getResponse(["message" => $e->getMessage()], 406);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function checkData($uuid, $data) {
+    $obj = json_decode($data);
+
+    if (!$obj) {
+      throw new InvalidPayloadException("Invalid JSON");
+    }
+
+    if (isset($obj->identifier) && $obj->identifier != $uuid) {
+      throw new InvalidPayloadException("Identifier cannot be modified");
     }
   }
 
@@ -272,11 +284,11 @@ abstract class Api extends ControllerBase {
    */
   public function delete($uuid, $schema_id) {
     /* @var $engine \Sae\Sae */
-    $engine = $this->getEngine();
+    $engine = $this->getEngine($schema_id);
 
     $engine->delete($uuid);
-    return $this->dkanFactory
-      ->newJsonResponse((object) ["message" => "Dataset {$uuid} has been deleted."], 200);
+
+    return new JsonResponse((object) ["message" => "Dataset {$uuid} has been deleted."], 200);
   }
 
   /**
@@ -285,21 +297,36 @@ abstract class Api extends ControllerBase {
    * @return \Sae\Sae
    *   Service Api Engine
    */
-  public function getEngine() {
-
-    return $this->dkanFactory
-      ->newServiceApiEngine($this->getStorage(), $this->getJsonSchema());
+  public function getEngine($schema_id) {
+    return new Sae($this->getStorage($schema_id), $this->getJsonSchema($schema_id));
   }
 
   /**
-   * Inherited.
+   * Get Storage.
    *
-   * {@inheritdocs}.
-   *
-   * @codeCoverageIgnore
+   * @return \Drupal\dkan_api\Storage\Data
+   *   Dataset
    */
-  public static function create(ContainerInterface $container) {
-    return new static($container);
+  private function getStorage($schema_id) {
+    $this->storage->setSchema($schema_id);
+    return $this->storage;
+  }
+
+  /**
+   * Get Json Schema.
+   *
+   * @return string
+   *   Json schema.
+   */
+  private function getJsonSchema($schema_id) {
+
+    // @Todo: mechanism to validate against additional schemas. For now,
+    // validate against the empty object, as it accepts any valid json.
+    if ($schema_id != 'dataset') {
+      return '{ }';
+    }
+
+    return $this->schemaRetriever->retrieve('dataset');
   }
 
 }

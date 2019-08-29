@@ -2,12 +2,12 @@
 
 namespace Drupal\dkan_schema;
 
-use Contracts\Retriever;
+use Contracts\RetrieverInterface;
 
 /**
  * Class.
  */
-class SchemaRetriever implements Retriever {
+class SchemaRetriever implements RetrieverInterface {
 
   /**
    * Directory.

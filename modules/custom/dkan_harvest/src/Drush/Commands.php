@@ -40,7 +40,6 @@ class Commands extends DrushCommands {
    */
   public function __construct() {
     // @todo passing via arguments doesn't seem play well with drush.services.yml
-    $this->harvestFactory = \Drupal::service('dkan_harvest.factory');
     $this->harvestService = \Drupal::service('dkan_harvest.service');
     $this->logger = \Drupal::service('dkan_harvest.logger_channel');
   }

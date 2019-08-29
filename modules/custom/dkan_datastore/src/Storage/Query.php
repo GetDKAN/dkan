@@ -2,15 +2,20 @@
 
 namespace Drupal\dkan_datastore\Storage;
 
-use Contracts\Sorter;
-use Contracts\Conditioner;
-use Contracts\Offsetter;
-use Contracts\Limiter;
+use Contracts\SorterInterface;
+use Contracts\ConditionerInterface;
+use Contracts\OffsetterInterface;
+use Contracts\LimiterInterface;
 
 /**
  * Query class.
  */
-class Query implements Sorter, Conditioner, Offsetter, Limiter {
+class Query implements
+    SorterInterface,
+    ConditionerInterface,
+    OffsetterInterface,
+    LimiterInterface {
+
   public $thing;
   public $properties = [];
   public $conditions = [];

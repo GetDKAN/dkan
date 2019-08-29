@@ -66,11 +66,17 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
+            dktl dc exec cli apt update -y
+            dktl dc exec cli apt install jq -y
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl drush dkan-dummy-content:create
-            dktl drush dkan-datastore:import c9e2d352-e24c-4051-9158-f48127aa5692
-            dktl drush dkan-datastore:import 5dc1cfcf-8028-476c-a020-f58ec6dd621c
+            RESOURCE_ID1=$(dktl dc exec cli curl -s http://dkan/api/v1/dataset/c9e2d352-e24c-4051-9158-f48127aa5692\?values\=both | jq -r '.distribution[0]["identifier"]')
+            export RESOURCE_ID1
+            RESOURCE_ID2=$(dktl dc exec cli curl -s http://dkan/api/v1/dataset/5dc1cfcf-8028-476c-a020-f58ec6dd621c\?values\=both | jq -r '.distribution[0]["identifier"]')
+            export RESOURCE_ID2
+            dktl drush dkan-datastore:import $RESOURCE_ID1
+            dktl drush dkan-datastore:import $RESOURCE_ID2
             dktl dkan:test-cypress
             dktl dkan:test-dredd
       - store_artifacts:

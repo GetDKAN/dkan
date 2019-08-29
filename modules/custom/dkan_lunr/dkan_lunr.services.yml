@@ -1,6 +1,6 @@
 services:
     dkan_lunr.search:
         class: Drupal\dkan_lunr\Search
+        arguments:
+            - '@dkan_api.controller'
         shared: false
-    dkan_lunr.dataset_modifier:
-        class: Drupal\dkan_lunr\Service\DatasetModifier

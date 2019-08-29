@@ -16,7 +16,7 @@ trait FileHelperTrait {
    *   FileHelper.
    */
   protected function getFileHelper() {
-    return \Drupal::service('dkan_harvest.file_helper');
+    return new FileHelper();
   }
 
 }

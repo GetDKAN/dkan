@@ -24,6 +24,8 @@ trait RequestTrait {
    *
    * @return string
    *   String.
+   *
+   * @codeCoverageIgnore
    */
   protected function getCurrentRequestUri() {
     return $this->getCurrentRequest()
@@ -35,6 +37,8 @@ trait RequestTrait {
    *
    * @return string|resource
    *   String or resource.
+   *
+   * @codeCoverageIgnore
    */
   protected function getCurrentRequestContent() {
     return $this->getCurrentRequest()

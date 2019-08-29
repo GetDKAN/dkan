@@ -1,11 +1,11 @@
 services:
-    dkan_api.controller.dataset:
-        # todo this is used a few places to get the Sae instance from `getEngine()`
-        # should not be using inner workings of controller to get data
-        # consider refactoring to use a more generic service instead.
-        class: \Drupal\dkan_api\Controller\Dataset
-        arguments: ['@service_container']
-    dkan_api.storage.drupal_node_dataset:
-        class: \Drupal\dkan_api\Storage\DrupalNodeDataset
-        arguments:
-            - '@entity_type.manager'
+  dkan_api.controller:
+    class: \Drupal\dkan_api\Controller\Api
+    arguments:
+      - '@request_stack'
+      - '@dkan_schema.schema_retriever'
+      - '@dkan_data.storage'
+  dkan_api.route_provider:
+    class: \Drupal\dkan_api\Routing\RouteProvider
+    arguments:
+      - '@config.factory'

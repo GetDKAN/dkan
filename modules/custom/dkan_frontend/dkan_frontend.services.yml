@@ -1,4 +1,6 @@
 services:
-    dkan_frontend.page:
-        class: Drupal\dkan_frontend\Page
-        shared: false
+  dkan_frontend.page:
+      class: Drupal\dkan_frontend\Page
+      arguments:
+        - '@app.root'
+      shared: false
