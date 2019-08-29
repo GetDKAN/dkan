@@ -62,30 +62,12 @@ context('API', () => {
     })
 
     context('GET requests', () => {
-        it('GET a single dataset', () => {
-            cy.request(endpoint + '/' + json1.identifier).then((response) => {
-                expect(response.status).eql(200)
-                expect(response.body.identifier).eql(json1.identifier)
-                expect(response.body.title).eql(json1.title)
-            })
-        })
-
         it('GET a non-existent dataset', () => {
             cy.request({
                 url: endpoint + '/' + jsonShouldNotExist.identifier,
                 failOnStatusCode: false
             }).then((response) => {
                 expect(response.status).eql(404)
-            })
-        })
-
-        it('GET all datasets', () => {
-            cy.request(endpoint).then((response) => {
-                expect(response.status).eql(200)
-                expect(response.body[response.body.length - 1].identifier).eql(json2.identifier)
-                expect(response.body[response.body.length - 1].title).eql(json2.title)
-                expect(response.body[response.body.length - 2].identifier).eql(json1.identifier)
-                expect(response.body[response.body.length - 2].title).eql(json1.title)
             })
         })
     })
@@ -134,17 +116,6 @@ context('API', () => {
     })
 
     context('POST requests', () => {
-        it('POST fails without basic auth', () => {
-            cy.request({
-                method: 'POST',
-                url: endpoint,
-                body: jsonPost,
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(401)
-            })
-        })
-
         it('POST fails with no payload, or empty payload', () => {
             cy.request({
                 method: 'POST',
@@ -166,62 +137,9 @@ context('API', () => {
                 expect(response.status).eql(406)
             })
         })
-
-        it('POST creates a dataset', () => {
-            cy.request({
-                method: 'POST',
-                url: endpoint,
-                auth: user_credentials,
-                body: jsonPost
-            }).then((response) => {
-                expect(response.status).eql(201)
-                expect(response.body.endpoint).eql("/api/v1/dataset/" + jsonPost.identifier)
-                expect(response.body.identifier).eql(jsonPost.identifier)
-            })
-            // Verify expected title.
-            cy.request(endpoint + '/' + jsonPost.identifier).then((response) => {
-                expect(response.status).eql(200)
-                expect(response.body.title).eql(jsonPost.title)
-            })
-        })
-
-        it('POST fails on existing dataset', () => {
-            cy.request({
-                method: 'POST',
-                url: endpoint,
-                auth: user_credentials,
-                body: {
-                    title: jsonShouldNotExist.title,
-                    description: jsonShouldNotExist.description,
-                    identifier: jsonPost.identifier
-                },
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(409)
-                expect(response.body.endpoint).eql("/api/v1/dataset/" + jsonPost.identifier)
-            })
-            // Verify this data is unchanged.
-            cy.request(endpoint + '/' + jsonPost.identifier).then((response) => {
-                expect(response.status).eql(200)
-                expect(response.body.title).eql(jsonPost.title)
-                expect(response.body.description).eql(jsonPost.description)
-                expect(response.body.identifier).eql(jsonPost.identifier)
-            })
-        })
-    })
+   })
 
     context('PUT requests', () => {
-        it('PUT fails without basic auth', () => {
-            cy.request({
-                method: 'PUT',
-                url: endpoint + '/' + jsonShouldNotExist.identifier,
-                body: jsonShouldNotExist,
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(401)
-            })
-        })
-
         it('PUT fails with no payload, or empty payload', () => {
             cy.request({
                 method: 'PUT',
@@ -301,17 +219,6 @@ context('API', () => {
     })
 
     context('PATCH requests', () => {
-        it('PATCH fails without basic auth', () => {
-            cy.request({
-                method: 'PATCH',
-                url: endpoint + '/' + jsonShouldNotExist.identifier,
-                body: jsonShouldNotExist,
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(401)
-            })
-        })
-
         it('PATCH fails for non-existent dataset', () => {
             cy.request({
                 method: 'PATCH',
@@ -426,16 +333,6 @@ context('API', () => {
     })
 
     context('DELETE requests', () => {
-        it('DELETE fails without basic authentication', () => {
-            cy.request({
-                method: 'DELETE',
-                url: endpoint + '/' + jsonPost.identifier,
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(401)
-            })
-        })
-
         it('DELETE existing datasets', () => {
             cy.request({
                 method: 'DELETE',

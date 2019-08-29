@@ -39,6 +39,7 @@ endpointsToSkip.forEach(endpoint => hooks.before(endpoint, (transaction) => {
  */
 endpointsRequiringAuth = [
   '/api/v1/dataset > Create a dataset > 201 > application/json',
+  '/api/v1/dataset > Create a dataset > 409 > application/json',
   '/api/v1/dataset/{uuid} > Replace a dataset > 200 > application/json',
   '/api/v1/dataset/{uuid} > Update a dataset > 200 > application/json',
   '/api/v1/dataset/{uuid} > Delete a dataset > 200 > application/json',

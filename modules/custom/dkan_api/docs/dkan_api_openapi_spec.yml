@@ -138,6 +138,19 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '409':
+          description: Resource already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                properties:
+                  endpoint:
+                    type: string
+        '401':
+          description: Unauthorized
   /api/v1/dataset/{uuid}:
     get:
       operationId: dataset-get
@@ -194,6 +207,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
     patch:
       operationId: dataset-patch
       summary: Update a dataset
@@ -228,6 +243,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
     delete:
       operationId: dataset-delete
       summary: Delete a dataset
@@ -249,6 +266,8 @@ paths:
                 properties:
                   message:
                     type: string
+        '401':
+          description: Unauthorized
   /api/v1/{property}:
     get:
       operationId: property-get-all
@@ -306,6 +325,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
   /api/v1/{property}/{uuid}:
     get:
       operationId: property-get
@@ -363,6 +384,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
     patch:
       operationId: property-patch
       summary: Update a property
@@ -395,6 +418,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
     delete:
       operationId: property-delete
       summary: Delete a property
@@ -417,6 +442,8 @@ paths:
                 properties:
                   message:
                     type: string
+        '401':
+          description: Unauthorized
   /api/v1/sql/{query}:
     get:
       operationId: datastore-query

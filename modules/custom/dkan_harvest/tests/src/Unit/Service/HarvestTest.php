@@ -176,110 +176,110 @@ class HarvestTest extends DkanTestBase {
   /**
    * Tests RevertHarvest().
    */
-  public function testRevertHarvest() {
+  // public function testRevertHarvest() {
 
-    // Setup.
-    $mock = $this->getMockBuilder(Harvest::class)
-      ->setMethods(NULL)
-      ->disableOriginalConstructor()
-      ->getMock();
+  //   // Setup.
+  //   $mock = $this->getMockBuilder(Harvest::class)
+  //     ->setMethods(NULL)
+  //     ->disableOriginalConstructor()
+  //     ->getMock();
 
-    $mockFactory = $this->getMockBuilder(HarvestFactory::class)
-      ->setMethods(['getHarvester'])
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->writeProtectedProperty($mock, 'factory', $mockFactory);
+  //   $mockFactory = $this->getMockBuilder(HarvestFactory::class)
+  //     ->setMethods(['getHarvester'])
+  //     ->disableOriginalConstructor()
+  //     ->getMock();
+  //   $this->writeProtectedProperty($mock, 'factory', $mockFactory);
 
-    $mockHarvester = $this->getMockBuilder(Harvester::class)
-      ->setMethods(['revert'])
-      ->disableOriginalConstructor()
-      ->getMock();
+  //   $mockHarvester = $this->getMockBuilder(Harvester::class)
+  //     ->setMethods(['revert'])
+  //     ->disableOriginalConstructor()
+  //     ->getMock();
 
-    $id       = uniqid('foo');
-    $expected = TRUE;
-    // Expect.
-    $mockFactory->expects($this->once())
-      ->method('getHarvester')
-      ->with($id)
-      ->willReturn($mockHarvester);
+  //   $id       = uniqid('foo');
+  //   $expected = TRUE;
+  //   // Expect.
+  //   $mockFactory->expects($this->once())
+  //     ->method('getHarvester')
+  //     ->with($id)
+  //     ->willReturn($mockHarvester);
 
-    $mockHarvester->expects($this->once())
-      ->method('revert')
-      ->willReturn($expected);
+  //   $mockHarvester->expects($this->once())
+  //     ->method('revert')
+  //     ->willReturn($expected);
 
-    // Assert.
-    $actual = $mock->revertHarvest($id);
-    $this->assertEquals($expected, $actual);
-  }
+  //   // Assert.
+  //   $actual = $mock->revertHarvest($id);
+  //   $this->assertEquals($expected, $actual);
+  // }
 
   /**
    * Tests RunHarvest().
    */
-  public function testRunHarvest() {
+  // public function testRunHarvest() {
 
-    // Setup.
-    $mock = $this->getMockBuilder(Harvest::class)
-      ->setMethods(NULL)
-      ->disableOriginalConstructor()
-      ->getMock();
+  //   // Setup.
+  //   $mock = $this->getMockBuilder(Harvest::class)
+  //     ->setMethods(NULL)
+  //     ->disableOriginalConstructor()
+  //     ->getMock();
 
-    $mockFactory = $this->getMockBuilder(HarvestFactory::class)
-      ->setMethods([
-        'getHarvester',
-        'getStorage',
-      ])
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->writeProtectedProperty($mock, 'factory', $mockFactory);
+  //   $mockFactory = $this->getMockBuilder(HarvestFactory::class)
+  //     ->setMethods([
+  //       'getHarvester',
+  //       'getStorage',
+  //     ])
+  //     ->disableOriginalConstructor()
+  //     ->getMock();
+  //   $this->writeProtectedProperty($mock, 'factory', $mockFactory);
 
-    $mockHarvester = $this->getMockBuilder(Harvester::class)
-      ->setMethods(['harvest'])
-      ->disableOriginalConstructor()
-      ->getMock();
+  //   $mockHarvester = $this->getMockBuilder(Harvester::class)
+  //     ->setMethods(['harvest'])
+  //     ->disableOriginalConstructor()
+  //     ->getMock();
 
-    $mockStorage = $this->getMockBuilder(Storage::class)
-      ->setMethods(['store'])
-      ->disableOriginalConstructor()
-      ->getMockForAbstractClass();
+  //   $mockStorage = $this->getMockBuilder(Storage::class)
+  //     ->setMethods(['store'])
+  //     ->disableOriginalConstructor()
+  //     ->getMockForAbstractClass();
 
-    $mockTime = $this->getMockBuilder(TimeInterface::class)
-      ->setMethods(['getCurrentTime'])
-      ->disableOriginalConstructor()
-      ->getMockForAbstractClass();
-    $this->writeProtectedProperty($mock, 'time', $mockTime);
+  //   $mockTime = $this->getMockBuilder(TimeInterface::class)
+  //     ->setMethods(['getCurrentTime'])
+  //     ->disableOriginalConstructor()
+  //     ->getMockForAbstractClass();
+  //   $this->writeProtectedProperty($mock, 'time', $mockTime);
 
-    $id              = uniqid('foo');
-    $currentTime     = 123456;
-    $expected        = TRUE;
-    $encodedExpected = json_encode($expected);
+  //   $id              = uniqid('foo');
+  //   $currentTime     = 123456;
+  //   $expected        = TRUE;
+  //   $encodedExpected = json_encode($expected);
 
-    // Expect.
-    $mockFactory->expects($this->once())
-      ->method('getHarvester')
-      ->with($id)
-      ->willReturn($mockHarvester);
+  //   // Expect.
+  //   $mockFactory->expects($this->once())
+  //     ->method('getHarvester')
+  //     ->with($id)
+  //     ->willReturn($mockHarvester);
 
-    $mockHarvester->expects($this->once())
-      ->method('harvest')
-      ->willReturn($expected);
+  //   $mockHarvester->expects($this->once())
+  //     ->method('harvest')
+  //     ->willReturn($expected);
 
-    $mockFactory->expects($this->once())
-      ->method('getStorage')
-      ->with($id, 'run')
-      ->willReturn($mockStorage);
+  //   $mockFactory->expects($this->once())
+  //     ->method('getStorage')
+  //     ->with($id, 'run')
+  //     ->willReturn($mockStorage);
 
-    $mockTime->expects($this->once())
-      ->method('getCurrentTime')
-      ->willReturn($currentTime);
+  //   $mockTime->expects($this->once())
+  //     ->method('getCurrentTime')
+  //     ->willReturn($currentTime);
 
-    $mockStorage->expects($this->once())
-      ->method('store')
-      ->with($encodedExpected, $currentTime);
+  //   $mockStorage->expects($this->once())
+  //     ->method('store')
+  //     ->with($encodedExpected, $currentTime);
 
-    // Assert.
-    $actual = $mock->runHarvest($id);
-    $this->assertEquals($expected, $actual);
-  }
+  //   // Assert.
+  //   $actual = $mock->runHarvest($id);
+  //   $this->assertEquals($expected, $actual);
+  // }
 
   /**
    * Data provider for testGetHarvestRunInfo.
