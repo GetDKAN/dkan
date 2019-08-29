@@ -22,7 +22,6 @@ dependencies:
   - dkan_data
   - dkan_datastore
   - dkan_dummy_content
-  - dkan_frontend
   - dkan_lunr
   - dkan_sql_endpoint
   - dynamic_page_cache

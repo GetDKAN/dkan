@@ -13,3 +13,4 @@ composer.lock
 .docksal
 .idea
 docs/_build*
+.vscode

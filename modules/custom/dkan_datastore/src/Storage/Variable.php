@@ -2,13 +2,12 @@
 
 namespace Drupal\dkan_datastore\Storage;
 
-use Dkan\Datastore\Storage\IKeyValue;
 use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Variable storage.
  */
-class Variable implements IKeyValue {
+class Variable {
 
   protected $store = [];
 

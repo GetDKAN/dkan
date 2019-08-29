@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_lunr;
 
+use Drupal\dkan_api\Controller\Api;
+use Drupal\dkan_lunr\Service\DatasetModifier;
 use LunrPHP\BuildLunrIndex;
 
 /**
@@ -11,6 +13,19 @@ use LunrPHP\BuildLunrIndex;
  */
 class Search {
 
+  /**
+   * Api controller.
+   *
+   * @var \Drupal\dkan_api\Controller\Api
+   */
+  private $apiController;
+
+  /**
+   * Search constructor.
+   */
+  public function __construct(Api $controller) {
+    $this->apiController = $controller;
+  }
 
   /**
    * Search index fields.
@@ -120,7 +135,7 @@ class Search {
   public function docs() {
     $datasets = [];
     /* @var Service\DatasetModifier $dataset_modifier */
-    $dataset_modifier = \Drupal::service('dkan_lunr.dataset_modifier');
+    $dataset_modifier = new DatasetModifier();
     foreach ($this->getDatasets() as $dataset) {
       $datasets[] = $dataset_modifier->modifyDataset($dataset);
     }
@@ -146,16 +161,13 @@ class Search {
    *   Array of dataset objects.
    */
   protected function getDatasets() {
-    /* @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
-    $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
 
     // Engine returns array of json strings.
     return array_map(
           function ($item) {
               return json_decode($item);
           },
-          $dataset_controller->getEngine()
-            ->get()
+          $this->apiController->getEngine('dataset')->get()
       );
   }
 

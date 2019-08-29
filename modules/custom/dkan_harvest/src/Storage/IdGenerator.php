@@ -2,12 +2,12 @@
 
 namespace Drupal\dkan_harvest\Storage;
 
-use Contracts\IdGenerator as ContractsIdGenerator;
+use Contracts\IdGeneratorInterface;
 
 /**
  * Class.
  */
-class IdGenerator implements ContractsIdGenerator {
+class IdGenerator implements IdGeneratorInterface {
 
   /**
    * Data.

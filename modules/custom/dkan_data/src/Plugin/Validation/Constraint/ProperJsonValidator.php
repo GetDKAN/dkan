@@ -32,7 +32,7 @@ class ProperJsonValidator extends ConstraintValidator {
    */
   protected function isProper($value) {
     // @codeCoverageIgnoreStart
-    return \Drupal::service("dkan_api.controller.dataset")->getEngine()->validate($value);
+    return \Drupal::service("dkan_api.controller")->getEngine()->validate($value);
     // @codeCoverageIgnoreEnd
   }
 

@@ -1,6 +1,6 @@
 # Dynamic routes based on dkan_json_property_api's property_list config.
 route_callbacks:
-  - '\Drupal\dkan_api\Routing\RouteProvider::routes'
+  - 'dkan_api.route_provider:routes'
 dkan_api.docs.get_spec_complete:
   path: '/api/v1/docs'
   methods: [GET]

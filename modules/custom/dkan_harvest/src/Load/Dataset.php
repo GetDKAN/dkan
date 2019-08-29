@@ -37,8 +37,8 @@ class Dataset extends Load {
    */
   protected function getDatasetEngine() {
     /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
-    $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
-    return $dataset_controller->getEngine();
+    $dataset_controller = \Drupal::service('dkan_api.controller');
+    return $dataset_controller->getEngine('dataset');
   }
 
 }

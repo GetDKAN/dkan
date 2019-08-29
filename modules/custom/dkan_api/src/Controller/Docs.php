@@ -5,8 +5,12 @@ declare(strict_types = 1);
 namespace Drupal\dkan_api\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Serialization\Yaml;
+use Drupal\dkan_data\Storage\Data;
 use Drupal\dkan_data\ValueReferencer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Serves openapi spec for dataset-related endpoints.
@@ -18,35 +22,28 @@ class Docs implements ContainerInjectionInterface {
    *
    * @var array
    */
-  protected $spec;
+  private $spec;
 
   /**
    * Module handler.
    *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
-  protected $moduleHandler;
-
-  /**
-   * Factory to generate various dkan classes.
-   *
-   * @var \Drupal\dkan_common\Service\Factory
-   */
-  protected $dkanFactory;
+  private $moduleHandler;
 
   /**
    * Serializer to translate yaml to json.
    *
    * @var \Symfony\Component\Serializer\Serializer
    */
-  protected $ymlSerializer;
+  private $serializer;
 
   /**
    * Drupal node dataset storage.
    *
-   * @var \Drupal\dkan_api\Storage\DrupalNodeDataset
+   * @var \Drupal\dkan_api\Storage\Data
    */
-  protected $storage;
+  private $storage;
 
   /**
    * Inherited.
@@ -56,20 +53,22 @@ class Docs implements ContainerInjectionInterface {
    * @codeCoverageIgnore
    */
   public static function create(ContainerInterface $container) {
-    return new static($container);
+    $moduleHandler = $container->get('module_handler');
+    $storage = $container->get('dkan_data.storage');
+    return new Docs($moduleHandler, $storage);
   }
 
   /**
    * Constructor.
    */
-  public function __construct(ContainerInterface $container) {
-    $this->moduleHandler = $container->get('module_handler');
-    $this->dkanFactory = $container->get('dkan.factory');
-    $this->ymlSerializer = $container->get('serialization.yaml');
-
-    $this->storage = $container->get('dkan_api.storage.drupal_node_dataset');
+  public function __construct(
+    ModuleHandlerInterface $moduleHandler,
+    Data $storage
+  ) {
+    $this->moduleHandler = $moduleHandler;
+    $this->serializer = new Yaml();
+    $this->storage = $storage;
     $this->storage->setSchema('dataset');
-
     $this->spec = $this->getJsonFromYmlFile();
   }
 
@@ -79,12 +78,12 @@ class Docs implements ContainerInjectionInterface {
    * @return array
    *   The openapi spec.
    */
-  protected function getJsonFromYmlFile() {
+  private function getJsonFromYmlFile() {
     $modulePath = $this->moduleHandler->getModule('dkan_api')->getPath();
     $ymlSpecPath = $modulePath . '/docs/dkan_api_openapi_spec.yml';
     $ymlSpec = $this->fileGetContents($ymlSpecPath);
 
-    return $this->ymlSerializer->decode($ymlSpec);
+    return $this->serializer->decode($ymlSpec);
   }
 
   /**
@@ -98,7 +97,7 @@ class Docs implements ContainerInjectionInterface {
    *
    * @codeCoverageIgnore
    */
-  protected function fileGetContents($path) {
+  private function fileGetContents($path) {
     return file_get_contents($path);
   }
 
@@ -160,8 +159,11 @@ class Docs implements ContainerInjectionInterface {
       ["name" => "SQL Query"],
     ];
     // Replace the dataset uuid placeholder.
-    $spec['paths']['/api/v1/dataset/' . $uuid] = $spec['paths']['/api/v1/dataset/{uuid}'];
-    unset($spec['paths']['/api/v1/dataset/{uuid}']);
+    if (isset($spec['paths']['/api/v1/dataset/{uuid}'])) {
+      $spec['paths']['/api/v1/dataset/' . $uuid] = $spec['paths']['/api/v1/dataset/{uuid}'];
+      unset($spec['paths']['/api/v1/dataset/{uuid}']);
+    }
+
     // Replace the sql endpoint query placeholder.
     $spec = $this->replaceDistributions($spec, $uuid);
 
@@ -178,9 +180,8 @@ class Docs implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   OpenAPI spec response.
    */
-  public function sendResponse(string $jsonSpec) {
-    return $this->dkanFactory
-      ->newJsonResponse(
+  private function sendResponse(string $jsonSpec) {
+    return new JsonResponse(
               $jsonSpec,
               200,
               [
@@ -202,15 +203,17 @@ class Docs implements ContainerInjectionInterface {
    * @return array
    *   Modified spec.
    */
-  protected function removeSpecOperations(array $spec, array $ops_to_remove) {
-    foreach ($spec['paths'] as $path => $operations) {
-      foreach ($operations as $op => $details) {
-        if (in_array($op, $ops_to_remove)) {
-          unset($spec['paths'][$path][$op]);
+  private function removeSpecOperations(array $spec, array $ops_to_remove) {
+    if (isset($spec['paths'])) {
+      foreach ($spec['paths'] as $path => $operations) {
+        foreach ($operations as $op => $details) {
+          if (in_array($op, $ops_to_remove)) {
+            unset($spec['paths'][$path][$op]);
+          }
         }
-      }
-      if (empty($spec['paths'][$path])) {
-        unset($spec['paths'][$path]);
+        if (empty($spec['paths'][$path])) {
+          unset($spec['paths'][$path]);
+        }
       }
     }
 
@@ -228,12 +231,16 @@ class Docs implements ContainerInjectionInterface {
    * @return array
    *   Modified spec.
    */
-  protected function removeSpecPaths(array $spec, array $paths_to_remove) {
+  private function removeSpecPaths(array $spec, array $paths_to_remove) {
+    if (!isset($spec['paths'])) {
+      return $spec;
+    }
     foreach ($spec['paths'] as $path => $ops) {
       if (in_array($path, $paths_to_remove)) {
         unset($spec['paths'][$path]);
       }
     }
+
     return $spec;
   }
 
@@ -248,22 +255,25 @@ class Docs implements ContainerInjectionInterface {
    * @return array
    *   Modified spec.
    */
-  protected function replaceDistributions(array $spec, string $uuid) {
+  private function replaceDistributions(array $spec, string $uuid) {
     // Load this dataset's metadata with both data and identifiers.
-    drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
+    if (function_exists('drupal_static')) {
+      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
+    }
     $dataset = $this->storage->retrieve($uuid);
     $data = json_decode($dataset);
 
     // Create and customize a path for each dataset distribution/resource.
-    foreach ($data->distribution as $dist) {
-      $path = "/api/v1/sql/[SELECT * FROM {$dist->identifier}];";
+    if (isset($data->distribution)) {
+      foreach ($data->distribution as $dist) {
+        $path = "/api/v1/sql/[SELECT * FROM {$dist->identifier}];";
 
-      $spec['paths'][$path] = $spec['paths']['/api/v1/sql/{query}'];
-      $spec['paths'][$path]['get']['summary'] = $dist->data->title ?? "";
-      $spec['paths'][$path]['get']['description'] = $dist->data->description ?? "";
+        $spec['paths'][$path] = $spec['paths']['/api/v1/sql/{query}'];
+        $spec['paths'][$path]['get']['summary'] = $dist->data->title ?? "";
+        $spec['paths'][$path]['get']['description'] = $dist->data->description ?? "";
+      }
+      unset($spec['paths']['/api/v1/sql/{query}']);
     }
-    unset($spec['paths']['/api/v1/sql/{query}']);
-
     return $spec;
   }
 

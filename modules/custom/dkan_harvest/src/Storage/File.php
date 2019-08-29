@@ -2,13 +2,16 @@
 
 namespace Drupal\dkan_harvest\Storage;
 
-use Harvest\Storage\Storage;
+use Contracts\BulkRetrieverInterface;
+use Contracts\RemoverInterface;
+use Contracts\RetrieverInterface;
+use Contracts\StorerInterface;
 use Drupal\dkan_harvest\Load\FileHelperTrait;
 
 /**
  * Class.
  */
-class File implements Storage {
+class File implements RetrieverInterface, StorerInterface, RemoverInterface, BulkRetrieverInterface {
   use FileHelperTrait;
 
   /**
