@@ -37,6 +37,7 @@ projects:
       revision: f9a8b5b
     patch:
       849232: https://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
+      3063738: https://www.drupal.org/files/issues/2019-06-24/php72count-3063738-1.patch
   better_exposed_filters:
     version: '3.6'
   bueditor:
