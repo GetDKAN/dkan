@@ -62,7 +62,7 @@ jobs:
             cd ~/sandbox
             dktl install
       - run:
-          name: Run cypress tests
+          name: Run integration tests (cypress, dredd)
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
@@ -72,6 +72,7 @@ jobs:
             dktl drush dkan-datastore:import c9e2d352-e24c-4051-9158-f48127aa5692
             dktl drush dkan-datastore:import 5dc1cfcf-8028-476c-a020-f58ec6dd621c
             dktl dkan:test-cypress
+            dktl dkan:test-dredd
       - store_artifacts:
           path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/screenshots
       - store_test_results:
