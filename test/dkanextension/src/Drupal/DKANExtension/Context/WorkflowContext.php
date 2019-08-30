@@ -131,7 +131,7 @@ class WorkflowContext extends RawDKANContext {
       // `workbench_moderation_store` function is part of the shutdown
       // execution and run it.
       $callbacks = &drupal_register_shutdown_function();
-      while (list($key, $callback) = each($callbacks)) {
+      foreach ($callbacks as $key => $callback) {
         if ($callback['callback'] == 'workbench_moderation_store') {
           call_user_func_array($callback['callback'], $callback['arguments']);
           unset($callbacks[$key]);
