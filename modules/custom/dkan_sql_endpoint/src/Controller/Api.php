@@ -2,25 +2,41 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
+use Drupal\dkan_datastore\Service\Datastore;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\Query;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Maquina\StateMachine\MachineOfMachines;
+use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Drupal\Core\Database\Connection;
 
 /**
  * Api class.
  */
 class Api implements ContainerInjectionInterface {
 
-  private $container;
+  private $database;
+  private $datastore;
+
+  /**
+   * Inherited.
+   *
+   * @{inheritdocs}
+   *
+   * @codeCoverageIgnore
+   */
+  public static function create(ContainerInterface $container) {
+    return new Api($container->get('database'), $container->get('dkan_datastore.service'));
+  }
 
   /**
    * Constructor.
    */
-  public function __construct(ContainerInterface $container) {
-    $this->container = $container;
+  public function __construct(Connection $database, Datastore $datastore) {
+    $this->database = $database;
+    $this->datastore = $datastore;
   }
 
   /**
@@ -28,7 +44,7 @@ class Api implements ContainerInjectionInterface {
    */
   public function runQuery($query_string) {
 
-    $parser = $this->getParser();
+    $parser = new SqlParser();
 
     if ($parser->validate($query_string) === FALSE) {
       return $this->response("Invalid query string.", 500);
@@ -43,7 +59,7 @@ class Api implements ContainerInjectionInterface {
       return $this->response("No datastore.", 500);
     }
 
-    $databaseTable = new DatabaseTable($this->container->get('database'), $this->getResource($state_machine));
+    $databaseTable = new DatabaseTable($this->database, $this->getResource($state_machine));
 
     try {
       $result = $databaseTable->query($query_object);
@@ -61,7 +77,7 @@ class Api implements ContainerInjectionInterface {
    */
   private function getResource(MachineOfMachines $state_machine) {
     $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
-    return $this->container->get('dkan_datastore.service')->getResourceFromUuid($uuid);
+    return $this->datastore->getResourceFromUuid($uuid);
   }
 
   /**
@@ -189,8 +205,6 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Private.
-   *
-   * @codeCoverageIgnore
    */
   private function response($message, $code) {
     return new JsonResponse(
@@ -198,26 +212,6 @@ class Api implements ContainerInjectionInterface {
         $code,
         ["Access-Control-Allow-Origin" => "*"]
       );
-  }
-
-  /**
-   * Private.
-   *
-   * @codeCoverageIgnore
-   */
-  private function getParser() {
-    return $this->container->get('dkan_sql_endpoint.sql_parser');
-  }
-
-  /**
-   * Inherited.
-   *
-   * @{inheritdocs}
-   *
-   * @codeCoverageIgnore
-   */
-  public static function create(ContainerInterface $container) {
-    return new static($container);
   }
 
 }

@@ -124,11 +124,6 @@ class Api implements ContainerInjectionInterface {
    *   The json response.
    */
   public function post($schema_id) {
-
-    /* @var $engine \Sae\Sae */
-    $engine = $this->getEngine($schema_id);
-
-    /* @var $request \Symfony\Component\HttpFoundation\Request */
     $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
     $data = $this->requestStack->getCurrentRequest()->getContent();
 
@@ -136,27 +131,17 @@ class Api implements ContainerInjectionInterface {
     $params = json_decode($data, TRUE);
     if (isset($params['identifier'])) {
       $uuid = $params['identifier'];
-      try {
-        $this->storage->retrieve($uuid);
-
-        return new JsonResponse(
-            (object) ["endpoint" => "{$uri}/{$uuid}"], 409
-        );
-      }
-      catch (\Exception $e) {
-
+      if ($this->objectExists($schema_id, $uuid)) {
+        return $this->getResponse(["endpoint" => "{$uri}/{$uuid}"], 409);
       }
     }
 
     try {
-      $uuid = $engine->post($data);
-      return new JsonResponse(
-          (object) ["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid],
-          201
-      );
+      $uuid = $this->getEngine($schema_id)->post($data);
+      return $this->getResponse(["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid], 201);
     }
     catch (\Exception $e) {
-      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
+      return $this->getResponseFromException($e, 406);
     }
   }
 
@@ -185,7 +170,7 @@ class Api implements ContainerInjectionInterface {
     $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 
     try {
-      if ($this->objectExists($uuid)) {
+      if ($this->objectExists($schema_id, $uuid)) {
         $engine->put($uuid, $data);
         return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 200);
       }
@@ -202,21 +187,14 @@ class Api implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function objectExists($uuid) {
+  private function objectExists($schemaId, $uuid) {
     try {
-      $this->storage->retrieve($uuid);
+      $this->getStorage($schemaId)->retrieve($uuid);
       return TRUE;
     }
     catch (\Exception $e) {
       return FALSE;
     }
-  }
-
-  /**
-   * Private.
-   */
-  private function getResponse(array $message, int $code) {
-    return new JsonResponse((object) $message, $code);
   }
 
   /**
@@ -239,7 +217,7 @@ class Api implements ContainerInjectionInterface {
 
     try {
       $this->checkData($uuid, $data);
-      if ($this->objectExists($uuid)) {
+      if ($this->objectExists($schema_id, $uuid)) {
         $engine->patch($uuid, $data);
         $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
         return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 200);
@@ -327,6 +305,20 @@ class Api implements ContainerInjectionInterface {
     }
 
     return $this->schemaRetriever->retrieve('dataset');
+  }
+
+  /**
+   * Private.
+   */
+  private function getResponse(array $message, int $code) {
+    return new JsonResponse((object) $message, $code, ["Access-Control-Allow-Origin" => "*"]);
+  }
+
+  /**
+   * Private.
+   */
+  private function getResponseFromException(\Exception $e, int $code) {
+    return new JsonResponse((object) ['message' => $e->getMessage()], $code, ["Access-Control-Allow-Origin" => "*"]);
   }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_api\Unit\Controller;
 
+use Drupal\dkan_common\Tests\MockChain;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\dkan_api\Controller\Api;
@@ -15,81 +16,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ApiTest extends TestCase {
 
-  private $request;
-
-  /**
-   *
-   */
-  public function getContainer() {
-
-    $container = $this->getMockBuilder(ContainerInterface::class)
-      ->setMethods(['get'])
-      ->disableOriginalConstructor()
-      ->getMockForAbstractClass();
-
-    $container->method('get')
-      ->with(
-        $this->logicalOr(
-          $this->equalTo('dkan_schema.schema_retriever'),
-          $this->equalTo('dkan_data.storage'),
-          $this->equalTo('request_stack')
-        )
-      )
-      ->will($this->returnCallback([$this, 'containerGet']));
-
-    return $container;
-  }
-
-  /**
-   *
-   */
-  public function containerGet($input) {
-    switch ($input) {
-      case 'request_stack':
-        $stack = $this->getMockBuilder(RequestStack::class)
-          ->disableOriginalConstructor()
-          ->setMethods(['getCurrentRequest'])
-          ->getMock();
-
-        $stack->method("getCurrentRequest")->willReturn($this->request);
-
-        return $stack;
-
-      break;
-      case 'dkan_schema.schema_retriever':
-        $schemaRetriever = $this->getMockBuilder(SchemaRetriever::class)
-          ->disableOriginalConstructor()
-          ->setMethods(['retrieve'])
-          ->getMock();
-
-        $schemaRetriever->method('retrieve')->willReturn("{ }");
-        return $schemaRetriever;
-
-      break;
-      case 'dkan_data.storage':
-        $storage = $this->getMockBuilder(Data::class)
-          ->disableOriginalConstructor()
-          ->setMethods(['retrieveAll', 'retrieve', 'store', 'remove'])
-          ->getMock();
-
-        $json = '{"name": "hello"}';
-        $storage->method('retrieveAll')->willReturn([$json, $json, $json]);
-        $storage->method('retrieve')->willReturn($json);
-        $storage->method('store')->willReturn(1);
-        $storage->method('remove')->willReturn(1);
-
-        return $storage;
-
-      break;
-    }
-  }
-
   /**
    *
    */
   public function testGetAll() {
-    $this->request = new Request();
-    $controller = Api::create($this->getContainer());
+    $mockChain = $this->getCommonMockChain();
+    $json = '{"name": "hello"}';
+    $mockChain->add(Data::class, 'retrieveAll', json_encode([$json, $json, $json]));
+
+    $controller = Api::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
     $this->assertEquals('[{"name":"hello"},{"name":"hello"},{"name":"hello"}]', $response->getContent());
   }
@@ -98,8 +33,11 @@ class ApiTest extends TestCase {
    *
    */
   public function testGet() {
-    $this->request = new Request();
-    $controller = Api::create($this->getContainer());
+    $mockChain = $this->getCommonMockChain();
+    $json = '{"name": "hello"}';
+    $mockChain->add(Data::class, 'retrieve', json_encode($json));
+
+    $controller = Api::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
     $this->assertEquals('{"name":"hello"}', $response->getContent());
   }
@@ -107,19 +45,39 @@ class ApiTest extends TestCase {
   /**
    *
    */
+  public function testGetException() {
+    $mockChain = $this->getCommonMockChain();;
+    $mockChain->add(Data::class, 'retrieve', new \Exception("bad"));
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->get(1, 'dataset');
+    $this->assertEquals('{"message":"bad"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testGetExceptionOtherSchema() {
+    $mockChain = $this->getCommonMockChain();;
+    $mockChain->add(Data::class, 'retrieve', new \Exception("bad"));
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->get(1, 'blah');
+    $this->assertEquals('{"message":"bad"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
   public function testPost() {
-    $request = $this->getMockBuilder(Request::class)
-      ->setMethods(['getContent', 'getRequestUri'])
-      ->disableOriginalConstructor()
-      ->getMock();
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+    $mockChain->add(Request::class, 'getContent', json_encode('{"identifier": "1"}'));
+    $json = '{"name": "hello"}';
+    $mockChain->add(Data::class, 'retrieve', json_encode($json));
 
-    $thing = ['identifier' => 1];
-    $request->method('getContent')->willReturn(json_encode($thing));
-    $request->method('getRequestUri')->willReturn("http://blah");
-
-    $this->request = $request;
-
-    $controller = Api::create($this->getContainer());
+    $controller = Api::create($mockChain->getMock());
     $response = $controller->post('dataset');
     $this->assertEquals('{"endpoint":"http:\/\/blah\/1"}', $response->getContent());
   }
@@ -127,19 +85,47 @@ class ApiTest extends TestCase {
   /**
    *
    */
+  public function testPostNoIdentifier() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+    $mockChain->add(Request::class, 'getContent', json_encode('{ }'));
+    $mockChain->add(Data::class, 'store', "1");
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->post('dataset');
+    $this->assertEquals('{"endpoint":"http:\/\/blah\/1","identifier":"1"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPostNoIdentifierException() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+    $mockChain->add(Request::class, 'getContent', json_encode('{ }'));
+    $mockChain->add(Data::class, 'store', new \Exception("bad"));
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->post('dataset');
+    $this->assertEquals('{"message":"bad"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
   public function testPatch() {
-    $request = $this->getMockBuilder(Request::class)
-      ->setMethods(['getContent', 'getRequestUri'])
-      ->disableOriginalConstructor()
-      ->getMock();
-
+    $mockChain = $this->getCommonMockChain();
+    $json = '{"name": "hello"}';
+    $mockChain->add(Data::class, 'retrieve', json_encode($json));
+    $mockChain->add(Data::class, 'store', "1");
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $thing = ['identifier' => 1];
-    $request->method('getContent')->willReturn(json_encode($thing));
-    $request->method('getRequestUri')->willReturn("http://blah");
+    $mockChain->add(Request::class, 'getContent', json_encode(json_encode($thing)));
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
 
-    $this->request = $request;
-
-    $controller = Api::create($this->getContainer());
+    $controller = Api::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
     $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":1}', $response->getContent());
   }
@@ -147,19 +133,65 @@ class ApiTest extends TestCase {
   /**
    *
    */
-  public function testPut() {
-    $request = $this->getMockBuilder(Request::class)
-      ->setMethods(['getContent', 'getRequestUri'])
-      ->disableOriginalConstructor()
-      ->getMock();
-
+  public function testPatchNoObject() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'retrieve', new \Exception());
+    $mockChain->add(Data::class, 'store', "1");
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $thing = ['identifier' => 1];
-    $request->method('getContent')->willReturn(json_encode($thing));
-    $request->method('getRequestUri')->willReturn("http://blah");
+    $mockChain->add(Request::class, 'getContent', json_encode(json_encode($thing)));
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
 
-    $this->request = $request;
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->patch(1, 'dataset');
+    $this->assertEquals('{"message":"No data with the identifier 1 was found."}', $response->getContent());
+  }
 
-    $controller = Api::create($this->getContainer());
+  /**
+   *
+   */
+  public function testPatchStoreError() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'retrieve', json_encode("{ }"));
+    $mockChain->add(Data::class, 'store', new \Exception("Could not store"));
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $thing = ['identifier' => 1];
+    $mockChain->add(Request::class, 'getContent', json_encode(json_encode($thing)));
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->patch(1, 'dataset');
+    $this->assertEquals('{"message":"Could not store"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPatchBadPayload() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'retrieve', json_encode("{ }"));
+    $mockChain->add(Data::class, 'store', new \Exception("Could not store"));
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', json_encode("{"));
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->patch(1, 'dataset');
+    $this->assertEquals('{"message":"Invalid JSON"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPut() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'retrieve', json_encode("{ }"));
+    $mockChain->add(Data::class, 'store', "1");
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', json_encode("{ }"));
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+
+    $controller = Api::create($mockChain->getMock());
     $response = $controller->put(1, 'dataset');
     $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":1}', $response->getContent());
   }
@@ -167,12 +199,79 @@ class ApiTest extends TestCase {
   /**
    *
    */
-  public function testDelete() {
-    $this->request = new Request();
+  public function testPutModifyId() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'retrieve', json_encode("{ }"));
+    $mockChain->add(Data::class, 'store', "1");
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', json_encode('{"identifier":"2"}'));
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
 
-    $controller = Api::create($this->getContainer());
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->put(1, 'dataset');
+    $this->assertEquals('{"message":"Identifier cannot be modified"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPutNoObject() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'retrieve', new \Exception());
+    $mockChain->add(Data::class, 'store', "1");
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $thing = ['identifier' => 1];
+    $mockChain->add(Request::class, 'getContent', json_encode(json_encode($thing)));
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->put(1, 'dataset');
+    $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":1}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPutStoreError() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'retrieve', new \Exception());
+    $mockChain->add(Data::class, 'store', new \Exception("bad"));
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $thing = ['identifier' => 1];
+    $mockChain->add(Request::class, 'getContent', json_encode(json_encode($thing)));
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->put(1, 'dataset');
+    $this->assertEquals('{"message":"bad"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testDelete() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'remove', "");
+
+    $controller = Api::create($mockChain->getMock());
     $response = $controller->delete(1, 'dataset');
     $this->assertEquals('{"message":"Dataset 1 has been deleted."}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  private function getCommonMockChain() {
+    $mockChain = new MockChain($this);
+    $mockChain->add(ContainerInterface::class, 'get',
+      [
+        'request_stack' => RequestStack::class,
+        'dkan_schema.schema_retriever' => SchemaRetriever::class,
+        'dkan_data.storage' => Data::class,
+      ]
+    );
+    $mockChain->add(SchemaRetriever::class, 'retrieve', json_encode("{ }"));
+    return $mockChain;
   }
 
 }
