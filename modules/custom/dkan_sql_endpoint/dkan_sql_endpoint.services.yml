@@ -1,3 +1,0 @@
-services:
-  dkan_sql_endpoint.sql_parser:
-    class: SqlParser\SqlParser

@@ -27,10 +27,7 @@ class File implements RetrieverInterface, StorerInterface, RemoverInterface, Bul
   public function __construct($directory_path) {
     $this->directoryPath = $directory_path;
     $this->getFileHelper()
-      ->prepareDir(
-                    $this->directoryPath,
-                    FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS
-              );
+      ->prepareDir($this->directoryPath, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
   }
 
   /**
