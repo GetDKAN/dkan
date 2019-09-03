@@ -11,7 +11,7 @@ references:
         mv ~/dkan .
         dktl make
         dktl install
-        
+
   install_tests: &install_tests
     run:
       name: Install tests
@@ -38,7 +38,9 @@ jobs:
           command: |
             cd ~
             git clone https://github.com/GetDKAN/dkan-tools.git
-            chmod 777 ./dkan-tools/bin/dktl
+            cd dkan-tools
+            git checkout 87605bbd1bb3413055cc6b071b262863692da6a5
+            chmod 777 ./bin/dktl
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -88,7 +90,7 @@ jobs:
             (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list
             echo "TESTING FEATURES:"
             cat $test_list
-            while read file; do 
+            while read file; do
               echo "FEATURE FILE: $file"
               if ! dktl test:behat $file; then
                 exit_status=1;
