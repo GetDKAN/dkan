@@ -247,12 +247,12 @@ projects:
       url: https://git.drupal.org/project/multistep.git
       revision: 3b0d40a
   og:
-    version: '2.10'
+    version: '2.x-dev'
     patch:
       1090438: https://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch
       2549071: https://www.drupal.org/files/issues/og_actions-bug-vbo-delete.patch
       2301831: https://www.drupal.org/files/issues/og-missing-permission-roles-2301831-1.patch
-      2900273: https://www.drupal.org/files/issues/2019-05-07/og-entity-malformed-exception-after-deleting-group-2900273-14.patch
+      0: patches/check-if-group-is-object.patch
   og_extras:
     version: '1.2'
   og_moderation:
