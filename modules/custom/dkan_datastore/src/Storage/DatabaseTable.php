@@ -162,7 +162,7 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
         $db_query->range($query->offset, $query->limit);
       }
       else {
-        $db_query->range(1, $query->limit);
+        $db_query->range(0, $query->limit);
       }
     }
     elseif ($query->offset) {

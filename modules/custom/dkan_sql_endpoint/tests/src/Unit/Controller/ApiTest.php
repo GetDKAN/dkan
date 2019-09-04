@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\StorableConfigBase;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_datastore\Service\Datastore;
@@ -31,7 +33,8 @@ class ApiTest extends DkanTestBase {
       ->with(
         $this->logicalOr(
           $this->equalTo('database'),
-          $this->equalTo('dkan_datastore.service')
+          $this->equalTo('dkan_datastore.service'),
+          $this->equalTo('config.factory')
         )
       )
       ->will($this->returnCallback(function ($input) {
@@ -41,6 +44,9 @@ class ApiTest extends DkanTestBase {
 
           case 'dkan_datastore.service':
             return $this->getDatastoreMock();
+
+          case 'config.factory':
+            return $this->getConfigMock();
         }
       }));
 
@@ -131,6 +137,28 @@ class ApiTest extends DkanTestBase {
    */
   private function getDatastoreMock() {
     return $this->createMock(Datastore::class);
+  }
+
+  private function getConfigMock() {
+    $mock = $this->getMockBuilder(ConfigFactoryInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+
+    $mock->method('get')->willReturn($this->getConfigResultMock());
+
+    return $mock;
+  }
+
+  private function getConfigResultMock() {
+    $mock = $this->getMockBuilder(StorableConfigBase::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+
+    $mock->method('get')->willReturn(10);
+
+    return $mock;
   }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_datastore\Service\Datastore;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\Query;
@@ -19,6 +20,7 @@ class Api implements ContainerInjectionInterface {
 
   private $database;
   private $datastore;
+  private $configFactory;
 
   /**
    * Inherited.
@@ -28,15 +30,16 @@ class Api implements ContainerInjectionInterface {
    * @codeCoverageIgnore
    */
   public static function create(ContainerInterface $container) {
-    return new Api($container->get('database'), $container->get('dkan_datastore.service'));
+    return new Api($container->get('database'), $container->get('dkan_datastore.service'), $container->get('config.factory'));
   }
 
   /**
    * Constructor.
    */
-  public function __construct(Connection $database, Datastore $datastore) {
+  public function __construct(Connection $database, Datastore $datastore, ConfigFactoryInterface $configFactory) {
     $this->database = $database;
     $this->datastore = $datastore;
+    $this->configFactory = $configFactory;
   }
 
   /**
@@ -152,9 +155,14 @@ class Api implements ContainerInjectionInterface {
    * Private.
    */
   private function setQueryObjectLimit(Query $object, $state_machine) {
+    $rows_limit = $this->configFactory->get('dkan_sql_endpoint.settings')->get('rows_limit');
+
     $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
-    if (!empty($limit)) {
+    if (!empty($limit) && $limit[0] <= $rows_limit) {
       $object->limitTo($limit[0]);
+    }
+    else {
+      $object->limitTo($rows_limit);
     }
 
     $offset = $this->getStringsFromStringMachine($state_machine->gsm('numeric2'));
