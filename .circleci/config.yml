@@ -38,9 +38,7 @@ jobs:
           command: |
             cd ~
             git clone https://github.com/GetDKAN/dkan-tools.git
-            cd dkan-tools
-            git checkout 87605bbd1bb3413055cc6b071b262863692da6a5
-            chmod 777 ./bin/dktl
+            chmod 777 ./dkan-tools/bin/dktl
       - persist_to_workspace:
           root: /home/circleci
           paths:
