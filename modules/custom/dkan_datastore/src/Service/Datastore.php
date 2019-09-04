@@ -79,7 +79,7 @@ class Datastore {
 
     $importer = $this->getImporter($uuid);
 
-    // Otherwise, start the import immidiately.
+    // Otherwise, start the import immediately.
     $importer->runIt();
 
     // No matter what, create a record in the DB for this job.

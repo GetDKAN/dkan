@@ -448,7 +448,8 @@ paths:
     get:
       operationId: datastore-query
       summary: Query resources in datastore
-      description: Interact with resources in the datastore using an SQL-like syntax.
+      description: >
+        Interact with resources in the datastore using an SQL-like syntax.
       tags:
         - SQL Query
       parameters:
@@ -465,7 +466,9 @@ paths:
   /api/v1/harvest:
     get:
       operationId: harvest-get-all
-      summary: Get all harvest identifiers
+      summary: Lists harvest identifiers
+      description: >
+        Lists the identifiers of all registered harvests.
       tags:
         - Harvest
       responses:
@@ -476,10 +479,12 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
+                  type: string
     post:
       operationId: harvest-register
       summary: Register a new harvest
+      description: >
+        Registers a new harvest, after validating against our schema.
       tags:
         - Harvest
       security:
@@ -509,6 +514,9 @@ paths:
     get:
       operationId: harvest-info
       summary: List previous runs for a harvest id
+      description: >
+        Lists the identifiers (timestamps) of previous runs for a particular
+        harvest id.
       tags:
         - Harvest
       parameters:
@@ -526,6 +534,8 @@ paths:
     get:
       operationId: harvest-run-info
       summary: Information about a specific previous harvest run
+      description: >
+        Gives information about a previous run for a specific harvest run.
       tags:
         - Harvest
       parameters:
@@ -542,6 +552,8 @@ paths:
     put:
       operationId: harvest-run
       summary: Runs a harvest
+      description: >
+        Runs a harvest for a specific identifier.
       tags:
         - Harvest
       security:
@@ -575,7 +587,10 @@ paths:
   /api/v1/datastore/{uuid}:
     get:
       operationId: datastore-get
-      summary: Return a dataset with datastore headers and statistics
+      summary: Datastore statistics
+      description: >
+        Returns the numbers of rows and columns, and a list of columns headers
+        from the datastore.
       tags:
         - Datastore
       parameters:
@@ -586,12 +601,27 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Dataset'
+                type: object
+                required:
+                  - numOfRows
+                  - numOfColumns
+                  - columns
+                properties:
+                  numOfRows:
+                    type: integer
+                  numOfColumns:
+                    type: integer
+                  columns:
+                    type: array
+                    items:
+                      type: string
     delete:
       operationId: datastore-delete
-      summary: Drop a datastore
+      summary: Delete a datastore
+      description: >
+        Delete one or more datastores. If the uuid parameter is that of
+        a resource, delete that resource. If the uuid parameter is that of
+        a dataset, delete all resources of that dataset.
       tags:
         - Datastore
       security:
@@ -614,6 +644,8 @@ paths:
     put:
       operationId: datastore-import
       summary: Datastore import
+      description: >
+        Immediately starts the import process for a datastore.
       tags:
         - Datastore
       security:
@@ -645,6 +677,8 @@ paths:
     put:
       operationId: datastore-deferred-import
       summary: Deferred datastore import
+      description: >
+        Queues the process of importing a resource to the datastore.
       tags:
         - Datastore
       security:
