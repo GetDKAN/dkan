@@ -290,43 +290,6 @@ paths:
                   properties:
                     identifier:
                       type: string
-    post:
-      operationId: property-create
-      summary: Create a property
-      tags:
-        - Properties
-      security:
-        - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/property'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - identifier
-              properties:
-                identifier:
-                  type: string
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - endpoint
-                  - identifier
-                properties:
-                  endpoint:
-                    type: string
-                  identifier:
-                    type: string
-        '401':
-          description: Unauthorized
   /api/v1/{property}/{uuid}:
     get:
       operationId: property-get
@@ -417,30 +380,6 @@ paths:
                   endpoint:
                     type: string
                   identifier:
-                    type: string
-        '401':
-          description: Unauthorized
-    delete:
-      operationId: property-delete
-      summary: Delete a property
-      tags:
-        - Properties
-      security:
-        - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/property'
-        - $ref: '#/components/parameters/propertyUuid'
-      responses:
-        '200':
-          description: Property has been deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - message
-                properties:
-                  message:
                     type: string
         '401':
           description: Unauthorized
