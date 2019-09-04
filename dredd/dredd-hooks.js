@@ -9,11 +9,9 @@ const hooks = require('hooks');
  * or we can create some as needed.
  */
 endpointsToSkip = [
-  '/api/v1/{property} > Create a property > 201 > application/json',
   '/api/v1/{property}/{uuid} > Get a property > 200 > application/json',
   '/api/v1/{property}/{uuid} > Replace a property > 200 > application/json',
   '/api/v1/{property}/{uuid} > Update a property > 200 > application/json',
-  '/api/v1/{property}/{uuid} > Delete a property > 200 > application/json',
   '/api/v1/sql/{query} > Query resources in datastore > 200 > application/json',
   '/api/v1/harvest > Register a new harvest > 200 > application/json',
   '/api/v1/harvest/info/{id} > List previous runs for a harvest id > 200 > application/json',
@@ -42,10 +40,8 @@ endpointsRequiringAuth = [
   '/api/v1/dataset/{uuid} > Replace a dataset > 200 > application/json',
   '/api/v1/dataset/{uuid} > Update a dataset > 200 > application/json',
   '/api/v1/dataset/{uuid} > Delete a dataset > 200 > application/json',
-  '/api/v1/{property} > Create a property > 201 > application/json',
   '/api/v1/{property}/{uuid} > Replace a property > 200 > application/json',
   '/api/v1/{property}/{uuid} > Update a property > 200 > application/json',
-  '/api/v1/{property}/{uuid} > Delete a property > 200 > application/json',
   '/api/v1/harvest > Register a new harvest > 200 > application/json',
   '/api/v1/harvest/run/{id} > Runs a harvest > 200 > application/json',
   '/api/v1/datastore/{uuid} > Drop a datastore > 200 > application/json',
