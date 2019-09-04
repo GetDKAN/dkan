@@ -50,7 +50,10 @@ class Api implements ContainerInjectionInterface {
       return $this->successResponse($data);
     }
     catch (\Exception $e) {
-      return $this->exceptionResponse($e);
+      return $this->exceptionResponse(
+        new \Exception("A datastore for resource {$uuid} does not exist."),
+        404
+      );
     }
   }
 
@@ -82,7 +85,12 @@ class Api implements ContainerInjectionInterface {
   public function delete($uuid) {
     try {
       $this->datastoreService->drop($uuid);
-      return $this->successResponse((object) ["identifier" => $uuid]);
+      return $this->successResponse(
+        [
+          "identifier" => $uuid,
+          "message" => "The datastore for resource {$uuid} was succesfully dropped.",
+        ]
+      );
     }
     catch (\Exception $e) {
       return $this->exceptionResponse($e);
@@ -99,8 +107,8 @@ class Api implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function exceptionResponse(\Exception $e) {
-    return new JsonResponse((object) ['message' => $e->getMessage()], 500);
+  private function exceptionResponse(\Exception $e, $code = 500) {
+    return new JsonResponse((object) ['message' => $e->getMessage()], $code);
   }
 
 }

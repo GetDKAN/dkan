@@ -7,3 +7,5 @@ weight: 2
 is_admin: false
 permissions:
   - 'post put delete datasets through the api'
+  - 'dkan_datastore_api_drop'
+  - 'dkan_datastore_api_import'

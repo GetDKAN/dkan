@@ -311,7 +311,7 @@ class DatastoreApiTest extends DkanTestBase {
   public function testDelete() {
     $controller = Api::create($this->getContainer());
     $response = $controller->delete('asdbv');
-    $this->assertEquals('{"identifier":"asdbv"}', $response->getContent());
+    $this->assertEquals('{"identifier":"asdbv","message":"The datastore for resource asdbv was succesfully dropped."}', $response->getContent());
   }
 
   /**
@@ -320,7 +320,7 @@ class DatastoreApiTest extends DkanTestBase {
   public function testDeferredImport() {
     $controller = Api::create($this->getContainer());
     $response = $controller->import('asdbv', TRUE);
-    $this->assertEquals('{"queueID":"1"}', $response->getContent());
+    $this->assertEquals('{"message":"Resource asdbv has been queued to be imported.","queue_id":"1"}', $response->getContent());
   }
 
 }
