@@ -3,6 +3,7 @@
 namespace Drupal\dkan_schema;
 
 use Contracts\RetrieverInterface;
+use Drupal\Core\Extension\ExtensionList;
 
 /**
  * Class.
@@ -19,8 +20,8 @@ class SchemaRetriever implements RetrieverInterface {
   /**
    * Public.
    */
-  public function __construct() {
-    $this->findSchemaDirectory();
+  public function __construct($appRoot, ExtensionList $profileExtensionList) {
+    $this->findSchemaDirectory($appRoot, $profileExtensionList);
   }
 
   /**
@@ -57,14 +58,14 @@ class SchemaRetriever implements RetrieverInterface {
   /**
    * Private.
    */
-  protected function findSchemaDirectory() {
+  protected function findSchemaDirectory($appRoot, $profileExtensionList) {
 
-    $drupalRoot = \Drupal::service('app.root');
+    $drupalRoot = $appRoot;
 
     if (is_dir($drupalRoot . "/schema")) {
       $this->directory = $drupalRoot . "/schema";
     }
-    elseif (($directory = $this->getDefaultSchemaDirectory())
+    elseif (($directory = $this->getDefaultSchemaDirectory($profileExtensionList))
           && is_dir($directory)
       ) {
       $this->directory = $directory;
@@ -82,9 +83,9 @@ class SchemaRetriever implements RetrieverInterface {
    * @return string
    *   Path.
    */
-  protected function getDefaultSchemaDirectory() {
+  protected function getDefaultSchemaDirectory($profileExtensionList) {
     /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
-    $extensionList = \Drupal::service('extension.list.profile');
+    $extensionList = $profileExtensionList;
     $infoFile = $extensionList->getPathname('dkan2');
 
     return dirname($infoFile) . '/schema';

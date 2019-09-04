@@ -60,7 +60,10 @@ class Datastore {
     // If we passed $deferred, immediately add to the queue for later.
     if (!empty($deferred)) {
       $queueId = $this->queueImport($uuid);
-      return ['queueID' => $queueId];
+      return [
+        'message' => "Resource {$uuid} has been queued to be imported.",
+        'queue_id' => $queueId,
+      ];
     }
 
     $file_fetcher = $this->getFileFetcher($uuid);

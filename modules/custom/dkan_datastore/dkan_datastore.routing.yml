@@ -12,7 +12,9 @@ dkan_datastore.import_deferred:
     _controller: '\Drupal\dkan_datastore\Controller\Api::import'
     deferred: true
   requirements:
-    _permission: 'access content'
+    _permission: 'dkan_datastore_api_import'
+  options:
+    _auth: ['basic_auth']
 dkan_datastore.import:
   path: '/api/v1/datastore/import/{uuid}'
   methods: [PUT]
@@ -20,11 +22,15 @@ dkan_datastore.import:
     _controller: '\Drupal\dkan_datastore\Controller\Api::import'
     deferred: false
   requirements:
-    _permission: 'access content'
+    _permission: 'dkan_datastore_api_import'
+  options:
+    _auth: ['basic_auth']
 dkan_datastore.delete:
   path: '/api/v1/datastore/{uuid}'
   methods: [DELETE]
   defaults:
     _controller: '\Drupal\dkan_datastore\Controller\Api::delete'
   requirements:
-    _permission: 'access content'
+    _permission: 'dkan_datastore_api_drop'
+  options:
+    _auth: ['basic_auth']
