@@ -1,4 +1,4 @@
-name: SQL Enpoint
+name: SQL Endpoint
 description: 'An web services endpoint that allow SQL-like syntax to be used to interact with resources in the datastore.'
 type: module
 core: 8.x
