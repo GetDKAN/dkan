@@ -2,6 +2,11 @@ context('SQL Endpoint', () => {
 
     let endpoint = "http://dkan/api/v1/sql/"
     let dataset_identifier = "c9e2d352-e24c-4051-9158-f48127aa5692"
+    let datastore_endpoint = "http://dkan/api/v1/datastore"
+    let user_credentials = {
+      user: 'testuser',
+      pass: '2jqzOAnXS9mmcLasy'
+    };
     let resource_identifier
 
     // Obtain the resource identifier from the above dataset before proceeding.
@@ -11,7 +16,28 @@ context('SQL Endpoint', () => {
             expect(response.body.distribution[0]).not.eql(dataset_identifier)
             expect(response.body.distribution[0]).to.match(uuidRegex);
             resource_identifier = response.body.distribution[0];
+            cy.request(
+              {
+                method: 'PUT',
+                url: datastore_endpoint +'/import/' + resource_identifier,
+                auth: user_credentials
+              }
+            ).then((response) => {
+              expect(response.status).eql(200);
+            })
         })
+    })
+
+    after(function() {
+      cy.request(
+        {
+          method: 'DELETE',
+          url: datastore_endpoint +'/' + resource_identifier,
+          auth: user_credentials
+        }
+      ).then((response) => {
+        expect(response.status).eql(200);
+      })
     })
 
     context('SELECT', () => {
