@@ -1,0 +1,24 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function dkan_datastore_node_insert(EntityInterface $entity) {
+  /* @var $entity \Drupal\node\Entity\Node */
+  if ($entity->bundle() == "data") {
+    $data_type = $entity->get('field_data_type')->get(0)->getValue()['value'];
+    if ($data_type == "distribution") {
+      $array = $entity->get('field_json_metadata')->get(0)->getValue();
+      $json = $array['value'];
+      $object = json_decode($json);
+      $data = $object->data;
+      if (isset($data->downloadURL) || isset($data->accessURL)) {
+        /* @var $datastore_service \Drupal\dkan_datastore\Service\Datastore */
+        $datastore_service = \Drupal::service("dkan_datastore.service");
+        $datastore_service->import($entity->uuid(), TRUE);
+      }
+    }
+  }
+}
