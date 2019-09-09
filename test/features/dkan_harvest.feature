@@ -7,6 +7,23 @@ Feature: Dkan Harvest
       | Source one | /harvest_source/source-one |
       | Source two | /harvest_source/source-two |
 
+@harvest @harvest_01 @api @javascript
+  Scenario: As a site manager I should be able to add a harvest source.
+    Given users:
+      | name              | mail                     | status | roles             |
+      | Site manager      | admin@fakeemail.com      | 1      | site manager      |
+
+    And I am logged in as "Site manager"
+    And I am on "node/add/harvest-source"
+    Then I should see the text "Create Harvest Source"
+    And I fill in "Title" with "Source 1"
+    And I wait for "2" seconds
+    And I fill in "Source URI" with "https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
+    And I select "Project Open Data v1.1 JSON" from "Type"
+    And I press "Save"
+    And I wait for "10" seconds
+    Then I should see the success message "Harvest Source Source 1 has been created."
+
   @harvest @harvest_12 @api
   Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
     Given users:
@@ -129,23 +146,6 @@ Feature: Dkan Harvest
     Examples:
       | role              |
       | site manager      |
-
-  @harvest @harvest_01 @api @javascript
-  Scenario: As a site manager I should be able to add a harvest source.
-    Given users:
-      | name              | mail                     | status | roles             |
-      | Site manager      | admin@fakeemail.com      | 1      | site manager      |
-
-    And I am logged in as "Site manager"
-    And I am on "node/add/harvest-source"
-    Then I should see the text "Create Harvest Source"
-    And I fill in "Title" with "Source 1"
-    And I wait for "2" seconds
-    And I fill in "Source URI" with "https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
-    And I select "Project Open Data v1.1 JSON" from "Type"
-    And I press "Save"
-    And I wait for "10" seconds
-    Then I should see the success message "Harvest Source Source 1 has been created."
 
   @harvest @harvest_02 @api @javascript
   Scenario: Harvest source machine name should not have forward slash character.
