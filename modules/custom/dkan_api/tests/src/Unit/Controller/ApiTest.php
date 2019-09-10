@@ -45,12 +45,37 @@ class ApiTest extends TestCase {
   /**
    *
    */
-  public function testGetException() {
+  public function testGetResources() {
+    $mockChain = $this->getCommonMockChain();
+    $json = '{"name": "hello", "distribution": [{"title": "Foo"}, {"title": "Bar"}]}';
+    $mockChain->add(Data::class, 'retrieve', json_encode($json));
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->getResources(1, 'dataset');
+    $this->assertEquals('[{"title":"Foo"},{"title":"Bar"}]', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testGetResourcesException() {
     $mockChain = $this->getCommonMockChain();;
     $mockChain->add(Data::class, 'retrieve', new \Exception("bad"));
 
     $controller = Api::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
+    $this->assertEquals('{"message":"bad"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testGetException() {
+    $mockChain = $this->getCommonMockChain();;
+    $mockChain->add(Data::class, 'retrieve', new \Exception("bad"));
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->getResources(1, 'dataset');
     $this->assertEquals('{"message":"bad"}', $response->getContent());
   }
 

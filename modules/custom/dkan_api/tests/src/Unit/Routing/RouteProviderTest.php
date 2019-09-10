@@ -41,6 +41,7 @@ class RouteProviderTest extends TestCase {
         $route->getPath(),
         $this->logicalOr(
           $this->equalTo("/api/v1/dataset/{uuid}"),
+          $this->equalTo("/api/v1/dataset/{uuid}/resources"),
           $this->equalTo("/api/v1/dataset"),
           $this->equalTo("/api/v1/theme/{uuid}"),
           $this->equalTo("/api/v1/theme")
