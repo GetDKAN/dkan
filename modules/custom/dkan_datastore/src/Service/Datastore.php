@@ -4,21 +4,24 @@ namespace Drupal\dkan_datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
+use Dkan\Datastore\Resource;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\node\NodeInterface;
-use Dkan\Datastore\Resource;
-use FileFetcher\FileFetcher;
-use Procrastinator\Result;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\JobStore;
+use Drupal\dkan_datastore\Service\ImporterList\ImporterList;
+use Drupal\node\NodeInterface;
+use FileFetcher\FileFetcher;
+use Procrastinator\Result;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Main services for the datastore.
  */
-class Datastore {
+class Datastore implements ContainerInjectionInterface {
 
   const DATASTORE_DEFAULT_TIMELIMIT = 60;
 
@@ -33,6 +36,22 @@ class Datastore {
    */
   private $fileSystem;
 
+  private $jobStore;
+
+  /**
+   * Inherited.
+   *
+   * {@inheritDoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new Datastore(
+      $container->get('entity.repository'),
+      $container->get('database'),
+      $container->get('queue'),
+      $container->get('file_system')
+    );
+  }
+
   /**
    * Constructor for datastore service.
    */
@@ -46,6 +65,7 @@ class Datastore {
     $this->connection = $connection;
     $this->queue = $queue->get('dkan_datastore_import');
     $this->fileSystem = $fileSystem;
+    $this->jobStore = new JobStore($this->connection);
   }
 
   /**
@@ -57,8 +77,12 @@ class Datastore {
    *   Send to the queue for later? Will import immediately if FALSE.
    */
   public function import(string $uuid, bool $deferred = FALSE): array {
+
     // If we passed $deferred, immediately add to the queue for later.
     if (!empty($deferred)) {
+      $file_fetcher = $this->getFileFetcher($uuid);
+      $this->jobStore->store($uuid, $file_fetcher);
+
       $queueId = $this->queueImport($uuid);
       return [
         'message' => "Resource {$uuid} has been queued to be imported.",
@@ -70,8 +94,7 @@ class Datastore {
     $file_fetcher->run();
 
     // No matter what, create a record in the DB for this job.
-    $jobStore = new JobStore($this->connection);
-    $jobStore->store($uuid, $file_fetcher);
+    $this->jobStore->store($uuid, $file_fetcher);
 
     if ($file_fetcher->getResult()->getStatus() != Result::DONE) {
       return [get_class($file_fetcher) => $file_fetcher->getResult()];
@@ -83,8 +106,7 @@ class Datastore {
     $importer->runIt();
 
     // No matter what, create a record in the DB for this job.
-    $jobStore = new JobStore($this->connection);
-    $jobStore->store($uuid, $importer);
+    $this->jobStore->store($uuid, $importer);
 
     return ["FileFetcherResult" => $file_fetcher->getResult(), "ImporterResult" => $importer->getResult()];
   }
@@ -98,9 +120,8 @@ class Datastore {
    */
   public function drop($uuid) {
     $this->getStorage($uuid)->destroy();
-    $jobStore = new JobStore($this->connection);
-    $jobStore->remove($uuid, Importer::class);
-    $jobStore->remove($uuid, FileFetcher::class);
+    $this->jobStore->remove($uuid, Importer::class);
+    $this->jobStore->remove($uuid, FileFetcher::class);
   }
 
   /**
@@ -140,13 +161,22 @@ class Datastore {
       $resource = $this->getResourceFromUuid($uuid, TRUE);
       $importer = new Importer($resource, $this->getStorage($uuid), Csv::getParser());
       $importer->setTimeLimit(self::DATASTORE_DEFAULT_TIMELIMIT);
-      $jobStore = new JobStore($this->connection);
-      $jobStore->store($uuid, $importer);
+      $this->jobStore->store($uuid, $importer);
     }
     if (!($importer instanceof Importer)) {
       throw new \Exception("Could not load importer for uuid $uuid");
     }
     return $importer;
+  }
+
+  /**
+   * Get a list of all stored importers and filefetchers from database.
+   *
+   * @return \Drupal\dkan_datastore\Service\ImporterList\ImporterList
+   *   The importer list object.
+   */
+  public function listStoredImporters() {
+    return ImporterList::getList($this->jobStore);
   }
 
   /**
@@ -159,8 +189,7 @@ class Datastore {
    *   Importer object or FALSE if none found.
    */
   private function getStoredImporter(string $uuid) {
-    $jobStore = new JobStore($this->connection);
-    if ($importer = $jobStore->get($uuid, Importer::class)) {
+    if ($importer = $this->jobStore->retrieve($uuid, Importer::class)) {
       return $importer;
     }
     return FALSE;
@@ -224,8 +253,7 @@ class Datastore {
       $fileFetcher = new FileFetcher($file_path, $tmpDirectory);
 
       $fileFetcher->setTimeLimit(self::DATASTORE_DEFAULT_TIMELIMIT);
-      $jobStore = new JobStore($this->connection);
-      $jobStore->store($uuid, $fileFetcher);
+      $this->jobStore->store($uuid, $fileFetcher);
     }
     if (!($fileFetcher instanceof FileFetcher)) {
       throw new \Exception("Could not load file-fetcher for uuid $uuid");
@@ -237,8 +265,7 @@ class Datastore {
    * Private.
    */
   private function getStoredFileFetcher(string $uuid) {
-    $jobStore = new JobStore($this->connection);
-    if ($filefetcher = $jobStore->get($uuid, FileFetcher::class)) {
+    if ($filefetcher = $this->jobStore->retrieve($uuid, FileFetcher::class)) {
       return $filefetcher;
     }
     return FALSE;

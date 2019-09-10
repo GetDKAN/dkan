@@ -12,6 +12,11 @@ use Drupal\Core\Database\Connection;
  */
 class JobStore {
 
+  /**
+   * The database connection to use for querrying jobstore tables.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
   private $connection;
 
   /**
@@ -24,15 +29,10 @@ class JobStore {
   /**
    * Get.
    */
-  public function get(string $uuid, string $jobClass) {
-    if (!$this->validateJobClass($jobClass)) {
-      throw new \Exception("Invalid jobType provided: $jobClass");
-    }
-
+  public function retrieve(string $uuid, string $jobClass) {
     $tableName = $this->getTableName($jobClass);
-    if (!$this->tableExists($tableName)) {
-      $this->createTable($tableName);
-    }
+
+    $this->validateJobClassAndTableExistence($jobClass, $tableName);
 
     $result = $this->connection->select($tableName, 't')
       ->fields('t', ['job_data'])
@@ -44,6 +44,45 @@ class JobStore {
     }
     if (isset($job) && ($job instanceof $jobClass)) {
       return $job;
+    }
+  }
+
+  /**
+   * Retrieve all.
+   */
+  public function retrieveAll(string $jobClass): array {
+    $tableName = $this->getTableName($jobClass);
+
+    $this->validateJobClassAndTableExistence($jobClass, $tableName);
+
+    $result = $this->connection->select($tableName, 't')
+      ->fields('t', ['ref_uuid', 'job_data'])
+      ->execute()
+      ->fetchAll();
+
+    if ($result === FALSE) {
+      throw new \Exception("No data in table: $tableName");
+    }
+
+    return array_reduce($result, function ($carry, $item) use ($jobClass) {
+      $job = $jobClass::hydrate($item->job_data);
+      if (isset($job) && ($job instanceof $jobClass)) {
+        $carry[$item->ref_uuid] = $job;
+      }
+      return $carry;
+    }, []);
+  }
+
+  /**
+   * Private.
+   */
+  private function validateJobClassAndTableExistence($jobClass, $tableName) {
+    if (!$this->validateJobClass($jobClass)) {
+      throw new \Exception("Invalid jobType provided: $jobClass");
+    }
+
+    if (!$this->tableExists($tableName)) {
+      $this->createTable($tableName);
     }
   }
 

@@ -134,9 +134,10 @@ class Api implements ContainerInjectionInterface {
         drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
       }
 
-      $data = $this->getEngine($schema_id)
+      $json = $this->getEngine($schema_id)
         ->get($uuid);
-      $distribution = json_decode($data)->distribution;
+      $data = json_decode($json);
+      $distribution = $data->distribution;
 
       return new JsonResponse(
         $distribution,

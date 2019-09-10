@@ -98,6 +98,25 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Returns a list of import jobs and data about their status.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function list() {
+    try {
+      $data = $this->datastoreService->listStoredImporters();
+      return $this->successResponse($data);
+    }
+    catch (\Exception $e) {
+      return $this->exceptionResponse(
+        new \Exception("No importer data was returned. {$e->getMessage()}"),
+        404
+      );
+    }
+  }
+
+  /**
    * Private.
    */
   private function successResponse($message) {

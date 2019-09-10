@@ -2,9 +2,8 @@
 
 namespace Drupal\dkan_datastore\Drush;
 
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\dkan_data\ValueReferencer;
-
-
 use Drush\Commands\DrushCommands;
 
 /**
@@ -14,7 +13,18 @@ use Drush\Commands\DrushCommands;
  */
 class Commands extends DrushCommands {
 
+  /**
+   * The datastore service.
+   *
+   * @var \Drupal\dkan_datastore\Service\Datastore
+   */
   protected $datastoreService;
+
+  /**
+   * Logger channel service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannel
+   */
   protected $logger;
 
   /**
@@ -29,7 +39,7 @@ class Commands extends DrushCommands {
    * Import.
    *
    * @param string $uuid
-   *   The uuid of a dataset.
+   *   The uuid of a resource.
    * @param bool $deferred
    *   Whether or not the process should be deferred to a queue.
    *
@@ -48,6 +58,39 @@ class Commands extends DrushCommands {
       $this->logger->error("We were not able to load the entity with uuid {$uuid}");
       $this->logger->debug($e->getMessage());
     }
+  }
+
+  /**
+   * List.
+   *
+   * @field-labels
+   *   uuid: Resource UUID
+   *   fileName: File Name
+   *   fileFetcherStatus: FileFetcher
+   *   fileFetcherBytes: Processed
+   *   importerStatus: Importer
+   *   importerBytes: Processed
+   *
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   *   The importer list, organized into a RowsOfFields formatter object.
+   *
+   * @command dkan-datastore:list
+   */
+  public function list() {
+    $list = $this->datastoreService->listStoredImporters();
+    $rows = [];
+    foreach ($list as $uuid => $item) {
+      $row = [
+        'uuid' => $uuid,
+        'fileName' => $item->fileName,
+        'fileFetcherStatus' => $item->fileFetcherStatus,
+        'fileFetcherBytes' => \format_size($item->fileFetcherBytes) . " ($item->fileFetcherPercentDone%)",
+        'importerStatus' => $item->importerStatus,
+        'importerBytes' => \format_size($item->importerBytes) . " ($item->importerPercentDone%)",
+      ];
+      $rows[] = $row;
+    }
+    return new RowsOfFields($rows);
   }
 
   /**
