@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_api\Controller;
 
+use Drupal\dkan_data\ValueReferencer;
 use Sae\Sae;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -105,6 +106,40 @@ class Api implements ContainerInjectionInterface {
 
       return new JsonResponse(
         json_decode($data),
+        200,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
+    }
+    catch (\Exception $e) {
+      return new JsonResponse((object) ["message" => $e->getMessage()], 404);
+    }
+  }
+
+  /**
+   * GET all resources associated with a dataset.
+   *
+   * @param string $uuid
+   *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function getResources($uuid, $schema_id) {
+
+    try {
+      // Load this dataset's metadata with both data and identifiers.
+      if (function_exists('drupal_static')) {
+        drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
+      }
+
+      $data = $this->getEngine($schema_id)
+        ->get($uuid);
+      $distribution = json_decode($data)->distribution;
+
+      return new JsonResponse(
+        $distribution,
         200,
         ["Access-Control-Allow-Origin" => "*"]
       );

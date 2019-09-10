@@ -43,39 +43,87 @@ class RouteProvider {
     $routes = new RouteCollection();
     $public_routes = new RouteCollection();
     $authenticated_routes = new RouteCollection();
-    $schemas = array_merge(['dataset'], $this->getPropertyList());
 
-    foreach ($schemas as $schema) {
-      // GET collection.
-      $get_all = $this->routeHelper($schema, "/api/v1/$schema", 'GET', 'getAll');
-      $public_routes->add("dkan_api.{$schema}.get_all", $get_all);
-      // GET individual.
-      $get = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'GET', 'get');
-      $public_routes->add("dkan_api.{$schema}.get", $get);
-      // PUT.
-      $put = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'PUT', 'put');
-      $authenticated_routes->add("dkan_api.{$schema}.put", $put);
-      // PATCH.
-      $patch = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'PATCH', 'patch');
-      $authenticated_routes->add("dkan_api.{$schema}.patch", $patch);
-      // Only applicable to datasets.
-      if ($schema === 'dataset') {
-        // POST.
-        $post = $this->routeHelper($schema, "/api/v1/$schema", 'POST', 'post');
-        $authenticated_routes->add("dkan_api.{$schema}.post", $post);
-        // DELETE.
-        $delete = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'DELETE', 'delete');
-        $authenticated_routes->add("dkan_api.{$schema}.delete", $delete);
-      }
-    }
-
+    $public_routes->addCollection($this->datasetPublicRoutes());
+    $public_routes->addCollection($this->propertyPublicRoutes());
     $this->setPublicRoutesAccess($public_routes);
-    $this->setPrivateRoutesAccess($authenticated_routes);
-
     $routes->addCollection($public_routes);
+
+    $authenticated_routes->addCollection($this->datasetAuthenticatedRoutes());
+    $authenticated_routes->addCollection($this->propertyAuthenticatedRoutes());
+    $this->setPrivateRoutesAccess($authenticated_routes);
     $routes->addCollection($authenticated_routes);
 
     return $routes;
+  }
+
+  /**
+   * Private.
+   */
+  private function datasetPublicRoutes() {
+    $datasetPublic = new RouteCollection();
+    $datasetPublic->add("dkan_api.dataset.get_all", $this->routeHelper(
+      'dataset', 'dataset', 'GET', 'getAll')
+    );
+    $datasetPublic->add("dkan_api.dataset.get", $this->routeHelper(
+      'dataset', 'dataset/{uuid}', 'GET', 'get')
+    );
+    $datasetPublic->add("dkan_api.dataset.get_resources", $this->routeHelper(
+      'dataset', 'dataset/{uuid}/resources', 'GET', 'getResources')
+    );
+    return $datasetPublic;
+  }
+
+  /**
+   * Private.
+   */
+  private function datasetAuthenticatedRoutes() {
+    $datasetAuthenticated = new RouteCollection();
+    $datasetAuthenticated->add("dkan_api.dataset.post", $this->routeHelper(
+      'dataset', 'dataset', 'POST', 'post')
+    );
+    $datasetAuthenticated->add("dkan_api.dataset.put", $this->routeHelper(
+      'dataset', 'dataset/{uuid}', 'PUT', 'put')
+    );
+    $datasetAuthenticated->add("dkan_api.dataset.patch", $this->routeHelper(
+      'dataset', 'dataset/{uuid}', 'PATCH', 'patch')
+    );
+    $datasetAuthenticated->add("dkan_api.dataset.delete", $this->routeHelper(
+      'dataset', 'dataset/{uuid}', 'DELETE', 'delete')
+    );
+    return $datasetAuthenticated;
+  }
+
+  /**
+   * Private.
+   */
+  private function propertyPublicRoutes() {
+    $propertyPublic = new RouteCollection();
+    foreach ($this->getPropertyList() as $schema) {
+      $propertyPublic->add("dkan_api.{$schema}.get_all", $this->routeHelper(
+        $schema, $schema, 'GET', 'getAll')
+      );
+      $propertyPublic->add("dkan_api.{$schema}.get", $this->routeHelper(
+        $schema, "{$schema}/{uuid}", 'GET', 'get')
+      );
+    }
+    return $propertyPublic;
+  }
+
+  /**
+   * Private.
+   */
+  private function propertyAuthenticatedRoutes() {
+    $propertyAuthenticated = new RouteCollection();
+    foreach ($this->getPropertyList() as $schema) {
+      $propertyAuthenticated->add("dkan_api.{$schema}.put", $this->routeHelper(
+        $schema, "{$schema}/{uuid}", 'PUT', 'put')
+      );
+      $propertyAuthenticated->add("dkan_api.{$schema}.patch", $this->routeHelper(
+        $schema, "{$schema}/{uuid}", 'PATCH', 'patch')
+      );
+    }
+    return $propertyAuthenticated;
   }
 
   /**
@@ -98,7 +146,7 @@ class RouteProvider {
    */
   private function routeHelper(string $schema, string $path, string $httpVerb, string $datasetMethod) : Route {
     $route = new Route(
-          $path,
+      "/api/v1/{$path}",
           [
             '_controller' => '\Drupal\dkan_api\Controller\Api::' . $datasetMethod,
             'schema_id' => $schema,
