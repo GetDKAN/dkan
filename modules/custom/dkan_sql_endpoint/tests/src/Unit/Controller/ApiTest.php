@@ -139,6 +139,9 @@ class ApiTest extends DkanTestBase {
     return $this->createMock(Datastore::class);
   }
 
+  /**
+   *
+   */
   private function getConfigMock() {
     $mock = $this->getMockBuilder(ConfigFactoryInterface::class)
       ->disableOriginalConstructor()
@@ -150,6 +153,9 @@ class ApiTest extends DkanTestBase {
     return $mock;
   }
 
+  /**
+   *
+   */
   private function getConfigResultMock() {
     $mock = $this->getMockBuilder(StorableConfigBase::class)
       ->disableOriginalConstructor()

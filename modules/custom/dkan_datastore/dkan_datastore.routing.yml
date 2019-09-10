@@ -34,3 +34,12 @@ dkan_datastore.delete:
     _permission: 'dkan_datastore_api_drop'
   options:
     _auth: ['basic_auth']
+dkan_datastore.list:
+  path: '/api/v1/datastore'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\dkan_datastore\Controller\Api::list'
+  requirements:
+    _permission: 'access content'
+  # options:
+  #   _auth: ['basic_auth']

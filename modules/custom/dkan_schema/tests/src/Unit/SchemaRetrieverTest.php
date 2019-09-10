@@ -14,6 +14,9 @@ use PHPUnit\Framework\TestCase;
  */
 class SchemaRetrieverTest extends TestCase {
 
+  /**
+   *
+   */
   public function testSchemaDirectory() {
     $profile = $this->getMockBuilder(ExtensionList::class)
       ->setMethods(['getPathname'])
@@ -27,6 +30,9 @@ class SchemaRetrieverTest extends TestCase {
     $this->assertEquals($dir, './schema');
   }
 
+  /**
+   *
+   */
   public function testGetAllIds() {
     $profile = $this->getMockBuilder(ExtensionList::class)
       ->setMethods(['getPathname'])
@@ -40,6 +46,9 @@ class SchemaRetrieverTest extends TestCase {
     $this->assertEquals(['dataset'], $ids);
   }
 
+  /**
+   *
+   */
   public function testGet() {
     $profile = $this->getMockBuilder(ExtensionList::class)
       ->setMethods(['getPathname'])
@@ -54,6 +63,9 @@ class SchemaRetrieverTest extends TestCase {
     $this->assertNotFalse($json);
   }
 
+  /**
+   *
+   */
   public function testError() {
     $this->expectExceptionMessage("Schema blah not found.");
     $profile = $this->getMockBuilder(ExtensionList::class)
@@ -67,6 +79,9 @@ class SchemaRetrieverTest extends TestCase {
     $retriever->retrieve('blah');
   }
 
+  /**
+   *
+   */
   public function testNoDirectory() {
     $this->expectExceptionMessage("No schema directory found.");
     $profile = $this->getMockBuilder(ExtensionList::class)
@@ -79,4 +94,5 @@ class SchemaRetrieverTest extends TestCase {
     $retriever = new SchemaRetriever("/abcd", $profile);
     $retriever->retrieve('dataset');
   }
+
 }
