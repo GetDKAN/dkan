@@ -476,7 +476,7 @@ li .heading:hover {
 }
 .label[data-format=csv],
 .label[data-format*=csv] {
-  background-color: #645900;
+  background-color: #a64300;
 }
 .label[data-format=xls],
 .label[data-format*=xls] {
@@ -571,7 +571,7 @@ li .heading:hover {
 }
 .format-label[data-format=csv]:before {
   content: "\e622";
-  color: #dfb100;
+  color: #a64300;
 }
 .format-label[data-format=html]:before {
   content: "\e645";

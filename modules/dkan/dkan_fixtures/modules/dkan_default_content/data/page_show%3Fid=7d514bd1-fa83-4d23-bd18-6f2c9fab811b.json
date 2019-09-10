@@ -130,7 +130,7 @@
                     "configuration": {
                         "button_link_title": "Click Here",
                         "button_link_url": "about",
-                        "button_color": "#3B3B3B",
+                        "button_color": "#002245",
                         "button_align": "text-left",
                         "override_title": 0,
                         "override_title_text": "",
