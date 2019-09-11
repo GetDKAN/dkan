@@ -1186,7 +1186,8 @@ class HarvestMigration extends MigrateDKAN {
       // The parsed remote file should be valid and should not look like a web
       // page.
       if (!is_null($remoteFileInfo->getType())
-        && !in_array($remoteFileInfo->getExtension(), $html_extensions)) {
+        && !in_array($remoteFileInfo->getExtension(), $html_extensions)
+        && $remoteFileInfo->getType() != 'text/html') {
         // Check if this file extension is allowed for field_link_remote_file.
         // Reduce everything to lowercase to support files with uppercase
         // extensions.
