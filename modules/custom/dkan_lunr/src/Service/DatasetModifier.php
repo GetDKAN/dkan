@@ -3,7 +3,7 @@
 namespace Drupal\dkan_lunr\Service;
 
 /**
- * Refactor of some static methods out of the Interra API controller.
+ * Refactor of some static methods out of the API controller.
  *
  * @codeCoverageIgnore
  */
