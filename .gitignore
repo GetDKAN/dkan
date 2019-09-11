@@ -12,5 +12,5 @@ composer.lock
 /docroot
 .docksal
 .idea
-docs/_build*
+docs/_build
 .vscode

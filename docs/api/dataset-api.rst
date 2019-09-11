@@ -14,6 +14,17 @@ GET is used to request data from the data catalog. No authentication is needed.
     # Get a specific dataset by adding the dataset identifier to the end
     http://dkan/api/v1/dataset/{identifier of your dataset}
 
+    # Try out the api of a specific dataset
+    http://dkan/dataset/{identifier of your dataset}/api
+
+
+
+The dataset API has an additional endpoint that breaks out specific sub-elements 
+of the dataset schema (distribution, publisher, theme, and keyword) so that these 
+elements can be worked with as individual objects. 
+Each element is assigned a unique identifier in addition to it's original schema values,
+this endpoint can be viewed at ``http://dkan/api/v1/dataset?values=both``
+
 
 .. note::
   
