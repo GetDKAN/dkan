@@ -71,7 +71,7 @@
             "field_contact_email": "datademo@example.com",
             "field_contact_name": "Gray, Stefanie",
             "field_data_dictionary": null,
-            "field_frequency": "5",
+            "field_frequency": "irregular",
             "field_granularity": "District",
             "field_harvest_source_issued": null,
             "field_harvest_source_modified": null,
