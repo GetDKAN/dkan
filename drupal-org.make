@@ -2,13 +2,13 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-2.0/visualization_entity.make
+- https://raw.githubusercontent.com/GetDKAN/visualization_entity/7.x-2.x/visualization_entity.make
 - https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.4/open_data_schema_map.make
 - https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
 - https://raw.githubusercontent.com/NuCivic/recline/7.x-2.1/recline.make
 projects:
   admin_menu:
-    version: 3.0-rc5
+    version: 3.0-rc6
   admin_menu_source:
     version: '1.1'
     patch:
@@ -34,9 +34,10 @@ projects:
       type: git
       url: https://git.drupal.org/project/beautytips.git
       branch: 7.x-2.x
-      revision: f9a8b5b
+      revision: 5e8a425d
     patch:
-      849232: https://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
+      849232: https://www.drupal.org/files/issues/2019-08-29/include-excanvas-via-libraries-api-d7-849232-15_0.patch
+      3063738: https://www.drupal.org/files/issues/2019-06-24/php72count-3063738-1.patch
   better_exposed_filters:
     version: '3.6'
   bueditor:
@@ -104,12 +105,12 @@ projects:
     version: '1.5'
   facetapi_bonus:
     version: '1.2'
+    patch:
+      2938545: https://www.drupal.org/files/issues/2018-09-04/non-countable-2938545-5.patch
   facetapi_pretty_paths:
     version: '1.4'
   features:
-    version: '2.10'
-    patch:
-      2765721: https://www.drupal.org/files/issues/features-blank-line-after-php-tag-2765721-0.patch
+    version: '2.11'
   features_roles_permissions:
     version: '1.2'
   feeds:
@@ -147,11 +148,7 @@ projects:
     download:
       full_version: 7.x-1.0-beta1
   fieldable_panels_panes:
-    version: '1.11'
-    patch:
-      2825835: https://www.drupal.org/files/issues/2825835.patch
-      2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
-      2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
+    version: '1.13'
   file_entity:
     version: 2.25
   file_resup:
@@ -222,9 +219,9 @@ projects:
     patch:
       2045225: https://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.21
+    version: 2.23
   media_youtube:
-    version: '3.7'
+    version: '3.8'
   media_vimeo:
     version: '2.1'
     patch:
@@ -239,6 +236,7 @@ projects:
     version: '2.11'
     patch:
       1989492: https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch
+      3027630: https://www.drupal.org/files/issues/2019-01-22/3027630-migrate-php72-count-2.patch
   migrate_extras:
     version: '2.5'
   module_filter:
@@ -254,6 +252,7 @@ projects:
       1090438: https://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch
       2549071: https://www.drupal.org/files/issues/og_actions-bug-vbo-delete.patch
       2301831: https://www.drupal.org/files/issues/og-missing-permission-roles-2301831-1.patch
+      2900273: https://www.drupal.org/files/issues/2019-09-11/check-if-group-is-object-2900273-16.patch
   og_extras:
     version: '1.2'
   og_moderation:
@@ -270,12 +269,12 @@ projects:
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.58'
+    version: '1.70'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.58'
+    version: '1.70'
   path_breadcrumbs:
     version: '3.4'
   pathauto:
@@ -284,7 +283,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.6'
+    version: '3.7'
     patch:
       1: patches/radix-bootstrap.patch
   radix_layouts:
@@ -309,7 +308,7 @@ projects:
   role_export:
     version: '1.0'
   rules:
-    version: '2.11'
+    version: '2.12'
   restws:
     version: '2.8'
   roleassign:
@@ -320,13 +319,13 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.25'
+    version: '1.26'
   search_api_db:
     version: '1.7'
   select_or_other:
     version: '2.24'
   services:
-    version: '3.24'
+    version: '3.25'
   simple_gmap:
     version: '1.4'
   strongarm:
@@ -347,9 +346,8 @@ projects:
   uuid:
     version: '1.3'
   views:
-    version: '3.21'
+    version: '3.23'
     patch:
-      2885660: https://www.drupal.org/files/issues/2018-06-28/2885660-13.patch
       2543562: https://www.drupal.org/files/issues/views-use_query_group_operator_for_main_group-2543562-2.patch
   views_autocomplete_filters:
     version: '1.2'

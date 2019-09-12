@@ -1203,7 +1203,7 @@ function dkan_harvest_node_insert($node) {
       dkan_harvest_get_migration($harvest_source);
     }
     catch (\Exception $e) {
-      watchdog('dkan_harvest', $e->getMessage(), WATCHDOG_WARNING);
+      watchdog('dkan_harvest', $e->getMessage(), NULL, WATCHDOG_WARNING);
     }
   }
 }
