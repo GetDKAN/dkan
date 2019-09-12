@@ -43,8 +43,8 @@ $info = array(
         'title' => '#3B3B3B',
         'text' => '#3B3B3B',
         'link' => '#002245',
-        'linkactive' => '#005489',
-        'linkhover' => '#0A77BD',
+        'linkactive' => '#145b98',
+        'linkhover' => '#145b98',
       ),
     ),
     'bluelagoon' => array(
