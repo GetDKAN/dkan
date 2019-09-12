@@ -7,7 +7,7 @@ Feature: Dkan Harvest
       | Source one | /harvest_source/source-one |
       | Source two | /harvest_source/source-two |
 
-  @harvest @harvest_01 @api @javascript
+@harvest @harvest_01 @api @javascript
   Scenario: As a site manager I should be able to add a harvest source.
     Given users:
       | name              | mail                     | status | roles             |
@@ -21,8 +21,131 @@ Feature: Dkan Harvest
     And I fill in "Source URI" with "https://s3.amazonaws.com/dkan-default-content-files/files/data_harvest_test.json"
     And I select "Project Open Data v1.1 JSON" from "Type"
     And I press "Save"
-    And I wait for "2" seconds
+    And I wait for "10" seconds
     Then I should see the success message "Harvest Source Source 1 has been created."
+
+  @harvest @harvest_12 @api
+  Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
+    Given users:
+      | name            | mail                   | roles           |
+      | Site manager    | admin@fakeemail.com    | site manager    |
+    And The "source_one" source is harvested
+    And I am logged in as a "<role>"
+    And I am on the "Source one" page
+    When I click "Manage Datasets"
+    Then the table with the class name "views-table" should have 3 rows
+
+    Examples:
+      | role              |
+      | site manager      |
+
+  @harvest @harvest_13 @api
+  Scenario Outline: As user I should see a list of imported datasets in the harvest administration dashboard
+    Given users:
+      | name            | mail                   | roles           |
+      | Site manager    | admin@fakeemail.com    | site manager    |
+    And pages:
+      | name                       | url                                     |
+      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
+    And The "source_one" source is harvested
+    And I am logged in as a "<role>"
+    And I am on the "Harvest Dashboard Datasets" page
+    And I should see a table with a class name "views-table"
+    And the table with the class name "views-table" should have 3 rows
+
+    Examples:
+      | role              |
+      | site manager      |
+
+  @harvest @harvest_14 @api @javascript
+  Scenario Outline: As user I want to filter harvested datasets by orphan status in the harvest administration dashboard
+    Given users:
+      | name            | mail                   | roles           |
+      | Site manager    | admin@fakeemail.com    | site manager    |
+    And pages:
+      | name                       | url                                     |
+      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
+    And The "source_one" source is harvested
+    And I am logged in as a "<role>"
+    And I am on the "Harvest Dashboard Datasets" page
+    And I select "Orphans only" from "Orphan Status"
+    And I press "Apply"
+    Then I wait for "No harvested datasets were found"
+
+    Examples:
+      | role              |
+      | site manager      |
+
+  @harvest @harvest_15 @api @javascript
+  Scenario Outline: As user I want to filter harvested datasets by post date in the harvest administration dashboard
+    Given users:
+      | name            | mail                   | roles           |
+      | Site manager    | admin@fakeemail.com    | site manager    |
+    And pages:
+      | name                       | url                                     |
+      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
+    And The "source_one" source is harvested
+    And I am logged in as a "<role>"
+    And I am on the "Harvest Dashboard Datasets" page
+    And I fill in "edit-field-harvest-source-issued-value-min-datepicker-popup-0" with "Wednesday, June 1, 2016"
+    And I fill in "edit-field-harvest-source-issued-value-max-datepicker-popup-0" with "Thursday, June 30, 2016"
+    And I press "Apply"
+    And I wait for "3" seconds
+    Then I should see "Florida Bike Lanes Harvest"
+    And I should see a table with a class name "views-table"
+    Then the table with the class name "views-table" should have 1 rows
+
+    Examples:
+      | role              |
+      | site manager      |
+
+  @harvest_16 @api @javascript @harvest
+  Scenario Outline: As user I want to filter harvested datasets by published status in the harvest administration dashboard
+    Given users:
+      | name            | mail                   | roles           |
+      | Site manager    | admin@fakeemail.com    | site manager    |
+    And pages:
+      | name                       | url                                     |
+      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
+    And The "source_one" source is harvested
+    And I am logged in as a "<role>"
+    And I am on the "Harvest Dashboard Datasets" page
+    And I fill in "edit-status" with "0"
+    And I press "Apply"
+    Then I wait for "No harvested datasets were found"
+    Then I fill in "edit-status" with "1"
+    And I press "Apply"
+    Then I wait for "3" seconds
+    And I should see a table with a class name "views-table"
+    Then the table with the class name "views-table" should have 3 rows
+
+    Examples:
+      | role              |
+      | site manager      |
+
+  @harvest @harvest_17 @api @javascript
+  Scenario Outline: As user I want to delete harvested datasets in the harvest administration dashboard
+    Given users:
+      | name            | mail                   | roles           |
+      | Site manager    | admin@fakeemail.com    | site manager    |
+    And pages:
+      | name                       | url                                     |
+      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
+    And The "source_one" source is harvested
+    And I am logged in as a "<role>"
+    And I am on the "Harvest Dashboard Datasets" page
+    And I check the box "views_bulk_operations[0]"
+    And I select "Delete item" from "operation"
+    And I press "Execute"
+    And I press "Confirm"
+    Then I wait for "DKAN Harvest Dashboard"
+    And I should see "Performed Delete item on 1 item"
+    And I should see a table with a class name "views-table"
+    Then the table with the class name "views-table" should have 2 rows
+
+    Examples:
+      | role              |
+      | site manager      |
 
   @harvest @harvest_02 @api @javascript
   Scenario: Harvest source machine name should not have forward slash character.
@@ -186,129 +309,6 @@ Feature: Dkan Harvest
     And I should see a table with a class name "harvest-event-log"
     And the table with the class name "harvest-event-log" should have 1 row
     And I should see the text "OK"
-
-    Examples:
-      | role              |
-      | site manager      |
-
-  @harvest @harvest_12 @api
-  Scenario Outline: As a user I should see a list of imported datasets on the Harvest Source page.
-    Given users:
-      | name            | mail                   | roles           |
-      | Site manager    | admin@fakeemail.com    | site manager    |
-    And The "source_one" source is harvested
-    And I am logged in as a "<role>"
-    And I am on the "Source one" page
-    When I click "Manage Datasets"
-    Then the table with the class name "views-table" should have 3 rows
-
-    Examples:
-      | role              |
-      | site manager      |
-
-  @harvest @harvest_13 @api
-  Scenario Outline: As user I should see a list of imported datasets in the harvest administration dashboard
-    Given users:
-      | name            | mail                   | roles           |
-      | Site manager    | admin@fakeemail.com    | site manager    |
-    And pages:
-      | name                       | url                                     |
-      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
-    And The "source_one" source is harvested
-    And I am logged in as a "<role>"
-    And I am on the "Harvest Dashboard Datasets" page
-    And I should see a table with a class name "views-table"
-    And the table with the class name "views-table" should have 3 rows
-
-    Examples:
-      | role              |
-      | site manager      |
-
-  @harvest @harvest_14 @api @javascript
-  Scenario Outline: As user I want to filter harvested datasets by orphan status in the harvest administration dashboard
-    Given users:
-      | name            | mail                   | roles           |
-      | Site manager    | admin@fakeemail.com    | site manager    |
-    And pages:
-      | name                       | url                                     |
-      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
-    And The "source_one" source is harvested
-    And I am logged in as a "<role>"
-    And I am on the "Harvest Dashboard Datasets" page
-    And I select "Orphans only" from "Orphan Status"
-    And I press "Apply"
-    Then I wait for "No harvested datasets were found"
-
-    Examples:
-      | role              |
-      | site manager      |
-
-  @harvest @harvest_15 @api @javascript
-  Scenario Outline: As user I want to filter harvested datasets by post date in the harvest administration dashboard
-    Given users:
-      | name            | mail                   | roles           |
-      | Site manager    | admin@fakeemail.com    | site manager    |
-    And pages:
-      | name                       | url                                     |
-      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
-    And The "source_one" source is harvested
-    And I am logged in as a "<role>"
-    And I am on the "Harvest Dashboard Datasets" page
-    And I fill in "edit-field-harvest-source-issued-value-min-datepicker-popup-0" with "Wednesday, June 1, 2016"
-    And I fill in "edit-field-harvest-source-issued-value-max-datepicker-popup-0" with "Thursday, June 30, 2016"
-    And I press "Apply"
-    And I wait for "3" seconds
-    Then I should see "Florida Bike Lanes Harvest"
-    And I should see a table with a class name "views-table"
-    Then the table with the class name "views-table" should have 1 rows
-
-    Examples:
-      | role              |
-      | site manager      |
-
-  @harvest_16 @api @javascript @harvest
-  Scenario Outline: As user I want to filter harvested datasets by published status in the harvest administration dashboard
-    Given users:
-      | name            | mail                   | roles           |
-      | Site manager    | admin@fakeemail.com    | site manager    |
-    And pages:
-      | name                       | url                                     |
-      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
-    And The "source_one" source is harvested
-    And I am logged in as a "<role>"
-    And I am on the "Harvest Dashboard Datasets" page
-    And I fill in "edit-status" with "0"
-    And I press "Apply"
-    Then I wait for "No harvested datasets were found"
-    Then I fill in "edit-status" with "1"
-    And I press "Apply"
-    Then I wait for "3" seconds
-    And I should see a table with a class name "views-table"
-    Then the table with the class name "views-table" should have 3 rows
-
-    Examples:
-      | role              |
-      | site manager      |
-
-  @harvest @harvest_17 @api @javascript
-  Scenario Outline: As user I want to delete harvested datasets in the harvest administration dashboard
-    Given users:
-      | name            | mail                   | roles           |
-      | Site manager    | admin@fakeemail.com    | site manager    |
-    And pages:
-      | name                       | url                                     |
-      | Harvest Dashboard Datasets | /admin/dkan/harvest/dashboard/datasets  |
-    And The "source_one" source is harvested
-    And I am logged in as a "<role>"
-    And I am on the "Harvest Dashboard Datasets" page
-    And I check the box "views_bulk_operations[0]"
-    And I select "Delete item" from "operation"
-    And I press "Execute"
-    And I press "Confirm"
-    Then I wait for "DKAN Harvest Dashboard"
-    And I should see "Performed Delete item on 1 item"
-    And I should see a table with a class name "views-table"
-    Then the table with the class name "views-table" should have 2 rows
 
     Examples:
       | role              |

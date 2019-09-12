@@ -11,7 +11,7 @@ references:
         mv ~/dkan .
         dktl make
         dktl install
-        
+
   install_tests: &install_tests
     run:
       name: Install tests
@@ -88,7 +88,7 @@ jobs:
             (cd dkan/test; circleci tests glob features/*.feature | circleci tests split --split-by=filesize )> $test_list
             echo "TESTING FEATURES:"
             cat $test_list
-            while read file; do 
+            while read file; do
               echo "FEATURE FILE: $file"
               if ! dktl test:behat $file; then
                 exit_status=1;

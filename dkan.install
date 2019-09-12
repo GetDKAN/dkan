@@ -822,5 +822,4 @@ function dkan_update_7035() {
     module_disable(array('feeds', 'feeds_field_fetcher', 'feeds_flatstore_processor'));
     drupal_uninstall_modules(array('feeds', 'feeds_field_fetcher', 'feeds_flatstore_processor'));
   }
-  node_access_rebuild();
 }
