@@ -53,7 +53,7 @@ function nuboot_radix_preprocess(&$variables, $hook) {
       $background_option = theme_get_setting('background_option');
       if (empty($background_option)) :
         $variables['tint'] = 'no-tint';
-        $variables['bg_color'] = '#005B9D';
+        $variables['bg_color'] = '#145b98';
         $variables['path'] = 'none';
       else :
         $uri = '';
