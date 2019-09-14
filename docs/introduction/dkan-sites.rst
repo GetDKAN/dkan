@@ -159,6 +159,7 @@ Russia                                                                 http://da
 Moscow Region, Russia                                                  http://data.mosreg.ru
 Instituto Politécnico de Bragança, Portugal                            http://observatoriottm.ipb.pt
 Barcelona Provicial Diputation, Spain                                  https://dadesobertes.diba.cat/
+Castilla–La Mancha, Spain                                              https://datosabiertos.castillalamancha.es/
 Düsseldorf, Germany                                                    https://opendata.duesseldorf.de/
 The Republic of Cyprus                                                 http://www.data.gov.cy/
 ====================================================================== =============
