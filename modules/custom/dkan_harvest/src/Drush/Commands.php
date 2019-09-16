@@ -13,6 +13,7 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class Commands extends DrushCommands {
+  use Helper;
 
   /**
    * Harvest Factory.

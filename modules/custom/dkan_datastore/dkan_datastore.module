@@ -19,7 +19,7 @@ function dkan_datastore_node_insert(EntityInterface $entity) {
       $object = json_decode($json);
       $data = $object->data;
       if (isset($data->downloadURL) || isset($data->accessURL)) {
-        if ((isset($data->mediaType) && $data->mediaType == "application/csv") || (isset($data->format) && $data->format == "csv")) {
+        if ((isset($data->mediaType) && $data->mediaType == "text/csv") || (isset($data->format) && $data->format == "csv")) {
           /* @var $datastore_service \Drupal\dkan_datastore\Service\Datastore */
           $datastore_service = \Drupal::service("dkan_datastore.service");
           $datastore_service->import($entity->uuid(), TRUE);

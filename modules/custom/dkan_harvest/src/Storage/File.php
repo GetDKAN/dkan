@@ -44,8 +44,11 @@ class File implements RetrieverInterface, StorerInterface, RemoverInterface, Bul
    */
   public function store(string $data, string $id = NULL): string {
     $file_path = "{$this->directoryPath}/{$id}.json";
-    $this->getFileHelper()
+    $result = $this->getFileHelper()
       ->filePutContents($file_path, $data);
+    if ($result === FALSE) {
+      throw new \Exception("Could not write {$file_path}.");
+    }
     return $id;
   }
 
