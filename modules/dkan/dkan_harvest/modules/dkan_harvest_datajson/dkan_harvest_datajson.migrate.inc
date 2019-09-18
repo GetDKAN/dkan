@@ -209,7 +209,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
         }
         catch (Exception $e) {
           $message = t(
-            'Cannot determine temporal coverage value.'
+            'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
           );
           $this->saveMessage($message);
         }
