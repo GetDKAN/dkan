@@ -204,7 +204,15 @@ class DatajsonHarvestMigration extends HarvestMigration {
           }
         }
 
-        $value = $value_date->getTimestamp();
+        if ($value_date) {
+          $value = $value_date->getTimestamp();
+        }
+        else {
+          $message = t(
+            'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
+          );
+          $this->saveMessage($message);
+        }
       }
 
       if (isset($date[0])) {
