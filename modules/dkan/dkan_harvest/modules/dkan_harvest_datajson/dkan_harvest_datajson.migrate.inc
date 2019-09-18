@@ -203,8 +203,16 @@ class DatajsonHarvestMigration extends HarvestMigration {
             $this->saveMessage($message);
           }
         }
-
-        $value = $value_date->getTimestamp();
+        
+        try {
+          $value = $value_date->getTimestamp();
+        }
+        catch (Exception $e) {
+          $message = t(
+            'Cannot determine temporal coverage value.'
+          );
+          $this->saveMessage($message);
+        }
       }
 
       if (isset($date[0])) {
