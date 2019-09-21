@@ -47,6 +47,7 @@ endpointsRequiringAuth = [
   '/api/v1/datastore/{uuid} > Drop a datastore > 200 > application/json',
   '/api/v1/datastore/import/{uuid} > Datastore import > 200 > application/json',
   '/api/v1/datastore/import/{uuid}/deferred > Deferred datastore import > 200 > application/json',
+  '/api/v1/harvest > Lists harvest identifiers > 200 > application/json',
 ];
 endpointsRequiringAuth.forEach(endpoint => hooks.before(endpoint, (transaction) => {
   transaction.request.headers.Authorization = 'Basic dGVzdHVzZXI6Mmpxek9BblhTOW1tY0xhc3k=';
