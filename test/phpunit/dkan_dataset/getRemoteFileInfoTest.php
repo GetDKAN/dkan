@@ -66,11 +66,11 @@ Age: 5730';
     $urls[3]['name'] = "rows.xml";
     $urls[3]['effective_url'] = 'https://data.cdc.gov/api/views/cucp-zsht/rows.xml?accessType=DOWNLOAD';
 
-    $urls[4]['url'] = "https://developers.google.com/kml/documentation/KML_Samples.kml";
-    $urls[4]['type'] = 'application/vnd.google-earth.kml+xml';
+    $urls[4]['url'] = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/Example_KML_file.kml";
+    $urls[4]['type'] = 'application/xml';
     $urls[4]['extension'] = 'kml';
-    $urls[4]['name'] = "KML_Samples.kml";
-    $urls[4]['effective_url'] = "https://developers.google.com/kml/documentation/KML_Samples.kml";
+    $urls[4]['name'] = "Example_KML_file.kml";
+    $urls[4]['effective_url'] = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/Example_KML_file.kml";
 
     foreach ($urls as $key => $info) {
       $fileInfo = new getRemoteFileInfo($info['url'], 'test', TRUE);
