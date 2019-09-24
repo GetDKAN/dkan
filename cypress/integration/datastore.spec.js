@@ -20,7 +20,7 @@ context('Datastore API', () => {
   };
 
   before(() => {
-    cy.request(dataset_endpoint + '/' + dataset_identifier + '?values=both').then((response) => {
+    cy.request(dataset_endpoint + '/' + dataset_identifier + '?view=verbose').then((response) => {
       resource_identifier = response.body.distribution[0].identifier
     })
   })

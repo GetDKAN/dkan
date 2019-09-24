@@ -718,7 +718,7 @@ class ValueReferencerTest extends DkanTestBase {
       'another to dereference' => $uuid2,
       'other property' => 'Some other value',
     ];
-    // DEREFERENCE_OUTPUT_IDENTIFIER.
+    // DEREFERENCE_OUTPUT_MINIMAL.
     $method = 1;
 
     // Assert the dereferencing left the data unchanged, with identifiers.

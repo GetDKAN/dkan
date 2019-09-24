@@ -74,7 +74,7 @@ context('API', () => {
 
     context('Dereference methods', () => {
         it('bad query parameter', () => {
-            cy.request(endpoint + '/' + json1.identifier + '?values=foobar').then((response) => {
+            cy.request(endpoint + '/' + json1.identifier + '?view=foobar').then((response) => {
                 expect(response.body.keyword).eql(json1.keyword)
             })
         })
@@ -86,13 +86,13 @@ context('API', () => {
         })
 
         it('data (explicit)', () => {
-            cy.request(endpoint + '/' + json1.identifier + '?values=data').then((response) => {
+            cy.request(endpoint + '/' + json1.identifier + '?view=default').then((response) => {
                 expect(response.body.keyword).eql(json1.keyword)
             })
         })
 
         it('identifier', () => {
-            cy.request(endpoint + '/' + json1.identifier + '?values=identifier').then((response) => {
+            cy.request(endpoint + '/' + json1.identifier + '?view=minimal').then((response) => {
                 expect(response.body.keyword).not.eql(json1.keyword)
                 expect(response.body.keyword.length).eql(json1.keyword.length)
                 expect(response.body.keyword[0]).to.match(uuidRegex)
@@ -102,7 +102,7 @@ context('API', () => {
         })
 
         it('data+identifier', () => {
-            cy.request(endpoint + '/' + json1.identifier + '?values=both').then((response) => {
+            cy.request(endpoint + '/' + json1.identifier + '?view=verbose').then((response) => {
                 expect(response.body.keyword).not.eql(json1.keyword)
                 expect(response.body.keyword.length).eql(json1.keyword.length)
                 expect(response.body.keyword[0].identifier).to.match(uuidRegex)

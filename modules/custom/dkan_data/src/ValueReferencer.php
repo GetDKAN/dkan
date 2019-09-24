@@ -22,21 +22,21 @@ class ValueReferencer {
    *
    * @var int
    */
-  const DEREFERENCE_OUTPUT_DATA = 0;
+  const DEREFERENCE_OUTPUT_DEFAULT = 0;
 
   /**
    * Indicates that dereferencing outputs the identifier (uuid).
    *
    * @var int
    */
-  const DEREFERENCE_OUTPUT_IDENTIFIER = 1;
+  const DEREFERENCE_OUTPUT_MINIMAL = 1;
 
   /**
    * Indicates that dereferencing outputs both the data and its uuid.
    *
    * @var int
    */
-  const DEREFERENCE_OUTPUT_BOTH = 2;
+  const DEREFERENCE_OUTPUT_VERBOSE = 2;
 
   /**
    * Store the dereferencing method for current request.
@@ -262,9 +262,9 @@ class ValueReferencer {
    * @return mixed
    *   Modified json metadata object.
    */
-  public function dereference(stdClass $data, int $method = self::DEREFERENCE_OUTPUT_DATA) {
+  public function dereference(stdClass $data, int $method = self::DEREFERENCE_OUTPUT_DEFAULT) {
     // Skip data dereferencing when only seeking identifiers.
-    if ($method == self::DEREFERENCE_OUTPUT_IDENTIFIER) {
+    if ($method == self::DEREFERENCE_OUTPUT_MINIMAL) {
       return $data;
     }
 
@@ -340,7 +340,7 @@ class ValueReferencer {
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
-        if ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_BOTH) {
+        if ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_VERBOSE) {
           return $metadata;
         }
         else {
