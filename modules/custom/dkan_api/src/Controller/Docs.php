@@ -258,7 +258,7 @@ class Docs implements ContainerInjectionInterface {
   private function replaceDistributions(array $spec, string $uuid) {
     // Load this dataset's metadata with both data and identifiers.
     if (function_exists('drupal_static')) {
-      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
+      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_VERBOSE);
     }
     $dataset = $this->storage->retrieve($uuid);
     $data = json_decode($dataset);

@@ -34,24 +34,24 @@ function dkan_data_node_load(array $entities) {
  *
  * @return int
  *   One of the int constants from class ValueReferencer:
- *     - DEREFERENCE_OUTPUT_DATA = 0 (default case)
- *     - DEREFERENCE_OUTPUT_IDENTIFIER = 1
- *     - DEREFERENCE_OUTPUT_BOTH = 2
+ *     - DEREFERENCE_OUTPUT_DEFAULT = 0
+ *     - DEREFERENCE_OUTPUT_MINIMAL = 1
+ *     - DEREFERENCE_OUTPUT_VERBOSE = 2
  */
 function dereferencing_method() : int {
   $allowed_methods = [
-    ValueReferencer::DEREFERENCE_OUTPUT_DATA,
-    ValueReferencer::DEREFERENCE_OUTPUT_IDENTIFIER,
-    ValueReferencer::DEREFERENCE_OUTPUT_BOTH,
+    ValueReferencer::DEREFERENCE_OUTPUT_DEFAULT,
+    ValueReferencer::DEREFERENCE_OUTPUT_MINIMAL,
+    ValueReferencer::DEREFERENCE_OUTPUT_VERBOSE,
   ];
 
   // Selection based on API's http request query parameters.
   $params = Drupal::request()->query->all();
-  if (isset($params['values']) && $params['values'] == 'both') {
-    return ValueReferencer::DEREFERENCE_OUTPUT_BOTH;
+  if (isset($params['view']) && $params['view'] == 'verbose') {
+    return ValueReferencer::DEREFERENCE_OUTPUT_VERBOSE;
   }
-  if (isset($params['values']) && $params['values'] == 'identifier') {
-    return ValueReferencer::DEREFERENCE_OUTPUT_IDENTIFIER;
+  if (isset($params['view']) && $params['view'] == 'minimal') {
+    return ValueReferencer::DEREFERENCE_OUTPUT_MINIMAL;
   }
 
   // Selection based on static variable.
@@ -61,7 +61,7 @@ function dereferencing_method() : int {
   }
 
   // Default case.
-  return ValueReferencer::DEREFERENCE_OUTPUT_DATA;
+  return ValueReferencer::DEREFERENCE_OUTPUT_DEFAULT;
 }
 
 /**

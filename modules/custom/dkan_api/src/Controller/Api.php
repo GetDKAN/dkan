@@ -131,7 +131,7 @@ class Api implements ContainerInjectionInterface {
     try {
       // Load this dataset's metadata with both data and identifiers.
       if (function_exists('drupal_static')) {
-        drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
+        drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_VERBOSE);
       }
 
       $json = $this->getEngine($schema_id)

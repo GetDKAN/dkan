@@ -12,7 +12,7 @@ context('SQL Endpoint', () => {
     // Obtain the resource identifier from the above dataset before proceeding.
     before(function() {
         let uuidRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-        cy.request("http://dkan/api/v1/dataset/" + dataset_identifier + "?values=identifier").then((response) => {
+        cy.request("http://dkan/api/v1/dataset/" + dataset_identifier + "?view=minimal").then((response) => {
             expect(response.body.distribution[0]).not.eql(dataset_identifier)
             expect(response.body.distribution[0]).to.match(uuidRegex);
             resource_identifier = response.body.distribution[0];
