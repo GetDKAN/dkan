@@ -151,7 +151,8 @@ class ImporterListItem {
    */
   private function getPercentDone(Job $job): float {
     $bytes = $this->getBytesProcessed($job);
-    return round($bytes / $this->getFileSize() * 100);
+    $filesize = $this->getFileSize();
+    return ($filesize > 0) ? round($bytes / $filesize * 100) : 0;
   }
 
   /**

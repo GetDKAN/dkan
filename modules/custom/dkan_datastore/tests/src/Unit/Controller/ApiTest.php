@@ -20,6 +20,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Tests\dkan_datastore\Unit\Mock\Container;
+use FileFetcher\Processor\Local;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\dkan_common\Tests\Mock\Chain;
@@ -105,9 +106,15 @@ class DatastoreApiTest extends DkanTestBase {
    */
   public function testList() {
 
+    $fileFetcherContent = file_get_contents(__DIR__ . '/../../../data/filefetcher.json');
+    $fileFetcherObject = json_decode($fileFetcherContent);
+    $data = json_decode($fileFetcherObject->result->data);
+    $data->processor = Local::class;
+    $fileFetcherObject->result->data = json_encode($data);
+
     $fileFetcherJob = (object) [
       'ref_uuid' => 1,
-      'job_data' => file_get_contents(__DIR__ . '/../../../data/filefetcher.json'),
+      'job_data' => json_encode($fileFetcherObject),
     ];
 
     $importerJob = (object) [
