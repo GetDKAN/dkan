@@ -441,6 +441,8 @@ paths:
         Lists the identifiers of all registered harvests.
       tags:
         - Harvest
+      security:
+        - basicAuth: []
       responses:
         '200':
           description: Ok
@@ -489,6 +491,8 @@ paths:
         harvest id.
       tags:
         - Harvest
+      security:
+        - basicAuth: []
       parameters:
         - $ref: '#/components/parameters/harvestId'
       responses:
@@ -508,6 +512,8 @@ paths:
         Gives information about a previous run for a specific harvest run.
       tags:
         - Harvest
+      security:
+        - basicAuth: []
       parameters:
         - $ref: '#/components/parameters/harvestId'
         - $ref: '#/components/parameters/harvestRunId'
