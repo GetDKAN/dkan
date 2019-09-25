@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['welcome_21_962',['Welcome!',['../welcome.html',1,'intro']]]
+  ['updating_20and_20maintaining_20dkan_960',['Updating and Maintaining DKAN',['../dev-maintain.html',1,'development']]]
 ];

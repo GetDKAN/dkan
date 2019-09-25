@@ -1,10 +1,6 @@
 var searchData=
 [
-  ['add_38',['add',['../classDrupal_1_1dkan__common_1_1Tests_1_1Mock_1_1Chain.html#ac598db8eb4b33ebc9618cb1d275a5e72',1,'Drupal\dkan_common\Tests\Mock\Chain\add()'],['../classDrupal_1_1dkan__common_1_1Tests_1_1Mock_1_1Options.html#a3dd8d0771f13e93b5e07607e975979b1',1,'Drupal\dkan_common\Tests\Mock\Options\add()'],['../classDrupal_1_1dkan__common_1_1Tests_1_1Mock_1_1Sequence.html#a605550a4a6712e6265c953dc8aeaf9c4',1,'Drupal\dkan_common\Tests\Mock\Sequence\add()']]],
-  ['api_39',['Api',['../classDrupal_1_1dkan__api_1_1Controller_1_1Api.html',1,'Drupal\dkan_api\Controller\Api'],['../classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html',1,'Drupal\dkan_sql_endpoint\Controller\Api'],['../classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html',1,'Drupal\dkan_datastore\Controller\Api'],['../classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html',1,'Drupal\dkan_harvest\Controller\Api']]],
-  ['api_2ephp_40',['Api.php',['../dkan__api_2src_2Controller_2Api_8php.html',1,'(Global Namespace)'],['../dkan__datastore_2src_2Controller_2Api_8php.html',1,'(Global Namespace)'],['../dkan__harvest_2src_2Controller_2Api_8php.html',1,'(Global Namespace)'],['../dkan__sql__endpoint_2src_2Controller_2Api_8php.html',1,'(Global Namespace)']]],
-  ['apicontroller_41',['ApiController',['../classDrupal_1_1dkan__lunr_1_1Controller_1_1ApiController.html',1,'Drupal::dkan_lunr::Controller']]],
-  ['apicontroller_2ephp_42',['ApiController.php',['../ApiController_8php.html',1,'']]],
-  ['apitest_43',['ApiTest',['../classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html',1,'Drupal\Tests\dkan_api\Unit\Controller\ApiTest'],['../classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1ApiTest.html',1,'Drupal\Tests\dkan_datastore\Unit\Controller\ApiTest'],['../classApiTest.html',1,'ApiTest']]],
-  ['apitest_2ephp_44',['ApiTest.php',['../dkan__api_2tests_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)'],['../dkan__datastore_2tests_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)'],['../dkan__harvest_2test_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)'],['../dkan__sql__endpoint_2tests_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)']]]
+  ['2_2e0_5fdevelopment_2emd_39',['2.0_development.md',['../2_80__development_8md.html',1,'']]],
+  ['2_2e1_5fdevelopment_2dmaintain_2emd_40',['2.1_development-maintain.md',['../2_81__development-maintain_8md.html',1,'']]],
+  ['2_2e2_5fdevelopment_2dcustom_2emd_41',['2.2_development-custom.md',['../2_82__development-custom_8md.html',1,'']]]
 ];
