@@ -1,24 +1,5 @@
 var searchData=
 [
-  ['savefile_349',['saveFile',['../classDrupal_1_1dkan__harvest_1_1Transform_1_1ResourceImporter.html#a64d354c541d20c8ef4697ad2b4cb3797',1,'Drupal::dkan_harvest::Transform::ResourceImporter']]],
-  ['saveitem_350',['saveItem',['../classDrupal_1_1dkan__harvest_1_1Load_1_1Dataset.html#a5fb6e2cb58ccc8dd4190e3847c8914ba',1,'Drupal::dkan_harvest::Load::Dataset']]],
-  ['schemaretriever_351',['SchemaRetriever',['../classDrupal_1_1dkan__schema_1_1SchemaRetriever.html',1,'Drupal::dkan_schema']]],
-  ['schemaretriever_2ephp_352',['SchemaRetriever.php',['../SchemaRetriever_8php.html',1,'']]],
-  ['schemaretrievertest_353',['SchemaRetrieverTest',['../classDrupal_1_1Tests_1_1dkan__schema_1_1Unit_1_1SchemaRetrieverTest.html',1,'Drupal::Tests::dkan_schema::Unit']]],
-  ['schemaretrievertest_2ephp_354',['SchemaRetrieverTest.php',['../SchemaRetrieverTest_8php.html',1,'']]],
-  ['search_355',['Search',['../classDrupal_1_1dkan__lunr_1_1Search.html',1,'Drupal::dkan_lunr']]],
-  ['search_2ephp_356',['Search.php',['../Search_8php.html',1,'']]],
-  ['sequence_357',['Sequence',['../classDrupal_1_1dkan__common_1_1Tests_1_1Mock_1_1Sequence.html',1,'Drupal::dkan_common::Tests::Mock']]],
-  ['sequence_2ephp_358',['Sequence.php',['../Sequence_8php.html',1,'']]],
-  ['set_359',['set',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1Variable.html#af6102eab40455eb9fc91d2b4f94755dc',1,'Drupal::dkan_datastore::Storage::Variable']]],
-  ['setdereferencemethod_360',['setDereferenceMethod',['../classDrupal_1_1dkan__data_1_1ValueReferencer.html#a7c5333dfe80674c7b5aea50fb7da03b1',1,'Drupal::dkan_data::ValueReferencer']]],
-  ['setnonode_361',['setNoNode',['../classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Mock_1_1Container.html#a1c673e04c13f19ac3c1d019c4341bb64',1,'Drupal::Tests::dkan_datastore::Unit::Mock::Container']]],
-  ['setschema_362',['setSchema',['../classDrupal_1_1dkan__data_1_1Storage_1_1Data.html#a2f7393a10054ce3bd2851340f6da1071',1,'Drupal::dkan_data::Storage::Data']]],
-  ['setthingtoretrieve_363',['setThingToRetrieve',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1Query.html#a4a26f5a0c0b333c68af553601af5ff00',1,'Drupal::dkan_datastore::Storage::Query']]],
-  ['setup_364',['setUp',['../classDrupal_1_1dkan__common_1_1Tests_1_1DkanTestBase.html#a473454b6e748a9d8b7548be511f84d9f',1,'Drupal\dkan_common\Tests\DkanTestBase\setUp()'],['../classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html#abad3dfec5190993ebe711b15d472304e',1,'Drupal\Tests\dkan_datastore\Unit\Controller\DatastoreApiTest\setUp()'],['../classDrupal_1_1Tests_1_1dkan__harvest_1_1Unit_1_1Storage_1_1FileTest.html#a521fabd4b0df0c8a231de9779aa0548f',1,'Drupal\Tests\dkan_harvest\Unit\Storage\FileTest\setUp()']]],
-  ['sortbyascending_365',['sortByAscending',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1Query.html#a1f797cd567a2fc19f6af1f44595e4645',1,'Drupal::dkan_datastore::Storage::Query']]],
-  ['sortbydescending_366',['sortByDescending',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1Query.html#ac25d1cfd4eff5972b1bd10560a2812f3',1,'Drupal::dkan_datastore::Storage::Query']]],
-  ['store_367',['store',['../classDrupal_1_1dkan__data_1_1Storage_1_1Data.html#a721c5902f8e4130a98b159939eb46a22',1,'Drupal\dkan_data\Storage\Data\store()'],['../classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html#a2e9b634e69d276cb34eaf9fbee4dbe25',1,'Drupal\dkan_datastore\Storage\DatabaseTable\store()'],['../classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html#a62a7c9216d4aea229ddd9ff3255c5931',1,'Drupal\dkan_datastore\Storage\JobStore\store()'],['../classDrupal_1_1dkan__harvest_1_1Storage_1_1File.html#a1186304c1490372bb6bab1b3c603cbb9',1,'Drupal\dkan_harvest\Storage\File\store()']]],
-  ['submitform_368',['submitForm',['../classDrupal_1_1dkan__data_1_1Form_1_1DkanDataSettingsForm.html#a27ad726dc7f5b7310a293fecfb84d164',1,'Drupal\dkan_data\Form\DkanDataSettingsForm\submitForm()'],['../classDrupal_1_1dkan__sql__endpoint_1_1Form_1_1DkanSqlEndpointSettingsForm.html#a72ab6afdddbcb3102f543ad47693208e',1,'Drupal\dkan_sql_endpoint\Form\DkanSqlEndpointSettingsForm\submitForm()']]],
-  ['summary_369',['summary',['../classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html#a2529d471e5a096774c6845c92a484b8e',1,'Drupal::dkan_datastore::Controller::Api']]]
+  ['metastore_281',['Metastore',['../metastore.html',1,'components']]],
+  ['modifydataset_282',['modifyDataset',['../classDrupal_1_1dkan__lunr_1_1Service_1_1DatasetModifier.html#a2c07458daf54d7a8bd5149e2b477368a',1,'Drupal::dkan_lunr::Service::DatasetModifier']]]
 ];

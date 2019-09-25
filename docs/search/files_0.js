@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['api_2ephp_578',['Api.php',['../dkan__api_2src_2Controller_2Api_8php.html',1,'(Global Namespace)'],['../dkan__datastore_2src_2Controller_2Api_8php.html',1,'(Global Namespace)'],['../dkan__harvest_2src_2Controller_2Api_8php.html',1,'(Global Namespace)'],['../dkan__sql__endpoint_2src_2Controller_2Api_8php.html',1,'(Global Namespace)']]],
-  ['apicontroller_2ephp_579',['ApiController.php',['../ApiController_8php.html',1,'']]],
-  ['apitest_2ephp_580',['ApiTest.php',['../dkan__api_2tests_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)'],['../dkan__datastore_2tests_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)'],['../dkan__harvest_2test_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)'],['../dkan__sql__endpoint_2tests_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)']]]
+  ['1_2e0_5finstallation_2emd_579',['1.0_installation.md',['../1_80__installation_8md.html',1,'']]],
+  ['1_2e1_5finstallation_2dprod_2emd_580',['1.1_installation-prod.md',['../1_81__installation-prod_8md.html',1,'']]]
 ];

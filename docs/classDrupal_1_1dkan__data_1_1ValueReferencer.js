@@ -3,7 +3,7 @@ var classDrupal_1_1dkan__data_1_1ValueReferencer =
     [ "__construct", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a16a886991a575c5ea0173fbf0a7fdea5", null ],
     [ "checkExistingReference", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a418699c8ba148b1e76b14705376aff2a", null ],
     [ "createPropertyReference", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a130965d853aead8648a4c961e85a674b", null ],
-    [ "dereference", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a4e2c4bb593d9bc6ffeb02492bc47bcdb", null ],
+    [ "dereference", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#ad7f5b9863c9ef4f950b8fc47821a547b", null ],
     [ "dereferenceMultiple", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#ad3883cb03e8bf9001a6944090032f167", null ],
     [ "dereferenceProperty", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a607824c9ef046cc60639d8a1c8c97c6e", null ],
     [ "dereferenceSingle", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#ae2568cb276e0ed972a5afcbc74234095", null ],
@@ -24,7 +24,7 @@ var classDrupal_1_1dkan__data_1_1ValueReferencer =
     [ "$entityTypeManager", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a3f23bc56a1849c0d2d451d19af35705c", null ],
     [ "$queueService", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#aa769c3789c761c386440b874d9fad824", null ],
     [ "$uuidService", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a58c7bab47ef89731f982fe4f5d77fe31", null ],
-    [ "DEREFERENCE_OUTPUT_BOTH", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#abf536b7f151b6fbec572a1d56f81d02e", null ],
-    [ "DEREFERENCE_OUTPUT_DATA", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#ad306db16f1bf4c7ec43656a794a4b48a", null ],
-    [ "DEREFERENCE_OUTPUT_IDENTIFIER", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#ab3fd09d82717e537921249930c05a0b0", null ]
+    [ "DEREFERENCE_OUTPUT_DEFAULT", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a081f25aeb747ea60aa809a7736f823e3", null ],
+    [ "DEREFERENCE_OUTPUT_MINIMAL", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#af9df84ea2d9628e3c7409c493e252cfb", null ],
+    [ "DEREFERENCE_OUTPUT_VERBOSE", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a88876f6f692e7b9b7a16de55199d10b1", null ]
 ];
