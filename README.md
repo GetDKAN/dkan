@@ -2,8 +2,10 @@
 
 DKAN for Drupal 8 - Alpha
 
+[![CircleCI](https://circleci.com/gh/GetDKAN/dkan2.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan2)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7a93219b8ae65a83f095/maintainability)](https://codeclimate.com/github/GetDKAN/dkan2/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/7a93219b8ae65a83f095/test_coverage)](https://codeclimate.com/github/GetDKAN/dkan2/test_coverage)
+[![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 DKAN Open Data Portal/Catalog built on Drupal 8.
 
