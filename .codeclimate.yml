@@ -10,6 +10,7 @@ exclude_patterns:
  - "db/"
  - "dist/"
  - "docs/"
+ - "documentation/"
  - "features/"
  - "**/node_modules/"
  - "script/"

@@ -1,2 +1,0 @@
-Extending and Customizing DKAN
-===============================
