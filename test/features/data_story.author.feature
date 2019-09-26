@@ -14,6 +14,7 @@ Feature: Data Stories
       | name         | field_icon_type  | field_topic_icon   |
       | TestTopic1   | font             | xe904              |
 
+  @story_author_01
   Scenario: Create Story Content
     And I am logged in as "Jaz001"
     When I am on "/node/add/dkan-data-story"
@@ -23,6 +24,7 @@ Feature: Data Stories
     Then I should see "Your Data Story 'Test Post' has been created"
     Then I should not see "panels-ipe-region"
 
+  @story_author_02
   Scenario: Edit own story content
     And I am logged in as "Jaz001"
     When I am on "story/dkan-data-story-test-story-post"
@@ -31,6 +33,7 @@ Feature: Data Stories
     And I press "Save"
     Then I should see "DKAN Data Story Test Story Post has been updated"
 
+  @story_author_03
   Scenario: Add topic to a story
     And I am logged in as "Jaz001"
     When I am on "story/dkan-data-story-test-story-post"
@@ -40,6 +43,7 @@ Feature: Data Stories
     And I press "Save"
     Then I should see "TestTopic1"
 
+  @story_author_04
   Scenario: Delete own story content
     And I am logged in as "Jaz001"
     When I am on "story/dkan-data-story-test-story-post"
