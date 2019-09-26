@@ -1,5 +1,5 @@
 # time:1m1.50s
-@api @smoketest
+@api
 Feature: Site Manager administer groups
 
   Background:
