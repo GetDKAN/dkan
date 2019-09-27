@@ -823,3 +823,10 @@ function dkan_update_7035() {
     drupal_uninstall_modules(array('feeds', 'feeds_field_fetcher', 'feeds_flatstore_processor'));
   }
 }
+
+/**
+ * Enable fast token browser, included with new version of open_data_schema_map.
+ */
+function dkan_update_7036() {
+  module_enable(['fast_token_browser']);
+}
