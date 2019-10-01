@@ -277,7 +277,12 @@ projects:
   panopoly_images:
     version: '1.54'
   paragraphs:
-    version: '1.0-rc5'
+    download:
+      type: git
+      url: https://git.drupalcode.org/project/paragraphs.git
+      revision: c4f2e47
+    patch:
+      2603424: https://www.drupal.org/files/issues/2019-07-15/paragraphs_workbench_moderation-2603424-34.patch
   paragraphs_defaults:
     version: '1.0'
   path_breadcrumbs:
