@@ -7,10 +7,12 @@ services:
     class: \Drupal\dkan_data\ValueReferencer
     arguments:
       - '@entity_type.manager'
-      - '@uuid'
+      - '@dkan_data.uuid5'
       - '@config.factory'
       - '@queue'
   dkan_data.config_overrider:
     class: \Drupal\dkan_data\ConfigurationOverrider
     tags:
       - {name: config.factory.override, priority: 5}
+  dkan_data.uuid5:
+    class: Drupal\dkan_data\Service\Uuid5

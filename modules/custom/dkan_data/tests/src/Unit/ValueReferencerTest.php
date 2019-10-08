@@ -7,7 +7,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_data\ValueReferencer;
-use Drupal\Component\Uuid\UuidInterface;
+use Drupal\dkan_data\Service\Uuid5;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\node\NodeInterface;
@@ -33,7 +33,7 @@ class ValueReferencerTest extends DkanTestBase {
       ->getMock();
 
     $mockEntityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
-    $mockUuidInterface     = $this->createMock(UuidInterface::class);
+    $mockUuidInterface     = $this->createMock(Uuid5::class);
     $mockConfigInterface   = $this->createMock(ConfigFactoryInterface::class);
     $mockQueueFactory      = $this->createMock(QueueFactory::class);
 
@@ -130,7 +130,7 @@ class ValueReferencerTest extends DkanTestBase {
       ->setMethods(NULL)
       ->getMock();
 
-    $mockUuidInterface = $this->getMockBuilder(UuidInterface::class)
+    $mockUuidInterface = $this->getMockBuilder(Uuid5::class)
       ->disableOriginalConstructor()
       ->setMethods(
               [
@@ -168,7 +168,7 @@ class ValueReferencerTest extends DkanTestBase {
 
     $property_id = uniqid('some-property-');
     $value = uniqid('some-value-');
-    $uuid = uniqid('some-uuid-');
+    $uuid = Uuid5::generate($property_id, $value);
     $data = new stdClass();
     $data->identifier = $uuid;
     $data->data = $value;
