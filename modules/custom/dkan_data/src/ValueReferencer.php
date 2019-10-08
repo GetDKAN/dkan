@@ -6,7 +6,7 @@ namespace Drupal\dkan_data;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Component\Uuid\UuidInterface;
+use Drupal\dkan_data\Service\Uuid5;
 use Drupal\Core\Queue\QueueFactory;
 use stdClass;
 
@@ -78,14 +78,14 @@ class ValueReferencer {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
-   * @param \Drupal\Component\Uuid\UuidInterface $uuidService
+   * @param Drupal\dkan_data\Service\Uuid5 $uuidService
    *   Injected uuid service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
    *   Injected config service.
    * @param \Drupal\Core\Queue\QueueFactory $queueService
    *   Injected queue service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, UuidInterface $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService) {
     $this->entityTypeManager = $entityTypeManager;
     $this->uuidService = $uuidService;
     $this->configService = $configService;
@@ -218,7 +218,7 @@ class ValueReferencer {
   protected function createPropertyReference(string $property_id, $value) {
     // Create json metadata for the reference.
     $data = new stdClass();
-    $data->identifier = $this->uuidService->generate();
+    $data->identifier = $this->uuidService->generate($property_id, $value);
     $data->data = $value;
 
     // Create node to store this reference.
