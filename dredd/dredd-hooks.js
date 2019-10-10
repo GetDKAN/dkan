@@ -9,18 +9,18 @@ const hooks = require('hooks');
  * or we can create some as needed.
  */
 endpointsToSkip = [
-  '/api/v1/{property}/{uuid} > Get a property > 200 > application/json',
-  '/api/v1/{property}/{uuid} > Replace a property > 200 > application/json',
-  '/api/v1/{property}/{uuid} > Update a property > 200 > application/json',
-  '/api/v1/sql/{query} > Query resources in datastore > 200 > application/json',
-  '/api/v1/harvest > Register a new harvest > 200 > application/json',
-  '/api/v1/harvest/info/{id} > List previous runs for a harvest id > 200 > application/json',
-  '/api/v1/harvest/info/{id}/{run_id} > Information about a specific previous harvest run > 200 > application/json',
-  '/api/v1/harvest/run/{id} > Runs a harvest > 200 > application/json',
-  '/api/v1/datastore/{uuid} > Datastore statistics > 200 > application/json',
-  '/api/v1/datastore/{uuid} > Delete a datastore > 200 > application/json',
-  '/api/v1/datastore/import/{uuid} > Datastore import > 200 > application/json',
-  '/api/v1/datastore/import/{uuid}/deferred > Deferred datastore import > 200 > application/json',
+  '/api/1/metastore/schemas/{schema_id}/items/{identifier} > Get a property > 200 > application/json',
+  '/api/1/metastore/schemas/{schema_id}/items/{identifier} > Replace a property > 200 > application/json',
+  '/api/1/metastore/schemas/{schema_id}/items/{identifier} > Update a property > 200 > application/json',
+  '/api/1/datastore/sql > Query resources in datastore > 200 > application/json',
+  '/api/1/harvest/plans > Register a new harvest > 200 > application/json',
+  '/api/1/harvest/plans/{plan_id} > Get single harvest plan > 200 > application/json',
+  '/api/1/harvest/runs > List previous runs for a harvest id > 200 > application/json',
+  '/api/1/harvest/runs > Run a harvest > 200 > application/json',
+  '/api/1/harvest/runs/{run_id} > Information about a previous run > 200 > application/json',
+  '/api/1/datastore/imports > Datastore import > 200 > application/json',
+  '/api/1/datastore/imports/{identifier} > Datastore statistics > 200 > application/json',
+  '/api/1/datastore/imports/{identifier} > Delete a datastore > 200 > application/json',
 ];
 endpointsToSkip.forEach(endpoint => hooks.before(endpoint, (transaction) => {
   transaction.skip = true;
@@ -35,19 +35,23 @@ endpointsToSkip.forEach(endpoint => hooks.before(endpoint, (transaction) => {
  * verbs.
  */
 endpointsRequiringAuth = [
-  '/api/v1/dataset > Create a dataset > 201 > application/json',
-  '/api/v1/dataset > Create a dataset > 409 > application/json',
-  '/api/v1/dataset/{uuid} > Replace a dataset > 200 > application/json',
-  '/api/v1/dataset/{uuid} > Update a dataset > 200 > application/json',
-  '/api/v1/dataset/{uuid} > Delete a dataset > 200 > application/json',
-  '/api/v1/{property}/{uuid} > Replace a property > 200 > application/json',
-  '/api/v1/{property}/{uuid} > Update a property > 200 > application/json',
-  '/api/v1/harvest > Register a new harvest > 200 > application/json',
-  '/api/v1/harvest/run/{id} > Runs a harvest > 200 > application/json',
-  '/api/v1/datastore/{uuid} > Drop a datastore > 200 > application/json',
-  '/api/v1/datastore/import/{uuid} > Datastore import > 200 > application/json',
-  '/api/v1/datastore/import/{uuid}/deferred > Deferred datastore import > 200 > application/json',
-  '/api/v1/harvest > Lists harvest identifiers > 200 > application/json',
+  '/api/1/metastore/schemas/dataset/items > Create a dataset > 201 > application/json',
+  '/api/1/metastore/schemas/dataset/items > Create a dataset > 409 > application/json',
+  '/api/1/metastore/schemas/dataset/items/{identifier} > Replace a dataset > 200 > application/json',
+  '/api/1/metastore/schemas/dataset/items/{identifier} > Update a dataset > 200 > application/json',
+  '/api/1/metastore/schemas/dataset/items/{identifier} > Delete a dataset > 200 > application/json',
+  '/api/1/metastore/schemas/{schema_id}/items/{identifier} > Get a property > 200 > application/json',
+  '/api/1/metastore/schemas/{schema_id}/items/{identifier} > Replace a property > 200 > application/json',
+  '/api/1/metastore/schemas/{schema_id}/items/{identifier} > Update a property > 200 > application/json',
+  '/api/1/harvest/plans > List harvest identifiers > 200 > application/json',
+  '/api/1/harvest/plans > Register a new harvest > 200 > application/json',
+  '/api/1/harvest/plans/{plan_id} > Get single harvest plan > 200 > application/json',
+  '/api/1/harvest/runs > List previous runs for a harvest id > 200 > application/json',
+  '/api/1/harvest/runs > Run a harvest > 200 > application/json',
+  '/api/1/harvest/runs/{run_id} > Information about a previous run > 200 > application/json',
+  '/api/1/datastore/imports > List datastores > 200 > application/json',
+  '/api/1/datastore/imports > Datastore import > 200 > application/json',
+  '/api/1/datastore/imports/{identifier} > Delete a datastore > 200 > application/json',
 ];
 endpointsRequiringAuth.forEach(endpoint => hooks.before(endpoint, (transaction) => {
   transaction.request.headers.Authorization = 'Basic dGVzdHVzZXI6Mmpxek9BblhTOW1tY0xhc3k=';

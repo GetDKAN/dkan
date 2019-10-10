@@ -9,7 +9,3 @@
  
  @warning
     The schema is actively used by the catalog to verify the validity of the data. Making changes to the schema, after data is present in the catalog should be done with care as non-backward compatible changes to the schema could cause issues. Look at Drupal::dkan_schema::SchemaRetriever::findSchemaDirectory() for context.
- 
-  
- 
- 

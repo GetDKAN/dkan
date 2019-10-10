@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\Tests\dkan_api\Unit\Controller;
+namespace Drupal\Tests\dkan_metastore\Unit\Controller;
 
 use Drupal\dkan_common\Tests\Mock\Chain;
 use Drupal\dkan_common\Tests\Mock\Options;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\dkan_api\Controller\Api;
+use Drupal\dkan_metastore\Controller\Api;
 use Drupal\dkan_data\Storage\Data;
 use Drupal\dkan_schema\SchemaRetriever;
 use PHPUnit\Framework\TestCase;

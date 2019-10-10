@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Class Api.
  *
  * @package Drupal\dkan_harvest\Controller
+ *
+ * @codeCoverageIgnore
  */
 class Api implements ContainerInjectionInterface {
 
@@ -66,6 +68,31 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Get a single harvest plan.
+   *
+   * @param string $identifier
+   *   A harvest plan id.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   Json response.
+   */
+  public function getPlan($identifier) {
+    try {
+      $plan = $this->harvester
+        ->getHarvestPlan($identifier);
+
+      return new JsonResponse(
+        json_decode($plan),
+        200,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
+    }
+    catch (\Exception $e) {
+      return $this->exceptionJsonResponse($e);
+    }
+  }
+
+  /**
    * Register a new harvest.
    */
   public function register() {
@@ -93,16 +120,16 @@ class Api implements ContainerInjectionInterface {
   /**
    * Deregister a harvest.
    */
-  public function deregister($id) {
+  public function deregister($identifier) {
 
     try {
 
       $this->harvester
-        ->deregisterHarvest($id);
+        ->deregisterHarvest($identifier);
 
       return new JsonResponse(
             (object) [
-              "identifier" => $id,
+              "identifier" => $identifier,
             ],
             200,
             ["Access-Control-Allow-Origin" => "*"]
@@ -115,13 +142,16 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Runs harvest.
-   *
-   * @param string $id
-   *   The harvest id.
    */
-  public function run($id) {
+  public function run() {
     try {
+      $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+      $payload = json_decode($payloadJson);
+      if (!isset($payload->plan_id)) {
+        return $this->exceptionJsonResponse(new \Exception("Invalid payload."));
+      }
 
+      $id = $payload->plan_id;
       $result = $this->harvester
         ->runHarvest($id);
 
@@ -141,13 +171,18 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Gives list of previous runs for a harvest id.
-   *
-   * @param string $id
-   *   The harvest id.
    */
-  public function info($id) {
+  public function info() {
 
     try {
+      $id = $this->requestStack->getCurrentRequest()->get('plan');
+      if (empty($id)) {
+        return new JsonResponse(
+          ["message" => "Missing 'plan' query parameter value"],
+          400,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
+      }
 
       $response = array_keys($this->harvester
         ->getAllHarvestRunInfo($id));
@@ -166,17 +201,23 @@ class Api implements ContainerInjectionInterface {
   /**
    * Gives information about a single previous harvest run.
    *
-   * @param string $id
-   *   The harvest id.
-   * @param string $run_id
+   * @param string $identifier
    *   The run's id.
    */
-  public function infoRun($id, $run_id) {
+  public function infoRun($identifier) {
+
+    $id = $this->requestStack->getCurrentRequest()->get('plan');
+    if (empty($id)) {
+      return new JsonResponse(
+        ["message" => "Missing 'plan' query parameter value"],
+        400,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
+    }
 
     try {
-
       $response = $this->harvester
-        ->getHarvestRunInfo($id, $run_id);
+        ->getHarvestRunInfo($id, $identifier);
 
       return new JsonResponse(
             $response,
@@ -191,12 +232,18 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Reverts harvest.
-   *
-   * @param string $id
-   *   The source to revert.
    */
-  public function revert($id) {
+  public function revert() {
     try {
+
+      $id = $this->requestStack->getCurrentRequest()->get('plan');
+      if (empty($id)) {
+        return new JsonResponse(
+          ["message" => "Missing 'plan' query parameter value"],
+          400,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
+      }
 
       $result = $this->harvester
         ->revertHarvest($id);

@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_datastore\Service\ImporterList;
 
+use Dkan\Datastore\Importer;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
 
@@ -175,16 +176,19 @@ class ImporterListItem {
    *   Total bytes processed.
    */
   private function getBytesProcessed(Job $job): int {
-    $jobShortClass = (new \ReflectionClass($job))->getShortName();
-    switch ($jobShortClass) {
+    $className = get_class($job);
+    switch ($className) {
       // For Importer, avoid going above total size due to chunk multiplication.
-      case 'Importer':
+      case Importer::class:
         $chunksSize = $job->getStateProperty('chunksProcessed') * 32;
         $fileSize = $this->getFileSize();
         return ($chunksSize > $fileSize) ? $fileSize : $chunksSize;
 
-      case 'FileFetcher':
+      case FileFetcher::class:
         return $job->getStateProperty('total_bytes_copied');
+
+      default:
+        return 0;
     }
   }
 

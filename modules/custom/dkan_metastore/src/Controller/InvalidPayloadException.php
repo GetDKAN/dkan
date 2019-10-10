@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_api\Controller;
+namespace Drupal\dkan_metastore\Controller;
 
 /**
  * Class InvalidLoadException.

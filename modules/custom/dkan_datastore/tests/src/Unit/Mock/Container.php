@@ -12,7 +12,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\TypedData\TypedDataInterface;
-use Drupal\dkan_datastore\Service\Datastore;
+use Drupal\dkan_datastore\Service\Service;
 use Drupal\node\NodeInterface;
 use FileFetcher\Processor\Local;
 use PHPUnit\Framework\TestCase;
@@ -73,7 +73,7 @@ class Container {
               $mockQueueFactory = $this->getQueueFactoryMock();
               $mockFileSystem = $this->getFileSystemMock();
 
-              return new Datastore(
+              return new Service(
                 $mockEntityRepository,
                 $mockConnection,
                 $mockQueueFactory,

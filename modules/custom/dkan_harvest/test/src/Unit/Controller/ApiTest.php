@@ -1,7 +1,9 @@
 <?php
 
-use Harvest\ETL\Load\Simple;
-use Harvest\ETL\Extract\DataJson;
+use Drupal\dkan_common\Tests\Mock\Options;
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\dkan_common\Tests\Mock\Chain;
+use Procrastinator\Result;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -119,48 +121,21 @@ class ApiTest extends DkanTestBase {
   /**
    *
    */
-  public function testRegisterAndRunAndInfoAndInfoRunAndRevertAndDeregister() {
-    $request = $this->getMockBuilder(Request::class)
-      ->setMethods(['getContent'])
-      ->disableOriginalConstructor()
+  public function testRun() {
+    $options = (new Options())
+      ->add("request_stack", RequestStack::class)
+      ->add("dkan_harvest.service", Harvester::class);
+
+    $container = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getContent', json_encode((object) ['plan_id' => 'test']))
+      ->add(Harvester::class, "runHarvest", Result::class)
       ->getMock();
 
-    $plan = [
-      'identifier' => 'test',
-      'extract' => ['type' => DataJson::class, "uri" => "file://" . __DIR__ . "/data.json"],
-      'load' => ['type' => Simple::class],
-    ];
-
-    $request->method('getContent')->willReturn(json_encode($plan));
-
-    $this->request = $request;
-
-    $controller = new Api($this->getContainer());
-    $response = $controller->register();
+    $controller = Api::create($container);
+    $response = $controller->run();
     $this->assertEquals(JsonResponse::class, get_class($response));
-    $this->assertEquals($response->getContent(), json_encode(["identifier" => "test"]));
-
-    $response = $controller->run('test');
-    $this->assertEquals(JsonResponse::class, get_class($response));
-    $result = json_decode($response->getContent())->result;
-    $this->assertEquals("NEW", $result->status->load->{"cedcd327-4e5d-43f9-8eb1-c11850fa7c55"});
-
-    $response = $controller->info('test');
-    $runs = json_decode($response->getContent());
-    $run = array_shift($runs);
-
-    $response = $controller->infoRun("test", $run);
-    $result = json_decode($response->getContent());
-    $this->assertEquals("NEW", $result->status->load->{"cedcd327-4e5d-43f9-8eb1-c11850fa7c55"});
-
-    $response = $controller->revert('test');
-    $content = json_decode($response->getContent());
-    $this->assertEquals('test', $content->identifier);
-    $this->assertEquals(1, $content->result);
-
-    $response = $controller->deregister('test');
-    $content = json_decode($response->getContent());
-    $this->assertEquals('test', $content->identifier);
   }
 
 }

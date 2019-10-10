@@ -2,16 +2,17 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\dkan_datastore\Service\Datastore;
-use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Database\Connection;
+use Drupal\dkan_datastore\Service\Factory\Resource;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_datastore\Storage\Query;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Maquina\StateMachine\MachineOfMachines;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\Core\Database\Connection;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Api class.
@@ -19,8 +20,10 @@ use Drupal\Core\Database\Connection;
 class Api implements ContainerInjectionInterface {
 
   private $database;
-  private $datastore;
   private $configFactory;
+  private $requestStack;
+  private $resourceServiceFactory;
+  private $databaseTableFactory;
 
   /**
    * Inherited.
@@ -30,22 +33,43 @@ class Api implements ContainerInjectionInterface {
    * @codeCoverageIgnore
    */
   public static function create(ContainerInterface $container) {
-    return new Api($container->get('database'), $container->get('dkan_datastore.service'), $container->get('config.factory'));
+
+    return new Api(
+      $container->get('database'),
+      $container->get('dkan_datastore.service.factory.resource'),
+      $container->get('config.factory'),
+      $container->get('request_stack'),
+      $container->get('dkan_datastore.database_table_factory')
+    );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(Connection $database, Datastore $datastore, ConfigFactoryInterface $configFactory) {
+  public function __construct(
+    Connection $database,
+    Resource $resourceServiceFactory,
+    ConfigFactory $configFactory,
+    RequestStack $requestStack,
+    DatabaseTableFactory $databaseTableFactory
+  ) {
     $this->database = $database;
-    $this->datastore = $datastore;
+    $this->resourceServiceFactory = $resourceServiceFactory;
     $this->configFactory = $configFactory;
+    $this->requestStack = $requestStack;
+    $this->databaseTableFactory = $databaseTableFactory;
   }
 
   /**
    * Method called by the router.
    */
-  public function runQuery($query_string) {
+  public function runQuery() {
+
+    $query_string = $this->getQueryString();
+
+    if (empty($query_string)) {
+      return $this->response("Missing 'query' query parameter or value", 400);
+    }
 
     $parser = new SqlParser();
 
@@ -62,7 +86,7 @@ class Api implements ContainerInjectionInterface {
       return $this->response("No datastore.", 500);
     }
 
-    $databaseTable = new DatabaseTable($this->database, $this->getResource($state_machine));
+    $databaseTable = $this->getDatabaseTable($state_machine);
 
     try {
       $result = $databaseTable->query($query_object);
@@ -72,7 +96,31 @@ class Api implements ContainerInjectionInterface {
     }
 
     return $this->response($result, 200);
+  }
 
+  /**
+   * Private.
+   */
+  private function getDatabaseTable($stateMachine) {
+    $resource = $this->getResource($stateMachine);
+    $resourceId = json_encode($resource);
+    return $this->databaseTableFactory->getInstance($resourceId);
+  }
+
+  /**
+   * Private.
+   */
+  private function getQueryString() {
+    $queryString = NULL;
+    $queryString = $this->requestStack->getCurrentRequest()->get('query');
+    if (empty($queryString)) {
+      $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+      $payload = json_decode($payloadJson);
+      if (isset($payload->query)) {
+        $queryString = $payload->query;
+      }
+    }
+    return $queryString;
   }
 
   /**
@@ -80,7 +128,10 @@ class Api implements ContainerInjectionInterface {
    */
   private function getResource(MachineOfMachines $state_machine) {
     $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
-    return $this->datastore->getResourceFromUuid($uuid);
+
+    /* @var $resourceService \Drupal\dkan_datastore\Service\Resource */
+    $resourceService = $this->resourceServiceFactory->getInstance($uuid);
+    return $resourceService->get();
   }
 
   /**
