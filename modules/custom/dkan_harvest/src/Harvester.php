@@ -39,6 +39,26 @@ class Harvester {
   }
 
   /**
+   * Return a harvest plan.
+   *
+   * @param string $plan_id
+   *   The harvest plan id.
+   *
+   * @return mixed
+   *   The harvest plan, if any, or null.
+   *
+   * @throws \Exception
+   */
+  public function getHarvestPlan($plan_id) {
+    $store = $this->storeFactory->getInstance("harvest_plans");
+
+    if ($store instanceof BulkRetrieverInterface) {
+      return $store->retrieve($plan_id);
+    }
+    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {RetrieverInterface::class}");
+  }
+
+  /**
    * Register a new harvest plan.
    *
    * @param object $plan
@@ -119,9 +139,9 @@ class Harvester {
   public function getAllHarvestRunInfo($id) {
     $util = new JsonUtil();
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    return $util->decodeArrayOfJson(
-          $run_store->retrieveAll()
-    );
+    $runs = $run_store->retrieveAll();
+    $runs = $util->decodeArrayOfJson($runs);
+    return $runs;
   }
 
   /**
@@ -145,6 +165,15 @@ class Harvester {
     $harvestPlan = json_decode($plan_store->retrieve($id));
     $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
     $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");
+    return $this->getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store);
+  }
+
+  /**
+   * Protected.
+   *
+   * @codeCoverageIgnore
+   */
+  protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {
     return new DkanHarvester(new Factory($harvestPlan, $item_store, $hash_store));
   }
 

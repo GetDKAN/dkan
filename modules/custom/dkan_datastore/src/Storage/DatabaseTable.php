@@ -48,6 +48,7 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
    * @todo Implement.
    */
   public function retrieveAll(): array {
+    return [];
   }
 
   /**
@@ -56,6 +57,7 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
    * @todo Implement.
    */
   public function retrieve(string $id): ?string {
+    return $id;
   }
 
   /**

@@ -1,0 +1,11 @@
+services:
+  dkan_metastore.controller:
+    class: \Drupal\dkan_metastore\Controller\Api
+    arguments:
+      - '@request_stack'
+      - '@dkan_schema.schema_retriever'
+      - '@dkan_data.storage'
+  dkan_metastore.route_provider:
+    class: \Drupal\dkan_metastore\Routing\RouteProvider
+    arguments:
+      - '@config.factory'

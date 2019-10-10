@@ -61,66 +61,6 @@ class ValueReferencerTest extends DkanTestBase {
   }
 
   /**
-   * Tests the checkExistingReference function.
-   *
-   * @param string $property_id
-   *   The property name.
-   * @param mixed $data
-   *   The json value of the property.
-   * @param array $nodes
-   *   Array of node objects with uuid->value properties.
-   * @param mixed $expected
-   *   Expected result.
-   *
-   * @dataProvider dataTestCheckExistingReference
-   */
-  public function testCheckExistingReference($property_id, $data, array $nodes, $expected) {
-    // Setup.
-    $mock = $this->getMockBuilder(ValueReferencer::class)
-      ->setMethods(NULL)
-      ->disableOriginalConstructor()
-      ->getMock();
-
-    $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->setMethods(
-              [
-                'getStorage',
-              ]
-          )
-      ->getMockForAbstractClass();
-
-    $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
-
-    $mockNodeStorage = $this->getMockBuilder(EntityStorageInterface::class)
-      ->setMethods(
-              [
-                'loadByProperties',
-              ]
-          )
-      ->getMockForAbstractClass();
-
-    // Expect.
-    $mockEntityTypeManager->expects($this->once())
-      ->method('getStorage')
-      ->with('node')
-      ->willReturn($mockNodeStorage);
-
-    $mockNodeStorage->expects($this->once())
-      ->method('loadByProperties')
-      ->with(
-              [
-                'field_data_type' => $property_id,
-                'title'           => md5(json_encode($data)),
-              ]
-          )
-      ->willReturn($nodes);
-
-    // Assert.
-    $actual = $this->invokeProtectedMethod($mock, 'checkExistingReference', $property_id, $data);
-    $this->assertEquals($expected, $actual);
-  }
-
-  /**
    * Tests the createPropertyReference function.
    */
   public function testCreatePropertyReference() {
@@ -699,31 +639,6 @@ class ValueReferencerTest extends DkanTestBase {
 
     // Assert.
     $this->assertEquals($expected, $mock->dereference($data));
-  }
-
-  /**
-   * Tests skipping the dereferencing.
-   */
-  public function testDereferenceSkipping() {
-    // Setup.
-    $mock = $this->getMockBuilder(ValueReferencer::class)
-      ->setMethods(NULL)
-      ->disableOriginalConstructor()
-      ->getMock();
-
-    $uuid1 = uniqid('uuid1-');
-    $uuid2 = uniqid('uuid2-');
-    $data = (object) [
-      'property to be dereferenced' => $uuid1,
-      'another to dereference' => $uuid2,
-      'other property' => 'Some other value',
-    ];
-    // DEREFERENCE_OUTPUT_MINIMAL.
-    $method = 1;
-
-    // Assert the dereferencing left the data unchanged, with identifiers.
-    $actual = $this->invokeProtectedMethod($mock, 'dereference', $data, $method);
-    $this->assertEquals($data, $actual);
   }
 
   /**

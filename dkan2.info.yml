@@ -23,6 +23,7 @@ dependencies:
   - dkan_datastore
   - dkan_dummy_content
   - dkan_lunr
+  - dkan_metastore
   - dkan_sql_endpoint
   - dynamic_page_cache
   - editor

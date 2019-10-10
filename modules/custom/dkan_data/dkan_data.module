@@ -41,17 +41,13 @@ function dkan_data_node_load(array $entities) {
 function dereferencing_method() : int {
   $allowed_methods = [
     ValueReferencer::DEREFERENCE_OUTPUT_DEFAULT,
-    ValueReferencer::DEREFERENCE_OUTPUT_MINIMAL,
-    ValueReferencer::DEREFERENCE_OUTPUT_VERBOSE,
+    ValueReferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS,
   ];
 
   // Selection based on API's http request query parameters.
   $params = Drupal::request()->query->all();
-  if (isset($params['view']) && $params['view'] == 'verbose') {
-    return ValueReferencer::DEREFERENCE_OUTPUT_VERBOSE;
-  }
-  if (isset($params['view']) && $params['view'] == 'minimal') {
-    return ValueReferencer::DEREFERENCE_OUTPUT_MINIMAL;
+  if (isset($params['show-reference-ids'])) {
+    return ValueReferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS;
   }
 
   // Selection based on static variable.

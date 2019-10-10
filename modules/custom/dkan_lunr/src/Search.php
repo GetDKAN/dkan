@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_lunr;
 
-use Drupal\dkan_api\Controller\Api;
+use Drupal\dkan_metastore\Controller\Api;
 use Drupal\dkan_lunr\Service\DatasetModifier;
 use LunrPHP\BuildLunrIndex;
 
@@ -16,7 +16,7 @@ class Search {
   /**
    * Api controller.
    *
-   * @var \Drupal\dkan_api\Controller\Api
+   * @var \Drupal\dkan_metastore\Controller\Api
    */
   private $apiController;
 

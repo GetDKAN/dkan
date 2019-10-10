@@ -1,45 +1,46 @@
-dkan_datastore.summary:
-  path: '/api/v1/datastore/{uuid}'
+dkan_datastore.1.datastore:
+  path: '/api/1/datastore'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\dkan_datastore\Controller\Api::summary'
+    { _controller: '\Drupal\dkan_api\Controller\Docs::getComplete'}
   requirements:
     _permission: 'access content'
-dkan_datastore.import_deferred:
-  path: '/api/v1/datastore/import/{uuid}/deferred'
-  methods: [PUT]
+
+dkan_datastore.1.imports:
+  path: '/api/1/datastore/imports'
+  methods: [GET]
   defaults:
-    _controller: '\Drupal\dkan_datastore\Controller\Api::import'
-    deferred: true
+    _controller: '\Drupal\dkan_datastore\WebServiceApi::list'
   requirements:
     _permission: 'dkan_datastore_api_import'
   options:
     _auth: ['basic_auth']
-dkan_datastore.import:
-  path: '/api/v1/datastore/import/{uuid}'
-  methods: [PUT]
+
+dkan_datastore.1.imports.post:
+  path: '/api/1/datastore/imports'
+  methods: [POST]
   defaults:
-    _controller: '\Drupal\dkan_datastore\Controller\Api::import'
+    _controller: '\Drupal\dkan_datastore\WebServiceApi::import'
     deferred: false
   requirements:
     _permission: 'dkan_datastore_api_import'
   options:
     _auth: ['basic_auth']
-dkan_datastore.delete:
-  path: '/api/v1/datastore/{uuid}'
+
+dkan_datastore.1.imports.id:
+  path: '/api/1/datastore/imports/{identifier}'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\dkan_datastore\WebServiceApi::summary'
+  requirements:
+    _permission: 'access content'
+
+dkan_datastore.1.imports.id.delete:
+  path: '/api/1/datastore/imports/{identifier}'
   methods: [DELETE]
   defaults:
-    _controller: '\Drupal\dkan_datastore\Controller\Api::delete'
+    _controller: '\Drupal\dkan_datastore\WebServiceApi::delete'
   requirements:
     _permission: 'dkan_datastore_api_drop'
   options:
     _auth: ['basic_auth']
-dkan_datastore.list:
-  path: '/api/v1/datastore'
-  methods: [GET]
-  defaults:
-    _controller: '\Drupal\dkan_datastore\Controller\Api::list'
-  requirements:
-    _permission: 'access content'
-  # options:
-  #   _auth: ['basic_auth']

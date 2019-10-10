@@ -1,5 +1,5 @@
-name: DKAN Dummy Content
-description: 'DKAN Dummy Content.'
+name: Dummy Content
+description: 'Dummy Content.'
 type: module
 core: 8.x
 dependencies:

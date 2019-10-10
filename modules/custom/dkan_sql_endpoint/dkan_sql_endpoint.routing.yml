@@ -1,5 +1,5 @@
 dkan_sql_endpoint.api:
-  path: '/api/v1/sql/{query_string}'
+  path: '/api/1/datastore/sql'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_sql_endpoint\Controller\Api::runQuery'}

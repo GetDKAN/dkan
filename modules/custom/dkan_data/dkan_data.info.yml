@@ -4,11 +4,9 @@ type: module
 core: 8.x
 dependencies:
   - dkan_schema
-  - field
-  - node
   - json_form
-  - menu_ui
   - path
-  - text
   - user
+  - node
+  - menu_ui
 package: DKAN

@@ -12,7 +12,7 @@ components:
       scheme: basic
   parameters:
     datasetUuid:
-      name: uuid
+      name: identifier
       in: path
       description: A dataset uuid
       required: true
@@ -20,7 +20,7 @@ components:
         type: string
       example: 11111111-1111-4111-1111-111111111111
     property:
-      name: property
+      name: schema_id
       in: path
       description: Property of a dataset
       required: true
@@ -28,7 +28,7 @@ components:
         type: string
       example: keyword
     propertyUuid:
-      name: uuid
+      name: identifier
       in: path
       description: A property uuid
       required: true
@@ -37,28 +37,28 @@ components:
       example: PROPERTY-UUID
     query:
       name: query
-      in: path
+      in: query
       description: SQL query
       required: true
       schema:
         type: string
       example: '[SELECT * FROM DATASTORE-UUID];'
     datastoreUuid:
-      name: uuid
+      name: identifier
       in: path
       description: A datastore uuid
       required: true
       schema:
         type: string
       example: DATASTORE-UUID
-    harvestId:
-      name: id
+    harvestPlanId:
+      name: plan_id
       in: path
-      description: A harvest identifier
+      description: A harvest plan identifier
       required: true
       schema:
         type: string
-      example: HARVEST-ID
+      example: HARVEST-PLAN-ID
     harvestRunId:
       name: run_id
       in: path
@@ -90,7 +90,20 @@ components:
             - restricted public
             - non-public
 paths:
-  /api/v1/dataset:
+  /api/1/metastore/schemas/dataset:
+    get:
+      operationId: dataset-get-schema
+      summary: Get dataset schema
+      tags:
+        - Dataset
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/1/metastore/schemas/dataset/items:
     get:
       operationId: dataset-get-all
       summary: Get all datasets
@@ -151,14 +164,14 @@ paths:
                     type: string
         '401':
           description: Unauthorized
-  /api/v1/dataset/{uuid}:
+  /api/1/metastore/schemas/dataset/items/{identifier}:
     get:
       operationId: dataset-get
       summary: Get this dataset
       tags:
         - Dataset
       parameters:
-        - name: uuid
+        - name: identifier
           in: path
           description: A dataset uuid
           required: true
@@ -268,38 +281,7 @@ paths:
                     type: string
         '401':
           description: Unauthorized
-  /api/v1/dataset/{uuid}/resources:
-    get:
-      operationId: dataset-get-resources
-      summary: Get a dataset's resources
-      tags:
-        - Dataset
-      parameters:
-        - name: uuid
-          in: path
-          description: A dataset uuid
-          required: true
-          schema:
-            type: string
-          example: c9e2d352-e24c-4051-9158-f48127aa5692
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - identifier
-                    - data
-                  properties:
-                    identifier:
-                      type: string
-                    data:
-                      type: object
-  /api/v1/{property}:
+  /api/1/metastore/schemas/{schema_id}/items:
     get:
       operationId: property-get-all
       summary: Get properties
@@ -321,7 +303,7 @@ paths:
                   properties:
                     identifier:
                       type: string
-  /api/v1/{property}/{uuid}:
+  /api/1/metastore/schemas/{schema_id}/items/{identifier}:
     get:
       operationId: property-get
       summary: Get a property
@@ -414,7 +396,7 @@ paths:
                     type: string
         '401':
           description: Unauthorized
-  /api/v1/sql/{query}:
+  /api/1/datastore/sql:
     get:
       operationId: datastore-query
       summary: Query resources in datastore
@@ -433,10 +415,10 @@ paths:
                 type: array
                 items:
                   type: object
-  /api/v1/harvest:
+  /api/1/harvest/plans:
     get:
       operationId: harvest-get-all
-      summary: Lists harvest identifiers
+      summary: List harvest identifiers
       description: >
         Lists the identifiers of all registered harvests.
       tags:
@@ -452,6 +434,8 @@ paths:
                 type: array
                 items:
                   type: string
+        '401':
+          description: Unauthorized
     post:
       operationId: harvest-register
       summary: Register a new harvest
@@ -482,7 +466,75 @@ paths:
                     type: string
                   identifier:
                     type: string
-  /api/v1/harvest/info/{id}:
+        '401':
+          description: Unauthorized
+  /api/1/harvest/plans/{plan_id}:
+    get:
+      operationId: harvest-get-single
+      summary: Get single harvest plan
+      description: >
+        Get the json plan of a registered harvest, based on the its harvest id.
+      tags:
+        - Harvest
+      parameters:
+        - $ref: '#/components/parameters/harvestPlanId'
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - identifier
+                  - extract
+                  - load
+                properties:
+                  identifier:
+                    type: string
+                  extract:
+                    type: object
+                    required:
+                      - type
+                      - uri
+                    properties:
+                      type:
+                        type: string
+                      uri:
+                        type: string
+                  load:
+                    type: object
+                    required:
+                      - type
+                    properties:
+                      type:
+                        type: string
+        '401':
+          description: Unauthorized
+  /api/1/harvest/runs/{run_id}:
+    get:
+      operationId: harvest-run-info
+      summary: Information about a previous run
+      description: >
+        Gives information about a previous run for a specific harvest run.
+      tags:
+        - Harvest
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/harvestRunId'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+  /api/1/harvest/runs:
     get:
       operationId: harvest-info
       summary: List previous runs for a harvest id
@@ -494,7 +546,13 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: '#/components/parameters/harvestId'
+        - in: query
+          name: plan
+          description: A plan identifier
+          required: true
+          schema:
+            type: string
+          example: PLAN-ID
       responses:
         '200':
           description: Ok
@@ -504,44 +562,28 @@ paths:
                 type: array
                 items:
                   type: object
-  /api/v1/harvest/info/{id}/{run_id}:
-    get:
-      operationId: harvest-run-info
-      summary: Information about a specific previous harvest run
-      description: >
-        Gives information about a previous run for a specific harvest run.
-      tags:
-        - Harvest
-      security:
-        - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/harvestId'
-        - $ref: '#/components/parameters/harvestRunId'
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: object
-  /api/v1/harvest/run/{id}:
-    put:
+        '401':
+          description: Unauthorized
+    post:
       operationId: harvest-run
-      summary: Runs a harvest
+      summary: Run a harvest
       description: >
-        Runs a harvest for a specific identifier.
+        Runs a harvest for a specific plan identifier inside json object payload.
       tags:
         - Harvest
       security:
         - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/harvestId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - plan_id
+              properties:
+                plan_id:
+                  type: string
       responses:
         '200':
           description: Ok
@@ -550,17 +592,64 @@ paths:
               schema:
                 type: object
                 required:
-                  - endpoint
                   - identifier
                   - result
                 properties:
-                  endpoint:
-                    type: string
                   identifier:
                     type: string
                   result:
                     type: string
-  /api/v1/datastore/{uuid}:
+        '401':
+          description: Unauthorized
+  /api/1/datastore/imports:
+    get:
+      operationId: datastore-list
+      summary: List datastores
+      description: >
+        Returns a list of all stored importers, with data about their file fetcher and status.
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+    post:
+      operationId: datastore-import
+      summary: Datastore import
+      description: >
+        Immediately starts the import process for a datastore.
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - resource_id
+              properties:
+                plan_id:
+                  type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+  /api/1/datastore/imports/{identifier}:
     get:
       operationId: datastore-get
       summary: Datastore statistics
@@ -616,73 +705,7 @@ paths:
                 properties:
                   message:
                     type: string
-  /api/v1/datastore/import/{uuid}:
-    put:
-      operationId: datastore-import
-      summary: Datastore import
-      description: >
-        Immediately starts the import process for a datastore.
-      tags:
-        - Datastore
-      security:
-        - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/datastoreUuid'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - endpoint
-                  - identifier
-                properties:
-                  endpoint:
-                    type: string
-                  identifier:
-                    type: string
-  /api/v1/datastore/import/{uuid}/deferred:
-    put:
-      operationId: datastore-deferred-import
-      summary: Deferred datastore import
-      description: >
-        Queues the process of importing a resource to the datastore.
-      tags:
-        - Datastore
-      security:
-        - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/datastoreUuid'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - endpoint
-                  - identifier
-                properties:
-                  endpoint:
-                    type: string
-                  identifier:
-                    type: string
-  /api/v1/docs:
+  /api/1:
     get:
       operationId: docs-get
       summary: Complete json documentation
@@ -695,14 +718,14 @@ paths:
             application/json:
               schema:
                 type: object
-  /api/v1/docs/{uuid}:
+  /api/1/metastore/schemas/dataset/items/{identifier}/docs:
     get:
       operationId: docs-get-dataset-specific
       summary: Dataset-specific json documentation
       tags:
         - Documentation
       parameters:
-        - name: uuid
+        - name: identifier
           in: path
           description: A dataset uuid
           required: true

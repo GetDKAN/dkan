@@ -7,8 +7,6 @@ namespace Drupal\dkan_api\Controller;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Serialization\Yaml;
-use Drupal\dkan_data\Storage\Data;
-use Drupal\dkan_data\ValueReferencer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -39,13 +37,6 @@ class Docs implements ContainerInjectionInterface {
   private $serializer;
 
   /**
-   * Drupal node dataset storage.
-   *
-   * @var \Drupal\dkan_api\Storage\Data
-   */
-  private $storage;
-
-  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -54,22 +45,23 @@ class Docs implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     $moduleHandler = $container->get('module_handler');
-    $storage = $container->get('dkan_data.storage');
-    return new Docs($moduleHandler, $storage);
+    return new Docs($moduleHandler);
   }
 
   /**
    * Constructor.
    */
-  public function __construct(
-    ModuleHandlerInterface $moduleHandler,
-    Data $storage
-  ) {
+  public function __construct(ModuleHandlerInterface $moduleHandler) {
     $this->moduleHandler = $moduleHandler;
     $this->serializer = new Yaml();
-    $this->storage = $storage;
-    $this->storage->setSchema('dataset');
     $this->spec = $this->getJsonFromYmlFile();
+  }
+
+  /**
+   * Ger version.
+   */
+  public function getVersions() {
+    return new JsonResponse(["version" => 1, "url" => "/api/1"]);
   }
 
   /**
@@ -78,7 +70,7 @@ class Docs implements ContainerInjectionInterface {
    * @return array
    *   The openapi spec.
    */
-  private function getJsonFromYmlFile() {
+  public function getJsonFromYmlFile() {
     $modulePath = $this->moduleHandler->getModule('dkan_api')->getPath();
     $ymlSpecPath = $modulePath . '/docs/dkan_api_openapi_spec.yml';
     $ymlSpec = $this->fileGetContents($ymlSpecPath);
@@ -114,64 +106,6 @@ class Docs implements ContainerInjectionInterface {
   }
 
   /**
-   * Returns only dataset-specific GET requests for the API spec.
-   *
-   * @param \Drupal\dkan_api\Controller\string $uuid
-   *   Dataset uuid.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   OpenAPI spec response.
-   */
-  public function getDatasetSpecific(string $uuid) {
-    // Keep only the GET requests.
-    $spec = $this->removeSpecOperations(
-          $this->spec, [
-            'post',
-            'put',
-            'patch',
-            'delete',
-          ]
-      );
-    // Remove GET dataset collection endpoint as well as property-related ones.
-    // @TODO: consider flipping the logic, keeping array of paths interested in.
-    $spec = $this->removeSpecPaths(
-          $spec, [
-            '/api/v1/dataset',
-            '/api/v1/{property}',
-            '/api/v1/{property}/{uuid}',
-            '/api/v1/harvest',
-            '/api/v1/harvest/info/{id}',
-            '/api/v1/harvest/info/{id}/{run_id}',
-            '/api/v1/docs',
-            '/api/v1/docs/{uuid}',
-            '/api/v1/datastore',
-            '/api/v1/datastore/{uuid}',
-          ]
-      );
-    // Remove the security schemes.
-    unset($spec['components']['securitySchemes']);
-    // Remove required parameters, since now part of path.
-    unset($spec['paths']['/api/v1/sql/{query}']['get']['parameters']);
-    unset($spec['paths']['/api/v1/dataset/{uuid}']['get']['parameters']);
-    // Keep only the tags needed, so remove the properties tag.
-    $spec['tags'] = [
-      ["name" => "Dataset"],
-      ["name" => "SQL Query"],
-    ];
-    // Replace the dataset uuid placeholder.
-    if (isset($spec['paths']['/api/v1/dataset/{uuid}'])) {
-      $spec['paths']['/api/v1/dataset/' . $uuid] = $spec['paths']['/api/v1/dataset/{uuid}'];
-      unset($spec['paths']['/api/v1/dataset/{uuid}']);
-    }
-
-    // Replace the sql endpoint query placeholder.
-    $spec = $this->replaceDistributions($spec, $uuid);
-
-    $jsonSpec = json_encode($spec);
-    return $this->sendResponse($jsonSpec);
-  }
-
-  /**
    * Helper function to set headers and send response.
    *
    * @param string $jsonSpec
@@ -190,91 +124,6 @@ class Docs implements ContainerInjectionInterface {
               ],
               TRUE
           );
-  }
-
-  /**
-   * Removes operations from the api spec's paths.
-   *
-   * @param array $spec
-   *   The original spec array.
-   * @param array $ops_to_remove
-   *   Array of operations to be removed.
-   *
-   * @return array
-   *   Modified spec.
-   */
-  private function removeSpecOperations(array $spec, array $ops_to_remove) {
-    if (isset($spec['paths'])) {
-      foreach ($spec['paths'] as $path => $operations) {
-        foreach ($operations as $op => $details) {
-          if (in_array($op, $ops_to_remove)) {
-            unset($spec['paths'][$path][$op]);
-          }
-        }
-        if (empty($spec['paths'][$path])) {
-          unset($spec['paths'][$path]);
-        }
-      }
-    }
-
-    return $spec;
-  }
-
-  /**
-   * Remove paths from the api spec.
-   *
-   * @param array $spec
-   *   The original spec array.
-   * @param array $paths_to_remove
-   *   Array of paths to be removed.
-   *
-   * @return array
-   *   Modified spec.
-   */
-  private function removeSpecPaths(array $spec, array $paths_to_remove) {
-    if (!isset($spec['paths'])) {
-      return $spec;
-    }
-    foreach ($spec['paths'] as $path => $ops) {
-      if (in_array($path, $paths_to_remove)) {
-        unset($spec['paths'][$path]);
-      }
-    }
-
-    return $spec;
-  }
-
-  /**
-   * Replace the sql {query} placeholder with dataset-specific distributions.
-   *
-   * @param array $spec
-   *   The original spec array.
-   * @param \Drupal\dkan_api\Controller\string $uuid
-   *   The dataset uuid.
-   *
-   * @return array
-   *   Modified spec.
-   */
-  private function replaceDistributions(array $spec, string $uuid) {
-    // Load this dataset's metadata with both data and identifiers.
-    if (function_exists('drupal_static')) {
-      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_VERBOSE);
-    }
-    $dataset = $this->storage->retrieve($uuid);
-    $data = json_decode($dataset);
-
-    // Create and customize a path for each dataset distribution/resource.
-    if (isset($data->distribution)) {
-      foreach ($data->distribution as $dist) {
-        $path = "/api/v1/sql/[SELECT * FROM {$dist->identifier}];";
-
-        $spec['paths'][$path] = $spec['paths']['/api/v1/sql/{query}'];
-        $spec['paths'][$path]['get']['summary'] = $dist->data->title ?? "";
-        $spec['paths'][$path]['get']['description'] = $dist->data->description ?? "";
-      }
-      unset($spec['paths']['/api/v1/sql/{query}']);
-    }
-    return $spec;
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_api\Routing;
+namespace Drupal\dkan_metastore\Routing;
 
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -116,10 +116,10 @@ class RouteProvider {
   private function propertyAuthenticatedRoutes() {
     $propertyAuthenticated = new RouteCollection();
     foreach ($this->getPropertyList() as $schema) {
-      $propertyAuthenticated->add("dkan_api.{$schema}.put", $this->routeHelper(
+      $propertyAuthenticated->add("dkan_metastore.t{$schema}.put", $this->routeHelper(
         $schema, "{$schema}/{uuid}", 'PUT', 'put')
       );
-      $propertyAuthenticated->add("dkan_api.{$schema}.patch", $this->routeHelper(
+      $propertyAuthenticated->add("dkan_metastore.{$schema}.patch", $this->routeHelper(
         $schema, "{$schema}/{uuid}", 'PATCH', 'patch')
       );
     }
@@ -148,7 +148,7 @@ class RouteProvider {
     $route = new Route(
       "/api/v1/{$path}",
           [
-            '_controller' => '\Drupal\dkan_api\Controller\Api::' . $datasetMethod,
+            '_controller' => '\Drupal\dkan_metastore\Controller\Api::' . $datasetMethod,
             'schema_id' => $schema,
           ]
       );

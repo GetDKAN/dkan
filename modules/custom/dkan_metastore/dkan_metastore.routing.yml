@@ -1,0 +1,87 @@
+dkan_metastore.1.metastore:
+  path: '/api/1/metastore'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_api\Controller\Docs::getComplete'}
+  requirements:
+    _permission: 'access content'
+
+dkan_metastore.1.metastore.schemas:
+  path: '/api/1/metastore/schemas'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::getSchemas'}
+  requirements:
+    _permission: 'access content'
+
+dkan_metastore.1.metastore.schemas.id:
+  path: '/api/1/metastore/schemas/{identifier}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::getSchema'}
+  requirements:
+    _permission: 'access content'
+
+dkan_metastore.1.metastore.schemas.id.items:
+  path: '/api/1/metastore/schemas/{schema_id}/items'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::getAll'}
+  requirements:
+    _permission: 'access content'
+
+dkan_metastore.1.metastore.schemas.id.items.post:
+  path: '/api/1/metastore/schemas/{schema_id}/items'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::post'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _auth: ['basic_auth']
+
+dkan_metastore.1.metastore.schemas.id.items.id:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::get'}
+  requirements:
+    _permission: 'access content'
+
+dkan_metastore.1.metastore.schemas.id.items.id.put:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [PUT]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::put'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _auth: ['basic_auth']
+
+dkan_metastore.1.metastore.schemas.id.items.id.patch:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [PATCH]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::patch'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _auth: ['basic_auth']
+
+dkan_metastore.1.metastore.schemas.id.items.id.delete:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [DELETE]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::delete'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _auth: ['basic_auth']
+
+dkan_metastore.1.metastore.schemas.dataset.items.id.docs:
+  path: '/api/1/metastore/schemas/dataset/items/{identifier}/docs'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\Controller\Api::getDatasetSpecific'}
+  requirements:
+    _permission: 'access content'

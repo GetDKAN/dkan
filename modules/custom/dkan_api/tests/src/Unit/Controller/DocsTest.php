@@ -68,18 +68,6 @@ class DocsTest extends DkanTestBase {
   /**
    *
    */
-  public function testGetDatasetSpecific() {
-    $controller = Docs::create($this->getContainer());
-    $response = $controller->getDatasetSpecific(1);
-
-    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"paths":{"\/api\/v1\/dataset\/1":{"get":{"summary":"Get this dataset","tags":["Dataset"],"responses":{"200":{"description":"Ok"}}}}},"tags":[{"name":"Dataset"},{"name":"SQL Query"}]}';
-
-    $this->assertEquals($spec, $response->getContent());
-  }
-
-  /**
-   *
-   */
   private function getModuleHandlerMock() {
     $mock = $this->getMockBuilder(ModuleHandlerInterface::class)
       ->disableOriginalConstructor()

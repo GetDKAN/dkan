@@ -1,0 +1,21 @@
+openapi: 3.0.1
+info:
+  title: API Documentation
+  version: Alpha
+paths:
+  /api/v1/dataset/{uuid}:
+    get:
+      summary: Get this dataset
+      # description:
+      tags:
+        - Dataset
+      parameters:
+        - name: "uuid"
+          in: "path"
+          description: "Dataset uuid"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok

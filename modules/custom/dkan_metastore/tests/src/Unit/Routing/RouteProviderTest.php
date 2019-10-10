@@ -2,7 +2,8 @@
 
 /**
  *
- */use Drupal\dkan_api\Routing\RouteProvider;
+ */
+use Drupal\dkan_metastore\Routing\RouteProvider;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use PHPUnit\Framework\TestCase;

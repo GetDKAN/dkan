@@ -1,5 +1,5 @@
 services:
   dkan_datastore:commands:
-    class: \Drupal\dkan_datastore\Drush\Commands
+    class: \Drupal\dkan_datastore\Drush
     tags:
       - { name: drush.command }

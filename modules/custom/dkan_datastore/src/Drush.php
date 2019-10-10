@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_datastore\Drush;
+namespace Drupal\dkan_datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\dkan_data\ValueReferencer;
@@ -11,12 +11,12 @@ use Drush\Commands\DrushCommands;
  *
  * @codeCoverageIgnore
  */
-class Commands extends DrushCommands {
+class Drush extends DrushCommands {
 
   /**
    * The datastore service.
    *
-   * @var \Drupal\dkan_datastore\Service\Datastore
+   * @var \Drupal\dkan_datastore\Service\Service
    */
   protected $datastoreService;
 
