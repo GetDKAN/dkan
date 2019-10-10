@@ -3,8 +3,9 @@
 Datastore API
 =============
 
-DKAN offers a Datastore API as a custom endpoint for the Drupal Services
-module.
+DKAN offers a Datastore API as a custom endpoint for the Drupal Services module.
+
+To import and otherwise control individual resources in the Datastore, use the datastore functions in the :ref:`Dataset REST API <datastore-rest-examples>`.
 
 This API is designed to be as compatible as possible with the `CKAN
 Datastore API <http://ckan.readthedocs.org/en/latest/maintaining/datastore.html>`_.
@@ -34,10 +35,11 @@ Aggregation functions
 
 -  **sum** (*string*) – field to compute the sum
 -  **avg** (*string*) – field to compute the average
--  **min** (*string*) – field to compute the maximum
--  **max** (*string*) – field to compute the minimum
+-  **min** (*string*) – field to compute the minimum
+-  **max** (*string*) – field to compute the maximum
 -  **std** (*string*) – field to compute the standard deviation
 -  **variance** (*string*) – field to compute the variance
+-  **count** (*string*) – field to compute the count
 
 URL format
 ----------
@@ -69,7 +71,7 @@ above syntax, it also accepts an alternative format:
 
 ::
 
-    ...&sort=field1,field2 desc
+    ...&sort[field1]=desc
 
 Multiple queries
 ----------------
@@ -174,7 +176,7 @@ Response
           ]
         }
       }
-    }7
+    }
 
 Response formats
 ----------------
@@ -242,7 +244,7 @@ Simple query example
 
 ::
 
-    http://EXAMPLE.COM/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[country]=AR,US&fields=country,population,timestamp&sort[country]=asc
+    http://EXAMPLE.COM/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[country]=AR,US&fields[]=country&fields[]=population,timestamp&sort[country]=asc
 
 Returns the country, population, and timestamp fields for US and AR from
 dataset 1 sorting by the country in ascending order.
@@ -253,7 +255,7 @@ Text Search
 Requests with the 'query' argument will search the listed fields within
 the dataset::
 
-    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&&fields=country,population&query=US
+    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&&fields[]=country&fields[]=population&query=US
 
 This will return the country and population from US.
 
@@ -277,7 +279,49 @@ on further requests.
 
 Since Datastore API uses the Drupal cache system under the hood, the
 Datastore API cache will be cleared at the same time as the rest of the Drupal cache. This
-coule be when the cache is wiped manually, or when the cache lifetime ends.
+could be when the cache is wiped manually, or when the cache lifetime ends.
 
-All this options can be configured at
+These options can be configured at
 ``admin/config/development/performance``
+
+Field Names
+~~~~~~~~~~~
+
+In order to get data for specific fields, you need to add the argument 'fields' as an array to your request:
+
+::
+
+    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&fields[]=country
+
+If you wish to get multiple fields, add the 'fields[]' parameter followed by the field name as many times as fields needed, for example:
+
+::
+
+    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&fields[]=field_name_1&fields[]=field_name_2
+
+Important Note: if the resource you are querying has a file with column names which contains spaces or capital letters (e.g. 'School Name'), you should NOT specify the field in the request in that way, instead, it should be referenced as lower case with underscores instead of spaces (e.g. school_name).
+
+Read more about changes to the Datastore after upgrading to DKAN 7.x-1.16 `here <../components/datastore.html#important-notes-when-upgrading-dkan-to-7-x-1-16-from-previous-versions>`_
+
+Filters
+~~~~~~~
+
+If you wish to filter data based on the value of a field, you'll need to specify the 'filters' parameter in the request, it should be formatted like:
+
+::
+
+    filters[field_name_1]=value,value2
+
+When you need to specify filters for multiple fields, then you'll just join them with &, like this:
+
+::
+
+    filters[field_name_1]=value&filters[field_name_2]=value2
+
+So, for example you could execute the query:
+
+::
+
+    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[country]=AR,US
+
+That query will return the records in which the 'country' is set to US or AR.

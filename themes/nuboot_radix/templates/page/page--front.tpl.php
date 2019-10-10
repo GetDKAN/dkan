@@ -78,10 +78,9 @@
     <?php endif; ?>
 
 
-    <div class="main-row">
+    <div id="main-content" class="main-row">
 
       <section>
-        <a id="main-content"></a>
         <?php print render($title_prefix); ?>
         <?php if (!empty($title) && (arg(0) == 'admin' || arg(1) == 'add' || arg(1) == 'edit')): ?>
           <h1 class="page-header"><?php print $title; ?></h1>

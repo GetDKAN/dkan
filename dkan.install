@@ -5,6 +5,11 @@
  * Install functions and update hooks for DKAN profile.
  */
 
+use Dkan\Datastore\Manager\Factory;
+use Dkan\Datastore\Resource;
+use Dkan\Datastore\Manager\ManagerInterface;
+use Dkan\Datastore\LockableDrupalVariables;
+
 /**
  * Reverts dkan_sitewide to add Markdown filter. Sets up roleassign feature.
  */
@@ -458,11 +463,11 @@ function dkan_update_7027() {
     // Delete the entries for non-harvested datasets.
     if (!in_array($nid, $harvested_nids)) {
       db_delete('field_data_field_harvest_source_modified')
-      ->condition('entity_id', $nid)
-      ->execute();
+        ->condition('entity_id', $nid)
+        ->execute();
       db_delete('field_data_field_harvest_source_issued')
-      ->condition('entity_id', $nid)
-      ->execute();
+        ->condition('entity_id', $nid)
+        ->execute();
     }
     $count = $count + 1;
   }
@@ -478,4 +483,350 @@ function dkan_update_7028() {
     // Delete the view.
     views_delete_view($view);
   }
+}
+
+/**
+ * Change field_harvest_source_modified from a datetime to text field. See #2612.
+ */
+function dkan_update_7029() {
+  features_revert_module('dkan_dataset_content_types');
+
+  // Add format column to harvest_source_modified tables.
+  $tables = array(
+    'field_data_field_harvest_source_modified',
+    'field_revision_field_harvest_source_modified'
+  );
+  $spec = array(
+    'type' => 'varchar',
+    'length' => 100,
+    'not null' => FALSE,
+    'default' => '',
+  );
+  foreach ($tables as $table) {
+    db_add_field($table, 'field_harvest_source_modified_format', $spec);
+    db_change_field($table, 'field_harvest_source_modified_value', 'field_harvest_source_modified_value', $spec);
+
+    // Convert dates to strings.
+    $result = db_select($table, 'm')
+      ->fields('m', array(
+        'field_harvest_source_modified_value',
+        'revision_id'
+      ))
+      ->execute()
+      ->fetchAll();
+    foreach($result as $row) {
+      $string =substr($row->field_harvest_source_modified_value, 0, 10);
+      db_update($table)
+        ->fields(array(
+          'field_harvest_source_modified_value' => $string
+        ))
+        ->condition('revision_id', $row->revision_id)
+        ->execute();
+    }
+  }
+
+  // Fetch the current harvest_source_modified field_config, then update it.
+  $field_config = db_select('field_config', 'f')
+    ->fields('f', array('data'))
+    ->condition('field_name', 'field_harvest_source_modified')
+    ->execute()
+    ->fetchCol();
+  $data = unserialize($field_config[0]);
+
+  $data['indexes']['format'][0] = 'format';
+  $data['settings'] = array();
+  $data['settings'] = array('max_length' => '255');
+  $data['foreign keys']['format']['table'] = 'filter_format';
+  $data['foreign keys']['format']['columns']['format'] = 'format';
+
+  $data = serialize($data);
+
+  // Update with new field configuration.
+  db_update('field_config')
+    ->fields(array(
+      'data' => $data,
+      'type' => 'text',
+      'module' => 'text'
+    ))
+    ->condition('field_name', 'field_harvest_source_modified')
+    ->execute();
+
+
+  // Fetch the current harvest_source_modified field_config_instance, then update it.
+  $field_config = db_select('field_config_instance', 'f')
+    ->fields('f', array('data'))
+    ->condition('field_name', 'field_harvest_source_modified')
+    ->execute()
+    ->fetchCol();
+  $data = unserialize($field_config[0]);
+
+  $data['default_value'] = NULL;
+  $data['settings'] = array();
+  $data['settings']= array('text_processing' => 0, 'user_register_form' => FALSE);
+  $data['widget']['module'] = 'text';
+  $data['widget']['settings'] = array();
+  $data['widget']['settings'] = array('size' => 60);
+  $data['widget']['type'] = 'text_textfield';
+
+  $data = serialize($data);
+
+  // Update with new field configuration.
+  db_update('field_config_instance')
+    ->fields(array(
+      'data' => $data,
+    ))
+    ->condition('field_name', 'field_harvest_source_modified')
+    ->execute();
+
+}
+
+/**
+ * Update field_frequency_value to store ISO code rather than integers.
+ */
+function dkan_update_7030() {
+  // Change frequency field_config from list_int to list_text.
+  $field_config = db_select('field_config', 'f')
+    ->fields('f', array('data'))
+    ->condition('field_name', 'field_frequency')
+    ->execute()
+    ->fetchCol();
+  $data = unserialize($field_config[0]);
+
+  $data['settings']['allowed_values'] = array();
+  $data['settings']['allowed_values_function'] = 'dkan_dataset_content_types_iso_frecuency_map';
+
+  $data = serialize($data);
+
+  db_update('field_config')
+    ->fields(array(
+      'type' => 'list_text',
+      'data' => $data,
+    ))
+    ->condition('field_name', 'field_frequency')
+    ->execute();
+
+  // Change field_frequency_value type from int to varchar.
+  $tables = array(
+    'field_data_field_frequency',
+    'field_revision_field_frequency'
+  );
+  $spec = array(
+    'type' => 'varchar',
+    'length' => 15,
+    'not null' => FALSE,
+    'default' => '',
+  );
+  foreach ($tables as $table) {
+    db_change_field($table, 'field_frequency_value', 'field_frequency_value', $spec);
+
+    // Convert integers to strings.
+    $result = db_select($table, 'm')
+      ->fields('m', array(
+        'field_frequency_value',
+        'revision_id'
+      ))
+      ->execute()
+      ->fetchAll();
+    foreach($result as $row) {
+      // Convert integer values to ISO 8601 value.
+      switch ($row->field_frequency_value) {
+        case '0':
+          $val = 'R/P1D';
+          break;
+
+        case '1':
+          $val = 'R/P1W';
+          break;
+
+        case '2':
+          $val = 'R/P1M';
+          break;
+
+        case '3':
+          $val = 'R/P1Y';
+          break;
+
+        case '4':
+          $val = 'R/PT1S';
+          break;
+
+        case '5':
+          $val = 'irregular';
+          break;
+
+        case '6':
+          $val = 'R/P10Y';
+          break;
+
+        case '7':
+          $val = 'R/P4Y';
+          break;
+
+        case '8':
+          $val = 'R/P2M';
+          break;
+
+        case '9':
+          $val = 'R/P3.5D';
+          break;
+
+        case '10':
+          $val = 'R/P2W';
+          break;
+
+        case '11':
+          $val = 'R/P6M';
+          break;
+
+        case '12':
+          $val = 'R/P2Y';
+          break;
+
+        case '13':
+          $val = 'R/P3Y';
+          break;
+
+        case '14':
+          $val = 'R/P0.33W';
+          break;
+
+        case '15':
+          $val = 'R/P0.33M';
+          break;
+
+        case '16':
+          $val = 'R/P3M';
+          break;
+
+        case '17':
+          $val = 'R/P4M';
+          break;
+
+        case '18':
+          $val = 'R/P0.5M';
+          break;
+
+        default:
+          $val = '';
+          break;
+      }
+      db_update($table)
+        ->fields(array(
+          'field_frequency_value' => $val,
+        ))
+        ->condition('revision_id', $row->revision_id)
+        ->execute();
+    }
+  }
+}
+
+/**
+ * Enable the simple import module.
+ */
+function dkan_update_7031() {
+  module_enable(array('dkan_datastore_simple_import'));
+}
+
+function _dkan_remove_prefix($prefix, $string) {
+  if (substr($string, 0, strlen($prefix)) == $prefix) {
+    $string = substr($string, strlen($prefix));
+  }
+  return $string;
+}
+
+/**
+ * Rename feeds_datastore tables.
+ */
+function dkan_update_7032() {
+  global $databases;
+
+  $prefix = "";
+
+  if (isset($databases['default']['default']['prefix'])) {
+    $prefix = $databases['default']['default']['prefix'];
+  }
+
+  // I have seen both of these patterns used, I am not sure if it is related
+  // to a version of feeds or not, so we are checking both.
+  $possibilities = [
+    "%feeds_datastore_dkan_%",
+    "%feeds_datastore_%",
+  ];
+
+  foreach ($possibilities as $string) {
+    foreach (db_find_tables($string) as $table_name) {
+
+      // db_find_tables returns full table names with a prefix if
+      // configured. The rest of db functions will work without
+      // explicitely setting the prefix. We need to remove
+      // the prefix for db_rename_table to work correctly.
+      $table_name = _dkan_remove_prefix($prefix, $table_name);
+
+      $clean = str_replace("%", "", $string);
+
+      $new_table_name = str_replace("{$clean}file", "dkan_datastore", $table_name);
+      $new_table_name = str_replace("{$clean}link", "dkan_datastore", $new_table_name);
+
+      db_rename_table($table_name, $new_table_name);
+    }
+  }
+}
+
+/**
+ * Generate basic datastore configuration.
+ */
+function dkan_update_7033() {
+  global $databases;
+
+  $prefix = "";
+
+  if (isset($databases['default']['default']['prefix'])) {
+    $prefix = $databases['default']['default']['prefix'];
+  }
+
+  foreach (db_find_tables("%dkan_datastore%") as $table_name) {
+    $table_name = _dkan_remove_prefix($prefix, $table_name);
+    $nid = str_replace("dkan_datastore_", "", $table_name);
+    try {
+      $resource = Resource::createFromDrupalNodeNid($nid);
+
+      /* @var $manager \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
+      $manager = (new Factory($resource))->get();
+      $manager->saveState();
+    }
+    catch( \Exception $e) {}
+  }
+}
+
+/**
+ * Update the datastore configuration.
+ */
+function dkan_update_7034() {
+  $storage = new LockableDrupalVariables("dkan_datastore");
+  $bin = $storage->borrowBin();
+
+  foreach ($bin as $nid => $state) {
+    $bin[$nid]['data_import'] = ManagerInterface::DATA_IMPORT_DONE;
+    $bin[$nid]['storage'] = ManagerInterface::STORAGE_INITIALIZED;
+  }
+
+  $storage->returnBin($bin);
+}
+
+/**
+ * Disable feeds modules.
+ */
+function dkan_update_7035() {
+  # Deprecating feeds modules as they are no longer used in dkan_datastore.
+  if( module_exists('feeds')) {
+    module_disable(array('feeds', 'feeds_field_fetcher', 'feeds_flatstore_processor'));
+    drupal_uninstall_modules(array('feeds', 'feeds_field_fetcher', 'feeds_flatstore_processor'));
+  }
+}
+
+/**
+ * Enable fast token browser, included with new version of open_data_schema_map.
+ */
+function dkan_update_7036() {
+  module_enable(['fast_token_browser']);
 }

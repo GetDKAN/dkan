@@ -52,7 +52,7 @@ Feature: Markdown Editor
     And I should not see the button "Format selected text as code" in the "dataset edit body"
     And I should not see the button "Format selected text as a code block" in the "dataset edit body"
 
-  @markdown_editor_2 @javascript 
+  @markdown_editor_2 @javascript
   Scenario: Seeing 'Markdown' text format and toolbar as an Editor
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
@@ -64,7 +64,7 @@ Feature: Markdown Editor
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
 
-  
+
   @markdown_editor_3 @javascript
   Scenario: Seeing 'Markdown' text format and toolbar as a Site Manager
     Given I am logged in as "John"
@@ -77,7 +77,7 @@ Feature: Markdown Editor
     # Buttons that the user should not see on the toolbar
     And I should not see the button "Insert a table" in the "dataset edit body"
 
-  @markdown_editor_4
+  @markdown_editor_4 @smoketest
   Scenario: Add headers using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
@@ -91,7 +91,7 @@ Feature: Markdown Editor
     Then I should see the "h2" element in the "dataset body" region
     And I should see the "h3" element in the "dataset body" region
 
-  @markdown_editor_5
+  @markdown_editor_5 @smoketest
   Scenario: Add italic text using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page
@@ -104,7 +104,7 @@ Feature: Markdown Editor
     When I am on "dataset/test-dataset"
     Then I should see the "em" element in the "dataset body" region
 
-  @markdown_editor_6
+  @markdown_editor_6 @smoketest
   Scenario: Add bold text using markdown
     Given I am logged in as "Jaz"
     When I am on "Add Dataset" page

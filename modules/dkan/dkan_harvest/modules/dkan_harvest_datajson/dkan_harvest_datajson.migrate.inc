@@ -83,15 +83,45 @@ class DatajsonHarvestMigration extends HarvestMigration {
   public function prepareRow($row) {
     parent::prepareRow($row);
 
+    // The modified field is required. https://project-open-data.cio.gov/v1.1/schema/#modified.
+    // Check the value when harvesting, it should be a valid ISO 8601 Date.
+    if(isset($row->modified)) {
+      $d = dkan_dataset_validate_date($row->modified) ? true : false;
+      if ($d) {
+        // Valid date, no change.
+      }
+      elseif (substr($row->modified, 0, 2) == 'R/') {
+        try {
+          $v = substr($row->modified, 2);
+          $valid = new DateInterval($v);
+        }
+        catch (Exception $e) {
+          $message = t(
+            'Modified value unknown or bad format (@value)',
+            array(
+              '@value' => $v,
+            ));
+          $this->saveMessage($message);
+        }
+      }
+      else {
+        $message = t(
+          'The modified value is not a valid ISO 8601 Date (@value)',
+          array(
+            '@value' => $row->modified,
+          ));
+        $this->saveMessage($message);
+      }
+    }
+
     // The issued field is not required. When missing, use the modified field to
     // have consistent dataset display.
     // https://project-open-data.cio.gov/v1.1/schema#issued
-    if (!isset($row->issued)) {
-      $row->issued = $row->modified;
-    }
-
-    if (property_exists($row, 'accrualPeriodicity')) {
-      $row->accrualPeriodicity = dkan_dataset_content_types_iso2frequency($row->accrualPeriodicity);
+    if (!isset($row->issued) && isset($row->modified)) {
+      $d = dkan_dataset_validate_date($row->modified) ? true : false;
+      if ($d) {
+        $row->issued = $row->modified;
+      }
     }
 
     // Process contact name and email.
@@ -114,7 +144,13 @@ class DatajsonHarvestMigration extends HarvestMigration {
     // Process Temporal Coverage. The mapping are defined in the base main
     // class, we just need to set the properties.
     if (isset($row->temporal)) {
-      $date = explode("/", $row->temporal);
+      $date = $row->temporal;
+      if (strpos($row->temporal, '/')) {
+        $date = explode("/", $row->temporal);
+      }
+      elseif (strpos($row->temporal, '-')) {
+        $date = explode("-", $row->temporal);
+      }
       // The first key is the start date of the 'temporal coverage' and the second key is the
       // end date of the 'temporal coverage'.
       foreach ($date as $key => &$value) {
@@ -168,7 +204,15 @@ class DatajsonHarvestMigration extends HarvestMigration {
           }
         }
 
-        $value = $value_date->getTimestamp();
+        if ($value_date) {
+          $value = $value_date->getTimestamp();
+        }
+        else {
+          $message = t(
+            'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
+          );
+          $this->saveMessage($message);
+        }
       }
 
       if (isset($date[0])) {
@@ -225,14 +269,38 @@ class DatajsonHarvestMigration extends HarvestMigration {
         $url = $resource_row_data->accessURL;
       }
 
-      $resource = $this->prepareResourceHelper($url,
-        $resource_row_data->format,
+      $format = $resource_row_data->format;
+
+      if (empty($format)) {
+        // If mediayType is defined, then get the right format based on that mimetype.
+        if (!empty($resource_row_data->mediaType)) {
+          include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+          $mimetype_mappings = file_mimetype_mapping();
+          $mimetype_keys = array_keys($mimetype_mappings['mimetypes'], $resource_row_data->mediaType);
+          // Get the candidate extensions from the mimetype_keys.
+          $extensions_lookup = array();
+          foreach ($mimetype_keys as $mimetype_key) {
+            $extensions_lookup = array_merge($extensions_lookup, array_keys($mimetype_mappings['extensions'], $mimetype_key));
+          }
+          if (!empty($extensions_lookup)) {
+            $format = array_pop($extensions_lookup);
+          } else {
+            $format = '';
+          }
+        }
+      }
+
+      list($status, $return) = $this->prepareResourceHelper($url,
+        $format,
         $resource_row_data->title,
         NULL,
         $resource_row_data->description);
 
-      if ($resource) {
-        $resources[] = $resource;
+      if ($status == TRUE) {
+        $resources[] = $return;
+      }
+      else {
+        $this->reportMessage($return);
       }
     }
 

@@ -1,6 +1,137 @@
+7.x-1.17
+-----------
+ - #2956 Update new WCAG-compliant default theme colors to be consistent across the site.
+ - #2957 Update frequency values on default content files.
+ - #2954 Update contrib modules, adjust DKAN code to support PHP 7.2
+ - #2951 Update default greetings on workbench email templates.
+ - #2908 Add DKAN Periodic Updates module
+ - #2804 Disable and uninstall feeds, feeds_flatstore_processor, and feeds_field_fetcher modules
+ - #2945 Upgrade imagecache_actions to 1.11
+ - #2944 Specify behavior on dkan_workflow moderation set state action to avoid extra node_save.
+ - #2943 Add documentation for DKAN Feedback
+ - #2940 Update Open Data Schema Map to 7.x-2.4
+ - #2935 Add documentation for DKAN custom solr
+ - #2931 Add patch for NULL controller class
+ - #2921 Fix gaps in WCAG compliance
+
+7.x-1.16.13
+-----------
+ - #2928 Update ODSM to 7.x-2.3 to fix broken RDF/JSON links
+ - #2918 Avoid importing/orphaning when harvest cache is not present for unavailable sources.
+ - #2919 Security update for imagecache_actions
+ 
+7.x-1.16.12
+------------
+ - #2892 Harvest support range dates separated by dashes
+ - #2894 Remove user field on unpublished nodes tab on workbench moderation UI.
+ - #2889 Make Page Title reflect dataset/resource content
+ - #2893 Update Open Data Schema Map to 7.x-2.2
+ - #2885 Security update for uuid and tablefield modules
+ 
+7.x-1.16.11
+------------
+ - #2876 Update the datastore lock code to use drupal functions
+ - #2879 Update dkan_workflow to add option to delete unpublished nodes
+ - #2880 Fix drush command that deletes orphaned datastore tables
+ - #2870 Remove workflow emails from dkan_workflow
+ - #2878 Remove hard-coded access to revisions for anonymous users
+ 
+7.x-1.16.10
+-----------
+ - #2874 Security update for Drupal to 7.67 (SA-CORE-2019-007)
+ - #2730 Behat test improvements
+ - #2862 Add primary key to datastore tables. Create hook_datastore_post_import to allow users to execute actions right after data has been imported into the datastore.
+ - #2842 Fix harvest migration message logging for batched migrations
+
+7.x-1.16.9
+----------
+ - #2864 Tablefield security update
+ - #2864 Drupal core security update
+ - #2863 Use the data.json mediaType value to assign the resource extension during Harvest if the format is not given.
+ - #2809 Remove 'Feedback' from the list of content types managed by DKAN Workflow
+ - #2809 Apply patch to views to fix a bug on set_group_operator when using hook_views_query_alter
+ - #2809 Remove user picture from comment.tpl.php
+ - #2860 Document new datastore behavior
+ - #2852 Add 'count' to the list of functions supported by the Datastore API
+
+7.x-1.16.8
+----------
+ - #2854 Wrap words on harvest summary sidebar.
+ - #2856 Switch to forked version of font_icon_select module.
+ - #2858 Security Upgrade of Services to 3.24.
+
+7.x-1.16.7
+----------
+ - #2780 Run tests with dktl.
+ - #2853 Security Upgrade of Module Filter to 2.2.
+
+7.x-1.16.6
+----------
+ - #2848 Upgrade Drupal to 7.65
+ - #2812 Use ISO 8601 Date Format for Temporal Coverage
+
+7.x-1.16.5
+----------
+ - #2846 Update for views 7.x-3.21 and ctools 7.x-1.15
+ - #2824 Handle missing harvest source with a warning rather than mass un-publishing of content.
+ - #2840 Skip the dataset_changelog step when harvesting, datasets always get a new revision with out it
+ - #2839 Add drush command for deleting orphaned data tables drush dkan-datastore-drop-orphan-tables
+ - #2828 Implement the --feedback flag when harvesting to avoid SSH time outs during long harvests
+
+7.x-1.16.4
+----------
+ - #2837 Security updates for the services and path_breadcrumbs contrib modules
+ - #2834 Add drush command drush ddpr to reduce duplicate dataset revisions from the same timestamp to a single revision.
+ - #2830 Add patch to workbench_moderation to avoid deadlock on update
+ - #2821 Declare file size of remote files as 'unknown' since the value given can be inaccurate
+ - #2823 Update dkan_dataset_validate_date() function to work on additional date formats
+
+7.x-1.16.3
+----------
+ - #2832 Security updates for link and restws
+ - #2816 Fix resource titles when harvesting from Socrata - use the format when a title is not available
+
+7.x-1.16.2
+----------
+ - #2805 Update Drupal Core to 7.63
+ - #2800 Update Drupal Core to 7.62
+ - #2792 Fix text/tab-separated-values file mime types to work with the datastore
+ - #2793 Fix documentation on aggregation functions min and max.
+
+7.x-1.16.1
+----------
+ - #2778 Add check for partial date elements when running harvest
+ - #2787 Update rest-api documentation
+ - #2788 Update contrib modules: diff, field_hidden, file_entity, honeypot, libraries, menu_block, migrate, panopoly_images, panopoly_widgets, search_api, tablefield, taxonomy_menu
+ - #2784 Update harvest node machine name field settings to limit length and replace single hyphen
+ - #2785 Fix harvest support for dataset identifiers that end with a '/'
+ - #2782 Fix dataset and resource orphan field update on post-harvest import operations
+ - #2781 Use dkan_allowed_extensions() during harvest
+ - #2760 Remove content page create/edit permissions from the editor role
+ - #2775 Add check for mysql reserved words in column names when importing data to the datastore
+ - #2777 Add check for SelectQuery object when running  dkan_datastore_api_debug
+ - #2776 Update recline revision
+ - #2767 Update workbench email notification text
+ - #2774 Update the license options uri values
+ - #2773 Fix Only variables should be passed by reference errors in dkan_datastore_api
+ - #2772 Fix CartoDB preview error
+ - #2763 Update dkan_environment key from 'stage' to 'test'
+ - #2762 Update Drupal to 7.61
+
+7.x-1.16
+----------
+ - #2179 Refactor Datastore Importer
+ - #2627 Add support for ISO-8106 duration values in "modified" when harvesting
+ - #2729 Update recline to 2.1
+ - #2713 CSV Parser Improvements: trailing commas & escape chars
+ - #2740 Fix dkan_workflow anonymous access to revisions and unpublished content
+ - #2724 Update contrib modules: better_exposed_filters, file_entity, media, panopoly_widgets, search_api_db, uuid, date: fixes issue 2843367
+ - #2718 Update odsm_dkan token values for remote file
+ - #2707 DKAN workflow documentation updates
+ - #2723 Include dkan.profile to prevent undefined function in update
 
 7.x-1.15.5
----------- 
+----------
  - #2710 Replace data stories page view with a non-search index version
  - #2712 Remove unused xss code
 

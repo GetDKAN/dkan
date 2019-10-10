@@ -1,7 +1,7 @@
 .panel-top {
   -ms-behavior: url(/backgroundsize.min.htc); }
   .panel-top .tint {
-    background: #0A77BD;
+    background: #002245;
     opacity: 0.5;
     filter: alpha(opacity=50);
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; }
@@ -27,7 +27,7 @@
   background-image: none;
   margin: 1px 1em .75em 0;
   position: relative;
-  color: #0A77BD;
+  color: #002245;
   border: none;
   border-left: 0;
   z-index: 2; }
@@ -37,7 +37,7 @@
 .field-type-taxonomy-term-reference .field-item a:hover:after,
 .field-type-taxonomy-term-reference .field-item a:hover {
   background: inherit;
-  color: #002245;
+  color: #145b98;
   text-decoration: underline; }
 
 /*# sourceMappingURL=ie8.css.map */

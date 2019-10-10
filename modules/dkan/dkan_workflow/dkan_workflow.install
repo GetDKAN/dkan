@@ -40,7 +40,7 @@ function dkan_workflow_enable() {
   // Enable moderation for dkan_workflow enabled content types upon install.
   // This config is kept persistant using the hook_strongarm_alter().
   // Default dkan content types with moderation.
-  $dkan_workflow_content_types = array('dataset', 'resource', 'feedback');
+  $dkan_workflow_content_types = array('dataset', 'resource');
 
   foreach ($dkan_workflow_content_types as $type) {
     $var_name = 'node_options_' . $type;
@@ -82,6 +82,8 @@ function dkan_workflow_enable() {
   }
   variable_set('roleassign_roles', $roleassign_roles);
 
+  // Import workbench email defaults.
+  dkan_workflow_import_email_defaults();
 }
 
 /**
@@ -136,4 +138,11 @@ function dkan_workflow_disable() {
   }
 
   variable_set('roleassign_roles', $roleassign_roles);
+}
+
+/**
+ * Revert variable for dkan_workflow.
+ */
+function dkan_workflow_update_7001() {
+  features_revert(['dkan_workflow' => ['variable']]);
 }

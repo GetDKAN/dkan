@@ -62,9 +62,6 @@ class DkanDatastoreWebTestCase extends DrupalWebTestCase {
     $modules[] = 'dkan_datastore';
     $modules[] = 'dkan_datastore_api';
     $modules[] = 'features';
-    $modules[] = 'feeds';
-    $modules[] = 'feeds_field_fetcher';
-    $modules[] = 'feeds_flatstore_processor';
     $modules[] = 'double_field';
     $modules[] = 'entityreference';
     $modules[] = 'field_group';
@@ -135,7 +132,6 @@ class DkanDatastoreWebTestCase extends DrupalWebTestCase {
       'create resource content',
       'edit any dataset content',
       'edit any resource content',
-      'administer feeds',
       'manage datastore',
     );
     $this->verbose('Creating admin user with permissions: ' . var_export($admin_perms, TRUE));
@@ -248,7 +244,7 @@ class DkanDatastoreWebTestCase extends DrupalWebTestCase {
   protected function assertDatastoreTable($resource) {
     // See if table exists.
     $r = $this->assertTrue(
-      db_table_exists('feeds_datastore_dkan_file_' . $resource->nid),
+      db_table_exists('dkan_datastore_' . $resource->nid),
       "Datastore table exists."
     );
     return $r;
@@ -269,7 +265,7 @@ class DkanDatastoreWebTestCase extends DrupalWebTestCase {
    */
   protected function assertDatastoreTableData($resource, $id, $expected_result) {
     // We're actually going to see if we get a hit for a particular country id.
-    $result = db_select('feeds_datastore_dkan_file_' . $resource->nid, 'f')
+    $result = db_select('dkan_datastore_' . $resource->nid, 'f')
       ->fields('f', array('country'))
       ->condition('id', $id)
       ->execute();

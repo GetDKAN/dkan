@@ -1,5 +1,5 @@
 # time:0m23.59s
-@disablecaptcha
+@api @disablecaptcha
 Feature: Data Dashboard
 
   Background:
@@ -10,13 +10,11 @@ Feature: Data Dashboard
       | Afghan Dashboard |
     And I am logged in as a user with the "site manager" role
 
-  @api
   Scenario: See the list of data dashboards
     When I am on "admin/dkan/data-dashboards"
     Then I should see the text "Dashboard 01" in the "dashboards" region
     And I should see the text "Dashboard 02" in the "dashboards" region
 
-  @api
   Scenario: Creation of data dashboard
     And I am on "admin/dkan/data-dashboards"
     And I click "Create Dashboard"
@@ -27,7 +25,6 @@ Feature: Data Dashboard
     Then I should see "Your Data Dashboard 'My new dashboard' has been created"
     And I should see "Start adding content by clicking on the + sign on each panel"
 
-  @api
   Scenario: Edition of data dashboard
     And I am on "/dashboard-01"
     When I click "Edit"
@@ -38,7 +35,6 @@ Feature: Data Dashboard
     Then I should see the text "Edited Dashboard" in the "dashboards" region
     And I should not see the text "Dashboard 01" in the "dashboards" region
 
-  @api
   Scenario: Deletion of data dashboard
     And I am on "/dashboard-01"
     When I click "Edit"
@@ -49,7 +45,7 @@ Feature: Data Dashboard
     When I am on "admin/dkan/data-dashboards"
     Then I should not see the text "Dashboard 01" in the "dashboards" region
 
-  @api @javascript
+  @javascript
   Scenario: Dashboards have Panels IPE available
     Given I am on "/afghan-dashboard"
     And I wait for "Customize this page"

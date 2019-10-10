@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * DKAN Datastore - Simple Import.
+ */
+
+use Dkan\Datastore\Manager\Info;
+
+/**
+ * Implements hook_xautoload().
+ */
+function dkan_datastore_simple_import_xautoload($adapter) {
+  $adapter->absolute()->addPsr4(
+    'Dkan\Datastore\Manager\SimpleImport\\',
+    drupal_get_path("module", "dkan_datastore_simple_import") . '/src'
+  );
+}
+
+/**
+ * Implements hook_dkan_datastore_manager().
+ */
+function dkan_datastore_simple_import_dkan_datastore_manager() {
+  $info = new Info(
+    '\Dkan\Datastore\Manager\SimpleImport\SimpleImport',
+    "simple",
+    "Simple Import"
+  );
+
+  return $info;
+}

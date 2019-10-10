@@ -135,7 +135,7 @@ function dkan_dataset_node_view($node, $view_mode, $langcode) {
       '#theme' => 'dkan_dataset_modified_date_view',
       '#node' => $node,
       '#enabled' => TRUE,
-      '#title' => t('Modified Date'),
+      '#title' => t('Modified'),
       '#label_display' => 'above',
       '#items' => array(),
       '#field_name' => '',
@@ -199,7 +199,7 @@ function dkan_dataset_field_extra_fields() {
         'weight' => 0,
       ),
       'modified_date' => array(
-        'label' => t('Modified Date'),
+        'label' => t('Modified'),
         'description' => t('Node changed date available as a field'),
         'weight' => 0,
       ),
@@ -221,7 +221,7 @@ function dkan_dataset_field_extra_fields() {
         'weight' => 0,
       ),
       'modified_date' => array(
-        'label' => t('Modified Date'),
+        'label' => t('Modified'),
         'description' => t('Node changed date available as a field'),
         'weight' => 0,
       ),
@@ -544,12 +544,21 @@ function dkan_dataset_node_update($node) {
       if (count($datasets)) {
         $queue = DrupalQueue::get('dataset_changelog');
         foreach ($datasets as $dataset) {
-          $item = array(
-            'dataset' => $dataset,
-            'message' => 'Update to resource \'' . $node->title . '\'',
-            'user' => $user->uid,
-          );
-          $queue->createItem($item);
+          // Determine if the resource is part of a harvest.
+          // Skip the dataset_changelog update if harvesting since every resource is updated.
+          $harvest = db_select('field_data_field_harvest_source_ref', 'r')
+            ->fields('r', array('entity_id'))
+            ->condition('entity_id', $dataset)
+            ->execute()
+            ->fetchAll();
+          if (!$harvest) {
+            $item = array(
+              'dataset' => $dataset,
+              'message' => 'Update to resource \'' . $resource->title . '\'',
+              'user' => $user->uid,
+            );
+            $queue->createItem($item);
+          }
         }
       }
       break;
@@ -1063,7 +1072,7 @@ function dkan_dataset_preview_url_cartodb($node) {
     $resource_file_url = file_create_url($resource_wrapper->field_upload->value()->uri);
   }
   elseif ($resource_wrapper->field_link_remote_file->value()) {
-    $resource_file_url = $resource_wrapper->field_link_remote_file->value()->uri;
+    $resource_file_url = $resource_wrapper->field_link_remote_file->value()['uri'];
   }
   if ($resource_file_url) {
     return sprintf($pattern, $resource_file_url);
@@ -1268,7 +1277,7 @@ function _dkan_dataset_format($text) {
 }
 
 /**
- * Return node modified date.
+ * Return node created date.
  *
  * For harvested nodes use the value from 'field_harvest_source_issued' as
  * filled by the dkan_harvest. Fallback to the 'changed' node property
@@ -1292,11 +1301,10 @@ function dkan_dataset_release_date($node) {
 }
 
 /**
- * Return node modified date with ISO 8601 format.
+ * Return node modified value with ISO 8601 format.
  *
  * For harvested nodes use the value from 'field_harvest_source_modified' as
- * filled by the dkan_harvest. Fallback to the 'changed' node property
- * otherwise.
+ * filled by the dkan_harvest. Otherwise fallback to the node 'changed' property.
  */
 function dkan_dataset_modified_date($node) {
   $node = ($node instanceof EntityMetadataWrapper) ? $node :
@@ -1304,7 +1312,23 @@ function dkan_dataset_modified_date($node) {
 
   if (isset($node->field_harvest_source_modified) &&
     !empty($node->field_harvest_source_modified->value())) {
-    $date = format_date($node->field_harvest_source_modified->value(), 'iso_8601_date');
+    $d = dkan_dataset_validate_date($node->field_harvest_source_modified->value()) ? true : false;
+    // If the harvest source modified value is a date, display it.
+    if ($d) {
+      $date = $node->field_harvest_source_modified->value();
+    }
+    // If the harvest source modified value is a repeating interval, decode it.
+    else {
+      try {
+        $r = substr($node->field_harvest_source_modified->value(), 2);
+        $date = dkan_dataset_modified_date_interval($r);
+      }
+      catch (Exception $e) {
+        $date = format_date($node->changed->value(), 'iso_8601_date');
+        $message = t('Invalid harvest modified value in %nid', array('%nid' => $node->label()));
+        watchdog('dkan_dataset', $message);
+      }
+    }
   }
   else {
     $date = format_date($node->changed->value(), 'iso_8601_date');
@@ -1357,4 +1381,76 @@ function dkan_dataset_field_formatter_view($entity_type, $entity, $field, $insta
   $element[0]['#markup'] = $markup;
 
   return $element;
+}
+
+/**
+ * Helper function to validate dates.
+ */
+function dkan_dataset_validate_date($date) {
+  // Check if we have a date with time info (2019-02-18T10:12:26.685485).
+  $parts = explode("T",$date);
+  $count = count($parts);
+  if ($count > 1) {
+    $date = $parts[0];
+  }
+  // Check for partial date elements.
+  $parts = explode("-",$date);
+  $count = count($parts);
+  switch ($count) {
+    case '1':
+      $format = 'Y';
+      break;
+
+    case '2':
+      $format = 'Y-m';
+      break;
+
+    default:
+      $format = 'Y-m-d';
+      break;
+  }
+  $d = DateTime::createFromFormat($format, $date);
+  return $d && $d->format($format) === $date;
+}
+
+/**
+ * Helper function to convert ISO 8601 repeating interval values into plain text.
+ */
+function dkan_dataset_modified_date_interval($int) {
+  $interval = new DateInterval($int);
+  $doPlural = function($nb,$str){return $nb>1?$str.'s':$str;};
+
+  $format = array();
+  if($interval->y !== 0) {
+    $format[] = "%y ".$doPlural($interval->y, "year");
+  }
+  if($interval->m !== 0) {
+    $format[] = "%m ".$doPlural($interval->m, "month");
+  }
+  if($interval->d !== 0) {
+    $format[] = "%d ".$doPlural($interval->d, "day");
+  }
+  if($interval->h !== 0) {
+    $format[] = "%h ".$doPlural($interval->h, "hour");
+  }
+  if($interval->i !== 0) {
+    $format[] = "%i ".$doPlural($interval->i, "minute");
+  }
+  if($interval->s !== 0) {
+    if(!count($format)) {
+      return "less than a minute ago";
+    } else {
+      $format[] = "%s ".$doPlural($interval->s, "second");
+    }
+  }
+
+  // We use the two biggest parts
+  if(count($format) > 1) {
+    $format = array_shift($format)." and ".array_shift($format);
+  } else {
+    $format = array_pop($format);
+  }
+
+  return 'Every ' . $interval->format($format);
+
 }

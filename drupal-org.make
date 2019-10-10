@@ -2,13 +2,13 @@
 api: '2'
 core: 7.x
 includes:
-- https://raw.githubusercontent.com/NuCivic/visualization_entity/7.x-2.0/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.1/open_data_schema_map.make
+- https://raw.githubusercontent.com/GetDKAN/visualization_entity/7.x-2.x/visualization_entity.make
+- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.5/open_data_schema_map.make
 - https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
-- https://raw.githubusercontent.com/NuCivic/recline/7.x-2.0/recline.make
+- https://raw.githubusercontent.com/NuCivic/recline/7.x-2.1/recline.make
 projects:
   admin_menu:
-    version: 3.0-rc5
+    version: 3.0-rc6
   admin_menu_source:
     version: '1.1'
     patch:
@@ -23,14 +23,21 @@ projects:
     version: '2.3'
     patch:
       2833824: https://www.drupal.org/files/issues/autocomplete-deluxe-2833824-4.patch
+  autoload:
+    download:
+      type: git
+      url: https://git.drupal.org/project/autoload.git
+      branch: 7.x-2.x
+      revision: 80ea4d125a2edf1e3c68c5627b3afb4614828a27
   beautytips:
     download:
       type: git
       url: https://git.drupal.org/project/beautytips.git
       branch: 7.x-2.x
-      revision: f9a8b5b
+      revision: 5e8a425d
     patch:
-      849232: https://drupal.org/files/include-excanvas-via-libraries-api-d7-849232-13.patch
+      849232: https://www.drupal.org/files/issues/2019-08-29/include-excanvas-via-libraries-api-d7-849232-15_0.patch
+      3063738: https://www.drupal.org/files/issues/2019-06-24/php72count-3063738-1.patch
   better_exposed_filters:
     version: '3.6'
   bueditor:
@@ -55,7 +62,7 @@ projects:
   context:
     version: '3.7'
   ctools:
-    version: '1.14'
+    version: '1.15'
   data:
     version: 1.x
   date:
@@ -67,9 +74,9 @@ projects:
   defaultconfig:
     version: 1.0-alpha11
   devel:
-    version: '1.5'
+    version: '1.7'
   diff:
-    version: '3.3'
+    version: '3.4'
   double_field:
     version: '2.5'
   drafty:
@@ -98,12 +105,12 @@ projects:
     version: '1.5'
   facetapi_bonus:
     version: '1.2'
+    patch:
+      2938545: https://www.drupal.org/files/issues/2018-09-04/non-countable-2938545-5.patch
   facetapi_pretty_paths:
     version: '1.4'
   features:
-    version: '2.10'
-    patch:
-      2765721: https://www.drupal.org/files/issues/features-blank-line-after-php-tag-2765721-0.patch
+    version: '2.11'
   features_roles_permissions:
     version: '1.2'
   feeds:
@@ -134,19 +141,16 @@ projects:
     version: '1.6'
     patch:
       2887897: https://www.drupal.org/files/issues/added_missing_isset_calls-2887897-2.patch
+      3016830: https://www.drupal.org/files/issues/2018-11-28/undefined-index-classes-3016830-0.patch
   field_hidden:
-    version: '1.7'
+    version: '1.8'
   field_reference_delete:
     download:
       full_version: 7.x-1.0-beta1
   fieldable_panels_panes:
-    version: '1.11'
-    patch:
-      2825835: https://www.drupal.org/files/issues/2825835.patch
-      2826182: https://www.drupal.org/files/issues/fieldable_panels_panes-title-shown-when-set-to-hidden-2826182-3.patch
-      2826205: https://www.drupal.org/files/issues/fieldable_panels_panes-n2826205-32.patch
+    version: '1.13'
   file_entity:
-    version: 2.22
+    version: 2.25
   file_resup:
     version: '1.5'
   filefield_sources:
@@ -154,7 +158,7 @@ projects:
   font_icon_select:
     download:
       type: git
-      url: https://git.drupal.org/sandbox/wolffereast/2319993.git
+      url: https://github.com/GetDKAN/font_icon_select.git
       branch: 7.x-1.x
   fontyourface:
     version: '2.8'
@@ -165,6 +169,8 @@ projects:
       2816837: https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch
   globalredirect:
     version: '1.6'
+    patch:
+      3053515: https://www.drupal.org/files/issues/2019-05-08/globalredirect-3053515-is-dir-external-check.patch
   gravatar:
     download:
       type: git
@@ -174,16 +180,11 @@ projects:
     patch:
       1568162: https://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch
   honeypot:
-    version: '1.24'
+    version: '1.25'
   image_url_formatter:
     version: '1.4'
   imagecache_actions:
-    version: '1.9'
-    type: module
-    download:
-      type: git
-      url: https://git.drupal.org/project/imagecache_actions.git
-      revision: cd19d2a
+    version: '1.11'
   job_scheduler:
     version: 2.0
   jquery_update:
@@ -194,9 +195,9 @@ projects:
       url: https://github.com/GetDKAN/leaflet_draw_widget.git
       revision: 5a5f8faf664aeca02371f6692307580d9fab9116
   libraries:
-    version: '2.3'
+    version: '2.5'
   link:
-    version: '1.5'
+    version: '1.6'
   link_badges:
     version: '1.1'
   link_iframe_formatter:
@@ -218,9 +219,9 @@ projects:
     patch:
       2045225: https://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.21
+    version: 2.23
   media_youtube:
-    version: '3.7'
+    version: '3.8'
   media_vimeo:
     version: '2.1'
     patch:
@@ -230,15 +231,16 @@ projects:
   menu_badges:
     version: '1.3'
   menu_block:
-    version: '2.7'
+    version: '2.8'
   migrate:
-    version: '2.10'
+    version: '2.11'
     patch:
       1989492: https://www.drupal.org/files/issues/migrate-append-map-messages-1989492-10.patch
+      3027630: https://www.drupal.org/files/issues/2019-01-22/3027630-migrate-php72-count-2.patch
   migrate_extras:
     version: '2.5'
   module_filter:
-    version: '2.1'
+    version: '2.2'
   multistep:
     download:
       type: git
@@ -250,6 +252,7 @@ projects:
       1090438: https://drupal.org/files/issues/og-add_users_and_entities_with_drush-1090438-12.patch
       2549071: https://www.drupal.org/files/issues/og_actions-bug-vbo-delete.patch
       2301831: https://www.drupal.org/files/issues/og-missing-permission-roles-2301831-1.patch
+      2900273: https://www.drupal.org/files/issues/2019-09-11/check-if-group-is-object-2900273-16.patch
   og_extras:
     version: '1.2'
   og_moderation:
@@ -258,7 +261,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/open_data_schema_map.git
-      tag: 7.x-2.1
+      branch: 7.x-2.5
   panelizer:
     version: '3.4'
   panels:
@@ -266,21 +269,21 @@ projects:
   panels_style_collapsible:
     version: '1.3'
   panopoly_widgets:
-    version: '1.57'
+    version: '1.70'
     patch:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.54'
+    version: '1.70'
   path_breadcrumbs:
-    version: '3.3'
+    version: '3.4'
   pathauto:
     version: '1.3'
   r4032login:
     version: '1.8'
   radix:
     type: theme
-    version: '3.6'
+    version: '3.7'
     patch:
       1: patches/radix-bootstrap.patch
   radix_layouts:
@@ -289,7 +292,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/recline.git
-      tag: 7.x-2.0
+      revision: 6db1ab729d14f40150f6571457331ff3bde8752d
   ref_field:
     download:
       type: git
@@ -305,9 +308,9 @@ projects:
   role_export:
     version: '1.0'
   rules:
-    version: '2.11'
+    version: '2.12'
   restws:
-    version: '2.7'
+    version: '2.8'
   roleassign:
     version: '1.2'
   safeword:
@@ -316,21 +319,21 @@ projects:
     version: '1.2'
     revision: 08b02458694d186f8ab3bd0b24fbc738f9271108
   search_api:
-    version: '1.24'
+    version: '1.26'
   search_api_db:
     version: '1.7'
   select_or_other:
     version: '2.24'
   services:
-    version: '3.20'
+    version: '3.25'
   simple_gmap:
     version: '1.4'
   strongarm:
     version: '2.0'
   tablefield:
-    version: '3.1'
+    version: '3.5'
   taxonomy_menu:
-    version: '1.5'
+    version: '1.6'
   taxonomy_fixtures:
     download:
       type: git
@@ -341,9 +344,11 @@ projects:
   token_tweaks:
     version: 1.x-dev
   uuid:
-    version: '1.2'
+    version: '1.3'
   views:
-    version: '3.20'
+    version: '3.23'
+    patch:
+      2543562: https://www.drupal.org/files/issues/views-use_query_group_operator_for_main_group-2543562-2.patch
   views_autocomplete_filters:
     version: '1.2'
     patch:
@@ -365,7 +370,12 @@ projects:
     version: '3.12'
   workbench_moderation:
     version: '3.0'
-    revision: 3fcb1a66e87a539f06664502141abc8f37712929
+    patch:
+      2360973: https://www.drupal.org/files/issues/workbench_moderation-install-warnings-2360973-3.patch
+      1512442: https://www.drupal.org/files/issues/1512442-20-workbench_moderation-fix_access_check.patch
+      2252871: https://www.drupal.org/files/issues/2252871-workbench_moderation-db_update-6.patch
+  xautoload:
+    version: '5.7'
 libraries:
   chosen:
     download:

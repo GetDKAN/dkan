@@ -78,6 +78,11 @@ class HarvestMigration extends MigrateDKAN {
 
     parent::__construct($arguments);
 
+    // We need to take over the logID generation happening on
+    // parent::beginProcess() to accomodate the batch operation. Instead of
+    // generating a new logID for each run we check if we have it already set.
+    $this->logHistory = FALSE;
+
     $this->dkanHarvestSource = $arguments['dkan_harvest_source'];
 
     // SourceList options.
@@ -128,12 +133,6 @@ class HarvestMigration extends MigrateDKAN {
 
     $result = $query->execute();
 
-    if (!isset($result['node'])) {
-      // Something is wrong.
-      $message = t('Cannot look-up the harvest source Node ID');
-      self::displayMessage($message, 'error');
-    }
-
     // This should be set when running the harvest with a harvest source node.
     // Add a check to support the phpunit tests that run from nodeless harvest
     // source object.
@@ -145,13 +144,10 @@ class HarvestMigration extends MigrateDKAN {
     else {
       $this->dkanHarvestSourceNid = FALSE;
       $this->dkanHarvestSourceNode = NULL;
+      // Something is wrong.
+      $message = t('Cannot look-up the harvest source Node ID');
+      $this->reportMessage($message);
     }
-
-    // Disable the logging system of the migration module.
-    // The module logs every time the processImport() method is called but we
-    // want to log only once, when the full migration event finishes. If we
-    // don't do that then we are going to get one log record per batch chunk.
-    $this->logHistory = FALSE;
 
     // Initialize results.
     $this->migrationResults = array(
@@ -183,9 +179,19 @@ class HarvestMigration extends MigrateDKAN {
    * Implementation of MigrationBase::beginProcess().
    */
   protected function beginProcess($newStatus) {
-
     // Begin process.
     parent::beginProcess($newStatus);
+
+    if (!isset($this->logID)) {
+      $this->logID = db_insert('migrate_log')
+        ->fields(array(
+          'machine_name' => $this->machineName,
+          'process_type' => $newStatus,
+          'starttime' => round(microtime(TRUE) * 1000),
+          'initialHighwater' => $this->getHighwater(),
+        ))
+        ->execute();
+    }
 
     // If an import if being run then update the results.
     if ($this->processing) {
@@ -202,18 +208,20 @@ class HarvestMigration extends MigrateDKAN {
   public function logEvent($event_data) {
     // First add record on the 'migrate_log' table.
     try {
+      if (!isset($this->logID)) {
       $this->logID = db_insert('migrate_log')
         ->fields(array(
-            'machine_name' => $this->machineName,
-            'process_type' => $event_data['process_type'],
-            'starttime' => $event_data['start_time'],
-            'endtime' => $event_data['end_time'],
-            'initialHighwater' => $event_data['initial_highwater'],
-            'finalHighwater' => $event_data['final_highwater'],
-            'numprocessed' => $event_data['datasets_processed'],
-          ))
+          'machine_name' => $this->machineName,
+          'process_type' => $event_data['process_type'],
+          'starttime' => $event_data['start_time'],
+          'endtime' => $event_data['end_time'],
+          'initialHighwater' => $event_data['initial_highwater'],
+          'finalHighwater' => $event_data['final_highwater'],
+          'numprocessed' => $event_data['datasets_processed'],
+        ))
         ->execute();
     }
+  }
     catch (PDOException $e) {
       Migration::displayMessage(t('Could not log event for migration !name',
         array('!name' => $this->machineName)));
@@ -240,6 +248,34 @@ class HarvestMigration extends MigrateDKAN {
   }
 
   /**
+   * Implementation of MigrationBase::endProcess().
+   */
+  public function endProcess() {
+    parent::endProcess();
+
+    // Clear the message Queue.
+    $this->saveQueuedMessages();
+
+    // Complete the log record.
+    if ($this->logID) {
+      try {
+        db_merge('migrate_log')
+          ->key(array('mlid' => $this->logID))
+          ->fields(array(
+            'endtime' => round(microtime(TRUE) * 1000),
+            'finalhighwater' => $this->getHighwater(),
+            'numprocessed' => $this->total_processed,
+          ))
+          ->execute();
+      }
+      catch (PDOException $e) {
+        Migration::displayMessage(t('Could not log operation on migration !name - possibly MigrationBase::beginProcess() was not called',
+        array('!name' => $this->machineName)));
+      }
+    }
+  }
+
+  /**
    * Runs before an import starts.
    *
    * Used to disable any rules which could cause problems during
@@ -258,8 +294,8 @@ class HarvestMigration extends MigrateDKAN {
 
     // Disable any rules passed in the arguments array
     // Most probably in the processImport() method.
-    if (module_exists('rules') &&
-      !empty(variable_get('dkan_harvest_disable_rules', array()))) {
+    $disable_rules = variable_get('dkan_harvest_disable_rules', array());
+    if (module_exists('rules') && !empty($disable_rules)) {
       // Make sure that we only alter the status of already enabled rules.
       $rules = db_select('rules_config', 'rc')
         ->fields('rc', array('name'))
@@ -285,7 +321,7 @@ class HarvestMigration extends MigrateDKAN {
           array(
             '@rules_list' => implode(', ', $this->dkanHarvestDisabledRules),
           ));
-        self::displayMessage($message, 'notice');
+        $this->reportMessage($message, MigrationBase::MESSAGE_NOTICE);
       }
     }
   }
@@ -296,6 +332,12 @@ class HarvestMigration extends MigrateDKAN {
    * Add support for harvest migration specific checks and options.
    */
   public function processImport(array $options = array()) {
+    if (!$this->dkanHarvestSource->getCacheDir()) {
+      $message = t('Looks like the source is missing and a cache does not exist. No updates can be made at this time.');
+      self::displayMessage($message, 'error');
+      $this->reportMessage($message);
+      return FALSE;
+    }
     // Add any extra Harvest Migration Arguments.
     $this->arguments = array_merge($this->arguments, $options);
     return parent::processImport($options);
@@ -449,7 +491,7 @@ class HarvestMigration extends MigrateDKAN {
             array(
               '@exception_message' => $emwException->getMessage(),
             ));
-          $this->saveMessage($message);
+          $this->reportMessage($message);
         }
       }
       if (!empty($field_resources_value)) {
@@ -514,9 +556,9 @@ class HarvestMigration extends MigrateDKAN {
    *
    * Prepare an Object usable for HarvestMigration::prepareMetadataSource().
    *
-   * @return object
-   *   An object usable for
-   *         HarvestMigration::prepareMetadataSource() or FALSE.
+   * @return array
+   *   The status and the error message in case of faileur or the object suitable
+   *   for HarvestMigration::prepareMetadataSource() or FALSE.
    */
   public static function prepareMetadataSourceHelper($file_uri,
   $title = NULL,
@@ -538,8 +580,7 @@ class HarvestMigration extends MigrateDKAN {
             '@message_prefix' => 'Adding Metada Source failed',
             '@file_path' => $file_uri,
           ));
-        self::displayMessage($message, 'error');
-        return FALSE;
+        return array(FALSE, $message);
       }
       $metadata_source->file_uri = $file_uri;
     }
@@ -556,7 +597,7 @@ class HarvestMigration extends MigrateDKAN {
     // UID.
     $metadata_source->uid = $uid;
 
-    return $metadata_source;
+    return array(TRUE, $metadata_source);
   }
 
   /**
@@ -591,7 +632,7 @@ class HarvestMigration extends MigrateDKAN {
           array(
             '@exception_message' => $emwException->getMessage(),
           ));
-        $this->saveMessage($message);
+        $this->reportMessage($message);
       }
     }
 
@@ -629,7 +670,7 @@ class HarvestMigration extends MigrateDKAN {
             '@vocabulary' => $vocab,
           )
         );
-        $this->saveMessage($message);
+        $this->reportMessage($message);
       }
       else {
         // Looks fine.
@@ -647,7 +688,7 @@ class HarvestMigration extends MigrateDKAN {
 
     if (!$file) {
       $message = t('Cannot create the file for the Metadata Source.');
-      $this->saveMessage($message);
+      $this->reportMessage($message);
       return FALSE;
     }
     else {
@@ -665,7 +706,7 @@ class HarvestMigration extends MigrateDKAN {
           '@message_prefix' => 'Adding Metada Source failed',
           '@exception_message' => $emwException->getMessage(),
         ));
-      $this->saveMessage($message);
+      $this->reportMessage($message);
     }
 
     // Attache the metadata source to the dataset.
@@ -687,9 +728,9 @@ class HarvestMigration extends MigrateDKAN {
     // Check if sourceCount is 0.
     // Show and add an error to the message table.
     if ($this->sourceCount() == 0) {
-      $message = t('Items to import is 0. Looks like source is missing. All the content previously harvested will be unpublished.');
+      $message = t('Items to import is 0. Looks like source is missing. No updates can be made at this time.');
       self::displayMessage($message, 'error');
-      $this->saveMessage($message);
+      $this->reportMessage($message);
     }
 
     // Zombie entries are datasets that failed to import during a previous
@@ -729,7 +770,7 @@ class HarvestMigration extends MigrateDKAN {
         array(
           '@rules_list' => implode(', ', $this->dkanHarvestDisabledRules),
         ));
-      self::displayMessage($message, 'notice');
+      $this->reportMessage($message, MigrationBase::MESSAGE_NOTICE);
     }
 
     // If an import if being run then update the results.
@@ -759,7 +800,8 @@ class HarvestMigration extends MigrateDKAN {
     // in a previous harvest migrate.
     // Get rows marked with HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE
     // and part of the imported datasets imported.
-    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
+    $id_list = $this->getIdList();
+    if (is_array($id_list) && !empty($id_list)) {
       $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
         ->fields('map')
         ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE)
@@ -782,9 +824,10 @@ class HarvestMigration extends MigrateDKAN {
           $dataset_emw = entity_metadata_wrapper('node', $dataset_nid);
           $related_count = 0;
 
-          // Unpublish attached resources.
+          // Publish attached resources.
           if (isset($dataset_emw->field_resources)) {
             foreach ($dataset_emw->field_resources->getIterator() as $delta => $resource_emw) {
+              $resource_emw->field_orphan->set(0);
               $resource_emw->status->set(1);
               $resource_emw->save();
               $related_count++;
@@ -799,6 +842,7 @@ class HarvestMigration extends MigrateDKAN {
           }
 
           // Publish the dataset.
+          $dataset_emw->field_orphan->set(0);
           $dataset_emw->status->set(1);
           $dataset_emw->save();
 
@@ -836,7 +880,8 @@ class HarvestMigration extends MigrateDKAN {
     $query = $this->map->getConnection()->select($this->map->getMapTable(), 'map')
       ->fields('map')
       ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE, '<>');
-    if (is_array($this->getIdList()) && !empty($this->getIdList())) {
+    $id_list = $this->getIdList();
+    if (is_array($this->getIdList()) && !empty($id_list)) {
       foreach ($this->map->getSourceKeyMap() as $key_name) {
         $query = $query->condition("map.$key_name", $this->getIdList(), 'NOT IN');
       }
@@ -856,7 +901,7 @@ class HarvestMigration extends MigrateDKAN {
           $dataset_emw = entity_metadata_wrapper('node', $nid);
         }
         catch (EntityMetadataWrapperException $exception) {
-          $this->saveMessage($exception->getMessage());
+          $this->reportMessage($exception->getMessage());
           // Skip this nid.
           continue;
         }
@@ -1084,8 +1129,9 @@ class HarvestMigration extends MigrateDKAN {
    * @param string $description
    *   Option body content.
    *
-   * @return object
-   *   Object usable for HarvestMigration::createResourceNode().
+   * @return array
+   *   array with the status and the error if failed or the the object prepared
+   *   for HarvestMigration::createResourceNode().
    *         Or FALSE.
    */
   public static function prepareResourceHelper($url, $format = NULL, $title = NULL, $created = NULL, $description = NULL) {
@@ -1104,8 +1150,7 @@ class HarvestMigration extends MigrateDKAN {
         array(
           '@url' => $url,
         ));
-      self::displayMessage($message, 'error');
-      return FALSE;
+      return array(FALSE, $message);
     }
     else {
       $resource->url = $url;
@@ -1142,12 +1187,11 @@ class HarvestMigration extends MigrateDKAN {
       // page.
       if (!is_null($remoteFileInfo->getType())
         && !in_array($remoteFileInfo->getExtension(), $html_extensions)) {
-
         // Check if this file extension is allowed for field_link_remote_file.
-        $link_field = field_info_instance('node', 'field_link_remote_file', 'resource');
         // Reduce everything to lowercase to support files with uppercase
         // extensions.
-        $file_extensions = array_map('strtolower', explode(' ', $link_field['settings']['file_extensions']));
+        $file_extensions = array_map('strtolower', explode(' ', dkan_allowed_extensions()));
+
         // Reject if the extension is not allowed.
         if (!in_array($remoteFileInfo->getExtension(), $file_extensions)) {
           $message = t('Resource remote url (@url) extension (@extension) not allowed',
@@ -1155,8 +1199,7 @@ class HarvestMigration extends MigrateDKAN {
               '@url' => $resource->url,
               '@extension' => $remoteFileInfo->getExtension(),
             ));
-          self::displayMessage($message, 'error');
-          return FALSE;
+          return array(FALSE, $message);
         }
 
         // If the URL is determined to be a remote file,
@@ -1177,8 +1220,7 @@ class HarvestMigration extends MigrateDKAN {
     $resource->format = isset($format) ? strtolower($format) : $format_detected;
 
     // Title.
-    $name = isset($title) ? $title : $remoteFileInfo->getName();
-    $resource->title = isset($name) ? $name : $resource->format;
+    $resource->title = isset($title) ? $title : $resource->format;
 
     // Created.
     $resource->created = isset($created) ? $created : time();
@@ -1186,7 +1228,7 @@ class HarvestMigration extends MigrateDKAN {
     // Description.
     $resource->description = isset($description) ? $description : '';
 
-    return $resource;
+    return array(TRUE, $resource);
   }
 
   /**
@@ -1232,7 +1274,7 @@ class HarvestMigration extends MigrateDKAN {
             '@vocabulary' => $vocab,
           )
         );
-        $this->saveMessage($message);
+        $this->reportMessage($message);
       }
       else {
         $resource_emw->field_format = $term->tid;
@@ -1276,28 +1318,46 @@ class HarvestMigration extends MigrateDKAN {
   }
 
   /**
-   * {@inheritdoc}
-   *
-   * Add support for the $mlid column.
-   */
-  public function queueMessage($message, $level = MigrationBase::MESSAGE_ERROR, $mlid = FALSE) {
-    // Use the default $mlid if not available.
-    if (!$mlid) {
-      $mlid = $this->getLogId();
-    }
-
-    $this->queuedMessages[] = array(
-      'message' => $message,
-      'level' => $level,
-      'mlid' => $mlid,
-    );
-  }
-
-  /**
    * Add support for the $mlid column.
    */
   public function saveMessage($message, $level = MigrationBase::MESSAGE_ERROR, $mlid = FALSE) {
     $this->map->saveMessage($this->currentSourceKey(), $message, $level, $mlid);
+  }
+
+  /**
+   *
+   */
+  public function reportMessage($message, $level = MigrationBase::MESSAGE_ERROR) {
+    // Add to Queue if logID is not available.
+    if (!empty($this->logID)) {
+      $this->saveMessage($message, $level, $this->logID);
+    }
+    else {
+      $this->queueMessage($message, $level);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * Override to make sure to use the mlid for all the log messages being saved
+   * from the queue or display in case we don't have the Migration Log ID
+   * (mlid).
+   */
+  public function saveQueuedMessages() {
+    // If we have a logID, save message to DB, if not display to user.
+    foreach ($this->queuedMessages as $queued_message) {
+      if (!empty($this->logID)) {
+        $this->saveMessage($queued_message['message'], $queued_message['level'], $this->logID);
+      }
+      else {
+        self::displayMessage(
+          $queued_message['message'],
+        $this->getMessageLevelName($queued_message['level'])
+      );
+      }
+    }
+    $this->queuedMessages = array();
   }
 
   /**
@@ -1340,6 +1400,16 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function getLogId() {
     return $this->logID;
+  }
+
+  /**
+   * Setter for the $logID variable.
+   *
+   * Update migration log ID. Useful to log tracking when triggered from with
+   * external process like batch APIs.
+   */
+  public function setLogId($logID) {
+    $this->logID = $logID;
   }
 
   /**
@@ -1397,10 +1467,10 @@ class XMLHarvestMigration extends HarvestMigration {
                                   $warn_on_override = TRUE) {
     // Warn of duplicate mappings.
     if ($warn_on_override && !is_null($destination_field) && isset($this->codedFieldMappings[$destination_field])) {
-      self::displayMessage(
+      $this->reportMessage(
         t('!name addFieldMapping: !dest was previously mapped, overridden',
           array('!name' => $this->machineName, '!dest' => $destination_field)),
-        'warning');
+        MigrationBase::MESSAGE_WARNING);
     }
     $mapping = new MigrateXMLFieldMapping($destination_field, $source_field);
     if (is_null($destination_field)) {

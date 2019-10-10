@@ -62,6 +62,7 @@ class WorkflowContext extends RawDKANContext {
     // Clean users and disable modules.
     entity_delete_multiple('user', $users_to_delete);
     module_disable(array_values($modules_to_disable));
+    // features_revert(array('dkan_permissions'));
     drupal_flush_all_caches();
     node_access_rebuild(TRUE);
   }
@@ -130,7 +131,7 @@ class WorkflowContext extends RawDKANContext {
       // `workbench_moderation_store` function is part of the shutdown
       // execution and run it.
       $callbacks = &drupal_register_shutdown_function();
-      while (list($key, $callback) = each($callbacks)) {
+      foreach ($callbacks as $key => $callback) {
         if ($callback['callback'] == 'workbench_moderation_store') {
           call_user_func_array($callback['callback'], $callback['arguments']);
           unset($callbacks[$key]);

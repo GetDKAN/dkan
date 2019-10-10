@@ -326,11 +326,21 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     }
 
     // Message table assertions.
-    // We expect one new message from this test when harvesting the empty
-    // source.
-    $this->assertEquals(1, count($migrationEmptyMessage));
-    $messageEntry = end($migrationEmptyMessage);
-    $this->assertEquals("Items to import is 0. Looks like source is missing. All the content previously harvested will be unpublished.", $messageEntry->message);
+    // We expect 2 new message from this test when harvesting the empty
+    // source:
+    $expectedEntries = array(
+      'Items to import is 0. Looks like source is missing. No updates can be made at this time.',
+      'Cannot look-up the harvest source Node ID',
+    );
+
+    $this->assertEquals(count($expectedEntries), count($migrationEmptyMessage));
+
+    $loggedEntries = array_map(function($item) {
+      return $item->message;
+    },$migrationEmptyMessage);
+
+    // Use array_values to avoid assertion being scued by the index.
+    $this->assertEquals(array_values($expectedEntries), array_values($loggedEntries));
   }
 
   /**
@@ -370,9 +380,12 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     /*
      * Test message table.
      */
-    // Harvesting the empty source will add a new error message.
+    // Harvesting the empty source will add 3 new error message.
+    // 1- "Cannot lookup the harvest source Node ID".
+    // 2- "MigrateException Illegal offset type in isset or empty".
+    // 3- "Illegal offset type in isset or empty".
     $this->assertNotEquals($migrationErrorMessage, $migrationEmptyMessage);
-    $this->assertEquals(count($migrationErrorMessage) + 1, count($migrationEmptyMessage));
+    $this->assertEquals(count($migrationErrorMessage) + 3, count($migrationEmptyMessage));
   }
 
   /**
@@ -551,6 +564,10 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
         'value' => "2000-01-15T00:45:00Z",
         'value2' => "2010-01-15T00:06:00Z",
       ),
+      'Test' => array(
+        'value' => "2005-01-01 00:00:00",
+        'value2' => "2016-12-31 00:00:00",
+      ),
     );
 
     // Harvest the faulty source.
@@ -595,7 +612,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Test harvest source with resouce that does not have the issued field.
+   * Test harvest source with resource that does not have the issued field.
    *
    * The issued field is not required for the POD dataset. The Harvest should
    * fallback to the modified field value (which is required).
@@ -611,7 +628,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
     }, $migrationMap);
     $this->assertEquals(1, count($dest_ids));
     $dataset = entity_metadata_wrapper('node', array_pop($dest_ids));
-    $this->assertEquals($dataset->field_harvest_source_modified->value(),
+    $this->assertEquals(strtotime($dataset->field_harvest_source_modified->value()),
       $dataset->field_harvest_source_issued->value());
   }
 
@@ -713,84 +730,96 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    * Test Harvest Source.
    */
   public static function getOriginalTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_original.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_original.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getAlternativeTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_alternative.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_alternative.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getGroupUpdatedTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_group_updated.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_group_updated.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getErrorTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_error.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_error.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getEmptyTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_empty.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_empty.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getNoResourceTestSource() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_no_resources.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_no_resources.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getResourceWithRedirects() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_redirects.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_redirects.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getResourceSchemeless() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_schemeless_resource.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_schemeless_resource.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getResourceTemporal() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_temporal.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_temporal.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getResourceNoIssued() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_noissued.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_noissued.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getResourceAccessUrl() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_resource_accessurl.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_resource_accessurl.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
    * Test Harvest Source.
    */
   public static function getResourceBom() {
-    return new HarvestSourceDataJsonStub(__DIR__ . '/data/dkan_harvest_datajson_test_bom.json');
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_bom.json');
+    return new HarvestSourceDataJsonStub($uri);
   }
 
   /**
