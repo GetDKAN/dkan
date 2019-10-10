@@ -158,13 +158,9 @@ function dkan_harvest_dashboard_views_default_views() {
   $handler->display->display_options['fields']['dkan_harvest_harvest_status']['table'] = 'dkan_harvest_dashboard';
   $handler->display->display_options['fields']['dkan_harvest_harvest_status']['field'] = 'dkan_harvest_harvest_status';
   $handler->display->display_options['fields']['dkan_harvest_harvest_status']['label'] = 'Status';
-  $handler->display->display_options['fields']['dkan_harvest_harvest_status']['element_class'] = '[dkan_harvest_harvest_status]';
+  $handler->display->display_options['fields']['dkan_harvest_harvest_status']['element_class'] = '[dkan_harvest_harvest_status_id]';
   $handler->display->display_options['fields']['dkan_harvest_harvest_status']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['dkan_harvest_harvest_status']['element_wrapper_class'] = '[dkan_harvest_harvest_status]';
-  $handler->display->display_options['fields']['dkan_harvest_harvest_status']['type'] = 'custom';
-  $handler->display->display_options['fields']['dkan_harvest_harvest_status']['type_custom_true'] = 'ERROR';
-  $handler->display->display_options['fields']['dkan_harvest_harvest_status']['type_custom_false'] = 'OK';
-  $handler->display->display_options['fields']['dkan_harvest_harvest_status']['not'] = 0;
+  $handler->display->display_options['fields']['dkan_harvest_harvest_status']['element_wrapper_class'] = '[dkan_harvest_harvest_status_id]';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';

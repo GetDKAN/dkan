@@ -77,7 +77,7 @@
             "field_contact_email": "cdcinfo@cdc.gov",
             "field_contact_name": "CDC INFO",
             "field_data_dictionary": null,
-            "field_frequency": "3",
+            "field_frequency": "R/P1Y",
             "field_granularity": "State",
             "field_harvest_source_issued": null,
             "field_harvest_source_modified": null,

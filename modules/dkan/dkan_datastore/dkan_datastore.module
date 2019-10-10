@@ -234,17 +234,6 @@ function dkan_datastore_node_update($node) {
         $file = '';
       }
     }
-    if ($file) {
-      if (!isset($node->feeds)) {
-        // Feeds only saves if there is a form present. We want this to work
-        // programmatically as well.
-        feeds_node_prepare($node);
-      }
-      // Remove node from feeds list if not csv.
-      elseif ($file->filemime != 'text/csv') {
-        feeds_node_delete($node);
-      }
-    }
   }
 }
 

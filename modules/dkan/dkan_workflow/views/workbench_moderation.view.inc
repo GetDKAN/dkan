@@ -128,6 +128,180 @@ $handler->display->display_options['filters']['is_current']['id'] = 'is_current'
 $handler->display->display_options['filters']['is_current']['table'] = 'workbench_moderation_node_history';
 $handler->display->display_options['filters']['is_current']['field'] = 'is_current';
 
+/* Display: Unpublished nodes page */
+$handler = $view->new_display('page', 'Unpublished nodes page', 'unpublished_node_drafts_page');
+$handler->display->display_options['defaults']['title'] = FALSE;
+$handler->display->display_options['title'] = 'Unpublished nodes';
+$handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+$handler->display->display_options['defaults']['empty'] = FALSE;
+/* No results behavior: Global: Text area */
+$handler->display->display_options['empty']['area']['id'] = 'area';
+$handler->display->display_options['empty']['area']['table'] = 'views';
+$handler->display->display_options['empty']['area']['field'] = 'area';
+$handler->display->display_options['empty']['area']['content'] = 'This list displays content you have created that is not published. Currently there is no such content.';
+$handler->display->display_options['empty']['area']['format'] = 'plain_text';
+$handler->display->display_options['defaults']['relationships'] = FALSE;
+/* Relationship: Workbench Moderation: Node */
+$handler->display->display_options['relationships']['nid']['id'] = 'nid';
+$handler->display->display_options['relationships']['nid']['table'] = 'workbench_moderation_node_history';
+$handler->display->display_options['relationships']['nid']['field'] = 'nid';
+$handler->display->display_options['relationships']['nid']['required'] = TRUE;
+/* Relationship: Content: Author */
+$handler->display->display_options['relationships']['uid_1']['id'] = 'uid_1';
+$handler->display->display_options['relationships']['uid_1']['table'] = 'node';
+$handler->display->display_options['relationships']['uid_1']['field'] = 'uid';
+$handler->display->display_options['relationships']['uid_1']['relationship'] = 'nid';
+$handler->display->display_options['defaults']['fields'] = FALSE;
+/* Field: Bulk operations: Content */
+$handler->display->display_options['fields']['views_bulk_operations_1']['id'] = 'views_bulk_operations_1';
+$handler->display->display_options['fields']['views_bulk_operations_1']['table'] = 'views_entity_node';
+$handler->display->display_options['fields']['views_bulk_operations_1']['field'] = 'views_bulk_operations';
+$handler->display->display_options['fields']['views_bulk_operations_1']['relationship'] = 'nid';
+$handler->display->display_options['fields']['views_bulk_operations_1']['label'] = '';
+$handler->display->display_options['fields']['views_bulk_operations_1']['element_type'] = '0';
+$handler->display->display_options['fields']['views_bulk_operations_1']['element_label_colon'] = FALSE;
+$handler->display->display_options['fields']['views_bulk_operations_1']['element_wrapper_type'] = '0';
+$handler->display->display_options['fields']['views_bulk_operations_1']['element_default_classes'] = FALSE;
+$handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['display_type'] = '1';
+$handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['enable_select_all_pages'] = 1;
+$handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['force_single'] = 0;
+$handler->display->display_options['fields']['views_bulk_operations_1']['vbo_settings']['entity_load_capacity'] = '10';
+$handler->display->display_options['fields']['views_bulk_operations_1']['vbo_operations'] = array(
+  'action::views_dkan_workflow_tree_set_moderation_state_action_needs_review' => array(
+    'selected' => 1,
+    'postpone_processing' => 0,
+    'skip_confirmation' => 1,
+    'override_label' => 1,
+    'label' => 'Submit for review',
+  ),
+  'action::views_bulk_operations_delete_item' => array(
+    'selected' => 1,
+    'postpone_processing' => 0,
+    'skip_confirmation' => 0,
+    'override_label' => 1,
+    'label' => 'Delete',
+  ),
+);
+/* Field: Content revision: Vid */
+$handler->display->display_options['fields']['vid']['id'] = 'vid';
+$handler->display->display_options['fields']['vid']['table'] = 'node_revision';
+$handler->display->display_options['fields']['vid']['field'] = 'vid';
+$handler->display->display_options['fields']['vid']['relationship'] = 'nid';
+$handler->display->display_options['fields']['vid']['exclude'] = TRUE;
+$handler->display->display_options['defaults']['filter_groups'] = FALSE;
+$handler->display->display_options['defaults']['filters'] = FALSE;
+/* Filter criterion: Workbench Moderation: Current */
+$handler->display->display_options['filters']['is_current']['id'] = 'is_current';
+$handler->display->display_options['filters']['is_current']['table'] = 'workbench_moderation_node_history';
+$handler->display->display_options['filters']['is_current']['field'] = 'is_current';
+$handler->display->display_options['filters']['is_current']['value'] = '1';
+$handler->display->display_options['filters']['is_current']['group'] = 1;
+/* Filter criterion: Workbench Moderation: State */
+$handler->display->display_options['filters']['state_1']['id'] = 'state_1';
+$handler->display->display_options['filters']['state_1']['table'] = 'workbench_moderation_node_history';
+$handler->display->display_options['filters']['state_1']['field'] = 'state';
+$handler->display->display_options['filters']['state_1']['value'] = array(
+  'draft' => 'draft',
+);
+$handler->display->display_options['filters']['state_1']['group'] = 1;
+/* Filter criterion: Content: Title */
+$handler->display->display_options['filters']['title']['id'] = 'title';
+$handler->display->display_options['filters']['title']['table'] = 'node';
+$handler->display->display_options['filters']['title']['field'] = 'title';
+$handler->display->display_options['filters']['title']['relationship'] = 'nid';
+$handler->display->display_options['filters']['title']['operator'] = 'contains';
+$handler->display->display_options['filters']['title']['group'] = 1;
+$handler->display->display_options['filters']['title']['exposed'] = TRUE;
+$handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
+$handler->display->display_options['filters']['title']['expose']['label'] = 'Title';
+$handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
+$handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
+$handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
+$handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  200153887 => 0,
+  30037204 => 0,
+  132006037 => 0,
+  210770034 => 0,
+  190180509 => 0,
+  169051924 => 0,
+);
+$handler->display->display_options['filters']['title']['expose']['autocomplete_items'] = '10';
+$handler->display->display_options['filters']['title']['expose']['autocomplete_min_chars'] = '0';
+$handler->display->display_options['filters']['title']['expose']['autocomplete_raw_suggestion'] = 1;
+$handler->display->display_options['filters']['title']['expose']['autocomplete_raw_dropdown'] = 1;
+$handler->display->display_options['filters']['title']['expose']['autocomplete_dependent'] = 0;
+/* Filter criterion: Content: Type */
+$handler->display->display_options['filters']['type']['id'] = 'type';
+$handler->display->display_options['filters']['type']['table'] = 'node';
+$handler->display->display_options['filters']['type']['field'] = 'type';
+$handler->display->display_options['filters']['type']['relationship'] = 'nid';
+$handler->display->display_options['filters']['type']['operator'] = 'empty';
+$handler->display->display_options['filters']['type']['value'] = array(
+  'all' => 'all',
+  'dkan_data_story' => 'dkan_data_story',
+  'data_dashboard' => 'data_dashboard',
+  'dataset' => 'dataset',
+  'group' => 'group',
+  'page' => 'page',
+  'resource' => 'resource',
+);
+$handler->display->display_options['filters']['type']['group'] = 1;
+$handler->display->display_options['filters']['type']['exposed'] = TRUE;
+$handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
+$handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
+$handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
+$handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
+$handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
+$handler->display->display_options['filters']['type']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  200153887 => 0,
+  30037204 => 0,
+  132006037 => 0,
+  210770034 => 0,
+  190180509 => 0,
+  169051924 => 0,
+);
+/* Filter criterion: Content: Publisher (og_group_ref) (reference filter) */
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['id'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['table'] = 'og_membership';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['field'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['relationship'] = 'nid';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['group'] = 1;
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['exposed'] = TRUE;
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator_id'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['label'] = 'Groups';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['operator'] = 'og_group_ref_target_id_entityreference_filter_op';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['identifier'] = 'og_group_ref_target_id_entityreference_filter';
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  200153887 => 0,
+  30037204 => 0,
+  132006037 => 0,
+  210770034 => 0,
+  190180509 => 0,
+  169051924 => 0,
+);
+$handler->display->display_options['filters']['og_group_ref_target_id_entityreference_filter']['reference_display'] = 'entity_reference_groups_list:entityreference_1';
+$handler->display->display_options['path'] = 'admin/workbench/unpublished-nodes';
+$handler->display->display_options['menu']['type'] = 'tab';
+$handler->display->display_options['menu']['title'] = 'Unpublished nodes';
+$handler->display->display_options['menu']['weight'] = '20';
+$handler->display->display_options['menu']['context'] = 0;
+$handler->display->display_options['menu']['context_only_inline'] = 0;
+$handler->display->display_options['tab_options']['weight'] = '0';
+/* Filter criterion: Content: Published */
+$handler->display->display_options['filters']['status']['id'] = 'status';
+$handler->display->display_options['filters']['status']['table'] = 'node';
+$handler->display->display_options['filters']['status']['field'] = 'status';
+$handler->display->display_options['filters']['status']['relationship'] = 'nid';
+$handler->display->display_options['filters']['status']['value'] = 0;
+$handler->display->display_options['filters']['status']['group'] = 1;
+$handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+
 /* Display: Drafts page */
 $handler = $view->new_display('page', 'Drafts page', 'drafts_page');
 $handler->display->display_options['defaults']['title'] = FALSE;
@@ -792,6 +966,59 @@ $handler->display->display_options['menu']['weight'] = '50';
 $handler->display->display_options['menu']['context'] = 0;
 $handler->display->display_options['menu']['context_only_inline'] = 0;
 
+/* Display: Unpublished nodes Badge */
+$handler = $view->new_display('menu_badge', 'Unpublished nodes Badge', 'unpublished_nodes_drafts_badge');
+$handler->display->display_options['use_more_always'] = FALSE;
+$handler->display->display_options['group_by'] = TRUE;
+$handler->display->display_options['access']['type'] = 'none';
+$handler->display->display_options['cache']['type'] = 'none';
+$handler->display->display_options['query']['type'] = 'views_query';
+$handler->display->display_options['exposed_form']['type'] = 'basic';
+$handler->display->display_options['pager']['type'] = 'some';
+$handler->display->display_options['style_plugin'] = 'default';
+$handler->display->display_options['row_plugin'] = 'fields';
+/* Relationship: Workbench Moderation: Node */
+$handler->display->display_options['relationships']['nid']['id'] = 'nid';
+$handler->display->display_options['relationships']['nid']['table'] = 'workbench_moderation_node_history';
+$handler->display->display_options['relationships']['nid']['field'] = 'nid';
+$handler->display->display_options['relationships']['nid']['required'] = TRUE;
+/* Relationship: Content: Author */
+$handler->display->display_options['relationships']['uid']['id'] = 'uid';
+$handler->display->display_options['relationships']['uid']['table'] = 'node';
+$handler->display->display_options['relationships']['uid']['field'] = 'uid';
+$handler->display->display_options['relationships']['uid']['relationship'] = 'nid';
+/* Field: Content revision: Vid */
+$handler->display->display_options['fields']['vid']['id'] = 'vid';
+$handler->display->display_options['fields']['vid']['table'] = 'node_revision';
+$handler->display->display_options['fields']['vid']['field'] = 'vid';
+$handler->display->display_options['fields']['vid']['relationship'] = 'nid';
+$handler->display->display_options['fields']['vid']['group_type'] = 'count_distinct';
+$handler->display->display_options['fields']['vid']['label'] = '';
+$handler->display->display_options['fields']['vid']['element_label_colon'] = FALSE;
+/* Filter criterion: Workbench Moderation: Current */
+$handler->display->display_options['filters']['is_current']['id'] = 'is_current';
+$handler->display->display_options['filters']['is_current']['table'] = 'workbench_moderation_node_history';
+$handler->display->display_options['filters']['is_current']['field'] = 'is_current';
+$handler->display->display_options['filters']['is_current']['value'] = '1';
+$handler->display->display_options['filters']['is_current']['group'] = 1;
+/* Filter criterion: Workbench Moderation: State */
+$handler->display->display_options['filters']['state']['id'] = 'state';
+$handler->display->display_options['filters']['state']['table'] = 'workbench_moderation_node_history';
+$handler->display->display_options['filters']['state']['field'] = 'state';
+$handler->display->display_options['filters']['state']['value'] = array(
+  'draft' => 'draft',
+);
+$handler->display->display_options['filters']['state']['group'] = 1;
+/* Filter criterion: Content: Published */
+$handler->display->display_options['filters']['status']['id'] = 'status';
+$handler->display->display_options['filters']['status']['table'] = 'node';
+$handler->display->display_options['filters']['status']['field'] = 'status';
+$handler->display->display_options['filters']['status']['relationship'] = 'nid';
+$handler->display->display_options['filters']['status']['value'] = 0;
+$handler->display->display_options['filters']['status']['group'] = 1;
+$handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+$handler->display->display_options['link_display'] = 'unpublished_node_drafts_page';
+
 /* Display: My Drafts Badge */
 $handler = $view->new_display('menu_badge', 'My Drafts Badge', 'my_drafts_badge');
 $handler->display->display_options['use_more_always'] = FALSE;
@@ -841,6 +1068,7 @@ $handler->display->display_options['filters']['uid_current']['table'] = 'users';
 $handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
 $handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
 $handler->display->display_options['filters']['uid_current']['value'] = '1';
+$handler->display->display_options['link_display'] = 'drafts_page';
 
 /* Display: Needs Review Badge */
 $handler = $view->new_display('menu_badge', 'Needs Review Badge', 'needs_review_badge');
@@ -884,6 +1112,7 @@ $handler->display->display_options['filters']['state']['value'] = array(
   'needs_review' => 'needs_review',
 );
 $handler->display->display_options['filters']['state']['group'] = 1;
+$handler->display->display_options['link_display'] = 'needs_review_page';
 
 /* Display: Stale Drafts Badge */
 $handler = $view->new_display('menu_badge', 'Stale Drafts Badge', 'stale_drafts_badge');
@@ -936,6 +1165,7 @@ $handler->display->display_options['filters']['stamp']['operator'] = '<';
 $handler->display->display_options['filters']['stamp']['value']['value'] = '-72 hours';
 $handler->display->display_options['filters']['stamp']['value']['type'] = 'offset';
 $handler->display->display_options['filters']['stamp']['group'] = 1;
+$handler->display->display_options['link_display'] = 'page_stale_draft';
 
 /* Display: Stale Reviews Badge */
 $handler = $view->new_display('menu_badge', 'Stale Reviews Badge', 'stale_reviews_badge');
@@ -988,3 +1218,4 @@ $handler->display->display_options['filters']['stamp']['operator'] = '<';
 $handler->display->display_options['filters']['stamp']['value']['value'] = '-48 hours';
 $handler->display->display_options['filters']['stamp']['value']['type'] = 'offset';
 $handler->display->display_options['filters']['stamp']['group'] = 1;
+$handler->display->display_options['link_display'] = 'page_stale_reviews';

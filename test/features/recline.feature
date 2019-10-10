@@ -8,32 +8,22 @@ Feature: Recline
   Background:
     Given users:
       | name    | mail                | roles                |
-      | John    | john@example.com    | site manager         |
       | Katie   | katie@example.com   | content creator      |
-    Given groups:
-      | title    | author  | published |
-      | Group 01 | John    | Yes       |
-    And group memberships:
-      | user    | group    | role on group        | membership status |
-      | Katie   | Group 01 | member               | Active            |
-    And "Tags" terms:
-      | name     |
-      | price    |
     And datasets:
-      | title      | publisher | author  | published        | tags     | description |
-      | Dataset 01 | Group 01  | Katie   | Yes              | price    | Test 01     |
+      | title      | author  | published        | description |
+      | Dataset 01 | Katie   | Yes              | Test 01     |
     And resources:
-      | title       | publisher | format | author | published | dataset    | description |
-      | Resource 01 | Group 01  | csv    | Katie  | Yes       | Dataset 01 | Test R1     |
-      | Resource 02 | Group 01  | csv    | Katie  | Yes       | Dataset 01 | Test R2     |
+      | title       | format | author | published | dataset    | description |
+      | Resource 01 | csv    | Katie  | Yes       | Dataset 01 | Test R1     |
+      | Resource 02 | csv    | Katie  | Yes       | Dataset 01 | Test R2     |
 
-# Don't remove! This is for avoiding issues when other scenarios are disabled (because of @noworkflow tag).
+# Don't remove! This is for avoiding issues when other scenarios are disabled.
   Scenario: Dumb test
     Given I am on the homepage
 
   @javascript
   Scenario: Viewing map preview
-    Given I am logged in as "John"
+    Given I am logged in as "Katie"
     And I am on "/dataset/dataset-01"
     Then I should see "Resource 01"
     When I click "Resource 01"
@@ -50,22 +40,9 @@ Feature: Recline
     Given I click map icon number "88"
     And I wait for "Alicia Ashman Branch Library"
 
-  @javascript @api @noworkflow
-  Scenario: Viewing a resource with API field should show a iframe
-    Given I am logged in as "John"
-    And I am on "/dataset/dataset-01"
-    Then I should see "Test 01"
-    Given I click "Resource 02"
-    Then I should see "Test R2"
-    When I click "Edit"
-    And I click "API or Website URL"
-    And I fill in "edit-field-link-api-und-0-url" with "https://data.wa.gov/api/views/mu24-67ke/rows.csv?accessType=DOWNLOAD"
-    And I press "edit-submit"
-    Then I should not see "File was too large or unavailable for preview."
-
-  @javascript @api @noworkflow
+  @javascript @api
   Scenario: Viewing graph preview
-    Given I am logged in as "John"
+    Given I am logged in as "Katie"
     And I am on "/dataset/dataset-01"
     Then I should see "Test 01"
     Given I click "Resource 02"
@@ -81,9 +58,9 @@ Feature: Recline
     Given I press "Graph"
     Then I should see "There's no graph here yet"
 
-  @javascript @noworkflow
+  @javascript
   Scenario: Searching data
-    Given I am logged in as "John"
+    Given I am logged in as "Katie"
     And I am on "/dataset/dataset-01"
     Then I should see "Resource 01"
     When I click "Resource 01"
@@ -97,11 +74,11 @@ Feature: Recline
     Then I should see "Polling_Places_Madison_0.csv"
     And I wait for "1" seconds
     When I click "»"
-    And I wait for "Our"
+    And I wait for "Madison Ice Arena"
     And I wait for "1" seconds
     And I click "«"
     And I wait for "1" seconds
-    And I wait for "East"
+    And I wait for "Blackhawk Middle School"
     And I fill in "q" with "Glendale"
     And I press "Go"
-    Then I should see "Tompkins"
+    Then I should see "1201 Tompkins Dr"

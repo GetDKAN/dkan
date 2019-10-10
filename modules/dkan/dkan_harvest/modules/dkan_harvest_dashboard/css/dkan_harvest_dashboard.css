@@ -24,3 +24,27 @@
 #edit-field-harvest-source-issued-value-wrapper .views-widget div {
   display: inline-block;
 }
+
+.views-field.views-field-dkan-harvest-harvest-status.views_handler_field_harvest_status_unknown {
+  background: #ec8e45;
+}
+
+.views-field.views-field-dkan-harvest-harvest-status.views_handler_field_harvest_status_failed {
+  background: #db3447;
+}
+
+.views-field.views-field-dkan-harvest-harvest-status.views_handler_field_harvest_status_finished_with_errors {
+  background: #79c38b;
+}
+
+.views-field.views-field-dkan-harvest-harvest-status.views_handler_field_harvest_status_finished_no_errors {
+  background: #2ca849;
+}
+
+.views-field.views-field-dkan-harvest-harvest-status.views_handler_field_harvest_status_in_progress {
+  background: #1ea4b8;
+}
+
+.views-field.views-field-dkan-harvest-harvest-status.views_handler_field_harvest_status_new {
+  background: #fdc12b;
+}

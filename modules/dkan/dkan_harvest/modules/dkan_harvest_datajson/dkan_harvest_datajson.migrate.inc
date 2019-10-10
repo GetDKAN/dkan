@@ -144,7 +144,13 @@ class DatajsonHarvestMigration extends HarvestMigration {
     // Process Temporal Coverage. The mapping are defined in the base main
     // class, we just need to set the properties.
     if (isset($row->temporal)) {
-      $date = explode("/", $row->temporal);
+      $date = $row->temporal;
+      if (strpos($row->temporal, '/')) {
+        $date = explode("/", $row->temporal);
+      }
+      elseif (strpos($row->temporal, '-')) {
+        $date = explode("-", $row->temporal);
+      }
       // The first key is the start date of the 'temporal coverage' and the second key is the
       // end date of the 'temporal coverage'.
       foreach ($date as $key => &$value) {
@@ -198,7 +204,15 @@ class DatajsonHarvestMigration extends HarvestMigration {
           }
         }
 
-        $value = $value_date->getTimestamp();
+        if ($value_date) {
+          $value = $value_date->getTimestamp();
+        }
+        else {
+          $message = t(
+            'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
+          );
+          $this->saveMessage($message);
+        }
       }
 
       if (isset($date[0])) {
@@ -276,14 +290,17 @@ class DatajsonHarvestMigration extends HarvestMigration {
         }
       }
 
-      $resource = $this->prepareResourceHelper($url,
+      list($status, $return) = $this->prepareResourceHelper($url,
         $format,
         $resource_row_data->title,
         NULL,
         $resource_row_data->description);
 
-      if ($resource) {
-        $resources[] = $resource;
+      if ($status == TRUE) {
+        $resources[] = $return;
+      }
+      else {
+        $this->reportMessage($return);
       }
     }
 

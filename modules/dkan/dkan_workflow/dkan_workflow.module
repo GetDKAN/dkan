@@ -46,6 +46,17 @@ function dkan_workflow_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   // Add child links for workbench tasks.
+  $items['admin/workbench/unpublished-nodes'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/workbench/unpublished-nodes',
+    'router_path' => 'admin/workbench/unpublished-nodes',
+    'title' => 'Unpublished nodes',
+    'description' => 'Unpublished nodes',
+    'page callback' => 'drupal_goto',
+    'access arguments' => array('access workbench'),
+    'weight' => 0,
+    'type' => MENU_NORMAL_ITEM,
+  );
   $items['admin/workbench/drafts-active'] = array(
     'menu_name' => 'menu-command-center-menu',
     'link_path' => 'admin/workbench/drafts-active',
@@ -54,7 +65,7 @@ function dkan_workflow_menu() {
     'description' => 'My drafts',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
-    'weight' => 0,
+    'weight' => 1,
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/workbench/needs-review-active'] = array(
@@ -65,7 +76,7 @@ function dkan_workflow_menu() {
     'description' => 'Needs review',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
-    'weight' => 1,
+    'weight' => 2,
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/workbench/drafts-stale'] = array(
@@ -76,7 +87,7 @@ function dkan_workflow_menu() {
     'description' => 'Stale drafts',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
-    'weight' => 2,
+    'weight' => 3,
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/workbench/needs-review-stale'] = array(
@@ -87,7 +98,7 @@ function dkan_workflow_menu() {
     'description' => 'Stale reviews',
     'page callback' => 'drupal_goto',
     'access arguments' => array('access workbench'),
-    'weight' => 3,
+    'weight' => 4,
     'type' => MENU_NORMAL_ITEM,
   );
 
@@ -101,17 +112,6 @@ function dkan_workflow_node_grants($user, $op) {
   $grants['dkan_workflow'] = array($user->uid);
   return $grants;
 }
-
-/**
- * Implements hook_workbench_moderation_acces_alter().
- */
-function dkan_workflow_workbench_moderation_access_alter(&$access, $op, $node) {
-  global $user;
-  // Allow anon users to see revision history.
-  if ($op == 'view history' && $user->uid == 0) {
-    $access = 1;
-  }
-} 
 
 /**
  * Implements hook_node_access_records().
@@ -130,7 +130,7 @@ function dkan_workflow_node_access_records($node) {
       'grant_update' => 0,
       'grant_delete' => 0,
       'priority' => 0,
-    );  
+    );
   }
   return !empty($grants) ? $grants : array();
 }
@@ -159,19 +159,11 @@ function dkan_workflow_menu_local_tasks_alter(&$data, $router_item, $root_path) 
   }
   // Restore 'Revisions' tab for anonymous users when dkan_workflow is enabled.
   global $user;
-  if ($user->uid == 0 && isset($data['tabs'][0]['output'][1]) &&
-    $data['tabs'][0]['output'][1]['#link']['page_callback'] == 'workbench_moderation_node_history_view') {
-    // Check if revisions exist.
-    $node = node_load(arg(1));
-    $r = count(node_revision_list($node));
-    if ($r > 1) {
-      // Change moderate button text to 'Revisions' if user is anonymous.
-      $data['tabs'][0]['output'][1]['#link']['title'] = 'Revisions';
-    }
-    else {
-      // Remove local tabs if there are no revisions.
-      unset($data['tabs']);
-    }
+  if (user_access('view moderation history') 
+    && isset($data['tabs'][0]['output'][1]) 
+    && $data['tabs'][0]['output'][1]['#link']['page_callback'] == 'workbench_moderation_node_history_view') {
+    // Change moderate button text to 'Revisions' if user is anonymous.
+    $data['tabs'][0]['output'][1]['#link']['title'] = 'Revisions';
   }
 }
 
@@ -469,4 +461,21 @@ function dkan_workflow_mail_alter(&$message) {
     $dkan_email_proxy = new DkanWorkflowEmailProxy($message);
     $message['send'] = $dkan_email_proxy->send();
   }
+}
+
+/**
+ * Helper function for importing workbench email defaults.
+ */
+function dkan_workflow_import_email_defaults() {
+  module_load_include('inc', 'dkan_workflow', 'dkan_workflow.features.workbench_email');
+  $items = dkan_workflow_workbench_email_export();
+  if (is_array($items)) {
+    foreach ($items as $machine_name => $transition) {
+      $role = workbench_email_get_role_by_name($transition['role']);
+      $subject = !empty($transition['subject']) ? $transition['subject'] : NULL;
+      $message = !empty($transition['message']) ? $transition['message'] : NULL;
+      workbench_email_save((object) $transition, $role->rid, $subject, $message, $transition['author'], $transition['automatic']);
+    }
+  }
+  drupal_static_reset('workbench_email');
 }

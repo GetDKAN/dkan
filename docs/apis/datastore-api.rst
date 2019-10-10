@@ -3,8 +3,9 @@
 Datastore API
 =============
 
-DKAN offers a Datastore API as a custom endpoint for the Drupal Services
-module.
+DKAN offers a Datastore API as a custom endpoint for the Drupal Services module.
+
+To import and otherwise control individual resources in the Datastore, use the datastore functions in the :ref:`Dataset REST API <datastore-rest-examples>`.
 
 This API is designed to be as compatible as possible with the `CKAN
 Datastore API <http://ckan.readthedocs.org/en/latest/maintaining/datastore.html>`_.
@@ -286,4 +287,41 @@ These options can be configured at
 Field Names
 ~~~~~~~~~~~
 
-Read about changes to the Datastore field names when `upgrading to DKAN 7.x-1.16 <../components/datastore.html#important-notes-when-upgrading-dkan-from-previous-versions-to-7-x-1-16>`_
+In order to get data for specific fields, you need to add the argument 'fields' as an array to your request:
+
+::
+
+    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&fields[]=country
+
+If you wish to get multiple fields, add the 'fields[]' parameter followed by the field name as many times as fields needed, for example:
+
+::
+
+    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&fields[]=field_name_1&fields[]=field_name_2
+
+Important Note: if the resource you are querying has a file with column names which contains spaces or capital letters (e.g. 'School Name'), you should NOT specify the field in the request in that way, instead, it should be referenced as lower case with underscores instead of spaces (e.g. school_name).
+
+Read more about changes to the Datastore after upgrading to DKAN 7.x-1.16 `here <../components/datastore.html#important-notes-when-upgrading-dkan-to-7-x-1-16-from-previous-versions>`_
+
+Filters
+~~~~~~~
+
+If you wish to filter data based on the value of a field, you'll need to specify the 'filters' parameter in the request, it should be formatted like:
+
+::
+
+    filters[field_name_1]=value,value2
+
+When you need to specify filters for multiple fields, then you'll just join them with &, like this:
+
+::
+
+    filters[field_name_1]=value&filters[field_name_2]=value2
+
+So, for example you could execute the query:
+
+::
+
+    http://example.com/api/dataset/search?resource_id=d3c099c6-1340-4ee5-b030-8faf22b4b424&filters[country]=AR,US
+
+That query will return the records in which the 'country' is set to US or AR.
