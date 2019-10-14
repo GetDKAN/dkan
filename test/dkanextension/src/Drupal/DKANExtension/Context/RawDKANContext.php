@@ -120,7 +120,8 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     if (!module_exists('captcha')) {
       return;
     }
-
+    $module_list = ['image_captcha', 'recaptcha', 'captcha'];
+    module_disable($module_list);
     // Need to both disable the validation function for the captcha
     // AND disable the appearence of the captcha form field
     module_load_include('inc', 'captcha', 'captcha');
@@ -162,11 +163,8 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
    */
   public function afterCaptcha()
   {
-    // Nothing to do.
-    if (!module_exists('captcha')) {
-      return;
-    }
-
+    $module_list = ['image_captcha', 'recaptcha', 'captcha'];
+    module_enable($module_list);
     module_load_include('inc', 'captcha', 'captcha');
     variable_set('disable_captcha', FALSE);
     captcha_set_form_id_setting('user_login', 'default');
