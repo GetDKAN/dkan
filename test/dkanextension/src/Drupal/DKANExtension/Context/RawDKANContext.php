@@ -120,8 +120,7 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     if (!module_exists('captcha')) {
       return;
     }
-    $module_list = ['image_captcha', 'recaptcha', 'captcha'];
-    module_disable($module_list);
+
     // Need to both disable the validation function for the captcha
     // AND disable the appearence of the captcha form field
     module_load_include('inc', 'captcha', 'captcha');
@@ -131,6 +130,7 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     captcha_set_form_id_setting('user_register_form', 'none');
     captcha_set_form_id_setting('feedback_node_form', 'none');
     captcha_set_form_id_setting('comment_node_feedback_form', 'none');
+    captcha_set_form_id_setting('comment_node_dataset_form', 'none');
   }
 
   /**
@@ -163,8 +163,10 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
    */
   public function afterCaptcha()
   {
-    $module_list = ['image_captcha', 'recaptcha', 'captcha'];
-    module_enable($module_list);
+    // Nothing to do.
+    if (!module_exists('captcha')) {
+      return;
+    }
     module_load_include('inc', 'captcha', 'captcha');
     variable_set('disable_captcha', FALSE);
     captcha_set_form_id_setting('user_login', 'default');
@@ -172,6 +174,7 @@ class RawDKANContext extends RawDrupalContext implements DKANAwareInterface {
     captcha_set_form_id_setting('user_register_form', 'none');
     captcha_set_form_id_setting('feedback_node_form', 'default');
     captcha_set_form_id_setting('comment_node_feedback_form', 'default');
+    captcha_set_form_id_setting('comment_node_dataset_form', 'default');
   }
 
   public function setEntityStore(EntityStore $entityStore) {
