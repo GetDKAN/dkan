@@ -261,7 +261,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/open_data_schema_map.git
-      branch: 7.x-2.5
+      tag: 7.x-2.5
   panelizer:
     version: '3.4'
   panels:
