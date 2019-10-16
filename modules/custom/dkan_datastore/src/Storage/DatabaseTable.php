@@ -63,7 +63,7 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
   /**
    * Store data.
    */
-  public function store(string $data, string $id = NULL): string {
+  public function store($data, string $id = NULL): string {
     if (!$this->schema) {
       throw new \Exception("Schema is required.");
     }

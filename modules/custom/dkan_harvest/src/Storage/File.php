@@ -42,7 +42,7 @@ class File implements RetrieverInterface, StorerInterface, RemoverInterface, Bul
   /**
    * Public.
    */
-  public function store(string $data, string $id = NULL): string {
+  public function store($data, string $id = NULL): string {
     $file_path = "{$this->directoryPath}/{$id}.json";
     $result = $this->getFileHelper()
       ->filePutContents($file_path, $data);
