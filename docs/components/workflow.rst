@@ -72,7 +72,7 @@ All of the aforementioned dependencies are declared in the `drupal-org.make
 .. _`workflow-roles`:
 
 Workflow Roles and Permissions
-=============================
+==============================
 
 The three Workflow roles correspond with the three core DKAN `roles and permissions <http://dkan.readthedocs.io/en/latest/components/permissions.html>`_ If a user is given a Workflow role, they must also be granted the corresponding core DKAN role.
 
@@ -112,7 +112,7 @@ When logged in as a user that has been assigned a Workbench role, the "My Workbe
 .. image:: ../images/workflow/dkan_workflow_main_interface.png
 
 The "My Workbench" Moderation Toolbar
-------------------------------------
+-------------------------------------
 
 :My content: This tab provides a list of all of the content you've created.
 
