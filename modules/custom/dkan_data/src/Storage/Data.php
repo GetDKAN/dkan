@@ -114,7 +114,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * {@inheritDoc}.
    */
-  public function store(string $data, string $id = NULL): string {
+  public function store($data, string $id = NULL): string {
 
     if (!isset($this->schemaId)) {
       throw new \Exception("Data schemaId not set in store().");
