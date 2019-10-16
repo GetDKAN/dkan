@@ -4,7 +4,7 @@ DKAN is open source and flexible: you can download it for free and run it on you
 
 ## Download and run DKAN on your server
 
-DKAN is based on the open source </a><a href="https://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [installation](../installation/index.rst) section of this site.
+DKAN is based on the open source </a><a href="https://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [installation](../installation/index.html) section of this site.
 
 ## Hosting Partners
 
@@ -18,7 +18,7 @@ You can register for a free account [here](https://www.getpantheon.com/). Once y
 
 ![Pantheon new site form](../images/Pantheon_Dashboard.png)
 
-Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation.md).
+Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation/basic.html).
 
 #### Using Terminus
 
@@ -66,4 +66,4 @@ Acquia offers a "single-click" installation of DKAN. While this is labelled as a
 
 #### Maintaining a DKAN Site on Acquia
 
-Updates to DKAN are released frequently. Acquia will not push these updates to your instance automatically, but you can keep your codebase up-to-date using your own workflow, or following our general [Upgrade Instructions](../development/maintaining.md).
+Updates to DKAN are released frequently. Acquia will not push these updates to your instance automatically, but you can keep your codebase up-to-date using your own workflow, or following our general [Upgrade Instructions](maintaining.html).
