@@ -56,11 +56,14 @@ Click the '+' on the filter editor to add one or more filters to limit the data 
 Multiple filters will be applied with the AND operator (all criteria must be met for the data to be included in the chart).
 
 1. Create a filter
+
   * Select the field you would like to filter by.
   * Select filter type: Select Value to filter by strings (labels), select Range to filter by numerical values, and select Geo distance to filter by geographical data.
   * Click **Add**
   * Value filters check for exact matches (no partial text matches; use the Query Editor instead if you need to search for partial text matches)
+
 2. Configure the filter
+
   * Fill in the fields to complete the filter.
   * Click **Update** to reload the chart.
 
