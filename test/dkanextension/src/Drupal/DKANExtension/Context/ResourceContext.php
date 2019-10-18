@@ -91,4 +91,24 @@ class ResourceContext extends RawDKANEntityContext{
       throw new \InvalidArgumentException(sprintf('Preview of type %s not found on page.', $previewtype));
     }
   }
+
+  /**
+   * @BeforeScenario @add_filehash
+   */
+  public function addFilehash(BeforeScenarioScope $event)
+  {
+    // Enable 'filehash' module.
+    module_enable(array('filehash'));
+    // Set options to hash files with SHA-512
+    variable_set('filehash_algos', ["sha512" => "sha512", "md5" => 0, "sha1" => 0, "sha256" => 0]);
+  }
+
+  /**
+   * @AfterScenario @remove_filehash
+   */
+  public function removeFilehash(AfterScenarioScope $event)
+  {
+    // Disable 'filehash' module.
+    module_disable(array('filehash'));
+  }
 }
