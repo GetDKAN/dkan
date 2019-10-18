@@ -724,3 +724,21 @@ body .node-dataset #data-and-resources ul.resource-list li .orig {
 .field-name-field-data-dictionary .text-format-wrapper .description {
   margin-bottom: 10px;
 }
+.file-hash {
+  word-wrap: break-word;
+  font-size: 12px;
+  line-height: 1.2;
+  margin: 6px 0;
+  color: #888888;
+}
+.file-hash--content {
+  border-style: solid;
+  width: 80%;
+}
+td .file-hash--content {
+  background-color:inherit;
+  width:100%;
+}
+.file-hash--label {
+  font-weight: bold;
+}
