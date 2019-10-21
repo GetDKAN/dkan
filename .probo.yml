@@ -29,15 +29,15 @@ steps:
       echo "Run make"
       dktl make
       ln -s $SRC_DIR/docroot /var/www/html
-      chmod 777 /var/www/html/sites/default
-      chmod 777 $SRC_DIR/src/site
-      chmod -R 777 $SRC_DIR/src/site/files
       chmod -R 777 /var/www/html/sites/default/files
-      
+
       chmod +w docroot/sites/default/settings.php
       printf "// Docker Database Settings\n\$databases['default']['default'] = array(\n  'database' => 'dkan',\n  'username' => 'root',\n  'password' => 'strongpassword',\n  'host' => 'localhost',\n  'port' => '',\n  'driver' => 'mysql',\n  'prefix' => '',\n);\n" >> docroot/sites/default/settings.php
+      chmod -w docroot/sites/default/settings.php
       
       echo "Run install" 
-      dktl drush site-install dkan --db-url=mysql://root:strongpassword@127.0.0.1/dkan
+      dktl drush site-install dkan --site-name='DKAN' --db-url=mysql://root:strongpassword@127.0.0.1/dkan
+      chown -R www-data:www-data /var/www/html/sites/default/files
       dktl deploy test
+      dktl drush user-password admin --password="admin"
       dktl test:qa-users
