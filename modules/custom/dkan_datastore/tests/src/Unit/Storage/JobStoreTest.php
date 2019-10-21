@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Storage;
 
+use Contracts\Mock\Storage\Memory;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Delete;
 use Drupal\Core\Database\Query\Select;
@@ -25,7 +26,7 @@ class JobStoreTest extends TestCase {
     $chain = (new Chain($this))
       ->add(Connection::class, "blah", "blah");
 
-    $jobStore = new JobStore($chain->getMock());
+    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
     $this->assertTrue(is_object($jobStore));
   }
 
@@ -33,7 +34,7 @@ class JobStoreTest extends TestCase {
    *
    */
   public function testRetrieve() {
-    $job_data = json_encode(new FileFetcher("file://" . __DIR__ . "/../../../data/countries.csv"));
+    $job_data = json_encode($this->getFileFetcher());
     $job = (object) [];
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
@@ -47,15 +48,15 @@ class JobStoreTest extends TestCase {
       ->add(Select::class, 'execute', Statement::class)
       ->add(Statement::class, 'fetch', $job);
 
-    $jobStore = new JobStore($chain->getMock());
-    $this->assertTrue(is_object($jobStore->retrieve("1", FileFetcher::class)));
+    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
+    $this->assertEquals($job_data, $jobStore->retrieve("1", FileFetcher::class));
   }
 
   /**
    *
    */
   public function testRetrieveAll() {
-    $job_data = json_encode(new FileFetcher("file://" . __DIR__ . "/../../../data/countries.csv"));
+    $job_data = json_encode($this->getFileFetcher());
     $job = (object) [];
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
@@ -68,7 +69,7 @@ class JobStoreTest extends TestCase {
       ->add(Select::class, 'execute', Statement::class)
       ->add(Statement::class, 'fetchAll', [$job]);
 
-    $jobStore = new JobStore($chain->getMock());
+    $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
     $this->assertTrue(is_array($jobStore->retrieveAll(FileFetcher::class)));
   }
 
@@ -76,7 +77,7 @@ class JobStoreTest extends TestCase {
    *
    */
   public function testStore() {
-    $jobObject = new FileFetcher("file://" . __DIR__ . "/../../../data/countries.csv");
+    $jobObject = $this->getFileFetcher();
 
     $job_data = json_encode($jobObject);
     $job = (object) [];
@@ -84,7 +85,7 @@ class JobStoreTest extends TestCase {
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
 
-    $chain = (new Chain($this))
+    $connection = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", TRUE)
       ->add(Connection::class, 'select', Select::class, 'select_1')
@@ -95,27 +96,36 @@ class JobStoreTest extends TestCase {
       ->add(Connection::class, 'update', Update::class)
       ->add(Update::class, "fields", Update::class)
       ->add(Update::class, "condition", Update::class)
-      ->add(Update::class, "execute", NULL);
+      ->add(Update::class, "execute", NULL)
+      ->getMock();
 
-    $jobStore = new JobStore($chain->getMock());
+    $jobStore = new JobStore(FileFetcher::class, $connection);
 
-    $this->assertEquals("", $jobStore->store("1", $jobObject));
+    $this->assertEquals("1", $jobStore->store(json_encode($jobObject), "1"));
   }
 
   /**
    *
    */
   public function testRemove() {
-    $chain = (new Chain($this))
+    $connection = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", TRUE)
       ->add(Connection::class, "delete", Delete::class)
       ->add(Delete::class, "condition", Delete::class)
-      ->add(Delete::class, "execute", NULL);
+      ->add(Delete::class, "execute", NULL)
+      ->getMock();
 
-    $jobStore = new JobStore($chain->getMock());
+    $jobStore = new JobStore(FileFetcher::class, $connection);
 
     $this->assertEquals("", $jobStore->remove("1", FileFetcher::class));
+  }
+
+  /**
+   *
+   */
+  private function getFileFetcher() {
+    return FileFetcher::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../../data/countries.csv"]);
   }
 
 }

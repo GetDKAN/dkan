@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_datastore\Storage;
 
+use Contracts\RetrieverInterface;
+use Contracts\StorerInterface;
 use Procrastinator\Job\Job;
 use Drupal\Core\Database\Connection;
 
@@ -10,7 +12,7 @@ use Drupal\Core\Database\Connection;
  *
  * @todo should probably be a service in its own module.
  */
-class JobStore {
+class JobStore implements StorerInterface, RetrieverInterface {
 
   /**
    * The database connection to use for querrying jobstore tables.
@@ -19,44 +21,76 @@ class JobStore {
    */
   private $connection;
 
+  private $jobClass;
+
   /**
    * Constructor.
    */
-  public function __construct(Connection $connection) {
+  public function __construct(string $jobClass, Connection $connection) {
+    $this->jobClass = $jobClass;
     $this->connection = $connection;
   }
 
   /**
    * Get.
    */
-  public function retrieve(string $uuid, string $jobClass) {
-    $tableName = $this->getTableName($jobClass);
+  public function retrieve(string $identifier) {
+    $tableName = $this->getTableName($this->jobClass);
 
-    $this->validateJobClassAndTableExistence($jobClass, $tableName);
+    $this->validateJobClassAndTableExistence($this->jobClass, $tableName);
 
     $result = $this->connection->select($tableName, 't')
       ->fields('t', ['job_data'])
-      ->condition('ref_uuid', $uuid)
+      ->condition('ref_uuid', $identifier)
       ->execute()
       ->fetch();
-    if (!empty($result)) {
-      $job = $jobClass::hydrate($result->job_data);
+
+    return $result->job_data;
+  }
+
+  /**
+   * Store.
+   */
+  public function store($data, string $id = NULL): string {
+    $tableName = $this->getTableName($this->jobClass);
+
+    if (!$this->tableExists($tableName)) {
+      $this->createTable($tableName);
     }
-    if (isset($job) && ($job instanceof $jobClass)) {
-      return $job;
+
+    $existing_id = $this->connection->select($tableName, 't')
+      ->fields('t', ['jid'])
+      ->condition('ref_uuid', $id)
+      ->execute()
+      ->fetch();
+
+    $values = ['ref_uuid' => $id, 'job_data' => $data];
+    if (!$existing_id) {
+      $q = $this->connection->insert($tableName);
+      $q->fields(array_keys($values))
+        ->values(array_values($values))
+        ->execute();
     }
+    else {
+      $q = $this->connection->update($tableName);
+      $q->fields($values)
+        ->condition('jid', $existing_id->jid)
+        ->execute();
+    }
+
+    return $id;
   }
 
   /**
    * Retrieve all.
    */
-  public function retrieveAll(string $jobClass): array {
-    $tableName = $this->getTableName($jobClass);
+  public function retrieveAll(): array {
+    $tableName = $this->getTableName($this->jobClass);
 
-    $this->validateJobClassAndTableExistence($jobClass, $tableName);
+    $this->validateJobClassAndTableExistence($this->jobClass, $tableName);
 
     $result = $this->connection->select($tableName, 't')
-      ->fields('t', ['ref_uuid', 'job_data'])
+      ->fields('t', ['ref_uuid'])
       ->execute()
       ->fetchAll();
 
@@ -64,13 +98,9 @@ class JobStore {
       throw new \Exception("No data in table: $tableName");
     }
 
-    return array_reduce($result, function ($carry, $item) use ($jobClass) {
-      $job = $jobClass::hydrate($item->job_data);
-      if (isset($job) && ($job instanceof $jobClass)) {
-        $carry[$item->ref_uuid] = $job;
-      }
-      return $carry;
-    }, []);
+    return array_map(function ($item) {
+      return $item->ref_uuid;
+    }, $result);
   }
 
   /**
@@ -87,43 +117,10 @@ class JobStore {
   }
 
   /**
-   * Store.
-   */
-  public function store(string $uuid, Job $job) {
-    $jobClass = get_class($job);
-    $tableName = $this->getTableName($jobClass);
-
-    if (!$this->tableExists($tableName)) {
-      $this->createTable($tableName);
-    }
-
-    $existing_id = $this->connection->select($tableName, 't')
-      ->fields('t', ['jid'])
-      ->condition('ref_uuid', $uuid)
-      ->execute()
-      ->fetch();
-
-    $data = json_encode($job);
-    $values = ['ref_uuid' => $uuid, 'job_data' => $data];
-    if (!$existing_id) {
-      $q = $this->connection->insert($tableName);
-      $q->fields(array_keys($values))
-        ->values(array_values($values))
-        ->execute();
-    }
-    else {
-      $q = $this->connection->update($tableName);
-      $q->fields($values)
-        ->condition('jid', $existing_id->jid)
-        ->execute();
-    }
-  }
-
-  /**
    * Remove.
    */
-  public function remove($uuid, $jobClass) {
-    $tableName = $this->getTableName($jobClass);
+  public function remove($uuid) {
+    $tableName = $this->getTableName($this->jobClass);
     $this->connection->delete($tableName)
       ->condition('ref_uuid', $uuid)
       ->execute();

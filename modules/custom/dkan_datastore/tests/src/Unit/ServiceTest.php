@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\dkan_datastore\Storage\JobStore;
+use Drupal\dkan_datastore\Storage\JobStoreFactory;
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan_datastore\Service;
 use Drupal\Component\DependencyInjection\Container;
@@ -28,7 +28,7 @@ class ServiceTest extends TestCase {
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
       ->add('dkan_datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
-      ->add('dkan_datastore.job_store', JobStore::class);
+      ->add('dkan_datastore.job_store_factory', JobStoreFactory::class);
 
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
@@ -54,7 +54,7 @@ class ServiceTest extends TestCase {
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
       ->add('dkan_datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
-      ->add('dkan_datastore.job_store', JobStore::class);
+      ->add('dkan_datastore.job_store_factory', JobStoreFactory::class);
 
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
