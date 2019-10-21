@@ -77,7 +77,7 @@ class Drush extends DrushCommands {
    * @command dkan-datastore:list
    */
   public function list() {
-    $list = $this->datastoreService->listStoredImporters();
+    $list = $this->datastoreService->list();
     $rows = [];
     foreach ($list as $uuid => $item) {
       $row = [

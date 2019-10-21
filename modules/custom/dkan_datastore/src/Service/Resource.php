@@ -2,13 +2,13 @@
 
 namespace Drupal\dkan_datastore\Service;
 
+use Drupal\dkan_datastore\Storage\JobStoreFactory;
 use Procrastinator\Result;
 use FileFetcher\FileFetcher;
 use Dkan\Datastore\Resource as R;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\File\FileSystem;
 use Drupal\node\NodeInterface;
-use Drupal\dkan_datastore\Storage\JobStore;
 
 /**
  * Class Resource.
@@ -19,7 +19,7 @@ class Resource {
   private $uuid;
   private $entityRepository;
   private $fileSystem;
-  private $jobStore;
+  private $jobStoreFactory;
 
   /**
    * Constructor.
@@ -28,12 +28,12 @@ class Resource {
     string $uuid,
     EntityRepository $entityRepository,
     FileSystem $fileSystem,
-    JobStore $jobStore
+    JobStoreFactory $jobStoreFactory
   ) {
     $this->uuid = $uuid;
     $this->entityRepository = $entityRepository;
     $this->fileSystem = $fileSystem;
-    $this->jobStore = $jobStore;
+    $this->jobStoreFactory = $jobStoreFactory;
   }
 
   /**
@@ -41,28 +41,20 @@ class Resource {
    *
    * @param bool $useFileFetcher
    *   If file fetcher was used, get path from the file fetcher.
+   * @param bool $runFileFetcher
+   *   If file fetcher was used, run it.
    *
    * @return \Dkan\Datastore\Resource
    *   Datastore resource object.
    */
-  public function get($useFileFetcher = FALSE): ?R {
+  public function get($useFileFetcher = FALSE, $runFileFetcher = TRUE): ?R {
     $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);
     if (!$node) {
       return NULL;
     }
 
     if ($useFileFetcher == TRUE) {
-      $fileFetcher = $this->getFileFetcher($this->uuid);
-      $fileFetcher->run();
-      $this->jobStore->store($this->uuid, $fileFetcher);
-
-      if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
-        return NULL;
-      }
-
-      $json = $fileFetcher->getResult()->getData();
-      $fileData = json_decode($json);
-      return new R($node->id(), $fileData->destination);
+      return $this->getResourceFromFileFetcher($node, $runFileFetcher);
     }
     else {
       return new R($node->id(), $this->getResourceFilePathFromNode($node));
@@ -83,29 +75,31 @@ class Resource {
    * @codeCoverageIgnore
    */
   protected function getFileFetcherInstance($filePath, $tmpDirectory) {
-    $fileFetcher = new FileFetcher($filePath, $tmpDirectory);
+    $fileFetcher = FileFetcher::get($this->uuid, $this->jobStoreFactory->getInstance(FileFetcher::class), [
+      'filePath' => $filePath,
+      'temporaryDirectory' => $tmpDirectory,
+    ]);
     $fileFetcher->setTimeLimit(self::DEFAULT_TIMELIMIT);
     return $fileFetcher;
   }
 
   /**
-   * Private.
+   * Get FileFetcher.
    */
-  private function getFileFetcher(): FileFetcher {
-    if (!$fileFetcher = $this->getStoredFileFetcher($this->uuid)) {
-      $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);
-      $filePath = $this->getResourceFilePathFromNode($node);
+  public function getFileFetcher(): FileFetcher {
 
-      $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
-      $this->fileSystem->prepareDirectory($tmpDirectory, FileSystem::CREATE_DIRECTORY | FileSystem::MODIFY_PERMISSIONS);
+    $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);
 
-      $fileFetcher = $this->getFileFetcherInstance($filePath, $tmpDirectory);
-      $this->jobStore->store($this->uuid, $fileFetcher);
+    if (!$node) {
+      throw new \Exception("No node found for uuid {$this->uuid}");
     }
-    if (!($fileFetcher instanceof FileFetcher)) {
-      throw new \Exception("Could not load file-fetcher for uuid $this->uuid");
-    }
-    return $fileFetcher;
+
+    $filePath = $this->getResourceFilePathFromNode($node);
+
+    $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
+    $this->fileSystem->prepareDirectory($tmpDirectory, FileSystem::CREATE_DIRECTORY | FileSystem::MODIFY_PERMISSIONS);
+
+    return $this->getFileFetcherInstance($filePath, $tmpDirectory);
   }
 
   /**
@@ -144,11 +138,20 @@ class Resource {
   /**
    * Private.
    */
-  private function getStoredFileFetcher(): ?FileFetcher {
-    if ($fileFetcher = $this->jobStore->retrieve($this->uuid, FileFetcher::class)) {
-      return $fileFetcher;
+  private function getResourceFromFileFetcher($node, $runFileFetcher) {
+    $fileFetcher = $this->getFileFetcher($this->uuid);
+
+    if ($runFileFetcher) {
+      $fileFetcher->run();
     }
-    return NULL;
+
+    if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
+      return NULL;
+    }
+
+    $json = $fileFetcher->getResult()->getData();
+    $fileData = json_decode($json);
+    return new R($node->id(), $fileData->destination);
   }
 
 }

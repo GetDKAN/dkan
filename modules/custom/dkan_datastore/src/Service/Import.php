@@ -5,7 +5,7 @@ namespace Drupal\dkan_datastore\Service;
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
-use Drupal\dkan_datastore\Storage\JobStore;
+use Drupal\dkan_datastore\Storage\JobStoreFactory;
 use Procrastinator\Result;
 use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
@@ -17,15 +17,15 @@ class Import {
   const DEFAULT_TIMELIMIT = 50;
 
   private $resource;
-  private $jobStore;
+  private $jobStoreFactory;
   private $databaseTableFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(Resource $resource, JobStore $jobStore, DatabaseTableFactory $databaseTableFactory) {
+  public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
     $this->resource = $resource;
-    $this->jobStore = $jobStore;
+    $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
 
@@ -35,7 +35,6 @@ class Import {
   public function import() {
     $importer = $this->getImporter();
     $importer->run();
-    $this->jobStore->store($this->resource->getId(), $importer);
   }
 
   /**
@@ -55,29 +54,20 @@ class Import {
    * @throws \Exception
    *   Throws exception if cannot create valid importer object.
    */
-  private function getImporter(): Importer {
-    if (!$importer = $this->getStoredImporter()) {
-      $importer = new Importer($this->resource, $this->getStorage(), Csv::getParser());
-      $importer->setTimeLimit(self::DEFAULT_TIMELIMIT);
-      $this->jobStore->store($this->resource->getId(), $importer);
-    }
-    if (!($importer instanceof Importer)) {
-      throw new \Exception("Could not load importer for resource {$this->resource->getId()}");
-    }
-    return $importer;
-  }
+  public function getImporter(): Importer {
 
-  /**
-   * Get a stored importer.
-   *
-   * @return \Dkan\Datastore\Importer|Null
-   *   Importer object.
-   */
-  private function getStoredImporter(): ?Importer {
-    if ($importer = $this->jobStore->retrieve($this->resource->getId(), Importer::class)) {
-      return $importer;
-    }
-    return NULL;
+    $importer = Importer::get($this->resource->getId(),
+      $this->jobStoreFactory->getInstance(Importer::class),
+      [
+        "storage" => $this->getStorage(),
+        "parser" => Csv::getParser(),
+        "resource" => $this->resource,
+      ]
+    );
+
+    $importer->setTimeLimit(self::DEFAULT_TIMELIMIT);
+
+    return $importer;
   }
 
   /**
