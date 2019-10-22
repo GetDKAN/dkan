@@ -1,5 +1,5 @@
 dkan_lunr.search:
-  path: '/api/v1/search-index.json'
+  path: '/api/1/lunr/search-index.json'
   defaults:
    { _controller: '\Drupal\dkan_lunr\Controller\ApiController::search'}
   requirements:
