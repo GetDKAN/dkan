@@ -44,7 +44,6 @@ jobs:
             fi'
             cat src/make/composer.json
             dktl make
-            dktl updatedrush -y
             rm -rf ./docroot/profiles/contrib/dkan2
             mv ~/project ./docroot/profiles/contrib/dkan2
             ls -lha ./docroot/profiles/contrib/dkan2

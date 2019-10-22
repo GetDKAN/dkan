@@ -9,6 +9,7 @@
         "bower-asset/json-forms": "1.6.3",
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
+        "drush/drush": "^9.7.1",
         "drupal/config_update": "1.x-dev",
         "drupal/entity": "1.0.0-rc1",
         "fmizzell/json_form": "dev-8.x-1.x",
