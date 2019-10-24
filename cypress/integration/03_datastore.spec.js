@@ -49,7 +49,7 @@ context('Datastore API', () => {
       distribution: [
         {
           "@type": "dcat:Distribution",
-          downloadURL: "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv",
+          downloadURL: "https://dkan-default-content-files.s3.amazonaws.com/district_centerpoints_small.csv",
           mediaType: "text/csv",
           format: "csv",
           description: "<p>You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.</p>",
@@ -126,8 +126,8 @@ context('Datastore API', () => {
     cy.request(apiUri + '/datastore/imports/' + resource_identifier).then((response) => {
       expect(response.status).eql(200);
       expect(response.body.columns).eql(expected_columns);
-      expect(response.body.numOfRows).eql(399);
-      expect(response.body.numOfColumns).eql(9);
+      expect(response.body.numOfRows).eql(2);
+      expect(response.body.numOfColumns).eql(5);
     });
 
     // Delete.

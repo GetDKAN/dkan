@@ -75,7 +75,7 @@ context('SQL Endpoint', () => {
       distribution: [
         {
           "@type": "dcat:Distribution",
-          downloadURL: "http://demo.getdkan.com/sites/default/files/district_centerpoints_0.csv",
+          downloadURL: "https://dkan-default-content-files.s3.amazonaws.com/district_centerpoints_small.csv",
           mediaType: "text/csv",
           format: "csv",
           description: "<p>You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.</p>",
@@ -115,7 +115,7 @@ context('SQL Endpoint', () => {
         }
       }).then((response) => {
         expect(response.status).eql(200)
-        expect(response.body.length).eql(399)
+        expect(response.body.length).eql(2)
         cy.fixture('electionDistricts').then((json) => {
           json.properties.forEach((x) => {
             expect(response.body[0].hasOwnProperty(x)).equal(true)
@@ -134,7 +134,7 @@ context('SQL Endpoint', () => {
         }
       }).then((response) => {
         expect(response.status).eql(200)
-        expect(response.body.length).eql(399)
+        expect(response.body.length).eql(2)
         let properties = [
           "lat",
           "lon"
@@ -150,7 +150,7 @@ context('SQL Endpoint', () => {
 
   context('WHERE', () => {
     it('Single condition', () => {
-      let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah'];`
+      let query = `[SELECT * FROM ${resource_identifier}][WHERE dist_name = 'Pusht Rod'];`
       cy.request({
         method: 'GET',
         url: apiUri + '/datastore/sql',
@@ -159,12 +159,12 @@ context('SQL Endpoint', () => {
         }
       }).then((response) => {
         expect(response.status).eql(200)
-        expect(response.body.length).eql(11)
+        expect(response.body.length).eql(1)
       })
     })
 
     it('Multiple conditions', () => {
-      let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah' AND dist_name = 'Farah'];`
+      let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah' AND dist_name = 'Pusht Rod'];`
       cy.request({
         method: 'GET',
         url: apiUri + '/datastore/sql',
@@ -182,7 +182,7 @@ context('SQL Endpoint', () => {
   context('ORDER BY', () => {
 
     it('Ascending explicit', () => {
-      let query = `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC];`
+      let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC];`
       cy.request({
         method: 'GET',
         url: apiUri + '/datastore/sql',
@@ -191,13 +191,13 @@ context('SQL Endpoint', () => {
         }
       }).then((response) => {
         expect(response.status).eql(200)
-        expect(response.body.length).eql(399)
-        expect(response.body[0].prov_name).eql("Badakhshan")
+        expect(response.body.length).eql(2)
+        expect(response.body[0].dist_name).eql("Pusht Rod")
       })
     })
 
     it('Descending explicit', () => {
-      let query = `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name DESC];`
+      let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name DESC];`
       cy.request({
         method: 'GET',
         url: apiUri + '/datastore/sql',
@@ -206,8 +206,8 @@ context('SQL Endpoint', () => {
         }
       }).then((response) => {
         expect(response.status).eql(200)
-        expect(response.body.length).eql(399)
-        expect(response.body[0].prov_name).eql("Zabul")
+        expect(response.body.length).eql(2)
+        expect(response.body[0].dist_name).eql("Qala-e-Kah")
       })
     })
 
@@ -215,7 +215,7 @@ context('SQL Endpoint', () => {
 
   context('LIMIT and OFFSET', () => {
     it('Limit only', () => {
-      let query = `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC][LIMIT 5];`
+      let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC][LIMIT 1];`
       cy.request({
         method: 'GET',
         url: apiUri + '/datastore/sql',
@@ -224,13 +224,13 @@ context('SQL Endpoint', () => {
         }
       }).then((response) => {
         expect(response.status).eql(200)
-        expect(response.body.length).eql(5)
-        expect(response.body[0].prov_name).eql("Badakhshan")
+        expect(response.body.length).eql(1)
+        expect(response.body[0].dist_name).eql("Pusht Rod")
       })
     })
 
     it('Limit and offset', () => {
-      let query = `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC][LIMIT 5 OFFSET 100];`
+      let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC][LIMIT 1 OFFSET 1];`
       cy.request({
         method: 'GET',
         url: apiUri + '/datastore/sql',
@@ -239,8 +239,8 @@ context('SQL Endpoint', () => {
         }
       }).then((response) => {
         expect(response.status).eql(200)
-        expect(response.body.length).eql(5)
-        expect(response.body[0].prov_name).eql("Faryab")
+        expect(response.body.length).eql(1)
+        expect(response.body[0].dist_name).eql("Qala-e-Kah")
       })
     })
 
