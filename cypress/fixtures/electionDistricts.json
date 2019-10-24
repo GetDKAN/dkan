@@ -5,10 +5,6 @@
     "lat",
     "unit_type",
     "dist_name",
-    "prov_name",
-    "dari_dist",
-    "dari_prov",
-    "dist_id",
-    "prov_id"
+    "prov_name"
   ]
 }
