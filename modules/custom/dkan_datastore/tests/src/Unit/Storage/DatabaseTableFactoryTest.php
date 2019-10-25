@@ -33,7 +33,8 @@ class DatabaseTableFactoryTest extends TestCase {
 
     $factory->method("getDatabaseTable")->willReturn($databaseTable);
 
-    $object = $factory->getInstance(json_encode(new Resource("blah", "")));
+    $resource = new Resource("blah", "");
+    $object = $factory->getInstance($resource->getId(), ['resource' => $resource]);
     $this->assertTrue($object instanceof DatabaseTable);
   }
 

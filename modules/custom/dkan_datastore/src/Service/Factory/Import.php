@@ -3,7 +3,6 @@
 namespace Drupal\dkan_datastore\Service\Factory;
 
 use Contracts\FactoryInterface;
-use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_datastore\Service\Import as Instance;
 use Drupal\dkan_datastore\Storage\JobStoreFactory;
@@ -32,9 +31,15 @@ class Import implements FactoryInterface {
    *
    * @inheritDoc
    */
-  public function getInstance(string $identifier) {
+  public function getInstance(string $identifier, array $config = []) {
+
+    if (!isset($config['resource'])) {
+      throw new \Exception("config['resource'] is required");
+    }
+
+    $resource = $config['resource'];
+
     if (!isset($this->services[$identifier])) {
-      $resource = Resource::hydrate($identifier);
       $this->services[$identifier] = new Instance($resource, $this->jobStoreFactory, $this->databaseTableFactory);
     }
 

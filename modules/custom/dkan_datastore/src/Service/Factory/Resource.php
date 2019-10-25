@@ -36,7 +36,7 @@ class Resource implements FactoryInterface {
    *
    * @inheritDoc
    */
-  public function getInstance(string $identifier) {
+  public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->services[$identifier])) {
       $this->services[$identifier] = new Instance($identifier, $this->entityRepository, $this->fileSystem, $this->jobStoreFactory);
     }

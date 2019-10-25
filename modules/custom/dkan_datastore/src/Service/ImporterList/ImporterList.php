@@ -46,8 +46,10 @@ class ImporterList {
     $store = $this->jobStoreFactory->getInstance(FileFetcher::class);
     foreach ($store->retrieveAll() as $id) {
       $fileFetchers[$id] = $this->resourceServiceFactory->getInstance($id)->getFileFetcher();
+
+      /* @var $resource \Dkan\Datastore\Resource */
       $resource = $this->resourceServiceFactory->getInstance($id)->get();
-      $importers[$id] = $this->importServiceFactory->getInstance(json_encode($resource))->getImporter();
+      $importers[$id] = $this->importServiceFactory->getInstance($resource->getId(), ['resource' => $resource])->getImporter();
     }
 
     foreach ($fileFetchers as $uuid => $fileFetcher) {

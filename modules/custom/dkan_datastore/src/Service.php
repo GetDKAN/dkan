@@ -69,13 +69,14 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
+    /* @var $resource \Dkan\Datastore\Resource */
     $resource = $resourceService->get(TRUE);
     if (!$resource) {
       $name = substr(strrchr(get_class($resourceService), "\\"), 1);
       return [$name => $resourceService->getResult()];
     }
 
-    $importService = $this->importServiceFactory->getInstance(json_encode($resource));
+    $importService = $this->importServiceFactory->getInstance($resource->getId(), ['resource' => $resource]);
     $importService->import();
 
     $rname = substr(strrchr(get_class($resourceService), "\\"), 1);
@@ -95,7 +96,10 @@ class Service implements ContainerInjectionInterface {
    *   all connected resources.
    */
   public function drop($uuid) {
-    $this->getStorage($uuid)->destroy();
+    $storage = $this->getStorage($uuid);
+    if ($storage) {
+      $storage->destroy();
+    }
     /* @var $resource \Dkan\Datastore\Resource */
     $resource = $this->resourceServiceFactory->getInstance($uuid)->get();
     $this->jobStoreFactory->getInstance(Importer::class)->remove($resource->getId());
@@ -140,9 +144,15 @@ class Service implements ContainerInjectionInterface {
    */
   public function getStorage(string $uuid) {
     $resourceService = $this->resourceServiceFactory->getInstance($uuid);
+
+    /* @var $resource \Dkan\Datastore\Resource */
     $resource = $resourceService->get();
-    $importService = $this->importServiceFactory->getInstance(json_encode($resource));
-    return $importService->getStorage();
+    if ($resource) {
+      $importService = $this->importServiceFactory->getInstance($resource->getId(),
+        ['resource' => $resource]);
+      return $importService->getStorage();
+    }
+    return NULL;
   }
 
 }

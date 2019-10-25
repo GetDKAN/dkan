@@ -3,7 +3,6 @@
 namespace Drupal\dkan_datastore\Storage;
 
 use Contracts\FactoryInterface;
-use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
 
 /**
@@ -11,14 +10,14 @@ use Drupal\Core\Database\Connection;
  */
 class DatabaseTableFactory implements FactoryInterface {
   private $connection;
-  private $databaseTables;
+
+  private $databaseTables = [];
 
   /**
    * Constructor.
    */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
-    $this->databaseTables = [];
   }
 
   /**
@@ -26,22 +25,22 @@ class DatabaseTableFactory implements FactoryInterface {
    *
    * @inheritDoc
    */
-  public function getInstance(string $identifier) {
-    /* @var $resource \Dkan\Datastore\Resource */
-    $resource = Resource::hydrate($identifier);
-    $id = $resource->getId();
-
-    if (!isset($this->databaseTables[$id])) {
-      $this->databaseTables[$id] = $this->getDatabaseTable($resource);
+  public function getInstance(string $identifier, array $config = []) {
+    if (!isset($config['resource'])) {
+      throw new \Exception("config['resource'] is required");
     }
 
-    return $this->databaseTables[$id];
+    $resource = $config['resource'];
+
+    if (!isset($this->databaseTables[$identifier])) {
+      $this->databaseTables[$identifier] = $this->getDatabaseTable($resource);
+    }
+
+    return $this->databaseTables[$identifier];
   }
 
   /**
    * Protected.
-   *
-   * @codeCoverageIgnore
    */
   protected function getDatabaseTable($resource) {
     return new DatabaseTable($this->connection, $resource);

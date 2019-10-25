@@ -103,8 +103,7 @@ class Api implements ContainerInjectionInterface {
    */
   private function getDatabaseTable($stateMachine) {
     $resource = $this->getResource($stateMachine);
-    $resourceId = json_encode($resource);
-    return $this->databaseTableFactory->getInstance($resourceId);
+    return $this->databaseTableFactory->getInstance($resource->getId(), ['resource' => $resource]);
   }
 
   /**

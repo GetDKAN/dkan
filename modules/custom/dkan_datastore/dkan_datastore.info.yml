@@ -3,3 +3,5 @@ description: 'A datastore for resources. '
 type: module
 core: 8.x
 package: DKAN
+dependencies:
+  - dkan_common

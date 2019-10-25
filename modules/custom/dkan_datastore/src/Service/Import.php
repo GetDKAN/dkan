@@ -77,7 +77,7 @@ class Import {
    *   DatabaseTable storage object.
    */
   public function getStorage(): DatabaseTable {
-    return $this->databaseTableFactory->getInstance(json_encode($this->resource));
+    return $this->databaseTableFactory->getInstance($this->resource->getId(), ['resource' => $this->resource]);
   }
 
 }

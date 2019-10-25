@@ -9,6 +9,7 @@ use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\Statement;
 use Drupal\dkan_common\Tests\Mock\Chain;
+use Drupal\dkan_common\Tests\Mock\Sequence;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\TableSummary;
 use PHPUnit\Framework\TestCase;
@@ -22,6 +23,7 @@ class DatabaseTableTest extends TestCase {
    *
    */
   public function testConstruction() {
+
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
       $this->getResource()
@@ -32,20 +34,26 @@ class DatabaseTableTest extends TestCase {
   /**
    *
    */
-  public function testRetrieve() {
-    $databaseTable = new DatabaseTable(
-      $this->getConnectionChain()->getMock(),
-      $this->getResource()
-    );
-    $this->assertEquals("1", $databaseTable->retrieve("1"));
-  }
-
-  /**
-   *
-   */
   public function testRetrieveAll() {
+
+    $fieldInfo = [
+      (object) ['Field' => "first_name"],
+      (object) ['Field' => "last_name"],
+    ];
+
+    $sequence = (new Sequence())
+      ->add($fieldInfo)
+      ->add([]);
+
+    $connection = $this->getConnectionChain()
+      ->add(Connection::class, "select", Select::class)
+      ->add(Select::class, "fields", Select::class)
+      ->add(Select::class, "execute", Statement::class)
+      ->add(Statement::class, 'fetchAll', $sequence)
+      ->getMock();
+
     $databaseTable = new DatabaseTable(
-      $this->getConnectionChain()->getMock(),
+      $connection,
       $this->getResource()
     );
     $this->assertEquals([], $databaseTable->retrieveAll());
@@ -59,13 +67,13 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', NULL);
+      ->add(Insert::class, 'execute', "1");
 
     $databaseTable = new DatabaseTable(
      $connectionChain->getMock(),
       $this->getResource()
     );
-    $this->assertEquals("SUCCESS", $databaseTable->store('["Gerardo", "Gonzalez"]'));
+    $this->assertEquals("1", $databaseTable->store('["Gerardo", "Gonzalez"]'));
   }
 
   /**
