@@ -52,6 +52,7 @@ class ApiTest extends TestCase {
       ->add(Config::class, 'get', 1000)
       ->add(ResourceServiceFactory::class, 'getInstance', ResourceService::class)
       ->add(ResourceService::class, 'get', Resource::class)
+      ->add(Resource::class, 'getId', "1")
       ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
       ->add(DatabaseTable::class, 'query', [])
       ->getMock();

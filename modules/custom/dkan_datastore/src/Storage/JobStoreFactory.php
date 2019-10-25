@@ -24,7 +24,7 @@ class JobStoreFactory implements FactoryInterface {
    *
    * @inheritDoc
    */
-  public function getInstance(string $identifier) {
+  public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->instances[$identifier])) {
       $this->instances[$identifier] = new JobStore($identifier, $this->connection);
     }

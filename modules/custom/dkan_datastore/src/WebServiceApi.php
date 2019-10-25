@@ -57,8 +57,12 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function summary($identifier) {
     try {
-      $data = $this->datastoreService->getStorage($identifier)->getSummary();
-      return $this->successResponse($data);
+      $storage = $this->datastoreService->getStorage($identifier);
+      if ($storage) {
+        $data = $storage->getSummary();
+        return $this->successResponse($data);
+      }
+      throw new \Exception("no storage");
     }
     catch (\Exception $e) {
       return $this->exceptionResponse(
