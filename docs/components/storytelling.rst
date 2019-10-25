@@ -62,16 +62,16 @@ Editing existing panels-based content
 
 1. Go to a panelized page (in this case the DKAN homepage) and click "Customize this page":
 
-  .. image:: ../images/customize-this-page.png
+  .. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/customize-this-page.png
 
 2. Use the drag and drop controls to rearrange a given pane, click and hold the directional arrows button on the top right corner of the panel, drag it below the region name you want it to display in, wait until you see a yellow space light up before you let go :
 
-  .. image:: ../images/drag-n-drop.png
+  .. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/drag-n-drop.png
 
 
 3. Save changes by clicking the save button at the bottom:
 
-	.. image:: ../images/ipe-save.png
+	.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/ipe-save.png
 
 
 Adding new panes to Panels-based pages
@@ -81,7 +81,7 @@ Adding new panes to Panels-based pages
 2. Click the "plus" sign ("+") to add a new pane to any given panel region.
 3. Select the type of content you would like to add:
 
-	.. image:: ../images/ipe-list.png
+	.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/ipe-list.png
 
 
   .. note::
@@ -102,16 +102,16 @@ Altering the layout of an existing page
 
 1. Go to the page you want to change the layout for and click **Change Layout**:
 
-	.. image:: ../images/change-layout.png
+	.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/change-layout.png
 
 2. Select new layout:
 
-	.. image:: ../images/layout-options.png
+	.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/layout-options.png
 
 3. Choose where existing panes belong in the new layout:
 
-	.. image:: ../images/arrange-content.png
+	.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/arrange-content.png
 
 4. Click Save (or Save as Custom) and enjoy the new page:
 
-	.. image:: ../images/ipe-save.png
+	.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/ipe-save.png

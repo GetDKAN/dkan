@@ -21,7 +21,7 @@ Workflow creates a moderation queue so that content is published to the live sit
 * **Needs Review** - The author feels the content is ready to go on public on the live site, and would like the supervisor to review it.
 * **Published** - The content is public and visible on the live site.
 
-.. figure:: ../images/workflow/dkan_workflow_screenshot.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/workflow/dkan_workflow_screenshot.png
 
 The above image displays what you see on My Workbench after login. The Workbench navigation bar contains your content, drafts, and more. The "Create Content" menu features a list of content types you can create.
 
@@ -41,7 +41,7 @@ section).
 
 You may also see a message instructing you to rebuild permissions. If so, click the "Rebuild permissions" link to update the node access settings.
 
-.. image:: ../images/rebuild-permissions-message.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/rebuild-permissions-message.png
 
 Requirements for DKAN Workflow
 --------------------------------
@@ -109,7 +109,7 @@ When logged in as a user that has been assigned a Workbench role, the "My Workbe
 
 "My Workbench" is also accessible directly via *admin/workbench*.
 
-.. image:: ../images/workflow/dkan_workflow_main_interface.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/workflow/dkan_workflow_main_interface.png
 
 The "My Workbench" Moderation Toolbar
 -------------------------------------
@@ -145,7 +145,7 @@ Authors and reviewers can change the node's
 moderation state and add a note about the change via the **Moderation notes**
 text area.
 
-.. image:: ../images/workflow/workflow_node_edit.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/workflow/workflow_node_edit.png
 
 Changing Notification Email Settings
 -------------------------------------

@@ -145,7 +145,7 @@ With the web installer
 
 -  Open a web browser and visit **http://YOURDKANSITE/install.php**:
 
-.. figure:: ../images/install-language.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/install-language.png
    :alt: Installation Screen
 
    Installation Screen
@@ -158,7 +158,7 @@ With the web installer
    corrected before installation can proceed. Instructions for
    correcting each error condition are provided.
 
-.. figure:: ../images/install-database.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/install-database.png
    :alt: Installation Screen - database config
 
    Installation Screen
@@ -168,7 +168,7 @@ With the web installer
    database name, database username, and database password, then click
    “Save to Continue” to proceed.
 
-.. figure:: ../images/install-progress.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/install-progress.png
    :alt: Progress Bar
 
    Progress Bar
@@ -177,7 +177,7 @@ With the web installer
    screen. Depending on your server resources, this may take several
    minutes.
 
-.. figure:: ../images/install-config-screen.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/install-config-screen.png
    :alt: Configuration Screen
 
    Configuration

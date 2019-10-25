@@ -53,7 +53,7 @@ Project Open Data (as well as most metadata APIs) includes many fields that are 
 
 To access the name property for filtering or overriding, you can set `publisher.name` in the first text box and the value you want to use in the second one.
 
-.. figure:: ../images/harvest-filters.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/harvest-filters.png
 
 Harvest sources also include a :ref:`Topics <topics>` field. Chose one or more topics to apply them to *every* dataset harvested from that source.
 
@@ -61,7 +61,7 @@ Now click **Save**. The datasets from the source will be cached, and you will se
 
 Click **Harvest Now**. The datasets that were cached will now be imported into your site.
 
-.. figure:: ../images/harvest-search.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/harvest-search.png
 
 Harvest Source nodes are viewable by the public and provide some basic metadata to the user.
 
@@ -88,12 +88,12 @@ From the admin menu, navigate to DKAN > DKAN Harvest Dashboard to view *harvest 
 :Migrate source(s): This will migrate the current cache for the selected sources, no matter how old it is.
 
 
-.. figure:: ../images/harvest-dashboard.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/harvest-dashboard.png
 
 
 Click on the title of a harvest source from the dashboard to see the details of that source. Administrative tasks can be accomplished from the tabs across the top.
 
-.. figure:: ../images/harvest-source-node.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/harvest-source-node.png
 
 :View: View the *harvest source* node.
 :Edit: Click to make changes to the configuration of the *harvest source*.

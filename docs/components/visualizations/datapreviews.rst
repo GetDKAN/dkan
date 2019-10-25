@@ -12,29 +12,29 @@ DKAN, like CKAN, offers an integration with the `Recline <http://reclinejs.com>`
 
 **Record limit:** The previews will display up to 100 records by default. You can use the pager to preview additional results based on the range given. If you want to preview more than 100 records at a time, adjust the max range value to the desired range.
 
-.. figure:: ../../images/pager.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/pager.png
 
 Grid View
 *********
 All tabular data can be rendered as spreadsheet-style rows and columns:
 
-.. figure:: ../../images/csv-preview.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/csv-preview.png
 
 .. [*] For xls files be sure to fill in the format field to see previews of the data
 
-.. figure:: ../../images/xls-format.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/xls-format.png
 
 Map View
 ********
 Visitors can preview data that contains either coordinates or GeoJSON on a `Leaflet.js <http://leafletjs.com/>`_ -based map:
 
-.. image:: ../../images/map-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/map-preview.png
 
 Graph View
 **********
 If enabled, visitors can chose one column of your data as an X-axis, one or more as Y-axis data, and preview your data as a bar, point or line graph.
 
-.. image:: ../../images/graph-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/graph-preview.png
 
 File size limits
 ****************
@@ -52,19 +52,19 @@ Zip files
 *********
 DKAN offers the ability to preview the files and folders locked in ZIP files. DKAN will display a list of contents for ZIP files uploaded as resources on datasets.
 
-.. image:: ../../images/zip-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/zip-preview.png
 
 Image files
 ***********
 Image files (JPG, PNG or GIF) uploaded as resources will be displayed directly on the resource page.
 
-.. image:: ../../images/image-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/image-preview.png
 
 Web Map Service (WMS)
 *********************
 DKAN can use Leaflet to display a preview of a `WMS server <https://en.wikipedia.org/wiki/Web_Map_Service>`_, provided endpoint.
 
-.. image:: ../../images/wms.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/wms.png
 
 WMS support in DKAN is still somewhat experimental and your results may vary.
 
@@ -72,29 +72,29 @@ ArcGIS REST
 ***********
 An ESRI/ArcGIS REST endpoint may also be displayed in a Leaflet preview.
 
-.. image:: ../../images/arcgis.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/arcgis.png
 
 JSON files
 **********
-.. image:: ../../images/json-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/json-preview.png
 
 GeoJSON files
 ****************
-.. image:: ../../images/geojson-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/geojson-preview.png
 
 XML files
 ****************
-.. image:: ../../images/xml-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/xml-preview.png
 
 PDF files
 ****************
-.. image:: ../../images/pdf-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/pdf-preview.png
 
 External Previews
 ******************
 Starting with version 7.x-1.10, DKAN supports previewing/opening resources in external services that offer simple URL-based integrations. For instance, the CartoDB mapping service offers an `Open in CartoDB service <https://cartodb.com/open-in-cartodb>`_. Enabling this for CSV files will result in a dataset display like this:
 
-.. image:: ../../images/external-preview.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/external-preview.png
 
 External preview functionality can be enabled and configured in the "DKAN Dataset Previews" administration page (/admin/dkan/dataset_preview).
 
@@ -102,4 +102,4 @@ Configuration
 ----------------
 By default previews are available for resources with files below 3MB of size. However you can customize this limit in the recline configuration page (*/admin/dkan/recline*).
 
-.. image:: ../../images/recline-configuration.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/recline-configuration.png

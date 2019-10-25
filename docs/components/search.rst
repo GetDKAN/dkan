@@ -45,11 +45,11 @@ To switch from the native database to Solr simply:
 * Go to Configuration -> "Search API" then "Add server"
 * Enter a server name and under "Service class" select "Solr service"
 
-.. image:: ../images/create_solr_server.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/create_solr_server.png
 
 * After clicking "Create server" you should see a success message
 
-.. image:: ../images/create_solr_server1.jpg
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/create_solr_server1.jpg
 
 * Update the Dataset index to use the Solr server.
 
@@ -58,9 +58,9 @@ To switch from the native database to Solr simply:
   - Select the solr server you just added
   - Click **Save Settings**
 
-.. image:: ../images/edit-search-index.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/edit-search-index.png
 
-.. image:: ../images/select-solr-server.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/select-solr-server.png
 
 * Re-index your site ``admin/config/search/search_api/index/datasets``.
 
