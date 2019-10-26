@@ -35,8 +35,7 @@ function dkan_data_node_load(array $entities) {
  * @return int
  *   One of the int constants from class ValueReferencer:
  *     - DEREFERENCE_OUTPUT_DEFAULT = 0
- *     - DEREFERENCE_OUTPUT_MINIMAL = 1
- *     - DEREFERENCE_OUTPUT_VERBOSE = 2
+ *     - DEREFERENCE_OUTPUT_REFERENCE_IDS = 2
  */
 function dereferencing_method() : int {
   $allowed_methods = [
