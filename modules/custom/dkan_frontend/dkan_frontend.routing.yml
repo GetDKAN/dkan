@@ -1,2 +1,2 @@
 route_callbacks:
-  - '\Drupal\dkan_frontend\Routing\RouteProvider::routes'
+  - 'dkan_frontend.route_provider::routes'

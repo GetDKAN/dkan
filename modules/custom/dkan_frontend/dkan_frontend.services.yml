@@ -4,3 +4,7 @@ services:
       arguments:
         - '@app.root'
       shared: false
+  dkan_frontend.route_provider:
+      class: Drupal\dkan_frontend\Routing\RouteProvider
+      arguments:
+        - '@app.root'
