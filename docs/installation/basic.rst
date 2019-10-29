@@ -14,15 +14,12 @@ with:
    distributions <https://www.drupal.org/node/1089736#distributions-vs-installation-profiles>`_
 
 What you will find in the main `DKAN
-Repository <https://github.com/GetDKAN/dkan>`__ is a Drupal
+Repository <https://github.com/GetDKAN/dkan>`_ is a Drupal
 *installation profile*. To set up a working website using DKAN, you will
 need to acquire or build a full DKAN distribution of Drupal.
 
-.. tip:: `DKAN Starter <https://dkan-starter.readthedocs.io>`_ is project
-  containing a prebuilt version of DKAN and the tools `CivicActions
-  <https://civicactions.com/dkan/>`_ uses for our own implementations and
-  deployments. Learn more advanced workflows in that project's
-  `documentation <https://dkan-starter.readthedocs.io>`_.
+.. tip:: `DKAN Tools <https://github.com/GetDKAN/dkan-tools>`_ contains scripts that `CivicActions
+  <https://civicactions.com/dkan/>`_ uses for our own implementations and deployments.
 
 Requirements
 ------------
@@ -113,7 +110,7 @@ correct tag after cloning. For instance:
 ::
 
     $ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
-    $ git checkout tags/7.x-1.11
+    $ git checkout tags/7.x-1.17
     ...
 
 The automated software builder will download and configure the latest

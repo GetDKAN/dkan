@@ -36,7 +36,7 @@ DKAN Workflow is included on all out-of-the-box DKAN sites; however, it is not e
 
    drush en dkan_workflow -y
 
-Enabling DKAN workflow will automatically enable all other required modules and add the Workflow Supervisor role to all users already assigned the site manager role. (More information available in the `Workflow Roles`_
+Enabling DKAN workflow will automatically enable all other required modules and add the Workflow Supervisor role to all users already assigned the site manager role. (More information available in the :ref:`Workflow Roles`
 section).
 
 You may also see a message instructing you to rebuild permissions. If so, click the "Rebuild permissions" link to update the node access settings.
@@ -69,7 +69,7 @@ Finally, the following Drupal contrib modules provide extra functionality (Menu 
 All of the aforementioned dependencies are declared in the `drupal-org.make
 <https://github.com/GetDKAN/dkan/blob/7.x-1.x/drupal-org.make>`_ file.
 
-.. _`workflow-roles`:
+.. _workflow-roles:
 
 Workflow Roles and Permissions
 ==============================
