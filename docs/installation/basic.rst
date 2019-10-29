@@ -185,33 +185,3 @@ With the web installer
    shown. If the final configuration completes without error, you’ll see
    a short congratulatory message and you’ll be prompted to access your
    new site.
--  Proceed to “\ `DKAN - Data
-   Management <https://docs.getdkan.com/v1/data>`__\ ” or “\ `DKAN - User
-   Management <https://docs.getdkan.com/v1/users>`__ ” next to continue
-   setting up your new DKAN server.
-
-Install for development
------------------------
-
-This method is particularly useful for people who want to work on the
-DKAN project itself, as it preserves Git versioning information in every
-profile, theme and module directory. The core developers use this method
-when developing and testing DKAN.
-
-Grab Development version
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    $ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
-    $ cd dkan
-
-Build dkan
-~~~~~~~~~~
-
-::
-
-    $ drush make --prepare-install drupal-org-core.make webroot --yes
-    $ rsync -av . webroot/profiles/dkan --exclude webroot
-    $ drush -y make --no-core --working-copy --contrib-destination=./ drupal-org.make webroot/profiles/dkan --no-recursion --concurrency=3
-    $ cd webroot
