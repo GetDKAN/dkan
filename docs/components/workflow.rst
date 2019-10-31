@@ -36,7 +36,7 @@ DKAN Workflow is included on all out-of-the-box DKAN sites; however, it is not e
 
    drush en dkan_workflow -y
 
-Enabling DKAN workflow will automatically enable all other required modules and add the Workflow Supervisor role to all users already assigned the site manager role. (More information available in the :ref:`Workflow Roles`
+Enabling DKAN workflow will automatically enable all other required modules and add the Workflow Supervisor role to all users already assigned the site manager role. (More information available in the :ref:`Workflow Roles <workflow-roles>`
 section).
 
 You may also see a message instructing you to rebuild permissions. If so, click the "Rebuild permissions" link to update the node access settings.
