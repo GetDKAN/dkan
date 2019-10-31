@@ -103,16 +103,6 @@ To create a Nuboot Radix subtheme, run these commands
 
   drush dis radix
 
-OR if using `Ahoy <https://dkan-starter.readthedocs.io>`_:
-
-.. code-block:: php
-
-   ahoy dkan theme new-from-kit [new-theme-name]
-
-   ahoy dkan theme setup
-
-   ahoy dkan theme watch
-
 Your new subtheme will be placed in to the /sites/all/themes/ directory, it will contain only the directory structure, add your overrides where appropriate.
 
 Theming Tools
