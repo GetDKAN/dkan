@@ -7,11 +7,11 @@ The metadata in a DKAN Dataset is culled from the DCAT standard as well as Proje
 
 The Dataset form allows users to create Datasets and add appropriate metadata:
 
-.. image:: ../../images/add-dataset-screen-1.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/add-dataset-screen-1.png
 
 The DKAN Dataset API exposes Dataset metadata for individual datasets as well an entire catalog.
 
-.. image:: ../../images/data-json.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/data-json.png
 
 .. _custom_metadata:
 
@@ -22,7 +22,7 @@ It is easy to add new fields to DKAN which will show up on the Dataset form, mak
 
 If there is information that only pertains to one or more datasets then it is possible to use the "Additional Info" field. This allows content editors to add unique field / value entries that exist only on a single dataset:
 
-.. image:: ../../images/dataset_metadata_additional_info.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/dataset_metadata_additional_info.png
 
 Globally-available custom fields can also be added through `Drupal's Fields UI <https://www.drupal.org/documentation/modules/field-ui>`_ and added to public APIs using the :doc:`Open Data Schema Mapper <../open-data-schema>`.
 
@@ -33,13 +33,13 @@ Data Extent
 
 The "Data Extent" block is a visual representation of the "Spatial / Geographical Coverage Area".
 
-.. figure:: ../../images/data-extent-block.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/data-extent-block.png
 
 The "Spatial / Geographical Coverage Area" field is a geojson representation of the area a Dataset covers. This can be a point, box, or other representation.
 
 DKAN provides a widget so that a spatial area can be drawn if desired:
 
-.. figure:: ../../images/spacial-geographical.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/spacial-geographical.png
 
 .. note::
 
@@ -58,7 +58,7 @@ User Interface
 
 Revision log entries can be added through the user interface by clicking "Revision information" in the dataset or resource edit form and can be viewed by clicking "Revisions" on a Dataset or Resource page:
 
-.. figure:: ../../images/revision.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/revision.png
 
 Loading Revision information Programmatically
 *********************************************

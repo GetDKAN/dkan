@@ -97,7 +97,7 @@ The Add Content menu
 
 The most direct path for creating content is through the **Add content** tab on the Admin Menu toolbar. Select the content type you'd like to add, then complete the fields shown in the following form.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_01.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_01.png
    :alt: An image displaying the location of the "Add content" menu on the DKAN navigation bar.
 
 
@@ -108,22 +108,22 @@ In some cases, you may want to see what content exists before creating something
 
 You can click **Content** from the admin menu to access the Content page and view all existing content, publish or unpublish content, and add new content from scratch.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_02.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_02.png
    :alt: A screenshot of the DKAN "Content" page, as seen by a Site Manager.
 
 In the example below, the user is adding a new Dataset with Tags, Topics, and other metadata associated with Datasets.
 
 Though not all fields in the Dataset creation form are required, it's best to include as much information as possible. This way, users and the general public will have the proper metadata.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_03.gif
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_03.gif
    :alt: An animated screenshot showing the process of creating a new dataset.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_04.gif
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_04.gif
    :alt: An animated screenshot showing the process of inputting metadata when creating a new dataset.
 
 The final step in creating a piece of content is using the submenu at the bottom of the form to add the administrative information to the content.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_05.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_05.png
    :alt: Administrative content settings.
 
 **Use this menu to add information about:**
@@ -160,12 +160,12 @@ Viewing content you've already uploaded
 
 To see a list of content that you've already uploaded, you can navigate to your user profile page by clicking on your username on the right-hand side of the screen.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/Site_Manager_Logged_In.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/Site_Manager_Logged_In.png
    :alt: Click your username on the right side of the navigation bar in order to go to your profile page.
 
 Once you're on your user profile page, you'll see a list of datasets, resources and other content types that were uploaded by your account.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/User_Profile_Page.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/User_Profile_Page.png
    :alt: An example user profile page showing a dataset and resource uploaded by this user.
 
 Viewing a listing of the site's files
@@ -173,7 +173,7 @@ Viewing a listing of the site's files
 
 From the admin menu, click "Content." Once you're on the Content page, the "Files" button will take you to the files listing.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/Files_Page.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/Files_Page.png
    :alt: This is the "Files" listing, found within the "Content" page on a DKAN site.
 
 Adding a Resource
@@ -208,7 +208,7 @@ It's possible to add a Resource as a stand alone piece of content, but it isn't 
 
 Otherwise, Resources on their own do not contain metadata -- which is why it's important to assign them to Datasets, which do have metadata. Resources also inherit the group association of the dataset they belong to.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/dataset_reference_field.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/dataset_reference_field.png
    :alt: A Resource can be assigned to multiple datasets.
 
 When adding a new Resource, DKAN provides a list of existing Datasets and you can select the appropriate one. If none of the existing Datasets are a good fit, then consider first adding a new Dataset. You can also add a Resource and then assign it to a Dataset at a later time.
@@ -224,7 +224,7 @@ Users uploading Resources can enable DKAN Data Previews on JSON, geoJSON, XML, A
 
 Data Previews only display if the contents of the Resource match the data format for a preview. For example, if the map preview is enabled but the Resource doesn't have latitudinal/longitudinal or GeoJSON data, then the Preview page will be blank.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_06.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_06.png
    :alt: The "Add a Resource" screen, showing the options to enable grid, graph or map previews.
 
    This image displays where you can enable grid, graph and/or map previews for a Resource.
@@ -289,14 +289,14 @@ Add a Dataset:
 6. Click the Save button to finalize the addition.
 
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_09.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_09.gif
    :alt: This animated screencap shows the process of editing and saving a dataset.
 
    This animated screencap displays the process of editing and saving a dataset.
 
 Directly under the title of the Dataset, you may change the URL path for your dataset in the dataset/ field. Note that the title and URL path are not linked. That means that you can change the title without affecting the URL path and vice versa.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_10.gif
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_10.gif
    :alt: This animated screencap shows the process of changing a Resource URL.
 
 Adding Metadata
@@ -316,19 +316,19 @@ Site Managers can select to make Project Open Data and DCAT fields required for 
 
 When viewing a Dataset, scroll down the page to the Dataset Info section to view its metadata.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_13.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_13.png
    :alt: The highlighted portion of this screencap shows how the "Dataset Info" box within a dataset's description displays its metadata.
 
 **Adding more relevant information:** In the image below, you can see a section titled Resources and below that Related Content. In the Resources section you can choose from existing Resources to pull into the Dataset. You can even choose the order Resources appear in by dragging the individual rows up and down. Click the Add another item to add as many Resources as you want to the Dataset.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_14.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_14.png
    :alt: This screencap displays the portion of the page for adding new resources and related content to a Dataset.
 
 Scroll to the Related Content section to add links to other content that site visitors should see. This is a great way to link to your Data Stories, Charts, and Dashboards (or external links) that showcase the impact that data can have on the daily lives of citizens.
 
 Below is a Dataset that has been filled out completely with a description, metadata, assigned to a Group and includes related content.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_15.gif
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_15.gif
    :alt: This animated screencap displays a a Dataset that has been filled out completely with a description, metadata, assigned to a Group and includes related content.
 
 Visualizations
@@ -340,7 +340,7 @@ A Chart is the means, but the end must be defined by the citizen need. What is i
 
 While this tool is incredibly powerful, it also includes more variables that depend on one another. As a Site Manager, you have access to create Visualizations on DKAN. This type of content is unique to Site Managers and Editors, and as a Site Manager you have access to manage all content regardless of the author.
 
-.. image:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_16.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_16.png
    :alt: An example of a chart created in DKAN.
 
 Adding Charts
@@ -374,7 +374,7 @@ Charts are ideal for showing comparative and/or historical information. Site vis
 
   - **Google Spreadsheet:** You can power a Chart with a Google spreadsheet if the document has been published to the Web and made public. If you select the public link to a Google spreadsheet then Google Spreadsheet is your data back-end.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_17.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_17.png
    :alt: A screencap of the "Load Data" portion of the Visualizations creation page in DKAN.
 
 **Defining your Chart variables:** In essence, Chart variables are the two axes of your Chart that you set. The x-axis and the y-axis each have their own set of values that run along each respective axis. Because Resources often contain more than two columns (all with their own set of values), you can choose which columns you want as the x- and y-axis as well as add Series. Series can be selected from the different columns within your Resource to compare multiple columns along the Chart axes. This provides flexibility when using large files to create Charts.
@@ -393,26 +393,26 @@ For continuous data (like time) use a line Chart to show the movement of the dat
 
 There are a number of Chart types to best display your data depending on what you want the Chart to show and the contents of your Resource. You can choose a Chart type and then move to the Preview and Adjust screen to make the final modifications to your Chart. You can always change the Chart type by using the Back button, so that you can test and see which Chart type works best with your data.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_18.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_18.png
    :alt: A screencap displaying the options for Chart types in DKAN.
 
 In the example below, the Site Manager is adding a Chart that uses an existing Resource. By typing, DKAN suggests an autocomplete option and the Site Manager selects the Resource. Once the Resource is selected, the Site Manager can define the variables of the Chart. In this example, the Resource is very basic with only two columns that be chosen from, but more robust Resources could have several columns to choose from.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_19.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_19.gif
    :alt: An animated screencap displaying the Chart creation process in DKAN.
 
 **Adjusting your Chart settings:** After the data is loaded and the variables selected, you can see how your Chart will appear and make adjustments so that your visualization best depicts the meaning of the data. On the Preview and Adjust screen, you make any final modifications to your Chart through a number of options on the Chart Configuration menu. The Chart preview will adjust in real-time to show you what the Chart will look like on your site. Use the preview to test out different adjustments for your Chart settings.
 
 In the example below, a Site Manager is adjusting the Chart settings for a Chart they're adding. Though there are a number of options, the data here is fairly basic. The Site Manager rotates the labels by putting in a degree of rotation in the X Label Rotation field, changes the color of bars by adding a hex value in the Color field, and adds a label to the x-axis by putting a name in the X Axis Label field.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_20.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_20.gif
    :alt: An animated screencap displaying the Chart creation process in DKAN.
 
 As the example continues below, the Site Manager decides to show the title of the Chart and selects the Show Legend option. Show Tooltips and Reduce Ticks are selected by default. Click on the Finish button at the bottom of the page to finalize your selections and see the final results of how the Chart will appear on your DKAN site.
 
 Unlike other content types, Charts don't automatically collect on a page on your DKAN site. You can make Charts visible by including them in Dashboards and Data Stories.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_21.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_21.gif
    :alt: An animated screencap displaying the Chart creation process in DKAN.
 
 
@@ -497,7 +497,7 @@ Similar to a blog post, Data Stories provide a narrative that adds the depth of 
 
 Once the Data Story is added, the content may be altered, rearranged or new content added using the In-place Editor. Learn more about how to use the In-place Editor.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/Data_Stories_Summary_13.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/Data_Stories_Summary_13.png
    :alt: Examples of data stories in DKAN
 
 Key information when adding a Data Story:
@@ -543,7 +543,7 @@ Once the Dashboard itself is added, content is added to the layout of the Dashbo
 
 Example Data Dashboards can be found on the Dashboards page of demo.getdkan.com.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/Dashboards_Summary_13.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/Dashboards_Summary_13.png
    :alt: Examples of a Data Dashboard in DKAN
 
 Layouts for Dashboards and Data Stories
@@ -551,7 +551,7 @@ Layouts for Dashboards and Data Stories
 
 Layouts are composed of different regions. Each rectangle and square shown in the different layouts is a region, and each region can contain one or more (or zero) pieces of content. Choosing the right layout is often a matter of trial and error depending on how the content is oriented and how you want it arranged. The regions in a layout are suited better for some content than others; as you add your content you can easily change the layout to meet your needs without losing any of the content.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_23.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_23.png
    :alt: Examples of layouts in DKAN.
 
 **Using the In-place Editor:** Once you've selected the layout and save, you can begin adding content to the regions in the layout using the In-place Editor. The In-place Editor is a drag-and-drop tool that lets you visually place content within your selected layout and see a real-time preview of what it will look like once saved.
@@ -562,14 +562,14 @@ Layouts are composed of different regions. Each rectangle and square shown in th
 
 **Customize display:** Site Managers can change the layout even after adding content to your Dashboard or reset if you want to remove all content. You can also use the content menu to see another view of the content on your Dashboard. This is useful for rearranging content after changing layouts or shifting several pieces of content on a Dashboard. Click on the content link to open another set of options.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_25.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_25.png
    :alt: The "customize display" dialog in DKAN.
 
 - **Title type.** The Title type refers to how the title is set. Leave the selection at Manually set for your Dashboard to keep the original title. You won't change the title of your Dashboard here; this title is added and changed in the Edit menu with other administrative information.
 
 - **Substitutions:** You won't need to manage Substitutions, so you can leave this option hidden.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_26.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_26.png
    :alt: A screencap showing data dashboard customizations in DKAN.
 
 **Gear button:** On the Customize display screen, you can use the gear icon on the region sections to add and manage content for the whole region as well as change the appearance settings. You can also edit each piece of content within a region using the individual gear icons in the content boxes.
@@ -600,7 +600,7 @@ Groups are both a way to collect common Datasets and enable an additional workfl
 
 Behind the scenes, Groups add an additional set of roles and permissions that ensure quality and security when publishing your data. Group roles and permissions ensure that Content Creators can add new data but only to their assigned Group. This is especially important for large sites that may have several working groups publishing data to the site. Read more about Group roles and permissions.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_29.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_29.png
    :alt: An example of Groups within DKAN.
 
 When first adding a new Group, the form has only a few fields. This is the basic information about the Group itself that should tell site visitors what to expect from the Datasets in the Group.
@@ -613,7 +613,7 @@ Key information when adding a Group:
 - **Body text:** This text is the full description for your Group similar to an About page. The description includes details about the agency, its goals, and information about the data it publishes. While you want to include all the relevant information of the Group, the best descriptions are 1-2 paragraphs long and include a link to the agency's main web page for more details.
 - **Summary text:** You can use the Summary to create unique text for your Group. This text appears as a snippet under the Group image on the Group overview page. If left blank the first portion of the body text will be used (about 100 words). Including a summary can be useful in adding more key search terms or using a different tone to intrigue site visitors to learn more.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_30.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_30.png
    :alt: This screencap displays pointers on what to do when adding a Group to DKAN.
 
 Adding Datasets to a Group
@@ -625,7 +625,7 @@ When adding a Dataset to a Group, users can add a Dataset to as many Groups as t
 
 When a Dataset is added to a Group, it will be included on the Group's home page and may be edited by the Administrator members of a Group. As a best practice, **users should only add Datasets to Groups that they are a member.** Certain users won't be able to access their own content if they assign it to a Group that they do not belong to.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_31.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_31.png
    :alt: This image shows what happens when editing a Dataset and how you have the option to add it to one of your Groups.
 
 Adding members to a Group
@@ -633,7 +633,7 @@ Adding members to a Group
 
 Groups have members, who must be first approved, and members have different roles in the Group. A user's membership status affects how they can interact with the Group. As a Site Manager, you can add members to a Group and give members different roles.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_32.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_32.png
    :alt: An example of a Group called "Advisory Council on Infectious Disease" on the DKAN demo site.
 
 I added my content, where did it go?
@@ -645,7 +645,7 @@ Regardless of the type, once you click on the Save button you'll next see a prev
 
 In the image below, you can see that the content is on the View screen and the content has just been created. This is how the Data Story will appear to a general site visitor (without the ability to edit, of course). At this point, you can get a sense of the appearance and use the In-place Editor to make any final changes.
 
-.. figure:: ../../images/site_manager_playbook/adding_new_content/adding_new_content_33.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/adding_new_content/adding_new_content_33.png
    :alt: An example of a Data Story created within DKAN, with the "Customize this page" and "Change layout" buttons at bottom.
 
 **Manage existing content:** Once content is saved it is published and can be managed as existing content.
