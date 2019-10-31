@@ -67,13 +67,18 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', "1");
+      ->add(Insert::class, 'execute', "1")
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
      $connectionChain->getMock(),
       $this->getResource()
     );
-    $this->assertEquals("1", $databaseTable->store('["Gerardo", "Gonzalez"]'));
+    $this->assertEquals("1", $databaseTable->store('["Gerardo", "Gonzalez"]', "1"));
   }
 
   /**
@@ -111,8 +116,8 @@ class DatabaseTableTest extends TestCase {
     );
     $this->assertEquals(
       new TableSummary(
-        2,
-        ["first_name", "last_name"],
+        3,
+        ["record_number", "first_name", "last_name"],
         1
       ), $databaseTable->getSummary());
   }

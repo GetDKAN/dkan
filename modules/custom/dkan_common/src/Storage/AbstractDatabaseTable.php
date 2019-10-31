@@ -2,17 +2,19 @@
 
 namespace Drupal\dkan_common\Storage;
 
+use Contracts\RemoverInterface;
+use Contracts\RetrieverInterface;
 use Dkan\Datastore\Storage\StorageInterface;
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Query\Select;
 use Drupal\dkan_datastore\Storage\Query;
 
 /**
  * AbstractDatabaseTable class.
  */
-abstract class AbstractDatabaseTable implements StorageInterface {
+abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInterface, RemoverInterface {
   use SqlStorageTrait;
+  use QueryToQueryHelperTrait;
 
   protected $connection;
 
@@ -30,7 +32,7 @@ abstract class AbstractDatabaseTable implements StorageInterface {
    * Transform the string data given into what should be use by the insert
    * query.
    */
-  abstract protected function prepareData(string $data): array;
+  abstract protected function prepareData(string $data, string $id = NULL): array;
 
   /**
    * Get the primary key used in the table.
@@ -49,6 +51,23 @@ abstract class AbstractDatabaseTable implements StorageInterface {
     if ($this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
     }
+  }
+
+  /**
+   * Inherited.
+   *
+   * @inheritDoc
+   */
+  public function retrieve(string $id) {
+    $this->setTable();
+
+    $result = $this->connection->select($this->getTableName(), 't')
+      ->fields('t', array_keys($this->getSchema()['fields']))
+      ->condition($this->primaryKey(), $id)
+      ->execute()
+      ->fetch();
+
+    return $result;
   }
 
   /**
@@ -79,14 +98,50 @@ abstract class AbstractDatabaseTable implements StorageInterface {
    */
   public function store($data, string $id = NULL): string {
     $this->setTable();
-    $data = $this->prepareData($data);
 
-    $q = $this->connection->insert($this->getTableName());
-    $q->fields(array_keys($this->schema['fields']));
-    $q->values($data);
-    $id = $q->execute();
+    $existing = $this->retrieve($id);
+
+    $data = $this->prepareData($data, $id);
+
+    if (!$existing) {
+      $q = $this->connection->insert($this->getTableName());
+      $q->fields($this->getNonSerialFields());
+      $q->values($data);
+      $id = $q->execute();
+    }
+    else {
+      $q = $this->connection->update($this->getTableName());
+      $q->fields($data)
+        ->condition($this->primaryKey(), $id)
+        ->execute();
+    }
 
     return "{$id}";
+  }
+
+  /**
+   * Private.
+   */
+  private function getNonSerialFields() {
+    $fields = [];
+    foreach ($this->schema['fields'] as $field => $info) {
+      if ($info['type'] != 'serial') {
+        $fields[] = $field;
+      }
+    }
+    return $fields;
+  }
+
+  /**
+   * Inherited.
+   *
+   * @inheritDoc
+   */
+  public function remove(string $id) {
+    $tableName = $this->getTableName();
+    $this->connection->delete($tableName)
+      ->condition($this->primaryKey(), $id)
+      ->execute();
   }
 
   /**
@@ -133,45 +188,6 @@ abstract class AbstractDatabaseTable implements StorageInterface {
       else {
         throw new \Exception("Could not instantiate the table due to a lack of schema.");
       }
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryConditions(Select $db_query, Query $query) {
-    foreach ($query->conditions as $property => $value) {
-      $db_query->condition($property, $value, "LIKE");
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryOrderBy(Select $db_query, Query $query) {
-    foreach ($query->sort['ASC'] as $property) {
-      $db_query->orderBy($property);
-    }
-
-    foreach ($query->sort['DESC'] as $property) {
-      $db_query->orderBy($property, 'DESC');
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryLimitAndOffset(Select $db_query, Query $query) {
-    if ($query->limit) {
-      if ($query->offset) {
-        $db_query->range($query->offset, $query->limit);
-      }
-      else {
-        $db_query->range(0, $query->limit);
-      }
-    }
-    elseif ($query->offset) {
-      $db_query->range($query->limit);
     }
   }
 

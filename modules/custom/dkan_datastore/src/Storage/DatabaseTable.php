@@ -80,7 +80,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Protected.
    */
-  protected function prepareData(string $data): array {
+  protected function prepareData(string $data, string $id = NULL): array {
     return json_decode($data);
   }
 
@@ -89,6 +89,26 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   protected function primaryKey() {
     return "record_number";
+  }
+
+  /**
+   * Overriden.
+   */
+  public function setSchema($schema) {
+    $fields = $schema['fields'];
+    $new_field = [
+      $this->primaryKey() =>
+      [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+    ];
+    $fields = array_merge($new_field, $fields);
+
+    $schema['fields'] = $fields;
+    $schema['primary key'] = [$this->primaryKey()];
+    parent::setSchema($schema);
   }
 
 }

@@ -127,7 +127,7 @@ context('Datastore API', () => {
       expect(response.status).eql(200);
       expect(response.body.columns).eql(expected_columns);
       expect(response.body.numOfRows).eql(2);
-      expect(response.body.numOfColumns).eql(5);
+      expect(response.body.numOfColumns).eql(6);
     });
 
     // Delete.
