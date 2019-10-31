@@ -4,7 +4,7 @@ Appearance
 
 You can make your DKAN site look and feel completely aligned with your organization to give site visitors the best possible experience while going through the site. Add your logo, change page layouts, customize the Home page, or pick out the right fonts to match your brand.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_01.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_01.png
    :alt: The front page of an out-of-the-box DKAN site.
 
 Colorizer
@@ -17,7 +17,7 @@ With Colorizer, you can choose a different preset color scheme or create your ow
 
 Colorizer can be accessed by navigating to the Site Configuration drop-down menu and selecting "Colorizer."
 
-.. figure:: ../images/site_manager_playbook/appearance/colorizer_dropdown.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/colorizer_dropdown.png
    :alt: The Colorizer option, on the Site Configuration menu.
 
 Using Colorizer
@@ -39,13 +39,13 @@ Using Colorizer
 
 **Clear Colorizer Cache:** With custom themes, you can reset to the default theme by clicking the Clear Colorizer Cache at the bottom of the page. Clear the cache to start the customization process over or to simply use the default theme.
 
-.. figure:: ../images/site_manager_playbook/appearance/colorizer_in_action.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/colorizer_in_action.png
    :alt: An example screencap of Colorizer when choosing from one of the default color schemes.
 
 Theme Settings
 ~~~~~~~~~~~~~~
 
-.. figure:: ../images/site_manager_playbook/appearance/theme_settings_link.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/theme_settings_link.png
    :alt: The "Site Configuration" dropdown menu, which contains a link to theme settings.
 
 The theme settings are options that personalize your website. Page elements like logo, site name, the hero section, etc. can all be customized to reflect your agency’s brand.
@@ -56,7 +56,7 @@ The theme settings are options that personalize your website. Page elements like
 
 **Global settings:** These options control the default display settings for your entire site, across all themes. Unless they have been overridden by a specific theme, these settings will be used.
 
-.. figure:: ../images/site_manager_playbook/appearance/global_settings.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/global_settings.png
    :alt: The "global settings" display in DKAN, showing a full list of appearance options.
 
 - **Toggle display:** Turn the display of page elements on and off with the selected checkboxes. With these options, Site Managers can decide to show or not show the logo, site name, option to login, etc. Pay attention to elements like menus, since these affect how site visitors can navigate the site.
@@ -65,7 +65,7 @@ The theme settings are options that personalize your website. Page elements like
 
 **NuBoot Radix:** These options control the display settings for the NuBoot Radix theme. When your site is displayed using this theme, these settings will be used. Because NuBoot is the default theme, use these settings to make changes.
 
-.. figure:: ../images/site_manager_playbook/appearance/nuboot_theme.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/nuboot_theme.png
    :alt: The "theme settings" display in DKAN, showing the current theme of NuBoot Radix.
 
 - **Footer text:** The footer appears on the bottom of every page on the site. In the Copyright section, edit the footer text for additional branding.
@@ -137,14 +137,14 @@ The In-place Editor is a tool on DKAN designed to make it easy to add, change, a
 
 From the front page, click the Customize page button at the bottom of the page to open the In-Place Editor and access the existing content. You may want to leave some elements, like the search bar, or you may want to start completely new.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_02.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_02.png
    :alt: These two buttons located at the bottom of the screen give you options to customize the page or change the layout accordingly.
 
 Using the In-place Editor gives you flexibility in the way content is displayed and curated. Add simple content types like images, videos, links, and text or you can add more dynamic content like visualizations and slideshows.
 
 Because this feature shows changes in real-time, it's well-suited for testing how content will look before clicking the Save button. Play with the placement of content on the page, the styling of the region, and keep tweaking until the page looks right.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_03.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_03.gif
    :alt: An animated screencap of how to add, edit and delete front page content.
 
 Add new content (+):
@@ -159,17 +159,17 @@ Add new content (+):
 7. Preview the changes on the Page. Make edits or rearrange with the In-place Editor.
 8. Click the **Save** button at the bottom of the page to finalize the new content.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_05.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_05.gif
    :alt: An animated screencap of how to add, edit and delete front page content.
 
 **Which content, where?:** Choosing the right content type will depend on the information and the overall arrangement of the different pieces of content. Visual content, like slideshows (a collection of rotating images), videos, maps, and visualizations grab attention and so they do well near the top of the page. Other content, like text, files, and tables add density to a page so less is more. They're best used for quick bites of information and as complements to visual content.
 
 In the example below, the Site Manager is using the In-place Editor to move content from region to region and delete irrelevant content. the placement of the content is previewed in real-time so you can see how the page will look once the changes are saved and published to the public site.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_06.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_06.gif
    :alt: An animated screencap of how to add, edit and delete front page content.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_07.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_07.png
    :alt: An animated screencap of how to add, edit and delete front page content.
 
 Edit existing content:
@@ -195,17 +195,17 @@ Use this button to change the style of the region as a whole or an individual pa
 
 In the image below, none of the panes have any styling applied.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_08.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_08.png
    :alt: This image displays DKAN panels without any styling applied.
 
 In the image below each pane has a style different from the others in the same region (from left to right): rounded corners, collapsible (not by default), no style, collapsible (by default).
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_09.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_09.png
    :alt: This image displays DKAN panels with styling applied.
 
 In the example below the Site Manager is changing the style for the entire region on a page. The Site Manager chose rounded corners for the style. This style groups together a set of information to help guide the site visitor and create a clear differentiation from the other sets of information. When adding styling, you want to think about how it can improve the experience a site visitor has on your site rather than choosing a style based solely on the aesthetic.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_10.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_10.gif
    :alt: This animated screencap shows a Site Manager is changing the style for the entire region on a page.
 
 Choose fonts
@@ -220,10 +220,10 @@ While DKAN defaults to a certain font for text styles, the Site Manager has cont
 Enabling fonts
 --------------
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_11.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_11.png
    :alt: The "Site Configuration" menu and the Fonts selector.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_12.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_12.png
    :alt: This screencap shows the error message you'll receive if no fonts have been enabled.
 
 Before making font selections, you first have to enable fonts.
@@ -239,12 +239,12 @@ Enabled fonts are the options that may be used for default font settings. Browse
 
 The tiles have the name of the font as well as a preview, and tiles in green mean that the font is currently enabled. Switch to a list view of fonts you’ve already enabled (if applicable) by selecting the **Enabled fonts** tab.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_13.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_13.png
    :alt: The "Browse Fonts" screen.
 
 Once fonts are enabled, they will appear on the fonts main page and you can set defaults with these fonts. Quickly and easily disable fonts from either the **Enabled fonts** menu or while looking for new fonts in the **Browse all fonts** menu. Click the **Disable** link associated with the font.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_14.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_14.png
    :alt: This screen shows fonts that have been enabled.
 
 Selecting default fonts
@@ -254,7 +254,7 @@ Once your fonts are enabled, Site Managers can make selections for how text appe
 
 From the **Enabled fonts** menu, make selections based on the font or based on the CSS selector. CSS selector is a technical term that refers to headers, body text, and any other selectors.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_15.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_15.png
    :alt: This screen shows what you'll see when selecting which fonts should be assigned to which CSS selectors.
 
 Find the font you want to apply and use the drop-down menu in the CSS Selector section to choose the right selector. This is good for quick changes to your font selections. Click the **Save applied CSS selectors** to finalize your choices.
@@ -269,5 +269,5 @@ You can select multiple fallback fonts by using commas; if none are selected the
 
 Click the **Save applied fonts** button at the bottom of the page to save your selections.
 
-.. figure:: ../images/site_manager_playbook/appearance/appearance_16.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/appearance/appearance_16.png
    :alt: This screen shows what you'll see when selecting which fonts should be assigned to which CSS selectors.

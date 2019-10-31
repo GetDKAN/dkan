@@ -15,7 +15,7 @@ Resources
 
 Resources are the most basic content type on DKAN. They represent the actual file that can be viewed and downloaded by site visitors. DKAN supports a large range of file formats including csv, html, xls, json, xlsx, doc, docx, rdf, txt, jpg, png, gif, tiff, pdf, odf, ods, odt, tsv, geojson and xml. Resources may be uploaded alone, but in order to include metadata you must add the Resource to a Dataset. 
 
-.. figure:: ../../images/site_manager_playbook/data_and_content/resources_list_on_dataset_page.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/data_and_content/resources_list_on_dataset_page.png
    :alt: resource list
    
    Example of a list of resources on a dataset page.
@@ -33,7 +33,7 @@ Datasets are often described as "containers" because they group related pieces o
 
 In the image below everything surrounding the Resources is the "container", or Dataset. It includes a name for the Dataset, a description of the collection of Resources, tags, license information, the data author, and other metadata about the Resources. Resources may be uploaded alone, but metadata is associated with the dataset and cannot be individually attributed to a Resource.
 
-.. figure:: ../../images/site_manager_playbook/data_and_content/dataset_page.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/data_and_content/dataset_page.png
    :alt: dataset page
    
    Example of a dataset page.
@@ -53,7 +53,7 @@ Data Stories
 
 Data Stories show the people in data. It's not always obvious how rows and columns can make a difference in the world of citizens. Data Stories help show the impact data can make in our everyday lives by adding context and synthesis through a narrative form. This content type is easy to use and similar to writing a blog post. Use Data Stories to combine narrative, media, and data for a compelling way to connect to data.
 
-.. figure:: ../../images/site_manager_playbook/data_and_content/stories_page.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/data_and_content/stories_page.png
    :alt: stories page
    
    Example of the Stories page.
@@ -69,7 +69,7 @@ Visualizations
 
 Visualizations on DKAN create a powerful access point for users. Visual representations of data are simpler to comprehend, regardless of technical expertise, and make large quantities of data consumable rather than overwhelming. DKAN Charts (pictured below) can also be interactive, letting site visitors toggle which data points are shown in the Chart. Use Visualizations to make your data more than just available.
 
-.. figure:: ../../images/site_manager_playbook/data_and_content/multiple_pie_charts.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/data_and_content/multiple_pie_charts.png
    :alt: pie charts
    
    Example of the pie chart visualizations added to a Data Story page.
@@ -104,7 +104,7 @@ Dashboards provide the ultimate flexibility for you to give site visitors the be
 
 Mix videos, images slideshows, DKAN Visualizations, text, tables, and maps to most effectively deliver your content. With more than 20 responsive layouts to choose from and our easy to use drag and drop interface, any user can create compelling data-powered content within minutes.
 
-.. figure:: ../../images/site_manager_playbook/data_and_content/page_layout_options.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/data_and_content/page_layout_options.png
    :alt: page layouts
    
    Different layouts that can be used to build Dashboards.
@@ -124,7 +124,7 @@ Behind the scenes, Groups add an additional set of roles and permissions that en
 
 .. _`Group roles and permissions`: ./people.rst
 
-.. figure:: ../../images/site_manager_playbook/data_and_content/groups_list.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/data_and_content/groups_list.png
    :alt: groups list
    
    Example of a Groups list.

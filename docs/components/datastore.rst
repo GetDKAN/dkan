@@ -117,11 +117,11 @@ Installation
 
 .. note::
 
-  If you are using the docker-based development environment `described in the DKAN Starter documentation <https://dkan-starter.readthedocs.io/en/latest/docker-dev-env/index.html>`_, you will need to execute the following commands (take note that admin123 is the password of the admin user in that mysql environment):
+  If you are using the docker-based development environment utilized by `DKAN Tools <https://github.com/GetDkan/dkan-tools>`_, you will need to execute the following commands (take note that admin123 is the password of the admin user in that mysql environment):
 
   .. code-block:: bash
 
-    ahoy docker exec db bash
+    dktl dc exec db bash
     mysql -u root -padmin123
     GRANT FILE ON *.* TO 'drupal';
 

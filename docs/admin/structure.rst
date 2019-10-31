@@ -94,7 +94,7 @@ With so much data in a single place, DKAN sites have a number of tools to organi
 
 Topics typically reflect broad categories like transportation or education. These are areas of interest that should remain consistent themselves and collect timely, relevant content. Topics appear on the front page (unless otherwise modified) along with their assigned icons.
 
-.. figure:: ../images/site_manager_playbook/structure/highlighted_topics.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/highlighted_topics.png
    :alt: front page with highlighted topics
    
    The default DKAN frontpage with highlighted Topics section.
@@ -106,7 +106,7 @@ Topics are included in the Structure section of this guide because they're consi
 
 You'll find Topics in the **Taxonomy** drop-down menu item under the **Site Configuration** menu link on the Admin Menu.
 
-.. figure:: ../images/site_manager_playbook/structure/topics_admin_menu.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/topics_admin_menu.png
    :alt: location of topics in the admin menu
    
    Click on the **Topics** link to get to the main page where Topics are managed.
@@ -119,7 +119,7 @@ DKAN comes with six preset Topics: Transportation, Education, Finance and Budget
 Add a term
   On the Topics page, click on the Add term button to open the options for adding a new term (a single Topic) to be included in the collection of Topics. The only fields that are important for adding a new Topic are the Title field and icon selection. The title is the name of your Topic that will appear on the front page of your DKAN site under the icon you select.
 
-.. image:: ../images/site_manager_playbook/structure/default_topics_list.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/default_topics_list.png
    :alt: default list of topics
 
 Icon Type: Font
@@ -130,7 +130,7 @@ Icon
 Icon Color
   For font icons, you can choose a color for the icon of your Topic. Images do not have an option to change the color. It’s best to choose a single color that all your icons have in common. The color should also fit the look and feel of the rest of your site, either as a matching or complementary color.
 
-.. image:: ../images/site_manager_playbook/structure/font_icon_options.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/font_icon_options.png
    :alt: font icon options
 
 Icon Type: Image
@@ -140,10 +140,10 @@ If you have an image that you prefer to use for the Topic icon, select the Image
 
 **Note:** there are limits on the file size and type. 
 
-.. image:: ../images/site_manager_playbook/structure/image_icon_options.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/image_icon_options.png
    :alt: image icon options
 
-.. figure:: ../images/site_manager_playbook/structure/topic_options_animation.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/topic_options_animation.gif
    :alt: configuring topic options
    
    In this example, the Site Manager is adding a new term to the Topics taxonomy called "Environment". The Site Manager chooses an icon from the library and then chooses a color for the icon. Once the Topic is saved it will appear on the front page.
@@ -154,7 +154,7 @@ It's best to keep your site looking orderly, so you don't want Topics to appear 
 
 Additionally, the number of Topics pushes down to a second line and appears uneven. Keep the number of Topics even appearance by maintaining a certain number of Topics at any given time. Since there are six Topics to a line, that means the number of Topics should follow a factor of six.
 
-.. image:: ../images/site_manager_playbook/structure/added_topic.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/added_topic.png
    :alt: seven topics in two rows
 
 Manage terms
@@ -171,12 +171,12 @@ While many site visitors will be attracted to a Topic based on its visual elemen
 
 Notice the compass arrow to the left of each Topic name. You can change the order of the Topics by clicking and holding the compass arrow, then dragging and dropping each Topic either higher or lower on the list. The order determines how the Topics appear on the front page of your DKAN site. The first Topic on the list appears as the first Topic on the front page. It appears on the far left and the rest follow horizontally across the page.
 
-.. figure:: ../images/site_manager_playbook/structure/ordered_topic_list.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/ordered_topic_list.png
    :alt: list of topics with a new order
    
    Administrative view of the re-ordered Topics.
 
-.. figure:: ../images/site_manager_playbook/structure/ordered_topic_display.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/ordered_topic_display.png
    :alt: re-ordered view of topics on the front page
    
    Front page view of the re-ordered Topics.
@@ -191,12 +191,12 @@ Uploading new font icon libraries
 
 To add greater flexibility in the appearance of Topics to align with your organizational image, you can add your own font icon libraries to choose from for your Topics. By default, DKAN comes with a font icon library called DKAN Topics. It includes over 100 icons to choose from for your Topics. Alternatively, you can also upload your own font icon library if you have one that you prefer.
 
-.. image:: ../images/site_manager_playbook/structure/font_icon_select_options.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/font_icon_select_options.png
    :alt: font icon select options
 
 You’ll need to name your library with the Title field to manage it among all the uploaded font libraries. Uploading a library also requires four standard files that make a font: EOT, SVG, TTF, and WOFF. If you don’t have these files then you’ll either need to get the files or use the default DKAN Topics font.
 
-.. image:: ../images/site_manager_playbook/structure/upload_font_library.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/upload_font_library.png
    :alt: upload font library fields
 
 Editing existing font icon libraries
@@ -209,7 +209,7 @@ Edit Font Options
 
 Click the edit font link to change the details of the font icon library like the title and the files containing the visual elements of the library.
 
-.. image:: ../images/site_manager_playbook/structure/edit_font_options.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/edit_font_options.png
    :alt: font icon select options highlighted second tier options
 
 Edit Font Blacklist
@@ -217,7 +217,7 @@ Edit Font Blacklist
 
 Your font icon library may contain hundreds of icons, but there might be some icons that you don’t want users to assign to Topics. You can add unwanted icons to a blacklist to block those icons from appearing as an option. Edit the font library blacklist to choose which icons cannot be assigned to Topics. Click on an icon or remove an icon from the blacklist by click a red icon.
 
-.. image:: ../images/site_manager_playbook/structure/global_blacklist_selection.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/global_blacklist_selection.png
    :alt: global blacklist selection view
 
 Delete a library
@@ -230,7 +230,7 @@ Adding and managing Tags
 
 As content is added by users of all types, authors can add Tags to their content. Tags are free-form, so they can be newly added in the field and can contain any words. Think of Tags as keywords either within or related to the content. By including Tags on your content it will appear when the terms are included in a search.
 
-.. figure:: ../images/site_manager_playbook/structure/tags_field.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/tags_field.png
    :alt: tags field on content edit pages
    
    Tags field on content edit pages.
@@ -242,7 +242,7 @@ Users can add Tags to Datasets and Data Stories, whether they have been added be
 
 Tags are added in single terms, so if you have multiple or compound words they will either have to be combined for a single term or separated with dashes. If a Tag has been used before, DKAN will autocomplete the term for you. If the Tag has not been added previously, then a new Tag will be created and can be used in the future. As a Site Manager, you can add Tags without adding them to content on the Tags menu. 
 
-.. figure:: ../images/site_manager_playbook/structure/tags_list.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/tags_list.png
    :alt: tags list admin view
    
    Administrative view of the tags list.
@@ -254,7 +254,7 @@ Because Tags are free-form and can be newly added by any user, you may end up wi
 
 As a Site Manager, you have access to all the terms collected as Tags. You’ll want to keep an eye on your Tags to make sure they stay orderly and relevant. You can edit or remove redundant or incorrect terms from the Tags menu under the **Site Configuration** link on the Admin Menu.
 
-.. figure:: ../images/site_manager_playbook/structure/delete_tag_animation.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/delete_tag_animation.gif
    :alt: animation of deleting a tag
    
    In this example, the Site Manager is deleting a partial (and redundant) Tag as well as editing a Tag that is useful, but spelled incorrectly. This will help users avoid associating their content with the wrong Tags.
@@ -271,7 +271,7 @@ Add data formats
 
 DKAN comes standard with the most common data formats, but you can add more file formats as needed. File formats fall under the **Taxonomy** menu item on the Admin Menu. Use the Add term button to include an additional file format. Keep in mind that data formats are just labels to tell site visitors what type of data is contained in the file–adding a data format does **not** change or transform the contents of the files themselves.
 
-.. image:: ../images/site_manager_playbook/structure/format_list.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/format_list.png
    :alt: list of data formats
 
 Manage data formats
@@ -297,14 +297,14 @@ From the Admin Menu, click the the **Site Configuration** menu item and find the
 
 Options in the URL aliases page under the Search and metadata section show a list of the existing URL aliases and gives you options for either changing the alias or deleting it. In general, you won’t need to make bulk updates or delete groups of aliases, so we recommend using the List button when making changes.
 
-.. image:: ../images/site_manager_playbook/structure/url_aliases_list.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/url_aliases_list.png
    :alt: list of url aliases
 
 Find the URL that you want to change and click the edit link in the column furthest to the right of the URL. Only change the Path alias field; choose a name that is easy to remember, relatively brief so that it's easy to share, and a name that is engaging and tells a site visitor what they'll be reading.
 
 URL aliases are an excellent opportunity to improve how the content on your DKAN site is discovered because you can include key search terms that commonly appear in site visitors' searches. 
 
-.. figure:: ../images/site_manager_playbook/structure/edit_url_alias_animation.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/structure/edit_url_alias_animation.gif
    :alt: animation of editing a url alias
    
    In this example, the Site Manager is editing the URL of a Dataset to make it more specific so that it appears in searches for bike lanes in Miami. 

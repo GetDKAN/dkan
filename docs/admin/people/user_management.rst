@@ -3,7 +3,7 @@ Managing existing users
 
 Site managers can manage users by clicking 'People' in the Admin Menu. From this screen you can see all existing users, their roles, and details about their account, and by clicking on individual users you can additionally see all the content the user has created. You can also edit their account to change details, add or remove a role, add them to Groups or cancel an account.
 
-.. figure:: ../../images/site_manager_playbook/people/user-administration.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/people/user-administration.png
    :alt: Screen shot of the user administration page.
 
 **To edit an existing user's account:**
@@ -43,12 +43,12 @@ For users accounts belonging to your organization, blocking an account is typica
 
 You can block a single user by editing their profile and changing their status, or you can block several users at once by using the bulk actions function on the People page. In the example below, the Site Manager is blocking a user account by editing an individual user profile. To finalize the changes, the Site Manager must click the Save button at the bottom of the page.
 
-.. figure:: ../../images/site_manager_playbook/managing_users/managing_users_05.gif
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/managing_users/managing_users_05.gif
    :alt: An animated screencap showing how to block unwanted users on the People page.
 
 **Cancel an account.** Canceling an account can be a permanent action, and there are several options to choose from. Some of the actions cannot be reversed, so you should be careful when deciding which option to choose. Below are the options for canceling an account and the implications of selecting the option. While Site Managers can cancel the account of any user on the site, users may also cancel their own accounts.
 
-.. figure:: ../../images/site_manager_playbook/managing_users/managing_users_06.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/managing_users/managing_users_06.png
    :alt: An image displaying what happens during the process of canceling a user's account.
 
 - **Disable the account and keep its contents:** If you disable the account, the details of the profile remain in tact but the user is blocked from accessing the site with their user login. By keeping the contents, any content that the user published will remain on the live site. Because the account is only disabled (blocked) the user remains as the author of the content and the profile details may still be accessed. This option is similar to just blocking an account, and it's a good temporary measure in most cases.
