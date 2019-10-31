@@ -18,19 +18,19 @@ Create Visualization
 
 + Upload a geojson data file for the resource
 
-.. image:: images/geojson-step-01.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/geojson-step-01.png
 
 + Fill the required fields, enter 'geojson' in the format field, and **save** the resource
 
-.. image:: images/geojson-step-03.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/geojson-step-03.png
 
 + Look for **Structure -> Entity Types -> Visualization -> Geojson Visualization -> Add Geojson Visualization** in the admin menu and click on it.
 
 + Set a **title**
 + Select the **resource** containing the **geojson** data file you uploaded
 
-.. image:: images/geojson-step-04.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/geojson-step-04.png
 
 + Click **Save** & Enjoy!
 
-.. image:: images/geojson-step-05.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/geojson-step-05.png

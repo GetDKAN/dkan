@@ -10,11 +10,11 @@ The `DKAN Dataset REST API <https://github.com/GetDKAN/dkan/tree/7.x-1.x/modules
 Services Documentation
 **********************
 
-The DKAN Dataset API module is only a light wrapper around the `Services module <https://www.drupal.org/project/services>`_, which has extensive documentation. Here are some entries of interest:
+The DKAN Dataset API module is only a light wrapper around the `Services module <https://drupal.org/project/services>`_, which has extensive documentation. Here are some entries of interest:
 
 * `Testing Resources <https://www.drupal.org/node/783722>`_
 * `Identifying field names <https://www.drupal.org/node/1354202>`_
-* `Using REST Server with 2-Legged OAuth Authentication (Example with Java Servlet) <https://www.drupal.org/node/1827698>`_
+* `Using REST Server with 2-Legged OAuth Authentication (Example with Java Servlet) <https://drupal.org/node/1827698>`_
 * `Services CSRF Token with FireFox Poster <http://tylerfrankenstein.com/code/drupal-services-csrf-token-firefox-poster>`_
 
 The Sessions module also `has a thriving community on the Drupal Stack Exchange <http://drupal.stackexchange.com/questions/tagged/services>`_.
@@ -239,7 +239,7 @@ Request
 Response
 --------
 
-.. code-block:: json
+.. code-block:: 
 
   ---
   - true

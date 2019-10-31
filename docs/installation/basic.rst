@@ -14,15 +14,12 @@ with:
    distributions <https://www.drupal.org/node/1089736#distributions-vs-installation-profiles>`_
 
 What you will find in the main `DKAN
-Repository <https://github.com/GetDKAN/dkan>`__ is a Drupal
+Repository <https://github.com/GetDKAN/dkan>`_ is a Drupal
 *installation profile*. To set up a working website using DKAN, you will
 need to acquire or build a full DKAN distribution of Drupal.
 
-.. tip:: `DKAN Starter <https://dkan-starter.readthedocs.io>`_ is project
-  containing a prebuilt version of DKAN and the tools `CivicActions
-  <https://civicactions.com/dkan/>`_ uses for our own implementations and
-  deployments. Learn more advanced workflows in that project's
-  `documentation <https://dkan-starter.readthedocs.io>`_.
+.. tip:: `DKAN Tools <https://github.com/GetDKAN/dkan-tools>`_ contains scripts that `CivicActions
+  <https://civicactions.com/dkan/>`_ uses for our own implementations and deployments.
 
 Requirements
 ------------
@@ -113,7 +110,7 @@ correct tag after cloning. For instance:
 ::
 
     $ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
-    $ git checkout tags/7.x-1.11
+    $ git checkout tags/7.x-1.17
     ...
 
 The automated software builder will download and configure the latest
@@ -145,7 +142,7 @@ With the web installer
 
 -  Open a web browser and visit **http://YOURDKANSITE/install.php**:
 
-.. figure:: ../images/install-language.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/install-language.png
    :alt: Installation Screen
 
    Installation Screen
@@ -158,7 +155,7 @@ With the web installer
    corrected before installation can proceed. Instructions for
    correcting each error condition are provided.
 
-.. figure:: ../images/install-database.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/install-database.png
    :alt: Installation Screen - database config
 
    Installation Screen
@@ -168,7 +165,7 @@ With the web installer
    database name, database username, and database password, then click
    “Save to Continue” to proceed.
 
-.. figure:: ../images/install-progress.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/install-progress.png
    :alt: Progress Bar
 
    Progress Bar
@@ -177,7 +174,7 @@ With the web installer
    screen. Depending on your server resources, this may take several
    minutes.
 
-.. figure:: ../images/install-config-screen.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/install-config-screen.png
    :alt: Configuration Screen
 
    Configuration
@@ -188,33 +185,3 @@ With the web installer
    shown. If the final configuration completes without error, you’ll see
    a short congratulatory message and you’ll be prompted to access your
    new site.
--  Proceed to “\ `DKAN - Data
-   Management <https://docs.getdkan.com/v1/data>`__\ ” or “\ `DKAN - User
-   Management <https://docs.getdkan.com/v1/users>`__ ” next to continue
-   setting up your new DKAN server.
-
-Install for development
------------------------
-
-This method is particularly useful for people who want to work on the
-DKAN project itself, as it preserves Git versioning information in every
-profile, theme and module directory. The core developers use this method
-when developing and testing DKAN.
-
-Grab Development version
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    $ git clone --branch 7.x-1.x https://github.com/GetDKAN/dkan.git
-    $ cd dkan
-
-Build dkan
-~~~~~~~~~~
-
-::
-
-    $ drush make --prepare-install drupal-org-core.make webroot --yes
-    $ rsync -av . webroot/profiles/dkan --exclude webroot
-    $ drush -y make --no-core --working-copy --contrib-destination=./ drupal-org.make webroot/profiles/dkan --no-recursion --concurrency=3
-    $ cd webroot

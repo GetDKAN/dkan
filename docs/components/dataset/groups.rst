@@ -24,7 +24,7 @@ When adding a new Group, the form has fields for basic information about the Gro
 
 :Summary text: You can use the Summary to create unique text for your Group. This text appears as a snippet under the Group image on the Group overview page. If left blank the first portion of the body text will be used (about 100 words). Including a summary can be useful in adding more key search terms or using a different tone to intrigue site visitors to learn more.
 
-.. figure:: ../../images/group.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/group.png
 
 Managing Groups and Members
 ---------------------------

@@ -33,11 +33,11 @@ Enable the main _Open Data Schema Map_ module as usual, and additionally enable 
 
 Navigate to admin/config/services/odsm and click "Add API."
 
-![screen shot 2014-07-14 at 3 24 03 pm](../images/c7ff24e6-0b8c-11e4-92c3-9ba2e163bf56.png)
+![screen shot 2014-07-14 at 3 24 03 pm](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/c7ff24e6-0b8c-11e4-92c3-9ba2e163bf56.png)
 
 Give the API a title, machine name, choose which entity type (usually _node_) and bundle (in [DKAN](https://github.com/GetDKAN/dkan), this is usually _Dataset_).
 
-![screen shot 2014-07-14 at 3 46 39 pm](../images/b3e6ea90-0b8f-11e4-9d9e-33b4515310f0.png)
+![screen shot 2014-07-14 at 3 46 39 pm](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/b3e6ea90-0b8f-11e4-9d9e-33b4515310f0.png)
 
 You will need to create the API record before adding arguments and mappings.
 
@@ -45,7 +45,7 @@ You will need to create the API record before adding arguments and mappings.
 
 The results of the API call can be filtered by a particular field via arguments in the URL. To add an argument, first choose the schema field then, if you are filtering by a custom field API field (ie, a field whose machine name begins with "field\_"), identify the database column that would contain the actual argument value. Leave off the field name prefix; for instance, if filtering by a DKAN tag (a term reference field), the correct column is field_tags_tid, so you would enter "tid". Which Drupal field to use will be extrapolated from the token you map to that schema field.
 
-![Screen Shot 2014-07-14 at 3.55.49 PM.png | uploaded via ZenHub](../images/992d1138-7ac6-11e4-8e7b-bcaefa733648.png)
+![Screen Shot 2014-07-14 at 3.55.49 PM.png | uploaded via ZenHub](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/992d1138-7ac6-11e4-8e7b-bcaefa733648.png)
 
 ### Field Mapping
 
@@ -96,11 +96,11 @@ For Drupal multi-value entity reference fields, the schema can use an array to i
 
 You can choose which of the available multivalue fields on your selected bundle to map to the "tags" array, exposing all of the referenced "tag" entities (taxonomy terms in this example) to use as the context for your token mappings on the schema fields within that array. First, simply choose the multivalue field, leaving the individual field mappings blank, and save the form.
 
-![screen shot 2014-07-16 at 12 14 29 am](../images/c3ca9cd4-0c9f-11e4-8fd0-1ea7c3c8b2b3.png)
+![screen shot 2014-07-16 at 12 14 29 am](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/c3ca9cd4-0c9f-11e4-8fd0-1ea7c3c8b2b3.png)
 
 When you return to the tags section of the form after saving, you will now see a special token navigator you can use to find tokens that will work with this iterative approach (using "Nth" in place of the standard delta value in the token):
 
-![screen shot 2014-07-16 at 12 22 00 am](../images/ad5e3eac-7ac6-11e4-8c7d-91076527c84d.png)
+![screen shot 2014-07-16 at 12 22 00 am](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/ad5e3eac-7ac6-11e4-8c7d-91076527c84d.png)
 
 ## Customizing
 
@@ -110,7 +110,7 @@ You are not limited by the schemas included with this module; any Open Data sche
 
 ### Date format
 Date formats can be chanaged manually by changing the "Medium" date time format in "admin/config/regional/date-time" or in code by using one of the alter hooks:
-![screen shot 2014-09-04 at 11 15 01 am](../images/a9cb06b2-344e-11e4-84c8-c2174b5fc566.png)
+![screen shot 2014-09-04 at 11 15 01 am](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/a9cb06b2-344e-11e4-84c8-c2174b5fc566.png)
 
 ## A Note on XML Output
 
