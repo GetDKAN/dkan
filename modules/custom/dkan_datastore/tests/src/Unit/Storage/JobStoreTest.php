@@ -10,6 +10,7 @@ use Drupal\Core\Database\Query\Update;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\Statement;
 use Drupal\dkan_common\Tests\Mock\Chain;
+use Drupal\dkan_common\Tests\Mock\Sequence;
 use Drupal\dkan_datastore\Storage\JobStore;
 use FileFetcher\FileFetcher;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +25,9 @@ class JobStoreTest extends TestCase {
    */
   public function testConstruction() {
     $chain = (new Chain($this))
-      ->add(Connection::class, "blah", "blah");
+      ->add(Connection::class, "blah", "blah")
+      ->add(Connection::class, "schema", Schema::class)
+      ->add(Schema::class, "tableExists", FALSE);
 
     $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
     $this->assertTrue(is_object($jobStore));
@@ -39,6 +42,11 @@ class JobStoreTest extends TestCase {
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
 
+    $fieldInfo = [
+      (object) ['Field' => "ref_uuid"],
+      (object) ['Field' => "job_data"],
+    ];
+
     $chain = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", TRUE)
@@ -46,7 +54,9 @@ class JobStoreTest extends TestCase {
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
       ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetch', $job);
+      ->add(Statement::class, 'fetch', $job)
+      ->add(Connection::class, 'query', Statement::class)
+      ->add(Statement::class, 'fetchAll', $fieldInfo);
 
     $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
     $this->assertEquals($job_data, $jobStore->retrieve("1", FileFetcher::class));
@@ -61,16 +71,26 @@ class JobStoreTest extends TestCase {
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
 
+    $fieldInfo = [
+      (object) ['Field' => "ref_uuid"],
+      (object) ['Field' => "job_data"],
+    ];
+
+    $sequence = (new Sequence())
+      ->add($fieldInfo)
+      ->add([$job]);
+
     $chain = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", TRUE)
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetchAll', [$job]);
+      ->add(Connection::class, 'query', Statement::class)
+      ->add(Statement::class, 'fetchAll', $sequence);
 
     $jobStore = new JobStore(FileFetcher::class, $chain->getMock());
-    $this->assertTrue(is_array($jobStore->retrieveAll(FileFetcher::class)));
+    $this->assertTrue(is_array($jobStore->retrieveAll()));
   }
 
   /**
@@ -85,6 +105,11 @@ class JobStoreTest extends TestCase {
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
 
+    $fieldInfo = [
+      (object) ['Field' => "ref_uuid"],
+      (object) ['Field' => "job_data"],
+    ];
+
     $connection = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", TRUE)
@@ -97,6 +122,8 @@ class JobStoreTest extends TestCase {
       ->add(Update::class, "fields", Update::class)
       ->add(Update::class, "condition", Update::class)
       ->add(Update::class, "execute", NULL)
+      ->add(Connection::class, 'query', Statement::class)
+      ->add(Statement::class, 'fetchAll', $fieldInfo)
       ->getMock();
 
     $jobStore = new JobStore(FileFetcher::class, $connection);
@@ -108,12 +135,19 @@ class JobStoreTest extends TestCase {
    *
    */
   public function testRemove() {
+    $fieldInfo = [
+      (object) ['Field' => "ref_uuid"],
+      (object) ['Field' => "job_data"],
+    ];
+
     $connection = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", TRUE)
       ->add(Connection::class, "delete", Delete::class)
       ->add(Delete::class, "condition", Delete::class)
       ->add(Delete::class, "execute", NULL)
+      ->add(Connection::class, 'query', Statement::class)
+      ->add(Statement::class, 'fetchAll', $fieldInfo)
       ->getMock();
 
     $jobStore = new JobStore(FileFetcher::class, $connection);

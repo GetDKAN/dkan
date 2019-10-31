@@ -1,6 +1,7 @@
 {
   "uuid": "c9e2d352-e24c-4051-9158-f48127aa5692",
   "properties" : [
+    "record_number",
     "lon",
     "lat",
     "unit_type",
