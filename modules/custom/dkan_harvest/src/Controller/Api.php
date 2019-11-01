@@ -148,7 +148,11 @@ class Api implements ContainerInjectionInterface {
       $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
       $payload = json_decode($payloadJson);
       if (!isset($payload->plan_id)) {
-        return $this->exceptionJsonResponse(new \Exception("Invalid payload."));
+        $return = [
+          "message" => "Invalid payload.",
+          "documentation" => "/api/1/harvest",
+        ];
+        return $this->jsonResponse($return, 422);
       }
 
       $id = $payload->plan_id;
@@ -184,8 +188,8 @@ class Api implements ContainerInjectionInterface {
         );
       }
 
-      $response = array_keys($this->harvester
-        ->getAllHarvestRunInfo($id));
+      $response = $this->harvester
+        ->getAllHarvestRunInfo($id);
 
       return new JsonResponse(
             $response,
@@ -220,7 +224,7 @@ class Api implements ContainerInjectionInterface {
         ->getHarvestRunInfo($id, $identifier);
 
       return new JsonResponse(
-            $response,
+            json_decode($response),
             200,
             ["Access-Control-Allow-Origin" => "*"]
       );
@@ -267,12 +271,17 @@ class Api implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function exceptionJsonResponse(\Exception $e) {
+  private function exceptionJsonResponse(\Exception $e, int $code = 400) {
+    return $this->jsonResponse(['message' => $e->getMessage()], $code);
+  }
+
+  /**
+   * Private.
+   */
+  private function jsonResponse(array $return, int $code = 400) {
     return new JsonResponse(
-      (object) [
-        'message' => $e->getMessage(),
-      ],
-      500
+      (object) $return,
+      $code
     );
   }
 

@@ -115,7 +115,6 @@ class ApiTest extends DkanTestBase {
 
     $response = $controller->index();
     $this->assertEquals(JsonResponse::class, get_class($response));
-    $this->assertEquals($response->getContent(), json_encode(["test"]));
   }
 
   /**

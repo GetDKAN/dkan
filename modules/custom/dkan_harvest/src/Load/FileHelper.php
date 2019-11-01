@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_harvest\Load;
 
+use Drupal\Core\File\FileSystemInterface;
+
 /**
  * Class.
  *
@@ -20,8 +22,8 @@ class FileHelper implements IFileHelper {
   /**
    * Public.
    */
-  public function prepareDir(&$directory, $options = FILE_CREATE_DIRECTORY) {
-    file_prepare_directory($directory, $options);
+  public function prepareDir(&$directory, $options = FileSystemInterface::CREATE_DIRECTORY) {
+    return \Drupal::service('file_system')->prepareDirectory($directory, $options);
   }
 
   /**
@@ -33,10 +35,10 @@ class FileHelper implements IFileHelper {
       $pieces = parse_url($url);
       $path = explode("/", $pieces['path']);
       $filename = end($path);
-      return file_save_data($content, $destination . "/{$filename}", $managed, FILE_EXISTS_REPLACE);
+      return file_save_data($content, $destination . "/{$filename}", $managed, FileSystemInterface::EXISTS_REPLACE);
     }
     else {
-      return system_retrieve_file($url, $destination, $managed, FILE_EXISTS_REPLACE);
+      return system_retrieve_file($url, $destination, $managed, FileSystemInterface::EXISTS_REPLACE);
     }
   }
 

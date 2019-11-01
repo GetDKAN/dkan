@@ -2,7 +2,6 @@
 
 namespace Drupal\dkan_datastore\Storage;
 
-use Contracts\RetrieverInterface;
 use Drupal\dkan_common\Storage\AbstractDatabaseTable;
 use Procrastinator\Job\Job;
 use Drupal\Core\Database\Connection;
@@ -10,7 +9,7 @@ use Drupal\Core\Database\Connection;
 /**
  * Retrieve a serialized job (datastore importer or harvest) from the database.
  */
-class JobStore extends AbstractDatabaseTable implements RetrieverInterface {
+class JobStore extends AbstractDatabaseTable {
 
   private $jobClass;
 
@@ -18,12 +17,12 @@ class JobStore extends AbstractDatabaseTable implements RetrieverInterface {
    * Constructor.
    */
   public function __construct(string $jobClass, Connection $connection) {
-    parent::__construct($connection);
     if (!$this->validateJobClass($jobClass)) {
       throw new \Exception("Invalid jobType provided: $jobClass");
     }
     $this->jobClass = $jobClass;
     $this->setOurSchema();
+    parent::__construct($connection);
   }
 
   /**
@@ -54,10 +53,10 @@ class JobStore extends AbstractDatabaseTable implements RetrieverInterface {
       'indexes' => [
         'ref_uuid' => ['ref_uuid'],
       ],
-      'foriegn_keys' => [
+      'foreign keys' => [
         'ref_uuid' => ['table' => 'node', 'columns' => ['uuid' => 'uuid']],
       ],
-      'primary_key' => ['ref_uuid'],
+      'primary key' => ['ref_uuid'],
     ];
 
     $this->setSchema($schema);

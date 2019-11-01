@@ -2,11 +2,11 @@ services:
     dkan_harvest.service:
         class: Drupal\dkan_harvest\Harvester
         arguments:
-            - '@dkan_harvest.storage.file_factory'
-    dkan_harvest.storage.file_factory:
-      class: Drupal\dkan_harvest\Storage\FileFactory
+            - '@dkan_harvest.storage.database_table_factory'
+    dkan_harvest.storage.database_table_factory:
+      class: Drupal\dkan_harvest\Storage\DatabaseTableFactory
       arguments:
-        - '@file_system'
+        - '@database'
     dkan_harvest.logger_channel:
         parent: logger.channel_base
         arguments: ['dkan_harvest']
