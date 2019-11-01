@@ -88,9 +88,11 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
       return [];
     }
 
-    return array_map(function ($item) {
+    $result = array_map(function ($item) {
       return $item->{$this->primaryKey()};
     }, $result);
+
+    return $result;
   }
 
   /**
@@ -103,11 +105,13 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
 
     $data = $this->prepareData($data, $id);
 
+    $returned_id = NULL;
+
     if (!$existing) {
       $q = $this->connection->insert($this->getTableName());
       $q->fields($this->getNonSerialFields());
       $q->values($data);
-      $id = $q->execute();
+      $returned_id = $q->execute();
     }
     else {
       $q = $this->connection->update($this->getTableName());
@@ -116,7 +120,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
         ->execute();
     }
 
-    return "{$id}";
+    return ($returned_id) ? "$returned_id" : "{$id}";
   }
 
   /**

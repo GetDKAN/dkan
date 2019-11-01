@@ -2,11 +2,10 @@
 
 namespace Drupal\dkan_harvest\Drush;
 
-use Drupal\dkan_harvest\Storage\File;
+use Drupal\dkan_harvest\Storage\DatabaseTable;
 use Harvest\ETL\Factory;
 use Harvest\Harvester;
 use Harvest\ResultInterpreter;
-use Harvest\Storage\Storage;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -34,17 +33,17 @@ trait Helper {
   /**
    * Private..
    */
-  private function getPlanStorage(): Storage {
-    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    return new File("{$path}/dkan_harvest/plans");
+  private function getPlanStorage() {
+    $connection = \Drupal::service('database');
+    return new DatabaseTable($connection, "harvest_plans");
   }
 
   /**
    * Private..
    */
   private function getStorage($id, $type) {
-    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    return new File("{$path}/dkan_harvest/{$id}-{$type}");
+    $connection = \Drupal::service('database');
+    return new DatabaseTable($connection, "harvest_{$id}_{$type}");
   }
 
   /**
