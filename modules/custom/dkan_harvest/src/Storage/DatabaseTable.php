@@ -68,7 +68,7 @@ class DatabaseTable extends AbstractDatabaseTable {
   private function setOurSchema() {
     $schema = [
       'fields' => [
-        'id' => ['type' => 'varchar', 'not null' => TRUE, 'length' => 255],
+        'id' => ['type' => 'varchar', 'not null' => TRUE, 'length' => 190],
         'data' => ['type' => 'text', 'length' => 65535],
       ],
       'primary key' => ['id'],
