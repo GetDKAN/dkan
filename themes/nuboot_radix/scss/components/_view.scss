@@ -180,16 +180,21 @@
 
 #views-exposed-form-dkan-datasets-panel-pane-1 .views-exposed-form .description { display: none;}
 
-#views-exposed-form-dkan-administration-nodes-system-1,
-#views-exposed-form-dkan-administration-files-system-1 {
+#views-exposed-form-dkan-administration-nodes-page,
+#views-exposed-form-dkan-administration-files-page {
   .views-widget-filter-uid,
+  .views-widget-filter-filename,
+  .views-widget-filter-filemime,
+  .form-item-title,
   .form-item-author {
     .help-block {
       font-size: .85em;
-      margin-top: 0;
+      max-width: 15em;
+      line-height: 1em;
     }
     input {
-      width: auto;
+      width: 15em;
+      max-width: 15em;
     }
   }
   .views-widget-filter-date_filter {
@@ -201,8 +206,12 @@
       width: 100px;
       margin-right: 0;
     }
+    label,
     .help-block {
       display: none;
+    }
+    .views-widget label {
+      display: block;
     }
   }
 }

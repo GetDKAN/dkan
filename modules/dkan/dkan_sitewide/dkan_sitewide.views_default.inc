@@ -334,7 +334,7 @@ function dkan_sitewide_views_default_views() {
   $handler->display->display_options['filters']['filemime']['expose']['autocomplete_dependent'] = 0;
 
   /* Display: System */
-  $handler = $view->new_display('system', 'System', 'system_1');
+  $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['hide_admin_links'] = TRUE;
   $handler->display->display_options['defaults']['access'] = FALSE;
@@ -658,7 +658,7 @@ function dkan_sitewide_views_default_views() {
   );
 
   /* Display: System */
-  $handler = $view->new_display('system', 'System', 'system_1');
+  $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['hide_admin_links'] = TRUE;
   $handler->display->display_options['defaults']['access'] = FALSE;
