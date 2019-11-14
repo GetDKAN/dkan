@@ -17,8 +17,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
-    $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
-      '/:id';
 
     $this->source = new HarvestMigrateSourceList(
       new HarvestList($this->dkanHarvestSource->getCacheDir()),
