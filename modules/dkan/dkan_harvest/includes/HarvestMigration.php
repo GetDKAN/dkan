@@ -1433,4 +1433,12 @@ class HarvestMigration extends MigrateDKAN {
   public function setLogId($logID) {
     $this->logID = $logID;
   }
+
+  /**
+   * Return list of source items ids.
+   */
+  public function getIdList() {
+    return $this->source->getIdList();
+  }
+
 }
