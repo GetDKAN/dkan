@@ -1755,7 +1755,6 @@ select[multiple].input-lg,
   line-height: 1.42857;
   border-radius: 4px;
   -webkit-user-select: none;
-  -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
   .btn:focus, .media-widget > a:focus, .btn.focus, .media-widget > a.focus, .btn:active:focus, .media-widget > a:active:focus, .btn:active.focus, .media-widget > a:active.focus, .btn.active:focus, .media-widget > a.active:focus, .btn.active.focus, .media-widget > a.active.focus {
@@ -11307,33 +11306,53 @@ img {
 #views-exposed-form-dkan-datasets-panel-pane-1 .views-exposed-form .description {
   display: none; }
 
-#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-uid .help-block,
-#views-exposed-form-dkan-administration-nodes-system-1 .form-item-author .help-block,
-#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-uid .help-block,
-#views-exposed-form-dkan-administration-files-system-1 .form-item-author .help-block {
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-uid .help-block,
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-filename .help-block,
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-filemime .help-block,
+#views-exposed-form-dkan-administration-nodes-page .form-item-title .help-block,
+#views-exposed-form-dkan-administration-nodes-page .form-item-author .help-block,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-uid .help-block,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-filename .help-block,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-filemime .help-block,
+#views-exposed-form-dkan-administration-files-page .form-item-title .help-block,
+#views-exposed-form-dkan-administration-files-page .form-item-author .help-block {
   font-size: .85em;
-  margin-top: 0; }
+  max-width: 15em;
+  line-height: 1em; }
 
-#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-uid input,
-#views-exposed-form-dkan-administration-nodes-system-1 .form-item-author input,
-#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-uid input,
-#views-exposed-form-dkan-administration-files-system-1 .form-item-author input {
-  width: auto; }
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-uid input,
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-filename input,
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-filemime input,
+#views-exposed-form-dkan-administration-nodes-page .form-item-title input,
+#views-exposed-form-dkan-administration-nodes-page .form-item-author input,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-uid input,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-filename input,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-filemime input,
+#views-exposed-form-dkan-administration-files-page .form-item-title input,
+#views-exposed-form-dkan-administration-files-page .form-item-author input {
+  width: 15em;
+  max-width: 15em; }
 
-#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-date_filter #edit-date-filter-min-wrapper,
-#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-date_filter #edit-date-filter-max-wrapper,
-#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter #edit-date-filter-min-wrapper,
-#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter #edit-date-filter-max-wrapper {
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-date_filter #edit-date-filter-min-wrapper,
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-date_filter #edit-date-filter-max-wrapper,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-date_filter #edit-date-filter-min-wrapper,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-date_filter #edit-date-filter-max-wrapper {
   display: inline-block; }
 
-#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-date_filter input,
-#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter input {
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-date_filter input,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-date_filter input {
   width: 100px;
   margin-right: 0; }
 
-#views-exposed-form-dkan-administration-nodes-system-1 .views-widget-filter-date_filter .help-block,
-#views-exposed-form-dkan-administration-files-system-1 .views-widget-filter-date_filter .help-block {
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-date_filter label,
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-date_filter .help-block,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-date_filter label,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-date_filter .help-block {
   display: none; }
+
+#views-exposed-form-dkan-administration-nodes-page .views-widget-filter-date_filter .views-widget label,
+#views-exposed-form-dkan-administration-files-page .views-widget-filter-date_filter .views-widget label {
+  display: block; }
 
 .views-responsive-grid .views-row {
   clear: both; }
