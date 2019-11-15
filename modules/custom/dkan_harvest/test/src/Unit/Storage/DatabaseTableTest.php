@@ -13,6 +13,9 @@ use PHPUnit\Framework\TestCase;
  */
 class DatabaseTableTest extends TestCase {
 
+  /**
+   *
+   */
   public function testConstruction() {
     $connection = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)

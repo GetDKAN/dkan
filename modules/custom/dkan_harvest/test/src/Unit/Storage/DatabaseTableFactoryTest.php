@@ -3,7 +3,6 @@
 namespace Drupal\Tests\dkan_harvest\Unit\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\File\FileSystem;
 use Drupal\dkan_common\Tests\Mock\Chain;
 use Drupal\dkan_harvest\Storage\DatabaseTable;
 use Drupal\dkan_harvest\Storage\DatabaseTableFactory;
@@ -20,11 +19,11 @@ class DatabaseTableFactoryTest extends TestCase {
   public function test() {
 
     $connection = (new Chain($this))
-      ->add(Connection::class, "blah", null)
+      ->add(Connection::class, "blah", NULL)
       ->getMock();
 
     $databaseTable = (new Chain($this))
-      ->add(DatabaseTable::class, "blah", null)
+      ->add(DatabaseTable::class, "blah", NULL)
       ->getMock();
 
     $factory = $this->getMockBuilder(DatabaseTableFactory::class)
