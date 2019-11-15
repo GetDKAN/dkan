@@ -33,7 +33,7 @@ class HarvesterTest extends TestCase {
     $storeFactory = (new Chain($this))
       ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
       ->add(DatabaseTable::class, "retrieve", "Hello")
-      ->add(DatabaseTable::class, "destroy", null)
+      ->add(DatabaseTable::class, "destroy", NULL)
       ->add(DatabaseTable::class, "remove", "Hello")
       ->getMock();
 

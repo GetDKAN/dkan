@@ -108,7 +108,7 @@ context('SQL Endpoint', () => {
     it('All', () => {
       let query = `[SELECT * FROM ${resource_identifier}];`
       cy.request({
-        method: 'GET',
+        method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
           "query": query
@@ -127,7 +127,7 @@ context('SQL Endpoint', () => {
     it('Specific fields', () => {
       let query = `[SELECT lon,lat FROM ${resource_identifier}];`
       cy.request({
-        method: 'GET',
+        method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
           "query": query
@@ -152,7 +152,7 @@ context('SQL Endpoint', () => {
     it('Single condition', () => {
       let query = `[SELECT * FROM ${resource_identifier}][WHERE dist_name = 'Pusht Rod'];`
       cy.request({
-        method: 'GET',
+        method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
           "query": query
@@ -166,7 +166,7 @@ context('SQL Endpoint', () => {
     it('Multiple conditions', () => {
       let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah' AND dist_name = 'Pusht Rod'];`
       cy.request({
-        method: 'GET',
+        method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
           "query": query
@@ -184,7 +184,7 @@ context('SQL Endpoint', () => {
     it('Ascending explicit', () => {
       let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC];`
       cy.request({
-        method: 'GET',
+        method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
           "query": query
@@ -199,7 +199,7 @@ context('SQL Endpoint', () => {
     it('Descending explicit', () => {
       let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name DESC];`
       cy.request({
-        method: 'GET',
+        method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
           "query": query
@@ -217,7 +217,7 @@ context('SQL Endpoint', () => {
     it('Limit only', () => {
       let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC][LIMIT 1];`
       cy.request({
-        method: 'GET',
+        method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
           "query": query
@@ -232,7 +232,7 @@ context('SQL Endpoint', () => {
     it('Limit and offset', () => {
       let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC][LIMIT 1 OFFSET 1];`
       cy.request({
-        method: 'GET',
+        method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
           "query": query

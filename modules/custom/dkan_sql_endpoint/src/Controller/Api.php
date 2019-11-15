@@ -63,17 +63,44 @@ class Api implements ContainerInjectionInterface {
   /**
    * Method called by the router.
    */
-  public function runQuery() {
+  public function runQueryGet() {
 
-    $query_string = $this->getQueryString();
+    $query = NULL;
+    $query = $this->requestStack->getCurrentRequest()->get('query');
 
-    if (empty($query_string)) {
-      return $this->response("Missing 'query' query parameter or value", 400);
+    if (empty($query)) {
+      return $this->response("Missing 'query' query parameter", 400);
     }
 
+    return $this->runQuery($query);
+  }
+
+  /**
+   * Method called by the router.
+   */
+  public function runQueryPost() {
+
+    $query = NULL;
+    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    $payload = json_decode($payloadJson);
+    if (isset($payload->query)) {
+      $query = $payload->query;
+    }
+
+    if (empty($query)) {
+      return $this->response("Missing 'query' property in the request's body.", 400);
+    }
+
+    return $this->runQuery($query);
+  }
+
+  /**
+   * Private.
+   */
+  private function runQuery($query) {
     $parser = new SqlParser();
 
-    if ($parser->validate($query_string) === FALSE) {
+    if ($parser->validate($query) === FALSE) {
       return $this->response("Invalid query string.", 500);
     }
 
@@ -92,7 +119,7 @@ class Api implements ContainerInjectionInterface {
       $result = $databaseTable->query($query_object);
     }
     catch (\Exception $e) {
-      $this->response("Querying a datastore that does not exist.", 500);
+      return $this->response("Querying a datastore that does not exist.", 500);
     }
 
     return $this->response($result, 200);
@@ -104,22 +131,6 @@ class Api implements ContainerInjectionInterface {
   private function getDatabaseTable($stateMachine) {
     $resource = $this->getResource($stateMachine);
     return $this->databaseTableFactory->getInstance($resource->getId(), ['resource' => $resource]);
-  }
-
-  /**
-   * Private.
-   */
-  private function getQueryString() {
-    $queryString = NULL;
-    $queryString = $this->requestStack->getCurrentRequest()->get('query');
-    if (empty($queryString)) {
-      $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
-      $payload = json_decode($payloadJson);
-      if (isset($payload->query)) {
-        $queryString = $payload->query;
-      }
-    }
-    return $queryString;
   }
 
   /**
