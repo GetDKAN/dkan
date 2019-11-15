@@ -38,10 +38,11 @@ Feature: User command center links for editor role.
     When I click "Content" in the "admin menu" region
     Then I should see "Operations"
 
+  @javascript
   Scenario: Editor role can view the file list
     Given I am logged in as "Jaz"
-    When I click "Content" in the "admin menu" region
-    And I click "Files"
+    When I hover over the admin menu item "Content"
+    And I click "Files" in the "admin menu" region
     Then I should see "Thumbnails"
 
   @javascript
