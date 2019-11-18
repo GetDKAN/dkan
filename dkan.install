@@ -842,5 +842,16 @@ function dkan_update_7037() {
     db_delete('cache_views')
       ->condition('cid', '%administration%', 'LIKE')
       ->execute();
+    db_delete('system')
+      ->condition('name', 'admin_views')
+      ->execute();
+    db_delete('system')
+      ->condition('name', 'admin_views_test')
+      ->execute();
+
+    $default = variable_get('views_defaults');
+    unset($default['admin_views_file']);
+    unset($default['admin_views_node']);
+    variable_set('views_defaults', $default);
   }
 }
