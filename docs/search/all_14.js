@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['newhttpresponse_283',['newHttpResponse',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#affe30c37f9000434912829763f55d3c2',1,'Drupal::dkan_common::Service::Factory']]],
-  ['newjsonresponse_284',['newJsonResponse',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#ae661bbccd8247407d40104533c11f8bd',1,'Drupal::dkan_common::Service::Factory']]],
-  ['newserviceapiengine_285',['newServiceApiEngine',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#ae43830b97f4f2002376eefb0576616a0',1,'Drupal::dkan_common::Service::Factory']]]
+  ['metastore_311',['Metastore',['../metastore.html',1,'components']]],
+  ['modifydataset_312',['modifyDataset',['../classDrupal_1_1dkan__lunr_1_1Service_1_1DatasetModifier.html#a2c07458daf54d7a8bd5149e2b477368a',1,'Drupal::dkan_lunr::Service::DatasetModifier']]]
 ];

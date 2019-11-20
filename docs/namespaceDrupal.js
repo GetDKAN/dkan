@@ -8,6 +8,7 @@ var namespaceDrupal =
     [ "dkan_frontend", "namespaceDrupal_1_1dkan__frontend.html", "namespaceDrupal_1_1dkan__frontend" ],
     [ "dkan_harvest", "namespaceDrupal_1_1dkan__harvest.html", "namespaceDrupal_1_1dkan__harvest" ],
     [ "dkan_lunr", "namespaceDrupal_1_1dkan__lunr.html", "namespaceDrupal_1_1dkan__lunr" ],
+    [ "dkan_metastore", "namespaceDrupal_1_1dkan__metastore.html", "namespaceDrupal_1_1dkan__metastore" ],
     [ "dkan_schema", "namespaceDrupal_1_1dkan__schema.html", "namespaceDrupal_1_1dkan__schema" ],
     [ "dkan_sql_endpoint", "namespaceDrupal_1_1dkan__sql__endpoint.html", "namespaceDrupal_1_1dkan__sql__endpoint" ],
     [ "field_example", "namespaceDrupal_1_1field__example.html", "namespaceDrupal_1_1field__example" ],

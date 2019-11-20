@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['metastore_958',['Metastore',['../metastore.html',1,'components']]]
+  ['license_1055',['License',['../license.html',1,'']]]
 ];

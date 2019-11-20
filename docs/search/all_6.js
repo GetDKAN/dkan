@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['6_2e0_5flicense_2emd_45',['6.0_license.md',['../6_80__license_8md.html',1,'']]]
+  ['6_2e0_5fcode_2dof_2dconduct_2emd_50',['6.0_code-of-conduct.md',['../6_80__code-of-conduct_8md.html',1,'']]]
 ];

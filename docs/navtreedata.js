@@ -23,20 +23,17 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "DKAN", "index.html", [
-    [ "Features", "index.html#autotoc_md28", null ],
+    [ "Features", "index.html#autotoc_md45", null ],
     [ "Installation", "installation.html", "installation" ],
     [ "Development", "development.html", "development" ],
     [ "Components", "components.html", "components" ],
-    [ "Links", "links.html", null ],
-    [ "Code of conduct", "apage02.html", null ],
+    [ "User Guide", "guide.html", "guide" ],
+    [ "Community", "community.html", null ],
+    [ "Code of conduct", "conduct.html", null ],
     [ "License", "license.html", null ],
     [ "Todo List", "todo.html", null ],
     [ "Namespaces", "namespaces.html", [
-      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
-      [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Variables", "namespacemembers_vars.html", null ]
-      ] ]
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -56,10 +53,11 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"ApiController_8php.html",
-"classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1VariableTest.html#a94b3f8f131cb40fdda2b61755bae5a54",
-"classDrupal_1_1dkan__harvest_1_1Drush_1_1Commands.html#a2df3aac8c8fef37b9478ee312a328858",
-"dkan__sql__endpoint_2src_2Controller_2Api_8php.html"
+"AbstractDatabaseTable_8php.html",
+"classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1VariableTest.html",
+"classDrupal_1_1dkan__datastore_1_1Storage_1_1Query.html#a48458fdd65b99c45f07b1c68a3c935e7",
+"dir_5144fd931302470e6c578204e1ad7c1d.html",
+"namespaceDrupal_1_1dkan__api_1_1Controller.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

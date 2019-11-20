@@ -2,281 +2,178 @@
 <tagfile>
   <compound kind="file">
     <name>1.0_installation.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>1_80__installation_8md</filename>
   </compound>
   <compound kind="file">
     <name>1.1_installation-prod.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>1_81__installation-prod_8md</filename>
   </compound>
   <compound kind="file">
     <name>2.0_development.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>2_80__development_8md</filename>
   </compound>
   <compound kind="file">
     <name>2.1_development-maintain.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>2_81__development-maintain_8md</filename>
   </compound>
   <compound kind="file">
     <name>2.2_development-custom.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>2_82__development-custom_8md</filename>
   </compound>
   <compound kind="file">
     <name>3.0_components.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>3_80__components_8md</filename>
   </compound>
   <compound kind="file">
-    <name>4.0_links.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
-    <filename>4_80__links_8md</filename>
+    <name>4.0_User-Guide.md</name>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
+    <filename>4_80__User-Guide_8md</filename>
   </compound>
   <compound kind="file">
-    <name>5.0_code-of-conduct.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
-    <filename>5_80__code-of-conduct_8md</filename>
+    <name>4.1_general.md</name>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
+    <filename>4_81__general_8md</filename>
   </compound>
   <compound kind="file">
-    <name>6.0_license.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
-    <filename>6_80__license_8md</filename>
+    <name>4.2_dataset_api.md</name>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
+    <filename>4_82__dataset__api_8md</filename>
   </compound>
   <compound kind="file">
-    <name>dataset-api.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/api/</path>
-    <filename>dataset-api_8rst</filename>
+    <name>4.3_datastore_api.md</name>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
+    <filename>4_83__datastore__api_8md</filename>
   </compound>
   <compound kind="file">
-    <name>datastore-api.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/api/</path>
-    <filename>datastore-api_8rst</filename>
+    <name>4.4_harvest.md</name>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
+    <filename>4_84__harvest_8md</filename>
   </compound>
   <compound kind="file">
-    <name>index.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/api/</path>
-    <filename>api_2index_8rst</filename>
+    <name>5.0_community.md</name>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
+    <filename>5_80__community_8md</filename>
   </compound>
   <compound kind="file">
-    <name>index.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/components/</path>
-    <filename>components_2index_8rst</filename>
+    <name>6.0_code-of-conduct.md</name>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
+    <filename>6_80__code-of-conduct_8md</filename>
   </compound>
   <compound kind="file">
-    <name>open-data.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/api/</path>
-    <filename>open-data_8rst</filename>
-  </compound>
-  <compound kind="file">
-    <name>dataset.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/components/</path>
-    <filename>dataset_8rst</filename>
-  </compound>
-  <compound kind="file">
-    <name>datastore.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/components/</path>
-    <filename>datastore_8rst</filename>
-  </compound>
-  <compound kind="file">
-    <name>decoupled.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/components/</path>
-    <filename>decoupled_8rst</filename>
-  </compound>
-  <compound kind="file">
-    <name>harvest.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/components/</path>
-    <filename>harvest_8rst</filename>
-  </compound>
-  <compound kind="file">
-    <name>topics.rst</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/components/</path>
-    <filename>topics_8rst</filename>
-  </compound>
-  <compound kind="file">
-    <name>Api.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_api/src/Controller/</path>
-    <filename>dkan__api_2src_2Controller_2Api_8php</filename>
-    <class kind="class">Drupal::dkan_api::Controller::Api</class>
-    <namespace>Drupal::dkan_api::Controller</namespace>
-  </compound>
-  <compound kind="file">
-    <name>Api.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Controller/</path>
-    <filename>dkan__datastore_2src_2Controller_2Api_8php</filename>
-    <class kind="class">Drupal::dkan_datastore::Controller::Api</class>
-    <namespace>Drupal::dkan_datastore::Controller</namespace>
-    <namespace>Drupal</namespace>
-  </compound>
-  <compound kind="file">
-    <name>Api.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Controller/</path>
-    <filename>dkan__harvest_2src_2Controller_2Api_8php</filename>
-    <class kind="class">Drupal::dkan_harvest::Controller::Api</class>
-    <namespace>Drupal::dkan_harvest::Controller</namespace>
-    <namespace>Drupal</namespace>
-  </compound>
-  <compound kind="file">
-    <name>Api.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_sql_endpoint/src/Controller/</path>
-    <filename>dkan__sql__endpoint_2src_2Controller_2Api_8php</filename>
-    <class kind="class">Drupal::dkan_sql_endpoint::Controller::Api</class>
-    <namespace>Drupal::dkan_sql_endpoint::Controller</namespace>
+    <name>7.0_license.md</name>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
+    <filename>7_80__license_8md</filename>
   </compound>
   <compound kind="file">
     <name>Docs.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_api/src/Controller/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_api/src/Controller/</path>
     <filename>Docs_8php</filename>
     <class kind="class">Drupal::dkan_api::Controller::Docs</class>
     <namespace>Drupal::dkan_api::Controller</namespace>
   </compound>
   <compound kind="file">
-    <name>InvalidPayloadException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_api/src/Controller/</path>
-    <filename>InvalidPayloadException_8php</filename>
-    <class kind="class">Drupal::dkan_api::Controller::InvalidPayloadException</class>
-    <namespace>Drupal::dkan_api::Controller</namespace>
-  </compound>
-  <compound kind="file">
-    <name>RouteProvider.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_api/src/Routing/</path>
-    <filename>dkan__api_2src_2Routing_2RouteProvider_8php</filename>
-    <class kind="class">Drupal::dkan_api::Routing::RouteProvider</class>
-    <namespace>Drupal::dkan_api::Routing</namespace>
-  </compound>
-  <compound kind="file">
-    <name>RouteProvider.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_frontend/src/Routing/</path>
-    <filename>dkan__frontend_2src_2Routing_2RouteProvider_8php</filename>
-    <class kind="class">Drupal::dkan_frontend::Routing::RouteProvider</class>
-    <namespace>Drupal::dkan_frontend::Routing</namespace>
-  </compound>
-  <compound kind="file">
-    <name>ApiTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_api/tests/src/Unit/Controller/</path>
-    <filename>dkan__api_2tests_2src_2Unit_2Controller_2ApiTest_8php</filename>
-    <class kind="class">Drupal::Tests::dkan_api::Unit::Controller::ApiTest</class>
-    <namespace>Drupal::Tests::dkan_api::Unit::Controller</namespace>
-  </compound>
-  <compound kind="file">
-    <name>ApiTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/tests/src/Unit/Controller/</path>
-    <filename>dkan__datastore_2tests_2src_2Unit_2Controller_2ApiTest_8php</filename>
-    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Controller::DatastoreApiTest</class>
-    <namespace>Drupal::Tests::dkan_datastore::Unit::Controller</namespace>
-    <member kind="variable">
-      <type>const</type>
-      <name>FILE_CREATE_DIRECTORY</name>
-      <anchorfile>namespaceDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller.html</anchorfile>
-      <anchor>a435366d92ed7f616ea421491572f33d1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>const</type>
-      <name>FILE_MODIFY_PERMISSIONS</name>
-      <anchorfile>namespaceDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller.html</anchorfile>
-      <anchor>a45141bc2162ce3471a1465d995e36211</anchor>
-      <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="file">
-    <name>ApiTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/test/src/Unit/Controller/</path>
-    <filename>dkan__harvest_2test_2src_2Unit_2Controller_2ApiTest_8php</filename>
-    <class kind="class">ApiTest</class>
-  </compound>
-  <compound kind="file">
-    <name>ApiTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_sql_endpoint/tests/src/Unit/Controller/</path>
-    <filename>dkan__sql__endpoint_2tests_2src_2Unit_2Controller_2ApiTest_8php</filename>
-    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Controller::ApiTest</class>
-    <namespace>Drupal::Tests::dkan_datastore::Unit::Controller</namespace>
-  </compound>
-  <compound kind="file">
     <name>DocsTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_api/tests/src/Unit/Controller/</path>
-    <filename>DocsTest_8php</filename>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_api/tests/src/Unit/Controller/</path>
+    <filename>dkan__api_2tests_2src_2Unit_2Controller_2DocsTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_api::Unit::Controller::DocsTest</class>
     <namespace>Drupal::Tests::dkan_api::Unit::Controller</namespace>
   </compound>
   <compound kind="file">
-    <name>RouteProviderTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_api/tests/src/Unit/Routing/</path>
-    <filename>RouteProviderTest_8php</filename>
-    <class kind="class">RouteProviderTest</class>
+    <name>DocsTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_metastore/tests/src/Unit/Controller/</path>
+    <filename>dkan__metastore_2tests_2src_2Unit_2Controller_2DocsTest_8php</filename>
+    <class kind="class">Drupal::Tests::dkan_api::Unit::Controller::DocsTest</class>
+    <namespace>Drupal::Tests::dkan_api::Unit::Controller</namespace>
   </compound>
   <compound kind="file">
     <name>Factory.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Service/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Service/</path>
     <filename>Factory_8php</filename>
     <class kind="class">Drupal::dkan_common::Service::Factory</class>
     <namespace>Drupal::dkan_common::Service</namespace>
   </compound>
   <compound kind="file">
     <name>JsonUtil.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Service/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Service/</path>
     <filename>JsonUtil_8php</filename>
     <class kind="class">Drupal::dkan_common::Service::JsonUtil</class>
     <namespace>Drupal::dkan_common::Service</namespace>
   </compound>
   <compound kind="file">
+    <name>AbstractDatabaseTable.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Storage/</path>
+    <filename>AbstractDatabaseTable_8php</filename>
+    <class kind="class">Drupal::dkan_common::Storage::AbstractDatabaseTable</class>
+    <namespace>Drupal::dkan_common::Storage</namespace>
+  </compound>
+  <compound kind="file">
+    <name>QueryToQueryHelperTrait.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Storage/</path>
+    <filename>QueryToQueryHelperTrait_8php</filename>
+    <namespace>Drupal::dkan_common::Storage</namespace>
+  </compound>
+  <compound kind="file">
     <name>DkanTestBase.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Tests/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Tests/</path>
     <filename>DkanTestBase_8php</filename>
     <class kind="class">Drupal::dkan_common::Tests::DkanTestBase</class>
     <namespace>Drupal::dkan_common::Tests</namespace>
   </compound>
   <compound kind="file">
     <name>DkanUnitTestTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Tests/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Tests/</path>
     <filename>DkanUnitTestTrait_8php</filename>
     <namespace>Drupal::dkan_common::Tests</namespace>
   </compound>
   <compound kind="file">
     <name>Chain.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Tests/Mock/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Tests/Mock/</path>
     <filename>Chain_8php</filename>
     <class kind="class">Drupal::dkan_common::Tests::Mock::Chain</class>
     <namespace>Drupal::dkan_common::Tests::Mock</namespace>
   </compound>
   <compound kind="file">
     <name>Options.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Tests/Mock/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Tests/Mock/</path>
     <filename>Options_8php</filename>
     <class kind="class">Drupal::dkan_common::Tests::Mock::Options</class>
     <namespace>Drupal::dkan_common::Tests::Mock</namespace>
   </compound>
   <compound kind="file">
     <name>Sequence.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Tests/Mock/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Tests/Mock/</path>
     <filename>Sequence_8php</filename>
     <class kind="class">Drupal::dkan_common::Tests::Mock::Sequence</class>
     <namespace>Drupal::dkan_common::Tests::Mock</namespace>
   </compound>
   <compound kind="file">
     <name>ParentCallTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Util/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Util/</path>
     <filename>ParentCallTrait_8php</filename>
     <namespace>Drupal::dkan_common::Util</namespace>
   </compound>
   <compound kind="file">
     <name>RequestTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_common/src/Util/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_common/src/Util/</path>
     <filename>RequestTrait_8php</filename>
     <namespace>Drupal::dkan_common::Util</namespace>
   </compound>
   <compound kind="file">
     <name>ConfigurationOverrider.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/src/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/src/</path>
     <filename>ConfigurationOverrider_8php</filename>
     <class kind="class">Drupal::dkan_data::ConfigurationOverrider</class>
     <namespace>Drupal::dkan_data</namespace>
   </compound>
   <compound kind="file">
     <name>DkanDataSettingsForm.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/src/Form/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/src/Form/</path>
     <filename>DkanDataSettingsForm_8php</filename>
     <class kind="class">Drupal::dkan_data::Form::DkanDataSettingsForm</class>
     <namespace>Drupal::dkan_data::Form</namespace>
@@ -284,35 +181,42 @@
   </compound>
   <compound kind="file">
     <name>OrphanReferenceProcessor.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/src/Plugin/QueueWorker/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/src/Plugin/QueueWorker/</path>
     <filename>OrphanReferenceProcessor_8php</filename>
     <class kind="class">Drupal::dkan_data::Plugin::QueueWorker::OrphanReferenceProcessor</class>
     <namespace>Drupal::dkan_data::Plugin::QueueWorker</namespace>
   </compound>
   <compound kind="file">
     <name>ProperJson.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/src/Plugin/Validation/Constraint/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/src/Plugin/Validation/Constraint/</path>
     <filename>ProperJson_8php</filename>
     <class kind="class">Drupal::dkan_data::Plugin::Validation::Constraint::ProperJson</class>
     <namespace>Drupal::dkan_data::Plugin::Validation::Constraint</namespace>
   </compound>
   <compound kind="file">
     <name>ProperJsonValidator.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/src/Plugin/Validation/Constraint/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/src/Plugin/Validation/Constraint/</path>
     <filename>ProperJsonValidator_8php</filename>
     <class kind="class">Drupal::dkan_data::Plugin::Validation::Constraint::ProperJsonValidator</class>
     <namespace>Drupal::dkan_data::Plugin::Validation::Constraint</namespace>
   </compound>
   <compound kind="file">
+    <name>Uuid5.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/src/Service/</path>
+    <filename>Uuid5_8php</filename>
+    <class kind="class">Drupal::dkan_data::Service::Uuid5</class>
+    <namespace>Drupal::dkan_data::Service</namespace>
+  </compound>
+  <compound kind="file">
     <name>Data.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/src/Storage/</path>
     <filename>Data_8php</filename>
     <class kind="class">Drupal::dkan_data::Storage::Data</class>
     <namespace>Drupal::dkan_data::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>ValueReferencer.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/src/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/src/</path>
     <filename>ValueReferencer_8php</filename>
     <class kind="class">Drupal::dkan_data::ValueReferencer</class>
     <namespace>Drupal::dkan_data</namespace>
@@ -320,338 +224,516 @@
   </compound>
   <compound kind="file">
     <name>ConfigurationOverriderTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/tests/src/Unit/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/tests/src/Unit/</path>
     <filename>ConfigurationOverriderTest_8php</filename>
     <class kind="class">Drupal::dkan_datastore::ConfigurationOverriderTest</class>
     <namespace>Drupal::dkan_datastore</namespace>
   </compound>
   <compound kind="file">
     <name>ProperJsonValidatorTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/tests/src/Unit/Plugin/Validation/Constraint/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/tests/src/Unit/Plugin/Validation/Constraint/</path>
     <filename>ProperJsonValidatorTest_8php</filename>
     <class kind="class">ProperJsonValidatorTest</class>
   </compound>
   <compound kind="file">
+    <name>Uuid5Test.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/tests/src/Unit/Service/</path>
+    <filename>Uuid5Test_8php</filename>
+    <class kind="class">Drupal::dkan_data::Tests::Unit::Uuid5Test</class>
+    <namespace>Drupal::dkan_data::Tests::Unit</namespace>
+    <namespace>Drupal</namespace>
+  </compound>
+  <compound kind="file">
     <name>DataTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/tests/src/Unit/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/tests/src/Unit/Storage/</path>
     <filename>DataTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_api::Unit::Storage::DataTest</class>
     <namespace>Drupal::Tests::dkan_api::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>ValueReferencerTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_data/tests/src/Unit/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_data/tests/src/Unit/</path>
     <filename>ValueReferencerTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_data::Unit::ValueReferencerTest</class>
     <namespace>Drupal::Tests::dkan_data::Unit</namespace>
   </compound>
   <compound kind="file">
-    <name>Commands.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Drush/</path>
-    <filename>dkan__datastore_2src_2Drush_2Commands_8php</filename>
-    <class kind="class">Drupal::dkan_datastore::Drush::Commands</class>
-    <namespace>Drupal::dkan_datastore::Drush</namespace>
-  </compound>
-  <compound kind="file">
-    <name>Commands.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_dummy_content/src/Drush/</path>
-    <filename>dkan__dummy__content_2src_2Drush_2Commands_8php</filename>
-    <class kind="class">Drupal::dkan_dummy_content::Drush::Commands</class>
-    <namespace>Drupal::dkan_dummy_content::Drush</namespace>
-  </compound>
-  <compound kind="file">
-    <name>Commands.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Drush/</path>
-    <filename>dkan__harvest_2src_2Drush_2Commands_8php</filename>
-    <class kind="class">Drupal::dkan_harvest::Drush::Commands</class>
-    <namespace>Drupal::dkan_harvest::Drush</namespace>
+    <name>Drush.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/</path>
+    <filename>Drush_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::Drush</class>
+    <namespace>Drupal::dkan_datastore</namespace>
   </compound>
   <compound kind="file">
     <name>Import.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Plugin/QueueWorker/</path>
-    <filename>Import_8php</filename>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Plugin/QueueWorker/</path>
+    <filename>Plugin_2QueueWorker_2Import_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Plugin::QueueWorker::Import</class>
     <namespace>Drupal::dkan_datastore::Plugin::QueueWorker</namespace>
   </compound>
   <compound kind="file">
-    <name>Datastore.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Service/</path>
-    <filename>Datastore_8php</filename>
-    <class kind="class">Drupal::dkan_datastore::Service::Datastore</class>
+    <name>Import.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Service/Factory/</path>
+    <filename>Service_2Factory_2Import_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::Service::Factory::Import</class>
+    <namespace>Drupal::dkan_datastore::Service::Factory</namespace>
+  </compound>
+  <compound kind="file">
+    <name>Import.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Service/</path>
+    <filename>Service_2Import_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::Service::Import</class>
+    <namespace>Drupal::dkan_datastore::Service</namespace>
+  </compound>
+  <compound kind="file">
+    <name>Service.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/</path>
+    <filename>Service_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::Service</class>
+    <namespace>Drupal::dkan_datastore</namespace>
+  </compound>
+  <compound kind="file">
+    <name>Resource.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Service/Factory/</path>
+    <filename>Factory_2Resource_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::Service::Factory::Resource</class>
+    <namespace>Drupal::dkan_datastore::Service::Factory</namespace>
+  </compound>
+  <compound kind="file">
+    <name>Resource.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Service/</path>
+    <filename>Resource_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::Service::Resource</class>
     <namespace>Drupal::dkan_datastore::Service</namespace>
   </compound>
   <compound kind="file">
     <name>ImporterList.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Service/ImporterList/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Service/ImporterList/</path>
     <filename>ImporterList_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service::ImporterList::ImporterList</class>
     <namespace>Drupal::dkan_datastore::Service::ImporterList</namespace>
   </compound>
   <compound kind="file">
     <name>ImporterListItem.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Service/ImporterList/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Service/ImporterList/</path>
     <filename>ImporterListItem_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service::ImporterList::ImporterListItem</class>
     <namespace>Drupal::dkan_datastore::Service::ImporterList</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTable.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Storage/</path>
     <filename>DatabaseTable_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::DatabaseTable</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
+    <name>DatabaseTableFactory.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Storage/</path>
+    <filename>DatabaseTableFactory_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::Storage::DatabaseTableFactory</class>
+    <namespace>Drupal::dkan_datastore::Storage</namespace>
+  </compound>
+  <compound kind="file">
     <name>JobStore.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Storage/</path>
     <filename>JobStore_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::JobStore</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
+    <name>JobStoreFactory.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Storage/</path>
+    <filename>JobStoreFactory_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::Storage::JobStoreFactory</class>
+    <namespace>Drupal::dkan_datastore::Storage</namespace>
+  </compound>
+  <compound kind="file">
     <name>Query.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Storage/</path>
     <filename>Query_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::Query</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>TableSummary.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Storage/</path>
     <filename>TableSummary_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::TableSummary</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>Variable.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/Storage/</path>
     <filename>Variable_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::Variable</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
+    <name>WebServiceApi.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/src/</path>
+    <filename>WebServiceApi_8php</filename>
+    <class kind="class">Drupal::dkan_datastore::WebServiceApi</class>
+    <namespace>Drupal::dkan_datastore</namespace>
+    <namespace>Drupal</namespace>
+  </compound>
+  <compound kind="file">
     <name>DatabaseTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/tests/src/Functional/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Functional/</path>
     <filename>DatabaseTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_datastore::Functional::DatabaseTest</class>
     <namespace>Drupal::Tests::dkan_datastore::Functional</namespace>
   </compound>
   <compound kind="file">
     <name>VariableTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/tests/src/Functional/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Functional/</path>
     <filename>Functional_2VariableTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_datastore::Functional::VariableTest</class>
     <namespace>Drupal::Tests::dkan_datastore::Functional</namespace>
   </compound>
   <compound kind="file">
     <name>VariableTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/tests/src/Unit/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/Storage/</path>
     <filename>Unit_2Storage_2VariableTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::VariableTest</class>
     <namespace>Drupal::Tests::dkan_datastore::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>Container.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_datastore/tests/src/Unit/Mock/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/Mock/</path>
     <filename>Container_8php</filename>
     <class kind="class">Drupal::Tests::dkan_datastore::Unit::Mock::Container</class>
     <namespace>Drupal::Tests::dkan_datastore::Unit::Mock</namespace>
   </compound>
   <compound kind="file">
+    <name>ImporterListTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/Service/ImporterList/</path>
+    <filename>ImporterListTest_8php</filename>
+    <class kind="class">ImporterListTest</class>
+  </compound>
+  <compound kind="file">
+    <name>ImportTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/Service/</path>
+    <filename>ImportTest_8php</filename>
+    <class kind="class">ImportTest</class>
+  </compound>
+  <compound kind="file">
+    <name>ResourceTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/Service/</path>
+    <filename>ResourceTest_8php</filename>
+    <class kind="class">ResourceTest</class>
+  </compound>
+  <compound kind="file">
+    <name>ServiceTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/</path>
+    <filename>ServiceTest_8php</filename>
+    <class kind="class">ServiceTest</class>
+  </compound>
+  <compound kind="file">
+    <name>DatabaseTableFactoryTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/Storage/</path>
+    <filename>DatabaseTableFactoryTest_8php</filename>
+    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::DatabaseTableFactoryTest</class>
+    <namespace>Drupal::Tests::dkan_datastore::Unit::Storage</namespace>
+  </compound>
+  <compound kind="file">
+    <name>DatabaseTableTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/Storage/</path>
+    <filename>DatabaseTableTest_8php</filename>
+    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::DatabaseTableTest</class>
+    <namespace>Drupal::Tests::dkan_datastore::Unit::Storage</namespace>
+  </compound>
+  <compound kind="file">
+    <name>JobStoreTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_datastore/tests/src/Unit/Storage/</path>
+    <filename>JobStoreTest_8php</filename>
+    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::JobStoreTest</class>
+    <namespace>Drupal::Tests::dkan_datastore::Unit::Storage</namespace>
+  </compound>
+  <compound kind="file">
+    <name>Commands.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_dummy_content/src/Drush/</path>
+    <filename>dkan__dummy__content_2src_2Drush_2Commands_8php</filename>
+    <class kind="class">Drupal::dkan_dummy_content::Drush::Commands</class>
+    <namespace>Drupal::dkan_dummy_content::Drush</namespace>
+  </compound>
+  <compound kind="file">
+    <name>Commands.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Drush/</path>
+    <filename>dkan__harvest_2src_2Drush_2Commands_8php</filename>
+    <class kind="class">Drupal::dkan_harvest::Drush::Commands</class>
+    <namespace>Drupal::dkan_harvest::Drush</namespace>
+  </compound>
+  <compound kind="file">
     <name>Page.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_frontend/src/Controller/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_frontend/src/Controller/</path>
     <filename>Controller_2Page_8php</filename>
     <class kind="class">Drupal::dkan_frontend::Controller::Page</class>
     <namespace>Drupal::dkan_frontend::Controller</namespace>
   </compound>
   <compound kind="file">
     <name>Page.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_frontend/src/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_frontend/src/</path>
     <filename>Page_8php</filename>
     <class kind="class">Drupal::dkan_frontend::Page</class>
     <namespace>Drupal::dkan_frontend</namespace>
   </compound>
   <compound kind="file">
+    <name>RouteProvider.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_frontend/src/Routing/</path>
+    <filename>dkan__frontend_2src_2Routing_2RouteProvider_8php</filename>
+    <class kind="class">Drupal::dkan_frontend::Routing::RouteProvider</class>
+    <namespace>Drupal::dkan_frontend::Routing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>RouteProvider.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_metastore/src/Routing/</path>
+    <filename>dkan__metastore_2src_2Routing_2RouteProvider_8php</filename>
+    <class kind="class">Drupal::dkan_metastore::Routing::RouteProvider</class>
+    <namespace>Drupal::dkan_metastore::Routing</namespace>
+  </compound>
+  <compound kind="file">
     <name>PageTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_frontend/tests/src/Unit/Controller/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_frontend/tests/src/Unit/Controller/</path>
     <filename>Controller_2PageTest_8php</filename>
     <class kind="class">ControllerPageTest</class>
   </compound>
   <compound kind="file">
     <name>PageTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_frontend/tests/src/Unit/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_frontend/tests/src/Unit/</path>
     <filename>PageTest_8php</filename>
     <class kind="class">PageTest</class>
   </compound>
   <compound kind="file">
     <name>RouteProvider2Test.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_frontend/tests/src/Unit/Routing/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_frontend/tests/src/Unit/Routing/</path>
     <filename>RouteProvider2Test_8php</filename>
     <class kind="class">RouteProvider2Test</class>
   </compound>
   <compound kind="file">
+    <name>Api.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Controller/</path>
+    <filename>dkan__harvest_2src_2Controller_2Api_8php</filename>
+    <class kind="class">Drupal::dkan_harvest::Controller::Api</class>
+    <namespace>Drupal::dkan_harvest::Controller</namespace>
+    <namespace>Drupal</namespace>
+  </compound>
+  <compound kind="file">
+    <name>Api.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_metastore/src/Controller/</path>
+    <filename>dkan__metastore_2src_2Controller_2Api_8php</filename>
+    <class kind="class">Drupal::dkan_metastore::Controller::Api</class>
+    <namespace>Drupal::dkan_metastore::Controller</namespace>
+  </compound>
+  <compound kind="file">
+    <name>Api.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_sql_endpoint/src/Controller/</path>
+    <filename>dkan__sql__endpoint_2src_2Controller_2Api_8php</filename>
+    <class kind="class">Drupal::dkan_sql_endpoint::Controller::Api</class>
+    <namespace>Drupal::dkan_sql_endpoint::Controller</namespace>
+  </compound>
+  <compound kind="file">
     <name>Helper.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Drush/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Drush/</path>
     <filename>Helper_8php</filename>
     <namespace>Drupal::dkan_harvest::Drush</namespace>
   </compound>
   <compound kind="file">
     <name>Harvester.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/</path>
     <filename>Harvester_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Harvester</class>
     <namespace>Drupal::dkan_harvest</namespace>
   </compound>
   <compound kind="file">
     <name>Dataset.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Load/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Load/</path>
     <filename>Dataset_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Load::Dataset</class>
     <namespace>Drupal::dkan_harvest::Load</namespace>
   </compound>
   <compound kind="file">
     <name>FileHelper.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Load/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Load/</path>
     <filename>FileHelper_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Load::FileHelper</class>
     <namespace>Drupal::dkan_harvest::Load</namespace>
   </compound>
   <compound kind="file">
     <name>FileHelperTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Load/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Load/</path>
     <filename>FileHelperTrait_8php</filename>
     <namespace>Drupal::dkan_harvest::Load</namespace>
   </compound>
   <compound kind="file">
     <name>IFileHelper.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Load/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Load/</path>
     <filename>IFileHelper_8php</filename>
     <class kind="interface">Drupal::dkan_harvest::Load::IFileHelper</class>
     <namespace>Drupal::dkan_harvest::Load</namespace>
   </compound>
   <compound kind="file">
     <name>File.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Storage/</path>
     <filename>File_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Storage::File</class>
     <namespace>Drupal::dkan_harvest::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>FileFactory.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Storage/</path>
     <filename>FileFactory_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Storage::FileFactory</class>
     <namespace>Drupal::dkan_harvest::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>IdGenerator.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Storage/</path>
     <filename>IdGenerator_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Storage::IdGenerator</class>
     <namespace>Drupal::dkan_harvest::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>ResourceImporter.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/src/Transform/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/src/Transform/</path>
     <filename>ResourceImporter_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Transform::ResourceImporter</class>
     <namespace>Drupal::dkan_harvest::Transform</namespace>
   </compound>
   <compound kind="file">
+    <name>ApiTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/test/src/Unit/Controller/</path>
+    <filename>dkan__harvest_2test_2src_2Unit_2Controller_2ApiTest_8php</filename>
+    <class kind="class">ApiTest</class>
+  </compound>
+  <compound kind="file">
+    <name>ApiTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_metastore/tests/src/Unit/Controller/</path>
+    <filename>dkan__metastore_2tests_2src_2Unit_2Controller_2ApiTest_8php</filename>
+    <class kind="class">Drupal::Tests::dkan_metastore::Unit::Controller::ApiTest</class>
+    <namespace>Drupal::Tests::dkan_metastore::Unit::Controller</namespace>
+  </compound>
+  <compound kind="file">
+    <name>ApiTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_sql_endpoint/tests/src/Unit/Controller/</path>
+    <filename>dkan__sql__endpoint_2tests_2src_2Unit_2Controller_2ApiTest_8php</filename>
+    <class kind="class">Drupal::Tests::dkan_sql_endpoint::Unit::Controller::ApiTest</class>
+    <namespace>Drupal::Tests::dkan_sql_endpoint::Unit::Controller</namespace>
+  </compound>
+  <compound kind="file">
+    <name>HarvesterTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/test/src/Unit/</path>
+    <filename>HarvesterTest_8php</filename>
+    <class kind="class">HarvesterTest</class>
+  </compound>
+  <compound kind="file">
     <name>DatasetTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/test/src/Unit/Load/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/test/src/Unit/Load/</path>
     <filename>DatasetTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Extract::DatasetTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Extract</namespace>
   </compound>
   <compound kind="file">
     <name>FileHelperTraitTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/test/src/Unit/Load/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/test/src/Unit/Load/</path>
     <filename>FileHelperTraitTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Extract::FileHelperTraitTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Extract</namespace>
   </compound>
   <compound kind="file">
     <name>FileFactoryTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/test/src/Unit/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/test/src/Unit/Storage/</path>
     <filename>FileFactoryTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Storage::FileFactoryTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>FileTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/test/src/Unit/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/test/src/Unit/Storage/</path>
     <filename>FileTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Storage::FileTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>IdGeneratorTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/test/src/Unit/Storage/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/test/src/Unit/Storage/</path>
     <filename>IdGeneratorTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Storage::IdGeneratorTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>ResourceImporterTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_harvest/test/src/Unit/Transform/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_harvest/test/src/Unit/Transform/</path>
     <filename>ResourceImporterTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Transform::ResourceImporterTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Transform</namespace>
   </compound>
   <compound kind="file">
     <name>ApiController.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_lunr/src/Controller/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_lunr/src/Controller/</path>
     <filename>ApiController_8php</filename>
     <class kind="class">Drupal::dkan_lunr::Controller::ApiController</class>
     <namespace>Drupal::dkan_lunr::Controller</namespace>
   </compound>
   <compound kind="file">
     <name>Search.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_lunr/src/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_lunr/src/</path>
     <filename>Search_8php</filename>
     <class kind="class">Drupal::dkan_lunr::Search</class>
     <namespace>Drupal::dkan_lunr</namespace>
   </compound>
   <compound kind="file">
     <name>DatasetModifier.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_lunr/src/Service/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_lunr/src/Service/</path>
     <filename>DatasetModifier_8php</filename>
     <class kind="class">Drupal::dkan_lunr::Service::DatasetModifier</class>
     <namespace>Drupal::dkan_lunr::Service</namespace>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_metastore/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_metastore/</path>
     <filename>modules_2custom_2dkan__metastore_2README_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/</path>
+    <path>/Users/janette/workspace/dkan2-git/</path>
     <filename>README_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/schema/</path>
+    <path>/Users/janette/workspace/dkan2-git/schema/</path>
     <filename>schema_2README_8md</filename>
   </compound>
   <compound kind="file">
+    <name>InvalidPayloadException.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_metastore/src/Controller/</path>
+    <filename>InvalidPayloadException_8php</filename>
+    <class kind="class">Drupal::dkan_metastore::Controller::InvalidPayloadException</class>
+    <namespace>Drupal::dkan_metastore::Controller</namespace>
+  </compound>
+  <compound kind="file">
+    <name>RouteProviderTest.php</name>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_metastore/tests/src/Unit/Routing/</path>
+    <filename>RouteProviderTest_8php</filename>
+    <class kind="class">RouteProviderTest</class>
+  </compound>
+  <compound kind="file">
     <name>SchemaRetriever.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_schema/src/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_schema/src/</path>
     <filename>SchemaRetriever_8php</filename>
     <class kind="class">Drupal::dkan_schema::SchemaRetriever</class>
     <namespace>Drupal::dkan_schema</namespace>
   </compound>
   <compound kind="file">
     <name>SchemaRetrieverTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_schema/tests/src/Unit/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_schema/tests/src/Unit/</path>
     <filename>SchemaRetrieverTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_schema::Unit::SchemaRetrieverTest</class>
     <namespace>Drupal::Tests::dkan_schema::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>DkanSqlEndpointSettingsForm.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/dkan_sql_endpoint/src/Form/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_sql_endpoint/src/Form/</path>
     <filename>DkanSqlEndpointSettingsForm_8php</filename>
     <class kind="class">Drupal::dkan_sql_endpoint::Form::DkanSqlEndpointSettingsForm</class>
     <namespace>Drupal::dkan_sql_endpoint::Form</namespace>
@@ -659,96 +741,205 @@
   </compound>
   <compound kind="file">
     <name>JsonTableFormatter.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/json_schema_field/src/Plugin/Field/FieldFormatter/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/json_schema_field/src/Plugin/Field/FieldFormatter/</path>
     <filename>JsonTableFormatter_8php</filename>
     <class kind="class">Drupal::json_schema_field::Plugin::Field::FieldFormatter::JsonTableFormatter</class>
     <namespace>Drupal::json_schema_field::Plugin::Field::FieldFormatter</namespace>
   </compound>
   <compound kind="file">
     <name>JsonSchemaItem.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/json_schema_field/src/Plugin/Field/FieldType/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/json_schema_field/src/Plugin/Field/FieldType/</path>
     <filename>JsonSchemaItem_8php</filename>
     <class kind="class">Drupal::field_example::Plugin::Field::FieldType::JsonSchemaItem</class>
     <namespace>Drupal::field_example::Plugin::Field::FieldType</namespace>
   </compound>
   <compound kind="file">
     <name>JsonSchemaFormWidget.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/custom/json_schema_field/src/Plugin/Field/FieldWidget/</path>
+    <path>/Users/janette/workspace/dkan2-git/modules/custom/json_schema_field/src/Plugin/Field/FieldWidget/</path>
     <filename>JsonSchemaFormWidget_8php</filename>
     <class kind="class">Drupal::json_schema_field::Plugin::Field::FieldWidget::JsonSchemaFormWidget</class>
     <namespace>Drupal::json_schema_field::Plugin::Field::FieldWidget</namespace>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_api::Controller::Api</name>
-    <filename>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</filename>
+    <name>Drupal::dkan_common::Storage::AbstractDatabaseTable</name>
+    <filename>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</filename>
     <member kind="function">
       <type></type>
       <name>__construct</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a56b12fe3d3e41975c4881d6a829f5092</anchor>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>add77329ade1e4744b0472216aafb9639</anchor>
+      <arglist>(Connection $connection)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>retrieve</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>ab1d480d35d6153bce47a02bff7b12d8d</anchor>
+      <arglist>(string $id)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>retrieveAll</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>a9555a719c0550cfefd40951cdb6a9c0f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>store</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>a7daf1ae0e3e8c0aac2b2ddd184a68e8f</anchor>
+      <arglist>($data, string $id=NULL)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>remove</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>a60e7119f610d2b3e5522a38b98e81e24</anchor>
+      <arglist>(string $id)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>count</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>a8971d5de8a4b0f34a45bb04b0f9cf7eb</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>query</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>a88e0bfcbd47ba998b349bca376b341af</anchor>
+      <arglist>(Query $query)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>destroy</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>a43ed4b84d9e6612377536850185e4bb4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>getTableName</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>aece36797b73f77b52c5d6e93b8d18849</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>prepareData</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>a00005f305412076e8eb919a6bbaa5602</anchor>
+      <arglist>(string $data, string $id=NULL)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>primaryKey</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>adb6eb3267f779bee2ec9de1cf7ebeb91</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type></type>
+      <name>$connection</name>
+      <anchorfile>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</anchorfile>
+      <anchor>ae04fe666435edd3a646a5f84b03e4754</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_metastore::Controller::Api</name>
+    <filename>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>aa7eee5c6305e158ca33356adbd4ae441</anchor>
       <arglist>(RequestStack $requestStack, SchemaRetriever $schemaRetriever, Data $storage)</arglist>
     </member>
     <member kind="function">
       <type></type>
+      <name>getSchemas</name>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>ac2bdc62b39ad3f751c854f6af6dd112f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getSchema</name>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a8a61ecc8ed83374078d6ed6157b425be</anchor>
+      <arglist>($identifier)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
       <name>getAll</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a71d1fd903e690710a20a47d3377c78db</anchor>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a6dd239d14425c1d28351f356a398667f</anchor>
       <arglist>($schema_id)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>get</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a0addcafea66c680f7d23389323184e08</anchor>
-      <arglist>($uuid, $schema_id)</arglist>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a849967e3d1439dd18efd05eceae739d9</anchor>
+      <arglist>($schema_id, $identifier)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>getResources</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a94a1bcd4b4dc0eedc5d89b1dff270d74</anchor>
-      <arglist>($uuid, $schema_id)</arglist>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>aa07bcdfc821c60e7b1f226fc768f5451</anchor>
+      <arglist>($schema_id, $identifier)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>post</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a52a93f34889e62231d68e7f11db8324d</anchor>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a7086b06e9cf106d8d56cb42dc8de7cc4</anchor>
       <arglist>($schema_id)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>put</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a32b0a13b7ebe281bf818085f3137e06b</anchor>
-      <arglist>($uuid, $schema_id)</arglist>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a0f1a7dd7b874d412179caad31e41e10b</anchor>
+      <arglist>($schema_id, $identifier)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>patch</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a4126b9d02ba65d2767d78cd25fb8bf5d</anchor>
-      <arglist>($uuid, $schema_id)</arglist>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a04c72e1f847179cd3a86e1c8e374e8dd</anchor>
+      <arglist>($schema_id, $identifier)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>delete</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a893b14af4913c1831c8e7bb8f1505dd5</anchor>
-      <arglist>($uuid, $schema_id)</arglist>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a9236b12d7ab1fd032583fdd07782138f</anchor>
+      <arglist>($schema_id, $identifier)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>getEngine</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a5cce1e5e3a421132482d227c4f36f616</anchor>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a1a834cd6b09d53c907bddfc3b23ea850</anchor>
       <arglist>($schema_id)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getDatasetSpecific</name>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>affcfc5781b77d69f9d38cc3d678282ba</anchor>
+      <arglist>(string $identifier)</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static</type>
       <name>create</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a46d16dd73fe2ab1246f00af181898d97</anchor>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>a8b893016fc975d181195348cab8415c4</anchor>
       <arglist>(ContainerInterface $container)</arglist>
     </member>
   </compound>
@@ -766,68 +957,15 @@
       <type></type>
       <name>__construct</name>
       <anchorfile>classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a26bc9c25e301cf959a52e004d7d5bd61</anchor>
-      <arglist>(Connection $database, Datastore $datastore, ConfigFactoryInterface $configFactory)</arglist>
+      <anchor>aaf69bb37ea3cbbfd9a6336f97a071d9e</anchor>
+      <arglist>(Connection $database, Resource $resourceServiceFactory, ConfigFactory $configFactory, RequestStack $requestStack, DatabaseTableFactory $databaseTableFactory)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>runQuery</name>
       <anchorfile>classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>aa970c0d40218eb3ba45f309200236dcc</anchor>
-      <arglist>($query_string)</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>Drupal::dkan_datastore::Controller::Api</name>
-    <filename>classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html</filename>
-    <member kind="function">
-      <type></type>
-      <name>__construct</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a163dd50402091b7c51f5d5310efe8209</anchor>
-      <arglist>(Datastore $datastoreService)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>summary</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a2529d471e5a096774c6845c92a484b8e</anchor>
-      <arglist>($uuid)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>import</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a5298e4062a431bc72e5c6d305b33d21f</anchor>
-      <arglist>($uuid, $deferred=FALSE)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>delete</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>aa2ed40a58dc8e3d8a7c0dc574e29e925</anchor>
-      <arglist>($uuid)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>list</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a5ded25076fbdf175479abb59eea65b5d</anchor>
+      <anchor>a73cec2fbbc88a893ceec594e82a4468a</anchor>
       <arglist>()</arglist>
-    </member>
-    <member kind="function" static="yes">
-      <type>static</type>
-      <name>create</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>aa7145c9bff2e56a06e8a0f1bda0b1485</anchor>
-      <arglist>(ContainerInterface $container)</arglist>
-    </member>
-    <member kind="variable" protection="protected">
-      <type></type>
-      <name>$datastoreService</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>ad6c6b1a5552dfb951b457940bca7f04d</anchor>
-      <arglist></arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -849,6 +987,13 @@
     </member>
     <member kind="function">
       <type></type>
+      <name>getPlan</name>
+      <anchorfile>classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html</anchorfile>
+      <anchor>aca391e4cb048ad3862e073109c153520</anchor>
+      <arglist>($identifier)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
       <name>register</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html</anchorfile>
       <anchor>afaa510330f66aab18bc5af294660185a</anchor>
@@ -858,36 +1003,36 @@
       <type></type>
       <name>deregister</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a649746d45757b8e8de2256e9aec1f7e5</anchor>
-      <arglist>($id)</arglist>
+      <anchor>a501d178b3fb1d5a13d7b997faa64bc57</anchor>
+      <arglist>($identifier)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>run</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>ad7f5690e10f1fc4750ef6e0154d5dba5</anchor>
-      <arglist>($id)</arglist>
+      <anchor>ada240be31df8bc696a3103bdf4bdd623</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>info</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a4b9416fd05b7750ccebcc18be6103c11</anchor>
-      <arglist>($id)</arglist>
+      <anchor>ad088bf2190f96a90627638c94231edf3</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>infoRun</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>a1b454018586f58ca2c33626cb9dad48f</anchor>
-      <arglist>($id, $run_id)</arglist>
+      <anchor>ae776575865a35ecd3128c9ce264d3196</anchor>
+      <arglist>($identifier)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>revert</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html</anchorfile>
-      <anchor>ad735b6919cadd76f482f34f83184e62e</anchor>
-      <arglist>($id)</arglist>
+      <anchor>ae8936866e616280d56ed16717e21e8bf</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static</type>
@@ -900,162 +1045,6 @@
   <compound kind="class">
     <name>Drupal::dkan_lunr::Controller::ApiController</name>
     <filename>classDrupal_1_1dkan__lunr_1_1Controller_1_1ApiController.html</filename>
-  </compound>
-  <compound kind="class">
-    <name>Drupal::Tests::dkan_api::Unit::Controller::ApiTest</name>
-    <filename>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</filename>
-    <member kind="function">
-      <type></type>
-      <name>testGetAll</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a3d1e658f0471372acce3a2ee9222ffb8</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testGet</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>ad847a0cc50e4153dfae09cbb7ac7ed6a</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testGetResources</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a08a1e75206686e0443f2587c628aa398</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testGetResourcesException</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>aaa94055b41d643e33933152fced255ec</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testGetException</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a92fc7a1169d5eff34e5545ace8904fa0</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testGetExceptionOtherSchema</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a0a2af8fbcfc17135e48c41e654ef81a7</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPost</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>aad4153c698fc352820358e93cd01c6b5</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPostNoIdentifier</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a4640834253722bd75a806f089cbc46b3</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPostNoIdentifierException</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a5269ccea80b87bfbd9d78dc45d658316</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPatch</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a7ec7101d29a8c27d531e5d4da0af20ba</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPatchNoObject</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a925dad1ae1326c0fc9c698fdd4ec331f</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPatchStoreError</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a60c7a07e71cfff7041488efb33aab17e</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPatchBadPayload</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>aaf5bf3c7aa19a967ff644c3c2d46bd65</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPut</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>aa51d033c2835610953cbbc5779c805f0</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPutModifyId</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a6709ec147681a14bcf5c361cca8e0434</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPutNoObject</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a9c68d010ed35cc3e845af7fcf4d47130</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testPutStoreError</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a516e24a0c0c616f48a2e3913e2eb0834</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testDelete</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>afbc0986966cd4af49ee4dd3f5b5b30cd</anchor>
-      <arglist>()</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>Drupal::Tests::dkan_datastore::Unit::Controller::ApiTest</name>
-    <filename>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1ApiTest.html</filename>
-    <base>Drupal::dkan_common::Tests::DkanTestBase</base>
-    <member kind="function">
-      <type></type>
-      <name>test</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a47b7f4167061f7a63de0622022f638c6</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>test2</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a381212b36cda70ee421baae947b79223</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>test3</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
-      <anchor>a2d3513dfc796ee7527c76063d0f92865</anchor>
-      <arglist>()</arglist>
-    </member>
   </compound>
   <compound kind="class">
     <name>ApiTest</name>
@@ -1098,9 +1087,150 @@
     </member>
     <member kind="function">
       <type></type>
-      <name>testRegisterAndRunAndInfoAndInfoRunAndRevertAndDeregister</name>
+      <name>testRun</name>
       <anchorfile>classApiTest.html</anchorfile>
-      <anchor>afbb73734a52f067f41050a618850f671</anchor>
+      <anchor>a5ca8eb92e1a9abfde5b83863cf5526f7</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::Tests::dkan_metastore::Unit::Controller::ApiTest</name>
+    <filename>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>testGetAll</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a99e32a30c4065dc861de9b0f2bb91410</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testGet</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a1d424f246aa9e9a9ac25770fe83b2fca</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testGetResources</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a23295ea13b74c47310a9c6fbcfe6c06e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testGetResourcesException</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>ad8f97ec3ddf26432a36b7a08fb9dcb19</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testGetException</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a75a71e503d57d6b840ff0b5a677bf28f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testGetExceptionOtherSchema</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>aa107d08e1ead2fd26312f666b022f575</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPost</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a63c236170fc06159235bc81a8a724c8e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPostNoIdentifier</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>abc7aa37fc8c65298b7d9bacefe182de1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPostNoIdentifierException</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>af09729897b75ba5b30137147c33adf8c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPatch</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a0d1686d152bfeafd295f5a72d0d3adc8</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPatchNoObject</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>aa8963e98d9e50680df4ee8f3136782e0</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPatchStoreError</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a9e19d9863c374a2bee1f07a143bc4b29</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPatchBadPayload</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a7a44063c6701fd6a30aea42ca515d0bf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPut</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a642163d65b7f94861d425e78e4a8e2ce</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPutModifyId</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a8036b4e31717e37b87d77c407f98690f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPutNoObject</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a8095f16c362a9ff1312d691a0de08bef</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testPutStoreError</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a606b6ffd68f6d87684624f764d1a1b4a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testDelete</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>a9e00a36dd434581f9bee4c293fb249c7</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::Tests::dkan_sql_endpoint::Unit::Controller::ApiTest</name>
+    <filename>classDrupal_1_1Tests_1_1dkan__sql__endpoint_1_1Unit_1_1Controller_1_1ApiTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>test</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__sql__endpoint_1_1Unit_1_1Controller_1_1ApiTest.html</anchorfile>
+      <anchor>ac8f61693c291ffa467ed8f3207e74168</anchor>
       <arglist>()</arglist>
     </member>
   </compound>
@@ -1145,52 +1275,6 @@
       <anchorfile>classDrupal_1_1dkan__dummy__content_1_1Drush_1_1Commands.html</anchorfile>
       <anchor>a32e97691225b39fa1b84ec2d222f0025</anchor>
       <arglist>()</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>Drupal::dkan_datastore::Drush::Commands</name>
-    <filename>classDrupal_1_1dkan__datastore_1_1Drush_1_1Commands.html</filename>
-    <member kind="function">
-      <type></type>
-      <name>__construct</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush_1_1Commands.html</anchorfile>
-      <anchor>ad0f27d833767c0125d3cd88f795d036b</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>import</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush_1_1Commands.html</anchorfile>
-      <anchor>af132d7801f68cafb71a0a57ed8e2c36a</anchor>
-      <arglist>($uuid, $deferred=FALSE)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>list</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush_1_1Commands.html</anchorfile>
-      <anchor>a7e24579574e025f7d09e7fa7de48810a</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>drop</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush_1_1Commands.html</anchorfile>
-      <anchor>afaf33c41f8fbe96d836af15fe851eb67</anchor>
-      <arglist>($uuid)</arglist>
-    </member>
-    <member kind="variable" protection="protected">
-      <type></type>
-      <name>$datastoreService</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush_1_1Commands.html</anchorfile>
-      <anchor>a095ee43473ff6d4ab695a50b50a92b4f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" protection="protected">
-      <type></type>
-      <name>$logger</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush_1_1Commands.html</anchorfile>
-      <anchor>a14354d993fce765a25cd882e7b6a33f4</anchor>
-      <arglist></arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -1431,54 +1515,20 @@
       <type></type>
       <name>store</name>
       <anchorfile>classDrupal_1_1dkan__data_1_1Storage_1_1Data.html</anchorfile>
-      <anchor>a721c5902f8e4130a98b159939eb46a22</anchor>
-      <arglist>(string $data, string $id=NULL)</arglist>
+      <anchor>a8648f0e5a4483b8380db3ea4dbcccfd0</anchor>
+      <arglist>($data, string $id=NULL)</arglist>
     </member>
   </compound>
   <compound kind="class">
     <name>Drupal::dkan_datastore::Storage::DatabaseTable</name>
     <filename>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</filename>
+    <base>Drupal::dkan_common::Storage::AbstractDatabaseTable</base>
     <member kind="function">
       <type></type>
       <name>__construct</name>
       <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
       <anchor>aa159b7eb829bf027f69a6daf80252218</anchor>
       <arglist>(Connection $connection, Resource $resource)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>retrieveAll</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
-      <anchor>a96096568a5f9816dae6aeb08d646341e</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>retrieve</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
-      <anchor>a9c226e1ecd87fb295f5529357f2f63b3</anchor>
-      <arglist>(string $id)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>store</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
-      <anchor>a2e9b634e69d276cb34eaf9fbee4dbe25</anchor>
-      <arglist>(string $data, string $id=NULL)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>remove</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
-      <anchor>ac44a1ef52aaf5305554c1529ee33c381</anchor>
-      <arglist>(string $id)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>count</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
-      <anchor>a8c1cec9c781d6a0f5d197a0a6aa2c236</anchor>
-      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type></type>
@@ -1489,24 +1539,17 @@
     </member>
     <member kind="function">
       <type></type>
-      <name>query</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
-      <anchor>a8e189dbba303e8b27842c52c97224518</anchor>
-      <arglist>(Query $query)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>destroy</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
-      <anchor>acedbd6caf62154d3dc2958788290e6f3</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
       <name>jsonSerialize</name>
       <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
       <anchor>a85036e545256446f30cb7696299507cf</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>setSchema</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
+      <anchor>a5cb7576da2066ec2117fa498c43c50b9</anchor>
+      <arglist>($schema)</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static</type>
@@ -1514,6 +1557,109 @@
       <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
       <anchor>a1f2efb7efffc31cf7561b8be04f40370</anchor>
       <arglist>(string $json)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>getTableName</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
+      <anchor>a5f289cae16e03580cc2c8743ea16bfaf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>prepareData</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
+      <anchor>a9e22687e1a1f517099c7abf421e4d1c7</anchor>
+      <arglist>(string $data, string $id=NULL)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>primaryKey</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</anchorfile>
+      <anchor>a013cfef260645493a2b1a91cb4509571</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_datastore::Storage::DatabaseTableFactory</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTableFactory.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTableFactory.html</anchorfile>
+      <anchor>a5ae680511ef1c10f3cd56d3de6109c53</anchor>
+      <arglist>(Connection $connection)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getInstance</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTableFactory.html</anchorfile>
+      <anchor>afe4544ce7584641ce32efa4b641d797d</anchor>
+      <arglist>(string $identifier, array $config=[])</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>getDatabaseTable</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTableFactory.html</anchorfile>
+      <anchor>a2ed81a3666492cbfb456b42565aa3d8b</anchor>
+      <arglist>($resource)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::Tests::dkan_datastore::Unit::Storage::DatabaseTableFactoryTest</name>
+    <filename>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableFactoryTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>test</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableFactoryTest.html</anchorfile>
+      <anchor>a4eee447a1250aae42d0fefcea3d23170</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::Tests::dkan_datastore::Unit::Storage::DatabaseTableTest</name>
+    <filename>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>testConstruction</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableTest.html</anchorfile>
+      <anchor>a24e09d0660d5c1958a66c6dd11c2f478</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testRetrieveAll</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableTest.html</anchorfile>
+      <anchor>ae2492a4a65faca86c98ae782ca0d9a1c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testStore</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableTest.html</anchorfile>
+      <anchor>a1d4b07b68a8e6c916952253de96c7914</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testCount</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableTest.html</anchorfile>
+      <anchor>a82e1e9b7e4b7e0a5bc5f582d392a5c59</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testGetSummary</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableTest.html</anchorfile>
+      <anchor>a401530385db64a6988825aabefb57e43</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testDestroy</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1DatabaseTableTest.html</anchorfile>
+      <anchor>ae4f943c3d36642450efb0d48f9fc2e59</anchor>
+      <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -1579,127 +1725,6 @@
       <name>testSaveItem</name>
       <anchorfile>classDrupal_1_1Tests_1_1dkan__harvest_1_1Unit_1_1Extract_1_1DatasetTest.html</anchorfile>
       <anchor>a237fd75e780ea28385acd6cff9d8afe4</anchor>
-      <arglist>()</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>Drupal::dkan_datastore::Service::Datastore</name>
-    <filename>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</filename>
-    <member kind="function">
-      <type></type>
-      <name>__construct</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</anchorfile>
-      <anchor>a6c58b07d18180480c09ad862f7bde544</anchor>
-      <arglist>(EntityRepository $entityRepository, Connection $connection, QueueFactory $queue, FileSystem $fileSystem)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>import</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</anchorfile>
-      <anchor>a352c569cc6e2eb2b45b2cf3b0d5537aa</anchor>
-      <arglist>(string $uuid, bool $deferred=FALSE)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>drop</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</anchorfile>
-      <anchor>af4a0b9030b0906f181889e287556c86d</anchor>
-      <arglist>($uuid)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>listStoredImporters</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</anchorfile>
-      <anchor>aea53ceaf9f52c170526beddb671ca833</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>getStorage</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</anchorfile>
-      <anchor>a3fb3f9fbf25eb1a9827ecd2700c57199</anchor>
-      <arglist>(string $uuid)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>getResourceFromUuid</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</anchorfile>
-      <anchor>af346c4c0c8a64e4fcc26a64f3292ed97</anchor>
-      <arglist>(string $uuid, $useFileFetcher=FALSE)</arglist>
-    </member>
-    <member kind="function" static="yes">
-      <type>static</type>
-      <name>create</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</anchorfile>
-      <anchor>aaa6d90d3300531044535323febe1d371</anchor>
-      <arglist>(ContainerInterface $container)</arglist>
-    </member>
-    <member kind="variable">
-      <type>const</type>
-      <name>DATASTORE_DEFAULT_TIMELIMIT</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Datastore.html</anchorfile>
-      <anchor>aa01b103c838e3a55a0cc3d265b5b6846</anchor>
-      <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>Drupal::Tests::dkan_datastore::Unit::Controller::DatastoreApiTest</name>
-    <filename>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</filename>
-    <base>Drupal::dkan_common::Tests::DkanTestBase</base>
-    <member kind="function">
-      <type></type>
-      <name>setUp</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</anchorfile>
-      <anchor>abad3dfec5190993ebe711b15d472304e</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testSummary</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</anchorfile>
-      <anchor>a50fa03e511a8887d05dcdd5af53825a1</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testImport</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</anchorfile>
-      <anchor>a1f336c942c9aad9c36d2e6459a7f540c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testImportFailure</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</anchorfile>
-      <anchor>a99226b855ac88399196fd26e880b8ec4</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testDelete</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</anchorfile>
-      <anchor>a440657034daef34c06c070857ff9f507</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testDeferredImport</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</anchorfile>
-      <anchor>adad0c8606ae54b5910700c515e69666a</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testList</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</anchorfile>
-      <anchor>a4229e1739112bf429749f2a019fd773b</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testListError</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller_1_1DatastoreApiTest.html</anchorfile>
-      <anchor>a19378b88f284343e758661a69a88ff27</anchor>
       <arglist>()</arglist>
     </member>
   </compound>
@@ -1866,8 +1891,22 @@
       <type></type>
       <name>__construct</name>
       <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Docs.html</anchorfile>
-      <anchor>a071fce3799d1dcb9a2a816bd726ba24a</anchor>
-      <arglist>(ModuleHandlerInterface $moduleHandler, Data $storage)</arglist>
+      <anchor>aa12a6402558a60b4dba502e5ba18cb97</anchor>
+      <arglist>(ModuleHandlerInterface $moduleHandler)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getVersions</name>
+      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Docs.html</anchorfile>
+      <anchor>aef4157659379d88a7c0413d26cdac8e0</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getJsonFromYmlFile</name>
+      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Docs.html</anchorfile>
+      <anchor>a8c9f11ee40de6763d1af0a810de07a32</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type></type>
@@ -1876,17 +1915,11 @@
       <anchor>a700faf36e1cfe35b42d2dc0a7ca7d50f</anchor>
       <arglist>()</arglist>
     </member>
-    <member kind="function">
-      <type></type>
-      <name>getDatasetSpecific</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Controller_1_1Docs.html</anchorfile>
-      <anchor>a89f9310fd5dd6a9d5e12d5104af9ebeb</anchor>
-      <arglist>(string $uuid)</arglist>
-    </member>
   </compound>
   <compound kind="class">
     <name>Drupal::Tests::dkan_api::Unit::Controller::DocsTest</name>
     <filename>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1DocsTest.html</filename>
+    <base>Drupal::dkan_common::Tests::DkanTestBase</base>
     <base>Drupal::dkan_common::Tests::DkanTestBase</base>
     <member kind="function">
       <type></type>
@@ -1915,6 +1948,52 @@
       <anchorfile>classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller_1_1DocsTest.html</anchorfile>
       <anchor>a2861ba74004f74c414a5e4326c4bce60</anchor>
       <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_datastore::Drush</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1Drush.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush.html</anchorfile>
+      <anchor>a37ca33f70b41293afa6e73b655c0f92e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>import</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush.html</anchorfile>
+      <anchor>abe194e08492f405b5b84096b31947bd8</anchor>
+      <arglist>($uuid, $deferred=FALSE)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>list</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush.html</anchorfile>
+      <anchor>a19d80c63ee5eac31b5a43c0d62efdc01</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>drop</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush.html</anchorfile>
+      <anchor>acb441edf423b56345ef2b11bfb0f4d56</anchor>
+      <arglist>($uuid)</arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type></type>
+      <name>$datastoreService</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush.html</anchorfile>
+      <anchor>a00f773731a5b931169592a3a74b25038</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type></type>
+      <name>$logger</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Drush.html</anchorfile>
+      <anchor>a7551fd739190c27fbc63269840290ff0</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -1963,8 +2042,8 @@
       <type></type>
       <name>store</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Storage_1_1File.html</anchorfile>
-      <anchor>a1186304c1490372bb6bab1b3c603cbb9</anchor>
-      <arglist>(string $data, string $id=NULL)</arglist>
+      <anchor>aee36677bcd33f5f5b22caf19832c73f0</anchor>
+      <arglist>($data, string $id=NULL)</arglist>
     </member>
     <member kind="function">
       <type></type>
@@ -2002,8 +2081,8 @@
       <type></type>
       <name>getInstance</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Storage_1_1FileFactory.html</anchorfile>
-      <anchor>abeeaac09cd6a43ac86429a78600b63dc</anchor>
-      <arglist>(string $identifier)</arglist>
+      <anchor>ac7c53adfbaa20b48281293296471e1f7</anchor>
+      <arglist>(string $identifier, array $config=[])</arglist>
     </member>
     <member kind="function" protection="protected">
       <type></type>
@@ -2177,6 +2256,13 @@
     </member>
     <member kind="function">
       <type></type>
+      <name>getHarvestPlan</name>
+      <anchorfile>classDrupal_1_1dkan__harvest_1_1Harvester.html</anchorfile>
+      <anchor>a73608f4bfa2c2a9065f861ee03c723ab</anchor>
+      <arglist>($plan_id)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
       <name>registerHarvest</name>
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Harvester.html</anchorfile>
       <anchor>aefb7e47dedd8314ab09e0d757ea36e34</anchor>
@@ -2223,6 +2309,52 @@
       <anchorfile>classDrupal_1_1dkan__harvest_1_1Harvester.html</anchorfile>
       <anchor>a211be6f29cdadaa710537517bcf35630</anchor>
       <arglist>($plan)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>getDkanHarvesterInstance</name>
+      <anchorfile>classDrupal_1_1dkan__harvest_1_1Harvester.html</anchorfile>
+      <anchor>a27c0873e23db9293ed2756619c503724</anchor>
+      <arglist>($harvestPlan, $item_store, $hash_store)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>HarvesterTest</name>
+    <filename>classHarvesterTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>testGetHarvestPlan</name>
+      <anchorfile>classHarvesterTest.html</anchorfile>
+      <anchor>abd03bc410862d5d4d39fa47615a0a468</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testDeregisterHarvest</name>
+      <anchorfile>classHarvesterTest.html</anchorfile>
+      <anchor>a26f065e20ff21e23da8b00e21dcc2a1a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testRunHarvest</name>
+      <anchorfile>classHarvesterTest.html</anchorfile>
+      <anchor>a6ac05f5c310499ded95ddf87a97f4a94</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testGetAllHarvestRunInfo</name>
+      <anchorfile>classHarvesterTest.html</anchorfile>
+      <anchor>a8b2332ff830155f0f8e5016702868b55</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testGetHarvestRunInfo</name>
+      <anchorfile>classHarvesterTest.html</anchorfile>
+      <anchor>a847199071c6454cadd748b64d85804c8</anchor>
+      <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -2383,21 +2515,85 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>Drupal::dkan_datastore::Service::Factory::Import</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1Service_1_1Factory_1_1Import.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Factory_1_1Import.html</anchorfile>
+      <anchor>a36311f4a2ae1d04e6f0c52f07cf08e86</anchor>
+      <arglist>(JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getInstance</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Factory_1_1Import.html</anchorfile>
+      <anchor>a9d27b2c06d539c2fbad5bb3e04c922ad</anchor>
+      <arglist>(string $identifier, array $config=[])</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_datastore::Service::Import</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1Service_1_1Import.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Import.html</anchorfile>
+      <anchor>abf7573ff9fe820b49c43507de20e2ad3</anchor>
+      <arglist>(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>import</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Import.html</anchorfile>
+      <anchor>a831d8a223d67e0c87b6754e441d9bf6a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getResult</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Import.html</anchorfile>
+      <anchor>ada403fc84198e7f1af546907c30fcd85</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getImporter</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Import.html</anchorfile>
+      <anchor>a6eab94293d666197b24080a97ea5472a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getStorage</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Import.html</anchorfile>
+      <anchor>a7201e97761fed4ec21593cf5ee1b357b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>const</type>
+      <name>DEFAULT_TIMELIMIT</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Import.html</anchorfile>
+      <anchor>a969ea29298e2e08e49a0747f5a2f2021</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>Drupal::dkan_datastore::Service::ImporterList::ImporterList</name>
     <filename>classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterList.html</filename>
     <member kind="function">
       <type></type>
       <name>__construct</name>
       <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterList.html</anchorfile>
-      <anchor>afbbf2907797673019d08751c8edcdb20</anchor>
-      <arglist>(JobStore $jobStore)</arglist>
+      <anchor>aa1d5f390ed6cddd9b554983304ea2ec6</anchor>
+      <arglist>(JobStoreFactory $jobStoreFactory, Resource $resrouceServiceFactory, Import $importServiceFactory)</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static</type>
       <name>getList</name>
       <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterList.html</anchorfile>
-      <anchor>aa46f3f82256c299c96a4b043532008c8</anchor>
-      <arglist>(JobStore $jobStore)</arglist>
+      <anchor>af581c57f8dd584b160f170de9dd0f097</anchor>
+      <arglist>(JobStoreFactory $jobStoreFactory, Resource $resrouceServiceFactory, Import $importServiceFactory)</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -2482,46 +2678,126 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_api::Controller::InvalidPayloadException</name>
-    <filename>classDrupal_1_1dkan__api_1_1Controller_1_1InvalidPayloadException.html</filename>
+    <name>ImporterListTest</name>
+    <filename>classImporterListTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>test</name>
+      <anchorfile>classImporterListTest.html</anchorfile>
+      <anchor>aece741d533e7d17e94cbec698b77c90e</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>ImportTest</name>
+    <filename>classImportTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>test</name>
+      <anchorfile>classImportTest.html</anchorfile>
+      <anchor>a7b679440e4c612651a08e41b13de7296</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_metastore::Controller::InvalidPayloadException</name>
+    <filename>classDrupal_1_1dkan__metastore_1_1Controller_1_1InvalidPayloadException.html</filename>
   </compound>
   <compound kind="class">
     <name>Drupal::dkan_datastore::Storage::JobStore</name>
     <filename>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</filename>
+    <base>Drupal::dkan_common::Storage::AbstractDatabaseTable</base>
     <member kind="function">
       <type></type>
       <name>__construct</name>
       <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</anchorfile>
-      <anchor>a42440e56e92120ad14e02149ce88927e</anchor>
-      <arglist>(Connection $connection)</arglist>
+      <anchor>a3a8c267765177cb6d8fe4bea4e493c62</anchor>
+      <arglist>(string $jobClass, Connection $connection)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>retrieve</name>
       <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</anchorfile>
-      <anchor>af3933e1859327a77e310eb216a089d4c</anchor>
-      <arglist>(string $uuid, string $jobClass)</arglist>
+      <anchor>ab292a383cdc1456b21ecd831525bbfd0</anchor>
+      <arglist>(string $id)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>getTableName</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</anchorfile>
+      <anchor>a2cfcf106da4f8116e73772e4fe3c45d4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>prepareData</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</anchorfile>
+      <anchor>a3f14597845489923b93738883b635b82</anchor>
+      <arglist>(string $data, string $id=NULL)</arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>primaryKey</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</anchorfile>
+      <anchor>a11313dde8c72dc9b20fd0a80b4efd569</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_datastore::Storage::JobStoreFactory</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStoreFactory.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStoreFactory.html</anchorfile>
+      <anchor>a7c6b685496d0db6339dc290bc73f5c57</anchor>
+      <arglist>(Connection $connection)</arglist>
     </member>
     <member kind="function">
       <type></type>
-      <name>retrieveAll</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</anchorfile>
-      <anchor>a0f9660ee605cfbdd2e543bac20deca85</anchor>
-      <arglist>(string $jobClass)</arglist>
+      <name>getInstance</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStoreFactory.html</anchorfile>
+      <anchor>aceafeb6cf118142530c2f6c6a7674448</anchor>
+      <arglist>(string $identifier, array $config=[])</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::Tests::dkan_datastore::Unit::Storage::JobStoreTest</name>
+    <filename>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1JobStoreTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>testConstruction</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1JobStoreTest.html</anchorfile>
+      <anchor>a33cdc0b92586ddfac3d7ce832057fede</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type></type>
-      <name>store</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</anchorfile>
-      <anchor>a62a7c9216d4aea229ddd9ff3255c5931</anchor>
-      <arglist>(string $uuid, Job $job)</arglist>
+      <name>testRetrieve</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1JobStoreTest.html</anchorfile>
+      <anchor>a3c2f0e234b1535050f316eeb741a07bc</anchor>
+      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type></type>
-      <name>remove</name>
-      <anchorfile>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</anchorfile>
-      <anchor>a64f5a7f2ef70bf3bae65e2ca3e7c922c</anchor>
-      <arglist>($uuid, $jobClass)</arglist>
+      <name>testRetrieveAll</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1JobStoreTest.html</anchorfile>
+      <anchor>ad2d751baebb839136c0d5fa6a551fe97</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testStore</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1JobStoreTest.html</anchorfile>
+      <anchor>a35823ee1427b457b53d22012564ceba1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testRemove</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1JobStoreTest.html</anchorfile>
+      <anchor>a83c940f36f6c5d723630e09929678146</anchor>
+      <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -2654,6 +2930,24 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>Drupal::dkan_frontend::Page</name>
+    <filename>classDrupal_1_1dkan__frontend_1_1Page.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__frontend_1_1Page.html</anchorfile>
+      <anchor>a46378f1165fc0d658a8c80c5d097e3b3</anchor>
+      <arglist>(string $appRoot)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>build</name>
+      <anchorfile>classDrupal_1_1dkan__frontend_1_1Page.html</anchorfile>
+      <anchor>a2ea03726e7c5921993428c431fec94da</anchor>
+      <arglist>($name)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>Drupal::dkan_frontend::Controller::Page</name>
     <filename>classDrupal_1_1dkan__frontend_1_1Controller_1_1Page.html</filename>
     <member kind="function">
@@ -2676,24 +2970,6 @@
       <anchorfile>classDrupal_1_1dkan__frontend_1_1Controller_1_1Page.html</anchorfile>
       <anchor>a7c39b63482ffcb464bb52e8c36afcabb</anchor>
       <arglist>(ContainerInterface $container)</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>Drupal::dkan_frontend::Page</name>
-    <filename>classDrupal_1_1dkan__frontend_1_1Page.html</filename>
-    <member kind="function">
-      <type></type>
-      <name>__construct</name>
-      <anchorfile>classDrupal_1_1dkan__frontend_1_1Page.html</anchorfile>
-      <anchor>a46378f1165fc0d658a8c80c5d097e3b3</anchor>
-      <arglist>(string $appRoot)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>build</name>
-      <anchorfile>classDrupal_1_1dkan__frontend_1_1Page.html</anchorfile>
-      <anchor>a2ea03726e7c5921993428c431fec94da</anchor>
-      <arglist>($name)</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -2864,6 +3140,70 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>Drupal::dkan_datastore::Service::Factory::Resource</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1Service_1_1Factory_1_1Resource.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Factory_1_1Resource.html</anchorfile>
+      <anchor>aa0c6e490ff4fe2c079bdd2476ecc21b9</anchor>
+      <arglist>(EntityRepository $entityRepository, FileSystem $fileSystem, JobStoreFactory $jobStoreFactory)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getInstance</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Factory_1_1Resource.html</anchorfile>
+      <anchor>a8e85abe1473cf9e4c0c3706b0c707297</anchor>
+      <arglist>(string $identifier, array $config=[])</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_datastore::Service::Resource</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html</anchorfile>
+      <anchor>af6a6e1ae2afffd61ada9e28efb7a3c2e</anchor>
+      <arglist>(string $uuid, EntityRepository $entityRepository, FileSystem $fileSystem, JobStoreFactory $jobStoreFactory)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>get</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html</anchorfile>
+      <anchor>adc177b7a29145bc82404ea81d86d1a70</anchor>
+      <arglist>($useFileFetcher=FALSE, $runFileFetcher=TRUE)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getResult</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html</anchorfile>
+      <anchor>a76eb4bdb1ae2dd3925315bccf782abec</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getFileFetcher</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html</anchorfile>
+      <anchor>a452e55de60c9cdabb9c509813f8e8e53</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>const</type>
+      <name>DEFAULT_TIMELIMIT</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html</anchorfile>
+      <anchor>a33ae28b5e1bf5604a59f72c458b46ce9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function" protection="protected">
+      <type></type>
+      <name>getFileFetcherInstance</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html</anchorfile>
+      <anchor>ae0541baadf884e38628a0815da99e212</anchor>
+      <arglist>($filePath, $tmpDirectory)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>Drupal::dkan_harvest::Transform::ResourceImporter</name>
     <filename>classDrupal_1_1dkan__harvest_1_1Transform_1_1ResourceImporter.html</filename>
     <member kind="function">
@@ -2978,27 +3318,34 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_api::Routing::RouteProvider</name>
-    <filename>classDrupal_1_1dkan__api_1_1Routing_1_1RouteProvider.html</filename>
+    <name>ResourceTest</name>
+    <filename>classResourceTest.html</filename>
     <member kind="function">
       <type></type>
-      <name>__construct</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Routing_1_1RouteProvider.html</anchorfile>
-      <anchor>aa9680121427de10103c4c80f832d2e68</anchor>
-      <arglist>(ConfigFactoryInterface $configFactory)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>getPropertyList</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Routing_1_1RouteProvider.html</anchorfile>
-      <anchor>a0d4d363d264d611b88328fe4c278ad91</anchor>
+      <name>testNoFileFetcher</name>
+      <anchorfile>classResourceTest.html</anchorfile>
+      <anchor>abb86e0727c7c75eaa81489341e8da291</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type></type>
-      <name>routes</name>
-      <anchorfile>classDrupal_1_1dkan__api_1_1Routing_1_1RouteProvider.html</anchorfile>
-      <anchor>a6a6dbace0cba0ead2c20d97ec81b2bbd</anchor>
+      <name>testFileFetcherNotDone</name>
+      <anchorfile>classResourceTest.html</anchorfile>
+      <anchor>acea634c5552a445243c20be0a86ceca2</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testFileFetcherDone</name>
+      <anchorfile>classResourceTest.html</anchorfile>
+      <anchor>aa43d6b0ab1be8abb82c44fb04e068f01</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testNoStoredFileFetcher</name>
+      <anchorfile>classResourceTest.html</anchorfile>
+      <anchor>a56061dc21cb7c8e455997839abac310b</anchor>
       <arglist>()</arglist>
     </member>
   </compound>
@@ -3025,6 +3372,31 @@
       <anchorfile>classDrupal_1_1dkan__frontend_1_1Routing_1_1RouteProvider.html</anchorfile>
       <anchor>a5bee04fc4925fd8e3b5d4d804008edbe</anchor>
       <arglist>($path)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_metastore::Routing::RouteProvider</name>
+    <filename>classDrupal_1_1dkan__metastore_1_1Routing_1_1RouteProvider.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Routing_1_1RouteProvider.html</anchorfile>
+      <anchor>adf89bdbb31d9a340855b8051da597a05</anchor>
+      <arglist>(ConfigFactoryInterface $configFactory)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getPropertyList</name>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Routing_1_1RouteProvider.html</anchorfile>
+      <anchor>afbb77602fe6d6c2f6fdc544d4b6ca056</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>routes</name>
+      <anchorfile>classDrupal_1_1dkan__metastore_1_1Routing_1_1RouteProvider.html</anchorfile>
+      <anchor>a7ae66feb042755667bf3a7ccdedc40ca</anchor>
+      <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -3227,6 +3599,70 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>Drupal::dkan_datastore::Service</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1Service.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service.html</anchorfile>
+      <anchor>ad5a5354ed1d8fb7464219cae924b83c3</anchor>
+      <arglist>(Resource $resourceServiceFactory, Import $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>import</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service.html</anchorfile>
+      <anchor>a9d153c9ff1fc3eb10e82ad821a488fe1</anchor>
+      <arglist>(string $uuid, bool $deferred=FALSE)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>drop</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service.html</anchorfile>
+      <anchor>a893d14677ed1446cde24870e4a25ef73</anchor>
+      <arglist>($uuid)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>list</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service.html</anchorfile>
+      <anchor>a368a1e61bbff6a40ff2ed00b68d84467</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>getStorage</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service.html</anchorfile>
+      <anchor>a46d2ab4a2e720810d35195521e0080e1</anchor>
+      <arglist>(string $uuid)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>create</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1Service.html</anchorfile>
+      <anchor>a5d4e7d44e640c1d55cc0866d79e18a8e</anchor>
+      <arglist>(ContainerInterface $container)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>ServiceTest</name>
+    <filename>classServiceTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>test</name>
+      <anchorfile>classServiceTest.html</anchorfile>
+      <anchor>aee88e3e7f2551fb720ad0376724110d5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testDeferred</name>
+      <anchorfile>classServiceTest.html</anchorfile>
+      <anchor>a2cd25b6b9c110fa0cd91714eeb9087e3</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>Drupal::dkan_datastore::Storage::TableSummary</name>
     <filename>classDrupal_1_1dkan__datastore_1_1Storage_1_1TableSummary.html</filename>
     <member kind="function">
@@ -3245,14 +3681,44 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>Drupal::dkan_data::Service::Uuid5</name>
+    <filename>classDrupal_1_1dkan__data_1_1Service_1_1Uuid5.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>generate</name>
+      <anchorfile>classDrupal_1_1dkan__data_1_1Service_1_1Uuid5.html</anchorfile>
+      <anchor>a9b4e731a293b8175424fd5197da677de</anchor>
+      <arglist>($schema_id, $value)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_data::Tests::Unit::Uuid5Test</name>
+    <filename>classDrupal_1_1dkan__data_1_1Tests_1_1Unit_1_1Uuid5Test.html</filename>
+    <base>Drupal::dkan_common::Tests::DkanTestBase</base>
+    <member kind="function">
+      <type></type>
+      <name>testGenerate</name>
+      <anchorfile>classDrupal_1_1dkan__data_1_1Tests_1_1Unit_1_1Uuid5Test.html</anchorfile>
+      <anchor>afc5bfb7dbd58763f2369520803d0b5b7</anchor>
+      <arglist>(string $schema_id, $value, $expected)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>generateProvider</name>
+      <anchorfile>classDrupal_1_1dkan__data_1_1Tests_1_1Unit_1_1Uuid5Test.html</anchorfile>
+      <anchor>ae7a0c4d0bf4ad381e24b7a33c669f9b2</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>Drupal::dkan_data::ValueReferencer</name>
     <filename>classDrupal_1_1dkan__data_1_1ValueReferencer.html</filename>
     <member kind="function">
       <type></type>
       <name>__construct</name>
       <anchorfile>classDrupal_1_1dkan__data_1_1ValueReferencer.html</anchorfile>
-      <anchor>a16a886991a575c5ea0173fbf0a7fdea5</anchor>
-      <arglist>(EntityTypeManagerInterface $entityTypeManager, UuidInterface $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService)</arglist>
+      <anchor>ad5bc38e114929464288f8bc3f5568718</anchor>
+      <arglist>(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService)</arglist>
     </member>
     <member kind="function">
       <type></type>
@@ -3291,16 +3757,9 @@
     </member>
     <member kind="variable">
       <type>const</type>
-      <name>DEREFERENCE_OUTPUT_MINIMAL</name>
+      <name>DEREFERENCE_OUTPUT_REFERENCE_IDS</name>
       <anchorfile>classDrupal_1_1dkan__data_1_1ValueReferencer.html</anchorfile>
-      <anchor>af9df84ea2d9628e3c7409c493e252cfb</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>const</type>
-      <name>DEREFERENCE_OUTPUT_VERBOSE</name>
-      <anchorfile>classDrupal_1_1dkan__data_1_1ValueReferencer.html</anchorfile>
-      <anchor>a88876f6f692e7b9b7a16de55199d10b1</anchor>
+      <anchor>a339c7a187574994b58d062f164be7374</anchor>
       <arglist></arglist>
     </member>
     <member kind="function" protection="protected">
@@ -3457,13 +3916,6 @@
     </member>
     <member kind="function">
       <type></type>
-      <name>testCheckExistingReference</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ValueReferencerTest.html</anchorfile>
-      <anchor>a94da0a2a5b2255ecf94108701f500827</anchor>
-      <arglist>($property_id, $data, array $nodes, $expected)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
       <name>testCreatePropertyReference</name>
       <anchorfile>classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ValueReferencerTest.html</anchorfile>
       <anchor>ad8f87cc0fdd242a7607fa92b86099d06</anchor>
@@ -3558,13 +4010,6 @@
       <name>testDereference</name>
       <anchorfile>classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ValueReferencerTest.html</anchorfile>
       <anchor>a5155fb87d41ada6542814eeaccbe4e37</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testDereferenceSkipping</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ValueReferencerTest.html</anchorfile>
-      <anchor>a3d5f80ecfc90b8512328951e612840fb</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
@@ -3678,45 +4123,6 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::Tests::dkan_datastore::Functional::VariableTest</name>
-    <filename>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</filename>
-    <member kind="function">
-      <type></type>
-      <name>testInstantiation</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
-      <anchor>a9f14dee36fc80e552c06f21db7f2055e</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testInMemoryRetrieval</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
-      <anchor>aec2d5363e9be1a401ceed54f56ab579c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testConfigRetrieval</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
-      <anchor>af6b1f5e3e5cde014dca75428b264b72b</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>testObjectStorage</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
-      <anchor>a156ff7879fe3f75417a4eccc933327e6</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="variable" protection="protected">
-      <type></type>
-      <name>$strictConfigSchema</name>
-      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
-      <anchor>ad3da297393934db023760a48e51cdeeb</anchor>
-      <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="class">
     <name>Drupal::Tests::dkan_datastore::Unit::Storage::VariableTest</name>
     <filename>classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1VariableTest.html</filename>
     <base>Drupal::dkan_common::Tests::DkanTestBase</base>
@@ -3770,6 +4176,98 @@
       <arglist>()</arglist>
     </member>
   </compound>
+  <compound kind="class">
+    <name>Drupal::Tests::dkan_datastore::Functional::VariableTest</name>
+    <filename>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>testInstantiation</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
+      <anchor>a9f14dee36fc80e552c06f21db7f2055e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testInMemoryRetrieval</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
+      <anchor>aec2d5363e9be1a401ceed54f56ab579c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testConfigRetrieval</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
+      <anchor>af6b1f5e3e5cde014dca75428b264b72b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>testObjectStorage</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
+      <anchor>a156ff7879fe3f75417a4eccc933327e6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type></type>
+      <name>$strictConfigSchema</name>
+      <anchorfile>classDrupal_1_1Tests_1_1dkan__datastore_1_1Functional_1_1VariableTest.html</anchorfile>
+      <anchor>ad3da297393934db023760a48e51cdeeb</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Drupal::dkan_datastore::WebServiceApi</name>
+    <filename>classDrupal_1_1dkan__datastore_1_1WebServiceApi.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>__construct</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1WebServiceApi.html</anchorfile>
+      <anchor>af3aba5a4c01ae6aeeef30554d9468071</anchor>
+      <arglist>(Service $datastoreService, RequestStack $requestStack)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>summary</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1WebServiceApi.html</anchorfile>
+      <anchor>a01cd069973928e5771d6febbcd8e8faf</anchor>
+      <arglist>($identifier)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>import</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1WebServiceApi.html</anchorfile>
+      <anchor>a9f80e33c507cfc0b9204cb0b0aee70d7</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>delete</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1WebServiceApi.html</anchorfile>
+      <anchor>abbf230dcf58705fb17246695e37ace90</anchor>
+      <arglist>($identifier)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>list</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1WebServiceApi.html</anchorfile>
+      <anchor>a972abf4e337ac5c051f07ff8722cdc39</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static</type>
+      <name>create</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1WebServiceApi.html</anchorfile>
+      <anchor>aeba282623c739b2d355a3b2dce140ea1</anchor>
+      <arglist>(ContainerInterface $container)</arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type></type>
+      <name>$datastoreService</name>
+      <anchorfile>classDrupal_1_1dkan__datastore_1_1WebServiceApi.html</anchorfile>
+      <anchor>ad392b755a9d13ae0a789c5f97111a9a6</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
   <compound kind="namespace">
     <name>Drupal</name>
     <filename>namespaceDrupal.html</filename>
@@ -3781,6 +4279,7 @@
     <namespace>Drupal::dkan_frontend</namespace>
     <namespace>Drupal::dkan_harvest</namespace>
     <namespace>Drupal::dkan_lunr</namespace>
+    <namespace>Drupal::dkan_metastore</namespace>
     <namespace>Drupal::dkan_schema</namespace>
     <namespace>Drupal::dkan_sql_endpoint</namespace>
     <namespace>Drupal::field_example</namespace>
@@ -3791,24 +4290,17 @@
     <name>Drupal::dkan_api</name>
     <filename>namespaceDrupal_1_1dkan__api.html</filename>
     <namespace>Drupal::dkan_api::Controller</namespace>
-    <namespace>Drupal::dkan_api::Routing</namespace>
   </compound>
   <compound kind="namespace">
     <name>Drupal::dkan_api::Controller</name>
     <filename>namespaceDrupal_1_1dkan__api_1_1Controller.html</filename>
-    <class kind="class">Drupal::dkan_api::Controller::Api</class>
     <class kind="class">Drupal::dkan_api::Controller::Docs</class>
-    <class kind="class">Drupal::dkan_api::Controller::InvalidPayloadException</class>
-  </compound>
-  <compound kind="namespace">
-    <name>Drupal::dkan_api::Routing</name>
-    <filename>namespaceDrupal_1_1dkan__api_1_1Routing.html</filename>
-    <class kind="class">Drupal::dkan_api::Routing::RouteProvider</class>
   </compound>
   <compound kind="namespace">
     <name>Drupal::dkan_common</name>
     <filename>namespaceDrupal_1_1dkan__common.html</filename>
     <namespace>Drupal::dkan_common::Service</namespace>
+    <namespace>Drupal::dkan_common::Storage</namespace>
     <namespace>Drupal::dkan_common::Tests</namespace>
     <namespace>Drupal::dkan_common::Util</namespace>
   </compound>
@@ -3817,6 +4309,11 @@
     <filename>namespaceDrupal_1_1dkan__common_1_1Service.html</filename>
     <class kind="class">Drupal::dkan_common::Service::Factory</class>
     <class kind="class">Drupal::dkan_common::Service::JsonUtil</class>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::dkan_common::Storage</name>
+    <filename>namespaceDrupal_1_1dkan__common_1_1Storage.html</filename>
+    <class kind="class">Drupal::dkan_common::Storage::AbstractDatabaseTable</class>
   </compound>
   <compound kind="namespace">
     <name>Drupal::dkan_common::Tests</name>
@@ -3840,7 +4337,9 @@
     <filename>namespaceDrupal_1_1dkan__data.html</filename>
     <namespace>Drupal::dkan_data::Form</namespace>
     <namespace>Drupal::dkan_data::Plugin</namespace>
+    <namespace>Drupal::dkan_data::Service</namespace>
     <namespace>Drupal::dkan_data::Storage</namespace>
+    <namespace>Drupal::dkan_data::Tests</namespace>
     <class kind="class">Drupal::dkan_data::ConfigurationOverrider</class>
     <class kind="class">Drupal::dkan_data::ValueReferencer</class>
   </compound>
@@ -3872,29 +4371,35 @@
     <class kind="class">Drupal::dkan_data::Plugin::Validation::Constraint::ProperJsonValidator</class>
   </compound>
   <compound kind="namespace">
+    <name>Drupal::dkan_data::Service</name>
+    <filename>namespaceDrupal_1_1dkan__data_1_1Service.html</filename>
+    <class kind="class">Drupal::dkan_data::Service::Uuid5</class>
+  </compound>
+  <compound kind="namespace">
     <name>Drupal::dkan_data::Storage</name>
     <filename>namespaceDrupal_1_1dkan__data_1_1Storage.html</filename>
     <class kind="class">Drupal::dkan_data::Storage::Data</class>
   </compound>
   <compound kind="namespace">
+    <name>Drupal::dkan_data::Tests</name>
+    <filename>namespaceDrupal_1_1dkan__data_1_1Tests.html</filename>
+    <namespace>Drupal::dkan_data::Tests::Unit</namespace>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::dkan_data::Tests::Unit</name>
+    <filename>namespaceDrupal_1_1dkan__data_1_1Tests_1_1Unit.html</filename>
+    <class kind="class">Drupal::dkan_data::Tests::Unit::Uuid5Test</class>
+  </compound>
+  <compound kind="namespace">
     <name>Drupal::dkan_datastore</name>
     <filename>namespaceDrupal_1_1dkan__datastore.html</filename>
-    <namespace>Drupal::dkan_datastore::Controller</namespace>
-    <namespace>Drupal::dkan_datastore::Drush</namespace>
     <namespace>Drupal::dkan_datastore::Plugin</namespace>
     <namespace>Drupal::dkan_datastore::Service</namespace>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
     <class kind="class">Drupal::dkan_datastore::ConfigurationOverriderTest</class>
-  </compound>
-  <compound kind="namespace">
-    <name>Drupal::dkan_datastore::Controller</name>
-    <filename>namespaceDrupal_1_1dkan__datastore_1_1Controller.html</filename>
-    <class kind="class">Drupal::dkan_datastore::Controller::Api</class>
-  </compound>
-  <compound kind="namespace">
-    <name>Drupal::dkan_datastore::Drush</name>
-    <filename>namespaceDrupal_1_1dkan__datastore_1_1Drush.html</filename>
-    <class kind="class">Drupal::dkan_datastore::Drush::Commands</class>
+    <class kind="class">Drupal::dkan_datastore::Drush</class>
+    <class kind="class">Drupal::dkan_datastore::Service</class>
+    <class kind="class">Drupal::dkan_datastore::WebServiceApi</class>
   </compound>
   <compound kind="namespace">
     <name>Drupal::dkan_datastore::Plugin</name>
@@ -3909,8 +4414,16 @@
   <compound kind="namespace">
     <name>Drupal::dkan_datastore::Service</name>
     <filename>namespaceDrupal_1_1dkan__datastore_1_1Service.html</filename>
+    <namespace>Drupal::dkan_datastore::Service::Factory</namespace>
     <namespace>Drupal::dkan_datastore::Service::ImporterList</namespace>
-    <class kind="class">Drupal::dkan_datastore::Service::Datastore</class>
+    <class kind="class">Drupal::dkan_datastore::Service::Import</class>
+    <class kind="class">Drupal::dkan_datastore::Service::Resource</class>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::dkan_datastore::Service::Factory</name>
+    <filename>namespaceDrupal_1_1dkan__datastore_1_1Service_1_1Factory.html</filename>
+    <class kind="class">Drupal::dkan_datastore::Service::Factory::Import</class>
+    <class kind="class">Drupal::dkan_datastore::Service::Factory::Resource</class>
   </compound>
   <compound kind="namespace">
     <name>Drupal::dkan_datastore::Service::ImporterList</name>
@@ -3922,7 +4435,9 @@
     <name>Drupal::dkan_datastore::Storage</name>
     <filename>namespaceDrupal_1_1dkan__datastore_1_1Storage.html</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::DatabaseTable</class>
+    <class kind="class">Drupal::dkan_datastore::Storage::DatabaseTableFactory</class>
     <class kind="class">Drupal::dkan_datastore::Storage::JobStore</class>
+    <class kind="class">Drupal::dkan_datastore::Storage::JobStoreFactory</class>
     <class kind="class">Drupal::dkan_datastore::Storage::Query</class>
     <class kind="class">Drupal::dkan_datastore::Storage::TableSummary</class>
     <class kind="class">Drupal::dkan_datastore::Storage::Variable</class>
@@ -4011,6 +4526,23 @@
     <class kind="class">Drupal::dkan_lunr::Service::DatasetModifier</class>
   </compound>
   <compound kind="namespace">
+    <name>Drupal::dkan_metastore</name>
+    <filename>namespaceDrupal_1_1dkan__metastore.html</filename>
+    <namespace>Drupal::dkan_metastore::Controller</namespace>
+    <namespace>Drupal::dkan_metastore::Routing</namespace>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::dkan_metastore::Controller</name>
+    <filename>namespaceDrupal_1_1dkan__metastore_1_1Controller.html</filename>
+    <class kind="class">Drupal::dkan_metastore::Controller::Api</class>
+    <class kind="class">Drupal::dkan_metastore::Controller::InvalidPayloadException</class>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::dkan_metastore::Routing</name>
+    <filename>namespaceDrupal_1_1dkan__metastore_1_1Routing.html</filename>
+    <class kind="class">Drupal::dkan_metastore::Routing::RouteProvider</class>
+  </compound>
+  <compound kind="namespace">
     <name>Drupal::dkan_schema</name>
     <filename>namespaceDrupal_1_1dkan__schema.html</filename>
     <class kind="class">Drupal::dkan_schema::SchemaRetriever</class>
@@ -4084,7 +4616,9 @@
     <namespace>Drupal::Tests::dkan_data</namespace>
     <namespace>Drupal::Tests::dkan_datastore</namespace>
     <namespace>Drupal::Tests::dkan_harvest</namespace>
+    <namespace>Drupal::Tests::dkan_metastore</namespace>
     <namespace>Drupal::Tests::dkan_schema</namespace>
+    <namespace>Drupal::Tests::dkan_sql_endpoint</namespace>
   </compound>
   <compound kind="namespace">
     <name>Drupal::Tests::dkan_api</name>
@@ -4100,7 +4634,6 @@
   <compound kind="namespace">
     <name>Drupal::Tests::dkan_api::Unit::Controller</name>
     <filename>namespaceDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Controller.html</filename>
-    <class kind="class">Drupal::Tests::dkan_api::Unit::Controller::ApiTest</class>
     <class kind="class">Drupal::Tests::dkan_api::Unit::Controller::DocsTest</class>
   </compound>
   <compound kind="namespace">
@@ -4133,29 +4666,8 @@
   <compound kind="namespace">
     <name>Drupal::Tests::dkan_datastore::Unit</name>
     <filename>namespaceDrupal_1_1Tests_1_1dkan__datastore_1_1Unit.html</filename>
-    <namespace>Drupal::Tests::dkan_datastore::Unit::Controller</namespace>
     <namespace>Drupal::Tests::dkan_datastore::Unit::Mock</namespace>
     <namespace>Drupal::Tests::dkan_datastore::Unit::Storage</namespace>
-  </compound>
-  <compound kind="namespace">
-    <name>Drupal::Tests::dkan_datastore::Unit::Controller</name>
-    <filename>namespaceDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller.html</filename>
-    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Controller::ApiTest</class>
-    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Controller::DatastoreApiTest</class>
-    <member kind="variable">
-      <type>const</type>
-      <name>FILE_CREATE_DIRECTORY</name>
-      <anchorfile>namespaceDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller.html</anchorfile>
-      <anchor>a435366d92ed7f616ea421491572f33d1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>const</type>
-      <name>FILE_MODIFY_PERMISSIONS</name>
-      <anchorfile>namespaceDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Controller.html</anchorfile>
-      <anchor>a45141bc2162ce3471a1465d995e36211</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="namespace">
     <name>Drupal::Tests::dkan_datastore::Unit::Mock</name>
@@ -4165,6 +4677,9 @@
   <compound kind="namespace">
     <name>Drupal::Tests::dkan_datastore::Unit::Storage</name>
     <filename>namespaceDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage.html</filename>
+    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::DatabaseTableFactoryTest</class>
+    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::DatabaseTableTest</class>
+    <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::JobStoreTest</class>
     <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::VariableTest</class>
   </compound>
   <compound kind="namespace">
@@ -4198,6 +4713,21 @@
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Transform::ResourceImporterTest</class>
   </compound>
   <compound kind="namespace">
+    <name>Drupal::Tests::dkan_metastore</name>
+    <filename>namespaceDrupal_1_1Tests_1_1dkan__metastore.html</filename>
+    <namespace>Drupal::Tests::dkan_metastore::Unit</namespace>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::Tests::dkan_metastore::Unit</name>
+    <filename>namespaceDrupal_1_1Tests_1_1dkan__metastore_1_1Unit.html</filename>
+    <namespace>Drupal::Tests::dkan_metastore::Unit::Controller</namespace>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::Tests::dkan_metastore::Unit::Controller</name>
+    <filename>namespaceDrupal_1_1Tests_1_1dkan__metastore_1_1Unit_1_1Controller.html</filename>
+    <class kind="class">Drupal::Tests::dkan_metastore::Unit::Controller::ApiTest</class>
+  </compound>
+  <compound kind="namespace">
     <name>Drupal::Tests::dkan_schema</name>
     <filename>namespaceDrupal_1_1Tests_1_1dkan__schema.html</filename>
     <namespace>Drupal::Tests::dkan_schema::Unit</namespace>
@@ -4206,6 +4736,21 @@
     <name>Drupal::Tests::dkan_schema::Unit</name>
     <filename>namespaceDrupal_1_1Tests_1_1dkan__schema_1_1Unit.html</filename>
     <class kind="class">Drupal::Tests::dkan_schema::Unit::SchemaRetrieverTest</class>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::Tests::dkan_sql_endpoint</name>
+    <filename>namespaceDrupal_1_1Tests_1_1dkan__sql__endpoint.html</filename>
+    <namespace>Drupal::Tests::dkan_sql_endpoint::Unit</namespace>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::Tests::dkan_sql_endpoint::Unit</name>
+    <filename>namespaceDrupal_1_1Tests_1_1dkan__sql__endpoint_1_1Unit.html</filename>
+    <namespace>Drupal::Tests::dkan_sql_endpoint::Unit::Controller</namespace>
+  </compound>
+  <compound kind="namespace">
+    <name>Drupal::Tests::dkan_sql_endpoint::Unit::Controller</name>
+    <filename>namespaceDrupal_1_1Tests_1_1dkan__sql__endpoint_1_1Unit_1_1Controller.html</filename>
+    <class kind="class">Drupal::Tests::dkan_sql_endpoint::Unit::Controller::ApiTest</class>
   </compound>
   <compound kind="page">
     <name>installation</name>
@@ -4251,28 +4796,70 @@
     <filename>components</filename>
   </compound>
   <compound kind="page">
-    <name>links</name>
-    <title>Links</title>
-    <filename>links</filename>
-    <docanchor file="links" title="Slack">autotoc_md13</docanchor>
-    <docanchor file="links" title="Connect">autotoc_md14</docanchor>
-    <docanchor file="links" title="Github">autotoc_md15</docanchor>
-    <docanchor file="links" title="Additional resources">autotoc_md16</docanchor>
+    <name>guide</name>
+    <title>User Guide</title>
+    <filename>guide</filename>
   </compound>
   <compound kind="page">
-    <name>apage02</name>
+    <name>general</name>
+    <title>Catalog Basics</title>
+    <filename>general</filename>
+    <docanchor file="general" title="What is a Dataset">autotoc_md13</docanchor>
+    <docanchor file="general" title="Sample Data Files">autotoc_md14</docanchor>
+    <docanchor file="general" title="Properties">autotoc_md15</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>guide-dataset-api</name>
+    <title>Dataset API</title>
+    <filename>guide-dataset-api</filename>
+    <docanchor file="guide-dataset-api" title="GET">autotoc_md16</docanchor>
+    <docanchor file="guide-dataset-api" title="Log In">autotoc_md17</docanchor>
+    <docanchor file="guide-dataset-api" title="POST">autotoc_md18</docanchor>
+    <docanchor file="guide-dataset-api" title="PUT">autotoc_md19</docanchor>
+    <docanchor file="guide-dataset-api" title="PATCH">autotoc_md20</docanchor>
+    <docanchor file="guide-dataset-api" title="DELETE">autotoc_md21</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>guide-datastore-api</name>
+    <title>Datastore API</title>
+    <filename>guide-datastore-api</filename>
+    <docanchor file="guide-datastore-api" title="Drush Commands">autotoc_md22</docanchor>
+    <docanchor file="guide-datastore-api" title="API">autotoc_md23</docanchor>
+    <docanchor file="guide-datastore-api" title="Example">autotoc_md24</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>guide-harvest</name>
+    <title>Harvest</title>
+    <filename>guide-harvest</filename>
+    <docanchor file="guide-harvest" title="Drush Commands">autotoc_md25</docanchor>
+    <docanchor file="guide-harvest" title="Setup">autotoc_md26</docanchor>
+    <docanchor file="guide-harvest" title="Example">autotoc_md27</docanchor>
+    <docanchor file="guide-harvest" title="Run the harvest">autotoc_md28</docanchor>
+    <docanchor file="guide-harvest" title="Example with new transform">autotoc_md29</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>community</name>
+    <title>Community</title>
+    <filename>community</filename>
+    <docanchor file="community" title="Slack">autotoc_md30</docanchor>
+    <docanchor file="community" title="Connect">autotoc_md31</docanchor>
+    <docanchor file="community" title="Github">autotoc_md32</docanchor>
+    <docanchor file="community" title="Additional resources">autotoc_md33</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>conduct</name>
     <title>Code of conduct</title>
-    <filename>apage02</filename>
-    <docanchor file="apage02" title="Purpose">autotoc_md17</docanchor>
-    <docanchor file="apage02" title="Open source &amp; culture citizenship">autotoc_md18</docanchor>
-    <docanchor file="apage02" title="Expected Behavior">autotoc_md19</docanchor>
-    <docanchor file="apage02" title="Unacceptable behavior">autotoc_md20</docanchor>
-    <docanchor file="apage02" title="Consequences of unacceptable behavior">autotoc_md21</docanchor>
-    <docanchor file="apage02" title="Reporting guidelines">autotoc_md22</docanchor>
-    <docanchor file="apage02" title="Addressing grievances">autotoc_md23</docanchor>
-    <docanchor file="apage02" title="Scope">autotoc_md24</docanchor>
-    <docanchor file="apage02" title="Contact info">autotoc_md25</docanchor>
-    <docanchor file="apage02" title="License and attribution">autotoc_md26</docanchor>
+    <filename>conduct</filename>
+    <docanchor file="conduct" title="Purpose">autotoc_md34</docanchor>
+    <docanchor file="conduct" title="Open source &amp; culture citizenship">autotoc_md35</docanchor>
+    <docanchor file="conduct" title="Expected Behavior">autotoc_md36</docanchor>
+    <docanchor file="conduct" title="Unacceptable behavior">autotoc_md37</docanchor>
+    <docanchor file="conduct" title="Consequences of unacceptable behavior">autotoc_md38</docanchor>
+    <docanchor file="conduct" title="Reporting guidelines">autotoc_md39</docanchor>
+    <docanchor file="conduct" title="Addressing grievances">autotoc_md40</docanchor>
+    <docanchor file="conduct" title="Scope">autotoc_md41</docanchor>
+    <docanchor file="conduct" title="Contact info">autotoc_md42</docanchor>
+    <docanchor file="conduct" title="License and attribution">autotoc_md43</docanchor>
   </compound>
   <compound kind="page">
     <name>license</name>
@@ -4288,6 +4875,6 @@
     <name>index</name>
     <title>DKAN</title>
     <filename>index</filename>
-    <docanchor file="index" title="Features">autotoc_md28</docanchor>
+    <docanchor file="index" title="Features">autotoc_md45</docanchor>
   </compound>
 </tagfile>
