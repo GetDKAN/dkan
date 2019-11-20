@@ -1,6 +1,6 @@
-# [DKAN](https://getdkan.github.io/dkan2/)
+# DKAN
 
-DKAN Open Data Portal/Catalog built on Drupal 8 - Alpha
+[DKAN](https://getdkan.com) Open Data Portal/Catalog built on [Drupal 8](https://www.drupal.org/documentation) - Alpha
 
 [![CircleCI](https://circleci.com/gh/GetDKAN/dkan2.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan2)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7a93219b8ae65a83f095/maintainability)](https://codeclimate.com/github/GetDKAN/dkan2/maintainability)
@@ -9,10 +9,12 @@ DKAN Open Data Portal/Catalog built on Drupal 8 - Alpha
 
 As a piece of software in its Alpha cycle, the code is continuously changing and in very active development.
 
+[Documentation](https://getdkan.github.io/dkan2/)
+
 ## Features
 
 - Harvesting of data from external catalogs that provide a data.json
 - Dataset metadata and resources @ref metastore "[Metastore]"
-- Web service API endpoints to work with datasets
+- Web service API endpoints that allow third party applications to work with the datasets
 - Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-frontend) 
 - A datastore to store CSV files and make them queryable through an SQL endpoint.

@@ -4,6 +4,8 @@ var classDrupal_1_1dkan__harvest_1_1Harvester =
     [ "deregisterHarvest", "classDrupal_1_1dkan__harvest_1_1Harvester.html#aec0ebab6c3b81825bfc3f02f880bd84a", null ],
     [ "getAllHarvestIds", "classDrupal_1_1dkan__harvest_1_1Harvester.html#a789642df33c7a23b517ed119ce6b8821", null ],
     [ "getAllHarvestRunInfo", "classDrupal_1_1dkan__harvest_1_1Harvester.html#af5dcfe74def478ba9c5f0077924a2a23", null ],
+    [ "getDkanHarvesterInstance", "classDrupal_1_1dkan__harvest_1_1Harvester.html#a27c0873e23db9293ed2756619c503724", null ],
+    [ "getHarvestPlan", "classDrupal_1_1dkan__harvest_1_1Harvester.html#a73608f4bfa2c2a9065f861ee03c723ab", null ],
     [ "getHarvestRunInfo", "classDrupal_1_1dkan__harvest_1_1Harvester.html#a6a7ae28cb50e9dd8c2c563cdc58ac428", null ],
     [ "registerHarvest", "classDrupal_1_1dkan__harvest_1_1Harvester.html#aefb7e47dedd8314ab09e0d757ea36e34", null ],
     [ "revertHarvest", "classDrupal_1_1dkan__harvest_1_1Harvester.html#ad71846aa635c0c14fcb69fdbbbf1bf24", null ],

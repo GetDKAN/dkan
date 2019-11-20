@@ -1,6 +1,6 @@
 var classDrupal_1_1dkan__data_1_1ValueReferencer =
 [
-    [ "__construct", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a16a886991a575c5ea0173fbf0a7fdea5", null ],
+    [ "__construct", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#ad5bc38e114929464288f8bc3f5568718", null ],
     [ "checkExistingReference", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a418699c8ba148b1e76b14705376aff2a", null ],
     [ "createPropertyReference", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a130965d853aead8648a4c961e85a674b", null ],
     [ "dereference", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#ad7f5b9863c9ef4f950b8fc47821a547b", null ],
@@ -25,6 +25,5 @@ var classDrupal_1_1dkan__data_1_1ValueReferencer =
     [ "$queueService", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#aa769c3789c761c386440b874d9fad824", null ],
     [ "$uuidService", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a58c7bab47ef89731f982fe4f5d77fe31", null ],
     [ "DEREFERENCE_OUTPUT_DEFAULT", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a081f25aeb747ea60aa809a7736f823e3", null ],
-    [ "DEREFERENCE_OUTPUT_MINIMAL", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#af9df84ea2d9628e3c7409c493e252cfb", null ],
-    [ "DEREFERENCE_OUTPUT_VERBOSE", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a88876f6f692e7b9b7a16de55199d10b1", null ]
+    [ "DEREFERENCE_OUTPUT_REFERENCE_IDS", "classDrupal_1_1dkan__data_1_1ValueReferencer.html#a339c7a187574994b58d062f164be7374", null ]
 ];

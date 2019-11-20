@@ -5,5 +5,5 @@ var classApiTest =
     [ "testBadPlan", "classApiTest.html#a4bf045494ad3510946e3ffb90b9230c5", null ],
     [ "testEmptyIndex", "classApiTest.html#a7e8c5ac65357e6eb2fb58d53c1b339d9", null ],
     [ "testRegisterAndIndex", "classApiTest.html#a3deae87de107006c90804695613eb21e", null ],
-    [ "testRegisterAndRunAndInfoAndInfoRunAndRevertAndDeregister", "classApiTest.html#afbb73734a52f067f41050a618850f671", null ]
+    [ "testRun", "classApiTest.html#a5ca8eb92e1a9abfde5b83863cf5526f7", null ]
 ];

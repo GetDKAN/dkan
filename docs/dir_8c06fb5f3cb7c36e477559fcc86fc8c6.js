@@ -8,7 +8,7 @@ var dir_8c06fb5f3cb7c36e477559fcc86fc8c6 =
     [ "dkan_frontend", "dir_02b75ec3fa54020dae506cdbd8681c0c.html", "dir_02b75ec3fa54020dae506cdbd8681c0c" ],
     [ "dkan_harvest", "dir_4ef23419dba35c696ed3342dc09b0c17.html", "dir_4ef23419dba35c696ed3342dc09b0c17" ],
     [ "dkan_lunr", "dir_dd187e051e34d2ee2b3f6f711436eef0.html", "dir_dd187e051e34d2ee2b3f6f711436eef0" ],
-    [ "dkan_metastore", "dir_efe142812db36e897c7b3eab87ac65ec.html", null ],
+    [ "dkan_metastore", "dir_efe142812db36e897c7b3eab87ac65ec.html", "dir_efe142812db36e897c7b3eab87ac65ec" ],
     [ "dkan_schema", "dir_57a03e52a17464fc58aab8a7bb694a6b.html", "dir_57a03e52a17464fc58aab8a7bb694a6b" ],
     [ "dkan_sql_endpoint", "dir_6c8b54760abbbbe28c9a7a593ae9bbce.html", "dir_6c8b54760abbbbe28c9a7a593ae9bbce" ],
     [ "json_schema_field", "dir_294b35f238a972bfe3a84e26d0ca8748.html", "dir_294b35f238a972bfe3a84e26d0ca8748" ]

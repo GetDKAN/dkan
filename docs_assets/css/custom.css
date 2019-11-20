@@ -33,6 +33,9 @@ h1,h2,h3,h4 {
   color: #0071bc;
 }
 
+.PageDoc > .contents {
+  margin: 20px;
+}
 .sm-dox {
   background-image: none;
   background-color: #0071bc;
