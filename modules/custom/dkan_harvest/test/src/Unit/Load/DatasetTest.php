@@ -3,9 +3,12 @@
 namespace Drupal\Tests\dkan_harvest\Unit\Extract;
 
 use Contracts\Mock\Storage\Memory;
+use Drupal\Core\DependencyInjection\Container;
 use Drupal\dkan_common\Tests\DkanTestBase;
+use Drupal\dkan_common\Tests\Mock\Chain;
+use Drupal\dkan_common\Tests\Mock\Options;
 use Drupal\dkan_harvest\Load\Dataset;
-use Sae\Sae;
+use Drupal\dkan_metastore\Service;
 
 /**
  * Tests Drupal\dkan_harvest\Load\Dataset.
@@ -19,53 +22,21 @@ class DatasetTest extends DkanTestBase {
    * Public.
    */
   public function test() {
-    $load = $this->getMockBuilder(Dataset::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['getDatasetEngine'])
-      ->getMock();
+    $container = (new Chain($this))
+      ->add(Container::class, "get", (new Options())
+        ->add('dkan_metastore.service', Service::class)
+    )
+      ->add(Service::class, "post", "1");
 
-    $storage = new Memory();
-    $storage->store("This is a string", "1");
-    $this->assertEquals(1, count($storage->retrieveAll()));
+    \Drupal::setContainer($container->getMock());
 
-    $engine = new Sae($storage, "{
-  \"\$schema\": \"http://json-schema.org/draft-07/schema#\",
-  \"title\": \"Yep\",
-  \"type\": \"string\"");
+    $hashStorage = new Memory();
+    $itemStorage = new Memory();
+    $load = new Dataset((object) ["identifier" => "plan"], $hashStorage, $itemStorage);
+    $load->run((object) ["identifier" => "1"]);
 
-    $load->method('getDatasetEngine')->willReturn($engine);
-    $load->removeItem("1");
-
-    $this->assertEquals(0, count($storage->retrieveAll()));
-  }
-
-  /**
-   * Tests saveItem().
-   */
-  public function testSaveItem() {
-    // Setup.
-    $mock = $this->getMockBuilder(Dataset::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['getDatasetEngine'])
-      ->getMock();
-
-    $mockEngine = $this->getMockBuilder(Sae::class)
-      ->setMethods(['post'])
-      ->disableOriginalConstructor()
-      ->getMock();
-
-    $item = (object) ['foo' => 'bar'];
-    // Expect.
-    $mock->expects($this->once())
-      ->method('getDatasetEngine')
-      ->willReturn($mockEngine);
-
-    $mockEngine->expects($this->once())
-      ->method('post')
-      ->willReturn(json_encode($item));
-
-    // Assert.
-    $this->invokeProtectedMethod($mock, 'saveItem', $item);
+    // We just want to run the code.
+    $this->assertTrue(TRUE);
   }
 
 }

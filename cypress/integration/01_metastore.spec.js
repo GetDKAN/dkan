@@ -121,7 +121,7 @@ context('Metastore', () => {
           },
           failOnStatusCode: false
         }).then((response) => {
-          expect(response.status).eql(406)
+          expect(response.status).eql(400)
         })
 
         cy.request({
@@ -130,7 +130,7 @@ context('Metastore', () => {
           auth: user_credentials,
           failOnStatusCode: false
         }).then((response) => {
-          expect(response.status).eql(406)
+          expect(response.status).eql(400)
         })
       })
     })
@@ -145,7 +145,7 @@ context('Metastore', () => {
           },
           failOnStatusCode: false
         }).then((response) => {
-          expect(response.status).eql(406)
+          expect(response.status).eql(400)
         })
 
         cy.request({
@@ -154,7 +154,7 @@ context('Metastore', () => {
           auth: user_credentials,
           failOnStatusCode: false
         }).then((response) => {
-          expect(response.status).eql(406)
+          expect(response.status).eql(400)
         })
       })
 
@@ -223,7 +223,7 @@ context('Metastore', () => {
           body: jsonShouldNotExist,
           failOnStatusCode: false
         }).then((response) => {
-          expect(response.status).eql(404)
+          expect(response.status).eql(412)
         })
       })
 

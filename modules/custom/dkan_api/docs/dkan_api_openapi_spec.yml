@@ -158,9 +158,9 @@ paths:
               schema:
                 type: object
                 required:
-                  - endpoint
+                  - message
                 properties:
-                  endpoint:
+                  message:
                     type: string
         '401':
           description: Unauthorized
