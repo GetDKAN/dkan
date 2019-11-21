@@ -1,11 +1,11 @@
 services:
-  dkan_metastore.controller:
-    class: \Drupal\dkan_metastore\Controller\Api
+  dkan_metastore.service:
+    class: \Drupal\dkan_metastore\Service
     arguments:
-      - '@request_stack'
+      - '@dkan_schema.schema_retriever'
+      - '@dkan_metastore.sae_factory'
+  dkan_metastore.sae_factory:
+    class: \Drupal\dkan_metastore\Factory\Sae
+    arguments:
       - '@dkan_schema.schema_retriever'
       - '@dkan_data.storage'
-  dkan_metastore.route_provider:
-    class: \Drupal\dkan_metastore\Routing\RouteProvider
-    arguments:
-      - '@config.factory'

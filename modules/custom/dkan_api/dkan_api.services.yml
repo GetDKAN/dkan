@@ -1,0 +1,5 @@
+services:
+  dkan_api.docs:
+    class: \Drupal\dkan_api\Controller\Docs
+    arguments:
+      - '@module_handler'

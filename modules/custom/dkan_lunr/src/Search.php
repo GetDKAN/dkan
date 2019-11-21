@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_lunr;
 
-use Drupal\dkan_metastore\Controller\Api;
+use Drupal\dkan_metastore\Service;
 use Drupal\dkan_lunr\Service\DatasetModifier;
 use LunrPHP\BuildLunrIndex;
 
@@ -13,18 +13,13 @@ use LunrPHP\BuildLunrIndex;
  */
 class Search {
 
-  /**
-   * Api controller.
-   *
-   * @var \Drupal\dkan_metastore\Controller\Api
-   */
-  private $apiController;
+  private $metastoreService;
 
   /**
    * Search constructor.
    */
-  public function __construct(Api $controller) {
-    $this->apiController = $controller;
+  public function __construct(Service $metastoreService) {
+    $this->metastoreService = $metastoreService;
   }
 
   /**
@@ -167,7 +162,7 @@ class Search {
           function ($item) {
               return json_decode($item);
           },
-          $this->apiController->getEngine('dataset')->get()
+          $this->metastoreService->getAll('dataset')
       );
   }
 

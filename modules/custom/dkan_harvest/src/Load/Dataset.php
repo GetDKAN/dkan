@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_harvest\Load;
 
+use Drupal\dkan_metastore\Service;
 use Harvest\ETL\Load\Load;
 
 /**
@@ -13,32 +14,32 @@ class Dataset extends Load {
    * Public.
    */
   public function removeItem($id) {
-    $engine = $this->getDatasetEngine();
-    $engine->delete($id);
+    $service = $this->getMetastoreService();
+    $service->delete("dataset", "{$id}");
   }
 
   /**
    * Private.
    */
   protected function saveItem($item) {
-    $engine = $this->getDatasetEngine();
-    $engine->post(json_encode($item));
+    $service = $this->getMetastoreService();
+    if (!is_string($item)) {
+      $item = json_encode($item);
+    }
+    $service->post('dataset', $item);
   }
 
   /**
-   * Get the engine from the Dataset Controller.
+   * Get the metastore service.
    *
-   * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
-   *
-   * @return \Sae\Sae
-   *   Sae object.
+   * @return \Drupal\dkan_metastore\Service
+   *   Metastore service.
    *
    * @codeCoverageIgnore
    */
-  protected function getDatasetEngine() {
-    /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
-    $dataset_controller = \Drupal::service('dkan_metastore.controller');
-    return $dataset_controller->getEngine('dataset');
+  protected function getMetastoreService(): Service {
+    $service = \Drupal::service('dkan_metastore.service');
+    return $service;
   }
 
 }
