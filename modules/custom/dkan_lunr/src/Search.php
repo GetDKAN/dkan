@@ -156,14 +156,7 @@ class Search {
    *   Array of dataset objects.
    */
   protected function getDatasets() {
-
-    // Engine returns array of json strings.
-    return array_map(
-          function ($item) {
-              return json_decode($item);
-          },
-          $this->metastoreService->getAll('dataset')
-      );
+    return $this->metastoreService->getAll('dataset');
   }
 
 }
