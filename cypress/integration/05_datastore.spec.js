@@ -1,7 +1,6 @@
 context('Datastore API', () => {
   let expected_columns;
   let dataset_identifier;
-  let resource_identifier;
   let user_credentials = Cypress.env('TEST_USER_CREDENTIALS');
   let apiUri = Cypress.config().apiUri;
 
@@ -17,13 +16,46 @@ context('Datastore API', () => {
     })
   }
 
-  function removeDataset() {
+  function removeDatasets() {
     let endpoint = apiUri + '/metastore/schemas/dataset/items';
     cy.request({
-      method: 'DELETE',
-      url: endpoint + '/' + dataset_identifier,
-      auth: user_credentials
+      method: 'GET',
+      url: endpoint,
+    }).then((response) => {
+      let datasets = response.body;
+      cy.log(datasets);
+      datasets.forEach((dataset) => {
+        cy.request({
+          method: 'DELETE',
+          url: endpoint + "/" + dataset.identifier,
+          auth: user_credentials,
+        })
+      });
     })
+  }
+
+  async function getResourceIdentifier() {
+    return cy.request(apiUri + '/metastore/schemas/dataset/items/' + dataset_identifier + '?show-reference-ids').then((response) => {
+        expect(response.status).eql(200);
+        return response.body.distribution[0].identifier;
+      });
+  }
+
+  function getExpectedColumns() {
+    cy.fixture('electionDistricts').then((json) => {
+      expected_columns = json.properties
+    })
+  }
+
+  function dropDatastores() {
+    // Delete.
+    cy.request({
+      method: 'DELETE',
+      url: apiUri + '/datastore/imports/' + resource_identifier,
+      auth: user_credentials
+    }).then((response) => {
+      expect(response.status).eql(200);
+    });
   }
 
   // Generate a random uuid.
@@ -52,7 +84,7 @@ context('Datastore API', () => {
           downloadURL: "https://dkan-default-content-files.s3.amazonaws.com/district_centerpoints_small.csv",
           mediaType: "text/csv",
           format: "csv",
-          description: "<p>You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.</p>",
+          description: "<p>Nah.</p>",
           title: "District Names"
         }
       ],
@@ -70,47 +102,29 @@ context('Datastore API', () => {
   }
 
   before(() => {
+    removeDatasets();
     createDataset();
-    cy.fixture('electionDistricts').then((json) => {
-      cy.request(apiUri + '/metastore/schemas/dataset/items/' + dataset_identifier + '?show-reference-ids').then((response) => {
+  });
+
+  it('Import', () => {
+    getResourceIdentifier().then((resource_identifier) => {
+      cy.request({
+        method: 'POST',
+        url: apiUri + '/datastore/imports',
+        auth: user_credentials,
+        body: {
+          "resource_id": resource_identifier
+        }
+      }).then((response) => {
         expect(response.status).eql(200);
-        resource_identifier = response.body.distribution[0].identifier;
-        expect(resource_identifier).to.match(new RegExp(Cypress.env('UUID_REGEX')));
+        expect(response.body.Resource.status).eql("done");
+        expect(response.body.Import.status).eql("done");
       });
-      expected_columns = json.properties
-    })
-  });
-
-  // Clean up after ourselves.
-  after(() => {
-    removeDataset()
-  })
-
-  it('GET empty', () => {
-    cy.request({
-      url: apiUri + '/datastore/imports/' + resource_identifier,
-      failOnStatusCode: false
-    }).then((response) => {
-      expect(response.body.message).eql("A datastore for resource " + resource_identifier + " does not exist.")
-    })
-  });
-
-  it('Import, List, Get Info, and Delete', () => {
-    // Import.
-    cy.request({
-      method: 'POST',
-      url: apiUri + '/datastore/imports',
-      auth: user_credentials,
-      body: {
-        "resource_id": resource_identifier
-      }
-    }).then((response) => {
-      expect(response.status).eql(200);
-      expect(response.body.Resource.status).eql("done");
-      expect(response.body.Import.status).eql("done");
     });
 
-    // List.
+  });
+
+  it('List', () => {
     cy.request({
       url: apiUri + '/datastore/imports',
       auth: user_credentials
@@ -121,30 +135,17 @@ context('Datastore API', () => {
       expect(response.body[firstKey].hasOwnProperty('fileFetcherStatus')).equals(true);
       expect(response.body[firstKey].hasOwnProperty('fileName')).equals(true);
     })
-
-    // Get Info.
-    cy.request(apiUri + '/datastore/imports/' + resource_identifier).then((response) => {
-      expect(response.status).eql(200);
-      expect(response.body.columns).eql(expected_columns);
-      expect(response.body.numOfRows).eql(2);
-      expect(response.body.numOfColumns).eql(6);
-    });
-
-    // Delete.
-    cy.request({
-      method: 'DELETE',
-      url: apiUri + '/datastore/imports/' + resource_identifier,
-      auth: user_credentials
-    }).then((response) => {
-      expect(response.status).eql(200);
-    });
   });
 
-  it('GET openapi api spec', () => {
-    cy.request(apiUri + '/datastore').then((response) => {
-      expect(response.status).eql(200);
-      expect(response.body.hasOwnProperty('openapi')).equals(true);
-    })
+  it('Get Info', () => {
+    getResourceIdentifier().then((resource_identifier) => {
+      cy.request(apiUri + '/datastore/imports/' + resource_identifier).then((response) => {
+        expect(response.status).eql(200);
+        expect(response.body.columns).eql(expected_columns);
+        expect(response.body.numOfRows).eql(2);
+        expect(response.body.numOfColumns).eql(6);
+      });
+    });
   });
 
 });

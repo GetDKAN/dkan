@@ -2,10 +2,11 @@
 
 namespace Drupal\dkan_metastore;
 
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan_api\Controller\Docs;
-use Drupal\dkan_data\ValueReferencer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\dkan_data\ValueReferencer;
+use Drupal\dkan_api\Controller\Docs;
 
 /**
  * Provides dataset-specific OpenAPI documentation.

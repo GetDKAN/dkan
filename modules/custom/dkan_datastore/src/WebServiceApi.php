@@ -3,9 +3,9 @@
 namespace Drupal\dkan_datastore;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\dkan_common\JsonResponseTrait;
 
 /**
  * Class Api.
@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * @codeCoverageIgnore
  */
 class WebServiceApi implements ContainerInjectionInterface {
+  use JsonResponseTrait;
+
   /**
    * Datastore Service.
    *
@@ -60,15 +62,13 @@ class WebServiceApi implements ContainerInjectionInterface {
       $storage = $this->datastoreService->getStorage($identifier);
       if ($storage) {
         $data = $storage->getSummary();
-        return $this->successResponse($data);
+        return $this->getResponse($data);
       }
       throw new \Exception("no storage");
     }
     catch (\Exception $e) {
-      return $this->exceptionResponse(
-        new \Exception("A datastore for resource {$identifier} does not exist."),
-        404
-      );
+      $exception = new \Exception("A datastore for resource {$identifier} does not exist.");
+      return $this->getResponseFromException($exception, 404);
     }
   }
 
@@ -79,17 +79,41 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
     $payload = json_decode($payloadJson);
+
+    if (isset($payload->resource_ids)) {
+      return $this->importMultiple($payload->resource_ids);
+    }
+
     if (!isset($payload->resource_id)) {
-      return $this->exceptionResponse(new \Exception("Invalid payload."));
+      return $this->getResponseFromException(new \Exception("Invalid payload."));
     }
 
     try {
       $results = $this->datastoreService->import($payload->resource_id, FALSE);
-      return $this->successResponse($results);
+      return $this->getResponse($results);
     }
     catch (\Exception $e) {
-      return $this->exceptionResponse($e);
+      return $this->getResponseFromException($e);
     }
+  }
+
+  /**
+   * Private.
+   */
+  private function importMultiple(array $resourceIds) {
+
+    $responses = [];
+    foreach ($resourceIds as $identifier) {
+      try {
+        $results = $this->datastoreService->import($identifier, FALSE);
+        $responses[$identifier] = $results;
+      }
+      catch (\Exception $e) {
+        $responses[$identifier] = $e->getMessage();
+      }
+    }
+
+    return $this->getResponse($responses);
   }
 
   /**
@@ -101,7 +125,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function delete($identifier) {
     try {
       $this->datastoreService->drop($identifier);
-      return $this->successResponse(
+      return $this->getResponse(
         [
           "identifier" => $identifier,
           "message" => "The datastore for resource {$identifier} was succesfully dropped.",
@@ -109,8 +133,32 @@ class WebServiceApi implements ContainerInjectionInterface {
       );
     }
     catch (\Exception $e) {
-      return $this->exceptionResponse($e);
+      return $this->getResponseFromException($e);
     }
+  }
+
+  /**
+   * Drop multiples.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   Json response.
+   */
+  public function deleteMultiple() {
+    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    $payload = json_decode($payloadJson);
+
+    if (!isset($payload->resource_ids)) {
+      return $this->getResponseFromException(new \Exception("Invalid payload."));
+    }
+
+    $identifiers = $payload->resource_ids;
+
+    $responses = [];
+    foreach ($identifiers as $identifier) {
+      $responses[$identifier] = json_decode($this->delete($identifier)->getContent());
+    }
+
+    return $this->getResponse($responses);
   }
 
   /**
@@ -122,28 +170,14 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function list() {
     try {
       $data = $this->datastoreService->list();
-      return $this->successResponse($data);
+      return $this->getResponse($data);
     }
     catch (\Exception $e) {
-      return $this->exceptionResponse(
+      return $this->getResponseFromException(
         new \Exception("No importer data was returned. {$e->getMessage()}"),
         404
       );
     }
-  }
-
-  /**
-   * Private.
-   */
-  private function successResponse($message) {
-    return new JsonResponse($message, 200, ["Access-Control-Allow-Origin" => "*"]);
-  }
-
-  /**
-   * Private.
-   */
-  private function exceptionResponse(\Exception $e, $code = 500) {
-    return new JsonResponse((object) ['message' => $e->getMessage()], $code);
   }
 
 }
