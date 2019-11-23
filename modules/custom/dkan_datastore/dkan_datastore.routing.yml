@@ -35,6 +35,16 @@ dkan_datastore.1.imports.id:
   requirements:
     _permission: 'access content'
 
+dkan_datastore.1.imports.delete:
+  path: '/api/1/datastore/imports'
+  methods: [DELETE]
+  defaults:
+    _controller: '\Drupal\dkan_datastore\WebServiceApi::deleteMultiple'
+  requirements:
+    _permission: 'dkan_datastore_api_drop'
+  options:
+    _auth: ['basic_auth']
+
 dkan_datastore.1.imports.id.delete:
   path: '/api/1/datastore/imports/{identifier}'
   methods: [DELETE]

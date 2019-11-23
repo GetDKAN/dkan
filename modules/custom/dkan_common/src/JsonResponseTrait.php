@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_metastore;
+namespace Drupal\dkan_common;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
