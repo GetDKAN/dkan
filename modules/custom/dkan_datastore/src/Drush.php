@@ -3,6 +3,7 @@
 namespace Drupal\dkan_datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\dkan_data\ValueReferencer;
 use Drush\Commands\DrushCommands;
 
@@ -16,7 +17,7 @@ class Drush extends DrushCommands {
   /**
    * The datastore service.
    *
-   * @var \Drupal\dkan_datastore\Service\Service
+   * @var \Drupal\dkan_datastore\Service
    */
   protected $datastoreService;
 
@@ -71,26 +72,57 @@ class Drush extends DrushCommands {
    *   importerStatus: Importer
    *   importerBytes: Processed
    *
-   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
-   *   The importer list, organized into a RowsOfFields formatter object.
+   * @options format The format of the data.
+   * @options status Show imports of the given status.
+   * @options uuid-only Only the list of uuids.
    *
    * @command dkan-datastore:list
    */
-  public function list() {
+  public function list($options = [
+    'format' => 'table',
+    'status' => NULL,
+    'uuid-only' => FALSE,
+  ]) {
+    $status = $options['status'];
+    $uuid_only = $options['uuid-only'];
+
     $list = $this->datastoreService->list();
     $rows = [];
     foreach ($list as $uuid => $item) {
-      $row = [
-        'uuid' => $uuid,
-        'fileName' => $item->fileName,
-        'fileFetcherStatus' => $item->fileFetcherStatus,
-        'fileFetcherBytes' => \format_size($item->fileFetcherBytes) . " ($item->fileFetcherPercentDone%)",
-        'importerStatus' => $item->importerStatus,
-        'importerBytes' => \format_size($item->importerBytes) . " ($item->importerPercentDone%)",
-      ];
-      $rows[] = $row;
+      $rows[] = $this->createRow($uuid, $item);
     }
+
+    if (!empty($status)) {
+      $rows = array_filter($rows, function ($row) use ($status) {
+        if ($row['fileFetcherStatus'] == $status || $row['importerStatus'] == $status) {
+          return TRUE;
+        }
+        return FALSE;
+      });
+    }
+
+    if ($uuid_only) {
+      foreach ($rows as $index => $row) {
+        $rows[$index] = $row['uuid'];
+      }
+      return new UnstructuredListData($rows);
+    }
+
     return new RowsOfFields($rows);
+  }
+
+  /**
+   * Private.
+   */
+  private function createRow($uuid, $item) {
+    return [
+      'uuid' => $uuid,
+      'fileName' => $item->fileName,
+      'fileFetcherStatus' => $item->fileFetcherStatus,
+      'fileFetcherBytes' => \format_size($item->fileFetcherBytes) . " ($item->fileFetcherPercentDone%)",
+      'importerStatus' => $item->importerStatus,
+      'importerBytes' => \format_size($item->importerBytes) . " ($item->importerPercentDone%)",
+    ];
   }
 
   /**

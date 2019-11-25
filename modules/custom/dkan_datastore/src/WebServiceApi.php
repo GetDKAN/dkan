@@ -105,7 +105,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     $responses = [];
     foreach ($resourceIds as $identifier) {
       try {
-        $results = $this->datastoreService->import($identifier, FALSE);
+        $results = $this->datastoreService->import($identifier, TRUE);
         $responses[$identifier] = $results;
       }
       catch (\Exception $e) {
