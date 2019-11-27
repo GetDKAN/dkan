@@ -3,14 +3,14 @@ info:
   title: API Documentation
   version: Alpha
 paths:
-  /api/v1/dataset/{uuid}:
+  /api/1/metastore/schemas/dataset/items/{identifier}:
     get:
       summary: Get this dataset
       # description:
       tags:
         - Dataset
       parameters:
-        - name: "uuid"
+        - name: "identifier"
           in: "path"
           description: "Dataset uuid"
           required: true

@@ -60,7 +60,7 @@ class DocsTest extends DkanTestBase {
     $controller = Docs::create($this->getContainer());
     $response = $controller->getComplete();
 
-    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"paths":{"\/api\/v1\/dataset\/{uuid}":{"get":{"summary":"Get this dataset","tags":["Dataset"],"parameters":[{"name":"uuid","in":"path","description":"Dataset uuid","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Ok"}}}}}}';
+    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"paths":{"\/api\/1\/metastore\/schemas\/dataset\/items\/{identifier}":{"get":{"summary":"Get this dataset","tags":["Dataset"],"parameters":[{"name":"identifier","in":"path","description":"Dataset uuid","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Ok"}}}}}}';
 
     $this->assertEquals($spec, $response->getContent());
   }

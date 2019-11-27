@@ -96,16 +96,16 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     unset($spec['components']['securitySchemes']);
     // Remove required parameters, since now part of path.
     unset($spec['paths']['/api/v1/sql/{query}']['get']['parameters']);
-    unset($spec['paths']['/api/v1/dataset/{uuid}']['get']['parameters']);
+    unset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']['get']['parameters']);
     // Keep only the tags needed, so remove the properties tag.
     $spec['tags'] = [
       ["name" => "Dataset"],
       ["name" => "SQL Query"],
     ];
     // Replace the dataset uuid placeholder.
-    if (isset($spec['paths']['/api/v1/dataset/{uuid}'])) {
-      $spec['paths']['/api/v1/dataset/' . $identifier] = $spec['paths']['/api/v1/dataset/{uuid}'];
-      unset($spec['paths']['/api/v1/dataset/{uuid}']);
+    if (isset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}'])) {
+      $spec['paths']['/api/1/metastore/schemas/dataset/items/' . $identifier] = $spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}'];
+      unset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']);
     }
 
     // Replace the sql endpoint query placeholder.
