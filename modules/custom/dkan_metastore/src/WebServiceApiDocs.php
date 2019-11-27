@@ -14,26 +14,17 @@ use Drupal\dkan_api\Controller\Docs;
 class WebServiceApiDocs implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
-  private $specOperationsToRemove = [
-    'post',
-    'put',
-    'patch',
-    'delete',
-  ];
-
-  private $specPathsToRemove = [
-    '/api/1/metastore/schemas/dataset',
-    '/api/1/metastore/schemas/dataset/items',
-    '/api/1/metastore/schemas/{schema_id}/items',
-    '/api/1/metastore/schemas/{schema_id}/items/{identifier}',
-    '/api/1/harvest/plans',
-    '/api/1/harvest/plans/{plan_id}',
-    '/api/1/harvest/runs',
-    '/api/1/harvest/runs/{run_id}',
-    '/api/1/datastore/imports',
-    '/api/1/datastore/imports/{identifier}',
-    '/api/1',
-    '/api/1/metastore/schemas/dataset/items/{identifier}/docs',
+  /**
+   * List of endpoints to keep for dataset-specific docs.
+   *
+   * Any combination of a path and any of its verbs not specifically listed
+   * below will be discarded.
+   *
+   * @var array
+   */
+  private $endpointsToKeep = [
+    '/api/1/metastore/schemas/dataset/items/{identifier}' => ['get'],
+    '/api/1/datastore/sql' => ['get'],
   ];
 
   /**
@@ -85,12 +76,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   public function getDatasetSpecific(string $identifier) {
     $spec = $this->docsController->getJsonFromYmlFile();
 
-    // Keep only the GET requests.
-    $spec = $this->removeSpecOperations($spec);
-
-    // Remove GET dataset collection endpoint as well as property-related ones.
-    // @TODO: consider flipping the logic, keeping array of paths interested in.
-    $spec = $this->removeSpecPaths($spec);
+    $spec = $this->keepDatasetSpecificEndpoints($spec);
 
     // Remove the security schemes.
     unset($spec['components']['securitySchemes']);
@@ -115,7 +101,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   }
 
   /**
-   * Removes operations from the api spec's paths.
+   * Keep only paths and verbs relevant for our dataset-specific docs.
    *
    * @param array $spec
    *   The original spec array.
@@ -123,68 +109,41 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * @return array
    *   Modified spec.
    */
-  private function removeSpecOperations(array $spec) {
-    return $this->removePathsWithoutOperations($this->removeUnnecessaryOperations($spec));
-  }
-
-  /**
-   * Private.
-   */
-  private function removeUnnecessaryOperations($spec) {
-    if (isset($spec['paths'])) {
-      return $spec;
-    }
-
+  private function keepDatasetSpecificEndpoints(array $spec) {
     foreach ($spec['paths'] as $path => $operations) {
-      $spec['paths'][$path] = array_filter($operations, function ($operation) {
-        if (in_array($operation, $this->specOperationsToRemove)) {
-                return FALSE;
-        }
-          return TRUE;
-      });
-
-      return $spec;
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function removePathsWithoutOperations($spec) {
-    if (isset($spec['paths'])) {
-      return $spec;
-    }
-
-    $spec['paths'] = array_filter($spec['paths'], function ($item) {
-      if ($item) {
-            return FALSE;
-      }
-        return TRUE;
-    });
-
-    return $spec;
-  }
-
-  /**
-   * Remove paths from the api spec.
-   *
-   * @param array $spec
-   *   The original spec array.
-   *
-   * @return array
-   *   Modified spec.
-   */
-  private function removeSpecPaths(array $spec) {
-    if (!isset($spec['paths'])) {
-      return $spec;
-    }
-    foreach ($spec['paths'] as $path => $ops) {
-      if (in_array($path, $this->specPathsToRemove)) {
+      // Discard unnecessary paths.
+      if (empty($this->endpointsToKeep[$path])) {
         unset($spec['paths'][$path]);
       }
+      else {
+        $this->filterOperationsInCurrentPath($operations, $path, $spec);
+      }
     }
 
     return $spec;
+  }
+
+  /**
+   * Filter the verbs on the current path.
+   *
+   * @param array $operations
+   *   Operations (verbs) for the current path.
+   * @param string $path
+   *   The path being processed.
+   * @param array $spec
+   *   Our modified dataset-specific openapi spec.
+   */
+  private function filterOperationsInCurrentPath(array $operations, string $path, array &$spec) {
+    // Otherwise, discard unnecessary verbs.
+    foreach ($operations as $operation => $details) {
+      if (!in_array($operation, $this->endpointsToKeep[$path])) {
+        unset($spec['paths'][$path][$operation]);
+      }
+    }
+    // Discard any newly-empty paths.
+    if (empty($spec['paths'][$path])) {
+      unset($spec['paths'][$path]);
+    }
   }
 
   /**
