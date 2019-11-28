@@ -19,3 +19,18 @@ paths:
       responses:
         200:
           description: Ok
+    delete:
+      summary: This operation should not be present in dataset-specific docs.
+      responses:
+        200:
+          description: Ok
+    # Though an empty verb invalidates the spec, test its removal by dataset-specific docs.
+    post:
+  /api/1/some/other/path:
+    patch:
+      summary: This path and operation should not be present in dataset-specific docs.
+      responses:
+        200:
+          description: Ok
+  # Though an empty path invalidates the spec, test its removal by dataset-specific docs.
+  /api/1/path/without/operations:
