@@ -22,7 +22,7 @@ class WebServiceApiDocsTest extends TestCase {
   public function testGetDatasetSpecific() {
     $mockChain = $this->getCommonMockChain();
 
-    // Test against ./docs/dkan_api_openapi_spec.yml
+    // Test against ./docs/dkan_api_openapi_spec.yml.
     $endpointsToKeep = [
       // Target paths.
       '/api/1/metastore/schemas/dataset/items/{identifier}' => ['get'],

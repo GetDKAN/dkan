@@ -68,6 +68,10 @@ function dkan_data_entity_presave(EntityInterface $entity) {
     return;
   }
 
+  if (empty($entity->get('field_data_type')->value)) {
+    $entity->set('field_data_type', "dataset");
+  }
+
   if ($entity->get('field_data_type')->value != 'dataset') {
     return;
   }
@@ -88,7 +92,7 @@ function dkan_data_entity_presave(EntityInterface $entity) {
   if (!isset($metadata->identifier)) {
     $metadata->identifier = $entity->uuid();
   }
-  // If one exists in the uui it should be the same in the table.
+  // If one exists in the uuid it should be the same in the table.
   else {
     $entity->set('uuid', $metadata->identifier);
   }
