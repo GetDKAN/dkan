@@ -82,11 +82,11 @@ class ResourceImporter extends Transform {
     }
 
     // Import distribution file.
-    $new_url = $this->saveFile($dist->downloadURL, $dataset->identifier);
+    $newUrl = $this->saveFile($dist->downloadURL, $dataset->identifier);
 
     // If successful, update downloadURL.
-    if ($new_url) {
-      $dist->downloadURL = $new_url;
+    if ($newUrl) {
+      $dist->downloadURL = $newUrl;
     }
 
     return $dist;
