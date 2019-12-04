@@ -43,6 +43,13 @@ class Chain {
   }
 
   /**
+   * Get stored input.
+   */
+  public function getStoredInput($id) {
+    return (isset($this->store[$id])) ? $this->store[$id] : NULL;
+  }
+
+  /**
    * Get Mock.
    */
   public function getMock() {
@@ -93,7 +100,13 @@ class Chain {
    */
   private function setStorageWithReturn(MockObject $mock, $method, $storeId, $return) {
     $mock->method($method)->willReturnCallback(function ($input) use ($storeId, $return) {
-      $this->store[$storeId] = $input;
+      if (func_num_args() > 1) {
+        $this->store[$storeId] = func_get_args();
+      }
+      else {
+        $this->store[$storeId] = $input;
+      }
+
       if (is_object($return)) {
         if ($return instanceof \Exception) {
           throw $return;

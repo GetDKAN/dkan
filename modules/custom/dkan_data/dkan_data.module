@@ -6,6 +6,8 @@
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\dkan_common\UrlHostTokenResolver;
+use Drupal\dkan_data\DataNodeLifeCycle;
 use Drupal\dkan_data\ValueReferencer;
 
 /**
@@ -24,6 +26,13 @@ function dkan_data_node_load(array $entities) {
       $referencer = Drupal::service("dkan_data.value_referencer");
       $metadata_obj = $referencer->dereference($metadata_obj, dereferencing_method());
       $entity->set('field_json_metadata', json_encode($metadata_obj));
+    }
+
+    // @todo Decouple "resource" functionality from specific dataset properties.
+    if ($entity->bundle() == "data" && $entity->field_data_type->value == "distribution") {
+      $metadataString = $entity->get('field_json_metadata')->value;
+      $metadataString = UrlHostTokenResolver::resolve($metadataString);
+      $entity->set('field_json_metadata', $metadataString);
     }
   }
 
@@ -63,51 +72,11 @@ function dereferencing_method() : int {
  * Implements hook_entity_presave().
  */
 function dkan_data_entity_presave(EntityInterface $entity) {
-
-  if ($entity->bundle() != "data") {
-    return;
+  try {
+    (new DataNodeLifeCycle($entity))->presave();
   }
-
-  if (empty($entity->get('field_data_type')->value)) {
-    $entity->set('field_data_type', "dataset");
-  }
-
-  if ($entity->get('field_data_type')->value != 'dataset') {
-    return;
-  }
-
-  $entityType = $entity->getEntityTypeId();
-
-  $metadata = json_decode($entity->get('field_json_metadata')->value);
-
-  $title = isset($metadata->title) ? $metadata->title : $metadata->name;
-  if ($entityType == 'node') {
-    $entity->setTitle($title);
-    if (empty($entity->field_data_type->value)) {
-      $entity->field_data_type->value = "dataset";
-    }
-  }
-
-  // If there is no uuid add one.
-  if (!isset($metadata->identifier)) {
-    $metadata->identifier = $entity->uuid();
-  }
-  // If one exists in the uuid it should be the same in the table.
-  else {
-    $entity->set('uuid', $metadata->identifier);
-  }
-
-  // Reference the dataset's values, and update our json metadata.
-  $referencer = Drupal::service("dkan_data.value_referencer");
-  $metadata = $referencer->reference($metadata);
-  $entity->set('field_json_metadata', json_encode($metadata));
-
-  // Check for possible orphan property references when updating a dataset.
-  if (isset($entity->original)) {
-    $referencer->processReferencesInUpdatedDataset(
-      json_decode($entity->referenced_metadata),
-      $metadata
-    );
+  catch (\Exception $e) {
+    // Nothing to do, this entity is not a data node.
   }
 }
 
