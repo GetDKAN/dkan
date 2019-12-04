@@ -20,13 +20,8 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetSchemas() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-    )
-      ->add(SchemaRetriever::class, "getAllIds", ["1"])
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
+    $container = $this->getCommonMockChain()
+      ->add(SchemaRetriever::class, "getAllIds", ["1"]);
 
     $service = Service::create($container->getMock());
     $this->assertEquals(json_encode(["1" => "blah"]), json_encode($service->getSchemas()));
@@ -36,12 +31,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetSchema() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-      )
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
+    $container = $this->getCommonMockChain();
 
     $service = Service::create($container->getMock());
     $this->assertEquals(json_encode("blah"), json_encode($service->getSchema("1")));
@@ -51,12 +41,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetAll() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-      )
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
+    $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", [json_encode("blah")]);
 
@@ -69,12 +54,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-      )
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
+    $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", json_encode("blah"));
 
@@ -94,12 +74,7 @@ class ServiceTest extends TestCase {
       ],
     ];
 
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-      )
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
+    $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", json_encode($dataset));
 
@@ -113,12 +88,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testPost() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-      )
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
+    $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "post", "1");
 
@@ -131,12 +101,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testPut() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-      )
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
+    $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "put", "1")
       ->add(Engine::class, "get", "1");
@@ -151,12 +116,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testPatch() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-      )
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
+    $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "patch", "1")
       ->add(Engine::class, "get", "1");
@@ -170,12 +130,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testDelete() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", (new Options())
-        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-        ->add('dkan_metastore.sae_factory', Sae::class)
-      )
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
+    $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "delete", "1")
       ->add(Engine::class, "get", "1");
@@ -183,6 +138,19 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->assertEquals("1", $service->delete("dataset", "1"));
+  }
+
+  /**
+   * @return \Drupal\dkan_common\Tests\Mock\Chain
+   */
+  public function getCommonMockChain() {
+    $options = (new Options())
+      ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
+      ->add('dkan_metastore.sae_factory', Sae::class);
+
+    return (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
   }
 
 }
