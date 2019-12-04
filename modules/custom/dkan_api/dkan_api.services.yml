@@ -3,3 +3,4 @@ services:
     class: \Drupal\dkan_api\Controller\Docs
     arguments:
       - '@module_handler'
+      - '@request_stack'
