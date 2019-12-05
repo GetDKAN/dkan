@@ -108,23 +108,31 @@ abstract class XmlHarvestMigration extends HarvestMigration {
     }
   }
 
-  /**
-   * Helper function to extract string from element or return empty string.
+  /*
+   * Helper function to generate a string from an array of elements.
    *
    * @param SimpleXMLElement $element
    *   The XML to extract the string from.
    * @param string $xpath
    *   Xpath of string to be extracted.
+   * @param bool $as_html
+   *   If true, wrap each element in a <p> tag.
    *
    * @return string
-   *   Extracted string.
+   *   The generated string.
    */
-  protected function stringIfExists(SimpleXMLElement $element, $xpath) {
+  protected function stringIfExists(SimpleXMLElement $element, $xpath, $as_html=FALSE) {
     $result = $element->xpath($xpath);
+    $return_string = '';
     if (!empty($result)) {
-      return (String) array_pop($result);
+      foreach ($result as $item) {
+        if ($as_html) {
+          $return_string .= '<p>' . (string)$item . '</p>';
+        } else {
+          $return_string .= (string)$item . ' ';
+        }
+      }
     }
-
-    return "";
+    return trim($return_string);
   }
 }
