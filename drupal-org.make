@@ -72,7 +72,7 @@ projects:
   devel:
     version: '1.7'
   diff:
-    version: '3.3'
+    version: '3.4'
   dkan_dataset_paragraphs:
     download:
       type: git
@@ -275,7 +275,7 @@ projects:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.54'
+    version: '1.70'
   paragraphs:
     download:
       type: git
