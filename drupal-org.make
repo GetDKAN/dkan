@@ -280,9 +280,7 @@ projects:
     download:
       type: git
       url: https://git.drupalcode.org/project/paragraphs.git
-      revision: c4f2e47
-    patch:
-      2603424: https://www.drupal.org/files/issues/2019-07-15/paragraphs_workbench_moderation-2603424-34.patch
+      revision: a9368657327daee8b8cc3a17c822200677517d75
   paragraphs_defaults:
     version: '1.0'
   path_breadcrumbs:
