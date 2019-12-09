@@ -4,6 +4,7 @@
  * @file
  */
 
+use Drupal\dkan_data\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\dkan_common\UrlHostTokenResolver;
@@ -75,8 +76,7 @@ function dkan_data_entity_presave(EntityInterface $entity) {
   try {
     (new DataNodeLifeCycle($entity))->presave();
   }
-  catch (\Exception $e) {
-    // Nothing to do, this entity is not a data node.
+  catch (DataNodeLifeCycleEntityValidationException $e) {
   }
 }
 
