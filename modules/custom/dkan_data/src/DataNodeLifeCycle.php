@@ -4,6 +4,7 @@ namespace Drupal\dkan_data;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\dkan_common\UrlHostTokenResolver;
+use Drupal\dkan_data\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\node\Entity\Node;
 
 /**
@@ -58,9 +59,6 @@ class DataNodeLifeCycle {
     $title = isset($metadata->title) ? $metadata->title : $metadata->name;
 
     $entity->setTitle($title);
-    if (empty($entity->field_data_type->value)) {
-      $entity->field_data_type->value = "dataset";
-    }
 
     // If there is no uuid add one.
     if (!isset($metadata->identifier)) {
@@ -90,11 +88,11 @@ class DataNodeLifeCycle {
    */
   private function distributionPresave() {
     $metadata = $this->getMetaData();
-    $host = \Drupal::request()->getSchemeAndHttpHost();
+    $host = \Drupal::request()->getHost();
     if (isset($metadata->data->downloadURL)) {
       $newUrl = $metadata->data->downloadURL;
-      if (substr_count($newUrl, $host) > 0) {
-        $parsedUrl = parse_url($newUrl);
+      $parsedUrl = parse_url($newUrl);
+      if ($parsedUrl['host'] == $host) {
         $parsedUrl['host'] = UrlHostTokenResolver::TOKEN;
         $metadata->data->downloadURL = $this->unparseUrl($parsedUrl);
         $this->setMetadata($metadata);
@@ -126,11 +124,11 @@ class DataNodeLifeCycle {
    */
   private function validate(EntityInterface $entity) {
     if (!($entity instanceof Node)) {
-      throw new \Exception("We only work with nodes.");
+      throw new DataNodeLifeCycleEntityValidationException("We only work with nodes.");
     }
 
     if ($entity->bundle() != "data") {
-      throw new \Exception("We only work with data nodes.");
+      throw new DataNodeLifeCycleEntityValidationException("We only work with data nodes.");
     }
   }
 
