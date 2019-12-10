@@ -408,6 +408,27 @@ function dkan_sitewide_menu_menu_default_menu_links() {
     'customized' => 1,
     'parent_identifier' => 'menu-command-center-menu_dkan:admin/dkan',
   );
+  // Exported menu link: menu-command-center-menu_files:admin/content/files.
+  $menu_links['menu-command-center-menu_files:admin/content/file'] = array(
+    'menu_name' => 'menu-command-center-menu',
+    'link_path' => 'admin/content/file',
+    'router_path' => 'admin/content',
+    'link_title' => 'Files',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'identifier' => 'menu-command-center-menu_files:admin/content/file',
+    ),
+    'module' => 'menu',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 0,
+    'customized' => 1,
+    'parent_identifier' => 'menu-command-center-menu_content:admin/content',
+  );
   // Exported menu link: menu-command-center-menu_fonts:admin/appearance/fontyourface.
   $menu_links['menu-command-center-menu_fonts:admin/appearance/fontyourface'] = array(
     'menu_name' => 'menu-command-center-menu',
@@ -763,6 +784,7 @@ function dkan_sitewide_menu_menu_default_menu_links() {
   t('Dataset');
   t('Datasets');
   t('Featured Groups Sort Order');
+  t('Files');
   t('Fonts');
   t('Group');
   t('Harvest Source');
