@@ -439,14 +439,12 @@ class HarvestMigration extends MigrateDKAN {
   private function moderatePublish($dataset) {
     // Publish dataset.
     if (module_exists('dkan_workflow')) {
-      // workbench_moderation_moderate($dataset, 'needs_review');.
       workbench_moderation_moderate($dataset, 'published');
 
       // Publish resources.
       if (!empty($dataset->field_resources[LANGUAGE_NONE])) {
         foreach ($dataset->field_resources[LANGUAGE_NONE] as $data) {
           $resource = node_load($data['target_id']);
-          // workbench_moderation_moderate($resource, 'needs_review');.
           workbench_moderation_moderate($resource, 'published');
         }
       }
