@@ -19,19 +19,6 @@ define('FILE_STATUS_TEMPORARY', 0);
 class HarvestMigration extends MigrateDKAN {
 
   /**
-   * {@inheritdoc}
-   */
-  public static function getInstance($machine_name, $class_name = NULL, array $arguments = array()) {
-    // Reset the cache entry for this specific migration. to make sure the
-    // arguments are always fresh.
-    $migrations = &drupal_static(__FUNCTION__, array());
-    if (isset($migrations[$machine_name])) {
-      unset($migrations[$machine_name]);
-    }
-    return parent::getInstance($machine_name, $class_name, $arguments);
-  }
-
-  /**
    * Store the harvest source we got from the Migration registration.
    *
    * @var object
@@ -44,6 +31,22 @@ class HarvestMigration extends MigrateDKAN {
   protected $dkanHarvestMigrateSQLMapDestinationKey;
   protected $dkanHarvestMigrateSQLMapConnectionKey;
   protected $dkanHarvestMigrateSQLMapSourceOptions;
+
+  public $itemUrl;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInstance($machine_name, $class_name = NULL, array $arguments = array()) {
+    // Reset the cache entry for this specific migration. to make sure the
+    // arguments are always fresh.
+    $migrations = &drupal_static(__FUNCTION__, array());
+    if (isset($migrations[$machine_name])) {
+      unset($migrations[$machine_name]);
+    }
+    return parent::getInstance($machine_name, $class_name, $arguments);
+  }
+
 
   /**
    * Extra Harvest argument.
@@ -166,6 +169,9 @@ class HarvestMigration extends MigrateDKAN {
 
     // Add Field mappings.
     $this->setFieldMappings();
+
+    // Define defite item URL
+    $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) . '/:id';
   }
 
   /**
@@ -209,19 +215,19 @@ class HarvestMigration extends MigrateDKAN {
     // First add record on the 'migrate_log' table.
     try {
       if (!isset($this->logID)) {
-      $this->logID = db_insert('migrate_log')
-        ->fields(array(
-          'machine_name' => $this->machineName,
-          'process_type' => $event_data['process_type'],
-          'starttime' => $event_data['start_time'],
-          'endtime' => $event_data['end_time'],
-          'initialHighwater' => $event_data['initial_highwater'],
-          'finalHighwater' => $event_data['final_highwater'],
-          'numprocessed' => $event_data['datasets_processed'],
-        ))
-        ->execute();
+        $this->logID = db_insert('migrate_log')
+          ->fields(array(
+            'machine_name' => $this->machineName,
+            'process_type' => $event_data['process_type'],
+            'starttime' => $event_data['start_time'],
+            'endtime' => $event_data['end_time'],
+            'initialHighwater' => $event_data['initial_highwater'],
+            'finalHighwater' => $event_data['final_highwater'],
+            'numprocessed' => $event_data['datasets_processed'],
+          ))
+          ->execute();
+      }
     }
-  }
     catch (PDOException $e) {
       Migration::displayMessage(t('Could not log event for migration !name',
         array('!name' => $this->machineName)));
@@ -401,6 +407,7 @@ class HarvestMigration extends MigrateDKAN {
     // be created. Also, we need the dataset to be created first
     // so the sync of groups work properly.
     $this->createResources($dataset, $row);
+    $this->createExtendedMetadata($dataset, $row);
 
     // Add group.
     $this->prepareGroup($dataset, $row);
@@ -411,6 +418,7 @@ class HarvestMigration extends MigrateDKAN {
     }
 
     // Save dataset.
+    $dataset->revision = FALSE;
     node_save($dataset);
 
     // Publish dataset and resources if dkan_workflow is enabled.
@@ -431,14 +439,12 @@ class HarvestMigration extends MigrateDKAN {
   private function moderatePublish($dataset) {
     // Publish dataset.
     if (module_exists('dkan_workflow')) {
-      workbench_moderation_moderate($dataset, 'needs_review');
       workbench_moderation_moderate($dataset, 'published');
 
       // Publish resources.
       if (!empty($dataset->field_resources[LANGUAGE_NONE])) {
         foreach ($dataset->field_resources[LANGUAGE_NONE] as $data) {
           $resource = node_load($data['target_id']);
-          workbench_moderation_moderate($resource, 'needs_review');
           workbench_moderation_moderate($resource, 'published');
         }
       }
@@ -503,6 +509,18 @@ class HarvestMigration extends MigrateDKAN {
       }
     }
     migrate_instrument_stop('HarvestMigration->createResources');
+  }
+
+  /**
+   * Create extended metadata paragraphs in datasets. This is used for custom
+   * fields and therefore has no specific logic here in the base class.
+   *
+   * @param object $dataset
+   *   Entity where resources are going to be added.
+   * @param object $row
+   *   Migration row.
+   */
+  protected function createExtendedMetadata(&$dataset, stdClass &$row) {
   }
 
   /**
@@ -950,7 +968,7 @@ class HarvestMigration extends MigrateDKAN {
   }
 
   /**
-   * Implements prepareRollback().
+   * Implements hook.
    *
    * Pre rollback callback. Deletes all the content related to the imported
    * datasets before deleting them.
@@ -1186,7 +1204,8 @@ class HarvestMigration extends MigrateDKAN {
       // The parsed remote file should be valid and should not look like a web
       // page.
       if (!is_null($remoteFileInfo->getType())
-        && !in_array($remoteFileInfo->getExtension(), $html_extensions)) {
+        && !in_array($remoteFileInfo->getExtension(), $html_extensions)
+        && $remoteFileInfo->getType() != 'text/html') {
         // Check if this file extension is allowed for field_link_remote_file.
         // Reduce everything to lowercase to support files with uppercase
         // extensions.
@@ -1310,11 +1329,12 @@ class HarvestMigration extends MigrateDKAN {
    * Change the default to not warn as overriding field mapping is common
    * practice for the HarvestMigration subclasses.
    */
-  public function addFieldMapping($destination_field,
-  $source_field = NULL,
-    $warn_on_override = FALSE) {
-    return parent::addFieldMapping($destination_field, $source_field,
-      $warn_on_override);
+  public function addFieldMapping(
+      $destination_field,
+      $source_field = NULL,
+      $warn_on_override = FALSE
+    ) {
+    return parent::addFieldMapping($destination_field, $source_field, $warn_on_override);
   }
 
   /**
@@ -1354,7 +1374,7 @@ class HarvestMigration extends MigrateDKAN {
         self::displayMessage(
           $queued_message['message'],
         $this->getMessageLevelName($queued_message['level'])
-      );
+        );
       }
     }
     $this->queuedMessages = array();
@@ -1417,134 +1437,6 @@ class HarvestMigration extends MigrateDKAN {
    */
   public function getIdList() {
     return $this->source->getIdList();
-  }
-
-}
-
-/**
- * XMLHarvestMigration class.
- */
-class XMLHarvestMigration extends HarvestMigration {
-
-  public $itemUrl;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct($arguments) {
-    parent::__construct($arguments);
-    $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
-      '/:id.xml';
-
-    $this->source = new HarvestMigrateSourceList(
-      new HarvestList($this->dkanHarvestSource->getCacheDir()),
-      new MigrateItemXML($this->itemUrl),
-      array(),
-      $this->sourceListOptions
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * So we can create our special field mapping class.
-   *
-   * @todo Find a cleaner way to just substitute a different mapping class.
-   *
-   * @param mixed $destination_field
-   *   A machine-name of destination field.
-   * @param mixed $source_field
-   *   A name of source field.
-   * @param bool $warn_on_override
-   *   Set to FALSE to prevent warnings when there's an existing mapping
-   *        for this destination field.
-   *
-   * @return MigrateXMLFieldMapping
-   *   MigrateXMLFieldMapping
-   */
-  public function addFieldMapping($destination_field,
-  $source_field = NULL,
-                                  $warn_on_override = TRUE) {
-    // Warn of duplicate mappings.
-    if ($warn_on_override && !is_null($destination_field) && isset($this->codedFieldMappings[$destination_field])) {
-      $this->reportMessage(
-        t('!name addFieldMapping: !dest was previously mapped, overridden',
-          array('!name' => $this->machineName, '!dest' => $destination_field)),
-        MigrationBase::MESSAGE_WARNING);
-    }
-    $mapping = new MigrateXMLFieldMapping($destination_field, $source_field);
-    if (is_null($destination_field)) {
-      $this->codedFieldMappings[] = $mapping;
-    }
-    else {
-      $this->codedFieldMappings[$destination_field] = $mapping;
-    }
-    return $mapping;
-  }
-
-  /**
-   * Apply migration mappings.
-   *
-   * A normal $data_row has all the input data as top-level fields - in this
-   * case, however, the data is embedded within a SimpleXMLElement object in
-   * $data_row->xml. Explode that out to the normal form, and pass on to the
-   * normal implementation.
-   */
-  protected function applyMappings() {
-    // We only know what data to pull from the xpaths in the mappings.
-    foreach ($this->getFieldMappings() as $mapping) {
-      $source = $mapping->getSourceField();
-      if ($source && !isset($this->sourceValues->{$source})) {
-        $xpath = $mapping->getXpath();
-        if ($xpath) {
-          // Derived class may override applyXpath().
-          $source_value = $this->applyXpath($this->sourceValues, $xpath);
-          if (!is_null($source_value)) {
-            $this->sourceValues->$source = $source_value;
-          }
-        }
-      }
-    }
-    parent::applyMappings();
-  }
-
-  /**
-   * Gets item from XML using the xpath.
-   *
-   * Default implementation - straightforward xpath application.
-   *
-   * @param object $data_row
-   *   A row containing items.
-   * @param string $xpath
-   *   An xpath used to find the item.
-   *
-   * @return SimpleXMLElement
-   *   Found element
-   */
-  public function applyXpath($data_row, $xpath) {
-    $result = $data_row->xml->xpath($xpath);
-    if ($result) {
-      if (count($result) > 1) {
-        $return = array();
-        foreach ($result as $record) {
-          $return[] = (string) $record;
-        }
-        return $return;
-      }
-      else {
-        return (string) $result[0];
-      }
-    }
-    else {
-      return NULL;
-    }
-  }
-
-  /**
-   * Implements prepare().
-   */
-  public function prepare($entity, $row) {
-    parent::prepare($entity, $row);
   }
 
 }
