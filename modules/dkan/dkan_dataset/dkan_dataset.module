@@ -806,6 +806,7 @@ function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $
     }
     else {
       $wrapper_resource->og_group_ref->set($resource_groups);
+      $wrapper_resource->revision->set(0);
       $wrapper_resource->save();
     }
   }
