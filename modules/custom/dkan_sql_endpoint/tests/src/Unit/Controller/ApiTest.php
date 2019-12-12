@@ -5,6 +5,7 @@ namespace Drupal\Tests\dkan_sql_endpoint\Unit\Controller;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\dkan_common\Tests\Mock\Chain;
@@ -12,6 +13,7 @@ use Drupal\dkan_common\Tests\Mock\Options;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_sql_endpoint\Controller\Api;
+use Drupal\dkan_sql_endpoint\Service;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -46,10 +48,16 @@ class ApiTest extends TestCase {
    *
    */
   private function getContainer() {
+    $container = (new Chain($this))
+      ->add(Container::class, "get", ConfigFactory::class)
+      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
+      ->add(ImmutableConfig::class, "get", "100")
+      ->getMock();
+
     $options = (new Options())
+      ->add('dkan_sql_endpoint.service', Service::create($container))
       ->add("database", Connection::class)
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
-      ->add('config.factory', ConfigFactory::class)
       ->add('request_stack', RequestStack::class)
       ->add('dkan_datastore.database_table_factory', DatabaseTableFactory::class);
 

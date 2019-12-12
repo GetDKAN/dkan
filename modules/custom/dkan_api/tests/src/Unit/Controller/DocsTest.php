@@ -8,7 +8,6 @@ use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\dkan_common\Tests\Mock\Chain;
 use Drupal\dkan_common\Tests\Mock\Options;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -18,6 +17,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class DocsTest extends DkanTestBase {
 
+  /**
+   *
+   */
   public function testGetVersions() {
     $mockChain = $this->getCommonMockChain();
     $controller = Docs::create($mockChain->getMock());
@@ -28,9 +30,12 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($spec, $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testGetComplete() {
     $mock = $this->getCommonMockChain()
-      ->add(RequestStack::class, 'getCurrentRequest',Request::class)
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'get', NULL);
 
     $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"components":{"securitySchemes":{"basicAuth":{"type":"http","scheme":"basic"}}},"paths":{"\/api\/1\/metastore\/schemas\/dataset\/items\/{identifier}":{"get":{"summary":"Get this dataset","tags":["Dataset"],"parameters":[{"name":"identifier","in":"path","description":"Dataset uuid","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Ok"}}},"delete":{"summary":"This operation should not be present in dataset-specific docs.","security":[{"basicAuth":[]}],"responses":{"200":{"description":"Ok"}}},"post":null},"\/api\/1\/some\/other\/path":{"patch":{"summary":"This path and operation should not be present in dataset-specific docs.","security":[{"basicAuth":[]}],"responses":{"200":{"description":"Ok"}}}}}}';
@@ -41,9 +46,12 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($spec, $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testGetPublic() {
     $mock = $this->getCommonMockChain()
-      ->add(RequestStack::class, 'getCurrentRequest',Request::class)
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'get', 'false');
 
     $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"components":[],"paths":{"\/api\/1\/metastore\/schemas\/dataset\/items\/{identifier}":{"get":{"summary":"Get this dataset","tags":["Dataset"],"parameters":[{"name":"identifier","in":"path","description":"Dataset uuid","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Ok"}}},"post":null}}}';
@@ -54,6 +62,9 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($spec, $response->getContent());
   }
 
+  /**
+   *
+   */
   public function getCommonMockChain() {
     $options = (new Options())
       ->add('module_handler', ModuleHandlerInterface::class)

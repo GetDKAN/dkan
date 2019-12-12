@@ -61,13 +61,16 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
   public function retrieve(string $id) {
     $this->setTable();
 
-    $result = $this->connection->select($this->getTableName(), 't')
+    /* @var $statement StatementInterface */
+    $statement = $this->connection->select($this->getTableName(), 't')
       ->fields('t', array_keys($this->getSchema()['fields']))
       ->condition($this->primaryKey(), $id)
-      ->execute()
-      ->fetch();
+      ->execute();
 
-    return $result;
+    // The docs do not mention it, but fetch can return false.
+    $return = (isset($statement)) ? $statement->fetch() : NULL;
+
+    return ($return === FALSE) ? NULL : $return;
   }
 
   /**
@@ -107,7 +110,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
 
     $returned_id = NULL;
 
-    if (!$existing) {
+    if ($existing === NULL) {
       $q = $this->connection->insert($this->getTableName());
       $q->fields($this->getNonSerialFields());
       $q->values($data);

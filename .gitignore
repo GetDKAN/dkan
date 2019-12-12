@@ -14,3 +14,6 @@ composer.lock
 .idea
 docs/_build
 .vscode
+coverage
+cypress/videos
+package-lock.json
