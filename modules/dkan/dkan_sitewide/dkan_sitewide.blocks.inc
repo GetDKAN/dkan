@@ -146,6 +146,14 @@ function dkan_sitewide_resource_additional_block($nid = '') {
       $file_info[] = array(t('filesize'), $filesize);
       $file_info[] = array(t('resource type'), 'file upload');
       $file_info[] = array(t('timestamp'), date('M d, Y', $file['timestamp']));
+
+      $node_wrapper = entity_metadata_wrapper('node', $node);
+      $file = $node_wrapper->field_upload->value();
+      if (!empty($file->filehash)) {
+        foreach ($file->filehash as $hash_type => $hash_value) {
+          $file_info[] = array(strtoupper($hash_type), '<input class="file-hash--content" value="' . $hash_value . '"/>');
+        }
+      }
       return theme('table',
         array('rows' => $file_info, 'header' => array(t('Field'), t('Value'))));
     }
