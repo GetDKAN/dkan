@@ -153,6 +153,15 @@ projects:
     version: '1.5'
   filefield_sources:
     version: '1.11'
+  filehash:
+    download:
+      type: git
+      url: https://git.drupal.org/project/filehash.git
+      branch: '7.x-1.x'
+      revision: d36daa759271737f20198240b4aa50280c95af5a
+    patch:
+      3088648: https://www.drupal.org/files/issues/2019-10-17/add-sha512-3088648-5.patch
+      2: patches/filehash-uploaded-files-only-option.patch
   font_icon_select:
     download:
       type: git
