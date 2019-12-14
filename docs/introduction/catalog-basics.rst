@@ -33,10 +33,10 @@ Datasets and Resources within DKAN and CKAN
 
 The following images display how datasets and resources are structured within DKAN and CKAN. Screenshots are from `Data.gov <https://data.gov>`_ which is powered by CKAN. DKAN follows CKAN conventions where possible.
 
-.. figure:: ../images/DatasetResourceDiagram2.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/DatasetResourceDiagram2.png
 
-.. figure:: ../images/datasets-resources.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/datasets-resources.png
 
-.. figure:: ../images/metadata.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/metadata.png
    :alt: Metadata
 

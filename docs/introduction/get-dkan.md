@@ -4,7 +4,7 @@ DKAN is open source and flexible: you can download it for free and run it on you
 
 ## Download and run DKAN on your server
 
-DKAN is based on the open source </a><a href="https://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [installation](../installation/index.rst) section of this site.
+DKAN is based on the open source </a><a href="https://drupal.org">Drupal</a> content and application framework and runs almost anywhere Drupal is supported.  Users unfamiliar with Drupal may be more comfortable trying one of the hosted options listed below, or contacting us to obtain a private demonstration instance. There is extensive information on how to install DKAN on your own in the [installation](../installation/index.html) section of this site.
 
 ## Hosting Partners
 
@@ -16,9 +16,9 @@ Pantheon provides reliable Drupal cloud hosting with a powerful development tool
 
 You can register for a free account [here](https://www.getpantheon.com/). Once you have access, create a new [dkan site](https://dashboard.getpantheon.com/products/dkan/spinup):
 
-![Pantheon new site form](../images/Pantheon_Dashboard.png)
+![Pantheon new site form](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/Pantheon_Dashboard.png)
 
-Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation.md).
+Pantheon will then build your new based site on the latest DKAN release. You will go through a normal Drupal install process, explained in detail in the [installation instructions](../installation/basic.html).
 
 #### Using Terminus
 
@@ -36,7 +36,7 @@ Pantheon uses a modified version of Drupal Pressflow, which is [publicly availab
 
 However, Pantheon provides an easy way to update your instance of DKAN (or any Drupal distribution hosted with them). Each time the DKAN's Pantheon build is updated, an alert will appear in your Pantheon dashboard:
 
-![Pulling in upstream changes via UI](../images/pantheon-updates.png)
+![Pulling in upstream changes via UI](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/pantheon-updates.png)
 
 Usually, you will be able to use the "Apply Updates" button to merge those "upstream" changes directly into your copy of the codebase, alongside any changes you have already made to it. If you are developing locally using git, the next time you pull from your Pantheon repository, you'll receive the DKAN updates locally as well.
 
@@ -46,7 +46,7 @@ If you have modified any of the files included with DKAN, merging in upstream ch
 
 An error like the following is often seen at the end of the install process on Pantheon:
 
-![An AJAX HTTP error occurred. HTTP Result Code: 502 Debugging information follows...](../images/pantheon-error.png)
+![An AJAX HTTP error occurred. HTTP Result Code: 502 Debugging information follows...](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/pantheon-error.png)
 
 This will hopefully be fixed on future releases. However, the resulting site should still be fully installed and functional.
 
@@ -56,7 +56,7 @@ This will hopefully be fixed on future releases. However, the resulting site sho
 
 [Acquia](https://acquia.com) offers a number of [hosting tools](https://www.acquia.com/products-services/acquia-cloud#Overview) built specifically for best maintaining Drupal sites. These include integrations with 3rd party systems like New Relic and Blaze Meter as well as reports on module updates, performance, and security reviews. Most importantly, Acquia offers a dashboard that makes it easy to move code (hosted by git), media files, and the database between development, testing, and production environments:
 
-![Acquia Dashboard screenshot](../images/acquia-dashboard.png)
+![Acquia Dashboard screenshot](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/acquia-dashboard.png)
 
 These tools allow a single site builder or team of developers to follow best practices, scale up if needed, and follow a rigorous QA process all without ever touching a server.
 
@@ -66,4 +66,4 @@ Acquia offers a "single-click" installation of DKAN. While this is labelled as a
 
 #### Maintaining a DKAN Site on Acquia
 
-Updates to DKAN are released frequently. Acquia will not push these updates to your instance automatically, but you can keep your codebase up-to-date using your own workflow, or following our general [Upgrade Instructions](../development/maintaining.md).
+Updates to DKAN are released frequently. Acquia will not push these updates to your instance automatically, but you can keep your codebase up-to-date using your own workflow, or following our general [Upgrade Instructions](maintaining.html).

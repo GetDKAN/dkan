@@ -35,14 +35,14 @@ Site name and slogan
 
 From the settings screen, you can toggle on/off the **site name** and **slogan**, simply check the box next to the elements you want to use.
 
-.. image:: ../images/Appearance_DKAN.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/Appearance_DKAN.png
 
 Logo
 *********************
 
 Uncheck the 'Use the default' checkbox, and upload a new logo file in the logo image settings section.
 
-.. image:: ../images/Appearance_DKAN_2.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/Appearance_DKAN_2.png
 
 Shortcut icon
 *********************
@@ -59,7 +59,7 @@ Hero background image/color
 
 The **Hero Unit** is the background image that displays on the front page. To use a different photo than the one supplied, click the 'Choose file' button to upload a new image. This image will expand to cover the full width of the browser so be sure to upload a horizontal/landscape image and not a vertical/portrait image.
 
-.. image:: ../images/Appearance_DKAN_3.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/Appearance_DKAN_3.png
 
 Color scheme
 ****************************
@@ -68,7 +68,7 @@ To use the **colorizer** option, you must use the default theme as the admin the
 
 Now navigate to `[SITEROOT]/admin/appearance/colorizer` by clicking on the 'Colorizer' tab. Here you will see the color scheme options. There are a few default options you can select from the drop down, or you can enter hex values to create a custom color scheme, be sure to click 'Save Configuration' when finished. Your new colors are saved to a css file in your files directory. If you do not see your changes you may need to clear the colorizer cache by clicking the 'Clear Colorizer Cache' button. These colors will override all other styles in the theme.
 
-.. image:: ../images/Appearance_DKAN_4.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/Appearance_DKAN_4.png
 
 Fonts
 ****************************
@@ -78,10 +78,10 @@ On the Appearance page, you will see a sub-menu item for **@font-your-face**. Na
 By default, the Google fonts api is enabled. If you click on the **Browse all fonts** tab, you will be able to select which google fonts to add to your site. Once you have made your selections, click on the **Enabled fonts** tab to view the font settings screen. Click on the **By CSS selector**, here you can select the css tag and what font should be applied to it using the table. To add fonts to specific css selectors, add them to the open text field at the bottom of the list, select a font from the dropdown next to it and click the **Save applied fonts** button
 For more information on how to use @fontyourface visit the `project page <https://www.drupal.org/project/fontyourface>`_.
 
-.. image:: ../images/Browse_fonts_DKAN.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/Browse_fonts_DKAN.png
    :alt: Apply fonts
 
-.. image:: ../images/Appearance_DKAN_5.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/Appearance_DKAN_5.png
    :alt: Select google fonts
 
 .. _creating_subtheme:
@@ -102,16 +102,6 @@ To create a Nuboot Radix subtheme, run these commands
   drush vset theme_default MyThemeName
 
   drush dis radix
-
-OR if using `Ahoy <https://dkan-starter.readthedocs.io>`_:
-
-.. code-block:: php
-
-   ahoy dkan theme new-from-kit [new-theme-name]
-
-   ahoy dkan theme setup
-
-   ahoy dkan theme watch
 
 Your new subtheme will be placed in to the /sites/all/themes/ directory, it will contain only the directory structure, add your overrides where appropriate.
 

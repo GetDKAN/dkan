@@ -7,9 +7,10 @@ For professional DKAN development services and support:
 - `Angry Cactus <http://www.angrycactus.biz/>`_
 - `National Democratic Institute <https://www.nditech.org/project/dkan>`_
 - `Annai <http://landing.dkan.annai.co.jp/>`_
+- `Solucionex <https://www.solucionex.com/dkan>`_
 
 Add your company
-=================
+----------------
 
 If you provide DKAN development and/or support services, here's how to add your company to business directory:
 

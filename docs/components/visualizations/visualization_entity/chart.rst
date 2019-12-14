@@ -15,7 +15,7 @@ Step One - Choose a Resource
 - OR, if the data you want to use is not on your site, click the Upload Data tab to upload a CSV data file.
 - Click the Next button.
 
-.. image:: images/chart-step-1n.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/chart-step-1n.png
 
 Step Two - Define Variables
 ****************************
@@ -24,31 +24,31 @@ Step Two - Define Variables
 - **X-Field:** Choose a single column for the x-axis, the **category** axis.
 - **X-Field Data Type:** The data type will be auto-detected but if you see issues you can manually select the data type here.
 
-.. image:: images/chart-define-variables.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/chart-define-variables.png
 
 Step Three - Choose Chart Type
 *******************************
 Select the chart type that will best represent your data.
 **NOTE**: X and Y Axis Fields are not supported by the *Pie Chart* type.
 
-.. image:: images/chart-step-3.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/chart-step-3.png
 
 Step Four - Preview and Adjust
 *******************************
 You can adjust colors, margins, include a goal, labels, tick values, and more.
 Click the question mark icons if you need help understanding the configuration options.
 
-.. image:: images/chart-configuration.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/chart-configuration.png
 
 By default the chart will use the first 100 records of your data source. To use all records, click the Dataset tab to reveal the data pager, edit the max range value from 100 to the total number of records present.
 
-.. image:: images/chart-pager.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/chart-pager.png
 
 Query Editor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Click the '+' on the query editor to see the query input field. Enter text to query the data. Returned rows will contain data matching your text (including partial text matches). Click on the Dataset tab to better see how the data is modified by your query.
 
-.. image:: images/chart-query-editor.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/chart-query-editor.png
 
 Filter Editor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -56,17 +56,20 @@ Click the '+' on the filter editor to add one or more filters to limit the data 
 Multiple filters will be applied with the AND operator (all criteria must be met for the data to be included in the chart).
 
 1. Create a filter
+
   * Select the field you would like to filter by.
   * Select filter type: Select Value to filter by strings (labels), select Range to filter by numerical values, and select Geo distance to filter by geographical data.
   * Click **Add**
   * Value filters check for exact matches (no partial text matches; use the Query Editor instead if you need to search for partial text matches)
+
 2. Configure the filter
+
   * Fill in the fields to complete the filter.
   * Click **Update** to reload the chart.
 
 To remove a filter, click the trash can icon next to the filter name.
 
-.. image:: images/chart-filter-editor.png
+.. image:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/chart-filter-editor.png
 
 Chart Configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

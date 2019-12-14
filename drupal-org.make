@@ -13,10 +13,6 @@ projects:
     version: '1.1'
     patch:
       2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
-  admin_views:
-    version: '1.6'
-    patch:
-      1780004: https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
@@ -261,7 +257,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/open_data_schema_map.git
-      branch: 7.x-2.5
+      tag: 7.x-2.5
   panelizer:
     version: '3.4'
   panels:

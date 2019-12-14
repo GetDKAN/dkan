@@ -24,8 +24,8 @@ copyright = u'2019'
 author = u'DKAN Team'
 
 
-version = '1.16'
-release = '1.16'
+version = '1.17'
+release = '1.17'
 
 language = 'en'
 
