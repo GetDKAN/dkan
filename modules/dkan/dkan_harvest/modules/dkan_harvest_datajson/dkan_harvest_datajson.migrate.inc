@@ -17,8 +17,6 @@ class DatajsonHarvestMigration extends HarvestMigration {
    */
   public function __construct($arguments) {
     parent::__construct($arguments);
-    $this->itemUrl = drupal_realpath($this->dkanHarvestSource->getCacheDir()) .
-      '/:id';
 
     $this->source = new HarvestMigrateSourceList(
       new HarvestList($this->dkanHarvestSource->getCacheDir()),
@@ -204,7 +202,15 @@ class DatajsonHarvestMigration extends HarvestMigration {
           }
         }
 
-        $value = $value_date->getTimestamp();
+        if ($value_date) {
+          $value = $value_date->getTimestamp();
+        }
+        else {
+          $message = t(
+            'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
+          );
+          $this->saveMessage($message);
+        }
       }
 
       if (isset($date[0])) {

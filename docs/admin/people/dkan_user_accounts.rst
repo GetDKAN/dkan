@@ -78,7 +78,7 @@ Where to change the account settings
 
 From the Admin Menu, click the Site Configuration menu link (not an item on the drop-down menu). This link will take you to the main Configuration page. Of the options on this page, find the People section and click on the Account Settings link.
 
-.. figure:: ../../images/site_manager_playbook/people/people_01.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/people/people_01.png
    :alt: The "Account Settings" link under Site Configuration.
 
 Account registration
@@ -100,5 +100,5 @@ By default, DKAN comes with template responses for certain actions. You can cust
 
 You can also manage notifications of messages in this menu. You can optionally send a notification when certain actions are taken, but not all of these templates are automatically sent. You’ll want to review the email options to make sure the settings meet your needs.
 
-.. figure:: ../../images/site_manager_playbook/people/people_02.png
+.. figure:: https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan1/site_manager_playbook/people/people_02.png
    :alt: Screenshot of the Account Settings screen where you can modify emails sent to users.

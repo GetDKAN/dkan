@@ -3,7 +3,7 @@ api: '2'
 core: 7.x
 includes:
 - https://raw.githubusercontent.com/GetDKAN/visualization_entity/7.x-2.x/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.4/open_data_schema_map.make
+- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.5/open_data_schema_map.make
 - https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
 - https://raw.githubusercontent.com/NuCivic/recline/7.x-2.1/recline.make
 projects:
@@ -13,10 +13,6 @@ projects:
     version: '1.1'
     patch:
       2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
-  admin_views:
-    version: '1.6'
-    patch:
-      1780004: https://www.drupal.org/files/issues/admin_views-duplicate_system_path-1780004-54.patch
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
@@ -261,7 +257,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/open_data_schema_map.git
-      tag: 7.x-2.4
+      tag: 7.x-2.5
   panelizer:
     version: '3.4'
   panels:

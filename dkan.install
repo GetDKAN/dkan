@@ -823,3 +823,35 @@ function dkan_update_7035() {
     drupal_uninstall_modules(array('feeds', 'feeds_field_fetcher', 'feeds_flatstore_processor'));
   }
 }
+
+/**
+ * Enable fast token browser, included with new version of open_data_schema_map.
+ */
+function dkan_update_7036() {
+  module_enable(['fast_token_browser']);
+}
+
+/**
+ * Disable/uninstall admin_views.
+ */
+function dkan_update_7037() {
+  if (module_exists('admin_views')) {
+    module_disable(array('admin_views'));
+    drupal_uninstall_modules(array('admin_views'));
+
+    db_delete('cache_views')
+      ->condition('cid', '%administration%', 'LIKE')
+      ->execute();
+    db_delete('system')
+      ->condition('name', 'admin_views')
+      ->execute();
+    db_delete('system')
+      ->condition('name', 'admin_views_test')
+      ->execute();
+
+    $default = variable_get('views_defaults');
+    unset($default['admin_views_file']);
+    unset($default['admin_views_node']);
+    variable_set('views_defaults', $default);
+  }
+}
