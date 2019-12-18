@@ -1,3 +1,15 @@
+7.x-1.17.4
+-----------
+ - #2997 Add views patch 3054091
+ 
+7.x-1.17.3
+-----------
+ - #2996 Security release for Drupal 7.69
+
+7.x-1.17.2
+-----------
+ - #2989 Bump symfony/dependency-injection from 2.8.38 to 2.8.52 in /test
+
 7.x-1.17.1
 -----------
  - #2982 #2986 Remove admin_views
