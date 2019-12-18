@@ -345,6 +345,7 @@ projects:
     version: '3.23'
     patch:
       2543562: https://www.drupal.org/files/issues/views-use_query_group_operator_for_main_group-2543562-2.patch
+      3054091: https://www.drupal.org/files/issues/2019-06-01/n3054091-14-hard.patch
   views_autocomplete_filters:
     version: '1.2'
     patch:
