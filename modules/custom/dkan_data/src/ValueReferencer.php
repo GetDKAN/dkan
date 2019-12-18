@@ -282,8 +282,17 @@ class ValueReferencer {
     if (is_array($data)) {
       return $this->dereferenceMultiple($property_id, $data);
     }
-    else {
+    elseif (is_string($data)) {
       return $this->dereferenceSingle($property_id, $data);
+    }
+    else {
+      Drupal::logger('value_referencer')->error(
+        'Unexpected data type when dereferencing property_id @property_id with data "@data"',
+        [
+          '@property_id' => property_id,
+          '@$data' => var_export($data, TRUE),
+        ]
+      );
     }
   }
 
