@@ -25,12 +25,12 @@ function dkan_datastore_proxy($node) {
   $type = recline_get_data_type($remote_file['filemime']);
 
   if (in_array($type, $allowed_types)) {
-    $size = isset($node_wrapper->field_link_remote_file->value()['filesize']) ? (int) $node_wrapper->field_link_remote_file->value()['filesize'] : 0;
-
     // dkan_datastore_proxy() loads the file locally which has a big memory footprint.
     // If the file is too large we don't want to proxy.
     $max = (int) variable_get('dkan_datastore_max_file_remote_proxy_size', MAX_FILE_REMOTE_PROXY_DEFAULT);
-    if ($size > $max) {
+    $size = isset($node_wrapper->field_link_remote_file->value()['filesize']) ? (int) $node_wrapper->field_link_remote_file->value()['filesize'] : $max;
+
+    if ($size >= $max) {
       drupal_goto($url);
     }
     else {
