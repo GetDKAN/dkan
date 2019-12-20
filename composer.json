@@ -21,7 +21,7 @@
         "getdkan/sae" : "^1.1.1",
         "getdkan/sql-parser": "^1.1.2",
         "getdkan/lunr.php": "^1.0.0",
-        "guzzlehttp/guzzle" : "6.3",
+        "guzzlehttp/guzzle" : "^6.3",
         "ezyang/htmlpurifier" : "^4.11",
         "ramsey/uuid" : "^3.8.0",
         "oomphinc/composer-installers-extender": "~1.1"

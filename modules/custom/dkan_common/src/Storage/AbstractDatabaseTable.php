@@ -104,15 +104,22 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
   public function store($data, string $id = NULL): string {
     $this->setTable();
 
-    $existing = $this->retrieve($id);
+    $existing = (isset($id)) ? $this->retrieve($id) : NULL;
 
     $data = $this->prepareData($data, $id);
 
     $returned_id = NULL;
 
     if ($existing === NULL) {
+      $fields = $this->getNonSerialFields();
+
+      if (count($fields) != count($data)) {
+        throw new \Exception("The number of fields and data given do not match: fields - " .
+        json_encode($fields) . " data - " . json_encode($data));
+      }
+
       $q = $this->connection->insert($this->getTableName());
-      $q->fields($this->getNonSerialFields());
+      $q->fields($fields);
       $q->values($data);
       $returned_id = $q->execute();
     }
@@ -129,7 +136,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
   /**
    * Private.
    */
-  private function getNonSerialFields() {
+  protected function getNonSerialFields() {
     $fields = [];
     foreach ($this->schema['fields'] as $field => $info) {
       if ($info['type'] != 'serial') {
