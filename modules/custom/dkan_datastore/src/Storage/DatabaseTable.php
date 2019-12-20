@@ -92,6 +92,18 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
+   * Protected.
+   */
+  protected function getNonSerialFields() {
+    $fields = parent::getNonSerialFields();
+    $index = array_search($this->primaryKey(), $fields);
+    if ($index !== FALSE) {
+      unset($fields[$index]);
+    }
+    return $fields;
+  }
+
+  /**
    * Overriden.
    */
   public function setSchema($schema) {
