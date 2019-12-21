@@ -35,4 +35,17 @@ class Uuid5 {
     return $uuid->toString();
   }
 
+  /**
+   * Check if a string is a valid UUID.
+   *
+   * @param string $uuid
+   *   The uuid being tested.
+   *
+   * @return bool
+   *   TRUE if valid, FALSE otherwise.
+   */
+  public function isValid(string $uuid) {
+    return Uuid::isValid($uuid);
+  }
+
 }

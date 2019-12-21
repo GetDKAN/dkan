@@ -10,6 +10,7 @@ services:
       - '@dkan_data.uuid5'
       - '@config.factory'
       - '@queue'
+      - '@logger.factory'
   dkan_data.config_overrider:
     class: \Drupal\dkan_data\ConfigurationOverrider
     tags:

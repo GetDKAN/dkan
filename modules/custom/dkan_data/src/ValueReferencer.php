@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_data\Service\Uuid5;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Logger\LoggerChannelFactory;
 use stdClass;
 
 /**
@@ -67,22 +68,32 @@ class ValueReferencer {
   protected $queueService;
 
   /**
+   * The logger factory service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   */
+  protected $loggerService;
+
+  /**
    * ValueReferencer constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
-   * @param Drupal\dkan_data\Service\Uuid5 $uuidService
+   * @param \Drupal\dkan_data\Service\Uuid5 $uuidService
    *   Injected uuid service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
    *   Injected config service.
    * @param \Drupal\Core\Queue\QueueFactory $queueService
    *   Injected queue service.
+   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerService
+   *   Injected logger factory service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService, LoggerChannelFactory $loggerService) {
     $this->entityTypeManager = $entityTypeManager;
     $this->uuidService = $uuidService;
     $this->configService = $configService;
     $this->queueService = $queueService;
+    $this->loggerService = $loggerService;
   }
 
   /**
@@ -120,7 +131,7 @@ class ValueReferencer {
       return $this->referenceMultiple($property_id, $data);
     }
     else {
-      // Object or string.
+      // Case for $data being an object or a string.
       return $this->referenceSingle($property_id, $data);
     }
   }
@@ -139,7 +150,10 @@ class ValueReferencer {
   protected function referenceMultiple(string $property_id, array $values) : array {
     $result = [];
     foreach ($values as $value) {
-      $result[] = $this->referenceSingle($property_id, $value);
+      $data = $this->referenceSingle($property_id, $value);
+      if (NULL !== $data) {
+        $result[] = $data;
+      }
     }
     return $result;
   }
@@ -164,9 +178,14 @@ class ValueReferencer {
       return $uuid;
     }
     else {
-      // In the unlikely case we neither found an existing reference nor could
-      // create a new reference, return the unchanged value.
-      return $value;
+      $this->loggerService->get('value_referencer')->error(
+        'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
+        [
+          '@property_id' => $property_id,
+          '@value' => var_export($value, TRUE),
+        ]
+      );
+      return NULL;
     }
   }
 
@@ -175,21 +194,22 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param string $data
+   * @param string|object $data
    *   The property's value used to find an existing reference.
    *
    * @return string|null
    *   The existing reference's uuid, or null if not found.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function checkExistingReference(string $property_id, $data) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
-      ->loadByProperties(
-              [
-                'field_data_type' => $property_id,
-                'title' => md5(json_encode($data)),
-              ]
-          );
+      ->loadByProperties([
+        'field_data_type' => $property_id,
+        'title' => md5(json_encode($data)),
+      ]);
 
     if ($node = reset($nodes)) {
       return $node->uuid();
@@ -202,11 +222,15 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param mixed $value
+   * @param string|object $value
    *   The property's value.
    *
    * @return string|null
    *   The new reference's uuid, or null.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function createPropertyReference(string $property_id, $value) {
     // Create json metadata for the reference.
@@ -217,15 +241,13 @@ class ValueReferencer {
     // Create node to store this reference.
     $node = $this->entityTypeManager
       ->getStorage('node')
-      ->create(
-              [
-                'title' => md5(json_encode($value)),
-                'type' => 'data',
-                'uuid' => $data->identifier,
-                'field_data_type' => $property_id,
-                'field_json_metadata' => json_encode($data),
-              ]
-          );
+      ->create([
+        'title' => md5(json_encode($value)),
+        'type' => 'data',
+        'uuid' => $data->identifier,
+        'field_data_type' => $property_id,
+        'field_json_metadata' => json_encode($data),
+      ]);
     $node->save();
 
     return $node->uuid();
@@ -272,27 +294,28 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param string|array $data
-   *   A single reference uuid string, or an array reference uuids.
+   * @param string|array $uuid
+   *   A single reference uuid string, or an array of reference uuids.
    *
-   * @return string|array
-   *   An array of dereferenced values, or a single one.
+   * @return mixed
+   *   An array of dereferenced values, a single one, or NULL.
    */
-  protected function dereferenceProperty(string $property_id, $data) {
-    if (is_array($data)) {
-      return $this->dereferenceMultiple($property_id, $data);
+  protected function dereferenceProperty(string $property_id, $uuid) {
+    if (is_array($uuid)) {
+      return $this->dereferenceMultiple($property_id, $uuid);
     }
-    elseif (is_string($data)) {
-      return $this->dereferenceSingle($property_id, $data);
+    elseif (is_string($uuid) && $this->uuidService->isValid($uuid)) {
+      return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
-      Drupal::logger('value_referencer')->error(
-        'Unexpected data type when dereferencing property_id @property_id with data "@data"',
+      $this->loggerService->get('value_referencer')->error(
+        'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
         [
-          '@property_id' => property_id,
-          '@$data' => var_export($data, TRUE),
+          '@property_id' => $property_id,
+          '@uuid' => var_export($uuid, TRUE),
         ]
       );
+      return NULL;
     }
   }
 
@@ -310,7 +333,10 @@ class ValueReferencer {
   protected function dereferenceMultiple(string $property_id, array $uuids) : array {
     $result = [];
     foreach ($uuids as $uuid) {
-      $result[] = $this->dereferenceSingle($property_id, $uuid);
+      $data = $this->dereferenceSingle($property_id, $uuid);
+      if (NULL !== $data) {
+        $result[] = $data;
+      }
     }
     return $result;
   }
@@ -325,16 +351,17 @@ class ValueReferencer {
    *
    * @return object|string
    *   The data from this reference.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function dereferenceSingle(string $property_id, string $uuid) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
-      ->loadByProperties(
-              [
-                'field_data_type' => $property_id,
-                'uuid' => $uuid,
-              ]
-          );
+      ->loadByProperties([
+        'field_data_type' => $property_id,
+        'uuid' => $uuid,
+      ]);
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
@@ -346,9 +373,16 @@ class ValueReferencer {
         }
       }
     }
-    // If str was not found, it's unlikely it was a uuid to begin with. It was
-    // most likely never referenced to begin with, so return unchanged.
-    return $uuid;
+    // If a property node was not found, it most likely means it was deleted
+    // while still being referenced.
+    $this->loggerService->get('value_referencer')->error(
+      'Property @property_id reference @uuid not found',
+      [
+        '@property_id' => $property_id,
+        '@uuid' => var_export($uuid, TRUE),
+      ]
+    );
+    return NULL;
   }
 
   /**
@@ -368,6 +402,11 @@ class ValueReferencer {
 
   /**
    * Private.
+   *
+   * @param string $property_id
+   *   The dataset property.
+   * @param array|string $uuids
+   *   The uuids to process.
    */
   protected function processReferencesInDeletedProperty($property_id, $uuids) {
     // Treat single uuid as an array of one uuid.
@@ -382,20 +421,28 @@ class ValueReferencer {
   /**
    * Private.
    *
+   * @param string $property_id
+   *   The dataset property.
+   * @param string $uuid
+   *   The uuid to queue for removal.
+   *
    * @codeCoverageIgnore
    */
   protected function queueReferenceForRemoval($property_id, $uuid) {
     $this->queueService->get('orphan_reference_processor')
-      ->createItem(
-              [
-                $property_id,
-                $uuid,
-              ]
-          );
+      ->createItem([
+        $property_id,
+        $uuid,
+      ]);
   }
 
   /**
    * Public.
+   *
+   * @param object $old_dataset
+   *   Old dataset.
+   * @param object $new_dataset
+   *   Updated dataset.
    */
   public function processReferencesInUpdatedDataset(stdClass $old_dataset, stdClass $new_dataset) {
     // Cycle through the dataset properties being referenced, check for orphans.
@@ -414,6 +461,13 @@ class ValueReferencer {
 
   /**
    * Private.
+   *
+   * @param string $property_id
+   *   The dataset property.
+   * @param mixed $old_value
+   *   The old value to be replaced.
+   * @param mixed $new_value
+   *   The new value to replaced it with.
    */
   protected function processReferencesInUpdatedProperty($property_id, $old_value, $new_value) {
     if (!is_array($old_value)) {
@@ -427,6 +481,12 @@ class ValueReferencer {
 
   /**
    * Private.
+   *
+   * @param mixed $data
+   *   Data whose type we want to match.
+   *
+   * @return array|string
+   *   Either the empty string or an empty array.
    */
   protected function emptyPropertyOfSameType($data) {
     if (is_array($data)) {
