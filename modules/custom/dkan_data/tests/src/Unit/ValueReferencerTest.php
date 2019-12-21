@@ -12,6 +12,8 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use stdClass;
 
 /**
@@ -36,28 +38,85 @@ class ValueReferencerTest extends DkanTestBase {
     $mockUuidInterface     = $this->createMock(Uuid5::class);
     $mockConfigInterface   = $this->createMock(ConfigFactoryInterface::class);
     $mockQueueFactory      = $this->createMock(QueueFactory::class);
+    $mockLoggerFactory     = $this->createMock(LoggerChannelFactory::class);
 
     // Assert.
-    $mock->__construct($mockEntityTypeManager, $mockUuidInterface, $mockConfigInterface, $mockQueueFactory);
+    $mock->__construct($mockEntityTypeManager, $mockUuidInterface, $mockConfigInterface, $mockQueueFactory, $mockLoggerFactory);
 
     $this->assertSame($mockEntityTypeManager, $this->readAttribute($mock, 'entityTypeManager'));
     $this->assertSame($mockUuidInterface, $this->readAttribute($mock, 'uuidService'));
     $this->assertSame($mockConfigInterface, $this->readAttribute($mock, 'configService'));
     $this->assertSame($mockQueueFactory, $this->readAttribute($mock, 'queueService'));
+    $this->assertSame($mockLoggerFactory, $this->readAttribute($mock, 'loggerService'));
   }
 
   /**
    * Provides data for testing checkExistingReference function.
    */
   public function dataTestCheckExistingReference() {
-    $mockNode = $this->createMock(NodeInterface::class);
+    $mockNode = $this->getMockBuilder(NodeInterface::class)
+      ->setMethods(['uuid'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
     $expected = uniqid('a-uuid');
+
+    $mockNode->expects($this->any())
+      ->method('uuid')
+      ->willReturn($expected);
+
     $mockNode->uuid = (object) ['value' => $expected];
 
     return [
       ['theme', 'Topic One', [$mockNode], $expected],
       ['barfoo', '', [], NULL],
     ];
+  }
+
+  /**
+   * Tests function checkExistingReference.
+   *
+   * @param string $property_id
+   *   The property name.
+   * @param string $data
+   *   The value of the property.
+   * @param array $nodes
+   *   The expected $nodes array internally.
+   * @param string $expected
+   *   The expected return value of referenceSingle.
+   *
+   * @dataProvider dataTestCheckExistingReference
+   */
+  public function testCheckExistingReference(string $property_id, string $data, array $nodes, $expected) {
+    // Setup.
+    $mock = $this->getMockBuilder(ValueReferencer::class)
+      ->disableOriginalConstructor()
+      ->setMethods(NULL)
+      ->getMock();
+    $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
+      ->setMethods(['getStorage'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
+    $mockNodeStorage = $this->getMockBuilder(EntityStorageInterface::class)
+      ->setMethods(['loadByProperties'])
+      ->getMockForAbstractClass();
+
+    // Expect.
+    $mockEntityTypeManager->expects($this->any())
+      ->method('getStorage')
+      ->with('node')
+      ->willReturn($mockNodeStorage);
+    $mockNodeStorage->expects($this->any())
+      ->method('loadByProperties')
+      ->with([
+        'field_data_type' => $property_id,
+        'title' => md5(json_encode($data)),
+      ])
+      ->willReturn($nodes);
+
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'checkExistingReference', $property_id, $data, $nodes, $expected);
+    $this->assertEquals($expected, $actual);
   }
 
   /**
@@ -72,43 +131,26 @@ class ValueReferencerTest extends DkanTestBase {
 
     $mockUuidInterface = $this->getMockBuilder(Uuid5::class)
       ->disableOriginalConstructor()
-      ->setMethods(
-              [
-                'generate',
-              ]
-          )
+      ->setMethods(['generate'])
       ->getMockForAbstractClass();
     $this->writeProtectedProperty($mock, 'uuidService', $mockUuidInterface);
 
     $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->setMethods(
-              [
-                'getStorage',
-              ]
-          )
+      ->setMethods(['getStorage'])
       ->getMockForAbstractClass();
     $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
 
     $mockNodeStorage = $this->getMockBuilder(EntityStorageInterface::class)
-      ->setMethods(
-              [
-                'create',
-              ]
-          )
+      ->setMethods(['create'])
       ->getMockForAbstractClass();
 
     $mockEntityInterface = $this->getMockBuilder(EntityInterface::class)
-      ->setMethods(
-              [
-                'save',
-                'uuid',
-              ]
-          )
+      ->setMethods(['save', 'uuid'])
       ->getMockForAbstractClass();
 
     $property_id = uniqid('some-property-');
     $value = uniqid('some-value-');
-    $uuid = Uuid5::generate($property_id, $value);
+    $uuid = uniqid('some-uuid-');
     $data = new stdClass();
     $data->identifier = $uuid;
     $data->data = $value;
@@ -123,15 +165,13 @@ class ValueReferencerTest extends DkanTestBase {
       ->willReturn($mockNodeStorage);
     $mockNodeStorage->expects($this->once())
       ->method('create')
-      ->with(
-              [
-                'title' => md5(json_encode($value)),
-                'type' => 'data',
-                'uuid' => $uuid,
-                'field_data_type' => $property_id,
-                'field_json_metadata' => json_encode($data),
-              ]
-          )
+      ->with([
+        'title' => md5(json_encode($value)),
+        'type' => 'data',
+        'uuid' => $uuid,
+        'field_data_type' => $property_id,
+        'field_json_metadata' => json_encode($data),
+      ])
       ->willReturn($mockEntityInterface);
     $mockEntityInterface->expects($this->once())
       ->method('save')
@@ -161,7 +201,7 @@ class ValueReferencerTest extends DkanTestBase {
         $property_id, $value, NULL, $uuid, $uuid,
       ],
       'neither found existing nor created new reference' => [
-        $property_id, $value, NULL, NULL, $value,
+        $property_id, $value, NULL, NULL, NULL,
       ],
     ];
   }
@@ -188,6 +228,11 @@ class ValueReferencerTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->setMethods(['checkExistingReference', 'createPropertyReference'])
       ->getMock();
+    $mockLoggerFactory = $this->getMockBuilder(LoggerChannelFactory::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'loggerService', $mockLoggerFactory);
 
     // Expect.
     $mock->expects($this->exactly(1))
@@ -198,6 +243,18 @@ class ValueReferencerTest extends DkanTestBase {
       ->method('createPropertyReference')
       ->with($property_id, $value)
       ->willReturn($createProperty);
+    $mockLoggerChannelInterface = $this->getMockBuilder(LoggerChannelInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['error'])
+      ->getMockForAbstractClass();
+    $mockLoggerChannelInterface->expects($this->any())
+      ->method('error')
+      ->withAnyParameters()
+      ->willReturn("");
+    $mockLoggerFactory->expects($this->any())
+      ->method('get')
+      ->withAnyParameters()
+      ->willReturn($mockLoggerChannelInterface);
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'referenceSingle', $property_id, $value);
@@ -429,14 +486,24 @@ class ValueReferencerTest extends DkanTestBase {
         $uuid1,
         NULL,
         $value1_retrieved,
+        TRUE,
         $value1_retrieved,
       ],
       'dereferencing an array of uuid' => [
         $property_id,
-      [$uuid1, $uuid2],
-      [$value1_retrieved, $value2_retrieved],
+        [$uuid1, $uuid2],
+        [$value1_retrieved, $value2_retrieved],
         NULL,
-      [$value1_retrieved, $value2_retrieved],
+        TRUE,
+        [$value1_retrieved, $value2_retrieved],
+      ],
+      'uuid is not a valid string' => [
+        $property_id,
+        "invalid-uuid",
+        NULL,
+        NULL,
+        FALSE,
+        NULL,
       ],
     ];
   }
@@ -452,17 +519,29 @@ class ValueReferencerTest extends DkanTestBase {
    *   The expected value of dereferenceMultiple.
    * @param string $deRefSingle
    *   The expected value of dereferenceSingle.
+   * @param bool $uuidIsValid
+   *   Whether a uuid string is valid or not.
    * @param string|array $expected
    *   The expected return value of dereferenceProperty.
    *
    * @dataProvider dataTestDereferenceProperty
    */
-  public function testDereferenceProperty(string $property_id, $uuids, $deRefMultiple, $deRefSingle, $expected) {
+  public function testDereferenceProperty(string $property_id, $uuids, $deRefMultiple, $deRefSingle, $uuidIsValid, $expected) {
     // Setup.
     $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(['dereferenceMultiple', 'dereferenceSingle'])
       ->getMock();
+    $mockUuidInterface = $this->getMockBuilder(Uuid5::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['isValid'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'uuidService', $mockUuidInterface);
+    $mockLoggerFactory = $this->getMockBuilder(LoggerChannelFactory::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'loggerService', $mockLoggerFactory);
 
     // Expect.
     $mock->expects($this->any())
@@ -473,6 +552,22 @@ class ValueReferencerTest extends DkanTestBase {
       ->method('dereferenceSingle')
       ->with($property_id, $uuids)
       ->willReturn($deRefSingle);
+    $mockUuidInterface->expects($this->any())
+      ->method('isValid')
+      ->with($uuids)
+      ->willReturn($uuidIsValid);
+    $mockLoggerChannelInterface = $this->getMockBuilder(LoggerChannelInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['error'])
+      ->getMockForAbstractClass();
+    $mockLoggerChannelInterface->expects($this->any())
+      ->method('error')
+      ->withAnyParameters()
+      ->willReturn("");
+    $mockLoggerFactory->expects($this->any())
+      ->method('get')
+      ->withAnyParameters()
+      ->willReturn($mockLoggerChannelInterface);
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'dereferenceProperty', $property_id, $uuids);
@@ -521,18 +616,36 @@ class ValueReferencerTest extends DkanTestBase {
   }
 
   /**
-   * Provides data for testing checkExistingReference function.
+   * Provides data for testing testDereferenceSingle function.
    */
-  public function datatestDereferenceSingle() {
+  public function dataTestDereferenceSingle() {
     $mockNode = $this->createMock(NodeInterface::class);
     $uuid = uniqid('some-property-uuid-');
     $expected = "Some Property Value";
     $mockNode->field_json_metadata = (object) ['value' => '{"uuid": "' . $uuid . '", "data": "Some Property Value"}'];
 
     return [
-      ['someProperty', $uuid, [$mockNode], 1, $expected],
-      ['someProperty', $uuid, [$mockNode], 2, (object) ['uuid' => $uuid, 'data' => $expected]],
-      ['someProperty', $uuid, [], 0, $uuid],
+      [
+        'someProperty',
+        $uuid,
+        [$mockNode],
+        1,
+        $expected,
+      ],
+      [
+        'someProperty',
+        $uuid,
+        [$mockNode],
+        2,
+        (object) ['uuid' => $uuid, 'data' => $expected],
+      ],
+      [
+        'someProperty',
+        $uuid,
+        [],
+        0,
+        NULL,
+      ],
     ];
   }
 
@@ -573,6 +686,11 @@ class ValueReferencerTest extends DkanTestBase {
               ]
           )
       ->getMockForAbstractClass();
+    $mockLoggerFactory = $this->getMockBuilder(LoggerChannelFactory::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'loggerService', $mockLoggerFactory);
 
     // Expect.
     $mockEntityTypeManager->expects($this->once())
@@ -589,6 +707,18 @@ class ValueReferencerTest extends DkanTestBase {
           )
       ->willReturn($nodes);
     $this->writeProtectedProperty($mock, 'dereferenceMethod', $dereferenceMethod);
+    $mockLoggerChannelInterface = $this->getMockBuilder(LoggerChannelInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['error'])
+      ->getMockForAbstractClass();
+    $mockLoggerChannelInterface->expects($this->any())
+      ->method('error')
+      ->withAnyParameters()
+      ->willReturn("");
+    $mockLoggerFactory->expects($this->any())
+      ->method('get')
+      ->withAnyParameters()
+      ->willReturn($mockLoggerChannelInterface);
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'dereferenceSingle', $property_id, $uuid);
