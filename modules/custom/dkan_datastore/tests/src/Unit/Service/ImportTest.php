@@ -4,7 +4,7 @@ use Drupal\dkan_datastore\Storage\JobStoreFactory;
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan_datastore\Service\Import as Service;
 use Dkan\Datastore\Resource;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 use Drupal\dkan_datastore\Storage\JobStore;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_datastore\Storage\DatabaseTable;

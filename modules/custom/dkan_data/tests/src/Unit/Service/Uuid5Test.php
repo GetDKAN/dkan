@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\dkan_data\Tests\Unit;
 
 use Drupal\dkan_data\Service\Uuid5;
-use Drupal\dkan_common\Tests\DkanTestBase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Drupal\dkan_data\Service\Uuid5.
@@ -14,7 +14,7 @@ use Drupal\dkan_common\Tests\DkanTestBase;
  * @package Drupal\Tests\dkan_data\Unit\Service
  * @group dkan_data
  */
-class Uuid5Test extends DkanTestBase {
+class Uuid5Test extends TestCase {
 
   /**
    * Test generate.

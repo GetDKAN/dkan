@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_harvest\Unit\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 use Drupal\dkan_harvest\Storage\DatabaseTable;
 use Drupal\dkan_harvest\Storage\DatabaseTableFactory;
 use PHPUnit\Framework\TestCase;

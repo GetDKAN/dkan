@@ -9,6 +9,8 @@ use Drupal\dkan_datastore\Storage\Query;
  * Class QueryToQueryHelperTrait.
  *
  * Given a Query object, setup a Drupal's select query.
+ *
+ * @codeCoverageIgnore
  */
 trait QueryToQueryHelperTrait {
 

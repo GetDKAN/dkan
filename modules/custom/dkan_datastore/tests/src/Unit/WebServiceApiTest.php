@@ -1,10 +1,10 @@
 <?php
 
-use Drupal\dkan_common\Tests\Mock\Options;
+use MockChain\Options;
 use Drupal\dkan_datastore\Service;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 use Drupal\dkan_datastore\WebServiceApi;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
