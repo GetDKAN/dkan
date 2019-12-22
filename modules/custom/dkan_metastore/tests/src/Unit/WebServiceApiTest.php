@@ -3,8 +3,8 @@
 namespace Drupal\Tests\dkan_metastore\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Drupal\dkan_common\Tests\Mock\Chain;
-use Drupal\dkan_common\Tests\Mock\Options;
+use MockChain\Chain;
+use MockChain\Options;
 use Drupal\dkan_metastore\Service;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;

@@ -8,6 +8,8 @@ use Drupal\dkan_harvest\Load\FileHelperTrait;
 
 /**
  * Defines a transform that saves the resources from a dataset.
+ *
+ * @codeCoverageIgnore
  */
 class ResourceImporter extends Transform {
 

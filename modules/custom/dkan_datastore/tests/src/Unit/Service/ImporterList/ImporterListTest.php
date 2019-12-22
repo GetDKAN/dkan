@@ -6,10 +6,10 @@ use Drupal\dkan_datastore\Service\Factory\Resource as ResourceFactory;
 use Drupal\dkan_datastore\Service\ImporterList\ImporterList;
 use Drupal\dkan_datastore\Service\Resource as ResourceService;
 use Drupal\dkan_datastore\Storage\JobStore;
-use Drupal\dkan_common\Tests\Mock\Sequence;
+use MockChain\Sequence;
 use FileFetcher\FileFetcher;
-use Drupal\dkan_common\Tests\Mock\Chain;
-use Drupal\dkan_common\Tests\Mock\Options;
+use MockChain\Chain;
+use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 use Drupal\dkan_datastore\Storage\JobStoreFactory;
@@ -30,6 +30,7 @@ class ImporterListTest extends TestCase {
     $options->add('total_bytes_copied', 20);
     $options->add('total_bytes', 30);
     $options->add("hello", "hello");
+    $options->add("source", "hello");
 
     $fileFetcher = (new Chain($this))
       ->add(FileFetcher::class, "getStateProperty", $options)

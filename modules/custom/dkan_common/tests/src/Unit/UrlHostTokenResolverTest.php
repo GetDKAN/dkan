@@ -1,7 +1,7 @@
 <?php
 
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 use Drupal\dkan_common\UrlHostTokenResolver;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;

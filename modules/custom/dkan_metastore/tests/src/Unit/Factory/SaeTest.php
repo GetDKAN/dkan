@@ -7,7 +7,7 @@ use Sae\Sae as Engine;
 use Drupal\dkan_data\Storage\Data;
 use Drupal\dkan_metastore\Factory\Sae;
 use Drupal\dkan_schema\SchemaRetriever;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 
 /**
  *

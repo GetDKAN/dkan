@@ -4,8 +4,8 @@ namespace Drupal\Tests\dkan_data\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\dkan_common\Tests\Mock\Chain;
-use Drupal\dkan_common\Tests\Mock\Options;
+use MockChain\Chain;
+use MockChain\Options;
 use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\dkan_data\DataNodeLifeCycle;
 use Drupal\node\Entity\Node;

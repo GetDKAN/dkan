@@ -5,7 +5,9 @@ namespace Drupal\dkan_harvest\Storage;
 use Contracts\IdGeneratorInterface;
 
 /**
- * Class.
+ * Class IdGenerator.
+ *
+ * @codeCoverageIgnore
  */
 class IdGenerator implements IdGeneratorInterface {
 

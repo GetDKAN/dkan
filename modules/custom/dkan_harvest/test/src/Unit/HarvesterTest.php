@@ -1,7 +1,7 @@
 <?php
 
 use Harvest\Harvester;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 use Drupal\dkan_harvest\Storage\DatabaseTableFactory;
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan_harvest\Storage\DatabaseTable;

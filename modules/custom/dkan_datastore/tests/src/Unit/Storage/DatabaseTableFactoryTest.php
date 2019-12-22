@@ -4,7 +4,7 @@ namespace Drupal\Tests\dkan_datastore\Unit\Storage;
 
 use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use PHPUnit\Framework\TestCase;

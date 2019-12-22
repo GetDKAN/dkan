@@ -1,22 +1,22 @@
 <?php
 
-use Drupal\dkan_common\Tests\Mock\Options;
+use MockChain\Options;
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 use Procrastinator\Result;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Contracts\Mock\Storage\MemoryFactory;
 use Drupal\dkan_harvest\Harvester;
-use Drupal\dkan_common\Tests\DkanTestBase;
+use PHPUnit\Framework\TestCase;
 use Drupal\dkan_harvest\Controller\Api;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  *
  */
-class ApiTest extends DkanTestBase {
+class ApiTest extends TestCase {
 
   private $request;
 

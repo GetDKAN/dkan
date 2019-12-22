@@ -4,7 +4,6 @@
     bootstrap="../../../core/tests/bootstrap.php"
     colors="true"
     stopOnFailure="false"
-    configuration="core"
     stopOnError="false"
     verbose="true">
 

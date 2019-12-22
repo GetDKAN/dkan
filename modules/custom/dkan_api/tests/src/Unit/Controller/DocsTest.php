@@ -4,18 +4,18 @@ namespace Drupal\Tests\dkan_api\Unit\Controller;
 
 use Drupal\Core\Extension\Extension;
 use Drupal\dkan_api\Controller\Docs;
-use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\dkan_common\Tests\Mock\Chain;
-use Drupal\dkan_common\Tests\Mock\Options;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use MockChain\Chain;
+use MockChain\Options;
 
 /**
  * Test class Docs.
  */
-class DocsTest extends DkanTestBase {
+class DocsTest extends TestCase {
 
   /**
    *

@@ -9,7 +9,7 @@ use Drupal\Core\File\FileSystem;
 use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\Field\Plugin\DataType\FieldItem;
 use Drupal\node\Entity\Node;
-use Drupal\dkan_common\Tests\Mock\Chain;
+use MockChain\Chain;
 use Drupal\dkan_datastore\Service\Resource as Service;
 use Drupal\dkan_datastore\Storage\JobStore;
 use Drupal\dkan_datastore\Storage\JobStoreFactory;

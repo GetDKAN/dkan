@@ -24,12 +24,11 @@
         "guzzlehttp/guzzle" : "^6.3",
         "ezyang/htmlpurifier" : "^4.11",
         "ramsey/uuid" : "^3.8.0",
-        "oomphinc/composer-installers-extender": "~1.1"
+        "oomphinc/composer-installers-extender": "~1.1",
+        "getdkan/mock-chain": "dev-master"
     },
     "require-dev": {
-      "burdamagazinorg/thunder-dev-tools": "dev-master",
-      "drupal/coder": "8.2",
-      "drupal/devel": "1.x-dev"
+	"phpunit/phpunit": "^7.5"
     },
     "repositories": [
         {
