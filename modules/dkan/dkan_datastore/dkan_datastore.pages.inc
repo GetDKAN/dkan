@@ -25,9 +25,19 @@ function dkan_datastore_proxy($node) {
   $type = recline_get_data_type($remote_file['filemime']);
 
   if (in_array($type, $allowed_types)) {
-    drupal_add_http_header('Content-Type', $mime);
-    drupal_add_http_header('Content-Disposition', 'attachment; filename=' . $filename);
-    print file_get_contents($uri);
+    // dkan_datastore_proxy() loads the file locally which has a big memory footprint.
+    // If the file is too large we don't want to proxy.
+    $max = (int) variable_get('dkan_datastore_max_file_remote_proxy_size', MAX_FILE_REMOTE_PROXY_DEFAULT);
+    $size = isset($node_wrapper->field_link_remote_file->value()['filesize']) ? (int) $node_wrapper->field_link_remote_file->value()['filesize'] : $max;
+
+    if ($size >= $max) {
+      drupal_goto($url);
+    }
+    else {
+      drupal_add_http_header('Content-Type', $mime);
+      drupal_add_http_header('Content-Disposition', 'attachment; filename=' . $filename);
+      print file_get_contents($uri);
+    }
   }
   else {
     // Not in allowed types, treat the file URI as a normal url.
@@ -60,17 +70,7 @@ function dkan_datastore_download($node) {
     return drupal_goto($url);
   }
   elseif ($type == 'remote') {
-    $size = isset($node_wrapper->field_link_remote_file->value()['filesize']) ? (int) $node_wrapper->field_link_remote_file->value()['filesize'] : 0;
-
-    // dkan_datastore_proxy() loads the file locally which has a big memory footprint.
-    // If the file is too large we don't want to proxy.
-    $max = (int) variable_get('dkan_datastore_max_file_remote_proxy_size', MAX_FILE_REMOTE_PROXY_DEFAULT);
-    if ($size > $max) {
-      drupal_goto($url);
-    }
-    else {
-      dkan_datastore_proxy($node);
-    }
+    dkan_datastore_proxy($node);
   }
   elseif ($type == 'link') {
     return drupal_goto($url);
