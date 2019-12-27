@@ -9,14 +9,14 @@ pipeline {
     // }
     stages {
         stage('Setup') {
-            when { tag() }
+            when { buildingTag() }
             steps {
               sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/master.zip"
               sh "unzip master.zip && mv dkan-tools-master dkan-tools && rm master.zip"
             }
         }
         stage('Upload assets') {
-            when { tag() }
+            when { buildingTag() }
             steps {
                 sh "ls -la"
             }
