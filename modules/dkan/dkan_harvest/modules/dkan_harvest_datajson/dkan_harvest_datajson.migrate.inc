@@ -144,74 +144,90 @@ class DatajsonHarvestMigration extends HarvestMigration {
     // Process Temporal Coverage. The mapping are defined in the base main
     // class, we just need to set the properties.
     if (isset($row->temporal)) {
+      // Validate the value.
+      try {
+        if (validISO8601Date($row->temporal) == FALSE) {
+          throw new Exception();
+        }
+      }
+      catch (Exception $e) {
+        $message = t(
+          '"@value" is not a valid temporal format.',
+          array(
+            '@value' => $row->temporal,
+          ));
+        $this->saveMessage($message);
+      }
+
+      // Fit the value into the date field.
       $date = $row->temporal;
+
       if (strpos($row->temporal, '/')) {
+        // Determine if the value is a range for Start and End dates.
         $date = explode("/", $row->temporal);
-      }
-      elseif (strpos($row->temporal, '-')) {
-        $date = explode("-", $row->temporal);
-      }
-      // The first key is the start date of the 'temporal coverage' and the second key is the
-      // end date of the 'temporal coverage'.
-      foreach ($date as $key => &$value) {
-        // Check if this is a time interval on the second Argument.
-        if ($key == 1
-          && preg_match("/P(\d*Y)?(\d*M)?(\d*D)?(\d*W)?T?(\d*H)?(\d*M)?(\d*S)?/", $value)) {
-          try {
-            $value_diff = new DateInterval($value);
-            // Get the date from the first segment. This should be represented
-            // as a timestamp by now.
+
+        // The first key is the start date of the 'temporal coverage' and the second key is the
+        // end date of the 'temporal coverage'.
+        foreach ($date as $key => &$value) {
+          // Check if this is a time interval on the second Argument.
+          if ($key == 1
+            && preg_match("/P(\d*Y)?(\d*M)?(\d*D)?(\d*W)?T?(\d*H)?(\d*M)?(\d*S)?/", $value)) {
+            try {
+              $value_diff = new DateInterval($value);
+              // Get the date from the first segment. This should be represented
+              // as a timestamp by now.
+              $value_date = new DateTime();
+              $value_date->setTimestamp($date[0]);
+              $value_date->add($value_diff);
+            }
+            catch (Exception $e) {
+              $message = t(
+                'Cannot parse temporal coverage interval @value',
+                array(
+                  '@value' => $value,
+                ));
+              $this->saveMessage($message);
+            }
+          }
+          // Support 4 digits year time strings.
+          elseif (preg_match("@^\d{4}$@", $value)) {
             $value_date = new DateTime();
-            $value_date->setTimestamp($date[0]);
-            $value_date->add($value_diff);
-          }
-          catch (Exception $e) {
-            $message = t(
-              'Cannot parse temporal coverage interval @value',
-              array(
-                '@value' => $value,
-              ));
-            $this->saveMessage($message);
-          }
-        }
-        // Support 4 digits year time strings.
-        elseif (preg_match("@^\d{4}$@", $value)) {
-          $value_date = new DateTime();
 
-          // If this is the end date then set it to the last day of the year.
-          if ($key == 1) {
-            $value_date->setDate($value, 12, 31);
+            // If this is the end date then set it to the last day of the year.
+            if ($key == 1) {
+              $value_date->setDate($value, 12, 31);
+            }
+            // If this is the start date then set it to the first day of the year.
+            else {
+              $value_date->setDate($value, 1, 1);
+            }
+
+            $value_date->setTime(0, 0);
           }
-          // If this is the start date then set it to the first day of the year.
+          // Fallback to full date/time format.
           else {
-            $value_date->setDate($value, 1, 1);
+            try {
+              $value_date = new DateTime($value);
+            }
+            catch (Exception $e) {
+              $message = t(
+                'Cannot parse temporal coverage value @value',
+                array(
+                  '@value' => $value,
+                ));
+              $this->saveMessage($message);
+            }
           }
 
-          $value_date->setTime(0, 0);
-        }
-        // Fallback to full date/time format.
-        else {
-          try {
-            $value_date = new DateTime($value);
+          if ($value_date) {
+            $value = $value_date->getTimestamp();
           }
-          catch (Exception $e) {
+          else {
             $message = t(
-              'Cannot parse temporal coverage value @value',
-              array(
-                '@value' => $value,
-              ));
+              'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
+            );
             $this->saveMessage($message);
           }
-        }
-
-        if ($value_date) {
-          $value = $value_date->getTimestamp();
-        }
-        else {
-          $message = t(
-            'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
-          );
-          $this->saveMessage($message);
         }
       }
 
@@ -322,6 +338,30 @@ class DatajsonHarvestMigration extends HarvestMigration {
     $group->name = $group_row_data->name;
 
     return $group;
+  }
+
+  /**
+   * Validate temporal key value as valid ISO 8601.
+   */
+  function validISO8601Date($value) {
+    $patterns = array(
+      "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$",
+      "^P(?=\\w*\\d)(?:\\d+Y|Y)?(?:\\d+M|M)?(?:\\d+W|W)?(?:\\d+D|D)?(?:T(?:\\d+H|H)?(?:\\d+M|M)?(?:\\d+(?:\\­.\\d{1,2})?S|S)?)?$",
+      "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?(\\/)([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$",
+      "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?(\\/)P(?=\\w*\\d)(?:\\d+Y|Y)?(?:\\d+M|M)?(?:\\d+W|W)?(?:\\d+D|D)?(?:T(?:\\d+H|H)?(?:\\d+M|M)?(?:\\d+(?:\\­.\\d{1,2})?S|S)?)?$",
+      "^P(?=\\w*\\d)(?:\\d+Y|Y)?(?:\\d+M|M)?(?:\\d+W|W)?(?:\\d+D|D)?(?:T(?:\\d+H|H)?(?:\\d+M|M)?(?:\\d+(?:\\­.\\d{1,2})?S|S)?)?\\/([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$",
+      "^R\\d*\\/([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?\\/P(?=\\w*\\d)(?:\\d+Y|Y)?(?:\\d+M|M)?(?:\\d+W|W)?(?:\\d+D|D)?(?:T(?:\\d+H|H)?(?:\\d+M|M)?(?:\\d+(?:\\­.\\d{1,2})?S|S)?)?$"
+    );
+
+    foreach ($patterns as $pattern) {
+      if (preg_match('/'. $pattern . '/', $value))
+      {
+         return true;
+      }
+    }
+
+    return false;
+
   }
 
 }
