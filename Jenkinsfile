@@ -8,6 +8,9 @@ pipeline {
     //     USER = 'jenkins'
     // }
     stages {
+        stage('Test') {
+            sh "ls -la"
+        }
         stage('Setup') {
             when { buildingTag() }
             steps {
