@@ -5,66 +5,51 @@
  * Zip up code for release and delete unneeded files.
  */
 
-// Get latest release name.
-$handler = curl_init('https://api.github.com/repos/GetDKAN/dkan/releases/latest');
-curl_setopt($handler, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($handler, CURLOPT_HTTPHEADER, [
-  'User-Agent: DKAN Jenkins',
-  'Accept: application/vnd.github.v3+json',
-]);
-$result = json_decode(curl_exec($handler));
-curl_close($handler);
-$dkan_version = $result->tag_name;
+$version = getenv('TAG_NAME');
+$folder = 'dkan-' . $version;
+$repo = repo_from_git_url(getenv('GIT_URL'));
 
-$file_name = "{$dkan_version}.zip";
-
-if (!file_exists($file_name)) {
-  `wget -O {$file_name} https://github.com/GetDKAN/dkan/archive/{$file_name}`;
-}
-else {
-  echo "Already got the file {$file_name}" . PHP_EOL;
-}
-
-$folder_name = "dkan-{$dkan_version}";
-if (!file_exists($folder_name)) {
-  "Extracting {$file_name}" . PHP_EOL;
-  `unzip {$file_name}`;
-  echo "{$file_name} was extracted" . PHP_EOL;
-}
-else {
-  echo "The file {$file_name} has already been extracted to {$folder_name}" . PHP_EOL;
-}
-
-$readme = file_get_contents("{$folder_name}/README.md");
-if (substr_count($readme, $dkan_version) == 0) {
-  echo "Adding version to README file" . PHP_EOL;
-  $new_readme = str_replace("# DKAN Open Data Platform", "# DKAN Open Data Platform ({$dkan_version})", $readme);
-  file_put_contents("{$folder_name}/README.md", $new_readme);
-  echo "Added version to README file" . PHP_EOL;
-}
-else {
-  echo "Version has already been added to the README file" . PHP_EOL;
-}
-
-$files = get_all_files_with_extension($folder_name, "info");
-foreach ($files as $file) {
-  add_version_to_info_file($file, $dkan_version);
-}
-
-$tar_file_name = "{$dkan_version}.tar.gz";
-if (!file_exists($tar_file_name)) {
-  echo "Compressing {$folder_name}" . PHP_EOL;
-  `zip -9 -r {$file_name} {$folder_name}`;
-  `tar -zcvf {$tar_file_name} {$folder_name}`;
-  echo "{$folder_name} zip and tar.gz archives were created" . PHP_EOL;
-}
-else {
-  echo "{$folder_name} has already been compressed";
-}
+// Create archives.
+add_version_to_files($folder, $version);
+create_archive_files($folder, $version);
 
 // Upload assets to release.
-upload_assets($dkan_version, $file_name, 'application/zip');
-upload_assets($dkan_version, $tar_file_name, 'application/gzip');
+upload_asset($version, $version . '.zip', $repo, 'application/zip');
+upload_asset($version, $version . '.tar.gz', $repo, 'application/gzip');
+
+function create_archive_files($folder, $version) {
+  if (!file_exists($version . '.zip')) {
+    echo "Compressing {$folder}" . PHP_EOL;
+    `zip -9 -r {$version}.zip {$folder}`;
+    `tar -zcvf {$version}.tar.gz {$folder}`;
+    echo "{$folder} zip and tar.gz archives were created" . PHP_EOL;
+  }
+  else {
+    echo "{$folder} has already been compressed";
+  }
+}
+
+function add_version_to_files($folder, $version) {
+  $readme = file_get_contents("{$folder}/README.md");
+  if (substr_count($readme, $version) == 0) {
+    echo "Adding version to README file" . PHP_EOL;
+    $new_readme = str_replace(
+      "# DKAN Open Data Platform",
+      "# DKAN Open Data Platform ({$version})",
+      $readme
+    );
+    file_put_contents("{$folder}/README.md", $new_readme);
+    echo "Added version to README file" . PHP_EOL;
+  }
+  else {
+    echo "Version has already been added to the README file" . PHP_EOL;
+  }
+
+  $files = get_all_files_with_extension($folder, "info");
+  foreach ($files as $path) {
+    add_version_to_info_file($path, $version);
+  }
+}
 
 function add_version_to_info_file($path, $version) {
   $content = file_get_contents($path);
@@ -73,7 +58,7 @@ function add_version_to_info_file($path, $version) {
     $content = trim($content);
     $content .= PHP_EOL . "version = {$version}" . PHP_EOL;
     file_put_contents($path, $content);
-    echo "Adding version number to {$path}" . PHP_EOL;
+    echo "Added version number to {$path}" . PHP_EOL;
 
   }
   else {
@@ -155,11 +140,12 @@ function shell_table_to_array($shell_table) {
   return $final;
 }
 
-function upload_assets($tag, $file_name, $content_type) {
-  echo "Uploading asset {$file_name} for DKAN release {$tag}..." . PHP_EOL;
+function upload_asset($tag, $file_name, $repo, $content_type) {
+  $release_url = "https://api.github.com/repos/{$repo}/releases/tags/{$tag}";
+  echo "Requesting tag list from $release_url" . PHP_EOL;
 
   // Request to get the release upload_url.
-  $handler = curl_init('https://api.github.com/repos/GetDKAN/dkan/releases/tags/' . $tag);
+  $handler = curl_init($release_url);
   curl_setopt($handler, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($handler, CURLOPT_HTTPHEADER, [
     'User-Agent: DKAN Jenkins',
@@ -169,14 +155,19 @@ function upload_assets($tag, $file_name, $content_type) {
   curl_close($handler);
 
   // Get real upload_url.
+  if (!isset($result->upload_url)) {
+    throw new \Exception("Release info could not be found. Tag must be created within Github release UI.");
+  }
+
   $upload_url = $result->upload_url;
   $matches = [];
   if (preg_match('/(.*){\?name,label}/', $upload_url, $matches)) {
     $upload_url = $matches[1];
   } else {
-    throw new \Exception("The upload URL is invalid.");
+    throw new \Exception("The upload URL ($upload_url) is invalid.");
   }
 
+  echo "Uploading asset {$file_name} for DKAN release {$tag}..." . PHP_EOL;
   // Get filepath.
   $path = realpath($file_name);
 
@@ -190,7 +181,7 @@ function upload_assets($tag, $file_name, $content_type) {
     CURLOPT_CUSTOMREQUEST => "POST",
     CURLOPT_HTTPHEADER => array(
       "accept: application/vnd.github.v3+json",
-      "authorization: token " . getenv('JENKINS_GITHUB_TOKEN'),
+      "authorization: token " . getenv('GITHUB_TOKEN'),
       "cache-control: no-cache",
       "content-type: " . $content_type,
     ),
@@ -212,4 +203,18 @@ function upload_assets($tag, $file_name, $content_type) {
   } else {
     throw new \Exception("The asset was not uploaded.");
   }
+}
+
+function repo_from_git_url($url) {
+  if (filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+    throw new \Exception('Not a valid URL');
+  }
+  if (strpos(parse_url($url)['host'], 'github.com') === FALSE) {
+    throw new \Exception('Not a Github URL');
+  }
+  $repo = substr(parse_url($url)['path'], 1);
+  if (strpos($repo, '.git') !== FALSE) {
+    $repo = substr($repo, 0, strrpos($repo, "."));
+  }
+  return $repo;
 }
