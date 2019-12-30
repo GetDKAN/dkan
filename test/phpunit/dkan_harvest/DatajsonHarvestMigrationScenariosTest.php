@@ -564,9 +564,9 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
         'value' => "2000-01-15T00:45:00Z",
         'value2' => "2010-01-15T00:06:00Z",
       ),
-      'Test' => array(
-        'value' => "2005-01-01 00:00:00",
-        'value2' => "2016-12-31 00:00:00",
+      'Test of invalid temporal value' => array(
+        'value' => "",
+        'value2' => "",
       ),
     );
 
@@ -583,10 +583,14 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
 
     foreach ($dest_ids as $distid) {
       $dataset = entity_metadata_wrapper('node', $distid);
-      $value = new DateTime($expected_temporal[$dataset->label()]['value']);
-      $value2 = new DateTime($expected_temporal[$dataset->label()]['value2']);
-      $this->assertEquals($value->getTimestamp(), $dataset->field_temporal_coverage->value->value());
-      $this->assertEquals($value2->getTimestamp(), $dataset->field_temporal_coverage->value2->value());
+      $value = $expected_temporal[$dataset->label()]['value'] 
+        ? strtotime($expected_temporal[$dataset->label()]['value'])
+        : "";
+      $value2 = $expected_temporal[$dataset->label()]['value2']
+        ? strtotime($expected_temporal[$dataset->label()]['value2'])
+        : "";
+      $this->assertEquals($value, $dataset->field_temporal_coverage->value->value());
+      $this->assertEquals($value2, $dataset->field_temporal_coverage->value2->value());
     }
   }
 

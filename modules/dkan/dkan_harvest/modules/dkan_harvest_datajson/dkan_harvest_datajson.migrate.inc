@@ -150,7 +150,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
           // Fit the value into the date field.
           $date = $row->temporal;
 
-          if (strpos($row->temporal, '/') && substr_count($row->temporal, '/') == 1) {
+          if (strpos($row->temporal, '/')) {
             // Determine if the value is a range for Start and End dates.
             $date = explode("/", $row->temporal);
 
