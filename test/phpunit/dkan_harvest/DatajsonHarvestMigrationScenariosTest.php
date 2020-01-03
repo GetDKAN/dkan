@@ -554,7 +554,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
       ),
       'Acute IPPS - Readmissions Reduction Program' => array(
         'value' => "2013-01-01 00:00:00",
-        'value2' => "2013-01-01 00:00:00",
+        'value2' => "2013-06-01 00:00:00",
       ),
       'Acute IPPS - Disproportionate Share Hospital - DSH' => array(
         'value' => "1988-01-01 00:00:00",
@@ -563,11 +563,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
       'UPIN Group File' => array(
         'value' => "2000-01-15T00:45:00Z",
         'value2' => "2010-01-15T00:06:00Z",
-      ),
-      'Test' => array(
-        'value' => "2005-01-01 00:00:00",
-        'value2' => "2016-12-31 00:00:00",
-      ),
+      )
     );
 
     // Harvest the faulty source.
@@ -583,10 +579,56 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
 
     foreach ($dest_ids as $distid) {
       $dataset = entity_metadata_wrapper('node', $distid);
-      $value = new DateTime($expected_temporal[$dataset->label()]['value']);
-      $value2 = new DateTime($expected_temporal[$dataset->label()]['value2']);
-      $this->assertEquals($value->getTimestamp(), $dataset->field_temporal_coverage->value->value());
-      $this->assertEquals($value2->getTimestamp(), $dataset->field_temporal_coverage->value2->value());
+      $value = strtotime($expected_temporal[$dataset->label()]['value']);
+      $value2 = strtotime($expected_temporal[$dataset->label()]['value2']);
+      $this->assertEquals($value, $dataset->field_temporal_coverage->value->value());
+      $this->assertEquals($value2, $dataset->field_temporal_coverage->value2->value());
+    }
+  }
+
+  /**
+   * Test harvest source Temporal field support entries.
+   *
+   * The test json file contain multiple temporal field with various edge cases
+   * that we want to check. Those are listed in the expected temporal values.
+   */
+  public function testTemporalInvalid() {
+    // $expected_temporal = array(
+    //   "Temporal test one" => array(
+    //     'value' => "2005-01-01 00:00:00",
+    //     'value2' => "2016-12-31 00:00:00",
+    //   ),
+    //   'Temporal test two' => array(
+    //     'value' => "2013-01-01 00:00:00",
+    //     'value2' => "2013-06-01 00:00:00",
+    //   ),
+    //   'Temporal test three' => array(
+    //     'value' => "1988-01-01 00:00:00",
+    //     'value2' => "1988-01-08 00:00:00",
+    //   ),
+    //   'Temporal test four' => array(
+    //     'value' => "2000-01-15T00:45:00Z",
+    //     'value2' => "2010-01-15T00:06:00Z",
+    //   )
+    // );
+
+    // Harvest the faulty source.
+    dkan_harvest_cache_source(self::getResourceTemporalInvalid());
+    dkan_harvest_migrate_source(self::getResourceTemporalInvalid());
+
+    $migration = dkan_harvest_get_migration(self::getResourceTemporalInvalid());
+    $migrationMap = $this->getMapTableFromMigration($migration);
+
+    $dest_ids = array_map(function ($mapRecord) {
+      return $mapRecord->destid1;
+    }, $migrationMap);
+
+    foreach ($dest_ids as $distid) {
+      $dataset = entity_metadata_wrapper('node', $distid);
+      // $value = strtotime($expected_temporal[$dataset->label()]['value']);
+      // $value2 = strtotime($expected_temporal[$dataset->label()]['value2']);
+      $this->assertEquals(NULL, $dataset->field_temporal_coverage->value);
+      $this->assertEquals(NULL, $dataset->field_temporal_coverage->value2);
     }
   }
 
@@ -795,6 +837,14 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public static function getResourceTemporal() {
     $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_temporal.json');
+    return new HarvestSourceDataJsonStub($uri);
+  }
+
+  /**
+   * Test Harvest Source.
+   */
+  public static function getResourceTemporalInvalid() {
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_temporal_invalid.json');
     return new HarvestSourceDataJsonStub($uri);
   }
 
