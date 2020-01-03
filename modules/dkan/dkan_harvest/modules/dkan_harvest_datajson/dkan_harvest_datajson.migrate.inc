@@ -145,89 +145,80 @@ class DatajsonHarvestMigration extends HarvestMigration {
     // class, we just need to set the properties.
     if (isset($row->temporal)) {
       try {
-        // Validate ISO 8601 format.
-        if ($this->validISO8601Date($row->temporal)) {
-          // Confirm a date range was provided.
-          if (strpos($row->temporal, '/')) {
-            $date = explode("/", $row->temporal);    
-            // The first key is the start date of the 'temporal coverage' and the second key is the
-            // end date of the 'temporal coverage'.
-            foreach ($date as $key => &$value) {
-              // Check if this is a time interval on the second Argument.
-              if ($key == 1
-                && preg_match("/P(\d*Y)?(\d*M)?(\d*D)?(\d*W)?T?(\d*H)?(\d*M)?(\d*S)?/", $value)) {
-                try {
-                  $value_diff = new DateInterval($value);
-                  // Get the date from the first segment. This should be represented
-                  // as a timestamp by now.
-                  $value_date = new DateTime();
-                  $value_date->setTimestamp($date[0]);
-                  $value_date->add($value_diff);
-                }
-                catch (Exception $e) {
-                  $message = t(
-                    'Cannot parse temporal coverage interval @value',
-                    array(
-                      '@value' => $value,
-                    ));
-                  $this->saveMessage($message);
-                }
-              }
-              // Support 4 digits year time strings.
-              elseif (preg_match("@^\d{4}$@", $value)) {
+        // Validate ISO 8601 format and confirm a date range was provided.
+        if ($this->validISO8601Date($row->temporal) && substr_count($row->temporal, '/') == 1) {
+
+          $date = explode("/", $row->temporal);
+  
+          // The first key is the start date of the 'temporal coverage' and the second key is the
+          // end date of the 'temporal coverage'.
+          foreach ($date as $key => &$value) {
+            // Check if this is a time interval on the second Argument.
+            if ($key == 1
+              && preg_match("/P(\d*Y)?(\d*M)?(\d*D)?(\d*W)?T?(\d*H)?(\d*M)?(\d*S)?/", $value)) {
+              try {
+                $value_diff = new DateInterval($value);
+                // Get the date from the first segment. This should be represented
+                // as a timestamp by now.
                 $value_date = new DateTime();
-
-                // If this is the end date then set it to the last day of the year.
-                if ($key == 1) {
-                  $value_date->setDate($value, 12, 31);
-                }
-                // If this is the start date then set it to the first day of the year.
-                else {
-                  $value_date->setDate($value, 1, 1);
-                }
-
-                $value_date->setTime(0, 0);
+                $value_date->setTimestamp($date[0]);
+                $value_date->add($value_diff);
               }
-              // Fallback to full date/time format.
-              else {
-                try {
-                  $value_date = new DateTime($value);
-                }
-                catch (Exception $e) {
-                  $message = t(
-                    'Cannot parse temporal coverage value @value',
-                    array(
-                      '@value' => $value,
-                    ));
-                  $this->saveMessage($message);
-                }
-              }
-
-              if ($value_date) {
-                $value = $value_date->getTimestamp();
-              }
-              else {
+              catch (Exception $e) {
                 $message = t(
-                  'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
-                );
+                  'Cannot parse temporal coverage interval @value',
+                  array(
+                    '@value' => $value,
+                  ));
+                $this->saveMessage($message);
+              }
+            }
+            // Support 4 digits year time strings.
+            elseif (preg_match("@^\d{4}$@", $value)) {
+              $value_date = new DateTime();
+
+              // If this is the end date then set it to the last day of the year.
+              if ($key == 1) {
+                $value_date->setDate($value, 12, 31);
+              }
+              // If this is the start date then set it to the first day of the year.
+              else {
+                $value_date->setDate($value, 1, 1);
+              }
+
+              $value_date->setTime(0, 0);
+            }
+            // Fallback to full date/time format.
+            else {
+              try {
+                $value_date = new DateTime($value);
+              }
+              catch (Exception $e) {
+                $message = t(
+                  'Cannot parse temporal coverage value @value',
+                  array(
+                    '@value' => $value,
+                  ));
                 $this->saveMessage($message);
               }
             }
 
-            if (isset($date[0])) {
-              $row->temporal_coverage_from = $date[0];
+            if ($value_date) {
+              $value = $value_date->getTimestamp();
             }
-            if (isset($date[1])) {
-              $row->temporal_coverage_to = $date[1];
+            else {
+              $message = t(
+                'Cannot determine temporal coverage value. Please review the formatting standards at https://project-open-data.cio.gov/v1.1/schema/#temporal'
+              );
+              $this->saveMessage($message);
             }
           }
-          else {
-            $message = t(
-              'Temporal value should be formatted as YYYY-MM-DDTHH:MM:SSZ/YYYY-MM-DDTHH:MM:SSZ.',
-              array(
-                '@value' => $value,
-              ));
-            $this->saveMessage($message);
+
+          if (isset($date[0])) {
+            $row->temporal_coverage_from = $date[0];
+          }
+          if (isset($date[1])) {
+            $row->temporal_coverage_to = $date[1];
           }
         }
         else {
