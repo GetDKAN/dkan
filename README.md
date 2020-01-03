@@ -1,6 +1,6 @@
 # DKAN
 
-[DKAN](https://getdkan.com) Open Data Portal/Catalog built on [Drupal 8](https://www.drupal.org/documentation) - Alpha
+[DKAN](https://getdkan.com) Open Data Portal/Catalog built on [Drupal 8](https://www.drupal.org/documentation) - Release Candidate
 
 [![CircleCI](https://circleci.com/gh/GetDKAN/dkan2.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan2)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7a93219b8ae65a83f095/maintainability)](https://codeclimate.com/github/GetDKAN/dkan2/maintainability)
