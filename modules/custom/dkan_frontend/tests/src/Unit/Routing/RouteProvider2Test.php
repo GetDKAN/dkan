@@ -1,9 +1,10 @@
 <?php
 
-/**
- *
- */use Drupal\dkan_frontend\Routing\RouteProvider;
+use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\dkan_frontend\Routing\RouteProvider;
+use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
+use Drupal\Core\Entity\Query\QueryInterface;
 
 /**
  *
@@ -14,7 +15,14 @@ class RouteProvider2Test extends TestCase {
    *
    */
   public function test() {
-    $provider = new RouteProvider(__DIR__ . "/../../../app");
+
+    $queryFactory = (new Chain($this))
+      ->add(QueryFactory::class, "get", QueryInterface::class)
+      ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', [])
+      ->getMock();
+
+    $provider = new RouteProvider(__DIR__ . "/../../../app", $queryFactory);
 
     /* @var $routes \Symfony\Component\Routing\RouteCollection */
     $routes = $provider->routes();

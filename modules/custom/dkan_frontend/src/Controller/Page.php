@@ -5,7 +5,6 @@ namespace Drupal\dkan_frontend\Controller;
 use Drupal\dkan_frontend\Page as PageBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 
 /**
@@ -37,7 +36,7 @@ class Page implements ContainerInjectionInterface {
   public function page($name) {
     $pageContent = $this->pageBuilder->build($name);
     if (empty($pageContent)) {
-      throw new NotFoundHttpException('Page could not be loaded');
+      $pageContent = $this->pageBuilder->build("dataset");
     }
     return Response::create($pageContent);
   }
