@@ -2,6 +2,10 @@ openapi: 3.0.1
 info:
   title: API Documentation
   version: Alpha
+tags:
+  - name: Dataset
+  - name: SQL Query
+  - name: Another Tag
 paths:
   /api/1/metastore/schemas/dataset/items/{identifier}:
     get:
@@ -26,6 +30,16 @@ paths:
           description: Ok
     # Though an empty verb invalidates the spec, test its removal by dataset-specific docs.
     post:
+  /api/1/datastore/sql:
+    get:
+      summary: Query resources
+      tags:
+        - SQL Query
+      parameters:
+        - $ref: '#/components/parameters/query'
+      responses:
+        '200':
+          description: Ok
   /api/1/some/other/path:
     patch:
       summary: This path and operation should not be present in dataset-specific docs.
