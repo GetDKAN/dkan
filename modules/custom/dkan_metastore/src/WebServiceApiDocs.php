@@ -75,29 +75,58 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    */
   public function getDatasetSpecific(string $identifier) {
     $fullSpec = $this->docsController->getJsonFromYmlFile();
-
     $spec = $this->keepDatasetSpecificEndpoints($fullSpec, $this->endpointsToKeep);
-
     // Remove the security schemes.
     unset($spec['components']['securitySchemes']);
-    // Remove required parameters, since now part of path.
-    unset($spec['paths']['/api/1/datastore/sql']['get']['parameters']);
-    unset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']['get']['parameters']);
-    // Keep only the tags needed, so remove the properties tag.
-    $spec['tags'] = [
-      ["name" => "Dataset"],
-      ["name" => "SQL Query"],
-    ];
-    // Replace the dataset uuid placeholder.
+    // Tags can be added later when needed, remove them for now.
+    $spec['tags'] = [];
+
+    $spec = $this->modifyDatasetEndpoint($spec, $identifier);
+    $spec = $this->modifySqlEndpoint($spec, $identifier);
+    return $this->getResponse($spec);
+  }
+
+  /**
+   * Modify the generic dataset endpoint to be specific to the current dataset.
+   *
+   * @param array $spec
+   *   The original spec.
+   * @param string $identifier
+   *   Dataset uuid.
+   *
+   * @return array
+   *   Spec with dataset-specific metastore get endpoint.
+   */
+  private function modifyDatasetEndpoint(array $spec, string $identifier) {
     if (isset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}'])) {
+      unset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']['get']['parameters']);
+      // Replace the dataset uuid placeholder.
       $spec['paths']['/api/1/metastore/schemas/dataset/items/' . $identifier] = $spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}'];
       unset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']);
+      // Keep only the tags needed, starting with the dataset tag.
+      $spec['tags'][] = ["name" => "Dataset"];
     }
+    return $spec;
+  }
 
-    // Replace the sql endpoint query placeholder.
-    $spec = $this->replaceDistributions($spec, $identifier);
-
-    return $this->getResponse($spec);
+  /**
+   * Modify the generic sql endpoint to be specific to the current dataset.
+   *
+   * @param array $spec
+   *   The original spec.
+   * @param string $identifier
+   *   Dataset uuid.
+   *
+   * @return array
+   *   Spec with dataset-specific datastore sql endpoint.
+   */
+  private function modifySqlEndpoint(array $spec, string $identifier) {
+    if (isset($spec['paths']['/api/1/datastore/sql'])) {
+      unset($spec['paths']['/api/1/datastore/sql']['get']['parameters']);
+      $spec = $this->replaceDistributions($spec, $identifier);
+      $spec['tags'][] = ["name" => "SQL Query"];
+    }
+    return $spec;
   }
 
   /**
