@@ -1,0 +1,8 @@
+name: 'Alternate API'
+description: 'Provides alternate routes to access data potentially modified or restricted.'
+type: module
+core: 8.x
+package: DKAN
+dependencies:
+  - dkan_metastore
+  - dkan_sql_endpoint
