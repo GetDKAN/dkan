@@ -1,0 +1,6 @@
+'get data through the alternate metastore api':
+  title: 'Get data through the alternate metastore api'
+  description: 'Allows performing HTTP GET requests against the alternate metastore API endpoints.'
+'query the alternate sql endpoint api':
+  title: 'Query the alternate sql endpoint api'
+  description: 'Allows performing HTTP GET or POST requests against the alternate SQL API endpoints.'

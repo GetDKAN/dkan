@@ -1,0 +1,39 @@
+dkan_alt_api.1.metastore.schemas.id.items:
+  path: '/alt/api/1/metastore/schemas/{schema_id}/items'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\WebServiceApi::getAll'}
+  requirements:
+    _permission: 'metastore increased visibility'
+  options:
+    _auth: ['basic_auth']
+
+dkan_alt_api.1.metastore.schemas.id.items.id:
+  path: '/alt/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\WebServiceApi::get'}
+  requirements:
+    _permission: 'metastore increased visibility'
+  options:
+    _auth: ['basic_auth']
+
+dkan_alt_api.get.api:
+  path: '/alt/api/1/datastore/sql'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_sql_endpoint\Controller\Api::runQueryGet'}
+  requirements:
+    _permission: 'query the alternate sql endpoint api'
+  options:
+    _auth: ['basic_auth']
+
+dkan_alt_api.post.api:
+  path: '/alt/api/1/datastore/sql'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\dkan_sql_endpoint\Controller\Api::runQueryPost'}
+  requirements:
+    _permission: 'query the alternate sql endpoint api'
+  options:
+    _auth: ['basic_auth']
