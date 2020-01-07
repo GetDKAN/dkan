@@ -167,6 +167,166 @@
         "Medicare"
       ],
       "title": "UPIN Group File"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+        }
+      ],
+      "identifier": "241",
+      "keyword": [
+        "Publically Available Data File - for purchase",
+        "Medicare",
+        "Providers",
+        "State"
+      ],
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "2007-present",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Invalid temporal: 2007-present"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+        }
+      ],
+      "identifier": "241",
+      "keyword": [
+        "Publically Available Data File - for purchase",
+        "Medicare",
+        "Providers",
+        "State"
+      ],
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "January",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Invalid temporal: January"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+        }
+      ],
+      "identifier": "241",
+      "keyword": [
+        "Publically Available Data File - for purchase",
+        "Medicare",
+        "Providers",
+        "State"
+      ],
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "01-01-2015",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Invalid temporal: 01-01-2015"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+        }
+      ],
+      "identifier": "241",
+      "keyword": [
+        "Publically Available Data File - for purchase",
+        "Medicare",
+        "Providers",
+        "State"
+      ],
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "01/01/2015-12/31/2019",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Invalid temporal: 01/01/2015-12/31/2019"
     }
   ]
 }
