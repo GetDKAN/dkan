@@ -1368,7 +1368,7 @@ uk-ogl|UK Open Government Licence (OGL)',
         'label' => 'hidden',
         'module' => 'date',
         'settings' => array(
-          'format_type' => 'medium',
+          'format_type' => 'iso_8601_date',
           'fromto' => 'both',
           'multiple_from' => '',
           'multiple_number' => '',
