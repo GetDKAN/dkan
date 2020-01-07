@@ -30,7 +30,7 @@ class Uuid5Test extends TestCase {
    */
   public function testGenerate(string $schema_id, $value, $expected) {
     // Assert.
-    $actual = Uuid5::generate($schema_id, $value);
+    $actual = (new Uuid5())->generate($schema_id, $value);
     $this->assertEquals($expected, $actual);
   }
 
@@ -53,6 +53,16 @@ class Uuid5Test extends TestCase {
         'e9de513e-b4d7-5b05-902b-f90ee7a5db52',
       ],
     ];
+  }
+
+  public function testIsValid() {
+    $uuid5 = new Uuid5();
+
+    $valid = $uuid5->isValid('96f0603e-5da9-43e7-bc94-38eab002f9b3');
+    $this->assertTrue($valid);
+
+    $notValid = $uuid5->isValid('foo-bar');
+    $this->assertFalse($notValid);
   }
 
 }
