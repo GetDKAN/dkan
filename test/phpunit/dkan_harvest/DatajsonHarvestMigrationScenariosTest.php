@@ -554,7 +554,7 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
       ),
       'Acute IPPS - Readmissions Reduction Program' => array(
         'value' => "2013-01-01 00:00:00",
-        'value2' => "2013-01-01 00:00:00",
+        'value2' => "2013-06-01 00:00:00",
       ),
       'Acute IPPS - Disproportionate Share Hospital - DSH' => array(
         'value' => "1988-01-01 00:00:00",
@@ -564,9 +564,17 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
         'value' => "2000-01-15T00:45:00Z",
         'value2' => "2010-01-15T00:06:00Z",
       ),
-      'Test' => array(
-        'value' => "2005-01-01 00:00:00",
-        'value2' => "2016-12-31 00:00:00",
+      'Invalid temporal: 2007-present' => array(
+        'value' => NULL,
+      ),
+      'Invalid temporal: January' => array(
+        'value' => NULL,
+      ),
+      'Invalid temporal: 01-01-2015' => array(
+        'value' => NULL,
+      ),
+      'Invalid temporal: 01/01/2015-12/31/201' => array(
+        'value' => NULL,
       ),
     );
 
@@ -583,10 +591,17 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
 
     foreach ($dest_ids as $distid) {
       $dataset = entity_metadata_wrapper('node', $distid);
-      $value = new DateTime($expected_temporal[$dataset->label()]['value']);
-      $value2 = new DateTime($expected_temporal[$dataset->label()]['value2']);
-      $this->assertEquals($value->getTimestamp(), $dataset->field_temporal_coverage->value->value());
-      $this->assertEquals($value2->getTimestamp(), $dataset->field_temporal_coverage->value2->value());
+      if (is_null($expected_temporal[$dataset->label()]['value'])) {
+        // Date is invalid.
+        $this->assertNull($dataset->field_temporal_coverage->value());
+      }
+      else {
+        // Date is valid.
+        $value = strtotime($expected_temporal[$dataset->label()]['value']);
+        $value2 = strtotime($expected_temporal[$dataset->label()]['value2']);
+        $this->assertEquals($value, $dataset->field_temporal_coverage->value->value());
+        $this->assertEquals($value2, $dataset->field_temporal_coverage->value2->value());
+      }
     }
   }
 
@@ -795,6 +810,14 @@ class DatajsonHarvestMigrationScenariosTest extends PHPUnit_Framework_TestCase {
    */
   public static function getResourceTemporal() {
     $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_temporal.json');
+    return new HarvestSourceDataJsonStub($uri);
+  }
+
+  /**
+   * Test Harvest Source.
+   */
+  public static function getResourceTemporalInvalid() {
+    $uri = file_create_url('profiles/dkan/test/phpunit/dkan_harvest/data/dkan_harvest_datajson_test_temporal_invalid.json');
     return new HarvestSourceDataJsonStub($uri);
   }
 
