@@ -73,19 +73,7 @@
       "identifier": "155",
       "keyword": [
         "Statistics",
-        "Hospital",
-        "Inpatient",
-        "Providers",
-        "National",
-        "Quality",
-        "Readmissions",
-        "Admissions",
-        "Claims",
-        "Payments",
-        "Prospective Payment System (PPS)",
-        "Rates",
-        "Publically Available Data File - for download",
-        "Chronic Condition"
+        "Hospital"
       ],
       "landingPage": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Readmissions-Reduction-Program.html",
       "modified": "2016-04-07",
@@ -95,7 +83,7 @@
       "publisher": {
         "name": "Centers for Medicare & Medicaid Services"
       },
-      "temporal": "2013",
+      "temporal": "2013-01/2013-06",
       "theme": [
         "Medicare"
       ],
@@ -124,22 +112,7 @@
       "identifier": "154",
       "keyword": [
         "Statistics",
-        "Medicare",
-        "Medicare Advantage",
-        "Hospital",
-        "Inpatient",
-        "Part A",
-        "Providers",
-        "National",
-        "Regional",
-        "Research",
-        "Claims",
-        "Eligibility",
-        "Enrollment",
-        "Payments",
-        "Prospective Payment System (PPS)",
-        "Part C",
-        "Disproportionate Share Hospitals (DSH)"
+        "Medicare"
       ],
       "landingPage": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/dsh.html",
       "modified": "2016-01-06",
@@ -207,36 +180,153 @@
         "hasEmail": "mailto:cms.data@cms.hhs.gov"
       },
       "dataQuality": true,
-      "description": "The Ambulance Fee Schedule public use files for calendar years 2004 through December 31, 2016 are located in the Downloads section below.",
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
-          "mediaType": "text/html",
-          "accessURL": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html"
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
         }
       ],
-      "identifier": "309",
+      "identifier": "241",
       "keyword": [
-        "Publically Available Data File - for download",
-        "Ambulatory",
+        "Publically Available Data File - for purchase",
+        "Medicare",
         "Providers",
-        "State",
-        "Claims"
+        "State"
       ],
-      "landingPage": "https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AmbulanceFeeSchedule/afspuf.html",
-      "modified": "2016-04-07",
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
       "programCode": [
         "009:000"
       ],
       "publisher": {
         "name": "Centers for Medicare & Medicaid Services"
       },
-      "temporal": "2005-2016",
+      "temporal": "2007-present",
       "theme": [
         "Medicare"
       ],
-      "title": "Test"
+      "title": "Invalid temporal: 2007-present"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+        }
+      ],
+      "identifier": "241",
+      "keyword": [
+        "Publically Available Data File - for purchase",
+        "Medicare",
+        "Providers",
+        "State"
+      ],
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "January",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Invalid temporal: January"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+        }
+      ],
+      "identifier": "241",
+      "keyword": [
+        "Publically Available Data File - for purchase",
+        "Medicare",
+        "Providers",
+        "State"
+      ],
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "01-01-2015",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Invalid temporal: 01-01-2015"
+    },
+    {
+      "@type": "dcat:Dataset",
+      "accessLevel": "public",
+      "bureauCode": [
+        "009:38"
+      ],
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Health Data Initiative",
+        "hasEmail": "mailto:cms.data@cms.hhs.gov"
+      },
+      "dataQuality": true,
+      "description": "The Group Unique Physician Identifier Number (UPIN) File is the business entity file that contains the group practice UPIN and descriptive information.  It does NOT associate individual physicians within the practice.  ",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html"
+        }
+      ],
+      "identifier": "241",
+      "keyword": [
+        "Publically Available Data File - for purchase",
+        "Medicare",
+        "Providers",
+        "State"
+      ],
+      "landingPage": "https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/NonIdentifiableDataFiles/UPINGroupFile.html",
+      "modified": "2015-12-16",
+      "programCode": [
+        "009:000"
+      ],
+      "publisher": {
+        "name": "Centers for Medicare & Medicaid Services"
+      },
+      "temporal": "01/01/2015-12/31/2019",
+      "theme": [
+        "Medicare"
+      ],
+      "title": "Invalid temporal: 01/01/2015-12/31/2019"
     }
   ]
 }
