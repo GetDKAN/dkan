@@ -31,7 +31,7 @@ function dkan_datastore_proxy($node) {
     $size = isset($node_wrapper->field_link_remote_file->value()['filesize']) ? (int) $node_wrapper->field_link_remote_file->value()['filesize'] : $max;
 
     if ($size >= $max) {
-      drupal_goto($url);
+      drupal_goto($uri);
     }
     else {
       drupal_add_http_header('Content-Type', $mime);
