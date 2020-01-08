@@ -4,7 +4,7 @@ dkan_alt_api.1.metastore.schemas.id.items:
   defaults:
     { _controller: '\Drupal\dkan_metastore\WebServiceApi::getAll'}
   requirements:
-    _permission: 'metastore increased visibility'
+    _permission: 'get data through the alternate metastore api'
   options:
     _auth: ['basic_auth']
 
@@ -14,7 +14,7 @@ dkan_alt_api.1.metastore.schemas.id.items.id:
   defaults:
     { _controller: '\Drupal\dkan_metastore\WebServiceApi::get'}
   requirements:
-    _permission: 'metastore increased visibility'
+    _permission: 'get data through the alternate metastore api'
   options:
     _auth: ['basic_auth']
 
