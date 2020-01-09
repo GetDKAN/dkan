@@ -13,6 +13,8 @@ projects:
     version: '1.1'
     patch:
       2441283: https://www.drupal.org/files/issues/allow_ordering_of_the-2441283-5.patch
+  admin_views:
+    version: '1.7'
   adminrole:
     version: '1.1'
   autocomplete_deluxe:
