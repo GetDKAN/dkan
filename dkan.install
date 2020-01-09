@@ -855,3 +855,10 @@ function dkan_update_7037() {
     variable_set('views_defaults', $default);
   }
 }
+
+/**
+ * Enable admin_views.
+ */
+function dkan_update_7038() {
+  module_enable(['admin_views']);
+}
