@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\dkan_common\DataModifierPluginTrait;
+use Drupal\dkan_common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\Factory\Sae;
@@ -14,6 +16,7 @@ use Drupal\dkan_schema\SchemaRetriever;
  * Service.
  */
 class Service implements ContainerInjectionInterface {
+  use DataModifierPluginTrait;
 
   /**
    * SAE Factory.
@@ -47,6 +50,17 @@ class Service implements ContainerInjectionInterface {
   public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
+  }
+
+  /**
+   * Setter to discover data modifier plugins.
+   *
+   * @param \Drupal\dkan_common\Plugin\DataModifierManager $pluginManager
+   *   Injected plugin manager.
+   */
+  public function setDataModifierPlugins(DataModifierManager $pluginManager) {
+    $this->pluginManager = $pluginManager;
+    $this->plugins = $this->discover();
   }
 
   /**
@@ -86,7 +100,10 @@ class Service implements ContainerInjectionInterface {
 
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
-      function ($json_string) {
+      function ($json_string) use ($schema_id) {
+        if (!empty($this->plugins)) {
+          $json_string = $this->modifyData($schema_id, $json_string);
+        }
         return json_decode($json_string);
       },
       $datasets
@@ -107,8 +124,35 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get($schema_id, $identifier): string {
-    return $this->getEngine($schema_id)
+    $data = $this->getEngine($schema_id)
       ->get($identifier);
+    if (!empty($this->plugins)) {
+      $data = $this->modifyData($schema_id, $data);
+    }
+    return $data;
+  }
+
+  /**
+   * Provides data modifiers plugins an opportunity to act.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $data
+   *   The Json input.
+   *
+   * @return string
+   *   The Json, modified by each applicable discovered data modifier plugins.
+   */
+  private function modifyData(string $schema_id, string $data) {
+    $dataObj = json_decode($data);
+
+    foreach ($this->plugins as $plugin) {
+      if ($plugin->requiresModification($schema_id, $dataObj)) {
+        $dataObj = $plugin->modify($schema_id, $dataObj);
+      }
+    }
+
+    return json_encode($dataObj);
   }
 
   /**
