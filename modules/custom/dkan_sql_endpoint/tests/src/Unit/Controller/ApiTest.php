@@ -8,6 +8,8 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
+use Drupal\dkan_common\Plugin\DataModifierBase;
+use Drupal\dkan_common\Plugin\DataModifierManager;
 use MockChain\Chain;
 use MockChain\Options;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
@@ -30,7 +32,7 @@ class ApiTest extends TestCase {
    *
    */
   public function test() {
-    $controller = Api::create($this->getContainer());
+    $controller = Api::create($this->getCommonMockChain()->getMock());
     $response = $controller->runQueryGet();
     $this->assertEquals("[]", $response->getContent());
   }
@@ -39,7 +41,7 @@ class ApiTest extends TestCase {
    *
    */
   public function test2() {
-    $controller = Api::create($this->getContainer());
+    $controller = Api::create($this->getCommonMockChain()->getMock());
     $response = $controller->runQueryPost();
     $this->assertEquals("[]", $response->getContent());
   }
@@ -47,7 +49,27 @@ class ApiTest extends TestCase {
   /**
    *
    */
-  private function getContainer() {
+  public function testWithDataModifierPlugin() {
+    $pluginMessage = "Resource hidden since dataset access level is non-public.";
+    $pluginCode = 401;
+
+    $container = $this->getCommonMockChain()
+      ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])
+      ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
+      ->add(DataModifierBase::class, 'requiresModification', TRUE)
+      ->add(DataModifierBase::class, 'message', $pluginMessage)
+      ->add(DataModifierBase::class, 'httpCode', $pluginCode);
+
+    $controller = Api::create($container->getMock());
+    $response = $controller->runQueryGet();
+    $expected = '{"message":"Resource hidden since dataset access level is non-public."}';
+    $this->assertEquals($expected, $response->getContent());
+  }
+
+  /**
+   * @return \MockChain\Chain
+   */
+  public function getCommonMockChain() {
     $container = (new Chain($this))
       ->add(Container::class, "get", ConfigFactory::class)
       ->add(ConfigFactory::class, "get", ImmutableConfig::class)
@@ -59,12 +81,13 @@ class ApiTest extends TestCase {
       ->add("database", Connection::class)
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
       ->add('request_stack', RequestStack::class)
-      ->add('dkan_datastore.database_table_factory', DatabaseTableFactory::class);
+      ->add('dkan_datastore.database_table_factory', DatabaseTableFactory::class)
+      ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class);
 
     $query = '[SELECT * FROM abc][WHERE abc = \'blah\'][ORDER BY abc DESC][LIMIT 1 OFFSET 3];';
     $body = json_encode(["query" => $query]);
 
-    $container = (new Chain($this))
+    return (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'get', $query)
@@ -76,9 +99,9 @@ class ApiTest extends TestCase {
       ->add(Resource::class, 'getId', "1")
       ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
       ->add(DatabaseTable::class, 'query', [])
-      ->getMock();
-
-    return $container;
+      ->add(DataModifierManager::class, 'getDefinitions', [])
+      ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
+      ->add(DataModifierBase::class, 'requiresModification', FALSE);
   }
 
 }

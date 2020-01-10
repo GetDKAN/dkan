@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
+use Drupal\dkan_common\DataModifierPluginTrait;
+use Drupal\dkan_common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
@@ -17,6 +19,7 @@ use Drupal\dkan_sql_endpoint\Service;
  */
 class Api implements ContainerInjectionInterface {
   use JsonResponseTrait;
+  use DataModifierPluginTrait;
 
   private $service;
   private $database;
@@ -37,7 +40,8 @@ class Api implements ContainerInjectionInterface {
       $container->get('database'),
       $container->get('dkan_datastore.service.factory.resource'),
       $container->get('request_stack'),
-      $container->get('dkan_datastore.database_table_factory')
+      $container->get('dkan_datastore.database_table_factory'),
+      $container->get('plugin.manager.dkan_common.data_modifier')
     );
   }
 
@@ -49,13 +53,17 @@ class Api implements ContainerInjectionInterface {
     Connection $database,
     Resource $resourceServiceFactory,
     RequestStack $requestStack,
-    DatabaseTableFactory $databaseTableFactory
+    DatabaseTableFactory $databaseTableFactory,
+    DataModifierManager $pluginManager
   ) {
     $this->service = $service;
     $this->database = $database;
     $this->resourceServiceFactory = $resourceServiceFactory;
     $this->requestStack = $requestStack;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->pluginManager = $pluginManager;
+
+    $this->plugins = $this->discover();
   }
 
   /**
@@ -103,7 +111,11 @@ class Api implements ContainerInjectionInterface {
       return $this->getResponseFromException($e);
     }
 
-    $databaseTable = $this->getDatabaseTable($this->service->getTableName($query));
+    $uuid = $this->service->getTableName($query);
+    if ($modifyResponse = $this->modifyData($uuid)) {
+      return $modifyResponse;
+    }
+    $databaseTable = $this->getDatabaseTable($uuid);
 
     try {
       $result = $databaseTable->query($queryObject);
@@ -113,6 +125,24 @@ class Api implements ContainerInjectionInterface {
     }
 
     return $this->getResponse($result, 200);
+  }
+
+  /**
+   * Provides data modifiers plugins an opportunity to act.
+   *
+   * @param string $identifier
+   *   The distribution's identifier.
+   *
+   * @return object|bool
+   *   The json response if sql endpoint docs needs modifying, FALSE otherwise.
+   */
+  private function modifyData(string $identifier) {
+    foreach ($this->plugins as $plugin) {
+      if ($plugin->requiresModification('distribution', $identifier)) {
+        return $this->getResponse((object) ["message" => $plugin->message()], $plugin->httpCode());
+      }
+    }
+    return FALSE;
   }
 
   /**
