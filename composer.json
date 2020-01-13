@@ -16,7 +16,7 @@
         "getdkan/contracts": "^1.0.0",
         "getdkan/datastore" : "^3.0.0",
         "getdkan/file-fetcher" : "^3.0.0",
-        "getdkan/harvest": "^0.2.4",
+        "getdkan/harvest": "^1.0.0",
         "getdkan/json-schema-provider": "^0.1.2",
         "getdkan/sae" : "^1.1.1",
         "getdkan/sql-parser": "^1.1.2",
