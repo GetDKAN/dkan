@@ -100,11 +100,9 @@ projects:
   environment_indicator:
     version: '2.9'
   facetapi:
-    version: '1.5'
+    version: '1.6'
   facetapi_bonus:
-    version: '1.2'
-    patch:
-      2938545: https://www.drupal.org/files/issues/2018-09-04/non-countable-2938545-5.patch
+    version: '1.3'
   facetapi_pretty_paths:
     version: '1.4'
   features:
@@ -148,7 +146,7 @@ projects:
   fieldable_panels_panes:
     version: '1.13'
   file_entity:
-    version: 2.25
+    version: 2.27
   file_resup:
     version: '1.5'
   filefield_sources:
@@ -187,7 +185,7 @@ projects:
     patch:
       1568162: https://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch
   honeypot:
-    version: '1.25'
+    version: '1.26'
   image_url_formatter:
     version: '1.4'
   imagecache_actions:
@@ -204,7 +202,7 @@ projects:
   libraries:
     version: '2.5'
   link:
-    version: '1.6'
+    version: '1.7'
   link_badges:
     version: '1.1'
   link_iframe_formatter:
@@ -226,9 +224,9 @@ projects:
     patch:
       2045225: https://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.23
+    version: 2.24
   media_youtube:
-    version: '3.8'
+    version: '3.9'
   media_vimeo:
     version: '2.1'
     patch:
@@ -281,7 +279,7 @@ projects:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.70'
+    version: '1.72'
   path_breadcrumbs:
     version: '3.4'
   pathauto:
