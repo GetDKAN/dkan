@@ -522,8 +522,7 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
       }
     }
 
-    // Process any outstanding search items.
-    $this->searchContext->process();
+    $this->indexItem($wrapper->getIdentifier());
 
     // Add the created entity to the array so it can be deleted later.
     $id = $wrapper->getIdentifier();
@@ -638,4 +637,18 @@ class RawDKANEntityContext extends RawDKANContext implements SnippetAcceptingCon
     }
   }
 
+  /**
+   * Add an entity to all indexes
+   *
+   * @param $item
+   *   The entity id of the item to index
+   *
+   * @throws \SearchApiException
+   */
+  public function indexItem($item) {
+    $search_indexes = search_api_index_load_multiple(false);
+    foreach ($search_indexes as $index) {
+      search_api_index_specific_items($index, [$item]);
+    }
+  }
 }
