@@ -281,7 +281,7 @@ projects:
     version: '1.8'
   radix:
     type: theme
-    version: '3.7'
+    version: '3.8'
     patch:
       1: patches/radix-bootstrap.patch
   radix_layouts:
