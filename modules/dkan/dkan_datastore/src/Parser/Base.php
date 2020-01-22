@@ -43,7 +43,7 @@ abstract class Base {
   }
 
   /**
-   * Feeds the parser a chunck of string to be parsed.
+   * Feeds the parser a chunk of string to be parsed.
    *
    * @param string $chunk
    *   Part of what we are parsing.
