@@ -862,3 +862,17 @@ function dkan_update_7037() {
 function dkan_update_7038() {
   module_enable(['admin_views']);
 }
+
+/**
+ * Clean up db.
+ *
+ * Remove deprecated roles and permissions module.
+ */
+function dkan_update_7039() {
+  if (!module_exists('dkan_sitewide_roles_perms')) {
+    db_delete('system')
+      ->condition('name', 'dkan_sitewide_roles_perms')
+      ->condition('type', 'module')
+      ->execute();
+  }
+}
