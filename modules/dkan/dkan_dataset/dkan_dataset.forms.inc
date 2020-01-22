@@ -305,10 +305,6 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
     $form['#attached']['css'][] = drupal_get_path('module', 'dkan_dataset') . '/css/dkan_dataset.css';
     $form['#attached']['js'][] = drupal_get_path('module', 'dkan_dataset') . '/js/dkan_forms.js';
 
-    if (isset($form['feeds'])) {
-      $form['feeds']['#access'] = FALSE;
-    }
-
     $form['#after_build']['dkan_dataset'] = 'dkan_dataset_resource_form_after_build';
 
     // Get langcode for field_dataset_ref.
