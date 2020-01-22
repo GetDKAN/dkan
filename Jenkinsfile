@@ -5,7 +5,7 @@ import groovy.json.JsonOutput
  *
  * @param version The tag in DKAN we're building against
  * @param date A timestamp for the new version
- * @param username The username for github
+ * @param username The username for github.
  * 
  */
 void createDropsPr(String version, String date, String username) {
@@ -18,8 +18,8 @@ void createDropsPr(String version, String date, String username) {
             head: branch,
             base: "master"
         ]
-	    def payload = JsonOutput.toJson(data)
-	    sh "curl -v -u ${username}:${GITHUB_TOKEN} -H ${header} -X POST ${url} -d '${payload}'"
+	def payload = JsonOutput.toJson(data)
+	sh "curl -v -u ${username}:${GITHUB_TOKEN} -H ${header} -X POST ${url} -d '${payload}'"
     }
 }
 
@@ -28,6 +28,12 @@ void createDropsPr(String version, String date, String username) {
  *
  * Create tarballs with version info and without dev artifacts,
  * and create a PR for a DKAN-DROPS-7 (Pantheon) release.
+ *
+ * - Uses the GitHub API to create pull requests
+ * - Uses Credentials Binding Plugin
+ * - Expects a private access token for Github stored in "dkanuploadassets"
+ * - Depends on the pantheon-system and GetDKAN/dkan-drops-7 repos
+ * - Uses the getdkan/dkan-docker:php72-cli image
  */
 pipeline {
     agent {
