@@ -100,39 +100,15 @@ projects:
   environment_indicator:
     version: '2.9'
   facetapi:
-    version: '1.5'
+    version: '1.6'
   facetapi_bonus:
-    version: '1.2'
-    patch:
-      2938545: https://www.drupal.org/files/issues/2018-09-04/non-countable-2938545-5.patch
+    version: '1.3'
   facetapi_pretty_paths:
     version: '1.4'
   features:
     version: '2.11'
   features_roles_permissions:
     version: '1.2'
-  feeds:
-    download:
-      type: git
-      url: https://git.drupal.org/project/feeds.git
-      branch: 7.x-2.x
-      revision: d312f4f66e98cc12b8462cd13874184589017f72
-    patch:
-      1127696: https://www.drupal.org/files/issues/1127696-137.patch
-  feeds_field_fetcher:
-    download:
-      type: git
-      url: https://git.drupal.org/project/feeds_field_fetcher.git
-      branch: 7.x-1.x
-      revision: 6725b86
-    patch:
-      2315425: https://www.drupal.org/files/issues/feeds_field_fetcher-typo-error-2315425-1.patch
-      2829416: https://www.drupal.org/files/issues/feeds_field_fetcher_error-validation-config.patch
-  feeds_flatstore_processor:
-    download:
-      type: git
-      url: https://github.com/GetDKAN/feeds_flatstore_processor.git
-      revision: 82b2a05bd133dbf870bdf09f1c0a45711f1432e3
   field_group:
     version: '1.6'
   field_group_table:
@@ -148,11 +124,20 @@ projects:
   fieldable_panels_panes:
     version: '1.13'
   file_entity:
-    version: 2.25
+    version: 2.27
   file_resup:
     version: '1.5'
   filefield_sources:
     version: '1.11'
+  filehash:
+    download:
+      type: git
+      url: https://git.drupal.org/project/filehash.git
+      branch: '7.x-1.x'
+      revision: d36daa759271737f20198240b4aa50280c95af5a
+    patch:
+      3088648: https://www.drupal.org/files/issues/2019-10-17/add-sha512-3088648-5.patch
+      2: patches/filehash-uploaded-files-only-option.patch
   font_icon_select:
     download:
       type: git
@@ -178,7 +163,7 @@ projects:
     patch:
       1568162: https://drupal.org/files/views-display-user-picture-doesn-t-display-gravatar-1568162-10.patch
   honeypot:
-    version: '1.25'
+    version: '1.26'
   image_url_formatter:
     version: '1.4'
   imagecache_actions:
@@ -195,7 +180,7 @@ projects:
   libraries:
     version: '2.5'
   link:
-    version: '1.6'
+    version: '1.7'
   link_badges:
     version: '1.1'
   link_iframe_formatter:
@@ -217,9 +202,9 @@ projects:
     patch:
       2045225: https://drupal.org/files/remove-dsm-from-hook-install-2045225-1.patch
   media:
-    version: 2.23
+    version: 2.24
   media_youtube:
-    version: '3.8'
+    version: '3.9'
   media_vimeo:
     version: '2.1'
     patch:
@@ -272,7 +257,7 @@ projects:
       1: patches/panopoly_widgets_overrides.patch
       2: patches/panopoly_widgets_add_jquery_ui_tabs.patch
   panopoly_images:
-    version: '1.70'
+    version: '1.72'
   path_breadcrumbs:
     version: '3.4'
   pathauto:

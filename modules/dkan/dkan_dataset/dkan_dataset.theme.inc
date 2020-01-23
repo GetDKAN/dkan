@@ -101,9 +101,21 @@ function theme_dkan_dataset_resource_view($vars) {
       if (isset($node->field_format) && $node->field_format && $node_wrapper->field_format->value()) {
         $format = $node_wrapper->field_format->value()->name;
       }
+      $hash = '';
       if (isset($node->field_upload[LANGUAGE_NONE])) {
         $type = 'file_upload';
         $file_count++;
+
+        $file = $node_wrapper->field_upload->value();
+        if (!empty($file->filehash)) {
+          foreach ($file->filehash as $hash_type => $hash_value) {
+            if (!empty($hash_value)) {
+              $hash .= '<div class="file-hash"><span class="file-hash--label">' .
+                  strtoupper($hash_type) . ':</span> <input class="file-hash--content" value="'
+                  . $hash_value . '"/></div>';
+            }
+          }
+        }
       }
       elseif (isset($node->field_link_remote_file[LANGUAGE_NONE])) {
         $type = 'link_remote_file';
@@ -111,6 +123,7 @@ function theme_dkan_dataset_resource_view($vars) {
       else {
         $type = 'link_api';
       }
+
       $teaser_link = theme('dkan_dataset_teaser_preview_link', array('node' => $node, 'type' => $type));
       $links[] = theme('dkan_dataset_teaser_link', array(
         'link' => $teaser_link,
@@ -119,6 +132,7 @@ function theme_dkan_dataset_resource_view($vars) {
         'desc' => $desc,
         'format' => $format,
         'type' => $type,
+        'hash' => $hash,
         'node' => $node,
       ));
     }
@@ -167,6 +181,7 @@ function dkan_dataset_resource_direct_link($node) {
 function theme_dkan_dataset_teaser_link($vars) {
 
   $desc = $vars['desc'];
+  $hash = $vars['hash'];
   $output = '<div property="dcat:Distribution">';
   $format = '<span data-toggle="tooltip" data-placement="top" data-original-title="' . $vars['format'] . '" class="format-label" property="dc:format" data-format="' . $vars['format'] . '">' . $vars['format'] . '</span>';
 
@@ -179,7 +194,7 @@ function theme_dkan_dataset_teaser_link($vars) {
     ),
   )
   );
-  $output .= $title . $desc . '<span class="links">' . $vars['link'] . '</span></div>';
+  $output .= $title . $desc . $hash . '<span class="links">' . $vars['link'] . '</span></div>';
 
   return $output;
 }

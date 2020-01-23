@@ -91,3 +91,13 @@ Feature: Resource
     Then I should not see the link "Back to dataset"
     When I click "Edit"
     Then I should see "Groups" in the "content" region
+
+  @resource_all_13 @api @add_filehash @remove_filehash
+  Scenario: View SHA-512 for resource with uploaded file when filehash is enabled and set create SHA-512
+    Given I am logged in as a user with the "content creator" role
+    And I am on "/node/add"
+    And I click "Resource"
+    And I attach the drupal file "dkan/TAB_delimiter_large_raw_number.tsv" to "files[field_upload_und_0]"
+    When I fill in "Title" with "Resource TSV"
+    And I press "Save"
+    Then I should see "SHA512"

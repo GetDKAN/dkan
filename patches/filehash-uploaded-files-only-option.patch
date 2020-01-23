@@ -1,0 +1,61 @@
+diff --git a/filehash.admin.inc b/filehash.admin.inc
+index 097b8ee..130e825 100644
+--- a/filehash.admin.inc
++++ b/filehash.admin.inc
+@@ -22,6 +22,12 @@ function filehash_settings() {
+     '#title' => t('Disallow duplicate files'),
+     '#type' => 'checkbox',
+   );
++  $form['filehash_local_only'] = array(
++    '#default_value' => variable_get('filehash_local_only', 0),
++    '#description' => t('If checked, only create hashes for files with "public" or "private" uri schemes.'),
++    '#title' => t('Only create hashes for locally uploaded files'),
++    '#type' => 'checkbox',
++  );
+   return system_settings_form($form);
+ }
+ 
+diff --git a/filehash.install b/filehash.install
+index 85505f9..4e86f6f 100644
+--- a/filehash.install
++++ b/filehash.install
+@@ -66,6 +66,7 @@ function filehash_schema() {
+ function filehash_uninstall() {
+   variable_del('filehash_algos');
+   variable_del('filehash_dedupe');
++  variable_del('filehash_local_only');
+ }
+ 
+ /**
+diff --git a/filehash.module b/filehash.module
+index 35a2c27..726af57 100644
+--- a/filehash.module
++++ b/filehash.module
+@@ -186,14 +186,20 @@ function filehash_rss_elements(array $file, $node) {
+  * Calculates and saves the file hashes.
+  */
+ function filehash_save($file) {
+-  $file->filehash = array_fill_keys(array('md5', 'sha1', 'sha256', 'sha512'), NULL);
+-  foreach (filehash_algos() as $algo) {
+-    $file->filehash[$algo] = hash_file($algo, $file->uri);
++  $create_hash = true;
++  if (variable_get('filehash_local_only', 0) && !in_array(parse_url($file->uri, PHP_URL_SCHEME), ['public', 'private'])) {
++    $create_hash = false;
++  }
++  if ($create_hash) {
++    $file->filehash = array_fill_keys(array('md5', 'sha1', 'sha256', 'sha512'), NULL);
++    foreach (filehash_algos() as $algo) {
++      $file->filehash[$algo] = hash_file($algo, $file->uri);
++    }
++    db_merge('filehash')
++      ->key(array('fid' => $file->fid))
++      ->fields($file->filehash)
++      ->execute();
+   }
+-  db_merge('filehash')
+-    ->key(array('fid' => $file->fid))
+-    ->fields($file->filehash)
+-    ->execute();
+ }
+ 
+ /**

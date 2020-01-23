@@ -537,33 +537,21 @@ function dkan_dataset_node_update($node) {
       dkan_dataset_sync_groups($node);
       break;
 
-    case 'resource':
+      case 'resource':
       // Add changelog on associated datasets.
       $resource = entity_metadata_wrapper('node', $node);
       $datasets = $resource->field_dataset_ref->raw();
-      if (count($datasets)) {
-        $queue = DrupalQueue::get('dataset_changelog');
-        foreach ($datasets as $dataset) {
-          // Determine if the resource is part of a harvest.
-          // Skip the dataset_changelog update if harvesting since every resource is updated.
-          $harvest = db_select('field_data_field_harvest_source_ref', 'r')
-            ->fields('r', array('entity_id'))
-            ->condition('entity_id', $dataset)
-            ->execute()
-            ->fetchAll();
-          if (!$harvest) {
-            $item = array(
-              'dataset' => $dataset,
-              'message' => 'Update to resource \'' . $resource->title . '\'',
-              'user' => $user->uid,
-            );
-            $queue->createItem($item);
-          }
+      if (empty($datasets)) {
+        break;
+      }
+      foreach ($datasets as $dataset_nid) {
+        $dataset = entity_metadata_wrapper('node', node_load($dataset_nid));
+        if (($resource->changed->value() - $dataset->changed->value() > 60)) {
+          $dataset->revision->set(TRUE);
+          $dataset->log->set(t("Update to resource @resource", array('@resource' => $resource->label())));
+          $dataset->save();
         }
       }
-      break;
-
-    default:
       break;
   }
 }
@@ -806,6 +794,7 @@ function dkan_dataset_update_resource_groups($resources, EntityMetadataWrapper $
     }
     else {
       $wrapper_resource->og_group_ref->set($resource_groups);
+      $wrapper_resource->revision->set(0);
       $wrapper_resource->save();
     }
   }
