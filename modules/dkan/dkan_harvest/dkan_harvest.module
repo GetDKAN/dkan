@@ -277,12 +277,9 @@ function dkan_harvest_page_preview($node) {
     // The cache directory does not exist.
     $uri = $harvestSource->uri;
     $info = new GetRemoteFileInfo($uri, 'test');
-    if (!$info->getInfo()) {
-      $output .= t("<div>Could not connect to <em>@url</em>. Please check the value of 'Source URI' and resubmit.</div>",
-          ['@url' => $uri]);
-    }
-    elseif (!empty($info->getType()) && strpos($info->getType(), 'json') === FALSE) {
-      $output .= t("<div><em>@url</em> is not a json endpoint. Please check the value of 'Source URI' and resubmit.</div>",
+    if (!$info->getInfo() ||
+        (!empty($info->getType()) && strpos($info->getType(), 'json') === FALSE)) {
+      $output .= t("<div>Unable to harvest from <em>@url</em>. Please check the value of 'Source URI' and confirm that it is publicly accessible and is a json endpoint. Then resubmit.</div>",
           ['@url' => $uri]);
     }
     else {
