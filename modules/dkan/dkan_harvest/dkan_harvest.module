@@ -281,7 +281,7 @@ function dkan_harvest_page_preview($node) {
       $output .= t("<div>Could not connect to <em>@url</em>. Please check the value of 'Source URI' and resubmit.</div>",
           ['@url' => $uri]);
     }
-    elseif (strpos($info->getType(), 'json') === FALSE) {
+    elseif (!empty($info->getType()) && strpos($info->getType(), 'json') === FALSE) {
       $output .= t("<div><em>@url</em> is not a json endpoint. Please check the value of 'Source URI' and resubmit.</div>",
           ['@url' => $uri]);
     }
