@@ -862,3 +862,27 @@ function dkan_update_7037() {
 function dkan_update_7038() {
   module_enable(['admin_views']);
 }
+
+/**
+ * Clean up db.
+ *
+ * Remove deprecated roles and permissions module.
+ */
+function dkan_update_7039() {
+  if (!module_exists('dkan_sitewide_roles_perms')) {
+    db_delete('system')
+      ->condition('name', 'dkan_sitewide_roles_perms')
+      ->condition('type', 'module')
+      ->execute();
+  }
+}
+
+/** 
+ * Enable new search feature
+ */
+function dkan_update_7040() {
+  // check that the core modules are still enabled
+  if (module_exists('dkan_sitewide_search_db') && module_exists('dkan_sitewide_panels')) {
+    module_enable(array('dkan_dataset_search'));
+  }
+}
