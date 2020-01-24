@@ -279,7 +279,7 @@ function dkan_harvest_page_preview($node) {
     $info = new GetRemoteFileInfo($uri, 'test');
     if (!$info->getInfo() ||
         (!empty($info->getType()) && strpos($info->getType(), 'json') === FALSE)) {
-      $output .= t("<div>Unable to harvest from <em>@url</em>. Please check the value of 'Source URI' and confirm that it is publicly accessible and is a json endpoint. Then resubmit.</div>",
+      $output .= t("<div class=\"alert alert-warning\">Unable to harvest from <em>@url</em>. Please check the value of 'Source URI' and confirm that it is publicly accessible and is a json endpoint. Then resubmit.</div>",
           ['@url' => $uri]);
     }
     else {
