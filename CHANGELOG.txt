@@ -1,3 +1,22 @@
+7.x-1.18
+-----------
+ - #3012 Prevent infinite loop in Harvest Source preview page
+ - #3002 Add release script and Jenkinsfile
+ - #2733 Decouple search from dkan_panels & other features
+ - #2984 Remove feeds modules
+ - #2985 Remove dreprecated dkan_sitewide_roles_perms module
+ - #3004 Update contrib modules (facet_api, facet_api_bonus, file_entity, honeypot, link, media, media_youtube, panopoly_images)
+ - #2995 Remove 404 redirect
+ - #2968 Stop queuing dataset "log" and only do if > 1min
+ - #2975 Add file hash option
+ - #2983 Separate harvest classes into separate files and do some light cleanup
+ - #3010 Update radix to 3.8
+ - #3008 Add admin_views contrib module
+ - #3007 Fix typo in dkan_datastore_proxy function
+ - #3003 Improve validation for temporal values when harvesting
+ - #2998 Move check for file size into the proxy function
+
+
 7.x-1.17.4
 -----------
  - #2997 Add views patch 3054091
