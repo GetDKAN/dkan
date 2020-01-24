@@ -5,6 +5,8 @@
  * Code for the DKAN Harvest feature.
  */
 
+use dkanDataset\GetRemoteFileInfo;
+
 include_once 'dkan_harvest.features.inc';
 
 // TODO Probably move this to drupal variables.
@@ -273,20 +275,29 @@ function dkan_harvest_page_preview($node) {
 
   if (!$cache_dir) {
     // The cache directory does not exist.
-    // Perform a cache operation.
-    $batch_operations = array();
-    $batch_operations[] = array('dkan_harvest_cache_source_batch_op', array($harvestSource));
+    $uri = $harvestSource->uri;
+    $info = new GetRemoteFileInfo($uri, 'test');
+    if (!$info->getInfo() ||
+        (!empty($info->getType()) && strpos($info->getType(), 'json') === FALSE)) {
+      $output .= t("<div class=\"alert alert-warning\">Unable to harvest from <em>@url</em>. Please check the value of 'Source URI' and confirm that it is publicly accessible and is a json endpoint. Then resubmit.</div>",
+          ['@url' => $uri]);
+    }
+    else {
+      // Perform a cache operation.
+      $batch_operations = array();
+      $batch_operations[] = array('dkan_harvest_cache_source_batch_op', array($harvestSource));
 
-    // Setup batch process.
-    $batch = array(
-      'operations' => $batch_operations,
-      'title' => t('Caching source and preparing Harvest preview...'),
-      'init_message' => t('Processed 0%.'),
-      'progress_message' => t('Processed @percentage.'),
-      'error_message' => t('An error ocurred while caching the source.'),
-    );
-    batch_set($batch);
-    batch_process();
+      // Setup batch process.
+      $batch = array(
+          'operations' => $batch_operations,
+          'title' => t('Caching source and preparing Harvest preview...'),
+          'init_message' => t('Processed 0%.'),
+          'progress_message' => t('Processed @percentage.'),
+          'error_message' => t('An error ocurred while caching the source.'),
+      );
+      batch_set($batch);
+      batch_process();
+    }
   }
   else {
     // The cache directory exists. Load the table.
