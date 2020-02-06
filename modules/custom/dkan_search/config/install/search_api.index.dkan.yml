@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.server.dkan
+  module:
+    - search_api
+    - dkan_search
+id: dkan
+name: DKAN
+description: ''
+read_only: false
+field_settings:
+  title:
+    label: title
+    datasource_id: dkan_dataset
+    property_path: title
+    type: text
+datasource_settings:
+  dkan_dataset: {  }
+processor_settings:
+  add_url: {  }
+  aggregated_field: {  }
+  language_with_fallback: {  }
+  rendered_item: {  }
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  index_directly: true
+  cron_limit: 50
+server: dkan
