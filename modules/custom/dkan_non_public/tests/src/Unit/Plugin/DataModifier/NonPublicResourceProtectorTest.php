@@ -2,24 +2,27 @@
 
 namespace Drupal\Tests\dkan_non_public\Unit;
 
-use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\ConditionInterface;
 use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\dkan_common\Plugin\DataModifierBase;
-use Drupal\dkan_common\Plugin\DataModifierInterface;
 use Drupal\dkan_data\Service\Uuid5;
 use Drupal\dkan_non_public\Plugin\DataModifier\NonPublicResourceProtector;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
+/**
+ *
+ */
 class NonPublicResourceProtectorTest extends TestCase {
 
+  /**
+   *
+   */
   public function requiresModificationProvider() {
     return [
       'public dataset object' => [
@@ -66,6 +69,9 @@ class NonPublicResourceProtectorTest extends TestCase {
     $this->assertEquals($expected, $plugin->requiresModification($schema, $data));
   }
 
+  /**
+   *
+   */
   public function modifyProvider() {
     return [
       'dataset json string without resources' => [
@@ -95,6 +101,9 @@ class NonPublicResourceProtectorTest extends TestCase {
     $this->assertEquals($expected, $plugin->modify($schema, $data));
   }
 
+  /**
+   *
+   */
   public function getCommonMockChain() {
     $pluginMessage = "Resource hidden since dataset access level is non-public.";
 

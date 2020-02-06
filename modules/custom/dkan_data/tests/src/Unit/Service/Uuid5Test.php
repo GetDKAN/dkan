@@ -55,6 +55,9 @@ class Uuid5Test extends TestCase {
     ];
   }
 
+  /**
+   *
+   */
   public function testIsValid() {
     $uuid5 = new Uuid5();
 

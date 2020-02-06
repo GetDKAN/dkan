@@ -8,8 +8,14 @@ use Drupal\dkan_schema\SchemaRetriever;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
-class ConfigurationOverriderTest extends TestCase
-{
+/**
+ *
+ */
+class ConfigurationOverriderTest extends TestCase {
+
+  /**
+   *
+   */
   public function testEmptyMethods() {
     $cofigOverrider = new ConfigurationOverrider();
     $this->assertNull($cofigOverrider->getCacheSuffix());
@@ -17,6 +23,9 @@ class ConfigurationOverriderTest extends TestCase
     $this->assertNull($cofigOverrider->getCacheableMetadata("blah"));
   }
 
+  /**
+   *
+   */
   public function testLoadOverrides() {
     $container = (new Chain($this))
       ->add(Container::class, "get", SchemaRetriever::class)
@@ -32,4 +41,5 @@ class ConfigurationOverriderTest extends TestCase
     $config = $cofigOverrider->loadOverrides(["blah"]);
     $this->assertTrue(is_array($config));
   }
+
 }

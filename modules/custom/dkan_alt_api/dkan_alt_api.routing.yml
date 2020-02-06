@@ -6,7 +6,7 @@ dkan_alt_api.1.metastore.schemas.id.items:
   requirements:
     _permission: 'get data through the alternate metastore api'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan_alt_api.1.metastore.schemas.id.items.id:
   path: '/alt/api/1/metastore/schemas/{schema_id}/items/{identifier}'

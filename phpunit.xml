@@ -18,6 +18,7 @@
             <directory>modules/custom/dkan_metastore/tests/src/Unit</directory>
             <directory>modules/custom/dkan_non_public/tests/src/Unit</directory>
             <directory>modules/custom/dkan_schema/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_search/tests/src/Unit</directory>
             <directory>modules/custom/dkan_sql_endpoint/tests/src/Unit</directory>
         </testsuite>
     </testsuites>
@@ -47,6 +48,7 @@
             <directory>modules/custom/dkan_metastore/src</directory>
             <directory>modules/custom/dkan_non_public/src</directory>
             <directory>modules/custom/dkan_schema/src</directory>
+            <directory>modules/custom/dkan_search/src</directory>
             <directory>modules/custom/dkan_sql_endpoint/src</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>

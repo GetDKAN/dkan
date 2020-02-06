@@ -1,7 +1,0 @@
-name: Lunr
-description: 'PHP Lunr index generator and endpoint.'
-type: module
-core: 8.x
-dependencies:
-  - dkan_metastore
-package: DKAN

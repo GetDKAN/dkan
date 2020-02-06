@@ -1,0 +1,11 @@
+name: Search
+description: "It provides an endpoint to perform searches against DKAN's metadata."
+type: module
+core: 8.x
+dependencies:
+  - dkan_data
+  - dkan_metastore
+  - dkan_schema
+  - search_api
+  - search_api_db
+package: DKAN

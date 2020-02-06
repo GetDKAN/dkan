@@ -2,9 +2,9 @@
 
 namespace Drupal\Tests\dkan_data\Unit;
 
+use MockChain\Sequence;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Config\Schema\Sequence;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Queue\QueueFactory;
@@ -14,8 +14,14 @@ use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
-class ValueReferencerTest extends TestCase
-{
+/**
+ *
+ */
+class ValueReferencerTest extends TestCase {
+
+  /**
+   *
+   */
   public function testReference() {
     $node = (new Chain($this))
       ->add(Node::class, "uuid", "123456789")
@@ -44,8 +50,11 @@ class ValueReferencerTest extends TestCase
     $this->assertEquals("123456789", $referenced->publisher);
   }
 
+  /**
+   *
+   */
   public function testReferenceMultiple() {
-    $uuids = (new \MockChain\Sequence())
+    $uuids = (new Sequence())
       ->add("123456789")
       ->add("987654321");
 
@@ -77,11 +86,14 @@ class ValueReferencerTest extends TestCase
     $this->assertEquals("987654321", $referenced->keyword[1]);
   }
 
+  /**
+   *
+   */
   public function testDereference() {
     $node = (object) [
       "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => (object) ['name' => 'Gerardo', 'company' => 'CivicActions']])
-      ]
+        "value" => json_encode((object) ["data" => (object) ['name' => 'Gerardo', 'company' => 'CivicActions']]),
+      ],
     ];
 
     $entityTypeManager = (new Chain($this))
@@ -108,20 +120,23 @@ class ValueReferencerTest extends TestCase
     $this->assertEquals((object) ['name' => 'Gerardo', 'company' => 'CivicActions'], $referenced->publisher);
   }
 
+  /**
+   *
+   */
   public function testDereferenceMultiple() {
     $node1 = (object) [
       "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => "Gerardo"])
-      ]
+        "value" => json_encode((object) ["data" => "Gerardo"]),
+      ],
     ];
 
     $node2 = (object) [
       "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => "CivicActions"])
-      ]
+        "value" => json_encode((object) ["data" => "CivicActions"]),
+      ],
     ];
 
-    $nodes = (new \MockChain\Sequence())
+    $nodes = (new Sequence())
       ->add([$node1])
       ->add([$node2]);
 
@@ -148,4 +163,5 @@ class ValueReferencerTest extends TestCase
     $this->assertEquals("Gerardo", $referenced->keyword[0]);
     $this->assertEquals("CivicActions", $referenced->keyword[1]);
   }
+
 }

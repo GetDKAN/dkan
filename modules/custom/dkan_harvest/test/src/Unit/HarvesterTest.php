@@ -1,10 +1,11 @@
 <?php
 
+use Harvest\ETL\Load\Simple;
+use Harvest\ETL\Extract\DataJson;
 use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 use Contracts\FactoryInterface;
 use Contracts\Mock\Storage\Memory;
-use Harvest\Harvester;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_harvest\Storage\DatabaseTableFactory;
 use Drupal\dkan_harvest\Harvester as HarvestService;
@@ -16,19 +17,22 @@ class HarvesterTest extends TestCase {
 
   private $storageFactory;
 
+  /**
+   *
+   */
   public function test() {
     $service = new HarvestService($this->getStorageFactory());
 
     $plan = (object) [
       'identifier' => 'test_plan',
       'extract' => (object) [
-        "type" => \Harvest\ETL\Extract\DataJson::class,
-        "uri" => "file://" . __DIR__ . '/../../files/data.json'
+        "type" => DataJson::class,
+        "uri" => "file://" . __DIR__ . '/../../files/data.json',
       ],
       'transforms' => [],
       'load' => (object) [
-        "type" => \Harvest\ETL\Load\Simple::class
-      ]
+        "type" => Simple::class,
+      ],
     ];
 
     // Register a harvest.
@@ -79,7 +83,7 @@ class HarvesterTest extends TestCase {
     $storageTypes = [
       'harvest_test_plan_items',
       'harvest_test_plan_hashes',
-      'harvest_test_plan_runs'
+      'harvest_test_plan_runs',
     ];
     foreach ($storageTypes as $storageId) {
       $this->assertEquals(0, count($this->getStorageFactory()->getInstance($storageId)->retrieveAll()));
@@ -90,6 +94,9 @@ class HarvesterTest extends TestCase {
     $this->assertEquals(0, count($this->getStorageFactory()->getInstance('harvest_plans')->retrieveAll()));
   }
 
+  /**
+   *
+   */
   public function testGetHarvestPlan() {
     $storeFactory = (new Chain($this))
       ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
@@ -101,6 +108,9 @@ class HarvesterTest extends TestCase {
     $this->assertEquals("Hello", $plan);
   }
 
+  /**
+   *
+   */
   public function testGetHarvestRunInfo() {
     $storeFactory = (new Chain($this))
       ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
@@ -124,26 +134,40 @@ class HarvesterTest extends TestCase {
     $this->assertFalse($result);
   }
 
+  /**
+   *
+   */
   private function getStorageFactory() {
     if (!isset($this->storageFactory)) {
       $this->storageFactory = new class() implements FactoryInterface {
         private $stores = [];
 
-        public function getInstance(string $identifier, array $config = [])
-        {
+        /**
+         *
+         */
+        public function getInstance(string $identifier, array $config = []) {
           if (!isset($this->stores[$identifier])) {
             $this->stores[$identifier] = new class() extends Memory {
-              public function retrieveAll(): array
-              {
+
+              /**
+               *
+               */
+              public function retrieveAll(): array {
                 return array_keys(parent::retrieveAll());
               }
+
+              /**
+               *
+               */
               public function destroy() {
                 $this->storage = [];
               }
+
             };
           }
           return $this->stores[$identifier];
         }
+
       };
     }
 
