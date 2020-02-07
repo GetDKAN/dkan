@@ -10,6 +10,7 @@ dependencies:
   - config_update_ui
   - contextual
   - dblog
+  - dkan_admin
   - dkan_api
   - dkan_common
   - dkan_data

@@ -1,0 +1,11 @@
+name: Admin
+description: 'Administrative config.'
+type: module
+core: 8.x
+dependencies:
+  - admin_toolbar
+  - dkan_data
+  - dkan_datastore
+  - views
+  - views_bulk_operations
+package: DKAN
