@@ -19,6 +19,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = '';
   $facet->facet = 'changed';
   $facet->enabled = FALSE;
+  $facet->hash = '0';
   $facet->settings = array(
     'operator' => 'and',
     'hard_limit' => '50',
@@ -46,6 +47,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'author';
   $facet->enabled = TRUE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -80,6 +82,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'changed';
   $facet->enabled = TRUE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -125,6 +128,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'field_license';
   $facet->enabled = TRUE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -159,6 +163,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'field_resources:body:value';
   $facet->enabled = FALSE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -193,6 +198,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'field_resources:field_format';
   $facet->enabled = TRUE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -227,6 +233,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'field_tags';
   $facet->enabled = TRUE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -261,6 +268,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'og_group_ref';
   $facet->enabled = TRUE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -295,6 +303,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'search_api_access_node';
   $facet->enabled = FALSE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -329,6 +338,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'search_api_language';
   $facet->enabled = FALSE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -363,6 +373,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'search_api_viewed';
   $facet->enabled = FALSE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -397,6 +408,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'status';
   $facet->enabled = FALSE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -431,6 +443,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'title';
   $facet->enabled = FALSE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
@@ -465,6 +478,7 @@ function dkan_dataset_groups_facetapi_default_facet_settings() {
   $facet->realm = 'block';
   $facet->facet = 'type';
   $facet->enabled = FALSE;
+  $facet->hash = '0';
   $facet->settings = array(
     'weight' => 0,
     'widget' => 'facetapi_links',
