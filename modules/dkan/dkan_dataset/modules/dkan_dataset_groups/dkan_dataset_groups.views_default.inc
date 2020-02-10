@@ -45,7 +45,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = 'No datasets were found.';
   $handler->display->display_options['empty']['area']['format'] = 'html';
-  /* Relationship: Indexed Node: Publisher */
+  /* Relationship: Indexed Node: Groups audience */
   $handler->display->display_options['relationships']['og_group_ref']['id'] = 'og_group_ref';
   $handler->display->display_options['relationships']['og_group_ref']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['relationships']['og_group_ref']['field'] = 'og_group_ref';
@@ -74,15 +74,13 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['sorts']['title']['order'] = 'DESC';
   $handler->display->display_options['sorts']['title']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['title']['expose']['label'] = 'Title';
-  /* Contextual filter: Indexed Node: Publisher */
+  /* Contextual filter: Indexed Node: Groups audience */
   $handler->display->display_options['arguments']['og_group_ref']['id'] = 'og_group_ref';
   $handler->display->display_options['arguments']['og_group_ref']['table'] = 'search_api_index_groups_di';
   $handler->display->display_options['arguments']['og_group_ref']['field'] = 'og_group_ref';
   $handler->display->display_options['arguments']['og_group_ref']['default_action'] = 'default';
   $handler->display->display_options['arguments']['og_group_ref']['default_argument_type'] = 'og_context';
   $handler->display->display_options['arguments']['og_group_ref']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['og_group_ref']['break_phrase'] = 0;
-  $handler->display->display_options['arguments']['og_group_ref']['not'] = 0;
   /* Filter criterion: Search: Fulltext search */
   $handler->display->display_options['filters']['search_api_views_fulltext']['id'] = 'search_api_views_fulltext';
   $handler->display->display_options['filters']['search_api_views_fulltext']['table'] = 'search_api_index_groups_di';
@@ -172,7 +170,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['sorts']['weight']['id'] = 'weight';
   $handler->display->display_options['sorts']['weight']['table'] = 'draggableviews_structure';
   $handler->display->display_options['sorts']['weight']['field'] = 'weight';
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -555,7 +553,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['arguments']['gid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['gid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['gid']['summary_options']['items_per_page'] = '25';
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -625,7 +623,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -702,7 +700,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['arguments']['gid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['gid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['gid']['summary_options']['items_per_page'] = '25';
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -772,7 +770,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -850,7 +848,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -909,7 +907,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -992,7 +990,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['arguments']['gid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['gid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['gid']['summary_options']['items_per_page'] = '25';
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
@@ -1071,7 +1069,7 @@ function dkan_dataset_groups_views_default_views() {
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Filter criterion: Content: Published */
+  /* Filter criterion: Content: Published status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
   $handler->display->display_options['filters']['status']['field'] = 'status';
