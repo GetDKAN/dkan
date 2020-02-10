@@ -1,3 +1,10 @@
+7.x-1.18.1
+-----------
+ - #3016 Add Drush command to remove datastore config and drop datastore table for resource.
+ - #3018 Upgrade recline to 7.x-2.2 -> fixes how the sort parameter is built
+ - #3017 Patch facetapi to hide block when facet is empty.
+ - #3015 Add summary option to Group description.
+
 7.x-1.18
 -----------
  - #3012 Prevent infinite loop in Harvest Source preview page
