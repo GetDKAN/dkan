@@ -101,6 +101,8 @@ projects:
     version: '2.9'
   facetapi:
     version: '1.6'
+    patch:
+      3084250: https://www.drupal.org/files/issues/2019-10-25/hide-block-title-empty-facet-3084250-5.patch
   facetapi_bonus:
     version: '1.3'
   facetapi_pretty_paths:
