@@ -317,16 +317,16 @@ function dkan_dataset_groups_default_search_api_server() {
             "type" : "list\\u003Ctext\\u003E",
             "boost" : "1.0"
           },
-          "og_group_ref" : {
-            "table" : "search_api_db_groups_di_og_group_ref",
-            "column" : "value",
-            "type" : "list\\u003Cinteger\\u003E",
-            "boost" : "1.0"
-          },
           "created" : {
             "table" : "search_api_db_groups_di",
             "column" : "created",
             "type" : "date",
+            "boost" : "1.0"
+          },
+          "og_group_ref" : {
+            "table" : "search_api_db_groups_di_og_group_ref",
+            "column" : "value",
+            "type" : "list\\u003Cinteger\\u003E",
             "boost" : "1.0"
           }
         }
