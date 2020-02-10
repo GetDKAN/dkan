@@ -27,6 +27,15 @@ function dkan_datastore_drush_command() {
     'callback' => 'dkan_datastore_drush_drop_orphan_tables',
   );
 
+  $items['dkan-datastore-delete'] = array(
+    'description' => 'Remove datastore store configuration and datastore table for a resource.',
+    'callback' => 'dkan_datastore_drush_delete',
+    'arguments' => array(
+      'resource_nid' => "Resource NID"
+    ),
+  );
+
+
   return $items;
 }
 
@@ -77,4 +86,18 @@ function dkan_datastore_drush_drop_orphan_tables() {
   } else {
     drush_print("There are currently no datastore tables on this site.");
   }
+}
+
+/**
+ * Remove datastore config and table.
+ *
+ * @param $resource_id
+ *  The nid of the resource whose datastore should be removed.
+ */
+function dkan_datastore_drush_delete($resource_id) {
+  $state_storage = new LockableDrupalVariables("dkan_datastore");
+  $state_storage->delete($resource_id);
+
+  $table = 'dkan_datastore_' . $resource_id;
+  $query = db_drop_table($table);
 }
