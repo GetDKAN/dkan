@@ -62,6 +62,13 @@ To remove all records from the datastore:
 3. Click the "Drop" button.
 4. Confirm by clicking the "Drop" button.
 
+Remove Stuck Datastore
+------------------------
+
+If a datastore cannot import correctly, it may be left in a 'stuck' state.
+
+To reset the datastore state and remove any incompletely imported datastore table, run ``drush dkan_datastore_drush_delete [RNID]``. Replace '[RNID]' with the node id of the related resource.
+
 
 .. _fast_import_manager:
 
