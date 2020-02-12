@@ -372,6 +372,22 @@ class HarvestMigration extends MigrateDKAN {
         }
       }
     }
+
+    // Check the accrualPeriodicity field.
+    // If it's in the frequency map as a value, set it to the associated key.
+    // If it's not there, either as a key or value, set it to null.
+    if (isset($row->accrualPeriodicity) && $row->accrualPeriodicity != '') {
+      $frequencies = dkan_dataset_content_types_iso_frecuency_map();
+      if (!isset($frequencies[$row->accrualPeriodicity])) {
+        $frequencies_by_label = array_flip($frequencies);
+        if (isset($frequencies_by_label[$row->accrualPeriodicity])) {
+          $row->accrualPeriodicity = $frequencies_by_label[$row->accrualPeriodicity];
+        }
+        else {
+          $row->accrualPeriodicity = NULL;
+        }
+      }
+    }
   }
 
   /**
