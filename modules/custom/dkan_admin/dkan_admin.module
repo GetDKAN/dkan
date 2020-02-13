@@ -18,7 +18,7 @@ function dkan_admin_form_views_exposed_form_alter(&$form, FormStateInterface $fo
       'distribution' => 'distribution',
       'keyword' => 'keyword',
       'publisher' => 'publisher',
-      'theme' => 'theme'
+      'theme' => 'theme',
     ];
 
     $form['data-type'] = [
@@ -41,15 +41,14 @@ function dkan_admin_preprocess_views_view_field(&$vars) {
   $uuid = $entity->uuid->value;
 
   // To access entities from relationship.
-  // $entities = $vars['row']->_relationship_entities;
-
-  if (isset($vars['view']) 
-    && ($vars['view']->id() == 'dkan_content') 
+  // $entities = $vars['row']->_relationship_entities;.
+  if (isset($vars['view'])
+    && ($vars['view']->id() == 'dkan_content')
     && ($vars['view']->current_display == 'page_1')) {
 
     if (isset($vars['view']->field) && (count($vars['view']->field) > 0)) {
       if ($vars['field']->field == 'nothing' && $entity->field_data_type->value == 'dataset') {
-        $vars['output'] =  [
+        $vars['output'] = [
           '#markup' => '<a href="/admin/dkan/dataset?id=' . $uuid . '">edit</a>',
         ];
       }

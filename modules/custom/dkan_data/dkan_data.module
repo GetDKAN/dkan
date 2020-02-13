@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\dkan_data\DataNodeLifeCycle;
-use Drupal\dkan_data\ValueReferencer;
+use Drupal\dkan_data\Reference\Dereferencer;
 
 /**
  * Implements hook_node_load().
@@ -24,7 +24,7 @@ function dkan_data_node_load(array $entities) {
 
       // Dereference dataset properties.
       $metadata_obj = json_decode($metadata_string);
-      $referencer = Drupal::service("dkan_data.value_referencer");
+      $referencer = Drupal::service("dkan_data.dereferencer");
       $metadata_obj = $referencer->dereference($metadata_obj, dereferencing_method());
       $entity->set('field_json_metadata', json_encode($metadata_obj));
     }
@@ -49,14 +49,14 @@ function dkan_data_node_load(array $entities) {
  */
 function dereferencing_method() : int {
   $allowed_methods = [
-    ValueReferencer::DEREFERENCE_OUTPUT_DEFAULT,
-    ValueReferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS,
+    Dereferencer::DEREFERENCE_OUTPUT_DEFAULT,
+    Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS,
   ];
 
   // Selection based on API's http request query parameters.
   $params = Drupal::request()->query->all();
   if (isset($params['show-reference-ids'])) {
-    return ValueReferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS;
+    return Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS;
   }
 
   // Selection based on static variable.
@@ -66,7 +66,7 @@ function dereferencing_method() : int {
   }
 
   // Default case.
-  return ValueReferencer::DEREFERENCE_OUTPUT_DEFAULT;
+  return Dereferencer::DEREFERENCE_OUTPUT_DEFAULT;
 }
 
 /**
@@ -87,7 +87,7 @@ function dkan_data_node_predelete(EntityInterface $entity) {
   // Check for possible orphan property references when deleting a dataset.
   if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
     $referenced_dataset = json_decode($entity->referenced_metadata);
-    $referencer = Drupal::service("dkan_data.value_referencer");
+    $referencer = Drupal::service("dkan_data.orphan_checker");
     $referencer->processReferencesInDeletedDataset($referenced_dataset);
   }
 }
