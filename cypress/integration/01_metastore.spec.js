@@ -212,6 +212,25 @@ context('Metastore', () => {
           expect(response.body.identifier).eql(jsonPut.identifier)
         })
       })
+
+      it('PUT fails to modify if data is the same', () => {
+        cy.request({
+          method: 'PUT',
+          url: endpoint + '/' + jsonPut.identifier,
+          auth: user_credentials,
+          body: jsonPut,
+          failOnStatusCode: false
+        }).then((response) => {
+          expect(response.status).eql(403)
+        })
+        // Verify data has not been modified.
+        cy.request(endpoint + '/' + jsonPut.identifier).then((response) => {
+          expect(response.status).eql(200)
+          expect(response.body.title).eql(jsonPut.title)
+          expect(response.body.description).eql(jsonPut.description)
+          expect(response.body.identifier).eql(jsonPut.identifier)
+        })
+        })
     })
 
     context('PATCH requests', () => {

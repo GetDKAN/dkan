@@ -2,16 +2,19 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
-use PHPUnit\Framework\TestCase;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
+use Drupal\dkan_data\Storage\Data;
+use Drupal\dkan_metastore\Service;
+use Drupal\dkan_metastore\WebServiceApi;
+use Drupal\dkan_schema\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
-use Drupal\dkan_metastore\Service;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\dkan_metastore\WebServiceApi;
-use Drupal\dkan_data\Storage\Data;
-use Drupal\dkan_schema\SchemaRetriever;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  *
@@ -131,6 +134,97 @@ class WebServiceApiTest extends TestCase {
   /**
    *
    */
+  public function testPostExistingObjectException() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getRequestUri', "http://blah")
+      ->add(Request::class, 'getContent', '{"identifier": "1"}')
+      ->add(Service::class, 'post', new ExistingObjectException("Already exists"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->post('dataset');
+    $this->assertEquals('{"message":"Already exists"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPut() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', "{ }");
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+    $mockChain->add(Service::class, "put", ["identifier" => "1", "new" => FALSE]);
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->put(1, 'dataset');
+    $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":"1"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPutInvalidJsonException() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getContent', "{");
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->put(1, 'dataset');
+    $this->assertEquals('{"message":"Invalid JSON"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPutMissingPayloadException() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getContent', "");
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->put(1, 'dataset');
+    $this->assertEquals('{"message":"Empty body"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPutWithEquivalentData() {
+    $existing = '{"identifier":"1","title":"Foo"}';
+    $updating = <<<EOF
+      {
+        "title": "Foo",
+        "identifier": "1"
+      }
+EOF;
+
+    $mockChain = $this->getCommonMockChain()
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getContent', $updating)
+      ->add(Request::class, 'getRequestUri', "http://blah")
+      ->add(Service::class, "put", new UnmodifiedObjectException("No changes"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->put('dataset', 1);
+    $this->assertEquals('{"message":"No changes"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPutExceptionOtherThanMetastore() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(RequestStack::class, 'getCurrentRequest', new \Exception("Unknown error"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->put('dataset', 1);
+    $this->assertEquals('{"message":"Unknown error"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
   public function testPatch() {
     $thing = (object) [];
 
@@ -181,16 +275,27 @@ class WebServiceApiTest extends TestCase {
   /**
    *
    */
-  public function testPut() {
-    $mockChain = $this->getCommonMockChain();
-    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
-    $mockChain->add(Request::class, 'getContent', "{ }");
-    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
-    $mockChain->add(Service::class, "put", ["identifier" => "1", "new" => FALSE]);
+  public function testPatchObjectNotFound() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getContent', '{"identifier":"1","title":"foo"}')
+      ->add(Service::class, "patch", new MissingObjectException("Not found"));
 
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->put(1, 'dataset');
-    $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":"1"}', $response->getContent());
+    $response = $controller->patch('dataset', 1);
+    $this->assertEquals('{"message":"Not found"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPatchExceptionOtherThanMetastore() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(RequestStack::class, 'getCurrentRequest', new \Exception("Unknown error"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->patch('dataset', 1);
+    $this->assertEquals('{"message":"Unknown error"}', $response->getContent());
   }
 
   /**
@@ -203,6 +308,18 @@ class WebServiceApiTest extends TestCase {
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->delete('dataset', "1");
     $this->assertEquals('{"message":"Dataset 1 has been deleted."}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testDeleteExceptionOtherThanMetastore() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(Service::class, 'delete', new \Exception("Unknown error"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->delete('dataset', 1);
+    $this->assertEquals('{"message":"Unknown error"}', $response->getContent());
   }
 
   /**

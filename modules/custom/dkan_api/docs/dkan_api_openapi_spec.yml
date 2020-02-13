@@ -201,8 +201,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Dataset'
             example:
-              title: UPDATED Title for 111111
-              description: UPDATED Description for 111111
+              title: UPDATED AGAIN Title for 111111
+              description: UPDATED AGAIN Description for 111111
               identifier: 11111111-1111-4111-1111-111111111111
               accessLevel: public
       responses:
@@ -222,6 +222,17 @@ paths:
                     type: string
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
     patch:
       operationId: dataset-patch
       summary: Update a dataset
