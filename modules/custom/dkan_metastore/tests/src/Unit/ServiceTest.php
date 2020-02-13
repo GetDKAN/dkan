@@ -2,14 +2,17 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
-use PHPUnit\Framework\TestCase;
-use Sae\Sae as Engine;
 use Drupal\Core\DependencyInjection\Container;
-use MockChain\Chain;
-use MockChain\Options;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
 use Drupal\dkan_metastore\Factory\Sae;
 use Drupal\dkan_metastore\Service;
 use Drupal\dkan_schema\SchemaRetriever;
+use MockChain\Chain;
+use MockChain\Options;
+use PHPUnit\Framework\TestCase;
+use Sae\Sae as Engine;
 
 /**
  *
@@ -100,6 +103,20 @@ class ServiceTest extends TestCase {
   /**
    *
    */
+  public function testPostAlreadyExisting() {
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", "1");
+
+    $service = Service::create($container->getMock());
+
+    $this->expectException(ExistingObjectException::class);
+    $service->post("dataset", '{"identifier":1,"title":"FooBar"}');
+  }
+
+  /**
+   *
+   */
   public function testPut() {
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
@@ -115,6 +132,75 @@ class ServiceTest extends TestCase {
   /**
    *
    */
+  public function testPutModifyIdentifierException() {
+    $existing = '{"identifier":"1","title":"Foo"}';
+    $updating = '{"identifier":"2","title":"Bar"}';
+
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", $existing);
+
+    $service = Service::create($container->getMock());
+
+    $this->expectExceptionMessage("Identifier cannot be modified");
+    $service->put("dataset", "1", $updating);
+  }
+
+  /**
+   *
+   */
+  public function testPutResultingInNewData() {
+    $data = '{"identifier":"3","title":"FooBar"}';
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", new \Exception())
+      ->add(Engine::class, "put", "3")
+      ->add(Engine::class, "post", "3");
+
+    $service = Service::create($container->getMock());
+    $info = $service->put("dataset", "3", $data);
+    $this->assertEquals("3", $info['identifier']);
+  }
+
+  /**
+   *
+   */
+  public function testPutObjectUnchangedException() {
+    $existing = '{"identifier":"1","title":"Foo"}';
+
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", $existing);
+
+    $service = Service::create($container->getMock());
+    $this->expectException(UnmodifiedObjectException::class);
+    $service->put("dataset", "1", $existing);
+  }
+
+  /**
+   *
+   */
+  public function testPutEquivalentDataObjectUnchangedException() {
+    $existing = '{"identifier":"1","title":"Foo"}';
+    $updating = <<<EOF
+      {
+        "title":"Foo",
+        "identifier":"1"
+      }
+EOF;
+
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", $existing);
+
+    $service = Service::create($container->getMock());
+    $this->expectException(UnmodifiedObjectException::class);
+    $service->put("dataset", "1", $updating);
+  }
+
+  /**
+   *
+   */
   public function testPatch() {
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
@@ -124,6 +210,21 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->assertEquals("1", $service->patch("dataset", "1", json_encode("blah")));
+  }
+
+  /**
+   *
+   */
+  public function testPatchObjectNotFoundException() {
+    $data = '{"identifier":"1","title":"FooBar"}';
+
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", new \Exception());
+
+    $service = Service::create($container->getMock());
+    $this->expectException(MissingObjectException::class);
+    $service->patch("dataset", "1", $data);
   }
 
   /**

@@ -2,15 +2,17 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\DataModifierPluginTrait;
 use Drupal\dkan_common\Plugin\DataModifierManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan_metastore\Factory\Sae;
-use Drupal\dkan_metastore\Exception\ObjectExists;
-use Drupal\dkan_metastore\Exception\ObjectNotFound;
 use Drupal\dkan_data\ValueReferencer;
+use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
+use Drupal\dkan_metastore\Factory\Sae;
 use Drupal\dkan_schema\SchemaRetriever;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Service.
@@ -199,7 +201,7 @@ class Service implements ContainerInjectionInterface {
     if (isset($decoded['identifier'])) {
       $identifier = $decoded['identifier'];
       if ($this->objectExists($schema_id, $identifier)) {
-        throw new ObjectExists("{$schema_id}/{$identifier} already exists.");
+        throw new ExistingObjectException("{$schema_id}/{$identifier} already exists.");
       }
     }
 
@@ -220,23 +222,40 @@ class Service implements ContainerInjectionInterface {
    *   ["identifier" => string, "new" => boolean].
    */
   public function put($schema_id, $identifier, string $data): array {
-    $new = TRUE;
-    $engine = $this->getEngine($schema_id);
-
     $obj = json_decode($data);
     if (isset($obj->identifier) && $obj->identifier != $identifier) {
-      throw new \Exception("Identifier cannot be modified");
+      throw new CannotChangeUuidException("Identifier cannot be modified");
     }
-
-    if ($this->objectExists($schema_id, $identifier)) {
-      $engine->put($identifier, $data);
-      $new = FALSE;
+    elseif ($this->objectExists($schema_id, $identifier) && $this->objectIsEquivalent($schema_id, $identifier, $data)) {
+      throw new UnmodifiedObjectException("No changes to {$schema_id} with identifier {$identifier}.");
     }
     else {
-      $engine->post($data);
+      return $this->proceedWithPut($schema_id, $identifier, $data);
     }
+  }
 
-    return ['identifier' => $identifier, 'new' => $new];
+  /**
+   * Procede with PUT.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   * @param string $data
+   *   Json payload.
+   *
+   * @return array
+   *   ["identifier" => string, "new" => boolean].
+   */
+  private function proceedWithPut($schema_id, $identifier, string $data): array {
+    if ($this->objectExists($schema_id, $identifier)) {
+      $this->getEngine($schema_id)->put($identifier, $data);
+      return ['identifier' => $identifier, 'new' => FALSE];
+    }
+    else {
+      $this->getEngine($schema_id)->post($data);
+      return ['identifier' => $identifier, 'new' => TRUE];
+    }
   }
 
   /**
@@ -259,7 +278,7 @@ class Service implements ContainerInjectionInterface {
       return $identifier;
     }
 
-    throw new ObjectNotFound("No data with the identifier {$identifier} was found.");
+    throw new MissingObjectException("No data with the identifier {$identifier} was found.");
   }
 
   /**
@@ -292,6 +311,28 @@ class Service implements ContainerInjectionInterface {
     catch (\Exception $e) {
       return FALSE;
     }
+  }
+
+  /**
+   * Verify if metadata is equivalent.
+   *
+   * Because json metadata strings could be formatted differently (white space,
+   * order of properties...) yet be equivalent, compare their resulting json
+   * objects.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   The uuid.
+   * @param string $new_metadata
+   *   The new data being compared to the existing data.
+   *
+   * @return bool
+   *   TRUE if the metadata is equivalent, false otherwise.
+   */
+  private function objectIsEquivalent(string $schema_id, string $identifier, string $new_metadata) {
+    $existing_metadata = $this->getEngine($schema_id)->get($identifier);
+    return json_decode($new_metadata) == json_decode($existing_metadata);
   }
 
   /**

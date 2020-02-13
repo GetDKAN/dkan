@@ -2,13 +2,14 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
+use Drupal\dkan_metastore\Exception\InvalidJsonException;
+use Drupal\dkan_metastore\Exception\MetastoreException;
+use Drupal\dkan_metastore\Exception\MissingPayloadException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\dkan_metastore\Exception\ObjectExists;
-use Drupal\dkan_metastore\Exception\ObjectNotFound;
-use Drupal\dkan_metastore\Exception\InvalidPayload;
 
 /**
  * Class Api.
@@ -139,11 +140,8 @@ class WebServiceApi implements ContainerInjectionInterface {
         "identifier" => $identifier,
       ], 201);
     }
-    catch (InvalidPayload $e) {
-      return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
-    }
-    catch (ObjectExists $e) {
-      return $this->getResponseFromException($e, 409);
+    catch (MetastoreException $e) {
+      return $this->getResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
@@ -169,8 +167,8 @@ class WebServiceApi implements ContainerInjectionInterface {
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);
     }
-    catch (InvalidPayload $e) {
-      return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
+    catch (MetastoreException $e) {
+      return $this->getResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
@@ -196,35 +194,11 @@ class WebServiceApi implements ContainerInjectionInterface {
       $this->service->patch($schema_id, $identifier, $data);
       return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
     }
-    catch (InvalidPayload $e) {
-      return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
-    }
-    catch (ObjectNotFound $e) {
-      return $this->getResponseFromException($e, 412);
+    catch (MetastoreException $e) {
+      return $this->getResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
-    }
-  }
-
-  /**
-   * Get http code from invalid payload exception.
-   *
-   * 400 Bad Request
-   * 409 Conflict
-   * 415 Unsupported Media Type.
-   */
-  private function getCodeFromInvalidPayloadException(InvalidPayload $e): int {
-    $message = $e->getMessage();
-    switch ($message) {
-      case "Empty body":
-        return 400;
-
-      case "Invalid JSON":
-        return 415;
-
-      case "Identifier cannot be modified":
-        return 409;
     }
   }
 
@@ -255,17 +229,17 @@ class WebServiceApi implements ContainerInjectionInterface {
   private function checkData($data, $identifier = NULL) {
 
     if (empty($data)) {
-      throw new InvalidPayload("Empty body");
+      throw new MissingPayloadException("Empty body");
     }
 
     $obj = json_decode($data);
 
     if (!$obj) {
-      throw new InvalidPayload("Invalid JSON");
+      throw new InvalidJsonException("Invalid JSON");
     }
 
     if (isset($identifier) && isset($obj->identifier) && $obj->identifier != $identifier) {
-      throw new InvalidPayload("Identifier cannot be modified");
+      throw new CannotChangeUuidException("Identifier cannot be modified");
     }
   }
 

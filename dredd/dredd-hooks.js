@@ -38,6 +38,7 @@ endpointsRequiringAuth = [
   '/api/1/metastore/schemas/dataset/items > Create a dataset > 201 > application/json',
   '/api/1/metastore/schemas/dataset/items > Create a dataset > 409 > application/json',
   '/api/1/metastore/schemas/dataset/items/{identifier} > Replace a dataset > 200 > application/json',
+  '/api/1/metastore/schemas/dataset/items/{identifier} > Replace a dataset > 403 > application/json',
   '/api/1/metastore/schemas/dataset/items/{identifier} > Update a dataset > 200 > application/json',
   '/api/1/metastore/schemas/dataset/items/{identifier} > Delete a dataset > 200 > application/json',
   '/api/1/metastore/schemas/{schema_id}/items/{identifier} > Get a property > 200 > application/json',
