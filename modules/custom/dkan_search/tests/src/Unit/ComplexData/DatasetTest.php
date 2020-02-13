@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\dkan_search\ComplexData\Dataset;
 use MockChain\Chain;
 use Drupal\dkan_schema\SchemaRetriever;
@@ -45,7 +46,7 @@ class DatasetTest extends TestCase {
 
     $options = (new Options())
       ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-    ->add('typed_data_manager', \Drupal\Core\TypedData\TypedDataManagerInterface::class);
+      ->add('typed_data_manager', TypedDataManagerInterface::class);
 
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)

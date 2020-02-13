@@ -7,7 +7,7 @@ use Drupal\dkan_common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\dkan_data\ValueReferencer;
+use Drupal\dkan_data\Reference\Dereferencer;
 use Drupal\dkan_api\Controller\Docs;
 
 /**
@@ -220,7 +220,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   private function replaceDistributions(array $spec, string $identifier) {
     // Load this dataset's metadata with both data and identifiers.
     if (function_exists('drupal_static')) {
-      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
+      drupal_static('dkan_data_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
     }
 
     $data = json_decode($this->metastoreService->get("dataset", $identifier));

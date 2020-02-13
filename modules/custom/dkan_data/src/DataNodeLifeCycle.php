@@ -69,14 +69,14 @@ class DataNodeLifeCycle {
       $entity->set('uuid', $metadata->identifier);
     }
 
-    // Reference the dataset's values, and update our json metadata.
-    $referencer = \Drupal::service("dkan_data.value_referencer");
-    $metadata = $referencer->reference($metadata);
+    $referencer = \Drupal::service("dkan_data.referencer");
+    $metadata = $referencer->reference($this->getMetaData());
     $this->setMetadata($metadata);
 
     // Check for possible orphan property references when updating a dataset.
     if (isset($entity->original)) {
-      $referencer->processReferencesInUpdatedDataset(
+      $orphanChecker = \Drupal::service("dkan_data.orphan_checker");
+      $orphanChecker->processReferencesInUpdatedDataset(
         json_decode($entity->referenced_metadata),
         $metadata
       );
