@@ -47,6 +47,7 @@ class SimpleImport extends Manager {
         break;
       }
       if (time() < $end) {
+        $chunk = $this->fixEncoding($chunk);
         $parser->feed($chunk);
         $counter = $this->getAndStore($parser, $query, $header, $counter, $start);
 
