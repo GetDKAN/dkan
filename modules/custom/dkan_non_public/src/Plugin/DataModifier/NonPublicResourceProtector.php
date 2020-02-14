@@ -88,7 +88,7 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
       $plugin_definition,
       $container->get('database'),
       $container->get('current_route_match'),
-      $container->get('dkan_data.uuid5')
+      new Uuid5()
     );
   }
 
