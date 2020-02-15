@@ -24,7 +24,7 @@ class Dereferencer {
    *
    * @var int
    */
-  const DEREFERENCE_OUTPUT_REFERENCE_IDS = 2;
+  const DEREFERENCE_OUTPUT_REFERENCE_IDS = 1;
 
   /**
    * Store the dereferencing method for current request.
