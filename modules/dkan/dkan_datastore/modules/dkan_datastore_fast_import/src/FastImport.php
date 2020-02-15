@@ -38,7 +38,11 @@ class FastImport extends Manager {
 
     $fields_escaped_by = $properties["escape"];
 
-    $encoding = $properties['encoding']['mysql'];
+    $encoding = $properties['encoding']['MYSQL'];
+    // MySQL manual: 'A character set of binary specifies “no conversion.”'
+    if ($encoding === CharsetEncoding::DEST_ENCODING['MYSQL']) {
+      $encoding = 'binary';
+    }
 
     $load_data_statement = 'LOAD DATA';
 
@@ -50,8 +54,7 @@ class FastImport extends Manager {
     $params[':file_path'] = $file_path;
     $params[':delim'] = $delim;
     $params[':quote_delimiters'] = $quote_delimiters;
-    // MySQL manual: 'A character set of binary specifies “no conversion.”'
-    $params[':encoding'] = $encoding === CharsetEncoding::DEST_ENCODING['MYSQL'] ? 'binary' : $encoding;
+    $params[':encoding'] =  $encoding;
 
     if ($fields_escaped_by) {
       $sql = $sql . "  ESCAPED BY :fields_escaped_by";
