@@ -40,7 +40,7 @@ abstract class Manager implements ManagerInterface {
 
     if (!$this->loadState()) {
       $this->setConfigurablePropertiesHelper([
-        'encoding' => self::TO_ENCODING,
+        'encoding' => CharsetEncoding::DEST_ENCODING,
         'delimiter' => ',',
         'quote' => '"',
         'escape' => '\\',
@@ -89,8 +89,7 @@ abstract class Manager implements ManagerInterface {
         $this->configurableProperties['delimiter'],
         $this->configurableProperties['quote'],
         $this->configurableProperties['escape'],
-        ["\r", "\n"],
-        $this->configurableProperties['encoding']
+        ["\r", "\n"]
       );
 
       if (isset($this->configurableProperties['trailing_delimiter']) && $this->configurableProperties['trailing_delimiter'] == TRUE) {
@@ -374,19 +373,4 @@ abstract class Manager implements ManagerInterface {
     $this->saveState();
   }
 
-  protected function fixEncoding($data) {
-    $properties = $this->getConfigurableProperties();
-
-    if (mb_check_encoding($data, $properties['encoding'])) {
-      if ($properties['encoding'] !== self::TO_ENCODING) {
-        // Convert encoding. The conversion is to UTF-8 by default to prevent
-        // SQL errors.
-        $data = mb_convert_encoding($data, self::TO_ENCODING, $properties['encoding']);
-      }
-    }
-    else {
-      drupal_set_message(t('Source file is not in %encoding encoding.', array('%encoding' => $properties['encoding'])));
-    }
-    return $data;
-  }
 }

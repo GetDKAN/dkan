@@ -17,8 +17,6 @@ interface ManagerInterface {
   const DATA_IMPORT_DONE = 6;
   const DATA_IMPORT_ERROR = 7;
 
-  const TO_ENCODING = 'UTF-8';
-
   /**
    * Drops a datastore.
    */
