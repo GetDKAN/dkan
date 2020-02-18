@@ -57,6 +57,10 @@ class CharsetEncoding {
   /**
    * Select list(s) of encodings, appropriate to available importers.
    *
+   * @todo Make Chosen update on #states change.
+   * Everything works fine if only one import manager is enabled, but if
+   * more than one is enabled, Chosen never loads values for the hidden encoding select.
+   *
    * @param array $default_value
    *   The default encoding to use.
    *
