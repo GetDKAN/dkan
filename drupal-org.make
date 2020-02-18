@@ -242,6 +242,8 @@ projects:
     version: '1.2'
   og_moderation:
     version: '2.3'
+    patch:
+      2447769: https://www.drupal.org/files/issues/revision_access-2447769.patch
   open_data_schema_map:
     download:
       type: git
