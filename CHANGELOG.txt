@@ -1,3 +1,11 @@
+7.x-1.18.3
+-----------
+ - #3022 Patch og_moderation module to allow users to revert nodes.
+
+7.x-1.18.2
+-----------
+ - #3023 Update recline hash on drupal-org.make
+
 7.x-1.18.1
 -----------
  - #3016 Add Drush command to remove datastore config and drop datastore table for resource.
