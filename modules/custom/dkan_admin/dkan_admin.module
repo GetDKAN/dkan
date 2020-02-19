@@ -35,16 +35,17 @@ function dkan_admin_form_views_exposed_form_alter(&$form, FormStateInterface $fo
  * Implements template_preprocess_views_view_fields().
  */
 function dkan_admin_preprocess_views_view_field(&$vars) {
-  // To access current row entity.
-  $entity = $vars['row']->_entity;
-  $entity_id = $entity->id();
-  $uuid = $entity->uuid->value;
-
-  // To access entities from relationship.
-  // $entities = $vars['row']->_relationship_entities;.
   if (isset($vars['view'])
     && ($vars['view']->id() == 'dkan_content')
     && ($vars['view']->current_display == 'page_1')) {
+
+    // To access current row entity.
+    $entity = $vars['row']->_entity;
+    $entity_id = $entity->id();
+    $uuid = $entity->uuid->value;
+
+    // To access entities from relationship.
+    // $entities = $vars['row']->_relationship_entities;.
 
     if (isset($vars['view']->field) && (count($vars['view']->field) > 0)) {
       if ($vars['field']->field == 'nothing' && $entity->field_data_type->value == 'dataset') {
