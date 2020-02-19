@@ -6,7 +6,6 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\dkan_common\Plugin\DataModifierBase;
-use Drupal\dkan_data\Service\Uuid5;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -46,13 +45,6 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
   private $database;
 
   /**
-   * The uuid5 service.
-   *
-   * @var \Drupal\dkan_data\Service\Uuid5
-   */
-  private $uuid5;
-
-  /**
    * NonPublicResourceProtector constructor.
    *
    * @param array $configuration
@@ -65,17 +57,14 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
    *   The database service.
    * @param \Drupal\Core\Routing\RouteMatchInterface $routeMatch
    *   The current route match service.
-   * @param \Drupal\dkan_data\Service\Uuid5 $uuid5
-   *   The uuid5 service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, Connection $database, RouteMatchInterface $routeMatch, Uuid5 $uuid5) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, Connection $database, RouteMatchInterface $routeMatch) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configuration = $configuration;
     $this->pluginId = $plugin_id;
     $this->pluginDefinition = $plugin_definition;
     $this->database = $database;
     $this->routeMatch = $routeMatch;
-    $this->uuid5 = $uuid5;
   }
 
   /**
@@ -87,8 +76,7 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
       $plugin_id,
       $plugin_definition,
       $container->get('database'),
-      $container->get('current_route_match'),
-      new Uuid5()
+      $container->get('current_route_match')
     );
   }
 
@@ -181,10 +169,12 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
    */
   private function getIdentifier($dist) : string {
     if (is_string($dist)) {
-      if ($this->uuid5->isValid($dist)) {
+      if ($decoded = json_decode($dist)) {
+        $dist = $decoded;
+      }
+      else {
         return $dist;
       }
-      $dist = json_decode($dist);
     }
     return $dist->identifier;
   }
