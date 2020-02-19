@@ -9,7 +9,6 @@ use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\dkan_common\Plugin\DataModifierBase;
-use Drupal\dkan_data\Service\Uuid5;
 use Drupal\dkan_non_public\Plugin\DataModifier\NonPublicResourceProtector;
 use MockChain\Chain;
 use MockChain\Options;
@@ -109,8 +108,7 @@ class NonPublicResourceProtectorTest extends TestCase {
 
     $options = (new Options())
       ->add('database', Connection::class)
-      ->add('current_route_match', RouteMatchInterface::class)
-      ->add('dkan_data.uuid5', Uuid5::class);
+      ->add('current_route_match', RouteMatchInterface::class);
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
