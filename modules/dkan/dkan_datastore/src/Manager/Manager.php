@@ -3,6 +3,7 @@
 namespace Dkan\Datastore\Manager;
 
 use Dkan\Datastore\LockableDrupalVariables;
+use Dkan\Datastore\Parser\Base;
 use Dkan\Datastore\Parser\Csv;
 use Dkan\Datastore\Resource;
 
@@ -39,6 +40,7 @@ abstract class Manager implements ManagerInterface {
 
     if (!$this->loadState()) {
       $this->setConfigurablePropertiesHelper([
+        'encoding' => CharsetEncoding::DEST_ENCODING,
         'delimiter' => ',',
         'quote' => '"',
         'escape' => '\\',

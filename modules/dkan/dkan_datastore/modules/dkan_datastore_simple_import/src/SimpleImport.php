@@ -2,6 +2,7 @@
 
 namespace Dkan\Datastore\Manager\SimpleImport;
 
+use Dkan\Datastore\Manager\CharsetEncoding;
 use Dkan\Datastore\Manager\Manager;
 use Dkan\Datastore\Manager\ManagerInterface;
 use Dkan\Datastore\Parser\Csv;
@@ -39,6 +40,8 @@ class SimpleImport extends Manager {
 
     $h = fopen($this->getResource()->getFilePath(), 'r');
 
+    $encoder = new CharsetEncoding($this);
+
     $finished = TRUE;
     $interrupt = $this->getInterrupt();
     while ($chunk = fread($h, 32)) {
@@ -47,6 +50,12 @@ class SimpleImport extends Manager {
         break;
       }
       if (time() < $end) {
+        try {
+          $chunk = $encoder->fixEncoding($chunk);
+        }
+        catch (\Exception $exception) {
+          drupal_set_message($exception->getMessage(), 'warning');
+        }
         $parser->feed($chunk);
         $counter = $this->getAndStore($parser, $query, $header, $counter, $start);
 

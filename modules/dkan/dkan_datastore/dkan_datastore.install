@@ -5,6 +5,9 @@
  * Install file for DKAN Datastore.
  */
 
+use Dkan\Datastore\LockableDrupalVariables;
+use Dkan\Datastore\Manager\CharsetEncoding;
+
 /**
  * Implements hook_install().
  */
@@ -25,4 +28,22 @@ function dkan_datastore_install() {
  */
 function dkan_datastore_update_7001() {
   module_enable(array('field_hidden'));
+}
+
+/**
+ * Add default encoding to existing datastores.
+ */
+function dkan_datastore_update_7002() {
+  $state_storage = new LockableDrupalVariables("dkan_datastore");
+  $bin = $state_storage->borrowBin();
+
+  foreach ($bin as $nid => &$state) {
+    if (!empty($state['configurable_properties'])) {
+      if (empty($state['configurable_properties']['encoding'])) {
+        $state['configurable_properties']['encoding'] = CharsetEncoding::DEST_ENCODING;
+      }
+    }
+  }
+
+  $state_storage->returnBin($bin);
 }

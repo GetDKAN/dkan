@@ -11,14 +11,16 @@ class Info implements \JsonSerializable {
   private $class;
   private $machineName;
   private $label;
+  private $importType;
 
   /**
    * Info constructor.
    */
-  public function __construct($class, $machine_name, $label) {
+  public function __construct($class, $machine_name, $label, $import_type) {
     $this->class = $class;
     $this->label = $label;
     $this->machineName = $machine_name;
+    $this->importType = $import_type;
   }
 
   /**
@@ -43,6 +45,13 @@ class Info implements \JsonSerializable {
   }
 
   /**
+   * Getter.
+   */
+  public function getImportType() {
+    return $this->importType;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function jsonSerialize() {
@@ -50,6 +59,7 @@ class Info implements \JsonSerializable {
       'class' => $this->class,
       'machine_name' => $this->machineName,
       'label' => $this->label,
+      'import_type' => $this->importType,
     ];
   }
 
