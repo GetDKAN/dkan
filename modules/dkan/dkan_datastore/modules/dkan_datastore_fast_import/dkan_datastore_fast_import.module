@@ -24,7 +24,8 @@ function dkan_datastore_fast_import_dkan_datastore_manager() {
   $info = new Info(
     '\Dkan\Datastore\Manager\FastImport\FastImport',
     "fast",
-    "Fast Import"
+    "Fast Import",
+    "MYSQL"
   );
 
   return $info;
