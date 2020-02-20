@@ -2,6 +2,7 @@
 
 namespace Dkan\Datastore\Manager\FastImport;
 
+use Dkan\Datastore\Manager\CharsetEncoding;
 use Dkan\Datastore\Manager\Manager;
 use Dkan\Datastore\Resource;
 
@@ -37,15 +38,23 @@ class FastImport extends Manager {
 
     $fields_escaped_by = $properties["escape"];
 
+    $encoding = $properties['encoding']['MYSQL'];
+    // MySQL manual: 'A character set of binary specifies “no conversion.”'
+    if ($encoding === CharsetEncoding::DEST_ENCODING['MYSQL']) {
+      $encoding = 'binary';
+    }
+
     $load_data_statement = 'LOAD DATA';
 
     $sql = "$load_data_statement INFILE :file_path IGNORE
       INTO TABLE {$this->getTableName()}
+      CHARACTER SET :encoding
       FIELDS TERMINATED BY :delim
       ENCLOSED BY :quote_delimiters";
     $params[':file_path'] = $file_path;
     $params[':delim'] = $delim;
     $params[':quote_delimiters'] = $quote_delimiters;
+    $params[':encoding'] =  $encoding;
 
     if ($fields_escaped_by) {
       $sql = $sql . "  ESCAPED BY :fields_escaped_by";

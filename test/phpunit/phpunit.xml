@@ -30,6 +30,7 @@
         </testsuite>
         <testsuite name="DKAN Datastore Test Suite">
           <file>dkan_datastore/DkanDatastoreCSVParserTest.php</file>
+          <file>dkan_datastore/DkanDatastoreEncodingTest.php</file>
           <file>dkan_datastore/DkanDatastoreTest.php</file>
         </testsuite>
         <testsuite name="DKAN Datastore API Test Suite">
