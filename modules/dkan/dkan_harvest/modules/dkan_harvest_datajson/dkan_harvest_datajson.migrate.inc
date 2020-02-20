@@ -255,7 +255,7 @@ class DatajsonHarvestMigration extends HarvestMigration {
         }
         else {
           $message = t(
-            '"@frequency", is not a valid Frequency value',
+            '"@frequency", is not a valid ISO 8601 Repeating Duration value, if the frequency is irregular, simply use "irregular".',
             ['@frequency' => $row->accrualPeriodicity]
           );
           $this->saveMessage($message);

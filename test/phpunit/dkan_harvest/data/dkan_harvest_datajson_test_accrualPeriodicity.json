@@ -1,0 +1,84 @@
+{
+    "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+    "@id": "http://www.agency.gov/data.json",
+    "@type": "dcat:Catalog",
+    "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+    "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+    "dataset": [
+      {
+        "@type": "dcat:Dataset",
+        "accessLevel": "public",
+        "contactPoint": {
+          "@type": "vcard:Contact",
+          "fn": "Contact Example",
+          "hasEmail": "mailto:test@test.com"
+        },
+        "dataQuality": true,
+        "description": "Testing accrualPeriodicity value.",
+        "identifier": "1156",
+        "keyword": [
+          "Test"
+        ],
+        "modified": "2016-04-07",
+        "publisher": {
+          "name": "Publisher Name"
+        },
+        "temporal": "2005/2016",
+        "accrualPeriodicity": "R/P1D",
+        "theme": [
+          "dkan"
+        ],
+        "title": "AP test - valid"
+      },
+      {
+        "@type": "dcat:Dataset",
+        "accessLevel": "public",
+        "accrualPeriodicity": "Daily",
+        "contactPoint": {
+          "@type": "vcard:Contact",
+          "fn": "Contact Example",
+          "hasEmail": "mailto:test@test.com"
+        },
+        "dataQuality": true,
+        "description": "Testing accrualPeriodicity value.",
+        "identifier": "1155",
+        "keyword": [
+          "Test"
+        ],
+        "modified": "2016-04-07",
+        "publisher": {
+          "name": "Publisher Name"
+        },
+        "temporal": "2013/2014",
+        "theme": [
+          "dkan"
+        ],
+        "title": "AP test - should also pass"
+      },
+      {
+        "@type": "dcat:Dataset",
+        "accessLevel": "public",
+        "accrualPeriodicity": "whenever",
+        "contactPoint": {
+          "@type": "vcard:Contact",
+          "fn": "Contact Example",
+          "hasEmail": "mailto:test@test.com"
+        },
+        "dataQuality": true,
+        "description": "This one will fail",
+        "identifier": "1154",
+        "keyword": [
+          "Test"
+        ],
+        "modified": "2016-01-06",
+        "publisher": {
+          "name": "Untidy Publisher"
+        },
+        "temporal": "1988-01-01/P1W",
+        "theme": [
+          "dkan"
+        ],
+        "title": "AP test - not going to make it in"
+      }
+    ]
+  }
