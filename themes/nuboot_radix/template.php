@@ -20,7 +20,7 @@ require_once dirname(__FILE__) . '/includes/view.inc';
 function nuboot_radix_link_iframe_formatter_original($variables) {
   $link_options = $variables['element'];
   $link = l($link_options['title'], $link_options['url'], $link_options);
-  return '<i class="fa fa-external-link"></i>  ' . $link;
+  return '<i class="fa fa-external-link" aria-hidden="true"></i>  ' . $link;
 }
 
 /**
@@ -38,7 +38,7 @@ function nuboot_radix_breadcrumb($variables) {
 
     $crumbs = '<ul class="breadcrumb">';
     if (!drupal_is_front_page()) {
-      $crumbs .= '<li class="home-link"><a href="' . url('<front>') . '"><i class="fa fa fa-home"></i><span> Home</span></a></li>';
+      $crumbs .= '<li class="home-link"><a href="' . url('<front>') . '"><i class="fa fa fa-home" aria-hidden="true"></i><span> Home</span></a></li>';
     }
 
     // Remove null values.
