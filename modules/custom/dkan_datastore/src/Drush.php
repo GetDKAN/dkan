@@ -4,7 +4,7 @@ namespace Drupal\dkan_datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Drupal\dkan_data\ValueReferencer;
+use Drupal\dkan_data\Reference\Dereferencer;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -51,7 +51,7 @@ class Drush extends DrushCommands {
 
     try {
       // Load metadata with both identifier and data for this request.
-      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
+      drupal_static('dkan_data_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
 
       $this->datastoreService->import($uuid, $deferred);
     }

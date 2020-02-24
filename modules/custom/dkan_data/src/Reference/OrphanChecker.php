@@ -4,6 +4,7 @@ namespace Drupal\dkan_data\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\dkan_common\LoggerTrait;
 use stdClass;
 
 /**
@@ -11,6 +12,7 @@ use stdClass;
  */
 class OrphanChecker {
   use HelperTrait;
+  use LoggerTrait;
 
   /**
    * The queue service.

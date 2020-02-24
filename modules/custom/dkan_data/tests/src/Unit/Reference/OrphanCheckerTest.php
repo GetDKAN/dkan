@@ -10,17 +10,23 @@ use Drupal\dkan_data\Reference\OrphanChecker;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
-class OrphanCheckerTest extends TestCase
-{
+/**
+ *
+ */
+class OrphanCheckerTest extends TestCase {
+
+  /**
+   *
+   */
   public function testDeleted() {
     $config = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', ['name'])
       ->getMock();
 
-    $queueChain =(new Chain($this))
+    $queueChain = (new Chain($this))
       ->add(QueueFactory::class, 'get', QueueInterface::class)
-      ->add(QueueInterface::class, 'createItem', null, 'items');
+      ->add(QueueInterface::class, 'createItem', NULL, 'items');
     $queue = $queueChain->getMock();
 
     $service = new OrphanChecker($config, $queue);
@@ -30,15 +36,18 @@ class OrphanCheckerTest extends TestCase
     $this->assertEquals($expected, $queueChain->getStoredInput('items'));
   }
 
+  /**
+   *
+   */
   public function testUpdate() {
     $config = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', ['name'])
       ->getMock();
 
-    $queueChain =(new Chain($this))
+    $queueChain = (new Chain($this))
       ->add(QueueFactory::class, 'get', QueueInterface::class)
-      ->add(QueueInterface::class, 'createItem', null, 'items');
+      ->add(QueueInterface::class, 'createItem', NULL, 'items');
     $queue = $queueChain->getMock();
 
     $service = new OrphanChecker($config, $queue);
@@ -47,4 +56,5 @@ class OrphanCheckerTest extends TestCase
     $expected = [0 => ['name', 1]];
     $this->assertEquals($expected, $queueChain->getStoredInput('items'));
   }
+
 }

@@ -2,24 +2,13 @@
 
 namespace Drupal\dkan_data;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\dkan_common\AbstractDataNodeLifeCycle;
 use Drupal\dkan_common\UrlHostTokenResolver;
-use Drupal\dkan_data\Exception\DataNodeLifeCycleEntityValidationException;
-use Drupal\node\Entity\Node;
 
 /**
  * DataNodeLifeCycle.
  */
-class DataNodeLifeCycle {
-  private $node;
-
-  /**
-   * Constructor.
-   */
-  public function __construct(EntityInterface $entity) {
-    $this->validate($entity);
-    $this->node = $entity;
-  }
+class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
 
   /**
    * Presave.
@@ -27,16 +16,12 @@ class DataNodeLifeCycle {
    * Activities to move a data node through during presave.
    */
   public function presave() {
-    /* @var $entity \Drupal\node\Entity\Node */
-    $entity = $this->node;
 
-    if (empty($entity->get('field_data_type')->value)) {
-      $entity->set('field_data_type', "dataset");
+    if (empty($this->getDataType())) {
+      $this->setDataType('dataset');
     }
 
-    $dataType = $entity->get('field_data_type')->value;
-
-    switch ($dataType) {
+    switch ($this->getDataType()) {
       case 'dataset':
         $this->datasetPresave();
         break;
@@ -99,37 +84,6 @@ class DataNodeLifeCycle {
       }
     }
 
-  }
-
-  /**
-   * Private.
-   */
-  private function getMetaData() {
-    /* @var $entity \Drupal\node\Entity\Node */
-    $entity = $this->node;
-    return json_decode($entity->get('field_json_metadata')->value);
-  }
-
-  /**
-   * Private.
-   */
-  private function setMetadata($metadata) {
-    /* @var $entity \Drupal\node\Entity\Node */
-    $entity = $this->node;
-    $entity->set('field_json_metadata', json_encode($metadata));
-  }
-
-  /**
-   * Private.
-   */
-  private function validate(EntityInterface $entity) {
-    if (!($entity instanceof Node)) {
-      throw new DataNodeLifeCycleEntityValidationException("We only work with nodes.");
-    }
-
-    if ($entity->bundle() != "data") {
-      throw new DataNodeLifeCycleEntityValidationException("We only work with data nodes.");
-    }
   }
 
   /**
