@@ -46,7 +46,6 @@ function dkan_admin_preprocess_views_view_field(&$vars) {
 
     // To access entities from relationship.
     // $entities = $vars['row']->_relationship_entities;.
-
     if (isset($vars['view']->field) && (count($vars['view']->field) > 0)) {
       if ($vars['field']->field == 'nothing' && $entity->field_data_type->value == 'dataset') {
         $vars['output'] = [

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_data\Exception;
+namespace Drupal\dkan_common\Exception;
 
 /**
  * Class DataNodeLifeCycleEntityValidationException.

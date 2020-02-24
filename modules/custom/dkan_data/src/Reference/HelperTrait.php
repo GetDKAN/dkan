@@ -3,7 +3,6 @@
 namespace Drupal\dkan_data\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\dkan_data\Service\Uuid5;
 
 /**
@@ -18,36 +17,10 @@ trait HelperTrait {
   private $configService;
 
   /**
-   * The logger factory service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory
-   */
-  private $loggerService;
-
-  /**
    * Setter.
    */
   private function setConfigService(ConfigFactoryInterface $configService) {
     $this->configService = $configService;
-  }
-
-  /**
-   * Setter.
-   *
-   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerService
-   *   Injected logger factory service.
-   */
-  public function setLoggerFactory(LoggerChannelFactory $loggerService) {
-    $this->loggerService = $loggerService;
-  }
-
-  /**
-   * Private.
-   */
-  private function log($loggerName, $message, $variables) {
-    if ($this->loggerService) {
-      $this->loggerService->get($loggerName)->error($message, $variables);
-    }
   }
 
   /**
