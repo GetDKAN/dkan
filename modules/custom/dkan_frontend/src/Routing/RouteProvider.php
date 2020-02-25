@@ -50,6 +50,11 @@ class RouteProvider {
    */
   private function expandDirectories($base_dir) {
     $directories = [];
+
+    if (!file_exists($base_dir)) {
+      return $directories;
+    }
+
     foreach (scandir($base_dir) as $file) {
       if ($file == '.' || $file == '..') {
         continue;
