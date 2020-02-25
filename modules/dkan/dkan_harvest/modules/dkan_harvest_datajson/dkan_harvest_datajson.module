@@ -360,6 +360,8 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
     ])->fetchField();
 
     if ($identifier_exists) {
+      drupal_set_message(t('@title with id "@value" already exists from another harvest source so will be skipped.',
+      array('@value' => $dataset['identifier'], '@title' => $dataset['title'])), 'warning', FALSE);
       continue;
     }
     $identifier = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
