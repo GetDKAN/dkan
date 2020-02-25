@@ -348,7 +348,22 @@ function dkan_harvest_datajson_cache_pod_v1_1_json(array $data, HarvestSource $s
   }, $datasets
   );
 
+  $query = "SELECT COUNT(*) FROM {node} n 
+              JOIN {field_data_field_harvest_source_ref} hsr ON n.nid = hsr.entity_id 
+              JOIN {field_data_field_dkan_harvest_machine_name} mn ON hsr.field_harvest_source_ref_target_id = mn.entity_id
+              WHERE n.uuid = :identifier AND mn.field_dkan_harvest_machine_name_machine <> :machine_name";
+
   foreach ($datasets as $dataset) {
+    $identifier_exists = db_query($query, [
+      ':identifier' => $dataset['identifier'],
+      ':machine_name' => $source->machineName,
+    ])->fetchField();
+
+    if ($identifier_exists) {
+      drupal_set_message(t('@title with id "@value" already exists from another harvest source so will be skipped.',
+      array('@value' => $dataset['identifier'], '@title' => $dataset['title'])), 'warning', FALSE);
+      continue;
+    }
     $identifier = dkan_harvest_datajson_prepare_item_id($dataset['identifier']);
     $dataset_file = implode('/', array($source->getCacheDir(), $identifier));
     $data = drupal_json_encode($dataset);
