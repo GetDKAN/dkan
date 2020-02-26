@@ -31,11 +31,20 @@ class FileHelper implements IFileHelper {
    */
   public function retrieveFile($url, $destination = NULL, $managed = FALSE) {
     if (substr_count($url, "file://") > 0) {
-      $content = file_get_contents($url);
+
+      $src = str_replace("file://", "", $url);
+
       $pieces = parse_url($url);
       $path = explode("/", $pieces['path']);
       $filename = end($path);
-      return file_save_data($content, $destination . "/{$filename}", $managed, FileSystemInterface::EXISTS_REPLACE);
+
+      $dest = $this->getRealPath($destination) . "/{$filename}";
+
+      copy($src, $dest);
+
+      $url = file_create_url("{$destination}/{$filename}");
+
+      return $url;
     }
     else {
       return system_retrieve_file($url, $destination, $managed, FileSystemInterface::EXISTS_REPLACE);
