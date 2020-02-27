@@ -65,7 +65,8 @@ class DataNodeLifeCycleTest extends TestCase {
 
     $options = (new Options())
       ->add('field_json_metadata', (object) ["value" => json_encode($metadata)])
-      ->add('field_data_type', (object) ["value" => "distribution"]);
+      ->add('field_data_type', (object) ["value" => "distribution"])
+      ->index(0);
 
     $nodeChain = new Chain($this);
     $node = $nodeChain

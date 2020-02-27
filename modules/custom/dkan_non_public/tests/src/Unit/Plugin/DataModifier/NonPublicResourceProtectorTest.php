@@ -108,7 +108,8 @@ class NonPublicResourceProtectorTest extends TestCase {
 
     $options = (new Options())
       ->add('database', Connection::class)
-      ->add('current_route_match', RouteMatchInterface::class);
+      ->add('current_route_match', RouteMatchInterface::class)
+      ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)

@@ -26,7 +26,8 @@ class DkanDatasetTest extends TestCase {
     $containerOptions = (new Options())
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('entity_type.repository', EntityTypeRepository::class)
-      ->add('dkan_data.storage', Data::class);
+      ->add('dkan_data.storage', Data::class)
+      ->index(0);
 
     $nids = [1, 2];
     $executeSequence = (new Sequence())->add(2)->add($nids);

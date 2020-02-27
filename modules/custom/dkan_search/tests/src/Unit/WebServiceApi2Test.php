@@ -52,7 +52,8 @@ class WebServiceApi2Test extends TestCase {
       ->add('entity_type.manager', EntityManager::class)
       ->add('request_stack', RequestStack::class)
       ->add('search_api.query_helper', QueryHelperInterface::class)
-      ->add('dkan_metastore.service', Service::class);
+      ->add('dkan_metastore.service', Service::class)
+      ->index(0);
 
     $item = (new Chain($this))
       ->add(Item::class, 'getId', 1)

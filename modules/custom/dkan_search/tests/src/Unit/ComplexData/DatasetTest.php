@@ -46,7 +46,8 @@ class DatasetTest extends TestCase {
 
     $options = (new Options())
       ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-      ->add('typed_data_manager', TypedDataManagerInterface::class);
+      ->add('typed_data_manager', TypedDataManagerInterface::class)
+      ->index(0);
 
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)

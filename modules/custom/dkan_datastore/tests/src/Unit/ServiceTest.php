@@ -92,7 +92,8 @@ class ServiceTest extends TestCase {
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
       ->add('dkan_datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
-      ->add('dkan_datastore.job_store_factory', JobStoreFactory::class);
+      ->add('dkan_datastore.job_store_factory', JobStoreFactory::class)
+      ->index(0);
 
   }
 

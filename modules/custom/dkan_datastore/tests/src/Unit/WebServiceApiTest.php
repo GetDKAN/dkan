@@ -45,7 +45,8 @@ class WebServiceApiTest extends TestCase {
   private function getContainer() {
     $options = (new Options())
       ->add("dkan_datastore.service", Service::class)
-      ->add("request_stack", RequestStack::class);
+      ->add("request_stack", RequestStack::class)
+      ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)

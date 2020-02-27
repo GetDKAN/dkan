@@ -26,11 +26,12 @@ class ImporterListTest extends TestCase {
    */
   public function test() {
 
-    $options = new Options();
-    $options->add('total_bytes_copied', 20);
-    $options->add('total_bytes', 30);
-    $options->add("hello", "hello");
-    $options->add("source", "hello");
+    $options = (new Options())
+      ->add('total_bytes_copied', 20)
+      ->add('total_bytes', 30)
+      ->add("hello", "hello")
+      ->add("source", "hello")
+      ->index(0);
 
     $fileFetcher = (new Chain($this))
       ->add(FileFetcher::class, "getStateProperty", $options)

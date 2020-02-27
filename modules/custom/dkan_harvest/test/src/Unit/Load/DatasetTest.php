@@ -25,6 +25,7 @@ class DatasetTest extends TestCase {
     $container = (new Chain($this))
       ->add(Container::class, "get", (new Options())
         ->add('dkan_metastore.service', Service::class)
+        ->index(0)
     )
       ->add(Service::class, "post", "1");
 

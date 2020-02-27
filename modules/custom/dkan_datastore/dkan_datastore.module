@@ -18,3 +18,14 @@ function dkan_datastore_node_insert(EntityInterface $entity) {
   catch (DataNodeLifeCycleEntityValidationException $e) {
   }
 }
+
+/**
+ * Implements hook_ENTITY_TYPE_predelete().
+ */
+function dkan_datastore_node_predelete(EntityInterface $entity) {
+  try {
+    (new DataNodeLifeCycle($entity))->predelete();
+  }
+  catch (DataNodeLifeCycleEntityValidationException $e) {
+  }
+}

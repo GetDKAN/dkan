@@ -68,7 +68,8 @@ class DocsTest extends TestCase {
   public function getCommonMockChain() {
     $options = (new Options())
       ->add('module_handler', ModuleHandlerInterface::class)
-      ->add('request_stack', RequestStack::class);
+      ->add('request_stack', RequestStack::class)
+      ->index(0);
 
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)

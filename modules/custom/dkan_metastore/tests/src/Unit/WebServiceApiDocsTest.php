@@ -79,6 +79,7 @@ class WebServiceApiDocsTest extends TestCase {
       (new Options)->add('dkan_api.docs', Docs::class)
         ->add('dkan_metastore.service', Service::class)
         ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class)
+        ->index(0)
     )
       ->add(Docs::class, "getJsonFromYmlFile", $serializer->decode($yamlSpec));
 

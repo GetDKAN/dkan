@@ -24,7 +24,8 @@ class DataNodeLifeCycle2Test extends TestCase {
   public function testNoDownloadURL() {
     $options = (new Options())
       ->add("dkan_datastore.service", Service::class)
-      ->add('logger.factory', LoggerChannelFactory::class);
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->index(0);
 
     $containerChain = (new Chain($this))
       ->add(Container::class, 'get', $options)
@@ -48,8 +49,8 @@ class DataNodeLifeCycle2Test extends TestCase {
 
     $entity = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
-      ->add(Node::class, 'get', FieldItemList::class)
       ->add(Node::class, 'uuid', '12345')
+      ->add(Node::class, 'get', FieldItemList::class)
       ->add(FieldItemList::class, 'first', FieldItemInterface::class)
       ->add(FieldItemInterface::class, '__get', $sequence)
       ->getMock();
@@ -61,6 +62,55 @@ class DataNodeLifeCycle2Test extends TestCase {
 
     $this->assertEquals('Invalid metadata information or missing file information.',
       $containerChain->getStoredInput('log')[0]);
+  }
+
+  /**
+   *
+   */
+  public function testLifeCycle() {
+    $options = (new Options())
+      ->add('dkan_datastore.service', Service::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->index(0);
+
+    $containerChain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(Service::class, 'import', [], 'import')
+      ->add(Service::class, 'drop', [], 'drop');
+    $container = $containerChain->getMock();
+
+    \Drupal::setContainer($container);
+
+    $metadata = (object) [
+      'identifier' => "12345",
+      'data' => (object) [
+        'accessURL' => "http://google.com",
+        'mediaType' => "text/csv",
+      ],
+    ];
+
+    $options = (new Options())
+      ->add('field_data_type', 'distribution')
+      ->add('field_json_metadata', json_encode($metadata))
+      ->use('field_get')
+      ->index(1);
+
+    $entity = (new Chain($this))
+      ->add(Node::class, 'bundle', 'data')
+      ->add(Node::class, 'uuid', '12345')
+      ->add(Node::class, 'get', FieldItemList::class, 'field_get')
+      ->add(FieldItemList::class, 'first', FieldItemInterface::class)
+      ->add(FieldItemInterface::class, '__get', $options)
+      ->getMock();
+
+    $cycle = new DataNodeLifeCycle($entity);
+    $cycle->insert();
+    // The right info was given to the datastore service to queue for import.
+    $this->assertEquals(['12345', TRUE], $containerChain->getStoredInput('import'));
+
+    $cycle->predelete();
+    // The right info was given to the datastore service to drop the datastore.
+    $this->assertEquals(['12345'], $containerChain->getStoredInput('drop'));
   }
 
 }

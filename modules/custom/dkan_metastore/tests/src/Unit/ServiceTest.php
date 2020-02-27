@@ -247,7 +247,8 @@ EOF;
   public function getCommonMockChain() {
     $options = (new Options())
       ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-      ->add('dkan_metastore.sae_factory', Sae::class);
+      ->add('dkan_metastore.sae_factory', Sae::class)
+      ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
