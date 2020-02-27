@@ -82,7 +82,8 @@ class ApiTest extends TestCase {
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
       ->add('request_stack', RequestStack::class)
       ->add('dkan_datastore.database_table_factory', DatabaseTableFactory::class)
-      ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class);
+      ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class)
+      ->index(0);
 
     $query = '[SELECT * FROM abc][WHERE abc = \'blah\'][ORDER BY abc DESC][LIMIT 1 OFFSET 3];';
     $body = json_encode(["query" => $query]);

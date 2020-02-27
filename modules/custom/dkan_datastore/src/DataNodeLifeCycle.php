@@ -13,6 +13,8 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
 
   /**
    * Insert.
+   *
+   * If a CSV resource is being saved a job should be created.
    */
   public function insert() {
     $entity = $this->node;
@@ -22,9 +24,9 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
 
     if ($this->isDatastorable()) {
       try {
-        /* @var $datastore_service \Drupal\dkan_datastore\Service */
-        $datastore_service = \Drupal::service('dkan_datastore.service');
-        $datastore_service->import($entity->uuid(), TRUE);
+        /* @var $datastoreService \Drupal\dkan_datastore\Service */
+        $datastoreService = \Drupal::service('dkan_datastore.service');
+        $datastoreService->import($entity->uuid(), TRUE);
       }
       catch (\Exception $e) {
         $this->setLoggerFactory(\Drupal::service('logger.factory'));
@@ -32,6 +34,29 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       }
     }
 
+  }
+
+  /**
+   * Predelete.
+   *
+   * When a resource is deleted, any incomplete import jobs should be removed.
+   * Also, its datastore should go.
+   */
+  public function predelete() {
+    $entity = $this->node;
+    if ($this->getDataType() != 'distribution') {
+      return;
+    }
+
+    try {
+      /* @var $datastoreService \Drupal\dkan_datastore\Service */
+      $datastoreService = \Drupal::service('dkan_datastore.service');
+      $datastoreService->drop($entity->uuid());
+    }
+    catch (\Exception $e) {
+      $this->setLoggerFactory(\Drupal::service('logger.factory'));
+      $this->log('dkan_datastore', $e->getMessage());
+    }
   }
 
   /**

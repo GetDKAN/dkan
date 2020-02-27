@@ -123,7 +123,8 @@ class ApiTest extends TestCase {
   public function testRun() {
     $options = (new Options())
       ->add("request_stack", RequestStack::class)
-      ->add("dkan_harvest.service", Harvester::class);
+      ->add("dkan_harvest.service", Harvester::class)
+      ->index(0);
 
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)

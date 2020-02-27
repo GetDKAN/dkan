@@ -330,6 +330,7 @@ EOF;
     $mockChain->add(ContainerInterface::class, 'get',
       (new Options)->add('request_stack', RequestStack::class)
         ->add("dkan_metastore.service", Service::class)
+        ->index(0)
     );
     $mockChain->add(SchemaRetriever::class, 'retrieve', "{}");
     return $mockChain;
