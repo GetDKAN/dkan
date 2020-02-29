@@ -11,6 +11,11 @@ name: DKAN
 description: ''
 read_only: false
 field_settings:
+  theme:
+    label: theme
+    datasource_id: dkan_dataset
+    property_path: theme
+    type: string
   title:
     label: title
     datasource_id: dkan_dataset
