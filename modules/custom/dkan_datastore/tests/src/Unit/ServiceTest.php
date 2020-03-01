@@ -71,6 +71,7 @@ class ServiceTest extends TestCase {
       ->add(QueueFactory::class, "get", NULL)
       ->add(ResourceServiceFactory::class, "getInstance", ResourceService::class)
       ->add(ResourceService::class, "get", new Resource("1", "file:///hello.txt"))
+      ->add(ResourceService::class, "remove", NULL)
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
       ->add(ImportService::class, "getStorage", DatabaseTable::class)
       ->add(DatabaseTable::class, "destroy", NULL)

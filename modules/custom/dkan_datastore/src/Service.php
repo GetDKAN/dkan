@@ -10,7 +10,6 @@ use Drupal\dkan_datastore\Service\Factory\Resource;
 use Drupal\dkan_datastore\Service\Factory\Import;
 use Drupal\dkan_datastore\Service\ImporterList\ImporterList;
 use Dkan\Datastore\Importer;
-use FileFetcher\FileFetcher;
 
 /**
  * Main services for the datastore.
@@ -100,10 +99,15 @@ class Service implements ContainerInjectionInterface {
     if ($storage) {
       $storage->destroy();
     }
+
+    /* @var $resourceService \Drupal\dkan_datastore\Service\Resource */
+    $resourceService = $this->resourceServiceFactory->getInstance($uuid);
+    $resourceService->remove();
+
     /* @var $resource \Dkan\Datastore\Resource */
-    $resource = $this->resourceServiceFactory->getInstance($uuid)->get();
+    $resource = $resourceService->get();
     $this->jobStoreFactory->getInstance(Importer::class)->remove($resource->getId());
-    $this->jobStoreFactory->getInstance(FileFetcher::class)->remove($uuid);
+
   }
 
   /**

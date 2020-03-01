@@ -16,8 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   title = @Translation("Queue to process datastore import"),
  *   cron = {"time" = 60}
  * )
- *
- * @codeCoverageIgnore
  */
 class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
@@ -57,34 +55,45 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    */
   public function processItem($data) {
 
-    $datastore = $this->container->get('dkan_datastore.service');
+    try {
+      $datastore = $this->container->get('dkan_datastore.service');
 
-    $results = $datastore->import($data['uuid']);
+      $results = $datastore->import($data['uuid']);
 
-    foreach ($results as $result) {
-      switch ($result->getStatus()) {
-        case Result::STOPPED:
-
-          // Requeue for next iteration.
-          // queue is self calling and should keep going until complete.
-          $newQueueItemId = $this->requeue($data);
-
-          $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).");
-
-          break;
-
-        case Result::IN_PROGRESS:
-        case Result::ERROR:
-
-          // @todo fall through to cleanup on error. maybe should not so we can inspect issues further?
-          $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error: {$result->getError()}");
-          break;
-
-        case Result::DONE:
-          $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
-          break;
+      foreach ($results as $result) {
+        $this->processResult($result, $data);
       }
     }
+    catch (\Exception $e) {
+      $this->log(RfcLogLevel::ERROR,
+        "Import for {$data['uuid']} returned an error: {$e->getMessage()}");
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function processResult(Result $result, $data) {
+    $level = RfcLogLevel::INFO;
+    $message = "";
+    $status = $result->getStatus();
+    switch ($status) {
+      case Result::STOPPED:
+        $newQueueItemId = $this->requeue($data);
+        $message = "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).";
+        break;
+
+      case Result::IN_PROGRESS:
+      case Result::ERROR:
+        $level = RfcLogLevel::ERROR;
+        $message = "Import for {$data['uuid']} returned an error: {$result->getError()}";
+        break;
+
+      case Result::DONE:
+        $message = "Import for {$data['uuid']} completed.";
+        break;
+    }
+    $this->log($level, $message);
   }
 
   /**
