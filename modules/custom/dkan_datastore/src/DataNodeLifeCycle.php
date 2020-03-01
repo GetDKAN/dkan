@@ -57,6 +57,15 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->log('dkan_datastore', $e->getMessage());
     }
+
+    $metadata = $this->getMetaData();
+    $data = $metadata->data;
+    if (isset($data->downloadURL)) {
+      $url = $data->downloadURL;
+      $pieces = explode('sites/default/files/', $url);
+      $path = "public://" . end($pieces);
+      file_unmanaged_delete($path);
+    }
   }
 
   /**

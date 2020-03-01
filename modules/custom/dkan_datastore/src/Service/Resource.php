@@ -62,6 +62,23 @@ class Resource {
   }
 
   /**
+   * Remove the resource object.
+   *
+   * Resource objects are dynamic, so they themselves do not need to be removed.
+   * However, to create a resource we use the filefetcher. Filefetcher states
+   * are stored, and once fetching is finished a file exists in the file system.
+   * We need to clean up both of those things.
+   */
+  public function remove() {
+    $fileFetcher = $this->getFileFetcher();
+    $filePath = $fileFetcher->getStateProperty('destination');
+    if (file_exists($filePath)) {
+      unlink($filePath);
+    }
+    $this->jobStoreFactory->getInstance(FileFetcher::class)->remove($this->uuid);
+  }
+
+  /**
    * Get result.
    */
   public function getResult(): Result {
