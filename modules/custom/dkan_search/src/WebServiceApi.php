@@ -67,11 +67,16 @@ class WebServiceApi {
     /* @var  $metastore Service */
     $metastore = \Drupal::service("dkan_metastore.service");
 
-    return array_map(function ($item) use ($metastore) {
+    return array_filter(array_map(function ($item) use ($metastore) {
       $id = $item->getId();
       $id = str_replace("dkan_dataset/", "", $id);
-      return json_decode($metastore->get("dataset", $id));
-    }, $result->getResultItems());
+      try {
+        return json_decode($metastore->get("dataset", $id));
+      }
+      catch (\Exception $e) {
+        return NULL;
+      }
+    }, $result->getResultItems()));
   }
 
   /**
