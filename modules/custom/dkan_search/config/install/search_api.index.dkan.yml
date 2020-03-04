@@ -11,6 +11,16 @@ name: DKAN
 description: ''
 read_only: false
 field_settings:
+  description:
+    label: description
+    datasource_id: dkan_dataset
+    property_path: description
+    type: text
+  keyword:
+    label: keyword
+    datasource_id: dkan_dataset
+    property_path: keyword
+    type: string
   theme:
     label: theme
     datasource_id: dkan_dataset
@@ -26,6 +36,13 @@ datasource_settings:
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  ignorecase:
+    all_fields: false
+    fields:
+      - description
+      - keyword
+      - theme
+      - title
   language_with_fallback: {  }
   rendered_item: {  }
 tracker_settings:
