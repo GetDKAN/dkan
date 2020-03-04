@@ -27,8 +27,10 @@ class Dataset extends ComplexDataFacade {
     $properties = array_keys((array) $object->properties);
 
     foreach ($properties as $property) {
-      $type = $object->properties->{$property}->type;
-      $definitions[$property] = self::getDefinition($type);
+      if (isset($object->properties->{$property}->type)) {
+        $type = $object->properties->{$property}->type;
+        $definitions[$property] = self::getDefinition($type);
+      }
     }
 
     return $definitions;
