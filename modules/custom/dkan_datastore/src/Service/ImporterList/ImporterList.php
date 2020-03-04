@@ -45,11 +45,18 @@ class ImporterList {
 
     $store = $this->jobStoreFactory->getInstance(FileFetcher::class);
     foreach ($store->retrieveAll() as $id) {
-      $fileFetchers[$id] = $this->resourceServiceFactory->getInstance($id)->getFileFetcher();
+      try {
+        $fileFetchers[$id] = $this->resourceServiceFactory->getInstance($id)
+          ->getFileFetcher();
 
-      /* @var $resource \Dkan\Datastore\Resource */
-      $resource = $this->resourceServiceFactory->getInstance($id)->get();
-      $importers[$id] = $this->importServiceFactory->getInstance($resource->getId(), ['resource' => $resource])->getImporter();
+        /* @var $resource \Dkan\Datastore\Resource */
+        $resource = $this->resourceServiceFactory->getInstance($id)->get();
+        $importers[$id] = $this->importServiceFactory->getInstance($resource->getId(),
+          ['resource' => $resource])->getImporter();
+      }
+      catch (\Exception $e) {
+        // The file fetcher id is not a resource.
+      }
     }
 
     foreach ($fileFetchers as $uuid => $fileFetcher) {
