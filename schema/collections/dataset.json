@@ -243,7 +243,7 @@
           "pattern": "^[a-z]+?$",
           "type": "string"
         },
-        "isssued": {
+        "issued": {
           "title": "Release Date",
           "description": "Date of formal issuance.",
           "type": "string",
