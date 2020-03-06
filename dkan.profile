@@ -318,7 +318,7 @@ function dkan_misc_variables_set(array &$context) {
   variable_set('page_manager_node_view_disabled', FALSE);
   variable_set('page_manager_node_edit_disabled', FALSE);
   variable_set('page_manager_user_view_disabled', FALSE);
-  variable_set('jquery_update_jquery_version', '1.10');
+  variable_set('jquery_update_jquery_version', '1.12');
   // Disable selected views enabled by contributed modules.
   $views_disable = array(
     'og_extras_nodes' => TRUE,
