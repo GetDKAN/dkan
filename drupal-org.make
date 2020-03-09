@@ -5,7 +5,7 @@ includes:
 - https://raw.githubusercontent.com/GetDKAN/visualization_entity/7.x-2.x/visualization_entity.make
 - https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.5/open_data_schema_map.make
 - https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
-- https://raw.githubusercontent.com/NuCivic/recline/7.x-2.2/recline.make
+- https://raw.githubusercontent.com/NuCivic/recline/7.x-2.3/recline.make
 projects:
   admin_menu:
     version: 3.0-rc6
@@ -103,6 +103,7 @@ projects:
     version: '1.6'
     patch:
       3084250: https://www.drupal.org/files/issues/2019-10-25/hide-block-title-empty-facet-3084250-5.patch
+      2610702: https://www.drupal.org/files/issues/2019-11-01/facetapi-sanitize-facet-2610702-6-D7-1.x.patch
   facetapi_bonus:
     version: '1.3'
   facetapi_pretty_paths:
@@ -279,7 +280,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/recline.git
-      revision: f7c0cdc6c8a095e33b05840f4b2dcc56912c21e7
+      tag: 7.x-2.3
   ref_field:
     download:
       type: git
