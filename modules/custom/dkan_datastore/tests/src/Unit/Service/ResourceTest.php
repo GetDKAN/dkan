@@ -6,7 +6,6 @@ use Procrastinator\Result;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\File\FileSystem;
-use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\Field\Plugin\DataType\FieldItem;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
@@ -27,17 +26,15 @@ class ResourceTest extends TestCase {
     $object = (object) [];
     $object->data = (object) [];
     $object->data->downloadURL = "http://google.com";
+    $object->data->mediaType = "text/csv";
 
-    $meta = [
-      "value" => json_encode($object),
-    ];
+    $meta = json_encode($object);
 
     $entityRepository = (new Chain($this))
       ->add(EntityRepository::class, "loadEntityByUuid", Node::class)
       ->add(Node::class, "id", "1")
-      ->add(Node::class, "get", FieldItemList::class)
-      ->add(FieldItemList::class, "get", FieldItem::class)
-      ->add(FieldItem::class, "getValue", $meta)
+      ->add(Node::class, "get", FieldItem::class)
+      ->add(FieldItem::class, "getString", $meta)
       ->getMock();
 
     $fileSystem = (new Chain($this))
@@ -66,17 +63,15 @@ class ResourceTest extends TestCase {
     $object = (object) [];
     $object->data = (object) [];
     $object->data->downloadURL = "http://google.com";
+    $object->data->mediaType = "text/csv";
 
-    $meta = [
-      "value" => json_encode($object),
-    ];
+    $meta = json_encode($object);
 
     $entityRepository = (new Chain($this))
       ->add(EntityRepository::class, "loadEntityByUuid", Node::class)
       ->add(Node::class, "id", "1")
-      ->add(Node::class, "get", FieldItemList::class)
-      ->add(FieldItemList::class, "get", FieldItem::class)
-      ->add(FieldItem::class, "getValue", $meta)
+      ->add(Node::class, "get", FieldItem::class)
+      ->add(FieldItem::class, "getString", $meta)
       ->getMock();
 
     $fileSystem = (new Chain($this))
@@ -124,17 +119,15 @@ class ResourceTest extends TestCase {
     $object = (object) [];
     $object->data = (object) [];
     $object->data->downloadURL = "http://google.com";
+    $object->data->mediaType = "text/csv";
 
-    $meta = [
-      "value" => json_encode($object),
-    ];
+    $meta = json_encode($object);
 
     $entityRepository = (new Chain($this))
       ->add(EntityRepository::class, "loadEntityByUuid", Node::class)
       ->add(Node::class, "id", "1")
-      ->add(Node::class, "get", FieldItemList::class)
-      ->add(FieldItemList::class, "get", FieldItem::class)
-      ->add(FieldItem::class, "getValue", $meta)
+      ->add(Node::class, "get", FieldItem::class)
+      ->add(FieldItem::class, "getString", $meta)
       ->getMock();
 
     $fileSystem = $this->getFileSystemMock();
@@ -180,17 +173,15 @@ class ResourceTest extends TestCase {
     $object = (object) [];
     $object->data = (object) [];
     $object->data->downloadURL = "http://google.com";
+    $object->data->mediaType = "text/csv";
 
-    $meta = [
-      "value" => json_encode($object),
-    ];
+    $meta = json_encode($object);
 
     $entityRepository = (new Chain($this))
       ->add(EntityRepository::class, "loadEntityByUuid", Node::class)
       ->add(Node::class, "id", "1")
-      ->add(Node::class, "get", FieldItemList::class)
-      ->add(FieldItemList::class, "get", FieldItem::class)
-      ->add(FieldItem::class, "getValue", $meta)
+      ->add(Node::class, "get", FieldItem::class)
+      ->add(FieldItem::class, "getString", $meta)
       ->getMock();
 
     $fileSystem = $this->getFileSystemMock();

@@ -22,7 +22,7 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       return;
     }
 
-    if ($this->isDatastorable()) {
+    if ($this->isDataStorable()) {
       try {
         /* @var $datastoreService \Drupal\dkan_datastore\Service */
         $datastoreService = \Drupal::service('dkan_datastore.service');
@@ -64,27 +64,27 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       $url = $data->downloadURL;
       $pieces = explode('sites/default/files/', $url);
       $path = "public://" . end($pieces);
-      file_unmanaged_delete($path);
+      /** @var \Drupal\Core\File\FileSystemInterface $fileSystemService */
+      $fileSystemService = \Drupal::service('file_system');
+      $fileSystemService->delete($path);
     }
   }
 
   /**
    * Private.
    */
-  private function isDatastorable() {
+  private function isDataStorable() : bool {
     $metadata = $this->getMetaData();
     $data = $metadata->data;
 
-    if (!isset($data->downloadURL) && !isset($data->accessURL)) {
-      return FALSE;
+    if (isset($data->downloadURL) && isset($data->mediaType)) {
+      return in_array($data->mediaType, [
+        'text/csv',
+        'text/tab-separated-values',
+      ]);
     }
 
-    if (!(isset($data->mediaType) && $data->mediaType == 'text/csv') &&
-      !(isset($data->format) && $data->format == 'csv')) {
-      return FALSE;
-    }
-
-    return TRUE;
+    return FALSE;
   }
 
 }

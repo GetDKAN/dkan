@@ -55,12 +55,16 @@ class Import {
    *   Throws exception if cannot create valid importer object.
    */
   public function getImporter(): Importer {
+    $delimiter = ",";
+    if ($this->resource->getMimeType() == 'text/tab-separated-values') {
+      $delimiter = "\t";
+    }
 
     $importer = Importer::get($this->resource->getId(),
       $this->jobStoreFactory->getInstance(Importer::class),
       [
         "storage" => $this->getStorage(),
-        "parser" => Csv::getParser(),
+        "parser" => Csv::getParser($delimiter),
         "resource" => $this->resource,
       ]
     );

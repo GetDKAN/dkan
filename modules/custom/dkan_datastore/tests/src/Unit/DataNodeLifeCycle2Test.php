@@ -3,6 +3,7 @@
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemList;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\dkan_datastore\DataNodeLifeCycle;
@@ -18,10 +19,64 @@ use PHPUnit\Framework\TestCase;
  */
 class DataNodeLifeCycle2Test extends TestCase {
 
-  /**
-   * Not having a download URL should not stop anything.
-   */
-  public function testNoDownloadURL() {
+  public function initialSetUp(string $type, stdClass $data) {
+    $options = (new Options())
+      ->add("dkan_datastore.service", Service::class);
+    $containerChain = (new Chain($this))
+      ->add(Container::class, 'get', $options);
+    $container = $containerChain->getMock();
+
+    $sequence = (new Sequence())
+      ->add($type)
+      ->add(json_encode($data));
+
+    $entity = (new Chain($this))
+      ->add(Node::class, 'bundle', 'data')
+      ->add(Node::class, 'uuid', '12345')
+      ->add(Node::class, 'get', FieldItemList::class)
+      ->add(FieldItemList::class, 'first', FieldItemInterface::class)
+      ->add(FieldItemInterface::class, '__get', $sequence)
+      ->getMock();
+
+    return [$container, $entity];
+  }
+
+  public function testNonDistributionInsert() {
+    $metadata = (object) ['identifier' => "12345"];
+    [$container, $entity] = $this->initialSetUp('foobar', $metadata);
+
+    \Drupal::setContainer($container);
+
+    $cycle = new DataNodeLifeCycle($entity);
+    $this->assertNull($cycle->insert());
+  }
+
+  public function testNonDistributionPreDelete() {
+    $metadata = (object) ['identifier' => "12345"];
+    [$container, $entity] = $this->initialSetUp('foobar', $metadata);
+
+    \Drupal::setContainer($container);
+
+    $cycle = new DataNodeLifeCycle($entity);
+    $this->assertNull($cycle->predelete());
+  }
+
+  public function testDistributionWithoutDownloadURL() {
+    $metadata = (object) [
+      'identifier' => "12345",
+      'data' => (object) [
+        'accessURL' => "http://google.com",
+      ],
+    ];
+    [$container, $entity] = $this->initialSetUp('distribution', $metadata);
+
+    \Drupal::setContainer($container);
+
+    $cycle = new DataNodeLifeCycle($entity);
+    $this->assertNull($cycle->insert());
+  }
+
+  public function testDistributionWithDownloadURL() {
     $options = (new Options())
       ->add("dkan_datastore.service", Service::class)
       ->add('logger.factory', LoggerChannelFactory::class)
@@ -38,7 +93,7 @@ class DataNodeLifeCycle2Test extends TestCase {
     $metadata = (object) [
       'identifier' => "12345",
       'data' => (object) [
-        'accessURL' => "http://google.com",
+        'downloadURL' => "http://google.com",
         'mediaType' => "text/csv",
       ],
     ];
@@ -64,13 +119,11 @@ class DataNodeLifeCycle2Test extends TestCase {
       $containerChain->getStoredInput('log')[0]);
   }
 
-  /**
-   *
-   */
   public function testLifeCycle() {
     $options = (new Options())
       ->add('dkan_datastore.service', Service::class)
       ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('file_system', FileSystemInterface::class)
       ->index(0);
 
     $containerChain = (new Chain($this))
@@ -84,7 +137,7 @@ class DataNodeLifeCycle2Test extends TestCase {
     $metadata = (object) [
       'identifier' => "12345",
       'data' => (object) [
-        'accessURL' => "http://google.com",
+        'downloadURL' => "http://google.com",
         'mediaType' => "text/csv",
       ],
     ];
