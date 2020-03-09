@@ -173,7 +173,7 @@ projects:
   job_scheduler:
     version: 2.0
   jquery_update:
-    version: '2.7'
+    version: '3.0-alpha5'
   leaflet_draw_widget:
     download:
       type: git
