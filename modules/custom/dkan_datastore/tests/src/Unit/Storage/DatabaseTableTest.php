@@ -160,7 +160,7 @@ class DatabaseTableTest extends TestCase {
    *
    */
   private function getResource() {
-    return new Resource("people", "");
+    return new Resource("people", "", "text/csv");
   }
 
 }

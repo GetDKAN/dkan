@@ -20,7 +20,7 @@ class ImportTest extends TestCase {
    *
    */
   public function test() {
-    $resource = new Resource("blah", "/");
+    $resource = new Resource("blah", "/", "text/csv");
 
     $jobStore = (new Chain($this))
       ->add(JobStore::class, "retrieve", "")

@@ -54,7 +54,7 @@ class ImporterListTest extends TestCase {
     $resourceServiceFactory = (new Chain($this))
       ->add(ResourceFactory::class, "getInstance", ResourceService::class)
       ->add(ResourceService::class, "getFileFetcher", $fileFetcher)
-      ->add(ResourceService::class, "get", new Resource("blah", ""))
+      ->add(ResourceService::class, "get", new Resource("blah", "", "text/csv"))
       ->getMock();
 
     $importServiceFactory = (new Chain($this))

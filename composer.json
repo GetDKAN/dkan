@@ -17,7 +17,7 @@
         "drupal/views_bulk_operations": "3.3",
         "fmizzell/json_form": "dev-8.x-1.x",
         "getdkan/contracts": "^1.0.0",
-        "getdkan/datastore" : "^3.0.0",
+        "getdkan/datastore" : "^4.0.0",
         "getdkan/file-fetcher" : "^3.0.0",
         "getdkan/harvest": "^1.0.0",
         "getdkan/json-schema-provider": "^0.1.2",

@@ -273,7 +273,10 @@ class Container {
       ->getMockForAbstractClass();
 
     $data = [
-      'value' => json_encode(['data' => ['downloadURL' => __DIR__ . '/../../../data/countries.csv']]),
+      'value' => json_encode(['data' => [
+        'downloadURL' => __DIR__ . '/../../../data/countries.csv',
+        'mediaType' => 'text/csv',
+      ]]),
     ];
 
     $mock->method('getValue')

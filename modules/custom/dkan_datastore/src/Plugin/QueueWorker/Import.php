@@ -56,6 +56,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   public function processItem($data) {
 
     try {
+      /** @var \Drupal\dkan_datastore\Service $datastore */
       $datastore = $this->container->get('dkan_datastore.service');
 
       $results = $datastore->import($data['uuid']);
