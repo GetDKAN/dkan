@@ -3,6 +3,7 @@
 namespace Drupal\dkan_common;
 
 use Drupal\Core\Logger\LoggerChannelFactory;
+use Psr\Log\LogLevel;
 
 /**
  * LoggerTrait.
@@ -28,9 +29,9 @@ trait LoggerTrait {
   /**
    * Private.
    */
-  private function log($loggerName, $message, $variables = []) {
+  private function log($loggerName, $message, $variables = [], $level = LogLevel::ERROR) {
     if ($this->loggerService) {
-      $this->loggerService->get($loggerName)->error($message, $variables);
+      $this->loggerService->get($loggerName)->log($level, $message, $variables);
     }
   }
 
