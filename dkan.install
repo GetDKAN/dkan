@@ -886,3 +886,11 @@ function dkan_update_7040() {
     module_enable(array('dkan_dataset_search'));
   }
 }
+
+/**
+ * User newer jquery
+ */
+function dkan_update_7041() {
+  variable_set('jquery_update_jquery_version', '1.12');
+  variable_set('jquery_update_jquery_migrate_enable', '1');
+}
