@@ -86,7 +86,7 @@ class DataNodeLifeCycle2Test extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'import', new \Exception("Invalid metadata information or missing file information."))
       ->add(LoggerChannelFactory::class, 'get', LoggerChannel::class)
-      ->add(LoggerChannel::class, 'error', NULL, 'log');
+      ->add(LoggerChannel::class, 'log', NULL, 'log');
 
     $container = $containerChain->getMock();
 
@@ -116,7 +116,7 @@ class DataNodeLifeCycle2Test extends TestCase {
     $cycle->insert();
 
     $this->assertEquals('Invalid metadata information or missing file information.',
-      $containerChain->getStoredInput('log')[0]);
+      $containerChain->getStoredInput('log')[1]);
   }
 
   public function testLifeCycle() {
