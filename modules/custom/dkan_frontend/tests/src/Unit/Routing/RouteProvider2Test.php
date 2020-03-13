@@ -33,6 +33,8 @@ class RouteProvider2Test extends TestCase {
       $this->assertThat(
         $route->getPath(),
         $this->logicalOr(
+          $this->equalTo("/about"),
+          $this->equalTo("/dataset"),
           $this->equalTo("/dataset/123"),
           $this->equalTo("/home")
         )
