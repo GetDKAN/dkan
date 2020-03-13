@@ -29,7 +29,6 @@ class RouteProvider {
     $routes = new RouteCollection();
 
     $this->addStaticPages($routes);
-    $this->addDatasets($routes);
 
     $routes->addRequirements(['_access' => 'TRUE']);
 
@@ -115,23 +114,6 @@ class RouteProvider {
     );
     $route->setMethods(['GET']);
     $routes->add('home', $route);
-  }
-
-  /**
-   * Private.
-   */
-  private function addDatasets(RouteCollection $routes) {
-    $query = $this->entityQuery->get("node");
-    $query->condition('type', 'data');
-    $query->condition('field_data_type', 'dataset');
-    $result = $query->execute();
-
-    foreach ($result as $item) {
-      $node = node_load($item);
-      $uuid = $node->get("uuid")->value;
-      $name = "dataset__{$uuid}";
-      $routes->add($name, $this->routeHelper("/dataset/{$uuid}", $name));
-    }
   }
 
 }
