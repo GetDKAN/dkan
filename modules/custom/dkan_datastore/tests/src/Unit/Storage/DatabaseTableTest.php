@@ -75,10 +75,88 @@ class DatabaseTableTest extends TestCase {
       ->add(Statement::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
-     $connectionChain->getMock(),
+      $connectionChain->getMock(),
       $this->getResource()
     );
     $this->assertEquals("1", $databaseTable->store('["Gerardo", "Gonzalez"]', "1"));
+  }
+
+  /**
+   *
+   */
+  public function testStoreFieldCountException() {
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'insert', Insert::class)
+      ->add(Insert::class, 'fields', Insert::class)
+      ->add(Insert::class, 'values', Insert::class)
+      ->add(Insert::class, 'execute', "1")
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetch', NULL);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+    $this->expectExceptionMessageRegExp("/The number of fields and data given do not match:/");
+    $this->assertEquals("1", $databaseTable->store('["Foobar"]', "1"));
+  }
+
+  /**
+   *
+   */
+  public function testStoreMultiple() {
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'insert', Insert::class)
+      ->add(Insert::class, 'fields', Insert::class)
+      ->add(Insert::class, 'values', Insert::class)
+      ->add(Insert::class, 'execute', "1")
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetch', NULL);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+    $data = [
+      '["Gerardo", "Gonzalez"]',
+      '["Thierry", "Dallacroce"]',
+      '["Foo", "Bar"]',
+    ];
+    $this->assertEquals("1", $databaseTable->storeMultiple($data, "1"));
+  }
+
+  /**
+   *
+   */
+  public function testStoreMultipleFieldCountException() {
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'insert', Insert::class)
+      ->add(Insert::class, 'fields', Insert::class)
+      ->add(Insert::class, 'values', Insert::class)
+      ->add(Insert::class, 'execute', "1")
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetch', NULL);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+    $data = [
+      '["One"]',
+      '["Two"]',
+      '["Three"]',
+    ];
+    $this->expectExceptionMessageRegExp("/The number of fields and data given do not match:/");
+    $this->assertEquals("1", $databaseTable->storeMultiple($data, "1"));
   }
 
   /**
