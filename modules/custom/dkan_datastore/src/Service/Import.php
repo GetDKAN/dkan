@@ -64,7 +64,7 @@ class Import {
       $this->jobStoreFactory->getInstance(Importer::class),
       [
         "storage" => $this->getStorage(),
-        "parser" => Csv::getParser($delimiter),
+        "parser" => $this->getNonRecordingParser($delimiter),
         "resource" => $this->resource,
       ]
     );
@@ -72,6 +72,25 @@ class Import {
     $importer->setTimeLimit(self::DEFAULT_TIMELIMIT);
 
     return $importer;
+  }
+
+  /**
+   * Create a non-recording parser.
+   *
+   * When processing chunk size was increased to boost performance, the state
+   * machine's default behavior to record every execution steps caused out of
+   * memory errors. Stopping the machine's recording addresses this.
+   *
+   * @param string $delimiter
+   *   Delimiter character.
+   *
+   * @return \CsvParser\Parser\Csv
+   *   A parser which does not keep track of every execution steps.
+   */
+  private function getNonRecordingParser(string $delimiter) : Csv {
+    $parser = Csv::getParser($delimiter);
+    $parser->machine->stopRecording();
+    return $parser;
   }
 
   /**
