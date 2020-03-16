@@ -180,7 +180,7 @@ class ImporterListItem {
     switch ($className) {
       // For Importer, avoid going above total size due to chunk multiplication.
       case Importer::class:
-        $chunksSize = $job->getStateProperty('chunksProcessed') * 32;
+        $chunksSize = $job->getStateProperty('chunksProcessed') * Importer::BYTES_PER_CHUNK;
         $fileSize = $this->getFileSize();
         return ($chunksSize > $fileSize) ? $fileSize : $chunksSize;
 
