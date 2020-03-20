@@ -150,7 +150,7 @@ context('SQL Endpoint', () => {
 
   context('WHERE', () => {
     it('Single condition', () => {
-      let query = `[SELECT * FROM ${resource_identifier}][WHERE dist_name = 'Pusht Rod'];`
+      let query = `[SELECT * FROM ${resource_identifier}][WHERE dist_name = "Pusht Rod"];`
       cy.request({
         method: 'POST',
         url: apiUri + '/datastore/sql',
@@ -164,7 +164,7 @@ context('SQL Endpoint', () => {
     })
 
     it('Multiple conditions', () => {
-      let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah' AND dist_name = 'Pusht Rod'];`
+      let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = "Farah" AND dist_name = "Pusht Rod"];`
       cy.request({
         method: 'POST',
         url: apiUri + '/datastore/sql',

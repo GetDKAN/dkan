@@ -78,6 +78,9 @@ class Api implements ContainerInjectionInterface {
       return $this->getResponse("Missing 'query' query parameter", 400);
     }
 
+    // The incoming string could contain escaped characters.
+    $query = stripslashes($query);
+
     return $this->runQuery($query);
   }
 

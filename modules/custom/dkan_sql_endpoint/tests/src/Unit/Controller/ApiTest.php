@@ -85,7 +85,7 @@ class ApiTest extends TestCase {
       ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class)
       ->index(0);
 
-    $query = '[SELECT * FROM abc][WHERE abc = \'blah\'][ORDER BY abc DESC][LIMIT 1 OFFSET 3];';
+    $query = '[SELECT * FROM abc][WHERE abc = "blah"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];';
     $body = json_encode(["query" => $query]);
 
     return (new Chain($this))
