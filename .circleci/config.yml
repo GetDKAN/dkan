@@ -86,12 +86,17 @@ jobs:
             cd ~/sandbox
             dktl install
             dktl drush dkan-dummy-content:create
+            dktl drush queue:run dkan_datastore_import
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl drush en dkan_frontend
             dktl drush dkan-search:rebuild-tracker
             dktl drush search-api-index
             dktl dc exec web chmod -R 777 /var/www/docroot/data-catalog-frontend
-            dktl dc exec cli npm install --prefix /var/www/docroot/data-catalog-frontend --unsafe-perm
+            dktl dc exec cli npm cache clean -f
+            dktl dc exec cli npm install -g n
+            dktl dc exec cli n stable
+            dktl dc exec cli npm install npm@latest
+            dktl frontend:install
             dktl frontend:build
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl drush cr
