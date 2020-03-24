@@ -59,13 +59,15 @@ class WebServiceApi2Test extends TestCase {
       ->add(Item::class, 'getId', 1)
       ->getMock();
 
-    $thing = (object) ['title' => 'hello', 'description' => 'goodbye'];
+    $thing = (object) ['title' => 'hello', 'description' => 'goodbye', 'publisher__name' => 'Steve'];
+    $facet = (object) ['data' => (object) ['name' => 'Steve']];
+    $expect = (object) ['type' => 'publisher__name', 'name' => 'Steve', 'total' => 1];
 
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(EntityManager::class, 'getStorage', EntityStorageInterface::class)
       ->add(EntityStorageInterface::class, 'load', IndexInterface::class)
-      ->add(IndexInterface::class, 'getFields', ['description' => 'blah'])
+      ->add(IndexInterface::class, 'getFields', ['description' => 'blah', 'publisher__name' => 'blah'])
       ->add(IndexInterface::class, 'getFulltextFields', ['title'])
       ->add(RequestStack::class, 'getCurrentRequest', $request)
       ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
@@ -74,6 +76,7 @@ class WebServiceApi2Test extends TestCase {
       ->add(ResultSet::class, 'getResultCount', 1)
       ->add(ResultSet::class, 'getResultItems', [$item])
       ->add(Service::class, 'get', json_encode($thing))
+      ->add(Service::class, 'getAll', [$facet])
       ->getMock();
 
     \Drupal::setContainer($container);
@@ -83,7 +86,7 @@ class WebServiceApi2Test extends TestCase {
     /* @var $response \Symfony\Component\HttpFoundation\JsonResponse */
     $response = $controller->search();
     $this->assertEquals(
-      json_encode((object) ['total' => 1, 'results' => [$thing], 'facets' => []]),
+      json_encode((object) ['total' => 1, 'results' => [$thing], 'facets' => [$expect]]),
       $response->getContent());
   }
 

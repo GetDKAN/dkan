@@ -26,11 +26,11 @@ class DatasetTest extends TestCase {
       "properties": {
         "firstName": {
           "type": "string",
-          "description": "The person\'s first name."
+          "description": "First name."
         },
         "lastName": {
           "type": "string",
-          "description": "The person\'s last name."
+          "description": "Last name."
         },
         "occupations" : {
           "type": "array"
@@ -39,6 +39,20 @@ class DatasetTest extends TestCase {
           "description": "Age in years which must be equal to or greater than zero.",
           "type": "integer",
           "minimum": 0
+        },
+        "address": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "coords": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "state": {
+              "type": "string"
+            }
+          }
         }
       }
     }
@@ -62,7 +76,7 @@ class DatasetTest extends TestCase {
     $this->assertEquals($json, json_encode($dataset->getValue()));
 
     $properties = $dataset->getProperties();
-    $this->assertEquals(4, count($properties));
+    $this->assertEquals(6, count($properties));
   }
 
 }
