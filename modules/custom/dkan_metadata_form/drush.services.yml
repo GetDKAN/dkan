@@ -1,0 +1,5 @@
+services:
+  dkan_metadata_form:commands:
+    class: \Drupal\dkan_metadata_form\Drush
+    tags:
+      - { name: drush.command }

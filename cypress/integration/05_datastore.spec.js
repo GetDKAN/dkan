@@ -77,6 +77,7 @@ context('Datastore API', () => {
       identifier: uuid,
       accessLevel: "public",
       bureauCode: ["1234:56"],
+      modified: "2020-02-28",
       "@type": "dcat:Dataset",
       distribution: [
         {

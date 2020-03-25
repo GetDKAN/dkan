@@ -1,0 +1,9 @@
+dkan_metadata_form.page:
+  path: '/admin/dkan/dataset'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metadata_form\Controller::page'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _admin_route: TRUE

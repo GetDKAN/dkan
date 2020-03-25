@@ -71,6 +71,7 @@ context('SQL Endpoint', () => {
       identifier: uuid,
       accessLevel: "public",
       bureauCode: ["1234:56"],
+      modified: "2020-02-28",
       "@type": "dcat:Dataset",
       distribution: [
         {
@@ -81,7 +82,17 @@ context('SQL Endpoint', () => {
           description: "<p>You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.</p>",
           title: "District Names SQL"
         }
-      ]
+      ],
+      keyword: [
+        "firsttag",
+        "secondtag",
+        "thirdtag"
+      ],
+      contactPoint: {
+          "@type": "vcard:Contact",
+          fn: "Firstname Lastname",
+          hasEmail: "mailto:first.last@example.com"
+      }
     }
   }
 

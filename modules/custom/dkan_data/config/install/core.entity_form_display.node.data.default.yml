@@ -7,10 +7,7 @@ dependencies:
     - field.field.node.data.field_json_metadata
     - node.type.data
   module:
-    - json_form
     - path
-_core:
-  default_config_hash: XUF7rshmx-Q17HcczdSSt8-HDS3hQtgY-wpX7wKI3Hg
 id: node.data.default
 targetEntityType: node
 bundle: data
@@ -25,11 +22,10 @@ content:
   field_json_metadata:
     weight: 6
     settings:
-      json_form: ''
-      json_form_default_value: ''
-      show_textarea: 0
+      rows: 5
+      placeholder: ''
     third_party_settings: {  }
-    type: json_form_field
+    type: string_textarea
     region: content
   path:
     type: path

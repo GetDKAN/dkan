@@ -1,0 +1,8 @@
+aria-role:
+  title: Aria Role
+lang:
+  title: Language
+  type: select
+  options:
+    en: English
+    de: German

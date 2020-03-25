@@ -6,7 +6,6 @@
     "description": "DKAN Open Data Catalog",
     "require": {
         "ext-json": "*",
-        "bower-asset/json-forms": "1.6.3",
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
         "drush/drush": "^9.7.1",
@@ -15,7 +14,6 @@
         "drupal/entity": "1.0.0-rc1",
         "drupal/search_api": "^1.15",
         "drupal/views_bulk_operations": "3.3",
-        "fmizzell/json_form": "dev-8.x-1.x",
         "fmizzell/maquina": "^1.1.0",
         "getdkan/contracts": "^1.0.0",
         "getdkan/datastore" : "^5.0.0",
@@ -38,19 +36,8 @@
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
-        },
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        },
-	    {
-	        "type": "vcs",
-            "url": "https://github.com/fmizzell/json_form"
-	    }
+        }
     ],
-    "scripts": {
-        "enable-asset-packagist": "Social\\Composer\\AssetPackagist::execute"
-    },
     "autoload": {
         "psr-4": {
             "Social\\": "src"

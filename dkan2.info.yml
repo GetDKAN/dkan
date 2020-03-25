@@ -16,6 +16,7 @@ dependencies:
   - dkan_data
   - dkan_datastore
   - dkan_dummy_content
+  - dkan_metadata_form
   - dkan_metastore
   - dkan_search
   - dkan_sql_endpoint

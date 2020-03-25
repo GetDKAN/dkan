@@ -17,6 +17,7 @@ context('Metastore', () => {
             identifier: uuid,
             accessLevel: "public",
             bureauCode: ["1234:56"],
+            modified: "2020-02-28",
             "@type": "dcat:Dataset",
             keyword: [
                 "firsttag",
@@ -179,7 +180,9 @@ context('Metastore', () => {
             title: json1.title + ", updated by PUT",
             description: "Description updated by PUT",
             identifier: json1.identifier,
-            accessLevel: "public"
+            accessLevel: "public",
+            modified: "2020-02-20",
+            keyword: ["test"]
           }
         }).then((response) => {
           expect(response.status).eql(200)

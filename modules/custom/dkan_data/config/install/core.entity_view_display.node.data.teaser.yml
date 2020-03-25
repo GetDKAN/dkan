@@ -4,12 +4,13 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.data.field_data_type
     - field.field.node.data.field_json_metadata
     - node.type.data
   module:
     - user
 _core:
-  default_config_hash: BRfpqtPXozgoJkIFvt1ILU8LCEipUEIzu_21usIPl3s
+  default_config_hash: 6xa4QLlbs8AC0Qlhn4-6G0QPL0JLGiXfS1X0ZR5h3HA
 id: node.data.teaser
 targetEntityType: node
 bundle: data
@@ -19,4 +20,5 @@ content:
     weight: 100
     region: content
 hidden:
+  field_data_type: true
   field_json_metadata: true
