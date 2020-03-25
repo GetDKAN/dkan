@@ -23,6 +23,8 @@ exclude_patterns:
  - "**/*.d.ts"
  - "**/*.yml"
  - "**/*.json"
+ - "**/*.js"
+ - "**/*.jsx"
  - "*.md"
  - "**/*.md"
  - "*.install"

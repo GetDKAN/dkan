@@ -1,11 +1,10 @@
-name: Admin
-description: 'Administrative config.'
+name: Catalog Admin
+description: 'Catalog config and administrative tools.'
 type: module
 core: 8.x
 dependencies:
   - admin_toolbar
   - dkan_data
-  - dkan_datastore
   - views
   - views_bulk_operations
 package: DKAN

@@ -5,6 +5,8 @@ dependencies:
   config:
     - field.storage.node.field_json_metadata
     - node.type.data
+_core:
+  default_config_hash: RusvzItfdnmUXlLeH7mU55DEPaVLyjs2DBlw-QWHJJ4
 id: node.data.field_json_metadata
 field_name: field_json_metadata
 entity_type: node

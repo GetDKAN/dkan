@@ -4,6 +4,8 @@ status: true
 dependencies:
   module:
     - node
+_core:
+  default_config_hash: 0EiyMNOusiZMM2oiQXIreVyV8gbR11VNINyooAAWzvU
 id: node.field_json_metadata
 field_name: field_json_metadata
 entity_type: node

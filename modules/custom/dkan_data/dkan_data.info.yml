@@ -5,7 +5,6 @@ core: 8.x
 dependencies:
   - dkan_common
   - dkan_schema
-  - json_form
   - path
   - user
   - node

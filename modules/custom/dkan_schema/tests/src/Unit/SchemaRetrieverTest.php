@@ -43,7 +43,7 @@ class SchemaRetrieverTest extends TestCase {
 
     $retriever = new SchemaRetriever("/tmp", $profile);
     $ids = $retriever->getAllIds();
-    $this->assertEquals(['dataset'], $ids);
+    $this->assertEquals(['dataset', 'dataset.ui'], $ids);
   }
 
   /**
