@@ -10,6 +10,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Setup composer config
+          command: |
+            cd ~
+            mkdir .composer
+            cd .composer
+            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > auth.json
+      - run:
           name: Install DKTL
           command: |
             cd ~
