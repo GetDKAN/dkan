@@ -218,6 +218,52 @@ class DatabaseTableTest extends TestCase {
   /**
    *
    */
+  public function testPrepareDataJsonDecodeNull() {
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'insert', Insert::class)
+      ->add(Insert::class, 'fields', Insert::class)
+      ->add(Insert::class, 'values', Insert::class)
+      ->add(Insert::class, 'execute', "1")
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetch', NULL);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+    $this->expectExceptionMessage('Import for 1 returned an error when preparing table header: {"foo":"bar"}');
+    $this->assertEquals("1", $databaseTable->store('{"foo":"bar"}', "1"));
+  }
+
+  /**
+   *
+   */
+  public function testPrepareDataNonArray() {
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'insert', Insert::class)
+      ->add(Insert::class, 'fields', Insert::class)
+      ->add(Insert::class, 'values', Insert::class)
+      ->add(Insert::class, 'execute', "1")
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetch', NULL);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+    $this->expectExceptionMessage("Import for 1 error when decoding foobar");
+    $this->assertEquals("1", $databaseTable->store("foobar", "1"));
+  }
+
+  /**
+   *
+   */
   private function getConnectionChain() {
     $fieldInfo = [
       (object) ['Field' => "first_name"],

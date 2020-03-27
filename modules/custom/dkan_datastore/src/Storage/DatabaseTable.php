@@ -4,7 +4,9 @@ namespace Drupal\dkan_datastore\Storage;
 
 use Drupal\Core\Database\Connection;
 use Dkan\Datastore\Resource;
+use Drupal\dkan_common\LoggerTrait;
 use Drupal\dkan_common\Storage\AbstractDatabaseTable;
+use Psr\Log\LogLevel;
 
 /**
  * Database storage object.
@@ -12,6 +14,8 @@ use Drupal\dkan_common\Storage\AbstractDatabaseTable;
  * @see \Dkan\Datastore\Storage\StorageInterface
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
+
+  use LoggerTrait;
 
   /**
    * Datastore resource object.
@@ -81,7 +85,26 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * Protected.
    */
   protected function prepareData(string $data, string $id = NULL): array {
-    return json_decode($data);
+    $decoded = json_decode($data);
+    if ($decoded === NULL) {
+      $this->log(
+        'dkan_datastore_import',
+        "Error decoding id:@id, data: @data.",
+        ['@id' => $id, '@data' => $data],
+        LogLevel::ERROR
+      );
+      throw new \Exception("Import for {$id} error when decoding {$data}");
+    }
+    elseif (!is_array($decoded)) {
+      $this->log(
+        'dkan_datastore_import',
+        "Array expected while decoding id:@id, data: @data.",
+        ['@id' => $id, '@data' => $data],
+        LogLevel::ERROR
+      );
+      throw new \Exception("Import for {$id} returned an error when preparing table header: {$data}");
+    }
+    return $decoded;
   }
 
   /**
