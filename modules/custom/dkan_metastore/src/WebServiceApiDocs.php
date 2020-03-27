@@ -26,8 +26,8 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * @var array
    */
   private $endpointsToKeep = [
-    '/api/1/metastore/schemas/dataset/items/{identifier}' => ['get'],
-    '/api/1/datastore/sql' => ['get'],
+    'metastore/schemas/dataset/items/{identifier}' => ['get'],
+    'datastore/sql' => ['get'],
   ];
 
   /**
@@ -84,38 +84,196 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    */
   public function getDatasetSpecific(string $identifier) {
     $fullSpec = $this->docsController->getJsonFromYmlFile();
-    $spec = $this->keepDatasetSpecificEndpoints($fullSpec, $this->endpointsToKeep);
-    // Remove the security schemes.
-    unset($spec['components']['securitySchemes']);
-    // Tags can be added later when needed, remove them for now.
-    $spec['tags'] = [];
 
-    $spec = $this->modifyDatasetEndpoint($spec, $identifier);
-    $spec = $this->modifySqlEndpoint($spec, $identifier);
-    return $this->getResponse($spec);
+    // Remove the security schemes.
+    unset($fullSpec['components']['securitySchemes']);
+
+    // Tags can be added later when needed, remove them for now.
+    $fullSpec['tags'] = [];
+
+    $pathsAndOperations = $fullSpec['paths'];
+    $pathsAndOperations = $this->keepDatasetSpecificEndpoints($pathsAndOperations);
+    $pathsAndOperations = $this->modifyDatasetEndpoints($pathsAndOperations, $identifier);
+    $pathsAndOperations = $this->modifySqlEndpoints($pathsAndOperations, $identifier, $fullSpec['components']['parameters']);
+
+    $fullSpec['paths'] = $pathsAndOperations;
+    return $this->getResponse($fullSpec);
+  }
+
+  /**
+   * Keep only paths and operations relevant for our dataset-specific docs.
+   *
+   * @param array $pathsAndOperations
+   *   The paths defined in the original spec.
+   *
+   * @return array
+   *   Modified paths and operations array.
+   */
+  private function keepDatasetSpecificEndpoints(array $pathsAndOperations) {
+    $keepPaths = array_keys($this->endpointsToKeep);
+
+    $paths = array_keys($pathsAndOperations);
+
+    $pathsToKeepPaths = array_combine($paths, array_map(function ($path) use ($keepPaths) {
+      foreach ($keepPaths as $keepPath) {
+        if (substr_count($path, $keepPath) > 0 && substr_count($path, $keepPath . "/") == 0) {
+          return $keepPath;
+        }
+      }
+      return NULL;
+    }, $paths));
+
+    foreach ($pathsAndOperations as $path => $operations) {
+      if (is_null($pathsToKeepPaths[$path])) {
+        unset($pathsAndOperations[$path]);
+      }
+      else {
+        $pathsAndOperations[$path] = array_filter($operations, function ($operation) use ($path, $pathsToKeepPaths) {
+          return in_array($operation, $this->endpointsToKeep[$pathsToKeepPaths[$path]]);
+        }, ARRAY_FILTER_USE_KEY);
+      }
+    }
+
+    return $pathsAndOperations;
   }
 
   /**
    * Modify the generic dataset endpoint to be specific to the current dataset.
    *
-   * @param array $spec
-   *   The original spec.
+   * @param array $pathsAndOperations
+   *   The paths defined in the original spec.
    * @param string $identifier
    *   Dataset uuid.
    *
    * @return array
    *   Spec with dataset-specific metastore get endpoint.
    */
-  private function modifyDatasetEndpoint(array $spec, string $identifier) {
-    if (isset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}'])) {
-      unset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']['get']['parameters']);
-      // Replace the dataset uuid placeholder.
-      $spec['paths']['/api/1/metastore/schemas/dataset/items/' . $identifier] = $spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}'];
-      unset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']);
-      // Keep only the tags needed, starting with the dataset tag.
-      $spec['tags'][] = ["name" => "Dataset"];
+  private function modifyDatasetEndpoints(array $pathsAndOperations, string $identifier) {
+
+    foreach ($pathsAndOperations as $path => $operations) {
+      $newPath = $path;
+      $newOperations = $operations;
+      unset($pathsAndOperations[$path]);
+      [$newPath, $newOperations] = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
+      $pathsAndOperations[$newPath] = $newOperations;
     }
-    return $spec;
+
+    return $pathsAndOperations;
+  }
+
+  /**
+   * Private.
+   */
+  private function modifyDatasetEndpoint($path, $operations, $identifier) {
+    $newOperations = $this->getModifyDatasetEndpointNewOperations($operations, $identifier);
+
+    if (!isset($newOperations)) {
+      return [$path, $operations];
+    }
+
+    $newPath = str_replace("{identifier}", $identifier, $path);;
+
+    return [$newPath, $newOperations];
+  }
+
+  /**
+   * Private.
+   */
+  private function getModifyDatasetEndpointNewOperations($operations, $identifier) {
+    $modified = FALSE;
+    foreach ($operations as $operation => $info) {
+      $newParameters = $this->getModifyDatasetEndpointNewParameters($info['parameters'], $identifier);
+      if ($newParameters) {
+        $operations[$operation]['parameters'] = $newParameters;
+        $modified = TRUE;
+      }
+    }
+
+    return ($modified) ? $operations : NULL;
+  }
+
+  /**
+   * Private.
+   */
+  private function getModifyDatasetEndpointNewParameters(array $parameters, $identifier): ?array {
+    $modified = FALSE;
+    foreach ($parameters as $key => $parameter) {
+      if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
+        $parameters[$key]['example'] = $identifier;
+        $modified = TRUE;
+      }
+    }
+    return ($modified) ? $parameters : NULL;
+  }
+
+  /**
+   * Modify the generic sql endpoint to be specific to the current dataset.
+   *
+   * @param array $pathsAndOperations
+   *   The paths defined in the original spec.
+   * @param string $identifier
+   *   Dataset uuid.
+   * @param array $parameters
+   *   Original spec parameters.
+   *
+   * @return array
+   *   Spec with dataset-specific datastore sql endpoint.
+   */
+  private function modifySqlEndpoints(array $pathsAndOperations, string $identifier, array $parameters) {
+    if ($this->modifyData($identifier)) {
+      return $this->removeSqlEndpointPaths($pathsAndOperations);
+    }
+
+    $query = $parameters['query'];
+
+    foreach ($this->getSqlPathsAndOperations($pathsAndOperations) as $path => $operations) {
+
+      foreach ($this->getDistributions($identifier) as $dist) {
+        list($newPath, $newOperations) = $this->modifySqlEndpoint($operations, $dist, $query);
+        $pathsAndOperations[$newPath] = $newOperations;
+      }
+
+      unset($pathsAndOperations[$path]);
+    }
+
+    return $pathsAndOperations;
+  }
+
+  /**
+   * Private.
+   */
+  private function getSqlPathsAndOperations($pathsAndOperations) {
+    foreach ($pathsAndOperations as $path => $operations) {
+      if (substr_count($path, 'sql') == 0) {
+        unset($pathsAndOperations[$path]);
+      }
+    }
+    return $pathsAndOperations;
+  }
+
+  /**
+   * Private.
+   */
+  private function removeSqlEndpointPaths($pathsAndOperations) {
+    foreach ($pathsAndOperations as $path => $operations) {
+      if (substr_count($path, 'sql') > 0) {
+
+        unset($pathsAndOperations[$path]);
+      }
+    }
+    return $pathsAndOperations;
+  }
+
+  /**
+   * Private.
+   */
+  private function modifySqlEndpoint($operations, $distribution, $query) {
+    $newPath = "/api/1/datastore/sql?query=[SELECT * FROM {$distribution->identifier}];";
+
+    $query['example'] = "[SELECT * FROM {$distribution->identifier}];";
+    $operations['get']['parameters'] = [$query];
+
+    return [$newPath, $operations];
   }
 
   /**
@@ -139,85 +297,15 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   }
 
   /**
-   * Modify the generic sql endpoint to be specific to the current dataset.
+   * Get a dataset's resources/distributions.
    *
-   * @param array $spec
-   *   The original spec.
-   * @param string $identifier
-   *   Dataset uuid.
-   *
-   * @return array
-   *   Spec with dataset-specific datastore sql endpoint.
-   */
-  private function modifySqlEndpoint(array $spec, string $identifier) {
-    if ($this->modifyData($identifier)) {
-      unset($spec['paths']['/api/1/datastore/sql']);
-    }
-    elseif (isset($spec['paths']['/api/1/datastore/sql'])) {
-      unset($spec['paths']['/api/1/datastore/sql']['get']['parameters']);
-      $spec = $this->replaceDistributions($spec, $identifier);
-      $spec['tags'][] = ["name" => "SQL Query"];
-    }
-    return $spec;
-  }
-
-  /**
-   * Keep only paths and operations relevant for our dataset-specific docs.
-   *
-   * @param array $spec
-   *   The original spec array.
-   * @param array $endpointsToKeep
-   *   List of endpoints to keep.
-   *
-   * @return array
-   *   Modified spec.
-   */
-  private function keepDatasetSpecificEndpoints(array $spec, array $endpointsToKeep) {
-    $relevant_paths = array_keys($endpointsToKeep);
-    foreach ($spec['paths'] as $path => $operations) {
-      if (in_array($path, $relevant_paths)) {
-        $this->filterOperationsInCurrentPath($operations, $path, $endpointsToKeep, $spec);
-      }
-      else {
-        unset($spec['paths'][$path]);
-      }
-    }
-
-    return $spec;
-  }
-
-  /**
-   * Keep relevant operations on the current path.
-   *
-   * @param array $operations
-   *   Operations for the current path.
-   * @param string $path
-   *   The path being processed.
-   * @param array $endpointsToKeep
-   *   Array of endpoints (paths with operations) to keep.
-   * @param array $spec
-   *   Our modified dataset-specific openapi spec.
-   */
-  private function filterOperationsInCurrentPath(array $operations, string $path, array $endpointsToKeep, array &$spec) {
-    foreach ($operations as $operation => $details) {
-      if (!in_array($operation, $endpointsToKeep[$path])) {
-        unset($spec['paths'][$path][$operation]);
-      }
-    }
-  }
-
-  /**
-   * Replace the sql {query} placeholder with dataset-specific distributions.
-   *
-   * @param array $spec
-   *   The original spec array.
    * @param string $identifier
    *   The dataset uuid.
    *
    * @return array
    *   Modified spec.
    */
-  private function replaceDistributions(array $spec, string $identifier) {
+  private function getDistributions(string $identifier) {
     // Load this dataset's metadata with both data and identifiers.
     if (function_exists('drupal_static')) {
       drupal_static('dkan_data_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
@@ -227,38 +315,9 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
 
     // Create and customize a path for each dataset distribution/resource.
     if (isset($data->distribution)) {
-      foreach ($data->distribution as $dist) {
-        $spec = $this->replaceDistribution($dist, $spec, $identifier);
-      }
-      unset($spec['paths']['/api/1/datastore/sql']);
+      return $data->distribution;
     }
-    return $spec;
-  }
-
-  /**
-   * Replace a single distribution within the spec.
-   *
-   * @param mixed $dist
-   *   A distribution object.
-   * @param array $spec
-   *   The original spec array.
-   * @param string $identifier
-   *   The dataset uuid.
-   *
-   * @return array
-   *   Modified spec.
-   */
-  private function replaceDistribution($dist, array $spec, string $identifier) {
-    $path = "/api/1/datastore/sql?query=[SELECT * FROM {$dist->identifier}];";
-
-    $spec['paths'][$path] = $spec['paths']['/api/1/datastore/sql'];
-    if (isset($dist->data->title)) {
-      $spec['paths'][$path]['get']['summary'] = $dist->data->title;
-    }
-    if (isset($dist->data->description)) {
-      $spec['paths'][$path]['get']['description'] = $dist->data->description;
-    }
-    return $spec;
+    return [];
   }
 
 }

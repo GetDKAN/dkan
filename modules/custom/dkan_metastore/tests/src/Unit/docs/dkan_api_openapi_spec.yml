@@ -7,6 +7,27 @@ tags:
   - name: SQL Query
   - name: Another Tag
 paths:
+  /api/1/metastore/schemas/dataset/items/{identifier}/docs:
+    get:
+      operationId: docs-get-dataset-specific
+      summary: Dataset-specific json documentation
+      tags:
+        - Documentation
+      parameters:
+        - name: identifier
+          in: path
+          description: A dataset uuid
+          required: true
+          schema:
+            type: string
+          example: c9e2d352-e24c-4051-9158-f48127aa5692
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
   /api/1/metastore/schemas/dataset/items/{identifier}:
     get:
       summary: Get this dataset
@@ -20,6 +41,7 @@ paths:
           required: true
           schema:
             type: string
+          example: 11111111-1111-4111-1111-111111111111
       responses:
         200:
           description: Ok
@@ -48,3 +70,17 @@ paths:
           description: Ok
   # Though an empty path invalidates the spec, test its removal by dataset-specific docs.
   /api/1/path/without/operations:
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  parameters:
+    query:
+      name: query
+      in: query
+      description: SQL query
+      required: true
+      schema:
+        type: string
+      example: '[SELECT * FROM DATASTORE-UUID];'

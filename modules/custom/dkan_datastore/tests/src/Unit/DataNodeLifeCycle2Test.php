@@ -19,6 +19,9 @@ use PHPUnit\Framework\TestCase;
  */
 class DataNodeLifeCycle2Test extends TestCase {
 
+  /**
+   *
+   */
   public function initialSetUp(string $type, stdClass $data) {
     $options = (new Options())
       ->add("dkan_datastore.service", Service::class);
@@ -41,6 +44,9 @@ class DataNodeLifeCycle2Test extends TestCase {
     return [$container, $entity];
   }
 
+  /**
+   *
+   */
   public function testNonDistributionInsert() {
     $metadata = (object) ['identifier' => "12345"];
     [$container, $entity] = $this->initialSetUp('foobar', $metadata);
@@ -51,6 +57,9 @@ class DataNodeLifeCycle2Test extends TestCase {
     $this->assertNull($cycle->insert());
   }
 
+  /**
+   *
+   */
   public function testNonDistributionPreDelete() {
     $metadata = (object) ['identifier' => "12345"];
     [$container, $entity] = $this->initialSetUp('foobar', $metadata);
@@ -61,6 +70,9 @@ class DataNodeLifeCycle2Test extends TestCase {
     $this->assertNull($cycle->predelete());
   }
 
+  /**
+   *
+   */
   public function testDistributionWithoutDownloadURL() {
     $metadata = (object) [
       'identifier' => "12345",
@@ -76,6 +88,9 @@ class DataNodeLifeCycle2Test extends TestCase {
     $this->assertNull($cycle->insert());
   }
 
+  /**
+   *
+   */
   public function testDistributionWithDownloadURL() {
     $options = (new Options())
       ->add("dkan_datastore.service", Service::class)
@@ -119,6 +134,9 @@ class DataNodeLifeCycle2Test extends TestCase {
       $containerChain->getStoredInput('log')[1]);
   }
 
+  /**
+   *
+   */
   public function testLifeCycle() {
     $options = (new Options())
       ->add('dkan_datastore.service', Service::class)
