@@ -3,8 +3,6 @@
 use Drupal\dkan_frontend\Page;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\node\NodeStorageInterface;
 
 /**
@@ -12,7 +10,7 @@ use Drupal\node\NodeStorageInterface;
  */
 class PageTest extends TestCase {
   private $node;
-  
+
   /**
    *
    */
@@ -57,9 +55,9 @@ class PageTest extends TestCase {
 
     return $node;
   }
-  
+
   /**
-   * Test regular page
+   * Test regular page.
    */
   public function test() {
     $page = new Page(__DIR__ . "/../../app", $this->getEntityTypeManagerMock());
@@ -71,7 +69,7 @@ class PageTest extends TestCase {
   }
 
   /**
-   * Test nonvalid UUID
+   * Test nonvalid UUID.
    */
   public function testNoDataset() {
     $page = new Page(__DIR__ . "/../../app", $this->getEntityTypeManagerMock());
@@ -80,7 +78,7 @@ class PageTest extends TestCase {
   }
 
   /**
-   * Test valid UUID
+   * Test valid UUID.
    */
   public function testDataset() {
     $page = new Page(__DIR__ . "/../../app", $this->getEntityTypeManagerMock());

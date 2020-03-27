@@ -4,6 +4,7 @@
  * @file
  */
 
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
@@ -46,31 +47,33 @@ function dkan_admin_preprocess_views_view_field(&$vars) {
     // Modify data titles to display the metadata title values rather than uuids.
     $data = json_decode($entity->field_json_metadata->value);
     $title = (array) $data;
-    
+
     if ($vars['field']->field == 'title') {
-      switch($entity->field_data_type->value) {
+      switch ($entity->field_data_type->value) {
         case 'keyword':
         case 'theme':
           $link = \Drupal::l($title['data'], Url::fromUri('internal:/node/' . $entity_id));
-          $vars['output'] =  [
-            '#markup' => Drupal\Core\Render\Markup::create($link)
+          $vars['output'] = [
+            '#markup' => Markup::create($link),
           ];
           break;
+
         case 'publisher':
           $name = (array) $title['data'];
           $link = \Drupal::l($name['name'], Url::fromUri('internal:/node/' . $entity_id));
-          $vars['output'] =  [
-            '#markup' => Drupal\Core\Render\Markup::create($link)
+          $vars['output'] = [
+            '#markup' => Markup::create($link),
           ];
           break;
+
         case 'distribution':
           $dist = (array) $title['data'];
           $mediatype = $entity_id . ' ' . $dist['mediaType'];
           $format = $dist['format'] ? $entity_id . ' ' . $dist['format'] : $mediatype;
           $title = $dist['title'] ? $dist['title'] : $format;
           $link = \Drupal::l($title, Url::fromUri('internal:/node/' . $entity_id));
-          $vars['output'] =  [
-            '#markup' => Drupal\Core\Render\Markup::create($link)
+          $vars['output'] = [
+            '#markup' => Markup::create($link),
           ];
           break;
       }
@@ -90,8 +93,8 @@ function dkan_admin_preprocess_views_view_field(&$vars) {
       $entity_id = $entity->id();
       $title = $entity->title->value;
       $link = \Drupal::l($title, Url::fromUri('internal:/node/' . $entity_id));
-      $vars['output'] =  [
-        '#markup' => Drupal\Core\Render\Markup::create($link)
+      $vars['output'] = [
+        '#markup' => Markup::create($link),
       ];
     }
   }
