@@ -252,6 +252,8 @@ projects:
       tag: 7.x-2.5
   panelizer:
     version: '3.4'
+    patch:
+      2845433: https://www.drupal.org/files/issues/2020-03-27/panelizer-fix-access-denied-2845433-42-D7.patch
   panels:
     version: '3.9'
   panels_style_collapsible:
