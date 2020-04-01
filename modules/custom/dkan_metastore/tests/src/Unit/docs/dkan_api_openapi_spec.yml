@@ -7,7 +7,7 @@ tags:
   - name: SQL Query
   - name: Another Tag
 paths:
-  /api/1/metastore/schemas/dataset/items/{identifier}/docs:
+  /random/prefix/api/1/metastore/schemas/dataset/items/{identifier}/docs:
     get:
       operationId: docs-get-dataset-specific
       summary: Dataset-specific json documentation
@@ -28,7 +28,7 @@ paths:
             application/json:
               schema:
                 type: object
-  /api/1/metastore/schemas/dataset/items/{identifier}:
+  /random/prefix/api/1/metastore/schemas/dataset/items/{identifier}:
     get:
       summary: Get this dataset
       # description:
@@ -52,7 +52,7 @@ paths:
           description: Ok
     # Though an empty verb invalidates the spec, test its removal by dataset-specific docs.
     post:
-  /api/1/datastore/sql:
+  /random/prefix/api/1/datastore/sql:
     get:
       summary: Query resources
       tags:
@@ -62,14 +62,14 @@ paths:
       responses:
         '200':
           description: Ok
-  /api/1/some/other/path:
+  /random/prefix/api/1/some/other/path:
     patch:
       summary: This path and operation should not be present in dataset-specific docs.
       responses:
         200:
           description: Ok
   # Though an empty path invalidates the spec, test its removal by dataset-specific docs.
-  /api/1/path/without/operations:
+  /random/prefix/api/1/path/without/operations:
 components:
   securitySchemes:
     basicAuth:

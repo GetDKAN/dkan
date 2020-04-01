@@ -229,7 +229,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     foreach ($this->getSqlPathsAndOperations($pathsAndOperations) as $path => $operations) {
 
       foreach ($this->getDistributions($identifier) as $dist) {
-        list($newPath, $newOperations) = $this->modifySqlEndpoint($operations, $dist, $query);
+        list($newPath, $newOperations) = $this->modifySqlEndpoint($path, $operations, $dist, $query);
         $pathsAndOperations[$newPath] = $newOperations;
       }
 
@@ -267,8 +267,8 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function modifySqlEndpoint($operations, $distribution, $query) {
-    $newPath = "/api/1/datastore/sql?query=[SELECT * FROM {$distribution->identifier}];";
+  private function modifySqlEndpoint($path, $operations, $distribution, $query) {
+    $newPath = "{$path}?query=[SELECT * FROM {$distribution->identifier}];";
 
     $query['example'] = "[SELECT * FROM {$distribution->identifier}];";
     $operations['get']['parameters'] = [$query];
