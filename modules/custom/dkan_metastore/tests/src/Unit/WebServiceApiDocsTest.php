@@ -43,7 +43,7 @@ class WebServiceApiDocsTest extends TestCase {
     $controller = WebServiceApiDocs::create($mockChain->getMock());
     $response = $controller->getDatasetSpecific(1);
 
-    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"tags":[],"paths":{"\/api\/1\/metastore\/schemas\/dataset\/items\/1":{"get":{"summary":"Get this dataset","tags":["Dataset"],"parameters":[{"name":"identifier","in":"path","description":"Dataset uuid","required":true,"schema":{"type":"string"},"example":"1"}],"responses":{"200":{"description":"Ok"}}}},"\/api\/1\/datastore\/sql?query=[SELECT * FROM dist-1234];":{"get":{"summary":"Query resources","tags":["SQL Query"],"parameters":[{"name":"query","in":"query","description":"SQL query","required":true,"schema":{"type":"string"},"example":"[SELECT * FROM dist-1234];"}],"responses":{"200":{"description":"Ok"}}}}},"components":{"parameters":{"query":{"name":"query","in":"query","description":"SQL query","required":true,"schema":{"type":"string"},"example":"[SELECT * FROM DATASTORE-UUID];"}}}}';
+    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"tags":[],"paths":{"\/random\/prefix\/api\/1\/metastore\/schemas\/dataset\/items\/1":{"get":{"summary":"Get this dataset","tags":["Dataset"],"parameters":[{"name":"identifier","in":"path","description":"Dataset uuid","required":true,"schema":{"type":"string"},"example":"1"}],"responses":{"200":{"description":"Ok"}}}},"\/random\/prefix\/api\/1\/datastore\/sql?query=[SELECT * FROM dist-1234];":{"get":{"summary":"Query resources","tags":["SQL Query"],"parameters":[{"name":"query","in":"query","description":"SQL query","required":true,"schema":{"type":"string"},"example":"[SELECT * FROM dist-1234];"}],"responses":{"200":{"description":"Ok"}}}}},"components":{"parameters":{"query":{"name":"query","in":"query","description":"SQL query","required":true,"schema":{"type":"string"},"example":"[SELECT * FROM DATASTORE-UUID];"}}}}';
     $this->assertEquals($spec, $response->getContent());
   }
 
@@ -60,7 +60,7 @@ class WebServiceApiDocsTest extends TestCase {
     $controller = WebServiceApiDocs::create($mockChain->getMock());
     $response = $controller->getDatasetSpecific(1);
 
-    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"tags":[],"paths":{"\/api\/1\/metastore\/schemas\/dataset\/items\/1":{"get":{"summary":"Get this dataset","tags":["Dataset"],"parameters":[{"name":"identifier","in":"path","description":"Dataset uuid","required":true,"schema":{"type":"string"},"example":"1"}],"responses":{"200":{"description":"Ok"}}}}},"components":{"parameters":{"query":{"name":"query","in":"query","description":"SQL query","required":true,"schema":{"type":"string"},"example":"[SELECT * FROM DATASTORE-UUID];"}}}}';
+    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"tags":[],"paths":{"\/random\/prefix\/api\/1\/metastore\/schemas\/dataset\/items\/1":{"get":{"summary":"Get this dataset","tags":["Dataset"],"parameters":[{"name":"identifier","in":"path","description":"Dataset uuid","required":true,"schema":{"type":"string"},"example":"1"}],"responses":{"200":{"description":"Ok"}}}}},"components":{"parameters":{"query":{"name":"query","in":"query","description":"SQL query","required":true,"schema":{"type":"string"},"example":"[SELECT * FROM DATASTORE-UUID];"}}}}';
     $this->assertEquals($spec, $response->getContent());
   }
 
