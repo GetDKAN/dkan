@@ -36,24 +36,13 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl get 8.7.11
+            dktl get 8.8.5
       - run:
           name: Make DKAN
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            sudo chmod 777 src/make/composer.json
-            bash -c 'if [[ -z "${CIRCLE_PR_USERNAME}" ]]; then                                                                                                                             !6354
-              sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
-            else
-              CIRCLE_PR_BRANCH=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.head.ref'`
-              sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/$CIRCLE_PR_USERNAME/dkan2\"},{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"vcs\",\"url\":\"https://github.com/civicactions/lunr.php\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_PR_BRANCH\"}}" > src/make/composer.json
-            fi'
-            cat src/make/composer.json
-            dktl make --frontend
-            rm -rf ./docroot/profiles/contrib/dkan2
-            mv ~/project ./docroot/profiles/contrib/dkan2
-            ls -lha ./docroot/profiles/contrib/dkan2
+            dktl make --branch $CIRCLE_BRANCH --frontend
       - run:
           name: Run phpUnit tests
           command: |
