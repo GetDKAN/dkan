@@ -42,8 +42,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            CIRCLE_PR_BRANCH=`curl -s https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${CIRCLE_PR_NUMBER} | jq -r '.head.ref'`
-            dktl make --branch $CIRCLE_PR_BRANCH --frontend
+            dktl make --branch $CIRCLE_BRANCH --frontend
       - run:
           name: Run phpUnit tests
           command: |
