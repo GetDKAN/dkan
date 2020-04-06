@@ -8,12 +8,12 @@
         "ext-json": "*",
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
-        "drush/drush": "^9.7.1",
-        "drupal/admin_toolbar": "2.0",
-        "drupal/config_update": "1.x-dev",
-        "drupal/entity": "1.0.0-rc1",
+        "drush/drush": "^10.2.2",
+        "drupal/admin_toolbar": "^2.2",
+        "drupal/config_update": "^1.6",
+        "drupal/entity": "^1.0.0",
         "drupal/search_api": "^1.15",
-        "drupal/views_bulk_operations": "3.3",
+        "drupal/views_bulk_operations": "^3.6",
         "fmizzell/maquina": "^1.1.0",
         "getdkan/contracts": "^1.0.0",
         "getdkan/datastore" : "^5.0.0",
@@ -30,12 +30,16 @@
         "getdkan/mock-chain": "^1.0.1"
     },
     "require-dev": {
-	"phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5"
     },
     "repositories": [
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
         }
     ],
     "autoload": {
@@ -49,12 +53,16 @@
             "email": "acinternets@gmail.com"
         },
         {
-          "name": "dafeder",
-          "email": "dafeder@gmail.com"
+            "name": "dafeder",
+            "email": "dafeder@gmail.com"
         },
-	    {
-	      "name": "fmizzell",
-          "email": "fmizzell.dev@gmail.com"
-	    }
+        {
+            "name": "fmizzell",
+            "email": "fmizzell.dev@gmail.com"
+        },
+        {
+            "name": "Thierry Dallacroce",
+            "email": "thierry.dallacroce+dev@gmail.com"
+        }
     ]
 }
