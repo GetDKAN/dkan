@@ -6,6 +6,7 @@ use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
 use Drupal\dkan_metastore\Exception\InvalidJsonException;
 use Drupal\dkan_metastore\Exception\MetastoreException;
 use Drupal\dkan_metastore\Exception\MissingPayloadException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -217,6 +218,21 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $this->service->delete($schema_id, $identifier);
       return $this->getResponse((object) ["message" => "Dataset {$identifier} has been deleted."]);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e);
+    }
+  }
+
+  /**
+   * Provides the data catalog.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   A json response, either the catalog or an exception.
+   */
+  public function getCatalog() : JsonResponse {
+    try {
+      return $this->getResponse($this->service->getCatalog());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);

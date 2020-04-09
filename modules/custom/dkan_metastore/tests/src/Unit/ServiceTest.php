@@ -242,6 +242,29 @@ EOF;
   }
 
   /**
+   *
+   */
+  public function testGetCatalog() {
+    $catalog = (object) [
+      "@id" => "http://catalog",
+      "dataset" => [],
+    ];
+    $dataset = (object) ["foo" => "bar"];
+
+    $container = $this->getCommonMockChain()
+      ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", [json_encode($dataset), json_encode($dataset)]);
+
+    $service = Service::create($container->getMock());
+    $catalog->dataset = [
+      $dataset,
+      $dataset,
+    ];
+    $this->assertEquals($catalog, $service->getCatalog());
+  }
+
+  /**
    * @return \Drupal\dkan_common\Tests\Mock\Chain
    */
   public function getCommonMockChain() {
