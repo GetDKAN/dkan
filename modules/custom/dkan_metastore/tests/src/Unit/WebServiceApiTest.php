@@ -325,6 +325,32 @@ EOF;
   /**
    *
    */
+  public function testGetCatalog() {
+    $catalog = (object) ["foo" => "bar"];
+
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Service::class, 'getCatalog', $catalog);
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->getCatalog();
+    $this->assertEquals(json_encode($catalog), $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testGetCatalogException() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Service::class, 'getCatalog', new \Exception("bad"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->getCatalog();
+    $this->assertEquals('{"message":"bad"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
   private function getCommonMockChain() {
     $mockChain = new Chain($this);
     $mockChain->add(ContainerInterface::class, 'get',

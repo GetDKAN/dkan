@@ -85,7 +85,31 @@ context('Metastore', () => {
         })
     })
 
-    context('Dereference methods', () => {
+  context('Catalog', () => {
+    it('Corresponds to catalog shell', () => {
+      cy.request({
+        url: 'http://dkan/data.json'
+      }).then((response) => {
+        expect(response.status).eql(200);
+        expect(response.body["@context"]).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld");
+        expect(response.body["@id"]).eql("http://dkan/data.json");
+        expect(response.body["@type"]).eql("dcat:Catalog");
+        expect(response.body.conformsTo).eql("https://project-open-data.cio.gov/v1.1/schema");
+        expect(response.body.describedBy).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.json");
+      })
+    })
+    it('Should at least contains both random datasets', () => {
+      cy.request({
+        url: 'http://dkan/data.json'
+      }).then((response) => {
+        expect(response.status).eql(200);
+        expect(response.body.dataset.length).to.be.greaterThan(1);
+      })
+    })
+  });
+
+
+  context('Dereference methods', () => {
       it('bad query parameter', () => {
         cy.request(endpoint + '/' + json1.identifier + '?view=foobar').then((response) => {
           expect(response.body.keyword).eql(json1.keyword)
