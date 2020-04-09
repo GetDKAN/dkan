@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: api_user
-label: 'API User'
+label: 'API user'
 weight: 2
 is_admin: false
 permissions:
