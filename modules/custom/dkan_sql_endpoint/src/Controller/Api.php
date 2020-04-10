@@ -127,7 +127,10 @@ class Api implements ContainerInjectionInterface {
       return $this->getResponseFromException($e);
     }
 
-    return $this->getResponse($result, 200);
+    return $this->getResponse(array_map(function ($row) {
+      unset($row->record_number);
+      return $row;
+    }, $result), 200);
   }
 
   /**
