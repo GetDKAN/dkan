@@ -34,7 +34,7 @@ class ApiTest extends TestCase {
   public function test() {
     $controller = Api::create($this->getCommonMockChain()->getMock());
     $response = $controller->runQueryGet();
-    $this->assertEquals("[]", $response->getContent());
+    $this->assertEquals("[{\"column_1\":\"hello\",\"column_2\":\"goodbye\"}]", $response->getContent());
   }
 
   /**
@@ -43,7 +43,7 @@ class ApiTest extends TestCase {
   public function test2() {
     $controller = Api::create($this->getCommonMockChain()->getMock());
     $response = $controller->runQueryPost();
-    $this->assertEquals("[]", $response->getContent());
+    $this->assertEquals("[{\"column_1\":\"hello\",\"column_2\":\"goodbye\"}]", $response->getContent());
   }
 
   /**
@@ -88,6 +88,8 @@ class ApiTest extends TestCase {
     $query = '[SELECT * FROM abc][WHERE abc = "blah"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];';
     $body = json_encode(["query" => $query]);
 
+    $row = (object) ['record_number' => 1, 'column_1' => "hello", 'column_2' => "goodbye"];
+
     return (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
@@ -99,7 +101,7 @@ class ApiTest extends TestCase {
       ->add(ResourceService::class, 'get', Resource::class)
       ->add(Resource::class, 'getId', "1")
       ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
-      ->add(DatabaseTable::class, 'query', [])
+      ->add(DatabaseTable::class, 'query', [$row])
       ->add(DataModifierManager::class, 'getDefinitions', [])
       ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
       ->add(DataModifierBase::class, 'requiresModification', FALSE);
