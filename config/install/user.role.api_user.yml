@@ -3,7 +3,7 @@ status: true
 dependencies: {  }
 id: api_user
 label: 'API user'
-weight: 2
+weight: 3
 is_admin: false
 permissions:
   - 'post put delete datasets through the api'
