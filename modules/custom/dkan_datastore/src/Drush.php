@@ -136,7 +136,7 @@ class Drush extends DrushCommands {
   public function drop($uuid) {
     try {
       // Load metadata with both identifier and data for this request.
-      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
+      drupal_static('dkan_data_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
       $this->datastoreService->drop($uuid);
     }
     catch (\Exception $e) {
