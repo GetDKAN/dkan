@@ -1,6 +1,6 @@
 {
     "name": "getdkan/dkan2",
-    "type": "drupal-profile",
+    "type": "drupal-module",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
@@ -22,7 +22,6 @@
         "getdkan/json-schema-provider": "^0.1.2",
         "getdkan/sae" : "^1.1.1",
         "getdkan/sql-parser": "^2.0.0",
-        "getdkan/lunr.php": "^1.0.0",
         "guzzlehttp/guzzle" : "^6.3",
         "ezyang/htmlpurifier" : "^4.11",
         "ramsey/uuid" : "^3.8.0",
@@ -49,20 +48,8 @@
     },
     "authors": [
         {
-            "name": "acouch",
-            "email": "acinternets@gmail.com"
-        },
-        {
-            "name": "dafeder",
-            "email": "dafeder@gmail.com"
-        },
-        {
-            "name": "fmizzell",
-            "email": "fmizzell.dev@gmail.com"
-        },
-        {
-            "name": "Thierry Dallacroce",
-            "email": "thierry.dallacroce+dev@gmail.com"
+            "name": "CivicActions",
+            "email": "contact@civicactions.com"
         }
     ]
 }
