@@ -9,17 +9,17 @@
 
     <testsuites>
         <testsuite name="DKAN Test Suite">
-            <directory>modules/custom/dkan_api/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_common/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_data/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_datastore/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_frontend/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_harvest/test/src/Unit</directory>
-            <directory>modules/custom/dkan_metastore/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_non_public/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_schema/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_search/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_sql_endpoint/tests/src/Unit</directory>
+            <directory>modules/dkan_api/tests/src/Unit</directory>
+            <directory>modules/dkan_common/tests/src/Unit</directory>
+            <directory>modules/dkan_data/tests/src/Unit</directory>
+            <directory>modules/dkan_datastore/tests/src/Unit</directory>
+            <directory>modules/dkan_frontend/tests/src/Unit</directory>
+            <directory>modules/dkan_harvest/test/src/Unit</directory>
+            <directory>modules/dkan_metastore/tests/src/Unit</directory>
+            <directory>modules/dkan_non_public/tests/src/Unit</directory>
+            <directory>modules/dkan_schema/tests/src/Unit</directory>
+            <directory>modules/dkan_search/tests/src/Unit</directory>
+            <directory>modules/dkan_sql_endpoint/tests/src/Unit</directory>
         </testsuite>
     </testsuites>
 
@@ -38,21 +38,21 @@
     <filter>
         <!-- whitelist needed for code coverage generation to work -->
         <whitelist>
-            <directory>modules/custom/dkan_api/src</directory>
-            <directory>modules/custom/dkan_common/src</directory>
-            <directory>modules/custom/dkan_data/src</directory>
-            <directory>modules/custom/dkan_datastore/src</directory>
-            <directory>modules/custom/dkan_frontend/src</directory>
-            <directory>modules/custom/dkan_harvest/src</directory>
-            <directory>modules/custom/dkan_lunr/src</directory>
-            <directory>modules/custom/dkan_metastore/src</directory>
-            <directory>modules/custom/dkan_non_public/src</directory>
-            <directory>modules/custom/dkan_schema/src</directory>
-            <directory>modules/custom/dkan_search/src</directory>
-            <directory>modules/custom/dkan_sql_endpoint/src</directory>
+            <directory>modules/dkan_api/src</directory>
+            <directory>modules/dkan_common/src</directory>
+            <directory>modules/dkan_data/src</directory>
+            <directory>modules/dkan_datastore/src</directory>
+            <directory>modules/dkan_frontend/src</directory>
+            <directory>modules/dkan_harvest/src</directory>
+            <directory>modules/dkan_lunr/src</directory>
+            <directory>modules/dkan_metastore/src</directory>
+            <directory>modules/dkan_non_public/src</directory>
+            <directory>modules/dkan_schema/src</directory>
+            <directory>modules/dkan_search/src</directory>
+            <directory>modules/dkan_sql_endpoint/src</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>
-        <directory>modules/custom/dkan_common/src/Tests</directory>
+        <directory>modules/dkan_common/src/Tests</directory>
         <directory suffix="Test.php">./</directory>
         <directory suffix="TestBase.php">./</directory>
         <!-- TBD: skip the drush commands for now -->

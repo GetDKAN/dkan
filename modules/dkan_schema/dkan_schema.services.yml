@@ -1,0 +1,7 @@
+services:
+    dkan_schema.schema_retriever:
+        class: \Drupal\dkan_schema\SchemaRetriever
+        arguments:
+          - '@app.root'
+          - '@extension.list.module'
+        shared: false
