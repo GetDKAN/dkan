@@ -9,23 +9,24 @@ steps:
       cp -a $SRC_DIR/. ~/dkan/
 
       apt-get update -y
-      
+
       echo "Install DKAN Tools"
       cd $SRC_DIR
       git clone  https://github.com/GetDKAN/dkan-tools.git
+      cd dkan-tools && git checkout 1.x
       ln -s $SRC_DIR/dkan-tools/bin/dktl /usr/local/bin/dktl
       chmod +x /usr/local/bin/dktl
-      
+
       export DKTL_MODE="HOST"
-      
+
       echo "Create database"
       mysql -u root -pstrongpassword -e 'create database dkan;'
-      
+
       echo "Initialize project directory"
       cd $SRC_DIR
       dktl init
       cp -a ~/dkan/. $SRC_DIR/dkan/
-      
+
       echo "Run make"
       dktl make
       ln -s $SRC_DIR/docroot /var/www/html
@@ -34,8 +35,8 @@ steps:
       chmod +w docroot/sites/default/settings.php
       printf "// Docker Database Settings\n\$databases['default']['default'] = array(\n  'database' => 'dkan',\n  'username' => 'root',\n  'password' => 'strongpassword',\n  'host' => 'localhost',\n  'port' => '',\n  'driver' => 'mysql',\n  'prefix' => '',\n);\n" >> docroot/sites/default/settings.php
       chmod -w docroot/sites/default/settings.php
-      
-      echo "Run install" 
+
+      echo "Run install"
       dktl drush site-install dkan --site-name='DKAN' --db-url=mysql://root:strongpassword@127.0.0.1/dkan
       chown -R www-data:www-data /var/www/html/sites/default/files
       dktl deploy test
