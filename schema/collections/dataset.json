@@ -191,6 +191,7 @@
       "type": "array",
       "items": {
         "type": "string",
+        "title": "Category",
         "minLength": 1
       },
       "uniqueItems": true
@@ -201,6 +202,7 @@
       "type": "array",
       "items": {
         "type": "string",
+        "title": "Tag",
         "minLength": 1
       },
       "minItems": 1
