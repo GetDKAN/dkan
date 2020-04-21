@@ -5,6 +5,7 @@ namespace Drupal\dkan_metadata_form;
 use Drush\Commands\DrushCommands;
 use Masterminds\HTML5;
 use Symfony\Component\Yaml\Yaml;
+use Masterminds\HTML5\Parser\FileInputStream;
 
 /**
  * Drush commands.
@@ -154,9 +155,10 @@ class Drush extends DrushCommands {
     }
 
     $indexFilePath = $this->reactAppBuildDirectoryPath . "/index.html";
+    $input = new FileInputStream($indexFilePath);
 
     $html = new HTML5();
-    $document = $html->parse(file_get_contents($indexFilePath));
+    $document = $html->parse($input);
     $scriptTags = $document->getElementsByTagName("script");
 
     /* @var $scriptTag DOMElement */
