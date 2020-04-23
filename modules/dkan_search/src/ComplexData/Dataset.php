@@ -27,7 +27,7 @@ class Dataset extends ComplexDataFacade {
     $properties = array_keys((array) $object->properties);
 
     foreach ($properties as $property) {
-      $type = $object->properties->{$property}->type;
+      $type = $object->properties->{$property}->type ?? "string";
       $defs = self::getPropertyDefinition($type, $object, $property);
       $definitions = array_merge($definitions, $defs);
     }

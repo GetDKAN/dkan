@@ -21,6 +21,11 @@ field_settings:
     datasource_id: dkan_dataset
     property_path: keyword
     type: string
+  modified:
+    label: modified
+    datasource_id: dkan_dataset
+    property_path: modified
+    type: string
   theme:
     label: theme
     datasource_id: dkan_dataset
