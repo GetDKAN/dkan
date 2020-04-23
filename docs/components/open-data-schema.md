@@ -149,6 +149,10 @@ An administrative UI to regenerate file caches manually is also included. This i
 
 To use, navigate to admin/config/services/odsm where there is a column called "Cache" with links to the individual admin pages for specific enpoint caches. If there is no cache the link is labled "none", otherwise the link is labled with the age of the cache in hours.  From the cache admin pages you can create, delete or regenerate the cache.
 
+### Pagination
+
+Sometimes caching will not be enough, you may discover that these endpoints fail to load if your dataset count is extremely high, if your server has limited resources, or if bots are constantly pinging these urls. If this happens you can add pagination to the endpoints so that not all datasets are loaded at once. Go to `admin/dkan/datasets_per_page` and enter a number to limit how many datasets to list at one time. You will see a page query added to the endpoint: `data.json?page=1` and changing the page number will change the datasets displayed.
+
 ## Schema Validation
 
 Both the Project Open Data and DCAT-AP schemas ship with validation tools you can access from the Drupal admin menu. More documentation on this feature coming soon...
