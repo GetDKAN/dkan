@@ -1,5 +1,5 @@
 name: Front End
-description: 'Routes Drupal to a decoupled front end.'
+description: 'Provides the connection between Gatsby and Drupal, controls the routing.'
 type: module
 core: 8.x
 dependencies:

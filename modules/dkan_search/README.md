@@ -1,5 +1,6 @@
  @page search Search
-The dkan_search module provides some integration with [search_api](https://www.drupal.org/project/search_api) to facilitate querying DKAN's metadata.
+
+The **dkan_search** module provides some integration with [search_api](https://www.drupal.org/project/search_api) to facilitate querying DKAN's metadata.
 
 Search API manages search servers and indexes. For more information on how Search API works visit their [documentation](https://www.drupal.org/docs/8/modules/search-api).
 
@@ -20,3 +21,11 @@ These are the available query parameters:
 |page-size| 10 |``?page-size=50``| The number of items to be returned in each page|
 |sort|search_api_relevance|``?sort=keyword``| The field to sort by |
 |sort-order|asc| ``?sort-order=desc``| The order of the sort applied|
+
+## Search Facets
+
+1. Navigate to `admin/config/search/search-api/index/dkan/fields` to define which fields of your metadata to search on.
+2. Rebuild tracking information with `drush dkan-search:rebuild-tracker`
+3. Re-index the site `drush sapi-i`
+
+Viewing the ``/api/1/search`` endpoint, you should see a "facets" section with the configured facet fields and their results.

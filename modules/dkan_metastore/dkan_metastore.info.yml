@@ -1,5 +1,5 @@
 name: Metastore
-description: 'Metastore.'
+description: 'Provides integration with the metastore library.'
 type: module
 core: 8.x
 package: DKAN

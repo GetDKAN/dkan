@@ -1,5 +1,5 @@
 name: Harvester
-description: 'Provides DKAN Harvester. '
+description: 'Provides integration with the Harvester library.'
 type: module
 core: 8.x
 dependencies:

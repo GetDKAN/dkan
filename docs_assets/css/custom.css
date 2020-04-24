@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:400,700|Varela+Round&display=swap'); pre,
 
+html, body, table, div, p, dl {
+  font-size: 16px;
+}
 body {
   background-color: #ffffff;
   color: black;
@@ -32,7 +35,15 @@ h1,h2,h3,h4 {
   font-family: 'Varela Round', 'Lato', Roboto, Droid Sans, Helvetica Neue, sans-serif;
   color: #0071bc;
 }
-
+h2 {
+  margin-top: 2em;
+}
+h2:first-of-type {
+  margin-top: 1em;
+}
+h3 {
+  margin-top: 1.5em;
+}
 .PageDoc > .contents {
   margin: 20px;
 }
@@ -84,7 +95,7 @@ h1,h2,h3,h4 {
 .memproto {
   box-shadow: none;
 }
-.memdoc, 
+.memdoc,
 dl.reflist dd{
   background-image: none;
   border: 1px solid #A8B8D9;
@@ -105,6 +116,10 @@ dl.note {
 dl.note dt,
 dl.warning dt {
   display: none;
+}
+dl.note dd,
+dl.warning dd {
+  margin: 6px;
 }
 dl.warning {
   margin-left: 0;
@@ -139,5 +154,5 @@ a:hover {
   background-color: #002245;
 }
 @media screen and (min-width: 876px) {
- 
+
 }

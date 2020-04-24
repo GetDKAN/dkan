@@ -5,5 +5,6 @@ var classDrupal_1_1dkan__datastore_1_1Service_1_1Resource =
     [ "getFileFetcher", "classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html#a452e55de60c9cdabb9c509813f8e8e53", null ],
     [ "getFileFetcherInstance", "classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html#ae0541baadf884e38628a0815da99e212", null ],
     [ "getResult", "classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html#a76eb4bdb1ae2dd3925315bccf782abec", null ],
+    [ "remove", "classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html#a914585efa421f38f4b4a4a734ecc9ac5", null ],
     [ "DEFAULT_TIMELIMIT", "classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html#a33ae28b5e1bf5604a59f72c458b46ce9", null ]
 ];

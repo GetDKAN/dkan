@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['jsonserialize_843',['jsonSerialize',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html#a85036e545256446f30cb7696299507cf',1,'Drupal\dkan_datastore\Storage\DatabaseTable\jsonSerialize()'],['../classDrupal_1_1dkan__datastore_1_1Storage_1_1TableSummary.html#a80e22f5950c3a725643ee7582132836e',1,'Drupal\dkan_datastore\Storage\TableSummary\jsonSerialize()']]]
+  ['key_963',['key',['../classDrupal_1_1dkan__search_1_1Facade_1_1ComplexDataFacade.html#aa701f7f0c2d1781e9f83f97537bef815',1,'Drupal::dkan_search::Facade::ComplexDataFacade']]]
 ];

@@ -1,5 +1,5 @@
 name: 'Alternate API'
-description: 'Provides alternate routes to access data potentially modified or restricted.'
+description: 'Provides alternate routes to access data and allows varying permissions on an api when logged in or anonymous.'
 type: module
 core: 8.x
 package: DKAN

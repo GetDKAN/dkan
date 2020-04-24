@@ -1,5 +1,5 @@
 name: Common
-description: 'Common utilities and function.'
+description: 'Provides common utilities and functions used by DKAN modules.'
 type: module
 core: 8.x
 package: DKAN

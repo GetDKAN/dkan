@@ -1,6 +1,5 @@
-
 name: Metadata Form
-description: Adds a React form for creating and editing dataset metadata.
+description: Provides a React form for creating and editing dataset metadata.
 package: DKAN
 type: module
 core: 8.x

@@ -1,6 +1,7 @@
 var classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable =
 [
     [ "__construct", "classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html#aa159b7eb829bf027f69a6daf80252218", null ],
+    [ "getNonSerialFields", "classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html#a6b4504097cd70755262c7cfaa78ac1f1", null ],
     [ "getSummary", "classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html#a8ddccec49c81941eb99cac068e278b74", null ],
     [ "getTableName", "classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html#a5f289cae16e03580cc2c8743ea16bfaf", null ],
     [ "jsonSerialize", "classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html#a85036e545256446f30cb7696299507cf", null ],

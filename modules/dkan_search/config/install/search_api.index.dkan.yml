@@ -48,6 +48,7 @@ processor_settings:
       - keyword
       - theme
       - title
+      - publisher__name
   language_with_fallback: {  }
   rendered_item: {  }
 tracker_settings:

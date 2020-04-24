@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['query_2ephp_720',['Query.php',['../Query_8php.html',1,'']]],
-  ['querytoqueryhelpertrait_2ephp_721',['QueryToQueryHelperTrait.php',['../QueryToQueryHelperTrait_8php.html',1,'']]]
+  ['loggertrait_2ephp_820',['LoggerTrait.php',['../LoggerTrait_8php.html',1,'']]]
 ];
