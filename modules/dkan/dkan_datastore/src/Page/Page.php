@@ -153,10 +153,10 @@ class Page {
         (new ManagerConfiguration($manager))->submit($manager_values);
       }
 
-      if ($values['submit'] == "Import") {
+      if ($values['submit'] == t("Import")) {
         $this->batchConfiguration($manager);
       }
-      elseif ($values['submit'] == "Drop") {
+      elseif ($values['submit'] == t('Drop')) {
         $this->dropFormSubmit($manager);
       }
     }
