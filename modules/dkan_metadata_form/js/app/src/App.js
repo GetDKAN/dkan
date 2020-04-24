@@ -4,15 +4,15 @@ import Form from "@rjsf/core";
 import 'bootstrap-lite/lib.bootstrap.css';
 import ToastBox, { toast } from "react-toastbox";
 import './App.scss';
+import axios from "axios";
 
-const axios = require('axios');
-
-function App({ tempUUID }) {
+function App({ tempUUID, isNew }) {
   const baseUrl = "";
 
   let history = useHistory();
 
-  const [identifier, setIdentifier] = useState("");
+  const [identifier, setIdentifier] = useState(null);
+  const [hasBeenUpdated, setHasBeenUpdated] = useState(false);
   const [message, setMessage] = useState("");
   const [schema, setSchema] = useState({});
   const [uiSchema, setUiSchema] = useState({});
@@ -34,26 +34,26 @@ function App({ tempUUID }) {
       const response2 = await axios.get(baseUrl + '/api/1/metastore/schemas/dataset.ui');
       setUiSchema(response2.data);
 
-      const id = getId()
-      if (id) {
-        setIdentifier(id);
-      }
+      setIdentifier(tempUUID.toString());
     }
-  
+
     fetchSchema();
   }, []);
 
   useEffect(() => {
     async function fetch() {
-      const response = await axios.get(baseUrl + '/api/1/metastore/schemas/dataset/items/' + identifier);
-      setFormData(response.data);
-    }  
-  
+      setHasBeenUpdated(false);
+      if (identifier && !isNew) {
+        const response = await axios.get(baseUrl + '/api/1/metastore/schemas/dataset/items/' + identifier);
+        setFormData(response.data);
+      }
+    }
+
     fetch();
-  }, [identifier]);
+  }, [identifier, hasBeenUpdated]);
 
   useEffect(() => {
-    if (message.length > 0) { 
+    if (message.length > 0) {
       toast.success(message);
     }
   }, [message]);
@@ -76,27 +76,23 @@ function App({ tempUUID }) {
   function submitDataset(event) {
     const data = event.formData;
     const cleanData = cleanTheData(data);
-    
-    if (identifier.length > 0) {
+
+    if (identifier.length > 0 && !isNew) {
       axios.put(baseUrl + '/api/1/metastore/schemas/dataset/items/' + identifier, cleanData).then(
         () => {
+          setHasBeenUpdated(true);
           setMessage("The dataset with identifier " + identifier + " has been updated.");
         }
       ).catch((error) => {
         if (error.response) {
           setMessage(error.response.data.message);
         }
-      });;
+      });
     }
     else {
       axios.post(baseUrl + '/api/1/metastore/schemas/dataset/items', cleanData).then(
         (response) => {
           const id = response.data.identifier;
-          
-          let currentUrlParams = new URLSearchParams(window.location.search);
-          currentUrlParams.set("id", id);
-          history.push(window.location.pathname + "?" + currentUrlParams.toString());
-          
           setIdentifier(id);
           setMessage("A dataset with the identifier " + id + " has been created.");
         }
@@ -109,19 +105,10 @@ function App({ tempUUID }) {
     window.scrollTo(0,0);
   }
 
-  function getId() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const ids = urlParams.getAll('id');
-    if (ids.length > 0) {
-      return ids[0];
-    }
-    return null;
-  }
-
   const CustomDescriptionField = ({id, description}) => {
     return <div className="dc-field-label"  id={id} dangerouslySetInnerHTML={{__html: description}} />
   };
-  
+
   const fields = {
     DescriptionField: CustomDescriptionField
   };
@@ -133,7 +120,7 @@ function App({ tempUUID }) {
       }
       if (error.name === "pattern" && error.property.includes(".distribution") && error.property.includes(".isssued")) {
         error.message = "Dates should be ISO 8601 of least resolution. In other words, as much of YYYY-MM-DDThh:mm:ss.sTZD as is relevant to this dataset.";
-      }       
+      }
       return error;
     });
   }
@@ -147,11 +134,11 @@ function App({ tempUUID }) {
         intent="success"
       />
       <button className="btn btn-default" type="button" onClick={event =>  window.location.href='/admin/content/datasets'}>Back to Datasets</button>
-      <Form 
-        id="dc-json-editor" 
+      <Form
+        id="dc-json-editor"
         schema={schema}
         fields={fields}
-        formData={formData} 
+        formData={formData}
         uiSchema={uiSchema}
         autoComplete="on"
         transformErrors={transformErrors}

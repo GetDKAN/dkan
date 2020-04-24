@@ -365,7 +365,7 @@ display:
             alter_text: true
             text: edit
             make_link: true
-            path: '/admin/dkan/dataset?id={{ uuid }}'
+            path: '/admin/dkan/dataset/{{ uuid }}'
             absolute: false
             external: false
             replace_spaces: false

@@ -66,7 +66,7 @@ context('Admin content and dataset views', () => {
     it('The dataset data node titles should link to the REACT page. The edit link should go to the json form.', () => {
         cy.visit(baseurl + "/admin/content/datasets")
         //cy.get('tbody > :nth-child(1) > .views-field-title > a').invoke('attr', 'href').should('contain', '/dataset/')
-        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', 'admin/dkan/dataset?id=');
+        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', 'admin/dkan/dataset/');
     })
 
     it('Admin user can delete a dataset', () => {
