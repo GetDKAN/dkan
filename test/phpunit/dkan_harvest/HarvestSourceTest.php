@@ -168,7 +168,7 @@ class HarvestSourceTest extends \PHPUnit_Framework_TestCase {
    */
   private function getLocalSource() {
     return new HarvestSourceTestStub(
-      'harvest_test_source_local_file', __DIR__ . '/data/harvest_test_source_local_file/data.json'
+      'harvest_test_source_local_file', __DIR__ . '/data/harvest_test_source_local_file/data1.json'
     );
   }
 
