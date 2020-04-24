@@ -1,5 +1,5 @@
 name: API
-description: 'API.'
+description: 'Provides the base "/api/1", other modules are responsible for their own endpoints.'
 type: module
 core: 8.x
 package: DKAN

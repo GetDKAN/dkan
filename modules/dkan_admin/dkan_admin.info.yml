@@ -1,11 +1,12 @@
-name: Catalog Admin
-description: 'Catalog config and administrative tools.'
+name: Administration
+description: 'Provides administrative views for managing dataset content.'
 type: module
 core: 8.x
 dependencies:
   - admin_toolbar
   - breakpoint
   - dkan_data
+  - dkan_metadata_form
   - system
   - toolbar
   - user
