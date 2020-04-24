@@ -75,6 +75,11 @@ projects:
     version: '1.7'
   diff:
     version: '3.4'
+  dkan_default_content:
+    download:
+        type: git
+        url: https://github.com/NuCivic/dkan_default_content.git
+        tag: 7.x-1.0
   double_field:
     version: '2.5'
   drafty:
@@ -232,6 +237,12 @@ projects:
       type: git
       url: https://git.drupal.org/project/multistep.git
       revision: 3b0d40a
+  nuboot_radix:
+    download:
+      type: git
+      url: https://github.com/NuCivic/nuboot_radix.git
+      tag: 7.x-2.0
+    type: theme
   og:
     version: '2.10'
     patch:
