@@ -21,10 +21,10 @@ field_settings:
     datasource_id: dkan_dataset
     property_path: keyword
     type: string
-  modified:
-    label: modified
+  publisher__name:
+    label: publisher__name
     datasource_id: dkan_dataset
-    property_path: modified
+    property_path: publisher__name
     type: string
   theme:
     label: theme
@@ -46,9 +46,13 @@ processor_settings:
     fields:
       - description
       - keyword
+      - publisher__name
       - theme
       - title
       - publisher__name
+    weights:
+      preprocess_index: -20
+      preprocess_query: -20
   language_with_fallback: {  }
   rendered_item: {  }
 tracker_settings:
