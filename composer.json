@@ -1,5 +1,5 @@
 {
-    "name": "getdkan/dkan2",
+    "name": "getdkan/dkan",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
