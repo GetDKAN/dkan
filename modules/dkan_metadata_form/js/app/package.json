@@ -2,7 +2,7 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/modules/contrib/dkan2/modules/dkan_metadata_form/js/app/build",
+  "homepage": "/modules/contrib/dkan/modules/dkan_metadata_form/js/app/build",
   "dependencies": {
     "@rjsf/core": "^2.0.0-alpha.2",
     "@testing-library/jest-dom": "^4.2.4",

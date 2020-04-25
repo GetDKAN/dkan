@@ -2,120 +2,120 @@
 <tagfile>
   <compound kind="file">
     <name>1.0_installation.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>1_80__installation_8md</filename>
   </compound>
   <compound kind="file">
     <name>1.1_installation-prod.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>1_81__installation-prod_8md</filename>
   </compound>
   <compound kind="file">
     <name>2.0_development.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>2_80__development_8md</filename>
   </compound>
   <compound kind="file">
     <name>2.1_development-maintain.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>2_81__development-maintain_8md</filename>
   </compound>
   <compound kind="file">
     <name>2.2_development-custom.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>2_82__development-custom_8md</filename>
   </compound>
   <compound kind="file">
     <name>3.0_components.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>3_80__components_8md</filename>
   </compound>
   <compound kind="file">
     <name>4.0_User-Guide.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>4_80__User-Guide_8md</filename>
   </compound>
   <compound kind="file">
     <name>4.2_dataset_api.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>4_82__dataset__api_8md</filename>
   </compound>
   <compound kind="file">
     <name>5.0_community.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>5_80__community_8md</filename>
   </compound>
   <compound kind="file">
     <name>6.0_code-of-conduct.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>6_80__code-of-conduct_8md</filename>
   </compound>
   <compound kind="file">
     <name>7.0_license.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/docs_assets/pages/</path>
+    <path>/home/fmizzell/Workspace/dkan/docs_assets/pages/</path>
     <filename>7_80__license_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_admin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_admin/</path>
     <filename>dkan__admin_2README_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/</path>
     <filename>dkan__data_2README_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/</path>
     <filename>dkan__datastore_2README_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/</path>
     <filename>dkan__harvest_2README_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/</path>
     <filename>dkan__metastore_2README_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/</path>
     <filename>dkan__search_2README_8md</filename>
   </compound>
   <compound kind="file">
     <name>Docs.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_api/src/Controller/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_api/src/Controller/</path>
     <filename>Docs_8php</filename>
     <class kind="class">Drupal::dkan_api::Controller::Docs</class>
     <namespace>Drupal::dkan_api::Controller</namespace>
   </compound>
   <compound kind="file">
     <name>DocsTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_api/tests/src/Unit/Controller/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_api/tests/src/Unit/Controller/</path>
     <filename>DocsTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_api::Unit::Controller::DocsTest</class>
     <namespace>Drupal::Tests::dkan_api::Unit::Controller</namespace>
   </compound>
   <compound kind="file">
     <name>AbstractDataNodeLifeCycle.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
     <filename>AbstractDataNodeLifeCycle_8php</filename>
     <class kind="class">Drupal::dkan_common::AbstractDataNodeLifeCycle</class>
     <namespace>Drupal::dkan_common</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifier.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Annotation/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Annotation/</path>
     <filename>DataModifier_8php</filename>
     <class kind="class">Drupal::dkan_common::Annotation::DataModifier</class>
     <namespace>Drupal::dkan_common::Annotation</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifierPluginTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
     <filename>DataModifierPluginTrait_8php</filename>
     <namespace>Drupal::dkan_common</namespace>
     <member kind="variable">
@@ -128,20 +128,20 @@
   </compound>
   <compound kind="file">
     <name>DataNodeLifeCycleEntityValidationException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Exception/</path>
     <filename>DataNodeLifeCycleEntityValidationException_8php</filename>
     <class kind="class">Drupal::dkan_common::Exception::DataNodeLifeCycleEntityValidationException</class>
     <namespace>Drupal::dkan_common::Exception</namespace>
   </compound>
   <compound kind="file">
     <name>JsonResponseTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
     <filename>JsonResponseTrait_8php</filename>
     <namespace>Drupal::dkan_common</namespace>
   </compound>
   <compound kind="file">
     <name>LoggerTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
     <filename>LoggerTrait_8php</filename>
     <namespace>Drupal::dkan_common</namespace>
     <member kind="function">
@@ -161,74 +161,74 @@
   </compound>
   <compound kind="file">
     <name>DataModifierBase.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Plugin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Plugin/</path>
     <filename>DataModifierBase_8php</filename>
     <class kind="class">Drupal::dkan_common::Plugin::DataModifierBase</class>
     <namespace>Drupal::dkan_common::Plugin</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifierInterface.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Plugin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Plugin/</path>
     <filename>DataModifierInterface_8php</filename>
     <class kind="interface">Drupal::dkan_common::Plugin::DataModifierInterface</class>
     <namespace>Drupal::dkan_common::Plugin</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifierManager.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Plugin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Plugin/</path>
     <filename>DataModifierManager_8php</filename>
     <class kind="class">Drupal::dkan_common::Plugin::DataModifierManager</class>
     <namespace>Drupal::dkan_common::Plugin</namespace>
   </compound>
   <compound kind="file">
     <name>Factory.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Service/</path>
     <filename>Factory_8php</filename>
     <class kind="class">Drupal::dkan_common::Service::Factory</class>
     <namespace>Drupal::dkan_common::Service</namespace>
   </compound>
   <compound kind="file">
     <name>JsonUtil.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Service/</path>
     <filename>JsonUtil_8php</filename>
     <class kind="class">Drupal::dkan_common::Service::JsonUtil</class>
     <namespace>Drupal::dkan_common::Service</namespace>
   </compound>
   <compound kind="file">
     <name>AbstractDatabaseTable.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Storage/</path>
     <filename>AbstractDatabaseTable_8php</filename>
     <class kind="class">Drupal::dkan_common::Storage::AbstractDatabaseTable</class>
     <namespace>Drupal::dkan_common::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>QueryToQueryHelperTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Storage/</path>
     <filename>QueryToQueryHelperTrait_8php</filename>
     <namespace>Drupal::dkan_common::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>UrlHostTokenResolver.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
     <filename>UrlHostTokenResolver_8php</filename>
     <class kind="class">Drupal::dkan_common::UrlHostTokenResolver</class>
     <namespace>Drupal::dkan_common</namespace>
   </compound>
   <compound kind="file">
     <name>ParentCallTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Util/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Util/</path>
     <filename>ParentCallTrait_8php</filename>
     <namespace>Drupal::dkan_common::Util</namespace>
   </compound>
   <compound kind="file">
     <name>RequestTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/src/Util/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Util/</path>
     <filename>RequestTrait_8php</filename>
     <namespace>Drupal::dkan_common::Util</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifierManagerTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/tests/src/Unit/Plugin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/tests/src/Unit/Plugin/</path>
     <filename>DataModifierManagerTest_8php</filename>
     <class kind="class">Drupal::dkan_common::Tests::Unit::DataModifierManagerTest</class>
     <namespace>Drupal::dkan_common::Tests::Unit</namespace>
@@ -236,34 +236,34 @@
   </compound>
   <compound kind="file">
     <name>UrlHostTokenResolverTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_common/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/tests/src/Unit/</path>
     <filename>UrlHostTokenResolverTest_8php</filename>
     <class kind="class">UrlHostTokenResolverTest</class>
   </compound>
   <compound kind="file">
     <name>ConfigurationOverrider.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/</path>
     <filename>ConfigurationOverrider_8php</filename>
     <class kind="class">Drupal::dkan_data::ConfigurationOverrider</class>
     <namespace>Drupal::dkan_data</namespace>
   </compound>
   <compound kind="file">
     <name>DataNodeLifeCycle.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/</path>
     <filename>src_2DataNodeLifeCycle_8php</filename>
     <class kind="class">Drupal::dkan_data::DataNodeLifeCycle</class>
     <namespace>Drupal::dkan_data</namespace>
   </compound>
   <compound kind="file">
     <name>DataNodeLifeCycle.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/</path>
     <filename>tore_2src_2DataNodeLifeCycle_8php</filename>
     <class kind="class">Drupal::dkan_datastore::DataNodeLifeCycle</class>
     <namespace>Drupal::dkan_datastore</namespace>
   </compound>
   <compound kind="file">
     <name>DkanDataSettingsForm.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Form/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Form/</path>
     <filename>DkanDataSettingsForm_8php</filename>
     <class kind="class">Drupal::dkan_data::Form::DkanDataSettingsForm</class>
     <namespace>Drupal::dkan_data::Form</namespace>
@@ -271,35 +271,35 @@
   </compound>
   <compound kind="file">
     <name>OrphanReferenceProcessor.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Plugin/QueueWorker/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Plugin/QueueWorker/</path>
     <filename>OrphanReferenceProcessor_8php</filename>
     <class kind="class">Drupal::dkan_data::Plugin::QueueWorker::OrphanReferenceProcessor</class>
     <namespace>Drupal::dkan_data::Plugin::QueueWorker</namespace>
   </compound>
   <compound kind="file">
     <name>ProperJson.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Plugin/Validation/Constraint/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Plugin/Validation/Constraint/</path>
     <filename>ProperJson_8php</filename>
     <class kind="class">Drupal::dkan_data::Plugin::Validation::Constraint::ProperJson</class>
     <namespace>Drupal::dkan_data::Plugin::Validation::Constraint</namespace>
   </compound>
   <compound kind="file">
     <name>ProperJsonValidator.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Plugin/Validation/Constraint/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Plugin/Validation/Constraint/</path>
     <filename>ProperJsonValidator_8php</filename>
     <class kind="class">Drupal::dkan_data::Plugin::Validation::Constraint::ProperJsonValidator</class>
     <namespace>Drupal::dkan_data::Plugin::Validation::Constraint</namespace>
   </compound>
   <compound kind="file">
     <name>Dereferencer.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Reference/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Reference/</path>
     <filename>Dereferencer_8php</filename>
     <class kind="class">Drupal::dkan_data::Reference::Dereferencer</class>
     <namespace>Drupal::dkan_data::Reference</namespace>
   </compound>
   <compound kind="file">
     <name>HelperTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Reference/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Reference/</path>
     <filename>HelperTrait_8php</filename>
     <namespace>Drupal::dkan_data::Reference</namespace>
     <member kind="variable">
@@ -312,76 +312,76 @@
   </compound>
   <compound kind="file">
     <name>OrphanChecker.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Reference/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Reference/</path>
     <filename>OrphanChecker_8php</filename>
     <class kind="class">Drupal::dkan_data::Reference::OrphanChecker</class>
     <namespace>Drupal::dkan_data::Reference</namespace>
   </compound>
   <compound kind="file">
     <name>Referencer.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Reference/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Reference/</path>
     <filename>Referencer_8php</filename>
     <class kind="class">Drupal::dkan_data::Reference::Referencer</class>
     <namespace>Drupal::dkan_data::Reference</namespace>
   </compound>
   <compound kind="file">
     <name>Uuid5.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Service/</path>
     <filename>Uuid5_8php</filename>
     <class kind="class">Drupal::dkan_data::Service::Uuid5</class>
     <namespace>Drupal::dkan_data::Service</namespace>
   </compound>
   <compound kind="file">
     <name>Data.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/src/Storage/</path>
     <filename>Data_8php</filename>
     <class kind="class">Drupal::dkan_data::Storage::Data</class>
     <namespace>Drupal::dkan_data::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>ConfigurationOverriderTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/tests/src/Unit/</path>
     <filename>ConfigurationOverriderTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_data::Unit::ConfigurationOverriderTest</class>
     <namespace>Drupal::Tests::dkan_data::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>DataNodeLifeCycleTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/tests/src/Unit/</path>
     <filename>DataNodeLifeCycleTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_data::Unit::DataNodeLifeCycleTest</class>
     <namespace>Drupal::Tests::dkan_data::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>ProperJsonValidatorTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/tests/src/Unit/Plugin/Validation/Constraint/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/tests/src/Unit/Plugin/Validation/Constraint/</path>
     <filename>ProperJsonValidatorTest_8php</filename>
     <class kind="class">ProperJsonValidatorTest</class>
   </compound>
   <compound kind="file">
     <name>DereferencerTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/tests/src/Unit/Reference/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/tests/src/Unit/Reference/</path>
     <filename>DereferencerTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_data::Unit::DereferencerTest</class>
     <namespace>Drupal::Tests::dkan_data::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>OrphanCheckerTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/tests/src/Unit/Reference/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/tests/src/Unit/Reference/</path>
     <filename>OrphanCheckerTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_data::Unit::OrphanCheckerTest</class>
     <namespace>Drupal::Tests::dkan_data::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>ReferencerTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/tests/src/Unit/Reference/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/tests/src/Unit/Reference/</path>
     <filename>ReferencerTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_data::Unit::ReferencerTest</class>
     <namespace>Drupal::Tests::dkan_data::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>Uuid5Test.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/tests/src/Unit/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/tests/src/Unit/Service/</path>
     <filename>Uuid5Test_8php</filename>
     <class kind="class">Drupal::dkan_data::Tests::Unit::Uuid5Test</class>
     <namespace>Drupal::dkan_data::Tests::Unit</namespace>
@@ -389,154 +389,154 @@
   </compound>
   <compound kind="file">
     <name>DataTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_data/tests/src/Unit/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_data/tests/src/Unit/Storage/</path>
     <filename>DataTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_api::Unit::Storage::DataTest</class>
     <namespace>Drupal::Tests::dkan_api::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>Drush.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/</path>
     <filename>dkan__datastore_2src_2Drush_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Drush</class>
     <namespace>Drupal::dkan_datastore</namespace>
   </compound>
   <compound kind="file">
     <name>Drush.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metadata_form/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metadata_form/src/</path>
     <filename>dkan__metadata__form_2src_2Drush_8php</filename>
     <class kind="class">Drupal::dkan_metadata_form::Drush</class>
     <namespace>Drupal::dkan_metadata_form</namespace>
   </compound>
   <compound kind="file">
     <name>Import.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Plugin/QueueWorker/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Plugin/QueueWorker/</path>
     <filename>Plugin_2QueueWorker_2Import_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Plugin::QueueWorker::Import</class>
     <namespace>Drupal::dkan_datastore::Plugin::QueueWorker</namespace>
   </compound>
   <compound kind="file">
     <name>Import.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Service/Factory/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Service/Factory/</path>
     <filename>Service_2Factory_2Import_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service::Factory::Import</class>
     <namespace>Drupal::dkan_datastore::Service::Factory</namespace>
   </compound>
   <compound kind="file">
     <name>Import.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Service/</path>
     <filename>Service_2Import_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service::Import</class>
     <namespace>Drupal::dkan_datastore::Service</namespace>
   </compound>
   <compound kind="file">
     <name>Service.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/</path>
     <filename>dkan__datastore_2src_2Service_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service</class>
     <namespace>Drupal::dkan_datastore</namespace>
   </compound>
   <compound kind="file">
     <name>Service.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/</path>
     <filename>dkan__metastore_2src_2Service_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Service</class>
     <namespace>Drupal::dkan_metastore</namespace>
   </compound>
   <compound kind="file">
     <name>Service.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_sql_endpoint/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_sql_endpoint/src/</path>
     <filename>dkan__sql__endpoint_2src_2Service_8php</filename>
     <class kind="class">Drupal::dkan_sql_endpoint::Service</class>
     <namespace>Drupal::dkan_sql_endpoint</namespace>
   </compound>
   <compound kind="file">
     <name>Resource.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Service/Factory/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Service/Factory/</path>
     <filename>Factory_2Resource_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service::Factory::Resource</class>
     <namespace>Drupal::dkan_datastore::Service::Factory</namespace>
   </compound>
   <compound kind="file">
     <name>Resource.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Service/</path>
     <filename>Resource_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service::Resource</class>
     <namespace>Drupal::dkan_datastore::Service</namespace>
   </compound>
   <compound kind="file">
     <name>ImporterList.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Service/ImporterList/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Service/ImporterList/</path>
     <filename>ImporterList_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service::ImporterList::ImporterList</class>
     <namespace>Drupal::dkan_datastore::Service::ImporterList</namespace>
   </compound>
   <compound kind="file">
     <name>ImporterListItem.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Service/ImporterList/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Service/ImporterList/</path>
     <filename>ImporterListItem_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Service::ImporterList::ImporterListItem</class>
     <namespace>Drupal::dkan_datastore::Service::ImporterList</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTable.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Storage/</path>
     <filename>dkan__datastore_2src_2Storage_2DatabaseTable_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::DatabaseTable</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTable.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Storage/</path>
     <filename>dkan__harvest_2src_2Storage_2DatabaseTable_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Storage::DatabaseTable</class>
     <namespace>Drupal::dkan_harvest::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTableFactory.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Storage/</path>
     <filename>dkan__datastore_2src_2Storage_2DatabaseTableFactory_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::DatabaseTableFactory</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTableFactory.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Storage/</path>
     <filename>dkan__harvest_2src_2Storage_2DatabaseTableFactory_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Storage::DatabaseTableFactory</class>
     <namespace>Drupal::dkan_harvest::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>JobStore.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Storage/</path>
     <filename>JobStore_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::JobStore</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>JobStoreFactory.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Storage/</path>
     <filename>JobStoreFactory_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::JobStoreFactory</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>Query.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Storage/</path>
     <filename>Query_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::Query</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>TableSummary.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/Storage/</path>
     <filename>TableSummary_8php</filename>
     <class kind="class">Drupal::dkan_datastore::Storage::TableSummary</class>
     <namespace>Drupal::dkan_datastore::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>WebServiceApi.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/src/</path>
     <filename>dkan__datastore_2src_2WebServiceApi_8php</filename>
     <class kind="class">Drupal::dkan_datastore::WebServiceApi</class>
     <namespace>Drupal::dkan_datastore</namespace>
@@ -544,179 +544,179 @@
   </compound>
   <compound kind="file">
     <name>WebServiceApi.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/</path>
     <filename>dkan__metastore_2src_2WebServiceApi_8php</filename>
     <class kind="class">Drupal::dkan_metastore::WebServiceApi</class>
     <namespace>Drupal::dkan_metastore</namespace>
   </compound>
   <compound kind="file">
     <name>WebServiceApi.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/src/</path>
     <filename>dkan__search_2src_2WebServiceApi_8php</filename>
     <class kind="class">Drupal::dkan_search::WebServiceApi</class>
     <namespace>Drupal::dkan_search</namespace>
   </compound>
   <compound kind="file">
     <name>DataNodeLifeCycle2Test.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/</path>
     <filename>DataNodeLifeCycle2Test_8php</filename>
     <class kind="class">DataNodeLifeCycle2Test</class>
   </compound>
   <compound kind="file">
     <name>Container.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/Mock/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/Mock/</path>
     <filename>Container_8php</filename>
     <class kind="class">Drupal::Tests::dkan_datastore::Unit::Mock::Container</class>
     <namespace>Drupal::Tests::dkan_datastore::Unit::Mock</namespace>
   </compound>
   <compound kind="file">
     <name>ImportTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/Plugin/QueueWorker/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/Plugin/QueueWorker/</path>
     <filename>Plugin_2QueueWorker_2ImportTest_8php</filename>
     <class kind="class">Import2Test</class>
   </compound>
   <compound kind="file">
     <name>ImportTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/Service/</path>
     <filename>Service_2ImportTest_8php</filename>
     <class kind="class">ImportTest</class>
   </compound>
   <compound kind="file">
     <name>ImporterListTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/Service/ImporterList/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/Service/ImporterList/</path>
     <filename>ImporterListTest_8php</filename>
     <class kind="class">ImporterListTest</class>
   </compound>
   <compound kind="file">
     <name>ResourceTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/Service/</path>
     <filename>ResourceTest_8php</filename>
     <class kind="class">ResourceTest</class>
   </compound>
   <compound kind="file">
     <name>ServiceTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/</path>
     <filename>dkan__datastore_2tests_2src_2Unit_2ServiceTest_8php</filename>
     <class kind="class">ServiceTest</class>
   </compound>
   <compound kind="file">
     <name>ServiceTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/tests/src/Unit/</path>
     <filename>dkan__metastore_2tests_2src_2Unit_2ServiceTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_metastore::Unit::ServiceTest</class>
     <namespace>Drupal::Tests::dkan_metastore::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>ServiceTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_sql_endpoint/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_sql_endpoint/tests/src/Unit/</path>
     <filename>dkan__sql__endpoint_2tests_2src_2Unit_2ServiceTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_sql_endpoint::ServiceTest</class>
     <namespace>Drupal::Tests::dkan_sql_endpoint</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTableFactoryTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/Storage/</path>
     <filename>dkan__datastore_2tests_2src_2Unit_2Storage_2DatabaseTableFactoryTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::DatabaseTableFactoryTest</class>
     <namespace>Drupal::Tests::dkan_datastore::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTableFactoryTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/test/src/Unit/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/test/src/Unit/Storage/</path>
     <filename>dkan__harvest_2test_2src_2Unit_2Storage_2DatabaseTableFactoryTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Storage::DatabaseTableFactoryTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTableTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/Storage/</path>
     <filename>dkan__datastore_2tests_2src_2Unit_2Storage_2DatabaseTableTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::DatabaseTableTest</class>
     <namespace>Drupal::Tests::dkan_datastore::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>DatabaseTableTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/test/src/Unit/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/test/src/Unit/Storage/</path>
     <filename>dkan__harvest_2test_2src_2Unit_2Storage_2DatabaseTableTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Storage::DatabaseTableTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>JobStoreTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/Storage/</path>
     <filename>JobStoreTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_datastore::Unit::Storage::JobStoreTest</class>
     <namespace>Drupal::Tests::dkan_datastore::Unit::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>WebServiceApiTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_datastore/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_datastore/tests/src/Unit/</path>
     <filename>dkan__datastore_2tests_2src_2Unit_2WebServiceApiTest_8php</filename>
     <class kind="class">WebServiceApiTest</class>
   </compound>
   <compound kind="file">
     <name>WebServiceApiTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/tests/src/Unit/</path>
     <filename>dkan__metastore_2tests_2src_2Unit_2WebServiceApiTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_metastore::Unit::WebServiceApiTest</class>
     <namespace>Drupal::Tests::dkan_metastore::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>Commands.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_dummy_content/src/Drush/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_dummy_content/src/Drush/</path>
     <filename>dkan__dummy__content_2src_2Drush_2Commands_8php</filename>
     <class kind="class">Drupal::dkan_dummy_content::Drush::Commands</class>
     <namespace>Drupal::dkan_dummy_content::Drush</namespace>
   </compound>
   <compound kind="file">
     <name>Commands.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Drush/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Drush/</path>
     <filename>dkan__harvest_2src_2Drush_2Commands_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Drush::Commands</class>
     <namespace>Drupal::dkan_harvest::Drush</namespace>
   </compound>
   <compound kind="file">
     <name>Page.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_frontend/src/Controller/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_frontend/src/Controller/</path>
     <filename>Controller_2Page_8php</filename>
     <class kind="class">Drupal::dkan_frontend::Controller::Page</class>
     <namespace>Drupal::dkan_frontend::Controller</namespace>
   </compound>
   <compound kind="file">
     <name>Page.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_frontend/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_frontend/src/</path>
     <filename>Page_8php</filename>
     <class kind="class">Drupal::dkan_frontend::Page</class>
     <namespace>Drupal::dkan_frontend</namespace>
   </compound>
   <compound kind="file">
     <name>RouteProvider.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_frontend/src/Routing/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_frontend/src/Routing/</path>
     <filename>RouteProvider_8php</filename>
     <class kind="class">Drupal::dkan_frontend::Routing::RouteProvider</class>
     <namespace>Drupal::dkan_frontend::Routing</namespace>
   </compound>
   <compound kind="file">
     <name>PageTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_frontend/tests/src/Unit/Controller/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_frontend/tests/src/Unit/Controller/</path>
     <filename>Controller_2PageTest_8php</filename>
     <class kind="class">ControllerPageTest</class>
   </compound>
   <compound kind="file">
     <name>PageTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_frontend/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_frontend/tests/src/Unit/</path>
     <filename>PageTest_8php</filename>
     <class kind="class">PageTest</class>
   </compound>
   <compound kind="file">
     <name>RouteProvider2Test.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_frontend/tests/src/Unit/Routing/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_frontend/tests/src/Unit/Routing/</path>
     <filename>RouteProvider2Test_8php</filename>
     <class kind="class">RouteProvider2Test</class>
   </compound>
   <compound kind="file">
     <name>Api.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Controller/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Controller/</path>
     <filename>dkan__harvest_2src_2Controller_2Api_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Controller::Api</class>
     <namespace>Drupal::dkan_harvest::Controller</namespace>
@@ -724,114 +724,114 @@
   </compound>
   <compound kind="file">
     <name>Api.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_sql_endpoint/src/Controller/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_sql_endpoint/src/Controller/</path>
     <filename>dkan__sql__endpoint_2src_2Controller_2Api_8php</filename>
     <class kind="class">Drupal::dkan_sql_endpoint::Controller::Api</class>
     <namespace>Drupal::dkan_sql_endpoint::Controller</namespace>
   </compound>
   <compound kind="file">
     <name>Helper.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Drush/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Drush/</path>
     <filename>Helper_8php</filename>
     <namespace>Drupal::dkan_harvest::Drush</namespace>
   </compound>
   <compound kind="file">
     <name>Harvester.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/</path>
     <filename>Harvester_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Harvester</class>
     <namespace>Drupal::dkan_harvest</namespace>
   </compound>
   <compound kind="file">
     <name>Dataset.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Load/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Load/</path>
     <filename>dkan__harvest_2src_2Load_2Dataset_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Load::Dataset</class>
     <namespace>Drupal::dkan_harvest::Load</namespace>
   </compound>
   <compound kind="file">
     <name>Dataset.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/src/ComplexData/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/src/ComplexData/</path>
     <filename>dkan__search_2src_2ComplexData_2Dataset_8php</filename>
     <class kind="class">Drupal::dkan_search::ComplexData::Dataset</class>
     <namespace>Drupal::dkan_search::ComplexData</namespace>
   </compound>
   <compound kind="file">
     <name>FileHelper.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Load/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Load/</path>
     <filename>FileHelper_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Load::FileHelper</class>
     <namespace>Drupal::dkan_harvest::Load</namespace>
   </compound>
   <compound kind="file">
     <name>FileHelperTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Load/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Load/</path>
     <filename>FileHelperTrait_8php</filename>
     <namespace>Drupal::dkan_harvest::Load</namespace>
   </compound>
   <compound kind="file">
     <name>IFileHelper.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Load/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Load/</path>
     <filename>IFileHelper_8php</filename>
     <class kind="interface">Drupal::dkan_harvest::Load::IFileHelper</class>
     <namespace>Drupal::dkan_harvest::Load</namespace>
   </compound>
   <compound kind="file">
     <name>IdGenerator.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Storage/</path>
     <filename>IdGenerator_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Storage::IdGenerator</class>
     <namespace>Drupal::dkan_harvest::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>ResourceImporter.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/src/Transform/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/src/Transform/</path>
     <filename>ResourceImporter_8php</filename>
     <class kind="class">Drupal::dkan_harvest::Transform::ResourceImporter</class>
     <namespace>Drupal::dkan_harvest::Transform</namespace>
   </compound>
   <compound kind="file">
     <name>ApiTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/test/src/Unit/Controller/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/test/src/Unit/Controller/</path>
     <filename>dkan__harvest_2test_2src_2Unit_2Controller_2ApiTest_8php</filename>
     <class kind="class">ApiTest</class>
   </compound>
   <compound kind="file">
     <name>ApiTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_sql_endpoint/tests/src/Unit/Controller/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_sql_endpoint/tests/src/Unit/Controller/</path>
     <filename>dkan__sql__endpoint_2tests_2src_2Unit_2Controller_2ApiTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_sql_endpoint::Unit::Controller::ApiTest</class>
     <namespace>Drupal::Tests::dkan_sql_endpoint::Unit::Controller</namespace>
   </compound>
   <compound kind="file">
     <name>HarvesterTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/test/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/test/src/Unit/</path>
     <filename>HarvesterTest_8php</filename>
     <class kind="class">HarvesterTest</class>
   </compound>
   <compound kind="file">
     <name>DatasetTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_harvest/test/src/Unit/Load/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_harvest/test/src/Unit/Load/</path>
     <filename>dkan__harvest_2test_2src_2Unit_2Load_2DatasetTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_harvest::Unit::Extract::DatasetTest</class>
     <namespace>Drupal::Tests::dkan_harvest::Unit::Extract</namespace>
   </compound>
   <compound kind="file">
     <name>DatasetTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/tests/src/Unit/ComplexData/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/tests/src/Unit/ComplexData/</path>
     <filename>dkan__search_2tests_2src_2Unit_2ComplexData_2DatasetTest_8php</filename>
     <class kind="class">DatasetTest</class>
   </compound>
   <compound kind="file">
     <name>Controller.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metadata_form/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metadata_form/src/</path>
     <filename>Controller_8php</filename>
     <class kind="class">Drupal::dkan_metadata_form::Controller</class>
     <namespace>Drupal::dkan_metadata_form</namespace>
   </compound>
   <compound kind="file">
     <name>CannotChangeUuidException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/Exception/</path>
     <filename>CannotChangeUuidException_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Exception::CannotChangeUuidException</class>
     <namespace>Drupal::dkan_metastore::Exception</namespace>
@@ -839,7 +839,7 @@
   </compound>
   <compound kind="file">
     <name>ExistingObjectException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/Exception/</path>
     <filename>ExistingObjectException_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Exception::ExistingObjectException</class>
     <namespace>Drupal::dkan_metastore::Exception</namespace>
@@ -847,7 +847,7 @@
   </compound>
   <compound kind="file">
     <name>InvalidJsonException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/Exception/</path>
     <filename>InvalidJsonException_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Exception::InvalidJsonException</class>
     <namespace>Drupal::dkan_metastore::Exception</namespace>
@@ -855,7 +855,7 @@
   </compound>
   <compound kind="file">
     <name>MetastoreException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/Exception/</path>
     <filename>MetastoreException_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Exception::MetastoreException</class>
     <namespace>Drupal::dkan_metastore::Exception</namespace>
@@ -863,7 +863,7 @@
   </compound>
   <compound kind="file">
     <name>MissingObjectException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/Exception/</path>
     <filename>MissingObjectException_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Exception::MissingObjectException</class>
     <namespace>Drupal::dkan_metastore::Exception</namespace>
@@ -871,7 +871,7 @@
   </compound>
   <compound kind="file">
     <name>MissingPayloadException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/Exception/</path>
     <filename>MissingPayloadException_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Exception::MissingPayloadException</class>
     <namespace>Drupal::dkan_metastore::Exception</namespace>
@@ -879,7 +879,7 @@
   </compound>
   <compound kind="file">
     <name>UnmodifiedObjectException.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/Exception/</path>
     <filename>UnmodifiedObjectException_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Exception::UnmodifiedObjectException</class>
     <namespace>Drupal::dkan_metastore::Exception</namespace>
@@ -887,63 +887,63 @@
   </compound>
   <compound kind="file">
     <name>Sae.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/Factory/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/Factory/</path>
     <filename>Sae_8php</filename>
     <class kind="class">Drupal::dkan_metastore::Factory::Sae</class>
     <namespace>Drupal::dkan_metastore::Factory</namespace>
   </compound>
   <compound kind="file">
     <name>WebServiceApiDocs.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/src/</path>
     <filename>WebServiceApiDocs_8php</filename>
     <class kind="class">Drupal::dkan_metastore::WebServiceApiDocs</class>
     <namespace>Drupal::dkan_metastore</namespace>
   </compound>
   <compound kind="file">
     <name>SaeTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/tests/src/Unit/Factory/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/tests/src/Unit/Factory/</path>
     <filename>SaeTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_metastore::Unit::Factory::SaeTest</class>
     <namespace>Drupal::Tests::dkan_metastore::Unit::Factory</namespace>
   </compound>
   <compound kind="file">
     <name>WebServiceApiDocsTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_metastore/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_metastore/tests/src/Unit/</path>
     <filename>WebServiceApiDocsTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_metastore::Unit::WebServiceApiDocsTest</class>
     <namespace>Drupal::Tests::dkan_metastore::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>NonPublicResourceProtector.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_non_public/src/Plugin/DataModifier/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_non_public/src/Plugin/DataModifier/</path>
     <filename>NonPublicResourceProtector_8php</filename>
     <class kind="class">Drupal::dkan_non_public::Plugin::DataModifier::NonPublicResourceProtector</class>
     <namespace>Drupal::dkan_non_public::Plugin::DataModifier</namespace>
   </compound>
   <compound kind="file">
     <name>NonPublicResourceProtectorTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_non_public/tests/src/Unit/Plugin/DataModifier/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_non_public/tests/src/Unit/Plugin/DataModifier/</path>
     <filename>NonPublicResourceProtectorTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_non_public::Unit::NonPublicResourceProtectorTest</class>
     <namespace>Drupal::Tests::dkan_non_public::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>SchemaRetriever.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_schema/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_schema/src/</path>
     <filename>SchemaRetriever_8php</filename>
     <class kind="class">Drupal::dkan_schema::SchemaRetriever</class>
     <namespace>Drupal::dkan_schema</namespace>
   </compound>
   <compound kind="file">
     <name>SchemaRetrieverTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_schema/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_schema/tests/src/Unit/</path>
     <filename>SchemaRetrieverTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_schema::Unit::SchemaRetrieverTest</class>
     <namespace>Drupal::Tests::dkan_schema::Unit</namespace>
   </compound>
   <compound kind="file">
     <name>DkanSearchCommands.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/src/Drush/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/src/Drush/</path>
     <filename>DkanSearchCommands_8php</filename>
     <class kind="class">Drupal::dkan_search::Drush::DkanSearchCommands</class>
     <namespace>Drupal::dkan_search::Drush</namespace>
@@ -951,33 +951,33 @@
   </compound>
   <compound kind="file">
     <name>ComplexDataFacade.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/src/Facade/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/src/Facade/</path>
     <filename>ComplexDataFacade_8php</filename>
     <class kind="class">Drupal::dkan_search::Facade::ComplexDataFacade</class>
     <namespace>Drupal::dkan_search::Facade</namespace>
   </compound>
   <compound kind="file">
     <name>DkanDataset.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/src/Plugin/search_api/datasource/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/src/Plugin/search_api/datasource/</path>
     <filename>DkanDataset_8php</filename>
     <class kind="class">Drupal::dkan_search::Plugin::search_api::datasource::DkanDataset</class>
     <namespace>Drupal::dkan_search::Plugin::search_api::datasource</namespace>
   </compound>
   <compound kind="file">
     <name>DkanDatasetTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/tests/src/Unit/Plugin/search_api/datasource/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/tests/src/Unit/Plugin/search_api/datasource/</path>
     <filename>DkanDatasetTest_8php</filename>
     <class kind="class">DkanDatasetTest</class>
   </compound>
   <compound kind="file">
     <name>WebServiceApi2Test.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_search/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_search/tests/src/Unit/</path>
     <filename>WebServiceApi2Test_8php</filename>
     <class kind="class">WebServiceApi2Test</class>
   </compound>
   <compound kind="file">
     <name>DkanSqlEndpointSettingsForm.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_sql_endpoint/src/Form/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_sql_endpoint/src/Form/</path>
     <filename>DkanSqlEndpointSettingsForm_8php</filename>
     <class kind="class">Drupal::dkan_sql_endpoint::Form::DkanSqlEndpointSettingsForm</class>
     <namespace>Drupal::dkan_sql_endpoint::Form</namespace>
@@ -985,28 +985,28 @@
   </compound>
   <compound kind="file">
     <name>GetStringsFromStateMachineExecution.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/dkan_sql_endpoint/src/Helper/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan_sql_endpoint/src/Helper/</path>
     <filename>GetStringsFromStateMachineExecution_8php</filename>
     <class kind="class">Drupal::dkan_sql_endpoint::Helper::GetStringsFromStateMachineExecution</class>
     <namespace>Drupal::dkan_sql_endpoint::Helper</namespace>
   </compound>
   <compound kind="file">
     <name>JsonTableFormatter.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/json_schema_field/src/Plugin/Field/FieldFormatter/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/json_schema_field/src/Plugin/Field/FieldFormatter/</path>
     <filename>JsonTableFormatter_8php</filename>
     <class kind="class">Drupal::json_schema_field::Plugin::Field::FieldFormatter::JsonTableFormatter</class>
     <namespace>Drupal::json_schema_field::Plugin::Field::FieldFormatter</namespace>
   </compound>
   <compound kind="file">
     <name>JsonSchemaItem.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/json_schema_field/src/Plugin/Field/FieldType/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/json_schema_field/src/Plugin/Field/FieldType/</path>
     <filename>JsonSchemaItem_8php</filename>
     <class kind="class">Drupal::field_example::Plugin::Field::FieldType::JsonSchemaItem</class>
     <namespace>Drupal::field_example::Plugin::Field::FieldType</namespace>
   </compound>
   <compound kind="file">
     <name>JsonSchemaFormWidget.php</name>
-    <path>/home/fmizzell/Workspace/dkan2/modules/json_schema_field/src/Plugin/Field/FieldWidget/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/json_schema_field/src/Plugin/Field/FieldWidget/</path>
     <filename>JsonSchemaFormWidget_8php</filename>
     <class kind="class">Drupal::json_schema_field::Plugin::Field::FieldWidget::JsonSchemaFormWidget</class>
     <namespace>Drupal::json_schema_field::Plugin::Field::FieldWidget</namespace>
@@ -1708,15 +1708,22 @@
       <type></type>
       <name>__construct</name>
       <anchorfile>classDrupal_1_1dkan__metadata__form_1_1Controller.html</anchorfile>
-      <anchor>a769d2a4592b5a71ba803d5bfa242ae28</anchor>
-      <arglist>(Php $uuid)</arglist>
+      <anchor>adff560da62b6a9ea48f4711971081050</anchor>
+      <arglist>(Php $uuid, EntityRepository $entity_repository)</arglist>
     </member>
     <member kind="function">
       <type></type>
-      <name>page</name>
+      <name>pageNew</name>
       <anchorfile>classDrupal_1_1dkan__metadata__form_1_1Controller.html</anchorfile>
-      <anchor>ab3691dd10d12f89cd4a1fa31578a9f17</anchor>
+      <anchor>a9b4fb0e72d184c881ca19e4f15dfb618</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>pageEdit</name>
+      <anchorfile>classDrupal_1_1dkan__metadata__form_1_1Controller.html</anchorfile>
+      <anchor>a1f52d45d4652c4b4eecc9fd485c98b57</anchor>
+      <arglist>($uuid)</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static</type>
@@ -1730,6 +1737,13 @@
       <name>$uuidService</name>
       <anchorfile>classDrupal_1_1dkan__metadata__form_1_1Controller.html</anchorfile>
       <anchor>a4504f34d589b918f2ed2c67e0d6d4072</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type></type>
+      <name>$entityRepositoryService</name>
+      <anchorfile>classDrupal_1_1dkan__metadata__form_1_1Controller.html</anchorfile>
+      <anchor>aa2ae82b92f919e5768331ab0e35d44e2</anchor>
       <arglist></arglist>
     </member>
   </compound>

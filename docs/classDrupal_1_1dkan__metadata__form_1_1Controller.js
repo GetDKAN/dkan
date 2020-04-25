@@ -1,6 +1,8 @@
 var classDrupal_1_1dkan__metadata__form_1_1Controller =
 [
-    [ "__construct", "classDrupal_1_1dkan__metadata__form_1_1Controller.html#a769d2a4592b5a71ba803d5bfa242ae28", null ],
-    [ "page", "classDrupal_1_1dkan__metadata__form_1_1Controller.html#ab3691dd10d12f89cd4a1fa31578a9f17", null ],
+    [ "__construct", "classDrupal_1_1dkan__metadata__form_1_1Controller.html#adff560da62b6a9ea48f4711971081050", null ],
+    [ "pageEdit", "classDrupal_1_1dkan__metadata__form_1_1Controller.html#a1f52d45d4652c4b4eecc9fd485c98b57", null ],
+    [ "pageNew", "classDrupal_1_1dkan__metadata__form_1_1Controller.html#a9b4fb0e72d184c881ca19e4f15dfb618", null ],
+    [ "$entityRepositoryService", "classDrupal_1_1dkan__metadata__form_1_1Controller.html#aa2ae82b92f919e5768331ab0e35d44e2", null ],
     [ "$uuidService", "classDrupal_1_1dkan__metadata__form_1_1Controller.html#a4504f34d589b918f2ed2c67e0d6d4072", null ]
 ];
