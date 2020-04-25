@@ -6,7 +6,6 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DRUPAL_VERSION: V8
     steps:
       - checkout
       - run:
@@ -51,16 +50,11 @@ jobs:
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
-          name: Install site
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl install
-      - run:
           name: Run DKAN cypress tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
+            dktl install
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl drush user:create testeditor --password="testeditor"
@@ -71,10 +65,9 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl install
+            dktl install --demo
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
-            dktl drush dkan-dummy-content:create
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
       - run:
@@ -82,22 +75,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl install
-            dktl drush dkan-dummy-content:create
-            dktl drush queue:run dkan_datastore_import
-            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
-            dktl drush en dkan_frontend
-            dktl drush dkan-search:rebuild-tracker
-            dktl drush search-api-index
-            dktl dc exec web chmod -R 777 /var/www/docroot/data-catalog-frontend
-            dktl dc exec cli npm cache clean -f
-            dktl dc exec cli npm install -g n
-            dktl dc exec cli n stable
-            dktl dc exec cli npm install npm@latest
-            dktl frontend:install
-            dktl frontend:build
-            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
-            dktl drush cr
+            dktl install --demo
             dktl dkan:test-cypress frontend
       - store_artifacts:
           path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/screenshots
