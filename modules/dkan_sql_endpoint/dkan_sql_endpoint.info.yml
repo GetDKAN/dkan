@@ -1,9 +1,0 @@
-name: SQL Endpoint
-description: 'A web services endpoint that allows SQL-like syntax to be used to interact with resources in the datastore.'
-type: module
-core: 8.x
-package: DKAN
-
-dependencies:
-  - dkan_common
-  - dkan_datastore

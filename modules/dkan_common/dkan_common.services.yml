@@ -1,8 +1,0 @@
-services:
-  dkan.factory:
-    class: Drupal\dkan_common\Service\Factory
-  dkan.json_util:
-    class: Drupal\dkan_common\Service\JsonUtil
-  plugin.manager.dkan_common.data_modifier:
-    class: \Drupal\dkan_common\Plugin\DataModifierManager
-    parent: default_plugin_manager

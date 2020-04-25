@@ -1,5 +1,0 @@
-services:
-  dkan_search:commands:
-    class: \Drupal\dkan_search\Drush\DkanSearchCommands
-    tags:
-      - { name: drush.command }

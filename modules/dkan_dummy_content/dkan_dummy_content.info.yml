@@ -1,7 +1,0 @@
-name: Dummy Content
-description: 'Provides example content for test driving the catalog.'
-type: module
-core: 8.x
-dependencies:
-  - dkan_harvest
-package: DKAN
