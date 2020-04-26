@@ -2,14 +2,14 @@
 
 [DKAN](https://getdkan.com) Open Data Portal/Catalog built on [Drupal 8](https://www.drupal.org/documentation) - Release Candidate
 
-[![CircleCI](https://circleci.com/gh/GetDKAN/dkan2.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan2)
-[![Maintainability](https://api.codeclimate.com/v1/badges/7a93219b8ae65a83f095/maintainability)](https://codeclimate.com/github/GetDKAN/dkan2/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/7a93219b8ae65a83f095/test_coverage)](https://codeclimate.com/github/GetDKAN/dkan2/test_coverage)
+[![GetDKAN](https://circleci.com/gh/GetDKAN/dkan/tree/2.x.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan/tree/2.x)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a02bf3362b94749579a1/maintainability)](https://codeclimate.com/github/GetDKAN/dkan/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/a02bf3362b94749579a1/test_coverage)](https://codeclimate.com/github/GetDKAN/dkan/test_coverage)
 [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 As a piece of software in its Alpha cycle, the code is continuously changing and in very active development.
 
-[Documentation](https://getdkan.github.io/dkan2/)
+[Documentation](https://getdkan.github.io/dkan/)
 
 ## Features
 

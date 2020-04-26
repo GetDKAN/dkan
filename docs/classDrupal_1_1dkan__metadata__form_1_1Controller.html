@@ -116,10 +116,12 @@ Inheritance diagram for Drupal\dkan_metadata_form\Controller:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a769d2a4592b5a71ba803d5bfa242ae28"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrupal_1_1dkan__metadata__form_1_1Controller.html#a769d2a4592b5a71ba803d5bfa242ae28">__construct</a> (Php $uuid)</td></tr>
-<tr class="separator:a769d2a4592b5a71ba803d5bfa242ae28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3691dd10d12f89cd4a1fa31578a9f17"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrupal_1_1dkan__metadata__form_1_1Controller.html#ab3691dd10d12f89cd4a1fa31578a9f17">page</a> ()</td></tr>
-<tr class="separator:ab3691dd10d12f89cd4a1fa31578a9f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adff560da62b6a9ea48f4711971081050"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrupal_1_1dkan__metadata__form_1_1Controller.html#adff560da62b6a9ea48f4711971081050">__construct</a> (Php $uuid, EntityRepository $entity_repository)</td></tr>
+<tr class="separator:adff560da62b6a9ea48f4711971081050"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b4fb0e72d184c881ca19e4f15dfb618"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrupal_1_1dkan__metadata__form_1_1Controller.html#a9b4fb0e72d184c881ca19e4f15dfb618">pageNew</a> ()</td></tr>
+<tr class="separator:a9b4fb0e72d184c881ca19e4f15dfb618"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f52d45d4652c4b4eecc9fd485c98b57"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrupal_1_1dkan__metadata__form_1_1Controller.html#a1f52d45d4652c4b4eecc9fd485c98b57">pageEdit</a> ($uuid)</td></tr>
+<tr class="separator:a1f52d45d4652c4b4eecc9fd485c98b57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -130,14 +132,16 @@ Static Public Member Functions</h2></td></tr>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a4504f34d589b918f2ed2c67e0d6d4072"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrupal_1_1dkan__metadata__form_1_1Controller.html#a4504f34d589b918f2ed2c67e0d6d4072">$uuidService</a></td></tr>
 <tr class="separator:a4504f34d589b918f2ed2c67e0d6d4072"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2ae82b92f919e5768331ab0e35d44e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDrupal_1_1dkan__metadata__form_1_1Controller.html#aa2ae82b92f919e5768331ab0e35d44e2">$entityRepositoryService</a></td></tr>
+<tr class="separator:aa2ae82b92f919e5768331ab0e35d44e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classDrupal_1_1dkan__metadata__form_1_1Controller.html">Controller</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00012">12</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00014">14</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a769d2a4592b5a71ba803d5bfa242ae28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a769d2a4592b5a71ba803d5bfa242ae28">&#9670;&nbsp;</a></span>__construct()</h2>
+<a id="adff560da62b6a9ea48f4711971081050"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adff560da62b6a9ea48f4711971081050">&#9670;&nbsp;</a></span>__construct()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,14 +150,24 @@ Protected Attributes</h2></td></tr>
           <td class="memname">Drupal\dkan_metadata_form\Controller::__construct </td>
           <td>(</td>
           <td class="paramtype">Php&#160;</td>
-          <td class="paramname"><em>$uuid</em></td><td>)</td>
+          <td class="paramname"><em>$uuid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">EntityRepository&#160;</td>
+          <td class="paramname"><em>$entity_repository</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Class constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00024">24</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00034">34</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
 
 </div>
 </div>
@@ -183,18 +197,39 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>{} </p>
 
-<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00031">31</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00042">42</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
 
 </div>
 </div>
-<a id="ab3691dd10d12f89cd4a1fa31578a9f17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3691dd10d12f89cd4a1fa31578a9f17">&#9670;&nbsp;</a></span>page()</h2>
+<a id="a1f52d45d4652c4b4eecc9fd485c98b57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f52d45d4652c4b4eecc9fd485c98b57">&#9670;&nbsp;</a></span>pageEdit()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Drupal\dkan_metadata_form\Controller::page </td>
+          <td class="memname">Drupal\dkan_metadata_form\Controller::pageEdit </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$uuid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Dataset edit. </p>
+
+<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00075">75</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
+
+</div>
+</div>
+<a id="a9b4fb0e72d184c881ca19e4f15dfb618"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b4fb0e72d184c881ca19e4f15dfb618">&#9670;&nbsp;</a></span>pageNew()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Drupal\dkan_metadata_form\Controller::pageNew </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -203,11 +238,35 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Page. </p>
 
-<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00042">42</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00054">54</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="aa2ae82b92f919e5768331ab0e35d44e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2ae82b92f919e5768331ab0e35d44e2">&#9670;&nbsp;</a></span>$entityRepositoryService</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Drupal\dkan_metadata_form\Controller::$entityRepositoryService</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00029">29</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
+
+</div>
+</div>
 <a id="a4504f34d589b918f2ed2c67e0d6d4072"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4504f34d589b918f2ed2c67e0d6d4072">&#9670;&nbsp;</a></span>$uuidService</h2>
 
@@ -228,7 +287,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00019">19</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Controller_8php_source.html#l00022">22</a> of file <a class="el" href="Controller_8php_source.html">Controller.php</a>.</p>
 
 </div>
 </div>

@@ -16,7 +16,7 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/Bike_Lane.csv",
+          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/Bike_Lane.csv",
           "mediaType": "text\/csv",
           "format": "csv",
           "title": "Florida Bike Lanes"
@@ -44,7 +44,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/IMD-MAPS.zip",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/IMD-MAPS.zip",
           "mediaType":"application\/zip",
           "format":"zip",
           "title":"English Indices of Deprivation 2010"}
@@ -71,7 +71,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/ViolentCrimeRates.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/ViolentCrimeRates.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ESource: FBI Uniform Crime Report, 2014 (\u003Ca href=\u0022https:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u0022\u003Ehttps:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u003C\/a\u003E)\u003C\/p\u003E\n\u003Cp\u003EIncludes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.\u003C\/p\u003E\n",
@@ -79,13 +79,13 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/PropertyCrimesByCity_3.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/PropertyCrimesByCity_3.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "title":"Property Crime Statistics by City"
         },
         {"@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/PropertyCrimeRates_1.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/PropertyCrimeRates_1.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ESource: FBI Uniform Crime Report, 2014 (\u003Ca href=\u0022https:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u0022\u003Ehttps:\/\/www.fbi.gov\/about-us\/cjis\/ucr\/ucr\u003C\/a\u003E)\u003C\/p\u003E\n",
@@ -93,7 +93,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/NumbersByCity.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/NumbersByCity.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "title":"Violent Crime Statistics by City "
@@ -120,7 +120,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/GenChart_0_0.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/GenChart_0_0.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003EPopulation of state employees broken down into Gen X, Gen Y, Baby Boomers and Over 65+.\u003C\/p\u003E\n",
@@ -128,7 +128,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/retirements_0.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/retirements_0.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ETotal number of employees who retired from the state workforce, 2011-2015.\u003C\/p\u003E\n",
@@ -136,7 +136,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/2015EligibleVsActual.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/2015EligibleVsActual.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003EThis data, ranging from fiscal year 2011 to fiscal year 2015, depicts the percentage of the workforce that is eligible to retire compared to the percentage of the workforce who actually retired.\u003C\/p\u003E\n",
@@ -163,7 +163,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/TobaccoTaxes2016_2_1.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/TobaccoTaxes2016_2_1.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ESource: The Campaign for Tobacco-Free Kids, April 2016: \u003Ca href=\u0022https:\/\/www.tobaccofreekids.org\/research\/factsheets\/pdf\/0097.pdf\u0022\u003Ehttps:\/\/www.tobaccofreekids.org\/research\/factsheets\/pdf\/0097.pdf\u003C\/a\u003E\u003C\/p\u003E\n",
@@ -171,7 +171,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/CDCSmokingRates.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/CDCSmokingRates.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ESource: Centers for Disease Control and Prevention, 2015\u003C\/p\u003E\n",
@@ -198,7 +198,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/postvaccinedeaths_0_0.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/postvaccinedeaths_0_0.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ESource: \u0022Near elimination of varicella deaths in the US after implementation of the vaccination program.\u0022 published in the American Journal of Pediatrics in August 2011.\u003C\/p\u003E\n",
@@ -206,7 +206,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/varicelladeaths1970_1994.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/varicelladeaths1970_1994.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ESource: Centers for Disease Control and Prevention in Atlanta, Georgia. \u201cVaricella Mortality: Trends before Vaccine Licensure in the United States, 1970\u20131994\u201d published August 2000 in the Journal of Infectious Diseases.\u003C\/p\u003E\n",
@@ -214,7 +214,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/varicellaincidencerates_0.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/varicellaincidencerates_0.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ESource: \u0022Impact of Vaccination on the Epidemiology of Varicella: 1995\u20132009\u0022 published in the journal Pediatrics in August 2011.\u003C\/p\u003E\n",
@@ -266,7 +266,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/us_foreclosures_jan_2012_by_state_0.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/us_foreclosures_jan_2012_by_state_0.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003EUS National Foreclosure Statistics - By State - January 2012\u003C\/p\u003E\n",
@@ -294,7 +294,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/data_0.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/data_0.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003ECSV file extracted and cleaned from source excel.\u003C\/p\u003E\n\u003Cp\u003EClick on Graph button under Preview and plot date (x-axis) against price (y-axis) to see a line graph. Hovering over a point gives you the value of that data entry.\u003C\/p\u003E\n",
@@ -323,7 +323,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan2/modules/dkan_dummy_content/files\/district_centerpoints_0.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/dkan_dummy_content/files\/district_centerpoints_0.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"\u003Cp\u003EYou can see this data plotted on a map, by clicking on \u0027Map\u0027 below. Individual data records can be seen by clicking on each point.\u003C\/p\u003E\n",

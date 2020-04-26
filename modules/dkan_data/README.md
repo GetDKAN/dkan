@@ -19,7 +19,7 @@ DKAN adds a content type called *data*. This content type will hold the metadata
 
 You can customize which sub-elements generate additional data nodes here `admin/config/dkan/properties`.
 
-![dataset properties](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/dataset-properties.png)
+![dataset properties](https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan/dataset-properties.png)
 
 When the value of these elements change or become outdated, the corresponding data node will be removed by the **orphan_reference_processor** queue task.
 
