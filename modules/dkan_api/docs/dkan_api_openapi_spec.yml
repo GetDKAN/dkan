@@ -68,7 +68,7 @@ components:
         type: string
       example: HARVEST-RUN-ID
   schemas:
-    # @TODO: Load directly from dkan2's schema/collections/dataset.json schema
+    # @TODO: Load directly from dkan's schema/collections/dataset.json schema
     Dataset:
       type: object
       required:

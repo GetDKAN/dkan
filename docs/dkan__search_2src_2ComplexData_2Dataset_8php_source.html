@@ -125,7 +125,7 @@ $(document).ready(function(){initNavTree('dkan__search_2src_2ComplexData_2Datase
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    $properties = array_keys((array) $object-&gt;properties);</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordflow">foreach</span> ($properties as $property) {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      $type = $object-&gt;properties-&gt;{$property}-&gt;type;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      $type = $object-&gt;properties-&gt;{$property}-&gt;type ?? <span class="stringliteral">&quot;string&quot;</span>;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      $defs = self::getPropertyDefinition($type, $object, $property);</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      $definitions = array_merge($definitions, $defs);</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    }</div>

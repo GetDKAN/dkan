@@ -117,7 +117,7 @@ Sample Data Files</h3>
 Properties</h3>
 <p>DKAN adds a content type called <em>data</em>. This content type will hold the metadata of a dataset in JSON format. Additional data nodes will be created for specific sub-elements of the dataset as well, (i.e. publisher, theme, keywords, and distribution). These data nodes will provide unique reference ids for the sub-elements and can be accesssed via an API endpoint. Learn more <a href="guide-dataset-api.html#identifiers">here</a>.</p>
 <p>You can customize which sub-elements generate additional data nodes here <code>admin/config/dkan/properties</code>.</p>
-<p><img src="https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan2/dataset-properties.png" alt="dataset properties" class="inline"/></p>
+<p><img src="https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan/dataset-properties.png" alt="dataset properties" class="inline"/></p>
 <p>When the value of these elements change or become outdated, the corresponding data node will be removed by the <b>orphan_reference_processor</b> queue task.</p>
 <p>If you prefer to run it manually, you may do so with:</p>
 <div class="fragment"><div class="line">drush queue-run orphan_reference_processor</div>

@@ -78,7 +78,7 @@ class SchemaRetriever implements RetrieverInterface {
   }
 
   /**
-   * Determine default location of schema folder for dkan2.
+   * Determine default location of schema folder for dkan.
    *
    * @todo There may be easier way to do this and without hardcoding paths.
    *
@@ -88,7 +88,7 @@ class SchemaRetriever implements RetrieverInterface {
   protected function getDefaultSchemaDirectory($extensionList) {
     /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
     $extensionList = $extensionList;
-    $infoFile = $extensionList->getPathname('dkan2');
+    $infoFile = $extensionList->getPathname('dkan');
 
     return dirname($infoFile) . '/schema';
   }
