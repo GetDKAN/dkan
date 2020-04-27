@@ -6,7 +6,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\dkan_metastore\Service as Metastore;
 use Drupal\search_api\Query\ResultSet;
-use Drupal\search_api\Utility\QueryHelper;
+use Drupal\search_api\Utility\QueryHelperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -47,7 +47,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Query helper.
    *
-   * @var \Drupal\search_api\Utility\QueryHelper
+   * @var \Drupal\search_api\Utility\QueryHelperInterface
    */
   private $queryHelper;
 
@@ -58,13 +58,13 @@ class Service implements ContainerInjectionInterface {
    *   Metastore service.
    * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
    *   Entity type manager.
-   * @param \Drupal\search_api\Utility\QueryHelper $queryHelper
+   * @param \Drupal\search_api\Utility\QueryHelperInterface $queryHelper
    *   Query helper.
    */
   public function __construct(
     Metastore $metastoreService,
     EntityTypeManager $entityTypeManager,
-    QueryHelper $queryHelper
+    QueryHelperInterface $queryHelper
   ) {
     $this->metastoreService = $metastoreService;
     $this->entityTypeManager = $entityTypeManager;
