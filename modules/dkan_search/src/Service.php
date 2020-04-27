@@ -134,21 +134,6 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Search filtered by an index field.
-   *
-   * @param string $id
-   *   Index field identifier.
-   * @param string $value
-   *   Index field value.
-   *
-   * @return array
-   *   Result array.
-   */
-  public function searchByIndexField(string $id, string $value) {
-    return ["bar"];
-  }
-
-  /**
    * Private.
    *
    * @param array $params

@@ -84,16 +84,6 @@ class ServiceTest extends TestCase {
   }
 
   /**
-   * Test for searchByIndexField().
-   */
-  public function testSearchByIndexField() {
-    $container = $this->getCommonMockChain();
-    $service = Service::create($container->getMock());
-
-    $this->assertEquals(["bar"], $service->searchByIndexField("theme", "finance"));
-  }
-
-  /**
    * Common mock chain.
    */
   public function getCommonMockChain() {
