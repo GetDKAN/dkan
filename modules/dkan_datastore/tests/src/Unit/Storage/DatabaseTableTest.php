@@ -34,6 +34,38 @@ class DatabaseTableTest extends TestCase {
   /**
    *
    */
+  public function testGetSchema() {
+    $databaseTable = new DatabaseTable(
+      $this->getConnectionChain()->getMock(),
+      $this->getResource()
+    );
+
+    $schema = $databaseTable->getSchema();
+
+    $expectedSchema = [
+      "fields" => [
+        "record_number" => [
+          "type" => "serial",
+          "unsigned" => true,
+          "not null" => true,
+        ],
+        "first_name" => [
+          "type" => "text",
+          "description" => "First Name"
+        ],
+        "last_name" => [
+          "type" => "text",
+          "description" => "lAST nAME"
+        ]
+      ]
+    ];
+
+    $this->assertEquals($expectedSchema['fields'], $schema['fields']);
+  }
+
+  /**
+   *
+   */
   public function testRetrieveAll() {
 
     $fieldInfo = [
@@ -275,7 +307,10 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, "schema", Schema::class)
       ->add(Connection::class, 'query', Statement::class)
       ->add(Statement::class, 'fetchAll', $fieldInfo)
-      ->add(Schema::class, "tableExists", TRUE);
+      ->add(Schema::class, "tableExists", TRUE)
+      ->add(Schema::class, 'getComment',
+        (new Sequence())->add('First Name')->add('lAST nAME')
+      );
 
     return $chain;
   }
