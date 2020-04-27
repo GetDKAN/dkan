@@ -289,7 +289,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function setSort(array $params, array $fields) {
     if (isset($params['sort']) && in_array($params['sort'], $fields)) {
-      $this->query->sort($params['sort'], $this->getSortOrder($this->query, $params));
+      $this->query->sort($params['sort'], $this->getSortOrder($params));
       return;
     }
 
