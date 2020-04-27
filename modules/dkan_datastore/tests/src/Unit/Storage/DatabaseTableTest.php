@@ -46,18 +46,18 @@ class DatabaseTableTest extends TestCase {
       "fields" => [
         "record_number" => [
           "type" => "serial",
-          "unsigned" => true,
-          "not null" => true,
+          "unsigned" => TRUE,
+          "not null" => TRUE,
         ],
         "first_name" => [
           "type" => "text",
-          "description" => "First Name"
+          "description" => "First Name",
         ],
         "last_name" => [
           "type" => "text",
-          "description" => "lAST nAME"
-        ]
-      ]
+          "description" => "lAST nAME",
+        ],
+      ],
     ];
 
     $this->assertEquals($expectedSchema['fields'], $schema['fields']);
