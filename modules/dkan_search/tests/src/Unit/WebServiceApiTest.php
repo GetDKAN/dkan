@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\dkan_search;
+
 use Drupal\search_api\Item\Item;
 use Drupal\search_api\Query\ConditionGroup;
 use Drupal\search_api\Query\ResultSet;
@@ -16,12 +18,11 @@ use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Utility\QueryHelperInterface;
 use Drupal\dkan_metastore\Service;
-use Drupal\dkan_search\WebServiceApi;
 
 /**
  *
  */
-class WebServiceApi2Test extends TestCase {
+class WebServiceApiTest extends TestCase {
 
   /**
    *
@@ -43,7 +44,7 @@ class WebServiceApi2Test extends TestCase {
       ->add(Request::class, 'blah', NULL)
       ->getMock();
 
-    $reflection = new ReflectionClass($request);
+    $reflection = new \ReflectionClass($request);
     $reflection_property = $reflection->getProperty('query');
     $reflection_property->setAccessible(TRUE);
     $reflection_property->setValue($request, $paramsBag);
