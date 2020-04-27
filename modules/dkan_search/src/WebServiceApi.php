@@ -2,13 +2,56 @@
 
 namespace Drupal\dkan_search;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Controller.
  */
-class WebServiceApi {
+class WebServiceApi implements ContainerInjectionInterface {
   use JsonResponseTrait;
+
+  /**
+   * Dkan search service.
+   *
+   * @var \Drupal\dkan_search\Service
+   */
+  private $service;
+
+  /**
+   * Request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  private $requestStack;
+
+  /**
+   * WebServiceApi constructor.
+   *
+   * @param \Drupal\dkan_search\Service $service
+   *   Dkan search service.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   Request stack.
+   */
+  public function __construct(
+    Service $service,
+    RequestStack $requestStack
+  ) {
+    $this->service = $service;
+    $this->requestStack = $requestStack;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan_search.service'),
+      $container->get('request_stack')
+    );
+  }
 
   /**
    * Search.
@@ -16,10 +59,7 @@ class WebServiceApi {
   public function search() {
     $params = $this->getParams();
 
-    /** @var \Drupal\dkan_search\Service $service */
-    $service = \Drupal::service("dkan_search.service");
-
-    $responseBody = $service->search($params);
+    $responseBody = $this->service->search($params);
 
     return $this->getResponse($responseBody);
   }
@@ -33,9 +73,7 @@ class WebServiceApi {
       "page" => 1,
     ];
 
-    /** @var \Symfony\Component\HttpFoundation\RequestStack $requestStack */
-    $requestStack = \Drupal::service('request_stack');
-    $request = $requestStack->getCurrentRequest();
+    $request = $this->requestStack->getCurrentRequest();
     $params = $request->query->all();
 
     foreach ($defaults as $param => $default) {
