@@ -194,7 +194,7 @@ class Service implements ContainerInjectionInterface {
     foreach ($fields as $field) {
       if (isset($params[$field])) {
         $values[$field] = $this->getValuesFromCommaSeparatedString($params[$field]);
-        $this->createConditionGroup($this->query, $values);
+        $this->createConditionGroup($values);
       }
     }
   }
