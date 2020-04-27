@@ -16,6 +16,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Service implements ContainerInjectionInterface {
 
   /**
+   * The search index.
+   *
+   * @var \Drupal\search_api\IndexInterface
+   */
+  private $searchIndex;
+
+  /**
    * Metastore service.
    *
    * @var \Drupal\dkan_metastore\Service
@@ -54,6 +61,8 @@ class Service implements ContainerInjectionInterface {
     $this->metastoreService = $metastoreService;
     $this->entityTypeManager = $entityTypeManager;
     $this->queryHelper = $queryHelper;
+
+    $this->setSearchIndex("dkan");
   }
 
   /**
@@ -65,6 +74,22 @@ class Service implements ContainerInjectionInterface {
       $container->get("entity_type.manager"),
       $container->get("search_api.query_helper")
     );
+  }
+
+  /**
+   * Set the dkan search index.
+   *
+   * @param string $id
+   *   Search index identifier.
+   */
+  private function setSearchIndex(string $id) {
+    $storage = $this->entityTypeManager
+      ->getStorage("search_api_index");
+    $this->searchIndex = $storage->load($id);
+
+    if (!$this->searchIndex) {
+      throw new \Exception("An index named [{$id}] does not exist.");
+    }
   }
 
   /**

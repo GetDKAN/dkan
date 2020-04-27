@@ -3,8 +3,10 @@
 namespace Drupal\dkan_search;
 
 use Drupal\Core\DependencyInjection\Container;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\dkan_metastore\Service as Metastore;
+use Drupal\search\SearchIndexInterface;
 use Drupal\search_api\Utility\QueryHelper;
 use MockChain\Chain;
 use MockChain\Options;
@@ -14,6 +16,17 @@ use PHPUnit\Framework\TestCase;
  * Dkan search service tests.
  */
 class ServiceTest extends TestCase {
+
+  /**
+   * Test for missing search index.
+   */
+  public function testNoSearchIndex() {
+    $container = $this->getCommonMockChain()
+      ->add(EntityStorageInterface::class, "load", null);
+
+    $this->expectExceptionMessage("An index named [dkan] does not exist.");
+    Service::create($container->getMock());
+  }
 
   /**
    * Test for search().
@@ -46,7 +59,9 @@ class ServiceTest extends TestCase {
       ->index(0);
 
     return (new Chain($this))
-      ->add(Container::class, "get", $options);
+      ->add(Container::class, "get", $options)
+      ->add(EntityTypeManager::class, "getStorage", EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, "load", SearchIndexInterface::class);
   }
 
 }
