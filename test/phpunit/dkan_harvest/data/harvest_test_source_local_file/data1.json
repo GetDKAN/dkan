@@ -1,0 +1,1086 @@
+{
+    "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+    "@id": "https://data.mo.gov/data.json",
+    "@type": "dcat:Catalog",
+    "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+    "dataset": [
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "Reentry Housing",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/ybbi-ajb9/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/ybbi-ajb9/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/ybbi-ajb9/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/ybbi-ajb9/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/ybbi-ajb9/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/ybbi-ajb9/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/ybbi-ajb9/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/ybbi-ajb9",
+            "issued": "2016-04-01",
+            "landingPage": "https://data.mo.gov/d/ybbi-ajb9",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "title": "Reentry Housing"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>",
+                "hasEmail": "mailto:steve.cusumano@oa.mo.gov"
+            },
+            "description": "Schedule of Missouri Open Meetings",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/au6r-w9n3/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/au6r-w9n3/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/au6r-w9n3/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/au6r-w9n3/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/au6r-w9n3/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/au6r-w9n3/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/au6r-w9n3/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/au6r-w9n3",
+            "issued": "2016-04-01",
+            "keyword": [
+                "open meetings"
+            ],
+            "landingPage": "https://data.mo.gov/d/au6r-w9n3",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Government Administration"
+            ],
+            "title": "Open Meetings"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "Listing of offices providing driver licensing and motor vehicle services to Missourians and are operated by individuals or businesses approved through the state of Missouri bid process.\r\n\r\nEvery attempt has been made to assure the accuracy of these listings; however, last-minute office transitions may not be reflected in this information. For additional motor vehicle and driver license office information, please see the latest Department of Revenue news releases.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/835g-7keg/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/835g-7keg/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/835g-7keg/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/835g-7keg/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/835g-7keg/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/835g-7keg/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/835g-7keg/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/835g-7keg",
+            "issued": "2016-04-01",
+            "keyword": [
+                "missouri",
+                "dmv",
+                "car license",
+                "car licensing",
+                "vehicle license",
+                "vehicle licensing",
+                "vehichle registration",
+                "motor vehicle",
+                "boat license",
+                "boat licensing",
+                "trailers",
+                "license plates",
+                "drivers license",
+                "driver license",
+                "driver's license",
+                "driver's licensing",
+                "revenue department",
+                "department of revenue"
+            ],
+            "landingPage": "https://data.mo.gov/d/835g-7keg",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Revenue"
+            ],
+            "title": "Missouri Department of Revenue Driver and Motor Vehicle License Offices"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "List of Motor Fuel Licensees",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/kf27-upwz/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/kf27-upwz/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/kf27-upwz/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/kf27-upwz/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/kf27-upwz/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/kf27-upwz/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/kf27-upwz/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/kf27-upwz",
+            "issued": "2016-04-01",
+            "keyword": [
+                "motor fuel",
+                "licensees"
+            ],
+            "landingPage": "https://data.mo.gov/d/kf27-upwz",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Revenue"
+            ],
+            "title": "Motor Fuel Licensee List"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "Listing of all current beer, wine and liquor solicitors and their associated zip code.  This is updated daily",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/mmn5-wy78/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/mmn5-wy78/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/mmn5-wy78/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/mmn5-wy78/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/mmn5-wy78/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/mmn5-wy78/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/mmn5-wy78/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/mmn5-wy78",
+            "issued": "2016-04-01",
+            "keyword": [
+                "missouri",
+                "beer",
+                "wholesaler",
+                "solicitor",
+                "listing",
+                "zip code"
+            ],
+            "landingPage": "https://data.mo.gov/d/mmn5-wy78",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "Missouri Beer, Wine and Liquor Solicitor List with Zip Code"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "Missouri Career Centers offer personal assistance for your job search or hiring needs.  Our staff is trained to assist you with products and services designed for both Job Seekers and Employers!",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/p2ie-br32/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/p2ie-br32/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/p2ie-br32/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/p2ie-br32/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/p2ie-br32/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/p2ie-br32/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/p2ie-br32/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/p2ie-br32",
+            "issued": "2016-04-01",
+            "keyword": [
+                "jobs",
+                "employers",
+                "job seekers",
+                "labor",
+                "career"
+            ],
+            "landingPage": "https://data.mo.gov/d/p2ie-br32",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Labor"
+            ],
+            "title": "Missouri Job Centers"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "List of Missouri alcohol licenses not renewed.  This dataset is generated during the months of April through July for the license renewal period.  This dataset will be empty the rest of the year.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/mtgj-bnbx/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/mtgj-bnbx/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/mtgj-bnbx/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/mtgj-bnbx/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/mtgj-bnbx/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/mtgj-bnbx/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/mtgj-bnbx/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/mtgj-bnbx",
+            "issued": "2016-04-01",
+            "keyword": [
+                "missouri",
+                "alcohol",
+                "liquor",
+                "licenses",
+                "renew"
+            ],
+            "landingPage": "https://data.mo.gov/d/mtgj-bnbx",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "Missouri Alcohol Licenses Not Renewed"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "Listing of current Missouri beer, wine and liquor wholesalers with their associated zip codes.  This listing is updated daily.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/fkt2-8smh/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/fkt2-8smh/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/fkt2-8smh/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/fkt2-8smh/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/fkt2-8smh/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/fkt2-8smh/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/fkt2-8smh/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/fkt2-8smh",
+            "issued": "2016-04-01",
+            "keyword": [
+                "missouri",
+                "liquor",
+                "wine",
+                "wholesaler",
+                "solicitor",
+                "zip code",
+                "excise",
+                "tax"
+            ],
+            "landingPage": "https://data.mo.gov/d/fkt2-8smh",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "Missouri Beer, Wine and Liquor Wholesaler List with Zip Code"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "List of alcohol licenses of businesses who have gone out of business",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/nytw-fmz3/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/nytw-fmz3/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/nytw-fmz3/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/nytw-fmz3/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/nytw-fmz3/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/nytw-fmz3/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/nytw-fmz3/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/nytw-fmz3",
+            "issued": "2016-04-01",
+            "keyword": [
+                "missouri",
+                "liquor",
+                "alcohol",
+                "license",
+                "out of business"
+            ],
+            "landingPage": "https://data.mo.gov/d/nytw-fmz3",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "Missouri Alcohol Licenses Out of Business"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "List of temporary alcohol license expiration dates",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/n3tx-eq5q/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/n3tx-eq5q/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/n3tx-eq5q/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/n3tx-eq5q/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/n3tx-eq5q/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/n3tx-eq5q/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/n3tx-eq5q/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/n3tx-eq5q",
+            "issued": "2016-04-01",
+            "keyword": [
+                "missouri",
+                "alcohol",
+                "liquor",
+                "license",
+                "temporary",
+                "expire"
+            ],
+            "landingPage": "https://data.mo.gov/d/n3tx-eq5q",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "Missouri Alcohol Temporary License Expirations"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "Weekly listing of new Liquor Licenses for the past 3 weeks",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/dymb-xy5c/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/dymb-xy5c/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/dymb-xy5c/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/dymb-xy5c/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/dymb-xy5c/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/dymb-xy5c/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/dymb-xy5c/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/dymb-xy5c",
+            "issued": "2016-04-01",
+            "keyword": [
+                "new",
+                "liquor",
+                "license",
+                "missouri",
+                "alcohol",
+                "tobacco",
+                "control"
+            ],
+            "landingPage": "https://data.mo.gov/d/dymb-xy5c",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "New Liquor Licenses"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "Alcohol Licensing information by County compiled weekly storing 3 weeks at a time",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/hbmv-rqk9/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/hbmv-rqk9/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/hbmv-rqk9/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/hbmv-rqk9/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/hbmv-rqk9/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/hbmv-rqk9/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/hbmv-rqk9/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/hbmv-rqk9",
+            "issued": "2016-04-01",
+            "keyword": [
+                "alcohol",
+                "license",
+                "liquor",
+                "county",
+                "clerk",
+                "missouri",
+                "weekly"
+            ],
+            "landingPage": "https://data.mo.gov/d/hbmv-rqk9",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "County Clerk License Information"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>",
+                "hasEmail": "mailto:Jessica.Hughes@oa.mo.gov"
+            },
+            "description": "Information from Missouri Department of Agriculture about the feed sampling results.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/y9w9-qkg2/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/y9w9-qkg2/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/y9w9-qkg2/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/y9w9-qkg2/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/y9w9-qkg2/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/y9w9-qkg2/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/y9w9-qkg2/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/y9w9-qkg2",
+            "issued": "2016-04-01",
+            "keyword": [
+                "agriculture",
+                "feed"
+            ],
+            "landingPage": "https://data.mo.gov/d/y9w9-qkg2",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Agriculture"
+            ],
+            "title": "Missouri Department of Agriculture - feed sample testing results"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "List of keg tags assigned to distributors",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/7fmu-y7e8/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/7fmu-y7e8/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/7fmu-y7e8/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/7fmu-y7e8/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/7fmu-y7e8/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/7fmu-y7e8/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/7fmu-y7e8/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/7fmu-y7e8",
+            "issued": "2016-04-01",
+            "keyword": [
+                "alcohol",
+                "beer",
+                "liquor"
+            ],
+            "landingPage": "https://data.mo.gov/d/7fmu-y7e8",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Public Safety"
+            ],
+            "title": "Missouri Keg Tag"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>"
+            },
+            "description": "Listing of job openings in Missouri state government",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/83mm-j7ms/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/83mm-j7ms/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/83mm-j7ms/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/83mm-j7ms/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/83mm-j7ms/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/83mm-j7ms/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/83mm-j7ms/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/83mm-j7ms",
+            "issued": "2016-04-01",
+            "keyword": [
+                "job",
+                "employer",
+                "employee",
+                "jobs",
+                "work"
+            ],
+            "landingPage": "https://data.mo.gov/d/83mm-j7ms",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Government Administration"
+            ],
+            "title": "Missouri State Government Job Openings"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>",
+                "hasEmail": "mailto:ITSD-DIFP-AppDev@oa.mo.gov"
+            },
+            "description": "Individual Navigators licensed in Missouri.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/w5xs-s3mj/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/w5xs-s3mj/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/w5xs-s3mj/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/w5xs-s3mj/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/w5xs-s3mj/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/w5xs-s3mj/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/w5xs-s3mj/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/w5xs-s3mj",
+            "issued": "2016-04-01",
+            "keyword": [
+                "health",
+                "insurance",
+                "navigators",
+                "navigator",
+                "licensed navigators",
+                "health insurance",
+                "navigator phone",
+                "navigators phone"
+            ],
+            "landingPage": "https://data.mo.gov/d/w5xs-s3mj",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Insurance"
+            ],
+            "title": "Individual Navigators"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>",
+                "hasEmail": "mailto:ITSD-DIFP-AppDev@oa.mo.gov"
+            },
+            "description": "Navigator Entities licensed in Missouri.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/n7d6-s7dn/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/n7d6-s7dn/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/n7d6-s7dn/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/n7d6-s7dn/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/n7d6-s7dn/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/n7d6-s7dn/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/n7d6-s7dn/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/n7d6-s7dn",
+            "issued": "2016-04-01",
+            "keyword": [
+                "health",
+                "insurance",
+                "navigators",
+                "navigator",
+                "licensed navigators",
+                "health insurance",
+                "navigator phone",
+                "navigators phone"
+            ],
+            "landingPage": "https://data.mo.gov/d/n7d6-s7dn",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Insurance"
+            ],
+            "title": "Navigator Entities"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>",
+                "hasEmail": "mailto:ITSD-DIFP-AppDev@oa.mo.gov"
+            },
+            "description": "List of Missouri Finance Entities",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/vfrr-8z5c/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/vfrr-8z5c/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/vfrr-8z5c/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/vfrr-8z5c/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/vfrr-8z5c/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/vfrr-8z5c/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/vfrr-8z5c/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/vfrr-8z5c",
+            "issued": "2016-04-01",
+            "keyword": [
+                "finance entities",
+                "finance"
+            ],
+            "landingPage": "https://data.mo.gov/d/vfrr-8z5c",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "Finance Entities"
+        },
+        {
+            "@type": "dcat:Dataset",
+            "accessLevel": "public",
+            "contactPoint": {
+                "@type": "vcard:Contact",
+                "fn": "<Nobody>",
+                "hasEmail": "mailto:ITSD-DIFP-AppDev@oa.mo.gov"
+            },
+            "description": "List of Missouri Credit Union, Branches and information there of. There is a provided Geo Location for each. This dataset corresponds with the map- view: https://data.mo.gov/Regulatory/Credit-Unions-Map/8aqp-4djd.",
+            "distribution": [
+                {
+                    "@type": "dcat:Distribution",
+                    "downloadURL": "https://data.mo.gov/api/views/r843-p6xb/rows.csv?accessType=DOWNLOAD",
+                    "mediaType": "text/csv"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/r843-p6xb/columns.rdf",
+                    "describedByType": "application/rdf+xml",
+                    "downloadURL": "https://data.mo.gov/api/views/r843-p6xb/rows.rdf?accessType=DOWNLOAD",
+                    "mediaType": "application/rdf+xml"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/r843-p6xb/columns.json",
+                    "describedByType": "application/json",
+                    "downloadURL": "https://data.mo.gov/api/views/r843-p6xb/rows.json?accessType=DOWNLOAD",
+                    "mediaType": "application/json"
+                },
+                {
+                    "@type": "dcat:Distribution",
+                    "describedBy": "https://data.mo.gov/api/views/r843-p6xb/columns.svc",
+                    "describedByType": "application/xml",
+                    "downloadURL": "https://data.mo.gov/api/views/r843-p6xb/rows.xml?accessType=DOWNLOAD",
+                    "mediaType": "application/xml"
+                }
+            ],
+            "identifier": "https://data.mo.gov/api/views/r843-p6xb",
+            "issued": "2016-04-01",
+            "keyword": [
+                "credit",
+                "credit unions",
+                "bank",
+                "banks",
+                "savings",
+                "bank map",
+                "bank locations",
+                "credit union map",
+                "credit union locations"
+            ],
+            "landingPage": "https://data.mo.gov/d/r843-p6xb",
+            "modified": "2016-04-01",
+            "publisher": {
+                "@type": "org:Organization",
+                "name": "data.mo.gov"
+            },
+            "theme": [
+                "Regulatory"
+            ],
+            "title": "Credit Union"
+        }
+    ],
+    "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json"
+}

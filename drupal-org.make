@@ -3,9 +3,9 @@ api: '2'
 core: 7.x
 includes:
 - https://raw.githubusercontent.com/GetDKAN/visualization_entity/7.x-2.x/visualization_entity.make
-- https://raw.githubusercontent.com/NuCivic/open_data_schema_map/7.x-2.6/open_data_schema_map.make
-- https://raw.githubusercontent.com/NuCivic/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
-- https://raw.githubusercontent.com/NuCivic/recline/7.x-2.3/recline.make
+- https://raw.githubusercontent.com/GetDKAN/open_data_schema_map/7.x-2.6/open_data_schema_map.make
+- https://raw.githubusercontent.com/GetDKAN/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
+- https://raw.githubusercontent.com/GetDKAN/recline/7.x-2.3/recline.make
 projects:
   admin_menu:
     version: 3.0-rc6
@@ -75,6 +75,11 @@ projects:
     version: '1.7'
   diff:
     version: '3.4'
+  dkan_default_content:
+    download:
+        type: git
+        url: https://github.com/GetDKAN/dkan_default_content.git
+        tag: 7.x-1.0
   double_field:
     version: '2.5'
   drafty:
@@ -232,6 +237,12 @@ projects:
       type: git
       url: https://git.drupal.org/project/multistep.git
       revision: 3b0d40a
+  nuboot_radix:
+    download:
+      type: git
+      url: https://github.com/GetDKAN/nuboot_radix.git
+      tag: 7.x-2.0
+    type: theme
   og:
     version: '2.10'
     patch:

@@ -25,7 +25,7 @@ class DkanHarvestTest extends \PHPUnit_Framework_TestCase {
       ),
       'harvest_test_source_local_file' => new HarvestSourceTestStub(
         'harvest_test_source_local_file',
-        __DIR__ . '/data/harvest_test_source_local_file/data.json'
+        __DIR__ . '/data/harvest_test_source_local_file/data1.json'
       ),
       'harvest_test_source_remote' => new HarvestSourceTestStub(
         'harvest_test_source_remote',

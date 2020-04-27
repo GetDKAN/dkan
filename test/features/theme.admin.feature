@@ -29,7 +29,7 @@ Feature: Theme
     Given I am logged in as "John"
     And I am on "Settings" page
     Then I should see "Hero Unit"
-    And I attach the drupal file "dkan/dkan_hero.jpg" to "files[hero_file]"
+    And I attach the drupal file "dkan/dkan_hero_blue.jpg" to "files[hero_file]"
     And I wait for the file upload to finish
     When I press "Save configuration"
     Then I wait for "3" seconds
