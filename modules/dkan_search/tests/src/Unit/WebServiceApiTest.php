@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-
 /**
  * Dkan search web service api tests.
  */
@@ -39,7 +38,13 @@ class WebServiceApiTest extends TestCase {
       'facets' => [],
     ];
 
-    $container = $this->getCommonMockChain()
+    $options = (new Options())
+      ->add('dkan_search.service', Service::class)
+      ->add('request_stack', RequestStack::class)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', $options)
       ->add(RequestStack::class, 'getCurrentRequest', $request)
       ->add(Service::class, 'search', $expected);
 
@@ -47,16 +52,6 @@ class WebServiceApiTest extends TestCase {
 
     $response = $controller->search();
     $this->assertEquals(json_encode($expected), $response->getContent());
-  }
-
-  public function getCommonMockChain() {
-    $options = (new Options())
-      ->add('dkan_search.service', Service::class)
-      ->add('request_stack', RequestStack::class)
-      ->index(0);
-
-    return (new Chain($this))
-      ->add(Container::class, 'get', $options);
   }
 
 }

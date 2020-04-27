@@ -70,7 +70,7 @@ class Service implements ContainerInjectionInterface {
     $this->entityTypeManager = $entityTypeManager;
     $this->queryHelper = $queryHelper;
 
-    $this->setSearchIndex("dkan");
+    $this->setSearchIndex('dkan');
   }
 
   /**
@@ -78,9 +78,9 @@ class Service implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get("dkan_metastore.service"),
-      $container->get("entity_type.manager"),
-      $container->get("search_api.query_helper")
+      $container->get('dkan_metastore.service'),
+      $container->get('entity_type.manager'),
+      $container->get('search_api.query_helper')
     );
   }
 
@@ -92,7 +92,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function setSearchIndex(string $id) {
     $storage = $this->entityTypeManager
-      ->getStorage("search_api_index");
+      ->getStorage('search_api_index');
     $this->index = $storage->load($id);
 
     if (!$this->index) {
@@ -104,6 +104,7 @@ class Service implements ContainerInjectionInterface {
    * Search.
    *
    * @param array $params
+   *   Search parameters.
    *
    * @return object
    *   StdClass containing total, results and facets.
@@ -127,9 +128,9 @@ class Service implements ContainerInjectionInterface {
     $data = $this->getData($result);
 
     return (object) [
-      "total" => $count,
-      "results" => $data,
-      "facets" => $facets,
+      'total' => $count,
+      'results' => $data,
+      'facets' => $facets,
     ];
   }
 
@@ -160,10 +161,13 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    *
-   * @param string $conjuction
+   * @param array $array
+   *   Array of values.
+   * @param string $conjunction
+   *   'OR' or 'AND'.
    */
-  private function createConditionGroup($array, $conjuction = 'AND') {
-    $cg = $this->query->createConditionGroup($conjuction);
+  private function createConditionGroup(array $array, string $conjunction = 'AND') {
+    $cg = $this->query->createConditionGroup($conjunction);
     foreach ($array as $field => $values) {
       foreach ($values as $value) {
         $cg->addCondition($field, $value);
@@ -188,12 +192,14 @@ class Service implements ContainerInjectionInterface {
    * Private.
    *
    * @param string $string
+   *   Comma-separated string.
    *
    * @return array
+   *   Values.
    */
   private function getValuesFromCommaSeparatedString(string $string) {
     $values = [];
-    foreach (explode(",", $string) as $value) {
+    foreach (explode(',', $string) as $value) {
       $values[] = trim($value);
     }
     return $values;
@@ -202,11 +208,13 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    *
-   * @param $fields
+   * @param array $fields
+   *   Fields.
    *
    * @return array
+   *   Array containing the facets.
    */
-  private function getFacets($fields) {
+  private function getFacets(array $fields) {
     $facetsTypes = ['theme', 'keyword', 'publisher__name'];
     $facets = [];
 
@@ -223,8 +231,10 @@ class Service implements ContainerInjectionInterface {
    * Private.
    *
    * @param string $type
+   *   String describing type.
    *
    * @return array
+   *   Array containing the facets.
    */
   private function getFacetsForType(string $type) {
     $facets = [];
@@ -251,9 +261,12 @@ class Service implements ContainerInjectionInterface {
    * Private.
    *
    * @param string $type
+   *   Type.
    * @param string $facet_name
+   *   Face name.
    *
    * @return array
+   *   Results for a facet.
    */
   private function getFacetHelper(string $type, string $facet_name) {
     $cloneQuery = clone $this->query;
@@ -270,7 +283,9 @@ class Service implements ContainerInjectionInterface {
    * Private.
    *
    * @param array $params
+   *   Parameters.
    * @param array $fields
+   *   Fields.
    */
   private function setSort(array $params, array $fields) {
     if (isset($params['sort']) && in_array($params['sort'], $fields)) {
@@ -285,8 +300,10 @@ class Service implements ContainerInjectionInterface {
    * Private.
    *
    * @param array $params
+   *   Search parameters.
    *
    * @return mixed
+   *   String describing sort order as ascending or descending.
    */
   private function getSortOrder(array $params) {
     $default = $this->query::SORT_ASC;
@@ -303,6 +320,7 @@ class Service implements ContainerInjectionInterface {
    * Private.
    *
    * @param array $params
+   *   Search parameters.
    */
   private function setRange(array $params) {
     $end = ($params['page'] * $params['page-size']);
@@ -314,19 +332,20 @@ class Service implements ContainerInjectionInterface {
    * Private.
    *
    * @param \Drupal\search_api\Query\ResultSet $result
+   *   Result set.
    *
    * @return array
+   *   Filtered results.
    */
   private function getData(ResultSet $result) {
-    /* @var  $metastore Metastore */
     $metastore = $this->metastoreService;
 
     return array_filter(array_map(
       function ($item) use ($metastore) {
         $id = $item->getId();
-        $id = str_replace("dkan_dataset/", "", $id);
+        $id = str_replace('dkan_dataset/', '', $id);
         try {
-          return json_decode($metastore->get("dataset", $id));
+          return json_decode($metastore->get('dataset', $id));
         }
         catch (\Exception $e) {
           return NULL;
