@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['orphanchecker_2ephp_829',['OrphanChecker.php',['../OrphanChecker_8php.html',1,'']]],
-  ['orphancheckertest_2ephp_830',['OrphanCheckerTest.php',['../OrphanCheckerTest_8php.html',1,'']]],
-  ['orphanreferenceprocessor_2ephp_831',['OrphanReferenceProcessor.php',['../OrphanReferenceProcessor_8php.html',1,'']]]
+  ['nonpublicresourceprotector_2ephp_832',['NonPublicResourceProtector.php',['../NonPublicResourceProtector_8php.html',1,'']]],
+  ['nonpublicresourceprotectortest_2ephp_833',['NonPublicResourceProtectorTest.php',['../NonPublicResourceProtectorTest_8php.html',1,'']]]
 ];
