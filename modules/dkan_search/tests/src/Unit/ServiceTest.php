@@ -45,7 +45,7 @@ class ServiceTest extends TestCase {
     $container = $this->getCommonMockChain();
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(["bar"], $service->searchByIndexField());
+    $this->assertEquals(["bar"], $service->searchByIndexField("theme", "finance"));
   }
 
   /**
