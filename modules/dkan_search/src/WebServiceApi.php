@@ -3,8 +3,6 @@
 namespace Drupal\dkan_search;
 
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\dkan_metastore\Service as MetastoreService;
-use Drupal\search_api\Query\QueryInterface;
 
 /**
  * Controller.
@@ -21,7 +19,6 @@ class WebServiceApi {
     /** @var \Drupal\dkan_search\Service $service */
     $service = \Drupal::service("dkan_search.service");
 
-    /* @var  $result ResultSet*/
     $responseBody = $service->search($params);
 
     return $this->getResponse($responseBody);
@@ -36,7 +33,7 @@ class WebServiceApi {
       "page" => 1,
     ];
 
-    /* @var $requestStack RequestStack */
+    /** @var \Symfony\Component\HttpFoundation\RequestStack $requestStack */
     $requestStack = \Drupal::service('request_stack');
     $request = $requestStack->getCurrentRequest();
     $params = $request->query->all();
