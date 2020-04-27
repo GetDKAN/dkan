@@ -1,4 +1,5 @@
-@page guide-dataset-api Using the dataset API
+@page datasetapi Metastore Dataset API
+
 
 ## GET
 
@@ -198,3 +199,4 @@ DELETE http://domain.com/api​/1​/metastore​/schemas​/dataset​/items/03
 Content-Type: application/json
 Accept: application/json
 ```
+
