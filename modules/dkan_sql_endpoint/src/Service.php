@@ -49,9 +49,26 @@ class Service implements ContainerInjectionInterface {
 
     $result = $databaseTable->query($queryObject);
 
-    return array_map(function ($row) {
+    $schema = $databaseTable->getSchema();
+    $fields = $schema['fields'];
+
+    return array_map(function ($row) use ($fields) {
       unset($row->record_number);
-      return $row;
+
+      $arrayRow = (array) $row;
+
+      $newRow = [];
+
+      foreach ($arrayRow as $fieldName => $value) {
+        if (isset($fields[$fieldName]['description'])) {
+          $newRow[$fields[$fieldName]['description']] = $value;
+        }
+        else {
+          $newRow[$fieldName] = $value;
+        }
+      }
+
+      return (object) $newRow;
     }, $result);
   }
 

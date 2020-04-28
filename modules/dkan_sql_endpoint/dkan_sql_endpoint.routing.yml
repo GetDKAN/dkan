@@ -2,14 +2,14 @@ dkan_sql_endpoint.get.api:
   path: '/api/1/datastore/sql'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_sql_endpoint\Controller\Api::runQueryGet'}
+    { _controller: '\Drupal\dkan_sql_endpoint\WebServiceApi::runQueryGet'}
   requirements:
     _access: 'TRUE'
 dkan_sql_endpoint.post.api:
   path: '/api/1/datastore/sql'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\dkan_sql_endpoint\Controller\Api::runQueryPost'}
+    { _controller: '\Drupal\dkan_sql_endpoint\WebServiceApi::runQueryPost'}
   requirements:
     _access: 'TRUE'
 dkan_sql_endpoint.settings:

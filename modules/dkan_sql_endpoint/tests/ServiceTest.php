@@ -9,6 +9,7 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\dkan_datastore\Service\Factory\Resource as ResourceServiceFactory;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use MockChain\Chain;
 use Drupal\dkan_sql_endpoint\Service;
@@ -28,6 +29,22 @@ class ServiceTest extends TestCase {
       ->add('database', Connection::class)
       ->index(0);
 
+    $dbData = (object) [
+      'first_name' => "Felix",
+      'last_name' => "The Cat"
+    ];
+
+    $schema = [
+      'fields' => [
+        'first_name' => [
+          'description' => 'First Name',
+        ],
+        'last_name' => [
+          'description' => 'lAST nAME'
+        ]
+      ]
+    ];
+
     $container = (new Chain($this))
       ->add(Container::class, "get", $services)
       ->add(ConfigFactory::class, "get", ImmutableConfig::class)
@@ -35,6 +52,9 @@ class ServiceTest extends TestCase {
       ->add(ResourceServiceFactory::class, 'getInstance', ResourceService::class)
       ->add(ResourceService::class, 'get', Resource::class)
       ->add(Resource::class, 'getId', '123')
+      ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
+      ->add(DatabaseTable::class, 'query', [$dbData])
+      ->add(DatabaseTable::class, 'getSchema', $schema)
       ->getMock();
 
     $expectedData = (object) [
@@ -44,7 +64,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container);
     $data = $service->runQuery('[SELECT * FROM 123];');
-    $this->assertEquals($expectedData, json_decode($data[0]));
+    $this->assertEquals($expectedData, $data[0]);
   }
 
   /**
