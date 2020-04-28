@@ -109,25 +109,6 @@ $(document).ready(function(){initNavTree('data.html','');});
 <p>When the value of these elements change or become outdated, the corresponding data node will be removed by the <b>orphan_reference_processor</b> queue task.</p>
 <p>If you prefer to run it manually, you may do so with:</p>
 <div class="fragment"><div class="line">drush queue-run orphan_reference_processor</div>
-</div><!-- fragment --><p>The <b>dkan_data</b> module provides the connection to <a href="https://drupal.org">Drupal</a> as a means of storage.</p>
-<h2><a class="anchor" id="autotoc_md40"></a>
-What is a Dataset</h2>
-<p>A dataset is an identifiable collection of structured data objects (distribution list) unified by some criteria (authorship, subject, scope, spatial or temporal extent…) as well as <a href="metastore.html">metadata</a>.</p>
-<h3><a class="anchor" id="autotoc_md41"></a>
-Sample Data Files</h3>
-<ul>
-<li><a href="https://project-open-data.cio.gov/v1.1/examples/catalog-sample.json">JSON - Minimum Requirements</a></li>
-<li><a href="https://project-open-data.cio.gov/v1.1/examples/catalog-sample-extended.json">JSON - With Extended Fields</a></li>
-</ul>
-<p><img src="https://project-open-data.cio.gov/v1.1/schema-diagram.svg" alt="dataset structure" class="inline"/></p>
-<h3><a class="anchor" id="autotoc_md42"></a>
-Properties</h3>
-<p>DKAN adds a content type called <em>data</em>. This content type will hold the metadata of a dataset in JSON format. Additional data nodes will be created for specific sub-elements of the dataset as well, (i.e. publisher, theme, keywords, and distribution). These data nodes will provide unique reference ids for the sub-elements and can be accesssed via an API endpoint. Learn more <a href="guide-dataset-api.html#identifiers">here</a>.</p>
-<p>You can customize which sub-elements generate additional data nodes here <code>admin/config/dkan/properties</code>.</p>
-<p><img src="https://dkan-documentation-files.s3.us-east-2.amazonaws.com/dkan/dataset-properties.png" alt="dataset properties" class="inline"/></p>
-<p>When the value of these elements change or become outdated, the corresponding data node will be removed by the <b>orphan_reference_processor</b> queue task.</p>
-<p>If you prefer to run it manually, you may do so with:</p>
-<div class="fragment"><div class="line">drush queue-run orphan_reference_processor</div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

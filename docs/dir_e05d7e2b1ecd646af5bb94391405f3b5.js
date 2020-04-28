@@ -1,6 +1,5 @@
 var dir_e05d7e2b1ecd646af5bb94391405f3b5 =
 [
-    [ "dkan_admin", "dir_7f26300baa7910cc09208320f20ac318.html", null ],
     [ "dkan_api", "dir_1b0c4bc982aa071d29f7bbb529035838.html", "dir_1b0c4bc982aa071d29f7bbb529035838" ],
     [ "dkan_common", "dir_5ab60f784b16394d0b3c3590d3c2532b.html", "dir_5ab60f784b16394d0b3c3590d3c2532b" ],
     [ "dkan_data", "dir_07163e7dc725deed3bea2e8264410d85.html", "dir_07163e7dc725deed3bea2e8264410d85" ],
