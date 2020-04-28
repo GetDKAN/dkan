@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['readme_2emd_848',['README.md',['../dkan__admin_2README_8md.html',1,'(Global Namespace)'],['../dkan__data_2README_8md.html',1,'(Global Namespace)'],['../dkan__datastore_2README_8md.html',1,'(Global Namespace)'],['../dkan__harvest_2README_8md.html',1,'(Global Namespace)'],['../dkan__metastore_2README_8md.html',1,'(Global Namespace)'],['../dkan__search_2README_8md.html',1,'(Global Namespace)']]],
+  ['readme_2emd_848',['README.md',['../README_8md.html',1,'']]],
   ['referencer_2ephp_849',['Referencer.php',['../Referencer_8php.html',1,'']]],
   ['referencertest_2ephp_850',['ReferencerTest.php',['../ReferencerTest_8php.html',1,'']]],
   ['requesttrait_2ephp_851',['RequestTrait.php',['../RequestTrait_8php.html',1,'']]],

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['readme_2emd_396',['README.md',['../dkan__admin_2README_8md.html',1,'(Global Namespace)'],['../dkan__data_2README_8md.html',1,'(Global Namespace)'],['../dkan__datastore_2README_8md.html',1,'(Global Namespace)'],['../dkan__harvest_2README_8md.html',1,'(Global Namespace)'],['../dkan__metastore_2README_8md.html',1,'(Global Namespace)'],['../dkan__search_2README_8md.html',1,'(Global Namespace)']]],
+  ['readme_2emd_396',['README.md',['../README_8md.html',1,'']]],
   ['rebuildtracker_397',['rebuildTracker',['../classDrupal_1_1dkan__search_1_1Drush_1_1DkanSearchCommands.html#a8a429d32d49ea8723a6f3fac8787978f',1,'Drupal::dkan_search::Drush::DkanSearchCommands']]],
   ['reference_398',['reference',['../classDrupal_1_1dkan__data_1_1Reference_1_1Referencer.html#ac03557b3b2b20d8d2bfeaa5d9dde1f7a',1,'Drupal::dkan_data::Reference::Referencer']]],
   ['referencer_399',['Referencer',['../classDrupal_1_1dkan__data_1_1Reference_1_1Referencer.html',1,'Drupal::dkan_data::Reference']]],

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DKAN: docs_assets/pages/community_sites.md File Reference</title>
+<title>DKAN: Metastore Search</title>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script src="https://kit.fontawesome.com/4f4525663e.js" crossorigin="anonymous"></script>
@@ -79,11 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-<<<<<<< HEAD:docs/community__sites_8md.html
-$(document).ready(function(){initNavTree('community__sites_8md.html','');});
-=======
-$(document).ready(function(){initNavTree('README_8md.html','');});
->>>>>>> delete duplicates:docs/README_8md.html
+$(document).ready(function(){initNavTree('search.html','');});
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -101,21 +97,47 @@ $(document).ready(function(){initNavTree('README_8md.html','');});
 </iframe>
 </div>
 
-<div class="header">
+<div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">docs_assets/pages/community_sites.md File Reference</div>  </div>
+<div class="title">Metastore Search </div>  </div>
 </div><!--header-->
 <div class="contents">
-</div><!-- contents -->
+<div class="textblock"><p>The <b>Metastore Search</b> module provides some integration with <a href="https://www.drupal.org/project/search_api">search_api</a> to facilitate querying DKAN's metadata.</p>
+<p>Search API manages search servers and indexes. For more information on how Search API works visit their <a href="https://www.drupal.org/docs/8/modules/search-api">documentation</a>.</p>
+<p>This module provides a Data Source for Search API that allows it to index DKAN's metadata. In particular datasets. It also provides a default server and index configurations.</p>
+<p>Querying the search server is possible at <code>/api/1/search</code></p>
+<p>Different search queries can be executed against the index through query parameters.</p>
+<p>These are the available query parameters:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft">Parameter  </th><th class="markdownTableHeadCenter">Default value  </th><th class="markdownTableHeadCenter">Example  </th><th class="markdownTableHeadLeft">Description   </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">fulltext  </td><td class="markdownTableBodyCenter">N/A  </td><td class="markdownTableBodyCenter"><code>?fulltext=hello</code>  </td><td class="markdownTableBodyLeft">Performs a search for the given phrase/word against all fields indexed as Fulltext   </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">field  </td><td class="markdownTableBodyCenter">N/A  </td><td class="markdownTableBodyCenter"><code>?keyword=hospital,blah</code>  </td><td class="markdownTableBodyLeft">Filters the search by the given field (keyword in the example), and the specific list of value given. The filter performs a logical AND so content with the keywords 'hospital' and 'blah' will be displayed   </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">page  </td><td class="markdownTableBodyCenter">1  </td><td class="markdownTableBodyCenter"><code>?page=2</code>  </td><td class="markdownTableBodyLeft">The page to be displayed. How many items are shown in a page is determined by the page-size parameter   </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">page-size  </td><td class="markdownTableBodyCenter">10  </td><td class="markdownTableBodyCenter"><code>?page-size=50</code>  </td><td class="markdownTableBodyLeft">The number of items to be returned in each page   </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">sort  </td><td class="markdownTableBodyCenter">search_api_relevance  </td><td class="markdownTableBodyCenter"><code>?sort=keyword</code>  </td><td class="markdownTableBodyLeft">The field to sort by   </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">sort-order  </td><td class="markdownTableBodyCenter">asc  </td><td class="markdownTableBodyCenter"><code>?sort-order=desc</code>  </td><td class="markdownTableBodyLeft">The order of the sort applied   </td></tr>
+</table>
+<h2><a class="anchor" id="autotoc_md39"></a>
+Search Facets</h2>
+<ol type="1">
+<li>Navigate to <code>admin/config/search/search-api/index/dkan/fields</code> to define which fields of your metadata to search on.</li>
+<li>Rebuild tracking information with <code>drush dkan-search:rebuild-tracker</code></li>
+<li>Re-index the site <code>drush sapi-i</code></li>
+</ol>
+<p>Viewing the <code>/api/1/search</code> endpoint, you should see a "facets" section with the configured facet fields and their results. </p>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-<<<<<<< HEAD:docs/community__sites_8md.html
-    <li class="navelem"><a class="el" href="community__sites_8md.html">community_sites.md</a></li>
-=======
-    <li class="navelem"><a class="el" href="README_8md.html">README.md</a></li>
->>>>>>> delete duplicates:docs/README_8md.html
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.16 </li>

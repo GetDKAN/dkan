@@ -76,36 +76,6 @@
     <filename>metastore__search_8md</filename>
   </compound>
   <compound kind="file">
-    <name>README.md</name>
-    <path>/Users/janette/workspace/dkan/modules/dkan_admin/</path>
-    <filename>dkan__admin_2README_8md</filename>
-  </compound>
-  <compound kind="file">
-    <name>README.md</name>
-    <path>/Users/janette/workspace/dkan/modules/dkan_data/</path>
-    <filename>dkan__data_2README_8md</filename>
-  </compound>
-  <compound kind="file">
-    <name>README.md</name>
-    <path>/Users/janette/workspace/dkan/modules/dkan_datastore/</path>
-    <filename>dkan__datastore_2README_8md</filename>
-  </compound>
-  <compound kind="file">
-    <name>README.md</name>
-    <path>/Users/janette/workspace/dkan/modules/dkan_harvest/</path>
-    <filename>dkan__harvest_2README_8md</filename>
-  </compound>
-  <compound kind="file">
-    <name>README.md</name>
-    <path>/Users/janette/workspace/dkan/modules/dkan_metastore/</path>
-    <filename>dkan__metastore_2README_8md</filename>
-  </compound>
-  <compound kind="file">
-    <name>README.md</name>
-    <path>/Users/janette/workspace/dkan/modules/dkan_search/</path>
-    <filename>dkan__search_2README_8md</filename>
-  </compound>
-  <compound kind="file">
     <name>Docs.php</name>
     <path>/Users/janette/workspace/dkan/modules/dkan_api/src/Controller/</path>
     <filename>Docs_8php</filename>
@@ -413,6 +383,11 @@
     <filename>DataTest_8php</filename>
     <class kind="class">Drupal::Tests::dkan_api::Unit::Storage::DataTest</class>
     <namespace>Drupal::Tests::dkan_api::Unit::Storage</namespace>
+  </compound>
+  <compound kind="file">
+    <name>README.md</name>
+    <path>/Users/janette/workspace/dkan/modules/dkan_datastore/</path>
+    <filename>README_8md</filename>
   </compound>
   <compound kind="file">
     <name>Drush.php</name>
@@ -5742,10 +5717,10 @@
     <docanchor file="datastore" title="Datastore API">autotoc_md15</docanchor>
     <docanchor file="datastore" title="Parameters">autotoc_md16</docanchor>
     <docanchor file="datastore" title="Example">autotoc_md17</docanchor>
-    <docanchor file="datastore" title="Drush Commands">autotoc_md43</docanchor>
-    <docanchor file="datastore" title="Datastore API">autotoc_md44</docanchor>
-    <docanchor file="datastore" title="Parameters">autotoc_md45</docanchor>
-    <docanchor file="datastore" title="Example">autotoc_md46</docanchor>
+    <docanchor file="datastore" title="Drush Commands">autotoc_md40</docanchor>
+    <docanchor file="datastore" title="Datastore API">autotoc_md41</docanchor>
+    <docanchor file="datastore" title="Parameters">autotoc_md42</docanchor>
+    <docanchor file="datastore" title="Example">autotoc_md43</docanchor>
   </compound>
   <compound kind="page">
     <name>harvest</name>
@@ -5756,11 +5731,6 @@
     <docanchor file="harvest" title="Example">autotoc_md20</docanchor>
     <docanchor file="harvest" title="Run the harvest">autotoc_md21</docanchor>
     <docanchor file="harvest" title="Example with new transform">autotoc_md22</docanchor>
-    <docanchor file="harvest" title="Drush Commands">autotoc_md47</docanchor>
-    <docanchor file="harvest" title="Setup">autotoc_md48</docanchor>
-    <docanchor file="harvest" title="Example">autotoc_md49</docanchor>
-    <docanchor file="harvest" title="Run the harvest">autotoc_md50</docanchor>
-    <docanchor file="harvest" title="Example with new transform">autotoc_md51</docanchor>
   </compound>
   <compound kind="page">
     <name>community</name>
@@ -5817,15 +5787,11 @@
     <name>data</name>
     <title>Metastore Content Type</title>
     <filename>data</filename>
-    <docanchor file="data" title="What is a Dataset">autotoc_md40</docanchor>
-    <docanchor file="data" title="Sample Data Files">autotoc_md41</docanchor>
-    <docanchor file="data" title="Properties">autotoc_md42</docanchor>
   </compound>
   <compound kind="page">
     <name>search</name>
     <title>Metastore Search</title>
     <filename>search</filename>
     <docanchor file="search" title="Search Facets">autotoc_md39</docanchor>
-    <docanchor file="search" title="Search Facets">autotoc_md52</docanchor>
   </compound>
 </tagfile>
