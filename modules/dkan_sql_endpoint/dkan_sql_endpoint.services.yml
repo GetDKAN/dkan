@@ -3,3 +3,5 @@ services:
     class: \Drupal\dkan_sql_endpoint\Service
     arguments:
       - '@config.factory'
+      - '@dkan_datastore.database_table_factory'
+      - '@dkan_datastore.service.factory.resource'
