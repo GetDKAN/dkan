@@ -4,7 +4,7 @@ namespace Drupal\Tests\dkan_sql_endpoint;
 
 use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
-use \Drupal\dkan_datastore\Service\Resource as ResourceService;
+use Drupal\dkan_datastore\Service\Resource as ResourceService;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
@@ -21,6 +21,9 @@ use PHPUnit\Framework\TestCase;
  */
 class ServiceTest extends TestCase {
 
+  /**
+   *
+   */
   public function testHappyPath() {
     $services = (new Options())
       ->add('config.factory', ConfigFactory::class)
@@ -31,7 +34,7 @@ class ServiceTest extends TestCase {
 
     $dbData = (object) [
       'first_name' => "Felix",
-      'last_name' => "The Cat"
+      'last_name' => "The Cat",
     ];
 
     $schema = [
@@ -40,9 +43,9 @@ class ServiceTest extends TestCase {
           'description' => 'First Name',
         ],
         'last_name' => [
-          'description' => 'lAST nAME'
-        ]
-      ]
+          'description' => 'lAST nAME',
+        ],
+      ],
     ];
 
     $container = (new Chain($this))
@@ -59,7 +62,7 @@ class ServiceTest extends TestCase {
 
     $expectedData = (object) [
       'First Name' => "Felix",
-      'lAST nAME' => "The Cat"
+      'lAST nAME' => "The Cat",
     ];
 
     $service = Service::create($container);

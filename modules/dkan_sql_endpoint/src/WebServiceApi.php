@@ -9,9 +9,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\dkan_datastore\Service\Factory\Resource;
-use Drupal\dkan_datastore\Storage\DatabaseTable;
-use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 
 /**
  * Api class.

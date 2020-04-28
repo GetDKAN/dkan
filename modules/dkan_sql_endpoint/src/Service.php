@@ -43,6 +43,9 @@ class Service implements ContainerInjectionInterface {
     $this->resourceServiceFactory = $resourceServiceFactory;
   }
 
+  /**
+   *
+   */
   public function runQuery(string $queryString): array {
     $queryObject = $this->getQueryObject($queryString);
     $databaseTable = $this->getDatabaseTable($this->getResourceUuid($queryString));
