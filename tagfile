@@ -51,6 +51,11 @@
     <filename>community__contributing_8md</filename>
   </compound>
   <compound kind="file">
+    <name>community_sites.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>community__sites_8md</filename>
+  </compound>
+  <compound kind="file">
     <name>metastore_admin.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
     <filename>metastore__admin_8md</filename>
@@ -5786,6 +5791,11 @@
     <name>contributing</name>
     <title>Contributing</title>
     <filename>contributing</filename>
+  </compound>
+  <compound kind="page">
+    <name>sites</name>
+    <title>Example DKAN Sites</title>
+    <filename>sites</filename>
   </compound>
   <compound kind="page">
     <name>admin</name>
