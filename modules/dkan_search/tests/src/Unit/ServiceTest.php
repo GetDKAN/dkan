@@ -61,12 +61,6 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $facets = [
-      'type' => 'publisher__name',
-      'name' => 'Steve',
-      'total' => 1,
-    ];
-
     $expect = (object) [
       'total' => 1,
       'results' => [$thing],

@@ -60,6 +60,8 @@ class WebServiceApi implements ContainerInjectionInterface {
     $params = $this->getParams();
 
     $responseBody = $this->service->search($params);
+    $facets = $this->service->facets($params);
+    $responseBody->facets = $facets;
 
     return $this->getResponse($responseBody);
   }

@@ -140,7 +140,7 @@ class Service implements ContainerInjectionInterface {
    * @return array
    *   Array of facets, each containing type, name, total.
    */
-  public function facets(array $params) {
+  public function facets(array $params) : array {
     $fields = array_keys($this->index->getFields());
     $this->query = $this->queryHelper->createQuery($this->index);
 
