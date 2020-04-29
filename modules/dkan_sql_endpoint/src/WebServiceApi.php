@@ -5,7 +5,6 @@ namespace Drupal\dkan_sql_endpoint;
 use Drupal\dkan_common\DataModifierPluginTrait;
 use Drupal\dkan_common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
