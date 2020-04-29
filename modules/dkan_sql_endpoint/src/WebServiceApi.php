@@ -25,8 +25,6 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Inherited.
    *
    * @{inheritdocs}
-   *
-   * @codeCoverageIgnore
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -64,7 +62,10 @@ class WebServiceApi implements ContainerInjectionInterface {
     $query = $this->requestStack->getCurrentRequest()->get('query');
 
     if (empty($query)) {
-      return $this->getResponse("Missing 'query' query parameter", 400);
+      return $this->getResponseFromException(
+        new \Exception("Missing 'query' query parameter"),
+        400
+      );
     }
 
     // The incoming string could contain escaped characters.
@@ -86,7 +87,10 @@ class WebServiceApi implements ContainerInjectionInterface {
     }
 
     if (empty($query)) {
-      return $this->getResponse("Missing 'query' property in the request's body.", 400);
+      return $this->getResponseFromException(
+        new \Exception("Missing 'query' property in the request's body."),
+        400
+      );
     }
 
     return $this->runQuery($query);

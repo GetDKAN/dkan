@@ -3,7 +3,6 @@
 namespace Drupal\Tests\dkan_sql_endpoint;
 
 use Dkan\Datastore\Resource;
-use Drupal\Core\Database\Connection;
 use Drupal\dkan_datastore\Service\Resource as ResourceService;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Config\ConfigFactory;
@@ -11,30 +10,26 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\dkan_datastore\Service\Factory\Resource as ResourceServiceFactory;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
+use Drupal\Tests\dkan_sql_endpoint\Traits\TestHelperTrait;
 use MockChain\Chain;
 use Drupal\dkan_sql_endpoint\Service;
-use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 /**
  *
  */
 class ServiceTest extends TestCase {
+  use TestHelperTrait;
 
   /**
    *
    */
   public function testHappyPath() {
-    $services = (new Options())
-      ->add('config.factory', ConfigFactory::class)
-      ->add('dkan_datastore.database_table_factory', DatabaseTableFactory::class)
-      ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
-      ->add('database', Connection::class)
-      ->index(0);
 
     $dbData = (object) [
       'first_name' => "Felix",
       'last_name' => "The Cat",
+      'occupation' => "cat",
     ];
 
     $schema = [
@@ -43,13 +38,14 @@ class ServiceTest extends TestCase {
           'description' => 'First Name',
         ],
         'last_name' => [
-          'description' => 'lAST nAME',
+          'description' => 'last_name',
         ],
+        'occupation' => [],
       ],
     ];
 
     $container = (new Chain($this))
-      ->add(Container::class, "get", $services)
+      ->add(Container::class, "get", $this->getServices())
       ->add(ConfigFactory::class, "get", ImmutableConfig::class)
       ->add(ImmutableConfig::class, "get", "100")
       ->add(ResourceServiceFactory::class, 'getInstance', ResourceService::class)
@@ -62,11 +58,12 @@ class ServiceTest extends TestCase {
 
     $expectedData = (object) [
       'First Name' => "Felix",
-      'lAST nAME' => "The Cat",
+      'last_name' => "The Cat",
+      'occupation' => "cat",
     ];
 
     $service = Service::create($container);
-    $data = $service->runQuery('[SELECT * FROM 123];');
+    $data = $service->runQuery('[SELECT * FROM 123][WHERE last_name = "Felix"][ORDER BY first_name DESC][LIMIT 1 OFFSET 1];');
     $this->assertEquals($expectedData, $data[0]);
   }
 
@@ -75,7 +72,7 @@ class ServiceTest extends TestCase {
    */
   public function testAutoLimitOnSqlStatements() {
     $container = (new Chain($this))
-      ->add(Container::class, "get", ConfigFactory::class)
+      ->add(Container::class, "get", $this->getServices())
       ->add(ConfigFactory::class, "get", ImmutableConfig::class)
       ->add(ImmutableConfig::class, "get", "100")
       ->getMock();
@@ -91,7 +88,7 @@ class ServiceTest extends TestCase {
    */
   public function testNoAutoLimitOnCountSqlStatements() {
     $container = (new Chain($this))
-      ->add(Container::class, "get", ConfigFactory::class)
+      ->add(Container::class, "get", $this->getServices())
       ->add(ConfigFactory::class, "get", ImmutableConfig::class)
       ->add(ImmutableConfig::class, "get", "100")
       ->getMock();

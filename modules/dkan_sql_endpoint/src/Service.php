@@ -44,7 +44,7 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Run query.
    */
   public function runQuery(string $queryString): array {
     $queryObject = $this->getQueryObject($queryString);
