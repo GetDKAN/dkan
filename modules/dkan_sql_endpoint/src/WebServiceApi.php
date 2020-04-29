@@ -5,6 +5,7 @@ namespace Drupal\dkan_sql_endpoint;
 use Drupal\dkan_common\DataModifierPluginTrait;
 use Drupal\dkan_common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -61,6 +62,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     $query = NULL;
     $query = $this->requestStack->getCurrentRequest()->get('query');
 
+    $flag = $this->requestStack->getCurrentRequest()->get('show-db-columns');
+    $showDbColumns = isset($flag) ? TRUE : FALSE;
+
     if (empty($query)) {
       return $this->getResponseFromException(
         new \Exception("Missing 'query' query parameter"),
@@ -71,7 +75,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     // The incoming string could contain escaped characters.
     $query = stripslashes($query);
 
-    return $this->runQuery($query);
+    return $this->runQuery($query, $showDbColumns);
   }
 
   /**
@@ -93,13 +97,15 @@ class WebServiceApi implements ContainerInjectionInterface {
       );
     }
 
-    return $this->runQuery($query);
+    $showDbColumns = $payload->show_db_columns ?? FALSE;
+
+    return $this->runQuery($query, $showDbColumns);
   }
 
   /**
    * Private.
    */
-  private function runQuery(string $query) {
+  private function runQuery(string $query, $showDbColumns = FALSE) {
     $uuid = $this->service->getResourceUuid($query);
 
     if ($modifyResponse = $this->modifyData($uuid)) {
@@ -107,7 +113,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     }
 
     try {
-      $result = $this->service->runQuery($query);
+      $result = $this->service->runQuery($query, $showDbColumns);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);

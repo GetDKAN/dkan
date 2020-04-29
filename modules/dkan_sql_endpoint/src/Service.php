@@ -46,7 +46,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Run query.
    */
-  public function runQuery(string $queryString): array {
+  public function runQuery(string $queryString, $showDbColumns = FALSE): array {
     $queryObject = $this->getQueryObject($queryString);
     $databaseTable = $this->getDatabaseTable($this->getResourceUuid($queryString));
 
@@ -55,15 +55,17 @@ class Service implements ContainerInjectionInterface {
     $schema = $databaseTable->getSchema();
     $fields = $schema['fields'];
 
-    return array_map(function ($row) use ($fields) {
-      unset($row->record_number);
+    return array_map(function ($row) use ($fields, $showDbColumns) {
+      if (!$showDbColumns) {
+        unset($row->record_number);
+      }
 
       $arrayRow = (array) $row;
 
       $newRow = [];
 
       foreach ($arrayRow as $fieldName => $value) {
-        if (isset($fields[$fieldName]['description'])) {
+        if (!$showDbColumns && isset($fields[$fieldName]['description']) && !empty($fields[$fieldName]['description'])) {
           $newRow[$fields[$fieldName]['description']] = $value;
         }
         else {
