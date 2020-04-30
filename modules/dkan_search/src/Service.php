@@ -116,8 +116,6 @@ class Service implements ContainerInjectionInterface {
     $this->setFullText($params);
     $this->setFieldConditions($fields, $params);
 
-    $facets = $this->getFacets($fields);
-
     $this->setSort($params, $fields);
     $this->setRange($params);
 
@@ -130,8 +128,26 @@ class Service implements ContainerInjectionInterface {
     return (object) [
       'total' => $count,
       'results' => $data,
-      'facets' => $facets,
     ];
+  }
+
+  /**
+   * Facets.
+   *
+   * @param array $params
+   *   Array of search parameters.
+   *
+   * @return array
+   *   Array of facets, each containing type, name, total.
+   */
+  public function facets(array $params) : array {
+    $fields = array_keys($this->index->getFields());
+    $this->query = $this->queryHelper->createQuery($this->index);
+
+    $this->setFullText($params);
+    $this->setFieldConditions($fields, $params);
+
+    return $this->getFacets($fields);
   }
 
   /**

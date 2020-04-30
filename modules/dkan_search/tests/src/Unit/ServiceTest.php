@@ -26,9 +26,9 @@ class ServiceTest extends TestCase {
    */
   public function testNoSearchIndex() {
     $container = $this->getCommonMockChain()
-      ->add(EntityStorageInterface::class, "load", NULL);
+      ->add(EntityStorageInterface::class, 'load', NULL);
 
-    $this->expectExceptionMessage("An index named [dkan] does not exist.");
+    $this->expectExceptionMessage('An index named [dkan] does not exist.');
     Service::create($container->getMock());
   }
 
@@ -36,44 +36,40 @@ class ServiceTest extends TestCase {
    * Test for search().
    */
   public function testSearch() {
-
-    $item = (new Chain($this))
-      ->add(Item::class, 'getId', 1)
-      ->getMock();
-
-    $thing = (object) [
-      'title' => 'hello',
-      'description' => 'goodbye',
-      'publisher__name' => 'Steve',
+    $expect = (object) [
+      'total' => 1,
+      'results' => [(object) [
+        'title' => 'hello',
+        'description' => 'goodbye',
+        'publisher__name' => 'Steve',
+      ]],
     ];
-    $facet = (object) ['data' => (object) ['name' => 'Steve']];
 
-    $container = $this->getCommonMockChain()
-      ->add(IndexInterface::class, 'getFields', ['description' => 'blah', 'publisher__name' => 'blah'])
-      ->add(IndexInterface::class, 'getFulltextFields', ['title'])
-      ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
-      ->add(QueryInterface::class, 'execute', ResultSet::class)
-      ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
-      ->add(ResultSet::class, 'getResultCount', 1)
-      ->add(ResultSet::class, 'getResultItems', [$item])
-      ->add(Metastore::class, 'get', json_encode($thing))
-      ->add(Metastore::class, 'getAll', [$facet]);
+    $service = Service::create($this->getCommonMockChain()->getMock());
 
-    $service = Service::create($container->getMock());
+    $this->assertEquals($expect, $service->search([
+      'page' => 1,
+      'page-size' => 10,
+      'fulltext' => 'hello',
+      'description' => 'goodbye',
+      'sort' => 'description',
+      'sort-order' => 'asc',
+    ]));
+  }
 
-    $facets = [
+  /**
+   * Test for facets().
+   */
+  public function testFacets() {
+    $expect = [[
       'type' => 'publisher__name',
       'name' => 'Steve',
       'total' => 1,
-    ];
+    ]];
 
-    $expect = (object) [
-      'total' => 1,
-      'results' => [$thing],
-      'facets' => [$facets],
-    ];
+    $service = Service::create($this->getCommonMockChain()->getMock());
 
-    $this->assertEquals($expect, $service->search([
+    $this->assertEquals($expect, $service->facets([
       'page' => 1,
       'page-size' => 10,
       'fulltext' => 'hello',
@@ -88,15 +84,36 @@ class ServiceTest extends TestCase {
    */
   public function getCommonMockChain() {
     $options = (new Options())
-      ->add("dkan_metastore.service", Metastore::class)
-      ->add("entity_type.manager", EntityTypeManager::class)
-      ->add("search_api.query_helper", QueryHelperInterface::class)
+      ->add('dkan_metastore.service', Metastore::class)
+      ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('search_api.query_helper', QueryHelperInterface::class)
       ->index(0);
 
+    $item = (new Chain($this))
+      ->add(Item::class, 'getId', 1)
+      ->getMock();
+
+    $thing = (object) [
+      'title' => 'hello',
+      'description' => 'goodbye',
+      'publisher__name' => 'Steve',
+    ];
+
+    $facet = (object) ['data' => (object) ['name' => 'Steve']];
+
     return (new Chain($this))
-      ->add(Container::class, "get", $options)
-      ->add(EntityTypeManager::class, "getStorage", EntityStorageInterface::class)
-      ->add(EntityStorageInterface::class, "load", IndexInterface::class);
+      ->add(Container::class, 'get', $options)
+      ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, 'load', IndexInterface::class)
+      ->add(IndexInterface::class, 'getFields', ['description' => 'blah', 'publisher__name' => 'blah'])
+      ->add(IndexInterface::class, 'getFulltextFields', ['title'])
+      ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', ResultSet::class)
+      ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
+      ->add(ResultSet::class, 'getResultCount', 1)
+      ->add(ResultSet::class, 'getResultItems', [$item])
+      ->add(Metastore::class, 'get', json_encode($thing))
+      ->add(Metastore::class, 'getAll', [$facet]);
   }
 
 }

@@ -35,8 +35,8 @@ class WebServiceApiTest extends TestCase {
     $expected = (object) [
       'total' => 1,
       'results' => [],
-      'facets' => [],
     ];
+    $facetsExpected = [];
 
     $options = (new Options())
       ->add('dkan_search.service', Service::class)
@@ -46,9 +46,12 @@ class WebServiceApiTest extends TestCase {
     $container = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(RequestStack::class, 'getCurrentRequest', $request)
-      ->add(Service::class, 'search', $expected);
+      ->add(Service::class, 'search', $expected)
+      ->add(Service::class, 'facets', $facetsExpected);
 
     $controller = WebServiceApi::create($container->getMock());
+
+    $expected->facets = $facetsExpected;
 
     $response = $controller->search();
     $this->assertEquals(json_encode($expected), $response->getContent());
