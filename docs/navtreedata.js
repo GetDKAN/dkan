@@ -62,7 +62,7 @@ var NAVTREEINDEX =
 "classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#ab5012e2317ec0b5193942fbb2b8c3e7e",
 "classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html#aab815545d06194ca0b5acf38e989555a",
 "dkan__harvest_2src_2Storage_2DatabaseTableFactory_8php_source.html",
-"namespaceDrupal_1_1dkan__metadata__form.html"
+"namespaceDrupal_1_1dkan__harvest_1_1Transform.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

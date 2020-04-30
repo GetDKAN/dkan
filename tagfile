@@ -66,6 +66,11 @@
     <filename>mod__harvest_8md.html</filename>
   </compound>
   <compound kind="file">
+    <name>mod_metadata_form.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__metadata__form_8md.html</filename>
+  </compound>
+  <compound kind="file">
     <name>overview_about.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
     <filename>overview__about_8md.html</filename>
@@ -5745,6 +5750,11 @@
     <name>harvest</name>
     <title>Harvest</title>
     <filename>harvest.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>form</name>
+    <title>Metadata Form</title>
+    <filename>form.html</filename>
   </compound>
   <compound kind="page">
     <name>about</name>
