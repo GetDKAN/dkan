@@ -10,6 +10,5 @@ var searchData=
   ['orphanreferenceprocessor_2ephp_367',['OrphanReferenceProcessor.php',['../OrphanReferenceProcessor_8php.html',1,'']]],
   ['overview_368',['Overview',['../overview.html',1,'']]],
   ['overview_5fabout_2emd_369',['overview_about.md',['../overview__about_8md.html',1,'']]],
-  ['overview_5finstallation_2emd_370',['overview_installation.md',['../overview__installation_8md.html',1,'']]],
-  ['overview_5flicense_2emd_371',['overview_license.md',['../overview__license_8md.html',1,'']]]
+  ['overview_5finstallation_2emd_370',['overview_installation.md',['../overview__installation_8md.html',1,'']]]
 ];

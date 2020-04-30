@@ -25,6 +25,8 @@
 var NAVTREE =
 [
   [ "DKAN", "index.html", [
+    [ "Features", "index.html#autotoc_md34", null ],
+    [ "License", "index.html#autotoc_md35", null ],
     [ "Overview", "overview.html", "overview" ],
     [ "Modules", "mods.html", "mods" ],
     [ "Community", "community.html", "community" ],
