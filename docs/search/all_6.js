@@ -1,13 +1,6 @@
 var searchData=
 [
-  ['about_38',['About',['../about.html',1,'overview']]],
-  ['abstractdatabasetable_39',['AbstractDatabaseTable',['../classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html',1,'Drupal::dkan_common::Storage']]],
-  ['abstractdatabasetable_2ephp_40',['AbstractDatabaseTable.php',['../AbstractDatabaseTable_8php.html',1,'']]],
-  ['abstractdatanodelifecycle_41',['AbstractDataNodeLifeCycle',['../classDrupal_1_1dkan__common_1_1AbstractDataNodeLifeCycle.html',1,'Drupal::dkan_common']]],
-  ['abstractdatanodelifecycle_2ephp_42',['AbstractDataNodeLifeCycle.php',['../AbstractDataNodeLifeCycle_8php.html',1,'']]],
-  ['api_43',['Api',['../classDrupal_1_1dkan__harvest_1_1Controller_1_1Api.html',1,'Drupal\dkan_harvest\Controller\Api'],['../classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html',1,'Drupal\dkan_sql_endpoint\Controller\Api']]],
-  ['api_2ephp_44',['Api.php',['../dkan__harvest_2src_2Controller_2Api_8php.html',1,'(Global Namespace)'],['../dkan__sql__endpoint_2src_2Controller_2Api_8php.html',1,'(Global Namespace)']]],
-  ['apitest_45',['ApiTest',['../classApiTest.html',1,'ApiTest'],['../classDrupal_1_1Tests_1_1dkan__sql__endpoint_1_1Unit_1_1Controller_1_1ApiTest.html',1,'Drupal\Tests\dkan_sql_endpoint\Unit\Controller\ApiTest']]],
-  ['apitest_2ephp_46',['ApiTest.php',['../dkan__harvest_2test_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)'],['../dkan__sql__endpoint_2tests_2src_2Unit_2Controller_2ApiTest_8php.html',1,'(Global Namespace)']]],
-  ['applydefaultvalue_47',['applyDefaultValue',['../classDrupal_1_1dkan__search_1_1Facade_1_1ComplexDataFacade.html#a6271cc5a7fd0e4358cc7ff56e67b6d7c',1,'Drupal::dkan_search::Facade::ComplexDataFacade']]]
+  ['build_47',['build',['../classDrupal_1_1dkan__frontend_1_1Page.html#a2ea03726e7c5921993428c431fec94da',1,'Drupal::dkan_frontend::Page']]],
+  ['builddataset_48',['buildDataset',['../classDrupal_1_1dkan__frontend_1_1Page.html#a018279fd4ebc5b9a1b40b2c3024216d3',1,'Drupal::dkan_frontend::Page']]],
+  ['buildform_49',['buildForm',['../classDrupal_1_1dkan__data_1_1Form_1_1DkanDataSettingsForm.html#a8b0c398cdf2e78beaf902b807276d12b',1,'Drupal\dkan_data\Form\DkanDataSettingsForm\buildForm()'],['../classDrupal_1_1dkan__sql__endpoint_1_1Form_1_1DkanSqlEndpointSettingsForm.html#aae2a79bfee49964b64efa280c354d467',1,'Drupal\dkan_sql_endpoint\Form\DkanSqlEndpointSettingsForm\buildForm()']]]
 ];

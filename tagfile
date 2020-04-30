@@ -16,11 +16,6 @@
     <filename>7_80__community_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>8.0_license.md</name>
-    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>8_80__license_8md.html</filename>
-  </compound>
-  <compound kind="file">
     <name>community_code-of-conduct.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
     <filename>community__code-of-conduct_8md.html</filename>
@@ -79,6 +74,11 @@
     <name>overview_installation.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
     <filename>overview__installation_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>overview_license.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>overview__license_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>Docs.php</name>
@@ -5697,11 +5697,6 @@
     <filename>community.html</filename>
   </compound>
   <compound kind="page">
-    <name>license</name>
-    <title>License</title>
-    <filename>license.html</filename>
-  </compound>
-  <compound kind="page">
     <name>conduct</name>
     <title>Code of conduct</title>
     <filename>conduct.html</filename>
@@ -5760,5 +5755,10 @@
     <name>installation</name>
     <title>Installation</title>
     <filename>installation.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>license</name>
+    <title>License</title>
+    <filename>license.html</filename>
   </compound>
 </tagfile>

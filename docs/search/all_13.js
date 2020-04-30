@@ -1,11 +1,15 @@
 var searchData=
 [
-  ['newhttpresponse_353',['newHttpResponse',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#affe30c37f9000434912829763f55d3c2',1,'Drupal::dkan_common::Service::Factory']]],
-  ['newjsonresponse_354',['newJsonResponse',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#ae661bbccd8247407d40104533c11f8bd',1,'Drupal::dkan_common::Service::Factory']]],
-  ['newserviceapiengine_355',['newServiceApiEngine',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#ae43830b97f4f2002376eefb0576616a0',1,'Drupal::dkan_common::Service::Factory']]],
-  ['next_356',['next',['../classDrupal_1_1dkan__search_1_1Facade_1_1ComplexDataFacade.html#a4549cdadd47639a3dbf20af27b85f5d2',1,'Drupal::dkan_search::Facade::ComplexDataFacade']]],
-  ['nonpublicresourceprotector_357',['NonPublicResourceProtector',['../classDrupal_1_1dkan__non__public_1_1Plugin_1_1DataModifier_1_1NonPublicResourceProtector.html',1,'Drupal::dkan_non_public::Plugin::DataModifier']]],
-  ['nonpublicresourceprotector_2ephp_358',['NonPublicResourceProtector.php',['../NonPublicResourceProtector_8php.html',1,'']]],
-  ['nonpublicresourceprotectortest_359',['NonPublicResourceProtectorTest',['../classDrupal_1_1Tests_1_1dkan__non__public_1_1Unit_1_1NonPublicResourceProtectorTest.html',1,'Drupal::Tests::dkan_non_public::Unit']]],
-  ['nonpublicresourceprotectortest_2ephp_360',['NonPublicResourceProtectorTest.php',['../NonPublicResourceProtectorTest_8php.html',1,'']]]
+  ['offsetby_360',['offsetBy',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1Query.html#a32946b74b131fc396ddc18429b1e9d38',1,'Drupal::dkan_datastore::Storage::Query']]],
+  ['onchange_361',['onChange',['../classDrupal_1_1dkan__search_1_1Facade_1_1ComplexDataFacade.html#a2e2ec10fdf14e69df5b1facb14a713ae',1,'Drupal::dkan_search::Facade::ComplexDataFacade']]],
+  ['orphanchecker_362',['OrphanChecker',['../classDrupal_1_1dkan__data_1_1Reference_1_1OrphanChecker.html',1,'Drupal::dkan_data::Reference']]],
+  ['orphanchecker_2ephp_363',['OrphanChecker.php',['../OrphanChecker_8php.html',1,'']]],
+  ['orphancheckertest_364',['OrphanCheckerTest',['../classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1OrphanCheckerTest.html',1,'Drupal::Tests::dkan_data::Unit']]],
+  ['orphancheckertest_2ephp_365',['OrphanCheckerTest.php',['../OrphanCheckerTest_8php.html',1,'']]],
+  ['orphanreferenceprocessor_366',['OrphanReferenceProcessor',['../classDrupal_1_1dkan__data_1_1Plugin_1_1QueueWorker_1_1OrphanReferenceProcessor.html',1,'Drupal::dkan_data::Plugin::QueueWorker']]],
+  ['orphanreferenceprocessor_2ephp_367',['OrphanReferenceProcessor.php',['../OrphanReferenceProcessor_8php.html',1,'']]],
+  ['overview_368',['Overview',['../overview.html',1,'']]],
+  ['overview_5fabout_2emd_369',['overview_about.md',['../overview__about_8md.html',1,'']]],
+  ['overview_5finstallation_2emd_370',['overview_installation.md',['../overview__installation_8md.html',1,'']]],
+  ['overview_5flicense_2emd_371',['overview_license.md',['../overview__license_8md.html',1,'']]]
 ];
