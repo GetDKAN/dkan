@@ -1,5 +1,9 @@
 var NAVTREEINDEX2 =
 {
+"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#ab5012e2317ec0b5193942fbb2b8c3e7e":[6,0,0,3,1,1,1,4],
+"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#abb3ba4e735a195c8811168ce747ccad2":[6,0,0,3,1,1,1,5],
+"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#ac58d117a87f7666f139cfdf0be1d2ed6":[6,0,0,3,1,1,1,1],
+"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#acaf2c953628b037db485a5b32ba6e318":[6,0,0,3,1,1,1,8],
 "classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html":[6,0,0,3,1,3],
 "classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html#a33ae28b5e1bf5604a59f72c458b46ce9":[6,0,0,3,1,3,6],
 "classDrupal_1_1dkan__datastore_1_1Service_1_1Resource.html#a452e55de60c9cdabb9c509813f8e8e53":[6,0,0,3,1,3,2],
@@ -245,9 +249,5 @@ var NAVTREEINDEX2 =
 "classDrupal_1_1dkan__search_1_1WebServiceApi.html#a54b4723e479ed2cedab2c452903dfc3a":[6,0,0,11,4,0],
 "classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html":[6,0,0,12,0,0],
 "classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html#a1d50b0188feab0b6956edff01a213d4a":[6,0,0,12,0,0,1],
-"classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html#a2888b2bd51a0080d79a8e5647f75635f":[6,0,0,12,0,0,2],
-"classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html#aab815545d06194ca0b5acf38e989555a":[6,0,0,12,0,0,0],
-"classDrupal_1_1dkan__sql__endpoint_1_1Form_1_1DkanSqlEndpointSettingsForm.html":[6,0,0,12,1,0],
-"classDrupal_1_1dkan__sql__endpoint_1_1Form_1_1DkanSqlEndpointSettingsForm.html#a38bd8ff830c14a2c72cceea2345ee112":[6,0,0,12,1,0,1],
-"classDrupal_1_1dkan__sql__endpoint_1_1Form_1_1DkanSqlEndpointSettingsForm.html#a72ab6afdddbcb3102f543ad47693208e":[6,0,0,12,1,0,3]
+"classDrupal_1_1dkan__sql__endpoint_1_1Controller_1_1Api.html#a2888b2bd51a0080d79a8e5647f75635f":[6,0,0,12,0,0,2]
 };

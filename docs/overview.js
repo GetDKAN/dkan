@@ -1,4 +1,5 @@
 var overview =
 [
-    [ "Modules", "modules.html", "modules" ]
+    [ "Installation", "installation.html", null ],
+    [ "About", "about.html", null ]
 ];

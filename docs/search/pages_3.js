@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['harvest_1205',['Harvest',['../harvest.html',1,'modules']]]
+  ['example_20dkan_20sites_1208',['Example DKAN Sites',['../sites.html',1,'community']]]
 ];

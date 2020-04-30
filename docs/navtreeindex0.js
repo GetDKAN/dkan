@@ -205,7 +205,11 @@ var NAVTREEINDEX0 =
 "WebServiceApiDocsTest_8php_source.html":[7,0,1,8,1,0,0,2],
 "WebServiceApiDocs_8php.html":[7,0,1,8,0,4],
 "WebServiceApiDocs_8php_source.html":[7,0,1,8,0,4],
-"admin.html":[1,0,8,2],
+"about.html":[0,1],
+"about.html#autotoc_md25":[5],
+"about.html#autotoc_md26":[6],
+"about.html#autotoc_md27":[7],
+"admin.html":[1,4],
 "annotated.html":[6,0],
 "classApiTest.html":[6,0,1],
 "classApiTest.html#a3deae87de107006c90804695613eb21e":[6,0,1,4],
@@ -245,9 +249,5 @@ var NAVTREEINDEX0 =
 "classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Storage_1_1DataTest.html#afa21edf36cad43ddf4a0f2418323bda2":[6,0,0,15,0,0,1,0,3],
 "classDrupal_1_1Tests_1_1dkan__api_1_1Unit_1_1Storage_1_1DataTest.html#afacfa5d9cefa70bbfc2f5b8373663d9c":[6,0,0,15,0,0,1,0,5],
 "classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ConfigurationOverriderTest.html":[6,0,0,15,1,0,0],
-"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ConfigurationOverriderTest.html#aa3038fcdaeefa34e31182beeed78a37e":[6,0,0,15,1,0,0,0],
-"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ConfigurationOverriderTest.html#ad77b99c3502f2f0b674891d5fbce9006":[6,0,0,15,1,0,0,1],
-"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DataNodeLifeCycleTest.html":[6,0,0,15,1,0,1],
-"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DataNodeLifeCycleTest.html#a2b4d74f748c8789d64b1360fa649ada1":[6,0,0,15,1,0,1,0],
-"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DataNodeLifeCycleTest.html#a39deba296899a76c22f2436fc14c5437":[6,0,0,15,1,0,1,1]
+"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ConfigurationOverriderTest.html#aa3038fcdaeefa34e31182beeed78a37e":[6,0,0,15,1,0,0,0]
 };

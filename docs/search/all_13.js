@@ -1,19 +1,11 @@
 var searchData=
 [
-  ['jobstore_309',['JobStore',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html',1,'Drupal::dkan_datastore::Storage']]],
-  ['jobstore_2ephp_310',['JobStore.php',['../JobStore_8php.html',1,'']]],
-  ['jobstorefactory_311',['JobStoreFactory',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStoreFactory.html',1,'Drupal::dkan_datastore::Storage']]],
-  ['jobstorefactory_2ephp_312',['JobStoreFactory.php',['../JobStoreFactory_8php.html',1,'']]],
-  ['jobstoretest_313',['JobStoreTest',['../classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1JobStoreTest.html',1,'Drupal::Tests::dkan_datastore::Unit::Storage']]],
-  ['jobstoretest_2ephp_314',['JobStoreTest.php',['../JobStoreTest_8php.html',1,'']]],
-  ['jsonresponsetrait_2ephp_315',['JsonResponseTrait.php',['../JsonResponseTrait_8php.html',1,'']]],
-  ['jsonschemaformwidget_316',['JsonSchemaFormWidget',['../classDrupal_1_1json__schema__field_1_1Plugin_1_1Field_1_1FieldWidget_1_1JsonSchemaFormWidget.html',1,'Drupal::json_schema_field::Plugin::Field::FieldWidget']]],
-  ['jsonschemaformwidget_2ephp_317',['JsonSchemaFormWidget.php',['../JsonSchemaFormWidget_8php.html',1,'']]],
-  ['jsonschemaitem_318',['JsonSchemaItem',['../classDrupal_1_1field__example_1_1Plugin_1_1Field_1_1FieldType_1_1JsonSchemaItem.html',1,'Drupal::field_example::Plugin::Field::FieldType']]],
-  ['jsonschemaitem_2ephp_319',['JsonSchemaItem.php',['../JsonSchemaItem_8php.html',1,'']]],
-  ['jsonserialize_320',['jsonSerialize',['../classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html#a85036e545256446f30cb7696299507cf',1,'Drupal\dkan_datastore\Storage\DatabaseTable\jsonSerialize()'],['../classDrupal_1_1dkan__datastore_1_1Storage_1_1TableSummary.html#a80e22f5950c3a725643ee7582132836e',1,'Drupal\dkan_datastore\Storage\TableSummary\jsonSerialize()']]],
-  ['jsontableformatter_321',['JsonTableFormatter',['../classDrupal_1_1json__schema__field_1_1Plugin_1_1Field_1_1FieldFormatter_1_1JsonTableFormatter.html',1,'Drupal::json_schema_field::Plugin::Field::FieldFormatter']]],
-  ['jsontableformatter_2ephp_322',['JsonTableFormatter.php',['../JsonTableFormatter_8php.html',1,'']]],
-  ['jsonutil_323',['JsonUtil',['../classDrupal_1_1dkan__common_1_1Service_1_1JsonUtil.html',1,'Drupal::dkan_common::Service']]],
-  ['jsonutil_2ephp_324',['JsonUtil.php',['../JsonUtil_8php.html',1,'']]]
+  ['newhttpresponse_353',['newHttpResponse',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#affe30c37f9000434912829763f55d3c2',1,'Drupal::dkan_common::Service::Factory']]],
+  ['newjsonresponse_354',['newJsonResponse',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#ae661bbccd8247407d40104533c11f8bd',1,'Drupal::dkan_common::Service::Factory']]],
+  ['newserviceapiengine_355',['newServiceApiEngine',['../classDrupal_1_1dkan__common_1_1Service_1_1Factory.html#ae43830b97f4f2002376eefb0576616a0',1,'Drupal::dkan_common::Service::Factory']]],
+  ['next_356',['next',['../classDrupal_1_1dkan__search_1_1Facade_1_1ComplexDataFacade.html#a4549cdadd47639a3dbf20af27b85f5d2',1,'Drupal::dkan_search::Facade::ComplexDataFacade']]],
+  ['nonpublicresourceprotector_357',['NonPublicResourceProtector',['../classDrupal_1_1dkan__non__public_1_1Plugin_1_1DataModifier_1_1NonPublicResourceProtector.html',1,'Drupal::dkan_non_public::Plugin::DataModifier']]],
+  ['nonpublicresourceprotector_2ephp_358',['NonPublicResourceProtector.php',['../NonPublicResourceProtector_8php.html',1,'']]],
+  ['nonpublicresourceprotectortest_359',['NonPublicResourceProtectorTest',['../classDrupal_1_1Tests_1_1dkan__non__public_1_1Unit_1_1NonPublicResourceProtectorTest.html',1,'Drupal::Tests::dkan_non_public::Unit']]],
+  ['nonpublicresourceprotectortest_2ephp_360',['NonPublicResourceProtectorTest.php',['../NonPublicResourceProtectorTest_8php.html',1,'']]]
 ];

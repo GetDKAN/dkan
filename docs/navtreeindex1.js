@@ -1,5 +1,9 @@
 var NAVTREEINDEX1 =
 {
+"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1ConfigurationOverriderTest.html#ad77b99c3502f2f0b674891d5fbce9006":[6,0,0,15,1,0,0,1],
+"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DataNodeLifeCycleTest.html":[6,0,0,15,1,0,1],
+"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DataNodeLifeCycleTest.html#a2b4d74f748c8789d64b1360fa649ada1":[6,0,0,15,1,0,1,0],
+"classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DataNodeLifeCycleTest.html#a39deba296899a76c22f2436fc14c5437":[6,0,0,15,1,0,1,1],
 "classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DataNodeLifeCycleTest.html#ac767efb648725b3a6ab098dc2784d36d":[6,0,0,15,1,0,1,2],
 "classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DereferencerTest.html":[6,0,0,15,1,0,2],
 "classDrupal_1_1Tests_1_1dkan__data_1_1Unit_1_1DereferencerTest.html#a156feb5826bde8cf2c8f063905413754":[6,0,0,15,1,0,2,1],
@@ -245,9 +249,5 @@ var NAVTREEINDEX1 =
 "classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#a588bf8baa9a07ff875074484a9f281af":[6,0,0,3,1,1,1,9],
 "classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#a766e2bf195bec4b63c6722c062b785ab":[6,0,0,3,1,1,1,3],
 "classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#a7e274f7e7f80ec87fe864ce531409c1f":[6,0,0,3,1,1,1,2],
-"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#aa2bcbec2f7d3f0beb50ee86c4a41212b":[6,0,0,3,1,1,1,0],
-"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#ab5012e2317ec0b5193942fbb2b8c3e7e":[6,0,0,3,1,1,1,4],
-"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#abb3ba4e735a195c8811168ce747ccad2":[6,0,0,3,1,1,1,5],
-"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#ac58d117a87f7666f139cfdf0be1d2ed6":[6,0,0,3,1,1,1,1],
-"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#acaf2c953628b037db485a5b32ba6e318":[6,0,0,3,1,1,1,8]
+"classDrupal_1_1dkan__datastore_1_1Service_1_1ImporterList_1_1ImporterListItem.html#aa2bcbec2f7d3f0beb50ee86c4a41212b":[6,0,0,3,1,1,1,0]
 };

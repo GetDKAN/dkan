@@ -1,4 +1,4 @@
-@page datasetapi Metastore Dataset API
+@page datasetapi Metastore API
 
 
 ## GET
@@ -22,7 +22,7 @@ View the API of a specific dataset:
 ```
 ​/api​/1​/metastore​/schemas​/dataset​/items​/$id​/docs
 ```
-<h3 id="identifiers">Identifiers</h3>
+<h2 id="identifiers">Identifiers</h2>
 The dataset API has an additional endpoint that breaks out specific sub-elements
 of the dataset schema (distribution, publisher, theme, and keyword) so that these
 elements can be worked with as individual objects.

@@ -50,7 +50,7 @@ Unacceptable behavior from any community member, including sponsors and those wi
 Anyone asked to stop unacceptable behavior is expected to comply immediately.
 If a community member engages in unacceptable behavior, we may take any action deemed appropriate, up to and including a temporary ban or permanent expulsion from the community without warning.
 
-## Reporting guidelines
+**Reporting guidelines**
 
 If you are subject to or witness unacceptable behavior, or have any other concerns, please notify us as soon as possible by emailing getdkan@gmail.com.
 
