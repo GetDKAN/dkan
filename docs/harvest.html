@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('harvest.html',''); initResizable(); })
 <div class="textblock"><p>The DKAN <b>Harvest</b> module provides integration with the <a href="https://github.com/GetDKAN/harvest">harvest</a> library. This enables you to use the public feed or API of another data portal and import items from that portal’s catalog into your own.</p>
 <p>For example, <a href="https://data.gov/">Data.gov</a> harvests all of its datasets from the <a href="https://project-open-data.cio.gov/v1.1/schema/">data.json</a> files of <a href="https://catalog.data.gov/harvest">hundreds of U.S. federal, state and local data portals</a>.</p>
 <p>A "harvest" is the execution of a <a href="#harvest-plan">harvest plan</a>.</p>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md22"></a>
 Drush Commands</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -181,7 +181,7 @@ Drush Commands</h2>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md12"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md23"></a>
 Setup</h2>
 <p>Currently there is no UI for creating or running a harvest, use the drush commands above to harvest data into your catalog.</p>
 <ol type="1">
@@ -194,7 +194,7 @@ Setup</h2>
 <li>If you would also like to make changes to the data you are harvesting, you can create custom <b>transforms</b> that will modify the data before saving to your catalog. Add multiple transforms as an array. <a href="#transforms">Learn more here</a>.</li>
 </ol>
 <p><b>Example</b> </p><div class="fragment"><div class="line">drush dkan-harvest:register &#39;{&quot;identifier&quot;:&quot;example&quot;,&quot;extract&quot;:{&quot;type&quot;:&quot;\\Harvest\\ETL\\Extract\\DataJson&quot;,&quot;uri&quot;:&quot;https://source/data.json&quot;},&quot;transforms&quot;:[],&quot;load&quot;:{&quot;type&quot;:&quot;\\Drupal\\dkan_harvest\\Load\\Dataset&quot;}}&#39;</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md13"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md24"></a>
 Run the harvest</h2>
 <p>Once you have registered a harvest source, run the import, passing in the identifier as an arguement <code>drush dkan-harvest:run example</code></p>
 <h2 id="transforms">How to create transforms</h2>

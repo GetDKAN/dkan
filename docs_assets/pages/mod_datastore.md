@@ -8,7 +8,7 @@ The import will happen in batches during cron runs. The import will itterate ove
 
 You can manually import file data into the datastore via drush with the identifier of the distribution. Use the [API](guide-dataset-api.html#identifiers) to get the identifier of the file you want to import.
 
-### Drush Commands
+## Drush Commands
 
 | Command | Args | Notes |
 | -- | -- | -- |
@@ -16,7 +16,7 @@ You can manually import file data into the datastore via drush with the identifi
 | dkan-datastore:drop   | $uuid | drop the datastore table |
 | queue:run | dkan_datastore_import | process all of the datastore import jobs |
 
-### Datastore API
+## Datastore API
 
 Your data is now available via the Datastore API!
 `api/1/datastore/sql?query=`

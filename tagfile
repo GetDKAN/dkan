@@ -31,16 +31,6 @@
     <filename>community__sites_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>datastore.md</name>
-    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>datastore_8md.html</filename>
-  </compound>
-  <compound kind="file">
-    <name>harvest.md</name>
-    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>harvest_8md.html</filename>
-  </compound>
-  <compound kind="file">
     <name>metastore_admin.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
     <filename>metastore__admin_8md.html</filename>
@@ -64,6 +54,16 @@
     <name>metastore_search.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
     <filename>metastore__search_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>mod_datastore.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__datastore_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>mod_harvest.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__harvest_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>overview_about.md</name>
@@ -5712,16 +5712,6 @@
     <filename>sites.html</filename>
   </compound>
   <compound kind="page">
-    <name>datastore</name>
-    <title>Datastore</title>
-    <filename>datastore.html</filename>
-  </compound>
-  <compound kind="page">
-    <name>harvest</name>
-    <title>Harvest</title>
-    <filename>harvest.html</filename>
-  </compound>
-  <compound kind="page">
     <name>admin</name>
     <title>Metastore Administration</title>
     <filename>admin.html</filename>
@@ -5745,6 +5735,16 @@
     <name>search</name>
     <title>Metastore Search</title>
     <filename>search.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>datastore</name>
+    <title>Datastore</title>
+    <filename>datastore.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>harvest</name>
+    <title>Harvest</title>
+    <filename>harvest.html</filename>
   </compound>
   <compound kind="page">
     <name>about</name>
