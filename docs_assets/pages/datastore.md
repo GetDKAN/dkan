@@ -8,7 +8,7 @@ The import will happen in batches during cron runs. The import will itterate ove
 
 You can manually import file data into the datastore via drush with the identifier of the distribution. Use the [API](guide-dataset-api.html#identifiers) to get the identifier of the file you want to import.
 
-## Drush Commands
+### Drush Commands
 
 | Command | Args | Notes |
 | -- | -- | -- |
@@ -16,12 +16,12 @@ You can manually import file data into the datastore via drush with the identifi
 | dkan-datastore:drop   | $uuid | drop the datastore table |
 | queue:run | dkan_datastore_import | process all of the datastore import jobs |
 
-## Datastore API
+### Datastore API
 
 Your data is now available via the Datastore API!
 `api/1/datastore/sql?query=`
 
-### Parameters
+**Parameters**
 - resource_identifier (mixed) – identifier of the resource to be searched against
 - properties (mixed) – array or string of matching conditions to select
 - conditions (string) - retrieve only objects with properties of certain values
@@ -31,7 +31,7 @@ Your data is now available via the Datastore API!
 - offset (int) – offset this number of rows
 - count (boolean) - mark query as a count query
 
-### Example
+**Example**
 
 ```
 http://domain.com/api/1/datastore/sql?query=[SELECT * FROM ${resource_identifier}][WHERE state = 'OK'][ORDER BY county ASC][LIMIT 5 OFFSET 100]

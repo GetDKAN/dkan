@@ -1,6 +1,5 @@
 @page contributing Contributing
 
-
 <h2><i class="fab fa-slack"></i> Slack</h2>
 
 Join the [DKAN Slack community!](https://dkan.slack.com/)

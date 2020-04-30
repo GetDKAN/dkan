@@ -1,4 +1,4 @@
-@page overview Overview
+@page about About
 
 DKAN is an open source open data platform inspired by [CKAN](https://ckan.org/) (Comprehensive Knowledge Archive Network). It allows governments, nonprofits, universities to easily publish data to the public and is maintained by [CivicActions](https://civicactions.com).
 
@@ -15,5 +15,3 @@ For exposing more and better-structured machine-readable metadata than Project O
 PHP powers a significant percentage of web pages and Drupal powers an estimated 2% of the Internet as a whole. This percentage is even higher among government entities who choose to publish open data. DKAN offers an easy option for those who have already adopted PHP or Drupal. DKAN can also be enabled in existing Drupal sites so that anyone using Drupal can easily start to publish open data in standards compliant ways.
 
 One of the design goals of DKAN is to make it easy for anyone with an inexpensive hosting environment to create an open data catalog. Thanks to the popularity of Drupal there are many resources to help install and host Drupal sites like DKAN.
-
-@subpage modules

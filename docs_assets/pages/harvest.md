@@ -97,7 +97,7 @@ Currently there is no UI for creating or running a harvest, use the drush comman
 
 2. If you would also like to make changes to the data you are harvesting, you can create custom **transforms** that will modify the data before saving to your catalog. Add multiple transforms as an array. [Learn more here](#transforms).
 
-### Example
+**Example**
 \code{.bash}
 drush dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
 \endcode
@@ -164,7 +164,8 @@ class Socrata extends Transform {
 }
 \endcode
 
-### Example with new transform
+**Example with new transform**
+
 \code{.bash}
 drush dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":["\\Drupal\\custom_module\\Transform\\Socrata"],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
 \endcode

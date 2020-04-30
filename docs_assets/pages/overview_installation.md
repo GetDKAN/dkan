@@ -1,5 +1,4 @@
 @page installation Installation
-@tableofcontents
 
 @note
   <i class="fas fa-toolbox" style="color: #42b983"></i>
