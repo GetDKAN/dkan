@@ -6,5 +6,6 @@ var mods =
     [ "Metastore Search", "search.html", null ],
     [ "Metastore Administration", "admin.html", null ],
     [ "Datastore", "datastore.html", null ],
-    [ "Harvest", "harvest.html", null ]
+    [ "Harvest", "harvest.html", null ],
+    [ "Metadata Form", "form.html", null ]
 ];
