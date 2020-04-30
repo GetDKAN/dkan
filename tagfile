@@ -76,11 +76,6 @@
     <filename>overview__installation_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>overview_license.md</name>
-    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>overview__license_8md.html</filename>
-  </compound>
-  <compound kind="file">
     <name>Docs.php</name>
     <path>/Users/janette/workspace/dkan/modules/dkan_api/src/Controller/</path>
     <filename>Docs_8php.html</filename>
@@ -388,11 +383,6 @@
     <filename>DataTest_8php.html</filename>
     <class kind="class">Drupal::Tests::dkan_api::Unit::Storage::DataTest</class>
     <namespace>Drupal::Tests::dkan_api::Unit::Storage</namespace>
-  </compound>
-  <compound kind="file">
-    <name>README.md</name>
-    <path>/Users/janette/workspace/dkan/modules/dkan_datastore/</path>
-    <filename>README_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>Drush.php</name>
@@ -1010,6 +1000,16 @@
     <filename>JsonSchemaFormWidget_8php.html</filename>
     <class kind="class">Drupal::json_schema_field::Plugin::Field::FieldWidget::JsonSchemaFormWidget</class>
     <namespace>Drupal::json_schema_field::Plugin::Field::FieldWidget</namespace>
+  </compound>
+  <compound kind="file">
+    <name>README.md</name>
+    <path>/Users/janette/workspace/dkan/</path>
+    <filename>README_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>README.md</name>
+    <path>/Users/janette/workspace/dkan/modules/dkan_datastore/</path>
+    <filename>modules_2dkan__datastore_2README_8md.html</filename>
   </compound>
   <compound kind="class">
     <name>Drupal::dkan_common::Storage::AbstractDatabaseTable</name>
@@ -5757,8 +5757,9 @@
     <filename>installation.html</filename>
   </compound>
   <compound kind="page">
-    <name>license</name>
-    <title>License</title>
-    <filename>license.html</filename>
+    <name>index</name>
+    <title>DKAN</title>
+    <filename>index.html</filename>
+    <docanchor file="index.html">md_README</docanchor>
   </compound>
 </tagfile>
