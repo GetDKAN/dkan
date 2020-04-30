@@ -28,7 +28,6 @@ var NAVTREE =
     [ "Overview", "overview.html", "overview" ],
     [ "Modules", "mods.html", "mods" ],
     [ "Community", "community.html", "community" ],
-    [ "License", "license.html", null ],
     [ "Todo List", "todo.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],

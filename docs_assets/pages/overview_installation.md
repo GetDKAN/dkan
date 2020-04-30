@@ -48,18 +48,12 @@ drush dkan-dummy-content:remove
 
 ## Decoupled front end
 
- DKAN for Drupal 8 works with a decoupled [React application](https://github.com/GetDKAN/data-catalog-frontend) as the frontend.
+ DKAN 2.x works with a decoupled frontend so there are two pieces for getting started.
 
- **DKAN_frontend** is an integration module that allows the React App driving the frontend to be embedded in Drupal.
+1. **[Data Catalog Frontend](https://github.com/GetDKAN/data-catalog-frontend)**
 
- If you are not using DKAN Tools, follow these steps to get the integration working:
- 1. Place the source for the ``data-catalog-frontend`` inside of your ``docroot`` directory.
+   This is a Gatsby React app that will use our [Data Catalog Components](https://github.com/GetDKAN/data-catalog-components) library to build the frontend. If you are not using DKAN Tools, follow the instructions on the README file of the app for manual installation.
 
-```
-git clone https://github.com/GetDKAN/data-catalog-frontend.git
-```
+2. **DKAN Frontend**
 
- 2. Follow the instructions in the [README](https://github.com/GetDKAN/data-catalog-frontend) of ``data-catalog-frontend``, but instead of runnig the development server at the end, build a copy with ``npm run build``
- 3. Enable the integration module ``dkan_frontend``
- 4. Change the sites configuration to point the homepage (``/``) to ``/home``
- 5. The app's README will also have instructions for how you can customize the colors and layout to meet your needs.
+   This is an integration module that allows the React app driving the frontend to be embedded in Drupal. Be sure that it is enabled.
