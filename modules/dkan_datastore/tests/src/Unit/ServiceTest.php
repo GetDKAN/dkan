@@ -25,7 +25,7 @@ class ServiceTest extends TestCase {
   /**
    *
    */
-  public function test() {
+  public function testImport() {
 
     $chain = (new Chain($this))
       ->add(Container::class, "get", $this->getContainerOptions())
@@ -46,7 +46,7 @@ class ServiceTest extends TestCase {
   /**
    *
    */
-  public function testDeferred() {
+  public function testDeferredImport() {
 
     $chain = (new Chain($this))
       ->add(Container::class, "get", $this->getContainerOptions())

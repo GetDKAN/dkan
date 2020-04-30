@@ -122,7 +122,8 @@ context('SQL Endpoint', () => {
         method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
-          "query": query
+          "query": query,
+          "show_db_columns": true
         }
       }).then((response) => {
         expect(response.status).eql(200)
@@ -141,7 +142,8 @@ context('SQL Endpoint', () => {
         method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
-          "query": query
+          "query": query,
+          "show_db_columns": true
         }
       }).then((response) => {
         expect(response.status).eql(200)
@@ -166,7 +168,8 @@ context('SQL Endpoint', () => {
         method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
-          "query": query
+          "query": query,
+          "show_db_columns": true
         }
       }).then((response) => {
         expect(response.status).eql(200)
@@ -180,7 +183,8 @@ context('SQL Endpoint', () => {
         method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
-          "query": query
+          "query": query,
+          "show_db_columns": true
         }
       }).then((response) => {
         expect(response.status).eql(200)
@@ -198,7 +202,8 @@ context('SQL Endpoint', () => {
         method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
-          "query": query
+          "query": query,
+          "show_db_columns": true
         }
       }).then((response) => {
         expect(response.status).eql(200)
@@ -213,7 +218,8 @@ context('SQL Endpoint', () => {
         method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
-          "query": query
+          "query": query,
+          "show_db_columns": true
         }
       }).then((response) => {
         expect(response.status).eql(200)
@@ -231,7 +237,8 @@ context('SQL Endpoint', () => {
         method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
-          "query": query
+          "query": query,
+          "show_db_columns": true
         }
       }).then((response) => {
         expect(response.status).eql(200)
@@ -246,7 +253,8 @@ context('SQL Endpoint', () => {
         method: 'POST',
         url: apiUri + '/datastore/sql',
         body: {
-          "query": query
+          "query": query,
+          "show_db_columns": true
         }
       }).then((response) => {
         expect(response.status).eql(200)
