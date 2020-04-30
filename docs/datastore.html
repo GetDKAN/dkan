@@ -102,8 +102,8 @@ $(document).ready(function(){initNavTree('datastore.html',''); initResizable(); 
 <p>When a dataset is added to the catalog, the mimetype value of each distribution object is checked to determine if the distribution is a CSV file or not. CSV distributions will be added to the import queue to be parsed and imported into the datastore.</p>
 <p>The import will happen in batches during cron runs. The import will itterate over the file, if it does not finish, the job will be returned to the queue. Be sure to have cron running on a regular basis so that large file imports will complete. If there is a change to the metadata it will trigger a new import to the datastore.</p>
 <p>You can manually import file data into the datastore via drush with the identifier of the distribution. Use the <a href="guide-dataset-api.html#identifiers">API</a> to get the identifier of the file you want to import.</p>
-<h3><a class="anchor" id="autotoc_md9"></a>
-Drush Commands</h3>
+<h2><a class="anchor" id="autotoc_md20"></a>
+Drush Commands</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Command </th><th class="markdownTableHeadNone">Args </th><th class="markdownTableHeadNone">Notes  </th></tr>
@@ -114,8 +114,8 @@ Drush Commands</h3>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">queue:run </td><td class="markdownTableBodyNone">dkan_datastore_import </td><td class="markdownTableBodyNone">process all of the datastore import jobs  </td></tr>
 </table>
-<h3><a class="anchor" id="autotoc_md10"></a>
-Datastore API</h3>
+<h2><a class="anchor" id="autotoc_md21"></a>
+Datastore API</h2>
 <p>Your data is now available via the Datastore API! <code>api/1/datastore/sql?query=</code></p>
 <p><b>Parameters</b></p><ul>
 <li>resource_identifier (mixed) – identifier of the resource to be searched against</li>

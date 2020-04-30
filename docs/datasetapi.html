@@ -98,7 +98,7 @@ $(document).ready(function(){initNavTree('datasetapi.html',''); initResizable();
 <div class="title">Metastore API </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h2><a class="anchor" id="autotoc_md14"></a>
+<div class="textblock"><h2><a class="anchor" id="autotoc_md9"></a>
 GET</h2>
 <p>GET is used to request data from the data catalog. No authentication is needed. $id = identifier of the dataset.</p>
 <p>Get all of the datasets in the catalog:</p>
@@ -116,7 +116,7 @@ GET</h2>
 <li>Headers need a <b>Content-Type</b> with <b>application/json</b></li>
 </ul>
 </dd></dl>
-<h2><a class="anchor" id="autotoc_md15"></a>
+<h2><a class="anchor" id="autotoc_md10"></a>
 Log In</h2>
 <p>For actions that require authentication, the user must also have the <b>API User</b> role. This gives the user permission to post, put, and delete datasets through the api.</p>
 <div class="fragment"><div class="line">POST http://domain.com/api/dataset/user/login</div>
@@ -127,7 +127,7 @@ Log In</h2>
 <div class="line">    &quot;username&quot;: &quot;{username}&quot;,</div>
 <div class="line">    &quot;password&quot;: &quot;{password}&quot;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md16"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md11"></a>
 POST</h2>
 <p>POST is used to send data to a server to create a dataset. The data sent to the server with POST is stored in the request body of the HTTP request.</p>
 <p>Create a dataset: <code>/api​/1​/metastore​/schemas​/dataset/items</code></p>
@@ -172,7 +172,7 @@ POST</h2>
 <div class="line">        }</div>
 <div class="line">    ],</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md17"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md12"></a>
 PUT</h2>
 <p>PUT is used to replace content. PUT requests are idempotent, so calling the same PUT request multiple times will always produce the same result. In contrast, calling a POST request repeatedly has the side effect of creating the same content multiple times.</p>
 <p>Replace a dataset: <code>/api​/1​/metastore​/schemas​/dataset/items​/$id</code></p>
@@ -210,7 +210,7 @@ PUT</h2>
 <div class="line">        &quot;Financing&quot;</div>
 <div class="line">    ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md18"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md13"></a>
 PATCH</h2>
 <p>PATCH is used to make changes to part of the content in your catalog, so you only send the parameters which you want to update.</p>
 <p>Update a dataset: <code>/api​/1​/metastore​/schemas​/dataset/items​/$id</code></p>
@@ -235,7 +235,7 @@ PATCH</h2>
 <div class="line">        &quot;Example&quot;</div>
 <div class="line">    ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md19"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md14"></a>
 DELETE</h2>
 <p>Delete a dataset: <code>api​/1​/metastore​/schemas​/dataset​/items/$id</code></p>
 <div class="fragment"><div class="line">DELETE http://domain.com/api​/1​/metastore​/schemas​/dataset​/items/03ac1e65-bec9-4e36-883d-181c04c95d99</div>
