@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan\JsonResponseTrait;
 use Drupal\dkan_data\Reference\Dereferencer;
-use Drupal\dkan_api\Controller\Docs;
+use Drupal\wsapi\Controller\Docs;
 
 /**
  * Provides dataset-specific OpenAPI documentation.
@@ -33,7 +33,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * OpenAPI spec for dataset-related endpoints.
    *
-   * @var \Drupal\dkan_api\Controller\Docs
+   * @var \Drupal\wsapi\Controller\Docs
    */
   private $docsController;
 
@@ -49,7 +49,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApiDocs(
-      $container->get("dkan_api.docs"),
+      $container->get("wsapi.docs"),
       $container->get("metastore.service"),
       $container->get('plugin.manager.dkan.data_modifier')
     );
@@ -58,7 +58,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Constructs a new WebServiceApiDocs.
    *
-   * @param \Drupal\dkan_api\Controller\Docs $docsController
+   * @param \Drupal\wsapi\Controller\Docs $docsController
    *   Serves openapi spec for dataset-related endpoints.
    * @param \Drupal\metastore\Service $metastoreService
    *   Metastore service.

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\dkan_api\Controller;
+namespace Drupal\wsapi\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -83,8 +83,8 @@ class Docs implements ContainerInjectionInterface {
    *   The openapi spec.
    */
   public function getJsonFromYmlFile() {
-    $modulePath = $this->moduleHandler->getModule('dkan_api')->getPath();
-    $ymlSpecPath = $modulePath . '/docs/dkan_api_openapi_spec.yml';
+    $modulePath = $this->moduleHandler->getModule('wsapi')->getPath();
+    $ymlSpecPath = $modulePath . '/docs/wsapi_openapi_spec.yml';
     $ymlSpec = file_get_contents($ymlSpecPath);
 
     return $this->serializer->decode($ymlSpec);

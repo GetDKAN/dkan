@@ -9,7 +9,7 @@
 
     <testsuites>
         <testsuite name="DKAN Test Suite">
-            <directory>modules/dkan_api/tests</directory>
+            <directory>modules/wsapi/tests</directory>
             <directory>modules/dkan/tests</directory>
             <directory>modules/dkan_data/tests</directory>
             <directory>modules/dkan_datastore/tests</directory>
@@ -38,7 +38,7 @@
     <filter>
         <!-- whitelist needed for code coverage generation to work -->
         <whitelist>
-            <directory>modules/dkan_api/src</directory>
+            <directory>modules/wsapi/src</directory>
             <directory>modules/dkan/src</directory>
             <directory>modules/dkan_data/src</directory>
             <directory>modules/dkan_datastore/src</directory>

@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\dkan_api\Unit\Controller;
+namespace Drupal\Tests\wsapi\Unit\Controller;
 
 use Drupal\Core\Extension\Extension;
-use Drupal\dkan_api\Controller\Docs;
+use Drupal\wsapi\Controller\Docs;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;

@@ -5,7 +5,7 @@ core: 8.x
 dependencies:
   - dkan
   - dkan_schema
-  - dkan_api
+  - wsapi
   - metastore
   - field
   - menu_ui

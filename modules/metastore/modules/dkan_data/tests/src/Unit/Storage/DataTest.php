@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan_api\Unit\Storage;
+namespace Drupal\Tests\wsapi\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  * Tests Drupal\dkan_data\Storage\Data.
  *
  * @coversDefaultClass \Drupal\dkan_data\Storage\Data
- * @group dkan_api
+ * @group wsapi
  */
 class DataTest extends TestCase {
   private $node;

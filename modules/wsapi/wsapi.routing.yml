@@ -1,15 +1,15 @@
-dkan_api:
+wsapi:
   path: '/api'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_api\Controller\Docs::getVersions'}
+    { _controller: '\Drupal\wsapi\Controller\Docs::getVersions'}
   requirements:
     _permission: 'access content'
 
-dkan_api.1:
+wsapi.1:
   path: '/api/1'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_api\Controller\Docs::getComplete'}
+    { _controller: '\Drupal\wsapi\Controller\Docs::getComplete'}
   requirements:
     _permission: 'access content'

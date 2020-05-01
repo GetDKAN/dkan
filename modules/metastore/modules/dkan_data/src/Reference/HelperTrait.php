@@ -29,7 +29,7 @@ trait HelperTrait {
    * @return array
    *   List of dataset properties.
    *
-   * @Todo: consolidate with dkan_api RouteProvider's getPropertyList.
+   * @Todo: consolidate with wsapi RouteProvider's getPropertyList.
    */
   private function getPropertyList() : array {
     if (isset($this->configService)) {

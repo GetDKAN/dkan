@@ -1,6 +1,6 @@
 services:
-  dkan_api.docs:
-    class: \Drupal\dkan_api\Controller\Docs
+  wsapi.docs:
+    class: \Drupal\wsapi\Controller\Docs
     arguments:
       - '@module_handler'
       - '@request_stack'

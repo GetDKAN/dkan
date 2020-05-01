@@ -5,7 +5,7 @@ core: 8.x
 package: DKAN
 dependencies:
   - dkan
-  - dkan_api
+  - wsapi
   - dkan_schema
   - dkan_data
   - basic_auth
