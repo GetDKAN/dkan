@@ -4,8 +4,8 @@ namespace Drupal\dkan_datastore\Storage;
 
 use Drupal\Core\Database\Connection;
 use Dkan\Datastore\Resource;
-use Drupal\dkan_common\LoggerTrait;
-use Drupal\dkan_common\Storage\AbstractDatabaseTable;
+use Drupal\dkan\LoggerTrait;
+use Drupal\dkan\Storage\AbstractDatabaseTable;
 use Psr\Log\LogLevel;
 
 /**

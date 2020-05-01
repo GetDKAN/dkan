@@ -101,23 +101,23 @@
   </compound>
   <compound kind="file">
     <name>AbstractDataNodeLifeCycle.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/</path>
     <filename>AbstractDataNodeLifeCycle_8php</filename>
-    <class kind="class">Drupal::dkan_common::AbstractDataNodeLifeCycle</class>
-    <namespace>Drupal::dkan_common</namespace>
+    <class kind="class">Drupal::dkan::AbstractDataNodeLifeCycle</class>
+    <namespace>Drupal::dkan</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifier.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Annotation/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Annotation/</path>
     <filename>DataModifier_8php</filename>
-    <class kind="class">Drupal::dkan_common::Annotation::DataModifier</class>
-    <namespace>Drupal::dkan_common::Annotation</namespace>
+    <class kind="class">Drupal::dkan::Annotation::DataModifier</class>
+    <namespace>Drupal::dkan::Annotation</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifierPluginTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/</path>
     <filename>DataModifierPluginTrait_8php</filename>
-    <namespace>Drupal::dkan_common</namespace>
+    <namespace>Drupal::dkan</namespace>
     <member kind="variable">
       <type>trait</type>
       <name>DataModifierPluginTrait</name>
@@ -128,22 +128,22 @@
   </compound>
   <compound kind="file">
     <name>DataNodeLifeCycleEntityValidationException.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Exception/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Exception/</path>
     <filename>DataNodeLifeCycleEntityValidationException_8php</filename>
-    <class kind="class">Drupal::dkan_common::Exception::DataNodeLifeCycleEntityValidationException</class>
-    <namespace>Drupal::dkan_common::Exception</namespace>
+    <class kind="class">Drupal::dkan::Exception::DataNodeLifeCycleEntityValidationException</class>
+    <namespace>Drupal::dkan::Exception</namespace>
   </compound>
   <compound kind="file">
     <name>JsonResponseTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/</path>
     <filename>JsonResponseTrait_8php</filename>
-    <namespace>Drupal::dkan_common</namespace>
+    <namespace>Drupal::dkan</namespace>
   </compound>
   <compound kind="file">
     <name>LoggerTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/</path>
     <filename>LoggerTrait_8php</filename>
-    <namespace>Drupal::dkan_common</namespace>
+    <namespace>Drupal::dkan</namespace>
     <member kind="function">
       <type></type>
       <name>setLoggerFactory</name>
@@ -161,82 +161,82 @@
   </compound>
   <compound kind="file">
     <name>DataModifierBase.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Plugin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Plugin/</path>
     <filename>DataModifierBase_8php</filename>
-    <class kind="class">Drupal::dkan_common::Plugin::DataModifierBase</class>
-    <namespace>Drupal::dkan_common::Plugin</namespace>
+    <class kind="class">Drupal::dkan::Plugin::DataModifierBase</class>
+    <namespace>Drupal::dkan::Plugin</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifierInterface.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Plugin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Plugin/</path>
     <filename>DataModifierInterface_8php</filename>
-    <class kind="interface">Drupal::dkan_common::Plugin::DataModifierInterface</class>
-    <namespace>Drupal::dkan_common::Plugin</namespace>
+    <class kind="interface">Drupal::dkan::Plugin::DataModifierInterface</class>
+    <namespace>Drupal::dkan::Plugin</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifierManager.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Plugin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Plugin/</path>
     <filename>DataModifierManager_8php</filename>
-    <class kind="class">Drupal::dkan_common::Plugin::DataModifierManager</class>
-    <namespace>Drupal::dkan_common::Plugin</namespace>
+    <class kind="class">Drupal::dkan::Plugin::DataModifierManager</class>
+    <namespace>Drupal::dkan::Plugin</namespace>
   </compound>
   <compound kind="file">
     <name>Factory.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Service/</path>
     <filename>Factory_8php</filename>
-    <class kind="class">Drupal::dkan_common::Service::Factory</class>
-    <namespace>Drupal::dkan_common::Service</namespace>
+    <class kind="class">Drupal::dkan::Service::Factory</class>
+    <namespace>Drupal::dkan::Service</namespace>
   </compound>
   <compound kind="file">
     <name>JsonUtil.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Service/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Service/</path>
     <filename>JsonUtil_8php</filename>
-    <class kind="class">Drupal::dkan_common::Service::JsonUtil</class>
-    <namespace>Drupal::dkan_common::Service</namespace>
+    <class kind="class">Drupal::dkan::Service::JsonUtil</class>
+    <namespace>Drupal::dkan::Service</namespace>
   </compound>
   <compound kind="file">
     <name>AbstractDatabaseTable.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Storage/</path>
     <filename>AbstractDatabaseTable_8php</filename>
-    <class kind="class">Drupal::dkan_common::Storage::AbstractDatabaseTable</class>
-    <namespace>Drupal::dkan_common::Storage</namespace>
+    <class kind="class">Drupal::dkan::Storage::AbstractDatabaseTable</class>
+    <namespace>Drupal::dkan::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>QueryToQueryHelperTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Storage/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Storage/</path>
     <filename>QueryToQueryHelperTrait_8php</filename>
-    <namespace>Drupal::dkan_common::Storage</namespace>
+    <namespace>Drupal::dkan::Storage</namespace>
   </compound>
   <compound kind="file">
     <name>UrlHostTokenResolver.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/</path>
     <filename>UrlHostTokenResolver_8php</filename>
-    <class kind="class">Drupal::dkan_common::UrlHostTokenResolver</class>
-    <namespace>Drupal::dkan_common</namespace>
+    <class kind="class">Drupal::dkan::UrlHostTokenResolver</class>
+    <namespace>Drupal::dkan</namespace>
   </compound>
   <compound kind="file">
     <name>ParentCallTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Util/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Util/</path>
     <filename>ParentCallTrait_8php</filename>
-    <namespace>Drupal::dkan_common::Util</namespace>
+    <namespace>Drupal::dkan::Util</namespace>
   </compound>
   <compound kind="file">
     <name>RequestTrait.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/src/Util/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/src/Util/</path>
     <filename>RequestTrait_8php</filename>
-    <namespace>Drupal::dkan_common::Util</namespace>
+    <namespace>Drupal::dkan::Util</namespace>
   </compound>
   <compound kind="file">
     <name>DataModifierManagerTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/tests/src/Unit/Plugin/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/tests/src/Unit/Plugin/</path>
     <filename>DataModifierManagerTest_8php</filename>
-    <class kind="class">Drupal::dkan_common::Tests::Unit::DataModifierManagerTest</class>
-    <namespace>Drupal::dkan_common::Tests::Unit</namespace>
+    <class kind="class">Drupal::dkan::Tests::Unit::DataModifierManagerTest</class>
+    <namespace>Drupal::dkan::Tests::Unit</namespace>
     <namespace>Drupal</namespace>
   </compound>
   <compound kind="file">
     <name>UrlHostTokenResolverTest.php</name>
-    <path>/home/fmizzell/Workspace/dkan/modules/dkan_common/tests/src/Unit/</path>
+    <path>/home/fmizzell/Workspace/dkan/modules/dkan/tests/src/Unit/</path>
     <filename>UrlHostTokenResolverTest_8php</filename>
     <class kind="class">UrlHostTokenResolverTest</class>
   </compound>
@@ -1012,7 +1012,7 @@
     <namespace>Drupal::json_schema_field::Plugin::Field::FieldWidget</namespace>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::Storage::AbstractDatabaseTable</name>
+    <name>Drupal::dkan::Storage::AbstractDatabaseTable</name>
     <filename>classDrupal_1_1dkan__common_1_1Storage_1_1AbstractDatabaseTable.html</filename>
     <member kind="function">
       <type></type>
@@ -1114,7 +1114,7 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::AbstractDataNodeLifeCycle</name>
+    <name>Drupal::dkan::AbstractDataNodeLifeCycle</name>
     <filename>classDrupal_1_1dkan__common_1_1AbstractDataNodeLifeCycle.html</filename>
     <member kind="function">
       <type></type>
@@ -1828,7 +1828,7 @@
   <compound kind="class">
     <name>Drupal::dkan_harvest::Storage::DatabaseTable</name>
     <filename>classDrupal_1_1dkan__harvest_1_1Storage_1_1DatabaseTable.html</filename>
-    <base>Drupal::dkan_common::Storage::AbstractDatabaseTable</base>
+    <base>Drupal::dkan::Storage::AbstractDatabaseTable</base>
     <member kind="function">
       <type></type>
       <name>__construct</name>
@@ -1868,7 +1868,7 @@
   <compound kind="class">
     <name>Drupal::dkan_datastore::Storage::DatabaseTable</name>
     <filename>classDrupal_1_1dkan__datastore_1_1Storage_1_1DatabaseTable.html</filename>
-    <base>Drupal::dkan_common::Storage::AbstractDatabaseTable</base>
+    <base>Drupal::dkan::Storage::AbstractDatabaseTable</base>
     <member kind="function">
       <type></type>
       <name>__construct</name>
@@ -2098,7 +2098,7 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::Annotation::DataModifier</name>
+    <name>Drupal::dkan::Annotation::DataModifier</name>
     <filename>classDrupal_1_1dkan__common_1_1Annotation_1_1DataModifier.html</filename>
     <member kind="variable">
       <type></type>
@@ -2130,9 +2130,9 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::Plugin::DataModifierBase</name>
+    <name>Drupal::dkan::Plugin::DataModifierBase</name>
     <filename>classDrupal_1_1dkan__common_1_1Plugin_1_1DataModifierBase.html</filename>
-    <base>Drupal::dkan_common::Plugin::DataModifierInterface</base>
+    <base>Drupal::dkan::Plugin::DataModifierInterface</base>
     <member kind="function">
       <type></type>
       <name>message</name>
@@ -2149,7 +2149,7 @@
     </member>
   </compound>
   <compound kind="interface">
-    <name>Drupal::dkan_common::Plugin::DataModifierInterface</name>
+    <name>Drupal::dkan::Plugin::DataModifierInterface</name>
     <filename>interfaceDrupal_1_1dkan__common_1_1Plugin_1_1DataModifierInterface.html</filename>
     <member kind="function">
       <type></type>
@@ -2181,7 +2181,7 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::Plugin::DataModifierManager</name>
+    <name>Drupal::dkan::Plugin::DataModifierManager</name>
     <filename>classDrupal_1_1dkan__common_1_1Plugin_1_1DataModifierManager.html</filename>
     <member kind="function">
       <type></type>
@@ -2192,7 +2192,7 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::Tests::Unit::DataModifierManagerTest</name>
+    <name>Drupal::dkan::Tests::Unit::DataModifierManagerTest</name>
     <filename>classDrupal_1_1dkan__common_1_1Tests_1_1Unit_1_1DataModifierManagerTest.html</filename>
     <member kind="function">
       <type></type>
@@ -2205,7 +2205,7 @@
   <compound kind="class">
     <name>Drupal::dkan_data::DataNodeLifeCycle</name>
     <filename>classDrupal_1_1dkan__data_1_1DataNodeLifeCycle.html</filename>
-    <base>Drupal::dkan_common::AbstractDataNodeLifeCycle</base>
+    <base>Drupal::dkan::AbstractDataNodeLifeCycle</base>
     <member kind="function">
       <type></type>
       <name>presave</name>
@@ -2217,7 +2217,7 @@
   <compound kind="class">
     <name>Drupal::dkan_datastore::DataNodeLifeCycle</name>
     <filename>classDrupal_1_1dkan__datastore_1_1DataNodeLifeCycle.html</filename>
-    <base>Drupal::dkan_common::AbstractDataNodeLifeCycle</base>
+    <base>Drupal::dkan::AbstractDataNodeLifeCycle</base>
     <member kind="function">
       <type></type>
       <name>insert</name>
@@ -2273,7 +2273,7 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::Exception::DataNodeLifeCycleEntityValidationException</name>
+    <name>Drupal::dkan::Exception::DataNodeLifeCycleEntityValidationException</name>
     <filename>classDrupal_1_1dkan__common_1_1Exception_1_1DataNodeLifeCycleEntityValidationException.html</filename>
   </compound>
   <compound kind="class">
@@ -2771,7 +2771,7 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::Service::Factory</name>
+    <name>Drupal::dkan::Service::Factory</name>
     <filename>classDrupal_1_1dkan__common_1_1Service_1_1Factory.html</filename>
     <member kind="function">
       <type></type>
@@ -3336,7 +3336,7 @@
   <compound kind="class">
     <name>Drupal::dkan_datastore::Storage::JobStore</name>
     <filename>classDrupal_1_1dkan__datastore_1_1Storage_1_1JobStore.html</filename>
-    <base>Drupal::dkan_common::Storage::AbstractDatabaseTable</base>
+    <base>Drupal::dkan::Storage::AbstractDatabaseTable</base>
     <member kind="function">
       <type></type>
       <name>__construct</name>
@@ -3464,7 +3464,7 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::Service::JsonUtil</name>
+    <name>Drupal::dkan::Service::JsonUtil</name>
     <filename>classDrupal_1_1dkan__common_1_1Service_1_1JsonUtil.html</filename>
     <member kind="function">
       <type></type>
@@ -3512,7 +3512,7 @@
   <compound kind="class">
     <name>Drupal::dkan_non_public::Plugin::DataModifier::NonPublicResourceProtector</name>
     <filename>classDrupal_1_1dkan__non__public_1_1Plugin_1_1DataModifier_1_1NonPublicResourceProtector.html</filename>
-    <base>Drupal::dkan_common::Plugin::DataModifierBase</base>
+    <base>Drupal::dkan::Plugin::DataModifierBase</base>
     <member kind="function">
       <type></type>
       <name>__construct</name>
@@ -4606,7 +4606,7 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>Drupal::dkan_common::UrlHostTokenResolver</name>
+    <name>Drupal::dkan::UrlHostTokenResolver</name>
     <filename>classDrupal_1_1dkan__common_1_1UrlHostTokenResolver.html</filename>
     <member kind="function" static="yes">
       <type>static</type>
@@ -5084,7 +5084,7 @@
     <name>Drupal</name>
     <filename>namespaceDrupal.html</filename>
     <namespace>Drupal::dkan_api</namespace>
-    <namespace>Drupal::dkan_common</namespace>
+    <namespace>Drupal::dkan</namespace>
     <namespace>Drupal::dkan_data</namespace>
     <namespace>Drupal::dkan_datastore</namespace>
     <namespace>Drupal::dkan_dummy_content</namespace>
@@ -5111,17 +5111,17 @@
     <class kind="class">Drupal::dkan_api::Controller::Docs</class>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common</name>
+    <name>Drupal::dkan</name>
     <filename>namespaceDrupal_1_1dkan__common.html</filename>
-    <namespace>Drupal::dkan_common::Annotation</namespace>
-    <namespace>Drupal::dkan_common::Exception</namespace>
-    <namespace>Drupal::dkan_common::Plugin</namespace>
-    <namespace>Drupal::dkan_common::Service</namespace>
-    <namespace>Drupal::dkan_common::Storage</namespace>
-    <namespace>Drupal::dkan_common::Tests</namespace>
-    <namespace>Drupal::dkan_common::Util</namespace>
-    <class kind="class">Drupal::dkan_common::AbstractDataNodeLifeCycle</class>
-    <class kind="class">Drupal::dkan_common::UrlHostTokenResolver</class>
+    <namespace>Drupal::dkan::Annotation</namespace>
+    <namespace>Drupal::dkan::Exception</namespace>
+    <namespace>Drupal::dkan::Plugin</namespace>
+    <namespace>Drupal::dkan::Service</namespace>
+    <namespace>Drupal::dkan::Storage</namespace>
+    <namespace>Drupal::dkan::Tests</namespace>
+    <namespace>Drupal::dkan::Util</namespace>
+    <class kind="class">Drupal::dkan::AbstractDataNodeLifeCycle</class>
+    <class kind="class">Drupal::dkan::UrlHostTokenResolver</class>
     <member kind="function">
       <type></type>
       <name>setLoggerFactory</name>
@@ -5145,45 +5145,45 @@
     </member>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common::Annotation</name>
+    <name>Drupal::dkan::Annotation</name>
     <filename>namespaceDrupal_1_1dkan__common_1_1Annotation.html</filename>
-    <class kind="class">Drupal::dkan_common::Annotation::DataModifier</class>
+    <class kind="class">Drupal::dkan::Annotation::DataModifier</class>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common::Exception</name>
+    <name>Drupal::dkan::Exception</name>
     <filename>namespaceDrupal_1_1dkan__common_1_1Exception.html</filename>
-    <class kind="class">Drupal::dkan_common::Exception::DataNodeLifeCycleEntityValidationException</class>
+    <class kind="class">Drupal::dkan::Exception::DataNodeLifeCycleEntityValidationException</class>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common::Plugin</name>
+    <name>Drupal::dkan::Plugin</name>
     <filename>namespaceDrupal_1_1dkan__common_1_1Plugin.html</filename>
-    <class kind="class">Drupal::dkan_common::Plugin::DataModifierBase</class>
-    <class kind="interface">Drupal::dkan_common::Plugin::DataModifierInterface</class>
-    <class kind="class">Drupal::dkan_common::Plugin::DataModifierManager</class>
+    <class kind="class">Drupal::dkan::Plugin::DataModifierBase</class>
+    <class kind="interface">Drupal::dkan::Plugin::DataModifierInterface</class>
+    <class kind="class">Drupal::dkan::Plugin::DataModifierManager</class>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common::Service</name>
+    <name>Drupal::dkan::Service</name>
     <filename>namespaceDrupal_1_1dkan__common_1_1Service.html</filename>
-    <class kind="class">Drupal::dkan_common::Service::Factory</class>
-    <class kind="class">Drupal::dkan_common::Service::JsonUtil</class>
+    <class kind="class">Drupal::dkan::Service::Factory</class>
+    <class kind="class">Drupal::dkan::Service::JsonUtil</class>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common::Storage</name>
+    <name>Drupal::dkan::Storage</name>
     <filename>namespaceDrupal_1_1dkan__common_1_1Storage.html</filename>
-    <class kind="class">Drupal::dkan_common::Storage::AbstractDatabaseTable</class>
+    <class kind="class">Drupal::dkan::Storage::AbstractDatabaseTable</class>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common::Tests</name>
+    <name>Drupal::dkan::Tests</name>
     <filename>namespaceDrupal_1_1dkan__common_1_1Tests.html</filename>
-    <namespace>Drupal::dkan_common::Tests::Unit</namespace>
+    <namespace>Drupal::dkan::Tests::Unit</namespace>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common::Tests::Unit</name>
+    <name>Drupal::dkan::Tests::Unit</name>
     <filename>namespaceDrupal_1_1dkan__common_1_1Tests_1_1Unit.html</filename>
-    <class kind="class">Drupal::dkan_common::Tests::Unit::DataModifierManagerTest</class>
+    <class kind="class">Drupal::dkan::Tests::Unit::DataModifierManagerTest</class>
   </compound>
   <compound kind="namespace">
-    <name>Drupal::dkan_common::Util</name>
+    <name>Drupal::dkan::Util</name>
     <filename>namespaceDrupal_1_1dkan__common_1_1Util.html</filename>
   </compound>
   <compound kind="namespace">

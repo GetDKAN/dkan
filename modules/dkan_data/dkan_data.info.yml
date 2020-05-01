@@ -3,7 +3,7 @@ description: 'Provides a Data content type and related configuration. '
 type: module
 core: 8.x
 dependencies:
-  - dkan_common
+  - dkan
   - dkan_schema
   - path
   - user

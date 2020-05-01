@@ -2,8 +2,8 @@
 
 namespace Drupal\dkan_datastore;
 
-use Drupal\dkan_common\AbstractDataNodeLifeCycle;
-use Drupal\dkan_common\LoggerTrait;
+use Drupal\dkan\AbstractDataNodeLifeCycle;
+use Drupal\dkan\LoggerTrait;
 
 /**
  * DataNodeLifeCycle.

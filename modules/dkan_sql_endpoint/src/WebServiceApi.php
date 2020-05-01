@@ -2,13 +2,13 @@
 
 namespace Drupal\dkan_sql_endpoint;
 
-use Drupal\dkan_common\DataModifierPluginTrait;
-use Drupal\dkan_common\Plugin\DataModifierManager;
+use Drupal\dkan\DataModifierPluginTrait;
+use Drupal\dkan\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\dkan\JsonResponseTrait;
 
 /**
  * Api class.
@@ -31,7 +31,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       $container->get('dkan_sql_endpoint.service'),
       $container->get('database'),
       $container->get('request_stack'),
-      $container->get('plugin.manager.dkan_common.data_modifier')
+      $container->get('plugin.manager.dkan.data_modifier')
     );
   }
 

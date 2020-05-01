@@ -6,7 +6,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\dkan_datastore\DataNodeLifeCycle;
-use Drupal\dkan_common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\dkan\Exception\DataNodeLifeCycleEntityValidationException;
 
 /**
  * Implements hook_ENTITY_TYPE_insert().

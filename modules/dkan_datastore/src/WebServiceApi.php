@@ -5,7 +5,7 @@ namespace Drupal\dkan_datastore;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\dkan\JsonResponseTrait;
 
 /**
  * Class Api.

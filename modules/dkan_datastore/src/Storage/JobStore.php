@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_datastore\Storage;
 
-use Drupal\dkan_common\Storage\AbstractDatabaseTable;
+use Drupal\dkan\Storage\AbstractDatabaseTable;
 use Procrastinator\Job\Job;
 use Drupal\Core\Database\Connection;
 

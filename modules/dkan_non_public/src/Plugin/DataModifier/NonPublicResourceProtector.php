@@ -5,7 +5,7 @@ namespace Drupal\dkan_non_public\Plugin\DataModifier;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\dkan_common\Plugin\DataModifierBase;
+use Drupal\dkan\Plugin\DataModifierBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

@@ -4,7 +4,7 @@ type: module
 core: 8.x
 package: DKAN
 dependencies:
-  - dkan_common
+  - dkan
   - dkan_api
   - dkan_schema
   - dkan_data

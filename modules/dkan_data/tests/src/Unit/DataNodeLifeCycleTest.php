@@ -6,7 +6,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityInterface;
 use MockChain\Chain;
 use MockChain\Options;
-use Drupal\dkan_common\UrlHostTokenResolver;
+use Drupal\dkan\UrlHostTokenResolver;
 use Drupal\dkan_data\DataNodeLifeCycle;
 use Drupal\node\Entity\Node;
 use PHPUnit\Framework\TestCase;

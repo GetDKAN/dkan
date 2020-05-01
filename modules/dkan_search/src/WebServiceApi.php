@@ -3,7 +3,7 @@
 namespace Drupal\dkan_search;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\dkan\JsonResponseTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 

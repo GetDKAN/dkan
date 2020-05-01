@@ -1,0 +1,6 @@
+dkan.admin_config:
+  path: '/admin/config/dkan'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+  requirements:
+    _permission: 'access administration pages'

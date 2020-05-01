@@ -3,7 +3,7 @@
 namespace Drupal\dkan_harvest\Storage;
 
 use Drupal\Core\Database\Connection;
-use Drupal\dkan_common\Storage\AbstractDatabaseTable;
+use Drupal\dkan\Storage\AbstractDatabaseTable;
 
 /**
  * DatabaseTable.

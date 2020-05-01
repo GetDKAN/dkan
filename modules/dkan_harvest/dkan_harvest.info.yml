@@ -3,7 +3,7 @@ description: 'Provides integration with the Harvester library.'
 type: module
 core: 8.x
 dependencies:
-  - dkan_common
+  - dkan
   - dkan_schema
   - dkan_api
   - dkan_metastore

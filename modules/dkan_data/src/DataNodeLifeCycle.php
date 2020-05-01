@@ -2,8 +2,8 @@
 
 namespace Drupal\dkan_data;
 
-use Drupal\dkan_common\AbstractDataNodeLifeCycle;
-use Drupal\dkan_common\UrlHostTokenResolver;
+use Drupal\dkan\AbstractDataNodeLifeCycle;
+use Drupal\dkan\UrlHostTokenResolver;
 
 /**
  * DataNodeLifeCycle.

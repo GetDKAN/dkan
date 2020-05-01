@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\dkan\JsonResponseTrait;
 
 /**
  * Class Api.

@@ -6,8 +6,8 @@ use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\dkan_common\Plugin\DataModifierBase;
-use Drupal\dkan_common\Plugin\DataModifierManager;
+use Drupal\dkan\Plugin\DataModifierBase;
+use Drupal\dkan\Plugin\DataModifierManager;
 use Drupal\Tests\dkan_sql_endpoint\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
@@ -96,7 +96,7 @@ class WebServiceApiTest extends TestCase {
       ->add('dkan_sql_endpoint.service', Service::class)
       ->add("database", Connection::class)
       ->add('request_stack', RequestStack::class)
-      ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class)
+      ->add('plugin.manager.dkan.data_modifier', DataModifierManager::class)
       ->index(0);
 
     $body = json_encode(["query" => $query]);
