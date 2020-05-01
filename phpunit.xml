@@ -18,7 +18,7 @@
             <directory>modules/metastore/tests</directory>
             <directory>modules/access_level_non_public/tests</directory>
             <directory>modules/schema/tests</directory>
-            <directory>modules/dkan_search/tests</directory>
+            <directory>modules/metadata_search/tests</directory>
             <directory>modules/sql_endpoint/tests</directory>
         </testsuite>
     </testsuites>
@@ -48,7 +48,7 @@
             <directory>modules/metastore/src</directory>
             <directory>modules/access_level_non_public/src</directory>
             <directory>modules/schema/src</directory>
-            <directory>modules/dkan_search/src</directory>
+            <directory>modules/metadata_search/src</directory>
             <directory>modules/sql_endpoint/src</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>

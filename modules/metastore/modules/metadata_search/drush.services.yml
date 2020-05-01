@@ -1,0 +1,5 @@
+services:
+  metadata_search:commands:
+    class: \Drupal\metadata_search\Drush\DkanSearchCommands
+    tags:
+      - { name: drush.command }

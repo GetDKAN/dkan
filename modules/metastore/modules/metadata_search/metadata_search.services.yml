@@ -1,0 +1,7 @@
+services:
+  metadata_search.service:
+    class: \Drupal\metadata_search\Service
+    arguments:
+      - '@metastore.service'
+      - '@entity_type.manager'
+      - '@search_api.query_helper'
