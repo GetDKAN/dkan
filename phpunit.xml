@@ -16,7 +16,7 @@
             <directory>modules/frontend/tests</directory>
             <directory>modules/harvest/tests</directory>
             <directory>modules/metastore/tests</directory>
-            <directory>modules/dkan_non_public/tests</directory>
+            <directory>modules/access_level_non_public/tests</directory>
             <directory>modules/dkan_schema/tests</directory>
             <directory>modules/dkan_search/tests</directory>
             <directory>modules/sql_endpoint/tests</directory>
@@ -46,7 +46,7 @@
             <directory>modules/harvest/src</directory>
             <directory>modules/dkan_lunr/src</directory>
             <directory>modules/metastore/src</directory>
-            <directory>modules/dkan_non_public/src</directory>
+            <directory>modules/access_level_non_public/src</directory>
             <directory>modules/dkan_schema/src</directory>
             <directory>modules/dkan_search/src</directory>
             <directory>modules/sql_endpoint/src</directory>
