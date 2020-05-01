@@ -12,7 +12,7 @@ use Drupal\Core\Url;
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function dkan_admin_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+function ground_control_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['#id']) && $form['#id'] == 'views-exposed-form-dkan-content-page-1') {
     $options = [
       '' => t('- Any -'),
@@ -36,7 +36,7 @@ function dkan_admin_form_views_exposed_form_alter(&$form, FormStateInterface $fo
 /**
  * Implements template_preprocess_views_view_fields().
  */
-function dkan_admin_preprocess_views_view_field(&$vars) {
+function ground_control_preprocess_views_view_field(&$vars) {
   if (isset($vars['view'])
     && ($vars['view']->id() == 'dkan_content')
     && ($vars['view']->current_display == 'page_1')) {

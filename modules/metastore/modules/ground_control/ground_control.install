@@ -7,7 +7,7 @@
 /**
  * Disable standard content view.
  */
-function dkan_admin_install() {
+function ground_control_install() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.content');
   $config->set('status', FALSE);
@@ -18,7 +18,7 @@ function dkan_admin_install() {
 /**
  * Ensable standard content view.
  */
-function dkan_admin_uninstall() {
+function ground_control_uninstall() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.content');
   $config->set('status', TRUE);
