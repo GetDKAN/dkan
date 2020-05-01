@@ -15,7 +15,7 @@ class Commands extends DrushCommands {
   /**
    * Create dummy content.
    *
-   * @command dkan-dummy-content:create
+   * @command dummy:create
    */
   public function create() {
     $this->createDummyJson();
@@ -28,7 +28,7 @@ class Commands extends DrushCommands {
   /**
    * Remove dummy content.
    *
-   * @command dkan-dummy-content:remove
+   * @command dummy:remove
    */
   public function remove() {
     $harvester = $this->getHarvester("dummy");
