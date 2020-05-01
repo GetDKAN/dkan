@@ -31,29 +31,14 @@
     <filename>community__sites_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>metastore_admin.md</name>
+    <name>dataset_api.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>metastore__admin_8md.html</filename>
+    <filename>dataset__api_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>metastore_api.md</name>
+    <name>mod_common.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>metastore__api_8md.html</filename>
-  </compound>
-  <compound kind="file">
-    <name>metastore_basics.md</name>
-    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>metastore__basics_8md.html</filename>
-  </compound>
-  <compound kind="file">
-    <name>metastore_content_type.md</name>
-    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>metastore__content__type_8md.html</filename>
-  </compound>
-  <compound kind="file">
-    <name>metastore_search.md</name>
-    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>metastore__search_8md.html</filename>
+    <filename>mod__common_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>mod_datastore.md</name>
@@ -61,14 +46,44 @@
     <filename>mod__datastore_8md.html</filename>
   </compound>
   <compound kind="file">
+    <name>mod_frontend.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__frontend_8md.html</filename>
+  </compound>
+  <compound kind="file">
     <name>mod_harvest.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
     <filename>mod__harvest_8md.html</filename>
   </compound>
   <compound kind="file">
-    <name>mod_metadata_form.md</name>
+    <name>mod_metastore_admin.md</name>
     <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
-    <filename>mod__metadata__form_8md.html</filename>
+    <filename>mod__metastore__admin_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>mod_metastore_basics.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__metastore__basics_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>mod_metastore_content_type.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__metastore__content__type_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>mod_metastore_form.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__metastore__form_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>mod_metastore_search.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__metastore__search_8md.html</filename>
+  </compound>
+  <compound kind="file">
+    <name>mod_test_fixtures.md</name>
+    <path>/Users/janette/workspace/dkan/docs_assets/pages/</path>
+    <filename>mod__test__fixtures_8md.html</filename>
   </compound>
   <compound kind="file">
     <name>overview_about.md</name>
@@ -5717,29 +5732,14 @@
     <filename>sites.html</filename>
   </compound>
   <compound kind="page">
-    <name>admin</name>
-    <title>Metastore Administration</title>
-    <filename>admin.html</filename>
-  </compound>
-  <compound kind="page">
     <name>datasetapi</name>
     <title>Metastore API</title>
     <filename>datasetapi.html</filename>
   </compound>
   <compound kind="page">
-    <name>intro</name>
-    <title>Metastore</title>
-    <filename>intro.html</filename>
-  </compound>
-  <compound kind="page">
-    <name>data</name>
-    <title>Metastore Content Type</title>
-    <filename>data.html</filename>
-  </compound>
-  <compound kind="page">
-    <name>search</name>
-    <title>Metastore Search</title>
-    <filename>search.html</filename>
+    <name>common</name>
+    <title>Common</title>
+    <filename>common.html</filename>
   </compound>
   <compound kind="page">
     <name>datastore</name>
@@ -5747,14 +5747,44 @@
     <filename>datastore.html</filename>
   </compound>
   <compound kind="page">
+    <name>frontend</name>
+    <title>Frontend</title>
+    <filename>frontend.html</filename>
+  </compound>
+  <compound kind="page">
     <name>harvest</name>
     <title>Harvest</title>
     <filename>harvest.html</filename>
   </compound>
   <compound kind="page">
+    <name>admin</name>
+    <title>Metastore Administration</title>
+    <filename>admin.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>meta</name>
+    <title>Metastore</title>
+    <filename>meta.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>data</name>
+    <title>Metastore Content Type</title>
+    <filename>data.html</filename>
+  </compound>
+  <compound kind="page">
     <name>form</name>
-    <title>Metadata Form</title>
+    <title>Metastore Form</title>
     <filename>form.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>search</name>
+    <title>Metastore Search</title>
+    <filename>search.html</filename>
+  </compound>
+  <compound kind="page">
+    <name>default</name>
+    <title>Test Fixtures</title>
+    <filename>default.html</filename>
   </compound>
   <compound kind="page">
     <name>about</name>

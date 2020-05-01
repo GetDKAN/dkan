@@ -9,7 +9,7 @@
 
 As a piece of software in its Alpha cycle, the code is continuously changing and in very active development.
 
-[Documentation](https://getdkan.github.io/dkan/)
+[Documentation](https://docs.getdkan.com/)
 
 ## Features
 
