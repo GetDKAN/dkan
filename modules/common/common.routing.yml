@@ -1,4 +1,4 @@
-dkan.admin_config:
+common.admin_config_dkan:
   path: '/admin/config/dkan'
   defaults:
     _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'

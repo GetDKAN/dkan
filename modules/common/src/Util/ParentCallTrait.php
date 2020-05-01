@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan\Util;
+namespace Drupal\common\Util;
 
 /**
  * Trait allows for simpler testing of `parent::` calls.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan;
+namespace Drupal\common;
 
 /**
  * Provides common functionality for alls data modifier plugins.
@@ -10,7 +10,7 @@ trait DataModifierPluginTrait {
   /**
    * Data modifier plugin manager service.
    *
-   * @var \Drupal\dkan\Plugin\DataModifierManager
+   * @var \Drupal\common\Plugin\DataModifierManager
    */
   private $pluginManager;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan\Util;
+namespace Drupal\common\Util;
 
 /**
  * Utilities relating to current request.

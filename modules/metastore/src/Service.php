@@ -3,8 +3,8 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan\DataModifierPluginTrait;
-use Drupal\dkan\Plugin\DataModifierManager;
+use Drupal\common\DataModifierPluginTrait;
+use Drupal\common\Plugin\DataModifierManager;
 use Drupal\data_content_type\Reference\Dereferencer;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
@@ -57,7 +57,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Setter to discover data modifier plugins.
    *
-   * @param \Drupal\dkan\Plugin\DataModifierManager $pluginManager
+   * @param \Drupal\common\Plugin\DataModifierManager $pluginManager
    *   Injected plugin manager.
    */
   public function setDataModifierPlugins(DataModifierManager $pluginManager) {

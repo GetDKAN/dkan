@@ -2,11 +2,11 @@
 
 namespace Drupal\metastore;
 
-use Drupal\dkan\DataModifierPluginTrait;
-use Drupal\dkan\Plugin\DataModifierManager;
+use Drupal\common\DataModifierPluginTrait;
+use Drupal\common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan\JsonResponseTrait;
+use Drupal\common\JsonResponseTrait;
 use Drupal\data_content_type\Reference\Dereferencer;
 use Drupal\wsapi\Docs;
 
@@ -62,7 +62,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Serves openapi spec for dataset-related endpoints.
    * @param \Drupal\metastore\Service $metastoreService
    *   Metastore service.
-   * @param \Drupal\dkan\Plugin\DataModifierManager $pluginManager
+   * @param \Drupal\common\Plugin\DataModifierManager $pluginManager
    *   Metastore plugin manager.
    */
   public function __construct(Docs $docsController, Service $metastoreService, DataModifierManager $pluginManager) {

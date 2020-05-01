@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan\Plugin;
+namespace Drupal\common\Plugin;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -31,12 +31,12 @@ class DataModifierManager extends DefaultPluginManager {
       'Plugin/DataModifier',
       $namespaces,
       $module_handler,
-      'Drupal\dkan\Plugin\DataModifierInterface',
-      'Drupal\dkan\Annotation\DataModifier'
+      'Drupal\common\Plugin\DataModifierInterface',
+      'Drupal\common\Annotation\DataModifier'
     );
 
-    $this->alterInfo('data_content_type_modifier_info');
-    $this->setCacheBackend($cache_backend, 'data_content_type_modifier_plugins');
+    $this->alterInfo('common_data_modifier_info');
+    $this->setCacheBackend($cache_backend, 'common_data_modifier_plugins');
   }
 
 }

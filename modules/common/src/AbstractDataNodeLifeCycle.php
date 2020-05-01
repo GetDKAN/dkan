@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\dkan;
+namespace Drupal\common;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\dkan\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\node\Entity\Node;
 
 /**

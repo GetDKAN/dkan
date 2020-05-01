@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan;
+namespace Drupal\common;
 
 /**
  * UrlHostTokenResolver.

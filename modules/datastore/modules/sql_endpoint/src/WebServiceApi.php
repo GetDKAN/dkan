@@ -2,13 +2,13 @@
 
 namespace Drupal\sql_endpoint;
 
-use Drupal\dkan\DataModifierPluginTrait;
-use Drupal\dkan\Plugin\DataModifierManager;
+use Drupal\common\DataModifierPluginTrait;
+use Drupal\common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan\JsonResponseTrait;
+use Drupal\common\JsonResponseTrait;
 
 /**
  * Api class.

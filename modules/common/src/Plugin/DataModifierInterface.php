@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan\Plugin;
+namespace Drupal\common\Plugin;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 

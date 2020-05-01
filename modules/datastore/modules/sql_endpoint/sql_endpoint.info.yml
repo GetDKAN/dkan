@@ -3,7 +3,6 @@ description: 'A web services endpoint that allows SQL-like syntax to be used to 
 type: module
 core: 8.x
 package: DKAN
-
 dependencies:
-  - dkan
+  - common
   - datastore

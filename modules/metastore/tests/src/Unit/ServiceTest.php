@@ -265,7 +265,7 @@ EOF;
   }
 
   /**
-   * @return \Drupal\dkan\Tests\Mock\Chain
+   * @return \Drupal\common\Tests\Mock\Chain
    */
   public function getCommonMockChain() {
     $options = (new Options())

@@ -3,8 +3,8 @@
 namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\Core\Database\Query\SelectInterface;
-use Drupal\dkan\Plugin\DataModifierManager;
-use Drupal\dkan\Plugin\DataModifierBase;
+use Drupal\common\Plugin\DataModifierManager;
+use Drupal\common\Plugin\DataModifierBase;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\wsapi\Docs;

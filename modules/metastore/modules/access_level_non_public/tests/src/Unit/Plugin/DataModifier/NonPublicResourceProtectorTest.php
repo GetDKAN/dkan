@@ -8,7 +8,7 @@ use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\dkan\Plugin\DataModifierBase;
+use Drupal\common\Plugin\DataModifierBase;
 use Drupal\access_level_non_public\Plugin\DataModifier\NonPublicResourceProtector;
 use MockChain\Chain;
 use MockChain\Options;

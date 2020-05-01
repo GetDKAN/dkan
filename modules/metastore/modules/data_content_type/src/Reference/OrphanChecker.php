@@ -4,7 +4,7 @@ namespace Drupal\data_content_type\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\dkan\LoggerTrait;
+use Drupal\common\LoggerTrait;
 use stdClass;
 
 /**

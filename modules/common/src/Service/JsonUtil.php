@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan\Service;
+namespace Drupal\common\Service;
 
 /**
  * Unclassified json utilities.

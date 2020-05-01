@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\dkan\Storage;
+namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Query\Select;
-use Drupal\datastore\Storage\Query;
+use Drupal\dkan_datastore\Storage\Query;
 
 /**
  * Class QueryToQueryHelperTrait.

@@ -10,7 +10,7 @@
     <testsuites>
         <testsuite name="DKAN Test Suite">
             <directory>modules/dkan_api/tests</directory>
-            <directory>modules/dkan_common/tests</directory>
+            <directory>modules/common/tests</directory>
             <directory>modules/dkan_data/tests</directory>
             <directory>modules/dkan_datastore/tests</directory>
             <directory>modules/dkan_frontend/tests</directory>
@@ -39,7 +39,7 @@
         <!-- whitelist needed for code coverage generation to work -->
         <whitelist>
             <directory>modules/dkan_api/src</directory>
-            <directory>modules/dkan_common/src</directory>
+            <directory>modules/common/src</directory>
             <directory>modules/dkan_data/src</directory>
             <directory>modules/dkan_datastore/src</directory>
             <directory>modules/dkan_frontend/src</directory>
@@ -52,7 +52,7 @@
             <directory>modules/dkan_sql_endpoint/src</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>
-        <directory>modules/dkan_common/src/Tests</directory>
+        <directory>modules/common/src/Tests</directory>
         <directory suffix="Test.php">./</directory>
         <directory suffix="TestBase.php">./</directory>
         <!-- TBD: skip the drush commands for now -->

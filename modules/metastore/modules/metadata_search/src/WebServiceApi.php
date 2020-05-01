@@ -3,7 +3,7 @@
 namespace Drupal\metadata_search;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan\JsonResponseTrait;
+use Drupal\common\JsonResponseTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 

@@ -6,10 +6,10 @@
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\dkan\UrlHostTokenResolver;
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\data_content_type\DataNodeLifeCycle;
 use Drupal\data_content_type\Reference\Dereferencer;
-use Drupal\dkan\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 
 /**
  * Implements hook_node_load().

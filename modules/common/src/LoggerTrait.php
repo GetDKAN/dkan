@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan;
+namespace Drupal\common;
 
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Psr\Log\LogLevel;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan\Annotation;
+namespace Drupal\common\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 

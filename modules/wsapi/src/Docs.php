@@ -84,7 +84,7 @@ class Docs implements ContainerInjectionInterface {
    */
   public function getJsonFromYmlFile() {
     $modulePath = $this->moduleHandler->getModule('wsapi')->getPath();
-    $ymlSpecPath = $modulePath . '/docs/wsapi_openapi_spec.yml';
+    $ymlSpecPath = $modulePath . '/docs/openapi_spec.yml';
     $ymlSpec = file_get_contents($ymlSpecPath);
 
     return $this->serializer->decode($ymlSpec);
