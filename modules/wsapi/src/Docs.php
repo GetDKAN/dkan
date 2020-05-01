@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\wsapi\Controller;
+namespace Drupal\wsapi;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;

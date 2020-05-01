@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\wsapi\Unit\Controller;
+namespace Drupal\Tests\wsapi;
 
 use Drupal\Core\Extension\Extension;
-use Drupal\wsapi\Controller\Docs;
+use Drupal\wsapi\Docs;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -74,7 +74,7 @@ class DocsTest extends TestCase {
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(ModuleHandlerInterface::class, 'getModule', Extension::class)
-      ->add(Extension::class, 'getPath', __DIR__);
+      ->add(Extension::class, 'getPath', __DIR__ . "/..");
 
     return $mockChain;
   }

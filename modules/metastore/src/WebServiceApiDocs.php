@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan\JsonResponseTrait;
 use Drupal\data_content_type\Reference\Dereferencer;
-use Drupal\wsapi\Controller\Docs;
+use Drupal\wsapi\Docs;
 
 /**
  * Provides dataset-specific OpenAPI documentation.

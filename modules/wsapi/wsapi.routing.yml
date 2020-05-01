@@ -2,7 +2,7 @@ wsapi:
   path: '/api'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\wsapi\Controller\Docs::getVersions'}
+    { _controller: '\Drupal\wsapi\Docs::getVersions'}
   requirements:
     _permission: 'access content'
 
@@ -10,6 +10,6 @@ wsapi.1:
   path: '/api/1'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\wsapi\Controller\Docs::getComplete'}
+    { _controller: '\Drupal\wsapi\Docs::getComplete'}
   requirements:
     _permission: 'access content'

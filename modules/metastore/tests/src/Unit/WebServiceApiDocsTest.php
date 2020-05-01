@@ -7,7 +7,7 @@ use Drupal\dkan\Plugin\DataModifierManager;
 use Drupal\dkan\Plugin\DataModifierBase;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Serialization\Yaml;
-use Drupal\wsapi\Controller\Docs;
+use Drupal\wsapi\Docs;
 use MockChain\Chain;
 use MockChain\Options;
 use Drupal\metastore\Service;
@@ -70,7 +70,7 @@ class WebServiceApiDocsTest extends TestCase {
   private function getCommonMockChain() {
     $serializer = new Yaml();
     // Test against ./docs/wsapi_openapi_spec.yml.
-    $yamlSpec = file_get_contents(__DIR__ . "/docs/wsapi_openapi_spec.yml");
+    $yamlSpec = file_get_contents(__DIR__ . "/docs/openapi_spec.yml");
 
     $mockChain = new Chain($this);
     $mockChain->add(ContainerInterface::class, 'get',
