@@ -4,12 +4,6 @@ type: module
 core: 8.x
 dependencies:
   - dkan
-  - schema
   - wsapi
   - metastore
-  - field
-  - menu_ui
-  - node
-  - path
-  - text
 package: DKAN

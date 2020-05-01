@@ -15,7 +15,7 @@ class DkanSearchCommands extends DrushCommands {
   /**
    * Rebuild the search api tracker for the dkan index.
    *
-   * @command dkan-search:rebuild-tracker
+   * @command metadata-search:rebuild-tracker
    */
   public function rebuildTracker() {
     $index = Index::load('dkan');

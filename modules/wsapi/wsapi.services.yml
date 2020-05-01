@@ -1,6 +1,6 @@
 services:
   wsapi.docs:
-    class: \Drupal\wsapi\Controller\Docs
+    class: \Drupal\wsapi\Docs
     arguments:
       - '@module_handler'
       - '@request_stack'

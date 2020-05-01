@@ -33,7 +33,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * OpenAPI spec for dataset-related endpoints.
    *
-   * @var \Drupal\wsapi\Controller\Docs
+   * @var \Drupal\wsapi\Docs
    */
   private $docsController;
 
@@ -58,7 +58,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Constructs a new WebServiceApiDocs.
    *
-   * @param \Drupal\wsapi\Controller\Docs $docsController
+   * @param \Drupal\wsapi\Docs $docsController
    *   Serves openapi spec for dataset-related endpoints.
    * @param \Drupal\metastore\Service $metastoreService
    *   Metastore service.

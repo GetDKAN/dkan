@@ -3,9 +3,7 @@ description: "Provides an endpoint to perform searches against DKAN's metadata."
 type: module
 core: 8.x
 dependencies:
-  - data_content_type
   - metastore
-  - schema
   - search_api
   - search_api_db
 package: DKAN

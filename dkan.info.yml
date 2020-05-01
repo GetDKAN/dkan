@@ -3,4 +3,18 @@ description: 'DKAN Open Data Portal'
 type: module
 core: 8.x
 core_version_requirement: ^8 || ^9
+dependencies:
+  - config
+  - dkan_api
+  - dkan_common
+  - dkan_data
+  - dkan_datastore
+  - dkan_metadata_form
+  - dkan_metastore
+  - dkan_search
+  - dkan_sql_endpoint
+  - file
+  - node
+  - path
+  - user
 package: DKAN
