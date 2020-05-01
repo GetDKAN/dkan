@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_dummy_content\Drush;
+namespace Drupal\dummy\Drush;
 
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -44,7 +44,7 @@ class Commands extends DrushCommands {
    * Private.
    */
   private function getHarvestPlan() {
-    $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content');
+    $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dummy');
 
     $plan_path = $module_path . "/harvest_plan.json";
     $json = file_get_contents($plan_path);
@@ -59,17 +59,17 @@ class Commands extends DrushCommands {
    * Private.
    */
   private function createDummyJson() {
-    $dummy_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/dummy.template.json";
+    $dummy_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dummy') . "/dummy.template.json";
     $content = file_get_contents($dummy_template);
     $new = $this->detokenize($content);
-    file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/dummy.json", $new);
+    file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dummy') . "/dummy.json", $new);
   }
 
   /**
    * Private.
    */
   private function detokenize($content) {
-    $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/files";
+    $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dummy') . "/files";
     return str_replace("<!*path*!>", $absolute_module_path, $content);
   }
 
