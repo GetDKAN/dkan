@@ -4,6 +4,9 @@ namespace Drupal\dkan_sql_endpoint;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\dkan_datastore\Service\Factory\Resource;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_sql_endpoint\Helper\GetStringsFromStateMachineExecution;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,6 +18,8 @@ use Maquina\StateMachine\Machine;
  */
 class Service implements ContainerInjectionInterface {
   private $configFactory;
+  private $databaseTableFactory;
+  private $resourceServiceFactory;
 
   /**
    * Inherited.
@@ -22,30 +27,88 @@ class Service implements ContainerInjectionInterface {
    * @inheritDoc
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('config.factory'));
+    return new static(
+      $container->get('config.factory'),
+      $container->get('dkan_datastore.database_table_factory'),
+      $container->get('dkan_datastore.service.factory.resource')
+    );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactory $configFactory) {
+  public function __construct(ConfigFactory $configFactory, DatabaseTableFactory $databaseTableFactory, Resource $resourceServiceFactory) {
     $this->configFactory = $configFactory;
+    $this->databaseTableFactory = $databaseTableFactory;
+    $this->resourceServiceFactory = $resourceServiceFactory;
   }
 
   /**
-   * Get table name.
+   * Run query.
+   */
+  public function runQuery(string $queryString, $showDbColumns = FALSE): array {
+    $queryObject = $this->getQueryObject($queryString);
+    $databaseTable = $this->getDatabaseTable($this->getResourceUuid($queryString));
+
+    $result = $databaseTable->query($queryObject);
+
+    $schema = $databaseTable->getSchema();
+    $fields = $schema['fields'];
+
+    return array_map(function ($row) use ($fields, $showDbColumns) {
+      if (!$showDbColumns) {
+        unset($row->record_number);
+      }
+
+      $arrayRow = (array) $row;
+
+      $newRow = [];
+
+      foreach ($arrayRow as $fieldName => $value) {
+        if (!$showDbColumns && isset($fields[$fieldName]['description']) && !empty($fields[$fieldName]['description'])) {
+          $newRow[$fields[$fieldName]['description']] = $value;
+        }
+        else {
+          $newRow[$fieldName] = $value;
+        }
+      }
+
+      return (object) $newRow;
+    }, $result);
+  }
+
+  /**
+   * Get resource UUID.
    *
    * @param string $sqlString
    *   A string with an sql statement.
    *
    * @return string
-   *   The table name from the sql statement.
+   *   The table name from the sql statement,
+   *   which is equivalent to the resource's UUID.
    *
    * @throws \Exception
    */
-  public function getTableName(string $sqlString): string {
+  public function getResourceUuid(string $sqlString): string {
     $stateMachine = $this->validate($sqlString);
     return $this->getTableNameFromSelect($stateMachine->gsm('select'));
+  }
+
+  /**
+   * Private.
+   */
+  private function getDatabaseTable(string $uuid): DatabaseTable {
+    $resource = $this->getResource($uuid);
+    return $this->databaseTableFactory->getInstance($resource->getId(), ['resource' => $resource]);
+  }
+
+  /**
+   * Private.
+   */
+  private function getResource(string $uuid) {
+    /* @var $resourceService \Drupal\dkan_datastore\Service\Resource */
+    $resourceService = $this->resourceServiceFactory->getInstance($uuid);
+    return $resourceService->get();
   }
 
   /**

@@ -9,6 +9,8 @@
 
 As a piece of software in its Alpha cycle, the code is continuously changing and in very active development.
 
+Looking for the Drupal 7 version of DKAN? [See the 7.x-1.x branch on this repository](https://github.com/GetDKAN/dkan/tree/7.x-1.x).
+
 [Documentation](https://docs.getdkan.com/)
 
 ## Features

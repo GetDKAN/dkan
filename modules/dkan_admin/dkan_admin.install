@@ -1,12 +1,16 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Disable standard content view.
  */
 function dkan_admin_install() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.content');
-  $config->set('status', false);
+  $config->set('status', FALSE);
   $config->save(TRUE);
   drupal_flush_all_caches();
 }
@@ -17,7 +21,7 @@ function dkan_admin_install() {
 function dkan_admin_uninstall() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.content');
-  $config->set('status', true);
+  $config->set('status', TRUE);
   $config->save(TRUE);
   drupal_flush_all_caches();
 }

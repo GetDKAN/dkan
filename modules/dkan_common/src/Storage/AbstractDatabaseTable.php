@@ -264,10 +264,20 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
    */
   private function setSchemaFromTable() {
     $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
-    if (!empty($fields_info)) {
-      $fields = $this->getFieldsFromFieldsInfo($fields_info);
-      $this->setSchema($this->getTableSchema($fields));
+    if (empty($fields_info)) {
+      return;
     }
+
+    $fields = $this->getFieldsFromFieldsInfo($fields_info);
+    $schema = $this->getTableSchema($fields);
+    if (method_exists($this->connection->schema(), 'getComment')) {
+      foreach ($schema['fields'] as $fieldName => $info) {
+        $newInfo = $info;
+        $newInfo['description'] = $this->connection->schema()->getComment($this->getTableName(), $fieldName);
+        $schema['fields'][$fieldName] = $newInfo;
+      }
+    }
+    $this->setSchema($schema);
   }
 
   /**
