@@ -1,0 +1,30 @@
+services:
+  data_content_type.storage:
+    class: \Drupal\data_content_type\Storage\Data
+    arguments:
+      - '@entity_type.manager'
+  data_content_type.referencer:
+    class: \Drupal\data_content_type\Reference\Referencer
+    arguments:
+      - '@config.factory'
+      - '@entity_type.manager'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
+  data_content_type.dereferencer:
+    class: \Drupal\data_content_type\Reference\Dereferencer
+    arguments:
+      - '@config.factory'
+      - '@entity_type.manager'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
+  data_content_type.orphan_checker:
+    class: \Drupal\data_content_type\Reference\OrphanChecker
+    arguments:
+      - '@config.factory'
+      - '@queue'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
+  data_content_type.config_overrider:
+    class: \Drupal\data_content_type\ConfigurationOverrider
+    tags:
+      - {name: config.factory.override, priority: 5}

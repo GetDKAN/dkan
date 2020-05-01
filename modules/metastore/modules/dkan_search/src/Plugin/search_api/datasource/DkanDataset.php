@@ -11,7 +11,7 @@ use Drupal\search_api\Datasource\DatasourcePluginBase;
  * Represents a datasource which exposes DKAN data.
  *
  * @SearchApiDatasource(
- *   id = "dkan_dataset",
+ *   id = "data_content_typeset",
  *   label = "DKAN Dataset",
  * )
  */
@@ -67,8 +67,8 @@ class DkanDataset extends DatasourcePluginBase {
    * @inheritDoc
    */
   public function loadMultiple(array $ids) {
-    /* @var  $dataStorage  \Drupal\dkan_data\Storage\Data */
-    $dataStorage = \Drupal::service("dkan_data.storage");
+    /* @var  $dataStorage  \Drupal\data_content_type\Storage\Data */
+    $dataStorage = \Drupal::service("data_content_type.storage");
     $dataStorage->setSchema('dataset');
 
     $items = [];

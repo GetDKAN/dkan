@@ -91,7 +91,7 @@ class Controller extends ControllerBase {
     }
     else {
       $this->messenger()->addWarning('No dataset with the UUID ' . $uuid . ' could be found.');
-      return $this->redirect('view.dkan_dataset_content.page_1');
+      return $this->redirect('view.data_content_typeset_content.page_1');
     }
   }
 

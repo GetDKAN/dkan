@@ -5,7 +5,7 @@ core: 8.x
 dependencies:
   - admin_toolbar
   - breakpoint
-  - dkan_data
+  - data_content_type
   - dkan_metadata_form
   - system
   - toolbar

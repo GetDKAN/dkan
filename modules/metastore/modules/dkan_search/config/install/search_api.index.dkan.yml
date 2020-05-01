@@ -13,31 +13,31 @@ read_only: false
 field_settings:
   description:
     label: description
-    datasource_id: dkan_dataset
+    datasource_id: data_content_typeset
     property_path: description
     type: text
   keyword:
     label: keyword
-    datasource_id: dkan_dataset
+    datasource_id: data_content_typeset
     property_path: keyword
     type: string
   publisher__name:
     label: publisher__name
-    datasource_id: dkan_dataset
+    datasource_id: data_content_typeset
     property_path: publisher__name
     type: string
   theme:
     label: theme
-    datasource_id: dkan_dataset
+    datasource_id: data_content_typeset
     property_path: theme
     type: string
   title:
     label: title
-    datasource_id: dkan_dataset
+    datasource_id: data_content_typeset
     property_path: title
     type: text
 datasource_settings:
-  dkan_dataset: {  }
+  data_content_typeset: {  }
 processor_settings:
   add_url: {  }
   aggregated_field: {  }

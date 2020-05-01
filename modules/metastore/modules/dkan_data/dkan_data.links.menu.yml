@@ -1,5 +1,0 @@
-dkan_data.api_settings_form:
-  title: Dataset properties
-  route_name: dkan_data.config_settings
-  description: Configure dataset properties for referencing and API endpoint.
-  parent: dkan.admin_config_dkan

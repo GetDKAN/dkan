@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\Unit;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\dkan_data\Storage\Data;
+use Drupal\data_content_type\Storage\Data;
 use Drupal\metastore\Service;
 use Drupal\metastore\WebServiceApi;
 use Drupal\dkan_schema\SchemaRetriever;

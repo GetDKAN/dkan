@@ -1,0 +1,8 @@
+data_content_type.config_settings:
+  path: '/admin/config/dkan/properties'
+  defaults:
+    _form: '\Drupal\data_content_type\Form\DkanDataSettingsForm'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
