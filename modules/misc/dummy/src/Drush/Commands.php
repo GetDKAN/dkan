@@ -4,7 +4,7 @@ namespace Drupal\dummy\Drush;
 
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Drupal\dkan_harvest\Drush\Helper;
+use Drupal\harvest\Drush\Helper;
 
 /**
  * Class.

@@ -1,0 +1,12 @@
+'harvest_api_index':
+  title: 'Harvest: API: Index'
+  description: 'See the harvest plans that are available through the API.'
+'harvest_api_register':
+  title: 'Harvest: API: Register'
+  description: 'Register a new harvest plan through the API.'
+'harvest_api_run':
+  title: 'Harvest: API: Run'
+  description: 'Run a harvest plan through the API.'
+'harvest_api_info':
+  title: 'Harvest: API: Info'
+  description: 'See the info about harvest plan runs through the API.'

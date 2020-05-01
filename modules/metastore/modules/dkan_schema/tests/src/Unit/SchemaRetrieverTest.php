@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  * Tests Drupal\dkan_schema\SchemaRetriever.
  *
  * @coversDefaultClass \Drupal\dkan_schema\SchemaRetriever
- * @group dkan_harvest
+ * @group harvest
  */
 class SchemaRetrieverTest extends TestCase {
 

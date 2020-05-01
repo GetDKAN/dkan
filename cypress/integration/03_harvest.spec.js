@@ -16,7 +16,7 @@ context('Harvest', () => {
           "uri": "https://dkan-default-content-files.s3.amazonaws.com/data.json"
         },
         "load": {
-          "type": "\\Drupal\\dkan_harvest\\Load\\Dataset"
+          "type": "\\Drupal\\harvest\\Load\\Dataset"
         }
       }
     }).then((response) => {

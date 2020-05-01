@@ -1,0 +1,101 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ *
+ */
+function harvest_schema() {
+
+  $schema['harvest_source'] = [
+    'description' => 'The table tracking harvest sources.',
+    'fields' => [
+      'source_id' => [
+        'description' => 'The primary identifier for an entity. Used to connect the harveset source to Drupal entity.',
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+      ],
+      'config' => [
+        'description' => 'The id for the harvest run.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => [
+      'source_id',
+    ],
+  ];
+
+  $schema['harvest_run'] = [
+    'description' => 'The table tracking harvest sources.',
+    'fields' => [
+      'run_id' => [
+        'description' => 'The id for the harvest run.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'source_id' => [
+        'description' => 'The primary identifier for an entity. Used to connect the harveset hash to Drupal entity.',
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp of when event occurred.',
+      ],
+      'results' => [
+        'description' => 'The id for the harvest run.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => [
+      'run_id',
+    ],
+  ];
+
+  $schema['harvest_hash'] = [
+    'description' => 'The table tracking harvest hashes.',
+    'fields' => [
+      'identifier' => [
+        'description' => 'The uuid for a dataset or open data entity.',
+        'type' => 'varchar_ascii',
+        'length' => 191,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'source_id' => [
+        'description' => 'The primary identifier for an entity. Used to connect the harveset hash to Drupal entity.',
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'hash' => [
+        'description' => 'The hash of the harvest.',
+        'type' => 'varchar_ascii',
+        'length' => 191,
+        'not null' => TRUE,
+        'default' => '',
+      ],
+      'timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp of when event occurred.',
+      ],
+    ],
+    'primary key' => [
+      'identifier',
+    ],
+  ];
+
+  return $schema;
+}

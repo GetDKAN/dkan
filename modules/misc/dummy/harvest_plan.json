@@ -4,8 +4,8 @@
     "type": "\\Harvest\\ETL\\Extract\\DataJson",
     "uri": "/dummy.json"
   },
-  "transforms": ["\\Drupal\\dkan_harvest\\Transform\\ResourceImporter"],
+  "transforms": ["\\Drupal\\harvest\\Transform\\ResourceImporter"],
   "load": {
-    "type": "\\Drupal\\dkan_harvest\\Load\\Dataset"
+    "type": "\\Drupal\\harvest\\Load\\Dataset"
   }
 }

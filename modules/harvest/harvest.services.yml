@@ -1,0 +1,12 @@
+services:
+    harvest.service:
+        class: Drupal\harvest\Harvester
+        arguments:
+            - '@harvest.storage.database_table_factory'
+    harvest.storage.database_table_factory:
+      class: Drupal\harvest\Storage\DatabaseTableFactory
+      arguments:
+        - '@database'
+    harvest.logger_channel:
+        parent: logger.channel_base
+        arguments: ['harvest']

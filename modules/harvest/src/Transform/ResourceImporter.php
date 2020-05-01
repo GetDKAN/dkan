@@ -1,0 +1,134 @@
+<?php
+
+namespace Drupal\harvest\Transform;
+
+use Drupal\Core\Site\Settings;
+use Harvest\ETL\Transform\Transform;
+use Drupal\harvest\Load\FileHelperTrait;
+
+/**
+ * Defines a transform that saves the resources from a dataset.
+ *
+ * @codeCoverageIgnore
+ */
+class ResourceImporter extends Transform {
+
+  use FileHelperTrait;
+
+  /**
+   * Inherited.
+   *
+   * {@inheritdoc}
+   */
+  public function run($dataset) {
+    $this->testEnvironment();
+    return $this->updateDistributions($dataset);
+  }
+
+  /**
+   * Test Environment.
+   *
+   * @codeCoverageIgnore
+   */
+  protected function testEnvironment() {
+    $setting = Settings::get('file_public_base_url');
+    if (!isset($setting) || empty($setting)) {
+      throw new \Exception("file_public_base_url should be set.");
+    }
+    return TRUE;
+  }
+
+  /**
+   * Update the distributions attached to a dataset.
+   *
+   * @param object $dataset
+   *   JSON decoded dataset.
+   *
+   * @return object
+   *   The original dataset with updated distributions.
+   */
+  protected function updateDistributions($dataset) {
+    // Abort if there's no distributions.
+    if (empty($dataset->distribution)) {
+      return $dataset;
+    }
+
+    $distributions = [];
+
+    // Loop through distributions.
+    foreach ($dataset->distribution as $dist) {
+      $distributions[] = $this->updateDownloadUrl($dataset, $dist);
+    }
+
+    // Update distributions.
+    $dataset->distribution = $distributions;
+
+    return $dataset;
+  }
+
+  /**
+   * Attempt to import distribution file and update downloadURL property.
+   *
+   * @param object $dataset
+   *   JSON decoded dataset.
+   * @param object $dist
+   *   JSON decoded distribution.
+   *
+   * @return object
+   *   The updated distribution.
+   */
+  protected function updateDownloadUrl($dataset, $dist) {
+    // Abort if there's no downloadURL property.
+    if (empty($dist->downloadURL)) {
+      return $dist;
+    }
+
+    // Import distribution file.
+    $newUrl = $this->saveFile($dist->downloadURL, $dataset->identifier);
+
+    // If successful, update downloadURL.
+    if ($newUrl) {
+      $dist->downloadURL = $newUrl;
+    }
+
+    return $dist;
+
+  }
+
+  /**
+   * Pulls down external file and saves it locally.
+   *
+   * If this method is called when PHP is running on the CLI (e.g. via drush),
+   * `$settings['file_public_base_url']` must be configured in `settings.php`,
+   * otherwise 'default' will be used as the hostname in the new URL.
+   *
+   * @param string $url
+   *   External file URL.
+   * @param string $dataset_id
+   *   Dataset identifier used to group resources together.
+   *
+   * @return string|bool
+   *   The URL for the newly created file, or FALSE if failure occurs.
+   */
+  public function saveFile($url, $dataset_id) {
+
+    $targetDir = 'public://distribution/' . $dataset_id;
+
+    $fileHelper = $this->getFileHelper();
+
+    $fileHelper->prepareDir($targetDir);
+
+    // Abort if file can't be saved locally.
+    if (!($path = $fileHelper->retrieveFile($url, $targetDir))) {
+      return FALSE;
+    }
+
+    if (is_object($path)) {
+      return file_create_url($path->uri->value);
+    }
+    else {
+      return $fileHelper->fileCreate($path);
+    }
+  }
+
+}

@@ -1,0 +1,87 @@
+harvest.1.harvest:
+  path: '/api/1/harvest'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\wsapi\Controller\Docs::getComplete'}
+  requirements:
+    _permission: 'access content'
+
+harvest.1.harvest.plans:
+  path: '/api/1/harvest/plans'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\harvest\Controller\Api::index'}
+  requirements:
+    _permission: 'harvest_api_index'
+  options:
+    _auth: ['basic_auth']
+
+harvest.1.harvest.plans.post:
+  path: '/api/1/harvest/plans'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\harvest\Controller\Api::register'}
+  requirements:
+    _permission: 'harvest_api_register'
+  options:
+    _auth: ['basic_auth']
+
+harvest.1.harvest.plans.id:
+  path: '/api/1/harvest/plans/{identifier}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\harvest\Controller\Api::getPlan'}
+  requirements:
+    _permission: 'harvest_api_index'
+  options:
+    _auth: ['basic_auth']
+
+harvest.1.harvest.plans.id.delete:
+  path: '/api/1/harvest/plans/{identifier}'
+  methods: [DELETE]
+  defaults:
+    { _controller: '\Drupal\harvest\Controller\Api::deregister'}
+  requirements:
+    _permission: 'harvest_api_run'
+  options:
+    _auth: ['basic_auth']
+
+harvest.1.harvest.runs:
+  path: '/api/1/harvest/runs'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\harvest\Controller\Api::info'}
+  requirements:
+    _permission: 'harvest_api_info'
+  options:
+    _auth: ['basic_auth']
+
+harvest.1.harvest.runs.post:
+  path: '/api/1/harvest/runs'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\harvest\Controller\Api::run'}
+  requirements:
+    _permission: 'harvest_api_run'
+  options:
+    _auth: ['basic_auth']
+
+harvest.1.harvest.runs.delete:
+  path: '/api/1/harvest/runs'
+  methods: [DELETE]
+  defaults:
+    { _controller: '\Drupal\harvest\Controller\Api::revert'}
+  requirements:
+    _permission: 'harvest_api_run'
+  options:
+    _auth: ['basic_auth']
+
+harvest.1.harvest.runs.id:
+  path: '/api/1/harvest/runs/{identifier}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\harvest\Controller\Api::infoRun'}
+  requirements:
+    _permission: 'harvest_api_info'
+  options:
+    _auth: ['basic_auth']
