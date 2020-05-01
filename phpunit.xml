@@ -12,7 +12,7 @@
             <directory>modules/wsapi/tests</directory>
             <directory>modules/dkan/tests</directory>
             <directory>modules/dkan_data/tests</directory>
-            <directory>modules/dkan_datastore/tests</directory>
+            <directory>modules/datastore/tests</directory>
             <directory>modules/frontend/tests</directory>
             <directory>modules/harvest/tests</directory>
             <directory>modules/metastore/tests</directory>
@@ -41,7 +41,7 @@
             <directory>modules/wsapi/src</directory>
             <directory>modules/dkan/src</directory>
             <directory>modules/dkan_data/src</directory>
-            <directory>modules/dkan_datastore/src</directory>
+            <directory>modules/datastore/src</directory>
             <directory>modules/frontend/src</directory>
             <directory>modules/harvest/src</directory>
             <directory>modules/dkan_lunr/src</directory>

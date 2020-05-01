@@ -3,7 +3,7 @@
 namespace Drupal\dkan\Storage;
 
 use Drupal\Core\Database\Query\Select;
-use Drupal\dkan_datastore\Storage\Query;
+use Drupal\datastore\Storage\Query;
 
 /**
  * Class QueryToQueryHelperTrait.

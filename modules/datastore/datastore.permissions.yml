@@ -1,0 +1,6 @@
+'datastore_api_import':
+  title: 'Datastore: API: Import'
+  description: 'Import Resources to the datastore through the API.'
+'datastore_api_drop':
+  title: 'Datastore: API: Drop'
+  description: "Drop a Resource's datastore through the API."

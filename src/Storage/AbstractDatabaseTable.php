@@ -8,7 +8,7 @@ use Contracts\StorerInterface;
 use Dkan\Datastore\Storage\StorageInterface;
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
-use Drupal\dkan_datastore\Storage\Query;
+use Drupal\datastore\Storage\Query;
 
 /**
  * AbstractDatabaseTable class.
@@ -198,7 +198,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
   /**
    * Run a query on the database table.
    *
-   * @param \Drupal\dkan_datastore\Storage\Query $query
+   * @param \Drupal\datastore\Storage\Query $query
    *   Query obejct.
    */
   public function query(Query $query): array {

@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 use Contracts\FactoryInterface;
 use Contracts\Mock\Storage\Memory;
-use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\harvest\Harvester as HarvestService;
 

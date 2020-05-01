@@ -1,0 +1,7 @@
+services:
+  dkan_sql_endpoint.service:
+    class: \Drupal\dkan_sql_endpoint\Service
+    arguments:
+      - '@config.factory'
+      - '@datastore.database_table_factory'
+      - '@datastore.service.factory.resource'

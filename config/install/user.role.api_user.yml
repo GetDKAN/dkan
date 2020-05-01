@@ -7,8 +7,8 @@ weight: 3
 is_admin: false
 permissions:
   - 'post put delete datasets through the api'
-  - 'dkan_datastore_api_drop'
-  - 'dkan_datastore_api_import'
+  - 'datastore_api_drop'
+  - 'datastore_api_import'
   - 'harvest_api_index'
   - 'harvest_api_register'
   - 'harvest_api_run'
