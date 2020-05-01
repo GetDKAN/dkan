@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\dkan_sql_endpoint;
+namespace Drupal\sql_endpoint;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\Service\Factory\Resource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\dkan_sql_endpoint\Helper\GetStringsFromStateMachineExecution;
+use Drupal\sql_endpoint\Helper\GetStringsFromStateMachineExecution;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datastore\Storage\Query;
@@ -215,7 +215,7 @@ class Service implements ContainerInjectionInterface {
    * Private.
    */
   private function setQueryObjectLimit(Query $object, Machine $state_machine) {
-    $rows_limit = $this->configFactory->get('dkan_sql_endpoint.settings')->get('rows_limit');
+    $rows_limit = $this->configFactory->get('sql_endpoint.settings')->get('rows_limit');
 
     $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
     if (!empty($limit) && $limit[0] <= $rows_limit) {

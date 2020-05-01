@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan_sql_endpoint;
+namespace Drupal\Tests\sql_endpoint;
 
 use Dkan\Datastore\Resource;
 use Drupal\datastore\Service\Resource as ResourceService;
@@ -10,9 +10,9 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\datastore\Service\Factory\Resource as ResourceServiceFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\Tests\dkan_sql_endpoint\Traits\TestHelperTrait;
+use Drupal\Tests\sql_endpoint\Traits\TestHelperTrait;
 use MockChain\Chain;
-use Drupal\dkan_sql_endpoint\Service;
+use Drupal\sql_endpoint\Service;
 use PHPUnit\Framework\TestCase;
 
 /**

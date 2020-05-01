@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan_sql_endpoint;
+namespace Drupal\Tests\sql_endpoint;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
@@ -8,11 +8,11 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\dkan\Plugin\DataModifierBase;
 use Drupal\dkan\Plugin\DataModifierManager;
-use Drupal\Tests\dkan_sql_endpoint\Traits\TestHelperTrait;
+use Drupal\Tests\sql_endpoint\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
-use Drupal\dkan_sql_endpoint\WebServiceApi;
-use Drupal\dkan_sql_endpoint\Service;
+use Drupal\sql_endpoint\WebServiceApi;
+use Drupal\sql_endpoint\Service;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,7 +93,7 @@ class WebServiceApiTest extends TestCase {
   public function getCommonMockChain($query = "[SELECT * FROM abc][WHERE abc = \"blah\"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];") {
 
     $options = (new Options())
-      ->add('dkan_sql_endpoint.service', Service::class)
+      ->add('sql_endpoint.service', Service::class)
       ->add("database", Connection::class)
       ->add('request_stack', RequestStack::class)
       ->add('plugin.manager.dkan.data_modifier', DataModifierManager::class)

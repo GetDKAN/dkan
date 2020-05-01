@@ -19,7 +19,7 @@
             <directory>modules/dkan_non_public/tests</directory>
             <directory>modules/dkan_schema/tests</directory>
             <directory>modules/dkan_search/tests</directory>
-            <directory>modules/dkan_sql_endpoint/tests</directory>
+            <directory>modules/sql_endpoint/tests</directory>
         </testsuite>
     </testsuites>
 
@@ -49,7 +49,7 @@
             <directory>modules/dkan_non_public/src</directory>
             <directory>modules/dkan_schema/src</directory>
             <directory>modules/dkan_search/src</directory>
-            <directory>modules/dkan_sql_endpoint/src</directory>
+            <directory>modules/sql_endpoint/src</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>
         <directory>modules/dkan/src/Tests</directory>
