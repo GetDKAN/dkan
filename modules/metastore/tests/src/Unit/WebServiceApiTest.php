@@ -8,7 +8,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\data_content_type\Storage\Data;
 use Drupal\metastore\Service;
 use Drupal\metastore\WebServiceApi;
-use Drupal\dkan_schema\SchemaRetriever;
+use Drupal\schema\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

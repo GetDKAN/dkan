@@ -45,8 +45,8 @@ class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
    *   Schema.
    */
   protected function getSchema() {
-    /** @var \Drupal\dkan_schema\SchemaRetriever $schemaRetriever */
-    $schemaRetriever = \Drupal::service('dkan_schema.schema_retriever');
+    /** @var \Drupal\schema\SchemaRetriever $schemaRetriever */
+    $schemaRetriever = \Drupal::service('schema.schema_retriever');
     return $schemaRetriever->retrieve("dataset");
   }
 

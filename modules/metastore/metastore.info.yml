@@ -6,6 +6,6 @@ package: DKAN
 dependencies:
   - dkan
   - wsapi
-  - dkan_schema
+  - schema
   - data_content_type
   - basic_auth

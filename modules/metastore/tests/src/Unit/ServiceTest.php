@@ -8,7 +8,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Service;
-use Drupal\dkan_schema\SchemaRetriever;
+use Drupal\schema\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -269,7 +269,7 @@ EOF;
    */
   public function getCommonMockChain() {
     $options = (new Options())
-      ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
+      ->add('schema.schema_retriever', SchemaRetriever::class)
       ->add('metastore.sae_factory', Sae::class)
       ->index(0);
 

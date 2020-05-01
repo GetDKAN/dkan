@@ -2,12 +2,12 @@ services:
   metastore.service:
     class: \Drupal\metastore\Service
     arguments:
-      - '@dkan_schema.schema_retriever'
+      - '@schema.schema_retriever'
       - '@metastore.sae_factory'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.dkan.data_modifier']]
   metastore.sae_factory:
     class: \Drupal\metastore\Factory\Sae
     arguments:
-      - '@dkan_schema.schema_retriever'
+      - '@schema.schema_retriever'
       - '@data_content_type.storage'

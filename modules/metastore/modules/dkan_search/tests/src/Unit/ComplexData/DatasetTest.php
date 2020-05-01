@@ -3,7 +3,7 @@
 use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\dkan_search\ComplexData\Dataset;
 use MockChain\Chain;
-use Drupal\dkan_schema\SchemaRetriever;
+use Drupal\schema\SchemaRetriever;
 use PHPUnit\Framework\TestCase;
 use MockChain\Options;
 use Drupal\Core\DependencyInjection\Container;
@@ -59,7 +59,7 @@ class DatasetTest extends TestCase {
     ';
 
     $options = (new Options())
-      ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
+      ->add('schema.schema_retriever', SchemaRetriever::class)
       ->add('typed_data_manager', TypedDataManagerInterface::class)
       ->index(0);
 

@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\Tests\dkan_schema\Unit;
+namespace Drupal\Tests\schema\Unit;
 
-use Drupal\dkan_schema\SchemaRetriever;
+use Drupal\schema\SchemaRetriever;
 use Drupal\Core\Extension\ExtensionList;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests Drupal\dkan_schema\SchemaRetriever.
+ * Tests Drupal\schema\SchemaRetriever.
  *
- * @coversDefaultClass \Drupal\dkan_schema\SchemaRetriever
+ * @coversDefaultClass \Drupal\schema\SchemaRetriever
  * @group harvest
  */
 class SchemaRetrieverTest extends TestCase {

@@ -4,7 +4,7 @@ type: module
 core: 8.x
 dependencies:
   - dkan
-  - dkan_schema
+  - schema
   - path
   - user
   - node

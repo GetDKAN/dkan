@@ -5,7 +5,7 @@ core: 8.x
 dependencies:
   - data_content_type
   - metastore
-  - dkan_schema
+  - schema
   - search_api
   - search_api_db
 package: DKAN

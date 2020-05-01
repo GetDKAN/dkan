@@ -4,7 +4,7 @@ namespace Drupal\Tests\data_content_type\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\data_content_type\ConfigurationOverrider;
-use Drupal\dkan_schema\SchemaRetriever;
+use Drupal\schema\SchemaRetriever;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 

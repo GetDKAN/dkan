@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_schema;
+namespace Drupal\schema;
 
 use Contracts\RetrieverInterface;
 use Drupal\Core\Extension\ExtensionList;

@@ -4,7 +4,7 @@ namespace Drupal\metastore\Factory;
 
 use Contracts\FactoryInterface;
 use Drupal\data_content_type\Storage\Data;
-use Drupal\dkan_schema\SchemaRetriever;
+use Drupal\schema\SchemaRetriever;
 use Sae\Sae as Engine;
 
 /**
@@ -29,14 +29,14 @@ class Sae implements FactoryInterface {
   /**
    * Schema retriever.
    *
-   * @var \Drupal\dkan_schema\SchemaRetriever
+   * @var \Drupal\schema\SchemaRetriever
    */
   private $schemaRetriever;
 
   /**
    * Constructs a new Sae.
    *
-   * @param \Drupal\dkan_schema\SchemaRetriever $schemaRetriever
+   * @param \Drupal\schema\SchemaRetriever $schemaRetriever
    *   Schema retriever.
    * @param \Drupal\data_content_type\Storage\Data $storage
    *   Data.

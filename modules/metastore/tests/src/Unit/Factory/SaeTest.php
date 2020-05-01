@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Sae\Sae as Engine;
 use Drupal\data_content_type\Storage\Data;
 use Drupal\metastore\Factory\Sae;
-use Drupal\dkan_schema\SchemaRetriever;
+use Drupal\schema\SchemaRetriever;
 use MockChain\Chain;
 
 /**

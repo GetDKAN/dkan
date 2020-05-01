@@ -11,7 +11,7 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
-use Drupal\dkan_schema\SchemaRetriever;
+use Drupal\schema\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -30,7 +30,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Schema retriever.
    *
-   * @var \Drupal\dkan_schema\SchemaRetriever
+   * @var \Drupal\schema\SchemaRetriever
    */
   private $schemaRetriever;
 
@@ -41,7 +41,7 @@ class Service implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new Service(
-      $container->get('dkan_schema.schema_retriever'),
+      $container->get('schema.schema_retriever'),
       $container->get('metastore.sae_factory')
     );
   }

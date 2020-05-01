@@ -59,7 +59,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    */
   public function retrieveSchemaProperties() : array {
     // Create a json object from our schema.
-    $schemaRetriever = \Drupal::service('dkan_schema.schema_retriever');
+    $schemaRetriever = \Drupal::service('schema.schema_retriever');
     $schema = $schemaRetriever->retrieve('dataset');
     $schema_object = json_decode($schema);
 
