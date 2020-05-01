@@ -6,7 +6,7 @@ dependencies:
   - admin_toolbar
   - breakpoint
   - data_content_type
-  - dkan_metadata_form
+  - metadata_form
   - system
   - toolbar
   - user

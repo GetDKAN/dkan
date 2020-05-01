@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_metadata_form;
+namespace Drupal\metadata_form;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -59,7 +59,7 @@ class Controller extends ControllerBase {
       '#markup' => '<div id="app"></div>',
       '#attached' => [
         'library' => [
-          'dkan_metadata_form/dkan_metadata_form',
+          'metadata_form/metadata_form',
         ],
         'drupalSettings' => [
           'tempUUID' => $generated_uuid,
@@ -80,7 +80,7 @@ class Controller extends ControllerBase {
         '#markup' => '<div id="app"></div>',
         '#attached' => [
           'library' => [
-            'dkan_metadata_form/dkan_metadata_form',
+            'metadata_form/metadata_form',
           ],
           'drupalSettings' => [
             'tempUUID' => $uuid,
