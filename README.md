@@ -4,7 +4,7 @@ DKAN is an open source open data platform with a full suite of cataloging, publi
 
 *  [ Official website ](https://getdkan.org)
 *  [ Demo ](http://demo.getdkan.com/)
-*  [ Documentation ](https://docs.getdkan.com/)
+*  [ 7.x-1.x Documentation ](https://dkan.readthedocs.io/en/latest/index.html)
 
 ## Community
 
@@ -24,7 +24,7 @@ Join the [DKAN Slack community](https://dkansignup.herokuapp.com/).
 
 ## Help
 
-* General: [DKAN documentation](https://docs.getdkan.com)
+* General: [DKAN 7.x-1.x documentation](https://dkan.readthedocs.io/en/latest/index.html)
 * Developers: Submit a [Github issue](https://github.com/GetDKAN/dkan/issues) or post to [ #dev ](https://dkan.slack.com/messages/C4BEVFDKJ/) channel in [ DKAN Slack ](https://dkan.slack.com)
 * Bugs: Submit a [Github issue](https://github.com/GetDKAN/dkan/issues)
 
@@ -61,7 +61,7 @@ Check the [releases page](https://github.com/GetDKAN/dkan/releases) for latest D
 
 DKAN follows a modified semantic versioning convention, and has _major_, _point_ (also known as _minor_), and _patch_ releases.
 
-The only _major_ release of DKAN has been 7.x-1.0. It is unlikely there will be a 7.x-2.x version of DKAN but in the case of a major architecture change, this is possible. 
+The only _major_ release of DKAN has been 7.x-1.0. It is unlikely there will be a 7.x-2.x version of DKAN but in the case of a major architecture change, this is possible.
 
 A [Drupal 8 version of DKAN is in development here](https://github.com/GetDKAN/dkan2).
 
