@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\dkan_metastore;
+namespace Drupal\metastore;
 
-use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
-use Drupal\dkan_metastore\Exception\InvalidJsonException;
-use Drupal\dkan_metastore\Exception\MetastoreException;
-use Drupal\dkan_metastore\Exception\MissingPayloadException;
+use Drupal\metastore\Exception\CannotChangeUuidException;
+use Drupal\metastore\Exception\InvalidJsonException;
+use Drupal\metastore\Exception\MetastoreException;
+use Drupal\metastore\Exception\MissingPayloadException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,7 +30,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\dkan_metastore\Service
+   * @var \Drupal\metastore\Service
    */
   private $service;
 
@@ -42,7 +42,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new WebServiceApi(
       $container->get('request_stack'),
-      $container->get('dkan_metastore.service')
+      $container->get('metastore.service')
     );
   }
 

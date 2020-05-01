@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Unit;
+namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\dkan_metastore\Exception\ExistingObjectException;
-use Drupal\dkan_metastore\Exception\MissingObjectException;
-use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
-use Drupal\dkan_metastore\Factory\Sae;
-use Drupal\dkan_metastore\Service;
+use Drupal\metastore\Exception\ExistingObjectException;
+use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\Exception\UnmodifiedObjectException;
+use Drupal\metastore\Factory\Sae;
+use Drupal\metastore\Service;
 use Drupal\dkan_schema\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
@@ -270,7 +270,7 @@ EOF;
   public function getCommonMockChain() {
     $options = (new Options())
       ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-      ->add('dkan_metastore.sae_factory', Sae::class)
+      ->add('metastore.sae_factory', Sae::class)
       ->index(0);
 
     return (new Chain($this))

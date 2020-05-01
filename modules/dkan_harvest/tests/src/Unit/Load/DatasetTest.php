@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 use MockChain\Options;
 use Drupal\dkan_harvest\Load\Dataset;
-use Drupal\dkan_metastore\Service;
+use Drupal\metastore\Service;
 
 /**
  * Tests Drupal\dkan_harvest\Load\Dataset.
@@ -24,7 +24,7 @@ class DatasetTest extends TestCase {
   public function test() {
     $container = (new Chain($this))
       ->add(Container::class, "get", (new Options())
-        ->add('dkan_metastore.service', Service::class)
+        ->add('metastore.service', Service::class)
         ->index(0)
     )
       ->add(Service::class, "post", "1");

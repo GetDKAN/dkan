@@ -6,7 +6,7 @@ dependencies:
   - dkan
   - dkan_schema
   - dkan_api
-  - dkan_metastore
+  - metastore
   - field
   - menu_ui
   - node

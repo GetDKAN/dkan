@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\dkan_metastore\Exception;
+namespace Drupal\metastore\Exception;
 
 /**
  * Class MissingPayloadException.
  *
- * @package Drupal\dkan_metastore\Exception
+ * @package Drupal\metastore\Exception
  */
 class MissingPayloadException extends MetastoreException {
 

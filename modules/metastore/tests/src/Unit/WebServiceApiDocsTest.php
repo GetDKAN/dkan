@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Unit;
+namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\dkan\Plugin\DataModifierManager;
@@ -10,8 +10,8 @@ use Drupal\Core\Serialization\Yaml;
 use Drupal\dkan_api\Controller\Docs;
 use MockChain\Chain;
 use MockChain\Options;
-use Drupal\dkan_metastore\Service;
-use Drupal\dkan_metastore\WebServiceApiDocs;
+use Drupal\metastore\Service;
+use Drupal\metastore\WebServiceApiDocs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -75,7 +75,7 @@ class WebServiceApiDocsTest extends TestCase {
     $mockChain = new Chain($this);
     $mockChain->add(ContainerInterface::class, 'get',
       (new Options)->add('dkan_api.docs', Docs::class)
-        ->add('dkan_metastore.service', Service::class)
+        ->add('metastore.service', Service::class)
         ->add('plugin.manager.dkan.data_modifier', DataModifierManager::class)
         ->index(0)
     )

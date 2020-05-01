@@ -4,7 +4,7 @@ namespace Drupal\dkan_search;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\dkan_metastore\Service as Metastore;
+use Drupal\metastore\Service as Metastore;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -33,7 +33,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\dkan_metastore\Service
+   * @var \Drupal\metastore\Service
    */
   private $metastoreService;
 
@@ -54,7 +54,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Service constructor.
    *
-   * @param \Drupal\dkan_metastore\Service $metastoreService
+   * @param \Drupal\metastore\Service $metastoreService
    *   Metastore service.
    * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
    *   Entity type manager.
@@ -78,7 +78,7 @@ class Service implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan_metastore.service'),
+      $container->get('metastore.service'),
       $container->get('entity_type.manager'),
       $container->get('search_api.query_helper')
     );

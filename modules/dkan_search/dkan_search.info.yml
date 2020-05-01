@@ -4,7 +4,7 @@ type: module
 core: 8.x
 dependencies:
   - dkan_data
-  - dkan_metastore
+  - metastore
   - dkan_schema
   - search_api
   - search_api_db

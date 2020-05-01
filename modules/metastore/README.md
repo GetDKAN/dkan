@@ -1,5 +1,5 @@
 @page metastore Metastore
-The **dkan_metastore** module is responsible for [schemas](https://json-schema.org/) (descriptions of data), and the data that conforms to those schemas.
+The **metastore** module is responsible for [schemas](https://json-schema.org/) (descriptions of data), and the data that conforms to those schemas.
 
 **Metadata** is structured information that describes, explains, locates, or otherwise makes it easier to retrieve, use, or manage a data resource. The challenge is to define and name standard metadata fields so that a data consumer has sufficient information to find, process and understand the described data. The more information that can be conveyed in a standardized regular format, the more valuable data becomes.
 

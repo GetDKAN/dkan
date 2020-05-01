@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\dkan_metastore\Exception;
+namespace Drupal\metastore\Exception;
 
 /**
  * Metastore's base exception class.
  *
- * @package Drupal\dkan_metastore\Exception
+ * @package Drupal\metastore\Exception
  */
 abstract class MetastoreException extends \Exception {
 

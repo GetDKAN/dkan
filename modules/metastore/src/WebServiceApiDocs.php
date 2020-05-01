@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_metastore;
+namespace Drupal\metastore;
 
 use Drupal\dkan\DataModifierPluginTrait;
 use Drupal\dkan\Plugin\DataModifierManager;
@@ -40,7 +40,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Metastore service.
    *
-   * @var \Drupal\dkan_metastore\Service
+   * @var \Drupal\metastore\Service
    */
   private $metastoreService;
 
@@ -50,7 +50,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new WebServiceApiDocs(
       $container->get("dkan_api.docs"),
-      $container->get("dkan_metastore.service"),
+      $container->get("metastore.service"),
       $container->get('plugin.manager.dkan.data_modifier')
     );
   }
@@ -60,7 +60,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *
    * @param \Drupal\dkan_api\Controller\Docs $docsController
    *   Serves openapi spec for dataset-related endpoints.
-   * @param \Drupal\dkan_metastore\Service $metastoreService
+   * @param \Drupal\metastore\Service $metastoreService
    *   Metastore service.
    * @param \Drupal\dkan\Plugin\DataModifierManager $pluginManager
    *   Metastore plugin manager.

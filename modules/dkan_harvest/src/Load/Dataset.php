@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_harvest\Load;
 
-use Drupal\dkan_metastore\Service;
+use Drupal\metastore\Service;
 use Harvest\ETL\Load\Load;
 
 /**
@@ -32,13 +32,13 @@ class Dataset extends Load {
   /**
    * Get the metastore service.
    *
-   * @return \Drupal\dkan_metastore\Service
+   * @return \Drupal\metastore\Service
    *   Metastore service.
    *
    * @codeCoverageIgnore
    */
   protected function getMetastoreService(): Service {
-    $service = \Drupal::service('dkan_metastore.service');
+    $service = \Drupal::service('metastore.service');
     return $service;
   }
 

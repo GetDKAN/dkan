@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\dkan_metastore;
+namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan\DataModifierPluginTrait;
 use Drupal\dkan\Plugin\DataModifierManager;
 use Drupal\dkan_data\Reference\Dereferencer;
-use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
-use Drupal\dkan_metastore\Exception\ExistingObjectException;
-use Drupal\dkan_metastore\Exception\MissingObjectException;
-use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
-use Drupal\dkan_metastore\Factory\Sae;
+use Drupal\metastore\Exception\CannotChangeUuidException;
+use Drupal\metastore\Exception\ExistingObjectException;
+use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\Exception\UnmodifiedObjectException;
+use Drupal\metastore\Factory\Sae;
 use Drupal\dkan_schema\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -23,7 +23,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * SAE Factory.
    *
-   * @var \Drupal\dkan_metastore\Factory\Sae
+   * @var \Drupal\metastore\Factory\Sae
    */
   private $saeFactory;
 
@@ -42,7 +42,7 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('dkan_schema.schema_retriever'),
-      $container->get('dkan_metastore.sae_factory')
+      $container->get('metastore.sae_factory')
     );
   }
 

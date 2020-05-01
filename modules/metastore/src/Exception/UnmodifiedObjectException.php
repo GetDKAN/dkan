@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\dkan_metastore\Exception;
+namespace Drupal\metastore\Exception;
 
 /**
  * Class UnmodifiedObjectException.
  *
- * @package Drupal\dkan_metastore\Exception
+ * @package Drupal\metastore\Exception
  */
 class UnmodifiedObjectException extends MetastoreException {
 

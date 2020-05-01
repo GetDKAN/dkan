@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_metastore\Factory;
+namespace Drupal\metastore\Factory;
 
 use Contracts\FactoryInterface;
 use Drupal\dkan_data\Storage\Data;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\dkan_metastore\Exception;
+namespace Drupal\metastore\Exception;
 
 /**
  * Class CannotChangeUuidException.
  *
- * @package Drupal\dkan_metastore\Exception
+ * @package Drupal\metastore\Exception
  */
 class CannotChangeUuidException extends MetastoreException {
 

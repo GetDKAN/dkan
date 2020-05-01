@@ -5,7 +5,7 @@ namespace Drupal\dkan_search;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\dkan_metastore\Service as Metastore;
+use Drupal\metastore\Service as Metastore;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Item;
 use Drupal\search_api\Query\ConditionGroup;
@@ -84,7 +84,7 @@ class ServiceTest extends TestCase {
    */
   public function getCommonMockChain() {
     $options = (new Options())
-      ->add('dkan_metastore.service', Metastore::class)
+      ->add('metastore.service', Metastore::class)
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('search_api.query_helper', QueryHelperInterface::class)
       ->index(0);

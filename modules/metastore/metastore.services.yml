@@ -1,13 +1,13 @@
 services:
-  dkan_metastore.service:
-    class: \Drupal\dkan_metastore\Service
+  metastore.service:
+    class: \Drupal\metastore\Service
     arguments:
       - '@dkan_schema.schema_retriever'
-      - '@dkan_metastore.sae_factory'
+      - '@metastore.sae_factory'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.dkan.data_modifier']]
-  dkan_metastore.sae_factory:
-    class: \Drupal\dkan_metastore\Factory\Sae
+  metastore.sae_factory:
+    class: \Drupal\metastore\Factory\Sae
     arguments:
       - '@dkan_schema.schema_retriever'
       - '@dkan_data.storage'

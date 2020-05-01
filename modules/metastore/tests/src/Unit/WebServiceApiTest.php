@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\dkan_metastore\Unit;
+namespace Drupal\Tests\metastore\Unit;
 
-use Drupal\dkan_metastore\Exception\ExistingObjectException;
-use Drupal\dkan_metastore\Exception\MissingObjectException;
-use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
+use Drupal\metastore\Exception\ExistingObjectException;
+use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\dkan_data\Storage\Data;
-use Drupal\dkan_metastore\Service;
-use Drupal\dkan_metastore\WebServiceApi;
+use Drupal\metastore\Service;
+use Drupal\metastore\WebServiceApi;
 use Drupal\dkan_schema\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
@@ -355,7 +355,7 @@ EOF;
     $mockChain = new Chain($this);
     $mockChain->add(ContainerInterface::class, 'get',
       (new Options)->add('request_stack', RequestStack::class)
-        ->add("dkan_metastore.service", Service::class)
+        ->add("metastore.service", Service::class)
         ->index(0)
     );
     $mockChain->add(SchemaRetriever::class, 'retrieve', "{}");
