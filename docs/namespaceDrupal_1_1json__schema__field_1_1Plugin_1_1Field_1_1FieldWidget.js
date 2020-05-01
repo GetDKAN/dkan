@@ -1,4 +1,0 @@
-var namespaceDrupal_1_1json__schema__field_1_1Plugin_1_1Field_1_1FieldWidget =
-[
-    [ "JsonSchemaFormWidget", "classDrupal_1_1json__schema__field_1_1Plugin_1_1Field_1_1FieldWidget_1_1JsonSchemaFormWidget.html", "classDrupal_1_1json__schema__field_1_1Plugin_1_1Field_1_1FieldWidget_1_1JsonSchemaFormWidget" ]
-];
