@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\dkan_frontend\Controller;
+namespace Drupal\frontend\Controller;
 
-use Drupal\dkan_frontend\Page as PageBuilder;
+use Drupal\frontend\Page as PageBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -20,7 +20,7 @@ class Page implements ContainerInjectionInterface {
    * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
-    return new Page($container->get('dkan_frontend.page'));
+    return new Page($container->get('frontend.page'));
   }
 
   /**

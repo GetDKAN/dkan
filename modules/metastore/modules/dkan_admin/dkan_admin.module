@@ -79,14 +79,14 @@ function dkan_admin_preprocess_views_view_field(&$vars) {
       }
     }
   }
-  // Check if the DKAN_Frontend module is enabled. If not, dataset titles
+  // Check if the frontend module is enabled. If not, dataset titles
   // should link to the drupal node rather than the REACT frontend.
   if (isset($vars['view'])
     && ($vars['view']->id() == 'dkan_dataset_content')
     && ($vars['view']->current_display == 'page_1')) {
 
     $moduleHandler = \Drupal::moduleHandler();
-    $moduleExist = $moduleHandler->moduleExists('dkan_frontend');
+    $moduleExist = $moduleHandler->moduleExists('frontend');
 
     if ($vars['field']->field == 'title' && !$moduleExist) {
       $entity = $vars['row']->_entity;

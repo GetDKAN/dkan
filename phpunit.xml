@@ -13,7 +13,7 @@
             <directory>modules/dkan/tests</directory>
             <directory>modules/dkan_data/tests</directory>
             <directory>modules/dkan_datastore/tests</directory>
-            <directory>modules/dkan_frontend/tests</directory>
+            <directory>modules/frontend/tests</directory>
             <directory>modules/dkan_harvest/tests</directory>
             <directory>modules/metastore/tests</directory>
             <directory>modules/dkan_non_public/tests</directory>
@@ -42,7 +42,7 @@
             <directory>modules/dkan/src</directory>
             <directory>modules/dkan_data/src</directory>
             <directory>modules/dkan_datastore/src</directory>
-            <directory>modules/dkan_frontend/src</directory>
+            <directory>modules/frontend/src</directory>
             <directory>modules/dkan_harvest/src</directory>
             <directory>modules/dkan_lunr/src</directory>
             <directory>modules/metastore/src</directory>

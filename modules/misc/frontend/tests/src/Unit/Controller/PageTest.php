@@ -1,7 +1,7 @@
 <?php
 
-use Drupal\dkan_frontend\Controller\Page as PageController;
-use Drupal\dkan_frontend\Page;
+use Drupal\frontend\Controller\Page as PageController;
+use Drupal\frontend\Page;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -23,7 +23,7 @@ class ControllerPageTest extends TestCase {
     $container->method('get')
       ->with(
         $this->logicalOr(
-          $this->equalTo('dkan_frontend.page')
+          $this->equalTo('frontend.page')
         )
       )
       ->will($this->returnCallback([$this, 'containerGet']));
@@ -36,7 +36,7 @@ class ControllerPageTest extends TestCase {
    */
   public function containerGet($input) {
     switch ($input) {
-      case 'dkan_frontend.page':
+      case 'frontend.page':
         $pageBuilder = $this->getMockBuilder(Page::class)
           ->disableOriginalConstructor()
           ->setMethods(['build', 'buildDataset'])

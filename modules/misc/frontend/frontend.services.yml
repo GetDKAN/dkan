@@ -1,12 +1,12 @@
 services:
-  dkan_frontend.page:
-      class: Drupal\dkan_frontend\Page
+  frontend.page:
+      class: Drupal\frontend\Page
       arguments:
         - '@app.root'
         - '@entity_type.manager'
       shared: false
-  dkan_frontend.route_provider:
-      class: Drupal\dkan_frontend\Routing\RouteProvider
+  frontend.route_provider:
+      class: Drupal\frontend\Routing\RouteProvider
       arguments:
         - '@app.root'
         - '@entity.query'

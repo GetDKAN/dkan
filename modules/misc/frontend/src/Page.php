@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_frontend;
+namespace Drupal\frontend;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 

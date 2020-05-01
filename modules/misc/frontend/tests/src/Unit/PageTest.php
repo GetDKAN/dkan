@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\dkan_frontend\Page;
+use Drupal\frontend\Page;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeStorageInterface;

@@ -1,7 +1,7 @@
 <?php
 
 use Drupal\Core\Entity\Query\QueryFactory;
-use Drupal\dkan_frontend\Routing\RouteProvider;
+use Drupal\frontend\Routing\RouteProvider;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\Query\QueryInterface;

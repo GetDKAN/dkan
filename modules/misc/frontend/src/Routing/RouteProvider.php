@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_frontend\Routing;
+namespace Drupal\frontend\Routing;
 
 use Drupal\Core\Entity\Query\QueryFactory;
 use Symfony\Component\Routing\Route;
@@ -82,7 +82,7 @@ class RouteProvider {
     $route = new Route(
           "/$path",
           [
-            '_controller' => '\Drupal\dkan_frontend\Controller\Page::page',
+            '_controller' => '\Drupal\frontend\Controller\Page::page',
             'name' => $name,
           ]
       );
@@ -108,7 +108,7 @@ class RouteProvider {
     $route = new Route(
       "/home",
       [
-        '_controller' => '\Drupal\dkan_frontend\Controller\Page::page',
+        '_controller' => '\Drupal\frontend\Controller\Page::page',
         'name' => 'home',
       ]
     );
