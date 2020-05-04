@@ -1,7 +1,0 @@
-services:
-    schema.schema_retriever:
-        class: \Drupal\schema\SchemaRetriever
-        arguments:
-          - '@app.root'
-          - '@extension.list.module'
-        shared: false
