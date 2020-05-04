@@ -4,9 +4,9 @@ namespace Drupal\Tests\metastore\Unit\Factory;
 
 use PHPUnit\Framework\TestCase;
 use Sae\Sae as Engine;
-use Drupal\data_content_type\Storage\Data;
+use Drupal\metastore_content_type\Storage\Data;
 use Drupal\metastore\Factory\Sae;
-use Drupal\schema\SchemaRetriever;
+use Drupal\metastore\SchemaRetriever;
 use MockChain\Chain;
 
 /**

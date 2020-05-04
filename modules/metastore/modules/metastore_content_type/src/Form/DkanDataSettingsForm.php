@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\data_content_type\Form;
+namespace Drupal\metastore_content_type\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -8,7 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Class DkanDataSettingsForm.
  *
- * @package Drupal\data_content_type\Form
+ * @package Drupal\metastore_content_type\Form
  * @codeCoverageIgnore
  */
 class DkanDataSettingsForm extends ConfigFormBase {
@@ -20,7 +20,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'data_content_type.settings',
+      'metastore_content_type.settings',
     ];
   }
 
@@ -30,7 +30,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'data_content_type_settings_form';
+    return 'metastore_content_type_settings_form';
   }
 
   /**
@@ -39,7 +39,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('data_content_type.settings');
+    $config = $this->config('metastore_content_type.settings');
     $options = $this->retrieveSchemaProperties();
     $default_values = $config->get('property_list');
     $form['property_list'] = [
@@ -85,7 +85,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $this->config('data_content_type.settings')
+    $this->config('metastore_content_type.settings')
       ->set('property_list', $form_state->getValue('property_list'))
       ->save();
 

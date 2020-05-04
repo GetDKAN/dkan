@@ -1,21 +1,21 @@
 <?php
 
-namespace Drupal\Tests\wsapi\Unit\Storage;
+namespace Drupal\Tests\common\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\data_content_type\Storage\Data;
+use Drupal\metastore_content_type\Storage\Data;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorageInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests Drupal\data_content_type\Storage\Data.
+ * Tests Drupal\metastore_content_type\Storage\Data.
  *
- * @coversDefaultClass \Drupal\data_content_type\Storage\Data
- * @group wsapi
+ * @coversDefaultClass \Drupal\metastore_content_type\Storage\Data
+ * @group common
  */
 class DataTest extends TestCase {
   private $node;

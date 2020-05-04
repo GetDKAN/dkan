@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\data_content_type\Storage;
+namespace Drupal\metastore_content_type\Storage;
 
 use Contracts\BulkRetrieverInterface;
 use Contracts\RemoverInterface;

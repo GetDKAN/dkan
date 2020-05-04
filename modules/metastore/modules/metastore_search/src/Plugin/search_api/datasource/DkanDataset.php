@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\metadata_search\Plugin\search_api\datasource;
+namespace Drupal\metastore_search\Plugin\search_api\datasource;
 
 use Drupal\Core\TypedData\ComplexDataInterface;
-use Drupal\metadata_search\ComplexData\Dataset;
+use Drupal\metastore_search\ComplexData\Dataset;
 use Drupal\node\Entity\Node;
 use Drupal\search_api\Datasource\DatasourcePluginBase;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\data_content_type\Unit;
+namespace Drupal\Tests\metastore_content_type\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use Drupal\common\UrlHostTokenResolver;
-use Drupal\data_content_type\DataNodeLifeCycle;
+use Drupal\metastore_content_type\DataNodeLifeCycle;
 use Drupal\node\Entity\Node;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;

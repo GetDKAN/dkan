@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sql_endpoint\Helper;
+namespace Drupal\datastore\SqlEndpoint\Helper;
 
 /**
  * Class GetStringsFromStateMachineExecution.

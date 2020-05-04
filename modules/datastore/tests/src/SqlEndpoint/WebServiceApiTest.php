@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\sql_endpoint;
+namespace Drupal\Tests\datastore\SqlEndpoint;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
@@ -8,11 +8,11 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\Plugin\DataModifierBase;
 use Drupal\common\Plugin\DataModifierManager;
-use Drupal\Tests\sql_endpoint\Traits\TestHelperTrait;
+use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
-use Drupal\sql_endpoint\WebServiceApi;
-use Drupal\sql_endpoint\Service;
+use Drupal\datastore\SqlEndpoint\WebServiceApi;
+use Drupal\datastore\SqlEndpoint\Service;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -93,10 +93,10 @@ class WebServiceApiTest extends TestCase {
   public function getCommonMockChain($query = "[SELECT * FROM abc][WHERE abc = \"blah\"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];") {
 
     $options = (new Options())
-      ->add('sql_endpoint.service', Service::class)
+      ->add('datastore.sql_endpoint.service', Service::class)
       ->add("database", Connection::class)
       ->add('request_stack', RequestStack::class)
-      ->add('plugin.manager.dkan.data_modifier', DataModifierManager::class)
+      ->add('plugin.manager.common.data_modifier', DataModifierManager::class)
       ->index(0);
 
     $body = json_encode(["query" => $query]);

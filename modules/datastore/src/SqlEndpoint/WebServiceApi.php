@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sql_endpoint;
+namespace Drupal\datastore\SqlEndpoint;
 
 use Drupal\common\DataModifierPluginTrait;
 use Drupal\common\Plugin\DataModifierManager;
@@ -28,10 +28,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('sql_endpoint.service'),
+      $container->get('datastore.sql_endpoint.service'),
       $container->get('database'),
       $container->get('request_stack'),
-      $container->get('plugin.manager.dkan.data_modifier')
+      $container->get('plugin.manager.common.data_modifier')
     );
   }
 

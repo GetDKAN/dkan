@@ -1,6 +1,6 @@
  @page search Search
 
-The **metadata_search** module provides some integration with [search_api](https://www.drupal.org/project/search_api) to facilitate querying DKAN's metadata.
+The **metastore_search** module provides some integration with [search_api](https://www.drupal.org/project/search_api) to facilitate querying DKAN's metadata.
 
 Search API manages search servers and indexes. For more information on how Search API works visit their [documentation](https://www.drupal.org/docs/8/modules/search-api).
 

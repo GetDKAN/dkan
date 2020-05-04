@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\data_content_type;
+namespace Drupal\metastore_content_type;
 
 use Drupal\common\AbstractDataNodeLifeCycle;
 use Drupal\common\UrlHostTokenResolver;
@@ -54,13 +54,13 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       $entity->set('uuid', $metadata->identifier);
     }
 
-    $referencer = \Drupal::service("data_content_type.referencer");
+    $referencer = \Drupal::service("metastore_content_type.referencer");
     $metadata = $referencer->reference($this->getMetaData());
     $this->setMetadata($metadata);
 
     // Check for possible orphan property references when updating a dataset.
     if (isset($entity->original)) {
-      $orphanChecker = \Drupal::service("data_content_type.orphan_checker");
+      $orphanChecker = \Drupal::service("metastore_content_type.orphan_checker");
       $orphanChecker->processReferencesInUpdatedDataset(
         json_decode($entity->referenced_metadata),
         $metadata

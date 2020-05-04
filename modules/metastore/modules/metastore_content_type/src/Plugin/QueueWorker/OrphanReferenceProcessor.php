@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\data_content_type\Plugin\QueueWorker;
+namespace Drupal\metastore_content_type\Plugin\QueueWorker;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;

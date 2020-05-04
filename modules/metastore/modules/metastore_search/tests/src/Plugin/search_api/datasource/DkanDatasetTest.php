@@ -4,15 +4,15 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\data_content_type\Storage\Data;
-use Drupal\metadata_search\Plugin\search_api\datasource\DkanDataset;
+use Drupal\metastore_content_type\Storage\Data;
+use Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeRepository;
-use Drupal\metadata_search\ComplexData\Dataset;
+use Drupal\metastore_search\ComplexData\Dataset;
 
 /**
  *

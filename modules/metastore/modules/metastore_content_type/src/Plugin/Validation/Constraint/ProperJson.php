@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\data_content_type\Plugin\Validation\Constraint;
+namespace Drupal\metastore_content_type\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 

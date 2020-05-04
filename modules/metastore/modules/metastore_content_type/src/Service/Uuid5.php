@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\data_content_type\Service;
+namespace Drupal\metastore_content_type\Service;
 
 use Ramsey\Uuid\Uuid;
 

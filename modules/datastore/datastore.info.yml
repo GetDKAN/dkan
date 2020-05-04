@@ -5,5 +5,5 @@ core: 8.x
 package: DKAN
 dependencies:
   - common
-  - wsapi
+  - common
   - data_content_type

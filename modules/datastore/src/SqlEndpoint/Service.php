@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\sql_endpoint;
+namespace Drupal\datastore\SqlEndpoint;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\Service\Factory\Resource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\sql_endpoint\Helper\GetStringsFromStateMachineExecution;
+use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datastore\Storage\Query;

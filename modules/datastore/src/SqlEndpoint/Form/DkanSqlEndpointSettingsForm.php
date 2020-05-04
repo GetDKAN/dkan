@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sql_endpoint\Form;
+namespace Drupal\datastore\SqlEndpoint\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;

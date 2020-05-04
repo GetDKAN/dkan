@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metadata_search\Drush;
+namespace Drupal\metastore_search\Drush;
 
 use Drush\Commands\DrushCommands;
 use Drupal\search_api\Entity\Index;
@@ -8,7 +8,7 @@ use Drupal\search_api\Entity\Index;
 /**
  * Class DkanSearchCommands.
  *
- * @package Drupal\metadata_search\Drush
+ * @package Drupal\metastore_search\Drush
  */
 class DkanSearchCommands extends DrushCommands {
 

@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\schema\Unit;
 
-use Drupal\schema\SchemaRetriever;
+use Drupal\metastore\SchemaRetriever;
 use Drupal\Core\Extension\ExtensionList;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Drupal\schema\SchemaRetriever.
  *
- * @coversDefaultClass \Drupal\schema\SchemaRetriever
+ * @coversDefaultClass \Drupal\metastore\SchemaRetriever
  * @group harvest
  */
 class SchemaRetrieverTest extends TestCase {

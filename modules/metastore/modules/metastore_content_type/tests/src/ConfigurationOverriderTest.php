@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\Tests\data_content_type\Unit;
+namespace Drupal\Tests\metastore_content_type\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\data_content_type\ConfigurationOverrider;
-use Drupal\schema\SchemaRetriever;
+use Drupal\metastore_content_type\ConfigurationOverrider;
+use Drupal\metastore\SchemaRetriever;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 

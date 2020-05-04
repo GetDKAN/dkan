@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metadata_search;
+namespace Drupal\metastore_search;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
@@ -16,7 +16,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Dkan search service.
    *
-   * @var \Drupal\metadata_search\Service
+   * @var \Drupal\metastore_search\Service
    */
   private $service;
 
@@ -30,7 +30,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * WebServiceApi constructor.
    *
-   * @param \Drupal\metadata_search\Service $service
+   * @param \Drupal\metastore_search\Service $service
    *   Dkan search service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   Request stack.
@@ -48,7 +48,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('metadata_search.service'),
+      $container->get('metastore_search.service'),
       $container->get('request_stack')
     );
   }

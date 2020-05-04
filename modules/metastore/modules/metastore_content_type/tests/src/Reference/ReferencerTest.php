@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\data_content_type\Unit;
+namespace Drupal\Tests\metastore_content_type\Unit;
 
 use MockChain\Sequence;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\data_content_type\Reference\Referencer;
+use Drupal\metastore_content_type\Reference\Referencer;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;

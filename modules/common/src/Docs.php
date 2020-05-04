@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\wsapi;
+namespace Drupal\common;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -83,7 +83,7 @@ class Docs implements ContainerInjectionInterface {
    *   The openapi spec.
    */
   public function getJsonFromYmlFile() {
-    $modulePath = $this->moduleHandler->getModule('wsapi')->getPath();
+    $modulePath = $this->moduleHandler->getModule('common')->getPath();
     $ymlSpecPath = $modulePath . '/docs/openapi_spec.yml';
     $ymlSpec = file_get_contents($ymlSpecPath);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\data_content_type\Reference;
+namespace Drupal\metastore_content_type\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;

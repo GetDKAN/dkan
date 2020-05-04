@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metadata_search;
+namespace Drupal\metastore_search;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;

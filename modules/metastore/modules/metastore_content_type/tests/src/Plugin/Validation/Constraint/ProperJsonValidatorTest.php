@@ -1,6 +1,7 @@
 <?php
+namespace Drupal\Tests\metastore_content_type\Plugin\Validation\Constraint;
 
-use Drupal\data_content_type\Plugin\Validation\Constraint\ProperJsonValidator;
+use Drupal\metastore_content_type\Plugin\Validation\Constraint\ProperJsonValidator;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Context\ExecutionContext;
 use PHPUnit\Framework\TestCase;

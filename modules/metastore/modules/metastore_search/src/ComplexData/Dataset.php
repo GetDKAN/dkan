@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\metadata_search\ComplexData;
+namespace Drupal\metastore_search\ComplexData;
 
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\ListDataDefinition;
 use Drupal\Core\TypedData\Plugin\DataType\ItemList;
 use Drupal\Core\TypedData\TypedData;
-use Drupal\metadata_search\Facade\ComplexDataFacade;
+use Drupal\metastore_search\Facade\ComplexDataFacade;
 
 /**
  * Dataset.

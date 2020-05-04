@@ -1,9 +1,11 @@
 <?php
 
+namespace Drupal\Tests\metastore_search\ComplexData;
+
 use Drupal\Core\TypedData\TypedDataManagerInterface;
-use Drupal\metadata_search\ComplexData\Dataset;
+use Drupal\metastore_search\ComplexData\Dataset;
 use MockChain\Chain;
-use Drupal\schema\SchemaRetriever;
+use Drupal\metastore\SchemaRetriever;
 use PHPUnit\Framework\TestCase;
 use MockChain\Options;
 use Drupal\Core\DependencyInjection\Container;

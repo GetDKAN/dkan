@@ -2,17 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\data_content_type\Tests\Unit;
+namespace Drupal\metastore_content_type\Tests\Unit;
 
-use Drupal\data_content_type\Service\Uuid5;
+use Drupal\metastore_content_type\Service\Uuid5;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests Drupal\data_content_type\Service\Uuid5.
+ * Tests Drupal\metastore_content_type\Service\Uuid5.
  *
- * @coversDefaultClass \Drupal\data_content_type\Service\Uuid5
- * @package Drupal\Tests\data_content_type\Unit\Service
- * @group data_content_type
+ * @coversDefaultClass \Drupal\metastore_content_type\Service\Uuid5
+ * @package Drupal\Tests\metastore_content_type\Unit\Service
+ * @group metastore_content_type
  */
 class Uuid5Test extends TestCase {
 

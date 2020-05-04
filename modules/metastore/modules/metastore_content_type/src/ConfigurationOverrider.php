@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\data_content_type;
+namespace Drupal\metastore_content_type;
 
 use Drupal\Core\Config\ConfigFactoryOverrideInterface;
 use Drupal\Core\Config\StorageInterface;

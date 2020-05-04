@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metadata_search;
+namespace Drupal\metastore_search;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManager;
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Dkan search service class.
  *
- * @package Drupal\metadata_search
+ * @package Drupal\metastore_search
  */
 class Service implements ContainerInjectionInterface {
 

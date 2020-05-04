@@ -7,14 +7,14 @@
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\common\UrlHostTokenResolver;
-use Drupal\data_content_type\DataNodeLifeCycle;
-use Drupal\data_content_type\Reference\Dereferencer;
+use Drupal\metastore_content_type\DataNodeLifeCycle;
+use Drupal\metastore_content_type\Reference\Dereferencer;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 
 /**
  * Implements hook_node_load().
  */
-function data_content_type_node_load(array $entities) {
+function metastore_content_type_node_load(array $entities) {
 
   foreach ($entities as $entity) {
     if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
@@ -24,7 +24,7 @@ function data_content_type_node_load(array $entities) {
 
       // Dereference dataset properties.
       $metadata_obj = json_decode($metadata_string);
-      $referencer = Drupal::service("data_content_type.dereferencer");
+      $referencer = Drupal::service("metastore_content_type.dereferencer");
       $metadata_obj = $referencer->dereference($metadata_obj, dereferencing_method());
       $entity->set('field_json_metadata', json_encode($metadata_obj));
     }
@@ -60,7 +60,7 @@ function dereferencing_method() : int {
   }
 
   // Selection based on static variable.
-  $method = drupal_static('data_content_type_dereference_method');
+  $method = drupal_static('metastore_content_type_dereference_method');
   if (isset($method) && in_array($method, $allowed_methods)) {
     return $method;
   }
@@ -72,7 +72,7 @@ function dereferencing_method() : int {
 /**
  * Implements hook_entity_presave().
  */
-function data_content_type_entity_presave(EntityInterface $entity) {
+function metastore_content_type_entity_presave(EntityInterface $entity) {
   try {
     (new DataNodeLifeCycle($entity))->presave();
   }
@@ -83,11 +83,11 @@ function data_content_type_entity_presave(EntityInterface $entity) {
 /**
  * Implements hook_ENTITY_TYPE_predelete().
  */
-function data_content_type_node_predelete(EntityInterface $entity) {
+function metastore_content_type_node_predelete(EntityInterface $entity) {
   // Check for possible orphan property references when deleting a dataset.
   if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
     $referenced_dataset = json_decode($entity->referenced_metadata);
-    $referencer = Drupal::service("data_content_type.orphan_checker");
+    $referencer = Drupal::service("metastore_content_type.orphan_checker");
     $referencer->processReferencesInDeletedDataset($referenced_dataset);
   }
 }
@@ -95,7 +95,7 @@ function data_content_type_node_predelete(EntityInterface $entity) {
 /**
  * Implements hook_entity_bundle_field_info_alter().
  */
-function data_content_type_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
+function metastore_content_type_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
   if ($bundle === 'data') {
     if (isset($fields['field_json_metadata'])) {
       $fields['field_json_metadata']->addConstraint('ProperJson', []);

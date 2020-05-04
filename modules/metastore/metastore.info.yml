@@ -5,7 +5,5 @@ core: 8.x
 package: DKAN
 dependencies:
   - common
-  - wsapi
-  - schema
-  - data_content_type
+  - metastore_content_type
   - basic_auth

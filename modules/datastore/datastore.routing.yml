@@ -2,7 +2,7 @@ datastore.1.datastore:
   path: '/api/1/datastore'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\wsapi\Docs::getComplete'}
+    { _controller: '\Drupal\common\Docs::getComplete'}
   requirements:
     _permission: 'access content'
 

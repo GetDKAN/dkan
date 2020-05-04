@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metadata_search;
+namespace Drupal\metastore_search;
 
 use Drupal\Component\DependencyInjection\Container;
 use MockChain\Chain;
@@ -39,7 +39,7 @@ class WebServiceApiTest extends TestCase {
     $facetsExpected = [];
 
     $options = (new Options())
-      ->add('metadata_search.service', Service::class)
+      ->add('metastore_search.service', Service::class)
       ->add('request_stack', RequestStack::class)
       ->index(0);
 

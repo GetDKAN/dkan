@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\data_content_type\Reference;
+namespace Drupal\metastore_content_type\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\data_content_type\Service\Uuid5;
+use Drupal\metastore_content_type\Service\Uuid5;
 
 /**
  * HelperTrait.
@@ -29,11 +29,11 @@ trait HelperTrait {
    * @return array
    *   List of dataset properties.
    *
-   * @Todo: consolidate with wsapi RouteProvider's getPropertyList.
+   * @Todo: consolidate with common RouteProvider's getPropertyList.
    */
   private function getPropertyList() : array {
     if (isset($this->configService)) {
-      $list = $this->configService->get('data_content_type.settings')->get('property_list');
+      $list = $this->configService->get('metastore_content_type.settings')->get('property_list');
       return array_values(array_filter($list));
     }
     throw new \Exception("Can't get property list, the config service was not set.");

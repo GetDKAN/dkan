@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\data_content_type\Unit;
+namespace Drupal\Tests\metastore_content_type\Unit;
 
 use MockChain\Sequence;
 use Drupal\Core\Config\ConfigFactory;
@@ -8,8 +8,8 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\data_content_type\Service\Uuid5;
-use Drupal\data_content_type\Reference\Dereferencer;
+use Drupal\metastore_content_type\Service\Uuid5;
+use Drupal\metastore_content_type\Reference\Dereferencer;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 

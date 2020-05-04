@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\sql_endpoint\Traits;
+namespace Drupal\Tests\datastore\Traits;
 
 use MockChain\Options;
 use Drupal\Core\Config\ConfigFactory;

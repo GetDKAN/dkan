@@ -3,7 +3,7 @@
 namespace Drupal\Tests\common;
 
 use Drupal\Core\Extension\Extension;
-use Drupal\wsapi\Docs;
+use Drupal\common\Docs;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -74,7 +74,7 @@ class DocsTest extends TestCase {
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(ModuleHandlerInterface::class, 'getModule', Extension::class)
-      ->add(Extension::class, 'getPath', __DIR__ . "/tests");
+      ->add(Extension::class, 'getPath', __DIR__ . "/..");
 
     return $mockChain;
   }

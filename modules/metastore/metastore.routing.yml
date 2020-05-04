@@ -2,7 +2,7 @@ metastore.1.metastore:
   path: '/api/1/metastore'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\wsapi\Docs::getComplete'}
+    { _controller: '\Drupal\common\Docs::getComplete'}
   requirements:
     _permission: 'access content'
 

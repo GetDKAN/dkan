@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metadata_search\Facade;
+namespace Drupal\metastore_search\Facade;
 
 use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\Core\TypedData\TraversableTypedDataInterface;

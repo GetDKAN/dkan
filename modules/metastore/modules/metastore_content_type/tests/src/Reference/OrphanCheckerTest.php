@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\Tests\data_content_type\Unit;
+namespace Drupal\Tests\metastore_content_type\Unit;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use Drupal\data_content_type\Reference\OrphanChecker;
+use Drupal\metastore_content_type\Reference\OrphanChecker;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 

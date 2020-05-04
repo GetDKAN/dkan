@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\schema;
+namespace Drupal\metastore;
 
 use Contracts\RetrieverInterface;
 use Drupal\Core\Extension\ExtensionList;

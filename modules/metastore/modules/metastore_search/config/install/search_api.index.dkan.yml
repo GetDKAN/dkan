@@ -5,7 +5,7 @@ dependencies:
     - search_api.server.dkan
   module:
     - search_api
-    - metadata_search
+    - metastore_search
 id: dkan
 name: DKAN
 description: ''
