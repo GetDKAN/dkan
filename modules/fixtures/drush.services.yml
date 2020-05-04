@@ -1,0 +1,5 @@
+services:
+  fixtures:commands:
+    class: \Drupal\fixtures\Drush\Commands
+    tags:
+      - { name: drush.command }

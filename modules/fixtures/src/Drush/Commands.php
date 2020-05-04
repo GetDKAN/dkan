@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dummy\Drush;
+namespace Drupal\fixtures\Drush;
 
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -13,38 +13,38 @@ class Commands extends DrushCommands {
   use Helper;
 
   /**
-   * Create dummy content.
+   * Create fixtures content.
    *
-   * @command dummy:create
+   * @command fixtures:create
    */
   public function create() {
-    $this->createDummyJson();
-    $harvester = $this->getHarvester("dummy");
+    $this->createfixturesJson();
+    $harvester = $this->getHarvester("fixtures");
     $result = $harvester->harvest();
     $this->renderResult($result);
     print_r($result);
   }
 
   /**
-   * Remove dummy content.
+   * Remove fixtures content.
    *
-   * @command dummy:remove
+   * @command fixtures:remove
    */
   public function remove() {
-    $harvester = $this->getHarvester("dummy");
+    $harvester = $this->getHarvester("fixtures");
     $result = $harvester->revert();
 
     $count = $result;
 
     $output = new ConsoleOutput();
-    $output->write("{$count} items reverted for the 'dummy' harvest plan.");
+    $output->write("{$count} items reverted for the 'fixtures' harvest plan.");
   }
 
   /**
    * Private.
    */
   private function getHarvestPlan() {
-    $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dummy');
+    $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'fixtures');
 
     $plan_path = $module_path . "/harvest_plan.json";
     $json = file_get_contents($plan_path);
@@ -58,18 +58,18 @@ class Commands extends DrushCommands {
   /**
    * Private.
    */
-  private function createDummyJson() {
-    $dummy_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dummy') . "/dummy.template.json";
-    $content = file_get_contents($dummy_template);
+  private function createfixturesJson() {
+    $fixtures_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'fixtures') . "/fixtures.template.json";
+    $content = file_get_contents($fixtures_template);
     $new = $this->detokenize($content);
-    file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dummy') . "/dummy.json", $new);
+    file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'fixtures') . "/fixtures.json", $new);
   }
 
   /**
    * Private.
    */
   private function detokenize($content) {
-    $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dummy') . "/files";
+    $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'fixtures') . "/files";
     return str_replace("<!*path*!>", $absolute_module_path, $content);
   }
 

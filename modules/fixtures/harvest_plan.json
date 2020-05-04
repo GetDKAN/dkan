@@ -1,8 +1,8 @@
 {
-  "identifier": "dummy",
+  "identifier": "fixtures",
   "extract": {
     "type": "\\Harvest\\ETL\\Extract\\DataJson",
-    "uri": "/dummy.json"
+    "uri": "/fixtures.json"
   },
   "transforms": ["\\Drupal\\harvest\\Transform\\ResourceImporter"],
   "load": {
