@@ -1,5 +1,0 @@
-name: WSAPI
-description: 'The Web Services Application Programming Interface (WSAPI) mdoule provides the base "/api/1" anchor for other DKAN modules to provide their own endpoints and documentation.'
-type: module
-core: 8.x
-package: DKAN

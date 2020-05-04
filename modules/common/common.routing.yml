@@ -4,3 +4,19 @@ common.admin_config_dkan:
     _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
   requirements:
     _permission: 'access administration pages'
+
+common.api:
+  path: '/api'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\common\Docs::getVersions'}
+  requirements:
+    _permission: 'access content'
+
+common.api.1:
+  path: '/api/1'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\common\Docs::getComplete'}
+  requirements:
+    _permission: 'access content'

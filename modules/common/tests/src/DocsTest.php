@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\wsapi;
+namespace Drupal\Tests\common;
 
 use Drupal\Core\Extension\Extension;
 use Drupal\wsapi\Docs;
@@ -74,7 +74,7 @@ class DocsTest extends TestCase {
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(ModuleHandlerInterface::class, 'getModule', Extension::class)
-      ->add(Extension::class, 'getPath', __DIR__ . "/..");
+      ->add(Extension::class, 'getPath', __DIR__ . "/tests");
 
     return $mockChain;
   }

@@ -1,8 +1,11 @@
 services:
-  dkan.factory:
+  common.factory:
     class: Drupal\common\Service\Factory
-  dkan.json_util:
-    class: Drupal\common\Service\JsonUtil
   plugin.manager.common.data_modifier:
     class: \Drupal\common\Plugin\DataModifierManager
     parent: default_plugin_manager
+  common.docs:
+    class: \Drupal\common\Docs
+    arguments:
+      - '@module_handler'
+      - '@request_stack'
