@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\Tests\metastore_content_type\Plugin\Validation\Constraint;
 
 use Drupal\metastore_content_type\Plugin\Validation\Constraint\ProperJsonValidator;

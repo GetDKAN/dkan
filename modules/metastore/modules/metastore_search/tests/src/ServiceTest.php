@@ -42,7 +42,8 @@ class ServiceTest extends TestCase {
         'title' => 'hello',
         'description' => 'goodbye',
         'publisher__name' => 'Steve',
-      ]],
+      ],
+      ],
     ];
 
     $service = Service::create($this->getCommonMockChain()->getMock());
@@ -65,7 +66,8 @@ class ServiceTest extends TestCase {
       'type' => 'publisher__name',
       'name' => 'Steve',
       'total' => 1,
-    ]];
+    ],
+    ];
 
     $service = Service::create($this->getCommonMockChain()->getMock());
 
