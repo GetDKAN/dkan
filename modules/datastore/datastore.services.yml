@@ -33,3 +33,9 @@ services:
     class: \Drupal\datastore\Storage\JobStoreFactory
     arguments:
       - '@database'
+  datastore.sql_endpoint.service:
+    class: \Drupal\datastore\SqlEndpoint\Service
+    arguments:
+      - '@config.factory'
+      - '@datastore.database_table_factory'
+      - '@datastore.service.factory.resource'

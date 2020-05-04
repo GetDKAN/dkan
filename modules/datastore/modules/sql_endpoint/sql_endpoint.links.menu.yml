@@ -1,5 +1,0 @@
-sql_endpoint.settings_form:
-  title: SQL endpoint
-  route_name: sql_endpoint.settings
-  description: Configure SQL query API endpoint.
-  parent: dkan.admin_config_dkan
