@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\metastore;
 
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\data_content_type\Storage\Data;
+use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Service;
 use Drupal\metastore\WebServiceApi;
-use Drupal\schema\SchemaRetriever;
+use Drupal\metastore\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

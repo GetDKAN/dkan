@@ -12,7 +12,7 @@
             <directory>modules/common/tests</directory>
             <directory>modules/common/modules/dkan_alt_api/tests</directory>
             <directory>modules/metastore/tests</directory>
-            <directory>modules/metastore/modules/metastore_content_type/tests</directory>
+            <directory>modules/metastore/modules/metastore/tests</directory>
             <directory>modules/metastore/modules/metastore_search/tests</directory>
             <directory>modules/metastore/modules/metastore_form/tests</directory>
             <directory>modules/metastore/modules/metastore_admin/tests</directory>
@@ -40,7 +40,7 @@
           <directory>modules/common/src</directory>
           <directory>modules/common/modules/dkan_alt_api/src</directory>
           <directory>modules/metastore/src</directory>
-          <directory>modules/metastore/modules/metastore_content_type/src</directory>
+          <directory>modules/metastore/modules/metastore/src</directory>
           <directory>modules/metastore/modules/metastore_search/src</directory>
           <directory>modules/metastore/modules/metastore_form/src</directory>
           <directory>modules/metastore/modules/metastore_admin/src</directory>

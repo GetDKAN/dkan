@@ -9,8 +9,8 @@ dependencies:
   - datastore
   - harvest
   - metastore
+  - metastore
   - metastore_admin
-  - metastore_form
   - metastore_search
   - file
   - node

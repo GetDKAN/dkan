@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metadata_form;
+namespace Drupal\metastore_form;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -59,7 +59,7 @@ class Controller extends ControllerBase {
       '#markup' => '<div id="app"></div>',
       '#attached' => [
         'library' => [
-          'metadata_form/metadata_form',
+          'metastore_form/metastore_form',
         ],
         'drupalSettings' => [
           'tempUUID' => $generated_uuid,
@@ -80,7 +80,7 @@ class Controller extends ControllerBase {
         '#markup' => '<div id="app"></div>',
         '#attached' => [
           'library' => [
-            'metadata_form/metadata_form',
+            'metastore_form/metastore_form',
           ],
           'drupalSettings' => [
             'tempUUID' => $uuid,
@@ -91,7 +91,7 @@ class Controller extends ControllerBase {
     }
     else {
       $this->messenger()->addWarning('No dataset with the UUID ' . $uuid . ' could be found.');
-      return $this->redirect('view.data_content_typeset_content.page_1');
+      return $this->redirect('view.dkan_dataset.page_1');
     }
   }
 

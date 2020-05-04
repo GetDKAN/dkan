@@ -93,3 +93,12 @@ metastore.data_json:
     { _controller: '\Drupal\metastore\WebServiceApi::getCatalog'}
   requirements:
     _permission: 'access content'
+
+metastore.config_settings:
+  path: '/admin/config/dkan/properties'
+  defaults:
+    _form: '\Drupal\metastore\Form\DkanDataSettingsForm'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

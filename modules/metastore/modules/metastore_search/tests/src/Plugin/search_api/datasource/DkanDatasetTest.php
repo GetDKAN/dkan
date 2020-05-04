@@ -4,7 +4,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\metastore_content_type\Storage\Data;
+use Drupal\metastore\Storage\Data;
 use Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
@@ -26,7 +26,7 @@ class DkanDatasetTest extends TestCase {
     $containerOptions = (new Options())
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('entity_type.repository', EntityTypeRepository::class)
-      ->add('data_content_type.storage', Data::class)
+      ->add('metastore.storage', Data::class)
       ->index(0);
 
     $nids = [1, 2];

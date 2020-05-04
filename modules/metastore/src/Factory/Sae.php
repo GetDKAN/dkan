@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Factory;
 
 use Contracts\FactoryInterface;
-use Drupal\metastore_content_type\Storage\Data;
+use Drupal\metastore\Storage\Data;
 use Drupal\metastore\SchemaRetriever;
 use Sae\Sae as Engine;
 
@@ -22,7 +22,7 @@ class Sae implements FactoryInterface {
   /**
    * Storage.
    *
-   * @var \Drupal\metastore_content_type\Storage\Data
+   * @var \Drupal\metastore\Storage\Data
    */
   private $storage;
 
@@ -38,7 +38,7 @@ class Sae implements FactoryInterface {
    *
    * @param \Drupal\metastore\SchemaRetriever $schemaRetriever
    *   Schema retriever.
-   * @param \Drupal\metastore_content_type\Storage\Data $storage
+   * @param \Drupal\metastore\Storage\Data $storage
    *   Data.
    */
   public function __construct(SchemaRetriever $schemaRetriever, Data $storage) {
@@ -76,7 +76,7 @@ class Sae implements FactoryInterface {
   /**
    * Get Storage.
    *
-   * @return \Drupal\metastore_content_type\Storage\Data
+   * @return \Drupal\metastore\Storage\Data
    *   Dataset
    */
   private function getStorage($schema_id) {

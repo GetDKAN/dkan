@@ -61,7 +61,7 @@ class DatasetTest extends TestCase {
     ';
 
     $options = (new Options())
-      ->add('schema.schema_retriever', SchemaRetriever::class)
+      ->add('metastore.schema_retriever', SchemaRetriever::class)
       ->add('typed_data_manager', TypedDataManagerInterface::class)
       ->index(0);
 

@@ -4,4 +4,4 @@ package: DKAN
 type: module
 core: 8.x
 dependencies:
-  - data_content_type
+  - metastore

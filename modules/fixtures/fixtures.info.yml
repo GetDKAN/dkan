@@ -2,6 +2,7 @@ name: fixtures Content
 description: 'Provides example content for test driving the catalog.'
 type: module
 core: 8.x
+package: DKAN
 dependencies:
   - harvest
-package: DKAN
+

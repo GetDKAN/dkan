@@ -359,7 +359,7 @@ class Service implements ContainerInjectionInterface {
     return array_filter(array_map(
       function ($item) use ($metastore) {
         $id = $item->getId();
-        $id = str_replace('data_content_typeset/', '', $id);
+        $id = str_replace('dkan_dataset/', '', $id);
         try {
           return json_decode($metastore->get('dataset', $id));
         }

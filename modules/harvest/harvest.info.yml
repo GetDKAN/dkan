@@ -4,6 +4,5 @@ type: module
 core: 8.x
 dependencies:
   - common
-  - common
   - metastore
 package: DKAN

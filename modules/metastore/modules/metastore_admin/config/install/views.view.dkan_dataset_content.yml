@@ -9,7 +9,7 @@ dependencies:
     - user
 _core:
   default_config_hash: a3iKR4Ahl23CurenkAnv23BpfnLT3gOCj13w5IgtZds
-id: data_content_typeset_content
+id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
 description: 'Find and manage content.'

@@ -5,7 +5,7 @@ namespace Drupal\metastore;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\DataModifierPluginTrait;
 use Drupal\common\Plugin\DataModifierManager;
-use Drupal\metastore_content_type\Reference\Dereferencer;
+use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -171,7 +171,7 @@ class Service implements ContainerInjectionInterface {
 
     // Load this dataset's metadata with both data and identifiers.
     if (function_exists('drupal_static')) {
-      drupal_static('data_content_type_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
+      drupal_static('metastore_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
     }
 
     $json = $this->getEngine($schema_id)

@@ -3,10 +3,10 @@ description: 'Provides administrative views for managing dataset content.'
 type: module
 core: 8.x
 dependencies:
+  - metastore
   - admin_toolbar
   - breakpoint
-  - data_content_type
-  - metadata_form
+  - metastore_form
   - system
   - toolbar
   - user
