@@ -237,7 +237,8 @@ function dkan_periodic_updates_get_items_to_update($file) {
       // If the resource will be updated, add if it should be imported into the
       // datastore.
       if (isset($to_update[$resource_data['resource_id']])) {
-          $to_update[$resource_data['resource_id']]['datastore'] = $resource_data['import_to_datastore'];
+        $datastore = $resource_data['import_to_datastore'] === 'Y' ? TRUE : FALSE;
+        $to_update[$resource_data['resource_id']]['datastore'] = $datastore;
       }
     }
     fclose($handle);
@@ -257,7 +258,7 @@ function dkan_periodic_updates_execute_update($resources) {
     foreach ($resources as $uuid => $resource) {
       $nids = entity_get_id_by_uuid('node', [$uuid]);
       $file_url = $resource['file_url'];
-      $datastore = $resource['datastore'] === 'Y' ? TRUE : FALSE;
+      $datastore = $resource['datastore'];
       if (empty($nids)) {
         watchdog('dkan_periodic_updates', 'There is no node with UUID !uuid.', ['!uuid' => $uuid], WATCHDOG_WARNING);
         variable_set('dkan_periodic_updates_message_' . $uuid, 'No node found for the UUID specified.');
