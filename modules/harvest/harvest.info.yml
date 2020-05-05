@@ -1,8 +1,9 @@
-name: Harvester
+name: Harvest
 description: 'Provides integration with the Harvester library.'
 type: module
 core: 8.x
+package: DKAN
 dependencies:
   - common
   - metastore
-package: DKAN
+

@@ -3,17 +3,12 @@ description: 'DKAN Open Data Portal'
 type: module
 core: 8.x
 core_version_requirement: ^8 || ^9
+package: DKAN
 dependencies:
-  - config
-  - common
-  - datastore
-  - harvest
-  - metastore
   - metastore
   - metastore_admin
   - metastore_search
-  - file
-  - node
-  - path
-  - user
-package: DKAN
+  - datastore
+  - harvest
+  - config
+

@@ -1,4 +1,4 @@
-name: fixtures Content
+name: sample_content
 description: 'Provides example content for test driving the catalog.'
 type: module
 core: 8.x

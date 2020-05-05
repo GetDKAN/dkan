@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\fixtures\Drush;
+namespace Drupal\sample_content;
 
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -9,42 +9,42 @@ use Drupal\harvest\Drush\Helper;
 /**
  * Class.
  */
-class Commands extends DrushCommands {
+class Drush extends DrushCommands {
   use Helper;
 
   /**
-   * Create fixtures content.
+   * Create sample content.
    *
-   * @command fixtures:create
+   * @command dkan:sample-content:create
    */
   public function create() {
-    $this->createfixturesJson();
-    $harvester = $this->getHarvester("fixtures");
+    $this->createJson();
+    $harvester = $this->getHarvester("sample_content");
     $result = $harvester->harvest();
     $this->renderResult($result);
     print_r($result);
   }
 
   /**
-   * Remove fixtures content.
+   * Remove sample content.
    *
-   * @command fixtures:remove
+   * @command dkan:sample-content:remove
    */
   public function remove() {
-    $harvester = $this->getHarvester("fixtures");
+    $harvester = $this->getHarvester("sample_content");
     $result = $harvester->revert();
 
     $count = $result;
 
     $output = new ConsoleOutput();
-    $output->write("{$count} items reverted for the 'fixtures' harvest plan.");
+    $output->write("{$count} items reverted for the 'sample_content' harvest plan.");
   }
 
   /**
    * Private.
    */
   private function getHarvestPlan() {
-    $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'fixtures');
+    $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content');
 
     $plan_path = $module_path . "/harvest_plan.json";
     $json = file_get_contents($plan_path);
@@ -58,18 +58,18 @@ class Commands extends DrushCommands {
   /**
    * Private.
    */
-  private function createfixturesJson() {
-    $fixtures_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'fixtures') . "/fixtures.template.json";
-    $content = file_get_contents($fixtures_template);
+  private function createJson() {
+    $sample_content_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content') . "/sample_content.template.json";
+    $content = file_get_contents($sample_content_template);
     $new = $this->detokenize($content);
-    file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'fixtures') . "/fixtures.json", $new);
+    file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content') . "/sample_content.json", $new);
   }
 
   /**
    * Private.
    */
   private function detokenize($content) {
-    $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'fixtures') . "/files";
+    $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content') . "/files";
     return str_replace("<!*path*!>", $absolute_module_path, $content);
   }
 
