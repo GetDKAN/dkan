@@ -112,6 +112,15 @@ class DkanPeriodicUpdatesTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals(2, count($to_update));
   }
 
+  public function testImportDatastore() {
+    $to_update = dkan_periodic_updates_get_items_to_update($this->manifest);
+    $this->assertEquals(4, count($to_update));
+    $this->assertTrue($to_update['c65c08d9-43c8-45a4-a49d-29e714ce2ebb']['datastore']);
+    $this->assertFalse($to_update['d7ccef48-5c8c-432c-94c8-17cee9c4ed37']['datastore']);
+    $this->assertFalse($to_update['fe4b712b-c570-4e0b-aeeb-67d9789a196e']['datastore']);
+    $this->assertFalse($to_update['non-existing-uuid']['datastore']);
+  }
+
   public function testUpdatesDisabled() {
     // Updates disabled.
     variable_set('dkan_periodic_updates_status', FALSE);
