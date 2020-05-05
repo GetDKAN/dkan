@@ -30,11 +30,12 @@ If you already have a manifest in the system but need to pause the periodic upda
 
 The manifest is a CSV file in which you define all of the resources that need to be updated periodically in the system, this file should contain the following column names:
 
-``resource_id,frequency,file_url``
+``resource_id,frequency,file_url,import_to_datastore``
 
 :resource_id: is the UUID related to the resource node.
 :frequency: it can be set to `daily`, `weekly` or `monthly`. If you leave it empty or put any other string, then the system asumes it has to be imported daily.
 :file_url: the URL of the remote file that needs to be downloaded or linked and saved to the node.
+:import_to_datastore: if you want the resource to be imported to the datastore, you should set this to "Y", every other value will prevent the file from being imported into the datastore.
 
 Once you upload the manifest and click on "Add file", the file will be recognized by the system.
 
@@ -51,4 +52,5 @@ If the updates are enabled and a valid manifest is uploaded, then you'll see a l
   - the Source File URL,
   - the Update frequency,
   - the Status: this represents the messages generated on each update, it will tell you wether the resource has been updated, if the process finished correctly or if/what errors were produced,
-  - the Last update date: this is the date in which the resource was last updated via periodic updates.
+  - the Last update date: this is the date in which the resource was last updated via periodic updates,
+  - the Import to datastore indicator: it shows wether the file should be imported into the datastore based on what is defined in the manifest.
