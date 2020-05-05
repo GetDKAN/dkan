@@ -21,24 +21,24 @@ services:
     class: \Drupal\metastore\Storage\Data
     arguments:
       - '@entity_type.manager'
-    metastore.referencer:
-      class: \Drupal\metastore\Reference\Referencer
-      arguments:
-        - '@config.factory'
-        - '@entity_type.manager'
-      calls:
-        - [setLoggerFactory, ['@logger.factory']]
-    metastore.dereferencer:
-      class: \Drupal\metastore\Reference\Dereferencer
-      arguments:
-        - '@config.factory'
-        - '@entity_type.manager'
-      calls:
-        - [setLoggerFactory, ['@logger.factory']]
-    metastore.orphan_checker:
-      class: \Drupal\metastore\Reference\OrphanChecker
-      arguments:
-        - '@config.factory'
-        - '@queue'
-      calls:
-        - [setLoggerFactory, ['@logger.factory']]
+  metastore.referencer:
+    class: \Drupal\metastore\Reference\Referencer
+    arguments:
+      - '@config.factory'
+      - '@entity_type.manager'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
+  metastore.dereferencer:
+    class: \Drupal\metastore\Reference\Dereferencer
+    arguments:
+      - '@config.factory'
+      - '@entity_type.manager'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
+  metastore.orphan_checker:
+    class: \Drupal\metastore\Reference\OrphanChecker
+    arguments:
+      - '@config.factory'
+      - '@queue'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]

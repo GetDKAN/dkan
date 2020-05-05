@@ -215,7 +215,7 @@ class Service implements ContainerInjectionInterface {
    * Private.
    */
   private function setQueryObjectLimit(Query $object, Machine $state_machine) {
-    $rows_limit = $this->configFactory->get('sql_endpoint.settings')->get('rows_limit');
+    $rows_limit = $this->configFactory->get('datastore.settings')->get('rows_limit');
 
     $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
     if (!empty($limit) && $limit[0] <= $rows_limit) {
