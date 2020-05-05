@@ -5,4 +5,3 @@ core: 8.x
 package: DKAN
 dependencies:
   - harvest
-
