@@ -8,7 +8,7 @@
 
 For either working on a project locally or working on the core DKAN software and libraries, using a standardized, [docker](https://www.docker.com/)-based local environment is recommended. Our DKAN Tools command-line utility will work on Mac or Linux to create containers for the various services needed by DKAN. This will ensure you have the same setup as DKAN's core developers, and that your environment is very close to that of our continuous integration tools.
 
-It is possible, though not reccomended, to use DKAN Tools [without docker](https://github.com/GetDKAN/dkan-tools/tree/master#running-without-docker) and using your system's native webserver, php, and database tools; see the DKAN Tools documentation.
+It is possible, though not reccomended, to use DKAN Tools [without docker](https://github.com/GetDKAN/dkan-tools/tree/master#running-without-docker) and using your system's native webserver, [PHP](https://www.php.net), and database tools; see the DKAN Tools [documentation](https://github.com/GetDKAN/dkan-tools).
 
 ## Requirements
 
