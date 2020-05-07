@@ -31,19 +31,19 @@ If you already have an existing Drupal site, install DKAN with [composer](https:
 composer require 'getdkan/dkan:2.0.0'
 ```
 
-## Dummy content
+## Sample content
 
-To populate your site with example content, enable the ``dkan_dummy_content`` module:
+To populate your site with example content, enable the ``sample_content`` module:
 
 ```
-drush en dkan_dummy_content
+drush en sample_content
 ```
 
 to add and then remove the content use the following commands:
 
 ```
-drush dkan-dummy-content:create
-drush dkan-dummy-content:remove
+drush dkan:sample-content:create
+drush dkan:sample-content:remove
 ```
 
 ## Decoupled front end

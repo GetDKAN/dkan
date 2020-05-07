@@ -24,7 +24,7 @@ These are the available query parameters:
 ## Search Facets
 
 1. Navigate to `admin/config/search/search-api/index/dkan/fields` to define which fields of your metadata to search on.
-2. Rebuild tracking information with `drush dkan-search:rebuild-tracker`
+2. Rebuild tracking information with `drush dkan:metastore-search:rebuild-tracker`
 3. Re-index the site `drush sapi-i`
 
 Viewing the ``/api/1/search`` endpoint, you should see a "facets" section with the configured facet fields and their results.

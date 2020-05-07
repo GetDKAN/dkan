@@ -14,7 +14,8 @@ You can manually import file data into the datastore via drush with the identifi
 | -- | -- | -- |
 | dkan-datastore:import | $uuid | import file to the datastore |
 | dkan-datastore:drop   | $uuid | drop the datastore table |
-| queue:run | dkan_datastore_import | process all of the datastore import jobs |
+| dkan-datastore:list   |       | lists available datastores and status of the import |
+| queue:run | datastore_import | process all of the datastore import jobs |
 
 ## Datastore API
 
