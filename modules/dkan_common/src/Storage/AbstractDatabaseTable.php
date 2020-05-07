@@ -113,12 +113,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
 
     if ($existing === NULL) {
       $fields = $this->getNonSerialFields();
-
-      if (count($fields) != count($data)) {
-        throw new \Exception("The number of fields and data given do not match: fields - " .
-        json_encode($fields) . " data - " . json_encode($data));
-      }
-
+      $this->verifyQuantityMatch($fields, $data);
       $q = $this->connection->insert($this->getTableName());
       $q->fields($fields);
       $q->values($data);
@@ -132,6 +127,16 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
     }
 
     return ($returned_id) ? "$returned_id" : "{$id}";
+  }
+
+  /**
+   * private.
+   */
+  private function verifyQuantityMatch(array $fields, array $data) {
+    if (count($fields) != count($data)) {
+      throw new \Exception("The number of fields and data given do not match: fields - " .
+        json_encode($fields) . " data - " . json_encode($data));
+    }
   }
 
   /**
@@ -152,10 +157,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
     $q->fields($fields);
     foreach ($data as $datum) {
       $datum = $this->prepareData($datum);
-      if (count($fields) != count($datum)) {
-        throw new \Exception("The number of fields and data given do not match: fields - " .
-          json_encode($fields) . " data - " . json_encode($datum));
-      }
+      $this->verifyQuantityMatch($fields, $datum);
       $q->values($datum);
     }
     return $q->execute();
