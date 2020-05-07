@@ -131,7 +131,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
   }
 
   /**
-   * private.
+   * Private.
    */
   private function verifyQuantityMatch(array $fields, array $data) {
     if (count($fields) != count($data)) {
