@@ -8,6 +8,7 @@ use Contracts\StorerInterface;
 use Dkan\Datastore\Storage\StorageInterface;
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\dkan_datastore\Storage\Query;
 
 /**
@@ -216,9 +217,29 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
       $db_query = $db_query->countQuery();
     }
 
-    $result = $db_query->execute()->fetchAll();
+    try {
+      $result = $db_query->execute()->fetchAll();
+    }
+    catch (DatabaseExceptionWrapper $e) {
+      throw new \Exception($this->sanitizedErrorMessage($e->getMessage()));
+    }
 
     return $result;
+  }
+
+  /**
+   * Create a minimal error message that does not leak database information.
+   */
+  private function sanitizedErrorMessage(string $unsanitizedMessage) {
+    $messages = [
+      'Column not found',
+    ];
+    foreach ($messages as $message) {
+      if (strpos($unsanitizedMessage, $message) !== FALSE) {
+        return $message;
+      }
+    }
+    return "Database internal error.";
   }
 
   /**
