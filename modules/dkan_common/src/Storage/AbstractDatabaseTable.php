@@ -199,7 +199,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
    * Run a query on the database table.
    *
    * @param \Drupal\dkan_datastore\Storage\Query $query
-   *   Query obejct.
+   *   Query object.
    */
   public function query(Query $query): array {
     $this->setTable();
