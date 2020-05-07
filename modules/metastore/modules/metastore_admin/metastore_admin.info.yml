@@ -1,5 +1,5 @@
 name: Administration
-description: 'Provides administrative views for managing dataset content.'
+description: Provides administrative views for managing dataset content.
 type: module
 core: 8.x
 dependencies:
