@@ -105,13 +105,13 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Private.
    */
   private function runQuery(string $query, $showDbColumns = FALSE) {
-    $uuid = $this->service->getResourceUuid($query);
-
-    if ($modifyResponse = $this->modifyData($uuid)) {
-      return $modifyResponse;
-    }
-
     try {
+      $uuid = $this->service->getResourceUuid($query);
+
+      if ($modifyResponse = $this->modifyData($uuid)) {
+        return $modifyResponse;
+      }
+
       $result = $this->service->runQuery($query, $showDbColumns);
     }
     catch (\Exception $e) {
