@@ -44,10 +44,7 @@ class ServiceTest extends TestCase {
       ],
     ];
 
-    $container = (new Chain($this))
-      ->add(Container::class, "get", $this->getServices())
-      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
-      ->add(ImmutableConfig::class, "get", "100")
+    $container = $this->getCommonMockChain($this)
       ->add(ResourceServiceFactory::class, 'getInstance', ResourceService::class)
       ->add(ResourceService::class, 'get', Resource::class)
       ->add(Resource::class, 'getId', '123')
@@ -71,10 +68,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testAutoLimitOnSqlStatements() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", $this->getServices())
-      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
-      ->add(ImmutableConfig::class, "get", "100")
+    $container = $this->getCommonMockChain($this)
       ->getMock();
 
     $service = Service::create($container);
@@ -87,15 +81,22 @@ class ServiceTest extends TestCase {
    *
    */
   public function testNoAutoLimitOnCountSqlStatements() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", $this->getServices())
-      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
-      ->add(ImmutableConfig::class, "get", "100")
+    $container = $this->getCommonMockChain($this)
       ->getMock();
 
     $service = Service::create($container);
     $query = $service->getQueryObject("[SELECT COUNT(*) FROM blah];");
     $this->assertFalse(isset($query->limit));
+  }
+
+  /**
+   *
+   */
+  private function getCommonMockChain() {
+    return (new Chain($this))
+      ->add(Container::class, "get", $this->getServices())
+      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
+      ->add(ImmutableConfig::class, "get", "100");
   }
 
 }
