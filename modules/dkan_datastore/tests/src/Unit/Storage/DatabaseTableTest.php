@@ -4,6 +4,7 @@ namespace Drupal\Tests\dkan_datastore\Unit\Storage;
 
 use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Schema;
@@ -313,6 +314,49 @@ class DatabaseTableTest extends TestCase {
     );
 
     $this->assertEquals([], $databaseTable->query($query));
+  }
+
+  /**
+   *
+   */
+  public function testQueryExceptionDatabaseInternalError() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("Integrity constraint violation"))
+    ;
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+
+    $this->expectExceptionMessage("Database internal error.");
+    $databaseTable->query($query);
+  }
+
+  /**
+   *
+   */
+  public function testQueryColumnNotFound() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("SQLSTATE[42S22]: Column not found: 1054 Unknown column 'sensitive_information'..."));
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+
+    $this->expectExceptionMessage("Column not found");
+    $databaseTable->query($query);
   }
 
   /**
