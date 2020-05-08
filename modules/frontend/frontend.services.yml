@@ -1,0 +1,12 @@
+services:
+  frontend.page:
+      class: Drupal\frontend\Page
+      arguments:
+        - '@app.root'
+        - '@entity_type.manager'
+      shared: false
+  frontend.route_provider:
+      class: Drupal\frontend\Routing\RouteProvider
+      arguments:
+        - '@app.root'
+        - '@entity.query'

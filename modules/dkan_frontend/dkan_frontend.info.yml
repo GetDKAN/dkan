@@ -1,7 +1,0 @@
-name: Front End
-description: 'Provides the connection between Gatsby and Drupal, controls the routing.'
-type: module
-core: 8.x
-dependencies:
-  - drupal:field
-package: DKAN

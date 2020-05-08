@@ -1,0 +1,7 @@
+metastore_search.1.search:
+  path: '/api/1/search'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\metastore_search\WebServiceApi::search'}
+  requirements:
+    _permission: 'access content'

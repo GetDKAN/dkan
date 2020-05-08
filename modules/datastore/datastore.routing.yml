@@ -1,0 +1,81 @@
+datastore.1.datastore:
+  path: '/api/1/datastore'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\common\Docs::getComplete'}
+  requirements:
+    _permission: 'access content'
+
+datastore.1.imports:
+  path: '/api/1/datastore/imports'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::list'
+  requirements:
+    _permission: 'datastore_api_import'
+  options:
+    _auth: ['basic_auth']
+
+datastore.1.imports.post:
+  path: '/api/1/datastore/imports'
+  methods: [POST]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::import'
+    deferred: false
+  requirements:
+    _permission: 'datastore_api_import'
+  options:
+    _auth: ['basic_auth']
+
+datastore.1.imports.id:
+  path: '/api/1/datastore/imports/{identifier}'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::summary'
+  requirements:
+    _permission: 'access content'
+
+datastore.1.imports.delete:
+  path: '/api/1/datastore/imports'
+  methods: [DELETE]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::deleteMultiple'
+  requirements:
+    _permission: 'datastore_api_drop'
+  options:
+    _auth: ['basic_auth']
+
+datastore.1.imports.id.delete:
+  path: '/api/1/datastore/imports/{identifier}'
+  methods: [DELETE]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::delete'
+  requirements:
+    _permission: 'datastore_api_drop'
+  options:
+    _auth: ['basic_auth']
+
+datastore.sql_endpoint.get.api:
+  path: '/api/1/datastore/sql'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\datastore\SqlEndpoint\WebServiceApi::runQueryGet'}
+  requirements:
+    _access: 'TRUE'
+
+datasotre.sql_endpoint.post.api:
+  path: '/api/1/datastore/sql'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\datastore\SqlEndpoint\WebServiceApi::runQueryPost'}
+  requirements:
+    _access: 'TRUE'
+
+datastore.sql_endpoint.settings:
+  path: '/admin/config/dkan/sql_endpoint'
+  defaults:
+    _form: '\Drupal\datastore\SqlEndpoint\Form\DkanSqlEndpointSettingsForm'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

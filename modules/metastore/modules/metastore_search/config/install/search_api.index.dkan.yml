@@ -1,0 +1,64 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.server.dkan
+  module:
+    - search_api
+    - metastore_search
+id: dkan
+name: DKAN
+description: ''
+read_only: false
+field_settings:
+  description:
+    label: description
+    datasource_id: dkan_dataset
+    property_path: description
+    type: text
+  keyword:
+    label: keyword
+    datasource_id: dkan_dataset
+    property_path: keyword
+    type: string
+  publisher__name:
+    label: publisher__name
+    datasource_id: dkan_dataset
+    property_path: publisher__name
+    type: string
+  theme:
+    label: theme
+    datasource_id: dkan_dataset
+    property_path: theme
+    type: string
+  title:
+    label: title
+    datasource_id: dkan_dataset
+    property_path: title
+    type: text
+datasource_settings:
+  dkan_dataset: {  }
+processor_settings:
+  add_url: {  }
+  aggregated_field: {  }
+  ignorecase:
+    all_fields: false
+    fields:
+      - description
+      - keyword
+      - publisher__name
+      - theme
+      - title
+      - publisher__name
+    weights:
+      preprocess_index: -20
+      preprocess_query: -20
+  language_with_fallback: {  }
+  rendered_item: {  }
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  index_directly: true
+  cron_limit: 50
+server: dkan

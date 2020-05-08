@@ -1,0 +1,39 @@
+{
+    "timeLimit": 60,
+    "result": {
+        "status": "done",
+        "data": "{\"recordNumber\":2970,\"chunksProcessed\":4572}",
+        "error": null
+    },
+    "parser": {
+        "delimiter": ",",
+        "quote": "\"",
+        "escape": "\\",
+        "recordEnd": [
+            "\n",
+            "\r"
+        ],
+        "records": [],
+        "fields": [],
+        "field": "",
+        "machine": {
+            "currentStates": [
+                "s_record_end"
+            ],
+            "halted": true,
+            "machines": []
+        }
+    },
+    "parserClass": "CsvParser\\Parser\\Csv",
+    "resource": {
+        "filePath": "/var/www/src/site/files/dkan-tmp/bike_lane.csv",
+        "id": "5"
+    },
+    "storage": {
+        "resource": {
+            "filePath": "http://dkan/sites/default/files/distribution/cedcd327-4e5d-43f9-8eb1-c11850fa7c55/Bike_Lane.csv",
+            "id": "5"
+        }
+    },
+    "storageClass": "Drupal\\datastore\\Storage\\DatabaseTable"
+}

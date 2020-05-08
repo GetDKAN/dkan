@@ -1,0 +1,101 @@
+<?php
+
+/**
+ * @file
+ */
+
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form['#id']) && $form['#id'] == 'views-exposed-form-dkan-content-page-1') {
+    $options = [
+      '' => t('- Any -'),
+      'dataset' => 'dataset',
+      'distribution' => 'distribution',
+      'keyword' => 'keyword',
+      'publisher' => 'publisher',
+      'theme' => 'theme',
+    ];
+
+    $form['data-type'] = [
+      '#title' => new TranslatableMarkup('Data Type'),
+      '#type' => 'select',
+      '#options' => $options,
+      '#size' => NULL,
+      '#default_value' => '',
+    ];
+  }
+}
+
+/**
+ * Implements template_preprocess_views_view_fields().
+ */
+function metastore_admin_preprocess_views_view_field(&$vars) {
+  if (isset($vars['view'])
+    && ($vars['view']->id() == 'dkan_content')
+    && ($vars['view']->current_display == 'page_1')) {
+    // To access current row entity.
+    $entity = $vars['row']->_entity;
+    $entity_id = $entity->id();
+
+    // Modify data titles to display the metadata title values rather than uuids.
+    $data = json_decode($entity->field_json_metadata->value);
+    $title = (array) $data;
+
+    if ($vars['field']->field == 'title') {
+      switch ($entity->field_data_type->value) {
+        case 'keyword':
+        case 'theme':
+          $link = \Drupal::l($title['data'], Url::fromUri('internal:/node/' . $entity_id));
+          $vars['output'] = [
+            '#markup' => Markup::create($link),
+          ];
+          break;
+
+        case 'publisher':
+          $name = (array) $title['data'];
+          $link = \Drupal::l($name['name'], Url::fromUri('internal:/node/' . $entity_id));
+          $vars['output'] = [
+            '#markup' => Markup::create($link),
+          ];
+          break;
+
+        case 'distribution':
+          $dist = (array) $title['data'];
+          $mediatype = $entity_id . ' ' . $dist['mediaType'];
+          $format = $dist['format'] ? $entity_id . ' ' . $dist['format'] : $mediatype;
+          $title = $dist['title'] ? $dist['title'] : $format;
+          $link = \Drupal::l($title, Url::fromUri('internal:/node/' . $entity_id));
+          $vars['output'] = [
+            '#markup' => Markup::create($link),
+          ];
+          break;
+      }
+    }
+  }
+  // Check if the frontend module is enabled. If not, dataset titles
+  // should link to the drupal node rather than the REACT frontend.
+  if (isset($vars['view'])
+    && ($vars['view']->id() == 'dkan_dataset')
+    && ($vars['view']->current_display == 'page_1')) {
+
+    $moduleHandler = \Drupal::moduleHandler();
+    $moduleExist = $moduleHandler->moduleExists('frontend');
+
+    if ($vars['field']->field == 'title' && !$moduleExist) {
+      $entity = $vars['row']->_entity;
+      $entity_id = $entity->id();
+      $title = $entity->title->value;
+      $link = \Drupal::l($title, Url::fromUri('internal:/node/' . $entity_id));
+      $vars['output'] = [
+        '#markup' => Markup::create($link),
+      ];
+    }
+  }
+}

@@ -1,0 +1,5 @@
+services:
+  datastore:commands:
+    class: \Drupal\datastore\Drush
+    tags:
+      - { name: drush.command }

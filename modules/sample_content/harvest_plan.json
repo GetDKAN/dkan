@@ -1,0 +1,11 @@
+{
+  "identifier": "sample_content",
+  "extract": {
+    "type": "\\Harvest\\ETL\\Extract\\DataJson",
+    "uri": "/sample_content.json"
+  },
+  "transforms": ["\\Drupal\\harvest\\Transform\\ResourceImporter"],
+  "load": {
+    "type": "\\Drupal\\harvest\\Load\\Dataset"
+  }
+}

@@ -1,0 +1,7 @@
+name: Sample Content
+description: Provides sample content for tests or standing up a demo instance.
+type: module
+core: 8.x
+package: DKAN
+dependencies:
+  - harvest
