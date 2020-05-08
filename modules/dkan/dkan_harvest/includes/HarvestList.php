@@ -26,7 +26,7 @@ class HarvestList extends MigrateList {
     $this->sourceCacheDir = $source_cache_dir;
     $options = array(
       'recurse' => FALSE,
-      'key' => 'name',
+      'key' => 'filename',
     );
     $this->files = file_scan_directory($this->sourceCacheDir, '/(.*)/', $options);
   }
