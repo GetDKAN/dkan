@@ -2,4 +2,4 @@ datastore.settings_form:
   title: SQL endpoint
   route_name: datastore.sql_endpoint.settings
   description: Configure SQL query API endpoint.
-  parent: dkan.admin_config
+  parent: dkan.common.admin_config

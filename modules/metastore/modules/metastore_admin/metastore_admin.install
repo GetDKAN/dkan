@@ -7,7 +7,7 @@
 /**
  * Disable standard content view.
  */
-function ground_control_install() {
+function metastore_admin_install() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.content');
   $config->set('status', FALSE);
@@ -18,7 +18,7 @@ function ground_control_install() {
 /**
  * Ensable standard content view.
  */
-function ground_control_uninstall() {
+function metastore_admin_uninstall() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.content');
   $config->set('status', TRUE);

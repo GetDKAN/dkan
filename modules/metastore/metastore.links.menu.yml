@@ -1,5 +1,5 @@
-metastore.settings_form:
+dkan.metastore.config_properties:
   title: Dataset properties
-  route_name: metastore.config_settings
+  route_name: dkan.metastore.config_properties
   description: Configure dataset properties for referencing an API endpoint.
-  parent: dkan.admin_config
+  parent: dkan.common.admin_config

@@ -94,7 +94,7 @@ metastore.data_json:
   requirements:
     _permission: 'access content'
 
-metastore.config_settings:
+dkan.metastore.config_properties:
   path: '/admin/config/dkan/properties'
   defaults:
     _form: '\Drupal\metastore\Form\DkanDataSettingsForm'
