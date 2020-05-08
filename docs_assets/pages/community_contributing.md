@@ -1,5 +1,4 @@
-@page community Community
-
+@page contributing Contributing
 
 <h2><i class="fab fa-slack"></i> Slack</h2>
 
@@ -21,9 +20,8 @@ This community resource is for DKAN developers and users to share how they're us
 
 For developers and contributors:
 
-- [Pull requests welcome!](https://github.com/GetDKAN/dkan) Add a link to the issue it fixes and a detailed description about your fix.
+- [Pull requests welcome!](https://github.com/GetDKAN/dkan) If you are making changes or improvements to DKAN, contribute back using the [standard fork and pull-request workflow in Gitihub](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/). Add a link to the issue it fixes and a detailed description about your fix.
 - [Submit an issue at the official DKAN repo](https://github.com/GetDKAN/dkan/issues/new) Please add detailed steps on how to reproduce the error, what version of DKAN you are using, and any environment details that could help expedite work on the problem.
-
 
 <h2><i class="fas fa-toolbox"></i> Additional resources</h2>
 
