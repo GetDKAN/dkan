@@ -14,6 +14,7 @@ use Drupal\Tests\dkan_sql_endpoint\Traits\TestHelperTrait;
 use MockChain\Chain;
 use Drupal\dkan_sql_endpoint\Service;
 use PHPUnit\Framework\TestCase;
+use SqlParser\SqlParser;
 
 /**
  *
@@ -62,6 +63,19 @@ class ServiceTest extends TestCase {
     $service = Service::create($container);
     $data = $service->runQuery('[SELECT * FROM 123][WHERE last_name = "Felix"][ORDER BY first_name DESC][LIMIT 1 OFFSET 1];');
     $this->assertEquals($expectedData, $data[0]);
+  }
+
+  /**
+   *
+   */
+  public function testParserInvalidQueryString() {
+    $container = $this->getCommonMockChain($this)
+      ->add(SqlParser::class, 'validate', FALSE)
+      ->getMock();
+
+    $service = Service::create($container);
+    $this->expectExceptionMessage("Invalid query string.");
+    $service->runQuery('[SELECT FROM 123');
   }
 
   /**
