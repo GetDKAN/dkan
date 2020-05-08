@@ -67,6 +67,20 @@ class ServiceTest extends TestCase {
   /**
    *
    */
+  public function testGetDatabaseTableExceptionResourceNotFound() {
+    $container = $this->getCommonMockChain($this)
+      ->add(ResourceServiceFactory::class, 'getInstance', ResourceService::class)
+      ->add(ResourceService::class, 'get', NULL)
+      ->getMock();
+
+    $service = Service::create($container);
+    $this->expectExceptionMessage("Resource not found.");
+    $service->runQuery('[SELECT * FROM 123][WHERE last_name = "Felix"][ORDER BY first_name DESC][LIMIT 1 OFFSET 1];');
+  }
+
+  /**
+   *
+   */
   public function testAutoLimitOnSqlStatements() {
     $container = $this->getCommonMockChain($this)
       ->getMock();
