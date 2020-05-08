@@ -4,10 +4,12 @@ namespace Drupal\Tests\datastore\Unit\Storage;
 
 use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\Statement;
+use Drupal\datastore\Storage\Query;
 use MockChain\Chain;
 use MockChain\Sequence;
 use Drupal\datastore\Storage\DatabaseTable;
@@ -291,6 +293,70 @@ class DatabaseTableTest extends TestCase {
     );
     $this->expectExceptionMessage("Import for 1 error when decoding foobar");
     $this->assertEquals("1", $databaseTable->store("foobar", "1"));
+  }
+
+  /**
+   *
+   */
+  public function testQuery() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetchAll', []);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+
+    $this->assertEquals([], $databaseTable->query($query));
+  }
+
+  /**
+   *
+   */
+  public function testQueryExceptionDatabaseInternalError() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("Integrity constraint violation"))
+    ;
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+
+    $this->expectExceptionMessage("Database internal error.");
+    $databaseTable->query($query);
+  }
+
+  /**
+   *
+   */
+  public function testQueryColumnNotFound() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("SQLSTATE[42S22]: Column not found: 1054 Unknown column 'sensitive_information'..."));
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+
+    $this->expectExceptionMessage("Column not found");
+    $databaseTable->query($query);
   }
 
   /**
