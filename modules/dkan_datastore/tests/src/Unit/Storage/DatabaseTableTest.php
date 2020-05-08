@@ -8,6 +8,7 @@ use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\Statement;
+use Drupal\dkan_datastore\Storage\Query;
 use MockChain\Chain;
 use MockChain\Sequence;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
@@ -291,6 +292,27 @@ class DatabaseTableTest extends TestCase {
     );
     $this->expectExceptionMessage("Import for 1 error when decoding foobar");
     $this->assertEquals("1", $databaseTable->store("foobar", "1"));
+  }
+
+  /**
+   *
+   */
+  public function testQuery() {
+    $query = new Query();
+
+    $connectionChain = $this->getConnectionChain()
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetchAll', []);
+
+    $databaseTable = new DatabaseTable(
+      $connectionChain->getMock(),
+      $this->getResource()
+    );
+
+    $this->assertEquals([], $databaseTable->query($query));
   }
 
   /**
