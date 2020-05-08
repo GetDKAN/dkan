@@ -17,3 +17,4 @@ docs
 coverage
 cypress/videos
 package-lock.json
+tagfile
