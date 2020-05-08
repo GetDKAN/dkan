@@ -37,3 +37,6 @@ Your data is now available via the Datastore API!
 ```
 http://domain.com/api/1/datastore/sql?query=[SELECT * FROM ${resource_identifier}][WHERE state = 'OK'][ORDER BY county ASC][LIMIT 5 OFFSET 100]
 ```
+
+**Configuration**
+If your server's resources are limited you can adjust the default number of rows returned with the configuration page located at `admin/config/dkan/sql_endpoint`.
