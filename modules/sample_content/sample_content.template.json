@@ -226,7 +226,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/Polling_Places.csv",
+          "downloadURL": "file:\/\/<!*path*!>\/Polling_Places.csv",
           "format":"csv",
           "description":"\u003Cp\u003EThis is a list and map of polling places in Madison, WI.\u003C\/p\u003E\n\u003Cp\u003EOriginal data here:\u003Cbr \/\u003E\u003Ca href=\u0022https:\/\/data.cityofmadison.com\/Polling-Places\/Polling-Places\/rtyh-6ucr\u0022\u003Ehttps:\/\/data.cityofmadison.com\/Polling-Places\/Polling-Places\/rtyh-6ucr\u003C\/a\u003E\u003C\/p\u003E\n",
           "title":"Madison Polling Places"
