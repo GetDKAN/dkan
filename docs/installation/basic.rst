@@ -65,9 +65,7 @@ At the moment, our supported fully-made DKAN codebase is the `DKAN
 DROPS-7 <https://github.com/GetDKAN/dkan-drops-7>`__ repository, which
 is optimized to run on the Pantheon platform. You can build a DKAN site
 with a single click on Pantheon
-`here <https://dashboard.getpantheon.com/products/dkan/spinup>`__. (We
-also offer `one-click installation on
-Acquia <https://docs.getdkan.com/dkan-documentation/get-dkan/dkan-acquia>`__)
+`here <https://dashboard.getpantheon.com/products/dkan/spinup>`__.
 
 Download and unzip `the latest version of the "DKAN DROPS"
 codebase <https://github.com/GetDKAN/dkan-drops-7/archive/master.zip>`__
