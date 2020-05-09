@@ -826,7 +826,7 @@ class HarvestMigration extends MigrateDKAN {
         // This will throw an exception if $this->idListImported is empty. We
         // are doing that check before entring this code but if you are
         // refactoring this code make sure to add the relevent checks.
-        ->condition('sourceid1', $this->getIdList(), 'IN');
+        ->condition('sourceid1', $id_list, 'IN');
       $result = $query->execute();
 
       $rowRestoredSourceList = $result->fetchAllAssoc('destid1');
@@ -899,9 +899,9 @@ class HarvestMigration extends MigrateDKAN {
       ->fields('map')
       ->condition("needs_update", HarvestMigrateSQLMap::STATUS_IGNORED_NO_SOURCE, '<>');
     $id_list = $this->getIdList();
-    if (is_array($this->getIdList()) && !empty($id_list)) {
+    if (is_array($id_list) && !empty($id_list)) {
       foreach ($this->map->getSourceKeyMap() as $key_name) {
-        $query = $query->condition("map.$key_name", $this->getIdList(), 'NOT IN');
+        $query = $query->condition("map.$key_name", $id_list, 'NOT IN');
       }
     }
     $result = $query->execute();
