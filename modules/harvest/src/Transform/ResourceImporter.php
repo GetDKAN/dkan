@@ -4,7 +4,7 @@ namespace Drupal\harvest\Transform;
 
 use Drupal\Core\Site\Settings;
 use Harvest\ETL\Transform\Transform;
-use Drupal\harvest\Load\FileHelperTrait;
+use Drupal\harvest\Utility\FileHelperTrait;
 
 /**
  * Defines a transform that saves the resources from a dataset.

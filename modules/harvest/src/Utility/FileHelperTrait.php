@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\Load;
+namespace Drupal\harvest\Utility;
 
 /**
  * Helper to wrap drupal filesystem functions.
