@@ -9,7 +9,7 @@ use Drupal\Core\File\FileSystemInterface;
  *
  * @codeCoverageIgnore
  */
-class FileHelper implements IFileHelper {
+class FileHelper implements FileHelperInteface {
 
   /**
    * Public.

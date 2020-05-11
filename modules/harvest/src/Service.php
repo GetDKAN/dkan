@@ -2,18 +2,24 @@
 
 namespace Drupal\harvest;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Harvest\Harvester as DkanHarvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Harvest\ETL\Factory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Harvester.
+ * Service.
  */
-class Harvester {
+class Service implements ContainerInjectionInterface {
 
   private $storeFactory;
+
+  public static function create(ContainerInterface $container) {
+    return new self($container->get("dkan.harvest.storage.database_table"));
+  }
 
   /**
    * Constructor.

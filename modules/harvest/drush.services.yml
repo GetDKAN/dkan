@@ -1,5 +1,5 @@
 services:
-  harvest:commands:
-    class: \Drupal\harvest\Drush\Commands
+  dkan.harvest.drush:
+    class: \Drupal\harvest\Drush
     tags:
       - { name: drush.command }

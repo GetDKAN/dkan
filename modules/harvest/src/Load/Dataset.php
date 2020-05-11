@@ -2,6 +2,7 @@
 
 namespace Drupal\harvest\Load;
 
+use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Service;
 use Harvest\ETL\Load\Load;
 
@@ -26,7 +27,14 @@ class Dataset extends Load {
     if (!is_string($item)) {
       $item = json_encode($item);
     }
-    $service->post('dataset', $item);
+
+    try {
+      $service->post('dataset', $item);
+    }
+    catch (ExistingObjectException $e) {
+      $object = json_decode($item, TRUE);
+      $service->put('dataset', $object['identifier'], $item);
+    }
   }
 
   /**

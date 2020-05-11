@@ -2,6 +2,6 @@ services:
   metastore_search.service:
     class: \Drupal\metastore_search\Service
     arguments:
-      - '@metastore.service'
+      - '@dkan.metastore.service'
       - '@entity_type.manager'
       - '@search_api.query_helper'

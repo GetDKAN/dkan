@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\harvest\Drush;
+namespace Drupal\harvest;
 
+use Drupal\harvest\Drush\Helper;
+use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
-
-use Drush\Commands\DrushCommands;
 
 /**
  * Class.
  *
  * @codeCoverageIgnore
  */
-class Commands extends DrushCommands {
+class Drush extends DrushCommands {
   use Helper;
 
   /**
@@ -41,8 +41,8 @@ class Commands extends DrushCommands {
    */
   public function __construct() {
     // @todo passing via arguments doesn't seem play well with drush.services.yml
-    $this->harvestService = \Drupal::service('harvest.service');
-    $this->logger = \Drupal::service('harvest.logger_channel');
+    $this->harvestService = \Drupal::service('dkan.harvest.service');
+    $this->logger = \Drupal::service('dkan.harvest.logger_channel');
   }
 
   /**

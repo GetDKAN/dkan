@@ -5,6 +5,7 @@ namespace Drupal\metastore_search;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\metastore\Service as Metastore;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Item;
@@ -20,6 +21,7 @@ use PHPUnit\Framework\TestCase;
  * Dkan search service tests.
  */
 class ServiceTest extends TestCase {
+  use ServiceCheckTrait;
 
   /**
    * Test for missing search index.
@@ -85,8 +87,10 @@ class ServiceTest extends TestCase {
    * Common mock chain.
    */
   public function getCommonMockChain() {
+    $this->checkService('dkan.metastore.service', 'metastore');
+
     $options = (new Options())
-      ->add('metastore.service', Metastore::class)
+      ->add('dkan.metastore.service', Metastore::class)
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('search_api.query_helper', QueryHelperInterface::class)
       ->index(0);

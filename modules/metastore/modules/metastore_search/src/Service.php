@@ -78,7 +78,7 @@ class Service implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('metastore.service'),
+      $container->get('dkan.metastore.service'),
       $container->get('entity_type.manager'),
       $container->get('search_api.query_helper')
     );

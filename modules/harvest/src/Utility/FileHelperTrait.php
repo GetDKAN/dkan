@@ -12,7 +12,7 @@ trait FileHelperTrait {
   /**
    * Private.
    *
-   * @return IFileHelper
+   * @return FileHelperInteface
    *   FileHelper.
    */
   protected function getFileHelper() {
