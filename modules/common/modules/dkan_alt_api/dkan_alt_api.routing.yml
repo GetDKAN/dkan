@@ -22,7 +22,7 @@ dkan_alt_api.get.api:
   path: '/alt/api/1/datastore/sql'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\sql_endpoint\WebServiceApi::runQueryGet'}
+    { _controller: '\Drupal\datastore\SqlEndpoint\WebServiceApi::runQueryGet'}
   requirements:
     _permission: 'query the alternate sql endpoint api'
   options:
@@ -32,7 +32,7 @@ dkan_alt_api.post.api:
   path: '/alt/api/1/datastore/sql'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\sql_endpoint\WebServiceApi::runQueryPost'}
+    { _controller: '\Drupal\datastore\SqlEndpoint\WebServiceApi::runQueryPost'}
   requirements:
     _permission: 'query the alternate sql endpoint api'
   options:
