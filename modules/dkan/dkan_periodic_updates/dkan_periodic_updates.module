@@ -62,7 +62,7 @@ function dkan_periodic_updates_form($form, &$form_state) {
     '#title' => 'Manifest for periodic updates',
   ];
   $form['manifest-file']['info'] = [
-    '#markup' => '<p>' . t('The manifest file should contain the following column names: resource_id, frequency and file_url. The allowed frequency values are daily, weekly, or monthly. If left blank, the frequency will default to daily.') . '</p>',
+    '#markup' => '<p>' . t('The manifest file should contain the following column names: resource_id, frequency, file_url and import_to_datastore. The allowed frequency values are daily, weekly, or monthly. If left blank, the frequency will default to daily.') . '</p>',
   ];
   $form['manifest-file']['manifest'] = [
     '#type' => 'managed_file',
@@ -105,7 +105,7 @@ function dkan_periodic_updates_form($form, &$form_state) {
  * Validate function for periodic updates manifest form.
  */
 function dkan_periodic_updates_form_validate($form, &$form_state) {
-  $standard_headers = ['resource_id', 'frequency', 'file_url'];
+  $standard_headers = ['resource_id', 'frequency', 'file_url', 'import_to_datastore'];
 
   $file = file_load($form_state['values']['manifest']);
   if ($file) {
@@ -214,24 +214,31 @@ function dkan_periodic_updates_get_items_to_update($file) {
         switch ($resource_data['frequency']) {
           case 'monthly':
             if ($time_passed->days >= 28) {
-              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+              $to_update[$resource_data['resource_id']]['file_url'] = $resource_data['file_url'];
             }
             break;
           case 'weekly':
             if ($time_passed->days >= 7) {
-              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+              $to_update[$resource_data['resource_id']]['file_url'] = $resource_data['file_url'];
             }
             break;
           default:
             if ($time_passed->days >= 1) {
-              $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+              $to_update[$resource_data['resource_id']]['file_url'] = $resource_data['file_url'];
             }
         }
       }
       // If there is no last update date, then add the resource to list of
       // resource to import.
       else {
-        $to_update[$resource_data['resource_id']] = $resource_data['file_url'];
+        $to_update[$resource_data['resource_id']]['file_url'] = $resource_data['file_url'];
+      }
+
+      // If the resource will be updated, add if it should be imported into the
+      // datastore.
+      if (isset($to_update[$resource_data['resource_id']])) {
+        $datastore = $resource_data['import_to_datastore'] === 'Y' ? TRUE : FALSE;
+        $to_update[$resource_data['resource_id']]['datastore'] = $datastore;
       }
     }
     fclose($handle);
@@ -248,8 +255,10 @@ function dkan_periodic_updates_get_items_to_update($file) {
 function dkan_periodic_updates_execute_update($resources) {
   module_load_include('inc', 'dkan_datastore', 'resources/dkan_datastore_resource');
   if (!empty($resources)) {
-    foreach ($resources as $uuid => $file_url) {
+    foreach ($resources as $uuid => $resource) {
       $nids = entity_get_id_by_uuid('node', [$uuid]);
+      $file_url = $resource['file_url'];
+      $datastore = $resource['datastore'];
       if (empty($nids)) {
         watchdog('dkan_periodic_updates', 'There is no node with UUID !uuid.', ['!uuid' => $uuid], WATCHDOG_WARNING);
         variable_set('dkan_periodic_updates_message_' . $uuid, 'No node found for the UUID specified.');
@@ -264,6 +273,7 @@ function dkan_periodic_updates_execute_update($resources) {
               $file = dkan_periodic_updates_create_file($file_url, TRUE, $nid);
               if ($file) {
                 $node->field_upload[LANGUAGE_NONE][0]['fid'] = $file->fid;
+                variable_set('dkan_periodic_updates_message_' . $uuid, '');
               }
               else {
                 watchdog('dkan_periodic_updates', 'File for node !uuid could not be retrieved.', ['!uuid' => $uuid], WATCHDOG_WARNING);
@@ -274,13 +284,14 @@ function dkan_periodic_updates_execute_update($resources) {
               if (!empty($node->field_link_remote_file)) {
                 $file = dkan_periodic_updates_create_file($file_url);
                 $node->field_link_remote_file[LANGUAGE_NONE][0]['fid'] = $file->fid;
+                variable_set('dkan_periodic_updates_message_' . $uuid, '');
               }
             }
             if ($file) {
               dkan_periodic_updates_impersonate_user($node);
               variable_set('dkan_periodic_updates_' . $uuid, new DateTime("now"));
               $updated = TRUE;
-              if ($file->filemime === 'text/csv' || $file->filemime === 'text/tab-separated-values') {
+              if ($datastore && ($file->filemime === 'text/csv' || $file->filemime === 'text/tab-separated-values')) {
                 $proceed_with_import = TRUE;
               }
             }
@@ -326,7 +337,7 @@ function dkan_periodic_updates_state() {
     if ($file) {
       $handle = fopen($file->uri, 'r');
       $headers = fgetcsv($handle, 0, ',');
-      $table_headers = [t('Destination Resource ID'), t('Source File URL'), t('Update frequency'), t('Status'), t('Last update')];
+      $table_headers = [t('Destination Resource ID'), t('Source File URL'), t('Update frequency'), t('Status'), t('Last update'), t('Import to datastore')];
 
       while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
         $resource_data = array_combine($headers, $data);
@@ -358,7 +369,7 @@ function dkan_periodic_updates_state() {
           default:
             $frequency = 'daily';
         }
-        $table_rows[] = [$destination, $resource_data['file_url'], $frequency, $status, $last_updated];
+        $table_rows[] = [$destination, $resource_data['file_url'], $frequency, $status, $last_updated, $resource_data['import_to_datastore']];
       }
       fclose($handle);
       $output['state'] = [
