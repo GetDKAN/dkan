@@ -2,7 +2,9 @@
 
 namespace Drupal\harvest;
 
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\harvest\Drush\Helper;
+use Drupal\harvest\Service;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -16,16 +18,9 @@ class Drush extends DrushCommands {
   use Helper;
 
   /**
-   * Harvest Factory.
-   *
-   * @var \Drupal\harvest\Service\Factory
-   */
-  protected $harvestFactory;
-
-  /**
    * Harvest.
    *
-   * @var \Drupal\harvest\Service\Harvest
+   * @var \Drupal\harvest\Service
    */
   protected $harvestService;
 
@@ -39,10 +34,11 @@ class Drush extends DrushCommands {
   /**
    * Commands constructor.
    */
-  public function __construct() {
+  public function __construct(Service $service, LoggerChannelInterface $logger) {
+    parent::__construct();
     // @todo passing via arguments doesn't seem play well with drush.services.yml
-    $this->harvestService = \Drupal::service('dkan.harvest.service');
-    $this->logger = \Drupal::service('dkan.harvest.logger_channel');
+    $this->harvestService = $service;
+    $this->logger = $logger;
   }
 
   /**
