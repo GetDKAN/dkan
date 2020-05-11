@@ -51,7 +51,7 @@ Please see the [Installation](http://dkan.readthedocs.io/en/latest/installation/
 
 ### Upgrading DKAN
 
-Please see the [Updating and Maintaining DKAN](https://docs.getdkan.com/en/latest/introduction/maintaining.html) section of the DKAN Documentation for general upgrade information.
+Please see the [Updating and Maintaining DKAN](https://dkan.readthedocs.io/en/latest/introduction/maintaining.html) section of the DKAN Documentation for general upgrade information.
 
 ## Releases
 
