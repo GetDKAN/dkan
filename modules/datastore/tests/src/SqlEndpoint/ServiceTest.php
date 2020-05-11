@@ -14,6 +14,7 @@ use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use Drupal\datastore\SqlEndpoint\Service;
 use PHPUnit\Framework\TestCase;
+use SqlParser\SqlParser;
 
 /**
  *
@@ -44,10 +45,7 @@ class ServiceTest extends TestCase {
       ],
     ];
 
-    $container = (new Chain($this))
-      ->add(Container::class, "get", $this->getServices())
-      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
-      ->add(ImmutableConfig::class, "get", "100")
+    $container = $this->getCommonMockChain($this)
       ->add(ResourceServiceFactory::class, 'getInstance', ResourceService::class)
       ->add(ResourceService::class, 'get', Resource::class)
       ->add(Resource::class, 'getId', '123')
@@ -70,11 +68,35 @@ class ServiceTest extends TestCase {
   /**
    *
    */
+  public function testParserInvalidQueryString() {
+    $container = $this->getCommonMockChain($this)
+      ->add(SqlParser::class, 'validate', FALSE)
+      ->getMock();
+
+    $service = Service::create($container);
+    $this->expectExceptionMessage("Invalid query string.");
+    $service->runQuery('[SELECT FROM 123');
+  }
+
+  /**
+   *
+   */
+  public function testGetDatabaseTableExceptionResourceNotFound() {
+    $container = $this->getCommonMockChain($this)
+      ->add(ResourceServiceFactory::class, 'getInstance', ResourceService::class)
+      ->add(ResourceService::class, 'get', NULL)
+      ->getMock();
+
+    $service = Service::create($container);
+    $this->expectExceptionMessage("Resource not found.");
+    $service->runQuery('[SELECT * FROM 123][WHERE last_name = "Felix"][ORDER BY first_name DESC][LIMIT 1 OFFSET 1];');
+  }
+
+  /**
+   *
+   */
   public function testAutoLimitOnSqlStatements() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", $this->getServices())
-      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
-      ->add(ImmutableConfig::class, "get", "100")
+    $container = $this->getCommonMockChain($this)
       ->getMock();
 
     $service = Service::create($container);
@@ -87,15 +109,22 @@ class ServiceTest extends TestCase {
    *
    */
   public function testNoAutoLimitOnCountSqlStatements() {
-    $container = (new Chain($this))
-      ->add(Container::class, "get", $this->getServices())
-      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
-      ->add(ImmutableConfig::class, "get", "100")
+    $container = $this->getCommonMockChain($this)
       ->getMock();
 
     $service = Service::create($container);
     $query = $service->getQueryObject("[SELECT COUNT(*) FROM blah];");
     $this->assertFalse(isset($query->limit));
+  }
+
+  /**
+   *
+   */
+  private function getCommonMockChain() {
+    return (new Chain($this))
+      ->add(Container::class, "get", $this->getServices())
+      ->add(ConfigFactory::class, "get", ImmutableConfig::class)
+      ->add(ImmutableConfig::class, "get", "100");
   }
 
 }

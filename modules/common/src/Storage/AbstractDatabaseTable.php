@@ -8,6 +8,7 @@ use Contracts\StorerInterface;
 use Dkan\Datastore\Storage\StorageInterface;
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\datastore\Storage\Query;
 
 /**
@@ -115,8 +116,10 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
       $fields = $this->getNonSerialFields();
 
       if (count($fields) != count($data)) {
-        throw new \Exception("The number of fields and data given do not match: fields - " .
-        json_encode($fields) . " data - " . json_encode($data));
+        throw new \Exception(
+          "The number of fields and data given do not match: fields - "
+            . json_encode($fields) . " data - " . json_encode($data)
+        );
       }
 
       $q = $this->connection->insert($this->getTableName());
@@ -199,7 +202,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
    * Run a query on the database table.
    *
    * @param \Drupal\datastore\Storage\Query $query
-   *   Query obejct.
+   *   Query object.
    */
   public function query(Query $query): array {
     $this->setTable();
@@ -214,9 +217,30 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
       $db_query = $db_query->countQuery();
     }
 
-    $result = $db_query->execute()->fetchAll();
+    try {
+      $result = $db_query->execute()->fetchAll();
+    }
+    catch (DatabaseExceptionWrapper $e) {
+      throw new \Exception($this->sanitizedErrorMessage($e->getMessage()));
+    }
 
     return $result;
+  }
+
+  /**
+   * Create a minimal error message that does not leak database information.
+   */
+  private function sanitizedErrorMessage(string $unsanitizedMessage) {
+    // Insert portions of exception messages you want caught here.
+    $messages = [
+      'Column not found',
+    ];
+    foreach ($messages as $message) {
+      if (strpos($unsanitizedMessage, $message) !== FALSE) {
+        return $message . ".";
+      }
+    }
+    return "Database internal error.";
   }
 
   /**

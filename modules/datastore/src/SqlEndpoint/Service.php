@@ -99,6 +99,10 @@ class Service implements ContainerInjectionInterface {
    */
   private function getDatabaseTable(string $uuid): DatabaseTable {
     $resource = $this->getResource($uuid);
+    if (!$resource) {
+      throw new \Exception("Resource not found.");
+    }
+
     return $this->databaseTableFactory->getInstance($resource->getId(), ['resource' => $resource]);
   }
 
