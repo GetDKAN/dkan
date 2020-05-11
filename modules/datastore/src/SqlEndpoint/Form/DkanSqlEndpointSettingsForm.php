@@ -19,7 +19,7 @@ class DkanSqlEndpointSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'sql_endpoint_settings_form';
+    return 'datastore_settings_form';
   }
 
   /**
@@ -29,7 +29,7 @@ class DkanSqlEndpointSettingsForm extends ConfigFormBase {
    */
   protected function getEditableConfigNames() {
     return [
-      'sql_endpoint.settings',
+      'datastore.settings',
     ];
   }
 
@@ -39,7 +39,7 @@ class DkanSqlEndpointSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('sql_endpoint.settings');
+    $config = $this->config('datastore.settings');
     $form['rows_limit'] = [
       '#type' => 'number',
       '#min' => 1,
@@ -58,7 +58,7 @@ class DkanSqlEndpointSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $this->config('sql_endpoint.settings')
+    $this->config('datastore.settings')
       ->set('rows_limit', $form_state->getValue('rows_limit'))
       ->save();
   }
