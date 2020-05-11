@@ -35,7 +35,7 @@ class ServiceTest extends TestCase {
     $this->checkService('dkan.harvest.storage.database_table', 'harvest');
 
     $container = (new Chain($this))
-      ->add (ContainerInterface::class, 'get', $options)
+      ->add(ContainerInterface::class, 'get', $options)
       ->getMock();
 
     $service = HarvestService::create($container);

@@ -18,7 +18,8 @@ class Service implements ContainerInjectionInterface {
   private $storeFactory;
 
   /**
-   * Create
+   * Create.
+   *
    * @inheritDoc
    */
   public static function create(ContainerInterface $container) {

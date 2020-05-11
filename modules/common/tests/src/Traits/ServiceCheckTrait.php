@@ -4,7 +4,14 @@ namespace Drupal\Tests\common\Traits;
 
 use Drupal\Core\Serialization\Yaml;
 
+/**
+ *
+ */
 trait ServiceCheckTrait {
+
+  /**
+   *
+   */
   private function checkService($serviceName, $dkanModule) {
     $servicesFile = $this->getRelativeDkanModulePath($dkanModule) . "/{$dkanModule}.services.yml";
     $content = Yaml::decode(file_get_contents($servicesFile));
@@ -12,13 +19,16 @@ trait ServiceCheckTrait {
     $this->assertTrue(in_array($serviceName, $services));
   }
 
+  /**
+   *
+   */
   private function getRelativeDkanModulePath($moduleName, $path = NULL) {
     if (!$path) {
       $path = $this->getRelativeDkanPath();
     }
 
     foreach (new \DirectoryIterator($path) as $fileInfo) {
-      if($fileInfo->isDir() && !$fileInfo->isDot()) {
+      if ($fileInfo->isDir() && !$fileInfo->isDot()) {
         if ($fileInfo->getFilename() == $moduleName) {
           return $fileInfo->getPathname();
         }
@@ -29,6 +39,9 @@ trait ServiceCheckTrait {
     }
   }
 
+  /**
+   *
+   */
   private function getRelativeDkanPath() {
     $path = __DIR__;
 
