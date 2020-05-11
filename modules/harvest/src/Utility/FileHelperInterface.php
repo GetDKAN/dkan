@@ -5,7 +5,7 @@ namespace Drupal\harvest\Utility;
 /**
  * Interface.
  */
-interface FileHelperInteface {
+interface FileHelperInterface {
 
   /**
    * Public.
