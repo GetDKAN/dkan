@@ -4,7 +4,6 @@ namespace Drupal\harvest;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\harvest\Drush\Helper;
-use Drupal\harvest\Service;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;

@@ -17,6 +17,10 @@ class Service implements ContainerInjectionInterface {
 
   private $storeFactory;
 
+  /**
+   * Create
+   * @inheritDoc
+   */
   public static function create(ContainerInterface $container) {
     return new self($container->get("dkan.harvest.storage.database_table"));
   }
