@@ -1,5 +1,8 @@
 services:
-  harvest:commands:
-    class: \Drupal\harvest\Drush\Commands
+  dkan.harvest.drush:
+    class: \Drupal\harvest\Drush
+    arguments:
+      - '@dkan.harvest.service'
+      - '@dkan.harvest.logger_channel'
     tags:
       - { name: drush.command }

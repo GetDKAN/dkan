@@ -1,10 +1,11 @@
 <?php
 
-namespace Drupal\harvest\Controller;
+namespace Drupal\harvest;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class Api.
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * @codeCoverageIgnore
  */
-class Api implements ContainerInjectionInterface {
+class WebServiceApi implements ContainerInjectionInterface {
 
   /**
    * Request stack.
@@ -25,7 +26,7 @@ class Api implements ContainerInjectionInterface {
   /**
    * Harvest.
    *
-   * @var \Drupal\harvest\Harvester
+   * @var \Drupal\harvest\Service
    */
   private $harvester;
 
@@ -35,15 +36,15 @@ class Api implements ContainerInjectionInterface {
    * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
-    return new Api($container);
+    return new WebServiceApi($container->get('request_stack'), $container->get('dkan.harvest.service'));
   }
 
   /**
    * Api constructor.
    */
-  public function __construct(ContainerInterface $container) {
-    $this->requestStack = $container->get('request_stack');
-    $this->harvester = $container->get('harvest.service');
+  public function __construct(RequestStack $requestStack, Service $service) {
+    $this->requestStack = $requestStack;
+    $this->harvester = $service;
   }
 
   /**

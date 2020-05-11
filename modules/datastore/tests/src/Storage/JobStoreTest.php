@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Storage;
+namespace Drupal\Tests\datastore\Storage;
 
 use Contracts\Mock\Storage\Memory;
 use Drupal\Core\Database\Connection;
@@ -16,7 +16,8 @@ use FileFetcher\FileFetcher;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ * @coversDefaultClass \Drupal\datastore\Storage\JobStore
+ * @group datastore
  */
 class JobStoreTest extends TestCase {
 
@@ -159,7 +160,7 @@ class JobStoreTest extends TestCase {
    *
    */
   private function getFileFetcher() {
-    return FileFetcher::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../../data/countries.csv"]);
+    return FileFetcher::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../data/countries.csv"]);
   }
 
 }

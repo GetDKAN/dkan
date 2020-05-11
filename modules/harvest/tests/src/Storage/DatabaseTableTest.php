@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest\Unit\Storage;
+namespace Drupal\Tests\harvest\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Schema;
@@ -9,7 +9,8 @@ use Drupal\harvest\Storage\DatabaseTable;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests Drupal\harvest\Storage\File.
+ * @coversDefaultClass \Drupal\harvest\Storage\DatabaseTable
+ * @group harvest
  */
 class DatabaseTableTest extends TestCase {
 

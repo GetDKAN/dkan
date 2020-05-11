@@ -1,4 +1,4 @@
-harvest.1.harvest:
+dkan.harvest.1.harvest:
   path: '/api/1/harvest'
   methods: [GET]
   defaults:
@@ -6,81 +6,81 @@ harvest.1.harvest:
   requirements:
     _permission: 'access content'
 
-harvest.1.harvest.plans:
+dkan.harvest.api.plans:
   path: '/api/1/harvest/plans'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\harvest\Controller\Api::index'}
+    { _controller: '\Drupal\harvest\WebServiceApi::index'}
   requirements:
     _permission: 'harvest_api_index'
   options:
     _auth: ['basic_auth']
 
-harvest.1.harvest.plans.post:
+dkan.harvest.api.plans.post:
   path: '/api/1/harvest/plans'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\harvest\Controller\Api::register'}
+    { _controller: '\Drupal\harvest\WebServiceApi::register'}
   requirements:
     _permission: 'harvest_api_register'
   options:
     _auth: ['basic_auth']
 
-harvest.1.harvest.plans.id:
+dkan.harvest.api.plans_id:
   path: '/api/1/harvest/plans/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\harvest\Controller\Api::getPlan'}
+    { _controller: '\Drupal\harvest\WebServiceApi::getPlan'}
   requirements:
     _permission: 'harvest_api_index'
   options:
     _auth: ['basic_auth']
 
-harvest.1.harvest.plans.id.delete:
+dkan.harvest.api.plans_id.delete:
   path: '/api/1/harvest/plans/{identifier}'
   methods: [DELETE]
   defaults:
-    { _controller: '\Drupal\harvest\Controller\Api::deregister'}
+    { _controller: '\Drupal\harvest\WebServiceApi::deregister'}
   requirements:
     _permission: 'harvest_api_run'
   options:
     _auth: ['basic_auth']
 
-harvest.1.harvest.runs:
+dkan.harvest.api.runs:
   path: '/api/1/harvest/runs'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\harvest\Controller\Api::info'}
+    { _controller: '\Drupal\harvest\WebServiceApi::info'}
   requirements:
     _permission: 'harvest_api_info'
   options:
     _auth: ['basic_auth']
 
-harvest.1.harvest.runs.post:
+dkan.harvest.api.runs.post:
   path: '/api/1/harvest/runs'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\harvest\Controller\Api::run'}
+    { _controller: '\Drupal\harvest\WebServiceApi::run'}
   requirements:
     _permission: 'harvest_api_run'
   options:
     _auth: ['basic_auth']
 
-harvest.1.harvest.runs.delete:
+dkan.harvest.api.runs.delete:
   path: '/api/1/harvest/runs'
   methods: [DELETE]
   defaults:
-    { _controller: '\Drupal\harvest\Controller\Api::revert'}
+    { _controller: '\Drupal\harvest\WebServiceApi::revert'}
   requirements:
     _permission: 'harvest_api_run'
   options:
     _auth: ['basic_auth']
 
-harvest.1.harvest.runs.id:
+dkan.harvest.api.runs_id:
   path: '/api/1/harvest/runs/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\harvest\Controller\Api::infoRun'}
+    { _controller: '\Drupal\harvest\WebServiceApi::infoRun'}
   requirements:
     _permission: 'harvest_api_info'
   options:

@@ -1,12 +1,25 @@
 services:
-    harvest.service:
-        class: Drupal\harvest\Harvester
-        arguments:
-            - '@harvest.storage.database_table_factory'
-    harvest.storage.database_table_factory:
-      class: Drupal\harvest\Storage\DatabaseTableFactory
-      arguments:
-        - '@database'
-    harvest.logger_channel:
-        parent: logger.channel_base
-        arguments: ['harvest']
+  dkan.harvest.service:
+    class: Drupal\harvest\Service
+    arguments:
+      - '@dkan.harvest.storage.database_table'
+  dkan.harvest.storage.database_table:
+    class: Drupal\harvest\Storage\DatabaseTableFactory
+    arguments:
+      - '@database'
+  dkan.harvest.logger_channel:
+      parent: logger.channel_base
+      arguments: ['harvest']
+
+  # @expectedDeprecation
+  harvest.service:
+    class: Drupal\harvest\Service
+    arguments:
+      - '@dkan.harvest.storage.database_table'
+  harvest.storage.database_table:
+    class: Drupal\harvest\Storage\DatabaseTableFactory
+    arguments:
+      - '@database'
+  harvest.logger_channel:
+    parent: logger.channel_base
+    arguments: ['harvest']

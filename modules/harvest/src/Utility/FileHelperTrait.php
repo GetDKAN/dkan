@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\Load;
+namespace Drupal\harvest\Utility;
 
 /**
  * Helper to wrap drupal filesystem functions.
@@ -12,7 +12,7 @@ trait FileHelperTrait {
   /**
    * Private.
    *
-   * @return IFileHelper
+   * @return FileHelperInterface
    *   FileHelper.
    */
   protected function getFileHelper() {

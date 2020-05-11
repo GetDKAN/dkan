@@ -32,7 +32,7 @@ class DatabaseTable extends AbstractDatabaseTable {
    */
   public function retrieve(string $id) {
     $result = parent::retrieve($id);
-    return $result->data;
+    return ($result === NULL) ? NULL : $result->data;
   }
 
   /**
@@ -41,7 +41,7 @@ class DatabaseTable extends AbstractDatabaseTable {
    * @inheritDoc
    */
   protected function getTableName() {
-    return "harvest_{$this->identifier}";
+    return "{$this->identifier}";
   }
 
   /**

@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\harvest\Load;
+namespace Drupal\harvest\Utility;
 
 /**
  * Interface.
  */
-interface IFileHelper {
+interface FileHelperInterface {
 
   /**
    * Public.

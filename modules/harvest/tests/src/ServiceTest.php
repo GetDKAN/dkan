@@ -1,19 +1,26 @@
 <?php
 
-use Harvest\ETL\Load\Simple;
-use Harvest\ETL\Extract\DataJson;
-use PHPUnit\Framework\TestCase;
-use MockChain\Chain;
+namespace Drupal\Tests\harvest;
+
 use Contracts\FactoryInterface;
 use Contracts\Mock\Storage\Memory;
 use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\harvest\Service as HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
-use Drupal\harvest\Harvester as HarvestService;
+use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Harvest\ETL\Extract\DataJson;
+use Harvest\ETL\Load\Simple;
+use MockChain\Chain;
+use MockChain\Options;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- *
+ * @coversDefaultClass \Drupal\harvest\Service
+ * @group harvest
  */
-class HarvesterTest extends TestCase {
+class ServiceTest extends TestCase {
+  use ServiceCheckTrait;
 
   private $storageFactory;
 
@@ -21,13 +28,23 @@ class HarvesterTest extends TestCase {
    *
    */
   public function test() {
-    $service = new HarvestService($this->getStorageFactory());
+    $options = (new Options())
+      ->add('dkan.harvest.storage.database_table', $this->getStorageFactory())
+      ->index(0);
+
+    $this->checkService('dkan.harvest.storage.database_table', 'harvest');
+
+    $container = (new Chain($this))
+      ->add(ContainerInterface::class, 'get', $options)
+      ->getMock();
+
+    $service = HarvestService::create($container);
 
     $plan = (object) [
       'identifier' => 'test_plan',
       'extract' => (object) [
         "type" => DataJson::class,
-        "uri" => "file://" . __DIR__ . '/../../files/data.json',
+        "uri" => "file://" . __DIR__ . '/../files/data.json',
       ],
       'transforms' => [],
       'load' => (object) [
@@ -64,7 +81,7 @@ class HarvesterTest extends TestCase {
 
     // Run harvest with changes.
     $plan2 = clone $plan;
-    $plan2->extract->uri = "file://" . __DIR__ . '/../../files/data2.json';
+    $plan2->extract->uri = "file://" . __DIR__ . '/../files/data2.json';
     $service->registerHarvest($plan2);
     $result = $service->runHarvest('test_plan');
 

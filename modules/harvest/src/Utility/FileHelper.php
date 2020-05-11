@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\Load;
+namespace Drupal\harvest\Utility;
 
 use Drupal\Core\File\FileSystemInterface;
 
@@ -9,7 +9,7 @@ use Drupal\Core\File\FileSystemInterface;
  *
  * @codeCoverageIgnore
  */
-class FileHelper implements IFileHelper {
+class FileHelper implements FileHelperInterface {
 
   /**
    * Public.

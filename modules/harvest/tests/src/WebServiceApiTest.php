@@ -1,5 +1,8 @@
 <?php
 
+namespace Drupal\Tests\harvest;
+
+use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Options;
 use Drupal\Component\DependencyInjection\Container;
 use MockChain\Chain;
@@ -8,15 +11,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Contracts\Mock\Storage\MemoryFactory;
-use Drupal\harvest\Harvester;
+use Drupal\harvest\Service;
 use PHPUnit\Framework\TestCase;
-use Drupal\harvest\Controller\Api;
+use Drupal\harvest\WebServiceApi;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- *
+ * @coversDefaultClass \Drupal\harvest\WebServiceApi
+ * @group harvest
  */
-class ApiTest extends TestCase {
+class WebServiceApiTest extends TestCase {
+  use ServiceCheckTrait;
 
   private $request;
 
@@ -35,8 +40,8 @@ class ApiTest extends TestCase {
     $container->method('get')
       ->with(
         $this->logicalOr(
-          $this->equalTo('harvest.service'),
-          $this->equalTo('harvest.logger_channel'),
+          $this->equalTo('dkan.harvest.service'),
+          $this->equalTo('dkan.harvest.logger_channel'),
           $this->equalTo('request_stack')
         )
       )
@@ -50,8 +55,8 @@ class ApiTest extends TestCase {
    */
   public function containerGet($input) {
     switch ($input) {
-      case 'harvest.service':
-        return new Harvester(new MemoryFactory());
+      case 'dkan.harvest.service':
+        return new Service(new MemoryFactory());
 
       break;
       case 'request_stack':
@@ -72,7 +77,7 @@ class ApiTest extends TestCase {
    *
    */
   public function testEmptyIndex() {
-    $controller = new Api($this->getContainer());
+    $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->index();
     $this->assertEquals(JsonResponse::class, get_class($response));
     $this->assertEquals($response->getContent(), json_encode([]));
@@ -83,7 +88,7 @@ class ApiTest extends TestCase {
    */
   public function testBadPlan() {
     $this->request = new Request();
-    $controller = new Api($this->getContainer());
+    $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->register();
     $this->assertEquals(JsonResponse::class, get_class($response));
     $this->assertEquals($response->getContent(), json_encode(["message" => "Harvest plan must be a php object."]));
@@ -108,7 +113,7 @@ class ApiTest extends TestCase {
 
     $this->request = $request;
 
-    $controller = new Api($this->getContainer());
+    $controller = WebServiceApi::create($this->getContainer());
     $response = $controller->register();
     $this->assertEquals(JsonResponse::class, get_class($response));
     $this->assertEquals($response->getContent(), json_encode(["identifier" => "test"]));
@@ -123,17 +128,22 @@ class ApiTest extends TestCase {
   public function testRun() {
     $options = (new Options())
       ->add("request_stack", RequestStack::class)
-      ->add("harvest.service", Harvester::class)
+      ->add("dkan.harvest.service", Service::class)
       ->index(0);
+
+    $this->checkService('dkan.harvest.service', 'harvest');
+
+    // We are not using the logger but it is good to check.
+    $this->checkService('dkan.harvest.logger_channel', 'harvest');
 
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', json_encode((object) ['plan_id' => 'test']))
-      ->add(Harvester::class, "runHarvest", Result::class)
+      ->add(Service::class, "runHarvest", Result::class)
       ->getMock();
 
-    $controller = Api::create($container);
+    $controller = WebServiceApi::create($container);
     $response = $controller->run();
     $this->assertEquals(JsonResponse::class, get_class($response));
   }

@@ -5,12 +5,12 @@ namespace Drupal\metastore;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\DataModifierPluginTrait;
 use Drupal\common\Plugin\DataModifierManager;
-use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
+use Drupal\metastore\Reference\Dereferencer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,7 +29,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Schema retriever.
    *
-   * @var \Drupal\schema\SchemaRetriever
+   * @var \Drupal\metastore\SchemaRetriever
    */
   private $schemaRetriever;
 
