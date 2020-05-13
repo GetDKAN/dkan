@@ -1,0 +1,23 @@
+diff --git a/field_group_table.module b/field_group_table.module
+index f0ec7d8..ea618ff 100644
+--- a/field_group_table.module
++++ b/field_group_table.module
+@@ -193,8 +193,8 @@ function field_group_table_field_group_pre_render(&$element, $group, &$form) {
+   $header = array();
+   if ($settings['first_column'] || $settings['second_column']) {
+     $header = array(
+-      check_plain($settings['first_column']),
+-      check_plain($settings['second_column']),
++      array('data' => check_plain($settings['first_column']),'scope' => 'col'),
++      array('data' => check_plain($settings['second_column']),'scope' => 'col'),
+     );
+   }
+ 
+@@ -310,6 +310,7 @@ function _field_group_table_row_build($variables) {
+           'data' => $title,
+           'header' => TRUE,
+           'class' => array('field-label'),
++          'scope' => 'row',
+         );
+ 
+         // Do not display the label in the second column.
