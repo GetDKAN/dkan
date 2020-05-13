@@ -2,8 +2,10 @@
 
 namespace Drupal\metastore_search;
 
+use Drupal\common\Util\Timer;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
+use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -57,11 +59,23 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Search.
    */
   public function search() {
+    $timer = new Timer();
+    $timer->start("getParams");
     $params = $this->getParams();
+    $timer->end("getParams");
 
+    $timer->start("search");
     $responseBody = $this->service->search($params);
+    $timer->end("search");
+
+    $timer->start("facets");
     $facets = $this->service->facets($params);
     $responseBody->facets = $facets;
+    $timer->end("facets");
+
+    /* @var $loggerChannel \Drupal\Core\Logger\LoggerChannelInterface */
+    $loggerChannel = \Drupal::service("logger.channel.default");
+    $loggerChannel->log(LogLevel::DEBUG, "{$timer}");
 
     return $this->getResponse($responseBody);
   }

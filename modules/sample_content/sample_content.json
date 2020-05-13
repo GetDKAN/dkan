@@ -34,7 +34,7 @@
         "City Planning"
       ],
       "title": "Florida Bike Lanes ",
-      "keyword":["No keyword provided"]
+      "keyword":["hello", "goodbye"]
     },
     {
       "@type":"dcat:Dataset",
