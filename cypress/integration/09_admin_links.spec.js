@@ -21,8 +21,10 @@ context('Administration pages', () => {
     cy.wait(2000)
     cy.get('.toolbar-icon-system-admin-config').contains('Configuration').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
+        cy.wait(2000)
         cy.wrap($el).contains('DKAN').next('.toolbar-menu').then($el=>{
           cy.wrap($el).invoke('show')
+          cy.wait(2000)
           cy.wrap($el).contains('SQL endpoint').click()
           cy.wait(5000)
           cy.get('label').should('have.text', 'Rows limit')
