@@ -23,7 +23,7 @@ context('Administration pages', () => {
         cy.wrap($el).contains('DKAN').next('.toolbar-menu').then($el=>{
           cy.wrap($el).invoke('show')
           cy.wrap($el).contains('SQL endpoint').click()
-          cy.get('.sql-endpoint-settings-form label').should('have.text', 'Rows limit')
+          cy.get('label').should('have.text', 'Rows limit')
         })
     })
   })
