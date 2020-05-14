@@ -5,7 +5,7 @@ context('Administration pages', () => {
   })
 
   it('I should see a link for the dataset properties configuration', () => {
-    cy.visit(baseurl + "/admin")
+    cy.visit(baseurl + "/user")
     cy.get('.toolbar-icon-system-admin-config').contains('Configuration').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
         cy.wrap($el).contains('DKAN').next('.toolbar-menu').then($el=>{
@@ -17,14 +17,15 @@ context('Administration pages', () => {
   })
 
   it('I should see a link for the SQL endpoint configuration', () => {
-    cy.visit(baseurl + "/admin")
+    cy.visit(baseurl + "/user")
     cy.get('.toolbar-icon-system-admin-config').contains('Configuration').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
         cy.wrap($el).contains('DKAN').next('.toolbar-menu').then($el=>{
           cy.wrap($el).invoke('show')
-          cy.wrap($el).contains('SQL endpoint').click()
-          cy.get('label').should('have.text', 'Rows limit')
+          cy.wrap($el).contains('SQL endpoint')
         })
     })
+    cy.visit(baseurl + "/admin/config/dkan/sql_endpoint")
+    cy.get('label').should('have.text', 'Rows limit')
   })
 })
