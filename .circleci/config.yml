@@ -78,9 +78,9 @@ jobs:
             dktl install --demo
             dktl dkan:test-cypress frontend
       - store_artifacts:
-          path: ~/sandbox/docroot/profiles/contrib/dkan/cypress/screenshots
+          path: ~/sandbox/docroot/modules/contrib/dkan/cypress/screenshots
       - store_test_results:
-          path: ~/sandbox/docroot/profiles/contrib/dkan/cypress/videos
+          path: ~/sandbox/docroot/modules/contrib/dkan/cypress/videos
       - store_artifacts:
           path: ~/sandbox/src/frontend/cypress/screenshots
       - store_artifacts:
