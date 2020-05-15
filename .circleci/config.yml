@@ -79,7 +79,7 @@ jobs:
             dktl dkan:test-cypress frontend
       - store_artifacts:
           path: ~/sandbox/docroot/modules/contrib/dkan/cypress/screenshots
-      - store_test_results:
+      - store_artifacts:
           path: ~/sandbox/docroot/modules/contrib/dkan/cypress/videos
       - store_artifacts:
           path: ~/sandbox/src/frontend/cypress/screenshots
