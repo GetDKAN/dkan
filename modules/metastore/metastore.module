@@ -25,7 +25,13 @@ function metastore_node_load(array $entities) {
       // Dereference dataset properties.
       $metadata_obj = json_decode($metadata_string);
       $referencer = Drupal::service("metastore.dereferencer");
-      $metadata_obj = $referencer->dereference($metadata_obj, dereferencing_method());
+      $referencing_method = dereferencing_method();
+      $metadata_obj = $referencer->dereference($metadata_obj, $referencing_method);
+
+      // Expose Dataset node's last modified date.
+      if ($referencing_method == Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS) {
+        $metadata_obj->{'%modified'} = $entity->getChangedTime();
+      }
       $entity->set('field_json_metadata', json_encode($metadata_obj));
     }
 
