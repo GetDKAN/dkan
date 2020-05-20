@@ -5,3 +5,10 @@ metastore_search.1.search:
     { _controller: '\Drupal\metastore_search\WebServiceApi::search'}
   requirements:
     _permission: 'access content'
+dkan.metastore_search.api.facets:
+  path: '/api/1/search/facets'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\metastore_search\WebServiceApi::facets'}
+  requirements:
+    _permission: 'access content'
