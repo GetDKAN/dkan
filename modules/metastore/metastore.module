@@ -30,7 +30,9 @@ function metastore_node_load(array $entities) {
 
       // Expose Dataset node's last modified date.
       if ($referencing_method == Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS) {
-        $metadata_obj->{'%modified'} = $entity->getChangedTime();
+        $formatted_changed_date = Drupal::service('date.formatter')
+          ->format($entity->getChangedTime(), 'html_date');
+        $metadata_obj->{'%modified'} = $formatted_changed_date;
       }
       $entity->set('field_json_metadata', json_encode($metadata_obj));
     }
