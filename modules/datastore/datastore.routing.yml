@@ -63,7 +63,7 @@ datastore.sql_endpoint.get.api:
   requirements:
     _access: 'TRUE'
 
-datasotre.sql_endpoint.post.api:
+datastore.sql_endpoint.post.api:
   path: '/api/1/datastore/sql'
   methods: [POST]
   defaults:
