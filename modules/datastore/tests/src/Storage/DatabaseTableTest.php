@@ -326,8 +326,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("Integrity constraint violation"))
-    ;
+      ->add(Select::class, 'execute', new DatabaseExceptionWrapper("Integrity constraint violation"));
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),

@@ -62,8 +62,11 @@ class WebServiceApi implements ContainerInjectionInterface {
     return $this->getResponse($responseBody);
   }
 
+  /**
+   * Facets.
+   */
   public function facets() {
-    $responseBody = (object)[];
+    $responseBody = (object) [];
     $params = $this->getParams();
     $facets = $this->service->facets($params);
     $responseBody->facets = $facets;
