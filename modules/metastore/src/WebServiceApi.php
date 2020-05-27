@@ -224,6 +224,19 @@ class WebServiceApi implements ContainerInjectionInterface {
     }
   }
 
+  public function publish($schema_id, $identifier) {
+    try {
+      $this->service->publish($schema_id, $identifier);
+      return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
+    }
+    catch (MetastoreException $e) {
+      return $this->getResponseFromException($e, $e->httpCode());
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 400);
+    }
+  }
+
   /**
    * Provides the data catalog.
    *

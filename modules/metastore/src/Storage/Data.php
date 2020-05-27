@@ -170,6 +170,38 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   }
 
   /**
+   * Publish the latest version of a data node.
+   *
+   * @param $id
+   *   Identifier.
+   */
+  public function publish($id) {
+    if (!isset($this->schemaId)) {
+      throw new \Exception("Data schemaId not set in publish().");
+    }
+    if ($this->schemaId !== 'dataset') {
+      throw new \Exception("Publishing currently only implemented for datasets.");
+    }
+
+    /** @var \Drupal\node\Entity\Node $node */
+    $node = $this->getNodeByUuid($id);
+
+    if (FALSE !== $node) {
+      if (!$node->isLatestRevision()) {
+        /** @var \Drupal\node\NodeStorageInterface $nodeStorage */
+        $nodeStorage = $this->entityTypeManager->getStorage('node');
+        $latestRevId = $nodeStorage->getLatestRevisionId($node->id());
+        $latestRevision = $nodeStorage->loadRevision($latestRevId);
+        $latestRevision->isDefaultRevision(TRUE);
+        $latestRevision->save();
+      }
+      return $node->id();
+    }
+
+    throw new \Exception("No data with the identifier {$id} was found.");
+  }
+
+  /**
    * Private.
    */
   private function createNewNode($id, $data) {
