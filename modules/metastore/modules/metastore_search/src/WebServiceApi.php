@@ -83,7 +83,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     $defaults = [
       "page-size" => 10,
       "page" => 1,
-      'facets' => true,
+      'facets' => TRUE,
     ];
 
     $request = $this->requestStack->getCurrentRequest();
