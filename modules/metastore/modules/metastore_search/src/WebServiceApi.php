@@ -58,11 +58,21 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function search() {
     $params = $this->getParams();
-
     $responseBody = $this->service->search($params);
+    if ($params['facets'] == TRUE) {
+      $responseBody->facets = $this->service->facets($params);
+    }
+    return $this->getResponse($responseBody);
+  }
+
+  /**
+   * Facets.
+   */
+  public function facets() {
+    $responseBody = (object) [];
+    $params = $this->getParams();
     $facets = $this->service->facets($params);
     $responseBody->facets = $facets;
-
     return $this->getResponse($responseBody);
   }
 
@@ -73,6 +83,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     $defaults = [
       "page-size" => 10,
       "page" => 1,
+      'facets' => TRUE,
     ];
 
     $request = $this->requestStack->getCurrentRequest();
