@@ -7,6 +7,7 @@ use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use HTMLPurifier;
 
@@ -15,12 +16,22 @@ use HTMLPurifier;
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
 
+  const PUBLISH_IMMEDIATELY = "immediately";
+  const PUBLISH_MANUALLY = "not immediately";
+
   /**
    * Entity Type Manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   private $entityTypeManager;
+
+  /**
+   * The config factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private $configService;
 
   /**
    * Represents the data type passed via the HTTP request url schema_id slug.
@@ -35,8 +46,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $configService) {
     $this->entityTypeManager = $entityTypeManager;
+    $this->configService = $configService;
   }
 
   /**
@@ -149,8 +161,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->field_json_metadata = $new_data;
     // Create a new revision.
     $node->setNewRevision(TRUE);
-    $node->isDefaultRevision(TRUE);
-    $node->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
+    // Conditionally publish this new revision.
+    $publish = $this->configService->get('metastore.settings')->get('publishing');
+    $node->isDefaultRevision($publish === self::PUBLISH_IMMEDIATELY);
 
     $node->save();
     return $node->uuid();
