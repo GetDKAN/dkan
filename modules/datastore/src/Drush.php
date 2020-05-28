@@ -45,7 +45,8 @@ class Drush extends DrushCommands {
    *   Whether or not the process should be deferred to a queue.
    *
    * @TODO pass configurable options for csv delimiter, quite, and escape characters.
-   * @command dkan-datastore:import
+   * @command dkan:datastore:import
+   * @aliases dkan-datastore:import
    */
   public function import($uuid, $deferred = FALSE) {
 
@@ -76,7 +77,8 @@ class Drush extends DrushCommands {
    * @options status Show imports of the given status.
    * @options uuid-only Only the list of uuids.
    *
-   * @command dkan-datastore:list
+   * @command dkan:datastore:list
+   * @aliases dkan-datastore:list
    */
   public function list($options = [
     'format' => 'table',
@@ -131,7 +133,8 @@ class Drush extends DrushCommands {
    * @param string $uuid
    *   The uuid of a dataset.
    *
-   * @command dkan-datastore:drop
+   * @command dkan:datastore:drop
+   * @aliases dkan-datastore:drop
    */
   public function drop($uuid) {
     try {

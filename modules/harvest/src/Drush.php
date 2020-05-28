@@ -43,9 +43,10 @@ class Drush extends DrushCommands {
   /**
    * Lists available harvests.
    *
-   * @command dkan-harvest:list
+   * @command dkan:harvest:list
+   * @aliases dkan-harvest:list
    *
-   * @usage dkan-harvest:list
+   * @usage dkan:harvest:list
    *   List available harvests.
    */
   public function index() {
@@ -62,7 +63,8 @@ class Drush extends DrushCommands {
   /**
    * Register a new harvest.
    *
-   * @command dkan-harvest:register
+   * @command dkan:harvest:register
+   * @aliases dkan-harvest:register
    */
   public function register($harvest_plan) {
     try {
@@ -80,7 +82,8 @@ class Drush extends DrushCommands {
   /**
    * Deregister a harvest.
    *
-   * @command dkan-harvest:deregister
+   * @command dkan:harvest:deregister
+   * @aliases dkan-harvest:deregister
    */
   public function deregister($id) {
     try {
@@ -101,9 +104,10 @@ class Drush extends DrushCommands {
    * @param string $id
    *   The harvest id.
    *
-   * @command dkan-harvest:run
+   * @command dkan:harvest:run
+   * @aliases dkan-harvest:run
    *
-   * @usage dkan-harvest:run
+   * @usage dkan:harvest:run
    *   Runs a harvest.
    */
   public function run($id) {
@@ -116,9 +120,10 @@ class Drush extends DrushCommands {
   /**
    * Runs all pending harvests.
    *
-   * @command dkan-harvest:run-all
+   * @command dkan:harvest:run-all
+   * @aliases dkan-harvest:run-all
    *
-   * @usage dkan-harvest:run-all
+   * @usage dkan:harvest:run-all
    *   Runs all pending harvests.
    */
   public function runAll() {
@@ -139,7 +144,8 @@ class Drush extends DrushCommands {
    * @param string $run_id
    *   The run's id.
    *
-   * @command dkan-harvest:info
+   * @command dkan:harvest:info
+   * @aliases dkan-harvest:info
    */
   public function info($id, $run_id = NULL) {
 
@@ -168,9 +174,10 @@ class Drush extends DrushCommands {
    * @param string $id
    *   The source to revert.
    *
-   * @command dkan-harvest:revert
+   * @command dkan:harvest:revert
+   * @aliases dkan-harvest:revert
    *
-   * @usage dkan-harvest:revert
+   * @usage dkan:harvest:revert
    *   Removes harvested entities.
    */
   public function revert($id) {
