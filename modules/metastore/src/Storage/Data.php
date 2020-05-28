@@ -69,9 +69,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * {@inheritDoc}.
    */
   public function retrieveAll(): array {
-
     if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieveAll().");
+      throw new \Exception("Data schemaId not set.");
     }
 
     $nodeStorage = $this->getNodeStorage();
@@ -99,12 +98,11 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * {@inheritDoc}.
    */
   public function retrieve(string $id): ?string {
-
     if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieve().");
+      throw new \Exception("Data schemaId not set.");
     }
 
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
+    if ($node = $this->getNodeByUuid($id)) {
       $value = $node->get('field_json_metadata')->get(0)->getValue();
       return $value['value'];
     }
@@ -118,10 +116,12 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * {@inheritDoc}.
    */
   public function remove(string $id) {
-
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      return $node->delete();
+    if ($node = $this->getNodeByUuid($id)) {
+      $node->delete();
+      return TRUE;
     }
+
+    return FALSE;
   }
 
   /**
@@ -130,9 +130,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * {@inheritDoc}.
    */
   public function store($data, string $id = NULL): string {
-
     if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in store().");
+      throw new \Exception("Data schemaId not set.");
     }
 
     $data = json_decode($data);
@@ -176,10 +175,13 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * @param string $id
    *   Identifier.
+   *
+   * @return string
+   *   Identifier.
    */
   public function publish(string $id) {
     if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in publish().");
+      throw new \Exception("Data schemaId not set.");
     }
     if ($this->schemaId !== 'dataset') {
       throw new \Exception("Publishing currently only implemented for datasets.");
@@ -188,7 +190,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     /** @var \Drupal\node\Entity\Node $node */
     $node = $this->getNodeByUuid($id);
 
-    if (FALSE !== $node) {
+    if ($node) {
       if (!$node->isLatestRevision()) {
         /** @var \Drupal\node\NodeStorageInterface $nodeStorage */
         $nodeStorage = $this->entityTypeManager->getStorage('node');
@@ -197,7 +199,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
         $latestRevision->isDefaultRevision(TRUE);
         $latestRevision->save();
       }
-      return $node->id();
+      return $id;
     }
 
     throw new \Exception("No data with that identifier was found.");
@@ -248,23 +250,21 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Fetch node id of a current type given uuid.
    *
-   * @return \Drupal\node\Entity\Node|bool
+   * @param string $uuid
+   *   Identifier.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
    *   Returns false if no nodes match.
    */
-  private function getNodeByUuid($uuid) {
-
+  private function getNodeByUuid(string $uuid) {
     $nodes = $this->getNodeStorage()->loadByProperties(
       [
         'type' => $this->getType(),
         'uuid' => $uuid,
       ]
     );
-    if (empty($nodes) || !is_array($nodes)) {
-      return FALSE;
-    }
-    // Uuid should be universally unique and always return
-    // a single node.
-    return current($nodes);
+
+    return $nodes ? reset($nodes) : NULL;
   }
 
   /**

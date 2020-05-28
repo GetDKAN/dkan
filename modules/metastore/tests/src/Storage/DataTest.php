@@ -80,20 +80,72 @@ class DataTest extends TestCase {
   /**
    *
    */
+  public function testPublishExceptionSchemaNotSet() {
+    $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
+    $this->expectExceptionMessage("Data schemaId not set.");
+    $store->publish(1);
+  }
+
+  /**
+   *
+   */
+  public function testPublishExceptionSchemaNotDataset() {
+    $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
+    $store->setSchema('foobar');
+    $this->expectExceptionMessage("Publishing currently only implemented for datasets.");
+    $store->publish(1);
+  }
+
+  /**
+   *
+   */
+  public function testPublishExceptionDataNotFound() {
+    $this->node = $this->getNodeMock();
+    $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
+    $store->setSchema('dataset');
+    $this->expectExceptionMessage("No data with that identifier was found.");
+    $store->publish(2);
+  }
+
+  /**
+   *
+   */
+  public function testPublish() {
+    $this->node = $this->getNodeMock();
+    $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
+    $store->setSchema('dataset');
+    $publish = $store->publish(1);
+    $this->assertEquals($publish, 1);
+  }
+
+  /**
+   *
+   */
   public function testRemove() {
     $this->node = $this->getNodeMock();
     $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
     $store->setSchema('dataset');
     $removed = $store->remove(1);
 
-    $this->assertEquals(NULL, $removed);
+    $this->assertEquals(TRUE, $removed);
+  }
+
+  /**
+   *
+   */
+  public function testRemoveFailure() {
+    $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
+    $store->setSchema('dataset');
+    $removed = $store->remove(2);
+
+    $this->assertEquals(FALSE, $removed);
   }
 
   /**
    *
    */
   public function testRetrieveAllException() {
-    $this->expectExceptionMessage("Data schemaId not set in retrieveAll()");
+    $this->expectExceptionMessage("Data schemaId not set.");
     $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
     $store->retrieveAll();
   }
@@ -102,7 +154,7 @@ class DataTest extends TestCase {
    *
    */
   public function testRetrieveExceptionSchemaNotSet() {
-    $this->expectExceptionMessage("Data schemaId not set in retrieve()");
+    $this->expectExceptionMessage("Data schemaId not set.");
     $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
     $store->retrieve(1);
   }
@@ -121,7 +173,7 @@ class DataTest extends TestCase {
    *
    */
   public function testStoreException() {
-    $this->expectExceptionMessage("Data schemaId not set in store()");
+    $this->expectExceptionMessage("Data schemaId not set.");
     $object = '{"name":"blah"}';
     $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
     $store->store($object, 1);
@@ -189,11 +241,17 @@ class DataTest extends TestCase {
 
     $nodeStorage->method('loadByProperties')
       ->willReturnMap([
-        [['type'=>'data', 'uuid'=>1], [$this->node]],
-        [['type'=>'data', 'uuid'=>2], NULL],
+        [['type' => 'data', 'uuid' => "1"], [$this->node]],
+        [['type' => 'data', 'uuid' => "2"], FALSE],
       ]);
 
     $nodeStorage->method('create')
+      ->willReturn($this->getNodeMock());
+
+    $nodeStorage->method('getLatestRevisionId')
+      ->willReturn(1);
+
+    $nodeStorage->method('loadRevision')
       ->willReturn($this->getNodeMock());
 
     return $nodeStorage;
@@ -215,6 +273,9 @@ class DataTest extends TestCase {
       ->willReturn(1);
 
     $node->method('save')
+      ->willReturn(1);
+
+    $node->method('isDefaultRevision')
       ->willReturn(1);
 
     return $node;
