@@ -4,9 +4,7 @@ namespace Drupal\metastore\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\metastore\Storage\Data;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class DkanPublishingForm.
