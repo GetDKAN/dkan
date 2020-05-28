@@ -8,13 +8,15 @@ use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use HTMLPurifier;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Data.
  */
-class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
+class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
 
   const PUBLISH_IMMEDIATELY = "immediately";
   const PUBLISH_MANUALLY = "not immediately";
@@ -51,6 +53,13 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   public function __construct(EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $configService) {
     $this->entityTypeManager = $entityTypeManager;
     $this->configService = $configService;
+  }
+
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity_type.manager'),
+      $container->get('config.factory')
+    );
   }
 
   /**
