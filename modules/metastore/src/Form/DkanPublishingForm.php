@@ -8,6 +8,9 @@ use Drupal\metastore\Storage\Data;
 
 /**
  * Class DkanPublishingForm.
+ *
+ * @package Drupal\metastore\Form
+ * @codeCoverageIgnore
  */
 class DkanPublishingForm extends ConfigFormBase {
 
