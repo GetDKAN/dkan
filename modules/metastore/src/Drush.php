@@ -23,6 +23,7 @@ class Drush extends DrushCommands {
    * Drush constructor.
    *
    * @param \Drupal\metastore\Storage\Data $storage
+   *   Metastore data storage.
    */
   public function __construct(Data $storage) {
     parent::__construct();
@@ -38,8 +39,7 @@ class Drush extends DrushCommands {
    * @command dkan:metastore:publish
    */
   public function publish(string $uuid) {
-    // @todo: Possibly remove once \Drupal\metastore\Storage\Data is passed
-    //   a third parameter, a string for schema.
+    // @todo: Remove once Storage\Data accept schema string as 3rd parameter.
     $this->storage->setSchema('dataset');
 
     try {

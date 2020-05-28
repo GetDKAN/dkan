@@ -55,6 +55,9 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
     $this->configService = $configService;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
