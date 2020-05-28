@@ -4,6 +4,7 @@ namespace Drupal\Tests\common\Unit\Storage;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Field\FieldItemInterface;
@@ -81,7 +82,13 @@ class DataTest extends TestCase {
    *
    */
   public function testPublishExceptionSchemaNotSet() {
-    $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
+    \Drupal::unsetContainer();
+    $container = new ContainerBuilder();
+    $container->set('entity_type.manager', $this->getEntityTypeManagerMock());
+    $container->set('config.factory', $this->getConfigFactoryMock());
+    \Drupal::setContainer($container);
+
+    $store = Data::create($container);
     $this->expectExceptionMessage("Data schemaId not set.");
     $store->publish(1);
   }
