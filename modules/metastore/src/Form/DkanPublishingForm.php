@@ -40,8 +40,8 @@ class DkanPublishingForm extends ConfigFormBase {
       '#title' => $this->t('When should dataset updates be published?'),
       '#description' => $this->t('E.g. automatically and immediately, or later and manually.'),
       '#options' => [
-        Data::PUBLISH_IMMEDIATELY,
-        Data::PUBLISH_MANUALLY,
+        Data::PUBLISH_IMMEDIATELY => Data::PUBLISH_IMMEDIATELY,
+        Data::PUBLISH_MANUALLY => Data::PUBLISH_MANUALLY,
       ],
       '#size' => 1,
       '#default_value' => $config->get('publishing'),
