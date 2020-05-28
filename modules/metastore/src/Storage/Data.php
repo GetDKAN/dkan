@@ -109,7 +109,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       return $value['value'];
     }
 
-    throw new \Exception("No data with the identifier {$id} was found.");
+    throw new \Exception("No data with that identifier was found.");
   }
 
   /**
@@ -200,7 +200,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       return $node->id();
     }
 
-    throw new \Exception("No data with the identifier {$id} was found.");
+    throw new \Exception("No data with that identifier was found.");
   }
 
   /**
@@ -259,6 +259,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
         'uuid' => $uuid,
       ]
     );
+    if (empty($nodes) || !is_array($nodes)) {
+      return FALSE;
+    }
     // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);

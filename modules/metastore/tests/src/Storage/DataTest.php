@@ -101,10 +101,20 @@ class DataTest extends TestCase {
   /**
    *
    */
-  public function testRetrieveException() {
+  public function testRetrieveExceptionSchemaNotSet() {
     $this->expectExceptionMessage("Data schemaId not set in retrieve()");
     $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
     $store->retrieve(1);
+  }
+
+  /**
+   *
+   */
+  public function testRetrieveExceptionDataNotFound() {
+    $this->expectExceptionMessage("No data with that identifier was found.");
+    $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
+    $store->setSchema('dataset');
+    $store->retrieve(2);
   }
 
   /**
@@ -178,7 +188,10 @@ class DataTest extends TestCase {
       ->willReturn($this->getNodeMock());
 
     $nodeStorage->method('loadByProperties')
-      ->willReturn([$this->node]);
+      ->willReturnMap([
+        [['type'=>'data', 'uuid'=>1], [$this->node]],
+        [['type'=>'data', 'uuid'=>2], NULL],
+      ]);
 
     $nodeStorage->method('create')
       ->willReturn($this->getNodeMock());
