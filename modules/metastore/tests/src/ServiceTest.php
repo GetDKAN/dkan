@@ -9,6 +9,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Storage\Data;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -271,6 +272,7 @@ EOF;
     $options = (new Options())
       ->add('metastore.schema_retriever', SchemaRetriever::class)
       ->add('metastore.sae_factory', Sae::class)
+      ->add('dkan.metastore.storage', Data::class)
       ->index(0);
 
     return (new Chain($this))
