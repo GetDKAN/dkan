@@ -69,6 +69,7 @@ services:
     class: \Drupal\metastore\Storage\Data
     arguments:
       - '@entity_type.manager'
+      - '@config.factory'
   metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
