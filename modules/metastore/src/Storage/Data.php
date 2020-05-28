@@ -45,6 +45,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
+   *   Injected config factory service.
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager, ConfigFactoryInterface $configService) {
     $this->entityTypeManager = $entityTypeManager;
@@ -172,10 +174,10 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Publish the latest version of a data node.
    *
-   * @param $id
+   * @param string $id
    *   Identifier.
    */
-  public function publish($id) {
+  public function publish(string $id) {
     if (!isset($this->schemaId)) {
       throw new \Exception("Data schemaId not set in publish().");
     }

@@ -224,7 +224,18 @@ class WebServiceApi implements ContainerInjectionInterface {
     }
   }
 
-  public function publish($schema_id, $identifier) {
+  /**
+   * Publish the latest revision of a dataset.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function publish(string $schema_id, string $identifier) {
     try {
       $this->service->publish($schema_id, $identifier);
       return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);

@@ -14,24 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DkanPublishingForm extends ConfigFormBase {
 
   /**
-   * Constructs a new DkanPublishingForm object.
-   */
-  public function __construct(
-    ConfigFactoryInterface $config_factory
-  ) {
-    parent::__construct($config_factory);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('config.factory'),
-    );
-  }
-
-  /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
@@ -57,8 +39,8 @@ class DkanPublishingForm extends ConfigFormBase {
       '#title' => $this->t('When should dataset updates be published?'),
       '#description' => $this->t('E.g. automatically and immediately, or later and manually.'),
       '#options' => [
-        Data::PUBLISH_IMMEDIATELY => $this->t(Data::PUBLISH_IMMEDIATELY),
-        Data::PUBLISH_MANUALLY => $this->t(Data::PUBLISH_MANUALLY),
+        Data::PUBLISH_IMMEDIATELY,
+        Data::PUBLISH_MANUALLY,
       ],
       '#size' => 1,
       '#default_value' => $config->get('publishing'),
