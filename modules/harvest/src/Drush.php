@@ -41,10 +41,11 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Lists available harvests.
+   * List available harvests.
    *
    * @command dkan:harvest:list
    * @aliases dkan-harvest:list
+   * @expectedDeprecation dkan-harvest:list is deprecated and will be removed in a future Dkan release. Use dkan:harvest:list instead.
    *
    * @usage dkan:harvest:list
    *   List available harvests.
@@ -65,6 +66,7 @@ class Drush extends DrushCommands {
    *
    * @command dkan:harvest:register
    * @aliases dkan-harvest:register
+   * @expectedDeprecation dkan-harvest:register is deprecated and will be removed in a future Dkan release. Use dkan:harvest:register instead.
    */
   public function register($harvest_plan) {
     try {
@@ -84,6 +86,7 @@ class Drush extends DrushCommands {
    *
    * @command dkan:harvest:deregister
    * @aliases dkan-harvest:deregister
+   * @expectedDeprecation dkan-harvest:deregister is deprecated and will be removed in a future Dkan release. Use dkan:harvest:deregister instead.
    */
   public function deregister($id) {
     try {
@@ -99,13 +102,14 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Runs harvest.
+   * Run a harvest.
    *
    * @param string $id
    *   The harvest id.
    *
    * @command dkan:harvest:run
    * @aliases dkan-harvest:run
+   * @expectedDeprecation dkan-harvest:run is deprecated and will be removed in a future Dkan release. Use dkan:harvest:run instead.
    *
    * @usage dkan:harvest:run
    *   Runs a harvest.
@@ -118,10 +122,11 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Runs all pending harvests.
+   * Run all pending harvests.
    *
    * @command dkan:harvest:run-all
    * @aliases dkan-harvest:run-all
+   * @expectedDeprecation dkan-harvest:run-all is deprecated and will be removed in a future Dkan release. Use dkan:harvest:run-all instead.
    *
    * @usage dkan:harvest:run-all
    *   Runs all pending harvests.
@@ -137,7 +142,7 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Gives information about a previous harvest run.
+   * Give information about a previous harvest run.
    *
    * @param string $id
    *   The harvest id.
@@ -146,6 +151,7 @@ class Drush extends DrushCommands {
    *
    * @command dkan:harvest:info
    * @aliases dkan-harvest:info
+   * @expectedDeprecation dkan-harvest:info is deprecated and will be removed in a future Dkan release. Use dkan:harvest:info instead.
    */
   public function info($id, $run_id = NULL) {
 
@@ -169,13 +175,14 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Reverts harvest.
+   * Revert a harvest, i.e. remove all of its harvested entities.
    *
    * @param string $id
    *   The source to revert.
    *
    * @command dkan:harvest:revert
    * @aliases dkan-harvest:revert
+   * @expectedDeprecation dkan-harvest:revert is deprecated and will be removed in a future Dkan release. Use dkan:harvest:revert instead.
    *
    * @usage dkan:harvest:revert
    *   Removes harvested entities.
