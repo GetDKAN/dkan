@@ -37,7 +37,7 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Import.
+   * Import a datastore.
    *
    * @param string $uuid
    *   The uuid of a resource.
@@ -45,7 +45,9 @@ class Drush extends DrushCommands {
    *   Whether or not the process should be deferred to a queue.
    *
    * @TODO pass configurable options for csv delimiter, quite, and escape characters.
-   * @command dkan-datastore:import
+   * @command dkan:datastore:import
+   * @aliases dkan-datastore:import
+   * @expectedDeprecation dkan-datastore:import is deprecated and will be removed in a future Dkan release. Use dkan:datastore:import instead.
    */
   public function import($uuid, $deferred = FALSE) {
 
@@ -62,7 +64,7 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * List.
+   * List information about all datastores.
    *
    * @field-labels
    *   uuid: Resource UUID
@@ -76,7 +78,9 @@ class Drush extends DrushCommands {
    * @options status Show imports of the given status.
    * @options uuid-only Only the list of uuids.
    *
-   * @command dkan-datastore:list
+   * @command dkan:datastore:list
+   * @aliases dkan-datastore:list
+   * @expectedDeprecation dkan-datastore:list is deprecated and will be removed in a future Dkan release. Use dkan:datastore:list instead.
    */
   public function list($options = [
     'format' => 'table',
@@ -126,12 +130,14 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Drop.
+   * Drop a datastore.
    *
    * @param string $uuid
    *   The uuid of a dataset.
    *
-   * @command dkan-datastore:drop
+   * @command dkan:datastore:drop
+   * @aliases dkan-datastore:drop
+   * @expectedDeprecation dkan-datastore:drop is deprecated and will be removed in a future Dkan release. Use dkan:datastore:drop instead.
    */
   public function drop($uuid) {
     try {
