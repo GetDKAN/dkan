@@ -7,8 +7,6 @@ use Drush\Commands\DrushCommands;
 
 /**
  * Metastore drush commands.
- *
- * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
 
@@ -44,10 +42,10 @@ class Drush extends DrushCommands {
 
     try {
       $this->storage->publish($uuid);
-      $this->logger()->success(dt("Dataset {$uuid} published."));
+      $this->logger()->success("Dataset {$uuid} published.");
     }
     catch (\Exception $e) {
-      $this->logger()->error(dt("Error while attempting to publish dataset {$uuid}: " . $e->getMessage()));
+      $this->logger()->error("Error while attempting to publish dataset {$uuid}: " . $e->getMessage());
     }
   }
 
