@@ -37,7 +37,7 @@ class Drush extends DrushCommands {
    * @command dkan:metastore:publish
    */
   public function publish(string $uuid) {
-    // @todo: Remove once Storage\Data accept schema string as 3rd parameter.
+    // @todo: Remove once Storage\Data accepts schema string as 3rd parameter.
     $this->storage->setSchema('dataset');
 
     try {

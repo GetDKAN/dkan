@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class DrushTest extends TestCase {
 
-  public function test() {
+  public function testPublish() {
     $data = (new Chain($this))
       ->add(Data::class, 'publish', null)
       ->getMock();
@@ -25,7 +25,24 @@ class DrushTest extends TestCase {
     $drush->publish('12345');
 
     $this->assertNotEmpty($loggerChain->getStoredInput('success'));
+  }
 
+  public function testPublishException() {
+    $data = (new Chain($this))
+      ->add(Data::class, 'publish', new \Exception("Some error."))
+      ->getMock();
+
+    $loggerChain = (new Chain($this))
+      ->add(LoggerChannel::class, 'error', null, 'error');
+
+    $logger = $loggerChain->getMock();
+
+    $drush = new Drush($data);
+    $drush->setLogger($logger);
+
+    $drush->publish('12345');
+
+    $this->assertNotEmpty($loggerChain->getStoredInput('error'));
   }
 
 }
