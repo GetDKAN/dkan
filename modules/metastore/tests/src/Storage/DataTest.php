@@ -69,7 +69,7 @@ class DataTest extends TestCase {
    */
   public function testStoreNew() {
     $this->node = NULL;
-    $object = '{"name":"blah"}';
+    $object = '{"name":"blah", "digit":1}';
 
     $store = new Data($this->getEntityTypeManagerMock(), $this->getConfigFactoryMock());
     $store->setSchema('dataset');
