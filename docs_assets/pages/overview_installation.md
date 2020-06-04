@@ -18,6 +18,7 @@ DKAN is based on Drupal software and -- generally -- runs anywhere Drupal is sup
 -  PHP: minimum version 7.2.x
 -  Apache: minimum version 2.x
 -  Drush: minimum version 9.x.
+-  Node: minimum version 8.10 (if using the decoupled frontend)
 
 ## Starting a new project
 
@@ -25,10 +26,10 @@ Follow the instructions on the DKAN Tools [README](https://github.com/getdkan/dk
 
 ## Installing DKAN
 
-If you already have an existing Drupal site, install DKAN with [composer](https://www.drupal.org/node/2718229). You can find the [latest release version here](https://github.com/GetDKAN/dkan/releases).
+If you already have an existing Drupal site, install DKAN with [composer](https://www.drupal.org/node/2718229). You can find the [latest DKAN release here](https://github.com/GetDKAN/dkan/releases). Composer will download the module and all of the  dependencies it requires for the backend. For more details [click here](https://github.com/GetDKAN/dkan-tools/tree/master#adding-dkan-to-an-existing-drupal-site).
 
 ```
-composer require 'getdkan/dkan:2.0.0'
+composer require 'getdkan/dkan:2.1.0'
 ```
 
 ## Sample content
@@ -48,12 +49,16 @@ drush dkan:sample-content:remove
 
 ## Decoupled front end
 
- DKAN 2.x works with a decoupled frontend so there are two pieces for getting started.
+ DKAN 2.x works with a decoupled frontend so there are two pieces for getting started:
 
 1. **[Data Catalog Frontend](https://github.com/GetDKAN/data-catalog-frontend)**
 
-   This is a Gatsby React app that will use our [Data Catalog Components](https://github.com/GetDKAN/data-catalog-components) library to build the frontend. If you are not using DKAN Tools, follow the instructions on the README file of the app for manual installation.
+   This is a React app that will use our [Data Catalog Components](https://github.com/GetDKAN/data-catalog-components) library to build the frontend. It will serve as a starting point for your own customizations. If you are **not** using DKAN Tools, follow the instructions on the [README file](https://github.com/GetDKAN/data-catalog-frontend/blob/master/README.md) for manual installation.
 
 2. **DKAN Frontend**
 
    This is an integration module that allows the React app driving the frontend to be embedded in Drupal. Be sure that it is enabled.
+
+```
+drush en frontend
+```
