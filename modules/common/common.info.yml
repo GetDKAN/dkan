@@ -1,5 +1,5 @@
 name: Common
 description: Provides common utilities, functions, and base api endpoints used by other DKAN modules.
 type: module
-core: 8.x
+core_version_requirement: ^8 || ^9
 package: DKAN
