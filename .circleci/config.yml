@@ -35,7 +35,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl get 8.8.5
+            dktl get 9.0.0
       - run:
           name: Make DKAN
           command: |
