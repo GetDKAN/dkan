@@ -250,7 +250,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   /**
    * Get the node storage.
    *
-   * @return \Drupal\node\NodeStorageInterface
+   * @return \Drupal\core\Entity\EntityStorageInterface
    *   Node Storage.
    */
   private function getNodeStorage() {
