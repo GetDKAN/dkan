@@ -18,8 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
 
-  const PUBLISH_IMMEDIATELY = "immediately";
-  const PUBLISH_MANUALLY = "not immediately";
+  const PUBLISH_NOW = "immediately";
+  const PUBLISH_LATER = "not immediately";
 
   /**
    * Entity Type Manager.
@@ -175,11 +175,20 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
     // Create a new revision.
     $node->setNewRevision(TRUE);
     // Conditionally publish this new revision.
-    $publish = $this->configService->get('metastore.settings')->get('publishing');
-    $node->isDefaultRevision($publish === self::PUBLISH_IMMEDIATELY);
+    $node->isDefaultRevision($this->getPublishMethod() === self::PUBLISH_NOW);
 
     $node->save();
     return $node->uuid();
+  }
+
+  /**
+   * Return the publishing method.
+   *
+   * @return string
+   *   Either Data::PUBLISH_NOW or Data::PUBLISH_LATER.
+   */
+  private function getPublishMethod() {
+    return $this->configService->get('metastore.settings')->get('publishing');
   }
 
   /**

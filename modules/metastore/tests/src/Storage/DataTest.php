@@ -226,7 +226,7 @@ class DataTest extends TestCase {
       ->getMock();
 
     $immutableConfig->method('get')
-      ->willReturn(Data::PUBLISH_IMMEDIATELY);
+      ->willReturn(Data::PUBLISH_NOW);
 
     return $immutableConfig;
   }
