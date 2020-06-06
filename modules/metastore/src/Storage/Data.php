@@ -275,11 +275,15 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    *
    * @param string $uuid
    *   Identifier.
+   * @param bool $published
+   *   (optional) Defaults to TRUE and returns the node's published version, if
+   *   any, or NULL if none or if the node does not exist. When passed FALSE, it
+   *   returns the node's latest revision, or NULL if the node does not exist.
    *
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   Returns false if no nodes match.
    */
-  private function getNodeByUuid(string $uuid) {
+  private function getNodeByUuid(string $uuid, bool $published = TRUE) {
     $nodes = $this->getNodeStorage()->loadByProperties(
       [
         'type' => $this->getType(),
