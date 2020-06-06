@@ -244,7 +244,7 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Procede with PUT.
+   * Proceed with PUT.
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
