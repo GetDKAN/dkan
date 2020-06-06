@@ -269,7 +269,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *   Current timestamp, formatted.
    */
   private function formattedTimestamp() : string {
-    $now = new \DateTime('now');
+    $now = new DateTime('now');
     return $now->format(DateTime::ATOM);
   }
 
