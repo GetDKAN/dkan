@@ -129,7 +129,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    * {@inheritDoc}.
    */
   public function remove(string $id) {
-    if ($node = $this->getNodeByUuid($id)) {
+    if ($node = $this->getNodeByUuid($id, FALSE)) {
       $node->delete();
       return TRUE;
     }
@@ -153,7 +153,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
     $id = (!$id && isset($data->identifier)) ? $data->identifier : $id;
 
     if ($id) {
-      $node = $this->getNodeByUuid($id);
+      $node = $this->getNodeByUuid($id, FALSE);
     }
 
     /* @var $node \Drupal\node\NodeInterface */
@@ -210,7 +210,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
     }
 
     /** @var \Drupal\node\Entity\Node $node */
-    $node = $this->getNodeByUuid($id);
+    $node = $this->getNodeByUuid($id, FALSE);
 
     if ($node) {
       if (!$node->isLatestRevision()) {
