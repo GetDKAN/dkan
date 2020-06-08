@@ -4,8 +4,9 @@
  * @file
  */
 
-use Drupal\Core\Render\Markup;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 
@@ -52,17 +53,20 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
       switch ($entity->field_data_type->value) {
         case 'keyword':
         case 'theme':
-          $link = \Drupal::l($title['data'], Url::fromUri('internal:/node/' . $entity_id));
           $vars['output'] = [
-            '#markup' => Markup::create($link),
+            '#markup' => Markup::create(
+              metastore_admin_create_text_link($title['data'], 'internal:/node/' . $entity_id)
+            ),
           ];
           break;
 
         case 'publisher':
           $name = (array) $title['data'];
-          $link = \Drupal::l($name['name'], Url::fromUri('internal:/node/' . $entity_id));
+
           $vars['output'] = [
-            '#markup' => Markup::create($link),
+            '#markup' => Markup::create(
+              metastore_admin_create_text_link($name['name'], 'internal:/node/' . $entity_id)
+            ),
           ];
           break;
 
@@ -71,9 +75,11 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
           $mediatype = $entity_id . ' ' . $dist['mediaType'];
           $format = $dist['format'] ? $entity_id . ' ' . $dist['format'] : $mediatype;
           $title = $dist['title'] ? $dist['title'] : $format;
-          $link = \Drupal::l($title, Url::fromUri('internal:/node/' . $entity_id));
+
           $vars['output'] = [
-            '#markup' => Markup::create($link),
+            '#markup' => Markup::create(
+              metastore_admin_create_text_link($title, 'internal:/node/' . $entity_id)
+            ),
           ];
           break;
       }
@@ -92,10 +98,18 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
       $entity = $vars['row']->_entity;
       $entity_id = $entity->id();
       $title = $entity->title->value;
-      $link = \Drupal::l($title, Url::fromUri('internal:/node/' . $entity_id));
+
       $vars['output'] = [
-        '#markup' => Markup::create($link),
+        '#markup' => Markup::create(
+          metastore_admin_create_text_link($title, 'internal:/node/' . $entity_id)
+        ),
       ];
     }
   }
+}
+
+function metastore_admin_create_text_link($linkText, $internalUri) {
+  $url = Url::fromUri($internalUri);
+  $link = Link::fromTextAndUrl(t($linkText), $url);
+  return $link->toString();
 }
