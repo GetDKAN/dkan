@@ -69,6 +69,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     $property_id = $data[0];
     $uuid = $data[1];
 
+    // @Todo: Search for uuid directly within the loadByProperties array.
     // Search datasets using this uuid for this property id.
     $datasets = $this->nodeStorage
       ->loadByProperties(
