@@ -7,7 +7,7 @@ use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\node\NodeStorageInterface;
 use HTMLPurifier;
 
 /**
@@ -16,11 +16,11 @@ use HTMLPurifier;
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
 
   /**
-   * Entity Type Manager.
+   * Node storage service.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\node\NodeStorageInterface
    */
-  private $entityTypeManager;
+  private $nodeStorage;
 
   /**
    * Represents the data type passed via the HTTP request url schema_id slug.
@@ -32,11 +32,11 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Constructor.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   Injected entity type manager.
+   * @param \Drupal\node\NodeStorageInterface $nodeStorage
+   *   Injected node storage service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
-    $this->entityTypeManager = $entityTypeManager;
+  public function __construct(NodeStorageInterface $nodeStorage) {
+    $this->nodeStorage = $nodeStorage;
   }
 
   /**
@@ -60,9 +60,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       throw new \Exception("Data schemaId not set in retrieveAll().");
     }
 
-    $nodeStorage = $this->getNodeStorage();
-
-    $node_ids = $nodeStorage->getQuery()
+    $node_ids = $this->nodeStorage->getQuery()
       ->condition('type', $this->getType())
       ->condition('field_data_type', $this->schemaId)
       ->execute();
@@ -70,7 +68,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $all = [];
     foreach ($node_ids as $nid) {
       /* @var $node \Drupal\node\NodeInterface */
-      $node = $nodeStorage->load($nid);
+      $node = $this->nodeStorage->load($nid);
       $fieldList = $node->get('field_json_metadata');
       $field = $fieldList->get(0);
       $data = $field->getValue();
@@ -161,7 +159,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   private function createNewNode($id, $data) {
     $title = isset($data->title) ? $data->title : $data->name;
-    $node = $this->getNodeStorage()
+    $node = $this->nodeStorage
       ->create(
         [
           'title' => $title,
@@ -175,17 +173,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $node->save();
     return $node->uuid();
-  }
-
-  /**
-   * Get the node storage.
-   *
-   * @return \Drupal\node\NodeStorageInterface
-   *   Node Storage.
-   */
-  private function getNodeStorage() {
-    return $this->entityTypeManager
-      ->getStorage('node');
   }
 
   /**
@@ -206,7 +193,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   private function getNodeByUuid($uuid) {
 
-    $nodes = $this->getNodeStorage()->loadByProperties(
+    $nodes = $this->nodeStorage->loadByProperties(
       [
         'type' => $this->getType(),
         'uuid' => $uuid,
