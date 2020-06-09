@@ -9,3 +9,7 @@ services:
     arguments:
       - '@module_handler'
       - '@request_stack'
+  dkan.common.node_storage:
+    class: Drupal\node\NodeStorage
+    factory: entity_type.manager:getStorage
+    arguments: ['node']
