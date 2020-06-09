@@ -3,7 +3,7 @@ services:
       class: Drupal\frontend\Page
       arguments:
         - '@app.root'
-        - '@entity_type.manager'
+        - '@dkan.common.node_storage'
       shared: false
   frontend.route_provider:
       class: Drupal\frontend\Routing\RouteProvider

@@ -2,7 +2,7 @@
 
 namespace Drupal\frontend;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\node\NodeStorageInterface;
 
 /**
  * Class.
@@ -10,14 +10,14 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 class Page {
 
   private $appRoot;
-  private $entityTypeManager;
+  private $nodeStorage;
 
   /**
    * Constructor.
    */
-  public function __construct(string $appRoot, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(string $appRoot, NodeStorageInterface $nodeStorage) {
     $this->appRoot = $appRoot;
-    $this->entityTypeManager = $entityTypeManager;
+    $this->nodeStorage = $nodeStorage;
   }
 
   /**
@@ -47,7 +47,7 @@ class Page {
    */
   public function buildDataset($name) {
     $base_dataset = $this->appRoot . "/data-catalog-frontend/public/dataset/index.html";
-    $node_loaded_by_uuid = $this->entityTypeManager->getStorage('node')->loadByProperties(['uuid' => $name]);
+    $node_loaded_by_uuid = $this->nodeStorage->loadByProperties(['uuid' => $name]);
     $node_loaded_by_uuid = reset($node_loaded_by_uuid);
     $file = $this->appRoot . "/data-catalog-frontend/public/dataset/{$name}/index.html";
 
