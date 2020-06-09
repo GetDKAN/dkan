@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Drupal\frontend\Routing\RouteProvider;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ class RouteProvider2Test extends TestCase {
   public function test() {
 
     $queryFactory = (new Chain($this))
-      ->add(QueryFactory::class, "get", QueryInterface::class)
+      ->add(QueryFactoryInterface::class, "get", QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', [])
       ->getMock();

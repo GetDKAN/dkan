@@ -19,7 +19,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone --single-branch --depth 1 https://github.com/GetDKAN/dkan-tools.git
+            git clone --branch=d9 --single-branch --depth 1 https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
@@ -35,7 +35,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl get 8.8.5
+            dktl get 9.0.0
       - run:
           name: Make DKAN
           command: |

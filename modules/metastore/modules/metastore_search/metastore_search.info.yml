@@ -1,7 +1,7 @@
 name: Search
 description: Provides an endpoint to perform searches against DKAN's metadata.
 type: module
-core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - metastore
   - search_api

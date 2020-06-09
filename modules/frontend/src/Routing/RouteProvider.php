@@ -2,7 +2,7 @@
 
 namespace Drupal\frontend\Routing;
 
-use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -17,7 +17,7 @@ class RouteProvider {
   /**
    * Constructor.
    */
-  public function __construct(string $appRoot, QueryFactory $entityQuery) {
+  public function __construct(string $appRoot, QueryFactoryInterface $entityQuery) {
     $this->appRoot = $appRoot;
     $this->entityQuery = $entityQuery;
   }

@@ -14,7 +14,7 @@ datastore.1.imports:
   requirements:
     _permission: 'datastore_api_import'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 datastore.1.imports.post:
   path: '/api/1/datastore/imports'
@@ -25,7 +25,7 @@ datastore.1.imports.post:
   requirements:
     _permission: 'datastore_api_import'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 datastore.1.imports.id:
   path: '/api/1/datastore/imports/{identifier}'
@@ -43,7 +43,7 @@ datastore.1.imports.delete:
   requirements:
     _permission: 'datastore_api_drop'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 datastore.1.imports.id.delete:
   path: '/api/1/datastore/imports/{identifier}'
@@ -53,7 +53,7 @@ datastore.1.imports.id.delete:
   requirements:
     _permission: 'datastore_api_drop'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 datastore.sql_endpoint.get.api:
   path: '/api/1/datastore/sql'
