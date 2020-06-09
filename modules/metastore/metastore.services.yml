@@ -25,14 +25,14 @@ services:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
       - '@config.factory'
-      - '@entity_type.manager'
+      - '@dkan.common.node_storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
   dkan.metastore.dereferencer:
     class: \Drupal\metastore\Reference\Dereferencer
     arguments:
       - '@config.factory'
-      - '@entity_type.manager'
+      - '@dkan.common.node_storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
   dkan.metastore.orphan_checker:
@@ -70,14 +70,14 @@ services:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
       - '@config.factory'
-      - '@entity_type.manager'
+      - '@dkan.common.node_storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
   metastore.dereferencer:
     class: \Drupal\metastore\Reference\Dereferencer
     arguments:
       - '@config.factory'
-      - '@entity_type.manager'
+      - '@dkan.common.node_storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
   metastore.orphan_checker:

@@ -2,15 +2,14 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
-use MockChain\Sequence;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\metastore\Service\Uuid5;
 use Drupal\metastore\Reference\Dereferencer;
+use Drupal\metastore\Service\Uuid5;
+use Drupal\node\NodeStorageInterface;
 use MockChain\Chain;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,9 +27,8 @@ class DereferencerTest extends TestCase {
       ],
     ];
 
-    $entityTypeManager = (new Chain($this))
-      ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
-      ->add(EntityStorageInterface::class, 'loadByProperties', [$node])
+    $nodeStorage = (new Chain($this))
+      ->add(NodeStorageInterface::class, 'loadByProperties', [$node])
       ->getMock();
 
     $uuidService = new Uuid5();
@@ -45,7 +43,7 @@ class DereferencerTest extends TestCase {
       ->add(QueueFactory::class, 'blah', NULL)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $entityTypeManager);
+    $valueReferencer = new Dereferencer($configService, $nodeStorage);
     $referenced = $valueReferencer->dereference((object) ['publisher' => $uuid]);
 
     $this->assertTrue(is_object($referenced));
@@ -72,9 +70,8 @@ class DereferencerTest extends TestCase {
       ->add([$node1])
       ->add([$node2]);
 
-    $entityTypeManager = (new Chain($this))
-      ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
-      ->add(EntityStorageInterface::class, 'loadByProperties', $nodes)
+    $nodeStorage = (new Chain($this))
+      ->add(NodeStorageInterface::class, 'loadByProperties', $nodes)
       ->getMock();
 
     $uuidService = new Uuid5();
@@ -88,7 +85,7 @@ class DereferencerTest extends TestCase {
       ->add(QueueFactory::class, 'blah', NULL)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $entityTypeManager);
+    $valueReferencer = new Dereferencer($configService, $nodeStorage);
     $referenced = $valueReferencer->dereference((object) ['keyword' => ['123456789', '987654321']]);
 
     $this->assertTrue(is_object($referenced));
