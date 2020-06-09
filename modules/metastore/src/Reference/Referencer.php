@@ -3,8 +3,8 @@
 namespace Drupal\metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
+use Drupal\node\NodeStorageInterface;
 use stdClass;
 
 /**
@@ -14,14 +14,14 @@ class Referencer {
   use HelperTrait;
   use LoggerTrait;
 
-  private $entityTypeManager;
+  private $nodeStorage;
 
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, EntityTypeManager $entityTypeManager) {
+  public function __construct(ConfigFactoryInterface $configService, NodeStorageInterface $nodeStorage) {
     $this->setConfigService($configService);
-    $this->entityTypeManager = $entityTypeManager;
+    $this->nodeStorage = $nodeStorage;
   }
 
   /**
@@ -134,8 +134,7 @@ class Referencer {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   private function checkExistingReference(string $property_id, $data) {
-    $nodes = $this->entityTypeManager
-      ->getStorage('node')
+    $nodes = $this->nodeStorage
       ->loadByProperties([
         'field_data_type' => $property_id,
         'title' => md5(json_encode($data)),
@@ -169,8 +168,7 @@ class Referencer {
     $data->data = $value;
 
     // Create node to store this reference.
-    $node = $this->entityTypeManager
-      ->getStorage('node')
+    $node = $this->nodeStorage
       ->create([
         'title' => md5(json_encode($value)),
         'type' => 'data',
