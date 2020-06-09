@@ -20,7 +20,7 @@ services:
   dkan.metastore.storage:
     class: \Drupal\metastore\Storage\Data
     arguments:
-      - '@entity_type.manager'
+      - '@dkan.common.node_storage'
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
@@ -65,7 +65,7 @@ services:
   metastore.storage:
     class: \Drupal\metastore\Storage\Data
     arguments:
-      - '@entity_type.manager'
+      - '@dkan.common.node_storage'
   metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
