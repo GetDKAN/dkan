@@ -3,8 +3,8 @@
 namespace Drupal\metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\common\LoggerTrait;
+use Drupal\node\NodeStorageInterface;
 use stdClass;
 
 /**
@@ -35,14 +35,14 @@ class Dereferencer {
    */
   private $dereferenceMethod;
 
-  private $entityTypeManager;
+  private $nodeStorage;
 
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, EntityTypeManager $entityTypeManager) {
+  public function __construct(ConfigFactoryInterface $configService, NodeStorageInterface $nodeStorage) {
     $this->setConfigService($configService);
-    $this->entityTypeManager = $entityTypeManager;
+    $this->nodeStorage = $nodeStorage;
   }
 
   /**
@@ -146,8 +146,7 @@ class Dereferencer {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   private function dereferenceSingle(string $property_id, string $uuid) {
-    $nodes = $this->entityTypeManager
-      ->getStorage('node')
+    $nodes = $this->nodeStorage
       ->loadByProperties([
         'field_data_type' => $property_id,
         'uuid' => $uuid,

@@ -2,7 +2,6 @@
 
 use Drupal\frontend\Page;
 use PHPUnit\Framework\TestCase;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeStorageInterface;
 
 /**
@@ -10,21 +9,6 @@ use Drupal\node\NodeStorageInterface;
  */
 class PageTest extends TestCase {
   private $node;
-
-  /**
-   *
-   */
-  private function getEntityTypeManagerMock() {
-    $entityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['getStorage'])
-      ->getMockForAbstractClass();
-
-    $entityTypeManager->method('getStorage')
-      ->willReturn($this->getNodeStorageMock());
-
-    return $entityTypeManager;
-  }
 
   /**
    *
@@ -60,7 +44,7 @@ class PageTest extends TestCase {
    * Test regular page.
    */
   public function test() {
-    $page = new Page(__DIR__ . "/../../app", $this->getEntityTypeManagerMock());
+    $page = new Page(__DIR__ . "/../../app", $this->getNodeStorageMock());
     $content = $page->build('home');
     $this->assertEquals("<h1>Hello World!!!</h1>\n", $content);
 
@@ -72,7 +56,7 @@ class PageTest extends TestCase {
    * Test nonvalid UUID.
    */
   public function testNoDataset() {
-    $page = new Page(__DIR__ . "/../../app", $this->getEntityTypeManagerMock());
+    $page = new Page(__DIR__ . "/../../app", $this->getNodeStorageMock());
     $content = $page->buildDataset('444');
     $this->assertEquals("<h1>!!!Hello World!!!</h1>\n", $content);
   }
@@ -81,7 +65,7 @@ class PageTest extends TestCase {
    * Test valid UUID.
    */
   public function testDataset() {
-    $page = new Page(__DIR__ . "/../../app", $this->getEntityTypeManagerMock());
+    $page = new Page(__DIR__ . "/../../app", $this->getNodeStorageMock());
     $content = $page->buildDataset('123');
     $this->assertEquals("<h1>Hello World!!!</h1>\n", $content);
   }
