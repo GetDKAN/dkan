@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 namespace Drupal\metastore\Plugin\QueueWorker;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -23,11 +23,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The entity type manager service.
+   * The node storage service.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\node\NodeStorageInterface
    */
-  protected $entityTypeManager;
+  protected $nodeStorage;
 
   /**
    * Constructs a new class instance.
@@ -38,12 +38,12 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   Entity type manager service.
+   * @param \Drupal\node\NodeStorageInterface $nodeStorage
+   *   Node storage service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, NodeStorageInterface $nodeStorage) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->entityTypeManager = $entity_type_manager;
+    $this->nodeStorage = $nodeStorage;
   }
 
   /**
@@ -56,7 +56,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
           $configuration,
           $plugin_id,
           $plugin_definition,
-          $container->get('entity_type.manager')
+          $container->get('dkan.common.node_storage')
       );
   }
 
@@ -70,7 +70,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     $uuid = $data[1];
 
     // Search datasets using this uuid for this property id.
-    $datasets = $this->entityTypeManager->getStorage('node')
+    $datasets = $this->nodeStorage
       ->loadByProperties(
               [
                 'field_data_type' => 'dataset',
@@ -101,7 +101,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The uuid.
    */
   protected function deleteReference(string $property_id, string $uuid) {
-    $references = $this->entityTypeManager->getStorage('node')
+    $references = $this->nodeStorage
       ->loadByProperties(
               [
                 'field_data_type' => $property_id,
