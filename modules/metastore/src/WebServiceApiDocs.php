@@ -50,7 +50,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new WebServiceApiDocs(
       $container->get("common.docs"),
-      $container->get("metastore.service"),
+      $container->get('dkan.metastore.service'),
       $container->get('plugin.manager.common.data_modifier')
     );
   }

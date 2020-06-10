@@ -42,7 +42,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new WebServiceApi(
       $container->get('request_stack'),
-      $container->get('metastore.service')
+      $container->get('dkan.metastore.service')
     );
   }
 
