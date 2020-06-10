@@ -3,3 +3,9 @@ dkan.metastore.config_properties:
   route_name: dkan.metastore.config_properties
   description: Configure dataset properties for referencing an API endpoint.
   parent: dkan.common.admin_config
+
+dkan.metastore.config_publishing:
+  title: Dataset updates
+  route_name: dkan.metastore.config_publishing
+  description: Configure when dataset updates are published.
+  parent: dkan.common.admin_config

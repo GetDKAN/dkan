@@ -102,3 +102,11 @@ dkan.metastore.config_properties:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+dkan.metastore.config_publishing:
+  path: '/admin/config/dkan/publishing'
+  defaults:
+    _title: 'Dataset updates'
+    _form: 'Drupal\metastore\Form\DkanPublishingForm'
+  requirements:
+    _permission: 'access administration pages'
