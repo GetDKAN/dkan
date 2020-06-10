@@ -407,11 +407,21 @@ function dkan_datastore_api_query($params) {
     return dkan_datastore_api_output($data_select, $results, $table, $params['fields'], $resource_ids, $count, $params['limit']);
   }
   catch (Exception $e) {
-    $info = "";
-    if ($data_select) {
-      $info = dkan_datastore_api_debug($data_select);
+    // If module devel is enabled, provide more information on the error.
+    if (module_exists('devel')) {
+      $info = "";
+      if ($data_select) {
+        $info = dkan_datastore_api_debug($data_select);
+      }
+      return array(
+        'sql' => $info,
+        'error' => array('message' => t('Caught exception: @exception', array('@exception' => $e->getMessage())))
+      );
     }
-    return array('sql' => $info, 'error' => array('message' => 'Caught exception: ' . $e->getMessage()));
+
+    return array(
+      'error' => array('message' => t('Exception Caught, please check logs for more information'))
+    );
   }
 }
 
