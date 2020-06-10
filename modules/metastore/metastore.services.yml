@@ -21,6 +21,7 @@ services:
     class: \Drupal\metastore\Storage\Data
     arguments:
       - '@dkan.common.node_storage'
+      - '@config.factory'
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:

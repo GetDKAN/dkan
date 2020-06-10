@@ -7,13 +7,19 @@ use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\node\NodeStorageInterface;
 use HTMLPurifier;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Data.
  */
-class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
+class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
+
+  const PUBLISH_NOW = 1;
+  const PUBLISH_LATER = 2;
 
   /**
    * Node storage service.
@@ -21,6 +27,11 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @var \Drupal\node\NodeStorageInterface
    */
   private $nodeStorage;
+
+  /**
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private $configService;
 
   /**
    * Represents the data type passed via the HTTP request url schema_id slug.
@@ -34,9 +45,22 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * @param \Drupal\node\NodeStorageInterface $nodeStorage
    *   Injected node storage service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
+   *   Injected config factory service.
    */
-  public function __construct(NodeStorageInterface $nodeStorage) {
+  public function __construct(NodeStorageInterface $nodeStorage, ConfigFactoryInterface $configService) {
     $this->nodeStorage = $nodeStorage;
+    $this->configService = $configService;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.common.node_storage'),
+      $container->get('config.factory')
+    );
   }
 
   /**
@@ -94,6 +118,37 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     }
 
     throw new \Exception("No data with the identifier {$id} was found.");
+  }
+
+  /**
+   * Return the publishing method.
+   *
+   * @return string
+   *   Either Data::PUBLISH_NOW or Data::PUBLISH_LATER.
+   */
+  public function getPublishMethod() {
+    return $this->configService->get('metastore.settings')->get('publishing');
+  }
+
+  /**
+   * Publish the latest version of a data node.
+   *
+   * @param string $id
+   *   Identifier.
+   *
+   * @return string
+   *   Identifier.
+   */
+  public function publish(string $id) {
+    if (!isset($this->schemaId)) {
+      throw new \Exception("Data schemaId not set.");
+    }
+    if ($this->schemaId !== 'dataset') {
+      throw new \Exception("Publishing currently only implemented for datasets.");
+    }
+
+    // @Todo: Publishing logic.
+    throw new \Exception("@Todo: Storage Data publishing logic.");
   }
 
   /**

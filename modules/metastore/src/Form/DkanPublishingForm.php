@@ -4,6 +4,7 @@ namespace Drupal\metastore\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\metastore\Storage\Data;
 
 /**
  * Class DkanPublishingForm.
@@ -39,8 +40,8 @@ class DkanPublishingForm extends ConfigFormBase {
       '#title' => $this->t('When should dataset updates be published?'),
       '#description' => $this->t('Note: Modifying this setting is not retroactive.'),
       '#options' => [
-        'immediately',
-        'not immediately',
+        Data::PUBLISH_NOW => 'immediately',
+        Data::PUBLISH_LATER => 'later',
       ],
       '#size' => 1,
       '#default_value' => $config->get('publishing'),
