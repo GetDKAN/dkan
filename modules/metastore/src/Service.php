@@ -11,6 +11,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Reference\Dereferencer;
+use Drupal\metastore\Storage\Data;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -34,6 +35,13 @@ class Service implements ContainerInjectionInterface {
   private $schemaRetriever;
 
   /**
+   * Storage.
+   *
+   * @var \Drupal\metastore\Storage\Data
+   */
+  private $storage;
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}
@@ -41,16 +49,18 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('metastore.schema_retriever'),
-      $container->get('metastore.sae_factory')
+      $container->get('metastore.sae_factory'),
+      $container->get('dkan.metastore.storage')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory) {
+  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, Data $storage) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
+    $this->storage = $storage;
   }
 
   /**
@@ -297,6 +307,26 @@ class Service implements ContainerInjectionInterface {
     $engine->delete($identifier);
 
     return $identifier;
+  }
+
+  /**
+   * Publish an item's update by making its latest revision its default one.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   *
+   * @return string
+   *   Identifier.
+   */
+  public function publish(string $schema_id, string $identifier) {
+    if ($this->objectExists($schema_id, $identifier)) {
+      $this->storage->setSchema($schema_id);
+      return $this->storage->publish($identifier);
+    }
+
+    throw new MissingObjectException("No data with the identifier {$identifier} was found.");
   }
 
   /**
