@@ -325,6 +325,45 @@ EOF;
   /**
    *
    */
+  public function testPublishExceptionNotFound() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(Service::class, 'publish', new MissingObjectException("Not found"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->publish('dataset', 1);
+    $this->assertEquals('{"message":"Not found"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPublishExceptionOtherThanMetastore() {
+    $mockChain = $this->getCommonMockChain()
+      ->add(Service::class, 'publish', new \Exception("Unknown error"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->publish('dataset', 1);
+    $this->assertEquals('{"message":"Unknown error"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPublish() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', '{}');
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+    $mockChain->add(Service::class, "publish", "1");
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->publish('dataset', "1");
+    $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":"1"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
   public function testGetCatalog() {
     $catalog = (object) ["foo" => "bar"];
 
