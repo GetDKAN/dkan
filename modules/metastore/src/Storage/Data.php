@@ -81,7 +81,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   public function retrieveAll(): array {
 
     if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieveAll().");
+      throw new \Exception("Data schema id not set.");
     }
 
     $node_ids = $this->nodeStorage->getQuery()
@@ -109,7 +109,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   public function retrieve(string $id): ?string {
 
     if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieve().");
+      throw new \Exception("Data schema id not set.");
     }
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
@@ -117,7 +117,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
       return $value['value'];
     }
 
-    throw new \Exception("No data with the identifier {$id} was found.");
+    throw new \Exception("No data with that identifier was found.");
   }
 
   /**
@@ -141,7 +141,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    */
   public function publish(string $id) {
     if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set.");
+      throw new \Exception("Data schema id not set.");
     }
     if ($this->schemaId !== 'dataset') {
       throw new \Exception("Publishing currently only implemented for datasets.");
@@ -171,7 +171,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   public function store($data, string $id = NULL): string {
 
     if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in store().");
+      throw new \Exception("Data schema id not set.");
     }
 
     $data = json_decode($data);
