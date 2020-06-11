@@ -16,6 +16,7 @@ export default ({
   dayLabel = "Day",
   className = "dc-pod-date"
 }) => {
+  const { title, description } = schema;
   const startDate = useMemo(() => (minDate || new Date(1900, 0, 1)), [minDate])
   const endDate = useMemo(() => (maxDate || new Date()), [maxDate]);
   const firstYear = useMemo(() => startDate.getFullYear(), [startDate]);
@@ -25,7 +26,7 @@ export default ({
   const dayRange = useMemo(() => range(1, 31), []);
   const fields = ['year','month','day'];
   let value = formData;
-  console.log(schema);
+  console.log(value);
 
   const labels = useMemo(
     () => ({ day: dayLabel, month: monthLabel, year: yearLabel }),
@@ -60,9 +61,11 @@ export default ({
   }, [state.year, state.month, state.day]);
 
   return (
-    <div className="app">
-      <form className={className}>
-      {fields.map(field => (
+    <div className={`${className} form-group field`}>
+      <label className="control-label" for={idSchema}>{title}</label>
+      <div className="dc-field-label" id={`${idSchema}__description`}>{description}</div>
+      <div className="dc-select-group form-inline">
+        {fields.map(field => (
           <Select
             key={field}
             label={labels[field]}
@@ -72,9 +75,10 @@ export default ({
             name={field}
             renderOption={field === "day" || field === "month" ? v => Pad(v) : null}
             generateValue={field === "day" || field === "month" ? v => Pad(v) : null}
+            className = "col"
           />
-      ))}
-      </form>
+        ))}
+      </div>
       <pre>{JSON.stringify(state, null, 2)}</pre>
     </div>
   );
