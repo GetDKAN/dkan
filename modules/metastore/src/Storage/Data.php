@@ -87,6 +87,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
     $node_ids = $this->nodeStorage->getQuery()
       ->condition('type', $this->getType())
       ->condition('field_data_type', $this->schemaId)
+      ->condition('status', 1)
       ->execute();
 
     $all = [];
