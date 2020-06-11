@@ -29,6 +29,8 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   private $nodeStorage;
 
   /**
+   * Config service, where the publishing method setting is stored.
+   *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   private $configService;
