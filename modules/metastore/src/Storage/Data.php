@@ -260,6 +260,34 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   }
 
   /**
+   * Get the node id from the dataset identifier.
+   *
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return int|string
+   *   The node id, if found.
+   */
+  private function getNidFromUuid(string $uuid) {
+
+    if (!isset($this->schemaId)) {
+      throw new \Exception("Data schema id not set.");
+    }
+
+    $nids = $this->nodeStorage->getQuery()
+      ->condition('uuid', $uuid)
+      ->condition('type', $this->getType())
+      ->condition('field_data_type', $this->schemaId)
+      ->execute();
+
+    if ($nids) {
+      return reset($nids);
+    }
+
+    throw new \Exception("No data with that identifier was found.");
+  }
+
+  /**
    * Get type.
    *
    * @return string
