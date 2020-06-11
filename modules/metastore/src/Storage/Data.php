@@ -71,6 +71,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    */
   public function setSchema($schema_id) {
     $this->schemaId = $schema_id;
+    return $this;
   }
 
   /**
