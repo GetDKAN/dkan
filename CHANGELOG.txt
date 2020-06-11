@@ -1,3 +1,11 @@
+7.x-1.18.7
+----------
+ - #3129 Fixed security issue in datastore: output debug info only when devel is enabled.
+
+7.x-1.18.6
+----------
+ - #3116 Update Drupal to 7.71 and Services to 3.26.
+
 7.x-1.18.5
 ----------
  - #3102 Update Drupal to 7.70.
