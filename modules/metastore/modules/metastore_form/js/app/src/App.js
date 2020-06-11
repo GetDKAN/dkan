@@ -5,9 +5,10 @@ import 'bootstrap-lite/lib.bootstrap.css';
 import ToastBox, { toast } from "react-toastbox";
 import './App.scss';
 import axios from "axios";
+import podDate from "./widgets/PodDate";
 
 function App({ tempUUID, isNew }) {
-  const baseUrl = "";
+  const baseUrl = "http://localtest.me:32779/";
 
   let history = useHistory();
 
@@ -110,7 +111,8 @@ function App({ tempUUID, isNew }) {
   };
 
   const fields = {
-    DescriptionField: CustomDescriptionField
+    DescriptionField: CustomDescriptionField,
+    podDate: podDate
   };
 
   function transformErrors(errors) {

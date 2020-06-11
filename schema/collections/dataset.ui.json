@@ -38,7 +38,8 @@
     "ui:emptyValue": "public"
   },
   "modified": {
-    "ui:placeholder": "YYYY-MM-DD"
+    "ui:placeholder": "YYYY-MM-DD",
+    "ui:field": "podDate"
   },
   "describedBy": {
     "ui:placeholder": "http://"
