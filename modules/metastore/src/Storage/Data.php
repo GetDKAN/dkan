@@ -97,12 +97,37 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
     foreach ($node_ids as $nid) {
       /* @var $node \Drupal\node\NodeInterface */
       $node = $this->nodeStorage->load($nid);
-      $fieldList = $node->get('field_json_metadata');
-      $field = $fieldList->get(0);
-      $data = $field->getValue();
-      $all[] = $data['value'];
+      $all[] = $node->get('field_json_metadata')->getString();
     }
     return $all;
+  }
+
+  /**
+   * Retrieve the json metadata from a node only if it is published.
+   *
+   * @param string $uuid
+   *   The identifier.
+   *
+   * @return string|null
+   *   The node's json metadata, or NULL if the node was not found.
+   */
+  public function retrievePublished(string $uuid) : ?string {
+    if (!isset($this->schemaId)) {
+      throw new \Exception("Data schema id not set.");
+    }
+
+    $nodes = $this->nodeStorage->loadByProperties([
+      'uuid' => $uuid,
+      'status' => 1,
+    ]);
+
+    $node = $nodes ? reset($nodes) : FALSE;
+
+    if ($node) {
+      return $node->get('field_json_metadata')->getString();
+    }
+
+    throw new \Exception("No data with that identifier was found.");
   }
 
   /**
