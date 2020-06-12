@@ -261,6 +261,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
           'uuid' => $id,
           'field_data_type' => $this->schemaId,
           'field_json_metadata' => json_encode($data),
+          'status' => ($this->getPublishMethod() === Data::PUBLISH_NOW) ? 1 : 0,
         ]
       );
     $node->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
