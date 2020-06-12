@@ -255,7 +255,16 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
     $node->field_json_metadata = $new_data;
     // Create a new revision.
     $node->setNewRevision(TRUE);
-    $node->isDefaultRevision(TRUE);
+
+    // Proceed differently based on the publishing method.
+    if ($this->getPublishMethod() === Data::PUBLISH_NOW) {
+      $node->setPublished();
+      $node->isDefaultRevision(TRUE);
+    }
+    else {
+      $node->setUnpublished();
+      $node->isDefaultRevision(FALSE);
+    }
     $node->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
 
     $node->save();
