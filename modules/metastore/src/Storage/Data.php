@@ -179,7 +179,14 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
       throw new \Exception("Publishing currently only implemented for datasets.");
     }
 
-    // @Todo: Publishing logic.
+    $node = $this->getLatestNodeRevision($id);
+    if ($node) {
+      $node->setPublished();
+      $node->isDefaultRevision(TRUE);
+      $node->save();
+      return $id;
+    }
+
     throw new \Exception("@Todo: Storage Data publishing logic.");
   }
 
