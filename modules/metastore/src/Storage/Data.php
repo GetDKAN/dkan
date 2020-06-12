@@ -135,15 +135,12 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    *
    * {@inheritDoc}.
    */
-  public function retrieve(string $id): ?string {
+  public function retrieve(string $uuid): ?string {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schema id not set.");
-    }
-
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      $value = $node->get('field_json_metadata')->get(0)->getValue();
-      return $value['value'];
+    $nid = $this->getNidFromUuid($uuid);
+    $node = $this->nodeStorage->load($nid);
+    if ($node && $node->isPublished()) {
+      return $node->get('field_json_metadata')->getValue();
     }
 
     throw new \Exception("No data with that identifier was found.");
