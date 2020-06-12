@@ -208,7 +208,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
     $id = (!$id && isset($data->identifier)) ? $data->identifier : $id;
 
     if ($id) {
-      $node = $this->getNodeByUuid($id);
+      $node = $this->getLatestNodeRevision($id);
     }
 
     /* @var $node \Drupal\node\NodeInterface */
