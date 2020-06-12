@@ -48,4 +48,5 @@ class Drush extends DrushCommands {
       $this->logger()->error("Error while attempting to publish dataset {$uuid}: " . $e->getMessage());
     }
   }
+
 }
