@@ -156,11 +156,14 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   /**
    * Return the publishing method.
    *
-   * @return string
-   *   Either Data::PUBLISH_NOW or Data::PUBLISH_LATER.
+   * @return int
+   *   One of this class' PUBLISH_ constants, cast to an integer to mitigate
+   *   that the return value from config's get is a string, and to facilitate
+   *   stricter comparison.
    */
   public function getPublishMethod() {
-    return $this->configService->get('metastore.settings')->get('publishing');
+    $config = $this->configService->get('metastore.settings');
+    return (int) $config->get('publishing');
   }
 
   /**
