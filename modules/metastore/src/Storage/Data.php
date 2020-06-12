@@ -288,6 +288,21 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   }
 
   /**
+   * Load a node's latest revision, given a dataset's uuid.
+   *
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *   The node's latest revision, if found.
+   */
+  private function getLatestNodeRevision(string $uuid) {
+    $nid = $this->getNidFromUuid($uuid);
+    $revision_id = $this->nodeStorage->getLatestRevisionId($nid);
+    return $this->nodeStorage->loadRevision($revision_id);
+  }
+
+  /**
    * Get type.
    *
    * @return string
