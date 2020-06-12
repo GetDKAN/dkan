@@ -312,25 +312,6 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   }
 
   /**
-   * Fetch node id of a current type given uuid.
-   *
-   * @return \Drupal\node\Entity\Node|bool
-   *   Returns false if no nodes match.
-   */
-  private function getNodeByUuid($uuid) {
-
-    $nodes = $this->nodeStorage->loadByProperties(
-      [
-        'type' => $this->getType(),
-        'uuid' => $uuid,
-      ]
-    );
-    // Uuid should be universally unique and always return
-    // a single node.
-    return current($nodes);
-  }
-
-  /**
    * Recursively filter the metadata object and all its properties.
    *
    * @param mixed $input
