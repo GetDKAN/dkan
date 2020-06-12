@@ -147,7 +147,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
 
     $node = $this->getLatestNodeRevision($uuid);
     if ($node) {
-      return $node->get('field_json_metadata')->getValue();
+      return $node->get('field_json_metadata')->getString();
     }
 
     throw new \Exception("No data with that identifier was found.");
