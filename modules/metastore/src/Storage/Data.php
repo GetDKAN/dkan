@@ -271,9 +271,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    * @return int|string
    *   The node id, if found.
    */
-  private function getNidFromUuid(string $uuid) {
-
-    $this->assertSchema();
+  private function getNidFromUuid(string $uuid) : ?int {
 
     $nids = $this->nodeStorage->getQuery()
       ->condition('uuid', $uuid)
@@ -281,11 +279,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
       ->condition('field_data_type', $this->schemaId)
       ->execute();
 
-    if ($nids) {
-      return reset($nids);
-    }
-
-    throw new \Exception("No data with that identifier was found.");
+    return $nids ? (int) reset($nids) : NULL;
   }
 
   /**
