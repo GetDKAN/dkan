@@ -185,9 +185,11 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    *
    * {@inheritDoc}.
    */
-  public function remove(string $id) {
+  public function remove(string $uuid) {
 
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
+    $nid = $this->getNidFromUuid($uuid);
+    $node = $this->nodeStorage->load($nid);
+    if ($node) {
       return $node->delete();
     }
   }
