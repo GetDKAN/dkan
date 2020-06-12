@@ -18,7 +18,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
 
+  /**
+   * Metastore update and create operations take effect immediately.
+   *
+   * @var int
+   */
   const PUBLISH_NOW = 1;
+
+  /**
+   * Metastore update and create operations are deferred.
+   *
+   * @var int
+   */
   const PUBLISH_LATER = 2;
 
   /**
