@@ -137,9 +137,8 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    */
   public function retrieve(string $uuid): ?string {
 
-    $nid = $this->getNidFromUuid($uuid);
-    $node = $this->nodeStorage->load($nid);
-    if ($node && $node->isPublished()) {
+    $node = $this->getLatestNodeRevision($uuid);
+    if ($node) {
       return $node->get('field_json_metadata')->getValue();
     }
 
