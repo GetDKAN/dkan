@@ -246,7 +246,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
       ->create(
         [
           'title' => $title,
-          'type' => 'data',
+          'type' => $this->getType(),
           'uuid' => $id,
           'field_data_type' => $this->schemaId,
           'field_json_metadata' => json_encode($data),
