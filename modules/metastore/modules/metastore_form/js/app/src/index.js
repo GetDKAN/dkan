@@ -4,10 +4,10 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router} from "react-router-dom";
 
-//const uuid = window.drupalSettings.tempUUID;
-const uuid = '123';
-const isNew = true;
-//const isNew = window.drupalSettings.isNew;
+const uuid = window.drupalSettings.tempUUID;
+const isNew = window.drupalSettings.isNew;
+// const uuid = '123';
+// const isNew = true;
 
 ReactDOM.render(<Router><App tempUUID={uuid} isNew={isNew} /></Router>, document.getElementById('app'));
 

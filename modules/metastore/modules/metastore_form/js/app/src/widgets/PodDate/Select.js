@@ -7,11 +7,11 @@ export default ({
   name,
   onChange,
   renderOption,
-  generateValue
+  generateValue,
+  required
 }) => {
-  //const v = value ? value : '';
   return (
-    <select value={value} onChange={onChange} name={name} className="form-control">
+    <select value={value} onChange={onChange} name={name} className="form-control" required={required}>
       <option value="">
         {label}
       </option>

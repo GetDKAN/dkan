@@ -26,7 +26,10 @@ export default ({
   const dayRange = useMemo(() => range(1, 31), []);
   const fields = ['year','month','day'];
   let value = formData;
-  console.log(value);
+  console.log('formData: ', formData);
+  console.log('value: ', value);
+  let v = value ? formData.split("-") : '';
+
 
   const labels = useMemo(
     () => ({ day: dayLabel, month: monthLabel, year: yearLabel }),
@@ -39,10 +42,10 @@ export default ({
   );
 
   const [state, setState] = React.useState({
-    year: "",
-    month: "",
-    day: "",
-    date: ""
+    year: v ? v[1] : "",
+    month: v ? v[2] : "",
+    day: v ? v[3] : "",
+    date: value
   });
 
   function handleChange(evt) {
@@ -75,7 +78,7 @@ export default ({
             name={field}
             renderOption={field === "day" || field === "month" ? v => Pad(v) : null}
             generateValue={field === "day" || field === "month" ? v => Pad(v) : null}
-            className = "col"
+            required={required && field === "year" ? required : null}
           />
         ))}
       </div>
