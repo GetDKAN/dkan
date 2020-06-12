@@ -77,15 +77,24 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
   }
 
   /**
+   * Assert schema is set.
+   *
+   * @throws \Exception
+   */
+  private function assertSchema() {
+    if (!isset($this->schemaId)) {
+      throw new \Exception("Data schema id not set.");
+    }
+  }
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}.
    */
   public function retrieveAll(): array {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schema id not set.");
-    }
+    $this->assertSchema();
 
     $node_ids = $this->nodeStorage->getQuery()
       ->condition('type', $this->getType())
@@ -112,9 +121,8 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    *   The node's json metadata, or NULL if the node was not found.
    */
   public function retrievePublished(string $uuid) : ?string {
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schema id not set.");
-    }
+
+    $this->assertSchema();
 
     $nodes = $this->nodeStorage->loadByProperties([
       'uuid' => $uuid,
@@ -165,9 +173,8 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    *   Identifier.
    */
   public function publish(string $id) {
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schema id not set.");
-    }
+
+    $this->assertSchema();
     if ($this->schemaId !== 'dataset') {
       throw new \Exception("Publishing currently only implemented for datasets.");
     }
@@ -197,9 +204,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    */
   public function store($data, string $id = NULL): string {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schema id not set.");
-    }
+    $this->assertSchema();
 
     $data = json_decode($data);
     $data = $this->filterHtml($data);
@@ -268,9 +273,7 @@ class Data implements ContainerInjectionInterface, StorerInterface, RetrieverInt
    */
   private function getNidFromUuid(string $uuid) {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schema id not set.");
-    }
+    $this->assertSchema();
 
     $nids = $this->nodeStorage->getQuery()
       ->condition('uuid', $uuid)
