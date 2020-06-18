@@ -50,15 +50,24 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   }
 
   /**
+   * Assert schema is set.
+   *
+   * @throws \Exception
+   */
+  private function assertSchema() {
+    if (!isset($this->schemaId)) {
+      throw new \Exception("Data schema id not set.");
+    }
+  }
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}.
    */
   public function retrieveAll(): array {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieveAll().");
-    }
+    $this->assertSchema();
 
     $node_ids = $this->nodeStorage->getQuery()
       ->condition('type', $this->getType())
@@ -84,9 +93,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function retrieve(string $id): ?string {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieve().");
-    }
+    $this->assertSchema();
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
       $value = $node->get('field_json_metadata')->get(0)->getValue();
@@ -115,9 +122,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function store($data, string $id = NULL): string {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in store().");
-    }
+    $this->assertSchema();
 
     $data = json_decode($data);
     $data = $this->filterHtml($data);

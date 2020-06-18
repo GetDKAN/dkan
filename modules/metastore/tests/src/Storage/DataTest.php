@@ -90,7 +90,7 @@ class DataTest extends TestCase {
    *
    */
   public function testRetrieveAllException() {
-    $this->expectExceptionMessage("Data schemaId not set in retrieveAll()");
+    $this->expectExceptionMessage("Data schema id not set.");
     $store = new Data($this->getNodeStorageMock());
     $store->retrieveAll();
   }
@@ -99,7 +99,7 @@ class DataTest extends TestCase {
    *
    */
   public function testRetrieveException() {
-    $this->expectExceptionMessage("Data schemaId not set in retrieve()");
+    $this->expectExceptionMessage("Data schema id not set.");
     $store = new Data($this->getNodeStorageMock());
     $store->retrieve(1);
   }
@@ -108,7 +108,7 @@ class DataTest extends TestCase {
    *
    */
   public function testStoreException() {
-    $this->expectExceptionMessage("Data schemaId not set in store()");
+    $this->expectExceptionMessage("Data schema id not set.");
     $object = '{"name":"blah"}';
     $store = new Data($this->getNodeStorageMock());
     $store->store($object, 1);
