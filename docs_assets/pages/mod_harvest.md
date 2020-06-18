@@ -10,12 +10,12 @@ For example, [Data.gov](https://data.gov/) harvests all of its datasets from the
 
 | Command | Args | Notes |
 | -- | -- | -- |
-| dkan-harvest:list         | n/a          | Lists avaialble harvests. |
-| dkan-harvest:register     | $config      | Register a new harvest, file saved to the *dkan_harvest/plans* directory. |
-| dkan-harvest:deregister   | $identifier  | Deletes the cached plan file. |
-| dkan-harvest:cache        | $identifier  | This will fetch the source data, apply the source configuration and cache the data to a local file. |
-| dkan-harvest:run          | $identifier  | This will harvest the current cache for the selected sources. |
-| dkan-harvest:revert       | $identifier  | Reverts harvest. |
+| dkan:harvest:list         | n/a          | Lists avaialble harvests. |
+| dkan:harvest:register     | $config      | Register a new harvest, file saved to the *dkan_harvest/plans* directory. |
+| dkan:harvest:deregister   | $identifier  | Deletes the cached plan file. |
+| dkan:harvest:cache        | $identifier  | This will fetch the source data, apply the source configuration and cache the data to a local file. |
+| dkan:harvest:run          | $identifier  | This will harvest the current cache for the selected sources. |
+| dkan:harvest:revert       | $identifier  | Reverts harvest. |
 
 
 <h2 id="harvest-plan">Harvest Plan schema</h2>
@@ -93,13 +93,13 @@ Currently there is no UI for creating or running a harvest, use the drush comman
 1. Register a new harvest source, passing in the harvest plan configuration as JSON, wrapped in single quotes, do not add spaces between elements:
   - Create a unique name as the **identifier**
   - Provide the **extract** object with type and uri values: type being the class that matches the data structure, (most likely "\\Harvest\\ETL\\Extract\\DataJson"), and the full URI for the source endpoint (such as `http://source/data.json` or `file://source/data.json`)
-  - Provide the **load** object that defines the type of content you want to create, most likely datasets, so use: "\\Drupal\\dkan_harvest\\Load\\Dataset"
+  - Provide the **load** object that defines the type of content you want to create, most likely datasets, so use: "\\Drupal\\harvest\\Load\\Dataset"
 
 2. If you would also like to make changes to the data you are harvesting, you can create custom **transforms** that will modify the data before saving to your catalog. Add multiple transforms as an array. [Learn more here](#transforms).
 
 **Example**
 \code{.bash}
-drush dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
+drush dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
 \endcode
 
 ## Run the harvest
@@ -122,30 +122,36 @@ use Harvest\ETL\Transform\Transform;
 class Socrata extends Transform {
 
   /**
-   * Counter.
-   *
-   * @var int
-   */
-  private $counter = 0;
-
-  /**
    * Inherited.
    *
    * {@inheritDoc}
    */
   public function run($item) {
-    $counter = 0;
+    // Convert URL identifier to just the ID.
     $identifier = $item->identifier;
     $item->identifier = $this->getIdentifier($identifier);
-    foreach ($item->distribution as $key => $dist) {
-      if ($dist->mediaType != "text/csv") {
-        unset($item->distribution[$key]);
+
+    // Add dummy keyword when keywords are null.
+    if (empty($item->keyword)) {
+      $item->keyword = ['No keywords provided'];
+    }
+
+    // Add dummy description if null (looking at you Seattle).
+    if (empty($item->description)) {
+      $item->description = 'No description provided';
+    }
+
+    // Add titles for csv distributions.
+    if ($item->distribution) {
+      foreach ($item->distribution as $key => $dist) {
+        if ($dist->mediaType != "text/csv") {
+          unset($item->distribution[$key]);
+        }
+        else {
+          $dist->title = "{$item->identifier}.csv";
+          $item->distribution[$key] = $dist;
+        }
       }
-      else {
-        $dist->title = "distribution_{$this->counter}_{$counter}";
-        $item->distribution[$key] = $dist;
-      }
-      $counter++;
     }
 
     return $item;
@@ -167,5 +173,5 @@ class Socrata extends Transform {
 **Example with new transform**
 
 \code{.bash}
-drush dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":["\\Drupal\\custom_module\\Transform\\Socrata"],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
+drush dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":["\\Drupal\\custom_module\\Transform\\Socrata"],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
 \endcode
