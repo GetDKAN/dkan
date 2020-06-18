@@ -1,0 +1,41 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.data
+  module:
+    - content_moderation
+id: dkan_publishing
+label: 'DKAN publishing'
+type: content_moderation
+type_settings:
+  states:
+    draft:
+      label: Draft
+      published: false
+      default_revision: false
+      weight: 0
+    published:
+      label: Published
+      published: true
+      default_revision: true
+      weight: 1
+  transitions:
+    create_new_draft:
+      label: 'Create New Draft'
+      to: draft
+      weight: 0
+      from:
+        - draft
+        - published
+    publish:
+      label: Publish
+      to: published
+      weight: 1
+      from:
+        - draft
+        - published
+  entity_types:
+    node:
+      - data
+  default_moderation_state: published
