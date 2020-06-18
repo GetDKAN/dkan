@@ -175,6 +175,8 @@ class Referencer {
         'uuid' => $data->identifier,
         'field_data_type' => $property_id,
         'field_json_metadata' => json_encode($data),
+        // Unlike datasets, always publish references immediately.
+        'moderation_state' => 'published',
       ]);
     $node->save();
 
