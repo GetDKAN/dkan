@@ -59,8 +59,8 @@ class ServiceTest extends TestCase {
    */
   public function testGet() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", json_encode("blah"));
+      ->add(Data::class, "setSchema", Data::class)
+      ->add(Data::class, "retrievePublished", json_encode("blah"));
 
     $service = Service::create($container->getMock());
 
