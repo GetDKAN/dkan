@@ -150,6 +150,30 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
+   * Publish the latest revision of a dataset.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function publish(string $schema_id, string $identifier) {
+    try {
+      $this->service->publish($schema_id, $identifier);
+      return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
+    }
+    catch (MetastoreException $e) {
+      return $this->getResponseFromException($e, $e->httpCode());
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 400);
+    }
+  }
+
+  /**
    * Implements PUT method.
    *
    * @param string $schema_id
