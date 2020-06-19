@@ -4,6 +4,7 @@ services:
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.sae_factory'
+      - '@dkan.metastore.storage'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
   dkan.metastore.sae_factory:
@@ -49,6 +50,7 @@ services:
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.sae_factory'
+      - '@dkan.metastore.storage'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
   metastore.sae_factory:
