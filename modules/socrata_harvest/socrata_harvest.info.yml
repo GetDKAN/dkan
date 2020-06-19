@@ -1,0 +1,7 @@
+name: Socrata Harvest
+description: 'Helper module to fill in missing POD values.'
+type: module
+core: 8.x
+dependencies:
+  - harvest
+package: Custom
