@@ -2,12 +2,18 @@
 
 namespace Drupal\Tests\common\Unit\Storage;
 
+use Drupal\content_moderation\Plugin\WorkflowType\ContentModeration;
+use Drupal\Core\Config\Entity\ConfigEntityStorage;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Field\FieldItemInterface;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\metastore\Storage\Data;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorageInterface;
+use Drupal\workflows\Entity\Workflow;
+use MockChain\Chain;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,60 +23,162 @@ use PHPUnit\Framework\TestCase;
  * @group common
  */
 class DataTest extends TestCase {
-  private $node;
+
+  /**
+   *
+   */
+  public function testRetrieveAllMissingSchema() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $this->expectExceptionMessage('Data schema id not set.');
+    $data->retrieveAll();
+  }
 
   /**
    *
    */
   public function testRetrieveAll() {
-    $store = new Data($this->getNodeStorageMock());
-    $store->setSchema('dataset');
-    $all = $store->retrieveAll();
+    $item = '{"foo":"bar"}';
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $data->setSchema('foobar');
+    $result = $data->retrieveAll();
+    $this->assertEquals([$item, $item], $result);
+  }
 
-    $object = '{"name":"blah"}';
+  /**
+   *
+   */
+  public function testRetrievePublishedMissingSchema() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $this->expectExceptionMessage('Data schema id not set.');
+    $data->retrievePublished('1');
+  }
 
-    $this->assertEquals([$object, $object], $all);
+  /**
+   *
+   */
+  public function testRetrievePublished() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $data->setSchema('dataset');
+    $expected = '{"foo":"bar"}';
+    $result = $data->retrievePublished('1');
+    $this->assertEquals($expected, $result);
+  }
+
+  /**
+   *
+   */
+  public function testRetrievePublishedNotFound() {
+    $entityTypeManager = $this->getEntityTypeManager()
+      ->add(NodeStorageInterface::class, 'loadByProperties', []);
+
+    $data = new Data($entityTypeManager->getMock());
+    $data->setSchema('dataset');
+    $this->expectExceptionMessage('No data with that identifier was found.');
+    $data->retrievePublished('1');
+  }
+
+  /**
+   *
+   */
+  public function testRetrieveMissingSchema() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $this->expectExceptionMessage('Data schema id not set.');
+    $data->retrieve('1');
   }
 
   /**
    *
    */
   public function testRetrieve() {
-    $this->node = $this->getNodeMock();
-    $store = new Data($this->getNodeStorageMock());
-    $store->setSchema('dataset');
-    $obj = $store->retrieve(1);
+    $jsonMetadataField = (new Chain($this))
+      ->add(FieldItemInterface::class, 'getString', '{"foo":"bar"}')
+      ->getMock();
 
-    $object = '{"name":"blah"}';
+    $node = (new Chain($this))
+      ->add(NodeInterface::class, 'get', $jsonMetadataField)
+      ->getMock();
 
-    $this->assertEquals($object, $obj);
+    $entityTypeManager = $this->getEntityTypeManager()
+      ->add(NodeStorageInterface::class, 'loadRevision', $node);
+    $data = new Data($entityTypeManager->getMock());
+    $data->setSchema('dataset');
+    $expected = '{"foo":"bar"}';
+    $result = $data->retrieve('1');
+    $this->assertEquals($expected, $result);
   }
 
   /**
    *
    */
-  public function testStoreExisting() {
-    $this->node = $this->getNodeMock();
-    $object = '{"name":"blah"}';
+  public function testRetrieveNotFound() {
+    $entityTypeManager = $this->getEntityTypeManager()
+      ->add(NodeStorageInterface::class, 'loadRevision', NULL);
 
-    $store = new Data($this->getNodeStorageMock());
-    $store->setSchema('dataset');
-    $id = $store->store($object, 1);
+    $data = new Data($entityTypeManager->getMock());
+    $data->setSchema('dataset');
+    $this->expectExceptionMessage('No data with that identifier was found.');
+    $data->retrieve('4');
+  }
 
+  /**
+   *
+   */
+  public function testPublishMissingSchema() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $this->expectExceptionMessage('Data schema id not set.');
+    $data->publish('1');
+  }
+
+  /**
+   *
+   */
+  public function testPublishNonDataset() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $data->setSchema('foobar');
+    $this->expectExceptionMessage('Publishing currently only implemented for datasets.');
+    $data->publish('1');
+  }
+
+  /**
+   *
+   */
+  public function testPublish() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $data->setSchema('dataset');
+    $result = $data->publish('1');
+    $this->assertEquals($result, '1');
+  }
+
+  /**
+   *
+   */
+  public function testPublishNotFound() {
+    $entityTypeManager = $this->getEntityTypeManager()
+      ->add(NodeStorageInterface::class, 'loadRevision', NULL);
+
+    $data = new Data($entityTypeManager->getMock());
+    $data->setSchema('dataset');
+    $this->expectExceptionMessage('No data with that identifier was found.');
+    $data->publish('2');
+  }
+
+  /**
+   *
+   */
+  public function testStoreUpdateExistingNode() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $data->setSchema('dataset');
+    $id = $data->store('{"foo":"bar"}', 1);
     $this->assertEquals(1, $id);
   }
 
   /**
    *
    */
-  public function testStoreNew() {
-    $this->node = NULL;
-    $object = '{"name":"blah"}';
-
-    $store = new Data($this->getNodeStorageMock());
-    $store->setSchema('dataset');
-    $id = $store->store($object, 1);
-
+  public function testStoreCreateNewNode() {
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $data->setSchema('dataset');
+    $id = $data->store('{"title":"foobar", "number":1}', NULL);
     $this->assertEquals(1, $id);
   }
 
@@ -78,116 +186,90 @@ class DataTest extends TestCase {
    *
    */
   public function testRemove() {
-    $this->node = $this->getNodeMock();
-    $store = new Data($this->getNodeStorageMock());
-    $store->setSchema('dataset');
-    $removed = $store->remove(1);
-
+    $data = new Data($this->getEntityTypeManager()->getMock());
+    $removed = $data->remove('1');
     $this->assertEquals(NULL, $removed);
   }
 
   /**
    *
    */
-  public function testRetrieveAllException() {
-    $this->expectExceptionMessage("Data schema id not set.");
-    $store = new Data($this->getNodeStorageMock());
-    $store->retrieveAll();
+  public function testRemoveNotFound() {
+    $entityTypeManager = $this->getEntityTypeManager()
+      ->add(NodeStorageInterface::class, 'load', NULL);
+
+    $data = new Data($entityTypeManager->getMock());
+    $data->setSchema('dataset');
+    $this->expectExceptionMessage('No data with that identifier was found.');
+
+    $data->remove('1');
   }
 
   /**
    *
    */
-  public function testRetrieveException() {
-    $this->expectExceptionMessage("Data schema id not set.");
-    $store = new Data($this->getNodeStorageMock());
-    $store->retrieve(1);
+  private function setNodeMock($uuid, $moderationState) {
+    $jsonMetadataField = (new Chain($this))
+      ->add(FieldItemInterface::class, 'getString', '{"foo":"bar"}')
+      ->getMock();
+    $moderationStateField = (new Chain($this))
+      ->add(FieldItemInterface::class, 'getString', $moderationState)
+      ->getMock();
+    $fields = (new Sequence())
+      ->add($moderationStateField)
+      ->add($jsonMetadataField);
+
+    return (new Chain($this))
+      ->add(NodeInterface::class, 'get', $fields)
+      ->add(NodeInterface::class, 'uuid', $uuid)
+      ->add(NodeInterface::class, 'save', '1')
+      ->getMock();
   }
 
   /**
    *
    */
-  public function testStoreException() {
-    $this->expectExceptionMessage("Data schema id not set.");
-    $object = '{"name":"blah"}';
-    $store = new Data($this->getNodeStorageMock());
-    $store->store($object, 1);
+  private function publishedNode() {
+    return $this->setNodeMock('1', 'published');
   }
 
   /**
    *
    */
-  private function getNodeStorageMock() {
-    $nodeStorage = $this->getMockBuilder(NodeStorageInterface::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['getQuery', 'load', 'loadByProperties', 'create'])
-      ->getMockForAbstractClass();
-
-    $nodeStorage->method('getQuery')
-      ->willReturn($this->getQueryMock());
-
-    $nodeStorage->method('load')
-      ->willReturn($this->getNodeMock());
-
-    $nodeStorage->method('loadByProperties')
-      ->willReturn([$this->node]);
-
-    $nodeStorage->method('create')
-      ->willReturn($this->getNodeMock());
-
-    return $nodeStorage;
+  private function draftNode() {
+    return $this->setNodeMock('2', 'draft');
   }
 
   /**
    *
    */
-  private function getNodeMock() {
-    $node = $this->getMockBuilder(NodeInterface::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['get', 'uuid', 'save'])
-      ->getMockForAbstractClass();
+  private function getEntityTypeManager() {
+    $storages = (new Sequence())
+      ->add(NodeStorageInterface::class)
+      ->add(ConfigEntityStorage::class);
 
-    $node->method('get')
-      ->willReturn($this->getFieldItemMock());
+    $node1 = $this->publishedNode();
 
-    $node->method('uuid')
-      ->willReturn(1);
+    $nodes = (new Sequence())
+      ->add($node1)
+      ->add($this->draftNode())
+      ->add($this->publishedNode());
 
-    $node->method('save')
-      ->willReturn(1);
-
-    return $node;
-  }
-
-  /**
-   *
-   */
-  private function getFieldItemMock() {
-    $item = $this->getMockBuilder(FieldItemInterface::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['getString'])
-      ->getMockForAbstractClass();
-
-    $item->method('getString')->willReturn(json_encode(["name" => "blah"]));
-
-    return $item;
-  }
-
-  /**
-   *
-   */
-  private function getQueryMock() {
-    $query = $this->getMockBuilder(QueryInterface::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['condition', 'execute'])
-      ->getMockForAbstractClass();
-
-    $query->method('condition')
-      ->willReturn($query);
-
-    $query->method('execute')->willReturn([1, 2]);
-
-    return $query;
+    return (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', $storages)
+      ->add(NodeStorageInterface::class, 'getQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', [1, 2, 3])
+      ->add(NodeStorageInterface::class, 'load', $nodes)
+      ->add(NodeStorageInterface::class, 'loadByProperties', [$node1])
+      ->add(NodeStorageInterface::class, 'create', $node1)
+      ->add(NodeStorageInterface::class, 'getLatestRevisionId', '1')
+      ->add(NodeStorageInterface::class, 'loadRevision', $node1)
+      ->add(ConfigEntityStorage::class, 'load', Workflow::class)
+      ->add(Workflow::class, 'getTypePlugin', ContentModeration::class)
+      ->add(ContentModeration::class, 'getConfiguration', [
+        'default_moderation_state' => 'published']
+      );
   }
 
 }

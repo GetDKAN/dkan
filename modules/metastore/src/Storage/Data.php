@@ -113,9 +113,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $this->assertSchema();
 
     $nodes = $this->nodeStorage->loadByProperties([
-      'uuid' => $uuid,
-      'field_data_type' => $this->schemaId,
       'type' => $this->getType(),
+      'uuid' => $uuid,
     ]);
 
     $node = $nodes ? reset($nodes) : FALSE;
@@ -194,7 +193,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @param string $uuid
    *   The dataset identifier.
    *
-   * @return int|string
+   * @return int|null
    *   The node id, if found.
    */
   private function getNidFromUuid(string $uuid) : ?int {
@@ -213,11 +212,15 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * {@inheritDoc}.
    */
-  public function remove(string $id) {
+  public function remove(string $uuid) {
 
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
+    $nid = $this->getNidFromUuid($uuid);
+    $node = $this->nodeStorage->load($nid);
+    if ($node) {
       return $node->delete();
     }
+
+    throw new \Exception("No data with that identifier was found.");
   }
 
   /**
@@ -239,7 +242,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     }
 
     /* @var $node \Drupal\node\NodeInterface */
-    if ($node) {
+    if (isset($node)) {
       return $this->updateExistingNode($node, $data);
     }
     // Create new node.
