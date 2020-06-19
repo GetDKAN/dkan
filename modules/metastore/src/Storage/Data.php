@@ -69,9 +69,15 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $this->assertSchema();
 
+    // Normally the condition should be on moderation_state, not status. Due to
+    // https://www.drupal.org/project/drupal/issues/3025164 we cannot getQuery
+    // on moderation_state as it is not a normal field, but a computed one.
+    // However, currently, it works for dkan_publishing workflow since it only
+    // has a single state considered 'Published'.
     $node_ids = $this->nodeStorage->getQuery()
       ->condition('type', $this->getType())
       ->condition('field_data_type', $this->schemaId)
+      ->condition('status', 1)
       ->execute();
 
     $all = [];
