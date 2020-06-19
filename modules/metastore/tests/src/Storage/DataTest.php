@@ -148,7 +148,7 @@ class DataTest extends TestCase {
       ->getMockForAbstractClass();
 
     $node->method('get')
-      ->willReturn($this->getFieldItemListMock());
+      ->willReturn($this->getFieldItemMock());
 
     $node->method('uuid')
       ->willReturn(1);
@@ -162,27 +162,13 @@ class DataTest extends TestCase {
   /**
    *
    */
-  private function getFieldItemListMock() {
-    $list = $this->getMockBuilder(FieldItemListInterface::class)
-      ->disableOriginalConstructor()
-      ->setMethods(['get'])
-      ->getMockForAbstractClass();
-
-    $list->method('get')->willReturn($this->getFieldItemMock());
-
-    return $list;
-  }
-
-  /**
-   *
-   */
   private function getFieldItemMock() {
     $item = $this->getMockBuilder(FieldItemInterface::class)
       ->disableOriginalConstructor()
-      ->setMethods(['getValue'])
+      ->setMethods(['getString'])
       ->getMockForAbstractClass();
 
-    $item->method('getValue')->willReturn(['value' => json_encode(["name" => "blah"])]);
+    $item->method('getString')->willReturn(json_encode(["name" => "blah"]));
 
     return $item;
   }

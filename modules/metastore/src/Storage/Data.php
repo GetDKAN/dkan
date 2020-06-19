@@ -78,10 +78,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     foreach ($node_ids as $nid) {
       /* @var $node \Drupal\node\NodeInterface */
       $node = $this->nodeStorage->load($nid);
-      $fieldList = $node->get('field_json_metadata');
-      $field = $fieldList->get(0);
-      $data = $field->getValue();
-      $all[] = $data['value'];
+      $all[] = $node->get('field_json_metadata')->getString();
     }
     return $all;
   }
@@ -96,8 +93,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $this->assertSchema();
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      $value = $node->get('field_json_metadata')->get(0)->getValue();
-      return $value['value'];
+      return $node->get('field_json_metadata')->getString();
     }
 
     throw new \Exception("No data with the identifier {$id} was found.");
