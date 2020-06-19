@@ -330,7 +330,7 @@ function dkan_dataset_form_alter(&$form, &$form_state, $form_id) {
 
     // Get langcode for field_format.
     $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_format');
-    $form['field_format'][$field_link_api_langcode]['#description'] = 'Leave blank to auto-detect resource format';
+    $form['field_format'][$field_link_api_langcode]['#description'] = t('Leave blank to auto-detect resource format');
 
     $form['title']['#attributes']['placeholder'] = t('eg. January Gold Prices');
     $form['title']['#required'] = TRUE;
