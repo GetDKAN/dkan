@@ -218,6 +218,26 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Publish an item's update by making its latest revision its default one.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   *
+   * @return string
+   *   Identifier.
+   */
+  public function publish(string $schema_id, string $identifier) {
+    if ($this->objectExists($schema_id, $identifier)) {
+      $this->storage->setSchema($schema_id);
+      return $this->storage->publish($identifier);
+    }
+
+    throw new MissingObjectException("No data with the identifier {$identifier} was found.");
+  }
+
+  /**
    * Implements PUT method.
    *
    * @param string $schema_id
