@@ -131,12 +131,12 @@ class Socrata extends Transform {
     $identifier = $item->identifier;
     $item->identifier = $this->getIdentifier($identifier);
 
-    // Add dummy keyword when keywords are null.
+    // Add a keyword when keywords are null.
     if (empty($item->keyword)) {
       $item->keyword = ['No keywords provided'];
     }
 
-    // Add dummy description if null (looking at you Seattle).
+    // Add a description if null.
     if (empty($item->description)) {
       $item->description = 'No description provided';
     }
