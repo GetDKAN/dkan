@@ -219,8 +219,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     if ($node) {
       return $node->delete();
     }
-
-    throw new \Exception("No data with that identifier was found.");
   }
 
   /**
