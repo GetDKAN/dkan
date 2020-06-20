@@ -193,20 +193,6 @@ class DataTest extends TestCase {
   /**
    *
    */
-  public function testRemoveNotFound() {
-    $entityTypeManager = $this->getEntityTypeManager()
-      ->add(NodeStorageInterface::class, 'load', NULL);
-
-    $data = new Data($entityTypeManager->getMock());
-    $data->setSchema('dataset');
-    $this->expectExceptionMessage('No data with that identifier was found.');
-
-    $data->remove('1');
-  }
-
-  /**
-   *
-   */
   private function setNodeMock($uuid, $moderationState) {
     $jsonMetadataField = (new Chain($this))
       ->add(FieldItemInterface::class, 'getString', '{"foo":"bar"}')
