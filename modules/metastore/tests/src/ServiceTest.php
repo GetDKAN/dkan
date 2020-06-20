@@ -231,6 +231,34 @@ EOF;
   /**
    *
    */
+  public function testPublish() {
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", "1")
+      ->add(Data::class, "publish", "1");
+
+    $service = Service::create($container->getMock());
+    $result = $service->publish('dataset', 1);
+    $this->assertEquals("1", $result);
+  }
+
+  /**
+   *
+   */
+  public function testPublishMissingObjectExpection() {
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", new \Exception());
+
+    $service = Service::create($container->getMock());
+
+    $this->expectException(MissingObjectException::class);
+    $service->publish('dataset', "foobar");
+  }
+
+  /**
+   *
+   */
   public function testDelete() {
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
