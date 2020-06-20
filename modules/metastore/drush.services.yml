@@ -1,0 +1,7 @@
+services:
+  metastore.commands:
+    class: \Drupal\metastore\Drush
+    arguments:
+      - '@dkan.metastore.storage'
+    tags:
+      - { name: drush.command }
