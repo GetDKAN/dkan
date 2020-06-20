@@ -8,7 +8,6 @@ use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\metastore\Storage\Data;
-use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorageInterface;
 use Drupal\workflows\Entity\Workflow;
@@ -268,7 +267,8 @@ class DataTest extends TestCase {
       ->add(ConfigEntityStorage::class, 'load', Workflow::class)
       ->add(Workflow::class, 'getTypePlugin', ContentModeration::class)
       ->add(ContentModeration::class, 'getConfiguration', [
-        'default_moderation_state' => 'published']
+        'default_moderation_state' => 'published',
+      ]
       );
   }
 

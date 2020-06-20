@@ -259,7 +259,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $new_data = json_encode($data);
     $node->field_json_metadata = $new_data;
 
-    // Dkan publishing's default moderation state
+    // Dkan publishing's default moderation state.
     $node->set('moderation_state', $this->getDefaultModerationState());
 
     $node->save();
@@ -376,6 +376,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * Return the default moderation state of our custom dkan_publishing workflow.
    *
    * @return string
+   *   Either 'draft' or 'published'.
    */
   private function getDefaultModerationState() {
     return $this->entityTypeManager->getStorage('workflow')
