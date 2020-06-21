@@ -274,4 +274,17 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     return $now->format(DateTime::ATOM);
   }
 
+  /**
+   * Return the default moderation state of our custom dkan_publishing workflow.
+   *
+   * @return string
+   *   Either 'draft' or 'published'.
+   */
+  private function getDefaultModerationState() {
+    return $this->entityTypeManager->getStorage('workflow')
+      ->load('dkan_publishing')
+      ->getTypePlugin()
+      ->getConfiguration()['default_moderation_state'];
+  }
+
 }
