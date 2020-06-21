@@ -75,7 +75,7 @@ class WebServiceApiDocsTest extends TestCase {
     $mockChain = new Chain($this);
     $mockChain->add(ContainerInterface::class, 'get',
       (new Options)->add('common.docs', Docs::class)
-        ->add('metastore.service', Service::class)
+        ->add('dkan.metastore.service', Service::class)
         ->add('plugin.manager.common.data_modifier', DataModifierManager::class)
         ->index(0)
     )
