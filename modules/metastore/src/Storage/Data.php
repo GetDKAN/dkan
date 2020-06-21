@@ -113,6 +113,26 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   }
 
   /**
+   * Get the node id from the dataset identifier.
+   *
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return int|null
+   *   The node id, if found.
+   */
+  private function getNidFromUuid(string $uuid) : ?int {
+
+    $nids = $this->nodeStorage->getQuery()
+      ->condition('uuid', $uuid)
+      ->condition('type', $this->getType())
+      ->condition('field_data_type', $this->schemaId)
+      ->execute();
+
+    return $nids ? (int) reset($nids) : NULL;
+  }
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}.
