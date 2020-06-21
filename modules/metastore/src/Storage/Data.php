@@ -100,40 +100,40 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * {@inheritDoc}.
    */
-  public function retrieve(string $id): ?string {
+  public function retrieve(string $uuid) : ?string {
 
     $this->assertSchema();
 
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
+    if (FALSE !== ($node = $this->getNodeByUuid($uuid))) {
       $value = $node->get('field_json_metadata')->get(0)->getValue();
       return $value['value'];
     }
 
-    throw new \Exception("No data with the identifier {$id} was found.");
+    throw new \Exception("No data with the identifier {$uuid} was found.");
   }
 
   /**
    * Publish the latest version of a data node.
    *
-   * @param string $id
+   * @param string $uuid
    *   Identifier.
    *
    * @return string
    *   Identifier.
    */
-  public function publish(string $id) : string {
+  public function publish(string $uuid) : string {
 
     $this->assertSchema();
     if ($this->schemaId !== 'dataset') {
       throw new \Exception("Publishing currently only implemented for datasets.");
     }
 
-    $node = $this->getNodeLatestRevision($id);
+    $node = $this->getNodeLatestRevision($uuid);
 
     if ($node && $node->get('moderation_state') !== 'published') {
       $node->set('moderation_state', 'published');
       $node->save();
-      return $id;
+      return $uuid;
     }
 
     throw new \Exception("No data with that identifier was found.");
@@ -200,9 +200,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * {@inheritDoc}.
    */
-  public function remove(string $id) {
+  public function remove(string $uuid) {
 
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
+    if (FALSE !== ($node = $this->getNodeByUuid($uuid))) {
       return $node->delete();
     }
   }
@@ -212,17 +212,17 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * {@inheritDoc}.
    */
-  public function store($data, string $id = NULL): string {
+  public function store($data, string $uuid = NULL): string {
 
     $this->assertSchema();
 
     $data = json_decode($data);
     $data = $this->filterHtml($data);
 
-    $id = (!$id && isset($data->identifier)) ? $data->identifier : $id;
+    $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
 
-    if ($id) {
-      $node = $this->getNodeByUuid($id);
+    if ($uuid) {
+      $node = $this->getNodeByUuid($uuid);
     }
 
     /* @var $node \Drupal\node\NodeInterface */
@@ -231,7 +231,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     }
     // Create new node.
     else {
-      return $this->createNewNode($id, $data);
+      return $this->createNewNode($uuid, $data);
     }
   }
 
@@ -254,14 +254,14 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Private.
    */
-  private function createNewNode($id, $data) {
+  private function createNewNode($uuid, $data) {
     $title = isset($data->title) ? $data->title : $data->name;
     $node = $this->nodeStorage
       ->create(
         [
           'title' => $title,
           'type' => 'data',
-          'uuid' => $id,
+          'uuid' => $uuid,
           'field_data_type' => $this->schemaId,
           'field_json_metadata' => json_encode($data),
         ]
