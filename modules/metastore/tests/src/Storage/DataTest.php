@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\common\Unit\Storage;
 
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -23,7 +24,7 @@ class DataTest extends TestCase {
    *
    */
   public function testRetrieveAll() {
-    $store = new Data($this->getNodeStorageMock());
+    $store = new Data($this->getEntityTypeManagerMock());
     $store->setSchema('dataset');
     $all = $store->retrieveAll();
 
@@ -37,7 +38,7 @@ class DataTest extends TestCase {
    */
   public function testRetrieve() {
     $this->node = $this->getNodeMock();
-    $store = new Data($this->getNodeStorageMock());
+    $store = new Data($this->getEntityTypeManagerMock());
     $store->setSchema('dataset');
     $obj = $store->retrieve(1);
 
@@ -53,7 +54,7 @@ class DataTest extends TestCase {
     $this->node = $this->getNodeMock();
     $object = '{"name":"blah"}';
 
-    $store = new Data($this->getNodeStorageMock());
+    $store = new Data($this->getEntityTypeManagerMock());
     $store->setSchema('dataset');
     $id = $store->store($object, 1);
 
@@ -67,7 +68,7 @@ class DataTest extends TestCase {
     $this->node = NULL;
     $object = '{"name":"blah"}';
 
-    $store = new Data($this->getNodeStorageMock());
+    $store = new Data($this->getEntityTypeManagerMock());
     $store->setSchema('dataset');
     $id = $store->store($object, 1);
 
@@ -79,7 +80,7 @@ class DataTest extends TestCase {
    */
   public function testRemove() {
     $this->node = $this->getNodeMock();
-    $store = new Data($this->getNodeStorageMock());
+    $store = new Data($this->getEntityTypeManagerMock());
     $store->setSchema('dataset');
     $removed = $store->remove(1);
 
@@ -91,7 +92,7 @@ class DataTest extends TestCase {
    */
   public function testRetrieveAllException() {
     $this->expectExceptionMessage("Data schema id not set.");
-    $store = new Data($this->getNodeStorageMock());
+    $store = new Data($this->getEntityTypeManagerMock());
     $store->retrieveAll();
   }
 
@@ -100,7 +101,7 @@ class DataTest extends TestCase {
    */
   public function testRetrieveException() {
     $this->expectExceptionMessage("Data schema id not set.");
-    $store = new Data($this->getNodeStorageMock());
+    $store = new Data($this->getEntityTypeManagerMock());
     $store->retrieve(1);
   }
 
@@ -110,8 +111,26 @@ class DataTest extends TestCase {
   public function testStoreException() {
     $this->expectExceptionMessage("Data schema id not set.");
     $object = '{"name":"blah"}';
-    $store = new Data($this->getNodeStorageMock());
+    $store = new Data($this->getEntityTypeManagerMock());
     $store->store($object, 1);
+  }
+
+  /**
+   *
+   */
+  /**
+   *
+   */
+  private function getEntityTypeManagerMock() {
+    $entityTypeManager = $this->getMockBuilder(EntityTypeManager::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getStorage'])
+      ->getMockForAbstractClass();
+
+    $entityTypeManager->method('getStorage')
+      ->willReturn($this->getNodeStorageMock());
+
+    return $entityTypeManager;
   }
 
   /**

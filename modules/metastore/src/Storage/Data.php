@@ -7,13 +7,20 @@ use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
-use Drupal\node\NodeStorageInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 use HTMLPurifier;
 
 /**
  * Data.
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
+
+  /**
+   * Entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   */
+  private $entityTypeManager;
 
   /**
    * Node storage service.
@@ -32,11 +39,12 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Constructor.
    *
-   * @param \Drupal\node\NodeStorageInterface $nodeStorage
-   *   Injected node storage service.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   Injected entity type manager.
    */
-  public function __construct(NodeStorageInterface $nodeStorage) {
-    $this->nodeStorage = $nodeStorage;
+  public function __construct(EntityTypeManager $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
+    $this->nodeStorage = $this->entityTypeManager->getStorage('node');
   }
 
   /**
