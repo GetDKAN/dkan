@@ -113,6 +113,33 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   }
 
   /**
+   * Publish the latest version of a data node.
+   *
+   * @param string $id
+   *   Identifier.
+   *
+   * @return string
+   *   Identifier.
+   */
+  public function publish(string $id) : string {
+
+    $this->assertSchema();
+    if ($this->schemaId !== 'dataset') {
+      throw new \Exception("Publishing currently only implemented for datasets.");
+    }
+
+    $node = $this->getNodeLatestRevision($id);
+
+    if ($node && $node->get('moderation_state') !== 'published') {
+      $node->set('moderation_state', 'published');
+      $node->save();
+      return $id;
+    }
+
+    throw new \Exception("No data with that identifier was found.");
+  }
+
+  /**
    * Load a Data node's published revision.
    *
    * @param string $uuid
