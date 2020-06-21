@@ -230,8 +230,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function publish(string $schema_id, string $identifier) {
     if ($this->objectExists($schema_id, $identifier)) {
-      $this->storage->setSchema($schema_id);
-      return $this->storage->publish($identifier);
+      return $this->storage->setSchema($schema_id)->publish($identifier);
     }
 
     throw new MissingObjectException("No data with the identifier {$identifier} was found.");

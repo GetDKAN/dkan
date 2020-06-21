@@ -47,6 +47,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function setSchema($schema_id) {
     $this->schemaId = $schema_id;
+    return $this;
   }
 
   /**
