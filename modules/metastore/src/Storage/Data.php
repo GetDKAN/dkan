@@ -113,6 +113,27 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   }
 
   /**
+   * Load a node's latest revision, given a dataset's uuid.
+   *
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *   The node's latest revision, if found.
+   */
+  private function getNodeLatestRevision(string $uuid) {
+
+    $nid = $this->getNidFromUuid($uuid);
+
+    if ($nid) {
+      $revision_id = $this->nodeStorage->getLatestRevisionId($nid);
+      return $this->nodeStorage->loadRevision($revision_id);
+    }
+
+    return NULL;
+  }
+
+  /**
    * Get the node id from the dataset identifier.
    *
    * @param string $uuid
