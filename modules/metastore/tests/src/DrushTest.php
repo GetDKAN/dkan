@@ -18,7 +18,7 @@ class DrushTest extends TestCase {
    */
   public function testPublish() {
     $data = (new Chain($this))
-      ->add(Data::class, 'publish', NULL)
+      ->add(Data::class, 'publish', '12345')
       ->getMock();
 
     $loggerChain = (new Chain($this))
