@@ -108,12 +108,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $this->assertSchema();
 
-    $nodes = $this->nodeStorage->loadByProperties([
-      'type' => $this->getType(),
-      'uuid' => $uuid,
-    ]);
-
-    $node = $nodes ? reset($nodes) : FALSE;
+    $node = $this->getNodePublishedRevision($uuid);
 
     if ($node && $node->get('moderation_state')->getString() == 'published') {
       return $node->get('field_json_metadata')->getString();
@@ -131,7 +126,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $this->assertSchema();
 
-    if (FALSE !== ($node = $this->getNodeByUuid($uuid))) {
+    $node = $this->getNodePublishedRevision($uuid);
+    if ($node) {
       return $node->get('field_json_metadata')->getString();
     }
 
@@ -228,7 +224,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function remove(string $uuid) {
 
-    if (FALSE !== ($node = $this->getNodeByUuid($uuid))) {
+    $node = $this->getNodeLatestRevision($uuid);
+    if ($node) {
       return $node->delete();
     }
   }
@@ -248,7 +245,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
 
     if ($uuid) {
-      $node = $this->getNodeByUuid($uuid);
+      $node = $this->getNodeLatestRevision($uuid);
     }
 
     if (isset($node) && $node instanceof NodeInterface) {
@@ -305,25 +302,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   private function getType() {
     return 'data';
-  }
-
-  /**
-   * Fetch node id of a current type given uuid.
-   *
-   * @return \Drupal\node\Entity\Node|bool
-   *   Returns false if no nodes match.
-   */
-  private function getNodeByUuid($uuid) {
-
-    $nodes = $this->nodeStorage->loadByProperties(
-      [
-        'type' => $this->getType(),
-        'uuid' => $uuid,
-      ]
-    );
-    // Uuid should be universally unique and always return
-    // a single node.
-    return current($nodes);
   }
 
   /**
