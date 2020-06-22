@@ -264,10 +264,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->field_data_type = $this->schemaId;
     $new_data = json_encode($data);
     $node->field_json_metadata = $new_data;
-    // Create a new revision.
-    $node->setNewRevision(TRUE);
-    $node->isDefaultRevision(TRUE);
-    $node->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
+
+    // Dkan publishing's default moderation state.
+    $node->set('moderation_state', $this->getDefaultModerationState());
 
     $node->save();
     return $node->uuid();
