@@ -131,7 +131,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       return $node->get('field_json_metadata')->getString();
     }
 
-    throw new \Exception("No data with the identifier {$uuid} was found.");
+    throw new \Exception("No data with that identifier was found.");
   }
 
   /**
