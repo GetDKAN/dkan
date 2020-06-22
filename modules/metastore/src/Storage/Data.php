@@ -96,6 +96,33 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   }
 
   /**
+   * Retrieve the json metadata from a node only if it is published.
+   *
+   * @param string $uuid
+   *   The identifier.
+   *
+   * @return string|null
+   *   The node's json metadata, or NULL if the node was not found.
+   */
+  public function retrievePublished(string $uuid) : ?string {
+
+    $this->assertSchema();
+
+    $nodes = $this->nodeStorage->loadByProperties([
+      'type' => $this->getType(),
+      'uuid' => $uuid,
+    ]);
+
+    $node = $nodes ? reset($nodes) : FALSE;
+
+    if ($node && $node->get('moderation_state')->getString() == 'published') {
+      return $node->get('field_json_metadata')->getString();
+    }
+
+    throw new \Exception("No data with that identifier was found.");
+  }
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}.

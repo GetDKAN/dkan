@@ -135,8 +135,8 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get($schema_id, $identifier): string {
-    $data = $this->getEngine($schema_id)
-      ->get($identifier);
+    $data = $this->storage->setSchema($schema_id)
+      ->retrievePublished($identifier);
     if (!empty($this->plugins)) {
       $data = $this->modifyData($schema_id, $data);
     }
