@@ -7,13 +7,21 @@ use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
-use Drupal\node\NodeStorageInterface;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\node\NodeInterface;
 use HTMLPurifier;
 
 /**
  * Data.
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
+
+  /**
+   * Entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   */
+  private $entityTypeManager;
 
   /**
    * Node storage service.
@@ -32,11 +40,12 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Constructor.
    *
-   * @param \Drupal\node\NodeStorageInterface $nodeStorage
-   *   Injected node storage service.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   Injected entity type manager.
    */
-  public function __construct(NodeStorageInterface $nodeStorage) {
-    $this->nodeStorage = $nodeStorage;
+  public function __construct(EntityTypeManager $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
+    $this->nodeStorage = $this->entityTypeManager->getStorage('node');
   }
 
   /**
@@ -47,6 +56,18 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function setSchema($schema_id) {
     $this->schemaId = $schema_id;
+    return $this;
+  }
+
+  /**
+   * Assert schema is set.
+   *
+   * @throws \Exception
+   */
+  private function assertSchema() {
+    if (!isset($this->schemaId)) {
+      throw new \Exception("Data schema id not set.");
+    }
   }
 
   /**
@@ -56,9 +77,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function retrieveAll(): array {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieveAll().");
-    }
+    $this->assertSchema();
 
     $node_ids = $this->nodeStorage->getQuery()
       ->condition('type', $this->getType())
@@ -69,31 +88,33 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     foreach ($node_ids as $nid) {
       /* @var $node \Drupal\node\NodeInterface */
       $node = $this->nodeStorage->load($nid);
-      $fieldList = $node->get('field_json_metadata');
-      $field = $fieldList->get(0);
-      $data = $field->getValue();
-      $all[] = $data['value'];
+      if ($node->get('moderation_state')->getString() === 'published') {
+        $all[] = $node->get('field_json_metadata')->getString();
+      }
     }
     return $all;
   }
 
   /**
-   * Inherited.
+   * Retrieve the json metadata from a node only if it is published.
    *
-   * {@inheritDoc}.
+   * @param string $uuid
+   *   The identifier.
+   *
+   * @return string|null
+   *   The node's json metadata, or NULL if the node was not found.
    */
-  public function retrieve(string $id): ?string {
+  public function retrievePublished(string $uuid) : ?string {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieve().");
+    $this->assertSchema();
+
+    $node = $this->getNodePublishedRevision($uuid);
+
+    if ($node && $node->get('moderation_state')->getString() == 'published') {
+      return $node->get('field_json_metadata')->getString();
     }
 
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      $value = $node->get('field_json_metadata')->get(0)->getValue();
-      return $value['value'];
-    }
-
-    throw new \Exception("No data with the identifier {$id} was found.");
+    throw new \Exception("No data with that identifier was found.");
   }
 
   /**
@@ -101,9 +122,111 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * {@inheritDoc}.
    */
-  public function remove(string $id) {
+  public function retrieve(string $uuid) : ?string {
 
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
+    $this->assertSchema();
+
+    $node = $this->getNodePublishedRevision($uuid);
+    if ($node) {
+      return $node->get('field_json_metadata')->getString();
+    }
+
+    throw new \Exception("No data with that identifier was found.");
+  }
+
+  /**
+   * Publish the latest version of a data node.
+   *
+   * @param string $uuid
+   *   Identifier.
+   *
+   * @return string
+   *   Identifier.
+   */
+  public function publish(string $uuid) : string {
+
+    $this->assertSchema();
+    if ($this->schemaId !== 'dataset') {
+      throw new \Exception("Publishing currently only implemented for datasets.");
+    }
+
+    $node = $this->getNodeLatestRevision($uuid);
+
+    if ($node && $node->get('moderation_state') !== 'published') {
+      $node->set('moderation_state', 'published');
+      $node->save();
+      return $uuid;
+    }
+
+    throw new \Exception("No data with that identifier was found.");
+  }
+
+  /**
+   * Load a Data node's published revision.
+   *
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *   The node's published revision, if found.
+   */
+  private function getNodePublishedRevision(string $uuid) {
+
+    $nid = $this->getNidFromUuid($uuid);
+
+    return $nid ? $this->nodeStorage->load($nid) : NULL;
+  }
+
+  /**
+   * Load a node's latest revision, given a dataset's uuid.
+   *
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface|null
+   *   The node's latest revision, if found.
+   */
+  private function getNodeLatestRevision(string $uuid) {
+
+    $nid = $this->getNidFromUuid($uuid);
+
+    if ($nid) {
+      $revision_id = $this->nodeStorage->getLatestRevisionId($nid);
+      return $this->nodeStorage->loadRevision($revision_id);
+    }
+
+    return NULL;
+  }
+
+  /**
+   * Get the node id from the dataset identifier.
+   *
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return int|null
+   *   The node id, if found.
+   */
+  private function getNidFromUuid(string $uuid) : ?int {
+
+    $nids = $this->nodeStorage->getQuery()
+      ->condition('uuid', $uuid)
+      ->condition('type', $this->getType())
+      ->condition('field_data_type', $this->schemaId)
+      ->execute();
+
+    return $nids ? (int) reset($nids) : NULL;
+  }
+
+  /**
+   * Inherited.
+   *
+   * {@inheritDoc}.
+   */
+  public function remove(string $uuid) {
+
+    $node = $this->getNodeLatestRevision($uuid);
+    if ($node) {
       return $node->delete();
     }
   }
@@ -113,28 +236,25 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * {@inheritDoc}.
    */
-  public function store($data, string $id = NULL): string {
+  public function store($data, string $uuid = NULL): string {
 
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in store().");
-    }
+    $this->assertSchema();
 
     $data = json_decode($data);
     $data = $this->filterHtml($data);
 
-    $id = (!$id && isset($data->identifier)) ? $data->identifier : $id;
+    $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
 
-    if ($id) {
-      $node = $this->getNodeByUuid($id);
+    if ($uuid) {
+      $node = $this->getNodeLatestRevision($uuid);
     }
 
-    /* @var $node \Drupal\node\NodeInterface */
-    if ($node) {
+    if (isset($node) && $node instanceof NodeInterface) {
       return $this->updateExistingNode($node, $data);
     }
     // Create new node.
     else {
-      return $this->createNewNode($id, $data);
+      return $this->createNewNode($uuid, $data);
     }
   }
 
@@ -145,10 +265,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->field_data_type = $this->schemaId;
     $new_data = json_encode($data);
     $node->field_json_metadata = $new_data;
-    // Create a new revision.
-    $node->setNewRevision(TRUE);
-    $node->isDefaultRevision(TRUE);
-    $node->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
+
+    // Dkan publishing's default moderation state.
+    $node->set('moderation_state', $this->getDefaultModerationState());
 
     $node->save();
     return $node->uuid();
@@ -157,14 +276,14 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Private.
    */
-  private function createNewNode($id, $data) {
+  private function createNewNode($uuid, $data) {
     $title = isset($data->title) ? $data->title : $data->name;
     $node = $this->nodeStorage
       ->create(
         [
           'title' => $title,
           'type' => 'data',
-          'uuid' => $id,
+          'uuid' => $uuid,
           'field_data_type' => $this->schemaId,
           'field_json_metadata' => json_encode($data),
         ]
@@ -183,25 +302,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   private function getType() {
     return 'data';
-  }
-
-  /**
-   * Fetch node id of a current type given uuid.
-   *
-   * @return \Drupal\node\Entity\Node|bool
-   *   Returns false if no nodes match.
-   */
-  private function getNodeByUuid($uuid) {
-
-    $nodes = $this->nodeStorage->loadByProperties(
-      [
-        'type' => $this->getType(),
-        'uuid' => $uuid,
-      ]
-    );
-    // Uuid should be universally unique and always return
-    // a single node.
-    return current($nodes);
   }
 
   /**
@@ -258,6 +358,19 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   private function formattedTimestamp() : string {
     $now = new DateTime('now');
     return $now->format(DateTime::ATOM);
+  }
+
+  /**
+   * Return the default moderation state of our custom dkan_publishing workflow.
+   *
+   * @return string
+   *   Either 'draft' or 'published'.
+   */
+  private function getDefaultModerationState() {
+    return $this->entityTypeManager->getStorage('workflow')
+      ->load('dkan_publishing')
+      ->getTypePlugin()
+      ->getConfiguration()['default_moderation_state'];
   }
 
 }

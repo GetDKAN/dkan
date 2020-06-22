@@ -4,6 +4,7 @@ services:
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.sae_factory'
+      - '@dkan.metastore.storage'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
   dkan.metastore.sae_factory:
@@ -20,7 +21,7 @@ services:
   dkan.metastore.storage:
     class: \Drupal\metastore\Storage\Data
     arguments:
-      - '@dkan.common.node_storage'
+      - '@entity_type.manager'
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
@@ -49,6 +50,7 @@ services:
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.sae_factory'
+      - '@dkan.metastore.storage'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
   metastore.sae_factory:
@@ -65,7 +67,7 @@ services:
   metastore.storage:
     class: \Drupal\metastore\Storage\Data
     arguments:
-      - '@dkan.common.node_storage'
+      - '@entity_type.manager'
   metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:

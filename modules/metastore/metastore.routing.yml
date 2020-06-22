@@ -48,6 +48,16 @@ metastore.1.metastore.schemas.id.items.id:
   requirements:
     _permission: 'access content'
 
+metastore.1.metastore.schemas.id.items.id.publish:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/publish'
+  methods: [PUT]
+  defaults:
+    { _controller: '\Drupal\metastore\WebServiceApi::publish'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 metastore.1.metastore.schemas.id.items.id.put:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [PUT]

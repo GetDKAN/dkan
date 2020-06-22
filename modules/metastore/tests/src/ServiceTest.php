@@ -9,6 +9,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Storage\Data;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -58,8 +59,8 @@ class ServiceTest extends TestCase {
    */
   public function testGet() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", json_encode("blah"));
+      ->add(Data::class, "setSchema", Data::class)
+      ->add(Data::class, "retrievePublished", json_encode("blah"));
 
     $service = Service::create($container->getMock());
 
@@ -230,6 +231,34 @@ EOF;
   /**
    *
    */
+  public function testPublish() {
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", "1")
+      ->add(Data::class, "publish", "1");
+
+    $service = Service::create($container->getMock());
+    $result = $service->publish('dataset', 1);
+    $this->assertEquals("1", $result);
+  }
+
+  /**
+   *
+   */
+  public function testPublishMissingObjectExpection() {
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", new \Exception());
+
+    $service = Service::create($container->getMock());
+
+    $this->expectException(MissingObjectException::class);
+    $service->publish('dataset', "foobar");
+  }
+
+  /**
+   *
+   */
   public function testDelete() {
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
@@ -271,6 +300,7 @@ EOF;
     $options = (new Options())
       ->add('metastore.schema_retriever', SchemaRetriever::class)
       ->add('metastore.sae_factory', Sae::class)
+      ->add('dkan.metastore.storage', Data::class)
       ->index(0);
 
     return (new Chain($this))

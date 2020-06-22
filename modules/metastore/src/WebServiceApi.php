@@ -42,7 +42,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new WebServiceApi(
       $container->get('request_stack'),
-      $container->get('metastore.service')
+      $container->get('dkan.metastore.service')
     );
   }
 
@@ -140,6 +140,30 @@ class WebServiceApi implements ContainerInjectionInterface {
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
         "identifier" => $identifier,
       ], 201);
+    }
+    catch (MetastoreException $e) {
+      return $this->getResponseFromException($e, $e->httpCode());
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 400);
+    }
+  }
+
+  /**
+   * Publish the latest revision of a dataset.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function publish(string $schema_id, string $identifier) {
+    try {
+      $this->service->publish($schema_id, $identifier);
+      return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
     }
     catch (MetastoreException $e) {
       return $this->getResponseFromException($e, $e->httpCode());
