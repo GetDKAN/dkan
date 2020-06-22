@@ -8,6 +8,7 @@ use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\node\NodeInterface;
 use HTMLPurifier;
 
 /**
@@ -221,8 +222,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       $node = $this->getNodeByUuid($uuid);
     }
 
-    /* @var $node \Drupal\node\NodeInterface */
-    if ($node) {
+    if (isset($node) && $node instanceof NodeInterface) {
       return $this->updateExistingNode($node, $data);
     }
     // Create new node.
