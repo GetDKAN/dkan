@@ -165,6 +165,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * Load a Data node's published revision.
    *
    * @param string $uuid
+   *   The dataset identifier.
    *
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The node's published revision, if found.
@@ -173,7 +174,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $nid = $this->getNidFromUuid($uuid);
 
-    return $nid? $this->nodeStorage->load($nid) : NULL;
+    return $nid ? $this->nodeStorage->load($nid) : NULL;
   }
 
   /**
