@@ -6,7 +6,6 @@ use Drupal\Core\Database\Connection;
 use Dkan\Datastore\Resource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Psr\Log\LogLevel;
 
 /**
  * Database storage object.
@@ -90,8 +89,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       $this->log(
         'datastore_import',
         "Error decoding id:@id, data: @data.",
-        ['@id' => $id, '@data' => $data],
-        LogLevel::ERROR
+        ['@id' => $id, '@data' => $data]
       );
       throw new \Exception("Import for {$id} error when decoding {$data}");
     }
@@ -99,8 +97,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       $this->log(
         'datastore_import',
         "Array expected while decoding id:@id, data: @data.",
-        ['@id' => $id, '@data' => $data],
-        LogLevel::ERROR
+        ['@id' => $id, '@data' => $data]
       );
       throw new \Exception("Import for {$id} returned an error when preparing table header: {$data}");
     }
