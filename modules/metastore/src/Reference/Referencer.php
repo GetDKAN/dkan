@@ -106,15 +106,14 @@ class Referencer {
       return $uuid;
     }
     else {
-      if ($this->loggerService) {
-        $this->loggerService->get('value_referencer')->error(
-          'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
-          [
-            '@property_id' => $property_id,
-            '@value' => var_export($value, TRUE),
-          ]
-        );
-      }
+      $this->log(
+        'value_referencer',
+        'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
+        [
+          '@property_id' => $property_id,
+          '@value' => var_export($value, TRUE),
+        ]
+      );
       return NULL;
     }
   }
