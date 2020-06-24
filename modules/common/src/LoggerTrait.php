@@ -9,6 +9,17 @@ use Psr\Log\LogLevel;
  * LoggerTrait.
  */
 trait LoggerTrait {
+
+  /**
+   * The logger channel name, with a default value of 'dkan'.
+   *
+   * Classes using this trait cannot redeclare this property, but are free to
+   * override its value anywhere, e.g. in a constructor.
+   *
+   * @var string
+   */
+  private $loggerName = 'dkan';
+
   /**
    * The logger factory service.
    *
