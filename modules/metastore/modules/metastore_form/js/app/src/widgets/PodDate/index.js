@@ -18,8 +18,8 @@ export default ({
   className = "dc-pod-date"
 }) => {
   const date = formData ? dateToValues(formData) : [];
-  let value = '';
   const { title, description } = schema;
+  const { $id } = idSchema;
   const startDate = useMemo(() => (minDate || new Date(1900, 0, 1)), [minDate])
   const endDate = useMemo(() => (maxDate || new Date()), [maxDate]);
   const firstYear = useMemo(() => startDate.getFullYear(), [startDate]);
@@ -31,6 +31,7 @@ export default ({
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
   const [day, setDay] = useState('');
+  const [value, setValue] = useState('');
 
   useEffect(() => {
     if (date) {
@@ -40,13 +41,9 @@ export default ({
       if (date[1]) {
         setMonth(Pad(date[1]))
       }
-      if (date[3]) {
-        setDay(Pad(date[3]))
+      if (date[2]) {
+        setDay(Pad(date[2]))
       }
-    } else if (date === '') {
-      setYear('')
-      setMonth('')
-      setDay('')
     }
   }, [date]);
 
@@ -64,7 +61,6 @@ export default ({
       if (field === 'day') {
         setDay(inpValue)
       }
-      value = 'test';
     }
   );
 
@@ -78,53 +74,47 @@ export default ({
     if (day) {
       date[2] = day;
     }
+    setValue(date.join('-'))
   }, [year, month, day]);
 
-  useEffect(() => {
-    value = date.join('-');
-  }, [date]);
-
-  console.log('d ', date);
-  console.log('v ', value);
+  console.log(idSchema);
 
   return (
     <div className={`${className} form-group field`}>
-      <label className="control-label" htmlFor={idSchema}>{title}</label>
-      <div className="dc-field-label" id={`${idSchema}__description`}>{description}</div>
+      <label className="control-label" htmlFor={$id}>{title}</label>
+      <div className="dc-field-label" id={`${$id}__description`}>{description}</div>
       <div className="dc-select-group form-inline">
-
-          <Select
-            key='year'
-            label={yearLabel}
-            items={yearRange}
-            value={year}
-            onChange={handleChange}
-            name='year'
-            renderOption={null}
-            generateValue={null}
-            required={required}
-          />
-          <Select
-            key='month'
-            label={monthLabel}
-            items={monthRange}
-            value={month}
-            onChange={handleChange}
-            name='month'
-            renderOption={monthRange ? v => Pad(v) : null}
-            generateValue={monthRange ? v => Pad(v) : null}
-          />
-          <Select
-            key='day'
-            label={dayLabel}
-            items={dayRange}
-            value={day}
-            onChange={handleChange}
-            name='day'
-            renderOption={dayRange ? v => Pad(v) : null}
-            generateValue={dayRange ? v => Pad(v) : null}
-          />
-
+        <Select
+          key='year'
+          label={yearLabel}
+          items={yearRange}
+          value={year}
+          onChange={handleChange}
+          name='year'
+          renderOption={null}
+          generateValue={null}
+        />
+        <Select
+          key='month'
+          label={monthLabel}
+          items={monthRange}
+          value={month}
+          onChange={handleChange}
+          name='month'
+          renderOption={monthRange ? v => Pad(v) : null}
+          generateValue={monthRange ? v => Pad(v) : null}
+        />
+        <Select
+          key='day'
+          label={dayLabel}
+          items={dayRange}
+          value={day}
+          onChange={handleChange}
+          name='day'
+          renderOption={dayRange ? v => Pad(v) : null}
+          generateValue={dayRange ? v => Pad(v) : null}
+        />
+        <input value={value} id={$id} required={required}/>
       </div>
     </div>
   );
