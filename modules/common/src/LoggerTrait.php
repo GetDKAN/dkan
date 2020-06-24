@@ -46,4 +46,34 @@ trait LoggerTrait {
     }
   }
 
+  /**
+   * Private.
+   */
+  private function error(string $message, array $context = []) {
+
+    if ($this->loggerService) {
+      $this->loggerService->get($this->loggerName)->error($message, $context);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function warning(string $message, array $context = []) {
+
+    if ($this->loggerService) {
+      $this->loggerService->get($this->loggerName)->warning($message, $context);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function notice(string $message, array $context = []) {
+
+    if ($this->loggerService) {
+      $this->loggerService->get($this->loggerName)->notice($message, $context);
+    }
+  }
+
 }
