@@ -3,7 +3,7 @@ import Select from "./Select";
 import { range, dateToValues, Pad } from "./utils";
 
 export default ({
-  formContext,
+  onChange,
   schema,
   name,
   uiSchema,
@@ -17,7 +17,7 @@ export default ({
   dayLabel = "Day",
   className = "dc-pod-date"
 }) => {
-  const date = formData ? dateToValues(formData) : [];
+  const date = formData ? dateToValues(formData) : ['', '', ''];
   const { title, description } = schema;
   const { $id } = idSchema;
   const startDate = useMemo(() => (minDate || new Date(1900, 0, 1)), [minDate])
@@ -31,53 +31,65 @@ export default ({
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
   const [day, setDay] = useState('');
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(date.join('-'));
+  console.log('value: ', value);
 
-  useEffect(() => {
-    if (date) {
-      if (date[0]) {
-        setYear(date[0])
-      }
-      if (date[1]) {
-        setMonth(Pad(date[1]))
-      }
-      if (date[2]) {
-        setDay(Pad(date[2]))
-      }
-    }
-  }, [date]);
+  // useEffect(() => {
+  //   if (date) {
+  //     if (date[0]) {
+  //       setYear(date[0])
+  //     }
+  //     if (date[1]) {
+  //       setMonth(Pad(date[1]))
+  //     }
+  //     if (date[2]) {
+  //       setDay(Pad(date[2]))
+  //     }
+  //   }
+  // }, [date]);
 
   const handleChange = useCallback(
     e => {
       const inpValue = e.target.value;
       const field  = e.target.name;
-
+      console.log(inpValue);
       if (field === 'year') {
         setYear(inpValue)
+        date[0] = inpValue
+        date[1] = date[1]
+        date[2] = date[2]
       }
       if (field === 'month') {
         setMonth(inpValue)
+        date[0] = date[0]
+        date[2] = date[2]
+        date[1] = inpValue
       }
       if (field === 'day') {
         setDay(inpValue)
+        date[0] = date[0]
+        date[1] = date[1]
+        date[2] = inpValue
       }
+      setValue(date.join('-'))
+      onChange(value);
+      console.log(date);
+      console.log(date[0]);
     }
   );
 
-  useEffect(() => {
-    if (year) {
-      date[0] = year;
-    }
-    if (month) {
-      date[1] = month;
-    }
-    if (day) {
-      date[2] = day;
-    }
-    setValue(date.join('-'))
-  }, [year, month, day]);
+  // useEffect(() => {
+  //   if (year) {
+  //     date[0] = year;
+  //   }
+  //   if (month) {
+  //     date[1] = month;
+  //   }
+  //   if (day) {
+  //     date[2] = day;
+  //   }
 
-  console.log(idSchema);
+  // }, [year, month, day]);
 
   return (
     <div className={`${className} form-group field`}>
@@ -88,7 +100,7 @@ export default ({
           key='year'
           label={yearLabel}
           items={yearRange}
-          value={year}
+          value={date[0]}
           onChange={handleChange}
           name='year'
           renderOption={null}
@@ -98,7 +110,7 @@ export default ({
           key='month'
           label={monthLabel}
           items={monthRange}
-          value={month}
+          value={date[1]}
           onChange={handleChange}
           name='month'
           renderOption={monthRange ? v => Pad(v) : null}
@@ -108,7 +120,7 @@ export default ({
           key='day'
           label={dayLabel}
           items={dayRange}
-          value={day}
+          value={date[2]}
           onChange={handleChange}
           name='day'
           renderOption={dayRange ? v => Pad(v) : null}
