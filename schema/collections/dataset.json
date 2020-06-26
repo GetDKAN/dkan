@@ -165,10 +165,6 @@
           "type": "string",
           "description": "Description of the organization."
         },
-        "identifier": {
-          "type": "string",
-          "title": "Identifier"
-        },
         "image": {
           "title": "Image",
           "description": "Image or logo for the organization.",
@@ -231,11 +227,6 @@
             "type": "string",
             "minLength": 1
           },
-          "identifier": {
-            "title": "Identifier",
-            "description": "Distribution identifier",
-            "type": "string"
-          },
           "description": {
             "title": "Description",
             "description": "Human-readable description of the distribution.",
@@ -245,17 +236,25 @@
           "format": {
             "title": "Format",
             "description": "A human-readable description of the file format of a distribution (i.e. csv, pdf, xml, kml, etc.).",
-            "type": "string"
+            "type": "string",
+            "examples": [
+              "arcgis",
+              "csv",
+              "esri rest",
+              "geojson",
+              "json",
+              "pdf",
+              "tsv",
+              "xls",
+              "xlsx",
+              "xml",
+              "zip"
+            ]
           },
           "mediaType": {
             "title": "Media Type",
             "description": "The machine-readable file format (<a href=\"https://www.iana.org/assignments/media-types/media-types.xhtml\">IANA Media Type or MIME Type</a>) of the distribution’s downloadURL.",
             "type": "string"
-          },
-          "mediaSize": {
-            "title": "Media Size",
-            "description": "The size of the meida file.",
-            "type": "integer"
           },
           "downloadURL": {
             "title": "Download URL",
@@ -286,12 +285,6 @@
             "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL.",
             "pattern": "^[a-z]+?$",
             "type": "string"
-          },
-          "isssued": {
-            "title": "Release Date",
-            "description": "Date of formal issuance.",
-            "type": "string",
-            "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
           },
           "schema": {
             "title": "Schema",
