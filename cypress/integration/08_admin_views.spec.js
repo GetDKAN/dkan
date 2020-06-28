@@ -19,8 +19,8 @@ context('Admin content and dataset views', () => {
         cy.get('.btn-success').click({ force:true })
         cy.get('.toast-content-container > .toast-content').should('contain','has been created')
     })
-    
-    // DKAN Content View.    
+
+    // DKAN Content View.
     it('The admin content screen has an exposed data type filter that contains the values I expect.', () => {
         cy.visit(baseurl + "/admin/content/node")
         cy.get('h1').should('have.text', 'Content')
@@ -58,7 +58,7 @@ context('Admin content and dataset views', () => {
     it('There is an "Add new dataset" button that takes user to the dataset json form. And a "Back to Datasets" button that returns user to the datasets view.', () => {
         cy.visit(baseurl + "/admin/content/datasets")
         cy.get('h1').should('have.text', 'Datasets')
-        cy.get('.view-header > .button').should('contain', 'Add new dataset').click({ force:true })
+        cy.get('.view-header > .form-actions > .button').should('contain', 'Add new dataset').click({ force:true })
         cy.get('#app > button.btn-default').should('contain', 'Back to Datasets').click({ force:true })
         cy.get('h1').should('have.text', 'Datasets')
     })
