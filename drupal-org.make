@@ -3,7 +3,7 @@ api: '2'
 core: 7.x
 includes:
 - https://raw.githubusercontent.com/GetDKAN/visualization_entity/7.x-2.x/visualization_entity.make
-- https://raw.githubusercontent.com/GetDKAN/open_data_schema_map/7.x-2.6/open_data_schema_map.make
+- https://raw.githubusercontent.com/GetDKAN/open_data_schema_map/7.x-2.7/open_data_schema_map.make
 - https://raw.githubusercontent.com/GetDKAN/leaflet_draw_widget/5a5f8faf664aeca02371f6692307580d9fab9116/leaflet_widget.make
 - https://raw.githubusercontent.com/GetDKAN/recline/7.x-2.3/recline.make
 projects:
@@ -261,7 +261,7 @@ projects:
     download:
       type: git
       url: https://github.com/GetDKAN/open_data_schema_map.git
-      tag: 7.x-2.6
+      tag: 7.x-2.7
   panelizer:
     version: '3.4'
     patch:
