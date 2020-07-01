@@ -9,6 +9,17 @@ use Psr\Log\LogLevel;
  * LoggerTrait.
  */
 trait LoggerTrait {
+
+  /**
+   * The logger channel name, with a default value of 'dkan'.
+   *
+   * Classes using this trait cannot redeclare this property, but are free to
+   * override its value anywhere, e.g. in a constructor.
+   *
+   * @var string
+   */
+  private $loggerName = 'dkan';
+
   /**
    * The logger factory service.
    *
@@ -32,6 +43,36 @@ trait LoggerTrait {
   private function log($loggerName, $message, $variables = [], $level = LogLevel::ERROR) {
     if ($this->loggerService) {
       $this->loggerService->get($loggerName)->log($level, $message, $variables);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function error(string $message, array $context = []) {
+
+    if ($this->loggerService) {
+      $this->loggerService->get($this->loggerName)->error($message, $context);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function warning(string $message, array $context = []) {
+
+    if ($this->loggerService) {
+      $this->loggerService->get($this->loggerName)->warning($message, $context);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function notice(string $message, array $context = []) {
+
+    if ($this->loggerService) {
+      $this->loggerService->get($this->loggerName)->notice($message, $context);
     }
   }
 

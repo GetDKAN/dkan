@@ -41,8 +41,6 @@ services:
     arguments:
       - '@config.factory'
       - '@queue'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
 
   # @expectedDeprecation
   metastore.service:
@@ -87,5 +85,3 @@ services:
     arguments:
       - '@config.factory'
       - '@queue'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
