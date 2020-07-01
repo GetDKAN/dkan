@@ -390,7 +390,7 @@
         },
         "fn": {
           "title": "Contact Name",
-          "description": "A full formatted name, eg Firstname Lastname.",
+          "description": "A full formatted name, e.g. Firstname Lastname.",
           "type": "string",
           "minLength": 1
         },
