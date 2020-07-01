@@ -212,7 +212,7 @@
           },
           "title": {
             "title": "Title",
-            "description": "Human-readable name of the distribution",
+            "description": "Human-readable name of the distribution.",
             "type": "string",
             "minLength": 1
           },
@@ -372,7 +372,7 @@
         },
         "fn": {
           "title": "Contact Name",
-          "description": "A full formatted name, eg Firstname Lastname.",
+          "description": "A full formatted name, e.g. Firstname Lastname.",
           "type": "string",
           "minLength": 1
         },
