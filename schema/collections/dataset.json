@@ -227,13 +227,13 @@
           },
           "title": {
             "title": "Title",
-            "description": "Human-readable name of the distribution",
+            "description": "Human-readable name of the distribution.",
             "type": "string",
             "minLength": 1
           },
           "identifier": {
             "title": "Identifier",
-            "description": "Distribution identifier",
+            "description": "Distribution identifier.",
             "type": "string"
           },
           "description": {
