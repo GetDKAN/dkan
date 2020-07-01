@@ -254,7 +254,7 @@
           },
           "mediaSize": {
             "title": "Media Size",
-            "description": "The size of the meida file.",
+            "description": "The size of the media file.",
             "type": "integer"
           },
           "downloadURL": {
