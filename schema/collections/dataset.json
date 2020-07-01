@@ -160,17 +160,6 @@
           "type": "string",
           "minLength": 1
         },
-        "description": {
-          "title": "Description",
-          "type": "string",
-          "description": "Description of the organization."
-        },
-        "image": {
-          "title": "Image",
-          "description": "Image or logo for the organization.",
-          "type": "string",
-          "format": "uri"
-        },
         "subOrganizationOf": {
           "title": "Parent Organization",
           "type": "string"
