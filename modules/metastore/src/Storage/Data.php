@@ -126,7 +126,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $this->assertSchema();
 
-    $node = $this->getNodeLatestRevision($uuid);
+    $node = $this->getNodePublishedRevision($uuid);
     if ($node) {
       return $node->get('field_json_metadata')->getString();
     }
