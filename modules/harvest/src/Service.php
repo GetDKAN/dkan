@@ -199,9 +199,11 @@ class Service implements ContainerInjectionInterface {
     $lastRunId = $this->getLastHarvestRunInfo($id);
     $lastRunInfoJsonString = $this->getHarvestRunInfo($id, $lastRunId);
     $lastRunInfoObj = json_decode($lastRunInfoJsonString);
+    $publishedIdentifiers = [];
     foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
-      $this->metastore->publish('dataset', $uuid);
+      $publishedIdentifiers[] = $this->metastore->publish('dataset', $uuid);
     }
+    return $publishedIdentifiers;
   }
 
   /**
