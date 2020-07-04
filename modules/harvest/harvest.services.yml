@@ -3,6 +3,7 @@ services:
     class: Drupal\harvest\Service
     arguments:
       - '@dkan.harvest.storage.database_table'
+      - '@dkan.metastore.service'
   dkan.harvest.storage.database_table:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:
