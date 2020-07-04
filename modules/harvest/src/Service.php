@@ -21,7 +21,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * DKAN metastore service.
    *
-   * @var Metastore
+   * @var \Drupal\metastore\Service
    */
   private $metastore;
 
@@ -194,6 +194,7 @@ class Service implements ContainerInjectionInterface {
    * Publish a harvest.
    *
    * @param string $id
+   *   Harvest identifier.
    */
   public function publish(string $id) {
     $lastRunId = $this->getLastHarvestRunInfo($id);
