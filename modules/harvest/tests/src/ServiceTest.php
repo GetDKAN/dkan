@@ -200,4 +200,37 @@ class ServiceTest extends TestCase {
       ->getMock();
   }
 
+  public function testPublish() {
+
+    $datasetUuids = ['abcd-1001', 'abcd-1002', 'abcd-1003'];
+    $lastRunInfo = (object) [
+      'status' => [
+        'extracted_items_ids' => $datasetUuids,
+      ],
+    ];
+
+    $container = $this->getCommonMockChain()
+      ->add(DatabaseTable::class, "retrieve", json_encode($lastRunInfo));
+
+    $service = HarvestService::create($container->getMock());
+    $result = $service->publish('1');
+    $this->assertEquals($result, ['1', '1', '1']);
+  }
+
+  private function getCommonMockChain() {
+
+    $options = (new Options())
+      ->add('dkan.harvest.storage.database_table', DatabaseTableFactory::class)
+      ->add('dkan.metastore.service', Metastore::class)
+      ->index(0);
+
+    return (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      // DatabaseTableFactory
+      ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
+      ->add(DatabaseTable::class, "retrieveAll", ['100', '102', '101'])
+      // Metastore
+      ->add(Metastore::class, 'publish', '1');
+  }
+
 }
