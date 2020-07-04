@@ -4,9 +4,11 @@ namespace Drupal\Tests\harvest;
 
 use Contracts\FactoryInterface;
 use Contracts\Mock\Storage\Memory;
+use Drupal\Component\DependencyInjection\Container;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Service as HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
+use Drupal\metastore\Service as Metastore;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
@@ -30,6 +32,7 @@ class ServiceTest extends TestCase {
   public function test() {
     $options = (new Options())
       ->add('dkan.harvest.storage.database_table', $this->getStorageFactory())
+      ->add('dkan.metastore.service', $this->getMetastoreMockChain())
       ->index(0);
 
     $this->checkService('dkan.harvest.storage.database_table', 'harvest');
@@ -120,7 +123,7 @@ class ServiceTest extends TestCase {
       ->add(DatabaseTable::class, "retrieve", "Hello")
       ->getMock();
 
-    $service = new HarvestService($storeFactory);
+    $service = new HarvestService($storeFactory, $this->getMetastoreMockChain());
     $plan = $service->getHarvestPlan("test");
     $this->assertEquals("Hello", $plan);
   }
@@ -141,7 +144,7 @@ class ServiceTest extends TestCase {
       ->getMock();
 
     $service = $this->getMockBuilder(HarvestService::class)
-      ->setConstructorArgs([$storeFactory])
+      ->setConstructorArgs([$storeFactory, $this->getMetastoreMockChain()])
       ->setMethods(['getDkanHarvesterInstance'])
       ->getMock();
 
@@ -189,6 +192,12 @@ class ServiceTest extends TestCase {
     }
 
     return $this->storageFactory;
+  }
+
+  private function getMetastoreMockChain() {
+    return (new Chain($this))
+      ->add(Metastore::class, 'publish', '1')
+      ->getMock();
   }
 
 }
