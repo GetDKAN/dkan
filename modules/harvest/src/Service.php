@@ -7,6 +7,7 @@ use Harvest\Harvester as DkanHarvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
+use Drupal\metastore\Service as Metastore;
 use Harvest\ETL\Factory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -18,19 +19,30 @@ class Service implements ContainerInjectionInterface {
   private $storeFactory;
 
   /**
+   * DKAN metastore service.
+   *
+   * @var \Drupal\metastore\Service
+   */
+  private $metastore;
+
+  /**
    * Create.
    *
    * @inheritDoc
    */
   public static function create(ContainerInterface $container) {
-    return new self($container->get("dkan.harvest.storage.database_table"));
+    return new self(
+      $container->get("dkan.harvest.storage.database_table"),
+      $container->get('dkan.metastore.service')
+    );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory) {
+  public function __construct(FactoryInterface $storeFactory, Metastore $metastore) {
     $this->storeFactory = $storeFactory;
+    $this->metastore = $metastore;
   }
 
   /**
@@ -164,6 +176,35 @@ class Service implements ContainerInjectionInterface {
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
     $runs = $run_store->retrieveAll();
     return $runs;
+  }
+
+  /**
+   * Get a harvest's most recent run identifier, i.e. timestamp.
+   *
+   * @param string $id
+   *   The harvest identifier.
+   */
+  private function getLastHarvestRunInfo(string $id) {
+    $runs = $this->getAllHarvestRunInfo($id);
+    rsort($runs);
+    return reset($runs);
+  }
+
+  /**
+   * Publish a harvest.
+   *
+   * @param string $id
+   *   Harvest identifier.
+   */
+  public function publish(string $id) {
+    $lastRunId = $this->getLastHarvestRunInfo($id);
+    $lastRunInfoJsonString = $this->getHarvestRunInfo($id, $lastRunId);
+    $lastRunInfoObj = json_decode($lastRunInfoJsonString);
+    $publishedIdentifiers = [];
+    foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
+      $publishedIdentifiers[] = $this->metastore->publish('dataset', $uuid);
+    }
+    return $publishedIdentifiers;
   }
 
   /**

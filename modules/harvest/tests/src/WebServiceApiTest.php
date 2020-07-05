@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\harvest;
 
+use Drupal\metastore\Service as Metastore;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Options;
 use Drupal\Component\DependencyInjection\Container;
@@ -56,7 +57,7 @@ class WebServiceApiTest extends TestCase {
   public function containerGet($input) {
     switch ($input) {
       case 'dkan.harvest.service':
-        return new Service(new MemoryFactory());
+        return new Service(new MemoryFactory(), $this->getMetastoreMockChain());
 
       break;
       case 'request_stack':
@@ -146,6 +147,12 @@ class WebServiceApiTest extends TestCase {
     $controller = WebServiceApi::create($container);
     $response = $controller->run();
     $this->assertEquals(JsonResponse::class, get_class($response));
+  }
+
+  private function getMetastoreMockChain() {
+    return (new Chain($this))
+      ->add(Metastore::class, 'publish', '1')
+      ->getMock();
   }
 
 }
