@@ -232,6 +232,7 @@
               "esri rest",
               "geojson",
               "json",
+              "kml",
               "pdf",
               "tsv",
               "xls",
