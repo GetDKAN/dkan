@@ -2,6 +2,8 @@
 
 namespace Drupal\harvest\Utility;
 
+use Drupal\Core\File\FileSystemInterface;
+
 /**
  * Interface.
  */
@@ -28,7 +30,7 @@ interface FileHelperInterface {
   /**
    * Public.
    */
-  public function prepareDir(&$directory, $options = FILE_CREATE_DIRECTORY);
+  public function prepareDir(&$directory, $options = FileSystemInterface::CREATE_DIRECTORY);
 
   /**
    * Public.
