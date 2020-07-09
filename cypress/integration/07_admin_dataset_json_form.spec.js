@@ -3,7 +3,7 @@ context('Admin dataset json form', () => {
     beforeEach(() => {
         cy.drupalLogin('testeditor', 'testeditor')
     })
-    
+
     it('The dataset form has the correct required fields.', () => {
         cy.visit(baseurl + "/admin/dkan/dataset")
         cy.get('#root__title').should('have.text', 'Project Open Data Dataset')
@@ -46,10 +46,9 @@ context('Admin dataset json form', () => {
         cy.get('#root_keyword_1').type('testing', { force:true })
         cy.get(':nth-child(2) > .col-xs-3 > .btn-group > .array-item-move-up').click({ force:true })
         cy.get('#root_distribution > :nth-child(4) > .col-xs-3 > .btn').click({ force:true })
-        cy.get('#root_distribution_0_title').type('DKANTEST distribution number one', { force:true })
+        cy.get('#root_distribution_0_title').type('DKANTEST distribution title text', { force:true })
+        cy.get('#root_distribution_0_description').type('DKANTEST distribution description text', { force:true })
         cy.get('#root_distribution_0_format').type('csv', { force:true })
-        cy.get('#root_distribution_0_mediaType').type('text/csv', { force:true })
-        cy.get('#root_distribution_0_isssued').type('2020-02-02', { force:true })
         cy.get('.btn-success').click({ force:true })
         cy.get('.toast-content').should('contain','has been updated')
     })
