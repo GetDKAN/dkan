@@ -92,9 +92,33 @@ class DataTest extends TestCase {
   /**
    *
    */
-  public function testRetrieve() {
+  public function testRetrieveModerationPublished() {
     $this->node1 = $this->setNodeMock('1', '{"foo":"bar"}', "");
-    $data = new Data($this->getEntityTypeManager()->getMock());
+
+    $etm = $this->getEntityTypeManager()
+      ->add(ContentModeration::class, 'getConfiguration', [
+      'default_moderation_state' => 'published',
+    ]);
+    $data = new Data($etm->getMock());
+    $data->setSchema('dataset');
+
+    $expected = '{"foo":"bar"}';
+    $result = $data->retrieve('1');
+
+    $this->assertEquals($expected, $result);
+  }
+
+  /**
+   *
+   */
+  public function testRetrieveModerationDraft() {
+    $this->node1 = $this->setNodeMock('1', '{"foo":"bar"}', "");
+
+    $etm = $this->getEntityTypeManager()
+      ->add(ContentModeration::class, 'getConfiguration', [
+        'default_moderation_state' => 'draft',
+      ]);
+    $data = new Data($etm->getMock());
     $data->setSchema('dataset');
 
     $expected = '{"foo":"bar"}';
@@ -107,11 +131,14 @@ class DataTest extends TestCase {
    *
    */
   public function testRetrieveNotFound() {
-    $entityTypeManager = $this->getEntityTypeManager()
+    $etm = $this->getEntityTypeManager()
+      ->add(ContentModeration::class, 'getConfiguration', [
+        'default_moderation_state' => 'draft',
+      ])
       ->add(QueryInterface::class, 'execute', []);
-
-    $data = new Data($entityTypeManager->getMock());
+    $data = new Data($etm->getMock());
     $data->setSchema('dataset');
+
     $this->expectExceptionMessage('No data with that identifier was found.');
     $data->retrieve('4');
   }
