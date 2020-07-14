@@ -30,11 +30,11 @@ class Page {
    */
   public function build($name) {
     if ($name == 'home') {
-      $file = $this->appRoot . "/data-catalog-frontend/public/index.html";
+      $file = $this->appRoot . "/frontend/public/index.html";
     }
     else {
       $name = str_replace("__", "/", $name);
-      $file = $this->appRoot . "/data-catalog-frontend/public/{$name}/index.html";
+      $file = $this->appRoot . "/frontend/public/{$name}/index.html";
     }
     return is_file($file) ? file_get_contents($file) : FALSE;
   }
@@ -46,10 +46,10 @@ class Page {
    *   False if file doesn't exist.
    */
   public function buildDataset($name) {
-    $base_dataset = $this->appRoot . "/data-catalog-frontend/public/dataset/index.html";
+    $base_dataset = $this->appRoot . "/frontend/public/dataset/index.html";
     $node_loaded_by_uuid = $this->nodeStorage->loadByProperties(['uuid' => $name]);
     $node_loaded_by_uuid = reset($node_loaded_by_uuid);
-    $file = $this->appRoot . "/data-catalog-frontend/public/dataset/{$name}/index.html";
+    $file = $this->appRoot . "/frontend/public/dataset/{$name}/index.html";
 
     return is_file($file) ? file_get_contents($file) : file_get_contents($base_dataset);
   }

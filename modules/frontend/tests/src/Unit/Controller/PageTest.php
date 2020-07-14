@@ -39,10 +39,9 @@ class ControllerPageTest extends TestCase {
       case 'frontend.page':
         $pageBuilder = $this->getMockBuilder(Page::class)
           ->disableOriginalConstructor()
-          ->setMethods(['build', 'buildDataset'])
+          ->setMethods(['build'])
           ->getMock();
         $pageBuilder->method('build')->willReturn("<h1>Hello World!!!</h1>\n");
-        $pageBuilder->method('buildDataset')->willReturn("<h1>Hello World!!!</h1>\n");
         return $pageBuilder;
 
       break;
@@ -56,16 +55,6 @@ class ControllerPageTest extends TestCase {
     $controller = PageController::create($this->getContainer());
     /* @var $response \Symfony\Component\HttpFoundation\Response */
     $response = $controller->page('home');
-    $this->assertEquals("<h1>Hello World!!!</h1>\n", $response->getContent());
-  }
-
-  /**
-   *
-   */
-  public function testDataset() {
-    $controller = PageController::create($this->getContainer());
-    /* @var $response \Symfony\Component\HttpFoundation\Response */
-    $response = $controller->dataset('123');
     $this->assertEquals("<h1>Hello World!!!</h1>\n", $response->getContent());
   }
 

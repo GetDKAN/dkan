@@ -27,9 +27,13 @@ class RouteProvider {
    */
   public function routes() {
     $routes = new RouteCollection();
-
-    $this->addStaticPages($routes);
-
+    $package_json = file_get_contents($this->appRoot . "/frontend/package.json");
+    $decode_package = json_decode($package_json, true);
+    if(!$decode_package["dependencies"]["gatsby"]) {
+      $this->addStaticPages($routes);
+    } else {
+      $this->addIndexPage($routes);
+    }
     $routes->addRequirements(['_access' => 'TRUE']);
 
     return $routes;
@@ -96,7 +100,6 @@ class RouteProvider {
   private function addStaticPages(RouteCollection $routes) {
     $base = $this->appRoot . "/data-catalog-frontend/public";
     $possible_pages = $this->expandDirectories($base);
-
     foreach ($possible_pages as $possible_page) {
       if (file_exists($possible_page . "/index.html")) {
         $name = self::getNameFromPath($possible_page);
@@ -116,4 +119,18 @@ class RouteProvider {
     $routes->add('home', $route);
   }
 
+  private function addIndexPage(RouteCollection $routes) {
+    $myRoutes = [
+      ["home", "/home"],
+      ["about", "/about"],
+      ["api", "/api"],
+      ["dataset", "/dataset/{id}"],
+      ["datasetapi", "/dataset/{id}/api"],
+      ["search", "/search"]
+    ];
+
+    foreach ($myRoutes as $possible_page) {
+      $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));
+    }
+  }
 }
