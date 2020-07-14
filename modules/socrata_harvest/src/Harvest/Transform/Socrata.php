@@ -55,7 +55,7 @@ class Socrata extends Transform {
    */
   private function getIdentifier($identifier) {
     $path = parse_url($identifier, PHP_URL_PATH);
-    $path = str_replace('/api/views/', "", $path);
+    $path = str_replace(['/api/views/', '/datasets/'], ["", ""], $path);
     return $path;
   }
 
