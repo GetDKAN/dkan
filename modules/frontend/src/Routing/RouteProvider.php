@@ -28,10 +28,11 @@ class RouteProvider {
   public function routes() {
     $routes = new RouteCollection();
     $package_json = file_get_contents($this->appRoot . "/frontend/package.json");
-    $decode_package = json_decode($package_json, true);
-    if($decode_package["dependencies"]["gatsby"]) {
+    $decode_package = json_decode($package_json, TRUE);
+    if ($decode_package["dependencies"]["gatsby"]) {
       $this->addStaticPages($routes);
-    } else {
+    }
+    else {
       $this->addIndexPage($routes);
     }
     $routes->addRequirements(['_access' => 'TRUE']);
@@ -96,6 +97,7 @@ class RouteProvider {
 
   /**
    * Private.
+   * Each route returns its own JS file.
    */
   private function addStaticPages(RouteCollection $routes) {
     $base = $this->appRoot . "/frontend/public";
@@ -119,6 +121,10 @@ class RouteProvider {
     $routes->add('home', $route);
   }
 
+  /**
+   * Private.
+   * All routes return root JS file.
+   */
   private function addIndexPage(RouteCollection $routes) {
     $config = \Drupal::config('frontend.routes');
     $config_routes = $config->get('routes');
@@ -126,5 +132,7 @@ class RouteProvider {
       $possible_page = explode(",", $config_route);
       $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));
     }
+
   }
+
 }
