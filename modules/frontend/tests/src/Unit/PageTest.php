@@ -44,7 +44,7 @@ class PageTest extends TestCase {
    * Test regular page.
    */
   public function test() {
-    $page = new Page(__DIR__ . "/../../app", $this->getNodeStorageMock());
+    $page = new Page(__DIR__ . "/../../gatsby", $this->getNodeStorageMock());
     $content = $page->build('home');
     $this->assertEquals("<h1>Hello World!!!</h1>\n", $content);
 
@@ -56,7 +56,7 @@ class PageTest extends TestCase {
    * Test nonvalid UUID.
    */
   public function testNoDataset() {
-    $page = new Page(__DIR__ . "/../../app", $this->getNodeStorageMock());
+    $page = new Page(__DIR__ . "/../../gatsby", $this->getNodeStorageMock());
     $content = $page->buildDataset('444');
     $this->assertEquals("<h1>!!!Hello World!!!</h1>\n", $content);
   }
@@ -65,7 +65,7 @@ class PageTest extends TestCase {
    * Test valid UUID.
    */
   public function testDataset() {
-    $page = new Page(__DIR__ . "/../../app", $this->getNodeStorageMock());
+    $page = new Page(__DIR__ . "/../../gatsby", $this->getNodeStorageMock());
     $content = $page->buildDataset('123');
     $this->assertEquals("<h1>Hello World!!!</h1>\n", $content);
   }

@@ -22,7 +22,7 @@ class RouteProvider2Test extends TestCase {
       ->add(QueryInterface::class, 'execute', [])
       ->getMock();
 
-    $provider = new RouteProvider(__DIR__ . "/../../../app", $queryFactory);
+    $provider = new RouteProvider(__DIR__ . "/../../../gatsby", $queryFactory);
 
     /* @var $routes \Symfony\Component\Routing\RouteCollection */
     $routes = $provider->routes();

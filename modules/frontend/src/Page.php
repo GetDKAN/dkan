@@ -32,7 +32,7 @@ class Page {
     if ($name == 'home') {
       $package_json = file_get_contents($this->appRoot . "/frontend/package.json");
       $decode_package = json_decode($package_json, TRUE);
-      if($decode_package["dependencies"]["gatsby"]) {
+      if ($decode_package["dependencies"]["gatsby"]) {
         $file = $this->appRoot . "/frontend/public/index.html";
       }
       else {

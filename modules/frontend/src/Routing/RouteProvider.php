@@ -96,8 +96,7 @@ class RouteProvider {
   }
 
   /**
-   * Private.
-   * Each route returns its own JS file.
+   * Private. Each route returns its own JS file.
    */
   private function addStaticPages(RouteCollection $routes) {
     $base = $this->appRoot . "/frontend/public";
@@ -122,8 +121,7 @@ class RouteProvider {
   }
 
   /**
-   * Private.
-   * All routes return root JS file.
+   * Private. All routes return root JS file.
    */
   private function addIndexPage(RouteCollection $routes) {
     $config = \Drupal::config('frontend.routes');
