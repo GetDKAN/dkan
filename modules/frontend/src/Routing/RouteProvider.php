@@ -120,16 +120,10 @@ class RouteProvider {
   }
 
   private function addIndexPage(RouteCollection $routes) {
-    $myRoutes = [
-      ["home", "/home"],
-      ["about", "/about"],
-      ["api", "/api"],
-      ["dataset", "/dataset/{id}"],
-      ["datasetapi", "/dataset/{id}/api"],
-      ["search", "/search"]
-    ];
-
-    foreach ($myRoutes as $possible_page) {
+    $config = \Drupal::config('frontend.routes');
+    $config_routes = $config->get('routes');
+    foreach ($config_routes as $config_route) {
+      $possible_page = explode(",", $config_route);
       $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));
     }
   }
