@@ -30,7 +30,13 @@ class Page {
    */
   public function build($name) {
     if ($name == 'home') {
-      $file = $this->appRoot . "/frontend/public/index.html";
+      $package_json = file_get_contents($this->appRoot . "/frontend/package.json");
+      $decode_package = json_decode($package_json, true);
+      if($decode_package["dependencies"]["gatsby"]) {
+        $file = $this->appRoot . "/frontend/public/index.html";
+      } else {
+        $file = $this->appRoot . "/frontend/build/index.html";
+      }
     }
     else {
       $name = str_replace("__", "/", $name);
