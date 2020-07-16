@@ -32,7 +32,7 @@ class RouteProvider {
     $routes = new RouteCollection();
     $package_json = file_get_contents($this->appRoot . "/frontend/package.json");
     $decode_package = json_decode($package_json, TRUE);
-    if ($decode_package["dependencies"]["gatsby"]) {
+    if (isset($decode_package["dependencies"]["gatsby"])) {
       $this->addStaticPages($routes);
     }
     else {

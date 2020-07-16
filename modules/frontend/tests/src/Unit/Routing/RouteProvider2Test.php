@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Drupal\frontend\Routing\RouteProvider;
 use MockChain\Chain;
@@ -15,21 +16,28 @@ class RouteProvider2Test extends TestCase {
    *
    */
   public function test() {
-
+    /* Test Gatsby Routes */
     $queryFactory = (new Chain($this))
       ->add(QueryFactoryInterface::class, "get", QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', [])
       ->getMock();
 
-    $provider = new RouteProvider(__DIR__ . "/../../../gatsby", $queryFactory);
+    /* Test React App Routes */
+    $reactappRoutes = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', ['frontend'])
+      ->getMock();
+
+    $gatsbyProvider = new RouteProvider(__DIR__ . "/../../../gatsby", $queryFactory, $reactappRoutes);
+    $reactAppProvider = new RouteProvider(__DIR__ . "/../../../cra", $queryFactory, $reactappRoutes);
 
     /* @var $routes \Symfony\Component\Routing\RouteCollection */
-    $routes = $provider->routes();
+    $gatsbyRoutes = $gatsbyProvider->routes();
+    $reactappRoutes = $reactAppProvider->routes();
 
     /* @var $route \Symfony\Component\Routing\Route */
-    /* @var $route \Symfony\Component\Routing\Route */
-    foreach ($routes->all() as $route) {
+    foreach ($gatsbyRoutes->all() as $route) {
       $this->assertThat(
         $route->getPath(),
         $this->logicalOr(
@@ -37,6 +45,19 @@ class RouteProvider2Test extends TestCase {
           $this->equalTo("/dataset"),
           $this->equalTo("/dataset/123"),
           $this->equalTo("/home")
+        )
+      );
+    }
+
+    /* @var $route \Symfony\Component\Routing\Route */
+    foreach ($reactappRoutes->all() as $route) {
+      $this->assertThat(
+        $route->getPath(),
+        $this->logicalOr(
+          $this->equalTo("/home"),
+          $this->equalTo("/about"),
+          $this->equalTo("/api"),
+          $this->equalTo("/dataset/{id}")
         )
       );
     }
