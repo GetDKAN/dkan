@@ -10,3 +10,5 @@ services:
       arguments:
         - '@app.root'
         - '@entity.query.sql'
+        - '@config.factory'
+        #  - '@frontend.routes'

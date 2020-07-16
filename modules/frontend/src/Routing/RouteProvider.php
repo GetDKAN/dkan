@@ -2,6 +2,7 @@
 
 namespace Drupal\frontend\Routing;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -13,13 +14,15 @@ class RouteProvider {
 
   private $appRoot;
   private $entityQuery;
+  private $configFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(string $appRoot, QueryFactoryInterface $entityQuery) {
+  public function __construct(string $appRoot, QueryFactoryInterface $entityQuery, ConfigFactoryInterface $configFactory) {
     $this->appRoot = $appRoot;
     $this->entityQuery = $entityQuery;
+    $this->configFactory = $configFactory;
   }
 
   /**
@@ -124,8 +127,8 @@ class RouteProvider {
    * Private. All routes return root JS file.
    */
   private function addIndexPage(RouteCollection $routes) {
-    $config = \Drupal::config('frontend.routes');
-    $config_routes = $config->get('routes');
+    $config_routes = $this->configFactory->get('frontend.routes')->get('routes');
+    // \Drupal::logger('frontend')->notice(implode("|",$config_routes));
     foreach ($config_routes as $config_route) {
       $possible_page = explode(",", $config_route);
       $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));
