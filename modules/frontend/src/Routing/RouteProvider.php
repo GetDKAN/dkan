@@ -128,7 +128,6 @@ class RouteProvider {
    */
   private function addIndexPage(RouteCollection $routes) {
     $config_routes = $this->configFactory->get('frontend.routes')->get('routes');
-    // \Drupal::logger('frontend')->notice(implode("|",$config_routes));
     foreach ($config_routes as $config_route) {
       $possible_page = explode(",", $config_route);
       $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));
