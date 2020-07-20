@@ -2,6 +2,7 @@
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\Query\QueryFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\frontend\Routing\RouteProvider;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,7 @@ class RouteProvider2Test extends TestCase {
     /* Test React App Routes */
     $reactappRoutes = (new Chain($this))
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', ['frontend'])
+      ->add(ImmutableConfig::class, 'get', ['home,/home'])
       ->getMock();
 
     $gatsbyProvider = new RouteProvider(__DIR__ . "/../../../gatsby", $queryFactory, $reactappRoutes);
@@ -53,12 +54,7 @@ class RouteProvider2Test extends TestCase {
     foreach ($reactappRoutes->all() as $route) {
       $this->assertThat(
         $route->getPath(),
-        $this->logicalOr(
-          $this->equalTo("/home"),
-          $this->equalTo("/about"),
-          $this->equalTo("/api"),
-          $this->equalTo("/dataset/{id}")
-        )
+        $this->equalTo("/home")
       );
     }
 

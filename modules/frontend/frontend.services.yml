@@ -11,4 +11,3 @@ services:
         - '@app.root'
         - '@entity.query.sql'
         - '@config.factory'
-        #  - '@frontend.routes'
