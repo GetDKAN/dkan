@@ -30,7 +30,7 @@ class RouteProvider {
    */
   public function routes() {
     $routes = new RouteCollection();
-    $package_json = file_get_contents($this->appRoot . "/frontend/package.json");
+    $package_json = file_get_contents($this->appRoot . "/data-catalog-frontend/public/package.json");
     $decode_package = json_decode($package_json, TRUE);
     if (isset($decode_package["dependencies"]["gatsby"])) {
       $this->addStaticPages($routes);
@@ -102,7 +102,7 @@ class RouteProvider {
    * Private. Each route returns its own JS file.
    */
   private function addStaticPages(RouteCollection $routes) {
-    $base = $this->appRoot . "/frontend/public";
+    $base = $this->appRoot . "/data-catalog-frontend/public";
     $possible_pages = $this->expandDirectories($base);
     foreach ($possible_pages as $possible_page) {
       if (file_exists($possible_page . "/index.html")) {
