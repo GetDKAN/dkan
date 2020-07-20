@@ -22,7 +22,9 @@ class RouteProvider {
   public function __construct(string $appRoot, QueryFactoryInterface $entityQuery, ConfigFactoryInterface $configFactory) {
     $this->appRoot = $appRoot;
     $this->entityQuery = $entityQuery;
-    $this->configFactory = $configFactory;
+    $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');
+    $this->frontendPath = $configFactory->get('frontend.config')->get('frontend_path');
+    $this->routes = $configFactory->get('frontend.config')->get('routes');
   }
 
   /**
@@ -30,7 +32,8 @@ class RouteProvider {
    */
   public function routes() {
     $routes = new RouteCollection();
-    $package_json = file_get_contents($this->appRoot . "/data-catalog-frontend/public/package.json");
+
+    $package_json = file_get_contents($this->appRoot . $this->frontendPath . "/package.json");
     $decode_package = json_decode($package_json, TRUE);
     if (isset($decode_package["dependencies"]["gatsby"])) {
       $this->addStaticPages($routes);
@@ -47,7 +50,7 @@ class RouteProvider {
    * Public.
    */
   public  function getNameFromPath($path) {
-    $base = $this->appRoot . "/data-catalog-frontend/public/";
+    $base = $this->appRoot . $this->frontendPath . $this->buildFolder;
     $sub = str_replace($base, "", $path);
     return str_replace("/", "__", $sub);
   }
@@ -102,7 +105,7 @@ class RouteProvider {
    * Private. Each route returns its own JS file.
    */
   private function addStaticPages(RouteCollection $routes) {
-    $base = $this->appRoot . "/data-catalog-frontend/public";
+    $base = $this->appRoot . $this->frontendPath . $this->buildFolder;
     $possible_pages = $this->expandDirectories($base);
     foreach ($possible_pages as $possible_page) {
       if (file_exists($possible_page . "/index.html")) {
@@ -127,7 +130,7 @@ class RouteProvider {
    * Private. All routes return root JS file.
    */
   private function addIndexPage(RouteCollection $routes) {
-    $config_routes = $this->configFactory->get('frontend.routes')->get('routes');
+    $config_routes = $this->routes;
     foreach ($config_routes as $config_route) {
       $possible_page = explode(",", $config_route);
       $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));

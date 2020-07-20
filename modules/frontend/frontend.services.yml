@@ -4,6 +4,7 @@ services:
       arguments:
         - '@app.root'
         - '@dkan.common.node_storage'
+        - '@config.factory'
       shared: false
   frontend.route_provider:
       class: Drupal\frontend\Routing\RouteProvider

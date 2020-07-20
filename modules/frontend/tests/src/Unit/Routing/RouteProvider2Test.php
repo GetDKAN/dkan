@@ -5,6 +5,7 @@ use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\frontend\Routing\RouteProvider;
 use MockChain\Chain;
+use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\Query\QueryInterface;
 
@@ -16,7 +17,7 @@ class RouteProvider2Test extends TestCase {
   /**
    *
    */
-  public function test() {
+  public function testGatsby() {
     /* Test Gatsby Routes */
     $queryFactory = (new Chain($this))
       ->add(QueryFactoryInterface::class, "get", QueryInterface::class)
@@ -24,18 +25,23 @@ class RouteProvider2Test extends TestCase {
       ->add(QueryInterface::class, 'execute', [])
       ->getMock();
 
-    /* Test React App Routes */
-    $reactappRoutes = (new Chain($this))
+    /* Test Gatsby Config Options */
+    $options = (new Options())
+      ->add('routes', [])
+      ->add('build_folder', '/public')
+      ->add('frontend_path', '/data-catalog-frontend')
+      ->index(0);
+
+    /* Test Gatsby Config Factory */
+    $configFactory = (new Chain($this))
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', ['home,/home'])
+      ->add(ImmutableConfig::class, 'get', $options)
       ->getMock();
 
-    $gatsbyProvider = new RouteProvider(__DIR__ . "/../../../gatsby", $queryFactory, $reactappRoutes);
-    $reactAppProvider = new RouteProvider(__DIR__ . "/../../../cra", $queryFactory, $reactappRoutes);
+    $gatsbyProvider = new RouteProvider(__DIR__ . "/../../../gatsby", $queryFactory, $configFactory);
 
     /* @var $routes \Symfony\Component\Routing\RouteCollection */
     $gatsbyRoutes = $gatsbyProvider->routes();
-    $reactappRoutes = $reactAppProvider->routes();
 
     /* @var $route \Symfony\Component\Routing\Route */
     foreach ($gatsbyRoutes->all() as $route) {
@@ -49,6 +55,37 @@ class RouteProvider2Test extends TestCase {
         )
       );
     }
+
+  }
+
+  /**
+   *
+   */
+  public function testCRA() {
+    /* Test CRA Routes */
+    $queryFactory = (new Chain($this))
+      ->add(QueryFactoryInterface::class, "get", QueryInterface::class)
+      ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', [])
+      ->getMock();
+
+    /* Test React App Routes */
+    $options = (new Options())
+      ->add('routes', ["home,/home"])
+      ->add('build_folder', '/build')
+      ->add('frontend_path', '/frontend')
+      ->index(0);
+
+    /* Test React App Routes */
+    $configFactory = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', $options)
+      ->getMock();
+
+    $reactAppProvider = new RouteProvider(__DIR__ . "/../../../cra", $queryFactory, $configFactory);
+
+    /* @var $routes \Symfony\Component\Routing\RouteCollection */
+    $reactappRoutes = $reactAppProvider->routes();
 
     /* @var $route \Symfony\Component\Routing\Route */
     foreach ($reactappRoutes->all() as $route) {

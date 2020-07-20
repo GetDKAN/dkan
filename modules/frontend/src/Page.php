@@ -3,6 +3,7 @@
 namespace Drupal\frontend;
 
 use Drupal\node\NodeStorageInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Class.
@@ -11,13 +12,16 @@ class Page {
 
   private $appRoot;
   private $nodeStorage;
+  private $configFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(string $appRoot, NodeStorageInterface $nodeStorage) {
+  public function __construct(string $appRoot, NodeStorageInterface $nodeStorage, ConfigFactoryInterface $configFactory) {
     $this->appRoot = $appRoot;
     $this->nodeStorage = $nodeStorage;
+    $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');
+    $this->frontendPath = $configFactory->get('frontend.config')->get('frontend_path');
   }
 
   /**
@@ -30,18 +34,11 @@ class Page {
    */
   public function build($name) {
     if ($name == 'home') {
-      $package_json = file_get_contents($this->appRoot . "/data-catalog-frontend/public/package.json");
-      $decode_package = json_decode($package_json, TRUE);
-      if ($decode_package["dependencies"]["gatsby"]) {
-        $file = $this->appRoot . "/data-catalog-frontend/public/index.html";
-      }
-      else {
-        $file = $this->appRoot . "/frontend/build/index.html";
-      }
+      $file = $this->appRoot . $this->frontendPath . $this->buildFolder . "/index.html";
     }
     else {
       $name = str_replace("__", "/", $name);
-      $file = $this->appRoot . "/frontend/public/{$name}/index.html";
+      $file = $this->appRoot . $this->frontendPath . $this->buildFolder . "/{$name}/index.html";
     }
     return is_file($file) ? file_get_contents($file) : FALSE;
   }
@@ -53,10 +50,10 @@ class Page {
    *   False if file doesn't exist.
    */
   public function buildDataset($name) {
-    $base_dataset = $this->appRoot . "/data-catalog-frontend/public/dataset/index.html";
+    $base_dataset = $this->appRoot . $this->frontendPath . $this->buildFolder . "/dataset/index.html";
     $node_loaded_by_uuid = $this->nodeStorage->loadByProperties(['uuid' => $name]);
     $node_loaded_by_uuid = reset($node_loaded_by_uuid);
-    $file = $this->appRoot . "/data-catalog-frontend/public/dataset/{$name}/index.html";
+    $file = $this->appRoot . $this->frontendPath . $this->buildFolder . "/dataset/{$name}/index.html";
 
     return is_file($file) ? file_get_contents($file) : file_get_contents($base_dataset);
   }
