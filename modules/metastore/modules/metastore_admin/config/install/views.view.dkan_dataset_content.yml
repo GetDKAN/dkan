@@ -608,7 +608,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Add dataset button'
-          empty: false
+          empty: true
           tokenize: false
           content: '<div class="form-actions"><a class="button button--primary" href="/admin/dkan/dataset">+ Add new dataset</a></div>'
           plugin_id: text_custom
