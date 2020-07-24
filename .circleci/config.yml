@@ -41,7 +41,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl make --prefer-source  --branch $CIRCLE_BRANCH --frontend
+            dktl make --prefer-source  --branch $CIRCLE_BRANCH --frontend=cypress-updates-07-24
       - run:
           name: Run phpUnit tests
           command: |
