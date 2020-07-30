@@ -1,0 +1,11 @@
+static: False
+build_folder: '/public'
+frontend_path: '/data-catalog-frontend'
+routes:
+  - home,/home
+  - about,/about
+  - api,/api
+  - dataset,/dataset/{id}
+  - datasetapi,/dataset/{id}/api
+  - search,/search
+  - publishers,/publishers

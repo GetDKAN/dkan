@@ -2,6 +2,7 @@
 
 namespace Drupal\frontend\Routing;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -13,13 +14,17 @@ class RouteProvider {
 
   private $appRoot;
   private $entityQuery;
+  private $configFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(string $appRoot, QueryFactoryInterface $entityQuery) {
+  public function __construct(string $appRoot, QueryFactoryInterface $entityQuery, ConfigFactoryInterface $configFactory) {
     $this->appRoot = $appRoot;
     $this->entityQuery = $entityQuery;
+    $this->buildFolder = $configFactory->get('frontend.config')->get('build_folder');
+    $this->frontendPath = $configFactory->get('frontend.config')->get('frontend_path');
+    $this->routes = $configFactory->get('frontend.config')->get('routes');
   }
 
   /**
@@ -28,8 +33,14 @@ class RouteProvider {
   public function routes() {
     $routes = new RouteCollection();
 
-    $this->addStaticPages($routes);
-
+    $package_json = file_get_contents($this->appRoot . $this->frontendPath . "/package.json");
+    $decode_package = json_decode($package_json, TRUE);
+    if (isset($decode_package["dependencies"]["gatsby"])) {
+      $this->addStaticPages($routes);
+    }
+    else {
+      $this->addIndexPage($routes);
+    }
     $routes->addRequirements(['_access' => 'TRUE']);
 
     return $routes;
@@ -39,7 +50,7 @@ class RouteProvider {
    * Public.
    */
   public  function getNameFromPath($path) {
-    $base = $this->appRoot . "/data-catalog-frontend/public/";
+    $base = $this->appRoot . $this->frontendPath . $this->buildFolder;
     $sub = str_replace($base, "", $path);
     return str_replace("/", "__", $sub);
   }
@@ -91,12 +102,11 @@ class RouteProvider {
   }
 
   /**
-   * Private.
+   * Private. Each route returns its own JS file.
    */
   private function addStaticPages(RouteCollection $routes) {
-    $base = $this->appRoot . "/data-catalog-frontend/public";
+    $base = $this->appRoot . $this->frontendPath . $this->buildFolder;
     $possible_pages = $this->expandDirectories($base);
-
     foreach ($possible_pages as $possible_page) {
       if (file_exists($possible_page . "/index.html")) {
         $name = self::getNameFromPath($possible_page);
@@ -114,6 +124,18 @@ class RouteProvider {
     );
     $route->setMethods(['GET']);
     $routes->add('home', $route);
+  }
+
+  /**
+   * Private. All routes return root JS file.
+   */
+  private function addIndexPage(RouteCollection $routes) {
+    $config_routes = $this->routes;
+    foreach ($config_routes as $config_route) {
+      $possible_page = explode(",", $config_route);
+      $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "home"));
+    }
+
   }
 
 }
