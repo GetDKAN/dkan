@@ -1,3 +1,8 @@
+7.x-1.18.9
+----------
+- #3135 Added missing translation.
+- #3147 Fix JSON/RDF links on dataset pages.
+
 7.x-1.18.8
 ----------
  - #3133 Drupal security upgrade to version 7.72.
