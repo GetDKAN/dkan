@@ -140,16 +140,16 @@ class JsonFormWidget extends WidgetBase {
   /**
    * Get form element based on property type.
    */
-  private function getFormElement($type, $property_name, $object, $data) {
+  private function getFormElement($type, $property_name, $property, $data) {
     switch ($type) {
       case 'object':
-        return $this->handleObjectElement($object, $property_name, $data);
+        return $this->handleObjectElement($property, $property_name, $data);
 
       case 'array':
-        return $this->handleArrayElement($object, $property_name, $data);
+        return $this->handleArrayElement($property, $property_name, $data);
 
       case 'string':
-        return $this->handleStringElement($object, $property_name, $data);
+        return $this->handleStringElement($property, $property_name, $data);
     }
   }
 
