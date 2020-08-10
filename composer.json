@@ -51,7 +51,7 @@
             "email": "contact@civicactions.com"
         }
     ],
-    "extra" {
+    "extra": {
         "dkan-frontend": {
             "data-catalog-react":"0.2.0"
         }
