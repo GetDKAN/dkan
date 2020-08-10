@@ -50,5 +50,10 @@
             "name": "CivicActions",
             "email": "contact@civicactions.com"
         }
-    ]
+    ],
+    "extra" {
+        "dkan-frontend": {
+            "data-catalog-react":"0.2.0"
+        }
+    }
 }
