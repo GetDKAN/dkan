@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore\Reference;
 
+use Drupal\common\LoggerTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;
 use stdClass;
@@ -11,6 +12,7 @@ use stdClass;
  */
 class OrphanChecker {
   use HelperTrait;
+  use LoggerTrait;
 
   /**
    * The queue service.
@@ -127,6 +129,11 @@ class OrphanChecker {
       $old_value = [$old_value];
       $new_value = [$new_value];
     }
+
+    $this->debug($property_id);
+    $this->debug(json_encode('old_value'));
+    $this->debug(json_encode($new_value));
+
     foreach (array_diff($old_value, $new_value) as $removed_reference) {
       $this->queueReferenceForRemoval($property_id, $removed_reference);
     }

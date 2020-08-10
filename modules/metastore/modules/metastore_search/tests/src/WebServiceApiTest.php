@@ -24,7 +24,7 @@ class WebServiceApiTest extends TestCase {
       ->getMock();
 
     $request = (new Chain($this))
-      ->add(Request::class, 'blah', NULL)
+      ->add(Request::class)
       ->getMock();
 
     $reflection = new \ReflectionClass($request);

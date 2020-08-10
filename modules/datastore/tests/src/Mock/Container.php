@@ -48,14 +48,14 @@ class Container {
   }
 
   /**
-   *
+   * Setter.
    */
   public function setNoNode() {
     $this->noNode = TRUE;
   }
 
   /**
-   *
+   * Getter.
    */
   public function get() {
     $container = $this->testCase->getMockBuilder(ContainerInterface::class)
@@ -86,7 +86,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function getQueueFactoryMock() {
     $mock = $this->testCase->getMockBuilder(QueueFactory::class)
@@ -101,7 +101,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function getQueueMock() {
     $mock = $this->testCase->getMockBuilder("\Drupal\Core\Queue\QueueInterface")
@@ -115,7 +115,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function getFileSystemMock() {
     $mock = $this->testCase->getMockBuilder(FileSystem::class)
@@ -129,7 +129,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function getConnectionMock() {
     $mock = $this->testCase->getMockBuilder(Connection::class)
@@ -151,7 +151,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function getQueryMock() {
     $mock = $this->testCase->getMockBuilder(SelectInterface::class)
@@ -169,7 +169,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function getStatementMock() {
     $mock = $this->testCase->getMockBuilder(StatementInterface::class)
@@ -194,7 +194,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function getSchemaMock() {
     $mock = $this->testCase->getMockBuilder(Schema::class)
@@ -208,7 +208,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function getEntityRepositoryMock() {
     $mock = $this->testCase->getMockBuilder(EntityRepository::class)
@@ -230,7 +230,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function mockNodeInterface() {
     $mock = $this->testCase->getMockBuilder(NodeInterface::class)
@@ -247,7 +247,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function mockFieldItemListInterface() {
     $mock = $this->testCase->getMockBuilder(FieldItemListInterface::class)
@@ -264,7 +264,7 @@ class Container {
   }
 
   /**
-   *
+   * Private.
    */
   private function mockTypedDataInterface() {
     $mock = $this->testCase->getMockBuilder(TypedDataInterface::class)

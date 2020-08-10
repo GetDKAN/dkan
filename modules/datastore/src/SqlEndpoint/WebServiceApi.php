@@ -108,7 +108,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $uuid = $this->service->getResourceUuid($query);
 
-      if ($modifyResponse = $this->modifyData($uuid)) {
+      if (isset($uuid) && $modifyResponse = $this->modifyData($uuid)) {
         return $modifyResponse;
       }
 

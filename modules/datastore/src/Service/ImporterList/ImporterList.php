@@ -3,8 +3,8 @@
 namespace Drupal\datastore\Service\ImporterList;
 
 use Drupal\datastore\Service\Factory\Import;
-use Drupal\datastore\Service\Factory\Resource;
-use Drupal\datastore\Storage\JobStoreFactory;
+use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\Service\ResourceLocalizer;
 use FileFetcher\FileFetcher;
 
 /**
@@ -15,19 +15,19 @@ class ImporterList {
   /**
    * A JobStore object.
    *
-   * @var \Drupal\datastore\Storage\JobStore
+   * @var \Drupal\common\Storage\JobStore
    */
   private $jobStoreFactory;
 
-  private $resourceServiceFactory;
+  private $resourceLocalizer;
   private $importServiceFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, Resource $resrouceServiceFactory, Import $importServiceFactory) {
+  public function __construct(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resourceLocalizer, Import $importServiceFactory) {
     $this->jobStoreFactory = $jobStoreFactory;
-    $this->resourceServiceFactory = $resrouceServiceFactory;
+    $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
   }
 
@@ -36,6 +36,9 @@ class ImporterList {
    *
    * @return array
    *   An array of ImporterListItem objects, keyed by UUID.
+   *
+   * @todo Going directly to get filefetcher objects does not feel right.
+   * We should have cleaner interfaces to get the data we need.
    */
   private function buildList() {
     $list = [];
@@ -45,17 +48,10 @@ class ImporterList {
 
     $store = $this->jobStoreFactory->getInstance(FileFetcher::class);
     foreach ($store->retrieveAll() as $id) {
-      try {
-        $fileFetchers[$id] = $this->resourceServiceFactory->getInstance($id)
-          ->getFileFetcher();
-
-        /* @var $resource \Dkan\Datastore\Resource */
-        $resource = $this->resourceServiceFactory->getInstance($id)->get();
-        $importers[$id] = $this->importServiceFactory->getInstance($resource->getId(),
-          ['resource' => $resource])->getImporter();
-      }
-      catch (\Exception $e) {
-        // The file fetcher id is not a resource.
+      [$ff, $imp] = $this->getFileFetcherAndImporter($id);
+      if (isset($ff) && isset($imp)) {
+        $fileFetchers[$id] = $ff;
+        $importers[$id] = $imp;
       }
     }
 
@@ -68,10 +64,31 @@ class ImporterList {
   }
 
   /**
+   * Private.
+   */
+  private function getFileFetcherAndImporter($id) {
+    $pieces = explode("_", $id);
+    try {
+      $resource = $this->resourceLocalizer->get($pieces[0], $pieces[1]);
+      if ($resource) {
+        $fileFetcher = $this->resourceLocalizer->getFileFetcher($resource);
+
+        $importer = $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(),
+          ['resource' => $resource])->getImporter();
+
+        return [$fileFetcher, $importer];
+      }
+    }
+    catch (\Exception $e) {
+    }
+    return [NULL, NULL];
+  }
+
+  /**
    * Static function to allow easy creation of lists.
    */
-  public static function getList(JobStoreFactory $jobStoreFactory, Resource $resrouceServiceFactory, Import $importServiceFactory): array {
-    $importerLister = new ImporterList($jobStoreFactory, $resrouceServiceFactory, $importServiceFactory);
+  public static function getList(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resrouceLocalizer, Import $importServiceFactory): array {
+    $importerLister = new ImporterList($jobStoreFactory, $resrouceLocalizer, $importServiceFactory);
     return $importerLister->buildList();
   }
 

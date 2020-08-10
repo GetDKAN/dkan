@@ -38,7 +38,7 @@ class Drush extends DrushCommands {
    *
    * @command dkan:metadata-form:sync
    * @aliases dkan-metadata-form:sync
-   * @expectedDeprecation dkan-metadata-form:sync is deprecated and will be removed in a future Dkan release. Use dkan:metadata-form:sync instead.
+   * @deprecated dkan-metadata-form:sync is deprecated and will be removed in a future Dkan release. Use dkan:metadata-form:sync instead.
    */
   public function sync() {
     $this->createLoadMeJs();

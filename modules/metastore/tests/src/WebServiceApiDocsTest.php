@@ -65,7 +65,7 @@ class WebServiceApiDocsTest extends TestCase {
   }
 
   /**
-   *
+   * Private.
    */
   private function getCommonMockChain() {
     $serializer = new Yaml();

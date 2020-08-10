@@ -1,11 +1,11 @@
 <?php
 
-use Drupal\datastore\Storage\JobStoreFactory;
+use Drupal\common\Storage\JobStoreFactory;
 use PHPUnit\Framework\TestCase;
 use Drupal\datastore\Service\Import as Service;
-use Dkan\Datastore\Resource;
+use Drupal\common\Resource;
 use MockChain\Chain;
-use Drupal\datastore\Storage\JobStore;
+use Drupal\common\Storage\JobStore;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Procrastinator\Result;
@@ -20,7 +20,7 @@ class ImportTest extends TestCase {
    *
    */
   public function test() {
-    $resource = new Resource("blah", "/", "text/csv");
+    $resource = new Resource("http://hello.goodby/text.csv", "text/csv");
 
     $jobStore = (new Chain($this))
       ->add(JobStore::class, "retrieve", "")

@@ -4,8 +4,10 @@ declare(strict_types = 1);
 
 namespace Drupal\metastore\Plugin\QueueWorker;
 
+use Drupal\common\LoggerTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\metastore\NodeWrapper\Data;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -21,6 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @codeCoverageIgnore
  */
 class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+  use LoggerTrait;
 
   /**
    * The node storage service.
@@ -52,12 +55,14 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
+    $me = new static(
           $configuration,
           $plugin_id,
           $plugin_definition,
           $container->get('dkan.common.node_storage')
       );
+    $me->setLoggerFactory($container->get('logger.factory'));
+    return $me;
   }
 
   /**
@@ -66,23 +71,27 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    * {@inheritdoc}
    */
   public function processItem($data) {
-    $property_id = $data[0];
-    $uuid = $data[1];
+    $this->debug(json_encode($data));
+
+    $metadataProperty = $data[0];
+    $identifier = $data[1];
 
     // @Todo: Search for uuid directly within the loadByProperties array.
     // Search datasets using this uuid for this property id.
-    $datasets = $this->nodeStorage
-      ->loadByProperties(
-              [
-                'field_data_type' => 'dataset',
-              ]
-          );
-    foreach ($datasets as $dataset) {
-      $data = json_decode($dataset->referenced_metadata);
-      $value = $data->{$property_id};
+    $properties = [
+      'type' => 'data',
+      'field_data_type' => 'dataset',
+    ];
+
+    $datasetNodes = $this->nodeStorage->loadByProperties($properties);
+
+    foreach ($datasetNodes as $node) {
+      $data = new Data($node);
+      $raw = $data->getRawMetadata();
+      $value = $raw->{$metadataProperty};
       // Check if uuid is found either directly or in an array.
-      $uuid_is_value = $uuid == $value;
-      $uuid_found_in_array = is_array($value) && in_array($uuid, $value);
+      $uuid_is_value = $identifier == $value;
+      $uuid_found_in_array = is_array($value) && in_array($identifier, $value);
       if ($uuid_is_value || $uuid_found_in_array) {
         // Uuid found in use, abort.
         return;
@@ -90,7 +99,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     }
 
     // Value reference uuid not found in any dataset, therefore safe to delete.
-    $this->deleteReference($property_id, $uuid);
+    $this->deleteReference($metadataProperty, $identifier);
   }
 
   /**

@@ -33,7 +33,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Inherited.
    *
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApi($container->get('request_stack'), $container->get('dkan.harvest.service'));

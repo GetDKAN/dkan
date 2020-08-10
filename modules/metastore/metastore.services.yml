@@ -7,21 +7,25 @@ services:
       - '@dkan.metastore.storage'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
+
   dkan.metastore.sae_factory:
     class: \Drupal\metastore\Factory\Sae
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
+
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
       - '@app.root'
       - '@extension.list.module'
     shared: false
+
   dkan.metastore.storage:
-    class: \Drupal\metastore\Storage\Data
+    class: \Drupal\metastore\Storage\DataFactory
     arguments:
       - '@entity_type.manager'
+
   dkan.metastore.referencer:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
@@ -29,6 +33,7 @@ services:
       - '@dkan.common.node_storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
+
   dkan.metastore.dereferencer:
     class: \Drupal\metastore\Reference\Dereferencer
     arguments:
@@ -36,13 +41,27 @@ services:
       - '@dkan.common.node_storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
+
   dkan.metastore.orphan_checker:
     class: \Drupal\metastore\Reference\OrphanChecker
     arguments:
       - '@config.factory'
       - '@queue'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
 
-  # @expectedDeprecation
+  dkan.metastore.resource_mapper:
+    class: \Drupal\metastore\ResourceMapper
+    arguments:
+      - '@dkan.metastore.resource_mapper_database_table'
+      - '@event_dispatcher'
+
+  dkan.metastore.resource_mapper_database_table:
+    class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
+    arguments:
+      - '@database'
+
+  # @deprecated
   metastore.service:
     class: \Drupal\metastore\Service
     arguments:
@@ -51,17 +70,20 @@ services:
       - '@dkan.metastore.storage'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
+
   metastore.sae_factory:
     class: \Drupal\metastore\Factory\Sae
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
+
   metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
       - '@app.root'
       - '@extension.list.module'
     shared: false
+
   metastore.storage:
     class: \Drupal\metastore\Storage\Data
     arguments:
@@ -73,6 +95,7 @@ services:
       - '@dkan.common.node_storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
+
   metastore.dereferencer:
     class: \Drupal\metastore\Reference\Dereferencer
     arguments:
@@ -80,8 +103,11 @@ services:
       - '@dkan.common.node_storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
+
   metastore.orphan_checker:
     class: \Drupal\metastore\Reference\OrphanChecker
     arguments:
       - '@config.factory'
       - '@queue'
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]

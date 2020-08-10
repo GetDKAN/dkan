@@ -27,6 +27,8 @@ trait LoggerTrait {
    */
   private $loggerService;
 
+  private $debug = FALSE;
+
   /**
    * Setter.
    *
@@ -73,6 +75,31 @@ trait LoggerTrait {
 
     if ($this->loggerService) {
       $this->loggerService->get($this->loggerName)->notice($message, $context);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function showDebug() {
+    $this->debug = TRUE;
+  }
+
+  /**
+   * Private.
+   */
+  private function debug(string $message = "", array $context = []) {
+    if ($this->loggerService && $this->debug) {
+      $m = "@class @function: " . $message;
+      $c = array_merge($context,
+        [
+          '@class' => static::class,
+          '@function' => debug_backtrace()[1]['function'],
+          '@message' => $message,
+        ]
+      );
+
+      $this->loggerService->get($this->loggerName)->notice($m, $c);
     }
   }
 

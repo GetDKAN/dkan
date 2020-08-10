@@ -2,45 +2,45 @@
 
 namespace Drupal\datastore\SqlEndpoint;
 
+use Drupal\common\Resource;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\datastore\Service\Factory\Resource;
-use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\common\Storage\Query;
+use Drupal\datastore\Service as DatastoreService;
 use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
+use Drupal\datastore\Storage\DatabaseTable;
+use Maquina\StateMachine\Machine;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\datastore\Storage\Query;
-use Maquina\StateMachine\Machine;
 
 /**
  * Class Service.
  */
 class Service implements ContainerInjectionInterface {
   private $configFactory;
-  private $databaseTableFactory;
-  private $resourceServiceFactory;
+  private $datastoreService;
 
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('config.factory'),
-      $container->get('datastore.database_table_factory'),
-      $container->get('datastore.service.factory.resource')
+      $container->get('dkan.datastore.service'),
+      $container->get('config.factory')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactory $configFactory, DatabaseTableFactory $databaseTableFactory, Resource $resourceServiceFactory) {
+  public function __construct(
+    DatastoreService $datastoreService,
+    ConfigFactory $configFactory) {
+
+    $this->datastoreService = $datastoreService;
     $this->configFactory = $configFactory;
-    $this->databaseTableFactory = $databaseTableFactory;
-    $this->resourceServiceFactory = $resourceServiceFactory;
   }
 
   /**
@@ -48,7 +48,10 @@ class Service implements ContainerInjectionInterface {
    */
   public function runQuery(string $queryString, $showDbColumns = FALSE): array {
     $queryObject = $this->getQueryObject($queryString);
-    $databaseTable = $this->getDatabaseTable($this->getResourceUuid($queryString));
+
+    [$identifier, $version] = $this->getResourceIdentifierAndVersion($queryString);
+
+    $databaseTable = $this->getDatabaseTable($identifier, $version);
 
     $result = $databaseTable->query($queryObject);
 
@@ -83,36 +86,22 @@ class Service implements ContainerInjectionInterface {
    * @param string $sqlString
    *   A string with an sql statement.
    *
-   * @return string
-   *   The table name from the sql statement,
-   *   which is equivalent to the resource's UUID.
+   * @return array
+   *   An array with the identifier and version.
    *
    * @throws \Exception
    */
-  public function getResourceUuid(string $sqlString): string {
+  public function getResourceIdentifierAndVersion(string $sqlString): array {
     $stateMachine = $this->validate($sqlString);
-    return $this->getTableNameFromSelect($stateMachine->gsm('select'));
+    $someIdentifier = $this->getTableNameFromSelect($stateMachine->gsm('select'));
+    return Resource::getIdentifierAndVersion($someIdentifier);
   }
 
   /**
    * Private.
    */
-  private function getDatabaseTable(string $uuid): DatabaseTable {
-    $resource = $this->getResource($uuid);
-    if (!$resource) {
-      throw new \Exception("Resource not found.");
-    }
-
-    return $this->databaseTableFactory->getInstance($resource->getId(), ['resource' => $resource]);
-  }
-
-  /**
-   * Private.
-   */
-  private function getResource(string $uuid) {
-    /* @var $resourceService \Drupal\datastore\Service\Resource */
-    $resourceService = $this->resourceServiceFactory->getInstance($uuid);
-    return $resourceService->get();
+  private function getDatabaseTable($identifier, $version = NULL): DatabaseTable {
+    return $this->datastoreService->getStorage($identifier, $version);
   }
 
   /**
@@ -136,7 +125,7 @@ class Service implements ContainerInjectionInterface {
    * @return \Drupal\datastore\Storage\Query
    *   A query object.
    */
-  public function getQueryObject(string $sqlString): Query {
+  private function getQueryObject(string $sqlString): Query {
     return $this->getQueryObjectFromStateMachine($this->validate($sqlString));
   }
 
@@ -240,6 +229,20 @@ class Service implements ContainerInjectionInterface {
    */
   private function getStringsFromStringMachine(Machine $machine): array {
     return (new GetStringsFromStateMachineExecution($machine->execution))->get();
+  }
+
+  /**
+   * Get the a resource's UUID if it was given through the SQL string.
+   */
+  public function getResourceUuid(string $sqlString) {
+    $stateMachine = $this->validate($sqlString);
+    $identifier = $this->getTableNameFromSelect($stateMachine->gsm('select'));
+
+    // Are we dealing with a distribution id?
+    if (substr_count($identifier, '__') == 0) {
+      return $identifier;
+    }
+    return NULL;
   }
 
 }

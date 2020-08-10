@@ -23,7 +23,7 @@ class SaeTest extends TestCase {
       ->getMock();
 
     $storage = (new Chain($this))
-      ->add(Data::class, "blah", NULL)
+      ->add(Data::class)
       ->getMock();
 
     $factory = new Sae($schemaRetriever, $storage);

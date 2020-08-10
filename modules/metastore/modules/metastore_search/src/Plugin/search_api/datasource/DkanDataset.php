@@ -20,7 +20,7 @@ class DkanDataset extends DatasourcePluginBase {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getPropertyDefinitions() {
     return Dataset::definition();
@@ -29,7 +29,7 @@ class DkanDataset extends DatasourcePluginBase {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getItemIds($page = NULL) {
     $pageSize = 250;
@@ -64,7 +64,7 @@ class DkanDataset extends DatasourcePluginBase {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function loadMultiple(array $ids) {
     /* @var  $dataStorage  \Drupal\metastore\Storage\Data */
@@ -82,7 +82,7 @@ class DkanDataset extends DatasourcePluginBase {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getItemId(ComplexDataInterface $item) {
     return $item->get('identifier');

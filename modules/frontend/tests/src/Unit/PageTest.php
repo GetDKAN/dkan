@@ -15,7 +15,7 @@ class PageTest extends TestCase {
   private $node;
 
   /**
-   *
+   * Private.
    */
   private function getConfigFactory() {
     $options = (new Options())
@@ -29,7 +29,7 @@ class PageTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', $options)
       ->getMock();
-    
+
     return $configFactory;
   }
 
@@ -49,7 +49,7 @@ class PageTest extends TestCase {
   }
 
   /**
-   *
+   * Private.
    */
   private function getNodeMock() {
     $node = $this->getMockBuilder(NodeInterface::class)
