@@ -28,4 +28,4 @@ It is possible to add new fields to conform to additional specifications or cust
 To change the schema being used, copy the `schema` directory from the DKAN repo and place it in the root of your Drupal installation. Then make any modifications necessary to the `dataset.json` file inside the `collections` directory.
 
 @warning
-  The schema is actively used by the catalog to verify the validity of the data. Making changes to the schema, after data is present in the catalog should be done with care as non-backward compatible changes to the schema could cause issues. Look at Drupal::dkan_schema::SchemaRetriever::findSchemaDirectory() for context.
+  The schema is actively used by the catalog to verify the validity of the data. Making changes to the schema, after data is present in the catalog should be done with care as non-backward compatible changes to the schema could cause issues. Look at Drupal::metastore::SchemaRetriever::findSchemaDirectory() for context.

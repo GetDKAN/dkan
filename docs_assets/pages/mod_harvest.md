@@ -124,7 +124,7 @@ class Socrata extends Transform {
   /**
    * Inherited.
    *
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public function run($item) {
     // Convert URL identifier to just the ID.
