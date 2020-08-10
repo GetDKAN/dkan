@@ -140,7 +140,7 @@ class ServiceTest extends TestCase {
       ->getMock();
 
     $dkanHarvester = (new Chain($this))
-      ->add(HarvestService::class, "harvest", "Hello")
+      ->add(HarvestService::class)
       ->getMock();
 
     $service = $this->getMockBuilder(HarvestService::class)
@@ -155,7 +155,7 @@ class ServiceTest extends TestCase {
   }
 
   /**
-   *
+   * Private.
    */
   private function getStorageFactory() {
     if (!isset($this->storageFactory)) {
@@ -163,7 +163,7 @@ class ServiceTest extends TestCase {
         private $stores = [];
 
         /**
-         *
+         * Getter.
          */
         public function getInstance(string $identifier, array $config = []) {
           if (!isset($this->stores[$identifier])) {
@@ -194,12 +194,18 @@ class ServiceTest extends TestCase {
     return $this->storageFactory;
   }
 
+  /**
+   * Private.
+   */
   private function getMetastoreMockChain() {
     return (new Chain($this))
       ->add(Metastore::class, 'publish', '1')
       ->getMock();
   }
 
+  /**
+   *
+   */
   public function testPublish() {
 
     $datasetUuids = ['abcd-1001', 'abcd-1002', 'abcd-1003'];
@@ -217,6 +223,9 @@ class ServiceTest extends TestCase {
     $this->assertEquals($result, ['1', '1', '1']);
   }
 
+  /**
+   * Private.
+   */
   private function getCommonMockChain() {
 
     $options = (new Options())
@@ -226,10 +235,10 @@ class ServiceTest extends TestCase {
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
-      // DatabaseTableFactory
+      // DatabaseTableFactory.
       ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
       ->add(DatabaseTable::class, "retrieveAll", ['100', '102', '101'])
-      // Metastore
+      // Metastore.
       ->add(Metastore::class, 'publish', '1');
   }
 

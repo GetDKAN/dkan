@@ -14,7 +14,7 @@ use Drupal\Core\Database\Connection;
 trait TestHelperTrait {
 
   /**
-   *
+   * Private.
    */
   private function getServices() {
     return (new Options())

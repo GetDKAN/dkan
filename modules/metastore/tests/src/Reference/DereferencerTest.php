@@ -40,7 +40,7 @@ class DereferencerTest extends TestCase {
       ->getMock();
 
     $queueService = (new Chain($this))
-      ->add(QueueFactory::class, 'blah', NULL)
+      ->add(QueueFactory::class)
       ->getMock();
 
     $valueReferencer = new Dereferencer($configService, $nodeStorage);
@@ -82,7 +82,7 @@ class DereferencerTest extends TestCase {
       ->getMock();
 
     $queueService = (new Chain($this))
-      ->add(QueueFactory::class, 'blah', NULL)
+      ->add(QueueFactory::class)
       ->getMock();
 
     $valueReferencer = new Dereferencer($configService, $nodeStorage);

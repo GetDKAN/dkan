@@ -37,7 +37,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Inherited.
    *
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApi(

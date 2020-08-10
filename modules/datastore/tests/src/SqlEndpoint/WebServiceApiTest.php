@@ -74,7 +74,7 @@ class WebServiceApiTest extends TestCase {
     $pluginMessage = "Resource hidden since dataset access level is non-public.";
     $pluginCode = 401;
 
-    $container = $this->getCommonMockChain()
+    $container = $this->getCommonMockChain("[SELECT * FROM 123456][WHERE abc = \"blah\"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];")
       ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])
       ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
       ->add(DataModifierBase::class, 'requiresModification', TRUE)
@@ -88,9 +88,9 @@ class WebServiceApiTest extends TestCase {
   }
 
   /**
-   * @return \MockChain\Chain
+   * Getter.
    */
-  public function getCommonMockChain($query = "[SELECT * FROM abc][WHERE abc = \"blah\"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];") {
+  public function getCommonMockChain($query = "[SELECT * FROM 123__456][WHERE abc = \"blah\"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];") {
 
     $options = (new Options())
       ->add('datastore.sql_endpoint.service', Service::class)

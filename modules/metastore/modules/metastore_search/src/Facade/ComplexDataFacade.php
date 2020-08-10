@@ -15,7 +15,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getDataDefinition() {
     // TODO: Implement getDataDefinition() method.
@@ -24,7 +24,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function get($property_name) {
     // TODO: Implement get() method.
@@ -33,7 +33,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function set($property_name, $value, $notify = TRUE) {
     // TODO: Implement set() method.
@@ -42,7 +42,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getProperties($include_computed = FALSE) {
     // TODO: Implement getProperties() method.
@@ -51,7 +51,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function toArray() {
     // TODO: Implement toArray() method.
@@ -60,7 +60,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function isEmpty() {
     // TODO: Implement isEmpty() method.
@@ -69,7 +69,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function current() {
     // TODO: Implement current() method.
@@ -78,7 +78,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function next() {
     // TODO: Implement next() method.
@@ -87,7 +87,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function key() {
     // TODO: Implement key() method.
@@ -96,7 +96,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function valid() {
     // TODO: Implement valid() method.
@@ -105,7 +105,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function rewind() {
     // TODO: Implement rewind() method.
@@ -114,7 +114,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function onChange($name) {
     // TODO: Implement onChange() method.
@@ -123,7 +123,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public static function createInstance(
     $definition,
@@ -136,7 +136,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getValue() {
     // TODO: Implement getValue() method.
@@ -145,7 +145,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function setValue($value, $notify = TRUE) {
     // TODO: Implement setValue() method.
@@ -154,7 +154,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getString() {
     // TODO: Implement getString() method.
@@ -163,7 +163,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getConstraints() {
     // TODO: Implement getConstraints() method.
@@ -172,7 +172,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function validate() {
     // TODO: Implement validate() method.
@@ -181,7 +181,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function applyDefaultValue($notify = TRUE) {
     // TODO: Implement applyDefaultValue() method.
@@ -190,7 +190,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getName() {
     // TODO: Implement getName() method.
@@ -199,7 +199,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getParent() {
     // TODO: Implement getParent() method.
@@ -208,7 +208,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getRoot() {
     // TODO: Implement getRoot() method.
@@ -217,7 +217,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getPropertyPath() {
     // TODO: Implement getPropertyPath() method.
@@ -226,7 +226,7 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function setContext(
     $name = NULL,

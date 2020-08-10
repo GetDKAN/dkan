@@ -388,7 +388,7 @@ EOF;
   }
 
   /**
-   *
+   * Private.
    */
   private function getCommonMockChain() {
     $mockChain = new Chain($this);

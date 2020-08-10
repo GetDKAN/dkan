@@ -14,27 +14,6 @@ class Dereferencer {
   use HelperTrait;
   use LoggerTrait;
 
-  /**
-   * Indicates that dereferencing outputs data, the default case.
-   *
-   * @var int
-   */
-  const DEREFERENCE_OUTPUT_DEFAULT = 0;
-
-  /**
-   * Indicates that dereferencing outputs both the data and its uuid.
-   *
-   * @var int
-   */
-  const DEREFERENCE_OUTPUT_REFERENCE_IDS = 1;
-
-  /**
-   * Store the dereferencing method for current request.
-   *
-   * @var int
-   */
-  private $dereferenceMethod;
-
   private $nodeStorage;
 
   /**
@@ -50,35 +29,21 @@ class Dereferencer {
    *
    * @param object $data
    *   The json metadata object.
-   * @param int $method
-   *   Represents the dereferencing method, data, identifier or both.
    *
    * @return mixed
    *   Modified json metadata object.
    */
-  public function dereference(stdClass $data, int $method = self::DEREFERENCE_OUTPUT_DEFAULT) {
-
-    $this->setDereferenceMethod($method);
+  public function dereference(stdClass $data) {
     // Cycle through the dataset properties we seek to dereference.
-    foreach ($this->getPropertyList() as $property_id) {
-      if (isset($data->{$property_id})) {
-        $data->{$property_id} = $this->dereferenceProperty($property_id, $data->{$property_id});
+    foreach ($this->getPropertyList() as $propertyId) {
+      if (isset($data->{$propertyId})) {
+        $referenceProperty = "%Ref{$propertyId}";
+        [$ref, $actual] = $this->dereferenceProperty($propertyId, $data->{$propertyId});
+        $data->{$referenceProperty} = $ref;
+        $data->{$propertyId} = $actual;
       }
     }
     return $data;
-  }
-
-  /**
-   * Setter for dereferencing method.
-   *
-   * @param int $method
-   *   Method.
-   *
-   * @return int
-   *   Int.
-   */
-  private function setDereferenceMethod(int $method) {
-    return $this->dereferenceMethod = $method;
   }
 
   /**
@@ -122,13 +87,15 @@ class Dereferencer {
    */
   private function dereferenceMultiple(string $property_id, array $uuids) : array {
     $result = [];
+    $reference = [];
     foreach ($uuids as $uuid) {
-      $data = $this->dereferenceSingle($property_id, $uuid);
-      if (NULL !== $data) {
-        $result[] = $data;
+      [$ref, $actual] = $this->dereferenceSingle($property_id, $uuid);
+      if (NULL !== $ref && NULL !== $actual) {
+        $result[] = $actual;
+        $reference[] = $ref;
       }
     }
-    return $result;
+    return [$reference, $result];
   }
 
   /**
@@ -155,7 +122,7 @@ class Dereferencer {
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
-        return ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_REFERENCE_IDS) ? $metadata : $metadata->data;
+        return [$metadata, $metadata->data];
       }
     }
     // If a property node was not found, it most likely means it was deleted
@@ -169,7 +136,7 @@ class Dereferencer {
       ]
     );
 
-    return NULL;
+    return [NULL, NULL];
   }
 
 }

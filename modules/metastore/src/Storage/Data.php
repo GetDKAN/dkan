@@ -8,6 +8,7 @@ use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\common\LoggerTrait;
 use Drupal\node\NodeInterface;
 use HTMLPurifier;
 
@@ -15,7 +16,7 @@ use HTMLPurifier;
  * Data.
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
-
+  use LoggerTrait;
   /**
    * Entity type manager.
    *
@@ -39,45 +40,27 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
   /**
    * Constructor.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
-   *   Injected entity type manager.
    */
-  public function __construct(EntityTypeManager $entityTypeManager) {
+  public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
+    $this->setLoggerFactory(\Drupal::service('logger.factory'));
+    $this->setSchema($schemaId);
   }
 
   /**
-   * Sets the data type.
-   *
-   * @param string $schema_id
-   *   The data type.
+   * Private.
    */
-  public function setSchema($schema_id) {
-    $this->schemaId = $schema_id;
-    return $this;
-  }
-
-  /**
-   * Assert schema is set.
-   *
-   * @throws \Exception
-   */
-  private function assertSchema() {
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schema id not set.");
-    }
+  private function setSchema($schemaId) {
+    $this->schemaId = $schemaId;
   }
 
   /**
    * Inherited.
    *
-   * {@inheritDoc}.
+   * {@inheritdoc}.
    */
   public function retrieveAll(): array {
-
-    $this->assertSchema();
 
     $node_ids = $this->nodeStorage->getQuery()
       ->condition('type', $this->getType())
@@ -105,9 +88,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *   The node's json metadata, or NULL if the node was not found.
    */
   public function retrievePublished(string $uuid) : ?string {
-
-    $this->assertSchema();
-
     $node = $this->getNodePublishedRevision($uuid);
 
     if ($node && $node->get('moderation_state')->getString() == 'published') {
@@ -120,11 +100,10 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Inherited.
    *
-   * {@inheritDoc}.
+   * {@inheritdoc}.
    */
   public function retrieve(string $uuid) : ?string {
-
-    $this->assertSchema();
+    $this->debug("uuid: @uuid", ['@uuid' => $uuid]);
 
     if ($this->getDefaultModerationState() === 'published') {
       $node = $this->getNodePublishedRevision($uuid);
@@ -134,6 +113,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     }
 
     if ($node) {
+
+      $this->debugNode(__FUNCTION__, $node);
+
       return $node->get('field_json_metadata')->getString();
     }
 
@@ -151,7 +133,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function publish(string $uuid) : string {
 
-    $this->assertSchema();
     if ($this->schemaId !== 'dataset') {
       throw new \Exception("Publishing currently only implemented for datasets.");
     }
@@ -227,7 +208,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Inherited.
    *
-   * {@inheritDoc}.
+   * {@inheritdoc}.
    */
   public function remove(string $uuid) {
 
@@ -240,11 +221,10 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Inherited.
    *
-   * {@inheritDoc}.
+   * {@inheritdoc}.
    */
   public function store($data, string $uuid = NULL): string {
-
-    $this->assertSchema();
+    $this->debug($data);
 
     $data = json_decode($data);
     $data = $this->filterHtml($data);
@@ -267,7 +247,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   /**
    * Private.
    */
-  private function updateExistingNode($node, $data) {
+  private function updateExistingNode(NodeInterface $node, $data) {
     $node->field_data_type = $this->schemaId;
     $new_data = json_encode($data);
     $node->field_json_metadata = $new_data;
@@ -276,6 +256,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->set('moderation_state', $this->getDefaultModerationState());
 
     $node->save();
+
+    $this->debugNode(__FUNCTION__, $node);
+
     return $node->uuid();
   }
 
@@ -297,6 +280,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
 
     $node->save();
+
+    $this->debugNode(__FUNCTION__, $node);
+
     return $node->uuid();
   }
 
@@ -377,6 +363,22 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       ->load('dkan_publishing')
       ->getTypePlugin()
       ->getConfiguration()['default_moderation_state'];
+  }
+
+  /**
+   * Private.
+   */
+  private function debugNode($function, NodeInterface $node) {
+    $this->debug("%function data type: %data_type, nid: %nid, uuid: %uuid, revision: %revision",
+      [
+        "%function" => $function,
+        "%data_type" => $node->field_data_type->value,
+        "%nid" => $node->id(),
+        "%uuid" => $node->uuid(),
+        "%revision" => $node->getRevisionId(),
+      ]
+    );
+    $this->debug($node->field_json_metadata->value);
   }
 
 }

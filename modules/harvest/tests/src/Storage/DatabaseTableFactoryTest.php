@@ -1,41 +1,34 @@
 <?php
 
-namespace Drupal\Tests\harvest\Unit\Storage;
+namespace Drupal\Tests\harvest\Storage;
 
 use Drupal\Core\Database\Connection;
-use MockChain\Chain;
-use Drupal\harvest\Storage\DatabaseTable;
+use Drupal\Core\Database\Schema;
 use Drupal\harvest\Storage\DatabaseTableFactory;
-use PHPUnit\Framework\TestCase;
+use Drupal\Tests\UnitTestCase;
+use MockChain\Chain;
 
 /**
  *
  */
-class DatabaseTableFactoryTest extends TestCase {
+class DatabaseTableFactoryTest extends UnitTestCase {
 
   /**
    *
    */
   public function test() {
+    $factory = new DatabaseTableFactory($this->getConnection());
+    $this->assertNotNull($factory->getInstance('blah', []));
+  }
 
-    $connection = (new Chain($this))
-      ->add(Connection::class, "blah", NULL)
+  /**
+   * Getter.
+   */
+  public function getConnection(): Connection {
+    return (new Chain($this))
+      ->add(Connection::class, 'schema', Schema::class)
+      ->add(Schema::class, 'tableExists', FALSE)
       ->getMock();
-
-    $databaseTable = (new Chain($this))
-      ->add(DatabaseTable::class, "blah", NULL)
-      ->getMock();
-
-    $factory = $this->getMockBuilder(DatabaseTableFactory::class)
-      ->setConstructorArgs([$connection])
-      ->setMethods(['getDatabaseTable'])
-      ->getMock();
-
-    $factory->method('getDatabaseTable')->willReturn($databaseTable);
-
-    $fileStorage = $factory->getInstance('blah');
-    $fileStorage2 = $factory->getInstance('blah');
-    $this->assertEquals($fileStorage, $fileStorage2);
   }
 
 }

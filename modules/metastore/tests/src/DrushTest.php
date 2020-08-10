@@ -7,6 +7,7 @@ use Drupal\metastore\Drush;
 use Drupal\metastore\Storage\Data;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  *
@@ -22,7 +23,7 @@ class DrushTest extends TestCase {
       ->getMock();
 
     $loggerChain = (new Chain($this))
-      ->add(LoggerChannel::class, 'success', NULL, 'success');
+      ->add(LoggerInterface::class, 'info', NULL, 'success');
 
     $logger = $loggerChain->getMock();
 

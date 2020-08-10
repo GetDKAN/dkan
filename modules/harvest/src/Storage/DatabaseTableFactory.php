@@ -22,7 +22,7 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->storage[$identifier])) {

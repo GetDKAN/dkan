@@ -18,14 +18,14 @@ class WebServiceApiTest extends TestCase {
   /**
    *
    */
-  public function testMultipleDrops() {
-    $container = $this->getContainer();
+  /*public function testMultipleDrops() {
+  $container = $this->getContainer();
 
-    $webServiceApi = WebServiceApi::create($container);
-    $result = $webServiceApi->deleteMultiple(["1", "2"]);
+  $webServiceApi = WebServiceApi::create($container);
+  $result = $webServiceApi->deleteMultiple(["1", "2"]);
 
-    $this->assertTrue($result instanceof JsonResponse);
-  }
+  $this->assertTrue($result instanceof JsonResponse);
+  }*/
 
   /**
    *
@@ -40,7 +40,7 @@ class WebServiceApiTest extends TestCase {
   }
 
   /**
-   *
+   * Private.
    */
   private function getContainer() {
     $options = (new Options())

@@ -11,7 +11,7 @@ use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\Statement;
 use MockChain\Chain;
 use MockChain\Sequence;
-use Drupal\datastore\Storage\JobStore;
+use Drupal\common\Storage\JobStore;
 use FileFetcher\FileFetcher;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +26,6 @@ class JobStoreTest extends TestCase {
    */
   public function testConstruction() {
     $chain = (new Chain($this))
-      ->add(Connection::class, "blah", "blah")
       ->add(Connection::class, "schema", Schema::class)
       ->add(Schema::class, "tableExists", FALSE);
 
@@ -157,7 +156,7 @@ class JobStoreTest extends TestCase {
   }
 
   /**
-   *
+   * Private.
    */
   private function getFileFetcher() {
     return FileFetcher::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../data/countries.csv"]);

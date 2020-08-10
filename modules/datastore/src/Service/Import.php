@@ -5,9 +5,10 @@ namespace Drupal\datastore\Service;
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\JobStoreFactory;
+use Drupal\common\Storage\JobStoreFactory;
 use Procrastinator\Result;
-use Dkan\Datastore\Resource;
+use Drupal\common\Resource;
+use Dkan\Datastore\Resource as DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 
 /**
@@ -24,7 +25,7 @@ class Import {
    * Constructor.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    $this->resource = $resource;
+    $this->resource = new DatastoreResource(md5($resource->getUniqueIdentifier()), $resource->getFilePath(), $resource->getMimeType());
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
