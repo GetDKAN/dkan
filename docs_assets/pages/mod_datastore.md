@@ -35,7 +35,7 @@ Your data is now available via the Datastore API!
 **Example**
 
 ```
-http://domain.com/api/1/datastore/sql?query=[SELECT * FROM ${resource_identifier}][WHERE state = 'OK'][ORDER BY county ASC][LIMIT 5 OFFSET 100]
+http://domain.com/api/1/datastore/sql?query=[SELECT * FROM ${resource_identifier}][WHERE state = "OK"][ORDER BY county ASC][LIMIT 5 OFFSET 100]
 ```
 
 **Configuration**
