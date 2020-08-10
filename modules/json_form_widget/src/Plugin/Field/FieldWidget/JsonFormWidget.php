@@ -140,7 +140,7 @@ class JsonFormWidget extends WidgetBase {
   /**
    * Get form element based on property type.
    */
-  private function getFormElement($type, $property_name, $property, $data) {
+  private function getFormElement($type, $property_name, $property, $data, $object_schema = FALSE) {
     switch ($type) {
       case 'object':
         return $this->handleObjectElement($property, $property_name, $data);
@@ -149,14 +149,14 @@ class JsonFormWidget extends WidgetBase {
         return $this->handleArrayElement($property, $property_name, $data);
 
       case 'string':
-        return $this->handleStringElement($property, $property_name, $data);
+        return $this->handleStringElement($property, $property_name, $data, $object_schema);
     }
   }
 
   /**
    * Handle form element for a string.
    */
-  private function handleStringElement($property, $field_name, $data, $has_children = FALSE) {
+  private function handleStringElement($property, $field_name, $data, $object_schema = FALSE) {
     // Basic definition.
     $element = [
       '#type' => 'textfield',
@@ -171,7 +171,7 @@ class JsonFormWidget extends WidgetBase {
       $element['#default_value'] = $property->default;
     }
     // Check if the field is required.
-    $element_schema = $has_children ? $property : $this->schema;
+    $element_schema = $object_schema ? $object_schema : $this->schema;
     $element['#required'] = $this->checkIfRequired($field_name, $element_schema);
     // Convert to select if applicable.
     if ($property->enum) {
@@ -195,8 +195,19 @@ class JsonFormWidget extends WidgetBase {
   /**
    * Handle form element for an object.
    */
-  private function handleObjectElement($type, $property) {
-    // Handle object.
+  private function handleObjectElement($property_schema, $field_name, $data) {
+    $element[$field_name] = [
+      '#type' => 'fieldset',
+      '#title' => $property_schema->title,
+      '#description' => $property_schema->description,
+    ];
+    $properties = array_keys((array) $property_schema->properties);
+
+    foreach ($properties as $child) {
+      $type = $property_schema->properties->{$child}->type ?? "string";
+      $element[$field_name][$child] = $this->getFormElement($type, $child, $property_schema->properties->{$child}, $data->{$child}, $property_schema);
+    }
+    return $element;
   }
 
   /**
@@ -232,7 +243,19 @@ class JsonFormWidget extends WidgetBase {
     $properties = array_keys((array) $this->schema->properties);
     $values = $form_state->getValue($field_name)[0]['value'];
     foreach ($properties as $property) {
-      $data[$property] = isset($values[$property]) ? $values[$property] : '';
+      if (isset($values[$property])) {
+        if (is_array($values[$property])) {
+          $data[$property] = [];
+          foreach ($values[$property][$property] as $key => $value) {
+            if ($value) {
+              $data[$property][$key] = $value;
+            }
+          }
+        }
+        elseif (!empty($values[$property])) {
+          $data[$property] = $values[$property];
+        }
+      }
     }
     $json = [json_encode($data)];
     $values = $this->massageFormValues($json, $form, $form_state);
@@ -245,7 +268,6 @@ class JsonFormWidget extends WidgetBase {
       unset($item->_original_delta, $item->_weight);
     }
     static::setWidgetState($form['#parents'], $field_name, $form_state, $field_state);
-
   }
 
   /**
