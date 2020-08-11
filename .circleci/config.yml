@@ -26,27 +26,22 @@ jobs:
           name: Initialize Project
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            mkdir ~/sandbox
-            cd ~/sandbox
             dktl init --dkan=dev-$CIRCLE_BRANCH
       - run:
           name: Make DKAN
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
             dktl make --prefer-source
       - run:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
           name: Run DKAN cypress tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
             dktl install
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
@@ -57,7 +52,6 @@ jobs:
           name: Run DKAN dredd tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
             dktl install
             dktl install:sample
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
@@ -68,7 +62,6 @@ jobs:
           name: Run frontend cypress tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
             dktl install
             dktl install:sample
             dktl frontend:install
@@ -76,10 +69,10 @@ jobs:
             dktl drush cr
             dktl dkan:test-cypress frontend
       - store_artifacts:
-          path: ~/sandbox/docroot/modules/contrib/dkan/cypress/screenshots
+          path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
-          path: ~/sandbox/docroot/modules/contrib/dkan/cypress/videos
+          path: docroot/modules/contrib/dkan/cypress/videos
       - store_artifacts:
-          path: ~/sandbox/src/frontend/cypress/screenshots
+          path: src/frontend/cypress/screenshots
       - store_artifacts:
-          path: ~/sandbox/src/frontend/cypress/videos
+          path: src/frontend/cypress/videos
