@@ -53,7 +53,7 @@
     ],
     "extra": {
         "dkan-frontend": {
-            "data-catalog-react":"0.2.0"
+            "@civicactions/data-catalog-react":"0.2.0"
         }
     }
 }
