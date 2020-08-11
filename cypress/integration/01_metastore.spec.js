@@ -93,7 +93,7 @@ context('Metastore', () => {
       }).then((response) => {
         expect(response.status).eql(200);
         expect(response.body["@context"]).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld");
-        expect(response.body["@id"]).eql(baseUrl + "/data.json");
+        expect(response.body["@id"]).eql("http://dkan/data.json");
         expect(response.body["@type"]).eql("dcat:Catalog");
         expect(response.body.conformsTo).eql("https://project-open-data.cio.gov/v1.1/schema");
         expect(response.body.describedBy).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.json");
