@@ -31,7 +31,7 @@ jobs:
           name: Make DKAN
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl make --prefer-source
+            dktl make
       - run:
           name: Run phpUnit tests
           command: |
