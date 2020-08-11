@@ -10,38 +10,30 @@ jobs:
       - run:
           name: Setup composer config
           command: |
-            cd ~
-            mkdir .composer
-            cd .composer
-            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > auth.json
+            mkdir ~/.composer
+            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
       - run:
           name: Install DKTL
           command: |
-            cd ~
-            git clone --branch=dan-refactor --single-branch --depth 1 https://github.com/GetDKAN/dkan-tools.git
-            chmod 777 ./dkan-tools/bin/dktl
-            export PATH=$PATH:~/dkan-tools/bin
-            which dktl
+            git clone --branch=dan-refactor --depth 1 https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools
+            chmod 777 ~/dkan-tools/bin/dktl
+            export PATH=$PATH:~/dkan-tools/bin >> $BASH_ENV
       - run:
           name: Initialize Project
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
             dktl init --dkan=dev-$CIRCLE_BRANCH
       - run:
           name: Make DKAN
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
             dktl make
       - run:
           name: Run phpUnit tests
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
           name: Run DKAN cypress tests
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
             dktl install
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
@@ -51,8 +43,6 @@ jobs:
       - run:
           name: Run DKAN dredd tests
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            dktl install
             dktl install:sample
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
@@ -61,9 +51,6 @@ jobs:
       - run:
           name: Run frontend cypress tests
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            dktl install
-            dktl install:sample
             dktl frontend:install
             dktl frontend:build
             dktl drush cr
