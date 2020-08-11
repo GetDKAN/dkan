@@ -7,7 +7,6 @@ jobs:
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
-      - checkout
       - run:
           name: Setup composer config
           command: |
@@ -19,7 +18,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone --branch=d9 --single-branch --depth 1 https://github.com/GetDKAN/dkan-tools.git
+            git clone --branch=dan-refactor --single-branch --depth 1 https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
@@ -29,19 +28,13 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             mkdir ~/sandbox
             cd ~/sandbox
-            dktl init
-      - run:
-          name: Get Drupal
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl get 9.0.0
+            dktl init --dkan=dev-$CIRCLE_BRANCH
       - run:
           name: Make DKAN
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl make --prefer-source  --branch $CIRCLE_BRANCH --frontend
+            dktl make --prefer-source
       - run:
           name: Run phpUnit tests
           command: |
@@ -65,7 +58,8 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl install --demo
+            dktl install
+            dktl install:sample
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
@@ -75,7 +69,11 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl install --demo
+            dktl install
+            dktl install:sample
+            dktl frontend:install
+            dktl frontend:build
+            dktl drush cr
             dktl dkan:test-cypress frontend
       - store_artifacts:
           path: ~/sandbox/docroot/modules/contrib/dkan/cypress/screenshots
