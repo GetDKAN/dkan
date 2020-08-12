@@ -8,11 +8,10 @@
 /**
  * Implements hook_permission().
  */
-function dkan_periodic_updates_permission()
-{
+function dkan_periodic_updates_permission() {
   return [
     'administer periodic updates' => [
-      'title' => t('administer periodic updates')
+      'title' => t('administer periodic updates'),
     ],
   ];
 }
@@ -41,7 +40,6 @@ function dkan_periodic_updates_menu() {
   ];
   return $items;
 }
-
 
 /**
  * Page callback for admin/dkan/periodic-updates.
@@ -196,6 +194,9 @@ function dkan_periodic_updates_cron() {
   }
 }
 
+/**
+ * Get items that need to be updated.
+ */
 function dkan_periodic_updates_get_items_to_update($file) {
   $file = file_load($file);
   if ($file) {
@@ -217,11 +218,13 @@ function dkan_periodic_updates_get_items_to_update($file) {
               $to_update[$resource_data['resource_id']]['file_url'] = $resource_data['file_url'];
             }
             break;
+
           case 'weekly':
             if ($time_passed->days >= 7) {
               $to_update[$resource_data['resource_id']]['file_url'] = $resource_data['file_url'];
             }
             break;
+
           default:
             if ($time_passed->days >= 1) {
               $to_update[$resource_data['resource_id']]['file_url'] = $resource_data['file_url'];
@@ -243,7 +246,8 @@ function dkan_periodic_updates_get_items_to_update($file) {
     }
     fclose($handle);
     return $to_update;
-  } else {
+  }
+  else {
     watchdog('dkan_periodic_updates', 'No manifest found.');
     return [];
   }
@@ -262,7 +266,8 @@ function dkan_periodic_updates_execute_update($resources) {
       if (empty($nids)) {
         watchdog('dkan_periodic_updates', 'There is no node with UUID !uuid.', ['!uuid' => $uuid], WATCHDOG_WARNING);
         variable_set('dkan_periodic_updates_message_' . $uuid, 'No node found for the UUID specified.');
-      } else {
+      }
+      else {
         foreach ($nids as $nid) {
           $node = node_load($nid);
           $updated = FALSE;
@@ -302,7 +307,8 @@ function dkan_periodic_updates_execute_update($resources) {
               try {
                 _dkan_datastore_resource_drop($node->nid);
                 $import = _dkan_datastore_resource_import($node->nid);
-              } catch (\Exception $e) {
+              }
+              catch (\Exception $e) {
                 $message = 'Error importing to the datastore: ' . htmlspecialchars($e->getMessage());
                 watchdog('error', $message, [], WATCHDOG_ERROR);
                 variable_set('dkan_periodic_updates_message_' . $uuid, $message);
@@ -312,7 +318,8 @@ function dkan_periodic_updates_execute_update($resources) {
                 variable_del('dkan_periodic_updates_message_' . $uuid);
               }
             }
-          } else {
+          }
+          else {
             watchdog('dkan_periodic_updates', 'Node with nid !nid not found.', ['!nid' => $nid], WATCHDOG_WARNING);
             variable_set('dkan_periodic_updates_message_' . $uuid, 'Node with nid ' . $nid . ' was not found.');
           }
@@ -329,7 +336,7 @@ function dkan_periodic_updates_state() {
   $active = variable_get('dkan_periodic_updates_status');
   $output = [];
   $output['info'] = [
-    '#markup' => '<p>' . t('The updates are evaluated on every cron run. If a resource from your manifest hasn\'t been updated yet, it may be updated on the next cron run.') . '</p>',
+    '#markup' => '<p>' . t("The updates are evaluated on every cron run. If a resource from your manifest hasn't been updated yet, it may be updated on the next cron run.") . "</p>",
   ];
   if ($active) {
     $file = variable_get('dkan_periodic_updates_manifest');
@@ -337,7 +344,14 @@ function dkan_periodic_updates_state() {
     if ($file) {
       $handle = fopen($file->uri, 'r');
       $headers = fgetcsv($handle, 0, ',');
-      $table_headers = [t('Destination Resource ID'), t('Source File URL'), t('Update frequency'), t('Status'), t('Last update'), t('Import to datastore')];
+      $table_headers = [
+        t('Destination Resource ID'),
+        t('Source File URL'),
+        t('Update frequency'),
+        t('Status'),
+        t('Last update'),
+        t('Import to datastore'),
+      ];
 
       while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
         $resource_data = array_combine($headers, $data);
@@ -346,7 +360,7 @@ function dkan_periodic_updates_state() {
         if (empty($last_updated)) {
           $last_updated = ' - ';
           if (empty($status)) {
-            $status = t('Resource hasn\'t been updated.');
+            $status = t("Resource hasn't been updated.");
           }
         }
         else {
@@ -366,6 +380,7 @@ function dkan_periodic_updates_state() {
           case 'weekly':
             $frequency = $resource_data['frequency'];
             break;
+
           default:
             $frequency = 'daily';
         }
@@ -377,7 +392,8 @@ function dkan_periodic_updates_state() {
         '#header' => $table_headers,
         '#rows' => $table_rows,
       ];
-    } else {
+    }
+    else {
       $output['state'] = [
         '#markup' => '<p class="alert alert-warning">' . t('No manifest was found.') . '</p>',
       ];
@@ -394,7 +410,7 @@ function dkan_periodic_updates_state() {
 
 /**
  * Helper function to get file contents.
-*/
+ */
 function dkan_periodic_updates_curl_get_contents($url, $path) {
   $url = preg_replace('/ /', '%20', $url);
   $fp = fopen($path, 'w');
@@ -447,7 +463,7 @@ function dkan_periodic_updates_create_file($file_url, $download = FALSE, $nid = 
     $files = file_load_multiple(array(), array('uri' => $file_url));
     $file = reset($files);
     if (!$file) {
-      $file = file_save((object)[
+      $file = file_save((object) [
         'filename' => drupal_basename($file_url),
         'uri' => $file_url,
         'status' => FILE_STATUS_PERMANENT,
