@@ -26,26 +26,26 @@ jobs:
           name: Make DKAN
           command: |
             dktl make
-      - run:
-          name: Run phpUnit tests
-          command: |
-            dktl xdebug:start
-            dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
-      - run:
-          name: Run DKAN cypress tests
-          command: |
-            dktl install
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
-            dktl drush user:create testeditor --password="testeditor"
-            dktl drush user-add-role administrator testeditor
-            dktl dkan:test-cypress
-      - run:
-          name: Run DKAN dredd tests
-          command: |
-            dktl install:sample
-            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
-            dktl dkan:test-dredd
+      # - run:
+      #     name: Run phpUnit tests
+      #     command: |
+      #       dktl xdebug:start
+      #       dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
+      # - run:
+      #     name: Run DKAN cypress tests
+      #     command: |
+      #       dktl install
+      #       dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
+      #       dktl drush user-add-role api_user testuser
+      #       dktl drush user:create testeditor --password="testeditor"
+      #       dktl drush user-add-role administrator testeditor
+      #       dktl dkan:test-cypress
+      # - run:
+      #     name: Run DKAN dredd tests
+      #     command: |
+      #       dktl install:sample
+      #       dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
+      #       dktl dkan:test-dredd
       - run:
           name: Run frontend cypress tests
           command: |
