@@ -43,6 +43,7 @@ jobs:
       - run:
           name: Run DKAN dredd tests
           command: |
+            dktl install
             dktl install:sample
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
