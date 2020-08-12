@@ -49,6 +49,8 @@ jobs:
       - run:
           name: Run frontend cypress tests
           command: |
+            dktl install
+            dktl install:sample
             dktl frontend:install
             dktl frontend:build
             dktl drush cr
