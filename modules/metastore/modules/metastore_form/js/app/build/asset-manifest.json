@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/css/main.b9557a38.chunk.css",
-    "main.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/main.c29fc085.chunk.js",
-    "main.js.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/main.c29fc085.chunk.js.map",
-    "runtime-main.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/runtime-main.542a6283.js",
-    "runtime-main.js.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/runtime-main.542a6283.js.map",
-    "static/css/2.85be2cc6.chunk.css": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/css/2.85be2cc6.chunk.css",
-    "static/js/2.e7b270ff.chunk.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/2.e7b270ff.chunk.js",
-    "static/js/2.e7b270ff.chunk.js.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/2.e7b270ff.chunk.js.map",
+    "main.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/main.1406e976.chunk.js",
+    "main.js.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/main.1406e976.chunk.js.map",
+    "runtime-main.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/runtime-main.91201ab4.js",
+    "runtime-main.js.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/runtime-main.91201ab4.js.map",
+    "static/css/2.0ebff1f4.chunk.css": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/css/2.0ebff1f4.chunk.css",
+    "static/js/2.84bb8275.chunk.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/2.84bb8275.chunk.js",
+    "static/js/2.84bb8275.chunk.js.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/2.84bb8275.chunk.js.map",
     "index.html": "/modules/contrib/dkan/modules/metastore_form/js/app/build/index.html",
-    "precache-manifest.ba759c28c97ddd7896e9239bba2adadc.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/precache-manifest.ba759c28c97ddd7896e9239bba2adadc.js",
+    "precache-manifest.1c70140ecdbdf7fe88ca5f0094244a5c.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/precache-manifest.1c70140ecdbdf7fe88ca5f0094244a5c.js",
     "service-worker.js": "/modules/contrib/dkan/modules/metastore_form/js/app/build/service-worker.js",
-    "static/css/2.85be2cc6.chunk.css.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/css/2.85be2cc6.chunk.css.map",
+    "static/css/2.0ebff1f4.chunk.css.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/css/2.0ebff1f4.chunk.css.map",
     "static/css/main.b9557a38.chunk.css.map": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/css/main.b9557a38.chunk.css.map",
-    "static/js/2.e7b270ff.chunk.js.LICENSE.txt": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/2.e7b270ff.chunk.js.LICENSE.txt"
+    "static/js/2.84bb8275.chunk.js.LICENSE.txt": "/modules/contrib/dkan/modules/metastore_form/js/app/build/static/js/2.84bb8275.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.542a6283.js",
-    "static/css/2.85be2cc6.chunk.css",
-    "static/js/2.e7b270ff.chunk.js",
+    "static/js/runtime-main.91201ab4.js",
+    "static/css/2.0ebff1f4.chunk.css",
+    "static/js/2.84bb8275.chunk.js",
     "static/css/main.b9557a38.chunk.css",
-    "static/js/main.c29fc085.chunk.js"
+    "static/js/main.1406e976.chunk.js"
   ]
 }
