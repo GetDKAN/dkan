@@ -16,14 +16,12 @@ jobs:
       - run:
           name: Install DKTL
           command: |
-            wget https://github.com/GetDKAN/dkan-tools/archive/$DKTL_VERSION.tar.gz
-            mkdir ~/dkan-tools && tar xf $DKTL_VERSION.tar.gz -C ~/dkan-tools --strip-components 1
-            rm $DKTL_VERSION.tar.gz && chmod 777 ~/dkan-tools/bin/dktl
+            git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Initialize Project
           command: |
-            v=$BRANCH
+            v=$CIRCLE_BRANCH
             if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
             v="$v#${CIRCLE_SHA1}" && dktl init --dkan=$v
       - run:
