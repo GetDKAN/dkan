@@ -22,7 +22,7 @@ jobs:
             git clone https://github.com/GetDKAN/dkan-tools.git
             cd dkan-tools
             git checkout 3.2.2
-            chmod 777 ./dkan-tools/bin/dktl
+            chmod 777 ~/dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
       - run:
