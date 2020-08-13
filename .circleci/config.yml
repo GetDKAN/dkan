@@ -6,6 +6,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
+      DKTL_VERSION: "4.0.0"
     steps:
       - run:
           name: Setup composer config
@@ -15,13 +16,16 @@ jobs:
       - run:
           name: Install DKTL
           command: |
-            git clone --branch=dan-refactor --depth 1 https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools
-            chmod 777 ~/dkan-tools/bin/dktl
+            wget https://github.com/GetDKAN/dkan-tools/archive/$DKTL_VERSION.tar.gz
+            mkdir ~/dkan-tools && tar xf $DKTL_VERSION.tar.gz -C ~/dkan-tools --strip-components 1
+            rm $DKTL_VERSION.tar.gz && chmod 777 ~/dkan-tools/bin/dktl
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Initialize Project
           command: |
-            dktl init --dkan=dev-$CIRCLE_BRANCH
+            v=$BRANCH
+            if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
+            v="$v#${CIRCLE_SHA1}" && dktl init --dkan=$v
       - run:
           name: Make DKAN
           command: |
