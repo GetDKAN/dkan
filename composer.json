@@ -50,5 +50,12 @@
             "name": "CivicActions",
             "email": "contact@civicactions.com"
         }
-    ]
+    ],
+    "extra": {
+        "dkan-frontend": {
+            "type": "vcs",
+            "url": "https://github.com/GetDKAN/data-catalog-app",
+            "ref": "1.0.0"
+        }
+    }
 }

@@ -1,5 +1,4 @@
 {
-  "baseUrl": "http://dkan",
   "apiUri": "api/1",
   "env": {
     "TEST_USER_CREDENTIALS": {

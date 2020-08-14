@@ -6,56 +6,36 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
+      DKTL_VERSION: "4.0.0"
     steps:
-      - checkout
       - run:
           name: Setup composer config
           command: |
-            cd ~
-            mkdir .composer
-            cd .composer
-            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > auth.json
+            mkdir ~/.composer
+            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
       - run:
           name: Install DKTL
           command: |
-            cd ~
-            git clone https://github.com/GetDKAN/dkan-tools.git
-            cd dkan-tools
-            git checkout 3.2.2
-            chmod 777 ~/dkan-tools/bin/dktl
-            export PATH=$PATH:~/dkan-tools/bin
-            which dktl
+            git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Initialize Project
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            mkdir ~/sandbox
-            cd ~/sandbox
-            dktl init
-      - run:
-          name: Get Drupal
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl get 9.0.0
+            v=$CIRCLE_BRANCH
+            if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
+            v="$v#${CIRCLE_SHA1}" && dktl init --dkan=$v
       - run:
           name: Make DKAN
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl make --prefer-source  --branch $CIRCLE_BRANCH --frontend
+            dktl make
       - run:
           name: Run phpUnit tests
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
           name: Run DKAN cypress tests
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
             dktl install
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
@@ -65,9 +45,8 @@ jobs:
       - run:
           name: Run DKAN dredd tests
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl install --demo
+            dktl install
+            dktl install:sample
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
@@ -75,15 +54,17 @@ jobs:
       - run:
           name: Run frontend cypress tests
           command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl install --demo
-            dktl dkan:test-cypress frontend
+            dktl install
+            dktl install:sample
+            dktl frontend:install
+            dktl frontend:build
+            dktl drush cr
+            dktl frontend:test
       - store_artifacts:
-          path: ~/sandbox/docroot/modules/contrib/dkan/cypress/screenshots
+          path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
-          path: ~/sandbox/docroot/modules/contrib/dkan/cypress/videos
+          path: docroot/modules/contrib/dkan/cypress/videos
       - store_artifacts:
-          path: ~/sandbox/src/frontend/cypress/screenshots
+          path: src/frontend/cypress/screenshots
       - store_artifacts:
-          path: ~/sandbox/src/frontend/cypress/videos
+          path: src/frontend/cypress/videos

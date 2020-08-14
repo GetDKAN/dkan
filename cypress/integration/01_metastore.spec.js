@@ -32,6 +32,7 @@ context('Metastore', () => {
         }
     }
 
+    let baseUrl = Cypress.config().baseUrl;
     let apiUri = Cypress.config().apiUri;
     let endpoint = apiUri + '/metastore/schemas/dataset/items';
     let user_credentials = Cypress.env("TEST_USER_CREDENTIALS");
@@ -88,7 +89,7 @@ context('Metastore', () => {
   context('Catalog', () => {
     it('Corresponds to catalog shell', () => {
       cy.request({
-        url: 'http://dkan/data.json'
+        url: baseUrl + '/data.json'
       }).then((response) => {
         expect(response.status).eql(200);
         expect(response.body["@context"]).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld");
@@ -100,7 +101,7 @@ context('Metastore', () => {
     })
     it('Should at least contains both random datasets', () => {
       cy.request({
-        url: 'http://dkan/data.json'
+        url: baseUrl + '/data.json'
       }).then((response) => {
         expect(response.status).eql(200);
         expect(response.body.dataset.length).to.be.greaterThan(1);
