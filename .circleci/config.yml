@@ -1,12 +1,6 @@
 version: 2
 jobs:
   build:
-    parallelism: 1
-    machine:
-      image: circleci/classic:latest
-    environment:
-      TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.0.0"
     steps:
       - run:
           name: Setup composer config
@@ -28,34 +22,44 @@ jobs:
           name: Make DKAN
           command: |
             dktl make
+  unit_test:
+    steps:
       - run:
           name: Run phpUnit tests
           command: |
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
-      - run:
-          name: Run DKAN cypress tests
-          command: |
+  db_install:
+    steps:
+      -run:
+        name: Install Drupal
+        command: |
             dktl install
+            dktl install:sample
+  cypress_admin:
+    steps:
+      - run:
+          name: Run DKAN admin cypress tests
+          command: |
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl drush user:create testeditor --password="testeditor"
             dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
+  dredd:
+    steps:
       - run:
           name: Run DKAN dredd tests
           command: |
-            dktl install
-            dktl install:sample
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
+  cypress_frontend:
+    steps:
       - run:
           name: Run frontend cypress tests
           command: |
-            dktl install
-            dktl install:sample
             dktl frontend:install
             dktl frontend:build
             dktl drush cr
@@ -68,3 +72,29 @@ jobs:
           path: src/frontend/cypress/screenshots
       - store_artifacts:
           path: src/frontend/cypress/videos
+workflows:
+  version: 2
+  build_and_test:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DKTL_VERSION: "4.0.0"
+    jobs:
+      - build
+      - unit_test
+        requires:
+          - build
+      - db_install
+        requires:
+          - unit_test
+      - cypress_admin
+        requires:
+          - db_install
+      - cypress_frontend
+        requires:
+          - db_install
+      - dredd
+        requires:
+          - db_install
+      
