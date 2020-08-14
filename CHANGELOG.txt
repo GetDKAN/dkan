@@ -1,3 +1,7 @@
+7.x-1.18.10
+-----------
+- #3179 Added drush command for forcing updates on dkan_periodic_updates.
+
 7.x-1.18.9
 ----------
 - #3135 Added missing translation.
