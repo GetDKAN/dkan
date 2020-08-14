@@ -38,7 +38,7 @@ jobs:
       image: circleci/classic:latest
     steps:
       - attach-workspace:
-          at: ~
+          at: ~/
       - run:
           name: Setup dktl
           command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
