@@ -3,6 +3,7 @@ jobs:
   build:
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.0.0"
@@ -36,6 +37,7 @@ jobs:
   db_install:
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
     steps:
       - attach-workspace:
           at: ~/
@@ -45,20 +47,26 @@ jobs:
       - run:
           name: Install Drupal
           command: |
+            ls -la
             dktl install
             dktl install:sample
+      - run:
+          name: Backup DB
+          command: dktl drush sql:cli > backups/1.sql
   cypress_admin:
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
     steps:
       - attach-workspace:
-          at: ~
+          at: ~/
       - run:
           name: Setup dktl
           command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Run DKAN admin cypress tests
           command: |
+            ls backups
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl drush user:create testeditor --password="testeditor"
