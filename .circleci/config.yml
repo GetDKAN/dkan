@@ -40,7 +40,7 @@ jobs:
     machine:
       image: circleci/classic:latest
     steps:
-      -run:
+      - run:
         name: Install Drupal
         command: |
             dktl install
