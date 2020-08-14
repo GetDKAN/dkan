@@ -2,7 +2,7 @@ version: 2
 executors:
   dkan-executor:
     machine:
-      image: circleci/classic:latest
+      - image: circleci/classic:latest
 jobs:
   build:
     executor: dkan-executor
