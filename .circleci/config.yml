@@ -27,10 +27,21 @@ jobs:
           name: Make DKAN
           command: |
             dktl make
+      - persist_to_workspace:
+          root: ~
+          paths:
+            - dkan-tools
+            - project
+            - .composer
   unit_test:
     machine:
       image: circleci/classic:latest
     steps:
+      - attach-workspace:
+          at: ~
+      - run:
+          name: Setup dktl
+          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Run phpUnit tests
           command: |
@@ -40,6 +51,11 @@ jobs:
     machine:
       image: circleci/classic:latest
     steps:
+      - attach-workspace:
+          at: ~
+      - run:
+          name: Setup dktl
+          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Install Drupal
           command: |
@@ -49,6 +65,11 @@ jobs:
     machine:
       image: circleci/classic:latest
     steps:
+      - attach-workspace:
+          at: ~
+      - run:
+          name: Setup dktl
+          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Run DKAN admin cypress tests
           command: |
@@ -61,6 +82,11 @@ jobs:
     machine:
       image: circleci/classic:latest
     steps:
+      - attach-workspace:
+          at: ~
+      - run:
+          name: Setup dktl
+          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Run DKAN dredd tests
           command: |
@@ -72,6 +98,11 @@ jobs:
     machine:
       image: circleci/classic:latest
     steps:
+      - attach-workspace:
+          at: ~
+      - run:
+          name: Setup dktl
+          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Run frontend cypress tests
           command: |
