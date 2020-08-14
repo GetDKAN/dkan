@@ -82,19 +82,19 @@ workflows:
       DKTL_VERSION: "4.0.0"
     jobs:
       - build
-      - unit_test
+      - unit_test:
         requires:
           - build
-      - db_install
+      - db_install:
         requires:
           - unit_test
-      - cypress_admin
+      - cypress_admin:
         requires:
           - db_install
-      - cypress_frontend
+      - cypress_frontend:
         requires:
           - db_install
-      - dredd
+      - dredd:
         requires:
           - db_install
       
