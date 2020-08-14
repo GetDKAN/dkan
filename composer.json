@@ -54,8 +54,8 @@
     "extra": {
         "dkan-frontend": {
             "type": "vcs",
-            "url": "https://github.com/GetDKAN/data-catalog-react",
-            "ref": "980-styles"
+            "url": "https://github.com/GetDKAN/data-catalog-app",
+            "ref": "1.0.0"
         }
     }
 }
