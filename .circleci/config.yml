@@ -33,20 +33,6 @@ jobs:
             - dkan-tools
             - project
             - .composer
-  unit_test:
-    machine:
-      image: circleci/classic:latest
-    steps:
-      - attach-workspace:
-          at: workspace
-      - run:
-          name: Setup dktl
-          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-      - run:
-          name: Run phpUnit tests
-          command: |
-            dktl xdebug:start
-            dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
   db_install:
     machine:
       image: circleci/classic:latest
@@ -123,12 +109,9 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - unit_test:
-          requires:
-            - build
       - db_install:
           requires:
-            - unit_test
+            - build
       - cypress_admin:
           requires:
             - db_install
