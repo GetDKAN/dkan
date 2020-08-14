@@ -1,11 +1,8 @@
 version: 2
-executors:
-  dkan-executor:
-    machine:
-      - image: circleci/classic:latest
 jobs:
   build:
-    executor: dkan-executor
+    machine:
+      image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.0.0"
@@ -30,7 +27,6 @@ jobs:
           name: Make DKAN
           command: |
             dktl make
-            ls -la
       - persist_to_workspace:
           root: ~/
           paths:
