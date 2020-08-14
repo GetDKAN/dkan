@@ -41,8 +41,8 @@ jobs:
       image: circleci/classic:latest
     steps:
       - run:
-        name: Install Drupal
-        command: |
+          name: Install Drupal
+          command: |
             dktl install
             dktl install:sample
   cypress_admin:
