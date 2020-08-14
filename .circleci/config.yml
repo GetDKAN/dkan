@@ -1,6 +1,11 @@
 version: 2
 jobs:
   build:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DKTL_VERSION: "4.0.0"
     steps:
       - run:
           name: Setup composer config
@@ -23,6 +28,8 @@ jobs:
           command: |
             dktl make
   unit_test:
+    machine:
+      image: circleci/classic:latest
     steps:
       - run:
           name: Run phpUnit tests
@@ -30,6 +37,8 @@ jobs:
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
   db_install:
+    machine:
+      image: circleci/classic:latest
     steps:
       -run:
         name: Install Drupal
@@ -37,6 +46,8 @@ jobs:
             dktl install
             dktl install:sample
   cypress_admin:
+    machine:
+      image: circleci/classic:latest
     steps:
       - run:
           name: Run DKAN admin cypress tests
@@ -47,6 +58,8 @@ jobs:
             dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
   dredd:
+    machine:
+      image: circleci/classic:latest
     steps:
       - run:
           name: Run DKAN dredd tests
@@ -56,6 +69,8 @@ jobs:
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
   cypress_frontend:
+    machine:
+      image: circleci/classic:latest
     steps:
       - run:
           name: Run frontend cypress tests
@@ -75,26 +90,21 @@ jobs:
 workflows:
   version: 2
   build_and_test:
-    machine:
-      image: circleci/classic:latest
-    environment:
-      TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.0.0"
     jobs:
       - build
       - unit_test:
-        requires:
-          - build
+          requires:
+            - build
       - db_install:
-        requires:
-          - unit_test
+          requires:
+            - unit_test
       - cypress_admin:
-        requires:
-          - db_install
+          requires:
+            - db_install
       - cypress_frontend:
-        requires:
-          - db_install
+          requires:
+            - db_install
       - dredd:
-        requires:
-          - db_install
+          requires:
+            - db_install
       
