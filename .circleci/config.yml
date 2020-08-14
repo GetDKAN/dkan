@@ -1,8 +1,11 @@
 version: 2
-jobs:
-  build:
+executors:
+  dkan-executor:
     machine:
       image: circleci/classic:latest
+jobs:
+  build:
+    executor: dkan-executor
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.0.0"
@@ -27,8 +30,9 @@ jobs:
           name: Make DKAN
           command: |
             dktl make
+            ls -la
       - persist_to_workspace:
-          root: ~
+          root: ~/
           paths:
             - dkan-tools
             - project
@@ -38,7 +42,7 @@ jobs:
       image: circleci/classic:latest
     steps:
       - attach-workspace:
-          at: ~
+          at: workspace
       - run:
           name: Setup dktl
           command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
