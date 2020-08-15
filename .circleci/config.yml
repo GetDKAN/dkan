@@ -4,7 +4,7 @@ jobs:
     machine:
       image: circleci/classic:latest
     environment:
-      DKTL_VERSION: "4.0.0"
+      DKTL_VERSION: "cli-only"
     steps:
       - run:
           name: Setup composer config
@@ -22,7 +22,7 @@ jobs:
             v=$CIRCLE_BRANCH
             if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
             # v="$v#`echo $CIRCLE_SHA1 | cut -c1-7`"
-            dktl init --dkan=$v
+            DKTL_CLI_ONLY=1 dktl init --dkan=$v
       - run:
           name: Make DKAN
           command: |
@@ -46,6 +46,7 @@ jobs:
       - run:
           name: Install Drupal
           command: |
+            dktl
             dktl install
             dktl install:sample
       - run:
