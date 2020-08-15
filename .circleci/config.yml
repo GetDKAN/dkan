@@ -1,11 +1,10 @@
 version: 2
 jobs:
-  build:
+  build_and_unittest:
     machine:
       image: circleci/classic:latest
     environment:
-      TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.0.0"
+      DKTL_VERSION: "cli-only"
     steps:
       - run:
           name: Setup composer config
@@ -22,7 +21,7 @@ jobs:
           command: |
             v=$CIRCLE_BRANCH
             if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
-            v="$v#${CIRCLE_SHA1}" && dktl init --dkan=$v
+            v="$v#${CIRCLE_SHA1}" && DKTL_CLI_ONLY=1 dktl init --dkan=$v
       - run:
           name: Make DKAN
           command: |
@@ -33,10 +32,9 @@ jobs:
             - dkan-tools
             - project
             - .composer
-  db_install:
+  cypress_admin:
     machine:
       image: circleci/classic:latest
-      docker_layer_caching: true
     steps:
       - attach-workspace:
           at: ~/
@@ -52,19 +50,6 @@ jobs:
             dktl install
             dktl install:sample
       - run:
-          name: Backup DB
-          command: mkdir src/backups && dktl drush sql:cli > src/backups/1.sql
-  cypress_admin:
-    machine:
-      image: circleci/classic:latest
-      docker_layer_caching: true
-    steps:
-      - attach-workspace:
-          at: ~/
-      - run:
-          name: Setup dktl
-          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-      - run:
           name: Run DKAN admin cypress tests
           command: |
             ls src/backups
@@ -78,7 +63,7 @@ jobs:
       image: circleci/classic:latest
     steps:
       - attach-workspace:
-          at: ~
+          at: ~/
       - run:
           name: Setup dktl
           command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
@@ -94,10 +79,15 @@ jobs:
       image: circleci/classic:latest
     steps:
       - attach-workspace:
-          at: ~
+          at: ~/
       - run:
           name: Setup dktl
           command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+      - run:
+          name: Install Drupal
+          command: |
+            dktl install
+            dktl install:sample
       - run:
           name: Run frontend cypress tests
           command: |
@@ -117,17 +107,14 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
-      - db_install:
-          requires:
-            - build
+      - build_and_unittest
       - cypress_admin:
           requires:
-            - db_install
+            - build_and_unittest
       - cypress_frontend:
           requires:
-            - db_install
+            - build_and_unittest
       - dredd:
           requires:
-            - db_install
+            - build_and_unittest
       
