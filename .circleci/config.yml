@@ -42,11 +42,7 @@ jobs:
       - run:
           name: Setup dktl
           command: |
-            ls -la
-            ls -la ~/
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            dktl dc up -d
-            dktl proxy:connect            
       - run:
           name: Install Drupal
           command: |
