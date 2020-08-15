@@ -21,7 +21,8 @@ jobs:
           command: |
             v=$CIRCLE_BRANCH
             if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
-            v="$v#${CIRCLE_SHA1}" && DKTL_CLI_ONLY=1 dktl init --dkan=$v
+            v="$v#`echo $CIRCLE_SHA1 | cut -c1-7`"
+            DKTL_CLI_ONLY=1 dktl init --dkan=$v
       - run:
           name: Make DKAN
           command: |
