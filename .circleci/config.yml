@@ -47,12 +47,13 @@ jobs:
           name: Install Drupal
           command: |
             dktl
+            dktl drush sql:query "show tables;"
+            dktl drush sql:query "show tables;"
             dktl install
             dktl install:sample
       - run:
           name: Run DKAN admin cypress tests
           command: |
-            ls src/backups
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl drush user:create testeditor --password="testeditor"
