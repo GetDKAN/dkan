@@ -43,6 +43,10 @@ jobs:
           name: Setup dktl
           command: |
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            export PATH=~/dkan-tools/bin:$PATH
+            dktl dc ps
+            dktl drush sql:query "show databases"
+            ls -la src/site
       - run:
           name: Install Drupal
           command: |
