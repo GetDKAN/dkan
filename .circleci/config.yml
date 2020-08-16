@@ -89,7 +89,7 @@ jobs:
             dktl drush user:create testeditor --password="testeditor"
             dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
-cypress_frontend:
+  cypress_frontend:
     machine:
       image: circleci/classic:latest
     steps:
