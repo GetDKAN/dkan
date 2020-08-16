@@ -65,7 +65,7 @@ jobs:
             dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
-  cypress_admin:
+  cypress_backend:
     machine:
       image: circleci/classic:latest
     steps:
@@ -130,7 +130,7 @@ workflows:
       - phpunit_dredd:
           requires:
             - build
-      - cypress_admin:
+      - cypress_backend:
           requires:
             - build
       - cypress_frontend:
