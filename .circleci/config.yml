@@ -39,24 +39,20 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_NO_PTY: "1"
+      DKTL_PATH: "export PATH=~/dkan-tools/bin:$PATH"
     steps:
       - attach-workspace:
           at: ~/
       - run:
-          name: Set up dktl
-          command: |
-            ~/dkan-tools/bin/dktl docker:compose up -d
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            wait 10
+          name: Set up DKAN Tools
+          command: $DKTL_PATH && echo $DKTL_PATH >> $BASH_ENV && dktl
       - run:
           name: Install Drupal
-          command: |
-            dktl drush sql:query "show databases"
-            dktl install
-            dktl install:sample
+          command: sleep 20 && dktl install
       - run:
           name: Run DKAN admin cypress tests
           command: |
+            dktl install:sample
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl drush user:create testeditor --password="testeditor"
@@ -89,16 +85,17 @@ jobs:
           command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Install Drupal
-          command: |
-            dktl install
-            dktl install:sample
+          command: dktl install
       - run:
-          name: Run frontend cypress tests
+          name: Set up frontend
           command: |
+            dktl install:sample
             dktl frontend:install
             dktl frontend:build
             dktl drush cr
-            dktl frontend:test
+      - run:
+          name: Run frontend cypress tests
+          command: dktl frontend:test
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
