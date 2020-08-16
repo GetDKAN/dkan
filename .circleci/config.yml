@@ -39,13 +39,15 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_NO_PTY: "1"
-      DKTL_PATH: "export PATH=~/dkan-tools/bin:$PATH"
     steps:
       - attach-workspace:
           at: ~/
       - run:
           name: Set up DKAN Tools
-          command: $DKTL_PATH && echo $DKTL_PATH >> $BASH_ENV && dktl
+          command: |
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl
       - run:
           name: Install Drupal
           command: sleep 20 && dktl install
