@@ -5,7 +5,6 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_VERSION: "4.0.0"
-      DKTL_NO_PTY: "1"
     steps:
       - run:
           name: Setup composer config
@@ -37,8 +36,6 @@ jobs:
   cypress_admin:
     machine:
       image: circleci/classic:latest
-    environment:
-      DKTL_NO_PTY: "1"
     steps:
       - attach-workspace:
           at: ~/
@@ -47,10 +44,10 @@ jobs:
           command: |
             export PATH=~/dkan-tools/bin:$PATH
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            dktl
+            dktl dc up -d
       - run:
           name: Install Drupal
-          command: sleep 20 && dktl install
+          command: sleep 10 && dktl install
       - run:
           name: Run DKAN admin cypress tests
           command: |
@@ -67,11 +64,19 @@ jobs:
       - attach-workspace:
           at: ~/
       - run:
-          name: Setup dktl
-          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+          name: Set up DKAN Tools
+          command: |
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl dc up -d
+      - run:
+          name: Install Drupal
+          command: sleep 10 && dktl install
       - run:
           name: Run DKAN dredd tests
           command: |
+            sleep 10
+            dktl install:sample
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
@@ -83,11 +88,14 @@ jobs:
       - attach-workspace:
           at: ~/
       - run:
-          name: Setup dktl
-          command: echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+          name: Set up DKAN Tools
+          command: |
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl dc up -d
       - run:
           name: Install Drupal
-          command: dktl install
+          command: sleep 10 && dktl install
       - run:
           name: Set up frontend
           command: |
@@ -114,10 +122,10 @@ workflows:
       - cypress_admin:
           requires:
             - build_and_unittest
-      # - cypress_frontend:
-      #     requires:
-      #       - build_and_unittest
-      # - dredd:
-      #     requires:
-      #       - build_and_unittest
+      - cypress_frontend:
+          requires:
+            - build_and_unittest
+      - dredd:
+          requires:
+            - build_and_unittest
       
