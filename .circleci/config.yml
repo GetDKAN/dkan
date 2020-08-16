@@ -43,14 +43,14 @@ jobs:
       - attach-workspace:
           at: ~/
       - run:
-          name: Setup dktl
+          name: Set up dktl
           command: |
+            ~/dkan-tools/bin/dktl docker:compose up -d
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            ls -la src/site
+            wait 10
       - run:
           name: Install Drupal
           command: |
-            dktl dc ps
             dktl drush sql:query "show databases"
             dktl install
             dktl install:sample
