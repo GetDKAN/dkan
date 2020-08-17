@@ -89,6 +89,10 @@ jobs:
             dktl drush user:create testeditor --password="testeditor"
             dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
+      - store_artifacts:
+          path: docroot/modules/contrib/dkan/cypress/screenshots
+      - store_artifacts:
+          path: docroot/modules/contrib/dkan/cypress/videos
   cypress_frontend:
     machine:
       image: circleci/classic:latest
@@ -114,10 +118,6 @@ jobs:
       - run:
           name: Run frontend cypress tests
           command: dktl frontend:test
-      - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/screenshots
-      - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/videos
       - store_artifacts:
           path: src/frontend/cypress/screenshots
       - store_artifacts:
