@@ -5,6 +5,8 @@ jobs:
       image: circleci/classic:latest
     environment:
       DKTL_VERSION: "4.0.0"
+      TERM: "xterm-256color"
+      DKTL_NO_PTY: "1"
     steps:
       - run:
           name: Setup composer config
@@ -36,6 +38,9 @@ jobs:
   phpunit_dredd:
     machine:
       image: circleci/classic:latest
+    environment:
+      TERM: "xterm-256color"
+      DKTL_NO_PTY: "1"
     steps:
       - attach-workspace:
           at: ~/
@@ -68,6 +73,9 @@ jobs:
   cypress_backend:
     machine:
       image: circleci/classic:latest
+    environment:
+      TERM: "xterm-256color"
+      DKTL_NO_PTY: "1"
     steps:
       - attach-workspace:
           at: ~/
@@ -96,6 +104,9 @@ jobs:
   cypress_frontend:
     machine:
       image: circleci/classic:latest
+    environment:
+      TERM: "xterm-256color"
+      DKTL_NO_PTY: "1"
     steps:
       - attach-workspace:
           at: ~/
