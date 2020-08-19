@@ -212,6 +212,11 @@ class ServiceTest extends TestCase {
     $lastRunInfo = (object) [
       'status' => [
         'extracted_items_ids' => $datasetUuids,
+        'load' => [
+          'abcd-1001' => "SUCCESS",
+          'abcd-1002' => "SUCCESS",
+          'abcd-1003' => "SUCCESS",
+        ],
       ],
     ];
 

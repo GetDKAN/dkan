@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\DataModifierPluginTrait;
 use Drupal\common\Plugin\DataModifierManager;
 use Drupal\metastore\Exception\CannotChangeUuidException;
@@ -9,13 +10,13 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
-use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Storage\DataFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Service.
  */
-class Service {
+class Service implements ContainerInjectionInterface {
   use DataModifierPluginTrait;
 
   /**
@@ -38,6 +39,19 @@ class Service {
    * @var \Drupal\metastore\Storage\DataFactory
    */
   private $factory;
+
+  /**
+   * Inherited.
+   *
+   * {@inheritDoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new Service(
+      $container->get('metastore.schema_retriever'),
+      $container->get('metastore.sae_factory'),
+      $container->get('dkan.metastore.storage')
+    );
+  }
 
   /**
    * Constructor.
@@ -163,12 +177,6 @@ class Service {
    *   An array of resources.
    */
   public function getResources($schema_id, $identifier): array {
-
-    // Load this dataset's metadata with both data and identifiers.
-    if (function_exists('drupal_static')) {
-      drupal_static('metastore_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
-    }
-
     $json = $this->getEngine($schema_id)
       ->get($identifier);
     $data = json_decode($json);
