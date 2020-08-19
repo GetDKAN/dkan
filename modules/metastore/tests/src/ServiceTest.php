@@ -10,6 +10,7 @@ use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\Data;
+use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -59,7 +60,6 @@ class ServiceTest extends TestCase {
    */
   public function testGet() {
     $container = $this->getCommonMockChain()
-      ->add(Data::class, "setSchema", Data::class)
       ->add(Data::class, "retrievePublished", json_encode("blah"));
 
     $service = Service::create($container->getMock());
@@ -300,11 +300,12 @@ EOF;
     $options = (new Options())
       ->add('metastore.schema_retriever', SchemaRetriever::class)
       ->add('metastore.sae_factory', Sae::class)
-      ->add('dkan.metastore.storage', Data::class)
+      ->add('dkan.metastore.storage', DataFactory::class)
       ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
+      ->add(DataFactory::class, 'getInstance', Data::class)
       ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
   }
 
