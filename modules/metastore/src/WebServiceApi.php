@@ -95,11 +95,47 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function get(string $schema_id, string $identifier) {
     try {
       $object = json_decode($this->service->get($schema_id, $identifier));
+      if ($this->wantObjectWithReferences()) {
+        $object = $this->swapReferences($object);
+      }
+      else {
+        $object = Service::removeReferences($object);
+      }
       return $this->getResponse($object);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 404);
     }
+  }
+
+  /**
+   * Private.
+   */
+  private function wantObjectWithReferences() {
+    $params = \Drupal::request()->query->all();
+    if (isset($params['show-reference-ids'])) {
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Private.
+   */
+  private function swapReferences($object) {
+    $array = (array) $object;
+    foreach ($array as $property => $value) {
+      if (substr_count($property, "%Ref") > 0) {
+        $original = str_replace("%Ref", "", $property);
+        if (isset($array[$original])) {
+          $array[$original] = $value;
+        }
+      }
+    }
+
+    $object = (object) $array;
+
+    return Service::removeReferences($object);
   }
 
   /**
