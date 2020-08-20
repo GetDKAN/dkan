@@ -4,6 +4,7 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\common\Storage\JobStoreFactory;
 use Procrastinator\Result;
@@ -25,7 +26,11 @@ class Import {
    * Constructor.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    $this->resource = new DatastoreResource(md5($resource->getUniqueIdentifier()), $resource->getFilePath(), $resource->getMimeType());
+    $this->resource = new DatastoreResource(
+      md5($resource->getUniqueIdentifier()),
+      UrlHostTokenResolver::resolve($resource->getFilePath()),
+      $resource->getMimeType()
+    );
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
