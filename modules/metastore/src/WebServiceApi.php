@@ -127,16 +127,24 @@ class WebServiceApi implements ContainerInjectionInterface {
     $array = (array) $object;
     foreach ($array as $property => $value) {
       if (substr_count($property, "%Ref:") > 0) {
-        $original = str_replace("%Ref:", "", $property);
-        if (isset($array[$original])) {
-          $array[$original] = $value;
-        }
+        $array = $this->swapReference($property, $value, $array);
       }
     }
 
     $object = (object) $array;
 
     return Service::removeReferences($object);
+  }
+
+  /**
+   * Private.
+   */
+  private function swapReference($property, $value, $array) {
+    $original = str_replace("%Ref:", "", $property);
+    if (isset($array[$original])) {
+      $array[$original] = $value;
+    }
+    return $array;
   }
 
   /**
