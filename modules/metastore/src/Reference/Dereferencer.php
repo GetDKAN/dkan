@@ -37,7 +37,7 @@ class Dereferencer {
     // Cycle through the dataset properties we seek to dereference.
     foreach ($this->getPropertyList() as $propertyId) {
       if (isset($data->{$propertyId})) {
-        $referenceProperty = "%Ref{$propertyId}";
+        $referenceProperty = "%Ref:{$propertyId}";
         [$ref, $actual] = $this->dereferenceProperty($propertyId, $data->{$propertyId});
         $data->{$referenceProperty} = $ref;
         $data->{$propertyId} = $actual;
