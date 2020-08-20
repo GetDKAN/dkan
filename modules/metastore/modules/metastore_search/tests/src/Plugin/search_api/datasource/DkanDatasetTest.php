@@ -29,7 +29,7 @@ class DkanDatasetTest extends TestCase {
     $containerOptions = (new Options())
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('entity_type.repository', EntityTypeRepository::class)
-      ->add('metastore.storage', DataFactory::class)
+      ->add('dkan.metastore.storage', DataFactory::class)
       ->index(0);
 
     $nids = [1, 2];
