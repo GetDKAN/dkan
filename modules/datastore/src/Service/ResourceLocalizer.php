@@ -4,6 +4,7 @@ namespace Drupal\datastore\Service;
 
 use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Contracts\FactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
@@ -137,7 +138,7 @@ class ResourceLocalizer {
     $directory = "file://{$this->drupalFiles->getPublicFilesDirectory()}/resources/{$uuid}";
     $this->drupalFiles->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
     $config = [
-      'filePath' => $resource->getFilePath(),
+      'filePath' => UrlHostTokenResolver::resolve($resource->getFilePath()),
       'temporaryDirectory' => $directory,
     ];
     return $this->fileFetcherFactory->getInstance($uuid, $config);
