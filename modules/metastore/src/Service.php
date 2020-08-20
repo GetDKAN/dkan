@@ -365,9 +365,32 @@ class Service implements ContainerInjectionInterface {
    * @return bool
    *   TRUE if the metadata is equivalent, false otherwise.
    */
-  private function objectIsEquivalent(string $schema_id, string $identifier, string $new_metadata) {
-    $existing_metadata = $this->getEngine($schema_id)->get($identifier);
-    return json_decode($new_metadata) == json_decode($existing_metadata);
+  private function objectIsEquivalent(string $schema_id, string $identifier, string $metadata) {
+    $existingMetadata = $this->getEngine($schema_id)->get($identifier);
+    $existing = json_decode($existingMetadata);
+    $existing = self::removeReferences($existing);
+    $new = json_decode($metadata);
+    return $new == $existing;
+  }
+
+  /**
+   * Private.
+   */
+  public static function removeReferences($object) {
+    $array = (array) $object;
+    foreach ($array as $property => $value) {
+      if (substr_count($property, "%") > 0) {
+        unset($array[$property]);
+      }
+    }
+
+    $object = (object) $array;
+
+    if (isset($object->distribution[0]->{"%RefdownloadURL"})) {
+      unset($object->distribution[0]->{"%RefdownloadURL"});
+    }
+
+    return $object;
   }
 
   /**
