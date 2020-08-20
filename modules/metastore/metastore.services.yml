@@ -85,7 +85,7 @@ services:
     shared: false
 
   metastore.storage:
-    class: \Drupal\metastore\Storage\Data
+    class: \Drupal\metastore\Storage\DataFactory
     arguments:
       - '@entity_type.manager'
   metastore.referencer:
