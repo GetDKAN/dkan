@@ -207,8 +207,8 @@ class Resource implements \JsonSerializable {
     $distribution = self::getDistribution($string);
 
     // Are we dealing with a distribution id?
-    if (isset($distribution->data->{"%RefdownloadURL"})) {
-      $resource = $distribution->data->{"%RefdownloadURL"}[0]->data;
+    if (isset($distribution->data->{"%Ref:downloadURL"})) {
+      $resource = $distribution->data->{"%Ref:downloadURL"}[0]->data;
       return [$resource->identifier, $resource->version];
     }
 

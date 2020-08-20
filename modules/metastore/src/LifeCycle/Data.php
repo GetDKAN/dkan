@@ -84,7 +84,7 @@ class Data extends AbstractData {
 
       $downloadUrl = isset($original) ? $original : "";
 
-      $refProperty = "%RefdownloadURL";
+      $refProperty = "%Ref:downloadURL";
       $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
     }
 

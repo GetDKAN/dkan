@@ -125,8 +125,8 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals($dataset->identifier, $identifier);
 
     $datasetWithReferences = json_decode($this->getMetastore()->get('dataset', $identifier));
-    $fileData = $datasetWithReferences->{"%Refdistribution"}[0]
-      ->data->{"%RefdownloadURL"}[0]
+    $fileData = $datasetWithReferences->{"%Ref:distribution"}[0]
+      ->data->{"%Ref:downloadURL"}[0]
       ->data;
 
     $this->assertEquals($downloadUrl, $fileData->filePath);

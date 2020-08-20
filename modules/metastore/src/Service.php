@@ -386,8 +386,8 @@ class Service implements ContainerInjectionInterface {
 
     $object = (object) $array;
 
-    if (isset($object->distribution[0]->{"%RefdownloadURL"})) {
-      unset($object->distribution[0]->{"%RefdownloadURL"});
+    if (isset($object->distribution[0]->{"%Ref:downloadURL"})) {
+      unset($object->distribution[0]->{"%Ref:downloadURL"});
     }
 
     return $object;
