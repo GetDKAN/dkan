@@ -359,7 +359,7 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   The uuid.
-   * @param string $new_metadata
+   * @param string $metadata
    *   The new data being compared to the existing data.
    *
    * @return bool
