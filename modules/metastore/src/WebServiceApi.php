@@ -112,11 +112,12 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Private.
    */
   private function wantObjectWithReferences() {
-    $params = \Drupal::request()->query->all();
-    if (isset($params['show-reference-ids'])) {
-      return TRUE;
+    $param = $this->requestStack->getCurrentRequest()
+      ->get('show-reference-ids', FALSE);
+    if ($param === FALSE) {
+      return FALSE;
     }
-    return FALSE;
+    return TRUE;
   }
 
   /**

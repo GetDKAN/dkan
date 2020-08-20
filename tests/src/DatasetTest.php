@@ -4,6 +4,7 @@ namespace Drupal\Tests\dkan;
 
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Service;
@@ -42,12 +43,20 @@ class DatasetTest extends ExistingSiteBase {
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
-    $data2 = $this->checkDatasetIn($dataset, 'put');
-    $this->assertEquals($data1, $data2);
+    try {
+      $this->checkDatasetIn($dataset, 'put');
+      $this->assertTrue(FALSE);
+    }
+    catch(UnmodifiedObjectException $e) {
+      $this->assertTrue(TRUE);
+    }
 
     // Test a new file/resource revision is created.
     $rev = &drupal_static('metastore_resource_mapper_new_revision');
     $rev = 1;
+    $object = json_decode($dataset);
+    $object->modified = "06-05-2020";
+    $dataset = json_encode($object);
     $data3 = $this->checkDatasetIn($dataset, 'put');
     $this->assertNotEquals($data1, $data3);
   }
