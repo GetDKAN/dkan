@@ -29,7 +29,8 @@
         "weitzman/drupal-test-traits": "^1.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5",
+        "zaporylie/composer-drupal-optimizations": "^1.1"
     },
     "repositories": [
         {
