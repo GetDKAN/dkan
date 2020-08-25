@@ -7,7 +7,7 @@ context('SQL Endpoint', () => {
 
   // Create a dataset.
   function createDataset() {
-    let endpoint = apiUri + '/metastore/schemas/dataset/items';
+    let endpoint = baseUrl + apiUri + '/metastore/schemas/dataset/items';
     let json1 = json();
     cy.request({
       method: 'POST',
@@ -18,7 +18,7 @@ context('SQL Endpoint', () => {
   }
 
   function removeDataset() {
-    let endpoint = apiUri + '/metastore/schemas/dataset/items';
+    let endpoint = baseUrl + apiUri + '/metastore/schemas/dataset/items';
     cy.request({
       method: 'DELETE',
       url: endpoint + '/' + dataset_identifier,
@@ -30,7 +30,7 @@ context('SQL Endpoint', () => {
     cy.log(resource_identifier);
     cy.request({
       method: 'POST',
-      url: apiUri + '/datastore/imports',
+      url: baseUrl + apiUri + '/datastore/imports',
       auth: user_credentials,
       body: {
         "resource_id": resource_identifier
@@ -45,7 +45,7 @@ context('SQL Endpoint', () => {
   function dropFromDatastore() {
     cy.request({
       method: 'DELETE',
-      url: apiUri + '/datastore/imports/' + resource_identifier,
+      url: baseUrl + apiUri + '/datastore/imports/' + resource_identifier,
       auth: user_credentials
     }).then((response) => {
       expect(response.status).eql(200);
@@ -99,7 +99,7 @@ context('SQL Endpoint', () => {
   before(() => {
     createDataset();
     cy.fixture('electionDistricts').then((json) => {
-      cy.request(apiUri + '/metastore/schemas/dataset/items/' + dataset_identifier + '?show-reference-ids').then((response) => {
+      cy.request(baseUrl + apiUri + '/metastore/schemas/dataset/items/' + dataset_identifier + '?show-reference-ids').then((response) => {
         expect(response.status).eql(200);
         resource_identifier = response.body.distribution[0].identifier;
         expect(resource_identifier).to.match(new RegExp(Cypress.env('UUID_REGEX')));
@@ -120,7 +120,7 @@ context('SQL Endpoint', () => {
       let query = `[SELECT * FROM ${resource_identifier}];`
       cy.request({
         method: 'POST',
-        url: apiUri + '/datastore/sql',
+        url: baseUrl + apiUri + '/datastore/sql',
         body: {
           "query": query,
           "show_db_columns": true
@@ -140,7 +140,7 @@ context('SQL Endpoint', () => {
       let query = `[SELECT lon,lat FROM ${resource_identifier}];`
       cy.request({
         method: 'POST',
-        url: apiUri + '/datastore/sql',
+        url: baseUrl + apiUri + '/datastore/sql',
         body: {
           "query": query,
           "show_db_columns": true
@@ -166,7 +166,7 @@ context('SQL Endpoint', () => {
       let query = `[SELECT * FROM ${resource_identifier}][WHERE dist_name = "Pusht Rod"];`
       cy.request({
         method: 'POST',
-        url: apiUri + '/datastore/sql',
+        url: baseUrl + apiUri + '/datastore/sql',
         body: {
           "query": query,
           "show_db_columns": true
@@ -181,7 +181,7 @@ context('SQL Endpoint', () => {
       let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = "Farah" AND dist_name = "Pusht Rod"];`
       cy.request({
         method: 'POST',
-        url: apiUri + '/datastore/sql',
+        url: baseUrl + apiUri + '/datastore/sql',
         body: {
           "query": query,
           "show_db_columns": true
@@ -200,7 +200,7 @@ context('SQL Endpoint', () => {
       let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC];`
       cy.request({
         method: 'POST',
-        url: apiUri + '/datastore/sql',
+        url: baseUrl + apiUri + '/datastore/sql',
         body: {
           "query": query,
           "show_db_columns": true
@@ -216,7 +216,7 @@ context('SQL Endpoint', () => {
       let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name DESC];`
       cy.request({
         method: 'POST',
-        url: apiUri + '/datastore/sql',
+        url: baseUrl + apiUri + '/datastore/sql',
         body: {
           "query": query,
           "show_db_columns": true
@@ -235,7 +235,7 @@ context('SQL Endpoint', () => {
       let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC][LIMIT 1];`
       cy.request({
         method: 'POST',
-        url: apiUri + '/datastore/sql',
+        url: baseUrl + apiUri + '/datastore/sql',
         body: {
           "query": query,
           "show_db_columns": true
@@ -251,7 +251,7 @@ context('SQL Endpoint', () => {
       let query = `[SELECT * FROM ${resource_identifier}][ORDER BY dist_name ASC][LIMIT 1 OFFSET 1];`
       cy.request({
         method: 'POST',
-        url: apiUri + '/datastore/sql',
+        url: baseUrl + apiUri + '/datastore/sql',
         body: {
           "query": query,
           "show_db_columns": true
