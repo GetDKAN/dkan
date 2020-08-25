@@ -4,7 +4,7 @@ jobs:
     machine:
       image: circleci/classic:latest
     environment:
-      DKTL_VERSION: "4.0.0"
+      DKTL_VERSION: "testusers"
       TERM: "xterm-256color"
       DKTL_NO_PTY: "1"
     steps:
@@ -66,8 +66,6 @@ jobs:
           command: |
             sleep 10
             dktl install:sample
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
   cypress_backend:
@@ -92,10 +90,6 @@ jobs:
           name: Run DKAN admin cypress tests
           command: |
             dktl install:sample
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
-            dktl drush user:create testeditor --password="testeditor"
-            dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
