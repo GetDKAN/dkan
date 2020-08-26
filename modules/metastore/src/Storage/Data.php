@@ -8,7 +8,6 @@ use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use DateTime;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\common\LoggerTrait;
 use Drupal\node\NodeInterface;
 use HTMLPurifier;
 
@@ -16,7 +15,7 @@ use HTMLPurifier;
  * Data.
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
-  use LoggerTrait;
+
   /**
    * Entity type manager.
    *
@@ -103,7 +102,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * {@inheritdoc}.
    */
   public function retrieve(string $uuid) : ?string {
-    $this->debug("uuid: @uuid", ['@uuid' => $uuid]);
 
     if ($this->getDefaultModerationState() === 'published') {
       $node = $this->getNodePublishedRevision($uuid);
@@ -113,9 +111,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     }
 
     if ($node) {
-
-      $this->debugNode(__FUNCTION__, $node);
-
       return $node->get('field_json_metadata')->getString();
     }
 
@@ -224,8 +219,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * {@inheritdoc}.
    */
   public function store($data, string $uuid = NULL): string {
-    $this->debug($data);
-
     $data = json_decode($data);
     $data = $this->filterHtml($data);
 
@@ -257,8 +250,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $node->save();
 
-    $this->debugNode(__FUNCTION__, $node);
-
     return $node->uuid();
   }
 
@@ -280,8 +271,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
 
     $node->save();
-
-    $this->debugNode(__FUNCTION__, $node);
 
     return $node->uuid();
   }
@@ -363,22 +352,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       ->load('dkan_publishing')
       ->getTypePlugin()
       ->getConfiguration()['default_moderation_state'];
-  }
-
-  /**
-   * Private.
-   */
-  private function debugNode($function, NodeInterface $node) {
-    $this->debug("%function data type: %data_type, nid: %nid, uuid: %uuid, revision: %revision",
-      [
-        "%function" => $function,
-        "%data_type" => $node->field_data_type->value,
-        "%nid" => $node->id(),
-        "%uuid" => $node->uuid(),
-        "%revision" => $node->getRevisionId(),
-      ]
-    );
-    $this->debug($node->field_json_metadata->value);
   }
 
 }
