@@ -16,6 +16,8 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 class DatasetTest extends ExistingSiteBase {
   use ServiceCheckTrait;
 
+  private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
+
   private function getData($downloadUrl) {
     return '
     {
@@ -38,8 +40,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/district_centerpoints_small.csv";
-    $dataset = $this->getData($downloadUrl);
+    $dataset = $this->getData($this->downloadUrl);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -64,8 +65,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/district_centerpoints_small.csv";
-    $dataset = $this->getData($downloadUrl);
+    $dataset = $this->getData($this->downloadUrl);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
@@ -82,7 +82,7 @@ class DatasetTest extends ExistingSiteBase {
     $display = ResourceLocalizer::LOCAL_URL_PERSPECTIVE;
     $localUrlDataset = json_decode($this->getMetastore()->get('dataset', json_decode($dataset)->identifier));
     $this->assertNotEqual($localUrlDataset->distribution[0]->downloadURL,
-    $downloadUrl);
+    $this->downloadUrl);
   }
 
   private function queryResource($fileData) {

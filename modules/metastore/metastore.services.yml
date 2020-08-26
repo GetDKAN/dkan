@@ -47,8 +47,6 @@ services:
     arguments:
       - '@config.factory'
       - '@queue'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
 
   dkan.metastore.resource_mapper:
     class: \Drupal\metastore\ResourceMapper
@@ -109,5 +107,3 @@ services:
     arguments:
       - '@config.factory'
       - '@queue'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]

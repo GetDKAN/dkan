@@ -76,10 +76,7 @@ function resource_mapper_new_revision() {
  *
  */
 function metastore_get_data_node_lifecycle($entity) {
-  $loggerFactory = \Drupal::service('logger.factory');
-  // @todo Change to Metadatum.
   $data = new Data($entity);
-  $data->setLoggerFactory($loggerFactory);
 
   $lifeCycle = new LifeCycle($data);
   $lifeCycle->setFileMapper(\Drupal::service('dkan.metastore.resource_mapper'));
