@@ -43,7 +43,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
-    $this->setLoggerFactory(\Drupal::service('logger.factory'));
     $this->setSchema($schemaId);
   }
 
