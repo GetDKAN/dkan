@@ -7,7 +7,7 @@ use Drupal\metastore\ResourceMapper;
 /**
  * ResourceMapper Trait.
  */
-trait FileMapperTrait {
+trait ResourceMapperTrait {
 
   /**
    * File mapper.

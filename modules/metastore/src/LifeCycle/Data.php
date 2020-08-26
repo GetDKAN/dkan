@@ -5,13 +5,13 @@ namespace Drupal\metastore\LifeCycle;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Events\PreReference;
-use Drupal\metastore\Traits\FileMapperTrait;
+use Drupal\metastore\Traits\ResourceMapperTrait;
 
 /**
  * Data.
  */
 class Data extends AbstractData {
-  use FileMapperTrait;
+  use ResourceMapperTrait;
 
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
 

@@ -55,7 +55,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
    *   Table name.
    */
   protected function getTableName() {
-    return "dkan_metastore_filemapper";
+    return "dkan_metastore_resource_mapper";
   }
 
   /**
