@@ -13,7 +13,7 @@ export function generateDataset() {
     distribution: [
       {
         "@type": "dcat:Distribution",
-        downloadURL: "https://dkan-default-content-files.s3.amazonaws.com/district_centerpoints_small.csv",
+        downloadURL: "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv",
         mediaType: "text/csv",
         format: "csv",
         description: "<p>Nah.</p>",
