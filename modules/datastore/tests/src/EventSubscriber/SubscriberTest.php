@@ -24,7 +24,7 @@ class SubscriberTest extends TestCase {
    */
   public function test() {
     $url = 'http://hello.world/file.csv';
-    $resource = new Resource('http://hello.world/file.csv', 'text/csv');
+    $resource = new Resource($url, 'text/csv');
     $event = new Registration($resource);
 
     $chain = $this->getContainerChain();
