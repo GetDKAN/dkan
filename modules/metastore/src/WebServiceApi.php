@@ -37,7 +37,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Inherited.
    *
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApi(
@@ -95,11 +95,56 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function get(string $schema_id, string $identifier) {
     try {
       $object = json_decode($this->service->get($schema_id, $identifier));
+      if ($this->wantObjectWithReferences()) {
+        $object = $this->swapReferences($object);
+      }
+      else {
+        $object = Service::removeReferences($object);
+      }
       return $this->getResponse($object);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 404);
     }
+  }
+
+  /**
+   * Private.
+   */
+  private function wantObjectWithReferences() {
+    $param = $this->requestStack->getCurrentRequest()
+      ->get('show-reference-ids', FALSE);
+    if ($param === FALSE) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
+   * Private.
+   */
+  private function swapReferences($object) {
+    $array = (array) $object;
+    foreach ($array as $property => $value) {
+      if (substr_count($property, "%Ref:") > 0) {
+        $array = $this->swapReference($property, $value, $array);
+      }
+    }
+
+    $object = (object) $array;
+
+    return Service::removeReferences($object);
+  }
+
+  /**
+   * Private.
+   */
+  private function swapReference($property, $value, $array) {
+    $original = str_replace("%Ref:", "", $property);
+    if (isset($array[$original])) {
+      $array[$original] = $value;
+    }
+    return $array;
   }
 
   /**

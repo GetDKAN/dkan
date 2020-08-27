@@ -127,6 +127,7 @@ class OrphanChecker {
       $old_value = [$old_value];
       $new_value = [$new_value];
     }
+
     foreach (array_diff($old_value, $new_value) as $removed_reference) {
       $this->queueReferenceForRemoval($property_id, $removed_reference);
     }

@@ -2,19 +2,14 @@
 
 namespace Drupal\common\Storage;
 
-use Contracts\RemoverInterface;
-use Contracts\RetrieverInterface;
-use Contracts\StorerInterface;
-use Dkan\Datastore\Storage\StorageInterface;
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
-use Drupal\datastore\Storage\Query;
 
 /**
  * AbstractDatabaseTable class.
  */
-abstract class AbstractDatabaseTable implements StorageInterface, StorerInterface, RetrieverInterface, RemoverInterface {
+abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   use SqlStorageTrait;
   use QueryToQueryHelperTrait;
 
@@ -58,7 +53,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function retrieve(string $id) {
     $this->setTable();
@@ -80,7 +75,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function retrieveAll(): array {
     $this->setTable();
@@ -182,7 +177,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();
@@ -203,7 +198,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, StorerInterfac
   /**
    * Run a query on the database table.
    *
-   * @param \Drupal\datastore\Storage\Query $query
+   * @param \Drupal\common\Storage\Query $query
    *   Query object.
    */
   public function query(Query $query): array {

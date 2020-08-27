@@ -388,16 +388,20 @@ EOF;
   }
 
   /**
-   *
+   * Private.
    */
   private function getCommonMockChain() {
-    $mockChain = new Chain($this);
-    $mockChain->add(ContainerInterface::class, 'get',
-      (new Options)->add('request_stack', RequestStack::class)
-        ->add('dkan.metastore.service', Service::class)
-        ->index(0)
-    );
-    $mockChain->add(SchemaRetriever::class, 'retrieve', "{}");
+    $options = (new Options)
+      ->add('request_stack', RequestStack::class)
+      ->add('dkan.metastore.service', Service::class)
+      ->index(0);
+
+    $mockChain = (new Chain($this))
+      ->add(ContainerInterface::class, 'get', $options)
+      ->add(SchemaRetriever::class, 'retrieve', "{}")
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'get', FALSE);
+
     return $mockChain;
   }
 

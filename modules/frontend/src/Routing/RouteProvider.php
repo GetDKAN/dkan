@@ -33,8 +33,11 @@ class RouteProvider {
   public function routes() {
     $routes = new RouteCollection();
 
-    $package_json = file_get_contents($this->appRoot . $this->frontendPath . "/package.json");
-    $decode_package = json_decode($package_json, TRUE);
+    $package_json_path = $this->appRoot . $this->frontendPath . "/package.json";
+    if (is_file($package_json_path)) {
+      $package_json = file_get_contents($package_json_path);
+      $decode_package = json_decode($package_json, TRUE);
+    }
     if (isset($decode_package["dependencies"]["gatsby"])) {
       $this->addStaticPages($routes);
     }

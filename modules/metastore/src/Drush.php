@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore;
 
-use Drupal\metastore\Storage\Data;
+use Drupal\metastore\Storage\DataFactory;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -13,19 +13,19 @@ class Drush extends DrushCommands {
   /**
    * Metastore data storage service.
    *
-   * @var \Drupal\metastore\Storage\Data
+   * @var \Drupal\metastore\Storage\DataFactory
    */
-  protected $storage;
+  protected $factory;
 
   /**
    * Drush constructor.
    *
-   * @param \Drupal\metastore\Storage\Data $storage
-   *   Metastore data storage.
+   * @param \Drupal\metastore\Storage\DataFactory $factory
+   *   A data factory.
    */
-  public function __construct(Data $storage) {
+  public function __construct(DataFactory $factory) {
     parent::__construct();
-    $this->storage = $storage;
+    $this->factory = $factory;
   }
 
   /**
@@ -38,8 +38,9 @@ class Drush extends DrushCommands {
    */
   public function publish(string $uuid) {
     try {
-      $this->storage->setSchema('dataset')->publish($uuid);
-      $this->logger()->success("Dataset {$uuid} published.");
+      $storage = $this->factory->getInstance('dataset');
+      $storage->publish($uuid);
+      $this->logger()->info("Dataset {$uuid} published.");
     }
     catch (\Exception $e) {
       $this->logger()->error("Error while attempting to publish dataset {$uuid}: " . $e->getMessage());

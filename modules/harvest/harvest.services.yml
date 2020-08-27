@@ -12,7 +12,7 @@ services:
       parent: logger.channel_base
       arguments: ['harvest']
 
-  # @expectedDeprecation
+  # @deprecated
   harvest.service:
     class: Drupal\harvest\Service
     arguments:

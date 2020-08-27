@@ -4,12 +4,12 @@
  * @file
  */
 
-use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\common\UrlHostTokenResolver;
-use Drupal\metastore\DataNodeLifeCycle;
-use Drupal\metastore\Reference\Dereferencer;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\common\Resource;
+use Drupal\metastore\LifeCycle\Data as LifeCycle;
+use Drupal\metastore\NodeWrapper\Data;
 
 /**
  * Implements hook_node_load().
@@ -17,64 +17,12 @@ use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 function metastore_node_load(array $entities) {
 
   foreach ($entities as $entity) {
-    if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
-      // Temporarily save the raw json metadata, for later use.
-      $metadata_string = $entity->get('field_json_metadata')->value;
-      $entity->referenced_metadata = $metadata_string;
-
-      // Dereference dataset properties.
-      $metadata_obj = json_decode($metadata_string);
-      $referencer = Drupal::service("metastore.dereferencer");
-      $referencing_method = dereferencing_method();
-      $metadata_obj = $referencer->dereference($metadata_obj, $referencing_method);
-
-      // Expose Dataset node's last modified date.
-      if ($referencing_method == Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS) {
-        $formatted_changed_date = Drupal::service('date.formatter')
-          ->format($entity->getChangedTime(), 'html_date');
-        $metadata_obj->{'%modified'} = $formatted_changed_date;
-      }
-      $entity->set('field_json_metadata', json_encode($metadata_obj));
+    try {
+      metastore_get_data_node_lifecycle($entity)->load();
     }
-
-    // @todo Decouple "resource" functionality from specific dataset properties.
-    if ($entity->bundle() == "data" && $entity->field_data_type->value == "distribution") {
-      $metadataString = $entity->get('field_json_metadata')->value;
-      $metadataString = UrlHostTokenResolver::resolve($metadataString);
-      $entity->set('field_json_metadata', $metadataString);
+    catch (DataNodeLifeCycleEntityValidationException $e) {
     }
   }
-
-}
-
-/**
- * Helps select the dereferencing method.
- *
- * @return int
- *   One of the int constants from class ValueReferencer:
- *     - DEREFERENCE_OUTPUT_DEFAULT = 0
- *     - DEREFERENCE_OUTPUT_REFERENCE_IDS = 2
- */
-function dereferencing_method() : int {
-  $allowed_methods = [
-    Dereferencer::DEREFERENCE_OUTPUT_DEFAULT,
-    Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS,
-  ];
-
-  // Selection based on API's http request query parameters.
-  $params = Drupal::request()->query->all();
-  if (isset($params['show-reference-ids'])) {
-    return Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS;
-  }
-
-  // Selection based on static variable.
-  $method = drupal_static('metastore_dereference_method');
-  if (isset($method) && in_array($method, $allowed_methods)) {
-    return $method;
-  }
-
-  // Default case.
-  return Dereferencer::DEREFERENCE_OUTPUT_DEFAULT;
 }
 
 /**
@@ -82,7 +30,7 @@ function dereferencing_method() : int {
  */
 function metastore_entity_presave(EntityInterface $entity) {
   try {
-    (new DataNodeLifeCycle($entity))->presave();
+    metastore_get_data_node_lifecycle($entity)->presave();
   }
   catch (DataNodeLifeCycleEntityValidationException $e) {
   }
@@ -92,11 +40,10 @@ function metastore_entity_presave(EntityInterface $entity) {
  * Implements hook_ENTITY_TYPE_predelete().
  */
 function metastore_node_predelete(EntityInterface $entity) {
-  // Check for possible orphan property references when deleting a dataset.
-  if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
-    $referenced_dataset = json_decode($entity->referenced_metadata);
-    $referencer = Drupal::service("metastore.orphan_checker");
-    $referencer->processReferencesInDeletedDataset($referenced_dataset);
+  try {
+    metastore_get_data_node_lifecycle($entity)->predelete();
+  }
+  catch (DataNodeLifeCycleEntityValidationException $e) {
   }
 }
 
@@ -109,4 +56,30 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
       $fields['field_json_metadata']->addConstraint('ProperJson', []);
     }
   }
+}
+
+/**
+ * Helper method to retrieve the static value for a resource's display.
+ */
+function resource_mapper_display() {
+  return drupal_static('metastore_resource_mapper_display', Resource::DEFAULT_SOURCE_PERSPECTIVE);
+}
+
+/**
+ * Helper method to retrieve the static value for a resource's revisioning.
+ */
+function resource_mapper_new_revision() {
+  return drupal_static('metastore_resource_mapper_new_revision', 0);
+}
+
+/**
+ * Create a LifeCycle object.
+ */
+function metastore_get_data_node_lifecycle($entity) {
+  $data = new Data($entity);
+
+  $lifeCycle = new LifeCycle($data);
+  $lifeCycle->setFileMapper(\Drupal::service('dkan.metastore.resource_mapper'));
+
+  return $lifeCycle;
 }

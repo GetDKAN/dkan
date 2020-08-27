@@ -101,7 +101,7 @@ class Dataset extends ComplexDataFacade {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function get($property_name) {
     $definitions = self::definition();
@@ -171,7 +171,7 @@ class Dataset extends ComplexDataFacade {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getProperties($include_computed = FALSE) {
     $definitions = self::definition();
@@ -185,7 +185,7 @@ class Dataset extends ComplexDataFacade {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getValue() {
     return $this->data;

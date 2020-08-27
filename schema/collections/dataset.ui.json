@@ -20,6 +20,9 @@
     "items": {
       "@type": {
         "ui:widget": "hidden"
+      },
+      "mediaType": {
+        "ui:widget": "hidden"
       }
     }
   },

@@ -9,7 +9,7 @@ use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class LoggerTraitTest
+ * Class LoggerTraitTest.
  *
  * @package Drupal\Tests\common\Traits
  */
@@ -70,7 +70,7 @@ class LoggerTraitTest extends TestCase {
   }
 
   /**
-   *
+   * Getter.
    */
   public function getLoggerChain() {
     return (new Chain($this))
@@ -80,4 +80,5 @@ class LoggerTraitTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'warning', NULL, "warnings")
       ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
   }
+
 }

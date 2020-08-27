@@ -4,6 +4,9 @@ namespace Drupal\metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\LoggerTrait;
+use Drupal\common\Resource;
+use Drupal\common\UrlHostTokenResolver;
+use Drupal\metastore\ResourceMapper;
 use Drupal\node\NodeStorageInterface;
 use stdClass;
 
@@ -22,6 +25,7 @@ class Referencer {
   public function __construct(ConfigFactoryInterface $configService, NodeStorageInterface $nodeStorage) {
     $this->setConfigService($configService);
     $this->nodeStorage = $nodeStorage;
+    $this->setLoggerFactory(\Drupal::service('logger.factory'));
   }
 
   /**
@@ -98,6 +102,11 @@ class Referencer {
    *   The Uuid reference, or unchanged value.
    */
   private function referenceSingle(string $property_id, $value) {
+
+    if ($property_id == 'distribution') {
+      $value = $this->distributionHandling($value);
+    }
+
     $uuid = $this->checkExistingReference($property_id, $value);
     if (!$uuid) {
       $uuid = $this->createPropertyReference($property_id, $value);
@@ -116,6 +125,137 @@ class Referencer {
       );
       return NULL;
     }
+  }
+
+  /**
+   * Private.
+   */
+  private function distributionHandling($value) {
+    $metadata = (object) [
+      'data' => $value,
+    ];
+
+    if (isset($metadata->data->downloadURL)) {
+      $downloadUrl = $metadata->data->downloadURL;
+
+      // Modify local urls to use our host/shost scheme.
+      $downloadUrl = $this->hostify($downloadUrl);
+
+      $mimeType = $this->getMimeType($metadata);
+
+      $downloadUrl = $this->registerWithResourceMapper(
+        $downloadUrl,
+        $mimeType);
+
+      $metadata->data->downloadURL = $downloadUrl;
+    }
+    return $metadata->data;
+  }
+
+  /**
+   * Private.
+   */
+  private function registerWithResourceMapper($downloadUrl, $mimeType) {
+    try {
+      // Register the url with the filemapper.
+      $resource = new Resource($downloadUrl, $mimeType);
+
+      if ($this->getFileMapper()->register($resource)) {
+        $downloadUrl = $resource->getUniqueIdentifier();
+      }
+    }
+    catch (\Exception $e) {
+      $message = $e->getMessage();
+      $info = json_decode($message);
+
+      if (is_array($info) &&
+        isset($info[0]) &&
+        is_object($info[0]) &&
+        isset($info[0]->identifier)) {
+
+        /* @var $stored Resource */
+        $stored = $this->getFileMapper()->get($info[0]->identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE);
+        $downloadUrl = $this->handleExistingResource($info, $stored);
+      }
+    }
+
+    return $downloadUrl;
+  }
+
+  /**
+   * Private.
+   */
+  private function handleExistingResource($info, $stored) {
+    if ($info[0]->perspective == Resource::DEFAULT_SOURCE_PERSPECTIVE && resource_mapper_new_revision() == 1) {
+      $new = $stored->createNewVersion();
+      $this->getFileMapper()->registerNewVersion($new);
+      $downloadUrl = $new->getUniqueIdentifier();
+    }
+    else {
+      $downloadUrl = $stored->getUniqueIdentifier();
+    }
+    return $downloadUrl;
+  }
+
+  /**
+   * Private.
+   */
+  private function getFileMapper(): ResourceMapper {
+    return \Drupal::service('dkan.metastore.resource_mapper');
+  }
+
+  /**
+   * Private.
+   */
+  public static function hostify($url) {
+    $host = \Drupal::request()->getHost();
+    $parsedUrl = parse_url($url);
+    if ($parsedUrl['host'] == $host) {
+      $parsedUrl['host'] = UrlHostTokenResolver::TOKEN;
+      $url = self::unparseUrl($parsedUrl);
+    }
+    return $url;
+  }
+
+  /**
+   * Private.
+   */
+  private static function unparseUrl($parsedUrl) {
+    $url = '';
+    $urlParts = [
+      'scheme',
+      'host',
+      'port',
+      'user',
+      'pass',
+      'path',
+      'query',
+      'fragment',
+    ];
+
+    foreach ($urlParts as $part) {
+      if (!isset($parsedUrl[$part])) {
+        continue;
+      }
+      $url .= ($part == "port") ? ':' : '';
+      $url .= ($part == "query") ? '?' : '';
+      $url .= ($part == "fragment") ? '#' : '';
+      $url .= $parsedUrl[$part];
+      $url .= ($part == "scheme") ? '://' : '';
+    }
+
+    return $url;
+  }
+
+  /**
+   * Private.
+   */
+  private function getMimeType($metadata) {
+    $mimeType = "text/plain";
+    if (isset($metadata->data->mediaType)) {
+      $mimeType = $metadata->data->mediaType;
+    }
+    return $mimeType;
   }
 
   /**
@@ -178,7 +318,6 @@ class Referencer {
         'moderation_state' => 'published',
       ]);
     $node->save();
-
     return $node->uuid();
   }
 

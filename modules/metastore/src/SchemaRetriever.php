@@ -3,12 +3,14 @@
 namespace Drupal\metastore;
 
 use Contracts\RetrieverInterface;
-use Drupal\Core\Extension\ExtensionList;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Extension\ModuleExtensionList;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class.
  */
-class SchemaRetriever implements RetrieverInterface {
+class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface {
 
   /**
    * Directory.
@@ -18,9 +20,21 @@ class SchemaRetriever implements RetrieverInterface {
   protected $directory;
 
   /**
+   * Inherited.
+   *
+   * @inheritdoc
+   */
+  public static function create(ContainerInterface $container) {
+    $appRoot = $container->get('app.root');
+    $moduleExtension = $container->get('extension.list.module');
+
+    return new static($appRoot, $moduleExtension);
+  }
+
+  /**
    * Public.
    */
-  public function __construct($appRoot, ExtensionList $extensionList) {
+  public function __construct($appRoot, ModuleExtensionList $extensionList) {
     $this->findSchemaDirectory($appRoot, $extensionList);
   }
 
@@ -63,14 +77,15 @@ class SchemaRetriever implements RetrieverInterface {
   protected function findSchemaDirectory($appRoot, $extensionList) {
 
     $drupalRoot = $appRoot;
+    $drupalRootSchema = $drupalRoot . "/schema";
 
-    if (is_dir($drupalRoot . "/schema")) {
-      $this->directory = $drupalRoot . "/schema";
+    $defaultSchema = $drupalRoot . "/" . $this->getDefaultSchemaDirectory($extensionList);
+
+    if (is_dir($drupalRootSchema)) {
+      $this->directory = $drupalRootSchema;
     }
-    elseif (($directory = $this->getDefaultSchemaDirectory($extensionList))
-          && is_dir($directory)
-      ) {
-      $this->directory = $directory;
+    elseif (is_dir($defaultSchema)) {
+      $this->directory = $defaultSchema;
     }
     else {
       throw new \Exception("No schema directory found.");
@@ -85,11 +100,8 @@ class SchemaRetriever implements RetrieverInterface {
    * @return string
    *   Path.
    */
-  protected function getDefaultSchemaDirectory($extensionList) {
-    /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
-    $extensionList = $extensionList;
+  protected function getDefaultSchemaDirectory(ModuleExtensionList $extensionList) {
     $infoFile = $extensionList->getPathname('dkan');
-
     return dirname($infoFile) . '/schema';
   }
 

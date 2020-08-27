@@ -63,7 +63,7 @@ class DocsTest extends TestCase {
   }
 
   /**
-   *
+   * Getter.
    */
   public function getCommonMockChain() {
     $options = (new Options())

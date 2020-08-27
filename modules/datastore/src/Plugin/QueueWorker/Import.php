@@ -2,10 +2,11 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Logger\RfcLogLevel;
-use Procrastinator\Result;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\common\LoggerTrait;
+use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -18,16 +19,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-
-  use \Drupal\Core\Logger\LoggerChannelTrait;
-
+  use LoggerTrait;
 
   private $container;
 
   /**
    * Inherited.
    *
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new Import($configuration, $plugin_id, $plugin_definition, $container);
@@ -55,11 +54,18 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    */
   public function processItem($data) {
 
+    if (is_object($data) && isset($data->data)) {
+      $data = $data->data;
+    }
+
     try {
+      $identifier = $data['identifier'];
+      $version = $data['version'];
+
       /** @var \Drupal\datastore\Service $datastore */
       $datastore = $this->container->get('datastore.service');
 
-      $results = $datastore->import($data['uuid']);
+      $results = $datastore->import($identifier, FALSE, $version);
 
       foreach ($results as $result) {
         $this->processResult($result, $data);
@@ -67,7 +73,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     }
     catch (\Exception $e) {
       $this->log(RfcLogLevel::ERROR,
-        "Import for {$data['uuid']} returned an error: {$e->getMessage()}");
+        "Import for {$data['identifier']} returned an error: {$e->getMessage()}");
     }
   }
 
@@ -75,34 +81,30 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * Private.
    */
   private function processResult(Result $result, $data) {
+    $identifier = $data['identifier'];
+    $version = $data['version'];
+    $uid = "{$identifier}__{$version}";
+
     $level = RfcLogLevel::INFO;
     $message = "";
     $status = $result->getStatus();
     switch ($status) {
       case Result::STOPPED:
         $newQueueItemId = $this->requeue($data);
-        $message = "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).";
+        $message = "Import for {$uid} is requeueing. (ID:{$newQueueItemId}).";
         break;
 
       case Result::IN_PROGRESS:
       case Result::ERROR:
         $level = RfcLogLevel::ERROR;
-        $message = "Import for {$data['uuid']} returned an error: {$result->getError()}";
+        $message = "Import for {$uid} returned an error: {$result->getError()}";
         break;
 
       case Result::DONE:
-        $message = "Import for {$data['uuid']} completed.";
+        $message = "Import for {$uid} completed.";
         break;
     }
-    $this->log($level, $message);
-  }
-
-  /**
-   * Log a datastore event.
-   */
-  protected function log($level, $message, array $context = []) {
-    $this->getLogger($this->getPluginId())
-      ->log($level, $message, $context);
+    $this->log('dkan', $message, [], $level);
   }
 
   /**
