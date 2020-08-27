@@ -22,18 +22,10 @@ class Drush extends DrushCommands {
   protected $datastoreService;
 
   /**
-   * Logger channel service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannel
-   */
-  protected $logger;
-
-  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct() {
     $this->datastoreService = \Drupal::service('datastore.service');
-    $this->logger = \Drupal::service('datastore.logger_channel');
   }
 
   /**
@@ -47,7 +39,7 @@ class Drush extends DrushCommands {
    * @TODO pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan:datastore:import
    * @aliases dkan-datastore:import
-   * @expectedDeprecation dkan-datastore:import is deprecated and will be removed in a future Dkan release. Use dkan:datastore:import instead.
+   * @deprecated dkan-datastore:import is deprecated and will be removed in a future Dkan release. Use dkan:datastore:import instead.
    */
   public function import($uuid, $deferred = FALSE) {
 
@@ -80,7 +72,7 @@ class Drush extends DrushCommands {
    *
    * @command dkan:datastore:list
    * @aliases dkan-datastore:list
-   * @expectedDeprecation dkan-datastore:list is deprecated and will be removed in a future Dkan release. Use dkan:datastore:list instead.
+   * @deprecated dkan-datastore:list is deprecated and will be removed in a future Dkan release. Use dkan:datastore:list instead.
    */
   public function list($options = [
     'format' => 'table',
@@ -137,7 +129,7 @@ class Drush extends DrushCommands {
    *
    * @command dkan:datastore:drop
    * @aliases dkan-datastore:drop
-   * @expectedDeprecation dkan-datastore:drop is deprecated and will be removed in a future Dkan release. Use dkan:datastore:drop instead.
+   * @deprecated dkan-datastore:drop is deprecated and will be removed in a future Dkan release. Use dkan:datastore:drop instead.
    */
   public function drop($uuid) {
     try {

@@ -3,7 +3,6 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Query\Select;
-use Drupal\datastore\Storage\Query;
 
 /**
  * Class QueryToQueryHelperTrait.
@@ -19,7 +18,7 @@ trait QueryToQueryHelperTrait {
    */
   private function setQueryConditions(Select $db_query, Query $query) {
     foreach ($query->conditions as $property => $value) {
-      $db_query->condition($property, $value, "LIKE");
+      $db_query->condition(strtolower($property), $value, "LIKE");
     }
   }
 
@@ -28,11 +27,11 @@ trait QueryToQueryHelperTrait {
    */
   private function setQueryOrderBy(Select $db_query, Query $query) {
     foreach ($query->sort['ASC'] as $property) {
-      $db_query->orderBy($property);
+      $db_query->orderBy(strtolower($property));
     }
 
     foreach ($query->sort['DESC'] as $property) {
-      $db_query->orderBy($property, 'DESC');
+      $db_query->orderBy(strtolower($property), 'DESC');
     }
   }
 

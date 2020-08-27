@@ -32,6 +32,7 @@ jobs:
           name: Run phpUnit tests
           command: |
             dktl xdebug:start
+            dktl install
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
           name: Run DKAN cypress tests

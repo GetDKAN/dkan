@@ -5,7 +5,7 @@ namespace Drupal\datastore\Service\Factory;
 use Contracts\FactoryInterface;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Service\Import as Instance;
-use Drupal\datastore\Storage\JobStoreFactory;
+use Drupal\common\Storage\JobStoreFactory;
 
 /**
  * Class Import.
@@ -29,7 +29,7 @@ class Import implements FactoryInterface {
   /**
    * Inherited.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
 

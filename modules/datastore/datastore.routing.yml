@@ -61,7 +61,9 @@ datastore.sql_endpoint.get.api:
   defaults:
     { _controller: '\Drupal\datastore\SqlEndpoint\WebServiceApi::runQueryGet'}
   requirements:
-    _access: 'TRUE'
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 datastore.sql_endpoint.post.api:
   path: '/api/1/datastore/sql'

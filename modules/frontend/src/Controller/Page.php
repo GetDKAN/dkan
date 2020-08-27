@@ -17,7 +17,7 @@ class Page implements ContainerInjectionInterface {
   /**
    * Inherited.
    *
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new Page($container->get('frontend.page'));

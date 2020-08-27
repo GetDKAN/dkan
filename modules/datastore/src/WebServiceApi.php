@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore;
 
+use Drupal\common\Resource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -59,7 +60,11 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function summary($identifier) {
     try {
-      $storage = $this->datastoreService->getStorage($identifier);
+
+      [$id, $version] = Resource::getIdentifierAndVersion($identifier);
+      $storage = $this->datastoreService
+        ->getStorage($id, $version);
+
       if ($storage) {
         $data = $storage->getSummary();
         return $this->getResponse($data);
@@ -89,7 +94,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     }
 
     try {
-      $results = $this->datastoreService->import($payload->resource_id, FALSE);
+      $resourceId = $payload->resource_id;
+      [$identifier, $version] = Resource::getIdentifierAndVersion($resourceId);
+      $results = $this->datastoreService->import($identifier, FALSE, $version);
       return $this->getResponse($results);
     }
     catch (\Exception $e) {

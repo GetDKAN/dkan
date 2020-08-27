@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ControllerPageTest extends TestCase {
 
   /**
-   *
+   * Getter.
    */
   public function getContainer() {
 

@@ -28,7 +28,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Create.
    *
-   * @inheritDoc
+   * @inheritdoc
    */
   public static function create(ContainerInterface $container) {
     return new self(
@@ -197,13 +197,24 @@ class Service implements ContainerInjectionInterface {
    *   Harvest identifier.
    */
   public function publish(string $id) {
+    $publishedIdentifiers = [];
+
     $lastRunId = $this->getLastHarvestRunInfo($id);
     $lastRunInfoJsonString = $this->getHarvestRunInfo($id, $lastRunId);
     $lastRunInfoObj = json_decode($lastRunInfoJsonString);
-    $publishedIdentifiers = [];
-    foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
-      $publishedIdentifiers[] = $this->metastore->publish('dataset', $uuid);
+
+    if (!isset($lastRunInfoObj->status->extracted_items_ids)) {
+      return $publishedIdentifiers;
     }
+
+    foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
+      if (isset($lastRunInfoObj->status->load) &&
+        $lastRunInfoObj->status->load->{$uuid} &&
+        $lastRunInfoObj->status->load->{$uuid} != "FAILURE") {
+        $publishedIdentifiers[] = $this->metastore->publish('dataset', $uuid);
+      }
+    }
+
     return $publishedIdentifiers;
   }
 

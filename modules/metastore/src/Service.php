@@ -10,8 +10,7 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
-use Drupal\metastore\Reference\Dereferencer;
-use Drupal\metastore\Storage\Data;
+use Drupal\metastore\Storage\DataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -37,9 +36,9 @@ class Service implements ContainerInjectionInterface {
   /**
    * Storage.
    *
-   * @var \Drupal\metastore\Storage\Data
+   * @var \Drupal\metastore\Storage\DataFactory
    */
-  private $storage;
+  private $factory;
 
   /**
    * Inherited.
@@ -57,10 +56,10 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, Data $storage) {
+  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataFactory $factory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
-    $this->storage = $storage;
+    $this->factory = $factory;
   }
 
   /**
@@ -135,8 +134,8 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get($schema_id, $identifier): string {
-    $data = $this->storage->setSchema($schema_id)
-      ->retrievePublished($identifier);
+    $storage = $this->factory->getInstance($schema_id);
+    $data = $storage->retrievePublished($identifier);
     if (!empty($this->plugins)) {
       $data = $this->modifyData($schema_id, $data);
     }
@@ -178,12 +177,6 @@ class Service implements ContainerInjectionInterface {
    *   An array of resources.
    */
   public function getResources($schema_id, $identifier): array {
-
-    // Load this dataset's metadata with both data and identifiers.
-    if (function_exists('drupal_static')) {
-      drupal_static('metastore_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
-    }
-
     $json = $this->getEngine($schema_id)
       ->get($identifier);
     $data = json_decode($json);
@@ -230,7 +223,8 @@ class Service implements ContainerInjectionInterface {
    */
   public function publish(string $schema_id, string $identifier) {
     if ($this->objectExists($schema_id, $identifier)) {
-      return $this->storage->setSchema($schema_id)->publish($identifier);
+      $storage = $this->factory->getInstance($schema_id);
+      return $storage->publish($identifier);
     }
 
     throw new MissingObjectException("No data with the identifier {$identifier} was found.");
@@ -365,15 +359,38 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   The uuid.
-   * @param string $new_metadata
+   * @param string $metadata
    *   The new data being compared to the existing data.
    *
    * @return bool
    *   TRUE if the metadata is equivalent, false otherwise.
    */
-  private function objectIsEquivalent(string $schema_id, string $identifier, string $new_metadata) {
-    $existing_metadata = $this->getEngine($schema_id)->get($identifier);
-    return json_decode($new_metadata) == json_decode($existing_metadata);
+  private function objectIsEquivalent(string $schema_id, string $identifier, string $metadata) {
+    $existingMetadata = $this->getEngine($schema_id)->get($identifier);
+    $existing = json_decode($existingMetadata);
+    $existing = self::removeReferences($existing);
+    $new = json_decode($metadata);
+    return $new == $existing;
+  }
+
+  /**
+   * Private.
+   */
+  public static function removeReferences($object) {
+    $array = (array) $object;
+    foreach ($array as $property => $value) {
+      if (substr_count($property, "%") > 0) {
+        unset($array[$property]);
+      }
+    }
+
+    $object = (object) $array;
+
+    if (isset($object->distribution[0]->{"%Ref:downloadURL"})) {
+      unset($object->distribution[0]->{"%Ref:downloadURL"});
+    }
+
+    return $object;
   }
 
   /**
