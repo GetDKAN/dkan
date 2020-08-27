@@ -110,12 +110,13 @@ class JsonFormWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $form_state->set('json_form_widget_field', $items->getName());
     $default_data = [];
     // Get default data.
     foreach ($items as $item) {
       $default_data = json_decode($item->value);
     }
-    $json_form = $this->getJsonForm($default_data);
+    $json_form = $this->getJsonForm($default_data, $form_state);
 
     return ['value' => $json_form];
   }
@@ -123,7 +124,7 @@ class JsonFormWidget extends WidgetBase {
   /**
    * Build form based on schema.
    */
-  private function getJsonForm($data) {
+  private function getJsonForm($data, $form_state = NULL) {
     $schema = $this->schemaRetriever->retrieve($this->getSetting('schema'));
     $this->schema = json_decode($schema);
     if ($this->schema) {
@@ -131,7 +132,8 @@ class JsonFormWidget extends WidgetBase {
 
       foreach ($properties as $property) {
         $type = $this->schema->properties->{$property}->type ?? "string";
-        $form[$property] = $this->getFormElement($type, $property, $this->schema->properties->{$property}, $data->{$property});
+        $value = $data->{$property} ?? NULL;
+        $form[$property] = $this->getFormElement($type, $property, $this->schema->properties->{$property}, $value, FALSE, $form_state);
       }
       return $form;
     }
@@ -140,13 +142,13 @@ class JsonFormWidget extends WidgetBase {
   /**
    * Get form element based on property type.
    */
-  private function getFormElement($type, $property_name, $property, $data, $object_schema = FALSE) {
+  private function getFormElement($type, $property_name, $property, $data, $object_schema = FALSE, $form_state = NULL) {
     switch ($type) {
       case 'object':
         return $this->handleObjectElement($property, $property_name, $data);
 
       case 'array':
-        return $this->handleArrayElement($property, $property_name, $data);
+        return $this->handleArrayElement($property, $property_name, $data, $form_state);
 
       case 'string':
         return $this->handleStringElement($property, $property_name, $data, $object_schema);
@@ -161,25 +163,27 @@ class JsonFormWidget extends WidgetBase {
     $element = [
       '#type' => 'textfield',
       '#title' => $property->title,
-      '#description' => $property->description,
     ];
+    if (isset($property->description)) {
+      $element['#description'] = $property->description;
+    }
     // Add default value.
     if ($data) {
       $element['#default_value'] = $data;
     }
-    elseif ($property->default) {
+    elseif (isset($property->default)) {
       $element['#default_value'] = $property->default;
     }
     // Check if the field is required.
     $element_schema = $object_schema ? $object_schema : $this->schema;
     $element['#required'] = $this->checkIfRequired($field_name, $element_schema);
     // Convert to select if applicable.
-    if ($property->enum) {
+    if (isset($property->enum)) {
       $element['#type'] = 'select';
       $element['#options'] = $this->getSelectOptions($property);
     }
     // Convert to html5 URL render element if needed.
-    if ($property->format == 'uri') {
+    if (isset($property->format) && $property->format == 'uri') {
       $element['#type'] = 'url';
     }
     return $element;
@@ -188,8 +192,81 @@ class JsonFormWidget extends WidgetBase {
   /**
    * Handle form element for an array.
    */
-  private function handleArrayElement($type, $property) {
-    // Handle array.
+  private function handleArrayElement($property_schema, $field_name, $data, $form_state) {
+    // Save info about the arrays.
+    $widget_array_info = $form_state->get('json_form_widget_array');
+    $form_state->set('json_form_widget_schema', $this->schema);
+    if (!isset($widget_array_info[$field_name])) {
+      $widget_array_info[$field_name]['amount'] = 1;
+      $form_state->set('json_form_widget_array', $widget_array_info);
+      $amount = 1;
+    }
+    else {
+      $amount = $widget_array_info[$field_name]['amount'];
+    }
+
+    if (is_array($data)) {
+      $count = count($data);
+      $amount = ($count > $amount) ? $count : $amount;
+    }
+
+    $element = [
+      '#type' => 'fieldset',
+      '#title' => $property_schema->title,
+      '#description' => $property_schema->description,
+      '#prefix' => '<div id="' . $field_name . '-fieldset-wrapper">',
+      '#suffix' => '</div>',
+      '#tree' => TRUE,
+    ];
+
+    for ($i = 0; $i < $amount; $i++) {
+      $element[$field_name][$i] = [
+        '#type' => 'textfield',
+        '#title' => $property_schema->items->title,
+      ];
+      if (is_array($data) && isset($data[$i])) {
+        $element[$field_name][$i]['#default_value'] = $data[$i];
+      }
+    }
+
+    $element['actions'] = [
+      '#type' => 'actions',
+    ];
+    $element['actions']['add'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Add one more'),
+      '#submit' => ['json_form_widget_add_one'],
+      '#ajax' => [
+        'callback' => [$this, 'addmoreCallback'],
+        'wrapper' => $field_name . '-fieldset-wrapper',
+      ],
+    ];
+    // If there is more than one name, add the remove button.
+    if ($amount > 1) {
+      $element['actions']['remove_name'] = [
+        '#type' => 'submit',
+        '#value' => $this->t('Remove one'),
+        '#submit' => ['json_form_widget_remove_one'],
+        '#ajax' => [
+          'callback' => [$this, 'addmoreCallback'],
+          'wrapper' => $field_name . '-fieldset-wrapper',
+        ],
+      ];
+    }
+
+    return $element;
+  }
+
+  /**
+   * Callback for both ajax-enabled buttons.
+   *
+   * Selects and returns the fieldset with the names in it.
+   */
+  public function addmoreCallback(array &$form, FormStateInterface $form_state) {
+    $base_field = $form_state->get('json_form_widget_field');
+    $widget_array_info = $form_state->get('json_form_widget_array');
+    $field = array_keys($widget_array_info)[0];
+    return $form[$base_field]['widget'][0]['value'][$field];
   }
 
   /**
@@ -205,7 +282,8 @@ class JsonFormWidget extends WidgetBase {
 
     foreach ($properties as $child) {
       $type = $property_schema->properties->{$child}->type ?? "string";
-      $element[$field_name][$child] = $this->getFormElement($type, $child, $property_schema->properties->{$child}, $data->{$child}, $property_schema);
+      $value = $data->{$child} ?? NULL;
+      $element[$field_name][$child] = $this->getFormElement($type, $child, $property_schema->properties->{$child}, $value, $property_schema);
     }
     return $element;
   }
@@ -225,7 +303,7 @@ class JsonFormWidget extends WidgetBase {
    */
   private function getSelectOptions($property) {
     $options = [];
-    if ($property->enumNames) {
+    if (isset($property->enumNames)) {
       $options = array_combine($property->enum, $property->enumNames);
     }
     else {
@@ -238,17 +316,21 @@ class JsonFormWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
-    $field_name = $this->fieldDefinition->getName();
+    $field_name = $form_state->get('json_form_widget_field');
+    $schema = $form_state->get('json_form_widget_schema');
+
     $data = [];
-    $properties = array_keys((array) $this->schema->properties);
+    $properties = array_keys((array) $schema->properties);
     $values = $form_state->getValue($field_name)[0]['value'];
     foreach ($properties as $property) {
       if (isset($values[$property])) {
         if (is_array($values[$property])) {
           $data[$property] = [];
-          foreach ($values[$property][$property] as $key => $value) {
-            if ($value) {
-              $data[$property][$key] = $value;
+          if (isset($values[$property][$property])) {
+            foreach ($values[$property][$property] as $key => $value) {
+              if ($value) {
+                $data[$property][$key] = $value;
+              }
             }
           }
         }

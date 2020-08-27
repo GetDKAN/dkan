@@ -3,3 +3,42 @@
 /**
  * @file
  */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Submit handler for the "add-one-more" button.
+ *
+ * Increments the max counter and causes a rebuild.
+ */
+function json_form_widget_add_one(array &$form, FormStateInterface $form_state) {
+  $widget_array_info = $form_state->get('json_form_widget_array');
+  $field = array_keys($widget_array_info)[0];
+  $amount = $widget_array_info[$field]['amount'];
+  $widget_array_info[$field]['amount'] = $amount + 1;
+  $form_state->set('json_form_widget_array', $widget_array_info);
+
+  // Since our buildForm() method relies on the value of 'num_names' to
+  // generate 'name' form elements, we have to tell the form to rebuild. If we
+  // don't do this, the form builder will not call buildForm().
+  $form_state->setRebuild();
+}
+
+/**
+ * Submit handler for the "remove one" button.
+ *
+ * Decrements the max counter and causes a form rebuild.
+ */
+function json_form_widget_remove_one(array &$form, FormStateInterface $form_state) {
+  $widget_array_info = $form_state->get('json_form_widget_array');
+  $field = array_keys($widget_array_info)[0];
+  $amount = $widget_array_info[$field]['amount'];
+  if ($amount > 1) {
+    $widget_array_info[$field]['amount'] = $amount - 1;
+    $form_state->set('json_form_widget_array', $widget_array_info);
+  }
+  // Since our buildForm() method relies on the value of 'num_names' to
+  // generate 'name' form elements, we have to tell the form to rebuild. If we
+  // don't do this, the form builder will not call buildForm().
+  $form_state->setRebuild();
+}
