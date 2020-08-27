@@ -59,21 +59,21 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
 }
 
 /**
- *
+ * Helper method to retrieve the static value for a resource's display.
  */
 function resource_mapper_display() {
   return drupal_static('metastore_resource_mapper_display', Resource::DEFAULT_SOURCE_PERSPECTIVE);
 }
 
 /**
- *
+ * Helper method to retrieve the static value for a resource's revisioning.
  */
 function resource_mapper_new_revision() {
   return drupal_static('metastore_resource_mapper_new_revision', 0);
 }
 
 /**
- *
+ * Create a LifeCycle object.
  */
 function metastore_get_data_node_lifecycle($entity) {
   $data = new Data($entity);

@@ -85,7 +85,6 @@ class ResourceLocalizer {
 
     try {
       $this->getFileMapper()->registerNewPerspective($new);
-      $this->debug('@resource', ['@resource' => json_encode($new)]);
     }
     catch (AlreadyRegistered $e) {
     }
@@ -94,7 +93,6 @@ class ResourceLocalizer {
 
     try {
       $this->getFileMapper()->registerNewPerspective($localUrlPerspective);
-      $this->debug('@resource', ['@resource' => json_encode($new)]);
     }
     catch (AlreadyRegistered $e) {
     }

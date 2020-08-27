@@ -71,8 +71,6 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    * {@inheritdoc}
    */
   public function processItem($data) {
-    $this->debug(json_encode($data));
-
     $metadataProperty = $data[0];
     $identifier = $data[1];
 

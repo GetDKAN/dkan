@@ -160,22 +160,13 @@ class Referencer {
       // Register the url with the filemapper.
       $resource = new Resource($downloadUrl, $mimeType);
 
-      $this->debug("About to register @url", [
-        '@url' => $downloadUrl,
-      ]);
-
       if ($this->getFileMapper()->register($resource)) {
-        $this->debug("@resource", ['@resource' => json_encode($resource)]);
         $downloadUrl = $resource->getUniqueIdentifier();
       }
     }
     catch (\Exception $e) {
       $message = $e->getMessage();
       $info = json_decode($message);
-
-      $this->debug("Already registered @info", [
-        '@info' => $message,
-      ]);
 
       if (is_array($info) &&
         isset($info[0]) &&
@@ -198,7 +189,6 @@ class Referencer {
     if ($info[0]->perspective == Resource::DEFAULT_SOURCE_PERSPECTIVE && resource_mapper_new_revision() == 1) {
       $new = $stored->createNewVersion();
       $this->getFileMapper()->registerNewVersion($new);
-      $this->debug("@resource", ['@resource' => json_encode($new)]);
       $downloadUrl = $new->getUniqueIdentifier();
     }
     else {

@@ -109,7 +109,7 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
 }
 
 /**
- *
+ * Create a text link.
  */
 function metastore_admin_create_text_link($linkText, $internalUri) {
   $url = Url::fromUri($internalUri);
