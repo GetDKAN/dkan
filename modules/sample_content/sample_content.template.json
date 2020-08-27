@@ -64,8 +64,8 @@
         {
           "@type":"dcat:Distribution",
           "accessURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/pittsmva2016data.zip",
-          "format":"html",
-          "title":"Interactive Map"
+          "format":"zip",
+          "title":"Map files"
         }
       ],
       "identifier":"fb3525f2-d32a-451e-8869-906ed41f7695",
@@ -243,6 +243,7 @@
         {
           "@type":"dcat:Distribution",
           "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/Polling_Places.csv",
+          "mediaType":"text\/csv",
           "format":"csv",
           "description":"List of polling places in Madison, WI.",
           "title":"Madison Polling Places"
