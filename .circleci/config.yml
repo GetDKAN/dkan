@@ -10,8 +10,6 @@ jobs:
     steps:
       - checkout:
           path: dkan
-      - setup_remote_docker: 
-          docker_layer_caching: true 
       - run:
           name: Setup composer config
           command: |
@@ -48,8 +46,6 @@ jobs:
     steps:
       - attach-workspace:
           at: ~/      
-      - setup_remote_docker: 
-          docker_layer_caching: true 
       - run:
           name: Set up DKAN Tools
           command: |
@@ -110,8 +106,6 @@ jobs:
     steps:
       - attach-workspace:
           at: ~/
-      - setup_remote_docker: 
-          docker_layer_caching: true 
       - run:
           name: Set up DKAN Tools
           command: |
