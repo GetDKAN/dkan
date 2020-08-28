@@ -242,7 +242,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/Polling_Places.csv",
+          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/polling-places.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"List of polling places in Madison, WI.",
