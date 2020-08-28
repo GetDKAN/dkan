@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    parallelism: 1
     machine:
       image: circleci/classic:latest
     environment:
@@ -23,17 +22,69 @@ jobs:
           command: |
             v=$CIRCLE_BRANCH
             if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
-            v="$v#${CIRCLE_SHA1}" && dktl init --dkan=$v
+            # v="$v#${CIRCLE_SHA1}"
+            dktl init --dkan=$v
       - run:
           name: Make DKAN
           command: |
             dktl make
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - dkan-tools
+            - project
+            - .composer
+  phpunit_dredd:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TERM: "xterm-256color"
+      DKTL_NO_PTY: "1"
+    steps:
+      - attach-workspace:
+          at: ~/      
+      - run:
+          name: Set up DKAN Tools
+          command: |
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl dc up -d
+      - run:
+          name: Install Drupal
+          command: sleep 10 && dktl install
       - run:
           name: Run phpUnit tests
+          command: dktl dkan:test-phpunit
+      - run:
+          name: Run CodeClimate Test Coverage Report
           command: |
-            dktl xdebug:start
-            dktl install
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
+      - run:
+          name: Run DKAN dredd tests
+          command: |
+            dktl install:sample
+            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
+            dktl drush user-add-role api_user testuser
+            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
+            dktl dkan:test-dredd
+  cypress_backend:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TERM: "xterm-256color"
+      DKTL_NO_PTY: "1"
+    steps:
+      - attach-workspace:
+          at: ~/
+      - run:
+          name: Set up DKAN Tools
+          command: |
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl dc up -d
+      - run:
+          name: Install Drupal
+          command: sleep 10 && dktl install
       - run:
           name: Run DKAN cypress tests
           command: |
@@ -43,19 +94,32 @@ jobs:
             dktl drush user:create testeditor --password="testeditor"
             dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
+      - store_artifacts:
+          path: docroot/modules/contrib/dkan/cypress/screenshots
+      - store_artifacts:
+          path: docroot/modules/contrib/dkan/cypress/videos
+
+  cypress_frontend:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TERM: "xterm-256color"
+      DKTL_NO_PTY: "1"
+    steps:
+      - attach-workspace:
+          at: ~/
       - run:
-          name: Run DKAN dredd tests
+          name: Set up DKAN Tools
           command: |
-            dktl install
-            dktl install:sample
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
-            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
-            dktl dkan:test-dredd
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl dc up -d
+      - run:
+          name: Install Drupal
+          command: sleep 10 && dktl install
       - run:
           name: Run frontend cypress tests
           command: |
-            dktl install
             dktl install:sample
             dktl frontend:install
             dktl frontend:build
@@ -69,3 +133,17 @@ jobs:
           path: src/frontend/cypress/screenshots
       - store_artifacts:
           path: src/frontend/cypress/videos
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - phpunit_dredd:
+          requires:
+            - build
+      - cypress_backend:
+          requires:
+            - build
+      - cypress_frontend:
+          requires:
+            - build
