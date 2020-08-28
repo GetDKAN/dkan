@@ -5,7 +5,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.0.0"
+      DKTL_VERSION: "4.0.3"
     steps:
       - run:
           name: Setup composer config
@@ -22,7 +22,7 @@ jobs:
           command: |
             v=$CIRCLE_BRANCH
             if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
-            # v="$v#${CIRCLE_SHA1}"
+            v="$v#${CIRCLE_SHA1}"
             dktl init --dkan=$v
       - run:
           name: Make DKAN
@@ -63,8 +63,6 @@ jobs:
           name: Run DKAN dredd tests
           command: |
             dktl install:sample
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
   cypress_backend:
@@ -88,11 +86,6 @@ jobs:
       - run:
           name: Run DKAN cypress tests
           command: |
-            dktl install
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
-            dktl drush user:create testeditor --password="testeditor"
-            dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
@@ -125,10 +118,6 @@ jobs:
             dktl frontend:build
             dktl drush cr
             dktl frontend:test
-      - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/screenshots
-      - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/videos
       - store_artifacts:
           path: src/frontend/cypress/screenshots
       - store_artifacts:
