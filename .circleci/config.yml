@@ -86,8 +86,7 @@ jobs:
           command: sleep 10 && dktl install
       - run:
           name: Run DKAN cypress tests
-          command: |
-            dktl dkan:test-cypress
+          command: dktl dkan:test-cypress
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:

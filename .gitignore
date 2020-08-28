@@ -16,5 +16,6 @@ docs
 .vscode
 coverage
 cypress/videos
+cypress/screenshots
 package-lock.json
 tagfile
