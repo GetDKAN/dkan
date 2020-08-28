@@ -55,7 +55,7 @@ trait ServiceCheckTrait {
     foreach ($dkanModules as $dkanModule) {
       $files[] = $this->getRelativeDkanModulePath($dkanModule) . "/{$dkanModule}.services.yml";
     }
-    $files[] = "/var/www/docroot/core/core.services.yml";
+    $files[] = DRUPAL_ROOT . "/core/core.services.yml";
 
     foreach ($files as $file) {
       $content = Yaml::decode(file_get_contents($file));

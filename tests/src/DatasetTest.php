@@ -187,7 +187,7 @@ class DatasetTest extends ExistingSiteBase {
 
     $dirs = ['dkan-tmp', 'distribution', 'resources'];
     foreach ($dirs as $dir) {
-      $path = "/var/www/docroot/sites/default/files/{$dir}";
+      $path = DRUPAL_ROOT . "/sites/default/files/{$dir}";
       if (file_exists($path)) {
         `rm -rf {$path}`;
       }
