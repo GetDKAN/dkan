@@ -32,6 +32,16 @@ trait LoggerTrait {
   /**
    * Setter.
    *
+   * @param string $name
+   *   The logger's name.
+   */
+  public function setLoggerName(string $name) {
+    $this->loggerName = $name;
+  }
+
+  /**
+   * Setter.
+   *
    * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerService
    *   Injected logger factory service.
    */
