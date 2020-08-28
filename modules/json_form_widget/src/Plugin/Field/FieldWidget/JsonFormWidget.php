@@ -205,7 +205,9 @@ class JsonFormWidget extends WidgetBase {
       $amount = $widget_array_info[$field_name]['amount'];
     }
 
-    if (!isset($widget_array_info[$field_name]['adding']) && is_array($data)) {
+    if (!isset($widget_array_info[$field_name]['removing'])
+      && !isset($widget_array_info[$field_name]['adding'])
+      && is_array($data)) {
       $count = count($data);
       $amount = ($count > $amount) ? $count : $amount;
       $widget_array_info[$field_name]['amount'] = $count;
