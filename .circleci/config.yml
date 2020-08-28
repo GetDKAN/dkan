@@ -57,6 +57,7 @@ jobs:
           command: |
             dktl install
             dktl install:sample
+            dktl drush queue:run datastore_import
             dktl frontend:get
             dktl frontend:install
             dktl frontend:build
