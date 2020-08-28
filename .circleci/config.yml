@@ -35,7 +35,7 @@ jobs:
             - dkan-tools
             - project
             - .composer
-  phpunit_dredd:
+  dredd:
     machine:
       image: circleci/classic:latest
     environment:
@@ -53,9 +53,6 @@ jobs:
       - run:
           name: Install Drupal
           command: sleep 10 && dktl install
-      - run:
-          name: Run phpUnit tests
-          command: dktl dkan:test-phpunit
       - run:
           name: Run CodeClimate Test Coverage Report
           command: |
@@ -84,6 +81,9 @@ jobs:
       - run:
           name: Install Drupal
           command: sleep 10 && dktl install
+      - run:
+          name: Run phpUnit tests
+          command: dktl dkan:test-phpunit
       - run:
           name: Run DKAN cypress tests
           command: |
