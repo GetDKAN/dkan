@@ -128,7 +128,7 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - dredd:
+      - phpunit_dredd:
           requires:
             - build
       - cypress_backend:
