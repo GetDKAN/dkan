@@ -113,6 +113,7 @@ trait ServiceCheckTrait {
    */
   private function getRelativeDruaplPath() {
     $path = __DIR__;
+    echo $path;
 
     while (TRUE) {
       $content = glob($path . "/*");
