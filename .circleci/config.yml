@@ -3,6 +3,7 @@ jobs:
   build:
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "localdkan"
@@ -38,6 +39,7 @@ jobs:
   phpunit_dredd:
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
     environment:
       TERM: "xterm-256color"
       DKTL_NO_PTY: "1"
@@ -69,6 +71,7 @@ jobs:
   cypress_backend:
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
     environment:
       TERM: "xterm-256color"
       DKTL_NO_PTY: "1"
@@ -96,6 +99,7 @@ jobs:
   cypress_frontend:
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
     environment:
       TERM: "xterm-256color"
       DKTL_NO_PTY: "1"
