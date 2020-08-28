@@ -21,10 +21,14 @@ jobs:
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Initialize Project
-          command: dktl init --dkan-local
+          command: |
+            v=$CIRCLE_BRANCH
+            if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
+            dktl init --dkan=$v --dkan-local
       - run:
           name: Make DKAN
-          command: dktl make
+          command: |
+            dktl make
       - persist_to_workspace:
           root: ~/
           paths:
