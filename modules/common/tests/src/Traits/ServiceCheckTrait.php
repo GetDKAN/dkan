@@ -55,7 +55,7 @@ trait ServiceCheckTrait {
     foreach ($dkanModules as $dkanModule) {
       $files[] = $this->getRelativeDkanModulePath($dkanModule) . "/{$dkanModule}.services.yml";
     }
-    $files[] = $this->getRelativeDruaplPath() . "/core/core.services.yml";
+    $files[] = "/var/www/docroot/core/core.services.yml";
 
     foreach ($files as $file) {
       $content = Yaml::decode(file_get_contents($file));
@@ -107,26 +107,4 @@ trait ServiceCheckTrait {
       $path .= "/..";
     }
   }
-
-  /**
-   * Private.
-   */
-  private function getRelativeDruaplPath() {
-    $path = __DIR__;
-    echo $path;
-
-    while (TRUE) {
-      $content = glob($path . "/*");
-      $content = array_map(function ($item) use ($path) {
-        return str_replace($path, "", $item);
-      }, $content);
-
-      if (in_array("/index.php", $content)) {
-        return $path;
-      }
-
-      $path .= "/..";
-    }
-  }
-
 }
