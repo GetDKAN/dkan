@@ -357,11 +357,4 @@ class JsonFormWidget extends WidgetBase {
     static::setWidgetState($form['#parents'], $field_name, $form_state, $field_state);
   }
 
-  /**
-   * Validate the json field.
-   */
-  public static function validate($element, FormStateInterface $form_state) {
-    // Validate.
-  }
-
 }
