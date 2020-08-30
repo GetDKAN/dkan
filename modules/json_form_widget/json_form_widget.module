@@ -13,7 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
  */
 function json_form_widget_add_one(array &$form, FormStateInterface $form_state) {
   $widget_array_info = $form_state->get('json_form_widget_array');
-  $field = array_keys($widget_array_info)[0];
+  $field = $form_state->getTriggeringElement()['#name'];
   $amount = $widget_array_info[$field]['amount'];
   $widget_array_info[$field]['amount'] = $amount + 1;
   $widget_array_info[$field]['adding'] = TRUE;
@@ -32,7 +32,7 @@ function json_form_widget_add_one(array &$form, FormStateInterface $form_state) 
  */
 function json_form_widget_remove_one(array &$form, FormStateInterface $form_state) {
   $widget_array_info = $form_state->get('json_form_widget_array');
-  $field = array_keys($widget_array_info)[0];
+  $field = $form_state->getTriggeringElement()['#name'];
   $amount = $widget_array_info[$field]['amount'];
   if ($amount > 1) {
     $widget_array_info[$field]['amount'] = $amount - 1;

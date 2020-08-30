@@ -240,6 +240,7 @@ class JsonFormWidget extends WidgetBase {
       '#type' => 'submit',
       '#value' => $this->t('Add one more'),
       '#submit' => ['json_form_widget_add_one'],
+      '#name' => $field_name,
       '#ajax' => [
         'callback' => [$this, 'addmoreCallback'],
         'wrapper' => $field_name . '-fieldset-wrapper',
@@ -251,6 +252,7 @@ class JsonFormWidget extends WidgetBase {
         '#type' => 'submit',
         '#value' => $this->t('Remove one'),
         '#submit' => ['json_form_widget_remove_one'],
+        '#name' => $field_name,
         '#ajax' => [
           'callback' => [$this, 'addmoreCallback'],
           'wrapper' => $field_name . '-fieldset-wrapper',
@@ -268,8 +270,7 @@ class JsonFormWidget extends WidgetBase {
    */
   public function addmoreCallback(array &$form, FormStateInterface $form_state) {
     $base_field = $form_state->get('json_form_widget_field');
-    $widget_array_info = $form_state->get('json_form_widget_array');
-    $field = array_keys($widget_array_info)[0];
+    $field = $form_state->getTriggeringElement()['#name'];
     return $form[$base_field]['widget'][0]['value'][$field];
   }
 
