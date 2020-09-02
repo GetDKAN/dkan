@@ -4,7 +4,7 @@ namespace Drupal\datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Drupal\metastore\Reference\Dereferencer;
+use Drupal\metastore\ResourceMapper;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -45,7 +45,7 @@ class Drush extends DrushCommands {
 
     try {
       // Load metadata with both identifier and data for this request.
-      drupal_static('metastore_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
+      drupal_static('metastore_dereference_method', ResourceMapper::DEREFERENCE_YES);
 
       $this->datastoreService->import($uuid, $deferred);
     }
@@ -134,7 +134,7 @@ class Drush extends DrushCommands {
   public function drop($uuid) {
     try {
       // Load metadata with both identifier and data for this request.
-      drupal_static('metastore_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
+      drupal_static('metastore_dereference_method', ResourceMapper::DEREFERENCE_YES);
       $this->datastoreService->drop($uuid);
     }
     catch (\Exception $e) {
