@@ -57,7 +57,7 @@ jobs:
           command: |
             dktl install
             dktl install:sample
-            dktl frontend:get --ref=sample-data-take3
+            dktl frontend:get
             dktl frontend:install
             dktl frontend:build
             dktl drush cr
