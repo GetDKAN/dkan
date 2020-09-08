@@ -226,11 +226,11 @@ EOF;
    *
    */
   public function testPatch() {
-    $thing = (object) [];
+    $collection = (object) [];
 
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
-    $mockChain->add(Request::class, 'getContent', json_encode($thing));
+    $mockChain->add(Request::class, 'getContent', json_encode($collection));
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
     $mockChain->add(Service::class, "patch", "1");
 
@@ -243,11 +243,11 @@ EOF;
    *
    */
   public function testPatchModifyId() {
-    $thing = ['identifier' => 1];
+    $collection = ['identifier' => 1];
 
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
-    $mockChain->add(Request::class, 'getContent', json_encode($thing));
+    $mockChain->add(Request::class, 'getContent', json_encode($collection));
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
     $mockChain->add(Service::class, "patch", "1");
 
