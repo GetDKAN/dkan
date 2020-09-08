@@ -10,6 +10,7 @@ use Drupal\datastore\Service as DatastoreService;
 use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
 use Drupal\datastore\Storage\DatabaseTable;
 use Maquina\StateMachine\Machine;
+use Maquina\StateMachine\MachineOfMachines;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -17,13 +18,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Class Service.
  */
 class Service implements ContainerInjectionInterface {
+  /**
+   * ConfigFactory object.
+   *
+   * @var Drupal\Core\Config\ConfigFactory
+   */
   private $configFactory;
+
+  /**
+   * The datastore service object.
+   *
+   * @var Drupal\datastore\Service
+   */
   private $datastoreService;
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -33,11 +43,14 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Constructor.
+   * Constructor, sets the datastoreService and configFactory properties.
+   *
+   * @param Drupal\datastore\Service $datastoreService
+   *   The datastore service object.
+   * @param Drupal\Core\Config\ConfigFactory $configFactory
+   *   An instance of Drupal's configFactory.
    */
-  public function __construct(
-    DatastoreService $datastoreService,
-    ConfigFactory $configFactory) {
+  public function __construct(DatastoreService $datastoreService, ConfigFactory $configFactory) {
 
     $this->datastoreService = $datastoreService;
     $this->configFactory = $configFactory;
@@ -45,6 +58,15 @@ class Service implements ContainerInjectionInterface {
 
   /**
    * Run query.
+   *
+   * @param string $queryString
+   *   The query string passed to the endpoint.
+   * @param bool $showDbColumns
+   *   If true, return DB column machine names instead of human-readable
+   *   descriptions, and include a "record_number" column.
+   *
+   * @return array
+   *   Array of row/record objects.
    */
   public function runQuery(string $queryString, $showDbColumns = FALSE): array {
     $queryObject = $this->getQueryObject($queryString);
@@ -107,7 +129,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getTableNameFromSelect(Machine $selectMachine): string {
+  private function getTableNameFromSelect(MachineOfMachines $selectMachine): string {
     $machine = $selectMachine->gsm('table_var');
     $strings = $this->getStringsFromStringMachine($machine);
     if (empty($strings)) {
@@ -132,7 +154,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function validate(string $sqlString): Machine {
+  private function validate(string $sqlString): MachineOfMachines {
     $parser = new SqlParser();
     if ($parser->validate($sqlString) === FALSE) {
       throw new \Exception("Invalid query string.");
@@ -144,7 +166,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getQueryObjectFromStateMachine(Machine $state_machine): Query {
+  private function getQueryObjectFromStateMachine(MachineOfMachines $state_machine): Query {
     $object = new Query();
     $this->setQueryObjectSelect($object, $state_machine->gsm('select'));
     $this->setQueryObjectWhere($object, $state_machine->gsm('where'));
@@ -157,7 +179,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function setQueryObjectSelect(Query $object, Machine $state_machine) {
+  private function setQueryObjectSelect(Query $object, MachineOfMachines $state_machine) {
     $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_count_all'));
     if (!empty($strings)) {
       $object->count();
@@ -178,7 +200,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function setQueryObjectWhere(Query $object, Machine $state_machine) {
+  private function setQueryObjectWhere(Query $object, MachineOfMachines $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('where_column'));
     $values = $this->getStringsFromStringMachine($state_machine->gsm('quoted_string')->gsm('string'));
 
@@ -193,7 +215,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function setQueryObjectOrderBy(Query $object, Machine $state_machine) {
+  private function setQueryObjectOrderBy(Query $object, MachineOfMachines $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('order_var'));
 
     $direction = $this->getStringsFromStringMachine($state_machine->gsm('order_asc'));
@@ -207,7 +229,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function setQueryObjectLimit(Query $object, Machine $state_machine) {
+  private function setQueryObjectLimit(Query $object, MachineOfMachines $state_machine) {
     $rows_limit = $this->configFactory->get('datastore.settings')->get('rows_limit');
 
     $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
