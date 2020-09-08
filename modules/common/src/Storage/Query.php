@@ -16,26 +16,74 @@ class Query implements
     OffsetterInterface,
     LimiterInterface {
 
-  public $thing;
+  /**
+   * The collection of records (usually, a database table) to query against.
+   *
+   * @var string
+   */
+  public $collection;
+
+  /**
+   * Properties (usually, columns) to retrieve from the collection.
+   *
+   * @var array
+   */
   public $properties = [];
+
+  /**
+   * Condition statements for the query.
+   *
+   * @var array
+   */
   public $conditions = [];
+
+  /**
+   * Result sorting directives.
+   *
+   * @var array
+   *   Associative array containing:
+   *   - ASC: Properties to sort by in ascending order
+   *   - DESC: Properties to sort by in descending order
+   */
   public $sort = ['ASC' => [], 'DESC' => []];
+
+  /**
+   * Limit for maximum number of records returned.
+   *
+   * @var int|null
+   */
   public $limit = NULL;
+
+  /**
+   * Number of records to offset by or skip before returning first record.
+   *
+   * @var int|null
+   */
   public $offset = NULL;
+
+  /**
+   * Whether to mark as count query.
+   *
+   * @var bool
+   */
   public $count = FALSE;
 
   /**
    * Set the identifier of what is being retrieved.
    *
-   * In the case of things being retrieved from a SQL database,
-   * a table name would be the identifier.
+   * @param string $id
+   *   Identifier of collection. When working with an SQL database, this would
+   *   be the table name.
    */
-  public function setThingToRetrieve($id) {
-    $this->thing = $id;
+  public function setCollectionToRetrieve($id) {
+    $this->collection = $id;
   }
 
   /**
-   * Properties to be retrieved.
+   * Add a single property to the properties being retrieved.
+   *
+   * @param string $property
+   *   The name of a property, such as a column from a db table.
    */
   public function filterByProperty($property) {
     $this->properties[] = $property;
@@ -43,13 +91,21 @@ class Query implements
 
   /**
    * Retrieve only objects with properties of certain values.
+   *
+   * @param string $property
+   *   Property to filter on.
+   * @param string $value
+   *   Property value to filter against.
    */
   public function conditionByIsEqualTo(string $property, string $value) {
     $this->conditions[$property] = $value;
   }
 
   /**
-   * Get a specific number of records.
+   * Set the maximum number of records to return.
+   *
+   * @param int $number_of_items
+   *   Number of items.
    */
   public function limitTo(int $number_of_items) {
     $this->limit = $number_of_items;
@@ -57,6 +113,9 @@ class Query implements
 
   /**
    * Offset where we start getting records.
+   *
+   * @param int $offset
+   *   Number of records to offset by before retrieving.
    */
   public function offsetBy(int $offset) {
     $this->offset = $offset;
@@ -64,6 +123,9 @@ class Query implements
 
   /**
    * Sort records by the given property in ascending order.
+   *
+   * @param string $property
+   *   Property to sort by in ascending order.
    */
   public function sortByAscending(string $property) {
     $this->sort['ASC'][] = $property;
@@ -71,6 +133,9 @@ class Query implements
 
   /**
    * Sort records by the given property in descending order.
+   *
+   * @param string $property
+   *   Property to sort by in descending order.
    */
   public function sortByDescending(string $property) {
     $this->sort['DESC'][] = $property;
