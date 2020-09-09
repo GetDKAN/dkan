@@ -1,9 +1,9 @@
 {
-  "@context": "https:\/\/project-open-data.cio.gov\/v1.1\/schema\/catalog.jsonld",
-  "@id": "http:\/\/demo.getdkan.com\/data.json",
+  "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+  "@id": "http://demo.getdkan.com/data.json",
   "@type": "dcat:Catalog",
-  "conformsTo": "https:\/\/project-open-data.cio.gov\/v1.1\/schema",
-  "describedBy": "https:\/\/project-open-data.cio.gov\/v1.1\/schema\/catalog.json",
+  "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+  "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
   "dataset": [
     {
       "@type": "dcat:Dataset",
@@ -16,8 +16,8 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/Bike_Lane.csv",
-          "mediaType": "text\/csv",
+          "downloadURL": "file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/Bike_Lane.csv",
+          "mediaType": "text/csv",
           "format": "csv",
           "title": "Florida Bike Lanes"
         }
@@ -49,21 +49,21 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/pittsmva2016data.zip",
-          "mediaType":"application\/zip",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/pittsmva2016data.zip",
+          "mediaType":"application/zip",
           "format":"zip",
           "title":"MVA Geographic Data 2016"
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/2016mvadatadictionary.pdf",
-          "mediaType":"application\/pdf",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/2016mvadatadictionary.pdf",
+          "mediaType":"application/pdf",
           "format":"pdf",
           "title":"2016 MVA Data Dictionary"
         },
         {
           "@type":"dcat:Distribution",
-          "accessURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/pittsmva2016data.zip",
+          "accessURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/pittsmva2016data.zip",
           "format":"zip",
           "title":"Map files"
         }
@@ -93,8 +93,8 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/ViolentCrimeRates.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/ViolentCrimeRates.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "description":"Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.",
           "title":"Violent Crime Data for the Ten Most Populous Cities in the U.S."
@@ -107,7 +107,7 @@
       "modified":"2016-04-20",
       "publisher":{"@type":"org:Organization","name":"State Economic Council"},
       "spatial":"POLYGON ((-129.7265625 24.046463999667, -129.7265625 51.835777520452, -65.390625 51.835777520452, -65.390625 24.046463999667))",
-      "temporal":"2014-01-01T05:00:00+00:00\/2014-01-01T05:00:00+00:00",
+      "temporal":"2014-01-01T05:00:00+00:00/2014-01-01T05:00:00+00:00",
       "theme":["Public Safety"],
       "title":"Crime Data for the Ten Most Populous Cities in the U.S."
     },
@@ -123,26 +123,19 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/asthma-prevalence-adults-by-year-1945-to-1999.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/asthma-prevalence-adults-by-year-1945-to-1999.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
           "title":"Data-Adult Asthma Prevalence 1945 to 1999"
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/asthma-prevalence-adults-by-year-2000-to-2020.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/asthma-prevalence-adults-by-year-2000-to-2020.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
           "title":"Data-Adult Asthma Prevalence 2000 to 2020"
-        },
-        {
-          "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/lifetime-asthma-prevalence-by-county_data-dictionary.xlsx",
-          "mediaType":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "format":"xlsx",
-          "title":"Data Dictionary Data-Lifetime Asthma Prevalence"
         }
       ],
       "identifier":"95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
@@ -155,7 +148,7 @@
         "name":"National Health Council"
       },
       "theme":["Health Care"],
-      "temporal":"1995-01-01T05:00:00+00:00\/2017-12-31T05:00:00+00:00",
+      "temporal":"1995-01-01T05:00:00+00:00/2017-12-31T05:00:00+00:00",
       "title":"Asthma Prevalence"
     },
     {
@@ -170,8 +163,8 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/CDCSmokingRates.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/CDCSmokingRates.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "description":"This dataset highlights critical trends in adult total and per capita consumption of both combustible (cigarettes, little cigars, small cigars, pipe tobacco, roll-your-own tobacco) tobacco products and smokeless (chewing tobacco and snuff) tobacco.",
           "title":"U.S. Adult Smoking Rate"
@@ -202,16 +195,16 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/demo_varicelladeaths_1991_2007.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/demo_varicelladeaths_1991_2007.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
           "title":"Varicella Mortality by Age Group, 1991-2007"
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/demo_varicelladeaths_1974_1990.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/demo_varicelladeaths_1974_1990.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
           "title":"Varicella Mortality by Age Group, 1974-1990"
@@ -242,8 +235,8 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/polling-places.csv",
-          "mediaType":"text\/csv",
+          "downloadURL": "file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/polling-places.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "description":"List of polling places in Madison, WI.",
           "title":"Madison Polling Places"
@@ -273,8 +266,8 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/us_foreclosures_jan_2012_by_state.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/us_foreclosures_jan_2012_by_state.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "description":"US National Foreclosure Statistics - By State - January 2012",
           "title":"1-2012-Foreclosures-by-State"
@@ -286,7 +279,7 @@
       "modified":"2013-02-10",
       "publisher":{"@type":"org:Organization","name":"State Economic Council"},
       "spatial":"POLYGON ((-126.9140625 24.046463999667, -126.9140625 50.625073063414, -65.56640625 50.625073063414, -65.56640625 24.046463999667))",
-      "temporal":"2012-01-01T05:00:00+00:00\/2012-01-01T05:00:00+00:00",
+      "temporal":"2012-01-01T05:00:00+00:00/2012-01-01T05:00:00+00:00",
       "theme":["Finance and Budgeting"],
       "title":"US National Foreclosure Statistics January 2012"
     },
@@ -297,12 +290,12 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"Monthly gold prices (USD) in London from Bundesbank. General: 1 ounce of fine gold = 31.1034768g.\u003Cp\u003EMethod of calculation:\u003C\/p\u003E\n\u003Cul\u003E\n\u003Cli\u003ESince 1 April 1968, calculated from the daily morning fixing;\u003C\/li\u003E\n\u003Cli\u003EFrom January 1950 to 21 March 1954, calculated using the Bank of England\u0027s gold purchasing price (1 ounce of fine = pound 12.40) in connection with the average exchange rate for the pound in New York (up to the end of 1952; source: Federal Reserve Bulletin) and, from January 1953, midpoint exchange rates for the US dollar in London (source: Financial Times (FT)).\u003C\/li\u003E\n\u003Cli\u003EFrom 22 March 1954 to December 1959, calculated using the fixing price for gold bars of approx. 12 1\/2 kg and 995\/1000 fineness and over (so-called standard bars) according to data from Metallgesellschaft AG, Frankfurt am Main, in connection with the average midpoint exchange rates for the US dollar in London (source: FT).\u003C\/li\u003E\n\u003Cli\u003EFrom January 1960 to 14 March 1968, average fixing price for standard bars as specified in the Bank of England\u0027s Quarterly Bulletin.\u003C\/li\u003E\n\u003Cli\u003EOn 15 March 1968, fixing price suspended. Gold market split into an official (reserved for central banks) and a free market as a result of the Washington Communique of 17 March 1968. Gold trading suspended from 18 to 29 March 1968.\u003C\/li\u003E\n\u003Cli\u003ESources for daily prices: April 1968 - March 1974: FT; April 1974 - December 1980: Samuel Montagu \u0026amp; Co. Ltd.; January 1981 - December 2005: FT; January 2006 - present: Reuters.\u003C\/li\u003E\n\u003Cli\u003EComment on 1968-03: Average from 1 to 14 March 1968.\u003C\/li\u003E\n\u003C\/ul\u003E\n\u003Cp\u003cense: PDDL (Source indicates no restrictions on data).\u003C\/p\u003E\n",
+      "description":"Monthly gold prices (USD) in London from Bundesbank. General: 1 ounce of fine gold = 31.1034768g.\u003Cp\u003EMethod of calculation:\u003C/p\u003E\n\u003Cul\u003E\n\u003Cli\u003ESince 1 April 1968, calculated from the daily morning fixing;\u003C/li\u003E\n\u003Cli\u003EFrom January 1950 to 21 March 1954, calculated using the Bank of England\u0027s gold purchasing price (1 ounce of fine = pound 12.40) in connection with the average exchange rate for the pound in New York (up to the end of 1952; source: Federal Reserve Bulletin) and, from January 1953, midpoint exchange rates for the US dollar in London (source: Financial Times (FT)).\u003C/li\u003E\n\u003Cli\u003EFrom 22 March 1954 to December 1959, calculated using the fixing price for gold bars of approx. 12 1/2 kg and 995/1000 fineness and over (so-called standard bars) according to data from Metallgesellschaft AG, Frankfurt am Main, in connection with the average midpoint exchange rates for the US dollar in London (source: FT).\u003C/li\u003E\n\u003Cli\u003EFrom January 1960 to 14 March 1968, average fixing price for standard bars as specified in the Bank of England\u0027s Quarterly Bulletin.\u003C/li\u003E\n\u003Cli\u003EOn 15 March 1968, fixing price suspended. Gold market split into an official (reserved for central banks) and a free market as a result of the Washington Communique of 17 March 1968. Gold trading suspended from 18 to 29 March 1968.\u003C/li\u003E\n\u003Cli\u003ESources for daily prices: April 1968 - March 1974: FT; April 1974 - December 1980: Samuel Montagu \u0026amp; Co. Ltd.; January 1981 - December 2005: FT; January 2006 - present: Reuters.\u003C/li\u003E\n\u003Cli\u003EComment on 1968-03: Average from 1 to 14 March 1968.\u003C/li\u003E\n\u003C/ul\u003E\n\u003Cp\u003cense: PDDL (Source indicates no restrictions on data).\u003C/p\u003E\n",
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/data.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/data.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "title":"Table of Gold Prices"
         }
@@ -310,14 +303,14 @@
       "identifier":"5dc1cfcf-8028-476c-a020-f58ec6dd621c",
       "issued":"2013-02-10",
       "keyword":["economy","price","time-series"],
-      "license":"http:\/\/opendefinition.org\/licenses\/odc-pddl\/",
+      "license":"http://opendefinition.org/licenses/odc-pddl/",
       "modified":"2019-06-06",
       "publisher":{
         "@type":"org:Organization",
         "name":"State Economic Council"
       },
       "spatial":"POLYGON ((-0.56854248046875 51.253320526331, -0.56854248046875 51.725326868065, 0.3076171875 51.725326868065, 0.3076171875 51.253320526331))",
-      "temporal":"1950-01-01T05:00:00+00:00\/1950-01-01T05:00:00+00:00",
+      "temporal":"1950-01-01T05:00:00+00:00/1950-01-01T05:00:00+00:00",
       "theme":["Finance and Budgeting"],
       "title":"Gold Prices in London 1950-2008 (Monthly)"
     },
@@ -332,8 +325,8 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/district_centerpoints.csv",
-          "mediaType":"text\/csv",
+          "downloadURL":"file:///var/www/docroot/modules/contrib/dkan/modules/sample_content/files/district_centerpoints.csv",
+          "mediaType":"text/csv",
           "format":"csv",
           "title":"District Names"
         }
