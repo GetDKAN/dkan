@@ -241,6 +241,7 @@ class JsonFormWidget extends WidgetBase {
         'callback' => [$this, 'addmoreCallback'],
         'wrapper' => $field_name . '-fieldset-wrapper',
       ],
+      '#limit_validation_errors' => [],
     ];
     // If there is more than one name, add the remove button.
     if ($amount > 1) {
