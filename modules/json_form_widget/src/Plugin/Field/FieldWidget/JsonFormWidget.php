@@ -145,7 +145,7 @@ class JsonFormWidget extends WidgetBase {
   private function getFormElement($type, $property_name, $property, $data, $object_schema = FALSE, $form_state = NULL) {
     switch ($type) {
       case 'object':
-        return $this->handleObjectElement($property, $property_name, $data);
+        return $this->handleObjectElement($property, $property_name, $data, $form_state);
 
       case 'array':
         return $this->handleArrayElement($property, $property_name, $data, $form_state);
@@ -162,8 +162,10 @@ class JsonFormWidget extends WidgetBase {
     // Basic definition.
     $element = [
       '#type' => 'textfield',
-      '#title' => $property->title,
     ];
+    if (isset($property->title)) {
+      $element['#title'] = $property->title;
+    }
     if (isset($property->description)) {
       $element['#description'] = $property->description;
     }
@@ -224,13 +226,7 @@ class JsonFormWidget extends WidgetBase {
     ];
 
     for ($i = 0; $i < $amount; $i++) {
-      $element[$field_name][$i] = [
-        '#type' => 'textfield',
-        '#title' => $property_schema->items->title,
-      ];
-      if (is_array($data) && isset($data[$i])) {
-        $element[$field_name][$i]['#default_value'] = $data[$i];
-      }
+      $element[$field_name][$i] = $this->getSingleArrayElement($field_name, $i, $property_schema, $data, $form_state);
     }
 
     $element['actions'] = [
@@ -257,9 +253,51 @@ class JsonFormWidget extends WidgetBase {
           'callback' => [$this, 'addmoreCallback'],
           'wrapper' => $field_name . '-fieldset-wrapper',
         ],
+        '#limit_validation_errors' => [],
       ];
     }
 
+    return $element;
+  }
+
+  /**
+   * Handle single element from array.
+   *
+   * Chooses wether element is simple or complex.
+   */
+  private function getSingleArrayElement($field_name, $i, $property_schema, $data, $form_state) {
+    if (isset($property_schema->items->properties)) {
+      // Return complex.
+      return $this->getSingleComplexArrayElement($field_name, $i, $property_schema, $data, $form_state);
+    }
+    else {
+      // Return simple.
+      return $this->getSingleSimpleArrayElement($field_name, $i, $property_schema, $data);
+    }
+  }
+
+  /**
+   * Returns single simple element from array.
+   */
+  private function getSingleSimpleArrayElement($field_name, $i, $property_schema, $data) {
+    $element = [
+      '#type' => 'textfield',
+    ];
+    if (isset($property_schema->items->title)) {
+      $element['#title'] = $property_schema->items->title;
+    }
+    if (is_array($data) && isset($data[$i])) {
+      $element['#default_value'] = $data[$i];
+    }
+    return $element;
+  }
+
+  /**
+   * Returns single complex element from array.
+   */
+  private function getSingleComplexArrayElement($field_name, $i, $property_schema, $data, $form_state) {
+    $value = isset($data[$i]) ? $data[$i] : '';
+    $element = $this->handleObjectElement($property_schema->items, $field_name, $value, $form_state);
     return $element;
   }
 
@@ -277,18 +315,21 @@ class JsonFormWidget extends WidgetBase {
   /**
    * Handle form element for an object.
    */
-  private function handleObjectElement($property_schema, $field_name, $data) {
+  private function handleObjectElement($property_schema, $field_name, $data, $form_state) {
     $element[$field_name] = [
-      '#type' => 'fieldset',
+      '#type' => 'details',
+      '#open' => TRUE,
       '#title' => $property_schema->title,
-      '#description' => $property_schema->description,
     ];
+    if (isset($property_schema->description)) {
+      $element['#description'] = $property_schema->description;
+    }
     $properties = array_keys((array) $property_schema->properties);
 
     foreach ($properties as $child) {
       $type = $property_schema->properties->{$child}->type ?? "string";
       $value = $data->{$child} ?? NULL;
-      $element[$field_name][$child] = $this->getFormElement($type, $child, $property_schema->properties->{$child}, $value, $property_schema);
+      $element[$field_name][$child] = $this->getFormElement($type, $child, $property_schema->properties->{$child}, $value, $property_schema, $form_state);
     }
     return $element;
   }
@@ -297,7 +338,7 @@ class JsonFormWidget extends WidgetBase {
    * Check if field is required based on its schema.
    */
   private function checkIfRequired($name, $element_schema) {
-    if (in_array($name, $element_schema->required)) {
+    if (isset($element_schema->required) && in_array($name, $element_schema->required)) {
       return TRUE;
     }
     return FALSE;
@@ -334,7 +375,12 @@ class JsonFormWidget extends WidgetBase {
           if (isset($values[$property][$property])) {
             foreach ($values[$property][$property] as $key => $value) {
               if ($value) {
-                $data[$property][$key] = $value;
+                if (isset($value[$property])) {
+                  $data[$property][$key] = $value[$property];
+                }
+                else {
+                  $data[$property][$key] = $value;
+                }
               }
             }
           }
