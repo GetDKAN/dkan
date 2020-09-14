@@ -56,7 +56,7 @@
         "dkan-frontend": {
             "type": "vcs",
             "url": "https://github.com/GetDKAN/data-catalog-app",
-            "ref": "master"
+            "ref": "stubs-tests2"
         }
     }
 }
