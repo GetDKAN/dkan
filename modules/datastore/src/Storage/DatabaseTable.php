@@ -42,7 +42,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * Get summary.
    */
   public function getSummary() {
-    $columns = array_keys($this->getSchema()['fields']);
+    $columns = $this->getSchema()['fields'];
     $numOfColumns = count($columns);
     $numOfRows = $this->count();
     return new TableSummary($numOfColumns, $columns, $numOfRows);
