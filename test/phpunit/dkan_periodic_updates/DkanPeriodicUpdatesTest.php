@@ -15,7 +15,7 @@ class DkanPeriodicUpdatesTest extends \PHPUnit_Framework_TestCase {
 
   protected function setUp() {
     // Daily update.
-    $file_url = "https://dkan-default-content-files.s3.amazonaws.com/files/district_centerpoints.csv";
+    $file_url = "https://dkan-default-content-files.s3.amazonaws.com/files/district_centerpoints_0.csv";
     $file = file_save((object)[
       'filename' => drupal_basename($file_url),
       'uri' => $file_url,
