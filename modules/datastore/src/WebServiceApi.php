@@ -3,6 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\common\Resource;
+use Drupal\common\Storage\Query;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -21,7 +22,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Datastore Service.
    *
-   * @var \Drupa\datastore\Service
+   * @var \Drupal\datastore\Service
    */
   protected $datastoreService;
 
@@ -127,7 +128,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Drop.
    *
    * @param string $identifier
-   *   The uuid of a dataset.
+   *   The uuid of a resource.
    */
   public function delete($identifier) {
     try {
@@ -135,7 +136,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       return $this->getResponse(
         [
           "identifier" => $identifier,
-          "message" => "The datastore for resource {$identifier} was succesfully dropped.",
+          "message" => "The datastore for resource {$identifier} was successfully dropped.",
         ]
       );
     }
@@ -185,6 +186,30 @@ class WebServiceApi implements ContainerInjectionInterface {
         404
       );
     }
+  }
+
+  /**
+   * Returns a list of import jobs and data about their status.
+   *
+   * @param string $identifier
+   *   The uuid of a resource.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function query($identifier) {
+
+    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    $query = Query::hydrate($payloadJson);
+    $query->collection = $identifier;
+    try {
+      $result = $this->datastoreService->runQuery($query);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e);
+    }
+
+    return $this->getResponse($result, 200);
   }
 
 }

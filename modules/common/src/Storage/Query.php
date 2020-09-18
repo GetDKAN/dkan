@@ -6,6 +6,8 @@ use Contracts\SorterInterface;
 use Contracts\ConditionerInterface;
 use Contracts\OffsetterInterface;
 use Contracts\LimiterInterface;
+use Procrastinator\HydratableTrait;
+use Procrastinator\JsonSerializeTrait;
 
 /**
  * Query class.
@@ -15,6 +17,8 @@ class Query implements
     ConditionerInterface,
     OffsetterInterface,
     LimiterInterface {
+
+  use HydratableTrait, JsonSerializeTrait;
 
   /**
    * The collection of records (usually, a database table) to query against.
@@ -31,28 +35,49 @@ class Query implements
   public $properties = [];
 
   /**
-   * Condition statements for the query.
+   * Conditions for the query. Will be appended with "AND".
+   *
+   * Should be an array of objects with properties:
+   * - property: The property/field to filter on
+   * - value: The value to filter for. Use an array for IN or BEWEEN operators.
+   * - operator: Condition operator. =, <>, <, <=, >, >=, IN, NOT IN, BETWEEN
+   *   are supported.
    *
    * @var array
    */
   public $conditions = [];
 
   /**
+   * OR conditions for the query.
+   *
+   * Adds a group of conditions to the query joined by OR instead of AND.
+   *
+   * Should be an array of objects with properties:
+   * - property: The property/field to filter on
+   * - value: The value to filter for. Use an array for IN or BETWEEN operators.
+   * - operator: Condition operator. =, <>, <, <=, >, >=, IN, NOT IN, BETWEEN
+   *   are supported.
+   *
+   * @var array
+   */
+  public $orConditions = [];
+
+  /**
    * Result sorting directives.
    *
    * @var array
    *   Associative array containing:
-   *   - ASC: Properties to sort by in ascending order
-   *   - DESC: Properties to sort by in descending order
+   *   - asc: Properties to sort by in ascending order
+   *   - desc: Properties to sort by in descending order
    */
-  public $sort = ['ASC' => [], 'DESC' => []];
+  public $sort = ['asc' => [], 'desc' => []];
 
   /**
    * Limit for maximum number of records returned.
    *
    * @var int|null
    */
-  public $limit = NULL;
+  public $limit = 500;
 
   /**
    * Number of records to offset by or skip before returning first record.
@@ -62,11 +87,30 @@ class Query implements
   public $offset = NULL;
 
   /**
-   * Whether to mark as count query.
+   * Return the full count of the query results, ignoring limit/offset.
+   *
+   * If combined with $results, will return both the full result set and count.
+   * Defaults to FALSE.
    *
    * @var bool
    */
-  public $count = FALSE;
+  public $count = TRUE;
+
+  /**
+   * Return the result set of the query.
+   *
+   * Set to FALSE and set $count to TRUE to fetch only a count.
+   *
+   * @var bool
+   */
+  public $results = TRUE;
+
+  /**
+   * Use real db field names, not human-readable desc. Also, show record_number.
+   *
+   * @var bool
+   */
+  public $showDbColumns = FALSE;
 
   /**
    * Set the identifier of what is being retrieved.
@@ -128,7 +172,7 @@ class Query implements
    *   Property to sort by in ascending order.
    */
   public function sortByAscending(string $property) {
-    $this->sort['ASC'][] = $property;
+    $this->sort['asc'][] = $property;
   }
 
   /**
@@ -138,7 +182,7 @@ class Query implements
    *   Property to sort by in descending order.
    */
   public function sortByDescending(string $property) {
-    $this->sort['DESC'][] = $property;
+    $this->sort['desc'][] = $property;
   }
 
   /**

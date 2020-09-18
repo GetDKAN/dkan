@@ -9,6 +9,7 @@ use Drupal\common\Storage\Query;
 use Drupal\datastore\Service as DatastoreService;
 use Drupal\datastore\SqlEndpoint\Helper\GetStringsFromStateMachineExecution;
 use Drupal\datastore\Storage\DatabaseTable;
+use MachineOfMachinesTest;
 use Maquina\StateMachine\Machine;
 use Maquina\StateMachine\MachineOfMachines;
 use SqlParser\SqlParser;
@@ -164,7 +165,13 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Take an instantiated state machine build a query object.
+   *
+   * @param Maquina\StateMachine\MachineOfMachines $state_machine
+   *   The state machine returned from the validate() function.
+   *
+   * @return Drupal\common\Storage\Query
+   *   A Drupal query object
    */
   private function getQueryObjectFromStateMachine(MachineOfMachines $state_machine): Query {
     $object = new Query();
@@ -177,7 +184,12 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Set select statements on query object.
+   *
+   * @param Drupal\common\Storage\Query $object
+   *   A drupal query object.
+   * @param Maquina\StateMachine\MachineOfMachines $state_machine
+   *   The state machine from validate().
    */
   private function setQueryObjectSelect(Query $object, MachineOfMachines $state_machine) {
     $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_count_all'));
@@ -198,11 +210,22 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Set where conditions on query object.
+   *
+   * @param Drupal\common\Storage\Query $object
+   *   A drupal query object.
+   * @param Maquina\StateMachine\MachineOfMachines $state_machine
+   *   The state machine from validate().
    */
   private function setQueryObjectWhere(Query $object, MachineOfMachines $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('where_column'));
-    $values = $this->getStringsFromStringMachine($state_machine->gsm('quoted_string')->gsm('string'));
+    $quoted_string = $this->getStringsFromStringMachine($state_machine->gsm('quoted_string'));
+    if ($quoted_string instanceof MachineOfMachines) {
+      $values = $quoted_string->gsm('string');
+    }
+    else {
+      throw new \Exception("State machine error.");
+    }
 
     foreach ($properties as $index => $property) {
       $value = $values[$index];
@@ -213,7 +236,12 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Set sorting on query object.
+   *
+   * @param Drupal\common\Storage\Query $object
+   *   A drupal query object.
+   * @param Maquina\StateMachine\MachineOfMachines $state_machine
+   *   The state machine from validate().
    */
   private function setQueryObjectOrderBy(Query $object, MachineOfMachines $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('order_var'));
