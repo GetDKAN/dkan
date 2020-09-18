@@ -20,9 +20,7 @@ class JobStoreFactory implements FactoryInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->instances[$identifier])) {
