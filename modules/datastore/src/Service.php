@@ -4,6 +4,7 @@ namespace Drupal\datastore;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\common\Storage\Query;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -17,14 +18,35 @@ use Drupal\datastore\Service\ImporterList\ImporterList;
  */
 class Service implements ContainerInjectionInterface {
 
+  /**
+   * Resource localizer for handling remote resource URLs.
+   *
+   * @var \Drupal\datastore\Service\ResourceLocalizer
+   */
   private $resourceLocalizer;
+
+  /**
+   * Datastore import factory class.
+   *
+   * @var \Drupal\datastore\Service\Factory\Import
+   */
   private $importServiceFactory;
+
+  /**
+   * Drupal queue.
+   *
+   * @var \Drupal\Core\Queue\QueueInterface
+   */
   private $queue;
+
+  /**
+   * JobStore factory object.
+   *
+   * @var \Drupal\common\Storage\JobStoreFactory
+   */
   private $jobStoreFactory;
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -39,8 +61,8 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor for datastore service.
    */
-  public function __construct(ResourceLocalizer $resourceLocalizer, Import $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory) {
-    $this->queue = $queue->get('datastore_import');
+  public function __construct(ResourceLocalizer $resourceLocalizer, Import $importServiceFactory, QueueFactory $queueFactory, JobStoreFactory $jobStoreFactory) {
+    $this->queue = $queueFactory->get('datastore_import');
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
@@ -197,6 +219,47 @@ class Service implements ContainerInjectionInterface {
       return $importService->getStorage();
     }
     throw new \Exception("No datastore storage found for {$identifier}:{$version}.");
+  }
+
+  /**
+   * Run query.
+   *
+   * @param Drupal\common\Storage\Query $query
+   *   DKAN Query object.
+   *
+   * @return array
+   *   Array of row/record objects.
+   */
+  public function runQuery(Query $query): array {
+    [$identifier, $version] = Resource::getIdentifierAndVersion($query->collection);
+    $databaseTable = $this->getStorage($identifier, $version);
+
+    $result = $databaseTable->query($query);
+
+    $schema = $databaseTable->getSchema();
+    $fields = $schema['fields'];
+
+    return array_map(function ($row) use ($fields, $query) {
+      if (!$query->showDbColumns) {
+        unset($row->record_number);
+      }
+
+      $arrayRow = (array) $row;
+      $newRow = [];
+
+      foreach ($arrayRow as $fieldName => $value) {
+        if (
+          !$query->showDbColumns && !empty($fields[$fieldName]['description'])
+        ) {
+          $newRow[$fields[$fieldName]['description']] = $value;
+        }
+        else {
+          $newRow[$fieldName] = $value;
+        }
+      }
+
+      return (object) $newRow;
+    }, $result);
   }
 
 }
