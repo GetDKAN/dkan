@@ -309,8 +309,9 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     $data = json_decode($this->metastoreService->get("dataset", $identifier));
 
     // Create and customize a path for each dataset distribution/resource.
-    if (isset($data->distribution)) {
-      return $data->distribution;
+    $distributionRefProperty = "%Ref:distribution";
+    if (isset($data->{$distributionRefProperty})) {
+      return $data->{$distributionRefProperty};
     }
     return [];
   }
