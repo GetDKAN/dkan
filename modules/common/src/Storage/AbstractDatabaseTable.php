@@ -11,8 +11,12 @@ use Drupal\Core\Database\DatabaseExceptionWrapper;
  */
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   use SqlStorageTrait;
-  use QueryToQueryHelperTrait;
 
+  /**
+   * Drupal DB connection object.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
   protected $connection;
 
   /**
@@ -143,7 +147,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @return string
    *   Last record id inserted into the database.
    */
-  public function storeMultiple(array $data) : string {
+  public function storeMultiple(array $data): string {
     $this->setTable();
 
     $fields = $this->getNonSerialFields();
@@ -203,16 +207,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function query(Query $query): array {
     $this->setTable();
-    $db_query = $this->connection->select($this->getTableName(), 't')
-      ->fields('t', $query->properties);
-
-    $this->setQueryConditions($db_query, $query);
-    $this->setQueryOrderBy($db_query, $query);
-    $this->setQueryLimitAndOffset($db_query, $query);
-
-    if ($query->count) {
-      $db_query = $db_query->countQuery();
-    }
+    $query->collection = $this->getTableName();
+    $db_query = SelectFactory::create($query, $this->connection);
 
     try {
       $result = $db_query->execute()->fetchAll();
@@ -305,7 +301,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Get field names from results of a DESCRIBE query.
    *
    * @param array $fieldsInfo
-   *   Array containing thre results of a DESCRIBE query sent to db connection.
+   *   Array containing three results of a DESCRIBE query sent to db connection.
    */
   private function getFieldsFromFieldsInfo(array $fieldsInfo) {
     $fields = [];
