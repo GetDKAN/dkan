@@ -24,7 +24,7 @@ class SelectFactory {
   public static function create(Query $query, Connection $connection): Select {
     $db_query = $connection->select($query->collection, 't');
 
-    // self::setQueryProperties($db_query, $query);
+    self::setQueryProperties($db_query, $query);
     self::setQueryConditions($db_query, $query);
     self::setQueryOrConditions($db_query, $query);
     self::setQueryOrderBy($db_query, $query);
@@ -42,16 +42,41 @@ class SelectFactory {
    *
    * @param Drupal\Core\Database\Query\Select $db_query
    *   A Drupal database query API object.
-   * @param Query $query
+   * @param Drupal\common\Storage\Query $query
+   *   A DKAN query object.
+   */
+  private static function setQueryProperties(Select $db_query, Query $query) {
+    if (empty($query->properties)) {
+      $db_query->fields('t');
+      return;
+    }
+    foreach ($query->properties as $p) {
+      if (is_string($p)) {
+        $db_query->addField('t', $p);
+      }
+      elseif (is_object($p)) {
+        $p = (array) $p;
+        $realProperty = array_key_first($p);
+        $db_query->addField('t', $realProperty, $p[$realProperty]);
+      }
+    }
+  }
+
+  /**
+   * Set filter conditions on DB query.
+   *
+   * @param Drupal\Core\Database\Query\Select $db_query
+   *   A Drupal database query API object.
+   * @param Drupal\common\Storage\Query $query
    *   A DKAN query object.
    */
   private static function setQueryConditions(Select $db_query, Query $query) {
     foreach ($query->conditions as $c) {
       if (!isset($c->operator)) {
-        $c->operator = "LIKE";
+        $c->operator = 'like';
       }
       $c->operator = strtoupper($c->operator);
-      $db_query->condition($c->property, $c->value, $c->operator);
+      $db_query->condition($c->property, $c->value, strtoupper($c->operator));
     }
   }
 

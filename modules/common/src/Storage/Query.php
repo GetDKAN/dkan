@@ -94,7 +94,7 @@ class Query implements
    *
    * @var bool
    */
-  public $count = TRUE;
+  public $count = FALSE;
 
   /**
    * Return the result set of the query.
@@ -142,7 +142,10 @@ class Query implements
    *   Property value to filter against.
    */
   public function conditionByIsEqualTo(string $property, string $value) {
-    $this->conditions[$property] = $value;
+    $this->conditions[] = (object) [
+      'property' => $property,
+      'value' => $value,
+    ];
   }
 
   /**
