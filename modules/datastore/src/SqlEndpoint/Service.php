@@ -219,7 +219,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function setQueryObjectWhere(Query $object, MachineOfMachines $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('where_column'));
-    $quoted_string = $this->getStringsFromStringMachine($state_machine->gsm('quoted_string'));
+    $quoted_string = $state_machine->gsm('quoted_string');
     if ($quoted_string instanceof MachineOfMachines) {
       $values = $quoted_string->gsm('string');
     }
