@@ -89,13 +89,18 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private static function setQueryOrConditions(Select $db_query, Query $query) {
-    foreach ($query->conditions as $c) {
+    if (empty($query->orConditions)) {
+      return;
+    }
+    $orGroup = $db_query->orConditionGroup();
+    foreach ($query->orConditions as $c) {
       if (!isset($c->operator)) {
         $c->operator = "LIKE";
       }
       $c->operator = strtoupper($c->operator);
-      $db_query->condition($c->property, $c->value, $c->operator);
+      $orGroup->condition($c->property, $c->value, $c->operator);
     }
+    $db_query->condition($orGroup);
   }
 
   /**
