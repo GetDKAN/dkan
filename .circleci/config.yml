@@ -52,16 +52,6 @@ jobs:
             dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
-      - run:
-          name: Run frontend cypress tests
-          command: |
-            dktl install
-            dktl install:sample
-            dktl frontend:get
-            dktl frontend:install
-            dktl frontend:build
-            dktl drush cr
-            dktl frontend:test
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
