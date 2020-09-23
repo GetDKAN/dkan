@@ -234,32 +234,42 @@ class Service implements ContainerInjectionInterface {
     [$identifier, $version] = Resource::getIdentifierAndVersion($query->collection);
     $databaseTable = $this->getStorage($identifier, $version);
 
-    $result = $databaseTable->query($query);
+    $return = [];
 
-    $schema = $databaseTable->getSchema();
-    $fields = $schema['fields'];
+    if ($query->results) {
+      $resultsQuery = clone $query;
+      $resultsQuery->count = FALSE;
+      $result = $databaseTable->query($resultsQuery);
 
-    return array_map(function ($row) use ($fields, $query) {
-      if (!$query->showDbColumns) {
-        unset($row->record_number);
-      }
+      $schema = $databaseTable->getSchema();
+      $fields = $schema['fields'];
 
-      $arrayRow = (array) $row;
-      $newRow = [];
-
-      foreach ($arrayRow as $fieldName => $value) {
-        if (
-          !$query->showDbColumns && !empty($fields[$fieldName]['description'])
-        ) {
-          $newRow[$fields[$fieldName]['description']] = $value;
+      $return["results"] = array_map(function ($row) use ($fields, $query) {
+        if (!$query->showDbColumns) {
+          unset($row->record_number);
         }
-        else {
-          $newRow[$fieldName] = $value;
-        }
-      }
 
-      return (object) $newRow;
-    }, $result);
+        $arrayRow = (array) $row;
+        $newRow = [];
+
+        foreach ($arrayRow as $fieldName => $value) {
+          if (
+            !$query->showDbColumns && !empty($fields[$fieldName]['description'])
+          ) {
+            $newRow[$fields[$fieldName]['description']] = $value;
+          }
+          else {
+            $newRow[$fieldName] = $value;
+          }
+        }
+
+        return (object) $newRow;
+      }, $result);
+    }
+    if ($query->count) {
+      $return["count"] = array_pop($databaseTable->query($query))->expression;
+    }
+    return $return;
   }
 
 }
