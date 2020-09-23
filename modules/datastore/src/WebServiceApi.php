@@ -200,7 +200,15 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function query($identifier) {
 
     $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
-    $query = Query::hydrate($payloadJson);
+    try {
+      $query = Query::hydrate($payloadJson);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException(
+        new \Exception("Invalid query JSON: {$e->getMessage()}"),
+        400
+      );
+    }
     $query->collection = $identifier;
     try {
       $result = $this->datastoreService->runQuery($query);
