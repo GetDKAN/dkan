@@ -27,7 +27,7 @@ pipeline {
         stage('QA Site') {
             when { changeRequest() }
             steps {
-                bash "dktl init"
+                sh "dktl init"
             }
         }
     }
