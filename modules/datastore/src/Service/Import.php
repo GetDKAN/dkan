@@ -4,6 +4,7 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
+use Drupal\common\LoggerTrait;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\common\Storage\JobStoreFactory;
@@ -16,6 +17,8 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
  * Class Import.
  */
 class Import {
+  use LoggerTrait;
+
   const DEFAULT_TIMELIMIT = 50;
 
   private $resource;
@@ -41,6 +44,14 @@ class Import {
   public function import() {
     $importer = $this->getImporter();
     $importer->run();
+
+    /** @var Result $result */
+    $result = $this->getResult();
+    if ($result->getStatus() == Result::ERROR) {
+      // @todo add via services.yml file
+      $this->setLoggerFactory(\Drupal::service('logger.factory'));
+      $this->log('datastore', $result->getError());
+    }
   }
 
   /**
