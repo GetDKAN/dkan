@@ -9,7 +9,7 @@ pipeline {
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
         USER = 'jenkins'
-        DKTL_VERSION = '4.0.0'
+        DKTL_VERSION = 'localdkan'
     }
     stages {
         stage('Setup environment') {
