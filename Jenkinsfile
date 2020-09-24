@@ -13,26 +13,22 @@ pipeline {
     }
     stages {
         stage('Setup environment') {
+            when { changeRequest() }
             steps {
+                sh "rm -rf *"
                 dir("dkan") {
                     checkout scm
                 }
                 sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
                 sh "unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip"
-                sh "ls -la && pwd"
             }
         }
-        // stage('QA Site') {
-        //     when { changeRequest() }
-        //     steps {
-        //         sh "echo QA site ready at http://${DKTL_SLUG}.${PROXY_DOMAIN}/"
-        //         script {
-        //             def target_url = "http://${DKTL_SLUG}.${PROXY_DOMAIN}"
-        //             setBuildStatus("QA site ready at ${target_url}", target_url, "success");
-        //         }
-        //         sh "curl `dktl url`"
-        //     }
-        // }
+        stage('QA Site') {
+            when { changeRequest() }
+            steps {
+                sh "dktl init"
+            }
+        }
     }
     post {
         success {
