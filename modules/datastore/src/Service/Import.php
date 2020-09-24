@@ -48,8 +48,6 @@ class Import {
     /** @var Result $result */
     $result = $this->getResult();
     if ($result->getStatus() == Result::ERROR) {
-      // @todo add via services.yml file
-      $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->log('datastore', $result->getError());
     }
   }

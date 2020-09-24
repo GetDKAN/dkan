@@ -20,6 +20,11 @@ services:
       - '@dkan.common.job_store'
       - '@datastore.database_table_factory'
 
+  dkan.datastore.service.import:
+    class: \Drupal\datastore\Service\Import
+    calls:
+      - [setLoggerFactory, ['@logger.factory']]
+
   dkan.datastore.logger_channel:
     parent: logger.channel_base
     arguments: ['datastore']
