@@ -45,7 +45,7 @@ class Import {
     $importer = $this->getImporter();
     $importer->run();
 
-    /** @var Result $result */
+    /** @var \Procrastinator\Result $result */
     $result = $this->getResult();
     if ($result->getStatus() == Result::ERROR) {
       $this->log('datastore', $result->getError());
