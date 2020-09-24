@@ -4,14 +4,14 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
+use Dkan\Datastore\Resource as DatastoreResource;
 use Drupal\common\LoggerTrait;
+use Drupal\common\Resource;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\common\Storage\JobStoreFactory;
-use Procrastinator\Result;
-use Drupal\common\Resource;
-use Dkan\Datastore\Resource as DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Procrastinator\Result;
 
 /**
  * Class Import.
