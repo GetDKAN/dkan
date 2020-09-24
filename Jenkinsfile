@@ -4,7 +4,7 @@ pipeline {
     agent any
     options {
         ansiColor 'xterm'
-        skipDefaultCheckout()
+        skipDefaultCheckout(true)
     }
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
