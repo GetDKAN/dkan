@@ -1,4 +1,3 @@
-#!/bin/bash
 import groovy.json.JsonOutput
 
 pipeline {
@@ -28,7 +27,8 @@ pipeline {
         stage('QA Site') {
             when { changeRequest() }
             steps {
-                sh "dktl init"
+                sh "#!/bin/bash
+                dktl init"
             }
         }
     }
