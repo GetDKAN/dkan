@@ -15,6 +15,7 @@ pipeline {
         stage('Setup environment') {
             when { changeRequest() }
             steps {
+                sh "echo \"PATH\" $PATH"
                 sh "rm -rf *"
                 dir("dkan") {
                     checkout scm
