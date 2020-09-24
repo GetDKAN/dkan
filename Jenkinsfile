@@ -15,6 +15,7 @@ pipeline {
             steps {
               sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
               sh "unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip"
+              sh "ls -la && pwd"
             }
         }
         // stage('QA Site') {
