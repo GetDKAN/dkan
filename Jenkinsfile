@@ -1,3 +1,4 @@
+#!/bin/bash
 import groovy.json.JsonOutput
 
 pipeline {
