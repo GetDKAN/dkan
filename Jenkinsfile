@@ -4,6 +4,7 @@ pipeline {
     agent any
     options {
         ansiColor 'xterm'
+        skipDefaultCheckout()
     }
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
@@ -11,11 +12,14 @@ pipeline {
         DKTL_VERSION = '4.0.0'
     }
     stages {
-        stage('Install DKTL') {
+        stage('Setup environment') {
             steps {
-              sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
-              sh "unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip"
-              sh "ls -la && pwd"
+                dir("dkan") {
+                    checkout scm
+                }
+                sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
+                sh "unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip"
+                sh "ls -la && pwd"
             }
         }
         // stage('QA Site') {
