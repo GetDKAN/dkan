@@ -37,7 +37,7 @@ pipeline {
                 dir("dkan") {
                     script {
                         gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-                        sh "dktl init --dkan-local --dkan dev-${gitCommit}"
+                        sh "cd .. && dktl init --dkan-local --dkan dev-${gitCommit}"
                     }
                 }
             }
