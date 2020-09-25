@@ -27,7 +27,7 @@ pipeline {
                 dir("dkan") {
                     checkout([
                         $class: 'GitSCM',
-                        branches: "refs/heads/${CHANGE_BRANCH}"
+                        branches: [[name: "refs/heads/${CHANGE_BRANCH}"]]
                     ])                
                 }
                 sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
