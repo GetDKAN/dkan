@@ -35,9 +35,11 @@ pipeline {
             when { changeRequest() }
             steps {
                 dir("dkan") {
-                    def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+                    script {
+                        gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+                        sh "dktl init --dkan-local --dkan dev-${gitCommit}"
+                    }
                 }
-                sh "dktl init --dkan-local --dkan dev-${gitCommit}"
             }
         }
         stage('Build demo') {
