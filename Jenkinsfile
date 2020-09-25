@@ -33,8 +33,7 @@ pipeline {
         stage('Initialize DKAN site') {
             when { changeRequest() }
             steps {
-                sh "env"
-                sh "dktl init --dkan-local --dkan ${CHANGE_SOURCE}-dev"
+                sh "dktl init --dkan-local --dkan ${CHANGE_BRANCH}-dev"
             }
         }
         stage('Build demo') {
