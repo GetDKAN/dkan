@@ -27,25 +27,25 @@ pipeline {
                 dir("dkan") {
                     checkout([
                         $class: 'GitSCM',
-                        branches: [[name: "refs/heads/${CHANGE_BRANCH}"]]
+                        branches: refs/heads
                     ])                
                 }
                 sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
                 sh "unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip"
             }
         }
-        // stage('Initialize DKAN site') {
-        //     when { changeRequest() }
-        //     steps {
-        //         sh "dktl init --dkan-local --dkan dev-${CHANGE_BRANCH}"
-        //     }
-        // }
-        // stage('Build demo') {
-        //     when { changeRequest() }
-        //     steps {
-        //         sh "dktl demo"
-        //     }
-        // }
+        stage('Initialize DKAN site') {
+            when { changeRequest() }
+            steps {
+                sh "dktl init --dkan-local --dkan dev-master"
+            }
+        }
+        stage('Build demo') {
+            when { changeRequest() }
+            steps {
+                sh "dktl demo"
+            }
+        }
     }
     post {
         success {
