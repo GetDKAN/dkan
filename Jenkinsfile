@@ -15,7 +15,13 @@ pipeline {
         stage('Setup environment') {
             when { changeRequest() }
             steps {
-                sh "test -x dktl && dktl down"
+                script {
+                    try {
+                        sh "dktl down" 
+                    } catch (err) {
+                        echo "DKTL not present; skipping"
+                    }
+                }
                 sh "rm -rf *"
                 dir("dkan") {
                     checkout scm
