@@ -10,6 +10,7 @@ pipeline {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
         USER = 'jenkins'
         DKTL_VERSION = 'localdkan'
+        // DKTL_SLUG = "$BRANCH_NAME"
     }
     stages {
         stage('Setup environment') {
@@ -33,7 +34,7 @@ pipeline {
         stage('Initialize DKAN site') {
             when { changeRequest() }
             steps {
-                sh "dktl init --dkan-local --dkan ${CHANGE_BRANCH}-dev"
+                sh "dktl init --dkan-local --dkan dev-${CHANGE_BRANCH}"
             }
         }
         stage('Build demo') {
