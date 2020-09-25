@@ -10,7 +10,7 @@ pipeline {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
         USER = 'jenkins'
         DKTL_VERSION = 'localdkan'
-        // DKTL_SLUG = "$BRANCH_NAME"
+        DKTL_SLUG = "dkan$CHANGE_ID"
     }
     stages {
         stage('Setup environment') {
