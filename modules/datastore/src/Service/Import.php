@@ -45,10 +45,10 @@ class Import {
     $importer = $this->getImporter();
     $importer->run();
 
-    /** @var \Procrastinator\Result $result */
     $result = $this->getResult();
     if ($result->getStatus() == Result::ERROR) {
-      $this->log('datastore', $result->getError());
+      $this->setLoggerFactory(\Drupal::service('logger.factory'));
+      $this->error("Done importing: " . $result->getStatus());
     }
   }
 
