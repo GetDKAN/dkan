@@ -69,6 +69,17 @@ class Query implements
   public $sort = ['asc' => [], 'desc' => []];
 
   /**
+   * Join against another table.
+   *
+   * @var array
+   *   Should be an array of objects with properties:
+   *   - resource: Uuid of the table's resource.
+   *   - alias: Alias for the table.
+   *   - on: Array of the condition to be met.
+   */
+  public $joins = [];
+
+  /**
    * Limit for maximum number of records returned.
    *
    * @var int|null

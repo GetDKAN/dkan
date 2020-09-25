@@ -29,6 +29,7 @@ class SelectFactory {
     self::setQueryOrConditions($db_query, $query);
     self::setQueryOrderBy($db_query, $query);
     self::setQueryLimitAndOffset($db_query, $query);
+    self::setQueryJoins($db_query, $query);
 
     if ($query->count) {
       $db_query = $db_query->countQuery();
@@ -177,6 +178,32 @@ class SelectFactory {
     }
     elseif ($query->offset) {
       $db_query->range($query->limit);
+    }
+  }
+
+  /**
+   * Add joins to the DB query.
+   *
+   * @param Drupal\Core\Database\Query\Select $db_query
+   *   A Drupal database query API object.
+   * @param Query $query
+   *   A DKAN query object.
+   */
+  private static function setQueryJoins(Select $db_query, Query $query) {
+    if ($query->joins) {
+      try {
+        foreach ($query->joins as $j) {
+          if (is_object($j)) {
+            $db_query->join($join->resource, $join->alias, $join->on);
+          }
+          else {
+            throw new Exception('There is an error with the join object.');
+          }
+        }
+      }
+      catch (Exception $e) {
+        echo $e->getMessage();
+      }
     }
   }
 
