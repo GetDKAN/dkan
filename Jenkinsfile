@@ -33,7 +33,7 @@ pipeline {
         stage('QA Site') {
             when { changeRequest() }
             steps {
-                sh "dktl init"
+                sh "dktl init --dkan-local"
             }
         }
     }
