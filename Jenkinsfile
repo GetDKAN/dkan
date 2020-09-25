@@ -26,7 +26,6 @@ pipeline {
                 sh "rm -rf *"
                 dir("dkan") {
                     checkout scm
-                    sh "rm -rf .git"
                 }
                 sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
                 sh "unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip"
@@ -35,8 +34,10 @@ pipeline {
         stage('Initialize DKAN site') {
             when { changeRequest() }
             steps {
-                sh "env"
-                sh "dktl init --dkan-local --dkan dev-${GIT_COMMIT}"
+                dir("dkan") {
+                    def gitCommit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+                }
+                sh "dktl init --dkan-local --dkan dev-${gitCommit}"
             }
         }
         stage('Build demo') {
