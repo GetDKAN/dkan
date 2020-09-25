@@ -30,10 +30,16 @@ pipeline {
                 sh "unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip"
             }
         }
-        stage('QA Site') {
+        stage('Initialize DKAN site') {
             when { changeRequest() }
             steps {
                 sh "dktl init --dkan-local"
+            }
+        }
+        stage('Build demo') {
+            when { changeRequest() }
+            steps {
+                sh "dktl demo"
             }
         }
     }
