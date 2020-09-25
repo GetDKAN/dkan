@@ -35,7 +35,8 @@ pipeline {
         stage('Initialize DKAN site') {
             when { changeRequest() }
             steps {
-                sh "dktl init --dkan-local --dkan dev-master"
+                sh "env"
+                sh "dktl init --dkan-local --dkan dev-${GIT_COMMIT}"
             }
         }
         stage('Build demo') {
