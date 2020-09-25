@@ -15,7 +15,7 @@ pipeline {
         stage('Setup environment') {
             when { changeRequest() }
             steps {
-                sh "dktl down"
+                sh "command -v dktl >/dev/null && command dktl down"
                 sh "rm -rf *"
                 dir("dkan") {
                     checkout scm
