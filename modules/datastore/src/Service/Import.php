@@ -48,7 +48,10 @@ class Import {
     $result = $this->getResult();
     if ($result->getStatus() == Result::ERROR) {
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
-      $this->error("Done importing: " . $result->getStatus());
+      $this->error("Error importing resource id:%id path:%path", [
+        '%id' => $this->resource->getId(),
+        '%path' => $this->resource->getFilePath(),
+      ]);
     }
   }
 
