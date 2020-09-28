@@ -53,6 +53,8 @@ class Import {
    *
    * @return \Dkan\Datastore\Resource
    *   Resource.
+   *
+   * @codeCoverageIgnore
    */
   protected function getResource() : DatastoreResource {
     return $this->resource;
