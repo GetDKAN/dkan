@@ -29,13 +29,33 @@ class Import {
    * Constructor.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+    $this->initializeResource($resource);
+    $this->jobStoreFactory = $jobStoreFactory;
+    $this->databaseTableFactory = $databaseTableFactory;
+  }
+
+  /**
+   * Initialize resource.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   Resource.
+   */
+  protected function initializeResource(Resource $resource) : DatastoreResource {
     $this->resource = new DatastoreResource(
       md5($resource->getUniqueIdentifier()),
       UrlHostTokenResolver::resolve($resource->getFilePath()),
       $resource->getMimeType()
     );
-    $this->jobStoreFactory = $jobStoreFactory;
-    $this->databaseTableFactory = $databaseTableFactory;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return \Dkan\Datastore\Resource
+   *   Resource.
+   */
+  protected function getResource() : DatastoreResource {
+    return $this->resource;
   }
 
   /**
@@ -46,11 +66,13 @@ class Import {
     $importer->run();
 
     $result = $this->getResult();
+    $status = $result->getStatus();
+    var_dump($status);
     if ($result->getStatus() == Result::ERROR) {
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->error("Error importing resource id:%id path:%path", [
-        '%id' => $this->resource->getId(),
-        '%path' => $this->resource->getFilePath(),
+        '%id' => $this->getResource()->getId(),
+        '%path' => $this->getResource()->getFilePath(),
       ]);
     }
   }
