@@ -66,8 +66,6 @@ class Import {
     $importer->run();
 
     $result = $this->getResult();
-    $status = $result->getStatus();
-    var_dump($status);
     if ($result->getStatus() == Result::ERROR) {
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->error("Error importing resource id:%id path:%path", [
