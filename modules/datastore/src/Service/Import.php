@@ -40,7 +40,7 @@ class Import {
    * @param \Drupal\common\Resource $resource
    *   Resource.
    */
-  protected function initializeResource(Resource $resource) : DatastoreResource {
+  protected function initializeResource(Resource $resource) {
     $this->resource = new DatastoreResource(
       md5($resource->getUniqueIdentifier()),
       UrlHostTokenResolver::resolve($resource->getFilePath()),
