@@ -4,7 +4,7 @@ namespace Drupal\datastore;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\common\Storage\Query;
+use Drupal\datastore\Service\DatastoreQuery;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -224,51 +224,45 @@ class Service implements ContainerInjectionInterface {
   /**
    * Run query.
    *
-   * @param Drupal\common\Storage\Query $query
-   *   DKAN Query object.
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   DKAN Datastore Query API object.
    *
-   * @return array
+   * @return object
    *   Array of row/record objects.
    */
-  public function runQuery(Query $query): array {
-    [$identifier, $version] = Resource::getIdentifierAndVersion($query->collection);
+  public function runQuery(DatastoreQuery $datastoreQuery) {
+    [$identifier, $version] = Resource::getIdentifierAndVersion($datastoreQuery->resource);
     $databaseTable = $this->getStorage($identifier, $version);
 
-    $return = [];
+    $return = (object) [];
 
-    if ($query->results) {
-      $resultsQuery = clone $query;
-      $resultsQuery->count = FALSE;
+    if ($datastoreQuery->results) {
+      $resultsQuery = $datastoreQuery->resultsQuery();
       $result = $databaseTable->query($resultsQuery);
 
-      $schema = $databaseTable->getSchema();
-      $fields = $schema['fields'];
-
-      $return["results"] = array_map(function ($row) use ($fields, $query) {
-        if (!$query->showDbColumns) {
-          unset($row->record_number);
-        }
-
-        $arrayRow = (array) $row;
-        $newRow = [];
-
-        foreach ($arrayRow as $fieldName => $value) {
-          if (
-            !$query->showDbColumns && !empty($fields[$fieldName]['description'])
-          ) {
-            $newRow[$fields[$fieldName]['description']] = $value;
+      if ($datastoreQuery->keys === FALSE) {
+        $result = array_map(function ($row) {
+          $arrayRow = (array) $row;
+          foreach ($arrayRow as $value) {
+            $newRow[] = $value;
           }
-          else {
-            $newRow[$fieldName] = $value;
-          }
-        }
+          return $newRow;
+        }, $result);
+      }
+      $return->results = $result;
+    }
 
-        return (object) $newRow;
-      }, $result);
+    if ($datastoreQuery->count) {
+      $countQuery = $datastoreQuery->countQuery();
+      $return->count = array_pop($databaseTable->query($countQuery))->expression;
     }
-    if ($query->count) {
-      $return["count"] = array_pop($databaseTable->query($query))->expression;
+
+    if ($datastoreQuery->schema) {
+      $return->schema = (object) $databaseTable->getSchema();
     }
+
+    $return->query = $datastoreQuery;
+
     return $return;
   }
 
