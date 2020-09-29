@@ -6,8 +6,6 @@ use Contracts\SorterInterface;
 use Contracts\ConditionerInterface;
 use Contracts\OffsetterInterface;
 use Contracts\LimiterInterface;
-use Procrastinator\HydratableTrait;
-use Procrastinator\JsonSerializeTrait;
 
 /**
  * Query class.
@@ -17,8 +15,6 @@ class Query implements
     ConditionerInterface,
     OffsetterInterface,
     LimiterInterface {
-
-  use HydratableTrait, JsonSerializeTrait;
 
   /**
    * The collection of records (usually, a database table) to query against.
@@ -89,21 +85,9 @@ class Query implements
   /**
    * Return the full count of the query results, ignoring limit/offset.
    *
-   * If combined with $results, will return both the full result set and count.
-   * Defaults to FALSE.
-   *
    * @var bool
    */
   public $count = FALSE;
-
-  /**
-   * Return the result set of the query.
-   *
-   * Set to FALSE and set $count to TRUE to fetch only a count.
-   *
-   * @var bool
-   */
-  public $results = TRUE;
 
   /**
    * Use real db field names, not human-readable desc. Also, show record_number.
