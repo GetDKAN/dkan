@@ -12,6 +12,7 @@ pipeline {
         DKTL_VERSION = 'dyanmictraefik'
         DKTL_SLUG = "dkan$CHANGE_ID"
         DKTL_TRAEFIK = "proxy"
+        WEB_DOMAIN = "ci.civicactions.net"
     }
     stages {
         stage('Setup environment') {
