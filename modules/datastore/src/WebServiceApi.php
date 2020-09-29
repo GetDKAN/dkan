@@ -3,7 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\common\Resource;
-use Drupal\common\Storage\Query;
+use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -201,7 +201,7 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
     try {
-      $query = Query::hydrate($payloadJson);
+      $datastoreQuery = DatastoreQuery::hydrate($payloadJson);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException(
@@ -209,9 +209,9 @@ class WebServiceApi implements ContainerInjectionInterface {
         400
       );
     }
-    $query->collection = $identifier;
+    $datastoreQuery->resource = $identifier;
     try {
-      $result = $this->datastoreService->runQuery($query);
+      $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);
