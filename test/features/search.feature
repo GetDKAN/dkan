@@ -8,7 +8,7 @@ Feature: Search
     And pages:
       | name                      | url                                                |
       | Dataset Search            | /search/type/dataset                               |
-      | Dataset Results           | /search?query=Dataset%2001                         |
+      | Dataset Results           | /search?query=DKANTest                             |
       | Topics Search             | /search/field_topics                               |
       | Topics Redirect           | /topics                                            |
       | Not valid type search     | /search/type/notvalid                              |
@@ -51,9 +51,9 @@ Feature: Search
   @search_01
   Scenario: Searching datasets
     Given I am on the "Dataset Search" page
-    When I search for "Dataset 01"
+    When I search for "DKANTest"
     Then I should be on the "Dataset Results" page
-    And I should see "Dataset 01"
+    And I should see "DKANTest"
 
   @search_02
   Scenario: See number of datasets on search page and Reset dataset search filters
