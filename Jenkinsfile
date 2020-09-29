@@ -9,9 +9,8 @@ pipeline {
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
         USER = 'jenkins'
-        DKTL_VERSION = 'dynamictraefik'
+        DKTL_VERSION = 'localdkan'
         DKTL_SLUG = "dkan$CHANGE_ID"
-        DKTL_TRAEFIK = "proxy"
     }
     stages {
         stage('Setup environment') {
