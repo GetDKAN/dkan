@@ -21,9 +21,7 @@ jobs:
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Initialize Project
-          command: |
-            v=$CIRCLE_BRANCH
-            dktl init --dkan-local
+          command: dktl init --dkan-local
       - run:
           name: Make DKAN
           command: |
