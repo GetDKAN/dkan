@@ -15,12 +15,25 @@
                     },
                     { 
                         "type": "object",
-                        "title": "Aliased property/expression",
+                        "title": "Aliased property from specific resource",
                         "properties": {
+                            "resource": { 
+                                "type": "string", 
+                                "description": "Full resource ID or alias (default: t)" 
+                            },
                             "property": { "type": "string" },
+                            "alias": { "type": "string" }
+                        },
+                        "required": [ "resource", "property", "alias" ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "Aliased expression",
+                        "properties": {
                             "expression": { "type": "string" },
                             "alias": { "type": "string" }
-                        }
+                        },
+                        "required": [ "expression", "alias" ]
                     }
                 ]
             }
