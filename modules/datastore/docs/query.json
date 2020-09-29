@@ -5,16 +5,6 @@
     "description": "Schema for DKAN database queries",
     "type": "object",
     "properties": {
-        "count": {
-            "description": "Return a count of the total rows returned by the query, ignoring the limit/offset.",
-            "type": "boolean",
-            "default": true
-        },
-        "results": {
-            "description": "Return the result set. Set to false and set count to true to receive only a count of matches.",
-            "type": "boolean",
-            "default": true
-        },
         "properties": {
             "type": "array",
             "items": {
@@ -116,6 +106,26 @@
                     "items": { "type": "string" }
                 }
             }
+        },
+        "count": {
+            "description": "Return a count of the total rows returned by the query, ignoring the limit/offset.",
+            "type": "boolean",
+            "default": true
+        },
+        "results": {
+            "description": "Return the result set. Set to false and set count to true to receive only a count of matches.",
+            "type": "boolean",
+            "default": true
+        },
+        "schema": {
+            "description": "Return the schema for the datastore collection.",
+            "type": "boolean",
+            "default": true
+        },
+        "keys": {
+            "description": "Return results as an array of keyed objects, with the column machine names as keys. If false, results will be an array of simple arrays of values.",
+            "type": "boolean",
+            "default": true
         }
     },
     "definitions": {
