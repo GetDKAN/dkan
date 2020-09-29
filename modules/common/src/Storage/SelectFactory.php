@@ -46,20 +46,28 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private static function setQueryProperties(Select $db_query, Query $query) {
+    // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
       $db_query->fields('t');
       return;
     }
+
     foreach ($query->properties as $p) {
       if (is_string($p)) {
         $db_query->addField('t', $p);
       }
-      elseif (is_object($p)) {
-        $p = (array) $p;
-        $realProperty = array_key_first($p);
-        $db_query->addField('t', $realProperty, $p[$realProperty]);
+      elseif (is_object($p) && isset($p->property)) {
+        $db_query->addField($p->resource, $p->property, $p->alias);
+      }
+      elseif (is_object($p) && isset($p->expression)) {
+        $expressionStr = $this->expressionToString($p->expression);
+        $db_query->addExpression($expressionStr, $p->alias);
       }
     }
+  }
+
+  private static function expressionToString($expression) {
+    throw new \Exception("Unsupported $expression");
   }
 
   /**
