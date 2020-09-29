@@ -45,6 +45,51 @@
             "description": "OR conditions for the query.",
             "items": { "$ref": "#/definitions/condition" }
         },
+        "joins": {
+            "type":"array",
+            "description":"Joins",
+            "items": {
+                "type":"object",
+                "properties": {
+                    "resource": { 
+                        "type": "string",
+                        "description": "UUID of the datastore resource to query"
+                    },
+                    "alias": { 
+                        "type": "string",
+                        "description": "An alias to use in properties, conditions and on statements"
+                    },
+                    "using": {
+                        "type": "string",
+                        "description": "Simple property name found in both datastore tables to use for join."
+                    },
+                    "on": {
+                        "type": "array",
+                        "description": "Array of two objects for on statement.",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "resource": {
+                                    "type": "string",
+                                    "description": "UUID or alias of a resource. The main resource we are querying against is always aliased to \"t\""
+                                },
+                                "property": {
+                                    "type": "string",
+                                    "description": "Property or column to join on."
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": ["resource"],
+                "oneOf": [
+                    {"required": ["using"]},
+                    {"required": ["on"]}
+                ]
+            }
+        },
         "limit": {
             "type": "integer",
             "maximum": 500,
@@ -102,7 +147,8 @@
                      "description": "Condition operator",
                      "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ]
                  }
-            }
+            },
+            "required": [ "property", "value"]
         }
     }
 }
