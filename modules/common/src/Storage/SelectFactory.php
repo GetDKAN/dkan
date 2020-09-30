@@ -80,13 +80,42 @@ class SelectFactory {
    */
   private static function setQueryConditions(Select $db_query, Query $query) {
     foreach ($query->conditions as $c) {
-      if (!isset($c->operator)) {
-        $c->operator = 'like';
+      if (isset($c->groupOperator)) {
+        self::addConditionGroup($db_query, $c);
       }
-      $c->operator = strtoupper($c->operator);
-      $db_query->condition($c->property, $c->value, strtoupper($c->operator));
+      else {
+        self::addCondition($db_query, $c);
+      }
     }
   }
+
+  private static function addCondition($db_query, $condition) {
+    if (!isset($condition->operator)) {
+      $condition->operator = 'like';
+    }
+    $field = ($condition->resource ? $condition->resource : 't')
+      . '.'
+      . $condition->property;
+    $db_query->condition(
+      $field,
+      $condition->value,
+      strtoupper($condition->operator)
+    );
+  }
+
+  private static function addConditionGroup($db_query, $conditionGroup) {
+    $groupMethod = "{$conditionGroup->groupOperator}ConditionGroup";
+    $group = $db_query->$groupMethod();
+    foreach ($conditionGroup->conditions as $c) {
+      if (isset($c->groupOperator)) {
+        self::addConditionGroup($group, $c);
+      }
+      else {
+        self::addCondition($group, $c);
+      }
+    }
+    $db_query->condition($group);
+}
 
   /**
    * Set a group of filter "OR" conditions on DB query.

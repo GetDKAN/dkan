@@ -40,13 +40,13 @@
         },
         "conditions": {
             "type": "array",
-            "description": "Conditions for the query. Will be appended with AND.",
-            "items": { "$ref": "#/definitions/condition" }
-        },
-        "orConditions": {
-            "type": "array",
-            "description": "OR conditions for the query.",
-            "items": { "$ref": "#/definitions/condition" }
+            "description": "Conditions or groups of conditions for the query, bound by 'and' operator.",
+            "items": {
+                "anyOf": [
+                    { "$ref": "#/definitions/condition" },
+                    { "$ref": "#/definitions/conditionGroup" }
+                ]
+            }
         },
         "joins": {
             "type":"array",
@@ -145,6 +145,10 @@
         "condition": {
             "type": "object",
             "properties": {
+                "resource": {
+                    "type": "string",
+                    "description": "UUID of the datastore resource or alias to query. Not needed when only querying against one resource."
+                },
                 "property": { 
                     "type": "string",
                     "description": "The property, column or alias to filter by."
@@ -172,6 +176,23 @@
                  }
             },
             "required": [ "property", "value"]
+        },
+        "conditionGroup": {
+            "type": "object",
+            "title": "Conditional group",
+            "description": "Group of conditions bound by 'and'/'or' operators.",
+            "properties": {
+                "groupOperator": {
+                    "type": "string",
+                    "enum": [ "and", "or" ]
+                },
+                "conditions": {
+                    "type": "array",
+                    "description": "OR conditions for the query.",
+                    "items": { "$ref": "#/definitions/condition" }
+                }
+            }
+
         }
     }
 }

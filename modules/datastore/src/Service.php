@@ -258,7 +258,7 @@ class Service implements ContainerInjectionInterface {
     }
 
     if ($datastoreQuery->schema) {
-      $return->schema = (object) $databaseTable->getSchema();
+      $return->schema->{$datastoreQuery->resource} = (object) $databaseTable->getSchema();
     }
 
     $return->query = $datastoreQuery;
