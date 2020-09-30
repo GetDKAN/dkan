@@ -118,7 +118,7 @@ class DatastoreQuery {
    *
    * @var bool
    */
-  public $propertyKeys = TRUE;
+  public $keys = TRUE;
 
   public function resultsQuery() {
     if ($this->results = FALSE) {
@@ -143,7 +143,6 @@ class DatastoreQuery {
   private function populateQuery($query) {
     $query->properties = $this->properties;
     $query->conditions = $this->conditions;
-    $query->orConditions = $this->orConditions;
     $query->joins = $this->joins;
     $query->sort = $this->sort;
     $query->limit = $this->limit;
