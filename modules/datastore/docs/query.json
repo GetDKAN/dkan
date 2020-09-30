@@ -43,8 +43,57 @@
             "description": "Conditions or groups of conditions for the query, bound by 'and' operator.",
             "items": {
                 "anyOf": [
-                    { "$ref": "#/definitions/condition" },
-                    { "$ref": "#/definitions/conditionGroup" }
+                    {
+                        "type": "object",
+                        "title": "Condition",
+                        "description": "Condition object including property, value and operator.",
+                        "properties": {
+                            "resource": {
+                                "type": "string",
+                                "description": "UUID of the datastore resource or alias to query. Not needed when only querying against one resource."
+                            },
+                            "property": { 
+                                "type": "string",
+                                "description": "The property, column or alias to filter by."
+                             },
+                             "value": {
+                                "anyOf": [
+                                    { "type": "string" },
+                                    { "type": "number" },
+                                    { 
+                                        "type": "array",
+                                        "items": {
+                                            "anyOf": [
+                                                { "type": "string" },
+                                                { "type": "number" }            
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "description": "The value to filter against."
+                             },
+                             "operator": {
+                                 "type": "string",
+                                 "description": "Condition operator",
+                                 "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ]
+                             }
+                        },
+                        "required": [ "property", "value"]            
+                    },
+                    {
+                        "type": "object",
+                        "title": "Conditional group",
+                        "description": "Group of conditions bound by 'and'/'or' operators.",
+                        "properties": {
+                            "groupOperator": {
+                                "type": "string",
+                                "enum": [ "and", "or" ]
+                            },
+                            "conditions": {
+                                 "$ref": "#/properties/conditions"
+                            }
+                        }            
+                    }
                 ]
             }
         },
@@ -139,60 +188,6 @@
             "description": "Return results as an array of keyed objects, with the column machine names as keys. If false, results will be an array of simple arrays of values.",
             "type": "boolean",
             "default": true
-        }
-    },
-    "definitions": {
-        "condition": {
-            "type": "object",
-            "properties": {
-                "resource": {
-                    "type": "string",
-                    "description": "UUID of the datastore resource or alias to query. Not needed when only querying against one resource."
-                },
-                "property": { 
-                    "type": "string",
-                    "description": "The property, column or alias to filter by."
-                 },
-                 "value": {
-                    "anyOf": [
-                        { "type": "string" },
-                        { "type": "number" },
-                        { 
-                            "type": "array",
-                            "items": {
-                                "anyOf": [
-                                    { "type": "string" },
-                                    { "type": "number" }            
-                                ]
-                            }
-                        }
-                    ],
-                    "description": "The value to filter against."
-                 },
-                 "operator": {
-                     "type": "string",
-                     "description": "Condition operator",
-                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ]
-                 }
-            },
-            "required": [ "property", "value"]
-        },
-        "conditionGroup": {
-            "type": "object",
-            "title": "Conditional group",
-            "description": "Group of conditions bound by 'and'/'or' operators.",
-            "properties": {
-                "groupOperator": {
-                    "type": "string",
-                    "enum": [ "and", "or" ]
-                },
-                "conditions": {
-                    "type": "array",
-                    "description": "OR conditions for the query.",
-                    "items": { "$ref": "#/definitions/condition" }
-                }
-            }
-
         }
     }
 }
