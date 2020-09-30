@@ -41,21 +41,6 @@ class DatastoreQuery {
   public $conditions = [];
 
   /**
-   * OR conditions for the query.
-   *
-   * Adds a group of conditions to the query joined by OR instead of AND.
-   *
-   * Should be an array of objects with properties:
-   * - property: The property/field to filter on
-   * - value: The value to filter for. Use an array for IN or BETWEEN operators.
-   * - operator: Condition operator. =, <>, <, <=, >, >=, IN, NOT IN, BETWEEN
-   *   are supported.
-   *
-   * @var array
-   */
-  public $orConditions = [];
-
-  /**
    * Joins for the query.
    *
    * @var array
