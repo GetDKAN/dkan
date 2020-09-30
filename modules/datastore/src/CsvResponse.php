@@ -5,7 +5,7 @@ namespace Drupal\datastore;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class CsvExport.
+ * Class CsvResponse.
  *
  * @package Drupal\datastore
  *
@@ -16,21 +16,22 @@ use Symfony\Component\HttpFoundation\Response;
  * @param string $filename
  *   Filename for the exported csv.
  */
-class CsvExport extends Response {
+class CsvResponse extends Response {
 
   private $data;
   private $keys;
   private $filename;
 
-  public function __construct($filename, $data = array(), $status = 200, $headers = array())
+  public function __construct($filename, $data = array(), $keys = array(), $status = 200, $headers = array())
   {
     parent::__construct('', $status, $headers);
     $this->filename = $filename . '_' . md5(uniqid(rand(), TRUE)) . '.csv';
-    $this->build($data);
+    $this->build($keys, $data);
     $this->serve();
   }
 
-  private function build(array $keys, array $data) {
+  private function build(array $keys, array $data)
+  {
     // Use PHP's built in file handler functions to create a temporary file.
     $handle = fopen('php://temp', 'w+');
 
@@ -57,19 +58,16 @@ class CsvExport extends Response {
     // Close the file handler since we don't need it anymore.
     // We are not storing this file anywhere in the filesystem.
     fclose($handle);
+  }
 
-    // Once the data is built, we can return it as a response.
-    $response = new Response();
+  private function serve()
+  {
+    $this->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $this->filename));
+    if (!$this->headers->has('Content-Type')) {
+        $this->headers->set('Content-Type', 'text/csv');
+    }
 
-    // By setting these 2 header options, the browser will see the URL
-    // used by this Controller to return a CSV file called "export.csv".
-    $response->headers->set('Content-Type', 'text/csv');
-    $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
-
-    // This line physically adds the CSV data we created.
-    $response->setContent($csv_data);
-
-    return $response;
+    return $this->setContent($this->data);
   }
 
 }
