@@ -63,8 +63,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
 
       [$id, $version] = Resource::getIdentifierAndVersion($identifier);
-      $storage = $this->datastoreService
-        ->getStorage($id, $version);
+      $storage = $this->datastoreService->getStorage($id, $version);
 
       if ($storage) {
         $data = $storage->getSummary();
@@ -197,9 +196,9 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function query($identifier) {
-
+  public function query() {
     $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+
     try {
       $datastoreQuery = DatastoreQuery::hydrate($payloadJson);
     }
@@ -209,7 +208,7 @@ class WebServiceApi implements ContainerInjectionInterface {
         400
       );
     }
-    $datastoreQuery->resource = $identifier;
+    // $datastoreQuery->resource = $identifier;
     try {
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }

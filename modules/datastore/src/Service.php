@@ -12,6 +12,8 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\Import;
 use Drupal\datastore\Service\ImporterList\ImporterList;
+use Drupal\common\Storage\Query;
+use stdClass;
 
 /**
  * Main services for the datastore.
@@ -231,14 +233,15 @@ class Service implements ContainerInjectionInterface {
    *   Array of row/record objects.
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {
-    [$identifier, $version] = Resource::getIdentifierAndVersion($datastoreQuery->resource);
-    $databaseTable = $this->getStorage($identifier, $version);
 
-    $return = (object) [];
+    $return = new stdClass();
+
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    $primaryResource = $datastoreQuery->resources[0]->alias;
+    $primaryResourceStorage = $storageMap[$primaryResource];
 
     if ($datastoreQuery->results) {
-      $resultsQuery = $datastoreQuery->resultsQuery();
-      $result = $databaseTable->query($resultsQuery);
+      $result = $primaryResourceStorage->query($this->resultsQuery($datastoreQuery, $storageMap));
 
       if ($datastoreQuery->keys === FALSE) {
         $result = array_map(function ($row) {
@@ -253,12 +256,15 @@ class Service implements ContainerInjectionInterface {
     }
 
     if ($datastoreQuery->count) {
-      $countQuery = $datastoreQuery->countQuery();
-      $return->count = array_pop($databaseTable->query($countQuery))->expression;
+      $countQuery = $this->countQuery($datastoreQuery, $storageMap);
+      $return->count = array_pop($primaryResourceStorage->query($countQuery))->expression;
     }
 
     if ($datastoreQuery->schema) {
-      $return->schema->{$datastoreQuery->resource} = (object) $databaseTable->getSchema();
+      foreach ($datastoreQuery->resources as $resource) {
+        $storage = $storageMap[$resource->alias];
+        $return->schema->{$resource->id} = (object) $storage->getSchema();
+      }
     }
 
     $return->query = $datastoreQuery;
@@ -266,4 +272,70 @@ class Service implements ContainerInjectionInterface {
     return $return;
   }
 
+  private function getQueryStorageMap($datastoreQuery) {
+    $storageMap = [];
+    foreach ($datastoreQuery->resources as $resource) {
+      [$identifier, $version] = Resource::getIdentifierAndVersion($resource->id);
+      $storage = $this->getStorage($identifier, $version);
+      $storageMap[$resource->alias] = $storage;
+    }
+    return $storageMap;
+  }
+
+  private function resultsQuery($datastoreQuery, $storageMap) {
+    if ($this->results = FALSE) {
+      throw new \Exception("Results query requested on non-results datastore query.");
+    }
+    return $this->populateQuery($datastoreQuery, $storageMap);
+  }
+
+  private function countQuery($datastoreQuery, $storageMap) {
+    if ($this->count = FALSE) {
+      throw new \Exception("Results query requested on non-results datastore query.");
+    }
+    $query = $this->populateQuery($datastoreQuery, $storageMap);
+    unset($query->limit, $query->offset);
+    $query->count();
+    return $query;
+  }
+
+  private function populateQuery($datastoreQuery, $storageMap) {
+    $query = new Query();
+    $query->properties = $datastoreQuery->properties;
+    $query->conditions = $datastoreQuery->conditions;
+    $this->populateQueryJoins($query, $datastoreQuery, $storageMap);
+    $this->populateQuerySort($query, $datastoreQuery);
+    $query->limit = $datastoreQuery->limit;
+    $query->offset = $datastoreQuery->offset;
+    $query->showDbColumns = TRUE;
+    return $query;
+  }
+
+  private function populateQuerySort($query, $datastoreQuery) {
+    foreach ($datastoreQuery->sort->desc as $desc) {
+      $query->sort["desc"][] = (object) [
+        "collection" => $desc->resource,
+        "property" => $desc->property,
+      ];
+    }
+    foreach ($datastoreQuery->sort->asc as $asc) {
+      $query->sort["asc"][] = (object) [
+        "collection" => $asc->resource,
+        "property" => $asc->property,
+      ];
+    }
+  }
+
+  private function populateQueryJoins($query, $datastoreQuery, $storageMap) {
+    foreach ($datastoreQuery->joins as $join) {
+      $storage = $storageMap[$join->resource];
+      $queryJoin = new stdClass();
+      $queryJoin->collection = $storage->getTableName();
+      $queryJoin->alias = $join->resource;
+      foreach ($join->on as $on) {
+        $queryJoin->on[] = (object) ["collection" => $on->resource, "property" => $on->property];
+      }
+      $query->joins[] = $queryJoin;
+    }
+  }
 }

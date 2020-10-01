@@ -17,12 +17,14 @@ class SelectFactory {
    *   DKAN Query object.
    * @param Drupal\Core\Database\Connection $connection
    *   A database table object, which includes a database connection.
+   * @param string $alias
+   *   Alias for primary table.
    *
    * @return Drupal\Core\Database\Query\Select
    *   Drupal DB API select object.
    */
-  public static function create(Query $query, Connection $connection): Select {
-    $db_query = $connection->select($query->collection, 't');
+  public static function create(Query $query, Connection $connection, string $alias = 't'): Select {
+    $db_query = $connection->select($query->collection, $alias);
 
     self::setQueryProperties($db_query, $query);
     self::setQueryConditions($db_query, $query);
@@ -58,7 +60,7 @@ class SelectFactory {
         $db_query->addField('t', $p);
       }
       elseif (is_object($p) && isset($p->property)) {
-        $db_query->addField($p->resource, $p->property, $p->alias);
+        $db_query->addField($p->collection, $p->property, $p->alias);
       }
       elseif (is_object($p) && isset($p->expression)) {
         $expressionStr = $this->expressionToString($p->expression);
@@ -94,7 +96,7 @@ class SelectFactory {
     if (!isset($condition->operator)) {
       $condition->operator = 'like';
     }
-    $field = ($condition->resource ? $condition->resource : 't')
+    $field = ($condition->collection ? $condition->collection : 't')
       . '.'
       . $condition->property;
     $db_query->condition(
@@ -150,12 +152,18 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private static function setQueryOrderBy(Select $db_query, Query $query) {
-    foreach ($query->sort['asc'] as $property) {
-      $db_query->orderBy(strtolower($property));
+    foreach ($query->sort["asc"] as $property) {
+      if (is_object($property)) {
+        $property = self::propertyString($property);
+      }
+      $db_query->orderBy($property);
     }
 
-    foreach ($query->sort['desc'] as $property) {
-      $db_query->orderBy(strtolower($property), 'DESC');
+    foreach ($query->sort["desc"] as $property) {
+      if (is_object($property)) {
+        $property = self::propertyString($property);
+      }
+      $db_query->orderBy($property, 'DESC');
     }
   }
 
@@ -190,21 +198,27 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private static function setQueryJoins(Select $db_query, Query $query) {
-    if ($query->joins) {
-      try {
-        foreach ($query->joins as $j) {
-          if (is_object($j)) {
-            $db_query->join($join->resource, $join->alias, $join->on);
-          }
-          else {
-            throw new Exception('There is an error with the join object.');
-          }
-        }
+    if (empty($query->joins)) {
+      return;
+    }
+    foreach ($query->joins as $join) {
+      if (!is_object($join)) {
+        throw new \Exception('Invalid join.');
       }
-      catch (Exception $e) {
-        echo $e->getMessage();
+      $db_query->join($join->collection, $join->alias, self::onString($join->on));
+      if (empty($query->properties)) {
+        $db_query->fields($join->alias);
       }
     }
   }
 
+  private static function onString($on) {
+    return "{$on[0]->collection}.{$on[0]->property} = {$on[1]->collection}.{$on[1]->property}";
+  }
+
+  private static function propertyString($property) {
+    return "{$property->collection}.{$property->property}";
+  }
+
 }
+

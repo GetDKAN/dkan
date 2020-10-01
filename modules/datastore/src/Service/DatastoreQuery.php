@@ -4,7 +4,6 @@ namespace Drupal\datastore\Service;
 
 use Procrastinator\HydratableTrait;
 use Procrastinator\JsonSerializeTrait;
-use Drupal\common\Storage\Query;
 
 /**
  * DatastoreQuery.
@@ -16,9 +15,9 @@ class DatastoreQuery {
   /**
    * The collection of records (usually, a database table) to query against.
    *
-   * @var string
+   * @var array
    */
-  public $resource;
+  public $resources;
 
   /**
    * Properties (usually, columns) to retrieve from the collection.
@@ -50,12 +49,12 @@ class DatastoreQuery {
   /**
    * Result sorting directives.
    *
-   * @var array
-   *   Associative array containing:
+   * @var object
+   *   Containing properties:
    *   - asc: Properties to sort by in ascending order
    *   - desc: Properties to sort by in descending order
    */
-  public $sort = ['asc' => [], 'desc' => []];
+  public $sort;
 
   /**
    * Limit for maximum number of records returned.
@@ -104,34 +103,4 @@ class DatastoreQuery {
    * @var bool
    */
   public $keys = TRUE;
-
-  public function resultsQuery() {
-    if ($this->results = FALSE) {
-      throw new \Exception("Results query requested on non-results datastore query.");
-    }
-    $query = new Query();
-    $this->populateQuery($query);
-    return $query;
-  }
-
-  public function countQuery() {
-    if ($this->count = FALSE) {
-      throw new \Exception("Results query requested on non-results datastore query.");
-    }
-    $query = new Query();
-    $this->populateQuery($query);
-    unset($query->limit, $query->offset);
-    $query->count();
-    return $query;
-  }
-
-  private function populateQuery($query) {
-    $query->properties = $this->properties;
-    $query->conditions = $this->conditions;
-    $query->joins = $this->joins;
-    $query->sort = $this->sort;
-    $query->limit = $this->limit;
-    $query->offset = $this->offset;
-    $query->showDbColumns = TRUE;
-  }
 }

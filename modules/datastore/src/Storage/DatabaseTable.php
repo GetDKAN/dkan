@@ -73,7 +73,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * @return string
    *   Table name.
    */
-  protected function getTableName() {
+  public function getTableName() {
     if ($this->resource) {
       return "datastore_{$this->resource->getId()}";
     }
