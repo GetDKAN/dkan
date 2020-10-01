@@ -17,7 +17,7 @@ class DatastoreQuery {
    *
    * @var array
    */
-  public $resources;
+  public $resources = [];
 
   /**
    * Properties (usually, columns) to retrieve from the collection.

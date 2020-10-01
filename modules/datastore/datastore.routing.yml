@@ -56,10 +56,20 @@ datastore.1.imports.id.delete:
     _auth: ['basic_auth', 'cookie']
 
 datastore.1.query.post:
-  path: '/api/1/datastore/query/{identifier}'
+  path: '/api/1/datastore/query'
   methods: [POST]
   defaults:
     _controller: '\Drupal\datastore\WebServiceApi::query'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.id.post:
+  path: '/api/1/datastore/query/{identifier}'
+  methods: [POST]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::queryResource'
   requirements:
     _permission: 'access content'
   options:

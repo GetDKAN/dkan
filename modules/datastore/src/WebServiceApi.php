@@ -188,10 +188,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
-   * Returns a list of import jobs and data about their status.
-   *
-   * @param string $identifier
-   *   The uuid of a resource.
+   * Perform a query on one or more datastore resources.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -208,7 +205,6 @@ class WebServiceApi implements ContainerInjectionInterface {
         400
       );
     }
-    // $datastoreQuery->resource = $identifier;
     try {
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
@@ -218,5 +214,52 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     return $this->getResponse($result, 200);
   }
+
+  /**
+   * Perform a query on a single datastore resource
+   *
+   * @param string $identifier
+   *   The uuid of a resource.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function queryResource($identifier) {
+    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    try {
+      $this->prepareQueryResourcePayload($payloadJson, $identifier);
+      $datastoreQuery = DatastoreQuery::hydrate($payloadJson);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException(
+        new \Exception("Invalid query JSON: {$e->getMessage()}"),
+        400
+      );
+    }
+    try {
+      $result = $this->datastoreService->runQuery($datastoreQuery);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e);
+    }
+
+    return $this->getResponse($result, 200);
+  }
+
+  private function prepareQueryResourcePayload(&$json, $identifier) {
+    $data = json_decode($json);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      throw new \Exception(json_last_error_msg());
+    }
+    if (!empty($data->resources) || !empty($data->joins)) {
+      throw new \Exception("Joins are not available and "
+        . "resources should not be explicitly passed when using the resource "
+        . "query endpoint. Try /api/1/datastore/query.");
+    }
+    $resource = (object) ["id" => $identifier, "alias" => "t"];
+    $data->resources = [$resource];
+    $json = json_encode($data);
+  }
+
 
 }
