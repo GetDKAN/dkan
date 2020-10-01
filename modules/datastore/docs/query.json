@@ -5,6 +5,24 @@
     "description": "Schema for DKAN database queries",
     "type": "object",
     "properties": {
+        "resources": {
+            "type": "array",
+            "title": "Resources",
+            "description": "Resources to query against and aliases. Usually you will add only one resource to this array, but if performing a join, list the primary resource first and then add resources to be used in the joins array.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": { 
+                        "type": "string",
+                        "description": "UUID of resource or distribution."
+                    },
+                    "alias": {
+                        "type": "string",
+                        "description": "Alias to use to refer to this resource elsewhere in the query."
+                    }
+                }
+            }
+        },
         "properties": {
             "type": "array",
             "items": {
@@ -50,7 +68,7 @@
                         "properties": {
                             "resource": {
                                 "type": "string",
-                                "description": "UUID of the datastore resource or alias to query. Not needed when only querying against one resource."
+                                "description": "Alias to resource set in resources array. Not needed when only querying against one resource."
                             },
                             "property": { 
                                 "type": "string",
@@ -135,11 +153,7 @@
                         }
                     }
                 },
-                "required": ["resource"],
-                "oneOf": [
-                    {"required": ["using"]},
-                    {"required": ["on"]}
-                ]
+                "required": ["resource", "on"]
             }
         },
         "limit": {
