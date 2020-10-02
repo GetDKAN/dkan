@@ -6,7 +6,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.0.0"
+      DKTL_VERSION: "localdkan"
     steps:
       - run:
           name: Setup composer config
@@ -20,10 +20,7 @@ jobs:
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Initialize Project
-          command: |
-            v=$CIRCLE_BRANCH
-            if [[ $v == "2.x" ]]; then v="dev-${v}"; else v="${v}-dev"; fi;
-            v="$v#${CIRCLE_SHA1}" && dktl init --dkan=$v
+          command: dktl init --dkan-local
       - run:
           name: Make DKAN
           command: |
