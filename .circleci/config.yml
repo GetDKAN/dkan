@@ -8,6 +8,8 @@ jobs:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "localdkan"
     steps:
+      - checkout:
+          path: dkan
       - run:
           name: Setup composer config
           command: |
