@@ -1,7 +1,7 @@
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.6/phpunit.xsd"
-    bootstrap="../../../../vendor/weitzman/drupal-test-traits/src/bootstrap.php"
+    bootstrap="/var/www/vendor/weitzman/drupal-test-traits/src/bootstrap.php"
     colors="true"
     stopOnFailure="false"
     stopOnError="false"
