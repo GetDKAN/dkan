@@ -22,7 +22,7 @@ jobs:
           name: Initialize Project
           command: |
             v=$CIRCLE_BRANCH
-            if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
+            if [[ $v == "2.x" ]]; then v="dev-${v}"; else v="${v}-dev"; fi;
             v="$v#${CIRCLE_SHA1}" && dktl init --dkan=$v
       - run:
           name: Make DKAN
