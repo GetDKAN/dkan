@@ -216,7 +216,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
-   * Perform a query on a single datastore resource
+   * Perform a query on a single datastore resource.
    *
    * @param string $identifier
    *   The uuid of a resource.
@@ -246,6 +246,14 @@ class WebServiceApi implements ContainerInjectionInterface {
     return $this->getResponse($result, 200);
   }
 
+  /**
+   * Normalize the simplified resource query to a standard datastore query.
+   *
+   * @param string $json
+   *   A JSON payload.
+   * @param mixed $identifier
+   *   Resource identifier to query against.
+   */
   private function prepareQueryResourcePayload(&$json, $identifier) {
     $data = json_decode($json);
     if (json_last_error() !== JSON_ERROR_NONE) {
@@ -260,6 +268,5 @@ class WebServiceApi implements ContainerInjectionInterface {
     $data->resources = [$resource];
     $json = json_encode($data);
   }
-
 
 }

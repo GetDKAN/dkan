@@ -97,10 +97,13 @@ class DatastoreQuery {
   public $schema = TRUE;
 
   /**
-   * Show keys for each property in results. If false, results will be an array
-   * of simple arrays rather than an array of keyed objects.
+   * Show keys for each property in results.
+   *
+   * If false, results will be an array of simple arrays rather than an array of
+   * keyed objects.
    *
    * @var bool
    */
   public $keys = TRUE;
+
 }
