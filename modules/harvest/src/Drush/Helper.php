@@ -148,8 +148,13 @@ trait Helper {
 
         $report = json_decode($errors['load'][$item_id], TRUE);
 
-        foreach ($report['errors'] as $error) {
-          $load_status[] = '- ' . $error['property'] . ': ' . $error['message'];
+        if (empty($report['errors'])) {
+          // Probably a string and not a json object.
+          $load_status[] = '- ' . $errors['load'][$item_id];
+        } else {
+          foreach ($report['errors'] as $error) {
+            $load_status[] = '- ' . $error['property'] . ': ' . $error['message'];
+          }
         }
         break;
 
