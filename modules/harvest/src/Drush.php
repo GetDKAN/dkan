@@ -195,4 +195,58 @@ class Drush extends DrushCommands {
     (new ConsoleOutput())->write("{$result} items reverted for the '{$id}' harvest plan." . PHP_EOL);
   }
 
+  /**
+   * Show status of of a particular harvest run.
+   *
+   * @param string $harvest_id
+   *   The id of the harvest source.
+   * @param string $run_id
+   *   The run's id. Optional. Show the status for the latest run if not
+   *   provided.
+   *
+   * @command dkan:harvest:status
+   *
+   * @usage dkan:harvest:status
+   *   test 1599157120
+   */
+  public function status($harvest_id, $run_id = NULL) {
+    // Validate the harvest id.
+    $harvest_id_all = $this->harvestService->getAllHarvestIds();
+
+    if (array_search($harvest_id, $harvest_id_all) === FALSE) {
+      (new ConsoleOutput())->writeln("<error>harvest id $harvest_id not found.</error>");
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    // No run_id provided, get the latest run_id.
+    // Validate run_id.
+    $run_id_all = $this->harvestService->getAllHarvestRunInfo($harvest_id);
+
+    if (empty($run_id_all)) {
+      (new ConsoleOutput())->writeln("<error>No Run IDs found for harvest id $harvest_id</error>");
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    if (empty($run_id)) {
+      $run_id = $run_id_all[0];
+    }
+
+    if (array_search($run_id, $run_id_all) === FALSE) {
+      (new ConsoleOutput())->writeln("<error>Run ID $run_id not found for harvest id $harvest_id</error>");
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    $run = $this->harvestService
+      ->getHarvestRunInfo($harvest_id, $run_id);
+
+    if (empty($run)) {
+      (new ConsoleOutput())->writeln("<error>No status found for harvest id $harvest_id and run id $run_id</error>");
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    $run = json_decode($run, TRUE);
+
+    $this->renderStatusTable($harvest_id, $run_id, $run);
+  }
+
 }
