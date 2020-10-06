@@ -142,29 +142,25 @@ trait Helper {
   private function generateItemLoadStatusRow($item_id, $status, $errors) {
     $load_status = [];
 
-    switch ($status['load'][$item_id]) {
-      case 'FAILURE':
-        $load_status[] = '[FAILURE]';
+    $load_status[] = '[' . $status['load'][$item_id] . ']';
 
-        $report = json_decode($errors['load'][$item_id], TRUE);
+    if ($status['load'][$item_id] == 'FAILURE') {
 
-        if (empty($report['errors'])) {
-          // Probably a string and not a json object.
-          $load_status[] = '- ' . $errors['load'][$item_id];
-        } else {
-          foreach ($report['errors'] as $error) {
-            $load_status[] = '- ' . $error['property'] . ': ' . $error['message'];
-          }
-        }
-        break;
+      $report = json_decode($errors['load'][$item_id], TRUE);
 
-      case 'SUCCESS':
-        $load_status[] = '[SUCCESS]';
-        break;
+      if (empty($report['errors'])) {
+        // Probably a string and not a json object.
+        $report['errors'] = [
+          [
+            'property' => '',
+            'message' => $errors['load'][$item_id],
+          ],
+        ];
+      }
 
-      default:
-        $load_status[] = '[UNKNOWN]';
-        break;
+      foreach ($report['errors'] as $error) {
+        $load_status[] = '- ' . $error['property'] . ': ' . $error['message'];
+      }
     }
 
     return implode("\n", $load_status);
