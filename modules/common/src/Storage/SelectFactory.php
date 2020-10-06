@@ -26,8 +26,8 @@ class SelectFactory {
   public static function create(Query $query, Connection $connection, string $alias = 't'): Select {
     $db_query = $connection->select($query->collection, $alias);
 
-    self::setQueryProperties($db_query, $query);
-    self::setQueryConditions($db_query, $query);
+    self::setQueryProperties($db_query, $query, $alias);
+    self::setQueryConditions($db_query, $query, $alias);
     self::setQueryOrConditions($db_query, $query);
     self::setQueryOrderBy($db_query, $query);
     self::setQueryLimitAndOffset($db_query, $query);
@@ -47,23 +47,25 @@ class SelectFactory {
    *   A Drupal database query API object.
    * @param Drupal\common\Storage\Query $query
    *   A DKAN query object.
+   * @param string $alias
+   *   Alias for the primary table to query against.
    */
-  private static function setQueryProperties(Select $db_query, Query $query) {
+  private static function setQueryProperties(Select $db_query, Query $query, string $alias) {
     // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
-      $db_query->fields('t');
+      $db_query->fields($alias);
       return;
     }
 
     foreach ($query->properties as $p) {
       if (is_string($p)) {
-        $db_query->addField('t', $p);
+        $db_query->addField($alias, $p);
       }
       elseif (is_object($p) && isset($p->property)) {
         $db_query->addField($p->collection, $p->property, $p->alias);
       }
       elseif (is_object($p) && isset($p->expression)) {
-        $expressionStr = $this->expressionToString($p->expression);
+        $expressionStr = self::expressionToString($p->expression);
         $db_query->addExpression($expressionStr, $p->alias);
       }
     }
@@ -81,22 +83,22 @@ class SelectFactory {
    * @param Drupal\common\Storage\Query $query
    *   A DKAN query object.
    */
-  private static function setQueryConditions(Select $db_query, Query $query) {
+  private static function setQueryConditions(Select $db_query, Query $query, string $alias) {
     foreach ($query->conditions as $c) {
       if (isset($c->groupOperator)) {
-        self::addConditionGroup($db_query, $c);
+        self::addConditionGroup($db_query, $c, $alias);
       }
       else {
-        self::addCondition($db_query, $c);
+        self::addCondition($db_query, $c, $alias);
       }
     }
   }
 
-  private static function addCondition($db_query, $condition) {
+  private static function addCondition($db_query, $condition, $alias) {
     if (!isset($condition->operator)) {
       $condition->operator = 'like';
     }
-    $field = ($condition->collection ? $condition->collection : 't')
+    $field = ($condition->collection ? $condition->collection : $alias)
       . '.'
       . $condition->property;
     $db_query->condition(
@@ -106,7 +108,7 @@ class SelectFactory {
     );
   }
 
-  private static function addConditionGroup($db_query, $conditionGroup) {
+  private static function addConditionGroup($db_query, $conditionGroup, $alias) {
     $groupMethod = "{$conditionGroup->groupOperator}ConditionGroup";
     $group = $db_query->$groupMethod();
     foreach ($conditionGroup->conditions as $c) {
@@ -114,7 +116,7 @@ class SelectFactory {
         self::addConditionGroup($group, $c);
       }
       else {
-        self::addCondition($group, $c);
+        self::addCondition($group, $c, $alias);
       }
     }
     $db_query->condition($group);

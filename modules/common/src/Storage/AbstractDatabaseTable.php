@@ -204,11 +204,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *
    * @param \Drupal\common\Storage\Query $query
    *   Query object.
+   * @param string $alias
+   *   (Optional) alias for primary table.
    */
-  public function query(Query $query): array {
+  public function query(Query $query, string $alias = 't'): array {
     $this->setTable();
     $query->collection = $this->getTableName();
-    $db_query = SelectFactory::create($query, $this->connection);
+    $db_query = SelectFactory::create($query, $this->connection, $alias);
 
     try {
       $result = $db_query->execute()->fetchAll();

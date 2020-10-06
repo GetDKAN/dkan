@@ -237,27 +237,13 @@ class Service implements ContainerInjectionInterface {
     $return = new stdClass();
 
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $primaryResource = $datastoreQuery->resources[0]->alias;
-    $primaryResourceStorage = $storageMap[$primaryResource];
 
     if ($datastoreQuery->results) {
-      $result = $primaryResourceStorage->query($this->resultsQuery($datastoreQuery, $storageMap));
-
-      if ($datastoreQuery->keys === FALSE) {
-        $result = array_map(function ($row) {
-          $arrayRow = (array) $row;
-          foreach ($arrayRow as $value) {
-            $newRow[] = $value;
-          }
-          return $newRow;
-        }, $result);
-      }
-      $return->results = $result;
+      $return->results = $this->runResultsQuery($datastoreQuery, $storageMap);
     }
 
     if ($datastoreQuery->count) {
-      $countQuery = $this->countQuery($datastoreQuery, $storageMap);
-      $return->count = array_pop($primaryResourceStorage->query($countQuery))->expression;
+      $return->count = $this->runCountQuery($datastoreQuery, $storageMap);
     }
 
     if ($datastoreQuery->schema) {
@@ -302,11 +288,26 @@ class Service implements ContainerInjectionInterface {
    * @return Drupal\common\Storage\Query
    *   Query object.
    */
-  private function resultsQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
+  private function runResultsQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
     if ($this->results = FALSE) {
       throw new \Exception("Results query requested on non-results datastore query.");
     }
-    return $this->populateQuery($datastoreQuery, $storageMap);
+    $query = $this->populateQuery($datastoreQuery, $storageMap);
+    $primaryAlias = $datastoreQuery->resources[0]->alias;
+
+    $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
+
+    if ($datastoreQuery->keys === FALSE) {
+      $result = array_map(function ($row) {
+        $arrayRow = (array) $row;
+        foreach ($arrayRow as $value) {
+          $newRow[] = $value;
+        }
+        return $newRow;
+      }, $result);
+    }
+    return $result;
+
   }
 
   /**
@@ -320,14 +321,18 @@ class Service implements ContainerInjectionInterface {
    * @return Drupal\common\Storage\Query
    *   Query object.
    */
-  private function countQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
+  private function runCountQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
     if ($this->count = FALSE) {
       throw new \Exception("Results query requested on non-results datastore query.");
     }
+
+    $primaryAlias = $datastoreQuery->resources[0]->alias;
     $query = $this->populateQuery($datastoreQuery, $storageMap);
     unset($query->limit, $query->offset);
     $query->count();
-    return $query;
+
+    $result = $storageMap[$primaryAlias]->query($query, $primaryAlias)->expression;
+    return array_pop($result);
   }
 
   /**
