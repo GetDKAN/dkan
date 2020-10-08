@@ -112,20 +112,7 @@ trait ServiceCheckTrait {
    * Private.
    */
   private function getRelativeDrupalPath() {
-    $path = __DIR__;
-
-    while (TRUE) {
-      $content = glob($path . "/*");
-      $content = array_map(function ($item) use ($path) {
-        return str_replace($path, "", $item);
-      }, $content);
-
-      if (in_array("/index.php", $content)) {
-        return $path;
-      }
-
-      $path .= "/..";
-    }
+    return "/var/www/docroot";
   }
 
 }
