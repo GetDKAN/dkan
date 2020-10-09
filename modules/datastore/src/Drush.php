@@ -75,6 +75,28 @@ class Drush extends DrushCommands {
   }
 
   /**
+   * Import ALL resrouces to the datastore.
+   *
+   * @command dkan:datastore:import-all
+   */
+  public function importAll() {
+
+    /* @var $metastoreService \Drupal\metastore\Service */
+    $metastoreService = \Drupal::service('dkan.metastore.service');
+
+    foreach ($metastoreService->getAll('distribution') as $distribution) {
+      $uuid = $distribution->identifier;
+      try {
+        $this->datastoreService->import($uuid, TRUE);
+        $this->logger->notice("Successfully added {$uuid} to be imported");
+      } catch (\Exception $e) {
+        $this->logger->error("We were not able to load the entity with uuid {$uuid}");
+        $this->logger->debug($e->getMessage());
+      }
+    }
+  }
+
+  /**
    * List information about all datastores.
    *
    * @field-labels

@@ -62,6 +62,10 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $identifier = $data['identifier'];
       $version = $data['version'];
 
+      if (!isset($version)) {
+        throw new \Exception("Version is required");
+      }
+
       /** @var \Drupal\datastore\Service $datastore */
       $datastore = $this->container->get('datastore.service');
 

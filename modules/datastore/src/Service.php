@@ -82,7 +82,7 @@ class Service implements ContainerInjectionInterface {
    * @return array
    *   Response.
    */
-  public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
+  public function import(string $identifier, bool $deferred = FALSE, $version): array {
 
     // If we passed $deferred, immediately add to the queue for later.
     if ($deferred == TRUE) {
@@ -124,7 +124,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getResource($identifier, $version) {
+  private function getResource(string $identifier,string $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
