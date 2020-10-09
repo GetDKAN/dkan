@@ -69,7 +69,7 @@ context('Datastore API', () => {
             expect(response.status).eql(200);
             expect(response.body.numOfRows).eql(2);
             expect(response.body.numOfColumns).eql(6);
-            cy.get('@columns').then((columns) => expect(response.body.columns).eql(columns));
+            cy.get('@columns').then((columns) => expect(Object.keys(response.body.columns)).eql(columns));
           });
       });
   });

@@ -8,9 +8,9 @@ namespace Drupal\datastore\Storage;
  * @todo Use JSON Schema maybe to validate this?
  */
 class TableSummary implements \JsonSerializable {
-  private $numOfColumns;
-  private $columns;
-  private $numOfRows;
+  public $numOfColumns;
+  public $columns;
+  public $numOfRows;
 
   /**
    * Constructor.
