@@ -151,4 +151,27 @@ class Drush extends DrushCommands {
     }
   }
 
+  /**
+   * Drop a ALL datastore tables.
+   *
+   * @command dkan:datastore:drop-all
+   */
+  public function dropAll() {
+    drupal_static('metastore_dereference_method',
+      Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
+
+    /* @var $metastoreService \Drupal\metastore\Service */
+    $metastoreService = \Drupal::service('dkan.metastore.service');
+
+    foreach ($metastoreService->getAll('distribution') as $distribution) {
+      $uuid = $distribution->identifier;
+      try {
+        $this->datastoreService->drop($uuid);
+        $this->logger->notice("Successfully drop the datastore for {$uuid}");
+      } catch (\Exception $e) {
+        $this->logger->error("We were not able to load the entity with uuid {$uuid}");
+        $this->logger->debug($e->getMessage());
+      }
+    }
+  }
 }
