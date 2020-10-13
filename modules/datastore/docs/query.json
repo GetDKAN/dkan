@@ -27,19 +27,13 @@
             "type": "array",
             "items": {
                 "anyOf": [
-                    { 
-                        "type": "string",
-                        "title": "Simple property"
-                    },
+                    { "$ref": "#/definitions/resource" },
                     { 
                         "type": "object",
                         "title": "Aliased property from specific resource",
                         "properties": {
-                            "resource": { 
-                                "type": "string", 
-                                "description": "Full resource ID or alias (default: t)" 
-                            },
-                            "property": { "type": "string" },
+                            "resource": { "$ref": "#/definitions/resource" },
+                            "property": { "$ref": "#/definitions/property" },
                             "alias": { "type": "string" }
                         },
                         "required": [ "resource", "property", "alias" ]
@@ -48,7 +42,7 @@
                         "type": "object",
                         "title": "Aliased expression",
                         "properties": {
-                            "expression": { "type": "string" },
+                            "expression": { "$ref": "#/definitions/expression" },
                             "alias": { "type": "string" }
                         },
                         "required": [ "expression", "alias" ]
@@ -61,43 +55,7 @@
             "description": "Conditions or groups of conditions for the query, bound by 'and' operator.",
             "items": {
                 "anyOf": [
-                    {
-                        "type": "object",
-                        "title": "Condition",
-                        "description": "Condition object including property, value and operator.",
-                        "properties": {
-                            "resource": {
-                                "type": "string",
-                                "description": "Alias to resource set in resources array. Not needed when only querying against one resource."
-                            },
-                            "property": { 
-                                "type": "string",
-                                "description": "The property, column or alias to filter by."
-                             },
-                             "value": {
-                                "anyOf": [
-                                    { "type": "string" },
-                                    { "type": "number" },
-                                    { 
-                                        "type": "array",
-                                        "items": {
-                                            "anyOf": [
-                                                { "type": "string" },
-                                                { "type": "number" }            
-                                            ]
-                                        }
-                                    }
-                                ],
-                                "description": "The value to filter against."
-                             },
-                             "operator": {
-                                 "type": "string",
-                                 "description": "Condition operator",
-                                 "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ]
-                             }
-                        },
-                        "required": [ "property", "value"]            
-                    },
+                    { "$ref": "#/definitions/condition" },
                     {
                         "type": "object",
                         "title": "Conditional group",
@@ -108,7 +66,7 @@
                                 "enum": [ "and", "or" ]
                             },
                             "conditions": {
-                                 "$ref": "#/properties/conditions"
+                                 "$ref": "#/definitions/condition"
                             }
                         }            
                     }
@@ -121,36 +79,13 @@
             "items": {
                 "type":"object",
                 "properties": {
-                    "resource": { 
-                        "type": "string",
-                        "description": "UUID of the datastore resource to query"
-                    },
-                    "alias": { 
-                        "type": "string",
-                        "description": "An alias to use in properties, conditions and on statements"
-                    },
-                    "using": {
-                        "type": "string",
-                        "description": "Simple property name found in both datastore tables to use for join."
-                    },
+                    "resource": { "$ref": "#/definitions/resource" },
                     "on": {
                         "type": "array",
-                        "description": "Array of two objects for on statement.",
+                        "description": "Array of two resource property objects for on statement.",
                         "minItems": 2,
                         "maxItems": 2,
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "resource": {
-                                    "type": "string",
-                                    "description": "UUID or alias of a resource. The main resource we are querying against is always aliased to \"t\""
-                                },
-                                "property": {
-                                    "type": "string",
-                                    "description": "Property or column to join on."
-                                }
-                            }
-                        }
+                        "items": { "$ref": "#/definitions/resourceProperty" }
                     }
                 },
                 "required": ["resource", "on"]
@@ -174,7 +109,13 @@
                 "asc": {
                     "type": "array",
                     "description": "Properties to sort by in ascending order",
-                    "items": { "type": "string" }
+                    "items": { 
+                        "anyOf": [
+                            { "$ref": "#/definitions/resource" },
+                            { "$ref": "#/definitions/resourceProperty" }
+                        ]
+                        
+                    }
                 },
                 "desc": {
                     "type": "array",
@@ -202,6 +143,88 @@
             "description": "Return results as an array of keyed objects, with the column machine names as keys. If false, results will be an array of simple arrays of values.",
             "type": "boolean",
             "default": true
+        }
+    },
+    "definitions": {
+        "resource": {
+            "type": "string",
+            "description": "Alias to resource set in resources array. Not needed when only querying against one resource."
+        },
+        "property": { 
+            "type": "string",
+            "description": "The property/column or alias to filter by. Should not include collection/table alias.",
+            "pattern": "^[^.]+$"
+        },
+        "resourceProperty": {
+            "type": "object",
+            "description": "Property name with optional collection/table alias.",
+            "properties": {
+                "resource": { "$ref": "#/definitions/resource" },
+                "property": { "$ref": "#/definitions/property" },
+            },
+            "required": [ "property" ]
+        },
+        "condition": {
+            "type": "object",
+            "title": "Condition",
+            "description": "Condition object including property, value and operator.",
+            "properties": {
+                "resource": { "$ref": "#/definitions/resource" },
+                "property": { "$ref": "#/definitions/property" },
+                "value": {
+                    "anyOf": [
+                        { "type": "string" },
+                        { "type": "number" },
+                        { 
+                            "type": "array",
+                            "items": {
+                                "anyOf": [
+                                    { "type": "string" },
+                                    { "type": "number" }            
+                                ]
+                            }
+                        }
+                    ],
+                    "description": "The value to filter against."
+                 },
+                 "operator": {
+                     "type": "string",
+                     "description": "Condition operator",
+                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ]
+                 }
+            },
+            "required": [ "property", "value"]            
+        },
+        "expression": {
+            "type": "object",
+            "title": "Expression",
+            "description": "Arithmetic or other expression performed on one or more properties. See operator property enum for currently supported expressions, and see https://dev.mysql.com/doc/refman/5.7/en/numeric-functions.html.",
+            "properties": {
+                "operator": {
+                    "type": "string",
+                    "enum": [
+                        "+", 
+                        "-",
+                        "*",
+                        "/",
+                        "%"
+                    ]
+                },
+                "operands": {
+                    "type": "array",
+                    "items": {
+                        "oneOf": [
+                            {
+                                "type": "number",
+                                "title": "Number"
+                            },
+                            { "$ref": "#/definitions/property" },
+                            { "$ref": "#/definitions/resourceProperty" },
+                            { "$ref": "#/definitions/expression" }
+                        ]
+                    }
+                }
+            }
         }
     }
 }

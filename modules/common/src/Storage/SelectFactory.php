@@ -33,10 +33,10 @@ class SelectFactory {
     self::setQueryLimitAndOffset($db_query, $query);
     self::setQueryJoins($db_query, $query);
 
+    $string = $db_query->__toString();
     if ($query->count) {
       $db_query = $db_query->countQuery();
     }
-
     return $db_query;
   }
 
@@ -50,29 +50,75 @@ class SelectFactory {
    * @param string $alias
    *   Alias for the primary table to query against.
    */
-  private static function setQueryProperties(Select $db_query, Query $query, string $alias) {
+  private static function setQueryProperties(Select $db_query, Query $query, string $primaryCollection) {
     // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
-      $db_query->fields($alias);
+      $db_query->fields($primaryCollection);
       return;
     }
 
     foreach ($query->properties as $p) {
-      if (is_string($p)) {
-        $db_query->addField($alias, $p);
-      }
-      elseif (is_object($p) && isset($p->property)) {
-        $db_query->addField($p->collection, $p->property, $p->alias);
-      }
-      elseif (is_object($p) && isset($p->expression)) {
-        $expressionStr = self::expressionToString($p->expression);
+      if (is_object($p) && isset($p->expression)) {
+        $expressionStr = self::expressionToString($p->expression, $primaryCollection);
         $db_query->addExpression($expressionStr, $p->alias);
+      }
+      else {
+        $property = self::normalizeProperty($p, $primaryCollection);
+        $db_query->addField($property->collection, $property->property, $property->alias);
       }
     }
   }
 
-  private static function expressionToString($expression) {
-    throw new \Exception("Unsupported $expression");
+  private static function normalizeProperty($property, $primaryCollection) {
+    if (is_string($property) && self::safeProperty($property)) {
+      return (object) [
+        "collection" => $primaryCollection,
+        "property" => $property,
+        "alias" => NULL,
+      ];
+    }
+    if (!is_object($property) || !isset($property->property) || !isset($property->collection)) {
+      throw new \Exception("Bad query property.");
+    }
+    self::safeProperty($property->property);
+    if (!isset($property->alias)) {
+      $property->alias = NULL;
+    }
+    return $property;
+  }
+
+  public static function safeProperty(string $string) {
+    if (preg_match("/^[^.]+$/", $string)) {
+      return TRUE;
+    }
+    throw new \Exception("Unsafe property name: $string");
+  }
+
+  private static function expressionToString($expression, $alias) {
+    $operands = [];
+    foreach ($expression->operands as $operand) {
+      if (is_numeric($operand)) {
+        $operands[] = $operand;
+      }
+      elseif (is_object($operand) && isset($operand->operator)) {
+        $operands[] = self::expressionToString($operand, $alias);
+      }
+      else {
+        $property = self::normalizeProperty($operand, $alias);
+        $operands[] = "{$property->collection}.{$property->property}";
+      }
+    }
+
+    if (ctype_alnum($expression->operator)) {
+      // $expressionStr = strtoupper($expression->operator);
+      // $expressionStr .= '(' . implode(',', $operands) . ')';
+      throw new \Exception("Only basic arithmetic expressions currently supported.");
+    }
+    else {
+      $expressionStr = implode($expression->operator, $operands);
+    }
+
+    return $expressionStr;
   }
 
   /**
@@ -113,7 +159,7 @@ class SelectFactory {
     $group = $db_query->$groupMethod();
     foreach ($conditionGroup->conditions as $c) {
       if (isset($c->groupOperator)) {
-        self::addConditionGroup($group, $c);
+        self::addConditionGroup($group, $c, $alias);
       }
       else {
         self::addCondition($group, $c, $alias);
@@ -156,7 +202,7 @@ class SelectFactory {
   private static function setQueryOrderBy(Select $db_query, Query $query) {
     foreach ($query->sort["asc"] as $property) {
       if (is_object($property)) {
-        $property = self::propertyString($property);
+        $sort = self::propertyString(self::normalizeProperty($property));
       }
       $db_query->orderBy($property);
     }
@@ -204,10 +250,9 @@ class SelectFactory {
       return;
     }
     foreach ($query->joins as $join) {
-      if (!is_object($join)) {
-        throw new \Exception('Invalid join.');
+      if (isset($join->on)) {
+        $db_query->join($join->collection, $join->alias, self::onString($join->on));
       }
-      $db_query->join($join->collection, $join->alias, self::onString($join->on));
       if (empty($query->properties)) {
         $db_query->fields($join->alias);
       }

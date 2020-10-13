@@ -322,7 +322,7 @@ class Service implements ContainerInjectionInterface {
    *   Query object.
    */
   private function runCountQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
-    if ($this->count = FALSE) {
+    if ($datastoreQuery->count == FALSE) {
       throw new \Exception("Results query requested on non-results datastore query.");
     }
 
@@ -331,8 +331,7 @@ class Service implements ContainerInjectionInterface {
     unset($query->limit, $query->offset);
     $query->count();
 
-    $result = $storageMap[$primaryAlias]->query($query, $primaryAlias)->expression;
-    return array_pop($result);
+    return $storageMap[$primaryAlias]->query($query, $primaryAlias)[0]->expression;
   }
 
   /**
@@ -347,15 +346,52 @@ class Service implements ContainerInjectionInterface {
    *   Query object.
    */
   private function populateQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
+    $dqClone = $this->cloneQueryObject($datastoreQuery);
     $query = new Query();
-    $query->properties = $datastoreQuery->properties;
-    $query->conditions = $datastoreQuery->conditions;
-    $this->populateQueryJoins($query, $datastoreQuery, $storageMap);
-    $this->populateQuerySort($query, $datastoreQuery);
-    $query->limit = $datastoreQuery->limit;
-    $query->offset = $datastoreQuery->offset;
+    $this->populateQueryProperties($query, $dqClone);
+    $query->conditions = $dqClone->conditions;
+    $this->populateQueryJoins($query, $dqClone, $storageMap);
+    $this->populateQuerySort($query, $dqClone);
+    $query->limit = $dqClone->limit;
+    $query->offset = $dqClone->offset;
     $query->showDbColumns = TRUE;
+    unset($dqClone);
     return $query;
+  }
+
+  private function populateQueryProperties($query, $datastoreQuery) {
+    foreach ($datastoreQuery->properties as $property) {
+      $query->properties[] = $this->propertyConvert($property);
+    }
+  }
+
+  private function propertyConvert($property) {
+    if (is_object($property) && isset($property->resource)) {
+      $property->collection = $property->resource;
+      unset($property->resource);
+    }
+    elseif (is_object($property) && isset($property->expression)) {
+      $property->expression = $this->expressionConvert($property->expression);
+    }
+    elseif (!is_string($property)) {
+      throw new \Exception("Bad query property.");
+    }
+    return $property;
+  }
+
+  private function expressionConvert($expression) {
+    foreach($expression->operands as $key => $operand) {
+      if (is_object($operand) && isset($operand->operator)) {
+        $expression->operands[$key] = $this->expressionConvert($operand);
+      }
+      elseif (is_numeric($operand)) {
+        continue;
+      }
+      else {
+        $expression->operands[$key] = $this->propertyConvert($operand);
+      }
+    }
+    return $expression;
   }
 
   /**
@@ -392,6 +428,13 @@ class Service implements ContainerInjectionInterface {
    *   Array of storage objects, keyed to resource aliases.
    */
   private function populateQueryJoins(Query $query, DatastoreQuery $datastoreQuery, array $storageMap) {
+    if (empty($datastoreQuery->joins) && count($datastoreQuery->resources) <= 1) {
+      return;
+    }
+    if (count($datastoreQuery->resources) > 1
+      && count($datastoreQuery->joins) < (count($datastoreQuery->resources) - 1)) {
+      throw new \Exception("Too many collections specified.");
+    }
     foreach ($datastoreQuery->joins as $join) {
       $storage = $storageMap[$join->resource];
       $queryJoin = new stdClass();
@@ -402,6 +445,11 @@ class Service implements ContainerInjectionInterface {
       }
       $query->joins[] = $queryJoin;
     }
+  }
+
+  private function cloneQueryObject($input) {
+    $output = unserialize(serialize($input));
+    return $output;
   }
 
 }
