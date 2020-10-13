@@ -80,7 +80,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function getAll(string $schema_id) {
     $keepRefs = $this->wantObjectWithReferences();
 
-    $output = array_map(function($object) use ($keepRefs) {
+    $output = array_map(function ($object) use ($keepRefs) {
       if ($keepRefs) {
         return $this->swapReferences($object);
       }
