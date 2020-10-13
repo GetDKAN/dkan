@@ -350,6 +350,7 @@ class Service implements ContainerInjectionInterface {
     $query = new Query();
     $this->populateQueryProperties($query, $dqClone);
     $query->conditions = $dqClone->conditions;
+    $this->populateQueryConditions($query, $dqClone);
     $this->populateQueryJoins($query, $dqClone, $storageMap);
     $this->populateQuerySort($query, $dqClone);
     $query->limit = $dqClone->limit;
@@ -413,6 +414,33 @@ class Service implements ContainerInjectionInterface {
       $query->sort["asc"][] = (object) [
         "collection" => $asc->resource,
         "property" => $asc->property,
+      ];
+    }
+  }
+
+  private function populateQueryConditions($query, $datastoreQuery) {
+    $conditions = [];
+    foreach ($datastoreQuery->conditions as $c) {
+      $conditions[] = $this->populateQueryCondition($c);
+    }
+  }
+
+  private function populateQueryCondition($datastoreCondition) {
+    if (isset($datastoreCondition->resource)) {
+      return (object) [
+        "collection" => $datastoreCondition->resource,
+        "property" => $datastoreCondition->property,
+        "operator" => $datastoreCondition->operator,
+        "value" => $datastoreCondition->value,
+      ];
+    }
+    elseif (isset($datastoreCondition->groupOperator)) {
+      foreach ($datastoreCondition->conditions as $c) {
+        $conditions[] = $this->populateQueryCondition($c);
+      }
+      return (object) [
+        "groupOperator" => $datastoreCondition->groupOperator,
+        "conditions" => $conditions,
       ];
     }
   }
