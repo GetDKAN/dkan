@@ -75,6 +75,16 @@ datastore.1.query.id.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
+datastore.1.query.schema.get:
+  path: '/api/1/datastore/query/schema'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::querySchema'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 datastore.sql_endpoint.get.api:
   path: '/api/1/datastore/sql'
   methods: [GET]
