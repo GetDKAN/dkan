@@ -728,20 +728,20 @@ paths:
                 properties:
                   message:
                     type: string
-  /api/1/datastore/query/{identifier}:
+  /api/1/datastore/query:
     post:
       operationId: datastore-query-post
-      summary: Query a datastore resource
+      summary: Query one or more datastore resources
       tags:
         - Datastore
       security:
         - basicAuth: []
       requestBody:
         required: true
+        schema: 
+          $ref: 'http://datastorebool.localtest.me/api/1/datastore/query/schema'
         content:
           application/json:
-            schema:
-              $ref: '#/components/Datastore/query/requestBody/schema'
             example:
               limit: 10
               properties:
@@ -788,175 +788,3 @@ paths:
             application/json:
               schema:
                 type: object
-components:
-  Datastore:
-    query:
-      requestBody:
-        schema:
-          title: Query
-          description: Schema for DKAN database queries
-          type: object
-          properties:
-            properties:
-              type: array
-              items:
-                anyOf:
-                - type: string
-                  title: Simple property
-                - type: object
-                  title: Aliased property from specific resource
-                  properties:
-                    resource:
-                      type: string
-                      description: 'Full resource ID or alias (default: t)'
-                    property:
-                      type: string
-                    alias:
-                      type: string
-                  required:
-                  - resource
-                  - property
-                  - alias
-                - type: object
-                  title: Aliased expression
-                  properties:
-                    expression:
-                      type: string
-                    alias:
-                      type: string
-                  required:
-                  - expression
-                  - alias
-            conditions:
-              type: array
-              description: Conditions or groups of conditions for the query, bound by 'and'
-                operator.
-              items:
-                anyOf:
-                - type: object
-                  properties:
-                    resource:
-                      type: string
-                      description: UUID of the datastore resource or alias to query. Not needed
-                        when only querying against one resource.
-                    property:
-                      type: string
-                      description: The property, column or alias to filter by.
-                    value:
-                      anyOf:
-                      - type: string
-                      - type: number
-                      - type: array
-                        items:
-                          anyOf:
-                          - type: string
-                          - type: number
-                      description: The value to filter against.
-                    operator:
-                      type: string
-                      description: Condition operator
-                      enum:
-                      - "="
-                      - "<>"
-                      - "<"
-                      - "<="
-                      - ">"
-                      - ">="
-                      - BETWEEN
-                      - IN
-                      - NOT IN
-                  required:
-                  - property
-                  - value
-                - type: object
-                  title: Conditional group
-                  description: Group of conditions bound by 'and'/'or' operators.
-                  properties:
-                    groupOperator:
-                      type: string
-                      enum:
-                      - and
-                      - or
-                    conditions:
-                      $ref: "#/components/Datastore/query/requestBody/schema/properties/conditions"
-            joins:
-              type: array
-              description: Joins
-              items:
-                type: object
-                properties:
-                  resource:
-                    type: string
-                    description: UUID of the datastore resource to query
-                  alias:
-                    type: string
-                    description: An alias to use in properties, conditions and on statements
-                  using:
-                    type: string
-                    description: Simple property name found in both datastore tables to use
-                      for join.
-                  'on':
-                    type: array
-                    description: Array of two objects for on statement.
-                    minItems: 2
-                    maxItems: 2
-                    items:
-                      type: object
-                      properties:
-                        resource:
-                          type: string
-                          description: UUID or alias of a resource. The main resource we are
-                            querying against is always aliased to "t"
-                        property:
-                          type: string
-                          description: Property or column to join on.
-                required:
-                - resource
-                oneOf:
-                - required:
-                  - using
-                - required:
-                  - 'on'
-            limit:
-              type: integer
-              maximum: 500
-              description: Limit for maximum number of records returned. Pass zero for no limit
-                (may be restricted by user permissions).
-              default: 500
-            offset:
-              type: integer
-              description: Number of records to offset by or skip before returning first record.
-              default: 0
-            sort:
-              type: object
-              description: Result sorting directives.
-              properties:
-                asc:
-                  type: array
-                  description: Properties to sort by in ascending order
-                  items:
-                    type: string
-                desc:
-                  type: array
-                  description: Properties to sort by in descending order
-                  items:
-                    type: string
-            count:
-              description: Return a count of the total rows returned by the query, ignoring
-                the limit/offset.
-              type: boolean
-              default: true
-            results:
-              description: Return the result set. Set to false and set count to true to receive
-                only a count of matches.
-              type: boolean
-              default: true
-            schema:
-              description: Return the schema for the datastore collection.
-              type: boolean
-              default: true
-            keys:
-              description: Return results as an array of keyed objects, with the column machine
-                names as keys. If false, results will be an array of simple arrays of values.
-              type: boolean
-              default: true
