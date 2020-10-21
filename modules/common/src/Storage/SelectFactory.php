@@ -11,29 +11,48 @@ use Drupal\Core\Database\Connection;
 class SelectFactory {
 
   /**
-   * Create Drupal select object.
+   * A database table object, which includes a database connection.
    *
-   * @param Query $query
-   *   DKAN Query object.
+   * @var Drupal\Core\Database\Connection
+   */
+  private $connection;
+
+  /**
+   * Alias for primary table.
+   *
+   * @var string
+   */
+  private $alias;
+
+  /**
+   * Constructor function.
+   *
    * @param Drupal\Core\Database\Connection $connection
    *   A database table object, which includes a database connection.
    * @param string $alias
    *   Alias for primary table.
-   *
-   * @return Drupal\Core\Database\Query\Select
-   *   Drupal DB API select object.
    */
-  public static function create(Query $query, Connection $connection, string $alias = 't'): Select {
-    $db_query = $connection->select($query->collection, $alias);
+  public function __construct(Connection $connection, string $alias = 't') {
+    $this->connection = $connection;
+    $this->alias = $alias;
+  }
 
-    self::setQueryProperties($db_query, $query, $alias);
-    self::setQueryConditions($db_query, $query, $alias);
-    self::setQueryOrConditions($db_query, $query);
-    self::setQueryOrderBy($db_query, $query);
-    self::setQueryLimitAndOffset($db_query, $query);
-    self::setQueryJoins($db_query, $query);
+  /**
+   * Create Drupal select object.
+   *
+   * @param Drupal\common\Storage\Query $query
+   *   DKAN Query object.
+   */
+  public function create(Query $query): Select {
+    $db_query = $this->connection->select($query->collection, $this->alias);
 
-    $string = $db_query->__toString();
+    $this->setQueryProperties($db_query, $query);
+    $this->setQueryConditions($db_query, $query);
+    $this->setQueryOrderBy($db_query, $query);
+    $this->setQueryLimitAndOffset($db_query, $query);
+    $this->setQueryJoins($db_query, $query);
+
+    // $string = $db_query->__toString();
     if ($query->count) {
       $db_query = $db_query->countQuery();
     }
@@ -47,32 +66,39 @@ class SelectFactory {
    *   A Drupal database query API object.
    * @param Drupal\common\Storage\Query $query
    *   A DKAN query object.
-   * @param string $alias
-   *   Alias for the primary table to query against.
    */
-  private static function setQueryProperties(Select $db_query, Query $query, string $primaryCollection) {
+  private function setQueryProperties(Select $db_query, Query $query) {
     // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
-      $db_query->fields($primaryCollection);
+      $db_query->fields($this->alias);
       return;
     }
 
     foreach ($query->properties as $p) {
       if (is_object($p) && isset($p->expression)) {
-        $expressionStr = self::expressionToString($p->expression, $primaryCollection);
+        $expressionStr = $this->expressionToString($p->expression);
         $db_query->addExpression($expressionStr, $p->alias);
       }
       else {
-        $property = self::normalizeProperty($p, $primaryCollection);
+        $property = $this->normalizeProperty($p);
         $db_query->addField($property->collection, $property->property, $property->alias);
       }
     }
   }
 
-  private static function normalizeProperty($property, $primaryCollection) {
+  /**
+   * Normalizes query properties as objects with consistent property names.
+   *
+   * @param mixed $property
+   *   A property object or string from the Query::properties array.
+   *
+   * @return object
+   *   Normalized property for conversion to field in select object.
+   */
+  private function normalizeProperty($property): object {
     if (is_string($property) && self::safeProperty($property)) {
       return (object) [
-        "collection" => $primaryCollection,
+        "collection" => $this->alias,
         "property" => $property,
         "alias" => NULL,
       ];
@@ -87,6 +113,15 @@ class SelectFactory {
     return $property;
   }
 
+  /**
+   * Checks for any "." in property name and throws exception of found.
+   *
+   * All property names should be structured objects if they need to specify a
+   * collection.
+   *
+   * @param string $string
+   *   Property name.
+   */
   public static function safeProperty(string $string) {
     if (preg_match("/^[^.]+$/", $string)) {
       return TRUE;
@@ -94,24 +129,33 @@ class SelectFactory {
     throw new \Exception("Unsafe property name: $string");
   }
 
-  private static function expressionToString($expression, $alias) {
+  /**
+   * When adding an expression, collection and property must one string.
+   *
+   * (The datastore query API, however, requires a structured object.)
+   *
+   * @param object $expression
+   *   Query expression object.
+   *
+   * @return string
+   *   Valid expression string.
+   */
+  private function expressionToString(object $expression) {
     $operands = [];
     foreach ($expression->operands as $operand) {
       if (is_numeric($operand)) {
         $operands[] = $operand;
       }
       elseif (is_object($operand) && isset($operand->operator)) {
-        $operands[] = self::expressionToString($operand, $alias);
+        $operands[] = $this->expressionToString($operand);
       }
       else {
-        $property = self::normalizeProperty($operand, $alias);
+        $property = $this->normalizeProperty($operand);
         $operands[] = "{$property->collection}.{$property->property}";
       }
     }
 
     if (ctype_alnum($expression->operator)) {
-      // $expressionStr = strtoupper($expression->operator);
-      // $expressionStr .= '(' . implode(',', $operands) . ')';
       throw new \Exception("Only basic arithmetic expressions currently supported.");
     }
     else {
@@ -129,66 +173,55 @@ class SelectFactory {
    * @param Drupal\common\Storage\Query $query
    *   A DKAN query object.
    */
-  private static function setQueryConditions(Select $db_query, Query $query, string $alias) {
+  private function setQueryConditions(Select $db_query, Query $query) {
     foreach ($query->conditions as $c) {
       if (isset($c->groupOperator)) {
-        self::addConditionGroup($db_query, $c, $alias);
+        $this->addConditionGroup($db_query, $c);
       }
       else {
-        self::addCondition($db_query, $c, $alias);
+        $this->addCondition($db_query, $c);
       }
     }
   }
 
-  private static function addCondition($db_query, $condition, $alias) {
+  /**
+   * Add a condition to the DB query object.
+   *
+   * @param mixed $db_query
+   *   Drupal DB API select object or condition object.
+   * @param object $condition
+   *   A condition from the DKAN query object.
+   */
+  private function addCondition($db_query, object $condition) {
     if (!isset($condition->operator)) {
       $condition->operator = 'like';
     }
-    $field = ($condition->collection ? $condition->collection : $alias)
+    $field = ($condition->collection ? $condition->collection : $this->alias)
       . '.'
       . $condition->property;
-    $db_query->condition(
-      $field,
-      $condition->value,
-      strtoupper($condition->operator)
-    );
+    $db_query->condition($field, $condition->value, strtoupper($condition->operator));
   }
 
-  private static function addConditionGroup($db_query, $conditionGroup, $alias) {
+  /**
+   * Add a condition group to the database query.
+   *
+   * @param Drupal\Core\Database\Query\Select $db_query
+   *   Drupal DB API select object.
+   * @param object $conditionGroup
+   *   A condition from the DKAN query object.
+   */
+  private function addConditionGroup(Select $db_query, $conditionGroup) {
     $groupMethod = "{$conditionGroup->groupOperator}ConditionGroup";
     $group = $db_query->$groupMethod();
     foreach ($conditionGroup->conditions as $c) {
       if (isset($c->groupOperator)) {
-        self::addConditionGroup($group, $c, $alias);
+        $this->addConditionGroup($group, $c);
       }
       else {
-        self::addCondition($group, $c, $alias);
+        $this->addCondition($group, $c);
       }
     }
     $db_query->condition($group);
-}
-
-  /**
-   * Set a group of filter "OR" conditions on DB query.
-   *
-   * @param Drupal\Core\Database\Query\Select $db_query
-   *   A Drupal database query API object.
-   * @param Query $query
-   *   A DKAN query object.
-   */
-  private static function setQueryOrConditions(Select $db_query, Query $query) {
-    if (empty($query->orConditions)) {
-      return;
-    }
-    $orGroup = $db_query->orConditionGroup();
-    foreach ($query->orConditions as $c) {
-      if (!isset($c->operator)) {
-        $c->operator = "LIKE";
-      }
-      $c->operator = strtoupper($c->operator);
-      $orGroup->condition($c->property, $c->value, $c->operator);
-    }
-    $db_query->condition($orGroup);
   }
 
   /**
@@ -199,19 +232,12 @@ class SelectFactory {
    * @param Query $query
    *   A DKAN query object.
    */
-  private static function setQueryOrderBy(Select $db_query, Query $query) {
-    foreach ($query->sort["asc"] as $property) {
-      if (is_object($property)) {
-        $sort = self::propertyString(self::normalizeProperty($property));
+  private function setQueryOrderBy(Select $db_query, Query $query) {
+    foreach (['asc', 'desc'] as $direction) {
+      foreach ($query->sort[$direction] as $property) {
+        $property = self::propertyString($this->normalizeProperty($property));
+        $db_query->orderBy($property, strtoupper($direction));
       }
-      $db_query->orderBy($property);
-    }
-
-    foreach ($query->sort["desc"] as $property) {
-      if (is_object($property)) {
-        $property = self::propertyString($property);
-      }
-      $db_query->orderBy($property, 'DESC');
     }
   }
 
@@ -223,7 +249,7 @@ class SelectFactory {
    * @param Query $query
    *   A DKAN query object.
    */
-  private static function setQueryLimitAndOffset(Select $db_query, Query $query) {
+  private function setQueryLimitAndOffset(Select $db_query, Query $query) {
     if ($query->limit) {
       if ($query->offset) {
         $db_query->range($query->offset, $query->limit);
@@ -259,13 +285,36 @@ class SelectFactory {
     }
   }
 
-  private static function onString($on) {
+  /**
+   * Format a DKAN query "On" object as a string for SQL join.
+   *
+   * @param object $on
+   *   Join "on" object from DKAN query.
+   *
+   * @return string
+   *   A proper "on" string for SQL join.
+   */
+  private static function onString($on): string {
     return "{$on[0]->collection}.{$on[0]->property} = {$on[1]->collection}.{$on[1]->property}";
   }
 
-  private static function propertyString($property) {
-    return "{$property->collection}.{$property->property}";
+  /**
+   * Convert a property object to a string including table alias.
+   *
+   * @param mixed $property
+   *   A property object from a DKAN query or a string.
+   *
+   * @return string
+   *   A SQL field string including table alias.
+   */
+  private static function propertyString($property): string {
+    if (is_string($property)) {
+      return $property;
+    }
+    if (isset($property->collection) && $property->property) {
+      return "{$property->collection}.{$property->property}";
+    }
+    throw new \Exception("Invalid property argument.");
   }
 
 }
-

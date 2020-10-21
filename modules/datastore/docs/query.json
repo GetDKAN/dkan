@@ -160,7 +160,7 @@
             "description": "Property name with optional collection/table alias.",
             "properties": {
                 "resource": { "$ref": "#/definitions/resource" },
-                "property": { "$ref": "#/definitions/property" },
+                "property": { "$ref": "#/definitions/property" }
             },
             "required": [ "property" ]
         },

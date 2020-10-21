@@ -144,10 +144,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @param array $data
    *   Array of values to be inserted into the database.
    *
-   * @return string
+   * @return string|null
    *   Last record id inserted into the database.
    */
-  public function storeMultiple(array $data): string {
+  public function storeMultiple(array $data) {
     $this->setTable();
 
     $fields = $this->getNonSerialFields();
@@ -210,7 +210,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   public function query(Query $query, string $alias = 't'): array {
     $this->setTable();
     $query->collection = $this->getTableName();
-    $db_query = SelectFactory::create($query, $this->connection, $alias);
+    $selectFactory = new SelectFactory($this->connection, $alias);
+    $db_query = $selectFactory->create($query);
 
     try {
       $result = $db_query->execute()->fetchAll();

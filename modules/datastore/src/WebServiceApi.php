@@ -247,6 +247,17 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
+   * Retrieve the datastore query schema.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function querySchema() {
+    $schema = json_decode(file_get_contents(__DIR__ . "/../docs/query.json"), TRUE);
+    return $this->getResponse($schema, 200);
+  }
+
+  /**
    * Normalize the simplified resource query to a standard datastore query.
    *
    * @param string $json

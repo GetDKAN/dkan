@@ -360,12 +360,29 @@ class Service implements ContainerInjectionInterface {
     return $query;
   }
 
-  private function populateQueryProperties($query, $datastoreQuery) {
+  /**
+   * Populate a query object with the queries from a datastore query payload.
+   *
+   * @param Drupal\common\Storage\Query $query
+   *   DKAN generalized query object.
+   * @param mixDrupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   Datastore Query API request object.
+   */
+  private function populateQueryProperties(Query $query, DatastoreQuery $datastoreQuery) {
     foreach ($datastoreQuery->properties as $property) {
       $query->properties[] = $this->propertyConvert($property);
     }
   }
 
+  /**
+   * Convert properties from a datastore query to regular DKAN query format.
+   *
+   * @param mixed $property
+   *   A datastore query property object, with "resource" properties.
+   *
+   * @return object
+   *   Standardized property object with "collection" instead of "resource."
+   */
   private function propertyConvert($property) {
     if (is_object($property) && isset($property->resource)) {
       $property->collection = $property->resource;
@@ -380,8 +397,17 @@ class Service implements ContainerInjectionInterface {
     return $property;
   }
 
+  /**
+   * Convert expressions from a datastore query to regular DKAN query format.
+   *
+   * @param object $expression
+   *   An expression from a datastore query, including "resources".
+   *
+   * @return object
+   *   Standardized expression object with "collection" instead of "resource".
+   */
   private function expressionConvert($expression) {
-    foreach($expression->operands as $key => $operand) {
+    foreach ($expression->operands as $key => $operand) {
       if (is_object($operand) && isset($operand->operator)) {
         $expression->operands[$key] = $this->expressionConvert($operand);
       }
@@ -418,13 +444,31 @@ class Service implements ContainerInjectionInterface {
     }
   }
 
-  private function populateQueryConditions($query, $datastoreQuery) {
+  /**
+   * Parse and normalize query conditions.
+   *
+   * @param Drupal\common\Storage\Query $query
+   *   DKAN query object we're building.
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   DatastoreQuery object.
+   */
+  private function populateQueryConditions(Query $query, DatastoreQuery $datastoreQuery) {
     $conditions = [];
     foreach ($datastoreQuery->conditions as $c) {
       $conditions[] = $this->populateQueryCondition($c);
     }
+    $query->conditions = $conditions;
   }
 
+  /**
+   * Parse and normalize a single datastore query condition.
+   *
+   * @param mixed $datastoreCondition
+   *   Either a condition object or a condition group.
+   *
+   * @return object
+   *   Valid condition object for use in a DKAN query.
+   */
   private function populateQueryCondition($datastoreCondition) {
     if (isset($datastoreCondition->resource)) {
       return (object) [
@@ -475,6 +519,17 @@ class Service implements ContainerInjectionInterface {
     }
   }
 
+  /**
+   * Helper function to perform a deep clone of an object.
+   *
+   * Use with caution - no protection against infinite recursion.
+   *
+   * @param object $input
+   *   Incoming object for cloning.
+   *
+   * @return object
+   *   Deep-cloned object.
+   */
   private function cloneQueryObject($input) {
     $output = unserialize(serialize($input));
     return $output;
