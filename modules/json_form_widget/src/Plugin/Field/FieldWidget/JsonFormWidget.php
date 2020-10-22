@@ -10,15 +10,15 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 
 /**
- * Plugin implementation of the 'field_example_text' widget.
+ * Plugin implementation of the 'json_form_widget'.
  *
  * @FieldWidget(
- * id = "json_form_widget",
- * module = "json_form_widget",
- * label = @Translation("JSON Form"),
- * field_types = {
- * "string_long"
- * }
+ *   id = "json_form_widget",
+ *   module = "json_form_widget",
+ *   label = @Translation("JSON Form"),
+ *   field_types = {
+ *     "string_long"
+ *   }
  * )
  */
 class JsonFormWidget extends WidgetBase {
