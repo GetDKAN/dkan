@@ -315,9 +315,15 @@ class JsonFormWidget extends WidgetBase {
    * Selects and returns the fieldset with the names in it.
    */
   public function addmoreCallback(array &$form, FormStateInterface $form_state) {
-    $base_field = $form_state->get('json_form_widget_field');
-    $field = $form_state->getTriggeringElement()['#name'];
-    return $form[$base_field]['widget'][0]['value'][$field];
+    $field = $form_state->getTriggeringElement();
+    $element = $form;
+    foreach ($field['#array_parents'] as $key => $parent) {
+      $element = $element[$parent];
+      if ($parent === $field['#name']) {
+        break;
+      }
+    }
+    return $element;
   }
 
   /**
