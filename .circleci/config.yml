@@ -6,7 +6,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.1.0"
+      DKTL_VERSION: "cypress-chromium"
     steps:
       - checkout:
           path: dkan
@@ -36,11 +36,9 @@ jobs:
       - run:
           name: Run DKAN cypress tests
           command: |
+            dktl dc exec cli apt update -y
+            dktl dc exec cli apt install chromium-browser -y
             dktl install
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
-            dktl drush user:create testeditor --password="testeditor"
-            dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
       - run:
           name: Run DKAN dredd tests

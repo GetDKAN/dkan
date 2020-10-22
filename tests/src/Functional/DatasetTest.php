@@ -6,10 +6,8 @@ use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Service;
-use Drupal\node\Entity\Node;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use FileFetcher\FileFetcher;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 class DatasetTest extends ExistingSiteBase {
