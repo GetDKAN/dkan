@@ -218,12 +218,19 @@ class JsonFormWidget extends WidgetBase {
 
     $element = [
       '#type' => 'fieldset',
-      '#title' => $property_schema->title,
-      '#description' => $property_schema->description,
+      '#title' => $field_name,
       '#prefix' => '<div id="' . $field_name . '-fieldset-wrapper">',
       '#suffix' => '</div>',
       '#tree' => TRUE,
     ];
+
+    if (isset($property_schema->title)) {
+      $element['#title'] = $property_schema->title;
+    }
+
+    if (isset($property_schema->description)) {
+      $element['#description'] = $property_schema->description;
+    }
 
     for ($i = 0; $i < $amount; $i++) {
       $element[$field_name][$i] = $this->getSingleArrayElement($field_name, $i, $property_schema, $data, $form_state);
