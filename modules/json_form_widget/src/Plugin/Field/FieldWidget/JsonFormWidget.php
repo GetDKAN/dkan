@@ -383,25 +383,9 @@ class JsonFormWidget extends WidgetBase {
     $properties = array_keys((array) $schema->properties);
     $values = $form_state->getValue($field_name)[0]['value'];
     foreach ($properties as $property) {
-      if (isset($values[$property])) {
-        if (is_array($values[$property])) {
-          $data[$property] = [];
-          if (isset($values[$property][$property])) {
-            foreach ($values[$property][$property] as $key => $value) {
-              if ($value) {
-                if (isset($value[$property])) {
-                  $data[$property][$key] = $value[$property];
-                }
-                else {
-                  $data[$property][$key] = $value;
-                }
-              }
-            }
-          }
-        }
-        elseif (!empty($values[$property])) {
-          $data[$property] = $values[$property];
-        }
+      $value = $this->flattenValues($values, $property, $schema->properties->{$property});
+      if ($value) {
+        $data[$property] = $value;
       }
     }
     $json = [json_encode($data)];
@@ -415,6 +399,80 @@ class JsonFormWidget extends WidgetBase {
       unset($item->_original_delta, $item->_weight);
     }
     static::setWidgetState($form['#parents'], $field_name, $form_state, $field_state);
+  }
+
+  /**
+   * Flatten values.
+   */
+  private function flattenValues($formValues, $property, $schema) {
+    $data = [];
+
+    switch ($schema->type) {
+      case 'string':
+        $data = $this->handleStringValues($formValues, $property);
+        break;
+
+      case 'object':
+        $data = $this->handleObjectValues($formValues[$property][$property], $property, $schema);
+        break;
+
+      case 'array':
+        $data = $this->handleArrayValues($formValues, $property, $schema);
+        break;
+    }
+    return $data;
+  }
+
+  /**
+   * Flatten values for string properties.
+   */
+  private function handleStringValues($formValues, $property) {
+    if (!empty($formValues[$property])) {
+      return $formValues[$property];
+    }
+    return FALSE;
+  }
+
+  /**
+   * Flatten values for object properties.
+   */
+  private function handleObjectValues($formValues, $property, $schema) {
+    $properties = array_keys((array) $schema->properties);
+
+    $data = FALSE;
+    if (isset($formValues)) {
+      foreach ($properties as $sub_property) {
+        $value = $this->flattenValues($formValues, $sub_property, $schema->properties->$sub_property);
+        if ($value) {
+          $data[$sub_property] = $value;
+        }
+      }
+    }
+    return $data;
+  }
+
+  /**
+   * Flatten values for array properties.
+   */
+  private function handleArrayValues($formValues, $property, $schema) {
+    $data = FALSE;
+    $subschema = $schema->items;
+    if ($subschema->type === "object") {
+      foreach ($formValues[$property][$property] as $key => $item) {
+        $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema->items);
+        if ($value) {
+          $data[$key] = $value;
+        }
+      }
+      return $data;
+    }
+
+    foreach ($formValues[$property][$property] as $key => $value) {
+      if (!empty($value)) {
+        $data[$key] = $value;
+      }
+    }
+    return $data;
   }
 
 }
