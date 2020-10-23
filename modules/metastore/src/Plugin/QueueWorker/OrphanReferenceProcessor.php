@@ -97,18 +97,18 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     }
 
     // Value reference uuid not found in any dataset, therefore safe to delete.
-    $this->deleteReference($metadataProperty, $identifier);
+    $this->unpublishReference($metadataProperty, $identifier);
   }
 
   /**
-   * Deletes a reference.
+   * Unpublish a reference.
    *
    * @param string $property_id
    *   The property id.
    * @param string $uuid
    *   The uuid.
    */
-  protected function deleteReference(string $property_id, string $uuid) {
+  protected function unpublishReference(string $property_id, string $uuid) {
     $references = $this->nodeStorage
       ->loadByProperties(
               [
@@ -117,7 +117,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
               ]
           );
     if (FALSE !== ($reference = reset($references))) {
-      $reference->delete();
+      $reference->set('moderation_state', 'draft');
     }
   }
 

@@ -226,12 +226,13 @@ class DatabaseTableTest extends TestCase {
       $connectionChain->getMock(),
       $this->getResource()
     );
-    $this->assertEquals(
-      new TableSummary(
-        3,
-        ["record_number", "first_name", "last_name"],
-        1
-      ), $databaseTable->getSummary());
+
+    $tableSummary = $databaseTable->getSummary();
+
+    $this->assertEquals(3, $tableSummary->numOfColumns);
+    $this->assertEquals(1, $tableSummary->numOfRows);
+    $this->assertEquals(["record_number", "first_name", "last_name"],
+      array_keys($tableSummary->columns));
   }
 
   /**

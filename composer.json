@@ -7,7 +7,7 @@
     "require": {
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
-        "drupal/admin_toolbar": "^2.2",
+        "drupal/admin_toolbar": "^2.3",
         "drupal/config_update": "^1.6",
         "drupal/search_api": "^1.15",
         "drupal/views_bulk_operations": "^3.6",
@@ -16,7 +16,7 @@
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.0",
         "getdkan/contracts": "^1.0.0",
-        "getdkan/datastore" : "dev-original-column-names",
+        "getdkan/datastore" : "^5.1.1",
         "getdkan/file-fetcher" : "^3.0.0",
         "getdkan/harvest": "^1.0.0",
         "getdkan/json-schema-provider": "^0.1.2",
@@ -56,7 +56,7 @@
         "dkan-frontend": {
             "type": "vcs",
             "url": "https://github.com/GetDKAN/data-catalog-app",
-            "ref": "1.0.0"
+            "ref": "1.0.2"
         }
     }
 }

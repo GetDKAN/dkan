@@ -376,10 +376,10 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  public static function removeReferences($object) {
+  public static function removeReferences($object, $prefix = "%") {
     $array = (array) $object;
     foreach ($array as $property => $value) {
-      if (substr_count($property, "%") > 0) {
+      if (substr_count($property, $prefix) > 0) {
         unset($array[$property]);
       }
     }

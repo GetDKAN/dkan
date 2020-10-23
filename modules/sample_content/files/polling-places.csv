@@ -1,0 +1,143 @@
+"X","Y","OBJECTID","tvpoll_p_WARD","tvpoll_p_BLDG_NAME","tvpoll_p_ADDRESS","tvpoll_p_HANDICAP_ACCESS","tvpoll_p_SPEC_COMMENTS","tvpoll_p_ALD_DIST","tvpoll_p_PHONE_NO","tvpoll_p_SUP_DIST","tvpoll_p_SEN_DIST","tvpoll_p_ASM_DIST","tvpoll_p_BALLOT_COLOR"
+-89.296292229,43.0524351737,2123,1,"Madison Fire Station 14 ","3201 Dairy Dr","yes","Fire Station No 14 ",16,,16,16,47,47
+-89.3121044196,43.0575023925,2124,2,"Glendale Elementary","1201 Tompkins Dr","yes","LMC",16,,24,16,47,47
+-89.3121044196,43.0575023925,2125,123,"Glendale Elementary","1201 Tompkins Dr",,,16,,24,16,47,
+-89.2982226742,43.0714694047,2126,3,"City Church","4909 E Buckeye Rd","yes","Lower Level - Rear Entrance",16,,24,16,47,47
+-89.2982226742,43.0714694047,2127,4,"City Church","4909 E Buckeye Rd","yes","Lower Level - Rear Entrance",16,,24,16,48,48
+-89.2726393237,43.0762399895,2128,7,"Westminster Senior Apartments","6160 Dell Dr","yes",,16,,16,16,48,48
+-89.2931988775,43.078687724,2129,5,"Elvehjem Elementary","5106 Academy Dr","yes","West Hall by Gym B, Gym B used in November",16,,16,16,48,48
+-89.2931988775,43.078687724,2130,6,"Elvehjem Elementary","5106 Academy Dr","yes","West Hall by Gym B, Gym B used in November",16,,16,16,48,48
+-89.2638716194,43.092661866,2131,8,"Door Creek Church","6602 Dominion Dr","yes","Gym",3,,16,16,48,48
+-89.2638716194,43.092661866,2132,129,"Door Creek Church","6602 Dominion Dr",,,3,,16,16,48,
+-89.2638716194,43.092661866,2133,131,"Door Creek Church","6602 Dominion Dr",,,3,,16,16,48,
+-89.2638716194,43.092661866,2134,134,"Door Creek Church","6602 Dominion Dr",,,3,,16,16,48,
+-89.2830028629,43.0895216337,2135,9,"Oak Park Place","718 Jupiter Dr","yes",,3,,16,16,48,48
+-89.2830028629,43.0895216337,2136,128,"Oak Park Place","718 Jupiter Dr","yes",,3,,17,16,48,
+-89.2830028629,43.0895216337,2137,130,"Oak Park Place","718 Jupiter Dr","yes",,3,,17,16,48,
+-89.2830028629,43.0895216337,2138,132,"Oak Park Place","718 Jupiter Dr","yes",,3,,17,16,48,
+-89.2830028629,43.0895216337,2139,133,"Oak Park Place","718 Jupiter Dr","yes",,3,,17,16,48,
+-89.2965815902,43.0947132282,2140,10,"Kennedy Elementary","221 Meadowlark Drive","yes","LMC for most elections, gym for November",3,,17,16,48,48
+-89.3138349809,43.1038563513,2141,11,"American Family Insurance","302 N Walbridge Ave","yes","Walbridge Room - park in front & use main entrance",3,,17,16,48,48
+-89.3138349809,43.1038563513,2142,17,"American Family Insurance","302 N Walbridge Ave","yes","Walbridge Room - park in front & use main entrance",15,,17,16,48,48
+-89.3029515377,43.089140346,2143,12,"New Beginnings Church","602 Acewood Blvd","yes","Enter off parking lot - lower level",3,,17,16,48,48
+-89.3198571252,43.0642144753,2144,13,"LaFollette High School","700 Pflaum Rd","yes","Gym",15,,24,16,47,47
+-89.3198571252,43.0642144753,2145,14,"LaFollette High School","700 Pflaum Rd","yes","Gym",15,,24,16,48,48
+-89.3198571252,43.0642144753,2146,15,"LaFollette High School","700 Pflaum Rd","yes","Gym",15,,17,16,48,48
+-89.3247610655,43.092216673,2147,16,"Whitehorse Middle School","218 Schenk St","yes","Gym",15,,17,16,48,48
+-89.3190678896,43.11832133,2148,18,"Hy-Vee","3801 E Washington Ave","yes","Community Room",15,,21,16,48,48
+-89.3190678896,43.11832133,2149,21,"Hy-Vee","3801 E Washington Ave","yes","Community Room",17,,21,16,48,48
+-89.3287243681,43.1190383915,2150,19,"East Madison Community Center","8 Straubel Ct","yes","Drill Room, rear entrance off parking lot",15,,6,16,48,48
+-89.3287243681,43.1190383915,2151,20,"East Madison Community Center","8 Straubel Ct","yes","Drill Room, rear entrance off parking lot",15,,6,26,76,76
+-89.3025869885,43.1148375522,2152,22,"Streets East","4602 Sycamore Ave","yes",,17,,21,16,48,48
+-89.3025869885,43.1148375522,2153,136,"Streets East","4602 Sycamore Ave",,,17,,21,16,48,
+-89.2794746208,43.1441527928,2154,23,"Fire Station #11","4011 Morgan Way","yes",,17,,21,16,48,48
+-89.2840525521,43.1566576451,2155,24,"Oakwood Villlage Prairie Ridge","5565 Tancho Dr","yes","Chapel",17,,21,16,48,48
+-89.3120262909,43.13635425,2156,25,"Sandburg Elementary","4114 Donald Dr","yes","Gym",17,,12,16,48,48
+-89.311600323,43.1291140733,2157,26,"Eastside Lutheran","2310 Independence Ln","yes","Gym",17,,12,16,48,48
+-89.311600323,43.1291140733,2158,126,"Eastside Lutheran","2310 Independence Ln",,,17,,12,16,48,
+-89.3569566041,43.105775116,2159,27,"Madison College - Commercial","2125 Commercial Ave","yes","Commons",12,,12,16,48,48
+-89.3569566041,43.105775116,2160,28,"Madison College - Commercial","2125 Commercial Ave","yes","Commons",12,,12,26,76,76
+-89.3548499452,43.0976990284,2161,29,"East High School","2222 E Washington Ave","yes","Fifth Street entrance, enter at door #10,Gym in November",12,,2,26,76,76
+-89.3626709147,43.1170437821,2162,30,"Sherman Middle School","1610 Ruskin St","yes","Wood Gym",12,,12,26,76,76
+-89.362347481,43.1275731803,2163,31,"Lakeview Library","2845 N Sherman Ave","yes","Lakeview Library",12,,12,16,48,48
+-89.3612514493,43.1282843558,2164,32,"Goodwill Madison Northside","2901 N Sherman Ave","yes",,12,,12,16,48,48
+-89.3669272854,43.132046045,2165,33,"Warner Park Community Rec Center","1625 Northport ","yes","Meeting Room",12,,18,16,48,48
+-89.3669272854,43.132046045,2166,34,"Warner Park Community Rec Center","1625 Northport ","yes","Meeting Room",18,,18,16,48,48
+-89.3848319514,43.1369088119,2167,35,"Mendota Elementary ","4002 School Rd","yes","Main Entranace, Gym in November",18,,18,16,48,48
+-89.3848319514,43.1369088119,2168,36,"Mendota Elementary ","4002 School Rd","yes","Main Entrance, Gym in November",18,,18,16,48,48
+-89.3892083402,43.1436762593,2169,37,"Lindbergh Elementary","4500 Kennedy Rd","yes","Gym",18,,18,16,48,48
+-89.3695287373,43.1469910176,2170,38,"Blackhawk Middle School","1402 Wyoming Way","yes","LMC",18,,18,16,48,48
+-89.3695287373,43.1469910176,2171,112,"Blackhawk Middle School","1402 Wyoming Way","yes","LMC",18,,21,27,79,79
+-89.3695287373,43.1469910176,2172,118,"Blackhawk Middle School","1402 Wyoming Way",,,18,,18,16,48,
+-89.3695287373,43.1469910176,2173,135,"Blackhawk Middle School","1402 Wyoming Way",,,18,,18,16,48,
+-89.3451363513,43.102138984,2174,39,"Hawthrone Library ","2707 E Washington Ave","yes","Community Room",6,,6,26,76,76
+-89.3346763029,43.0926019156,2175,40,"Olbrich Gardens","3330 Atwood Ave","yes","Community Room",6,,6,26,76,76
+-89.3580028165,43.0858216499,2176,41,"O'Keeffe Middle School ","510 S Thornton Ave","yes","Cafeteria - Enter off Spaight Street",6,,6,26,76,76
+-89.3670184272,43.0798044642,2177,42,"Wil-Mar Neighborhood Center","953 Jenifer St","yes","Yahara Room",6,,6,26,76,76
+-89.381976889,43.0731129567,2178,43,"Madison Municipal Building","215 Martin Luther King Jr Dr","yes","First Floor Lobby",6,,1,26,76,76
+-89.381976889,43.0731129567,2179,52,"Madison Municipal Building","215 Martin Luther King Jr Dr","yes","Front Lobby",4,,1,26,76,76
+-89.3689605041,43.0922483921,2180,44,"Tenney Park Pavilion","402 N Thornton Ave","yes","Community Room",2,,2,26,76,76
+-89.3722289168,43.0853569464,2181,45,"Lapham Elementary","1045 E Dayton St","yes","Ingersoll Entrance, Gym in November",2,,2,26,76,76
+-89.3847058757,43.0805445558,2182,46,"Gates of Heaven ","302 E Gorham St","yes","Main Entrance - East Gorham Street",2,,2,26,76,76
+-89.3958046434,43.0763311796,2183,47,"Lowell Center","610 Langdon St","yes","Front Lobby",2,,1,26,76,76
+-89.3958046434,43.0763311796,2184,48,"Lowell Center","610 Langdon St","yes","Front Lobby",2,,5,26,76,76
+-89.3951486003,43.0744001978,2185,49,"Hub Madison Apartments","437 N Francis St","yes","Utility Room - Enter off West Dayton Street",4,,5,26,76,76
+-89.3950083692,43.0703850559,2186,50,"Doyle Administration Building","545 W Dayton St","yes","Auditorium",4,,1,26,76,76
+-89.3875197946,43.0735883291,2187,51,"Central Library ","201 W Mifflin St","yes",,4,,1,26,76,76
+-89.38681776,43.0708263356,2188,53,"Capitol Lakes Retirement","333 W Main St","yes",,4,,1,26,76,76
+-89.4008363855,43.0690417075,2189,54,"Smith Hall","35 N Park St","yes",,8,,1,26,76,76
+-89.402938667,43.0724452664,2190,55,"Porchlight","306 N Brooks St","yes","Dining Room",8,,13,26,76,76
+-89.3990898742,43.071507727,2191,56,"Gordon Dining","770 W Dayton St","yes","A1, west end of Gordon Commons",8,,5,26,76,76
+-89.3984875109,43.0753761288,2192,57,"UW Memorial Library","728 State St","yes","Room 116",8,,5,26,76,76
+-89.3990613031,43.0764542016,2193,58,"Memorial Union","800 Langdon St","yes",,8,,5,26,77,77
+-89.4142086777,43.077572166,2194,59,"Frank Holt Center","1650 Kronshage Dr","yes","Lower Level Cafeteria",8,,5,26,77,77
+-89.4375309882,43.0862678242,2195,60,"Eagle Heights Community Center","611 Eagle Hts","yes","Room 101",5,,5,26,77,77
+-89.4146254399,43.0729276402,2196,61,"First Congregational Church","1609 University Ave","yes","First Floor Student Lounge or Lower Level Gym",5,,10,26,77,77
+-89.4227284829,43.0666579343,2197,62,"Blessed Sacrament Catholic Church","2131 Rowley Ave","yes","Lower Level Friary",5,,10,26,77,77
+-89.4270978864,43.0687649101,2198,63,"West High School","30 Ash St","yes","Van Hise Entrance - Gym",5,,10,26,77,77
+-89.4392477064,43.068815336,2199,64,"Hoyt School ","3802 Regent St","yes","Room 13, Gym in November",5,,11,26,77,77
+-89.4392477064,43.068815336,2200,82,"Hoyt School ","3802 Regent St","yes","Room 13, Gym in November",11,,11,26,77,77
+-89.4339244314,43.0549112427,2201,65,"Wingra School","718 Gilmore St","yes",,13,,13,26,77,77
+-89.4057719662,43.0660998058,2202,66,"St James Catholic School","1204 St James Ct","yes","Church basement",13,,13,26,76,76
+-89.3985385295,43.0655076965,2203,67,"Brittingham Apartments","755 Braxton Pl","yes","Meeting Room",13,,13,26,76,76
+-89.4050733811,43.062801063,2204,68,"Trinity Methodist Church","1123 Vilas Ave","yes","Lower Level Fellowship Hall - take first drivewayEnter off west parking lot",13,,13,26,76,76
+-89.3911067664,43.0550261738,2205,69,"Bjarne Romnes Apartments","540 W Olin Ave","yes","Community Room - Lower Level",13,,4,26,77,77
+-89.3471027488,43.0480472208,2206,70,"Bridge - Lake Point - Waunona Community Center","1917 Lake Point Dr","yes","Front Room",14,,23,26,77,77
+-89.3471027488,43.0480472208,2207,113,"Bridge - Lake Point - Waunona Community Center","1917 Lake Point Dr","yes","Front Room",14,,23,16,47,47
+-89.3773505108,43.0377069043,2208,71,"Badger Rock Neighborhood Center","501 E Badger Rd","yes","Community Room",14,,23,26,77,77
+-89.3934981484,43.0460081908,2209,72,"Catholic Multicultural Center","1862 Beld St","yes","Second Floor",14,,23,26,77,77
+-89.395181063,43.0410471789,2210,73,"Village on Park","2300 S Park St","yes","Community Room",14,,23,26,77,77
+-89.4214534656,43.0276357026,2211,74,"Leopold Elementary ","2602 Post Rd","yes","Lobby, Gym in November",14,,4,26,77,77
+-89.4214534656,43.0276357026,2212,75,"Leopold Elementary ","2602 Post Rd","yes","Lobby, Gym in November",14,,4,26,77,77
+-89.4753389484,43.034279509,2213,77,"Toki Middle School","5606 Russett Rd","yes","Use front entrance",10,,7,26,77,77
+-89.442490176,43.0460157388,2214,78,"Thoreau Elementary ","3870 Nakoma Rd","yes","LMC",10,,4,26,77,77
+-89.450399972,43.0540384417,2215,79,"Sequoya Library ","4340 Tokay Blvd","yes","Area inside main entrance",10,,8,26,77,77
+-89.4501058439,43.0573457901,2216,80,"Midvale Elementary ","502 Caromar Dr","yes","Lobby/front foyer",11,,8,26,77,77
+-89.4501058439,43.0573457901,2217,81,"Midvale Elementary ","502 Caromar Dr","yes","Lobby/front foyer",11,,11,26,77,77
+-89.4588292194,43.0614043423,2218,83,"Covenant Presbyterian Church","326 S Segoe Road","yes","<Null>",11,,11,26,77,77
+-89.4689430015,43.0696883845,2219,84,"Mount Olive Lutheran Church","110 N Whitney Way","yes",,11,,11,26,77,77
+-89.4791216592,43.0647288282,2220,85,"Wellspring United Methodist Church","5702 South Hill Dr","yes",,11,,11,26,78,78
+-89.47206332,43.081567702,2221,86,"Spring Harbor Middle School","1110 Spring Harbor Dr","yes","Room 7",19,,10,26,77,77
+-89.4945130069,43.0675593672,2222,87,"John Muir Elementary","6602 Inner Dr","yes",,19,,10,26,78,78
+-89.517620822,43.0761057052,2223,88,"Alicia Ashman Library ","733 N High Point Rd","yes","Meeting Room",19,,9,26,78,78
+-89.4874343966,43.059772008,2224,89,"Oakwood Villlage University Woods ","6201 Mineral Point Rd","yes",,19,,8,26,78,78
+-89.4869444964,43.0484312045,2225,90,"Madison Ice Arena","725 Forward Dr","yes","Conference Room",19,,8,26,78,78
+-89.4869444964,43.0484312045,2226,104,"Madison Ice Arena","725 Forward Dr","yes","Conference Room",19,,8,26,78,78
+-89.4869444964,43.0484312045,2227,117,"Madison Ice Arena","725 Forward Dr","yes","Conference Room",19,,8,26,78,78
+-89.4897276904,43.0402249764,2228,91,"Falk Elementary ","6323 Woodington Way","yes","Front Entrance",20,,7,26,78,78
+-89.4776390259,43.032009873,2229,92,"Meadowridge Library","5726 Raymond Rd","yes",,20,,7,26,78,78
+-89.4776390259,43.032009873,2230,95,"Meadowridge Library","5726 Raymond Rd","yes","Hallway near Office",20,,7,26,78,78
+-89.4777870839,43.0311846809,2231,93,"Good Shepherd Lutheran Church","5701 Raymond Rd","yes","Fellowship Hall - Front Entrance",20,,7,26,77,77
+-89.4777870839,43.0311846809,2232,94,"Good Shepherd Lutheran Church","5701 Raymond Rd","yes","Fellowship Hall - Front Entrance",20,,7,26,78,78
+-89.4922004353,43.0198962348,2233,96,"Heritage Congregational Church","3102 Prairie Rd","yes","Fellowship Hall - Side Entrance",20,,14,26,78,78
+-89.4922004353,43.0198962348,2234,99,"Heritage Congregational Church","3102 Prairie Rd","yes","Community Room",7,,14,26,78,78
+-89.4973584838,43.0113025116,2235,97,"St Marys Care Center ","3401 Maple Grove Dr","yes","Activities Room",7,,14,26,78,78
+-89.5009575214,43.0095168651,2236,98,"Chavez Elementary ","3502 Maple Grove Dr","yes","Room 102-C, Gym in November",7,,14,26,78,78
+-89.5277491592,43.016875241,2237,100,"Meriter - McKee Clinic ","3102 Mertier Way","yes","Community Room",7,,14,26,78,78
+-89.5108491263,43.0370526333,2238,101,"Elver Park Shelter","1250 McKenna Blvd","yes","Community Room",1,,7,26,78,78
+-89.5108491263,43.0370526333,2239,102,"Elver Park Shelter","1250 McKenna Blvd","yes","Community Room",1,,15,26,78,78
+-89.5108491263,43.0370526333,2240,119,"Elver Park Shelter","1250 McKenna Blvd",,,1,,15,26,78,
+-89.5108491263,43.0370526333,2241,121,"Elver Park Shelter","1250 McKenna Blvd",,,1,,15,26,78,
+-89.4976681556,43.0338489191,2242,103,"West Police District","1710 McKenna Blvd","yes",,1,,7,26,78,78
+-89.4976681556,43.0338489191,2243,114,"West Police District","1710 McKenna Blvd","yes",,1,,15,27,79,79
+-89.4976681556,43.0338489191,2244,115,"West Police District","1710 McKenna Blvd","yes",,1,,32,27,80,80
+-89.4976681556,43.0338489191,2245,116,"West Police District","1710 McKenna Blvd","yes",,1,,32,27,80,80
+-89.5190088952,43.0486281418,2246,105,"Coventry Village","7707 North Brookline Dr","yes",,1,,15,26,78,78
+-89.5190088952,43.0486281418,2247,107,"Coventry Village","7707 North Brookline Dr","yes",,9,,9,26,78,78
+-89.5190088952,43.0486281418,2248,127,"Coventry Village","7707 North Brookline Dr",,,9,,9,26,78,
+-89.5541636098,43.0624550219,2249,106,"Blackhawk Church","9620 Brader Way","yes",,1,,15,26,78,78
+-89.5541636098,43.0624550219,2250,125,"Blackhawk Church","9620 Brader Way","yes",,9,,9,26,78,78
+-89.5017324057,43.0663756793,2251,108,"Lussier Community Education Center","55 S Gammon Rd","yes","Classroom",9,,8,26,78,78
+-89.5156664156,43.0762642352,2252,109,"High Point Church","7702 Old Sauk Rd","yes","Micah Center - Park behind building, side entrance",9,,8,26,78,78
+-89.5278047302,43.0739887051,2253,110,"Attic Angel Association","640 Junction Rd","yes",,9,,9,26,78,78
+-89.5278047302,43.0739887051,2254,120,"Attic Angel Association","640 Junction Rd",,,9,,9,26,78,
+-89.5505678296,43.0740287722,2255,111,"The Jefferson","9401 Old Sauk Rd","yes","Activity Room",9,,9,26,78,78
+-89.5505678296,43.0740287722,2256,122,"The Jefferson","9401 Old Sauk Rd",,,9,,9,26,78,
+-89.5505678296,43.0740287722,2257,124,"The Jefferson","9401 Old Sauk Rd",,,9,,9,26,78,
+-89.4589170566,43.0286903066,2258,76,"Revival Ridge Apartments","2313 Allied Dr","yes",,14,,4,26,77,77
+-89.5541636098,43.0624550219,2259,137,"Blackhawk Church","9620 Brader Way","yes",,1,,15,26,78,78
+-89.5505678296,43.0740287722,2260,138,"The Jefferson","9401 Old Sauk Rd","yes","Activity Room",9,,9,26,78,78
+-89.3773505108,43.0377069043,2261,139,"Badger Rock Neighborhood Center","501 E Badger Rd","yes","Community Room",14,,23,26,77,77
+-89.4869444964,43.0484312045,2262,141,"Madison Ice Arena","725 Forward Dr","yes","Conference Room",19,,8,26,78,78
+-89.5541636098,43.0624550219,2263,140,"Blackhawk Church","9620 Brader Way","yes",,,,15,26,78,78
+-89.5505678296,43.0740287722,2264,143,"The Jefferson","9401 Old Sauk Rd","yes","Activity Room",9,,9,26,78,78
