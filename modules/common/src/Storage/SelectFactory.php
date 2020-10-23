@@ -3,6 +3,7 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Query\Select;
+use Drupal\Core\Database\Query\Condition;
 use Drupal\Core\Database\Connection;
 
 /**
@@ -104,7 +105,7 @@ class SelectFactory {
       ];
     }
     if (!is_object($property) || !isset($property->property) || !isset($property->collection)) {
-      throw new \Exception("Bad query property.");
+      throw new \Exception("Bad query property: " . print_r($property, 1));
     }
     self::safeProperty($property->property);
     if (!isset($property->alias)) {
@@ -159,10 +160,10 @@ class SelectFactory {
       throw new \Exception("Only basic arithmetic expressions currently supported.");
     }
     else {
-      $expressionStr = implode($expression->operator, $operands);
+      $expressionStr = implode(" $expression->operator ", $operands);
     }
 
-    return $expressionStr;
+    return "($expressionStr)";
   }
 
   /**
@@ -194,7 +195,7 @@ class SelectFactory {
    */
   private function addCondition($db_query, object $condition) {
     if (!isset($condition->operator)) {
-      $condition->operator = 'like';
+      $condition->operator = '=';
     }
     $field = ($condition->collection ? $condition->collection : $this->alias)
       . '.'
@@ -205,12 +206,12 @@ class SelectFactory {
   /**
    * Add a condition group to the database query.
    *
-   * @param Drupal\Core\Database\Query\Select $db_query
+   * @param Drupal\Core\Database\Query\Select|Drupal\Core\Database\Query\Condition $db_query
    *   Drupal DB API select object.
    * @param object $conditionGroup
    *   A condition from the DKAN query object.
    */
-  private function addConditionGroup(Select $db_query, $conditionGroup) {
+  private function addConditionGroup($db_query, $conditionGroup) {
     $groupMethod = "{$conditionGroup->groupOperator}ConditionGroup";
     $group = $db_query->$groupMethod();
     foreach ($conditionGroup->conditions as $c) {
@@ -233,10 +234,14 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private function setQueryOrderBy(Select $db_query, Query $query) {
-    foreach (['asc', 'desc'] as $direction) {
-      foreach ($query->sort[$direction] as $property) {
-        $property = self::propertyString($this->normalizeProperty($property));
-        $db_query->orderBy($property, strtoupper($direction));
+    foreach ($query->sort as $direction => $sort) {
+      if (!in_array($direction, ["asc", "desc"])) {
+        throw new \Exception("Invalid sort.");
+      }
+      foreach ($sort as $property) {
+        $nProperty = $this->normalizeProperty($property);
+        $propertyStr = "{$nProperty->collection}.{$nProperty->property}";
+        $db_query->orderBy($propertyStr, strtoupper($direction));
       }
     }
   }
@@ -257,9 +262,6 @@ class SelectFactory {
       else {
         $db_query->range(0, $query->limit);
       }
-    }
-    elseif ($query->offset) {
-      $db_query->range($query->limit);
     }
   }
 
@@ -296,25 +298,6 @@ class SelectFactory {
    */
   private static function onString($on): string {
     return "{$on[0]->collection}.{$on[0]->property} = {$on[1]->collection}.{$on[1]->property}";
-  }
-
-  /**
-   * Convert a property object to a string including table alias.
-   *
-   * @param mixed $property
-   *   A property object from a DKAN query or a string.
-   *
-   * @return string
-   *   A SQL field string including table alias.
-   */
-  private static function propertyString($property): string {
-    if (is_string($property)) {
-      return $property;
-    }
-    if (isset($property->collection) && $property->property) {
-      return "{$property->collection}.{$property->property}";
-    }
-    throw new \Exception("Invalid property argument.");
   }
 
 }

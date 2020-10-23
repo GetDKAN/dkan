@@ -171,6 +171,8 @@ class Query implements
 
   /**
    * Mark query as a count query.
+   *
+   * Note - for now, leaves limit/offset alone.
    */
   public function count() {
     $this->count = TRUE;
