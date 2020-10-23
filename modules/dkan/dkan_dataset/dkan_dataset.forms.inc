@@ -706,19 +706,19 @@ function dkan_dataset_resource_form_after_build($form, &$form_state) {
   if (isset($form['field_link_remote_file'])) {
     // Get langcode for field_link_remote_file.
     $field_link_remote_file_langcode = dkan_dataset_form_field_language($form, 'field_link_remote_file');
-    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011.csv';
+    $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['url']['#attributes']['placeholder'] = t('eg. http://example.com/gold-prices-jan-2011.csv');
     $form['field_link_remote_file'][$field_link_remote_file_langcode][0]['filefield_dkan_remotefile']['select']['#suffix'] = '';
   }
   if (isset($form['field_link_api'])) {
     // Get langcode for field_link_api.
     $field_link_api_langcode = dkan_dataset_form_field_language($form, 'field_link_api');
-    $form['field_link_api'][$field_link_api_langcode][0]['url']['#attributes']['placeholder'] = 'eg. http://example.com/gold-prices-jan-2011';
+    $form['field_link_api'][$field_link_api_langcode][0]['url']['#attributes']['placeholder'] = t('eg. http://example.com/gold-prices-jan-2011');
   }
   if (isset($form['field_format'])) {
     // Get langcode for field_format.
     $field_format_langcode = dkan_dataset_form_field_language($form, 'field_format');
 
-    $form['field_format'][$field_format_langcode]['textfield']['#attributes']['placeholder'] = 'eg. csv, json';
+    $form['field_format'][$field_format_langcode]['textfield']['#attributes']['placeholder'] = t('eg. csv, json');
     $form['field_format'][$field_format_langcode]['textfield']['#description'] = t('File format will be autodetected');
   }
   // Get langcode for body.
