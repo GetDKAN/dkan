@@ -78,7 +78,16 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   The json response.
    */
   public function getAll(string $schema_id) {
-    return $this->getResponse($this->service->getAll($schema_id));
+    $keepRefs = $this->wantObjectWithReferences();
+
+    $output = array_map(function ($object) use ($keepRefs) {
+      if ($keepRefs) {
+        return $this->swapReferences($object);
+      }
+      return Service::removeReferences($object);
+    }, $this->service->getAll($schema_id));
+
+    return $this->getResponse($output);
   }
 
   /**
@@ -133,7 +142,7 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     $object = (object) $array;
 
-    return Service::removeReferences($object);
+    return Service::removeReferences($object, "%Ref");
   }
 
   /**

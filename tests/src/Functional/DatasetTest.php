@@ -1,20 +1,18 @@
 <?php
 
-namespace Drupal\Tests\dkan;
+namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Reference\Dereferencer;
-use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Service;
-use Drupal\node\Entity\Node;
+use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use FileFetcher\FileFetcher;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 class DatasetTest extends ExistingSiteBase {
   use ServiceCheckTrait;
+  use CleanUp;
 
   private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
 
@@ -145,62 +143,6 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getMetastore(): Service {
     return \Drupal::service('dkan.metastore.service');
-  }
-
-  private function removeAllNodes() {
-    $nodes = Node::loadMultiple();
-    foreach ($nodes as $node) {
-      $node->delete();
-    }
-  }
-
-  private function removeAllMappedFiles() {
-    /* @var $filemappertable \Drupal\metastore\Storage\ResourceMapperDatabaseTable */
-    $filemappertable = \Drupal::service('dkan.metastore.resource_mapper_database_table');
-    foreach ($filemappertable->retrieveAll() as $id) {
-      $filemappertable->remove($id);
-    }
-  }
-
-  private function removeAllFileFetchingJobs() {
-    /* @var $jobStoreFactory \Drupal\common\Storage\JobStoreFactory */
-    $jobStoreFactory = \Drupal::service('dkan.common.job_store');
-
-    /* @var $jobStore \Drupal\common\Storage\JobStore */
-    $jobStore = $jobStoreFactory->getInstance(FileFetcher::class);
-    foreach ($jobStore->retrieveAll() as $id) {
-      $jobStore->remove($id);
-    }
-  }
-
-  private function flushQueues() {
-    $dkanQueues = ['orphan_reference_processor', 'datastore_import'];
-    foreach ($dkanQueues as $queueName) {
-      /* @var $queueFactory \Drupal\Core\Queue\QueueFactory */
-      $queueFactory = \Drupal::service('queue');
-      $queue = $queueFactory->get($queueName);
-      $queue->deleteQueue();
-    }
-  }
-
-  private function removeFiles() {
-
-    $dirs = ['dkan-tmp', 'distribution', 'resources'];
-    foreach ($dirs as $dir) {
-      $path = $this->getRelativeDruaplPath() . "/sites/default/files/{$dir}";
-      if (file_exists($path)) {
-        `rm -rf {$path}`;
-      }
-    }
-  }
-
-  private function removeDatastoreTables() {
-    /* @var $connection \Drupal\Core\Database\Connection */
-    $connection = \Drupal::service('database');
-    $tables = $connection->schema()->findTables("datastore_%");
-    foreach($tables as $table) {
-      $connection->schema()->dropTable($table);
-    }
   }
 
   public function tearDown() {

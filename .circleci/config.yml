@@ -6,8 +6,10 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.0.0"
+      DKTL_VERSION: "cypress-chromium"
     steps:
+      - checkout:
+          path: dkan
       - run:
           name: Setup composer config
           command: |
@@ -20,10 +22,7 @@ jobs:
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
       - run:
           name: Initialize Project
-          command: |
-            v=$CIRCLE_BRANCH
-            if [[ $v =~ ^[0-9]. ]]; then v="${v}-dev"; else v="dev-${v}"; fi;
-            v="$v#${CIRCLE_SHA1}" && dktl init --dkan=$v
+          command: dktl init --dkan-local
       - run:
           name: Make DKAN
           command: |
@@ -37,11 +36,9 @@ jobs:
       - run:
           name: Run DKAN cypress tests
           command: |
+            dktl dc exec cli apt update -y
+            dktl dc exec cli apt install chromium-browser -y
             dktl install
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
-            dktl drush user:create testeditor --password="testeditor"
-            dktl drush user-add-role administrator testeditor
             dktl dkan:test-cypress
       - run:
           name: Run DKAN dredd tests
@@ -57,6 +54,7 @@ jobs:
           command: |
             dktl install
             dktl install:sample
+            dktl frontend:get
             dktl frontend:install
             dktl frontend:build
             dktl drush cr
