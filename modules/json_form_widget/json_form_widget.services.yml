@@ -1,0 +1,4 @@
+services:
+  json_form.builder:
+    class: \Drupal\json_form_widget\JsonFormBuilder
+    arguments: ['@dkan.metastore.schema_retriever']
