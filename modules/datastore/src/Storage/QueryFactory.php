@@ -215,6 +215,7 @@ class QueryFactory {
       "conditions" => $conditions,
     ];
   }
+
   /**
    * Helper function for converting joins to Query format.
    *
