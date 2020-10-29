@@ -4,6 +4,7 @@ namespace Drupal\datastore;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\common\Storage\Query;
 use Drupal\datastore\Service\DatastoreQuery;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -12,7 +13,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\Import;
 use Drupal\datastore\Service\ImporterList\ImporterList;
-use Drupal\common\Storage\Query;
+use Drupal\datastore\Storage\QueryFactory;
 use stdClass;
 
 /**
@@ -295,13 +296,9 @@ class Service implements ContainerInjectionInterface {
    *
    * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
-   *
-   * @return Drupal\common\Storage\Query
-   *   Query object.
    */
   private function runResultsQuery(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
-
     $query = $this->populateQuery($datastoreQuery, $storageMap);
     $primaryAlias = $datastoreQuery->resources[0]->alias;
 
@@ -325,15 +322,12 @@ class Service implements ContainerInjectionInterface {
    *
    * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
-   *
-   * @return Drupal\common\Storage\Query
-   *   Query object.
    */
   private function runCountQuery(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    $query = $this->populateQuery($datastoreQuery, $storageMap);
 
     $primaryAlias = $datastoreQuery->resources[0]->alias;
-    $query = $this->populateQuery($datastoreQuery, $storageMap);
     unset($query->limit, $query->offset);
     $query->count();
 
@@ -341,206 +335,18 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Helper function to populate Query properties with DatastoreQuery object.
+   * Populate a DKAN query object from a DatastoreQuery.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
-   *   DatastoreQuery object.
-   *
-   * @return Drupal\common\Storage\Query
-   *   Query object.
-   */
-  public function populateQuery(DatastoreQuery $datastoreQuery) {
-    $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $dqClone = $this->cloneQueryObject($datastoreQuery);
-    $query = new Query();
-
-    $this->populateQueryProperties($query, $dqClone);
-    $this->populateQueryConditions($query, $dqClone);
-    $this->populateQueryJoins($query, $dqClone, $storageMap);
-    $this->populateQuerySort($query, $dqClone);
-    $query->limit = $dqClone->limit;
-    $query->offset = $dqClone->offset;
-    $query->showDbColumns = TRUE;
-
-    unset($dqClone);
-    return $query;
-  }
-
-  /**
-   * Populate a query object with the queries from a datastore query payload.
-   *
-   * @param Drupal\common\Storage\Query $query
-   *   DKAN generalized query object.
-   * @param mixDrupal\datastore\Service\DatastoreQuery $datastoreQuery
-   *   Datastore Query API request object.
-   */
-  private function populateQueryProperties(Query $query, DatastoreQuery $datastoreQuery) {
-    foreach ($datastoreQuery->properties as $property) {
-      $query->properties[] = $this->propertyConvert($property);
-    }
-  }
-
-  /**
-   * Convert properties from a datastore query to regular DKAN query format.
-   *
-   * @param mixed $property
-   *   A datastore query property object, with "resource" properties.
-   *
-   * @return object
-   *   Standardized property object with "collection" instead of "resource."
-   */
-  private function propertyConvert($property) {
-    if (is_object($property) && isset($property->resource)) {
-      $property->collection = $property->resource;
-      unset($property->resource);
-    }
-    elseif (is_object($property) && isset($property->expression)) {
-      $property->expression = $this->expressionConvert($property->expression);
-    }
-    elseif (!is_string($property)) {
-      throw new \Exception("Bad query property.");
-    }
-    return $property;
-  }
-
-  /**
-   * Convert expressions from a datastore query to regular DKAN query format.
-   *
-   * @param object $expression
-   *   An expression from a datastore query, including "resources".
-   *
-   * @return object
-   *   Standardized expression object with "collection" instead of "resource".
-   */
-  private function expressionConvert($expression) {
-    foreach ($expression->operands as $key => $operand) {
-      if (is_object($operand) && isset($operand->operator)) {
-        $expression->operands[$key] = $this->expressionConvert($operand);
-      }
-      elseif (is_numeric($operand)) {
-        continue;
-      }
-      else {
-        $expression->operands[$key] = $this->propertyConvert($operand);
-      }
-    }
-    return $expression;
-  }
-
-  /**
-   * Helper function for sorting queries.
-   *
-   * @param Drupal\common\Storage\Query $query
-   *   DKAN query object we're building.
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
-   *   DatastoreQuery object.
-   */
-  private function populateQuerySort(Query $query, DatastoreQuery $datastoreQuery) {
-    foreach (["desc", "asc"] as $order) {
-      if (isset($datastoreQuery->sort->$order)) {
-        foreach ($datastoreQuery->sort->$order as $sort) {
-          $query->sort[$order][] = $this->propertyConvert($sort);
-        }
-      }
-    }
-  }
-
-  /**
-   * Parse and normalize query conditions.
-   *
-   * @param Drupal\common\Storage\Query $query
-   *   DKAN query object we're building.
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
-   *   DatastoreQuery object.
-   */
-  private function populateQueryConditions(Query $query, DatastoreQuery $datastoreQuery) {
-    $conditions = [];
-    $primaryAlias = $datastoreQuery->resources[0]->alias;
-    foreach ($datastoreQuery->conditions as $c) {
-      $conditions[] = $this->populateQueryCondition($c, $primaryAlias);
-    }
-    $query->conditions = $conditions;
-  }
-
-  /**
-   * Parse and normalize a single datastore query condition.
-   *
-   * @param mixed $datastoreCondition
-   *   Either a condition object or a condition group.
-   * @param string $primaryAlias
-   *   Alias for main resource being queried.
-   *
-   * @return object
-   *   Valid condition object for use in a DKAN query.
-   */
-  private function populateQueryCondition($datastoreCondition, $primaryAlias) {
-    if (isset($datastoreCondition->property)) {
-      $return = (object) [
-        "collection" => isset($datastoreCondition->resource) ? $datastoreCondition->resource : $primaryAlias,
-        "property" => $datastoreCondition->property,
-        "value" => $datastoreCondition->value,
-      ];
-      if (isset($datastoreCondition->operator)) {
-        $return->operator = $datastoreCondition->operator;
-      }
-      return $return;
-    }
-    elseif (isset($datastoreCondition->groupOperator)) {
-      foreach ($datastoreCondition->conditions as $c) {
-        $conditions[] = $this->populateQueryCondition($c, $primaryAlias);
-      }
-      return (object) [
-        "groupOperator" => $datastoreCondition->groupOperator,
-        "conditions" => $conditions,
-      ];
-    }
-    throw new \Exception("Invalid condition");
-  }
-
-  /**
-   * Helper function for converting joins to Query format.
-   *
-   * @param Drupal\common\Storage\Query $query
-   *   DKAN query object we're building.
    * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
    * @param array $storageMap
-   *   Array of storage objects, keyed to resource aliases.
+   *   Array of storage objects keyed to resource aliases in $datastoreQuery.
+   *
+   * @return Drupal\common\Storage\Query
+   *   DKAN query ready to run against datasbase storage.
    */
-  private function populateQueryJoins(Query $query, DatastoreQuery $datastoreQuery, array $storageMap) {
-    if (empty($datastoreQuery->joins) && count($datastoreQuery->resources) <= 1) {
-      return;
-    }
-    if (count($datastoreQuery->resources) > 1
-      && count($datastoreQuery->joins) < (count($datastoreQuery->resources) - 1)) {
-      throw new \Exception("Too many resources specified.");
-    }
-    foreach ($datastoreQuery->joins as $join) {
-      $storage = $storageMap[$join->resource];
-      $queryJoin = new stdClass();
-      $queryJoin->collection = $storage->getTableName();
-      $queryJoin->alias = $join->resource;
-      foreach ($join->on as $on) {
-        $queryJoin->on[] = (object) ["collection" => $on->resource, "property" => $on->property];
-      }
-      $query->joins[] = $queryJoin;
-    }
+  public function populateQuery(DatastoreQuery $datastoreQuery): Query {
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    return QueryFactory::create($datastoreQuery, $storageMap);
   }
-
-  /**
-   * Helper function to perform a deep clone of an object.
-   *
-   * Use with caution - no protection against infinite recursion.
-   *
-   * @param object $input
-   *   Incoming object for cloning.
-   *
-   * @return object
-   *   Deep-cloned object.
-   */
-  private function cloneQueryObject($input) {
-    $output = unserialize(serialize($input));
-    return $output;
-  }
-
 }
