@@ -1,0 +1,11 @@
+{
+    "resources": [
+        {
+            "id": "asdf",
+            "alias": "t"
+        }
+    ],
+    "sort": {
+        "desc": ["field1"]
+    }
+}
