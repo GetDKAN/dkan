@@ -23,15 +23,8 @@ class WebServiceApiTest extends TestCase {
 
     $webServiceApi = WebServiceApi::create($container);
     $result = $webServiceApi->import();
-    // print_r($result);
 
     $this->assertTrue($result instanceof JsonResponse);
-  }
-
-  public function testQuery() {
-    $container = $this->getContainer();
-    $webServiceApi = WebServiceApi::create($container);
-    $result = $webServiceApi->query();
   }
 
   /**

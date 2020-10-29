@@ -62,7 +62,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function summary($identifier) {
     try {
 
-      [$id, $version] = Resource::getIdentifierAndVersion($identifier);
+      list($id, $version) = Resource::getIdentifierAndVersion($identifier);
       $storage = $this->datastoreService->getStorage($id, $version);
 
       if ($storage) {
@@ -95,7 +95,7 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     try {
       $resourceId = $payload->resource_id;
-      [$identifier, $version] = Resource::getIdentifierAndVersion($resourceId);
+      list($identifier, $version) = Resource::getIdentifierAndVersion($resourceId);
       $results = $this->datastoreService->import($identifier, FALSE, $version);
       return $this->getResponse($results);
     }

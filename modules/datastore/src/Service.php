@@ -90,7 +90,7 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
-    [$resource, $result] = $this->getResource($identifier, $version);
+    list($resource, $result) = $this->getResource($identifier, $version);
 
     if (!$resource) {
       return $result;
@@ -252,7 +252,16 @@ class Service implements ContainerInjectionInterface {
     return $return;
   }
 
-  private function getSchema($datastoreQuery) {
+  /**
+   * Get an a schema for each resource.
+   *
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   DKAN Datastore Query API object.
+   *
+   * @return object
+   *   An object containing a table schema for each resource.
+   */
+  private function getSchema(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
     $schema = new stdClass();
     foreach ($datastoreQuery->resources as $resource) {
@@ -458,6 +467,8 @@ class Service implements ContainerInjectionInterface {
    *
    * @param mixed $datastoreCondition
    *   Either a condition object or a condition group.
+   * @param string $primaryAlias
+   *   Alias for main resource being queried.
    *
    * @return object
    *   Valid condition object for use in a DKAN query.
