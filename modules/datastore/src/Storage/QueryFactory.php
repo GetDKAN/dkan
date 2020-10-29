@@ -216,15 +216,25 @@ class QueryFactory {
       throw new \Exception("Too many resources specified.");
     }
     foreach ($this->datastoreQuery->joins as $join) {
-      $storage = $this->storageMap[$join->resource];
-      $queryJoin = new \stdClass();
-      $queryJoin->collection = $storage->getTableName();
-      $queryJoin->alias = $join->resource;
-      foreach ($join->on as $on) {
-        $queryJoin->on[] = (object) ["collection" => $on->resource, "property" => $on->property];
-      }
-      $query->joins[] = $queryJoin;
+      $query->joins[] = $this->populateQueryJoin($join);
     }
+  }
+
+  /**
+   * Populate a single join statement.
+   *
+   * @param object $join
+   *   A join object from list of joins.
+   */
+  private function populateQueryJoin($join) {
+    $storage = $this->storageMap[$join->resource];
+    $queryJoin = new \stdClass();
+    $queryJoin->collection = $storage->getTableName();
+    $queryJoin->alias = $join->resource;
+    foreach ($join->on as $on) {
+      $queryJoin->on[] = (object) ["collection" => $on->resource, "property" => $on->property];
+    }
+    return $queryJoin;
   }
 
   /**
