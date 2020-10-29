@@ -84,10 +84,10 @@ class SelectFactory {
    *
    * @param SeDrupal\Core\Database\Query\Select $db_query
    *   A Drupal database query API object.
-   * @param object $property
+   * @param mixed $property
    *   One property from a query properties array.
    */
-  private function setQueryProperty(Select $db_query, object $property) {
+  private function setQueryProperty(Select $db_query, $property) {
     if (isset($property->expression)) {
       $expressionStr = $this->expressionToString($property->expression);
       $db_query->addExpression($expressionStr, $property->alias);
