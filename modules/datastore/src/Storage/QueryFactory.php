@@ -65,7 +65,7 @@ class QueryFactory {
     $this->populateQueryProperties($query);
     $this->populateQueryConditions($query);
     $this->populateQueryJoins($query);
-    $this->populateQuerySort($query);
+    $this->populateQuerySorts($query);
     $query->limit = $this->datastoreQuery->limit;
     $query->offset = $this->datastoreQuery->offset;
     $query->showDbColumns = TRUE;
@@ -133,21 +133,31 @@ class QueryFactory {
   }
 
   /**
-   * Helper function for sorting queries.
+   * Process both potential sorting direction.
    *
    * @param Drupal\common\Storage\Query $query
    *   DKAN query object we're building.
    */
-  private function populateQuerySort(Query $query) {
+  private function populateQuerySorts(Query $query) {
     if (isset($this->datastoreQuery->sort->asc)) {
-      foreach ($this->datastoreQuery->sort->asc as $sort) {
-        $query->sort['asc'][] = $this->propertyConvert($sort);
-      }
+      $this->populateQuerySortDirection($query, 'asc');
     }
     if (isset($this->datastoreQuery->sort->desc)) {
-      foreach ($this->datastoreQuery->sort->desc as $sort) {
-        $query->sort['desc'][] = $this->propertyConvert($sort);
-      }
+      $this->populateQuerySortDirection($query, 'desc');
+    }
+  }
+
+  /**
+   * Populate a specific sorting direction.
+   *
+   * @param mixed $query
+   *   DKAN query object we're building.
+   * @param mixed $direction
+   *   The specific sort direction to populate.
+   */
+  private function populateQuerySortDirection($query, $direction) {
+    foreach ($this->datastoreQuery->sort->$direction as $sort) {
+      $query->sort[$direction][] = $this->propertyConvert($sort);
     }
   }
 
