@@ -155,26 +155,38 @@ class SelectFactory {
   private function expressionToString($expression) {
     $operands = [];
     foreach ($expression->operands as $operand) {
-      if (is_numeric($operand)) {
-        $operands[] = $operand;
-      }
-      elseif (is_object($operand) && isset($operand->operator)) {
-        $operands[] = $this->expressionToString($operand);
-      }
-      else {
-        $property = $this->normalizeProperty($operand);
-        $operands[] = "{$property->collection}.{$property->property}";
-      }
+      $operands[] = $this->normalizeOperand($operand);
     }
 
     if (ctype_alnum($expression->operator)) {
       throw new \Exception("Only basic arithmetic expressions currently supported.");
     }
-    else {
-      $expressionStr = implode(" $expression->operator ", $operands);
-    }
+
+    $expressionStr = implode(" $expression->operator ", $operands);
 
     return "($expressionStr)";
+  }
+
+  /**
+   * Normalize an operand for use in Select query.
+   *
+   * @param mixed $operand
+   *   Operand from a query's expression operand array.
+   *
+   * @return mixed
+   *   String or numeric operand for expression.
+   */
+  private function normalizeOperand($operand) {
+    if (is_numeric($operand)) {
+      return $operand;
+    }
+    elseif (is_object($operand) && isset($operand->operator)) {
+      return $this->expressionToString($operand);
+    }
+    else {
+      $property = $this->normalizeProperty($operand);
+      return "{$property->collection}.{$property->property}";
+    }
   }
 
   /**
