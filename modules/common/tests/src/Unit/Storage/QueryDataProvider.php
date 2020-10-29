@@ -256,7 +256,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "WHERE (t.field1 = :db_condition_placeholder_0) OR ((t.field2 = :db_condition_placeholder_1) AND (t.field3 = :db_condition_placeholder_2))";
+        return "WHERE (t.field1 < :db_condition_placeholder_0) OR ((t.field2 = :db_condition_placeholder_1) AND (t.field3 = :db_condition_placeholder_2))";
 
       case self::EXCEPTION:
         return FALSE;
