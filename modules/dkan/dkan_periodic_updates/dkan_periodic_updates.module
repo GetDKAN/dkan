@@ -442,12 +442,19 @@ function dkan_periodic_updates_reset_form($form, &$form_state) {
       }
       fclose($handle);
 
+      if (empty($manifest_options)) {
+        $form['state'] = [
+          '#markup' => '<p class="alert alert-warning">' . t('There is nothing to reset, no resource has been imported.') . '</p>',
+        ];
+        return $form;
+      }
       $form['resource_id'] = [
         '#type' => 'select',
         '#empty_option' => t('Select an option'),
         '#title' => t('Resource'),
         '#options' => $manifest_options,
         '#description' => t('Select the resource to force import in the next cron execution.'),
+        '#required' => TRUE,
       ];
 
       $form['reset'] = [
