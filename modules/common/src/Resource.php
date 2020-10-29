@@ -225,7 +225,8 @@ class Resource implements \JsonSerializable {
     /* @var $storage \Drupal\metastore\Storage\Data */
     $storage = $factory->getInstance('distribution');
 
-    return json_decode($storage->retrieve($identifier));
+    $distroJson = $storage->retrieve($identifier);
+    return json_decode($distroJson);
   }
 
 }

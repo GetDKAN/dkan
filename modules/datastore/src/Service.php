@@ -233,29 +233,33 @@ class Service implements ContainerInjectionInterface {
    *   Array of row/record objects.
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {
-
     $return = new stdClass();
 
-    $storageMap = $this->getQueryStorageMap($datastoreQuery);
-
     if ($datastoreQuery->results) {
-      $return->results = $this->runResultsQuery($datastoreQuery, $storageMap);
+      $return->results = $this->runResultsQuery($datastoreQuery);
     }
 
     if ($datastoreQuery->count) {
-      $return->count = $this->runCountQuery($datastoreQuery, $storageMap);
+      $return->count = $this->runCountQuery($datastoreQuery);
     }
 
     if ($datastoreQuery->schema) {
-      foreach ($datastoreQuery->resources as $resource) {
-        $storage = $storageMap[$resource->alias];
-        $return->schema->{$resource->id} = (object) $storage->getSchema();
-      }
+      $return->schema = $this->getSchema($datastoreQuery);
     }
 
     $return->query = $datastoreQuery;
 
     return $return;
+  }
+
+  private function getSchema($datastoreQuery) {
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    $schema = new stdClass();
+    foreach ($datastoreQuery->resources as $resource) {
+      $storage = $storageMap[$resource->alias];
+      $schema->{$resource->id} = (object) $storage->getSchema();
+    }
+    return $schema;
   }
 
   /**
@@ -267,7 +271,7 @@ class Service implements ContainerInjectionInterface {
    * @return array
    *   Array of storage objects, keyed to resource aliases.
    */
-  private function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
+  public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
     $storageMap = [];
     foreach ($datastoreQuery->resources as $resource) {
       [$identifier, $version] = Resource::getIdentifierAndVersion($resource->id);
@@ -282,16 +286,13 @@ class Service implements ContainerInjectionInterface {
    *
    * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
-   * @param array $storageMap
-   *   Array of storage objects, keyed to resource aliases.
    *
    * @return Drupal\common\Storage\Query
    *   Query object.
    */
-  private function runResultsQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
-    if ($this->results = FALSE) {
-      throw new \Exception("Results query requested on non-results datastore query.");
-    }
+  private function runResultsQuery(DatastoreQuery $datastoreQuery) {
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+
     $query = $this->populateQuery($datastoreQuery, $storageMap);
     $primaryAlias = $datastoreQuery->resources[0]->alias;
 
@@ -315,16 +316,12 @@ class Service implements ContainerInjectionInterface {
    *
    * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
-   * @param array $storageMap
-   *   Array of storage objects, keyed to resource aliases.
    *
    * @return Drupal\common\Storage\Query
    *   Query object.
    */
-  private function runCountQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
-    if ($datastoreQuery->count == FALSE) {
-      throw new \Exception("Results query requested on non-results datastore query.");
-    }
+  private function runCountQuery(DatastoreQuery $datastoreQuery) {
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
     $primaryAlias = $datastoreQuery->resources[0]->alias;
     $query = $this->populateQuery($datastoreQuery, $storageMap);
@@ -339,23 +336,23 @@ class Service implements ContainerInjectionInterface {
    *
    * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
-   * @param array $storageMap
-   *   Array of storage objects, keyed to resource aliases.
    *
    * @return Drupal\common\Storage\Query
    *   Query object.
    */
-  private function populateQuery(DatastoreQuery $datastoreQuery, array $storageMap) {
+  public function populateQuery(DatastoreQuery $datastoreQuery) {
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
     $dqClone = $this->cloneQueryObject($datastoreQuery);
     $query = new Query();
+
     $this->populateQueryProperties($query, $dqClone);
-    $query->conditions = $dqClone->conditions;
     $this->populateQueryConditions($query, $dqClone);
     $this->populateQueryJoins($query, $dqClone, $storageMap);
     $this->populateQuerySort($query, $dqClone);
     $query->limit = $dqClone->limit;
     $query->offset = $dqClone->offset;
     $query->showDbColumns = TRUE;
+
     unset($dqClone);
     return $query;
   }
@@ -430,17 +427,12 @@ class Service implements ContainerInjectionInterface {
    *   DatastoreQuery object.
    */
   private function populateQuerySort(Query $query, DatastoreQuery $datastoreQuery) {
-    foreach ($datastoreQuery->sort->desc as $desc) {
-      $query->sort["desc"][] = (object) [
-        "collection" => $desc->resource,
-        "property" => $desc->property,
-      ];
-    }
-    foreach ($datastoreQuery->sort->asc as $asc) {
-      $query->sort["asc"][] = (object) [
-        "collection" => $asc->resource,
-        "property" => $asc->property,
-      ];
+    foreach (["desc", "asc"] as $order) {
+      if (isset($datastoreQuery->sort->$order)) {
+        foreach ($datastoreQuery->sort->$order as $sort) {
+          $query->sort[$order][] = $this->propertyConvert($sort);
+        }
+      }
     }
   }
 
@@ -454,8 +446,9 @@ class Service implements ContainerInjectionInterface {
    */
   private function populateQueryConditions(Query $query, DatastoreQuery $datastoreQuery) {
     $conditions = [];
+    $primaryAlias = $datastoreQuery->resources[0]->alias;
     foreach ($datastoreQuery->conditions as $c) {
-      $conditions[] = $this->populateQueryCondition($c);
+      $conditions[] = $this->populateQueryCondition($c, $primaryAlias);
     }
     $query->conditions = $conditions;
   }
@@ -469,24 +462,28 @@ class Service implements ContainerInjectionInterface {
    * @return object
    *   Valid condition object for use in a DKAN query.
    */
-  private function populateQueryCondition($datastoreCondition) {
-    if (isset($datastoreCondition->resource)) {
-      return (object) [
-        "collection" => $datastoreCondition->resource,
+  private function populateQueryCondition($datastoreCondition, $primaryAlias) {
+    if (isset($datastoreCondition->property)) {
+      $return = (object) [
+        "collection" => isset($datastoreCondition->resource) ? $datastoreCondition->resource : $primaryAlias,
         "property" => $datastoreCondition->property,
-        "operator" => $datastoreCondition->operator,
         "value" => $datastoreCondition->value,
       ];
+      if (isset($datastoreCondition->operator)) {
+        $return->operator = $datastoreCondition->operator;
+      }
+      return $return;
     }
     elseif (isset($datastoreCondition->groupOperator)) {
       foreach ($datastoreCondition->conditions as $c) {
-        $conditions[] = $this->populateQueryCondition($c);
+        $conditions[] = $this->populateQueryCondition($c, $primaryAlias);
       }
       return (object) [
         "groupOperator" => $datastoreCondition->groupOperator,
         "conditions" => $conditions,
       ];
     }
+    throw new \Exception("Invalid condition");
   }
 
   /**
@@ -505,7 +502,7 @@ class Service implements ContainerInjectionInterface {
     }
     if (count($datastoreQuery->resources) > 1
       && count($datastoreQuery->joins) < (count($datastoreQuery->resources) - 1)) {
-      throw new \Exception("Too many collections specified.");
+      throw new \Exception("Too many resources specified.");
     }
     foreach ($datastoreQuery->joins as $join) {
       $storage = $storageMap[$join->resource];

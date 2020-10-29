@@ -167,7 +167,7 @@
         "condition": {
             "type": "object",
             "title": "Condition",
-            "description": "Condition object including property, value and operator.",
+            "description": "Condition object including property, value and operator. If querying only one resource, the \"resource\" does not need to be specified.",
             "properties": {
                 "resource": { "$ref": "#/definitions/resource" },
                 "property": { "$ref": "#/definitions/property" },
