@@ -297,9 +297,6 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private static function setQueryJoins(Select $db_query, Query $query) {
-    if (empty($query->joins)) {
-      return;
-    }
     foreach ($query->joins as $join) {
       if (isset($join->on)) {
         $db_query->join($join->collection, $join->alias, self::onString($join->on));

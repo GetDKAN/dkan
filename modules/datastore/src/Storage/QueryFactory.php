@@ -190,17 +190,31 @@ class QueryFactory {
       return $return;
     }
     elseif (isset($datastoreCondition->groupOperator)) {
-      foreach ($datastoreCondition->conditions as $c) {
-        $conditions[] = $this->populateQueryCondition($c, $primaryAlias);
-      }
-      return (object) [
-        "groupOperator" => $datastoreCondition->groupOperator,
-        "conditions" => $conditions,
-      ];
+      return $this->populateQueryGroup($datastoreCondition, $primaryAlias);
     }
     throw new \Exception("Invalid condition");
   }
 
+  /**
+   * Populate a single condition group.
+   *
+   * @param mixed $datastoreCondition
+   *   Either a condition object or a condition group.
+   * @param string $primaryAlias
+   *   Alias for main resource being queried.
+   *
+   * @return object
+   *   Valid condition group object for use in a DKAN query.
+   */
+  private function populateQueryGroup($datastoreCondition, $primaryAlias) {
+    foreach ($datastoreCondition->conditions as $c) {
+      $conditions[] = $this->populateQueryCondition($c, $primaryAlias);
+    }
+    return (object) [
+      "groupOperator" => $datastoreCondition->groupOperator,
+      "conditions" => $conditions,
+    ];
+  }
   /**
    * Helper function for converting joins to Query format.
    *
