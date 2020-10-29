@@ -274,7 +274,7 @@ class Service implements ContainerInjectionInterface {
   public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
     $storageMap = [];
     foreach ($datastoreQuery->resources as $resource) {
-      [$identifier, $version] = Resource::getIdentifierAndVersion($resource->id);
+      list($identifier, $version) = Resource::getIdentifierAndVersion($resource->id);
       $storage = $this->getStorage($identifier, $version);
       $storageMap[$resource->alias] = $storage;
     }
