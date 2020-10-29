@@ -140,10 +140,11 @@ class QueryFactory {
    */
   private function populateQuerySort(Query $query) {
     foreach (["desc", "asc"] as $order) {
-      if (isset($this->datastoreQuery->sort->$order)) {
-        foreach ($this->datastoreQuery->sort->$order as $sort) {
-          $query->sort[$order][] = $this->propertyConvert($sort);
-        }
+      if (!isset($this->datastoreQuery->sort->$order)) {
+        continue;
+      }
+      foreach ($this->datastoreQuery->sort->$order as $sort) {
+        $query->sort[$order][] = $this->propertyConvert($sort);
       }
     }
   }

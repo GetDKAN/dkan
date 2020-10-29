@@ -3,7 +3,6 @@
 namespace Drupal\common\Storage;
 
 use Drupal\Core\Database\Query\Select;
-use Drupal\Core\Database\Query\Condition;
 use Drupal\Core\Database\Connection;
 
 /**
@@ -61,7 +60,7 @@ class SelectFactory {
   }
 
   /**
-   * Set filter conditions on DB query.
+   * Specify fields on DB query.
    *
    * @param Drupal\Core\Database\Query\Select $db_query
    *   A Drupal database query API object.
@@ -76,14 +75,26 @@ class SelectFactory {
     }
 
     foreach ($query->properties as $p) {
-      if (is_object($p) && isset($p->expression)) {
-        $expressionStr = $this->expressionToString($p->expression);
-        $db_query->addExpression($expressionStr, $p->alias);
-      }
-      else {
-        $property = $this->normalizeProperty($p);
-        $db_query->addField($property->collection, $property->property, $property->alias);
-      }
+      $this->setQueryProperty($db_query, $p);
+    }
+  }
+
+  /**
+   * Set a single property.
+   *
+   * @param SeDrupal\Core\Database\Query\Select $db_query
+   *   A Drupal database query API object.
+   * @param object $property
+   *   One property from a query properties array.
+   */
+  private function setQueryProperty(Select $db_query, object $property) {
+    if (isset($property->expression)) {
+      $expressionStr = $this->expressionToString($property->expression);
+      $db_query->addExpression($expressionStr, $property->alias);
+    }
+    else {
+      $property = $this->normalizeProperty($property);
+      $db_query->addField($property->collection, $property->property, $property->alias);
     }
   }
 
@@ -141,7 +152,7 @@ class SelectFactory {
    * @return string
    *   Valid expression string.
    */
-  private function expressionToString(object $expression) {
+  private function expressionToString($expression) {
     $operands = [];
     foreach ($expression->operands as $operand) {
       if (is_numeric($operand)) {
@@ -193,7 +204,7 @@ class SelectFactory {
    * @param object $condition
    *   A condition from the DKAN query object.
    */
-  private function addCondition($db_query, object $condition) {
+  private function addCondition($db_query, $condition) {
     if (!isset($condition->operator)) {
       $condition->operator = '=';
     }

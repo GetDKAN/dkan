@@ -14,7 +14,6 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\Import;
 use Drupal\datastore\Service\ImporterList\ImporterList;
 use Drupal\datastore\Storage\QueryFactory;
-use stdClass;
 
 /**
  * Main services for the datastore.
@@ -234,7 +233,7 @@ class Service implements ContainerInjectionInterface {
    *   Array of row/record objects.
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {
-    $return = new stdClass();
+    $return = new \stdClass();
 
     if ($datastoreQuery->results) {
       $return->results = $this->runResultsQuery($datastoreQuery);
@@ -264,7 +263,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function getSchema(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $schema = new stdClass();
+    $schema = new \stdClass();
     foreach ($datastoreQuery->resources as $resource) {
       $storage = $storageMap[$resource->alias];
       $schema->{$resource->id} = (object) $storage->getSchema();
