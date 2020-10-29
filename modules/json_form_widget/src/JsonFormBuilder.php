@@ -29,21 +29,30 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   protected $schema;
 
   /**
+   * String Helper.
+   *
+   * @var \Drupal\json_form_widget\JsonFormStringHelper
+   */
+  protected $stringHelper;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.metastore.schema_retriever')
+      $container->get('dkan.metastore.schema_retriever'),
+      $container->get('json_form.string_helper')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever) {
+  public function __construct(SchemaRetriever $schema_retriever, JsonFormStringHelper $string_helper) {
     $this->schemaRetriever = $schema_retriever;
+    $this->stringHelper = $string_helper;
   }
 
   /**
@@ -89,7 +98,7 @@ class JsonFormBuilder implements ContainerInjectionInterface {
         return $this->handleArrayElement($property, $property_name, $data, $form_state);
 
       case 'string':
-        return $this->handleStringElement($property, $property_name, $data, $object_schema);
+        return $this->stringHelper->handleStringElement($property, $property_name, $data, $object_schema);
     }
   }
 
@@ -106,41 +115,6 @@ class JsonFormBuilder implements ContainerInjectionInterface {
       if ($parent === $field['#name']) {
         break;
       }
-    }
-    return $element;
-  }
-
-  /**
-   * Handle form element for a string.
-   */
-  public function handleStringElement($property, $field_name, $data, $object_schema = FALSE) {
-    // Basic definition.
-    $element = [
-      '#type' => 'textfield',
-    ];
-    if (isset($property->title)) {
-      $element['#title'] = $property->title;
-    }
-    if (isset($property->description)) {
-      $element['#description'] = $property->description;
-    }
-    // Add default value.
-    if ($data) {
-      $element['#default_value'] = $data;
-    } elseif (isset($property->default)) {
-      $element['#default_value'] = $property->default;
-    }
-    // Check if the field is required.
-    $element_schema = $object_schema ? $object_schema : $this->schema;
-    $element['#required'] = $this->checkIfRequired($field_name, $element_schema);
-    // Convert to select if applicable.
-    if (isset($property->enum)) {
-      $element['#type'] = 'select';
-      $element['#options'] = $this->getSelectOptions($property);
-    }
-    // Convert to html5 URL render element if needed.
-    if (isset($property->format) && $property->format == 'uri') {
-      $element['#type'] = 'url';
     }
     return $element;
   }
@@ -285,30 +259,6 @@ class JsonFormBuilder implements ContainerInjectionInterface {
       $element[$field_name][$child] = $this->getFormElement($type, $child, $property_schema->properties->{$child}, $value, $property_schema, $form_state);
     }
     return $element;
-  }
-
-  /**
-   * Check if field is required based on its schema.
-   */
-  public function checkIfRequired($name, $element_schema) {
-    if (isset($element_schema->required) && in_array($name, $element_schema->required)) {
-      return TRUE;
-    }
-    return FALSE;
-  }
-
-  /**
-   * Get array of options for a property.
-   */
-  public function getSelectOptions($property) {
-    $options = [];
-    if (isset($property->enumNames)) {
-      $options = array_combine($property->enum, $property->enumNames);
-    }
-    else {
-      $options = array_combine($property->enum, $property->enum);
-    }
-    return $options;
   }
 
 }
