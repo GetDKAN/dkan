@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_form_widget\JsonFormBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\json_form_widget\JsonFormValueHandler;
 
 /**
  * Plugin implementation of the 'json_form_widget'.
@@ -24,11 +25,18 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 class JsonFormWidget extends WidgetBase {
 
   /**
-   * JsonFormWidget.
+   * JsonFormBuilder.
    *
    * @var \Drupal\json_form_widget\JsonFormBuilder
    */
   protected $builder;
+
+  /**
+   * JsonFormValueHandler.
+   *
+   * @var \Drupal\json_form_widget\JsonFormValueHandler
+   */
+  protected $valueHandler;
 
   /**
    * Constructs a WidgetBase object.
@@ -45,10 +53,13 @@ class JsonFormWidget extends WidgetBase {
    *   Any third party settings.
    * @param \Drupal\json_form_widget\JsonFormBuilder $builder
    *   The JsonFormBuilder service.
+   * @param \Drupal\json_form_widget\JsonFormValueHandler $value_handler
+   *   The JsonFormValueHandler service.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, JsonFormBuilder $builder) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, JsonFormBuilder $builder, JsonFormValueHandler $value_handler) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->builder = $builder;
+    $this->valueHandler = $value_handler;
   }
 
   /**
@@ -61,7 +72,8 @@ class JsonFormWidget extends WidgetBase {
       $configuration['field_definition'],
       $configuration['settings'],
       $configuration['third_party_settings'],
-      $container->get('json_form.builder')
+      $container->get('json_form.builder'),
+      $container->get('json_form.value_handler')
     );
   }
 
@@ -126,7 +138,7 @@ class JsonFormWidget extends WidgetBase {
     $properties = array_keys((array) $schema->properties);
     $values = $form_state->getValue($field_name)[0]['value'];
     foreach ($properties as $property) {
-      $value = $this->builder->flattenValues($values, $property, $schema->properties->{$property});
+      $value = $this->valueHandler->flattenValues($values, $property, $schema->properties->{$property});
       if ($value) {
         $data[$property] = $value;
       }

@@ -2,3 +2,5 @@ services:
   json_form.builder:
     class: \Drupal\json_form_widget\JsonFormBuilder
     arguments: ['@dkan.metastore.schema_retriever']
+  json_form.value_handler:
+    class: \Drupal\json_form_widget\JsonFormValueHandler
