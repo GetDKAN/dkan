@@ -339,8 +339,6 @@ class Service implements ContainerInjectionInterface {
    *
    * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
-   * @param array $storageMap
-   *   Array of storage objects keyed to resource aliases in $datastoreQuery.
    *
    * @return Drupal\common\Storage\Query
    *   DKAN query ready to run against datasbase storage.
@@ -349,4 +347,5 @@ class Service implements ContainerInjectionInterface {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
     return QueryFactory::create($datastoreQuery, $storageMap);
   }
+
 }

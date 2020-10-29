@@ -5,16 +5,49 @@ namespace Drupal\datastore\Storage;
 use Drupal\common\Storage\Query;
 use Drupal\datastore\Service\DatastoreQuery;
 
+/**
+ * Product a Query object based on a Datastore Query.
+ */
 class QueryFactory {
 
+  /**
+   * Datastore Query object for conversion.
+   *
+   * @var Drupal\datastore\Service\DatastoreQuery
+   */
   private $datastoreQuery;
+
+  /**
+   * Storage map array of storage objects keyed by resource alias.
+   *
+   * @var array
+   */
   private $storageMap;
 
+  /**
+   * Constructor.
+   *
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   Datastore query request object.
+   * @param array $storageMap
+   *   Storage map array.
+   */
   public function __construct(DatastoreQuery $datastoreQuery, array $storageMap) {
     $this->datastoreQuery = $datastoreQuery;
     $this->storageMap = $storageMap;
   }
 
+  /**
+   * Static factory create method.
+   *
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   Datastore query request object.
+   * @param array $storageMap
+   *   Storage map array.
+   *
+   * @return Drupal\common\Storage\Query
+   *   DKAN query object.
+   */
   public static function create(DatastoreQuery $datastoreQuery, array $storageMap): Query {
     $factory = new self($datastoreQuery, $storageMap);
     return $factory->populateQuery();
