@@ -485,9 +485,6 @@ function dkan_periodic_updates_reset_form($form, &$form_state) {
  * @param $form_state
  */
 function dkan_periodic_updates_reset_form_validate($form, &$form_state) {
-  if (empty($form_state['values']['resource_id'])) {
-    form_set_error('resource_id', t('You must select a resource'));
-  }
   if (empty(variable_get('dkan_periodic_updates_' . $form_state['values']['resource_id'], ''))) {
     form_set_error('resource_id', t('The resource has not been update'));
   }
