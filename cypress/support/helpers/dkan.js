@@ -243,7 +243,7 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
   // Dialog will only show if we're using published, click yes.
   if (moderation_state == 'published') {
     cy.get('.button').contains('Yes')
-      .click({ force:true }) 
+      .click({ force:true })
   }
   cy.get('.messages--status')
     .should('contain','has been created')
@@ -251,11 +251,14 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
   // Visit the new dataset and retrieve the identifier.
   // Alias the resulting dataset identifier so it can be retrieved
   // in the test.
-  cy.get('.field--name-field-json-metadata .field__item').invoke('text')
+  cy.get('table')
+    .contains('identifier')
+    .closest('tr')
+    .find('td')
+    .eq(1)
+    .invoke('text')
     .then((text) => {
-      const regexp = /"identifier":"([a-zA-Z0-9\-]+?)",/g
-      const result = regexp.exec(text)
-      cy.wrap(result[1]).as('datasetId')
+      cy.wrap(text).as('datasetId')
     })
   // Let's capture the node ID too
   cy.url().then((url) => {
