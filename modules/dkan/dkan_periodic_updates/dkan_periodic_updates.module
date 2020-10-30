@@ -38,6 +38,14 @@ function dkan_periodic_updates_menu() {
     'access arguments' => ['administer periodic updates'],
     'type' => MENU_LOCAL_TASK,
   ];
+  $items['admin/dkan/periodic-updates/reset'] = [
+    'title' => t('Reset'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' =>['dkan_periodic_updates_reset_form'],
+    'access arguments' => ['administer periodic updates'],
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1
+  ];
   return $items;
 }
 
@@ -406,6 +414,92 @@ function dkan_periodic_updates_state() {
   }
 
   return $output;
+}
+
+
+/**
+ * Page callback for periodic updates reset page.
+ *
+ * @param $form
+ * @param $form_state
+ *
+ * @return mixed
+ */
+function dkan_periodic_updates_reset_form($form, &$form_state) {
+  $active = variable_get('dkan_periodic_updates_status');
+  if ($active) {
+    $file = variable_get('dkan_periodic_updates_manifest');
+    $file = file_load($file);
+    if ($file) {
+      $handle = fopen($file->uri, 'r');
+      $manifest_options = [];
+      $headers = fgetcsv($handle, 0, ',');
+      while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+        $resource_data = array_combine($headers, $data);
+        if (!empty(variable_get('dkan_periodic_updates_' . $resource_data['resource_id'], ''))) {
+          $manifest_options[$resource_data['resource_id']] = $resource_data['file_url'];
+        }
+      }
+      fclose($handle);
+
+      if (empty($manifest_options)) {
+        $form['state'] = [
+          '#markup' => '<p class="alert alert-warning">' . t('There is nothing to reset, no resource has been imported.') . '</p>',
+        ];
+        return $form;
+      }
+      $form['resource_id'] = [
+        '#type' => 'select',
+        '#empty_option' => t('Select an option'),
+        '#title' => t('Resource'),
+        '#options' => $manifest_options,
+        '#description' => t('Select the resource to force import in the next cron execution.'),
+        '#required' => TRUE,
+      ];
+
+      $form['reset'] = [
+        '#type' => 'submit',
+        '#value' => t('Reset'),
+      ];
+
+    }
+    else {
+      $form['state'] = [
+        '#markup' => '<p class="alert alert-warning">' . t('No manifest was found.') . '</p>',
+      ];
+    }
+  }
+  else {
+    $form['state'] = [
+      '#markup' => '<p class="alert alert-warning">' . t('Periodic updates are disabled.') . '</p>',
+    ];
+  }
+
+  return $form;
+}
+
+/**
+ * Validate function for periodic updates reset form.
+ *
+ * @param $form
+ * @param $form_state
+ */
+function dkan_periodic_updates_reset_form_validate($form, &$form_state) {
+  if (empty(variable_get('dkan_periodic_updates_' . $form_state['values']['resource_id'], ''))) {
+    form_set_error('resource_id', t('The resource has not been update'));
+  }
+}
+
+/**
+ * Submit function for periodic updates reset form.
+ *
+ * @param $form
+ * @param $form_state
+ */
+function dkan_periodic_updates_reset_form_submit($form, &$form_state) {
+  variable_set('dkan_periodic_updates_' . $form_state['values']['resource_id'], '');
+  drupal_set_message(t('Timing of the resource has been reset'));
+  $form_state['redirect'] = 'admin/dkan/periodic-updates/status';
 }
 
 /**
