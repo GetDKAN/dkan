@@ -64,17 +64,25 @@ class JsonFormValueHandler {
     $data = FALSE;
     $subschema = $schema->items;
     if ($subschema->type === "object") {
-      foreach ($formValues[$property][$property] as $key => $item) {
-        $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema->items);
-        if ($value) {
-          $data[$key] = $value;
-        }
-      }
-      return $data;
+      return $this->getObjectInArrayData($formValues, $property, $subschema);
     }
 
     foreach ($formValues[$property][$property] as $key => $value) {
       if (!empty($value)) {
+        $data[$key] = $value;
+      }
+    }
+    return $data;
+  }
+
+  /**
+   * Flatten values for objects in arrays.
+   */
+  private function getObjectInArrayData($formValues, $property, $schema) {
+    $data = [];
+    foreach ($formValues[$property][$property] as $key => $item) {
+      $value = $this->handleObjectValues($formValues[$property][$property][$key][$property], $property, $schema);
+      if ($value) {
         $data[$key] = $value;
       }
     }
