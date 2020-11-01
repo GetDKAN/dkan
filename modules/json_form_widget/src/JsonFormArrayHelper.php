@@ -60,7 +60,7 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
   public function addmoreCallback(array &$form, FormStateInterface $form_state) {
     $field = $form_state->getTriggeringElement();
     $element = $form;
-    foreach ($field['#array_parents'] as $key => $parent) {
+    foreach ($field['#array_parents'] as $parent) {
       $element = $element[$parent];
       if ($parent === $field['#name']) {
         break;
