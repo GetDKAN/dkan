@@ -110,19 +110,25 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
       $element[$field_name][$i] = $this->getSingleArrayElement($field_name, $i, $property_schema, $data, $form_state);
     }
 
-    $element['actions'] = [
-      '#type' => 'actions',
-    ];
+    $element['actions'] = $this->addArrayActions($amount, $field_name);
+
+    return $element;
+  }
+
+  /**
+   * Helper function to add actions to array.
+   */
+  private function addArrayActions($amount, $field_name) {
+    $actions['#type'] = ['actions'];
     $title = $this->t('Add one more');
-    $element['actions']['add'] = $this->getAction($title, 'json_form_widget_add_one', $field_name);
+    $actions['actions']['add'] = $this->getAction($title, 'json_form_widget_add_one', $field_name);
 
     // If there is more than one name, add the remove button.
     if ($amount > 1) {
       $title = $this->t('Remove one');
-      $element['actions']['remove_name'] = $this->getAction($title, 'json_form_widget_remove_one', $field_name);
+      $actions['actions']['remove_name'] = $this->getAction($title, 'json_form_widget_remove_one', $field_name);
     }
-
-    return $element;
+    return $actions;
   }
 
   /**
