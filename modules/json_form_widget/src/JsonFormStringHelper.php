@@ -27,34 +27,46 @@ class JsonFormStringHelper {
   public function handleStringElement($property, $field_name, $data, $object_schema = FALSE) {
     // Basic definition.
     $element = [
-      '#type' => 'textfield',
+      '#type' => $this->getElementType($property),
     ];
-    if (isset($property->title)) {
-      $element['#title'] = $property->title;
-    }
-    if (isset($property->description)) {
-      $element['#description'] = $property->description;
-    }
-    // Add default value.
-    if ($data) {
-      $element['#default_value'] = $data;
-    }
-    elseif (isset($property->default)) {
-      $element['#default_value'] = $property->default;
-    }
+    $element['#title'] = isset($property->title) ? $property->title : '';
+    $element['#description'] = isset($property->description) ? $property->description : '';
+    $element['#default_value'] = $this->getDefaultValue($data, $property);
+
     // Check if the field is required.
     $element_schema = $object_schema ? $object_schema : $this->builder->schema;
     $element['#required'] = $this->checkIfRequired($field_name, $element_schema);
-    // Convert to select if applicable.
-    if (isset($property->enum)) {
-      $element['#type'] = 'select';
+
+    // Add options if element type is select.
+    if ($element['#type'] === 'select') {
       $element['#options'] = $this->getSelectOptions($property);
     }
-    // Convert to html5 URL render element if needed.
-    if (isset($property->format) && $property->format == 'uri') {
-      $element['#type'] = 'url';
-    }
     return $element;
+  }
+
+  /**
+   * Get type of element.
+   */
+  public function getElementType($property) {
+    if (isset($property->format) && $property->format == 'uri') {
+      return 'url';
+    }
+    if (isset($property->enum)) {
+      return 'select';
+    }
+    return 'textfield';
+  }
+
+  /**
+   * Get default value for element.
+   */
+  public function getDefaultValue($data, $property) {
+    if ($data) {
+      return $data;
+    }
+    elseif (isset($property->default)) {
+      return $property->default;
+    }
   }
 
   /**
