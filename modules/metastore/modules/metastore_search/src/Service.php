@@ -339,6 +339,12 @@ class Service implements ContainerInjectionInterface {
    *   Search parameters.
    */
   private function setRange(array $params) {
+    $defaults = [
+      'page' => 1,
+      'page-size' => 10,
+    ];
+    $params = $params + $defaults;
+
     $end = ($params['page'] * $params['page-size']);
     $start = $end - $params['page-size'];
     $this->query->range($start, $params['page-size']);
