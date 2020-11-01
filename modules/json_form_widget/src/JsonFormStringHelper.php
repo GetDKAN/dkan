@@ -8,6 +8,20 @@ namespace Drupal\json_form_widget;
 class JsonFormStringHelper {
 
   /**
+   * Builder object.
+   *
+   * @var \Drupal\json_form_widget\JsonFormBuilder
+   */
+  public $builder;
+
+  /**
+   * Set builder.
+   */
+  public function setBuilder($builder) {
+    $this->builder = $builder;
+  }
+
+  /**
    * Handle form element for a string.
    */
   public function handleStringElement($property, $field_name, $data, $object_schema = FALSE) {
@@ -29,7 +43,7 @@ class JsonFormStringHelper {
       $element['#default_value'] = $property->default;
     }
     // Check if the field is required.
-    $element_schema = $object_schema ? $object_schema : $this->schema;
+    $element_schema = $object_schema ? $object_schema : $this->builder->schema;
     $element['#required'] = $this->checkIfRequired($field_name, $element_schema);
     // Convert to select if applicable.
     if (isset($property->enum)) {

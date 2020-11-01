@@ -72,6 +72,7 @@ class JsonFormBuilder implements ContainerInjectionInterface {
     $this->arrayHelper = $array_helper;
 
     $this->arrayHelper->setBuilder($this);
+    $this->stringHelper->setBuilder($this);
   }
 
   /**
