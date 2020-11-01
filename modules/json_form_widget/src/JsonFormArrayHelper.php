@@ -76,25 +76,8 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
     // Save info about the arrays.
     $widget_array_info = $form_state->get('json_form_widget_array');
     $form_state->set('json_form_widget_schema', $this->builder->schema);
-    if (!isset($widget_array_info[$field_name])) {
-      $widget_array_info[$field_name]['amount'] = 1;
-      $form_state->set('json_form_widget_array', $widget_array_info);
-      $amount = 1;
-    }
-    else {
-      $amount = $widget_array_info[$field_name]['amount'];
-    }
-
-    if (
-      !isset($widget_array_info[$field_name]['removing'])
-      && !isset($widget_array_info[$field_name]['adding'])
-      && is_array($data)
-    ) {
-      $count = count($data);
-      $amount = ($count > $amount) ? $count : $amount;
-      $widget_array_info[$field_name]['amount'] = $count;
-      $form_state->set('json_form_widget_array', $widget_array_info);
-    }
+    // Get amount of items to prinnt.
+    $amount = $this->getItemsNumber($form_state, $widget_array_info, $field_name, $data);
 
     $element = [
       '#type' => 'fieldset',
@@ -115,10 +98,35 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
     for ($i = 0; $i < $amount; $i++) {
       $element[$field_name][$i] = $this->getSingleArrayElement($field_name, $i, $property_schema, $data, $form_state);
     }
-
     $element['actions'] = $this->addArrayActions($amount, $field_name);
 
     return $element;
+  }
+
+  /**
+   * Get amount of items to print.
+   */
+  private function getItemsNumber($form_state, $widget_array_info, $field_name, $data) {
+    $amount = 1;
+    if (!isset($widget_array_info[$field_name])) {
+      $widget_array_info[$field_name]['amount'] = 1;
+      $form_state->set('json_form_widget_array', $widget_array_info);
+    }
+    else {
+      $amount = $widget_array_info[$field_name]['amount'];
+    }
+
+    if (
+      !isset($widget_array_info[$field_name]['removing'])
+      && !isset($widget_array_info[$field_name]['adding'])
+      && is_array($data)
+    ) {
+      $count = count($data);
+      $amount = ($count > $amount) ? $count : $amount;
+      $widget_array_info[$field_name]['amount'] = $count;
+      $form_state->set('json_form_widget_array', $widget_array_info);
+    }
+    return $amount;
   }
 
   /**
