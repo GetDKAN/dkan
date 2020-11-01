@@ -4,6 +4,9 @@ plugins:
     enabled: true
     config:
       standard: "Drupal,DrupalPractice"
+checks:
+  argument-count:
+    enabled: false
 exclude_patterns:
  - "cypress/"
  - "config/"
@@ -37,4 +40,4 @@ exclude_patterns:
  - "**/*.module"
  - ".circleci/"
  - ".gitignore"
-  
+
