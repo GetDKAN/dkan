@@ -43,15 +43,16 @@ class JsonFormValueHandler {
    * Flatten values for object properties.
    */
   public function handleObjectValues($formValues, $property, $schema) {
-    $properties = array_keys((array) $schema->properties);
+    if (!isset($formValues)) {
+      return FALSE;
+    }
 
+    $properties = array_keys((array) $schema->properties);
     $data = FALSE;
-    if (isset($formValues)) {
-      foreach ($properties as $sub_property) {
-        $value = $this->flattenValues($formValues, $sub_property, $schema->properties->$sub_property);
-        if ($value) {
-          $data[$sub_property] = $value;
-        }
+    foreach ($properties as $sub_property) {
+      $value = $this->flattenValues($formValues, $sub_property, $schema->properties->$sub_property);
+      if ($value) {
+        $data[$sub_property] = $value;
       }
     }
     return $data;
