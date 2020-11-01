@@ -69,7 +69,7 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
     $this->builder = $builder;
     // Save info about the arrays.
     $widget_array_info = $form_state->get('json_form_widget_array');
-    $form_state->set('json_form_widget_schema', $this->schema);
+    $form_state->set('json_form_widget_schema', $this->builder->schema);
     if (!isset($widget_array_info[$field_name])) {
       $widget_array_info[$field_name]['amount'] = 1;
       $form_state->set('json_form_widget_array', $widget_array_info);

@@ -25,7 +25,7 @@ class JsonFormBuilder implements ContainerInjectionInterface {
    *
    * @var object
    */
-  protected $schema;
+  public $schema;
 
   /**
    * String Helper.
