@@ -74,7 +74,8 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
       $widget_array_info[$field_name]['amount'] = 1;
       $form_state->set('json_form_widget_array', $widget_array_info);
       $amount = 1;
-    } else {
+    }
+    else {
       $amount = $widget_array_info[$field_name]['amount'];
     }
 
@@ -112,10 +113,26 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
     $element['actions'] = [
       '#type' => 'actions',
     ];
-    $element['actions']['add'] = [
+    $title = $this->t('Add one more');
+    $element['actions']['add'] = $this->getAction($title, 'json_form_widget_add_one', $field_name);
+
+    // If there is more than one name, add the remove button.
+    if ($amount > 1) {
+      $title = $this->t('Remove one');
+      $element['actions']['remove_name'] = $this->getAction($title, 'json_form_widget_remove_one', $field_name);
+    }
+
+    return $element;
+  }
+
+  /**
+   * Helper function to get action.
+   */
+  private function getAction($title, $function, $field_name) {
+    return [
       '#type' => 'submit',
-      '#value' => $this->t('Add one more'),
-      '#submit' => ['json_form_widget_add_one'],
+      '#value' => $title,
+      '#submit' => [$function],
       '#name' => $field_name,
       '#ajax' => [
         'callback' => [$this, 'addmoreCallback'],
@@ -123,22 +140,6 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
       ],
       '#limit_validation_errors' => [],
     ];
-    // If there is more than one name, add the remove button.
-    if ($amount > 1) {
-      $element['actions']['remove_name'] = [
-        '#type' => 'submit',
-        '#value' => $this->t('Remove one'),
-        '#submit' => ['json_form_widget_remove_one'],
-        '#name' => $field_name,
-        '#ajax' => [
-          'callback' => [$this, 'addmoreCallback'],
-          'wrapper' => $field_name . '-fieldset-wrapper',
-        ],
-        '#limit_validation_errors' => [],
-      ];
-    }
-
-    return $element;
   }
 
   /**
@@ -150,7 +151,8 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
     if (isset($property_schema->items->properties)) {
       // Return complex.
       return $this->getSingleComplexArrayElement($field_name, $i, $property_schema, $data, $form_state);
-    } else {
+    }
+    else {
       // Return simple.
       return $this->getSingleSimpleArrayElement($field_name, $i, $property_schema, $data);
     }
