@@ -70,6 +70,8 @@ class JsonFormBuilder implements ContainerInjectionInterface {
     $this->stringHelper = $string_helper;
     $this->objectHelper = $object_helper;
     $this->arrayHelper = $array_helper;
+
+    $this->arrayHelper->setBuilder($this);
   }
 
   /**
@@ -112,7 +114,7 @@ class JsonFormBuilder implements ContainerInjectionInterface {
         return $this->objectHelper->handleObjectElement($property, $property_name, $data, $form_state, $this);
 
       case 'array':
-        return $this->arrayHelper->handleArrayElement($property, $property_name, $data, $form_state, $this);
+        return $this->arrayHelper->handleArrayElement($property, $property_name, $data, $form_state);
 
       case 'string':
         return $this->stringHelper->handleStringElement($property, $property_name, $data, $object_schema);

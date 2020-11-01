@@ -25,7 +25,7 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
    *
    * @var \Drupal\json_form_widget\JsonFormBuilder
    */
-  protected $builder;
+  public $builder;
 
   /**
    * Inherited.
@@ -43,6 +43,13 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
    */
   public function __construct(JsonFormObjectHelper $object_helper) {
     $this->objectHelper = $object_helper;
+  }
+
+  /**
+   * Set builder.
+   */
+  public function setBuilder($builder) {
+    $this->builder = $builder;
   }
 
   /**
@@ -65,8 +72,7 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
   /**
    * Handle form element for an array.
    */
-  public function handleArrayElement($property_schema, $field_name, $data, $form_state, $builder) {
-    $this->builder = $builder;
+  public function handleArrayElement($property_schema, $field_name, $data, $form_state) {
     // Save info about the arrays.
     $widget_array_info = $form_state->get('json_form_widget_array');
     $form_state->set('json_form_widget_schema', $this->builder->schema);
