@@ -36,6 +36,13 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   protected $stringHelper;
 
   /**
+   * Object Helper.
+   *
+   * @var \Drupal\json_form_widget\JsonFormObjectHelper
+   */
+  protected $objectHelper;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -43,16 +50,18 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.metastore.schema_retriever'),
-      $container->get('json_form.string_helper')
+      $container->get('json_form.string_helper'),
+      $container->get('json_form.object_helper')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever, JsonFormStringHelper $string_helper) {
+  public function __construct(SchemaRetriever $schema_retriever, JsonFormStringHelper $string_helper, JsonFormObjectHelper $object_helper) {
     $this->schemaRetriever = $schema_retriever;
     $this->stringHelper = $string_helper;
+    $this->objectHelper = $object_helper;
   }
 
   /**
@@ -89,10 +98,10 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   /**
    * Get form element based on property type.
    */
-  private function getFormElement($type, $property_name, $property, $data, $object_schema = FALSE, $form_state = NULL) {
+  public function getFormElement($type, $property_name, $property, $data, $object_schema = FALSE, $form_state = NULL) {
     switch ($type) {
       case 'object':
-        return $this->handleObjectElement($property, $property_name, $data, $form_state);
+        return $this->objectHelper->handleObjectElement($property, $property_name, $data, $form_state, $this);
 
       case 'array':
         return $this->handleArrayElement($property, $property_name, $data, $form_state);
@@ -235,29 +244,7 @@ class JsonFormBuilder implements ContainerInjectionInterface {
    */
   public function getSingleComplexArrayElement($field_name, $i, $property_schema, $data, $form_state) {
     $value = isset($data[$i]) ? $data[$i] : '';
-    $element = $this->handleObjectElement($property_schema->items, $field_name, $value, $form_state);
-    return $element;
-  }
-
-  /**
-   * Handle form element for an object.
-   */
-  public function handleObjectElement($property_schema, $field_name, $data, $form_state) {
-    $element[$field_name] = [
-      '#type' => 'details',
-      '#open' => TRUE,
-      '#title' => $property_schema->title,
-    ];
-    if (isset($property_schema->description)) {
-      $element['#description'] = $property_schema->description;
-    }
-    $properties = array_keys((array) $property_schema->properties);
-
-    foreach ($properties as $child) {
-      $type = $property_schema->properties->{$child}->type ?? "string";
-      $value = $data->{$child} ?? NULL;
-      $element[$field_name][$child] = $this->getFormElement($type, $child, $property_schema->properties->{$child}, $value, $property_schema, $form_state);
-    }
+    $element = $this->objectHelper->handleObjectElement($property_schema->items, $field_name, $value, $form_state, $this);
     return $element;
   }
 
