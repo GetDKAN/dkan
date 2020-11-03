@@ -24,7 +24,6 @@
         "getdkan/sae" : "^1.1.1",
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.3",
-        "oomphinc/composer-installers-extender": "~1.1",
         "ramsey/uuid" : "^3.8.0",
         "weitzman/drupal-test-traits": "^1.5"
     },
