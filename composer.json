@@ -5,8 +5,6 @@
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
     "require": {
-        "composer/installers": "^1.2",
-        "cweagans/composer-patches": "^1.5.0",
         "drupal/admin_toolbar": "^2.3",
         "drupal/config_update": "^1.6",
         "drupal/search_api": "^1.15",
