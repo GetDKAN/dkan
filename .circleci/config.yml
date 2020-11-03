@@ -6,7 +6,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "cypress-chromium"
+      DKTL_VERSION: "4.3.0"
     steps:
       - checkout:
           path: dkan
