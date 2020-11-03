@@ -36,10 +36,8 @@ jobs:
       - run:
           name: Run DKAN cypress tests
           command: |
-            dktl dc exec cli apt update -y
-            dktl dc exec cli apt install chromium-browser -y
             dktl install
-            dktl dkan:test-cypress
+            dktl dkan:test-cypress --headless --browser=chromium
       - run:
           name: Run DKAN dredd tests
           command: |
