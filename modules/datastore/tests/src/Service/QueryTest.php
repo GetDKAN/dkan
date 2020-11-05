@@ -41,7 +41,7 @@ class QueryTest extends TestCase {
     $dkanQuery = $datastoreService->populateQuery($datastoreQuery);
     $dkanQueryCompare = QueryData::$testName(QueryData::QUERY_OBJECT);
     $dkanQueryCompare->showDbColumns = TRUE;
-    $this->assertEquals(json_encode($dkanQuery, JSON_PRETTY_PRINT), json_encode($dkanQueryCompare, JSON_PRETTY_PRINT));
+    $this->assertEquals(serialize($dkanQuery), serialize($dkanQueryCompare));
   }
 
   /**
