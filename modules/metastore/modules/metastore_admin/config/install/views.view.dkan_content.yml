@@ -9,7 +9,7 @@ dependencies:
     - user
     - views_bulk_operations
 _core:
-  default_config_hash: NRDZnPbQCKTmXDMpa6hNSS4dVTbFhvzk2fCeMlZ6y3I
+  default_config_hash: nNi8dFcjVmDJL4brSSIk2j7EZgLP4YAWRfNBctIQmjU
 id: dkan_content
 label: 'DKAN Content'
 module: node
@@ -181,20 +181,8 @@ display:
           clear_on_exposed: true
           action_title: Action
           selected_actions:
-            node_unpromote_action: 0
-            node_unpublish_action: 0
-            node_publish_action: 0
-            node_unpublish_by_keyword_action: 0
-            node_assign_owner_action: 0
-            node_promote_action: 0
-            node_save_action: 0
-            node_make_sticky_action: 0
-            node_make_unsticky_action: 0
-            views_bulk_operations_delete_entity: views_bulk_operations_delete_entity
-            'entity:save_action:node': 0
-            'entity:unpublish_action:node': 'entity:unpublish_action:node'
-            'entity:publish_action:node': 'entity:publish_action:node'
-            'entity:delete_action:node': 0
+            6:
+              action_id: views_bulk_operations_delete_entity
           preconfiguration:
             views_bulk_operations_delete_entity:
               label_override: ''
@@ -555,6 +543,8 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -596,6 +586,8 @@ display:
               anonymous: '0'
               administrator: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -638,6 +630,8 @@ display:
               api_user: '0'
               administrator: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -674,6 +668,8 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: true
           group_info:
             label: 'Published status'
@@ -723,6 +719,8 @@ display:
               anonymous: '0'
               administrator: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -747,6 +745,9 @@ display:
           plugin_id: node_status
           group: 1
           entity_type: node
+          expose:
+            operator_limit_selection: false
+            operator_list: {  }
       sorts: {  }
       title: Content
       empty:
