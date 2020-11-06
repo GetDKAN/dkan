@@ -33,7 +33,7 @@ class QueryFactory {
    *   Storage map array.
    */
   public function __construct(DatastoreQuery $datastoreQuery, array $storageMap) {
-    $this->datastoreQuery = $datastoreQuery;
+    $this->datastoreQuery = $this->clone($datastoreQuery);
     $this->storageMap = $storageMap;
   }
 
@@ -96,11 +96,11 @@ class QueryFactory {
    */
   private function propertyConvert($property) {
     if (is_object($property) && isset($property->resource)) {
-      $property->collection = $this->cloneQueryObject($property->resource);
+      $property->collection = $this->clone($property->resource);
       unset($property->resource);
     }
     elseif (is_object($property) && isset($property->expression)) {
-      $property->expression = $this->expressionConvert($this->cloneQueryObject($property->expression));
+      $property->expression = $this->expressionConvert($this->clone($property->expression));
     }
     elseif (!is_string($property)) {
       throw new \Exception("Bad query property.");
@@ -267,15 +267,18 @@ class QueryFactory {
    *
    * Use with caution - no protection against infinite recursion.
    *
-   * @param object $input
+   * @param mixed $input
    *   Incoming object for cloning.
    *
    * @return object
    *   Deep-cloned object.
    */
-  private function cloneQueryObject($input) {
-    $output = unserialize(serialize($input));
-    return $output;
+  private function clone($input) {
+    if (is_object($input)) {
+      $output = unserialize(serialize($input));
+      return $output;
+    }
+    return $input;
   }
 
 }

@@ -42,6 +42,11 @@ class QueryTest extends TestCase {
     $dkanQueryCompare = QueryData::$testName(QueryData::QUERY_OBJECT);
     $dkanQueryCompare->showDbColumns = TRUE;
     $this->assertEquals(serialize($dkanQuery), serialize($dkanQueryCompare));
+    $result = $datastoreService->runQuery($datastoreQuery);
+    $this->assertIsArray($result->results);
+    $this->assertIsNumeric($result->count);
+    $this->assertIsObject($result->schema);
+    $this->assertInstanceOf(DatastoreQuery::class, $result->query);
   }
 
   /**
@@ -63,7 +68,6 @@ class QueryTest extends TestCase {
    */
   public function testNoKeysQuery() {
     $datastoreService = Service::create($this->getCommonMockChain());
-    $payload = file_get_contents(__DIR__ . "/../../data/query/propertiesQuery.json");
     $datastoreQuery = $this->getDatastoreQueryFromJson("propertiesQuery");
     $datastoreQuery->keys = FALSE;
     $response = $datastoreService->runQuery($datastoreQuery);
