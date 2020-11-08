@@ -739,33 +739,10 @@ paths:
       requestBody:
         required: true
         schema: 
-          $ref: 'http://datastorebool.localtest.me/api/1/datastore/query/schema'
         content:
           application/json:
-            example:
-              limit: 10
-              properties:
-              - roadway
-              - road_side
-              - lncd
-              - descr
-              - begin_post
-              - end_post
-              - shape_leng
-              conditions:
-              - groupOperator: or
-                conditions:
-                - property: record_number
-                  value: 10
-                  operator: "="
-                - groupOperator: or
-                  conditions:
-                  - property: record_number
-                    value: 11
-                    operator: "="
-                  - property: record_number
-                    value: 12
-                    operator: "="
+            schema:
+              $ref: '/api/1/datastore/query/schema'
 
   /api/1/metastore/schemas/dataset/items/{identifier}/docs:
     get:
