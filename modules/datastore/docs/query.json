@@ -80,15 +80,9 @@
                 "type":"object",
                 "properties": {
                     "resource": { "$ref": "#/definitions/resource" },
-                    "on": {
-                        "type": "array",
-                        "description": "Array of two resource property objects for on statement.",
-                        "minItems": 2,
-                        "maxItems": 2,
-                        "items": { "$ref": "#/definitions/resourceProperty" }
-                    }
+                    "condition": { "$ref": "#/definitions/condition" }
                 },
-                "required": ["resource", "on"]
+                "required": ["resource", "condition"]
             }
         },
         "limit": {
@@ -183,17 +177,19 @@
                                     { "type": "number" }            
                                 ]
                             }
-                        }
+                        },
+                        { "$ref": "#/definitions/resourceProperty" }
                     ],
                     "description": "The value to filter against."
                  },
                  "operator": {
                      "type": "string",
                      "description": "Condition operator",
-                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ]
+                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ],
+                     "default": "="
                  }
             },
-            "required": [ "property", "value"]            
+            "required": [ "property", "value" ]            
         },
         "expression": {
             "type": "object",

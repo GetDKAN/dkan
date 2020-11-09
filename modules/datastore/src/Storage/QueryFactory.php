@@ -187,7 +187,7 @@ class QueryFactory {
    * @return object
    *   Valid condition object for use in a DKAN query.
    */
-  private function populateQueryCondition($datastoreCondition, $primaryAlias) {
+  private function populateQueryCondition($datastoreCondition, string $primaryAlias) {
     if (isset($datastoreCondition->property)) {
       $return = (object) [
         "collection" => isset($datastoreCondition->resource) ? $datastoreCondition->resource : $primaryAlias,
@@ -256,9 +256,14 @@ class QueryFactory {
     $queryJoin = new \stdClass();
     $queryJoin->collection = $storage->getTableName();
     $queryJoin->alias = $join->resource;
-    foreach ($join->on as $on) {
-      $queryJoin->on[] = (object) ["collection" => $on->resource, "property" => $on->property];
-    }
+    $queryJoin->condition = (object) [
+      "collection" => $join->condition->resource,
+      "property" => $join->condition->property,
+      "value" => (object) [
+        "collection" => $join->condition->value->resource,
+        "property" => $join->condition->value->property,
+      ],
+    ];
     return $queryJoin;
   }
 

@@ -41,7 +41,7 @@ class QueryDataProvider {
     ];
     $data = [];
     foreach ($tests as $test) {
-      $data[] = [
+      $data[$test] = [
         self::$test(self::QUERY_OBJECT),
         self::$test(self::SQL),
         self::$test(self::EXCEPTION),
@@ -336,9 +336,13 @@ class QueryDataProvider {
           (object) [
             "collection" => "table2",
             "alias" => "l",
-            "on" => [
-              (object) ["collection" => "t", "property" => "field1"],
-              (object) ["collection" => "l", "property" => "field1"],
+            "condition" => (object) [
+              "collection" => "t",
+              "property" => "field1",
+              "value" => (object) [
+                "collection" => "l",
+                "property" => "field1",
+              ]
             ],
           ],
         ];
@@ -370,9 +374,10 @@ class QueryDataProvider {
           (object) [
             "collection" => "table2",
             "alias" => "l",
-            "on" => [
-              (object) ["collection" => "t", "property" => "field1"],
-              (object) ["collection" => "l", "property" => "field1"],
+            "condition" => (object) [
+              "collection" => "t",
+              "property" => "field1",
+              "value" => (object) ["collection" => "l", "property" => "field1"],
             ],
           ],
         ];

@@ -184,9 +184,22 @@ class SelectFactory {
       return $this->expressionToString($operand);
     }
     else {
-      $property = $this->normalizeProperty($operand);
-      return "{$property->collection}.{$property->property}";
+      return $this->propertyToString($operand);
     }
+  }
+
+  /**
+   * Convert a "property" property to a string, including alias.
+   *
+   * @param mixed $property
+   *   Property object or string representing a property for main collection.
+   *
+   * @return string
+   *   Property name with alias prefix.
+   */
+  private function propertyToString($property) {
+    $property = $this->normalizeProperty($property);
+    return "{$property->collection}.{$property->property}";
   }
 
   /**
@@ -296,10 +309,10 @@ class SelectFactory {
    * @param Query $query
    *   A DKAN query object.
    */
-  private static function setQueryJoins(Select $db_query, Query $query) {
+  private function setQueryJoins(Select $db_query, Query $query) {
     foreach ($query->joins as $join) {
-      if (isset($join->on)) {
-        $db_query->join($join->collection, $join->alias, self::onString($join->on));
+      if (isset($join->condition)) {
+        $db_query->join($join->collection, $join->alias, $this->conditionString($join->condition));
       }
       if (empty($query->properties)) {
         $db_query->fields($join->alias);
@@ -310,14 +323,23 @@ class SelectFactory {
   /**
    * Format a DKAN query "On" object as a string for SQL join.
    *
-   * @param object $on
-   *   Join "on" object from DKAN query.
+   * @param object $condition
+   *   Join "condition" object from DKAN query.
    *
    * @return string
-   *   A proper "on" string for SQL join.
+   *   A proper "on" condition string for SQL join.
    */
-  private static function onString($on): string {
-    return "{$on[0]->collection}.{$on[0]->property} = {$on[1]->collection}.{$on[1]->property}";
+  private function conditionString($condition): string {
+    if (!isset($condition->operator)) {
+      $condition->operator = '=';
+    }
+
+    if (!isset($condition->collection) || !isset($condition->value->collection)) {
+      throw new \Exception("Invalid join condition; collection must be specified.");
+    }
+
+    $value = $this->propertyToString($condition->value);
+    return "{$condition->collection}.{$condition->property} $condition->operator $value";
   }
 
 }
