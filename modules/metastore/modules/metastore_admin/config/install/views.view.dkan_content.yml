@@ -7,9 +7,8 @@ dependencies:
   module:
     - node
     - user
-    - views_bulk_operations
 _core:
-  default_config_hash: NRDZnPbQCKTmXDMpa6hNSS4dVTbFhvzk2fCeMlZ6y3I
+  default_config_hash: nNi8dFcjVmDJL4brSSIk2j7EZgLP4YAWRfNBctIQmjU
 id: dkan_content
 label: 'DKAN Content'
 module: node
@@ -126,14 +125,14 @@ display:
       row:
         type: fields
       fields:
-        views_bulk_operations_bulk_form:
-          id: views_bulk_operations_bulk_form
-          table: views
-          field: views_bulk_operations_bulk_form
+        node_bulk_form:
+          id: node_bulk_form
+          table: node
+          field: node_bulk_form
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Views bulk operations'
+          label: ''
           exclude: false
           alter:
             alter_text: false
@@ -166,7 +165,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -174,35 +173,12 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          batch: false
-          batch_size: 100
-          form_step: true
-          buttons: false
-          clear_on_exposed: true
           action_title: Action
+          include_exclude: include
           selected_actions:
-            node_unpromote_action: 0
-            node_unpublish_action: 0
-            node_publish_action: 0
-            node_unpublish_by_keyword_action: 0
-            node_assign_owner_action: 0
-            node_promote_action: 0
-            node_save_action: 0
-            node_make_sticky_action: 0
-            node_make_unsticky_action: 0
-            views_bulk_operations_delete_entity: views_bulk_operations_delete_entity
-            'entity:save_action:node': 0
-            'entity:unpublish_action:node': 'entity:unpublish_action:node'
-            'entity:publish_action:node': 'entity:publish_action:node'
-            'entity:delete_action:node': 0
-          preconfiguration:
-            views_bulk_operations_delete_entity:
-              label_override: ''
-            'entity:unpublish_action:node':
-              label_override: ''
-            'entity:publish_action:node':
-              label_override: ''
-          plugin_id: views_bulk_operations_bulk_form
+            - node_delete_action
+          entity_type: node
+          plugin_id: node_bulk_form
         title:
           id: title
           table: node_field_data
@@ -555,6 +531,8 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -596,6 +574,8 @@ display:
               anonymous: '0'
               administrator: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -638,6 +618,8 @@ display:
               api_user: '0'
               administrator: '0'
             placeholder: ''
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -674,6 +656,8 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: true
           group_info:
             label: 'Published status'
@@ -723,6 +707,8 @@ display:
               anonymous: '0'
               administrator: '0'
             reduce: false
+            operator_limit_selection: false
+            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -747,6 +733,9 @@ display:
           plugin_id: node_status
           group: 1
           entity_type: node
+          expose:
+            operator_limit_selection: false
+            operator_list: {  }
       sorts: {  }
       title: Content
       empty:
