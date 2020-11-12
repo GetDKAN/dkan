@@ -167,7 +167,10 @@ class JsonFormBuilder implements ContainerInjectionInterface {
     $element = $this->applyOnSimpleFields($spec, $element);
     // Handle UI specs for array items.
     if (isset($spec->items)) {
-      $element = $this->applyOnArrayFields($property, $spec->items, $element);
+      $fields = array_keys((array) $spec->items);
+      foreach ($element[$property] as &$item) {
+        $item = $this->applyOnArrayFields($property, $spec->items, $item, $fields);
+      }
     }
     else {
       $element = $this->applyOnObjectFields($property, $spec, $element);
@@ -204,16 +207,13 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   /**
    * Apply schema UI to array fields.
    */
-  public function applyOnArrayFields($property, $spec, $element) {
-    $fields = array_keys((array) $spec);
-    foreach ($element[$property] as &$item) {
-      foreach ($fields as $field) {
-        if (isset($item[$property][$field])) {
-          $item[$property][$field] = $this->handlePropertySpec($field, $spec->{$field}, $item[$property][$field]);
-        }
-        else {
-          $item = $this->applyOnSimpleFields($spec, $item);
-        }
+  public function applyOnArrayFields($property, $spec, $element, $fields) {
+    foreach ($fields as $field) {
+      if (isset($element[$property][$field])) {
+        $element[$property][$field] = $this->handlePropertySpec($field, $spec->{$field}, $element[$property][$field]);
+      }
+      else {
+        $element = $this->applyOnSimpleFields($spec, $element);
       }
     }
     return $element;
