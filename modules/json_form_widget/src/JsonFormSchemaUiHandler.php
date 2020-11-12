@@ -27,7 +27,7 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
   protected $schemaRetriever;
 
   /**
-   * Logger service..
+   * Logger service.
    *
    * @var \Drupal\Core\Logger\LoggerChannelFactory
    */
