@@ -137,7 +137,8 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
     foreach ($fields as $field) {
       if (isset($element[$property][$field])) {
         $element[$property][$field] = $this->handlePropertySpec($field, $spec->{$field}, $element[$property][$field]);
-      } else {
+      }
+      else {
         $element = $this->applyOnSimpleFields($spec, $element);
       }
     }

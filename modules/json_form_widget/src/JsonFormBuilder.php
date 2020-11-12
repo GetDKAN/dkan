@@ -8,7 +8,6 @@ use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
-
 /**
  * Class JsonFormBuilder.
  */
