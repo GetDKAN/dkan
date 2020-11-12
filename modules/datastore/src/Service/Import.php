@@ -42,7 +42,7 @@ class Import {
    */
   protected function initializeResource(Resource $resource) {
     $this->resource = new DatastoreResource(
-      md5($resource->getUniqueIdentifier()),
+      $this->getTableName($resource),
       UrlHostTokenResolver::resolve($resource->getFilePath()),
       $resource->getMimeType()
     );
@@ -58,6 +58,19 @@ class Import {
    */
   protected function getResource() : DatastoreResource {
     return $this->resource;
+  }
+
+  /**
+   * Get a resource's table name.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   Resource.
+   *
+   * @return string
+   *   Table name.
+   */
+  public function getTableName(Resource $resource) {
+    return md5($resource->getUniqueIdentifier());
   }
 
   /**
