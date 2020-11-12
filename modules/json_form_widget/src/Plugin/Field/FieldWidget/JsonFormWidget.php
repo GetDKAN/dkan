@@ -124,7 +124,9 @@ class JsonFormWidget extends WidgetBase {
     $this->builder->setSchema($this->getSetting('schema'));
     $json_form = $this->builder->getJsonForm($default_data, $form_state);
 
-    return ['value' => $json_form];
+    if ($json_form) {
+      return ['value' => $json_form];
+    }
   }
 
   /**

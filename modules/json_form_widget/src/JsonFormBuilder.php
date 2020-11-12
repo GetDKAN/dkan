@@ -6,6 +6,8 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
+
 
 /**
  * Class JsonFormBuilder.
@@ -56,6 +58,13 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   protected $arrayHelper;
 
   /**
+   * Logger service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   */
+  protected $loggerFactory;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -66,19 +75,21 @@ class JsonFormBuilder implements ContainerInjectionInterface {
       $container->get('json_form.string_helper'),
       $container->get('json_form.object_helper'),
       $container->get('json_form.array_helper'),
-      $container->get('json_form.schema_ui_handler')
+      $container->get('json_form.schema_ui_handler'),
+      $container->get('logger.factory')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever, JsonFormStringHelper $string_helper, JsonFormObjectHelper $object_helper, JsonFormArrayHelper $array_helper, JsonFormSchemaUiHandler $schema_ui_handler) {
+  public function __construct(SchemaRetriever $schema_retriever, JsonFormStringHelper $string_helper, JsonFormObjectHelper $object_helper, JsonFormArrayHelper $array_helper, JsonFormSchemaUiHandler $schema_ui_handler, LoggerChannelFactory $logger_factory) {
     $this->schemaRetriever = $schema_retriever;
     $this->stringHelper = $string_helper;
     $this->objectHelper = $object_helper;
     $this->arrayHelper = $array_helper;
     $this->schemaUiHandler = $schema_ui_handler;
+    $this->loggerFactory = $logger_factory;
 
     $this->arrayHelper->setBuilder($this);
     $this->stringHelper->setBuilder($this);
@@ -88,9 +99,14 @@ class JsonFormBuilder implements ContainerInjectionInterface {
    * Set schema.
    */
   public function setSchema($schema_name) {
-    $schema = $this->schemaRetriever->retrieve($schema_name);
-    $this->schema = json_decode($schema);
-    $this->schemaUiHandler->setSchemaUi($schema_name);
+    try {
+      $schema = $this->schemaRetriever->retrieve($schema_name);
+      $this->schema = json_decode($schema);
+      $this->schemaUiHandler->setSchemaUi($schema_name);
+    }
+    catch (\Exception $exception) {
+      $this->loggerFactory->get('json_form_widget')->notice("The JSON Schema for $schema_name does not exist.");
+    }
   }
 
   /**
@@ -118,6 +134,7 @@ class JsonFormBuilder implements ContainerInjectionInterface {
       }
       return $form;
     }
+    return [];
   }
 
   /**
