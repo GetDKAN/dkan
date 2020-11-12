@@ -146,6 +146,13 @@ class ResourceLocalizer {
   }
 
   /**
+   * Getter.
+   */
+  public function getDirectory(Resource $resource) {
+    return "public://resources/{$resource->getIdentifier()}_{$resource->getVersion()}";
+  }
+
+  /**
    * Private.
    */
   private function getFileMapper(): ResourceMapper {
