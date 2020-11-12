@@ -233,14 +233,22 @@ class JsonFormBuilder implements ContainerInjectionInterface {
 
       case 'textarea':
         $element['#type'] = 'textarea';
-        if (isset($spec->rows)) {
-          $element['#rows'] = $spec->rows;
-        }
-        if (isset($spec->cols)) {
-          $element['#cols'] = $spec['#cols'];
-        }
+        $element = $this->getTextareaOptions($spec, $element);
         break;
 
+    }
+    return $element;
+  }
+
+  /**
+   * Helper function for getting textarea options.
+   */
+  private function getTextareaOptions($spec, $element) {
+    if (isset($spec->rows)) {
+      $element['#rows'] = $spec->rows;
+    }
+    if (isset($spec->cols)) {
+      $element['#cols'] = $spec['#cols'];
     }
     return $element;
   }
