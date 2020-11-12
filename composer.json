@@ -10,7 +10,6 @@
         "drupal/search_api": "^1.15",
         "drupal/views_bulk_operations": "^3.6",
         "drush/drush": "^10.2.2",
-        "estahn/json-query-wrapper": "^0.2.1",
         "ext-json": "*",
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.0",
