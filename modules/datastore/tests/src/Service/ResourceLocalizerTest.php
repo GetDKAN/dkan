@@ -31,7 +31,7 @@ class ResourceLocalizerTest extends TestCase {
       ->add(ResourceMapper::class, 'remove', NULL)
       ->getMock();
 
-    $jobStoreFactory = (new Chain($this))
+    $fileFetcherFactory = (new Chain($this))
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
       ->add(JobStore::class, 'retrieve', NULL)
       ->add(JobStore::class, 'store', '123')
@@ -44,8 +44,12 @@ class ResourceLocalizerTest extends TestCase {
       ->add(FileSystem::class, "prepareDirectory", NULL)
       ->getMock();
 
+    $jobStoreFactory = (new Chain($this))
+      ->add(JobStoreFactory::class)
+      ->getMock();
+
     $resource = new Resource('http://hello.world/file.csv', 'text/csv');
-    $service = new ResourceLocalizer($fileMapper, $jobStoreFactory, $drupalFiles);
+    $service = new ResourceLocalizer($fileMapper, $fileFetcherFactory, $drupalFiles, $jobStoreFactory);
     $this->assertNull($service->get($resource->getIdentifier(), $resource->getVersion()));
   }
 

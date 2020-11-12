@@ -4,6 +4,7 @@ namespace Drupal\datastore\Service;
 
 use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
 use Contracts\FactoryInterface;
@@ -28,14 +29,16 @@ class ResourceLocalizer {
   private $fileMapper;
   private $fileFetcherFactory;
   private $drupalFiles;
+  private $jobStoreFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles) {
+  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
     $this->fileMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
+    $this->jobStoreFactory = $jobStoreFactory;
   }
 
   /**
