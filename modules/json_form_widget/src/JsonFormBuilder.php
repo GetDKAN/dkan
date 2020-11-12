@@ -28,11 +28,11 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   public $schema;
 
   /**
-   * Schema.
+   * Schema UI handler.
    *
    * @var object
    */
-  public $schemaUi;
+  public $schemaUiHandler;
 
   /**
    * String Helper.
@@ -65,18 +65,20 @@ class JsonFormBuilder implements ContainerInjectionInterface {
       $container->get('dkan.metastore.schema_retriever'),
       $container->get('json_form.string_helper'),
       $container->get('json_form.object_helper'),
-      $container->get('json_form.array_helper')
+      $container->get('json_form.array_helper'),
+      $container->get('json_form.schema_ui_handler')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever, JsonFormStringHelper $string_helper, JsonFormObjectHelper $object_helper, JsonFormArrayHelper $array_helper) {
+  public function __construct(SchemaRetriever $schema_retriever, JsonFormStringHelper $string_helper, JsonFormObjectHelper $object_helper, JsonFormArrayHelper $array_helper, JsonFormSchemaUiHandler $schema_ui_handler) {
     $this->schemaRetriever = $schema_retriever;
     $this->stringHelper = $string_helper;
     $this->objectHelper = $object_helper;
     $this->arrayHelper = $array_helper;
+    $this->schemaUiHandler = $schema_ui_handler;
 
     $this->arrayHelper->setBuilder($this);
     $this->stringHelper->setBuilder($this);
@@ -88,16 +90,7 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   public function setSchema($schema_name) {
     $schema = $this->schemaRetriever->retrieve($schema_name);
     $this->schema = json_decode($schema);
-    $this->setSchemaUi($schema_name);
-  }
-
-  /**
-   * Set schema.
-   */
-  public function setSchemaUi($schema_name) {
-    $schema_ui = $this->schemaRetriever->retrieve($schema_name . '.ui');
-    // Fix if there isn't a schema ui.
-    $this->schemaUi = json_decode($schema_ui);
+    $this->schemaUiHandler->setSchemaUi($schema_name);
   }
 
   /**
@@ -105,13 +98,6 @@ class JsonFormBuilder implements ContainerInjectionInterface {
    */
   public function getSchema($schema_name) {
     return $this->schema;
-  }
-
-  /**
-   * Get schema UI.
-   */
-  public function getSchemaUi($schema_name) {
-    return $this->schema_ui;
   }
 
   /**
@@ -126,8 +112,8 @@ class JsonFormBuilder implements ContainerInjectionInterface {
         $value = $data->{$property} ?? NULL;
         $form[$property] = $this->getFormElement($type, $property, $this->schema->properties->{$property}, $value, FALSE, $form_state);
       }
-      if ($this->schemaUi) {
-        $form_updated = $this->applySchemaUi($form);
+      if ($this->schemaUiHandler->getSchemaUi()) {
+        $form_updated = $this->schemaUiHandler->applySchemaUi($form);
         return $form_updated;
       }
       return $form;
@@ -148,149 +134,6 @@ class JsonFormBuilder implements ContainerInjectionInterface {
       case 'string':
         return $this->stringHelper->handleStringElement($property, $property_name, $data, $object_schema);
     }
-  }
-
-  /**
-   * Apply schema UI to form.
-   */
-  public function applySchemaUi($form) {
-    foreach ((array) $this->schemaUi as $property => $spec) {
-      $form[$property] = $this->handlePropertySpec($property, $spec, $form[$property]);
-    }
-    return $form;
-  }
-
-  /**
-   * Helper function for handling Schema UI specs.
-   */
-  public function handlePropertySpec($property, $spec, $element) {
-    $element = $this->applyOnSimpleFields($spec, $element);
-    // Handle UI specs for array items.
-    if (isset($spec->items)) {
-      $fields = array_keys((array) $spec->items);
-      foreach ($element[$property] as &$item) {
-        $item = $this->applyOnArrayFields($property, $spec->items, $item, $fields);
-      }
-    }
-    else {
-      $element = $this->applyOnObjectFields($property, $spec, $element);
-    }
-    return $element;
-  }
-
-  /**
-   * Apply schema UI to simple fields.
-   */
-  public function applyOnSimpleFields($spec, $element) {
-    if (isset($spec->{"ui:options"})) {
-      $element = $this->updateWidgets($spec->{"ui:options"}, $element);
-      $element = $this->disableFields($spec->{"ui:options"}, $element);
-      $element = $this->addPlaceholders($spec->{"ui:options"}, $element);
-      $element = $this->changeFieldDescriptions($spec->{"ui:options"}, $element);
-      $element = $this->changeFieldTitle($spec->{"ui:options"}, $element);
-    }
-    return $element;
-  }
-
-  /**
-   * Apply schema UI to object fields.
-   */
-  public function applyOnObjectFields($property, $spec, $element) {
-    foreach ((array) $spec as $field => $sub_spec) {
-      if (isset($element[$property][$field])) {
-        $element[$property][$field] = $this->applyOnSimpleFields($sub_spec, $element[$property][$field]);
-      }
-    }
-    return $element;
-  }
-
-  /**
-   * Apply schema UI to array fields.
-   */
-  public function applyOnArrayFields($property, $spec, $element, $fields) {
-    foreach ($fields as $field) {
-      if (isset($element[$property][$field])) {
-        $element[$property][$field] = $this->handlePropertySpec($field, $spec->{$field}, $element[$property][$field]);
-      }
-      else {
-        $element = $this->applyOnSimpleFields($spec, $element);
-      }
-    }
-    return $element;
-  }
-
-  /**
-   * Helper function for handling widgets.
-   */
-  public function updateWidgets($spec, $element) {
-    if (!isset($spec->widget)) {
-      return $element;
-    }
-    switch ($spec->widget) {
-      case 'hidden':
-        $element['#access'] = FALSE;
-        break;
-
-      case 'textarea':
-        $element['#type'] = 'textarea';
-        $element = $this->getTextareaOptions($spec, $element);
-        break;
-
-    }
-    return $element;
-  }
-
-  /**
-   * Helper function for getting textarea options.
-   */
-  private function getTextareaOptions($spec, $element) {
-    if (isset($spec->rows)) {
-      $element['#rows'] = $spec->rows;
-    }
-    if (isset($spec->cols)) {
-      $element['#cols'] = $spec['#cols'];
-    }
-    return $element;
-  }
-
-  /**
-   * Helper function for disabling fields.
-   */
-  public function disableFields($spec, $element) {
-    if (isset($spec->disabled)) {
-      $element['#disabled'] = TRUE;
-    }
-    return $element;
-  }
-
-  /**
-   * Helper function for adding placeholders.
-   */
-  public function addPlaceholders($spec, $element) {
-    if (isset($spec->placeholder)) {
-      $element['#attributes']['placeholder'] = $spec->placeholder;
-    }
-    return $element;
-  }
-
-  /**
-   * Helper function for changing help text.
-   */
-  public function changeFieldDescriptions($spec, $element) {
-    if (isset($spec->description)) {
-      $element['#description'] = $spec->description;
-    }
-    return $element;
-  }
-
-  /**
-   * Helper function for changing help text.
-   */
-  public function changeFieldTitle($spec, $element) {
-    if (isset($spec->title)) {
-      $element['#title'] = $spec->title;
-    }
-    return $element;
   }
 
 }
