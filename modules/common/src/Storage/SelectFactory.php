@@ -233,7 +233,7 @@ class SelectFactory {
     if (!isset($condition->operator)) {
       $condition->operator = '=';
     }
-    $field = ($condition->collection ? $condition->collection : $this->alias)
+    $field = (isset($condition->collection) ? $condition->collection : $this->alias)
       . '.'
       . $condition->property;
     $db_query->condition($field, $condition->value, strtoupper($condition->operator));
