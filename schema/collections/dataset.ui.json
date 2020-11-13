@@ -1,49 +1,69 @@
 {
-  "ui:autofocus": true,
   "@type": {
-    "ui:widget": "hidden"
+    "ui:options": {
+      "widget": "hidden"
+    }
   },
   "identifier": {
-    "ui:widget": "hidden"
+    "ui:options": {
+      "widget": "hidden"
+    }
   },
   "contactPoint": {
     "@type": {
-      "ui:widget": "hidden"
+      "ui:options": {
+        "widget": "hidden"
+      }
+    }
+  },
+  "spatial": {
+    "ui:options": {
+      "widget": "textarea",
+      "rows": 5
     }
   },
   "publisher": {
     "@type": {
-      "ui:widget": "hidden"
+      "ui:options": {
+        "widget": "hidden"
+      }
     }
   },
   "distribution": {
     "items": {
       "@type": {
-        "ui:widget": "hidden"
+        "ui:options": {
+          "widget": "hidden"
+        }
       },
       "mediaType": {
-        "ui:widget": "hidden"
+        "ui:options": {
+          "widget": "hidden"
+        }
       }
     }
   },
   "description": {
-    "ui:widget": "textarea",
     "ui:options": {
-      "rows": 5
+      "widget": "textarea",
+      "rows": 5,
     }
   },
   "references": {
     "items": {
-      "ui:placeholder": "http://"
+      "ui:options": {
+        "placeholder": "http://"
+      }
     }
   },
-  "accessLevel": {
-    "ui:emptyValue": "public"
-  },
   "modified": {
-    "ui:placeholder": "YYYY-MM-DD"
+    "ui:options": {
+      "placeholder": "YYYY-MM-DD"
+    }
   },
   "describedBy": {
-    "ui:placeholder": "http://"
+    "ui:options": {
+      "placeholder": "http://"
+    }
   }
 }
