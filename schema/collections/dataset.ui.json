@@ -46,7 +46,7 @@
   "description": {
     "ui:options": {
       "widget": "textarea",
-      "rows": 5,
+      "rows": 5
     }
   },
   "references": {
