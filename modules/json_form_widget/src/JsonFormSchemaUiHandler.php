@@ -80,6 +80,9 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
   public function applySchemaUi($form) {
     if ($this->schemaUi) {
       foreach ((array) $this->schemaUi as $property => $spec) {
+        // Apply schema UI on base field.
+        $form[$property] = $this->applyOnBaseField($spec, $form[$property]);
+        // Handle property specification from schema UI.
         $form[$property] = $this->handlePropertySpec($property, $spec, $form[$property]);
       }
     }
@@ -90,16 +93,17 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
    * Helper function for handling Schema UI specs.
    */
   public function handlePropertySpec($property, $spec, $element) {
-    $element = $this->applyOnSimpleFields($spec, $element);
     // Handle UI specs for array items.
     if (isset($spec->items)) {
       $fields = array_keys((array) $spec->items);
       foreach ($element[$property] as &$item) {
         $item = $this->applyOnArrayFields($property, $spec->items, $item, $fields);
       }
+      $element[$property] = $this->applyOnBaseField($spec, $element[$property]);
     }
-    else {
-      $element = $this->applyOnObjectFields($property, $spec, $element);
+    if (isset($spec->properties)) {
+      $element[$property] = $this->applyOnBaseField($spec, $element[$property]);
+      $element = $this->applyOnObjectFields($property, $spec->properties, $element);
     }
     return $element;
   }
@@ -107,7 +111,7 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
   /**
    * Apply schema UI to simple fields.
    */
-  public function applyOnSimpleFields($spec, $element) {
+  public function applyOnBaseField($spec, $element) {
     if (isset($spec->{"ui:options"})) {
       $element = $this->updateWidgets($spec->{"ui:options"}, $element);
       $element = $this->disableFields($spec->{"ui:options"}, $element);
@@ -124,7 +128,7 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
   public function applyOnObjectFields($property, $spec, $element) {
     foreach ((array) $spec as $field => $sub_spec) {
       if (isset($element[$property][$field])) {
-        $element[$property][$field] = $this->applyOnSimpleFields($sub_spec, $element[$property][$field]);
+        $element[$property][$field] = $this->applyOnBaseField($sub_spec, $element[$property][$field]);
       }
     }
     return $element;
@@ -139,7 +143,7 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
         $element[$property][$field] = $this->handlePropertySpec($field, $spec->{$field}, $element[$property][$field]);
       }
       else {
-        $element = $this->applyOnSimpleFields($spec, $element);
+        $element = $this->applyOnBaseField($spec, $element);
       }
     }
     return $element;
