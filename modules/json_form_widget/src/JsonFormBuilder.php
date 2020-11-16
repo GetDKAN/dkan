@@ -3,6 +3,7 @@
 namespace Drupal\json_form_widget;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -13,6 +14,7 @@ use Drupal\Core\Logger\LoggerChannelFactory;
  */
 class JsonFormBuilder implements ContainerInjectionInterface {
   use StringTranslationTrait;
+  use DependencySerializationTrait;
 
   /**
    * SchemaRetriever.
