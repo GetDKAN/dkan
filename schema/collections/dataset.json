@@ -182,7 +182,8 @@
           "description": "IRI for the JSON-LD data type. This should be vcard:Contact for contactPoint.",
           "enum": [
             "vcard:Contact"
-          ]
+          ],
+          "type": "string"
         },
         "fn": {
           "title": "Contact Name",
@@ -358,7 +359,8 @@
                         "uri",
                         "binary",
                         "uuid"
-                      ]
+                      ],
+                      "type": "string"
                     }
                   }
                 }
