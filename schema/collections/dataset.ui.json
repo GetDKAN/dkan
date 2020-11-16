@@ -10,9 +10,11 @@
     }
   },
   "contactPoint": {
-    "@type": {
-      "ui:options": {
-        "widget": "hidden"
+    "properties": {
+      "@type": {
+        "ui:options": {
+          "widget": "hidden"
+        }
       }
     }
   },
@@ -23,9 +25,11 @@
     }
   },
   "publisher": {
-    "@type": {
-      "ui:options": {
-        "widget": "hidden"
+    "properties": {
+      "@type": {
+        "ui:options": {
+          "widget": "hidden"
+        }
       }
     }
   },
