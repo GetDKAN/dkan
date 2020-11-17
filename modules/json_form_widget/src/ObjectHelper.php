@@ -3,9 +3,9 @@
 namespace Drupal\json_form_widget;
 
 /**
- * Class JsonFormObjectHelper.
+ * Class ObjectHelper.
  */
-class JsonFormObjectHelper {
+class ObjectHelper {
 
   /**
    * Handle form element for an object.

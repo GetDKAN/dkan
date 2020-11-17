@@ -9,9 +9,9 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Component\Uuid\Php;
 
 /**
- * Class JsonFormBuilder.
+ * Class SchemaUiHandler.
  */
-class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
+class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Schema.

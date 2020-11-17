@@ -9,23 +9,23 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class JsonFormArrayHelper.
+ * Class ArrayHelper.
  */
-class JsonFormArrayHelper implements ContainerInjectionInterface {
+class ArrayHelper implements ContainerInjectionInterface {
   use StringTranslationTrait;
   use DependencySerializationTrait;
 
   /**
    * Object Helper.
    *
-   * @var \Drupal\json_form_widget\JsonFormObjectHelper
+   * @var \Drupal\json_form_widget\ObjectHelper
    */
   protected $objectHelper;
 
   /**
    * Builder object.
    *
-   * @var \Drupal\json_form_widget\JsonFormBuilder
+   * @var \Drupal\json_form_widget\FormBuilder
    */
   public $builder;
 
@@ -43,7 +43,7 @@ class JsonFormArrayHelper implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(JsonFormObjectHelper $object_helper) {
+  public function __construct(ObjectHelper $object_helper) {
     $this->objectHelper = $object_helper;
   }
 

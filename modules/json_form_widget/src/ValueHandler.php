@@ -3,9 +3,9 @@
 namespace Drupal\json_form_widget;
 
 /**
- * Class JsonFormValueHandler.
+ * Class ValueHandler.
  */
-class JsonFormValueHandler {
+class ValueHandler {
 
   /**
    * Flatten values.

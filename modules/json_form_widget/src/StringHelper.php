@@ -3,14 +3,14 @@
 namespace Drupal\json_form_widget;
 
 /**
- * Class JsonFormStringHelper.
+ * Class StringHelper.
  */
-class JsonFormStringHelper {
+class StringHelper {
 
   /**
    * Builder object.
    *
-   * @var \Drupal\json_form_widget\JsonFormBuilder
+   * @var \Drupal\json_form_widget\FormBuilder
    */
   public $builder;
 

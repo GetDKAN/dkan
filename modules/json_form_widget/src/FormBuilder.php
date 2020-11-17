@@ -10,9 +10,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
 /**
- * Class JsonFormBuilder.
+ * Class FormBuilder.
  */
-class JsonFormBuilder implements ContainerInjectionInterface {
+class FormBuilder implements ContainerInjectionInterface {
   use StringTranslationTrait;
   use DependencySerializationTrait;
 
@@ -40,21 +40,21 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   /**
    * String Helper.
    *
-   * @var \Drupal\json_form_widget\JsonFormStringHelper
+   * @var \Drupal\json_form_widget\StringHelper
    */
   protected $stringHelper;
 
   /**
    * Object Helper.
    *
-   * @var \Drupal\json_form_widget\JsonFormObjectHelper
+   * @var \Drupal\json_form_widget\ObjectHelper
    */
   protected $objectHelper;
 
   /**
    * Array Helper.
    *
-   * @var \Drupal\json_form_widget\JsonFormArrayHelper
+   * @var \Drupal\json_form_widget\ArrayHelper
    */
   protected $arrayHelper;
 
@@ -84,7 +84,7 @@ class JsonFormBuilder implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever, JsonFormStringHelper $string_helper, JsonFormObjectHelper $object_helper, JsonFormArrayHelper $array_helper, JsonFormSchemaUiHandler $schema_ui_handler, LoggerChannelFactory $logger_factory) {
+  public function __construct(SchemaRetriever $schema_retriever, StringHelper $string_helper, ObjectHelper $object_helper, ArrayHelper $array_helper, SchemaUiHandler $schema_ui_handler, LoggerChannelFactory $logger_factory) {
     $this->schemaRetriever = $schema_retriever;
     $this->stringHelper = $string_helper;
     $this->objectHelper = $object_helper;

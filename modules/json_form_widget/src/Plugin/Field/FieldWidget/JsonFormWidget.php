@@ -5,10 +5,10 @@ namespace Drupal\json_form_widget\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\json_form_widget\JsonFormBuilder;
+use Drupal\json_form_widget\FormBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\json_form_widget\JsonFormValueHandler;
+use Drupal\json_form_widget\ValueHandler;
 
 /**
  * Plugin implementation of the 'json_form_widget'.
@@ -25,16 +25,16 @@ use Drupal\json_form_widget\JsonFormValueHandler;
 class JsonFormWidget extends WidgetBase {
 
   /**
-   * JsonFormBuilder.
+   * FormBuilder.
    *
-   * @var \Drupal\json_form_widget\JsonFormBuilder
+   * @var \Drupal\json_form_widget\FormBuilder
    */
   protected $builder;
 
   /**
-   * JsonFormValueHandler.
+   * ValueHandler.
    *
-   * @var \Drupal\json_form_widget\JsonFormValueHandler
+   * @var \Drupal\json_form_widget\ValueHandler
    */
   protected $valueHandler;
 
@@ -51,12 +51,12 @@ class JsonFormWidget extends WidgetBase {
    *   The widget settings.
    * @param array $third_party_settings
    *   Any third party settings.
-   * @param \Drupal\json_form_widget\JsonFormBuilder $builder
+   * @param \Drupal\json_form_widget\FormBuilder $builder
    *   The JsonFormBuilder service.
-   * @param \Drupal\json_form_widget\JsonFormValueHandler $value_handler
+   * @param \Drupal\json_form_widget\ValueHandler $value_handler
    *   The JsonFormValueHandler service.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, JsonFormBuilder $builder, JsonFormValueHandler $value_handler) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, FormBuilder $builder, ValueHandler $value_handler) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->builder = $builder;
     $this->valueHandler = $value_handler;
