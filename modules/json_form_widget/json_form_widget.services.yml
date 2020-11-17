@@ -1,16 +1,16 @@
 services:
   json_form.builder:
-    class: \Drupal\json_form_widget\JsonFormBuilder
+    class: \Drupal\json_form_widget\FormBuilder
     arguments: ['@dkan.metastore.schema_retriever','@json_form.string_helper','@json_form.object_helper', '@json_form.array_helper', '@json_form.schema_ui_handler', '@logger.factory']
   json_form.value_handler:
-    class: \Drupal\json_form_widget\JsonFormValueHandler
+    class: \Drupal\json_form_widget\ValueHandler
   json_form.string_helper:
-    class: \Drupal\json_form_widget\JsonFormStringHelper
+    class: \Drupal\json_form_widget\StringHelper
   json_form.object_helper:
-    class: \Drupal\json_form_widget\JsonFormObjectHelper
+    class: \Drupal\json_form_widget\ObjectHelper
   json_form.array_helper:
-    class: \Drupal\json_form_widget\JsonFormArrayHelper
+    class: \Drupal\json_form_widget\ArrayHelper
     arguments: ['@json_form.object_helper']
   json_form.schema_ui_handler:
-    class: \Drupal\json_form_widget\JsonFormSchemaUiHandler
+    class: \Drupal\json_form_widget\SchemaUiHandler
     arguments: ['@dkan.metastore.schema_retriever', '@logger.factory', '@uuid']
