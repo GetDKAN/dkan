@@ -13,6 +13,7 @@ services:
       - '@dkan.metastore.resource_mapper'
       - '@dkan.common.file_fetcher'
       - '@dkan.common.drupal_files'
+      - '@dkan.common.job_store'
 
   dkan.datastore.service.factory.import:
     class: \Drupal\datastore\Service\Factory\Import
