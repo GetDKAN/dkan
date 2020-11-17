@@ -6,7 +6,7 @@
   },
   "identifier": {
     "ui:options": {
-      "widget": "hidden"
+      "widget": "dkan_uuid"
     }
   },
   "contactPoint": {
