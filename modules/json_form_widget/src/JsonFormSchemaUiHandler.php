@@ -6,6 +6,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Component\Uuid\Php;
 
 /**
  * Class JsonFormBuilder.
@@ -34,6 +35,13 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
   protected $loggerFactory;
 
   /**
+   * Uuid Service.
+   *
+   * @var \Drupal\Component\Uuid\Php
+   */
+  protected $uuidService;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -41,17 +49,19 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.metastore.schema_retriever'),
-      $container->get('logger.factory')
+      $container->get('logger.factory'),
+      $container->get('uuid')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory) {
+  public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory, Php $uuid) {
     $this->schemaRetriever = $schema_retriever;
     $this->schemaUi = FALSE;
     $this->loggerFactory = $logger_factory;
+    $this->uuidService = $uuid;
   }
 
   /**
@@ -164,6 +174,11 @@ class JsonFormSchemaUiHandler implements ContainerInjectionInterface {
       case 'textarea':
         $element['#type'] = 'textarea';
         $element = $this->getTextareaOptions($spec, $element);
+        break;
+
+      case 'dkan_uuid':
+        $element['#default_value'] = $element['#default_value'] ? $element['#default_value'] : $this->uuidService->generate();
+        $element['#access'] = FALSE;
         break;
     }
     return $element;
