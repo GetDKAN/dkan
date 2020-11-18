@@ -49,6 +49,15 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   }
 
   /**
+   * Get node storage.
+   *
+   * @return \Drupal\node\NodeStorageInterface
+   */
+  public function getNodeStorage() {
+    return $this->nodeStorage;
+  }
+
+  /**
    * Private.
    */
   private function setSchema($schemaId) {
@@ -172,7 +181,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The node's published revision, if found.
    */
-  private function getNodePublishedRevision(string $uuid) {
+  public function getNodePublishedRevision(string $uuid) {
 
     $nid = $this->getNidFromUuid($uuid);
 
@@ -188,7 +197,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The node's latest revision, if found.
    */
-  private function getNodeLatestRevision(string $uuid) {
+  public function getNodeLatestRevision(string $uuid) {
 
     $nid = $this->getNidFromUuid($uuid);
 
