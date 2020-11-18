@@ -77,7 +77,7 @@ class Query implements
    *
    * @var int|null
    */
-  public $offset = NULL;
+  public $offset = 0;
 
   /**
    * Return the full count of the query results, ignoring limit/offset.
