@@ -180,8 +180,8 @@ class SelectFactory {
     if (is_numeric($operand)) {
       return $operand;
     }
-    elseif (is_object($operand) && isset($operand->operator)) {
-      return $this->expressionToString($operand);
+    elseif (is_object($operand) && isset($operand->expression)) {
+      return $this->expressionToString($operand->expression);
     }
     else {
       return $this->propertyToString($operand);

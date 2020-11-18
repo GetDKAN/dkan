@@ -155,12 +155,16 @@ class QueryDataProvider {
               "operator" => "*",
               "operands" => [
                 (object) [
-                  "operator" => "+",
-                  "operands" => ["field1", "field2"],
+                  "expression" => (object) [
+                    "operator" => "+",
+                    "operands" => ["field1", "field2"],
+                  ],
                 ],
                 (object) [
-                  "operator" => "+",
-                  "operands" => ["field3", "field4"],
+                  "expression" => (object) [
+                    "operator" => "+",
+                    "operands" => ["field3", "field4"],
+                  ],
                 ],
               ],
             ],

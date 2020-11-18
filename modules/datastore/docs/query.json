@@ -223,7 +223,13 @@
                             },
                             { "$ref": "#/definitions/property" },
                             { "$ref": "#/definitions/resourceProperty" },
-                            { "$ref": "#/definitions/expression" }
+                            {
+                                "type": "object",
+                                "title": "Expression",
+                                "properties": {
+                                    "expression": { "$ref": "#/definitions/expression" }
+                                }
+                            }
                         ]
                     }
                 }
