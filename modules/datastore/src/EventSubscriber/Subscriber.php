@@ -4,8 +4,11 @@ namespace Drupal\datastore\EventSubscriber;
 
 use Drupal\common\Resource;
 use Drupal\common\LoggerTrait;
+use Drupal\datastore\Service\ResourcePurger;
+use Drupal\metastore\Events\DatasetPublication;
 use Drupal\metastore\Events\Registration;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\Storage\Data;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -22,6 +25,7 @@ class Subscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     $events = [];
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
+    $events[Data::EVENT_DATASET_PUBLICATION][] = ['purgeResources'];
     return $events;
   }
 
@@ -57,6 +61,21 @@ class Subscriber implements EventSubscriberInterface {
       'text/csv',
       'text/tab-separated-values',
     ]);
+  }
+
+  /**
+   * Purge resources.
+   *
+   * @param DatasetPublication $event
+   *   Dataset publication.
+   */
+  public function purgeResources(DatasetPublication $event) {
+    $node = $event->getNode();
+
+    /** @var ResourcePurger $resourcePurger */
+    $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
+    // Queue limited purging.
+    $resourcePurger->schedulePurging([$node->uuid()]);
   }
 
 }
