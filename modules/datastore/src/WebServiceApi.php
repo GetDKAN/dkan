@@ -197,7 +197,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
 
     try {
-      $datastoreQuery = DatastoreQuery::hydrate($payloadJson);
+      $datastoreQuery = new DatastoreQuery($payloadJson);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException(

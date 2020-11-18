@@ -5,7 +5,6 @@ namespace Drupal\Tests\datastore\Service;
 use Drupal\common\Resource;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\common\Storage\Query;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
@@ -69,7 +68,7 @@ class QueryTest extends TestCase {
   public function testNoKeysQuery() {
     $datastoreService = Service::create($this->getCommonMockChain());
     $datastoreQuery = $this->getDatastoreQueryFromJson("propertiesQuery");
-    $datastoreQuery->keys = FALSE;
+    $datastoreQuery->{"$.keys"} = FALSE;
     $response = $datastoreService->runQuery($datastoreQuery);
     $this->assertIsArray($response->results[0]);
   }
@@ -82,7 +81,7 @@ class QueryTest extends TestCase {
   }
 
   public function testBadQueryProperty() {
-    $this->expectExceptionMessage("Bad query property.");
+    $this->expectExceptionMessage("JSON Schema validation failed.");
     $datastoreService = Service::create($this->getCommonMockChain());
     $datastoreQuery = $this->getDatastoreQueryFromJson("badPropertyQuery");
     $datastoreService->runQuery($datastoreQuery);
@@ -92,6 +91,13 @@ class QueryTest extends TestCase {
     $this->expectExceptionMessage("Too many resources specified.");
     $datastoreService = Service::create($this->getCommonMockChain());
     $datastoreQuery = $this->getDatastoreQueryFromJson("tooManyResourcesQuery");
+    $datastoreService->runQuery($datastoreQuery);
+  }
+
+  public function testInvalidQueryAgainstSchema() {
+    $this->expectExceptionMessage("JSON Schema validation failed");
+    $datastoreService = Service::create($this->getCommonMockChain());
+    $datastoreQuery = $this->getDatastoreQueryFromJson("invalidQuerySchema");
     $datastoreService->runQuery($datastoreQuery);
   }
 
@@ -111,7 +117,7 @@ class QueryTest extends TestCase {
 
   private function getDatastoreQueryFromJson($payloadName): DatastoreQuery {
     $payload = file_get_contents(__DIR__ . "/../../data/query/$payloadName.json");
-    return DatastoreQuery::hydrate($payload);
+    return new DatastoreQuery($payload);
   }
   
   /**

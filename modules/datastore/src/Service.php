@@ -235,15 +235,15 @@ class Service implements ContainerInjectionInterface {
   public function runQuery(DatastoreQuery $datastoreQuery) {
     $return = new \stdClass();
 
-    if ($datastoreQuery->results) {
+    if ($datastoreQuery->{"$.results"} !== FALSE) {
       $return->results = $this->runResultsQuery($datastoreQuery);
     }
 
-    if ($datastoreQuery->count) {
+    if ($datastoreQuery->{"$.count"} !== FALSE) {
       $return->count = $this->runCountQuery($datastoreQuery);
     }
 
-    if ($datastoreQuery->schema) {
+    if ($datastoreQuery->{"$.schema"} !== FALSE) {
       $return->schema = $this->getSchema($datastoreQuery);
     }
 
@@ -264,9 +264,9 @@ class Service implements ContainerInjectionInterface {
   private function getSchema(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
     $schema = new \stdClass();
-    foreach ($datastoreQuery->resources as $resource) {
-      $storage = $storageMap[$resource->alias];
-      $schema->{$resource->id} = (object) $storage->getSchema();
+    foreach ($datastoreQuery->{"$.resources"} as $resource) {
+      $storage = $storageMap[$resource["alias"]];
+      $schema->{$resource["id"]} = (object) $storage->getSchema();
     }
     return $schema;
   }
@@ -282,10 +282,10 @@ class Service implements ContainerInjectionInterface {
    */
   public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
     $storageMap = [];
-    foreach ($datastoreQuery->resources as $resource) {
-      list($identifier, $version) = Resource::getIdentifierAndVersion($resource->id);
+    foreach ($datastoreQuery->{"$.resources"} as $resource) {
+      list($identifier, $version) = Resource::getIdentifierAndVersion($resource["id"]);
       $storage = $this->getStorage($identifier, $version);
-      $storageMap[$resource->alias] = $storage;
+      $storageMap[$resource["alias"]] = $storage;
     }
     return $storageMap;
   }
@@ -299,11 +299,11 @@ class Service implements ContainerInjectionInterface {
   private function runResultsQuery(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
     $query = $this->populateQuery($datastoreQuery, $storageMap);
-    $primaryAlias = $datastoreQuery->resources[0]->alias;
+    $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
 
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
 
-    if ($datastoreQuery->keys === FALSE) {
+    if ($datastoreQuery->{"$.keys"} === FALSE) {
       $result = array_map(function ($row) {
         $arrayRow = (array) $row;
         foreach ($arrayRow as $value) {
@@ -326,7 +326,7 @@ class Service implements ContainerInjectionInterface {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
     $query = $this->populateQuery($datastoreQuery, $storageMap);
 
-    $primaryAlias = $datastoreQuery->resources[0]->alias;
+    $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     unset($query->limit, $query->offset);
     $query->count();
 

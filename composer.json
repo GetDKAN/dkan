@@ -23,7 +23,8 @@
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.3",
         "ramsey/uuid" : "^3.8.0",
-        "weitzman/drupal-test-traits": "^1.5"
+        "weitzman/drupal-test-traits": "^1.5",
+        "getdkan/rooted-json-data": "dev-noproperty"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5"

@@ -36,7 +36,7 @@
                             "property": { "$ref": "#/definitions/property" },
                             "alias": { "type": "string" }
                         },
-                        "required": [ "resource", "property", "alias" ]
+                        "required": [ "resource", "property" ]
                     },
                     {
                         "type": "object",
@@ -56,20 +56,7 @@
             "items": {
                 "anyOf": [
                     { "$ref": "#/definitions/condition" },
-                    {
-                        "type": "object",
-                        "title": "Conditional group",
-                        "description": "Group of conditions bound by 'and'/'or' operators.",
-                        "properties": {
-                            "groupOperator": {
-                                "type": "string",
-                                "enum": [ "and", "or" ]
-                            },
-                            "conditions": {
-                                 "$ref": "#/definitions/condition"
-                            }
-                        }            
-                    }
+                    { "$ref": "#/definitions/conditionGroup" }
                 ]
             }
         },
@@ -158,6 +145,26 @@
             },
             "required": [ "property" ]
         },
+        "conditionGroup": {
+            "type": "object",
+            "title": "Conditional group",
+            "description": "Group of conditions bound by 'and'/'or' operators.",
+            "properties": {
+                "groupOperator": {
+                    "type": "string",
+                    "enum": [ "and", "or" ]
+                },
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            { "$ref": "#/definitions/condition" },
+                            { "$ref": "#/definitions/conditionGroup" }
+                        ]
+                    }
+                }
+            }            
+        },
         "condition": {
             "type": "object",
             "title": "Condition",
@@ -209,7 +216,7 @@
                 "operands": {
                     "type": "array",
                     "items": {
-                        "oneOf": [
+                        "anyOf": [
                             {
                                 "type": "number",
                                 "title": "Number"

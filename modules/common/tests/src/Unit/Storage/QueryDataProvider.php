@@ -128,7 +128,7 @@ class QueryDataProvider {
             "expression" => (object) [
               "operator" => "+",
               "operands" => [
-                (object) ["property" => "field2", "collection" => "t"],
+                (object) ["collection" => "t", "property" => "field2"],
                 2,
               ],
             ],
@@ -206,8 +206,8 @@ class QueryDataProvider {
         $query = new Query();
         $query->conditions = [
           (object) [
-            "property" => "field1",
             "collection" => "t",
+            "property" => "field1",
             "value" => "value",
           ],
         ];
@@ -362,12 +362,12 @@ class QueryDataProvider {
         $query = new Query();
         $query->properties = [
           (object) [
-            "property" => "field2",
             "collection" => "t",
+            "property" => "field2",
           ],
           (object) [
-            "property" => "field3",
             "collection" => "l",
+            "property" => "field3",
           ],
         ];
         $query->joins = [

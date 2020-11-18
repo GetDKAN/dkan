@@ -33,7 +33,7 @@ class QueryFactory {
    *   Storage map array.
    */
   public function __construct(DatastoreQuery $datastoreQuery, array $storageMap) {
-    $this->datastoreQuery = $this->clone($datastoreQuery);
+    $this->datastoreQuery = $datastoreQuery;
     $this->storageMap = $storageMap;
   }
 
@@ -66,8 +66,8 @@ class QueryFactory {
     $this->populateQueryConditions($query);
     $this->populateQueryJoins($query);
     $this->populateQuerySorts($query);
-    $query->limit = $this->datastoreQuery->limit;
-    $query->offset = $this->datastoreQuery->offset;
+    $query->limit = $this->datastoreQuery->{"$.limit"};
+    $query->offset = $this->datastoreQuery->{"$.offset"};
     $query->showDbColumns = TRUE;
 
     return $query;
@@ -80,7 +80,10 @@ class QueryFactory {
    *   DKAN generalized query object.
    */
   private function populateQueryProperties(Query $query) {
-    foreach ($this->datastoreQuery->properties as $property) {
+    if (empty($this->datastoreQuery->{"$.properties"})) {
+      return;
+    }
+    foreach ($this->datastoreQuery->{"$.properties"} as $property) {
       $query->properties[] = $this->propertyConvert($property);
     }
   }
@@ -95,14 +98,14 @@ class QueryFactory {
    *   Standardized property object with "collection" instead of "resource."
    */
   private function propertyConvert($property) {
-    if (is_object($property) && isset($property->resource)) {
-      $property->collection = $this->clone($property->resource);
-      unset($property->resource);
+    if (is_array($property) && isset($property["resource"])) {
+      $property = (object) self::resourceRename($property);
     }
-    elseif (is_object($property) && isset($property->expression)) {
-      $property->expression = $this->expressionConvert($this->clone($property->expression));
+    elseif (is_array($property) && isset($property["expression"])) {
+      $property["expression"] = $this->expressionConvert($property["expression"]);
+      $property = (object) $property;
     }
-    elseif (!is_string($property)) {
+    elseif (!is_string($property) && !is_numeric($property)) {
       throw new \Exception("Bad query property.");
     }
     return $property;
@@ -118,18 +121,18 @@ class QueryFactory {
    *   Standardized expression object with "collection" instead of "resource".
    */
   private function expressionConvert($expression) {
-    foreach ($expression->operands as $key => $operand) {
-      if (is_object($operand) && isset($operand->operator)) {
-        $expression->operands[$key] = $this->expressionConvert($operand);
+    foreach ($expression["operands"] as $key => $operand) {
+      if (is_array($operand) && isset($operand["operator"])) {
+        $expression["operands"][$key] = $this->expressionConvert($operand);
       }
       elseif (is_numeric($operand)) {
         continue;
       }
       else {
-        $expression->operands[$key] = $this->propertyConvert($operand);
+        $expression["operands"][$key] = $this->propertyConvert($operand);
       }
     }
-    return $expression;
+    return (object) $expression;
   }
 
   /**
@@ -139,10 +142,10 @@ class QueryFactory {
    *   DKAN query object we're building.
    */
   private function populateQuerySorts(Query $query) {
-    if (isset($this->datastoreQuery->sort->asc)) {
+    if (isset($this->datastoreQuery->{"$.sort.asc"})) {
       $this->populateQuerySortDirection($query, 'asc');
     }
-    if (isset($this->datastoreQuery->sort->desc)) {
+    if (isset($this->datastoreQuery->{"$.sort.desc"})) {
       $this->populateQuerySortDirection($query, 'desc');
     }
   }
@@ -156,7 +159,7 @@ class QueryFactory {
    *   The specific sort direction to populate.
    */
   private function populateQuerySortDirection($query, $direction) {
-    foreach ($this->datastoreQuery->sort->$direction as $sort) {
+    foreach ($this->datastoreQuery->{"$.sort.$direction"} as $sort) {
       $query->sort[$direction][] = $this->propertyConvert($sort);
     }
   }
@@ -168,9 +171,12 @@ class QueryFactory {
    *   DKAN query object we're building.
    */
   private function populateQueryConditions(Query $query) {
+    if (empty($this->datastoreQuery->{"$.conditions"})) {
+      return;
+    }
     $conditions = [];
-    $primaryAlias = $this->datastoreQuery->resources[0]->alias;
-    foreach ($this->datastoreQuery->conditions as $c) {
+    $primaryAlias = $this->datastoreQuery->{"$.resources[0].alias"};
+    foreach ($this->datastoreQuery->{"$.conditions"} as $c) {
       $conditions[] = $this->populateQueryCondition($c, $primaryAlias);
     }
     $query->conditions = $conditions;
@@ -179,28 +185,27 @@ class QueryFactory {
   /**
    * Parse and normalize a single datastore query condition.
    *
-   * @param mixed $datastoreCondition
+   * @param mixed $condition
    *   Either a condition object or a condition group.
-   * @param string $primaryAlias
-   *   Alias for main resource being queried.
    *
    * @return object
    *   Valid condition object for use in a DKAN query.
    */
-  private function populateQueryCondition($datastoreCondition, string $primaryAlias) {
-    if (isset($datastoreCondition->property)) {
+  private function populateQueryCondition($condition) {
+    $primaryAlias = $this->datastoreQuery->{"$.resources[0].alias"};
+    if (isset($condition["property"])) {
       $return = (object) [
-        "collection" => isset($datastoreCondition->resource) ? $datastoreCondition->resource : $primaryAlias,
-        "property" => $datastoreCondition->property,
-        "value" => $datastoreCondition->value,
+        "collection" => isset($condition["resource"]) ? $condition["resource"] : $primaryAlias,
+        "property" => $condition["property"],
+        "value" => $this->propertyConvert($condition["value"]),
       ];
-      if (isset($datastoreCondition->operator)) {
-        $return->operator = $datastoreCondition->operator;
+      if (isset($condition["operator"])) {
+        $return->operator = $condition["operator"];
       }
       return $return;
     }
-    elseif (isset($datastoreCondition->groupOperator)) {
-      return $this->populateQueryGroup($datastoreCondition, $primaryAlias);
+    elseif (isset($condition["groupOperator"])) {
+      return $this->populateQueryGroup($condition);
     }
     throw new \Exception("Invalid condition");
   }
@@ -208,20 +213,18 @@ class QueryFactory {
   /**
    * Populate a single condition group.
    *
-   * @param mixed $datastoreCondition
-   *   Either a condition object or a condition group.
-   * @param string $primaryAlias
-   *   Alias for main resource being queried.
+   * @param mixed $conditionGroup
+   *   A conditionGroup array.
    *
    * @return object
    *   Valid condition group object for use in a DKAN query.
    */
-  private function populateQueryGroup($datastoreCondition, $primaryAlias) {
-    foreach ($datastoreCondition->conditions as $c) {
-      $conditions[] = $this->populateQueryCondition($c, $primaryAlias);
+  private function populateQueryGroup($conditionGroup) {
+    foreach ($conditionGroup["conditions"] as $c) {
+      $conditions[] = $this->populateQueryCondition($c);
     }
     return (object) [
-      "groupOperator" => $datastoreCondition->groupOperator,
+      "groupOperator" => $conditionGroup["groupOperator"],
       "conditions" => $conditions,
     ];
   }
@@ -233,14 +236,14 @@ class QueryFactory {
    *   DKAN query object we're building.
    */
   private function populateQueryJoins(Query $query) {
-    if (empty($this->datastoreQuery->joins) && count($this->datastoreQuery->resources) <= 1) {
+    if (empty($this->datastoreQuery->{"$.joins"}) && count($this->datastoreQuery->{"$.resources"}) <= 1) {
       return;
     }
-    if (count($this->datastoreQuery->resources) > 1
-      && count($this->datastoreQuery->joins) < (count($this->datastoreQuery->resources) - 1)) {
+    if (count($this->datastoreQuery->{"$.resources"}) > 1
+      && count($this->datastoreQuery->{"$.joins"}) < (count($this->datastoreQuery->{"$.resources"}) - 1)) {
       throw new \Exception("Too many resources specified.");
     }
-    foreach ($this->datastoreQuery->joins as $join) {
+    foreach ($this->datastoreQuery->{"$.joins"} as $join) {
       $query->joins[] = $this->populateQueryJoin($join);
     }
   }
@@ -252,38 +255,35 @@ class QueryFactory {
    *   A join object from list of joins.
    */
   private function populateQueryJoin($join) {
-    $storage = $this->storageMap[$join->resource];
+    $storage = $this->storageMap[$join["resource"]];
     $queryJoin = new \stdClass();
     $queryJoin->collection = $storage->getTableName();
-    $queryJoin->alias = $join->resource;
-    $queryJoin->condition = (object) [
-      "collection" => $join->condition->resource,
-      "property" => $join->condition->property,
-      "value" => (object) [
-        "collection" => $join->condition->value->resource,
-        "property" => $join->condition->value->property,
-      ],
-    ];
+    $queryJoin->alias = $join["resource"];
+    $queryJoin->condition = (object) $this->populateQueryCondition($join["condition"]);
     return $queryJoin;
   }
 
   /**
-   * Helper function to perform a deep clone of an object.
+   * Rename any "resource" keys to "collection" in assoc. array.
    *
-   * Use with caution - no protection against infinite recursion.
+   * @param array $input
+   *   Input array.
    *
-   * @param mixed $input
-   *   Incoming object for cloning.
-   *
-   * @return object
-   *   Deep-cloned object.
+   * @return array
+   *   Array with renamed keys.
    */
-  private function clone($input) {
-    if (is_object($input)) {
-      $output = unserialize(serialize($input));
-      return $output;
+  private static function resourceRename(array $input) {
+    $return = [];
+    foreach ($input as $key => $value) {
+      if ($key == "resource") {
+        $key = "collection";
+      }
+      if (is_array($value)) {
+        $value = self::resourceRename($value);
+      }
+      $return[$key] = $value;
     }
-    return $input;
+    return $return;
   }
 
 }
