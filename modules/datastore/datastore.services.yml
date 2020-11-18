@@ -15,6 +15,13 @@ services:
       - '@dkan.common.drupal_files'
       - '@dkan.common.job_store'
 
+  dkan.datastore.service.resource_purger:
+    class: \Drupal\datastore\Service\ResourcePurger
+    arguments:
+      - '@config.factory'
+      - '@dkan.metastore.storage'
+      - '@dkan.datastore.service'
+
   dkan.datastore.service.factory.import:
     class: \Drupal\datastore\Service\Factory\Import
     arguments:
