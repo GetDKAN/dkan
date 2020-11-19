@@ -121,7 +121,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function purgeMultiple(array $uuids, bool $allRevisions = FALSE) {
     if ($this->validatePurging()) {
       foreach ($uuids as $uuid) {
-        $this->purge($uuid, $allRevisions);
+        $this->purgeSingle($uuid, $allRevisions);
       }
     }
   }
@@ -129,23 +129,30 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * Purge a dataset's unneeded resources.
    */
-  private function purge(string $uuid, bool $allRevisions = FALSE) {
+  private function purgeSingle(string $uuid, bool $allRevisions = FALSE) {
     $dataset = $this->storage->getNodeLatestRevision($uuid);
     if (!$dataset) {
       return;
     }
     foreach ($this->getResourcesToPurge($dataset, $allRevisions) as [$id, $version]) {
-      if ($this->getPurgeFileSetting()) {
-        $this->datastore->getResourceLocalizer()->remove($id, $version);
-      }
-      if ($this->getPurgeTableSetting()) {
-        $this->datastore->getStorage($id, $version)->destroy();
-      }
+      $this->purge($id, $version);
     }
   }
 
   /**
-   * Get resources to purge.
+   * Purge a resource's file and/or table, based on enabled config settings.
+   */
+  private function purge(string $id, string $version) {
+    if ($this->getPurgeFileSetting()) {
+      $this->datastore->getResourceLocalizer()->remove($id, $version);
+    }
+    if ($this->getPurgeTableSetting()) {
+      $this->datastore->getStorage($id, $version)->destroy();
+    }
+  }
+
+  /**
+   * Determine which resources of a dataset can be purged.
    */
   private function getResourcesToPurge(NodeInterface $dataset, bool $allRevisions = FALSE) : array {
     $publishedCount = 0;
