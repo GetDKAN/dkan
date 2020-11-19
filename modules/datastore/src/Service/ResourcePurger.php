@@ -180,7 +180,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Important revisions are the latest revision, and the latest published revision.
+   * Important revisions are the latest one, and the latest published one.
    */
   private function isRevisionNeeded(bool $published, int $publishedCount, int $key, array $vids) : bool {
     $isLatestRevision = $key === array_key_first($vids);
