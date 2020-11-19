@@ -71,8 +71,12 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   (optional) Whether to include all dataset revisions. Defaults to FALSE.
    */
   public function schedulePurgingAll(bool $deferred = TRUE, bool $allRevisions = FALSE) {
-    // @todo Get all dataset uuids.
-    $uuids = [];
+    $uuids = $this->storage->getNodeStorage()
+      ->getQuery()
+      ->condition('type', 'data')
+      ->condition('field_data_type', 'dataset')
+      ->execute();
+
     $this->schedulePurging($uuids, $deferred, $allRevisions);
   }
 
