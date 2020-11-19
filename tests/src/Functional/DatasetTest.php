@@ -14,7 +14,11 @@ class DatasetTest extends ExistingSiteBase {
   use ServiceCheckTrait;
   use CleanUp;
 
-  private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
+  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+
+  private function getDownloadUrl(string $filename) {
+    return self::S3_PREFIX . '/' . $filename;
+  }
 
   private function getData($downloadUrl) {
     return '
@@ -25,20 +29,20 @@ class DatasetTest extends ExistingSiteBase {
       "accessLevel": "public",
       "modified": "06-04-2020",
       "keyword": ["hello"],
-        "distribution": [
-          {
-            "title": "blah",
-            "downloadURL": "' . $downloadUrl . '",
-            "mediaType": "text/csv"
-          }
-        ]
+      "distribution": [
+        {
+          "title": "blah",
+          "downloadURL": "' . $downloadUrl . '",
+          "mediaType": "text/csv"
+        }
+      ]
     }';
   }
 
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData($this->getDownloadUrl('district_centerpoints_small.csv'));
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -64,15 +68,12 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData($this->getDownloadUrl('district_centerpoints_small.csv'));
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
     // CSV file and registering a local url and file with the resource mapper.
     $this->datastoreProcesses($data1);
-
-    // Partially test the purging of unneeded resources.
-    $this->purgeUnneededResources();
 
     // Check that the imported file can be queried with the SQL Endpoint.
     $this->queryResource($data1);
@@ -84,7 +85,59 @@ class DatasetTest extends ExistingSiteBase {
     $display = ResourceLocalizer::LOCAL_URL_PERSPECTIVE;
     $localUrlDataset = json_decode($this->getMetastore()->get('dataset', json_decode($dataset)->identifier));
     $this->assertNotEqual($localUrlDataset->distribution[0]->downloadURL,
-    $this->downloadUrl);
+    $this->getDownloadUrl('district_centerpoints_small.csv'));
+  }
+
+  public function test3() {
+
+    // Post a dataset with file 1.csv.
+    $revision1 = $this->getData($this->getDownloadUrl('1.csv'));
+    $data1 = $this->checkDatasetIn($revision1);
+    // Update it with file 2.csv.
+    $revision2 = $this->getData($this->getDownloadUrl('2.csv'));
+    $data2 = $this->checkDatasetIn($revision2, 'put');
+    // Update it again with file 3.csv.
+    $revision3 = $this->getData($this->getDownloadUrl('3.csv'));
+    $data3 = $this->checkDatasetIn($revision3, 'put');
+
+    // Import the resources.
+    $this->cronToImportAll();
+
+    /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */
+    $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
+    $resourcePurger->schedulePurging(['123'],FALSE, TRUE);
+
+    // Verify there is only 1 datastore_% table, and 1 csv file after purging.
+    $this->assertEqual($this->countTables(), 1);
+    $this->assertEqual($this->countFiles(), 1);
+  }
+
+  private function cronToImportAll() {
+    /** @var \Drupal\Core\CronInterface $cron */
+    $cron = \Drupal::service('cron');
+    /** @var \Drupal\Core\Queue\QueueFactory $queue */
+    $queue = \Drupal::service('queue');
+
+    while ($queue->get('datastore_import')->numberOfItems()) {
+      $cron->run();
+    }
+  }
+
+  private function countTables() {
+    /* @var $db \Drupal\Core\Database\Connection */
+    $db = \Drupal::service('database');
+
+    $tables = $db->schema()->findTables("datastore_%");
+    return count($tables);
+  }
+
+  private function countFiles() {
+    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
+    $fileSystem = \Drupal::service('file_system');
+
+    $dir = DRUPAL_ROOT . "/sites/default/files/resources";
+    $files = $fileSystem->scanDirectory($dir, "/.*\.csv$/i", ['recurse' => TRUE]);
+    return count($files);
   }
 
   private function queryResource($fileData) {
