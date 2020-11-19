@@ -152,7 +152,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Determine which resources of a dataset can be purged.
+   * Determine which resources from various dataset revisions can be purged.
    */
   private function getResourcesToPurge(NodeInterface $dataset, bool $allRevisions = FALSE) : array {
     $publishedCount = 0;
@@ -165,18 +165,43 @@ class ResourcePurger implements ContainerInjectionInterface {
       if ($published = $data['published']) {
         $publishedCount++;
       }
-      if (($published && $publishedCount == 1) || ($key === array_key_first($vids))) {
+      if ($this->isRevisionNeeded($published, $publishedCount, $key, $vids)) {
         $keep[$vid] = $resource;
       }
-      if (!(in_array($resource, $keep) || in_array($resource, $purge))) {
+      if ($this->isResourceUnneeded($resource, $keep, $purge)) {
         $purge[$vid] = $resource;
       }
-      if (!$allRevisions && $publishedCount >= 2) {
+      if ($this->isPurgeScopeReduced($publishedCount, $allRevisions)) {
         break;
       }
     }
 
     return $purge;
+  }
+
+  /**
+   * Important revisions are the latest revision, and the latest published revision.
+   */
+  private function isRevisionNeeded(bool $published, int $publishedCount, int $key, array $vids) : bool {
+    $isLatestRevision = $key === array_key_first($vids);
+    $isLatestPublished = $published && $publishedCount == 1;
+    return $isLatestRevision || $isLatestPublished;
+  }
+
+  /**
+   * Unneeded resources have not yet been considered for keeping or discarding.
+   */
+  private function isResourceUnneeded(array $resource, array $keep, array $purge) : bool {
+    $toKeep = in_array($resource, $keep);
+    $toPurge = in_array($resource, $purge);
+    return !$toKeep && !$toPurge;
+  }
+
+  /**
+   * Determine if the scope of the purge is reduced or not.
+   */
+  private function isPurgeScopeReduced(int $publishedCount, bool $allRevisions) : bool {
+    return !$allRevisions && $publishedCount >= 2;
   }
 
   /**
