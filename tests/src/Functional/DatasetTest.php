@@ -57,6 +57,7 @@ class DatasetTest extends ExistingSiteBase {
     $object->modified = "06-05-2020";
     $dataset = json_encode($object);
     $data3 = $this->checkDatasetIn($dataset, 'put');
+
     $this->assertNotEquals($data1, $data3);
   }
 
@@ -69,6 +70,9 @@ class DatasetTest extends ExistingSiteBase {
     // Process datastore operations. This will include downloading the remote
     // CSV file and registering a local url and file with the resource mapper.
     $this->datastoreProcesses($data1);
+
+    // Partially test the purging of unneeded resources.
+    $this->purgeUnneededResources();
 
     // Check that the imported file can be queried with the SQL Endpoint.
     $this->queryResource($data1);
@@ -139,6 +143,12 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals($downloadUrl, $fileData->filePath);
 
     return $fileData;
+  }
+
+  private function purgeUnneededResources() {
+    /** @var \Drupal\datastore\Service\ResourcePurger $resourcePuger */
+    $resourcePuger = \Drupal::service('dkan.datastore.service.resource_purger');
+    $resourcePuger->schedulePurging(['123'], FALSE, TRUE);
   }
 
   private function getMetastore(): Service {
