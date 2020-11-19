@@ -168,7 +168,7 @@ class ResourcePurger implements ContainerInjectionInterface {
       if ($this->isRevisionNeeded($published, $publishedCount, $key, $vids)) {
         $keep[$vid] = $resource;
       }
-      if ($this->isResourceUnneeded($resource, $keep, $purge)) {
+      elseif ($this->isResourceUnneeded($resource, $keep, $purge)) {
         $purge[$vid] = $resource;
       }
       if ($this->isPurgeScopeReduced($publishedCount, $allRevisions)) {
