@@ -3,9 +3,12 @@
 namespace Drupal\Tests\datastore\EventSubscriber;
 
 use Drupal\common\Resource;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\datastore\EventSubscriber\Subscriber;
 use Drupal\datastore\Service;
+use Drupal\datastore\Service\ResourcePurger;
+use Drupal\metastore\Events\DatasetPublication;
 use Drupal\metastore\Events\Registration;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
@@ -53,6 +56,31 @@ class SubscriberTest extends TestCase {
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'import', [], 'import');
+  }
+
+  /**
+   * Test ResourcePurger-related parts.
+   */
+  public function testResourcePurging() {
+
+    $mockDatasetPublication = (new Chain($this))
+      ->add(DatasetPublication::class, 'getNode', ContentEntityInterface::class)
+      ->getMock();
+
+    $options = (new Options())
+      ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
+      ->index(0);
+
+    $containerChain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(ResourcePurger::class, 'schedulePurging')
+      ->add(ContentEntityInterface::class, 'uuid', 1);
+
+    \Drupal::setContainer($containerChain->getMock());
+
+    $subscriber = new Subscriber();
+    $voidReturn = $subscriber->purgeResources($mockDatasetPublication);
+    $this->assertNull($voidReturn);
   }
 
 }
