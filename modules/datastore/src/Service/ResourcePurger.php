@@ -4,6 +4,7 @@ namespace Drupal\datastore\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\common\LoggerTrait;
 use Drupal\datastore\Service;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
@@ -13,6 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * ResourcePurger service.
  */
 class ResourcePurger implements ContainerInjectionInterface {
+  use LoggerTrait;
 
   /**
    * The datastore.settings config.
@@ -101,6 +103,12 @@ class ResourcePurger implements ContainerInjectionInterface {
         'allRevisions' => $allRevisions,
       ]);
       // @todo Log message and include $queueId.
+      $this->notice('Queued resource purging with queueId:%queueId uuids:%uuids',
+        [
+          '%queueId' => $queueId,
+          '%uuids' => implode(', ', $uuids),
+        ]
+      );
     }
     else {
       $this->purgeMultiple($uuids, $allRevisions);

@@ -21,6 +21,8 @@ services:
       - '@config.factory'
       - '@dkan.metastore.storage'
       - '@dkan.datastore.service'
+    calls:
+      - [ setLoggerFactory, [ '@logger.factory' ] ]
 
   dkan.datastore.service.factory.import:
     class: \Drupal\datastore\Service\Factory\Import
