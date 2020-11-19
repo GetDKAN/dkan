@@ -1,3 +1,7 @@
+7.x-1.18.13
+-----------
+- #3270 Drupal security upgrade to version 7.74.
+
 7.x-1.18.12
 -----------
 - #3244 Periodic Updates enhancement: force import of particular resources on
@@ -19,7 +23,7 @@ next cron runs.
 7.x-1.18.8
 ----------
  - #3133 Drupal security upgrade to version 7.72.
- 
+
 7.x-1.18.7
 ----------
  - #3129 Fixed security issue in datastore: output debug info only when devel is enabled.
@@ -81,7 +85,7 @@ next cron runs.
 7.x-1.17.4
 -----------
  - #2997 Add views patch 3054091
- 
+
 7.x-1.17.3
 -----------
  - #2996 Security release for Drupal 7.69
@@ -125,7 +129,7 @@ next cron runs.
  - #2928 Update ODSM to 7.x-2.3 to fix broken RDF/JSON links
  - #2918 Avoid importing/orphaning when harvest cache is not present for unavailable sources.
  - #2919 Security update for imagecache_actions
- 
+
 7.x-1.16.12
 ------------
  - #2892 Harvest support range dates separated by dashes
@@ -133,7 +137,7 @@ next cron runs.
  - #2889 Make Page Title reflect dataset/resource content
  - #2893 Update Open Data Schema Map to 7.x-2.2
  - #2885 Security update for uuid and tablefield modules
- 
+
 7.x-1.16.11
 ------------
  - #2876 Update the datastore lock code to use drupal functions
@@ -141,7 +145,7 @@ next cron runs.
  - #2880 Fix drush command that deletes orphaned datastore tables
  - #2870 Remove workflow emails from dkan_workflow
  - #2878 Remove hard-coded access to revisions for anonymous users
- 
+
 7.x-1.16.10
 -----------
  - #2874 Security update for Drupal to 7.67 (SA-CORE-2019-007)
