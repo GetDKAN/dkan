@@ -21,7 +21,7 @@ class ResourcePurgerWorker extends QueueWorkerBase implements ContainerFactoryPl
   /**
    * Resource purger service.
    *
-   * @var ResourcePurger
+   * @var \Drupal\datastore\Service\ResourcePurger
    */
   private $resourcePurger;
 

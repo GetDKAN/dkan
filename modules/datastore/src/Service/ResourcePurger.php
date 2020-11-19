@@ -54,8 +54,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container)
-  {
+  public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
       $container->get('dkan.metastore.storage'),
@@ -142,8 +141,9 @@ class ResourcePurger implements ContainerInjectionInterface {
 
     $vids = array_reverse($this->storage->getNodeStorage()->revisionIds($dataset));
     foreach ($vids as $key => $vid) {
-      ['published' => $published, 'resource' => $resource] = $this->getRevisionData($vid);
-      if ($published) {
+      $data = $this->getRevisionData($vid);
+      $resource = $data['resource'];
+      if ($published = $data['published']) {
         $publishedCount++;
       }
       if (($published && $publishedCount == 1) || ($key === array_key_first($vids))) {
@@ -161,7 +161,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Get data about each revision of a dataset
+   * Get data about each revision of a dataset.
    */
   private function getRevisionData(string $vid) : array {
     $revision = $this->storage->getNodeStorage()->loadRevision($vid);

@@ -4,7 +4,6 @@ namespace Drupal\datastore\EventSubscriber;
 
 use Drupal\common\Resource;
 use Drupal\common\LoggerTrait;
-use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Events\DatasetPublication;
 use Drupal\metastore\Events\Registration;
 use Drupal\metastore\ResourceMapper;
@@ -66,13 +65,13 @@ class Subscriber implements EventSubscriberInterface {
   /**
    * Purge resources.
    *
-   * @param DatasetPublication $event
+   * @param \Drupal\metastore\Events\DatasetPublication $event
    *   Dataset publication.
    */
   public function purgeResources(DatasetPublication $event) {
     $node = $event->getNode();
 
-    /** @var ResourcePurger $resourcePurger */
+    /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */
     $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
     // Queue limited purging.
     $resourcePurger->schedulePurging([$node->uuid()]);

@@ -214,7 +214,8 @@ class Service implements ContainerInjectionInterface {
   /**
    * Return the resource localizer.
    *
-   * @return ResourceLocalizer
+   * @return \Drupal\datastore\Service\ResourceLocalizer
+   *   Resource localizer.
    */
   public function getResourceLocalizer() : ResourceLocalizer {
     return $this->resourceLocalizer;
@@ -223,7 +224,8 @@ class Service implements ContainerInjectionInterface {
   /**
    * Return the queue factory.
    *
-   * @return QueueFactory
+   * @return \Drupal\Core\Queue\QueueFactory
+   *   Queue factory.
    */
   public function getQueueFactory() : QueueFactory {
     return $this->queue;

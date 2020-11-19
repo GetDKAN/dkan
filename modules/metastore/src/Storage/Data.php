@@ -52,6 +52,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * Get node storage.
    *
    * @return \Drupal\node\NodeStorageInterface
+   *   Node storage.
    */
   public function getNodeStorage() {
     return $this->nodeStorage;

@@ -29,10 +29,11 @@ class PurgeCommands extends DrushCommands {
   /**
    * PurgeCommands constructor.
    *
-   * @param ResourcePurger $resourcePurger
+   * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
    *   The dkan.datastore.service.resource_localizer service.
    */
   public function __construct(ResourcePurger $resourcePurger) {
+    parent::__construct();
     $this->resourcePurger = $resourcePurger;
   }
 
@@ -40,18 +41,21 @@ class PurgeCommands extends DrushCommands {
    * Purge unneeded resources from one or more specific datasets.
    *
    * @param string $csvUuids
-   *    One or more dataset identifiers, comma-separated, no space.
+   *   One or more dataset identifiers, comma-separated, no space.
+   * @param array $options
+   *   Options array, see @option annotations below.
+   *
    * @option deferred
    *   Queue the purge for later processing.
    * @option all-revisions
    *   Consider all dataset revisions.
    *
    * @usage dkan:datastore:purge 1111,1112 --deferred --all-revisions
-   *   Queue the purging of resources in datasets 1111 and 1112, considering all dataset revisions.
+   *   Queue the purging of resources in 1111 and 1112, consider all revisions.
    *
    * @command dkan:datastore:purge
    */
-  public function purge(string $csvUuids, $options = ['deferred' => FALSE, 'all-revisions' => FALSE]) {
+  public function purge(string $csvUuids, array $options = ['deferred' => FALSE, 'all-revisions' => FALSE]) {
     try {
       $uuids = StringUtils::csvToArray($csvUuids);
       $this->resourcePurger->schedulePurging($uuids, $options['deferred'], $options['all-revisions']);
@@ -66,17 +70,20 @@ class PurgeCommands extends DrushCommands {
   /**
    * Purge unneeded resources from all datsets.
    *
+   * @param array $options
+   *   Options array, see @option annotations below.
+   *
    * @option deferred
    *   Queue the purge for later processing.
    * @option all-revisions
    *   Consider all dataset revisions.
    *
    * @usage dkan:datastore:purge-all --deferred --all-revisions
-   *   Purge resources from every datasets later, consider all dataset revisions.
+   *   Purge resources from every datasets later, consider all revisions.
    *
    * @command dkan:datastore:purge-all
    */
-  public function purgeAll($options = ['deferred' => FALSE, 'all-revisions' => FALSE]) {
+  public function purgeAll(array $options = ['deferred' => FALSE, 'all-revisions' => FALSE]) {
     try {
       $this->resourcePurger->schedulePurging([], $options['deferred'], $options['all-revisions']);
       $messagePrefix = $options['deferred'] ? 'Queued the purging of' : 'Purged';
