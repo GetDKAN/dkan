@@ -3,7 +3,7 @@
     "result": {
         "status":"done",
         "data":"{\"source\":\"modules\\\/custom\\\/datastore\\\/tests\\\/data\\\/countries.csv\",\"total_bytes_copied\":150,\"temporary\":false,\"destination\":\"modules\\\/custom\\\/datastore\\\/tests\\\/data\\\/countries.csv\",\"total_bytes\":150}",
-        "error":NULL
+        "error": null
     },
     "temporaryDirectory":"\/dkan-tmp"
 }

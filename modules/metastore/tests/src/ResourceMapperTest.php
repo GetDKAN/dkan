@@ -64,7 +64,7 @@ class ResourceMapperTest extends TestCase {
       $mapper->get($resource1->getIdentifier(), 'local_url', $resource1->getVersion())
         ->getFilePath()
     );
-    $this->assertNULL($mapper->get($resource1v2->getIdentifier(), 'local_url', $resource1v2->getVersion()));
+    $this->assertNull($mapper->get($resource1v2->getIdentifier(), 'local_url', $resource1v2->getVersion()));
 
     // Add perspective to the new revision.
     $resource1v2local = $resource1v2->createNewPerspective('local_url', $localUrl2);

@@ -3,7 +3,7 @@
     "result": {
         "status": "done",
         "data": "{\"recordNumber\":2970,\"chunksProcessed\":4572}",
-        "error": NULL
+        "error": null
     },
     "parser": {
         "delimiter": ",",

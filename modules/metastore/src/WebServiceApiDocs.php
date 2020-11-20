@@ -171,7 +171,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     }
 
     $newPath = str_replace("{identifier}", $identifier, $path);
-    ;
 
     return [$newPath, $newOperations];
   }
