@@ -159,7 +159,6 @@ projects:
       2: patches/fontyourface-clear-css-cache.patch
       2644694: https://www.drupal.org/files/issues/browse-fonts-page-uses-disabled-font-2644694.patch
       2816837: https://www.drupal.org/files/issues/font_your_face-remove_div_general_text_option-D7.patch
-      13909263: https://www.drupal.org/files/issues/2020-11-19/goolefont_key_as_env_var-3183601-2.patch
   globalredirect:
     version: '1.6'
     patch:
