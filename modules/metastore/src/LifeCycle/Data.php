@@ -80,6 +80,7 @@ class Data extends AbstractData {
 
     if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
       $resourceIdentifier = $downloadUrl;
+      $ref = NULL; $original = NULL;
       [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
 
       $downloadUrl = isset($original) ? $original : "";
@@ -106,7 +107,7 @@ class Data extends AbstractData {
 
     $fileMapperInfo = Resource::parseUniqueIdentifier($resourceIdentifier);
 
-    /* @var $sourceResource Resource */
+    /** @var \Drupal\common\Resource $sourceResource */
     $sourceResource = $this->getFileMapper()->get($fileMapperInfo['identifier'],
       Resource::DEFAULT_SOURCE_PERSPECTIVE, $fileMapperInfo['version']);
     if (!$sourceResource) {
@@ -117,7 +118,7 @@ class Data extends AbstractData {
 
     $perspective = resource_mapper_display();
 
-    /* @var $sourceResource Resource */
+    /** @var \Drupal\common\Resource $sourceResource */
     $resource = $sourceResource;
 
     if ($perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE) {
@@ -163,7 +164,7 @@ class Data extends AbstractData {
       $this->data->setIdentifier($metadata->identifier);
     }
 
-    /* @var $eventDispatcher \Symfony\Component\EventDispatcher\EventDispatcher */
+    /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
     $eventDispatcher = \Drupal::service("event_dispatcher");
     $eventDispatcher->dispatch(self::EVENT_PRE_REFERENCE,
       new PreReference($this->data));

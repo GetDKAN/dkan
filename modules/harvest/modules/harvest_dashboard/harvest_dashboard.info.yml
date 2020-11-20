@@ -1,0 +1,7 @@
+name: 'Harvest Dashboard'
+description: 'Harvest Dashboard.'
+type: module
+core_version_requirement: ^8 || ^9
+package: DKAN
+dependencies:
+  - harvest

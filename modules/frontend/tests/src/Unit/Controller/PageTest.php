@@ -53,7 +53,7 @@ class ControllerPageTest extends TestCase {
    */
   public function test() {
     $controller = PageController::create($this->getContainer());
-    /* @var $response \Symfony\Component\HttpFoundation\Response */
+    /** @var \Symfony\Component\HttpFoundation\Response $response */
     $response = $controller->page('home');
     $this->assertEquals("<h1>Hello World!!!</h1>\n", $response->getContent());
   }

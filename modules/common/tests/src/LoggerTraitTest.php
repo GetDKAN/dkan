@@ -3,7 +3,6 @@
 namespace Drupal\Tests\common;
 
 use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Tests\common\Unit\Mocks\Logging;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
