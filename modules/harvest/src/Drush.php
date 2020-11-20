@@ -134,7 +134,7 @@ class Drush extends DrushCommands {
   public function runAll() {
 
     $ids = $this->harvestService
-      ->getAllHarvestIds();;
+      ->getAllHarvestIds();
 
     foreach ($ids as $id) {
       $this->run($id);

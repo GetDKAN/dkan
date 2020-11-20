@@ -54,7 +54,7 @@ class ResourceLocalizer {
    * Get the localized resource.
    */
   public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?Resource {
-    /* @var $resource Resource */
+    /** @var \Drupal\common\Resource $resource */
     $resource = $this->getResourceSource($identifier, $version);
 
     if (!$resource) {
@@ -112,7 +112,7 @@ class ResourceLocalizer {
    * Remove.
    */
   public function remove($identifier, $version = NULL) {
-    /* @var $resource \Drupal\common\Resource */
+    /** @var \Drupal\common\Resource $resource */
     $resource = $this->get($identifier, $version);
     if ($resource) {
       $this->fileMapper->remove($resource);

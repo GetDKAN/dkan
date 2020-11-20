@@ -1,0 +1,19 @@
+dkan.harvest.dashboard:
+  path: '/admin/reports/dkan/harvest_dashboard'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\harvest_dashboard\Controller\Controller::harvests'}
+  requirements:
+    _permission: 'dkan.haverst.dashboard'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+dkan.harvest.dashboard.datasets:
+  path: '/admin/reports/dkan/harvest_dashboard/{harvestId}'
+  methods: [ GET ]
+  defaults:
+    { _controller: '\Drupal\harvest_dashboard\Controller\Controller::harvestDatasets' }
+  requirements:
+    _permission: 'dkan.harvest.dashboard'
+  options:
+    _auth: [ 'basic_auth', 'cookie' ]

@@ -41,9 +41,9 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Private.
+   * Protected.
    */
-  private function getHarvestPlan() {
+  protected function getHarvestPlan() {
     $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content');
 
     $plan_path = $module_path . "/harvest_plan.json";

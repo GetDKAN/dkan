@@ -32,12 +32,12 @@ class Subscriber implements EventSubscriberInterface {
    */
   public function onRegistration(Registration $event) {
 
-    /* @var \Drupal\common\Resource $resouce */
+    /** @var \Drupal\common\Resource $resouce */
     $resource = $event->getResource();
 
     if ($this->isDataStorable($resource)) {
       try {
-        /* @var $datastoreService \Drupal\datastore\Service */
+        /** @var \Drupal\datastore\Service $datastoreService */
         $datastoreService = \Drupal::service('dkan.datastore.service');
         $datastoreService->import($resource->getIdentifier(), TRUE, $resource->getVersion());
       }
