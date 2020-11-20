@@ -1,9 +1,9 @@
 name: Metastore Entity
 type: module
-description: .
+description: Entity for storing metadata.
 package: DKAN
 core_version_requirement: ^8 || ^9
 # These modules are required by the tests, must be available at bootstrap time
 dependencies:
-    - options
-
+    - drupal:options
+    - drupal:user

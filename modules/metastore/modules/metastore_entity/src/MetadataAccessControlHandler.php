@@ -51,7 +51,7 @@ class MetadataAccessControlHandler extends EntityAccessControlHandler {
     if ($account->hasPermission($admin_permission)) {
       return AccessResult::allowed();
     }
-    return AccessResult::allowedIfHasPermission($account, 'add contact entity');
+    return AccessResult::allowedIfHasPermission($account, 'add metadata entity');
   }
 
 }

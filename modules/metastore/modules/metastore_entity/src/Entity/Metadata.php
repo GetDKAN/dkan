@@ -43,10 +43,10 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *     "data" = "data"
  *   },
  *   links = {
- *     "canonical" = "/metastore_entity_metadata/{metastore_entity_metadata}",
- *     "edit-form" = "/metastore_entity_metadata/{metastore_entity_metadata}/edit",
+ *     "canonical" = "/metadata/{metastore_entity_metadata}",
+ *     "edit-form" = "/metadata/{metastore_entity_metadata}/edit",
  *     "delete-form" = "/metadata/{metastore_entity_metadata}/delete",
- *     "collection" = "/metastore_entity_metadata/list"
+ *     "collection" = "/admin/structure/metadata/list"
  *   },
  *   field_ui_base_route = "metastore_entity.metadata_settings",
  * )
@@ -193,7 +193,7 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
 
     $fields['langcode'] = BaseFieldDefinition::create('language')
       ->setLabel(t('Language code'))
-      ->setDescription(t('The language code of ContentEntityExample entity.'));
+      ->setDescription(t('The language code of the Metadata entity.'));
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the entity was created.'));

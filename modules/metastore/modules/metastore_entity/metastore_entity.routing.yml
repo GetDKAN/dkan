@@ -13,12 +13,12 @@ entity.metastore_entity_metadata.canonical:
 entity.metastore_entity_metadata.collection:
   path: 'admin/structure/metadata/list'
   defaults:
-  # Calls the list controller, defined in the annotation of the contact entity.
+  # Calls the list controller, defined in the annotation of the metadata entity.
     _entity_list: 'metastore_entity_metadata'
     _title: 'Metadata List'
   requirements:
   # Checks for permission directly.
-    _permission: 'view metadata entity'
+    _permission: 'admininister metadata entity'
 
 metastore_entity.metadata_add:
   path: '/metadata/add'
@@ -36,7 +36,7 @@ entity.metastore_entity_metadata.edit_form:
     _entity_form: metastore_entity_metadata.default
     _title: 'Edit Metadata'
   requirements:
-    _entity_access: 'metastore_entity_metadata.default'
+    _entity_access: 'metastore_entity_metadata.edit'
 
 entity.metastore_entity_metadata.delete_form:
   path: '/metadata/{metastore_entity_metadata}/delete'
@@ -48,7 +48,7 @@ entity.metastore_entity_metadata.delete_form:
     _entity_access: 'metastore_entity_metadata.delete'
 
 metastore_entity.metadata_settings:
-  path: 'admin/structure/metastore_entity_metadata_settings'
+  path: 'admin/structure/metadata/settings'
   defaults:
     _form: '\Drupal\metastore_entity\Form\MetadataSettingsForm'
     _title: 'Metadata Settings'
