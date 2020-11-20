@@ -128,40 +128,40 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
     $fields['title'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Title'))
       ->setDescription(t('The name of the Metadata entity.'))
-      ->setSettings(array(
+      ->setSettings([
         'default_value' => '',
         'max_length' => 255,
         'text_processing' => 0,
-      ))
-      ->setDisplayOptions('view', array(
+      ])
+      ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'string',
         'weight' => -6,
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => -6,
-      ))
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['data'] = BaseFieldDefinition::create('string')
+    $fields['data'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Data'))
       ->setDescription(t('Most likely JSON.'))
-      ->setSettings(array(
+      ->setSettings([
         'default_value' => '',
-        'max_length' => 255,
         'text_processing' => 0,
-      ))
-      ->setDisplayOptions('view', array(
-        'label' => 'above',
-        'type' => 'string',
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'visible',
+        'type' => 'basic_string',
         'weight' => -5,
-      ))
-      ->setDisplayOptions('form', array(
-        'type' => 'string_textfield',
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textarea',
         'weight' => -5,
-      ))
+        'settings' => ['rows' => 10],
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
@@ -174,20 +174,20 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
       ->setDescription(t('The Name of the associated user.'))
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'author',
         'weight' => -3,
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
-        'settings' => array(
+        'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => 60,
           'placeholder' => '',
-        ),
+        ],
         'weight' => -3,
-      ))
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
@@ -205,4 +205,4 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
     return $fields;
   }
 
- }
+}
