@@ -1,0 +1,10 @@
+'delete metadata entity':
+    title: Delete metadata content.
+'add metadata entity':
+    title: Add metadata content
+'view metadata entity':
+    title: View metadata content
+'edit metadata entity':
+    title: Edit metadata content
+'administer metadata entity':
+    title: Administer settings

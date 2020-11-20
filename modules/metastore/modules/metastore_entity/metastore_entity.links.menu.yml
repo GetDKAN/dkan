@@ -1,0 +1,12 @@
+# Define the menu links for this module
+
+entity.metastore_entity_metadata.collection:
+  title: 'Metastore Entity Listing'
+  route_name: entity.metastore_entity_metadata.collection
+  description: 'List metadata content'
+  weight: 10
+metastore_entity_metadata.admin.structure.settings:
+  title: Metastore Entity Settings
+  description: 'Configure Metadata entity'
+  route_name:  metastore_entity.metadata_settings
+  parent: system.admin_structure

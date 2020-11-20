@@ -1,0 +1,56 @@
+# Route name can be used in several places; e.g. links, redirects, and local
+# actions.
+entity.metastore_entity_metadata.canonical:
+  path: '/metadata/{metastore_entity_metadata}'
+  defaults:
+  # Calls the view controller, defined in the annotation of the contact entity
+    _entity_view: 'metastore_entity_metadata'
+    _title: 'Metadata Content'
+  requirements:
+  # Calls the access controller of the entity, $operation 'view'
+    _entity_access: 'metastore_entity_metadata.view'
+
+entity.metastore_entity_metadata.collection:
+  path: 'admin/structure/metadata/list'
+  defaults:
+  # Calls the list controller, defined in the annotation of the contact entity.
+    _entity_list: 'metastore_entity_metadata'
+    _title: 'Metadata List'
+  requirements:
+  # Checks for permission directly.
+    _permission: 'view metadata entity'
+
+metastore_entity.metadata_add:
+  path: '/metadata/add'
+  defaults:
+  # Calls the form.add controller, defined in the contact entity.
+    _entity_form: metastore_entity_metadata.default
+    _title: 'Add metadata'
+  requirements:
+    _entity_create_access: 'metastore_entity_metadata'
+
+entity.metastore_entity_metadata.edit_form:
+  path: '/metadata/{metastore_entity_metadata}/edit'
+  defaults:
+  # Calls the form.edit controller, defined in the contact entity.
+    _entity_form: metastore_entity_metadata.default
+    _title: 'Edit Metadata'
+  requirements:
+    _entity_access: 'metastore_entity_metadata.default'
+
+entity.metastore_entity_metadata.delete_form:
+  path: '/metadata/{metastore_entity_metadata}/delete'
+  defaults:
+    # Calls the form.delete controller, defined in the contact entity.
+    _entity_form: metastore_entity_metadata.delete
+    _title: 'Delete Contact'
+  requirements:
+    _entity_access: 'metastore_entity_metadata.delete'
+
+metastore_entity.metadata_settings:
+  path: 'admin/structure/metastore_entity_metadata_settings'
+  defaults:
+    _form: '\Drupal\metastore_entity\Form\MetadataSettingsForm'
+    _title: 'Metadata Settings'
+  requirements:
+    _permission: 'administer metadata entity'

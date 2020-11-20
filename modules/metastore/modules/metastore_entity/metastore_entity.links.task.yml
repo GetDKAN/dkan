@@ -1,0 +1,20 @@
+metadata.settings_tab:
+  route_name: metastore_entity.metadata_settings
+  title: Settings
+  base_route: metastore_entity.metadata_settings
+
+metadata.view:
+  route_name: entity.metastore_entity_metadata.canonical
+  base_route: entity.metastore_entity_metadata.canonical
+  title: View
+
+metadata.page_edit:
+  route_name: entity.metastore_entity_metadata.edit_form
+  base_route: entity.metastore_entity_metadata.canonical
+  title: Edit
+
+metadata.delete_confirm:
+  route_name:  entity.metastore_entity_metadata.delete_form
+  base_route:  entity.metastore_entity_metadata.canonical
+  title: Delete
+  weight: 10

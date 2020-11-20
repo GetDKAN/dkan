@@ -1,0 +1,11 @@
+# All action links for this module
+
+metastore_entity.metadata_add:
+    # Which route will be called by the link
+    route_name: metastore_entity.metadata_add
+    title: 'Add Contact'
+
+    # Where will the link appear, defined by route name.
+    appears_on:
+      - entity.metastore_entity_metadata.collection
+      - entity.metastore_entity_metadata.canonical
