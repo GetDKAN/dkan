@@ -39,8 +39,8 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *   admin_permission = "administer metastore_entity entity",
  *   entity_keys = {
  *     "id" = "id",
- *     "label" = "name",
- *     "uuid" = "uuid"
+ *     "title" = "title",
+ *     "data" = "data"
  *   },
  *   links = {
  *     "canonical" = "/metastore_entity_metadata/{metastore_entity_metadata}",

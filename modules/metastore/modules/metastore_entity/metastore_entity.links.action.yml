@@ -3,7 +3,7 @@
 metastore_entity.metadata_add:
     # Which route will be called by the link
     route_name: metastore_entity.metadata_add
-    title: 'Add Contact'
+    title: 'Add Metadata'
 
     # Where will the link appear, defined by route name.
     appears_on:
