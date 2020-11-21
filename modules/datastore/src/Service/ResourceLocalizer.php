@@ -117,9 +117,21 @@ class ResourceLocalizer {
     if ($resource) {
       $this->fileMapper->remove($resource);
       if (file_exists($resource->getFilePath())) {
-        unlink($resource->getFilePath());
+        $this->OsDependentRemove($resource);
       }
       $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($resource->getUniqueIdentifier());
+    }
+  }
+
+  /**
+   *
+   */
+  private function OsDependentRemove(Resource $resource) {
+    if (substr(PHP_OS, 0, 3) != 'WIN') {
+      `rm -rf {$resource->getFolder()}`;
+    }
+    else {
+      unlink($resource->getFilePath());
     }
   }
 
