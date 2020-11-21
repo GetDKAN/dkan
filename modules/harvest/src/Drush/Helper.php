@@ -19,13 +19,13 @@ trait Helper {
   /**
    * Private..
    */
-  private function getHarvester($id) {
+  private function getHarvester($id, $env = NULL) {
 
     if (!method_exists($this, 'getHarvestPlan')) {
       throw new \Exception("Drupal\harvest\Drush\Helper requires the host to implement the getHarvestPlan method.");
     }
 
-    return new Harvester(new Factory($this->getHarvestPlan($id),
+    return new Harvester(new Factory($this->getHarvestPlan($id, $env),
       $this->getStorage($id, "item"),
       $this->getStorage($id, "hash")));
   }
