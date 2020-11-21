@@ -52,7 +52,7 @@ class PurgeCommands extends DrushCommands {
   public function purge(string $csvUuids, array $options = ['deferred' => FALSE, 'all-revisions' => FALSE]) {
     try {
       $uuids = StringUtils::csvToArray($csvUuids);
-      $this->resourcePurger->schedulePurging($uuids, $options['deferred'], $options['all-revisions']);
+      $this->resourcePurger->schedule($uuids, $options['deferred'], $options['all-revisions']);
       $messagePrefix = $options['deferred'] ? 'Queued the purging of' : 'Purged';
       $this->logger()->info("{$messagePrefix} resources in {$csvUuids}.");
     }
@@ -79,7 +79,7 @@ class PurgeCommands extends DrushCommands {
    */
   public function purgeAll(array $options = ['deferred' => FALSE, 'all-revisions' => FALSE]) {
     try {
-      $this->resourcePurger->schedulePurging([], $options['deferred'], $options['all-revisions']);
+      $this->resourcePurger->schedule([], $options['deferred'], $options['all-revisions']);
       $messagePrefix = $options['deferred'] ? 'Queued the purging of' : 'Purged';
       $this->logger()->info("{$messagePrefix} resources in every dataset.");
     }
