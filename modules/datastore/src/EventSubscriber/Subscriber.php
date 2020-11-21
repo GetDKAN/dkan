@@ -73,8 +73,7 @@ class Subscriber implements EventSubscriberInterface {
 
     /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */
     $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    // Queue limited purging.
-    $resourcePurger->schedulePurging([$node->uuid()]);
+    $resourcePurger->schedule([$node->uuid()]);
   }
 
 }
