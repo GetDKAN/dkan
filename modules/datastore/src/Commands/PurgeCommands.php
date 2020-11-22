@@ -45,7 +45,8 @@ class PurgeCommands extends DrushCommands {
    *   Consider all prior dataset revisions, instead of the two most recent.
    *
    * @usage dkan:datastore:purge 1111,1112 --deferred --prior
-   *   Queue the purging of resources in datasets 1111 and 1112, consider all revisions.
+   *   Queue the purging of resources associated with datasets 1111 and 1112,
+   *   including all prior revisions.
    *
    * @command dkan:datastore:purge
    */
@@ -73,8 +74,8 @@ class PurgeCommands extends DrushCommands {
    *   Consider all prior dataset revisions, instead of the two most recent.
    *
    * @usage dkan:datastore:purge-all --deferred --prior
-   *   Queue the purging of resources associated with every datasets, including
-   *   all prior revisions.
+   *   Queue the purging of every dataset's resources, including all prior
+   *   revisions.
    *
    * @command dkan:datastore:purge-all
    */
