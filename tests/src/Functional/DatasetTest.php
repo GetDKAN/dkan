@@ -14,24 +14,28 @@ class DatasetTest extends ExistingSiteBase {
   use ServiceCheckTrait;
   use CleanUp;
 
-  private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
+  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
 
-  private function getData($downloadUrl) {
+  private function getDownloadUrl(string $filename) {
+    return self::S3_PREFIX . '/' . $filename;
+  }
+
+  private function getData($identifier, $title, $downloadUrl) {
     return '
     {
-      "title": "Test #1",
+      "title": "' . $title . '",
       "description": "Yep",
-      "identifier": "123",
+      "identifier": "' . $identifier . '",
       "accessLevel": "public",
       "modified": "06-04-2020",
       "keyword": ["hello"],
-        "distribution": [
-          {
-            "title": "blah",
-            "downloadURL": "' . $downloadUrl . '",
-            "mediaType": "text/csv"
-          }
-        ]
+      "distribution": [
+        {
+          "title": "blah",
+          "downloadURL": "' . $downloadUrl . '",
+          "mediaType": "text/csv"
+        }
+      ]
     }';
   }
 
@@ -48,7 +52,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData(123, 'Test #1', $this->getDownloadUrl('district_centerpoints_small.csv'));
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -73,7 +77,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData(123, 'Test #1', $this->getDownloadUrl('district_centerpoints_small.csv'));
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
@@ -90,7 +94,7 @@ class DatasetTest extends ExistingSiteBase {
     $display = ResourceLocalizer::LOCAL_URL_PERSPECTIVE;
     $localUrlDataset = json_decode($this->getMetastore()->get('dataset', json_decode($dataset)->identifier));
     $this->assertNotEqual($localUrlDataset->distribution[0]->downloadURL,
-    $this->downloadUrl);
+      $this->getDownloadUrl('district_centerpoints_small.csv'));
   }
 
   private function queryResource($fileData) {
