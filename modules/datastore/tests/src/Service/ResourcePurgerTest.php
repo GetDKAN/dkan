@@ -16,6 +16,7 @@ use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorageInterface;
 use MockChain\Chain;
 use MockChain\Options;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 class ResourcePurgerTest extends TestCase {
 
   /**
-   * Test schedulePurgingAll when neither purge config is set.
+   * Test when neither purge config is set.
    */
   public function testNoPurgeConfig() {
 
@@ -39,12 +40,11 @@ class ResourcePurgerTest extends TestCase {
   }
 
   /**
-   * Test queueing the purging.
+   * Test queueing the purge.
    */
   public function testQueueing() {
 
     $chain = $this->getCommonChain()
-      ->add(QueryInterface::class, 'execute', [1 => 1])
       ->add(Service::class, 'getQueueFactory', QueueFactory::class)
       ->add(QueueFactory::class, 'get', QueueInterface::class)
       ->add(QueueInterface::class, 'createItem', 1);
@@ -54,27 +54,22 @@ class ResourcePurgerTest extends TestCase {
     $this->assertNull($voidResult);
   }
 
-//  /**
-//   * Test figuring out resource purging.
-//   */
-//  public function testResourcePurger() {
-//
-//    $uuids = ['1111-1111'];
-//    $vids = [];
-//    $latestRevision = (new Chain($this))
-//      ->add(NodeInterface::class)
-//      ->getMock();
-//
-//    $chain = $this->getCommonChain()
-//      ->add(ImmutableConfig::class, 'get', 1)
-//      ->add(Data::class, 'getNodeLatestRevision', $latestRevision)
-//      ->add(Data::class, 'getNodeStorage', NodeStorageInterface::class)
-//      ->add(NodeStorageInterface::class, 'revisionIds', $vids);
-//
-//    $resourcePurger = ResourcePurger::create($chain->getMock());
-//    $voidResult = $resourcePurger->schedule($uuids, FALSE);
-//    $this->assertNull($voidResult);
-//  }
+  /**
+   * Test dataset revision disappearing between the queueing and processing.
+   */
+  public function testRevisionDisappearing() {
+
+    $revisions = (new Sequence())
+      ->add(NodeInterface::class)
+      ->add(NULL);
+
+    $chain = $this->getCommonChain()
+      ->add(NodeStorageInterface::class, 'loadRevision', $revisions);
+
+    $resourcePurger = ResourcePurger::create($chain->getMock());
+    $voidResult = $resourcePurger->schedule([1], FALSE);
+    $this->assertNull($voidResult);
+  }
 
   /**
    * Get common chain.

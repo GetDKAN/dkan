@@ -17,14 +17,12 @@ class ResourcePurgerWorkerTest extends TestCase {
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
       ->index(0);
 
-    $containerChain = (new Chain($this))
+    $containerMock = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(ResourcePurger::class, 'schedule', NULL);
-    $container = $containerChain->getMock();
+      ->add(ResourcePurger::class, 'purgeMultiple', NULL)
+      ->getMock();
 
-    \Drupal::setContainer($container);
-
-    $worker = ResourcePurgerWorker::create($container, [], '', '');
+    $worker = ResourcePurgerWorker::create($containerMock, [], '', '');
     $voidReturn = $worker->processItem(['uuids' => [], 'allRevisions' => FALSE]);
     $this->assertNull($voidReturn);
   }

@@ -141,10 +141,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     foreach ($this->getOlderRevisionIds($initialVid, $node) as $vid) {
       list($published, $resource) = $this->getRevisionData($vid);
       $purge[$vid] = $resource;
-      if ($published) {
-        $publishedCount++;
-      }
-      if ($this->isPurgeScopeReduced($publishedCount, $allRevisions)) {
+      if ($this->isPurgeScopeReduced($published, $publishedCount, $allRevisions)) {
         break;
       }
     }
@@ -185,9 +182,12 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Determine if the scope of the purge is reduced or not.
+   * Unless considering all previous revisions, exit after 2 published ones.
    */
-  private function isPurgeScopeReduced(int $publishedCount, bool $allRevisions) : bool {
+  private function isPurgeScopeReduced(bool $published, int &$publishedCount, bool $allRevisions) : bool {
+    if ($published) {
+      $publishedCount++;
+    }
     return !$allRevisions && $publishedCount >= 2;
   }
 
