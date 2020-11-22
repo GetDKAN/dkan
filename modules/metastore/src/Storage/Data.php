@@ -276,15 +276,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->field_json_metadata = $new_data;
 
     // Dkan publishing's default moderation state.
-    $defaultModerationState = $this->getDefaultModerationState();
-    $node->set('moderation_state', $defaultModerationState);
-
-    // When the default is to publish immediately, Dkan users may not know,
-    // nor should they be expected to publish the dataset via Drush or API,
-    // therefore fire publication event.
-    if ($defaultModerationState == 'published') {
-      $this->dispatchDatasetPublication($node);
-    }
+    $node->set('moderation_state', $this->getDefaultModerationState());
 
     $node->save();
 
