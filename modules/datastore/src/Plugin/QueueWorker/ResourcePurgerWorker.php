@@ -49,7 +49,7 @@ class ResourcePurgerWorker extends QueueWorkerBase implements ContainerFactoryPl
    * {@inheritdoc}
    */
   public function processItem($data) {
-    $this->resourcePurger->purge($data['uuids'], $data['allRevisions']);
+    $this->resourcePurger->purgeMultiple($data['uuids'], $data['allRevisions']);
   }
 
 }
