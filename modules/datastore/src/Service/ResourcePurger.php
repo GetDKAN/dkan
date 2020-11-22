@@ -126,7 +126,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $purge = $this->getResourcesToPurge($vid, $node, $allRevisions);
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
-      [$id, $version] = json_decode($idAndVersion);
+      list($id, $version) = json_decode($idAndVersion);
       $this->delete($id, $version);
     }
   }
@@ -139,7 +139,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $purge = [];
 
     foreach ($this->getOlderRevisionIds($initialVid, $node) as $vid) {
-      [$published, $resource] = $this->getRevisionData($vid);
+      list($published, $resource) = $this->getRevisionData($vid);
       $purge[$vid] = $resource;
       if ($published) {
         $publishedCount++;
