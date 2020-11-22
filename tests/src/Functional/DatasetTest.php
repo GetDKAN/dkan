@@ -15,6 +15,7 @@ class DatasetTest extends ExistingSiteBase {
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
   private function getDownloadUrl(string $filename) {
     return self::S3_PREFIX . '/' . $filename;
@@ -95,6 +96,50 @@ class DatasetTest extends ExistingSiteBase {
     $localUrlDataset = json_decode($this->getMetastore()->get('dataset', json_decode($dataset)->identifier));
     $this->assertNotEqual($localUrlDataset->distribution[0]->downloadURL,
       $this->getDownloadUrl('district_centerpoints_small.csv'));
+  }
+
+  public function test3() {
+
+    // Add a dataset, update its metadata, then its file.
+    $this->storeDataset(111, '1.1', '1.csv');
+    $this->storeDataset(111, '1.2', '1.csv', 'put');
+    $this->storeDataset(111, '1.3', '2.csv', 'put');
+
+    `drush queue:run datastore_import`;
+
+    /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */
+    $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
+    $resourcePurger->schedule([111], FALSE);
+
+    $this->assertEqual(['2.csv'], $this->checkFiles());
+    $this->assertEqual(1, $this->countTables());
+  }
+
+  private function storeDataset($identifier, $title, $filename, $method = 'post') {
+    $url = $this->getDownloadUrl($filename);
+    $dataset = $this->getData($identifier, $title, $url);
+    $this->checkDatasetIn($dataset, $method, $url);
+  }
+
+  private function countTables() {
+    /* @var $db \Drupal\Core\Database\Connection */
+    $db = \Drupal::service('database');
+
+    $tables = $db->schema()->findTables("datastore_%");
+    return count($tables);
+  }
+
+  private function checkFiles() {
+    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
+    $fileSystem = \Drupal::service('file_system');
+
+    $dir = DRUPAL_ROOT . "/sites/default/files/resources";
+    $filesObjects = $fileSystem->scanDirectory($dir, "/.*\.csv$/i", ['recurse' => TRUE]);
+    $filenames = array_values(array_map(function ($obj) {
+      return str_replace(self::FILENAME_PREFIX, '', $obj->filename);
+    }, $filesObjects));
+    sort($filenames);
+    return $filenames;
   }
 
   private function queryResource($fileData) {
