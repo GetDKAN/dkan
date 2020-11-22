@@ -71,31 +71,31 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Dataset identifiers.
    * @param bool $deferred
    *   Defaults to TRUE to process later, otherwise now.
-   * @param bool $allRevisions
+   * @param bool $prior
    *   Defaults to FALSE to only consider last 2 published revisions, otherwise
    *   consider all older revisions.
    */
-  public function schedule(array $uuids = [], bool $deferred = TRUE, bool $allRevisions = FALSE) {
+  public function schedule(array $uuids = [], bool $deferred = TRUE, bool $prior = FALSE) {
     $indexedUuids = $this->getIndexedUuids($uuids);
     if (!$this->validate() || empty($indexedUuids)) {
       return;
     }
     if ($deferred) {
-      $this->queue($indexedUuids, $allRevisions);
+      $this->queue($indexedUuids, $prior);
     }
     else {
-      $this->purgeMultiple($indexedUuids, $allRevisions);
+      $this->purgeMultiple($indexedUuids, $prior);
     }
   }
 
   /**
    * Schedule purging to run at a later time.
    */
-  private function queue(array $uuids, bool $allRevisions) {
+  private function queue(array $uuids, bool $prior) {
     $queue = $this->datastore->getQueueFactory()->get('resource_purger');
     $queueId = $queue->createItem([
       'uuids' => $uuids,
-      'allRevisions' => $allRevisions,
+      'prior' => $prior,
     ]);
     $this->notice('Queued resource purging with queueId:%queueId uuids:%uuids', [
       '%queueId' => $queueId,
@@ -106,10 +106,10 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * Purge unneeded resources of multiple datasets.
    */
-  public function purgeMultiple(array $uuids, bool $allRevisions = FALSE) {
+  public function purgeMultiple(array $uuids, bool $prior = FALSE) {
     if ($this->validate()) {
       foreach ($uuids as $vid => $uuid) {
-        $this->purge($vid, $uuid, $allRevisions);
+        $this->purge($vid, $uuid, $prior);
       }
     }
   }
@@ -117,13 +117,13 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * Purge a dataset's unneeded resources.
    */
-  private function purge(int $vid, string $uuid, bool $allRevisions) {
+  private function purge(int $vid, string $uuid, bool $prior) {
     $node = $this->storage->getNodeStorage()->loadRevision($vid);
     if (!$node) {
       return;
     }
     $keep = $this->getResourcesToKeep($node);
-    $purge = $this->getResourcesToPurge($vid, $node, $allRevisions);
+    $purge = $this->getResourcesToPurge($vid, $node, $prior);
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
       list($id, $version) = json_decode($idAndVersion);
@@ -134,14 +134,14 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * Determine which resources from various dataset revisions can be purged.
    */
-  private function getResourcesToPurge(int $initialVid, NodeInterface $node, bool $allRevisions) : array {
+  private function getResourcesToPurge(int $initialVid, NodeInterface $node, bool $prior) : array {
     $publishedCount = 0;
     $purge = [];
 
     foreach ($this->getOlderRevisionIds($initialVid, $node) as $vid) {
       list($published, $resource) = $this->getRevisionData($vid);
       $purge[$vid] = $resource;
-      if ($this->isPurgeScopeReduced($published, $publishedCount, $allRevisions)) {
+      if ($this->isPurgeScopeReduced($published, $publishedCount, $prior)) {
         break;
       }
     }
@@ -184,11 +184,11 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * Unless considering all previous revisions, exit after 2 published ones.
    */
-  private function isPurgeScopeReduced(bool $published, int &$publishedCount, bool $allRevisions) : bool {
+  private function isPurgeScopeReduced(bool $published, int &$publishedCount, bool $prior) : bool {
     if ($published) {
       $publishedCount++;
     }
-    return !$allRevisions && $publishedCount >= 2;
+    return !$prior && $publishedCount >= 2;
   }
 
   /**

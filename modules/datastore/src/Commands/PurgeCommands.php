@@ -41,18 +41,18 @@ class PurgeCommands extends DrushCommands {
    *
    * @option deferred
    *   Queue the purge for later processing.
-   * @option all-revisions
-   *   Consider all dataset revisions.
+   * @option prior
+   *   Consider all prior dataset revisions, instead of the two most recent.
    *
-   * @usage dkan:datastore:purge 1111,1112 --deferred --all-revisions
-   *   Queue the purging of resources in 1111 and 1112, consider all revisions.
+   * @usage dkan:datastore:purge 1111,1112 --deferred --prior
+   *   Queue the purging of resources in datasets 1111 and 1112, consider all revisions.
    *
    * @command dkan:datastore:purge
    */
-  public function purge(string $csvUuids, array $options = ['deferred' => FALSE, 'all-revisions' => FALSE]) {
+  public function purge(string $csvUuids, array $options = ['deferred' => FALSE, 'prior' => FALSE]) {
     try {
       $uuids = StringUtils::csvToArray($csvUuids);
-      $this->resourcePurger->schedule($uuids, $options['deferred'], $options['all-revisions']);
+      $this->resourcePurger->schedule($uuids, $options['deferred'], $options['prior']);
       $messagePrefix = $options['deferred'] ? 'Queued the purging of' : 'Purged';
       $this->logger()->info("{$messagePrefix} resources in {$csvUuids}.");
     }
@@ -69,17 +69,18 @@ class PurgeCommands extends DrushCommands {
    *
    * @option deferred
    *   Queue the purge for later processing.
-   * @option all-revisions
-   *   Consider all dataset revisions.
+   * @option prior
+   *   Consider all prior dataset revisions, instead of the two most recent.
    *
-   * @usage dkan:datastore:purge-all --deferred --all-revisions
-   *   Purge resources from every datasets later, consider all revisions.
+   * @usage dkan:datastore:purge-all --deferred --prior
+   *   Queue the purging of resources associated with every datasets, including
+   *   all prior revisions.
    *
    * @command dkan:datastore:purge-all
    */
-  public function purgeAll(array $options = ['deferred' => FALSE, 'all-revisions' => FALSE]) {
+  public function purgeAll(array $options = ['deferred' => FALSE, 'prior' => FALSE]) {
     try {
-      $this->resourcePurger->schedule([], $options['deferred'], $options['all-revisions']);
+      $this->resourcePurger->schedule([], $options['deferred'], $options['prior']);
       $messagePrefix = $options['deferred'] ? 'Queued the purging of' : 'Purged';
       $this->logger()->info("{$messagePrefix} resources in every dataset.");
     }

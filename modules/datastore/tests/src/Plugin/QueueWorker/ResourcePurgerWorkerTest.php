@@ -23,7 +23,7 @@ class ResourcePurgerWorkerTest extends TestCase {
       ->getMock();
 
     $worker = ResourcePurgerWorker::create($containerMock, [], '', '');
-    $voidReturn = $worker->processItem(['uuids' => [], 'allRevisions' => FALSE]);
+    $voidReturn = $worker->processItem(['uuids' => [], 'prior' => FALSE]);
     $this->assertNull($voidReturn);
   }
 
