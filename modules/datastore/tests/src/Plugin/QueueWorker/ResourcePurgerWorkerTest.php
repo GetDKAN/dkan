@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Plugin\QueuWorker;
+namespace Drupal\Tests\datastore\Plugin\QueueWorker;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\datastore\Plugin\QueueWorker\ResourcePurgerWorker;
@@ -19,7 +19,7 @@ class ResourcePurgerWorkerTest extends TestCase {
 
     $containerChain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(ResourcePurger::class, 'schedulePurging', NULL);
+      ->add(ResourcePurger::class, 'schedule', NULL);
     $container = $containerChain->getMock();
 
     \Drupal::setContainer($container);

@@ -5,12 +5,9 @@ namespace Drupal\datastore\Service;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\LoggerTrait;
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\datastore\Service;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
-use SebastianBergmann\CodeCoverage\Node\Iterator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -68,11 +65,15 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Validate and schedule the purging of unneeded resources.
    *
    * @param array $uuids
+   *   Dataset identifiers.
    * @param bool $deferred
+   *   Defaults to TRUE to process later, otherwise now.
    * @param bool $allRevisions
+   *   Defaults to FALSE to only consider last 2 published revisions, otherwise
+   *   consider all older revisions.
    */
   public function schedule(array $uuids = [], bool $deferred = TRUE, bool $allRevisions = FALSE) {
     $indexedUuids = $this->getIndexedUuids($uuids);
@@ -151,6 +152,9 @@ class ResourcePurger implements ContainerInjectionInterface {
     return array_unique($purge);
   }
 
+  /**
+   * Get older revision ids to consider.
+   */
   private function getOlderRevisionIds(int $initialVid, NodeInterface $dataset) : array {
 
     $vids = array_reverse($this->storage->getNodeStorage()->revisionIds($dataset));
@@ -160,6 +164,9 @@ class ResourcePurger implements ContainerInjectionInterface {
     });
   }
 
+  /**
+   * Resources to keep.
+   */
   private function getResourcesToKeep(NodeInterface $revision) : array {
     $resourcesToKeep = [];
 
@@ -176,15 +183,6 @@ class ResourcePurger implements ContainerInjectionInterface {
 
     return array_unique($resourcesToKeep);
   }
-
-//  /**
-//   * Unneeded resources have not yet been considered for keeping or discarding.
-//   */
-//  private function isResourceUnneeded(array $resource, array $keep, array $purge) : bool {
-//    $toKeep = in_array($resource, $keep);
-//    $toPurge = in_array($resource, $purge);
-//    return !$toKeep && !$toPurge;
-//  }
 
   /**
    * Determine if the scope of the purge is reduced or not.
@@ -224,7 +222,8 @@ class ResourcePurger implements ContainerInjectionInterface {
     if ($this->getPurgeTableSetting()) {
       try {
         $this->datastore->getStorage($id, $version)->destroy();
-      } catch (\Exception $e) {
+      }
+      catch (\Exception $e) {
       }
     }
   }

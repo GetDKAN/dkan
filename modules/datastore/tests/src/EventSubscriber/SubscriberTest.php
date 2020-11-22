@@ -73,7 +73,7 @@ class SubscriberTest extends TestCase {
 
     $containerChain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(ResourcePurger::class, 'schedulePurging')
+      ->add(ResourcePurger::class, 'schedule')
       ->add(ContentEntityInterface::class, 'uuid', 1);
 
     \Drupal::setContainer($containerChain->getMock());
