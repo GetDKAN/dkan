@@ -38,7 +38,7 @@ class ResourcePurgerTest extends TestCase {
       ->add(QueryInterface::class, 'execute', []);
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
-    $voidResult = $resourcePurger->schedulePurgingAll(FALSE, TRUE);
+    $voidResult = $resourcePurger->schedule([], FALSE, TRUE);
     $this->assertNull($voidResult);
   }
 
@@ -54,7 +54,7 @@ class ResourcePurgerTest extends TestCase {
       ->add(QueueInterface::class, 'createItem', 1);
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
-    $voidResult = $resourcePurger->schedulePurging([], TRUE);
+    $voidResult = $resourcePurger->schedule([], TRUE);
     $this->assertNull($voidResult);
   }
 
@@ -76,7 +76,7 @@ class ResourcePurgerTest extends TestCase {
       ->add(NodeStorageInterface::class, 'revisionIds', $vids);
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
-    $voidResult = $resourcePurger->schedulePurging($uuids, FALSE);
+    $voidResult = $resourcePurger->schedule($uuids, FALSE);
     $this->assertNull($voidResult);
   }
 
