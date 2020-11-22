@@ -35,6 +35,16 @@ class DatasetTest extends ExistingSiteBase {
     }';
   }
 
+  public function setUp() {
+    parent::setUp();
+    $this->removeAllNodes();
+    $this->removeAllMappedFiles();
+    $this->removeAllFileFetchingJobs();
+    $this->flushQueues();
+    $this->removeFiles();
+    $this->removeDatastoreTables();
+  }
+
   public function test() {
 
     // Test posting a dataset to the metastore.
@@ -143,16 +153,6 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getMetastore(): Service {
     return \Drupal::service('dkan.metastore.service');
-  }
-
-  public function tearDown() {
-    parent::tearDown();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
   }
 
 }
