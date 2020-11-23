@@ -85,7 +85,7 @@ class DatasetTest extends ExistingSiteBase {
 
     // Process datastore operations. This will include downloading the remote
     // CSV file and registering a local url and file with the resource mapper.
-    $this->runCron(['datastore_import']);
+    $this->datastoreProcesses($data1);
 
     // Check that the imported file can be queried with the SQL Endpoint.
     $this->queryResource($data1);
@@ -177,6 +177,23 @@ class DatasetTest extends ExistingSiteBase {
     }
 
     return $queueItemsCount > 0;
+  }
+
+  private function datastoreProcesses($fileData) {
+    $queue = $this->getQueueService()->get('datastore_import');
+    $this->assertEquals(1, $queue->numberOfItems());
+
+    /* @var $datastore \Drupal\datastore\Service */
+    $datastore = \Drupal::service('dkan.datastore.service');
+
+    $queueWorker = Import::create(\Drupal::getContainer(), [], 'blah', 'blah');
+    $queueWorker->processItem((object) ['data' => [
+      'identifier' => $fileData->identifier,
+      'version' => $fileData->version,
+    ]]);
+
+    $result = $datastore->list();
+    $this->assertEquals(1, count($result));
   }
 
   private function checkDatasetIn($datasetJson, $method = 'post', $downloadUrl = null) {
