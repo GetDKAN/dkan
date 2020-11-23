@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\ResourcePurger;
@@ -106,7 +107,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->storeDataset(111, '1.2', '1.csv', 'put');
     $this->storeDataset(111, '1.3', '2.csv', 'put');
 
-    `drush queue:run datastore_import`;
+    $this->runCron(['datastore_import']);
 
     $this->getResourcePurger()->schedule([111], FALSE);
 
@@ -152,10 +153,34 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertGreaterThan(0, count($results));
   }
 
+  /**
+   * Run cron until relevant queues are exhausted.
+   */
+  private function runCron(array $relevantQueues = []) {
+    /** @var \Drupal\Core\CronInterface $cron */
+    $cron = \Drupal::service('cron');
+
+    while ($this->queuesHaveItemsOfInterest($relevantQueues)) {
+      $cron->run();
+    }
+  }
+
+  /**
+   * Check if there are any relevant queue items left.
+   */
+  private function queuesHaveItemsOfInterest(array $relevantQueues) : bool {
+    $queueFactory = $this->getQueueService();
+
+    $queueItemsCount = 0;
+    foreach ($relevantQueues as $queueName) {
+      $queueItemsCount += $queueFactory->get($queueName)->numberOfItems();
+    }
+
+    return $queueItemsCount > 0;
+  }
+
   private function datastoreProcesses($fileData) {
-    /* @var $queueFactory \Drupal\Core\Queue\QueueFactory */
-    $queueFactory = \Drupal::service('queue');
-    $queue = $queueFactory->get('datastore_import');
+    $queue = $this->getQueueService()->get('datastore_import');
     $this->assertEquals(1, $queue->numberOfItems());
 
     /* @var $datastore \Drupal\datastore\Service */
@@ -205,6 +230,10 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getResourcePurger() : ResourcePurger {
     return \Drupal::service('dkan.datastore.service.resource_purger');
+  }
+
+  private function getQueueService() : QueueFactory {
+    return \Drupal::service('queue');
   }
 
 }
