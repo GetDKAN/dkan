@@ -139,10 +139,11 @@ class ResourcePurger implements ContainerInjectionInterface {
     if (!$node) {
       return;
     }
-    $keep = $this->getResourcesToKeep($node);
+    $keep = $this->getResourcesToKeep($uuid);
     $purge = $this->getResourcesToPurge($vid, $node, $prior);
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
+      // $idAndVersion is a json encoded array with resource's id and version.
       list($id, $version) = json_decode($idAndVersion);
       $this->delete($id, $version);
     }
@@ -168,7 +169,8 @@ class ResourcePurger implements ContainerInjectionInterface {
     foreach ($this->getOlderRevisionIds($initialVid, $node) as $vid) {
       list($published, $resource) = $this->getRevisionData($vid);
       $purge[$vid] = $resource;
-      if ($this->isPurgeScopeReduced($published, $publishedCount, $prior)) {
+      $publishedCount = $published ? $publishedCount + 1 : $publishedCount;
+      if (!$prior && $publishedCount >= 2) {
         break;
       }
     }
@@ -199,47 +201,27 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * Resources to keep.
    *
-   * @param \Drupal\node\NodeInterface $revision
-   *   The dataset whose revisions we are considering.
+   * @param string $uuid
+   *   Dataset identifier.
    *
    * @return array
    *   The revisions important to keep.
    */
-  private function getResourcesToKeep(NodeInterface $revision) : array {
+  private function getResourcesToKeep(string $uuid) : array {
     $resourcesToKeep = [];
 
     // Always keep the resource associated with the latest revision.
-    $latestRevision = $this->storage->getNodeLatestRevision($revision->uuid());
+    $latestRevision = $this->storage->getNodeLatestRevision($uuid);
     $resourcesToKeep[] = $this->getResourceIdAndVersion($latestRevision);
 
     // If the latest revision is not published, keep the resources associated
     // with the currently published version, if any.
-    $currentlyPublished = $this->storage->getNodePublishedRevision($revision->uuid());
+    $currentlyPublished = $this->storage->getNodePublishedRevision($uuid);
     if ($currentlyPublished) {
       $resourcesToKeep[] = $this->getResourceIdAndVersion($currentlyPublished);
     }
 
     return array_unique($resourcesToKeep);
-  }
-
-  /**
-   * Unless considering all previous revisions, exit after 2 published ones.
-   *
-   * @param bool $published
-   *   Whether the current revision is published or not.
-   * @param int $publishedCount
-   *   The count of published revisions so far.
-   * @param bool $prior
-   *   Whether to include all prior revisions.
-   *
-   * @return bool
-   *   Whether to end or continue.
-   */
-  private function isPurgeScopeReduced(bool $published, int &$publishedCount, bool $prior) : bool {
-    if ($published) {
-      $publishedCount++;
-    }
-    return !$prior && $publishedCount >= 2;
   }
 
   /**
