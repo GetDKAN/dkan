@@ -3,7 +3,7 @@
 entity.metastore_entity_metadata.canonical:
   path: '/metadata/{metastore_entity_metadata}'
   defaults:
-  # Calls the view controller, defined in the annotation of the contact entity
+  # Calls the view controller, defined in the annotation of the metadata entity
     _entity_view: 'metastore_entity_metadata'
     _title: 'Metadata Content'
   requirements:
@@ -11,14 +11,14 @@ entity.metastore_entity_metadata.canonical:
     _entity_access: 'metastore_entity_metadata.view'
 
 entity.metastore_entity_metadata.collection:
-  path: 'admin/structure/metadata/list'
+  path: '/metadata/list'
   defaults:
   # Calls the list controller, defined in the annotation of the metadata entity.
     _entity_list: 'metastore_entity_metadata'
     _title: 'Metadata List'
   requirements:
   # Checks for permission directly.
-    _permission: 'admininister metadata entity'
+    _permission: 'administer metadata entity'
 
 metastore_entity.metadata_add:
   path: '/metadata/add'

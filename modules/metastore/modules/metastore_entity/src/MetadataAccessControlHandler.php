@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 
 /**
- * Access controller for the contact entity.
+ * Access controller for the metadata entity.
  */
 class MetadataAccessControlHandler extends EntityAccessControlHandler {
 

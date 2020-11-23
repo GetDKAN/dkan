@@ -36,7 +36,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *   },
  *   list_cache_contexts = { "user" },
  *   base_table = "metadata",
- *   admin_permission = "administer metastore_entity entity",
+ *   admin_permission = "administer metadata entity",
  *   entity_keys = {
  *     "id" = "id",
  *     "title" = "title",
@@ -46,7 +46,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *     "canonical" = "/metadata/{metastore_entity_metadata}",
  *     "edit-form" = "/metadata/{metastore_entity_metadata}/edit",
  *     "delete-form" = "/metadata/{metastore_entity_metadata}/delete",
- *     "collection" = "/admin/structure/metadata/list"
+ *     "collection" = "/metadata/list"
  *   },
  *   field_ui_base_route = "metastore_entity.metadata_settings",
  * )
