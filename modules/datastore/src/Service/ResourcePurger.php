@@ -175,6 +175,7 @@ class ResourcePurger implements ContainerInjectionInterface {
       }
     }
 
+    // Remove any duplicate.
     return array_unique($purge);
   }
 
@@ -214,8 +215,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $latestRevision = $this->storage->getNodeLatestRevision($uuid);
     $resourcesToKeep[] = $this->getResourceIdAndVersion($latestRevision);
 
-    // If the latest revision is not published, keep the resources associated
-    // with the currently published version, if any.
+    // Keep the resource of the currently published revision, if any.
     $currentlyPublished = $this->storage->getNodePublishedRevision($uuid);
     if ($currentlyPublished) {
       $resourcesToKeep[] = $this->getResourceIdAndVersion($currentlyPublished);
