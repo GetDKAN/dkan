@@ -90,6 +90,11 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Schedule purging to run at a later time.
+   *
+   * @param array $uuids
+   *   The dataset identifiers.
+   * @param bool $prior
+   *   Whether to include all prior revisions.
    */
   private function queue(array $uuids, bool $prior) {
     $queue = $this->datastore->getQueueFactory()->get('resource_purger');
@@ -105,6 +110,11 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Purge unneeded resources of multiple datasets.
+   *
+   * @param array $uuids
+   *   The dataset identifiers.
+   * @param bool $prior
+   *   Whether to include all prior revisions.
    */
   public function purgeMultiple(array $uuids, bool $prior = FALSE) {
     if ($this->validate()) {
@@ -116,6 +126,13 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Purge a dataset's unneeded resources.
+   *
+   * @param int $vid
+   *   The dataset revision.
+   * @param string $uuid
+   *   The dataset identifier.
+   * @param bool $prior
+   *   Whether to include all prior revisions.
    */
   private function purge(int $vid, string $uuid, bool $prior) {
     $node = $this->storage->getNodeStorage()->loadRevision($vid);
@@ -126,20 +143,29 @@ class ResourcePurger implements ContainerInjectionInterface {
     $purge = $this->getResourcesToPurge($vid, $node, $prior);
 
     foreach (array_diff($purge, $keep) as $idAndVersion) {
-      list($id, $version) = json_decode($idAndVersion);
+      [$id, $version] = json_decode($idAndVersion);
       $this->delete($id, $version);
     }
   }
 
   /**
    * Determine which resources from various dataset revisions can be purged.
+   *
+   * @param int $initialVid
+   *   The initial dataset revision from which to search resources to purge.
+   * @param \Drupal\node\NodeInterface $node
+   *   The dataset.
+   * @param bool $prior
+   *   Whether to include all prior revisions.
+   *
+   * @return array
    */
   private function getResourcesToPurge(int $initialVid, NodeInterface $node, bool $prior) : array {
     $publishedCount = 0;
     $purge = [];
 
     foreach ($this->getOlderRevisionIds($initialVid, $node) as $vid) {
-      list($published, $resource) = $this->getRevisionData($vid);
+      [$published, $resource] = $this->getRevisionData($vid);
       $purge[$vid] = $resource;
       if ($this->isPurgeScopeReduced($published, $publishedCount, $prior)) {
         break;
@@ -151,6 +177,13 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Get older revision ids to consider.
+   *
+   * @param int $initialVid
+   *   The initial dataset revision from which to search resources to purge.
+   * @param \Drupal\node\NodeInterface $dataset
+   *   The dataset.
+   *
+   * @return array
    */
   private function getOlderRevisionIds(int $initialVid, NodeInterface $dataset) : array {
 
@@ -163,6 +196,11 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Resources to keep.
+   *
+   * @param \Drupal\node\NodeInterface $revision
+   *   The dataset whose revisions we are considering.
+   * @return array
+   *   The revisions important to keep.
    */
   private function getResourcesToKeep(NodeInterface $revision) : array {
     $resourcesToKeep = [];
@@ -171,7 +209,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $latestRevision = $this->storage->getNodeLatestRevision($revision->uuid());
     $resourcesToKeep[] = $this->getResourceIdAndVersion($latestRevision);
 
-    // If the latest revision is not published, keep the resources associoated
+    // If the latest revision is not published, keep the resources associated
     // with the currently published version, if any.
     $currentlyPublished = $this->storage->getNodePublishedRevision($revision->uuid());
     if ($currentlyPublished) {
@@ -183,6 +221,15 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Unless considering all previous revisions, exit after 2 published ones.
+   *
+   * @param bool $published
+   *   Whether the current revision is published or not.
+   * @param int $publishedCount
+   *   The count of published revisions so far.
+   * @param bool $prior
+   *   Whether to include all prior revisions.
+   *
+   * @return bool
    */
   private function isPurgeScopeReduced(bool $published, int &$publishedCount, bool $prior) : bool {
     if ($published) {
@@ -193,6 +240,12 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Get dataset published status and resource from a dataset revision.
+   *
+   * @param string $vid
+   *   A dataset revision.
+   *
+   * @return array
+   *   The revision's moderation state, and resource information json string.
    */
   private function getRevisionData(string $vid) : array {
     $revision = $this->storage->getNodeStorage()->loadRevision($vid);
@@ -204,6 +257,12 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Get a dataset's resource identifier and version.
+   *
+   * @param \Drupal\node\NodeInterface $dataset
+   *   The dataset.
+   *
+   * @return false|string
+   *   Json string of array containing resource identifier and version.
    */
   private function getResourceIdAndVersion(NodeInterface $dataset) {
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
@@ -214,6 +273,11 @@ class ResourcePurger implements ContainerInjectionInterface {
 
   /**
    * Delete a resource's file and/or table, based on enabled config settings.
+   *
+   * @param string $id
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
    */
   private function delete(string $id, string $version) {
     if ($this->getPurgeFileSetting()) {
