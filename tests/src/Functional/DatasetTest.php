@@ -4,6 +4,7 @@ namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Service;
 use Drupal\Tests\common\Traits\CleanUp;
@@ -107,9 +108,7 @@ class DatasetTest extends ExistingSiteBase {
 
     `drush queue:run datastore_import`;
 
-    /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */
-    $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    $resourcePurger->schedule([111], FALSE);
+    $this->getResourcePurger()->schedule([111], FALSE);
 
     $this->assertEqual(['2.csv'], $this->checkFiles());
     $this->assertEqual(1, $this->countTables());
@@ -202,6 +201,10 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getMetastore(): Service {
     return \Drupal::service('dkan.metastore.service');
+  }
+
+  private function getResourcePurger() : ResourcePurger {
+    return \Drupal::service('dkan.datastore.service.resource_purger');
   }
 
 }
