@@ -159,6 +159,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Whether to include all prior revisions.
    *
    * @return array
+   *   Array of revisions whose resource may be purged.
    */
   private function getResourcesToPurge(int $initialVid, NodeInterface $node, bool $prior) : array {
     $publishedCount = 0;
@@ -184,6 +185,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The dataset.
    *
    * @return array
+   *   List of revisions to consider.
    */
   private function getOlderRevisionIds(int $initialVid, NodeInterface $dataset) : array {
 
@@ -199,6 +201,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *
    * @param \Drupal\node\NodeInterface $revision
    *   The dataset whose revisions we are considering.
+   *
    * @return array
    *   The revisions important to keep.
    */
@@ -230,6 +233,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Whether to include all prior revisions.
    *
    * @return bool
+   *   Whether to end or continue.
    */
   private function isPurgeScopeReduced(bool $published, int &$publishedCount, bool $prior) : bool {
     if ($published) {
