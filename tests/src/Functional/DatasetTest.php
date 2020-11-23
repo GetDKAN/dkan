@@ -33,7 +33,7 @@ class DatasetTest extends ExistingSiteBase {
       "distribution": [
         {
           "title": "blah",
-          "downloadURL": "' . $downloadUrl . '",
+          "downloadURL": "' . $this->getDownloadUrl($downloadUrl) . '",
           "mediaType": "text/csv"
         }
       ]
@@ -53,7 +53,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', $this->getDownloadUrl('district_centerpoints_small.csv'));
+    $dataset = $this->getData(123, 'Test #1', 'district_centerpoints_small.csv');
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -78,7 +78,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', $this->getDownloadUrl('district_centerpoints_small.csv'));
+    $dataset = $this->getData(123, 'Test #1', 'district_centerpoints_small.csv');
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
@@ -117,7 +117,7 @@ class DatasetTest extends ExistingSiteBase {
 
   private function storeDataset($identifier, $title, $filename, $method = 'post') {
     $url = $this->getDownloadUrl($filename);
-    $dataset = $this->getData($identifier, $title, $url);
+    $dataset = $this->getData($identifier, $title, $filename);
     $this->checkDatasetIn($dataset, $method, $url);
   }
 
