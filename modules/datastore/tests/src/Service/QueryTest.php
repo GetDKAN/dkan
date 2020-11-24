@@ -42,6 +42,7 @@ class QueryTest extends TestCase {
     $dkanQueryCompare->showDbColumns = TRUE;
     $this->assertEquals(serialize($dkanQuery), serialize($dkanQueryCompare));
     $result = $datastoreService->runQuery($datastoreQuery);
+    print_r($result->query);
     $this->assertIsArray($result->results);
     $this->assertIsNumeric($result->count);
     $this->assertIsObject($result->schema);
@@ -119,7 +120,7 @@ class QueryTest extends TestCase {
     $payload = file_get_contents(__DIR__ . "/../../data/query/$payloadName.json");
     return new DatastoreQuery($payload);
   }
-  
+
   /**
    * Build our mockChain.
    */

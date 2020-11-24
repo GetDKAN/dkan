@@ -233,7 +233,7 @@ class Service implements ContainerInjectionInterface {
    *   Array of row/record objects.
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {
-    $return = new \stdClass();
+    $return = new DatastoreQuery('{}');
 
     if ($datastoreQuery->{"$.results"} !== FALSE) {
       $return->results = $this->runResultsQuery($datastoreQuery);
