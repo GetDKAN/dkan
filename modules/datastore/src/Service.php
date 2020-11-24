@@ -173,7 +173,7 @@ class Service implements ContainerInjectionInterface {
    * Get a list of all stored importers and filefetchers, and their status.
    */
   public function list() {
-    /** @var \Drupal\datastore\Service\Factory\ImportInfoList $service */
+    /** @var \Drupal\datastore\Service\Info\ImportInfoList $service */
     $service = \Drupal::service('dkan.datastore.import_info_list');
     return $service->buildList();
   }
