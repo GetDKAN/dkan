@@ -6,9 +6,7 @@ use Contracts\BulkRetrieverInterface;
 use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\Events\DatasetPublication;
 use Drupal\node\NodeInterface;
 
 /**
@@ -148,29 +146,10 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     if ($node && $node->get('moderation_state') !== 'published') {
       $node->set('moderation_state', 'published');
       $node->save();
-      $this->dispatchDatasetPublication($node);
       return $uuid;
     }
 
     throw new \Exception("No data with that identifier was found.");
-  }
-
-  /**
-   * Dispatch dataset publication event.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $node
-   *   Node being published.
-   *
-   * @return \Symfony\Component\EventDispatcher\Event
-   *   Dataset publication event.
-   *
-   * @codeCoverageIgnore
-   */
-  protected function dispatchDatasetPublication(EntityInterface $node) {
-    return \Drupal::service('event_dispatcher')->dispatch(
-      self::EVENT_DATASET_PUBLICATION,
-      new DatasetPublication($node)
-    );
   }
 
   /**

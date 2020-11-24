@@ -8,8 +8,11 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\Resource;
+use Drupal\metastore\Events\DatasetPublication;
 use Drupal\metastore\LifeCycle\Data as LifeCycle;
 use Drupal\metastore\NodeWrapper\Data;
+use Drupal\metastore\Storage\Data as MetastoreData;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_node_load().
@@ -55,6 +58,35 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
     if (isset($fields['field_json_metadata'])) {
       $fields['field_json_metadata']->addConstraint('ProperJson', []);
     }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function metastore_node_insert(NodeInterface $node) {
+  publish($node);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function metastore_node_update(NodeInterface $node) {
+  publish($node);
+}
+
+/**
+ * Fires the publication event for published datasets.
+ */
+function publish(NodeInterface $node) {
+  if ($node->bundle() == 'data'
+      && $node->get('field_data_type')->getString() == 'dataset'
+      && $node->get('moderation_state')->getString() == 'published'
+  ) {
+    \Drupal::service('event_dispatcher')->dispatch(
+      MetastoreData::EVENT_DATASET_PUBLICATION,
+      new DatasetPublication($node)
+    );
   }
 }
 
