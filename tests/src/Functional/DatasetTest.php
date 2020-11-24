@@ -5,7 +5,6 @@ namespace Drupal\Tests\dkan\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Service;
 use Drupal\Tests\common\Traits\CleanUp;
@@ -100,25 +99,45 @@ class DatasetTest extends ExistingSiteBase {
       $this->getDownloadUrl('district_centerpoints_small.csv'));
   }
 
+  /**
+   * Test the resource purger when the default moderation state is 'published'.
+   */
   public function test3() {
 
-    // Add a dataset, update its metadata, then its file.
-    $this->storeDataset(111, '1.1', '1.csv');
-    $this->storeDataset(111, '1.2', '1.csv', 'put');
-    $this->storeDataset(111, '1.3', '2.csv', 'put');
+    // Test the resource purger by posting a dataset, then updating its file.
+    $this->storeDatasetRunQueues(111, '1.1', '1.csv');
+    $this->storeDatasetRunQueues(111, '1.2', '2.csv', 'put');
 
-    $this->runCron(['datastore_import']);
-
-    $this->getResourcePurger()->schedule([111], FALSE);
-
-    $this->assertEqual(['2.csv'], $this->checkFiles());
-    $this->assertEqual(1, $this->countTables());
+    // Verify only 2.csv remains in the resources folder, and 1 datastore table.
+    $this->assertEquals(['2.csv'], $this->checkFiles());
+    $this->assertEquals(1, $this->countTables());
   }
 
-  private function storeDataset($identifier, $title, $filename, $method = 'post') {
+  /**
+   * Store or update a dataset,run datastore_import and resource_purger queues.
+   */
+  private function storeDatasetRunQueues($identifier, $title, $filename, $method = 'post') {
     $url = $this->getDownloadUrl($filename);
     $dataset = $this->getData($identifier, $title, $filename);
     $this->checkDatasetIn($dataset, $method, $url);
+    // Simulate a cron on queue relevant to this scenario.
+    $this->runQueues(['datastore_import', 'resource_purger']);
+  }
+
+  /**
+   * Process queues in a predictible order.
+   */
+  private function runQueues(array $relevantQueues = []) {
+    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
+    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    foreach ($relevantQueues as $queueName) {
+      $worker = $queueWorkerManager->createInstance($queueName);
+      $queue = $this->getQueueService()->get($queueName);
+      while ($item = $queue->claimItem()) {
+        $worker->processItem($item->data);
+        $queue->deleteItem($item);
+      }
+    }
   }
 
   private function countTables() {
@@ -134,6 +153,10 @@ class DatasetTest extends ExistingSiteBase {
     $fileSystem = \Drupal::service('file_system');
 
     $dir = DRUPAL_ROOT . "/sites/default/files/resources";
+    // Nothing to check if the resource folder does not exist.
+    if (!is_dir($dir)) {
+      return [];
+    }
     $filesObjects = $fileSystem->scanDirectory($dir, "/.*\.csv$/i", ['recurse' => TRUE]);
     $filenames = array_values(array_map(function ($obj) {
       return str_replace(self::FILENAME_PREFIX, '', $obj->filename);
@@ -151,32 +174,6 @@ class DatasetTest extends ExistingSiteBase {
 
     $results = $sqlEndpoint->runQuery($queryString);
     $this->assertGreaterThan(0, count($results));
-  }
-
-  /**
-   * Run cron until relevant queues are exhausted.
-   */
-  private function runCron(array $relevantQueues = []) {
-    /** @var \Drupal\Core\CronInterface $cron */
-    $cron = \Drupal::service('cron');
-
-    while ($this->queuesHaveItemsOfInterest($relevantQueues)) {
-      $cron->run();
-    }
-  }
-
-  /**
-   * Check if there are any relevant queue items left.
-   */
-  private function queuesHaveItemsOfInterest(array $relevantQueues) : bool {
-    $queueFactory = $this->getQueueService();
-
-    $queueItemsCount = 0;
-    foreach ($relevantQueues as $queueName) {
-      $queueItemsCount += $queueFactory->get($queueName)->numberOfItems();
-    }
-
-    return $queueItemsCount > 0;
   }
 
   private function datastoreProcesses($fileData) {
@@ -226,10 +223,6 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getMetastore(): Service {
     return \Drupal::service('dkan.metastore.service');
-  }
-
-  private function getResourcePurger() : ResourcePurger {
-    return \Drupal::service('dkan.datastore.service.resource_purger');
   }
 
   private function getQueueService() : QueueFactory {
