@@ -13,7 +13,7 @@ trait JsonResponseTrait {
    * Private.
    */
   private function getResponse($message, int $code = 200): JsonResponse {
-    return new JsonResponse($message, $code, ["Access-Control-Allow-Origin" => "*"]);
+    return new JsonResponse($message, $code, []);
   }
 
   /**
