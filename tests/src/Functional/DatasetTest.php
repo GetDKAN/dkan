@@ -120,7 +120,7 @@ class DatasetTest extends ExistingSiteBase {
     $url = $this->getDownloadUrl($filename);
     $dataset = $this->getData($identifier, $title, $filename);
     $this->checkDatasetIn($dataset, $method, $url);
-    // Simulate a cron on queue relevant to this scenario.
+    // Simulate a cron on queues relevant to this scenario.
     $this->runQueues(['datastore_import', 'resource_purger']);
   }
 
