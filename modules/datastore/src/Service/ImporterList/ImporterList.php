@@ -32,7 +32,7 @@ class ImporterList {
   }
 
   /**
-   * Retrieve stored jobs and build the list array property.
+   * Retrieve stored jobs and build the list array property
    *
    * @return array
    *   An array of ImporterListItem objects, keyed by UUID.
