@@ -198,21 +198,13 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     try {
       $datastoreQuery = new DatastoreQuery($payloadJson);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException(
-        new \Exception("Invalid query JSON: {$e->getMessage()}"),
-        400
-      );
-    }
-    try {
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e);
+      return $this->getResponseFromException($e, 400);
     }
 
-    return $this->getResponse($result, 200);
+    return $this->getResponse($result->{"$"}, 200);
   }
 
   /**

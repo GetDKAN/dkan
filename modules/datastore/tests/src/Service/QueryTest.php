@@ -42,11 +42,10 @@ class QueryTest extends TestCase {
     $dkanQueryCompare->showDbColumns = TRUE;
     $this->assertEquals(serialize($dkanQuery), serialize($dkanQueryCompare));
     $result = $datastoreService->runQuery($datastoreQuery);
-    print_r($result->query);
-    $this->assertIsArray($result->results);
-    $this->assertIsNumeric($result->count);
-    $this->assertIsObject($result->schema);
-    $this->assertInstanceOf(DatastoreQuery::class, $result->query);
+    $this->assertIsArray($result->{"$.results"});
+    $this->assertIsNumeric($result->{"$.count"});
+    $this->assertIsArray($result->{"$.schema"});
+    $this->assertIsArray($result->{"$.query"});
   }
 
   /**
@@ -56,11 +55,10 @@ class QueryTest extends TestCase {
     $datastoreService = Service::create($this->getCommonMockChain());
     $datastoreQuery = $this->getDatastoreQueryFromJson("propertiesQuery");
     $response = $datastoreService->runQuery($datastoreQuery);
-    $this->assertTrue(is_object($response->results[0]));
-    $this->assertTrue(is_numeric($response->count));
-    $this->assertTrue(is_array($response->schema->asdf->fields));
-    $this->assertInstanceOf(DatastoreQuery::class, $response->query);
-    $this->assertIsObject($response->results[0]);
+    $this->assertIsArray($response->{"$.results[0]"});
+    $this->assertEquals(123, $response->{"$.count"});
+    $this->assertIsArray($response->{"$.schema"}["asdf"]["fields"]);
+    $this->assertIsArray($response->{"$.query"});
   }
 
   /**
@@ -71,7 +69,7 @@ class QueryTest extends TestCase {
     $datastoreQuery = $this->getDatastoreQueryFromJson("propertiesQuery");
     $datastoreQuery->{"$.keys"} = FALSE;
     $response = $datastoreService->runQuery($datastoreQuery);
-    $this->assertIsArray($response->results[0]);
+    $this->assertIsArray($response->{"$.results[0]"});
   }
 
   public function testBadCondition() {

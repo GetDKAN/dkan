@@ -114,13 +114,13 @@ class QueryFactory {
   /**
    * Convert expressions from a datastore query to regular DKAN query format.
    *
-   * @param object $expression
+   * @param array $expression
    *   An expression from a datastore query, including "resources".
    *
    * @return object
    *   Standardized expression object with "collection" instead of "resource".
    */
-  private function expressionConvert($expression) {
+  private function expressionConvert(array $expression) {
     foreach ($expression["operands"] as $key => $operand) {
       if (is_array($operand) && isset($operand["operator"])) {
         $expression["operands"][$key] = $this->expressionConvert($operand);

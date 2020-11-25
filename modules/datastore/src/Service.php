@@ -7,6 +7,7 @@ use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Storage\Query;
 use Drupal\datastore\Service\DatastoreQuery;
 use Procrastinator\Result;
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
@@ -90,7 +91,7 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
-    list($resource, $result) = $this->getResource($identifier, $version);
+    [$resource, $result] = $this->getResource($identifier, $version);
 
     if (!$resource) {
       return $result;
@@ -195,7 +196,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Get a list of all stored importers and filefetchers, and their status.
    *
-   * @return \Drupal\datastore\Service\ImporterList\ImporterList
+   * @return array
    *   The importer list object.
    */
   public function list() {
@@ -233,8 +234,7 @@ class Service implements ContainerInjectionInterface {
    *   Array of row/record objects.
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {
-    $return = new DatastoreQuery('{}');
-
+    $return = (object) [];
     if ($datastoreQuery->{"$.results"} !== FALSE) {
       $return->results = $this->runResultsQuery($datastoreQuery);
     }
@@ -247,9 +247,8 @@ class Service implements ContainerInjectionInterface {
       $return->schema = $this->getSchema($datastoreQuery);
     }
 
-    $return->query = $datastoreQuery;
-
-    return $return;
+    $return->query = $datastoreQuery->{"$"};
+    return new RootedJsonData(json_encode($return));
   }
 
   /**
@@ -263,10 +262,10 @@ class Service implements ContainerInjectionInterface {
    */
   private function getSchema(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $schema = new \stdClass();
+    $schema = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
       $storage = $storageMap[$resource["alias"]];
-      $schema->{$resource["id"]} = (object) $storage->getSchema();
+      $schema[$resource["id"]] = $storage->getSchema();
     }
     return $schema;
   }
@@ -283,7 +282,7 @@ class Service implements ContainerInjectionInterface {
   public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
     $storageMap = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
-      list($identifier, $version) = Resource::getIdentifierAndVersion($resource["id"]);
+      [$identifier, $version] = Resource::getIdentifierAndVersion($resource["id"]);
       $storage = $this->getStorage($identifier, $version);
       $storageMap[$resource["alias"]] = $storage;
     }
@@ -293,8 +292,10 @@ class Service implements ContainerInjectionInterface {
   /**
    * Build query object for main "results query" for datastore.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
+   *
+   * @return array
    */
   private function runResultsQuery(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
