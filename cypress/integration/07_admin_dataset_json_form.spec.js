@@ -8,7 +8,6 @@ context('Admin dataset json form', () => {
         cy.visit(baseurl + "/admin/dkan/dataset")
         cy.get('#root__title').should('have.text', 'Project Open Data Dataset')
         cy.get('#root .control-label[for="root_title"] > .required').should('be.visible')
-        cy.get('#root .control-label[for="root_identifier"] > .required').should('not.be.visible')
         cy.get('#root .control-label[for="root_description"] > .required').should('be.visible')
         cy.get('#root .control-label[for="root_accessLevel"] > .required').should('be.visible')
         cy.get('#root .control-label[for="root_modified"] > .required').should('be.visible')
