@@ -114,6 +114,24 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   /**
+   * Test the resource purger when the default moderation state is 'draft'.
+   */
+  public function test4() {
+    /** @var \Drupal\Core\Config\ConfigFactory $config */
+    $config = \Drupal::service('config.factory');
+    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
+    $defaultModerationState->set('type_settings.default_moderation_state', 'draft');
+    $defaultModerationState->save();
+
+    
+
+    $defaultModerationState->set('type_settings.default_moderation_state', 'published');
+    $defaultModerationState->save();
+
+    $this->assertTrue(TRUE);
+  }
+
+  /**
    * Store or update a dataset,run datastore_import and resource_purger queues.
    */
   private function storeDatasetRunQueues($identifier, $title, $filename, $method = 'post') {
