@@ -123,7 +123,7 @@ class DatasetTest extends ExistingSiteBase {
     $defaultModerationState->set('type_settings.default_moderation_state', 'draft');
     $defaultModerationState->save();
 
-    
+
 
     $defaultModerationState->set('type_settings.default_moderation_state', 'published');
     $defaultModerationState->save();
@@ -135,9 +135,9 @@ class DatasetTest extends ExistingSiteBase {
    * Store or update a dataset,run datastore_import and resource_purger queues.
    */
   private function storeDatasetRunQueues($identifier, $title, $filename, $method = 'post') {
-    $url = $this->getDownloadUrl($filename);
-    $dataset = $this->getData($identifier, $title, $filename);
-    $this->checkDatasetIn($dataset, $method, $url);
+    $datasetJson = $this->getData($identifier, $title, $filename);
+    $this->httpVerbHandler($method, $datasetJson, json_decode($datasetJson));
+
     // Simulate a cron on queues relevant to this scenario.
     $this->runQueues(['datastore_import', 'resource_purger']);
   }
@@ -218,15 +218,7 @@ class DatasetTest extends ExistingSiteBase {
       $downloadUrl = $dataset->distribution[0]->downloadURL;
     }
 
-    if ($method == 'post') {
-      $identifier = $this->getMetastore()->post('dataset', $datasetJson);
-    }
-    else {
-      $id = $dataset->identifier;
-      $info = $this->getMetastore()->put('dataset', $id, $datasetJson);
-      $identifier = $info['identifier'];
-    }
-
+    $identifier = $this->httpVerbHandler($method, $datasetJson, $dataset);
     $this->assertEquals($dataset->identifier, $identifier);
 
     $datasetWithReferences = json_decode($this->getMetastore()->get('dataset', $identifier));
@@ -237,6 +229,21 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals($downloadUrl, $fileData->filePath);
 
     return $fileData;
+  }
+
+  private function httpVerbHandler(string $method, string $json, $dataset) {
+
+    if ($method == 'post') {
+      $identifier = $this->getMetastore()->post('dataset', $json);
+    }
+    // PUT for now, refactor later if more verbs are needed.
+    else {
+      $id = $dataset->identifier;
+      $info = $this->getMetastore()->put('dataset', $id, $json);
+      $identifier = $info['identifier'];
+    }
+
+    return $identifier;
   }
 
   private function getMetastore(): Service {
