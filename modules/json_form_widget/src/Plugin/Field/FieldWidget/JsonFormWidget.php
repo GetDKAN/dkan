@@ -21,6 +21,8 @@ use Drupal\json_form_widget\ValueHandler;
  *     "string_long"
  *   }
  * )
+ *
+ * @codeCoverageIgnore
  */
 class JsonFormWidget extends WidgetBase {
 
