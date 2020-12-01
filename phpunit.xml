@@ -20,6 +20,7 @@
             <directory>modules/datastore/tests</directory>
             <directory>modules/frontend/tests</directory>
             <directory>modules/harvest/tests</directory>
+            <directory>modules/json_form_widget/tests</directory>
         </testsuite>
     </testsuites>
 
@@ -50,6 +51,7 @@
           <directory>modules/datastore/src</directory>
           <directory>modules/frontend/src</directory>
           <directory>modules/harvest/src</directory>
+          <directory>modules/json_form_widget/src</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>
         <directory>modules/common/src/Tests</directory>
