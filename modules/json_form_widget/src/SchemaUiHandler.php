@@ -103,13 +103,15 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * Helper function for handling Schema UI specs.
    */
   public function handlePropertySpec($property, $spec, $element) {
+    if (!isset($spec->items) && !isset($spec->properties)) {
+      $element = $this->applyOnBaseField($spec, $element);
+    }
     // Handle UI specs for array items.
     if (isset($spec->items)) {
       $fields = array_keys((array) $spec->items);
       foreach ($element[$property] as &$item) {
         $item = $this->applyOnArrayFields($property, $spec->items, $item, $fields);
       }
-      $element[$property] = $this->applyOnBaseField($spec, $element[$property]);
     }
     if (isset($spec->properties)) {
       $element[$property] = $this->applyOnBaseField($spec, $element[$property]);
@@ -177,7 +179,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
         break;
 
       case 'dkan_uuid':
-        $element['#default_value'] = $element['#default_value'] ? $element['#default_value'] : $this->uuidService->generate();
+        $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
         $element['#access'] = FALSE;
         break;
     }
@@ -192,7 +194,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       $element['#rows'] = $spec->rows;
     }
     if (isset($spec->cols)) {
-      $element['#cols'] = $spec['#cols'];
+      $element['#cols'] = $spec->cols;
     }
     return $element;
   }
