@@ -102,8 +102,8 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   /**
    * Helper function for handling Schema UI specs.
    */
-  public function handlePropertySpec($property, $spec, $element) {
-    if (!isset($spec->items) && !isset($spec->properties)) {
+  public function handlePropertySpec($property, $spec, $element, $in_array = FALSE) {
+    if ($in_array) {
       $element = $this->applyOnBaseField($spec, $element);
     }
     // Handle UI specs for array items.
@@ -152,7 +152,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   public function applyOnArrayFields($property, $spec, $element, $fields) {
     foreach ($fields as $field) {
       if (isset($element[$property][$field])) {
-        $element[$property][$field] = $this->handlePropertySpec($field, $spec->{$field}, $element[$property][$field]);
+        $element[$property][$field] = $this->handlePropertySpec($field, $spec->{$field}, $element[$property][$field], TRUE);
       }
       else {
         $element = $this->applyOnBaseField($spec, $element);
