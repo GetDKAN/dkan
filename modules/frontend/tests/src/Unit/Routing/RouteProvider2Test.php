@@ -40,10 +40,10 @@ class RouteProvider2Test extends TestCase {
 
     $gatsbyProvider = new RouteProvider(__DIR__ . "/../../../gatsby", $queryFactory, $configFactory);
 
-    /* @var $routes \Symfony\Component\Routing\RouteCollection */
+    /** @var \Symfony\Component\Routing\RouteCollection $routes */
     $gatsbyRoutes = $gatsbyProvider->routes();
 
-    /* @var $route \Symfony\Component\Routing\Route */
+    /** @var \Symfony\Component\Routing\Route $route */
     foreach ($gatsbyRoutes->all() as $route) {
       $this->assertThat(
         $route->getPath(),
@@ -84,10 +84,10 @@ class RouteProvider2Test extends TestCase {
 
     $reactAppProvider = new RouteProvider(__DIR__ . "/../../../cra", $queryFactory, $configFactory);
 
-    /* @var $routes \Symfony\Component\Routing\RouteCollection */
+    /** @var \Symfony\Component\Routing\RouteCollection $routes */
     $reactappRoutes = $reactAppProvider->routes();
 
-    /* @var $route \Symfony\Component\Routing\Route */
+    /** @var \Symfony\Component\Routing\Route $route */
     foreach ($reactappRoutes->all() as $route) {
       $this->assertThat(
         $route->getPath(),

@@ -161,7 +161,7 @@ class Drush extends DrushCommands {
     $document = $html->parse($input);
     $scriptTags = $document->getElementsByTagName("script");
 
-    /* @var $scriptTag DOMElement */
+    /** @var DOMElement $scriptTag */
     foreach ($scriptTags as $scriptTag) {
       $content = $scriptTag->textContent;
       if (!empty($content)) {
