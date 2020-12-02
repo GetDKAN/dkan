@@ -63,7 +63,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "accessURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/pittsmva2016data.zip",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/IMD-MAPS.zip",
           "format":"zip",
           "title":"Map files"
         }
@@ -119,35 +119,20 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"This table contains the estimated percent of California adults (18 and older) with lifetime and current asthma (asthma prevalence), by year.",
+      "description":"Sample data.",
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/asthma-prevalence-adults-by-year-1945-to-1999.csv",
+          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/Asthma-Prevalence-Map-2017.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
-          "title":"Data-Adult Asthma Prevalence 1945 to 1999"
-        },
-        {
-          "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/asthma-prevalence-adults-by-year-2000-to-2020.csv",
-          "mediaType":"text\/csv",
-          "format":"csv",
-          "description":"Mock data for demonstration purposes.",
-          "title":"Data-Adult Asthma Prevalence 2000 to 2020"
-        },
-        {
-          "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/lifetime-asthma-prevalence-by-county_data-dictionary.xlsx",
-          "mediaType":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "format":"xlsx",
-          "title":"Data Dictionary Data-Lifetime Asthma Prevalence"
+          "title":"Asthma prevalence by location"
         }
       ],
       "identifier":"95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
       "issued":"2017-08-01",
-      "keyword":["health","asthma"],
+      "keyword":["asthma"],
       "license":"http://opendefinition.org/licenses/odc-odbl/",
       "modified":"2019-06-06",
       "publisher":{
@@ -155,7 +140,7 @@
         "name":"National Health Council"
       },
       "theme":["Health Care"],
-      "temporal":"1995-01-01T05:00:00+00:00\/2017-12-31T05:00:00+00:00",
+      "temporal":"2017-01-01T05:00:00+00:00\/2017-12-31T05:00:00+00:00",
       "title":"Asthma Prevalence"
     },
     {
