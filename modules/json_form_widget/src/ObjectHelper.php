@@ -17,7 +17,7 @@ class ObjectHelper {
       '#title' => $property_schema->title,
     ];
     if (isset($property_schema->description)) {
-      $element['#description'] = $property_schema->description;
+      $element[$field_name]['#description'] = $property_schema->description;
     }
     $properties = array_keys((array) $property_schema->properties);
 
