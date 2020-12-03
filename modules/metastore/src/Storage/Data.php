@@ -198,7 +198,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return int|null
    *   The node id, if found.
    */
-  private function getNidFromUuid(string $uuid) : ?int {
+  public function getNidFromUuid(string $uuid) : ?int {
 
     $nids = $this->nodeStorage->getQuery()
       ->condition('uuid', $uuid)

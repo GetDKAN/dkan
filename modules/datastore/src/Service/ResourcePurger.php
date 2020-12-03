@@ -312,41 +312,15 @@ class ResourcePurger implements ContainerInjectionInterface {
 
     $indexed = [];
 
-    $vids = $this->getVids($uuids);
-    foreach ($vids as $vid) {
-      $revision = $this->storage->getNodeStorage()->loadRevision($vid);
-      if ($revision) {
-        $indexed[$vid] = $revision->uuid();
-        unset($revision);
+    foreach ($uuids as $uuid) {
+      $nid = $this->storage->getNidFromUuid($uuid);
+      if ($nid) {
+        $vid = $this->storage->getNodeStorage()->getLatestRevisionId($nid);
+        $indexed[$vid] = $uuid;
       }
     }
 
     return $indexed;
-  }
-
-  /**
-   * Get the latest revision ids from our dataset identifiers.
-   *
-   * @param array $uuids
-   *   Dataset identifiers.
-   *
-   * @return array
-   *   The latest revision ids.
-   */
-  private function getVids(array $uuids) : array {
-
-    $query = $this->storage->getNodeStorage()
-      ->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('type', 'data')
-      ->condition('field_data_type', 'dataset');
-
-    if (!empty($uuids)) {
-      $query->condition('uuid', $uuids, 'IN');
-    }
-
-    // The latest revision ids are the keys in the query result array.
-    return array_keys($query->execute());
   }
 
 }
