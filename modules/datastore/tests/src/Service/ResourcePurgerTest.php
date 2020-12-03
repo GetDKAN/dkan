@@ -59,12 +59,10 @@ class ResourcePurgerTest extends TestCase {
    */
   public function testRevisionDisappearing() {
 
-    $revisions = (new Sequence())
-      ->add(NodeInterface::class)
-      ->add(NULL);
-
     $chain = $this->getCommonChain()
-      ->add(NodeStorageInterface::class, 'loadRevision', $revisions);
+      ->add(Data::class, 'getNidFromUuid', 1)
+      ->add(Data::class, 'getNodeStorage', NodeStorageInterface::class)
+      ->add(NodeStorageInterface::class, 'getLatestRevisionId', 1);
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
     $voidResult = $resourcePurger->schedule([1], FALSE);
@@ -86,15 +84,7 @@ class ResourcePurgerTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 1)
-      ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'getNodeStorage', NodeStorageInterface::class)
-      ->add(NodeStorageInterface::class, 'getQuery', QueryInterface::class)
-      ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
-      ->add(QueryInterface::class, 'condition', QueryInterface::class)
-      ->add(QueryInterface::class, 'execute', [1 => 1])
-      ->add(NodeStorageInterface::class, 'loadRevision', NodeInterface::class)
-      ->add(NodeInterface::class, 'uuid', '1234-abcd')
-    ;
+      ->add(DataFactory::class, 'getInstance', Data::class);
   }
 
 }
