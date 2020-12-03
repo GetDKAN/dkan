@@ -123,12 +123,23 @@ class DatasetTest extends ExistingSiteBase {
     $defaultModerationState->set('type_settings.default_moderation_state', 'draft');
     $defaultModerationState->save();
 
+    // Test the resource purger by posting, updating and publishing.
+    $this->storeDatasetRunQueues(111, '1.1', '1.csv');
+    $this->storeDatasetRunQueues(111, '1.2', '2.csv', 'put');
+    $this->getMetastore()->publish('dataset', 111);
+    $this->storeDatasetRunQueues(111, '1.3', '3.csv', 'put');
+    $this->storeDatasetRunQueues(111, '1.4', '4.csv', 'put');
+    $this->getMetastore()->publish('dataset', 111);
+    $this->storeDatasetRunQueues(111, '1.5', '5.csv', 'put');
+    $this->storeDatasetRunQueues(111, '1.6', '6.csv', 'put');
 
+    // Verify that only the resources associated with the published and the
+    // latest revision.
+    $this->assertEquals(['4.csv', '6.csv'], $this->checkFiles());
+    $this->assertEquals(2, $this->countTables());
 
     $defaultModerationState->set('type_settings.default_moderation_state', 'published');
     $defaultModerationState->save();
-
-    $this->assertTrue(TRUE);
   }
 
   /**
