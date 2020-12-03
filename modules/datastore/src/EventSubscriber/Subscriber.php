@@ -4,7 +4,7 @@ namespace Drupal\datastore\EventSubscriber;
 
 use Drupal\common\Resource;
 use Drupal\common\LoggerTrait;
-use Drupal\metastore\Events\DatasetPublication;
+use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\Registration;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\Data;
@@ -24,7 +24,7 @@ class Subscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     $events = [];
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
-    $events[Data::EVENT_DATASET_PUBLICATION][] = ['purgeResources'];
+    $events[Data::EVENT_DATASET_UPDATE][] = ['purgeResources'];
     return $events;
   }
 
@@ -65,10 +65,10 @@ class Subscriber implements EventSubscriberInterface {
   /**
    * Purge resources.
    *
-   * @param \Drupal\metastore\Events\DatasetPublication $event
+   * @param \Drupal\metastore\Events\DatasetUpdate $event
    *   Dataset publication.
    */
-  public function purgeResources(DatasetPublication $event) {
+  public function purgeResources(DatasetUpdate $event) {
     $node = $event->getNode();
 
     /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */

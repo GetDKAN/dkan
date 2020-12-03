@@ -14,7 +14,7 @@ use Drupal\node\NodeInterface;
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
 
-  const EVENT_DATASET_PUBLICATION = 'dkan_metastore_dataset_publication';
+  const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
 
   /**
    * Entity type manager.

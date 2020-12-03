@@ -8,7 +8,7 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\datastore\EventSubscriber\Subscriber;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
-use Drupal\metastore\Events\DatasetPublication;
+use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\Registration;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
@@ -64,7 +64,7 @@ class SubscriberTest extends TestCase {
   public function testResourcePurging() {
 
     $mockDatasetPublication = (new Chain($this))
-      ->add(DatasetPublication::class, 'getNode', ContentEntityInterface::class)
+      ->add(DatasetUpdate::class, 'getNode', ContentEntityInterface::class)
       ->getMock();
 
     $options = (new Options())

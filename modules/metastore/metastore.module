@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\Resource;
-use Drupal\metastore\Events\DatasetPublication;
+use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\LifeCycle\Data as LifeCycle;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\Storage\Data as MetastoreData;
@@ -65,27 +65,26 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
  * Implements hook_ENTITY_TYPE_insert().
  */
 function metastore_node_insert(NodeInterface $node) {
-  publish($node);
+  purgeResources($node);
 }
 
 /**
  * Implements hook_ENTITY_TYPE_update().
  */
 function metastore_node_update(NodeInterface $node) {
-  publish($node);
+  purgeResources($node);
 }
 
 /**
- * Fires the publication event for published datasets.
+ * Purge resources (if unneeded) of any updated dataset.
  */
-function publish(NodeInterface $node) {
+function purgeResources(NodeInterface $node) {
   if ($node->bundle() == 'data'
       && $node->get('field_data_type')->getString() == 'dataset'
-      && $node->get('moderation_state')->getString() == 'published'
   ) {
     \Drupal::service('event_dispatcher')->dispatch(
-      MetastoreData::EVENT_DATASET_PUBLICATION,
-      new DatasetPublication($node)
+      MetastoreData::EVENT_DATASET_UPDATE,
+      new DatasetUpdate($node)
     );
   }
 }
