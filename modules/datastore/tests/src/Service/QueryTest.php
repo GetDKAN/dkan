@@ -107,6 +107,7 @@ class QueryTest extends TestCase {
     return [
       ["propertiesQuery"],
       ["expressionQuery"],
+      ["arrayConditionQuery"],
       ["nestedExpressionQuery"],
       ["nestedConditionGroupQuery"],
       ["sortQuery"],

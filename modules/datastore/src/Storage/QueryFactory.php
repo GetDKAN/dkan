@@ -105,7 +105,7 @@ class QueryFactory {
       $property["expression"] = $this->expressionConvert($property["expression"]);
       $property = (object) $property;
     }
-    elseif (!is_string($property) && !is_numeric($property)) {
+    elseif (!is_string($property) && !is_numeric($property) && !is_array($property)) {
       throw new \Exception("Bad query property.");
     }
     return $property;

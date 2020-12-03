@@ -30,6 +30,7 @@ class QueryDataProvider {
       'nestedExpressionQuery',
       'badExpressionOperandQuery',
       'conditionQuery',
+      'arrayConditionQuery',
       'nestedConditionGroupQuery',
       'sortQuery',
       'badSortQuery',
@@ -219,6 +220,29 @@ class QueryDataProvider {
 
       case self::SQL:
         return "WHERE t.field1 = :db_condition_placeholder_0";
+
+      case self::EXCEPTION:
+        return FALSE;
+    }
+  }
+
+
+  public static function arrayConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => [1, 5],
+            "operator" => "in",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE t.field1 IN (:db_condition_placeholder_0, :db_condition_placeholder_1)";
 
       case self::EXCEPTION:
         return FALSE;
