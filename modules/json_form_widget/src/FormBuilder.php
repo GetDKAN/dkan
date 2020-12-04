@@ -98,6 +98,8 @@ class FormBuilder implements ContainerInjectionInterface {
 
   /**
    * Set schema.
+   *
+   * @codeCoverageIgnore
    */
   public function setSchema($schema_name) {
     try {
