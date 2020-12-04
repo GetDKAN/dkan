@@ -7,7 +7,9 @@ use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\ArrayHelper;
 use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
@@ -59,6 +61,7 @@ class JsonFormBuilderTest extends TestCase {
       ->add('json_form.array_helper', ArrayHelper::class)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
       ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('string_translation', TranslationManager::class)
       ->index(0);
 
     $container_chain = (new Chain($this))
@@ -212,6 +215,48 @@ class JsonFormBuilderTest extends TestCase {
       ],
     ];
     $this->assertEquals($form_builder->getJsonForm([]), $expected);
+
+    // Test array.
+    $container_chain->add(SchemaRetriever::class, 'retrieve', '
+    {
+      "properties":{
+        "keyword": {
+          "title": "Tags",
+          "description": "Tags (or keywords).",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "Tag"
+          }
+        }
+      },
+      "type":"object"
+    }');
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+
+    $form_builder = FormBuilder::create($container);
+    $form_builder->setSchema('dataset');
+    $expected = [
+      "keyword" => [
+        "#type" => "fieldset",
+        "#title" => "Tags",
+        "#prefix" => '<div id="keyword-fieldset-wrapper">',
+        "#suffix" => "</div>",
+        "#tree" => TRUE,
+        "#description" => "Tags (or keywords).",
+        "keyword" => [
+          0 => [
+            "#type" => "textfield",
+            "#title" => "Tag",
+          ],
+        ],
+      ],
+    ];
+    $form_state = new FormState();
+    $result = $form_builder->getJsonForm([], $form_state);
+    unset($result['keyword']['actions']);
+    $this->assertEquals($result, $expected);
   }
 
 }
