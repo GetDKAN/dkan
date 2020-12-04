@@ -1,8 +1,6 @@
 @page tut_metastore_properties How to add or remove entity generation for schema sub properties
 
-The **Metastore** module provides a content type called data.
-
-This content type will hold the metadata of a dataset in JSON format. Additional data nodes will be created for specific sub-elements of the dataset as well, (i.e. publisher, theme, keywords, and distribution). These data nodes will provide unique reference ids for the sub-elements and can be accesssed via an API endpoint. Learn more [here](https://demo.getdkan.org/api).
+When you create a dataset, additional data nodes will be created for specific sub-elements of the dataset as well, the default properties are: publisher, theme, keywords, and distribution. These data nodes will provide unique reference ids for the sub-elements and can be accesssed via an API endpoint. Learn more [here](https://demo.getdkan.org/api).
 
 You can customize which sub-elements generate additional data nodes here `admin/config/dkan/properties`.
 

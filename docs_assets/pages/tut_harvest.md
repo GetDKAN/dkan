@@ -2,7 +2,7 @@
 
 ## Setup
 
-Currently there is no UI for creating or running a harvest, use the drush commands above to harvest data into your catalog.
+Use drush commands to harvest data into your catalog.
 
 1. Register a new harvest source, passing in the harvest plan configuration as JSON, wrapped in single quotes, do not add spaces between elements:
   - Create a unique name as the **identifier**
