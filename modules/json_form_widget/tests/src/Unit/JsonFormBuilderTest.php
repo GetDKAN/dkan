@@ -113,6 +113,7 @@ class JsonFormBuilderTest extends TestCase {
 
     $form_builder = FormBuilder::create($container);
     $form_builder->setSchema('dataset');
+    $this->assertIsObject($form_builder->getSchema());
     $expected = [
       "test" => [
         "#type" => "textfield",
