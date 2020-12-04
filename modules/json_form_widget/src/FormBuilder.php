@@ -115,7 +115,7 @@ class FormBuilder implements ContainerInjectionInterface {
   /**
    * Get schema.
    */
-  public function getSchema($schema_name) {
+  public function getSchema() {
     return $this->schema;
   }
 
