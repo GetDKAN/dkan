@@ -62,13 +62,6 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
 }
 
 /**
- * Implements hook_ENTITY_TYPE_insert().
- */
-function metastore_node_insert(NodeInterface $node) {
-  purgeResources($node);
-}
-
-/**
  * Implements hook_ENTITY_TYPE_update().
  */
 function metastore_node_update(NodeInterface $node) {
