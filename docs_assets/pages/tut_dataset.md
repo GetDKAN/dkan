@@ -2,11 +2,11 @@
 
 ## API
 
-You will need to authenticate with a user account possessing the 'api user' role.
+You will need to authenticate with a user account possessing the 'api user' role. Use _Basic Auth_.
 
 Run a POST to `/api/1/metastore/schemas/dataset/items` with a json formatted request body, the minimal elements are:
 
-\code{.bash}
+<code>
 {
   "title": "My new dataset",
   "description": "Description for my new dataset.",
@@ -17,7 +17,7 @@ Run a POST to `/api/1/metastore/schemas/dataset/items` with a json formatted req
     "test"
   ]
 }
-\endcode
+</code>
 
 ## GUI
 
