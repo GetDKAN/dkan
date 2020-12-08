@@ -58,6 +58,8 @@ class ArrayHelper implements ContainerInjectionInterface {
    * Callback for both ajax-enabled buttons.
    *
    * Selects and returns the fieldset with the names in it.
+   *
+   * @codeCoverageIgnore
    */
   public function addmoreCallback(array &$form, FormStateInterface $form_state) {
     $field = $form_state->getTriggeringElement();
