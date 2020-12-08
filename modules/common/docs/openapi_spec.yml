@@ -746,10 +746,6 @@ paths:
       responses:
         '200':
           description: ok
-          content:
-            application/json:
-              schema:
-                type: object
 
   /api/1/metastore/schemas/dataset/items/{identifier}/docs:
     get:
