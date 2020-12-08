@@ -743,55 +743,13 @@ paths:
             schema:
               type: object
               description: Coming soon, for now refer to /api/1/datastore/query/schema
-            example:
-              resources:
-              - id: 330be639-8247-5d7a-95cf-bd1b3e32d26b
-                alias: l
-              properties:
-              - record_number
-              - expression:
-                  operands:
-                  - 1
-                  - record_number
-                  operator: "+"
-                alias: plusone
-              limit: 3
-              schema: false
       responses:
         '200':
           description: ok
           content:
             application/json:
-              example:
-                results:
-                - record_number: '1'
-                  plusone: '2'
-                - record_number: '2'
-                  plusone: '3'
-                - record_number: '3'
-                  plusone: '4'
-                count: '399'
-                query:
-                  resources:
-                  - id: 330be639-8247-5d7a-95cf-bd1b3e32d26b
-                    alias: l
-                  properties:
-                  - record_number
-                  - expression:
-                      operands:
-                      - 1
-                      - record_number
-                      operator: "+"
-                    alias: plusone
-                  conditions: []
-                  joins: []
-                  sort:
-                  limit: 3
-                  offset:
-                  count: true
-                  results: true
-                  schema: false
-                  keys: true
+              schema:
+                type: object
 
   /api/1/metastore/schemas/dataset/items/{identifier}/docs:
     get:
