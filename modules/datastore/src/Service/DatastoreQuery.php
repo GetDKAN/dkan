@@ -9,6 +9,12 @@ use RootedData\RootedJsonData;
  */
 class DatastoreQuery extends RootedJsonData {
 
+  /**
+   * Constructor.
+   *
+   * @param string $json
+   *   JSON query string from API payload.
+   */
   public function __construct(string $json) {
     $schema = file_get_contents(__DIR__ . "/../../docs/query.json");
     parent::__construct($json, $schema);

@@ -94,7 +94,7 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
-    [$resource, $result] = $this->getResource($identifier, $version);
+    list($resource, $result) = $this->getResource($identifier, $version);
 
     if (!$resource) {
       return $result;
@@ -287,7 +287,7 @@ class Service implements ContainerInjectionInterface {
   public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
     $storageMap = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
-      [$identifier, $version] = Resource::getIdentifierAndVersion($resource["id"]);
+      list($identifier, $version) = Resource::getIdentifierAndVersion($resource["id"]);
       $storage = $this->getStorage($identifier, $version);
       $storageMap[$resource["alias"]] = $storage;
     }
@@ -311,16 +311,28 @@ class Service implements ContainerInjectionInterface {
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
 
     if ($datastoreQuery->{"$.keys"} === FALSE) {
-      $result = array_map(function ($row) {
-        $arrayRow = (array) $row;
-        foreach ($arrayRow as $value) {
-          $newRow[] = $value;
-        }
-        return $newRow;
-      }, $result);
+      $result = array_map([$this, 'stripRowKeys'], $result);
     }
     return $result;
 
+  }
+
+  /**
+   * Strip keys from results row, convert to array.
+   *
+   * @param object $row
+   *   Query result row.
+   *
+   * @return array
+   *   Values only array.
+   */
+  private function stripRowKeys(\stdClass $row) {
+    $arrayRow = (array) $row;
+    $newRow = [];
+    foreach ($arrayRow as $value) {
+      $newRow[] = $value;
+    }
+    return $newRow;
   }
 
   /**

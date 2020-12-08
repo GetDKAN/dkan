@@ -129,7 +129,7 @@ class QueryFactory {
 
   /**
    * Convert an expression operand for expressionConvert().
-   * 
+   *
    * @param mixed $operand
    *   Operand from operands array.
    *
