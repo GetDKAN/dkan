@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
@@ -14,31 +15,46 @@ class DatasetTest extends ExistingSiteBase {
   use ServiceCheckTrait;
   use CleanUp;
 
-  private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
+  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
-  private function getData($downloadUrl) {
+  private function getDownloadUrl(string $filename) {
+    return self::S3_PREFIX . '/' . $filename;
+  }
+
+  private function getData($identifier, $title, $downloadUrl) {
     return '
     {
-      "title": "Test #1",
+      "title": "' . $title . '",
       "description": "Yep",
-      "identifier": "123",
+      "identifier": "' . $identifier . '",
       "accessLevel": "public",
       "modified": "06-04-2020",
       "keyword": ["hello"],
-        "distribution": [
-          {
-            "title": "blah",
-            "downloadURL": "' . $downloadUrl . '",
-            "mediaType": "text/csv"
-          }
-        ]
+      "distribution": [
+        {
+          "title": "blah",
+          "downloadURL": "' . $this->getDownloadUrl($downloadUrl) . '",
+          "mediaType": "text/csv"
+        }
+      ]
     }';
+  }
+
+  public function setUp() {
+    parent::setUp();
+    $this->removeAllNodes();
+    $this->removeAllMappedFiles();
+    $this->removeAllFileFetchingJobs();
+    $this->flushQueues();
+    $this->removeFiles();
+    $this->removeDatastoreTables();
   }
 
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData(123, 'Test #1', 'district_centerpoints_small.csv');
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -63,7 +79,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData(123, 'Test #1', 'district_centerpoints_small.csv');
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
@@ -80,7 +96,98 @@ class DatasetTest extends ExistingSiteBase {
     $display = ResourceLocalizer::LOCAL_URL_PERSPECTIVE;
     $localUrlDataset = json_decode($this->getMetastore()->get('dataset', json_decode($dataset)->identifier));
     $this->assertNotEqual($localUrlDataset->distribution[0]->downloadURL,
-    $this->downloadUrl);
+      $this->getDownloadUrl('district_centerpoints_small.csv'));
+  }
+
+  /**
+   * Test the resource purger when the default moderation state is 'published'.
+   */
+  public function test3() {
+
+    // Test the resource purger by posting a dataset, then updating its file.
+    $this->storeDatasetRunQueues(111, '1.1', '1.csv');
+    $this->storeDatasetRunQueues(111, '1.2', '2.csv', 'put');
+
+    // Verify only 2.csv remains in the resources folder, and 1 datastore table.
+    $this->assertEquals(['2.csv'], $this->checkFiles());
+    $this->assertEquals(1, $this->countTables());
+  }
+
+  /**
+   * Test the resource purger when the default moderation state is 'draft'.
+   */
+  public function test4() {
+    /** @var \Drupal\Core\Config\ConfigFactory $config */
+    $config = \Drupal::service('config.factory');
+    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
+    $defaultModerationState->set('type_settings.default_moderation_state', 'draft');
+    $defaultModerationState->save();
+
+    // Test the resource purger by posting, updating and publishing.
+    $this->storeDatasetRunQueues(111, '1.1', '1.csv');
+    $this->storeDatasetRunQueues(111, '1.2', '2.csv', 'put');
+    $this->getMetastore()->publish('dataset', 111);
+    $this->storeDatasetRunQueues(111, '1.3', '3.csv', 'put');
+
+    // Verify that only the resources associated with the published and the
+    // latest revision.
+    $this->assertEquals(['2.csv', '3.csv'], $this->checkFiles());
+    $this->assertEquals(2, $this->countTables());
+
+    $defaultModerationState->set('type_settings.default_moderation_state', 'published');
+    $defaultModerationState->save();
+  }
+
+  /**
+   * Store or update a dataset,run datastore_import and resource_purger queues.
+   */
+  private function storeDatasetRunQueues($identifier, $title, $filename, $method = 'post') {
+    $datasetJson = $this->getData($identifier, $title, $filename);
+    $this->httpVerbHandler($method, $datasetJson, json_decode($datasetJson));
+
+    // Simulate a cron on queues relevant to this scenario.
+    $this->runQueues(['datastore_import', 'resource_purger']);
+  }
+
+  /**
+   * Process queues in a predictible order.
+   */
+  private function runQueues(array $relevantQueues = []) {
+    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
+    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    foreach ($relevantQueues as $queueName) {
+      $worker = $queueWorkerManager->createInstance($queueName);
+      $queue = $this->getQueueService()->get($queueName);
+      while ($item = $queue->claimItem()) {
+        $worker->processItem($item->data);
+        $queue->deleteItem($item);
+      }
+    }
+  }
+
+  private function countTables() {
+    /* @var $db \Drupal\Core\Database\Connection */
+    $db = \Drupal::service('database');
+
+    $tables = $db->schema()->findTables("datastore_%");
+    return count($tables);
+  }
+
+  private function checkFiles() {
+    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
+    $fileSystem = \Drupal::service('file_system');
+
+    $dir = DRUPAL_ROOT . "/sites/default/files/resources";
+    // Nothing to check if the resource folder does not exist.
+    if (!is_dir($dir)) {
+      return [];
+    }
+    $filesObjects = $fileSystem->scanDirectory($dir, "/.*\.csv$/i", ['recurse' => TRUE]);
+    $filenames = array_values(array_map(function ($obj) {
+      return str_replace(self::FILENAME_PREFIX, '', $obj->filename);
+    }, $filesObjects));
+    sort($filenames);
+    return $filenames;
   }
 
   private function queryResource($fileData) {
@@ -95,9 +202,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function datastoreProcesses($fileData) {
-    /* @var $queueFactory \Drupal\Core\Queue\QueueFactory */
-    $queueFactory = \Drupal::service('queue');
-    $queue = $queueFactory->get('datastore_import');
+    $queue = $this->getQueueService()->get('datastore_import');
     $this->assertEquals(1, $queue->numberOfItems());
 
     /* @var $datastore \Drupal\datastore\Service */
@@ -120,15 +225,7 @@ class DatasetTest extends ExistingSiteBase {
       $downloadUrl = $dataset->distribution[0]->downloadURL;
     }
 
-    if ($method == 'post') {
-      $identifier = $this->getMetastore()->post('dataset', $datasetJson);
-    }
-    else {
-      $id = $dataset->identifier;
-      $info = $this->getMetastore()->put('dataset', $id, $datasetJson);
-      $identifier = $info['identifier'];
-    }
-
+    $identifier = $this->httpVerbHandler($method, $datasetJson, $dataset);
     $this->assertEquals($dataset->identifier, $identifier);
 
     $datasetWithReferences = json_decode($this->getMetastore()->get('dataset', $identifier));
@@ -141,18 +238,27 @@ class DatasetTest extends ExistingSiteBase {
     return $fileData;
   }
 
+  private function httpVerbHandler(string $method, string $json, $dataset) {
+
+    if ($method == 'post') {
+      $identifier = $this->getMetastore()->post('dataset', $json);
+    }
+    // PUT for now, refactor later if more verbs are needed.
+    else {
+      $id = $dataset->identifier;
+      $info = $this->getMetastore()->put('dataset', $id, $json);
+      $identifier = $info['identifier'];
+    }
+
+    return $identifier;
+  }
+
   private function getMetastore(): Service {
     return \Drupal::service('dkan.metastore.service');
   }
 
-  public function tearDown() {
-    parent::tearDown();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
+  private function getQueueService() : QueueFactory {
+    return \Drupal::service('queue');
   }
 
 }

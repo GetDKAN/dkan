@@ -49,7 +49,7 @@ trait CleanUp {
    *
    */
   private function flushQueues() {
-    $dkanQueues = ['orphan_reference_processor', 'datastore_import'];
+    $dkanQueues = ['orphan_reference_processor', 'datastore_import', 'resource_purger'];
     foreach ($dkanQueues as $queueName) {
       /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
       $queueFactory = \Drupal::service('queue');

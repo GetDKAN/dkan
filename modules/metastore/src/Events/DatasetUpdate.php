@@ -10,7 +10,7 @@ use Symfony\Component\EventDispatcher\Event;
  *
  * @package Drupal\metastore\Events
  */
-class DatasetPublication extends Event {
+class DatasetUpdate extends Event {
 
   /**
    * Dataset node.
