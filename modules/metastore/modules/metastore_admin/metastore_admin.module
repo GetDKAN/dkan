@@ -72,7 +72,7 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
 
         case 'distribution':
           $dist = (array) $title['data'];
-          $mediatype = $entity_id . ' ' . $dist['mediaType'];
+          $mediatype = isset($dist['mediaType']) ? $entity_id . ' ' . $dist['mediaType'] : '';
           $format = $dist['format'] ? $entity_id . ' ' . $dist['format'] : $mediatype;
           $title = $dist['title'] ? $dist['title'] : $format;
 

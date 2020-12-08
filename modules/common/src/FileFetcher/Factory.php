@@ -33,7 +33,7 @@ class Factory implements FactoryInterface {
    * Private.
    */
   private function getFileFetcherJobStore() {
-    /* @var $jobStoreFactory JobStoreFactory */
+    /** @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
     $jobStoreFactory = $this->factory;
     return $jobStoreFactory->getInstance(FileFetcher::class);
   }

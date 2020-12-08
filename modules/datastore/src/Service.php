@@ -13,7 +13,6 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\Import;
-use Drupal\datastore\Service\ImporterList\ImporterList;
 use Drupal\datastore\Storage\QueryFactory;
 
 /**
@@ -94,6 +93,8 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
+    $resource = NULL;
+    $result = NULL;
     list($resource, $result) = $this->getResource($identifier, $version);
 
     if (!$resource) {
@@ -201,10 +202,24 @@ class Service implements ContainerInjectionInterface {
    *   The importer list object.
    */
   public function list() {
-    return ImporterList::getList(
-      $this->jobStoreFactory,
-      $this->resourceLocalizer,
-      $this->importServiceFactory);
+    /** @var \Drupal\datastore\Service\Factory\ImportInfoList $service */
+    $service = \Drupal::service('dkan.datastore.import_info_list');
+    return $service->buildList();
+  }
+
+  /**
+   * Summary.
+   */
+  public function summary($identifier) {
+    $id = NULL; $version = NULL;
+    [$id, $version] = Resource::getIdentifierAndVersion($identifier);
+    $storage = $this->getStorage($id, $version);
+
+    if ($storage) {
+      $data = $storage->getSummary();
+      return $data;
+    }
+    throw new \Exception("no storage");
   }
 
   /**

@@ -16,7 +16,7 @@
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/Bike_Lane.csv",
+          "downloadURL": "file:\/\/<!*path*!>\/Bike_Lane.csv",
           "mediaType": "text\/csv",
           "format": "csv",
           "title": "Florida Bike Lanes"
@@ -49,21 +49,21 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/pittsmva2016data.zip",
+          "downloadURL":"file:\/\/<!*path*!>\/pittsmva2016data.zip",
           "mediaType":"application\/zip",
           "format":"zip",
           "title":"MVA Geographic Data 2016"
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/2016mvadatadictionary.pdf",
+          "downloadURL":"file:\/\/<!*path*!>\/2016mvadatadictionary.pdf",
           "mediaType":"application\/pdf",
           "format":"pdf",
           "title":"2016 MVA Data Dictionary"
         },
         {
           "@type":"dcat:Distribution",
-          "accessURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/pittsmva2016data.zip",
+          "downloadURL":"file:\/\/<!*path*!>\/IMD-MAPS.zip",
           "format":"zip",
           "title":"Map files"
         }
@@ -93,7 +93,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/ViolentCrimeRates.csv",
+          "downloadURL":"file:\/\/<!*path*!>\/ViolentCrimeRates.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Includes information on the frequency of violent crimes in general, murder and non-negligent manslaughter, aggravated assault, rape and robbery. All crime rates are per 100,000 people.",
@@ -119,35 +119,20 @@
         "fn": "Jane Doe",
         "hasEmail": "mailto:data.admin@example.com"
       },
-      "description":"This table contains the estimated percent of California adults (18 and older) with lifetime and current asthma (asthma prevalence), by year.",
+      "description":"Sample data.",
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/asthma-prevalence-adults-by-year-1945-to-1999.csv",
+          "downloadURL":"file:\/\/<!*path*!>\/Asthma-Prevalence-Map-2017.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
-          "title":"Data-Adult Asthma Prevalence 1945 to 1999"
-        },
-        {
-          "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/asthma-prevalence-adults-by-year-2000-to-2020.csv",
-          "mediaType":"text\/csv",
-          "format":"csv",
-          "description":"Mock data for demonstration purposes.",
-          "title":"Data-Adult Asthma Prevalence 2000 to 2020"
-        },
-        {
-          "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/lifetime-asthma-prevalence-by-county_data-dictionary.xlsx",
-          "mediaType":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "format":"xlsx",
-          "title":"Data Dictionary Data-Lifetime Asthma Prevalence"
+          "title":"Asthma prevalence by location"
         }
       ],
       "identifier":"95f8eac4-fd1f-4b35-8472-5c87e9425dfa",
       "issued":"2017-08-01",
-      "keyword":["health","asthma"],
+      "keyword":["asthma"],
       "license":"http://opendefinition.org/licenses/odc-odbl/",
       "modified":"2019-06-06",
       "publisher":{
@@ -155,7 +140,7 @@
         "name":"National Health Council"
       },
       "theme":["Health Care"],
-      "temporal":"1995-01-01T05:00:00+00:00\/2017-12-31T05:00:00+00:00",
+      "temporal":"2017-01-01T05:00:00+00:00\/2017-12-31T05:00:00+00:00",
       "title":"Asthma Prevalence"
     },
     {
@@ -170,7 +155,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/CDCSmokingRates.csv",
+          "downloadURL":"file:\/\/<!*path*!>\/CDCSmokingRates.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"This dataset highlights critical trends in adult total and per capita consumption of both combustible (cigarettes, little cigars, small cigars, pipe tobacco, roll-your-own tobacco) tobacco products and smokeless (chewing tobacco and snuff) tobacco.",
@@ -202,7 +187,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/demo_varicelladeaths_1991_2007.csv",
+          "downloadURL":"file:\/\/<!*path*!>\/demo_varicelladeaths_1991_2007.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
@@ -210,7 +195,7 @@
         },
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/demo_varicelladeaths_1974_1990.csv",
+          "downloadURL":"file:\/\/<!*path*!>\/demo_varicelladeaths_1974_1990.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"Mock data for demonstration purposes.",
@@ -242,7 +227,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL": "file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/polling-places.csv",
+          "downloadURL": "file:\/\/<!*path*!>\/polling-places.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"List of polling places in Madison, WI.",
@@ -273,7 +258,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/us_foreclosures_jan_2012_by_state.csv",
+          "downloadURL":"file:\/\/<!*path*!>\/us_foreclosures_jan_2012_by_state.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "description":"US National Foreclosure Statistics - By State - January 2012",
@@ -301,7 +286,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/data.csv",
+          "downloadURL":"file:\/\/<!*path*!>\/data.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "title":"Table of Gold Prices"
@@ -332,7 +317,7 @@
       "distribution":[
         {
           "@type":"dcat:Distribution",
-          "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/district_centerpoints.csv",
+          "downloadURL":"file:\/\/<!*path*!>\/district_centerpoints.csv",
           "mediaType":"text\/csv",
           "format":"csv",
           "title":"District Names"

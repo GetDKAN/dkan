@@ -33,7 +33,7 @@ context('Admin content and dataset views', () => {
 
     it('The content table has a column for Data Type', () => {
         cy.visit(baseurl + "/admin/content/node")
-        cy.get('.vbo-table > thead > tr > #view-field-data-type-table-column > a').should('contain','Data Type');
+        cy.get('#view-field-data-type-table-column > a').should('contain','Data Type');
     })
 
     it('The dataset data node titles should link to the REACT dataset page', () => {
@@ -71,6 +71,15 @@ context('Admin content and dataset views', () => {
 
     it('Admin user can delete a dataset', () => {
         cy.visit(baseurl + "/admin/content/datasets")
+        cy.wait(2000)
+        cy.get('#edit-node-bulk-form-0').check({ force:true })
+        cy.get('#edit-submit--2').click({ force:true })
+        cy.get('input[value="Delete"]').click({ force:true })
+        cy.get('.messages').should('contain','Deleted 1 content item.')
+    })
+
+    it('Admin user can delete a data node', () => {
+        cy.visit(baseurl + "/admin/content/node")
         cy.wait(2000)
         cy.get('#edit-node-bulk-form-0').check({ force:true })
         cy.get('#edit-submit--2').click({ force:true })

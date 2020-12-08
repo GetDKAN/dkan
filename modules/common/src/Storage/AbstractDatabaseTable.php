@@ -62,12 +62,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   public function retrieve(string $id) {
     $this->setTable();
 
-    /* @var $select \Drupal\Core\Database\Query\Select */
+    /** @var \Drupal\Core\Database\Query\Select $select */
     $select = $this->connection->select($this->getTableName(), 't')
       ->fields('t', array_keys($this->getSchema()['fields']))
       ->condition($this->primaryKey(), $id);
 
-    /* @var $statement \Drupal\Core\Database\StatementInterface */
+    /** @var \Drupal\Core\Database\StatementInterface $statement */
     $statement = $select->execute();
 
     // The docs do not mention it, but fetch can return false.
