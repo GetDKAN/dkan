@@ -341,7 +341,7 @@ class Service implements ContainerInjectionInterface {
    * @return array
    *   Values only array.
    */
-  private function stripRowKeys(\stdClass $row) {
+  private function stripRowKeys(object $row) {
     $arrayRow = (array) $row;
     $newRow = [];
     foreach ($arrayRow as $value) {

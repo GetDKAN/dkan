@@ -274,16 +274,32 @@ class SelectFactory {
       if (!in_array($direction, ["asc", "desc"])) {
         throw new \Exception("Invalid sort.");
       }
-      foreach ($sort as $property) {
-        if (!is_string($property)) {
-          $nProperty = $this->normalizeProperty($property);
-          $propertyStr = "{$nProperty->collection}.{$nProperty->property}";
-        }
-        else {
-          $propertyStr = $property;
-        }
-        $db_query->orderBy($propertyStr, strtoupper($direction));
+      $this->setQueryDirectionOrderBy($direction, $sort, $db_query);
+    }
+  }
+
+  /**
+   * Sort helper function.
+   *
+   * Set order by statements for a specific direction.
+   *
+   * @param string $direction
+   *   Sort direction - "asc" or "desc"
+   * @param array $sort
+   *   The sort properties.
+   * @param Drupal\Core\Database\Query\Select $db_query
+   *   A Drupal database query API object.
+   */
+  private function setQueryDirectionOrderBy(string $direction, array $sort, Select $db_query) {
+    foreach ($sort as $property) {
+      if (!is_string($property)) {
+        $nProperty = $this->normalizeProperty($property);
+        $propertyStr = "{$nProperty->collection}.{$nProperty->property}";
       }
+      else {
+        $propertyStr = $property;
+      }
+      $db_query->orderBy($propertyStr, strtoupper($direction));
     }
   }
 
