@@ -6,6 +6,11 @@
         }
     ],
     "sort": {
-        "desc": ["field1"]
+        "desc": [
+            {
+                "resource": "t",
+                "property": "field1"
+            }
+        ]
     }
 }

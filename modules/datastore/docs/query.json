@@ -87,22 +87,8 @@
             "type": "object",
             "description": "Result sorting directives.",
             "properties": {
-                "asc": {
-                    "type": "array",
-                    "description": "Properties to sort by in ascending order",
-                    "items": { 
-                        "anyOf": [
-                            { "$ref": "#/definitions/resource" },
-                            { "$ref": "#/definitions/resourceProperty" }
-                        ]
-                        
-                    }
-                },
-                "desc": {
-                    "type": "array",
-                    "description": "Properties to sort by in descending order",
-                    "items": { "type": "string" }
-                }
+                "asc": {"$ref": "#/definitions/sort"},
+                "desc": {"$ref": "#/definitions/sort"}
             }
         },
         "count": {
@@ -233,6 +219,17 @@
                         ]
                     }
                 }
+            }
+        },
+        "sort": {
+            "type": "array",
+            "description": "Properties to sort by in a particular order.",
+            "items": { 
+                "anyOf": [
+                    { "$ref": "#/definitions/resource" },
+                    { "$ref": "#/definitions/resourceProperty" }
+                ]
+                
             }
         }
     }

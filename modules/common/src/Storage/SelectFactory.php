@@ -275,8 +275,13 @@ class SelectFactory {
         throw new \Exception("Invalid sort.");
       }
       foreach ($sort as $property) {
-        $nProperty = $this->normalizeProperty($property);
-        $propertyStr = "{$nProperty->collection}.{$nProperty->property}";
+        if (!is_string($property)) {
+          $nProperty = $this->normalizeProperty($property);
+          $propertyStr = "{$nProperty->collection}.{$nProperty->property}";
+        }
+        else {
+          $propertyStr = $property;
+        }
         $db_query->orderBy($propertyStr, strtoupper($direction));
       }
     }

@@ -135,10 +135,14 @@ class QueryDataProvider {
             ],
           ],
         ];
+        $query->sort = [
+          "asc" => ["add_one"],
+          "desc" => [],
+        ];
         return $query;
 
       case self::SQL:
-        return "SELECT (t.field1 + 1) AS add_one, (t.field2 + 2) AS add_two FROM {table} t";
+        return "SELECT (t.field1 + 1) AS add_one, (t.field2 + 2) AS add_two FROM {table} t ORDER BY add_one ASC";
 
       case self::EXCEPTION:
         return FALSE;
@@ -297,7 +301,12 @@ class QueryDataProvider {
         $query = new Query();
         $query->sort = [
           "asc" => [],
-          "desc" => ["field1"],
+          "desc" => [
+            (object) [
+              "collection" => "t",
+              "property" => "field1",
+            ],
+          ],
         ];
         return $query;
 

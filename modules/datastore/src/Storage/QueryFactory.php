@@ -122,17 +122,30 @@ class QueryFactory {
    */
   private function expressionConvert(array $expression) {
     foreach ($expression["operands"] as $key => $operand) {
-      if (is_array($operand) && isset($operand["operator"])) {
-        $expression["operands"][$key] = $this->expressionConvert($operand);
-      }
-      elseif (is_numeric($operand)) {
-        continue;
-      }
-      else {
-        $expression["operands"][$key] = $this->propertyConvert($operand);
-      }
+      $expression["operands"][$key] = $this->operandConvert($operand);
     }
     return (object) $expression;
+  }
+
+  /**
+   * Convert an expression operand for expressionConvert().
+   * 
+   * @param mixed $operand
+   *   Operand from operands array.
+   *
+   * @return mixed
+   *   Operand ready for query.
+   */
+  private function operandConvert($operand) {
+    if (is_array($operand) && isset($operand["operator"])) {
+      return $this->expressionConvert($operand);
+    }
+    elseif (is_numeric($operand)) {
+      return $operand;
+    }
+    else {
+      return $this->propertyConvert($operand);
+    }
   }
 
   /**
