@@ -323,6 +323,10 @@ class Service implements ContainerInjectionInterface {
     $query = $this->populateQuery($datastoreQuery);
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
 
+    if (!$primaryAlias) {
+      return [];
+    }
+
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
 
     if ($datastoreQuery->{"$.keys"} === FALSE) {
@@ -361,9 +365,12 @@ class Service implements ContainerInjectionInterface {
     $query = $this->populateQuery($datastoreQuery);
 
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
+    if (!$primaryAlias) {
+      return 0;
+    }
+
     unset($query->limit, $query->offset);
     $query->count();
-
     return $storageMap[$primaryAlias]->query($query, $primaryAlias)[0]->expression;
   }
 
