@@ -284,7 +284,7 @@ class SelectFactory {
    * Set order by statements for a specific direction.
    *
    * @param string $direction
-   *   Sort direction - "asc" or "desc"
+   *   Sort direction - "asc" or "desc".
    * @param array $sort
    *   The sort properties.
    * @param Drupal\Core\Database\Query\Select $db_query
