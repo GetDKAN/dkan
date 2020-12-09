@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Import as ServiceImport;
 use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\datastore\Storage\QueryFactory;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
@@ -37,7 +38,8 @@ class QueryTest extends TestCase {
   public function testQueryCompare($testName) {
     $datastoreService = Service::create($this->getCommonMockChain());
     $datastoreQuery = $this->getDatastoreQueryFromJson($testName);
-    $dkanQuery = $datastoreService->populateQuery($datastoreQuery);
+    $storageMap = $datastoreService->getQueryStorageMap($datastoreQuery);
+    $dkanQuery = QueryFactory::create($datastoreQuery, $storageMap);
     $dkanQueryCompare = QueryData::$testName(QueryData::QUERY_OBJECT);
     $dkanQueryCompare->showDbColumns = TRUE;
     // $this->assertEquals(serialize($dkanQuery), serialize($dkanQueryCompare));
