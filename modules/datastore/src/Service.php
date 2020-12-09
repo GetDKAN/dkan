@@ -4,7 +4,6 @@ namespace Drupal\datastore;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\common\Storage\Query;
 use Drupal\datastore\Service\DatastoreQuery;
 use Procrastinator\Result;
 use RootedData\RootedJsonData;
@@ -320,13 +319,13 @@ class Service implements ContainerInjectionInterface {
    *   Array of result objects.
    */
   private function runResultsQuery(DatastoreQuery $datastoreQuery) {
-    $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $query = QueryFactory::create($datastoreQuery, $storageMap);
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
-
     if (!$primaryAlias) {
       return [];
     }
+
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    $query = QueryFactory::create($datastoreQuery, $storageMap);
 
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
 
@@ -362,13 +361,13 @@ class Service implements ContainerInjectionInterface {
    *   DatastoreQuery object.
    */
   private function runCountQuery(DatastoreQuery $datastoreQuery) {
-    $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $query = QueryFactory::create($datastoreQuery, $storageMap);
-
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return 0;
     }
+
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    $query = QueryFactory::create($datastoreQuery, $storageMap);
 
     unset($query->limit, $query->offset);
     $query->count();
