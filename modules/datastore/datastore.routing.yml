@@ -81,3 +81,11 @@ datastore.sql_endpoint.settings:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+datastore.dkan_resource_settings:
+  path: '/admin/config/dkan/resources'
+  defaults:
+    _title: 'Resources'
+    _form: 'Drupal\datastore\Form\ResourceSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

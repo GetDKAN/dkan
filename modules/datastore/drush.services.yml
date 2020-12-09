@@ -3,3 +3,9 @@ services:
     class: \Drupal\datastore\Drush
     tags:
       - { name: drush.command }
+  datastore.purger.commands:
+    class: Drupal\datastore\Commands\PurgeCommands
+    arguments:
+      - '@dkan.datastore.service.resource_purger'
+    tags:
+      - { name: drush.command }

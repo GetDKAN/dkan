@@ -1,7 +1,6 @@
 version: 2
 jobs:
   build:
-    parallelism: 1
     machine:
       image: circleci/classic:latest
     environment:
@@ -25,28 +24,82 @@ jobs:
           command: dktl init --dkan-local
       - run:
           name: Make DKAN
+          command: dktl make
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - dkan-tools
+            - project
+            - .composer
+  phpunit_dredd:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - attach-workspace:
+          at: ~/      
+      - run:
+          name: Set up DKAN Tools
           command: |
-            dktl make
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl dc up -d
+      - run:
+          name: Install Drupal
+          command: sleep 10 && dktl install
       - run:
           name: Run phpUnit tests
           command: |
             dktl xdebug:start
-            dktl install
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
-      - run:
-          name: Run DKAN cypress tests
-          command: |
-            dktl install
-            dktl dkan:test-cypress --headless --browser=chromium
       - run:
           name: Run DKAN dredd tests
           command: |
-            dktl install
             dktl install:sample
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
+  cypress_backend:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - attach-workspace:
+          at: ~/
+      - run:
+          name: Set up DKAN Tools
+          command: |
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl dc up -d
+      - run:
+          name: Install Drupal
+          command: sleep 10 && dktl install
+      - run:
+          name: Run DKAN cypress tests
+          command: dktl dkan:test-cypress --headless --browser=chromium
+      - store_artifacts:
+          path: docroot/modules/contrib/dkan/cypress/screenshots
+      - store_artifacts:
+          path: docroot/modules/contrib/dkan/cypress/videos
+  cypress_frontend:
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - attach-workspace:
+          at: ~/
+      - run:
+          name: Set up DKAN Tools
+          command: |
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+            dktl dc up -d
+      - run:
+          name: Install Drupal
+          command: sleep 10 && dktl install
       - run:
           name: Run frontend cypress tests
           command: |
@@ -58,10 +111,20 @@ jobs:
             dktl drush cr
             dktl frontend:test
       - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/screenshots
-      - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/videos
-      - store_artifacts:
           path: src/frontend/cypress/screenshots
       - store_artifacts:
           path: src/frontend/cypress/videos
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - phpunit_dredd:
+          requires:
+            - build
+      - cypress_backend:
+          requires:
+            - build
+      - cypress_frontend:
+          requires:
+            - build

@@ -7,7 +7,7 @@ use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service;
 use MockChain\Chain;
@@ -17,7 +17,7 @@ use Procrastinator\Result;
 /**
  * Test.
  */
-class ImportTest extends UnitTestCase {
+class ImportTest extends TestCase {
 
   private $data = [
     'data' => [
