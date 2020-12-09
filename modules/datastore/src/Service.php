@@ -63,8 +63,8 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor for datastore service.
    */
-  public function __construct(ResourceLocalizer $resourceLocalizer, Import $importServiceFactory, QueueFactory $queueFactory, JobStoreFactory $jobStoreFactory) {
-    $this->queue = $queueFactory->get('datastore_import');
+  public function __construct(ResourceLocalizer $resourceLocalizer, Import $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory) {
+    $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
@@ -186,7 +186,8 @@ class Service implements ContainerInjectionInterface {
    */
   private function queueImport(string $identifier, string $version) {
     // Attempt to fetch the file in a queue so as to not block user.
-    $queueId = $this->queue->createItem(['identifier' => $identifier, 'version' => $version]);
+    $queueId = $this->queue->get('datastore_import')
+      ->createItem(['identifier' => $identifier, 'version' => $version]);
 
     if ($queueId === FALSE) {
       throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
@@ -202,7 +203,7 @@ class Service implements ContainerInjectionInterface {
    *   The importer list object.
    */
   public function list() {
-    /** @var \Drupal\datastore\Service\Factory\ImportInfoList $service */
+    /** @var \Drupal\datastore\Service\Info\ImportInfoList $service */
     $service = \Drupal::service('dkan.datastore.import_info_list');
     return $service->buildList();
   }
@@ -386,6 +387,26 @@ class Service implements ContainerInjectionInterface {
   public function populateQuery(DatastoreQuery $datastoreQuery): Query {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
     return QueryFactory::create($datastoreQuery, $storageMap);
+  }
+
+  /**
+   * Return the resource localizer.
+   *
+   * @return \Drupal\datastore\Service\ResourceLocalizer
+   *   Resource localizer.
+   */
+  public function getResourceLocalizer() : ResourceLocalizer {
+    return $this->resourceLocalizer;
+  }
+
+  /**
+   * Return the queue factory.
+   *
+   * @return \Drupal\Core\Queue\QueueFactory
+   *   Queue factory.
+   */
+  public function getQueueFactory() : QueueFactory {
+    return $this->queue;
   }
 
 }
