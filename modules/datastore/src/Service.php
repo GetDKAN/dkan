@@ -37,7 +37,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Drupal queue.
    *
-   * @var \Drupal\Core\Queue\QueueInterface
+   * @var \Drupal\Core\Queue\QueueFactory
    */
   private $queue;
 
@@ -321,7 +321,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function runResultsQuery(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $query = $this->populateQuery($datastoreQuery);
+    $query = QueryFactory::create($datastoreQuery, $storageMap);
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
 
     if (!$primaryAlias) {
@@ -363,7 +363,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function runCountQuery(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    $query = $this->populateQuery($datastoreQuery);
+    $query = QueryFactory::create($datastoreQuery, $storageMap);
 
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
@@ -373,20 +373,6 @@ class Service implements ContainerInjectionInterface {
     unset($query->limit, $query->offset);
     $query->count();
     return $storageMap[$primaryAlias]->query($query, $primaryAlias)[0]->expression;
-  }
-
-  /**
-   * Populate a DKAN query object from a DatastoreQuery.
-   *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
-   *   DatastoreQuery object.
-   *
-   * @return \Drupal\common\Storage\Query
-   *   DKAN query ready to run against datasbase storage.
-   */
-  public function populateQuery(DatastoreQuery $datastoreQuery): Query {
-    $storageMap = $this->getQueryStorageMap($datastoreQuery);
-    return QueryFactory::create($datastoreQuery, $storageMap);
   }
 
   /**
@@ -405,7 +391,7 @@ class Service implements ContainerInjectionInterface {
    * @return \Drupal\Core\Queue\QueueFactory
    *   Queue factory.
    */
-  public function getQueueFactory() : QueueFactory {
+  public function getQueueFactory(): QueueFactory {
     return $this->queue;
   }
 
