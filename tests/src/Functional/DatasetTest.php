@@ -95,7 +95,7 @@ class DatasetTest extends ExistingSiteBase {
     $display = &drupal_static('metastore_resource_mapper_display');
     $display = ResourceLocalizer::LOCAL_URL_PERSPECTIVE;
     $localUrlDataset = json_decode($this->getMetastore()->get('dataset', json_decode($dataset)->identifier));
-    $this->assertNotEqual($localUrlDataset->distribution[0]->downloadURL,
+    $this->assertNotEquals($localUrlDataset->distribution[0]->downloadURL,
       $this->getDownloadUrl('district_centerpoints_small.csv'));
   }
 
