@@ -1,0 +1,58 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Manage item tracking of search api items.
+ */
+function metastore_search_search_api_tracking(EntityInterface $entity, string $operation) {
+  if ($entity->getEntityTypeId() != 'node') {
+    return;
+  }
+
+  if ($entity->bundle() != 'data') {
+    return;
+  }
+
+  $wrapper = new Drupal\metastore\NodeWrapper\Data($entity);
+  if ($wrapper->getDataType() != 'dataset') {
+    return;
+  }
+
+  $acceptableOperation = ['Inserted', 'Updated', 'Deleted'];
+
+  if (!in_array($operation, $acceptableOperation)) {
+    return;
+  }
+
+  $method = "trackItems{$operation}";
+
+  $storage = \Drupal::service('entity_type.manager')
+    ->getStorage('search_api_index');
+
+  /* @var $index \Drupal\search_api\Entity\Index */
+  $index = $storage->load('dkan');
+
+  $index->{$method}('dkan_dataset', [$entity->uuid()]);
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function metastore_search_entity_insert(EntityInterface $entity) {
+  metastore_search_search_api_tracking($entity, 'Inserted');
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function metastore_search_entity_update(EntityInterface $entity) {
+  metastore_search_search_api_tracking($entity, 'Updated');
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function metastore_search_entity_delete(EntityInterface $entity) {
+  metastore_search_search_api_tracking($entity, 'Deleted');
+}

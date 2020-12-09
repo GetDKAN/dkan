@@ -10,7 +10,6 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\Import;
-use Drupal\datastore\Service\ImporterList\ImporterList;
 
 /**
  * Main services for the datastore.
@@ -40,7 +39,7 @@ class Service implements ContainerInjectionInterface {
    * Constructor for datastore service.
    */
   public function __construct(ResourceLocalizer $resourceLocalizer, Import $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory) {
-    $this->queue = $queue->get('datastore_import');
+    $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
@@ -66,6 +65,7 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
+    $resource = NULL; $result = NULL;
     [$resource, $result] = $this->getResource($identifier, $version);
 
     if (!$resource) {
@@ -99,7 +99,7 @@ class Service implements ContainerInjectionInterface {
   private function getResource($identifier, $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
 
-    /* @var $resource \Drupal\common\Resource */
+    /** @var \Drupal\common\Resource $resource */
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
     if ($resource) {
@@ -159,7 +159,8 @@ class Service implements ContainerInjectionInterface {
    */
   private function queueImport($identifier, $version) {
     // Attempt to fetch the file in a queue so as to not block user.
-    $queueId = $this->queue->createItem(['identifier' => $identifier, 'version' => $version]);
+    $queueId = $this->queue->get('datastore_import')
+      ->createItem(['identifier' => $identifier, 'version' => $version]);
 
     if ($queueId === FALSE) {
       throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
@@ -170,15 +171,26 @@ class Service implements ContainerInjectionInterface {
 
   /**
    * Get a list of all stored importers and filefetchers, and their status.
-   *
-   * @return \Drupal\datastore\Service\ImporterList\ImporterList
-   *   The importer list object.
    */
   public function list() {
-    return ImporterList::getList(
-      $this->jobStoreFactory,
-      $this->resourceLocalizer,
-      $this->importServiceFactory);
+    /** @var \Drupal\datastore\Service\Info\ImportInfoList $service */
+    $service = \Drupal::service('dkan.datastore.import_info_list');
+    return $service->buildList();
+  }
+
+  /**
+   * Summary.
+   */
+  public function summary($identifier) {
+    $id = NULL; $version = NULL;
+    [$id, $version] = Resource::getIdentifierAndVersion($identifier);
+    $storage = $this->getStorage($id, $version);
+
+    if ($storage) {
+      $data = $storage->getSummary();
+      return $data;
+    }
+    throw new \Exception("no storage");
   }
 
   /**
@@ -190,13 +202,33 @@ class Service implements ContainerInjectionInterface {
    *   The version of the resource.
    */
   public function getStorage($identifier, $version = NULL) {
-    /* @var $resource \Drupal\common\Resource */
+    /** @var \Drupal\common\Resource $resource */
     $resource = $this->resourceLocalizer->get($identifier, $version);
     if ($resource) {
       $importService = $this->getImportService($resource);
       return $importService->getStorage();
     }
     throw new \Exception("No datastore storage found for {$identifier}:{$version}.");
+  }
+
+  /**
+   * Return the resource localizer.
+   *
+   * @return \Drupal\datastore\Service\ResourceLocalizer
+   *   Resource localizer.
+   */
+  public function getResourceLocalizer() : ResourceLocalizer {
+    return $this->resourceLocalizer;
+  }
+
+  /**
+   * Return the queue factory.
+   *
+   * @return \Drupal\Core\Queue\QueueFactory
+   *   Queue factory.
+   */
+  public function getQueueFactory() : QueueFactory {
+    return $this->queue;
   }
 
 }

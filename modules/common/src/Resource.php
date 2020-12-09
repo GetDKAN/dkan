@@ -50,7 +50,7 @@ class Resource implements \JsonSerializable {
   }
 
   /**
-   * __Create a new version__.
+   * Create a new version.
    *
    * Versions are, simply, a unique "string" used to represent changes in a
    * resource. For example, when new data is added to a file/resource a new
@@ -70,7 +70,7 @@ class Resource implements \JsonSerializable {
   }
 
   /**
-   * __Create a new perspective.__.
+   * Create a new perspective.
    *
    * Perspectives are useful to represent clusters of connected resources.
    *
@@ -117,6 +117,13 @@ class Resource implements \JsonSerializable {
    */
   public function getFilePath() {
     return $this->filePath;
+  }
+
+  /**
+   * Getter.
+   */
+  public function getFolder() {
+    return dirname($this->filePath);
   }
 
   /**
@@ -219,10 +226,10 @@ class Resource implements \JsonSerializable {
    * Private.
    */
   private static function getDistribution($identifier) {
-    /* @var $factory \Drupal\metastore\Storage\DataFactory */
+    /** @var \Drupal\metastore\Storage\DataFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
 
-    /* @var $storage \Drupal\metastore\Storage\Data */
+    /** @var \Drupal\metastore\Storage\Data $storage */
     $storage = $factory->getInstance('distribution');
 
     return json_decode($storage->retrieve($identifier));

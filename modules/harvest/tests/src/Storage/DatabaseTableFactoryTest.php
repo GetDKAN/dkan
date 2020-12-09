@@ -5,13 +5,13 @@ namespace Drupal\Tests\harvest\Storage;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Schema;
 use Drupal\harvest\Storage\DatabaseTableFactory;
-use Drupal\Tests\UnitTestCase;
+use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 
 /**
  *
  */
-class DatabaseTableFactoryTest extends UnitTestCase {
+class DatabaseTableFactoryTest extends TestCase {
 
   /**
    *

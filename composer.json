@@ -5,9 +5,7 @@
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
     "require": {
-        "composer/installers": "^1.2",
-        "cweagans/composer-patches": "^1.5.0",
-        "drupal/admin_toolbar": "^2.2",
+        "drupal/admin_toolbar": "^2.3",
         "drupal/config_update": "^1.6",
         "drupal/search_api": "^1.15",
         "drupal/views_bulk_operations": "^3.6",
@@ -16,15 +14,14 @@
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.0",
         "getdkan/contracts": "^1.0.0",
-        "getdkan/datastore" : "dev-original-column-names",
-        "getdkan/file-fetcher" : "^3.0.0",
+        "getdkan/datastore" : "^5.1.1",
+        "getdkan/file-fetcher" : "^4.0.0",
         "getdkan/harvest": "^1.0.0",
         "getdkan/json-schema-provider": "^0.1.2",
         "getdkan/mock-chain": "^1.3.0",
         "getdkan/sae" : "^1.1.1",
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.3",
-        "oomphinc/composer-installers-extender": "~1.1",
         "ramsey/uuid" : "^3.8.0",
         "weitzman/drupal-test-traits": "^1.5"
     },
@@ -57,7 +54,7 @@
         "dkan-frontend": {
             "type": "vcs",
             "url": "https://github.com/GetDKAN/data-catalog-app",
-            "ref": "1.0.1"
+            "ref": "1.0.3"
         }
     }
 }

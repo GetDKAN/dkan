@@ -1,0 +1,6 @@
+dkan.harvest.dashboard:
+  title: 'DKAN Harvests Information'
+  parent: system.admin_reports
+  description: 'View status information on DKAN harvests.'
+  route_name: dkan.harvest.dashboard
+  weight: -1

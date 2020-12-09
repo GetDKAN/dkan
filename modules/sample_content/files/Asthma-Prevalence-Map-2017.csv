@@ -1,0 +1,107 @@
+State,Abbreviation,Age Range,Current asthma prevalence,Standard Error,2011ranges,$$hashKey,$$stateabbreviation,$$statename,$$stateId,timeIntervalDataVal,$$color
+Alabama,AL,Adults,10.9%,0.53,9.9% +,object:147,al,Alabama,1,0,class5_color5
+Alaska,AK,Adults,8.4%,0.88,8.1-<8.8%,object:148,ak,Alaska,2,0,class5_color2
+Arizona,AZ,Adults,9.8%,0.31,9.5-<9.9%,object:149,az,Arizona,4,0,class5_color4
+Arkansas,AR,Adults,9.6%,0.73,9.5-<9.9%,object:150,ar,Arkansas,5,0,class5_color4
+California,CA,Adults,7.9%,0.38,<8.1%,object:151,ca,California,6,0,class5_color1
+Colorado,CO,Adults,9.3%,0.37,8.8-<9.5%,,co,Colorado,8,0,class5_color3
+Connecticut,CT,Adults,10.7%,0.43,9.9% +,,ct,Connecticut,9,0,class5_color5
+Delaware,DE,Adults,10.6%,0.71,9.9% +,,de,Delaware,10,0,class5_color5
+District of Columbia,DC,Adults,9.4%,0.63,8.8-<9.5%,,dc,District of Columbia,11,0,class5_color3
+Florida,FL,Adults,7.5%,0.39,<8.1%,,fl,Florida,12,0,class5_color1
+Georgia,GA,Adults,8.4%,0.47,8.1-<8.8%,,ga,Georgia,13,0,class5_color2
+Guam,GU,Adults,7.4%,0.96,<8.1%,,gu,Guam,66,0,class5_color1
+Hawaii,HI,Adults,9.8%,0.49,9.5-<9.9%,,hi,Hawaii,15,0,class5_color4
+Idaho,ID,Adults,9.0%,0.55,8.8-<9.5%,,id,Idaho,16,0,class5_color3
+Illinois,IL,Adults,8.2%,0.46,8.1-<8.8%,,il,Illinois,17,0,class5_color2
+Indiana,IN,Adults,10.0%,0.36,9.9% +,,in,Indiana,18,0,class5_color5
+Iowa,IA,Adults,9.3%,0.41,8.8-<9.5%,,ia,Iowa,19,0,class5_color3
+Kansas,KS,Adults,9.1%,0.25,8.8-<9.5%,,ks,Kansas,20,0,class5_color3
+Kentucky,KY,Adults,10.7%,0.56,9.9% +,,ky,Kentucky,21,0,class5_color5
+Louisiana,LA,Adults,9.0%,0.57,8.8-<9.5%,,la,Louisiana,22,0,class5_color3
+Maine,ME,Adults,11.2%,0.49,9.9% +,,me,Maine,23,0,class5_color5
+Maryland,MD,Adults,9.4%,0.41,8.8-<9.5%,,md,Maryland,24,0,class5_color3
+Massachusetts,MA,Adults,11.5%,0.68,9.9% +,,ma,Massachusetts,25,0,class5_color5
+Michigan,MI,Adults,10.8%,0.4,9.9% +,,mi,Michigan,26,0,class5_color5
+Minnesota,MN,Adults,7.3%,0.26,<8.1%,,mn,Minnesota,27,0,class5_color1
+Mississippi,MS,Adults,8.3%,0.53,8.1-<8.8%,,ms,Mississippi,28,0,class5_color2
+Missouri,MO,Adults,9.4%,0.47,8.8-<9.5%,,mo,Missouri,29,0,class5_color3
+Montana,MT,Adults,9.1%,0.52,8.8-<9.5%,,mt,Montana,30,0,class5_color3
+Nebraska,NE,Adults,8.2%,0.35,8.1-<8.8%,,ne,Nebraska,31,0,class5_color2
+Nevada,NV,Adults,10.4%,0.76,9.9% +,,nv,Nevada,32,0,class5_color5
+New Hampshire,NH,Adults,13.2%,0.69,9.9% +,,nh,New Hampshire,33,0,class5_color5
+New Jersey,NJ,Adults,8.6%,0.45,8.1-<8.8%,,nj,New Jersey,34,0,class5_color2
+New Mexico,NM,Adults,10.5%,0.56,9.9% +,,nm,New Mexico,35,0,class5_color5
+New York,NY,Adults,9.2%,0.36,8.8-<9.5%,,ny,New York,36,0,class5_color3
+North Carolina,NC,Adults,9.2%,0.54,8.8-<9.5%,,nc,North Carolina,37,0,class5_color3
+North Dakota,ND,Adults,8.6%,0.49,8.1-<8.8%,,nd,North Dakota,38,0,class5_color2
+Ohio,OH,Adults,9.9%,0.43,9.9% +,,oh,Ohio,39,0,class5_color5
+Oklahoma,OK,Adults,9.6%,0.46,9.5-<9.9%,,ok,Oklahoma,40,0,class5_color4
+Oregon,OR,Adults,10.9%,0.49,9.9% +,,or,Oregon,41,0,class5_color5
+Pennsylvania,PA,Adults,10.1%,0.52,9.9% +,,pa,Pennsylvania,42,0,class5_color5
+Puerto Rico,PR,Adults,12.1%,0.64,9.9% +,,pr,Puerto Rico,72,0,class5_color5
+Rhode Island,RI,Adults,12.3%,0.67,9.9% +,,ri,Rhode Island,44,0,class5_color5
+South Carolina,SC,Adults,9.2%,0.4,8.8-<9.5%,,sc,South Carolina,45,0,class5_color3
+South Dakota,SD,Adults,7.3%,0.56,<8.1%,,sd,South Dakota,46,0,class5_color1
+Tennessee,TN,Adults,10%,0.6,9.9% +,,tn,Tennessee,47,0,class5_color5
+Texas,TX,Adults,7.3%,0.49,<8.1%,,tx,Texas,48,0,class5_color1
+Utah,UT,Adults,8.9%,0.36,8.8-<9.5%,,ut,Utah,49,0,class5_color3
+Vermont,VT,Adults,11.8%,0.58,9.9% +,,vt,Vermont,50,0,class5_color5
+Virginia,VA,Adults,8.9%,0.41,8.8-<9.5%,,va,Virginia,51,0,class5_color3
+Washington,WA,Adults,10.5%,0.37,9.9% +,,wa,Washington,53,0,class5_color5
+West Virginia,WV,Adults,12.7%,0.56,9.9% +,,wv,West Virginia,54,0,class5_color5
+Wisconsin,WI,Adults,9.5%,0.54,9.5-<9.9%,,wi,Wisconsin,55,0,class5_color4
+Wyoming,WY,Adults,9.1%,0.55,8.8-<9.5%,,wy,Wyoming,56,0,class5_color3
+Alabama,AL,Children,No data,No data,No data,,al,Alabama,1,0,special1
+Alaska,AK,Children,No data,No data,No data,,ak,Alaska,2,0,special1
+Arizona,AZ,Children,No data,No data,No data,,az,Arizona,4,0,special1
+Arkansas,AR,Children,No data,No data,No data,,ar,Arkansas,5,0,special1
+California,CA,Children,6.2%,0.69,<8.1%,,ca,California,6,0,class5_color1
+Colorado,CO,Children,No data,No data,No data,,co,Colorado,8,0,special1
+Connecticut,CT,Children,12.9%,1.18,9.9% +,,ct,Connecticut,9,0,class5_color5
+Delaware,DE,Children,No data,No data,No data,,de,Delaware,10,0,special1
+District of Columbia,DC,Children,11.4%,1.32,9.9% +,,dc,District of Columbia,11,0,class5_color5
+Florida,FL,Children,7.3%,0.77,<8.1%,,fl,Florida,12,0,class5_color1
+Georgia,GA,Children,9.1%,1.09,8.8-<9.5%,,ga,Georgia,13,0,class5_color3
+Guam,GU,Children,No data,No data,No data,,gu,Guam,66,0,special1
+Hawaii,HI,Children,9.8%,0.99,9.5-<9.9%,,hi,Hawaii,15,0,class5_color4
+Idaho,ID,Children,No data,No data,No data,,id,Idaho,16,0,special1
+Illinois,IL,Children,5.7%,0.78,<8.1%,,il,Illinois,17,0,class5_color1
+Indiana,IN,Children,6.9%,0.53,<8.1%,,in,Indiana,18,0,class5_color1
+Iowa,IA,Children,No data,No data,No data,,ia,Iowa,19,0,special1
+Kansas,KS,Children,9.4%,0.63,8.8-<9.5%,,ks,Kansas,20,0,class5_color3
+Kentucky,KY,Children,No data,No data,No data,,ky,Kentucky,21,0,special1
+Louisiana,LA,Children,No data,No data,No data,,la,Louisiana,22,0,special1
+Maine,ME,Children,8.0%,0.89,<8.1%,,me,Maine,23,0,class5_color1
+Maryland,MD,Children,No data,No data,No data,,md,Maryland,24,0,special1
+Massachusetts,MA,Children,15.8%,3.05,9.9% +,,ma,Massachusetts,25,0,class5_color5
+Michigan,MI,Children,8.8%,0.71,8.8-<9.5%,,mi,Michigan,26,0,class5_color3
+Minnesota,MN,Children,4.5%,0.43,<8.1%,,mn,Minnesota,27,0,class5_color1
+Mississippi,MS,Children,11.4%,1.48,9.9% +,,ms,Mississippi,28,0,class5_color5
+Missouri,MO,Children,9.7%,1.07,9.5-<9.9%,,mo,Missouri,29,0,class5_color4
+Montana,MT,Children,8.6%,1.21,8.1-<8.8%,,mt,Montana,30,0,class5_color2
+Nebraska,NE,Children,6.1%,0.67,<8.1%,,ne,Nebraska,31,0,class5_color1
+Nevada,NV,Children,7.8%,1.51,<8.1%,,nv,Nevada,32,0,class5_color1
+New Hampshire,NH,Children,No data,No data,No data,,nh,New Hampshire,33,0,special1
+New Jersey,NJ,Children,8.3%,0.83,8.1-<8.8%,,nj,New Jersey,34,0,class5_color2
+New Mexico,NM,Children,9.3%,1.28,8.8-<9.5%,,nm,New Mexico,35,0,class5_color3
+New York,NY,Children,8.9%,1.01,8.8-<9.5%,,ny,New York,36,0,class5_color3
+North Carolina,NC,Children,No data,No data,No data,,nc,North Carolina,37,0,special1
+North Dakota,ND,Children,No data,No data,No data,,nd,North Dakota,38,0,special1
+Ohio,OH,Children,8.6%,0.83,8.1-<8.8%,,oh,Ohio,39,0,class5_color2
+Oklahoma,OK,Children,No data,No data,No data,,ok,Oklahoma,40,0,special1
+Oregon,OR,Children,5.8%,0.79,<8.1%,,or,Oregon,41,0,class5_color1
+Pennsylvania,PA,Children,8.9%,0.96,8.8-<9.5%,,pa,Pennsylvania,42,0,class5_color3
+Puerto Rico,PR,Children,15.5%,1.82,9.9% +,,pr,Puerto Rico,72,0,class5_color5
+Rhode Island,RI,Children,10.3%,1.34,9.9% +,,ri,Rhode Island,44,0,class5_color5
+South Carolina,SC,Children,No data,No data,No data,,sc,South Carolina,45,0,special1
+South Dakota,SD,Children,No data,No data,No data,,sd,South Dakota,46,0,special1
+Tennessee,TN,Children,No data,No data,No data,,tn,Tennessee,47,0,special1
+Texas,TX,Children,No data,No data,No data,,tx,Texas,48,0,special1
+Utah,UT,Children,6.1%,0.53,<8.1%,,ut,Utah,49,0,class5_color1
+Vermont,VT,Children,7.3%,0.85,<8.1%,,vt,Vermont,50,0,class5_color1
+Virginia,VA,Children,No data,No data,No data,,va,Virginia,51,0,special1
+Washington,WA,Children,No data,No data,No data,,wa,Washington,53,0,special1
+West Virginia,WV,Children,No data,No data,No data,,wv,West Virginia,54,0,special1
+Wisconsin,WI,Children,No data,No data,No data,,wi,Wisconsin,55,0,special1
+Wyoming,WY,Children,No data,No data,No data,,wy,Wyoming,56,0,special1

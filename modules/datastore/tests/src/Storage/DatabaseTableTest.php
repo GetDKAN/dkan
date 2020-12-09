@@ -13,7 +13,6 @@ use Drupal\common\Storage\Query;
 use MockChain\Chain;
 use MockChain\Sequence;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\datastore\Storage\TableSummary;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -226,12 +225,15 @@ class DatabaseTableTest extends TestCase {
       $connectionChain->getMock(),
       $this->getResource()
     );
-    $this->assertEquals(
-      new TableSummary(
-        3,
-        ["record_number", "first_name", "last_name"],
-        1
-      ), $databaseTable->getSummary());
+
+    $actual = json_decode(json_encode(
+      $databaseTable->getSummary()
+    ));
+
+    $this->assertEquals(3, $actual->numOfColumns);
+    $this->assertEquals(1, $actual->numOfRows);
+    $this->assertEquals(["record_number", "first_name", "last_name"],
+      array_keys((array) $actual->columns));
   }
 
   /**

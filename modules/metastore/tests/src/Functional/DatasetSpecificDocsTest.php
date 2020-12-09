@@ -2,16 +2,21 @@
 
 namespace Drupal\Tests\metastore\Functional;
 
-use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\WebServiceApiDocs;
 use Drupal\Tests\common\Traits\CleanUp;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
+/**
+ *
+ */
 class DatasetSpecificDocsTest extends ExistingSiteBase {
   use CleanUp;
 
   private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
 
+  /**
+   *
+   */
   private function getData($downloadUrl) {
     return '
     {
@@ -31,12 +36,15 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
     }';
   }
 
+  /**
+   *
+   */
   public function test() {
 
     // Test posting a dataset to the metastore.
     $dataset = $this->getData($this->downloadUrl);
 
-    /* @var $metastore \Drupal\metastore\Service */
+    /** @var \Drupal\metastore\Service $metastore */
     $metastore = \Drupal::service('dkan.metastore.service');
     $metastore->post('dataset', $dataset);
 
@@ -45,6 +53,9 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
     $this->assertTrue(is_object(json_decode($respose->getContent())));
   }
 
+  /**
+   *
+   */
   public function tearDown() {
     parent::tearDown();
     $this->removeAllNodes();

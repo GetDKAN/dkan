@@ -1,7 +1,7 @@
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.6/phpunit.xsd"
-    bootstrap="../../../../vendor/weitzman/drupal-test-traits/src/bootstrap.php"
+    bootstrap="/var/www/vendor/weitzman/drupal-test-traits/src/bootstrap.php"
     colors="true"
     stopOnFailure="false"
     stopOnError="false"
@@ -11,7 +11,6 @@
         <testsuite name="DKAN Test Suite">
             <directory>tests</directory>
             <directory>modules/common/tests</directory>
-            <directory>modules/common/modules/dkan_alt_api/tests</directory>
             <directory>modules/metastore/tests</directory>
             <directory>modules/metastore/modules/metastore/tests</directory>
             <directory>modules/metastore/modules/metastore_search/tests</directory>
@@ -20,6 +19,7 @@
             <directory>modules/datastore/tests</directory>
             <directory>modules/frontend/tests</directory>
             <directory>modules/harvest/tests</directory>
+            <directory>modules/harvest/modules/harvest_dashboard/tests</directory>
         </testsuite>
     </testsuites>
 
@@ -41,7 +41,6 @@
         <!-- whitelist needed for code coverage generation to work -->
         <whitelist>
           <directory>modules/common/src</directory>
-          <directory>modules/common/modules/dkan_alt_api/src</directory>
           <directory>modules/metastore/src</directory>
           <directory>modules/metastore/modules/metastore/src</directory>
           <directory>modules/metastore/modules/metastore_search/src</directory>
@@ -50,6 +49,7 @@
           <directory>modules/datastore/src</directory>
           <directory>modules/frontend/src</directory>
           <directory>modules/harvest/src</directory>
+          <directory>modules/harvest/modules/harvest_dashboard/src</directory>
       <!-- By definition test classes have no tests. -->
       <exclude>
         <directory>modules/common/src/Tests</directory>

@@ -6,15 +6,15 @@ use Contracts\BulkRetrieverInterface;
 use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
-use DateTime;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\node\NodeInterface;
-use HTMLPurifier;
 
 /**
  * Data.
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
+
+  const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
 
   /**
    * Entity type manager.
@@ -44,6 +44,16 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
     $this->setSchema($schemaId);
+  }
+
+  /**
+   * Get node storage.
+   *
+   * @return \Drupal\node\NodeStorageInterface
+   *   Node storage.
+   */
+  public function getNodeStorage() {
+    return $this->nodeStorage;
   }
 
   /**
@@ -151,7 +161,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The node's published revision, if found.
    */
-  private function getNodePublishedRevision(string $uuid) {
+  public function getNodePublishedRevision(string $uuid) {
 
     $nid = $this->getNidFromUuid($uuid);
 
@@ -167,7 +177,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The node's latest revision, if found.
    */
-  private function getNodeLatestRevision(string $uuid) {
+  public function getNodeLatestRevision(string $uuid) {
 
     $nid = $this->getNidFromUuid($uuid);
 
@@ -188,7 +198,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return int|null
    *   The node id, if found.
    */
-  private function getNidFromUuid(string $uuid) : ?int {
+  public function getNidFromUuid(string $uuid) : ?int {
 
     $nids = $this->nodeStorage->getQuery()
       ->condition('uuid', $uuid)
@@ -325,7 +335,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @codeCoverageIgnore
    */
   private function htmlPurifier(string $input) {
-    $filter = new HTMLPurifier();
+    $filter = new \HTMLPurifier();
     return $filter->purify($input);
   }
 
@@ -336,8 +346,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *   Current timestamp, formatted.
    */
   private function formattedTimestamp() : string {
-    $now = new DateTime('now');
-    return $now->format(DateTime::ATOM);
+    $now = new \DateTime('now');
+    return $now->format(\DateTime::ATOM);
   }
 
   /**

@@ -67,7 +67,7 @@ class Service implements ContainerInjectionInterface {
    *   The harvest plan id.
    *
    * @return mixed
-   *   The harvest plan, if any, or null.
+   *   The harvest plan, if any, or NULL.
    *
    * @throws \Exception
    */

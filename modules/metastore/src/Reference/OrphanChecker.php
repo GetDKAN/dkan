@@ -4,7 +4,6 @@ namespace Drupal\metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;
-use stdClass;
 
 /**
  * OrphanChecker.
@@ -42,7 +41,10 @@ class OrphanChecker {
    * @param object $data
    *   Dataset to be deleted.
    */
-  public function processReferencesInDeletedDataset(stdClass $data) {
+  public function processReferencesInDeletedDataset($data) {
+    if (!is_object($data)) {
+      throw new \Exception("data must be an object.");
+    }
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -59,7 +61,8 @@ class OrphanChecker {
    * @param object $new_dataset
    *   Updated dataset.
    */
-  public function processReferencesInUpdatedDataset(stdClass $old_dataset, stdClass $new_dataset) {
+  public function processReferencesInUpdatedDataset($old_dataset, $new_dataset) {
+    $this->objectsCheck([$old_dataset, $new_dataset]);
     // Cycle through the dataset properties being referenced, check for orphans.
     foreach ($this->getPropertyList() as $property_id) {
       if (!isset($old_dataset->{$property_id})) {
@@ -130,6 +133,17 @@ class OrphanChecker {
 
     foreach (array_diff($old_value, $new_value) as $removed_reference) {
       $this->queueReferenceForRemoval($property_id, $removed_reference);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function objectsCheck($objects) {
+    foreach ($objects as $object) {
+      if (!is_object($object)) {
+        throw new \Exception("data given must be an object.");
+      }
     }
   }
 

@@ -4,18 +4,21 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
+use Dkan\Datastore\Resource as DatastoreResource;
+use Drupal\common\LoggerTrait;
+use Drupal\common\Resource;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\datastore\Storage\DatabaseTable;
-use Drupal\common\Storage\JobStoreFactory;
-use Procrastinator\Result;
-use Drupal\common\Resource;
-use Dkan\Datastore\Resource as DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Procrastinator\Result;
 
 /**
  * Class Import.
  */
 class Import {
+  use LoggerTrait;
+
   const DEFAULT_TIMELIMIT = 50;
 
   private $resource;
@@ -26,13 +29,35 @@ class Import {
    * Constructor.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+    $this->initializeResource($resource);
+    $this->jobStoreFactory = $jobStoreFactory;
+    $this->databaseTableFactory = $databaseTableFactory;
+  }
+
+  /**
+   * Initialize resource.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   Resource.
+   */
+  protected function initializeResource(Resource $resource) {
     $this->resource = new DatastoreResource(
       md5($resource->getUniqueIdentifier()),
       UrlHostTokenResolver::resolve($resource->getFilePath()),
       $resource->getMimeType()
     );
-    $this->jobStoreFactory = $jobStoreFactory;
-    $this->databaseTableFactory = $databaseTableFactory;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return \Dkan\Datastore\Resource
+   *   Resource.
+   *
+   * @codeCoverageIgnore
+   */
+  protected function getResource() : DatastoreResource {
+    return $this->resource;
   }
 
   /**
@@ -41,6 +66,15 @@ class Import {
   public function import() {
     $importer = $this->getImporter();
     $importer->run();
+
+    $result = $this->getResult();
+    if ($result->getStatus() == Result::ERROR) {
+      $this->setLoggerFactory(\Drupal::service('logger.factory'));
+      $this->error("Error importing resource id:%id path:%path", [
+        '%id' => $this->getResource()->getId(),
+        '%path' => $this->getResource()->getFilePath(),
+      ]);
+    }
   }
 
   /**
