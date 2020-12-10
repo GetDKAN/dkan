@@ -40,7 +40,8 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *   entity_keys = {
  *     "id" = "id",
  *     "title" = "title",
- *     "data" = "data"
+ *     "data" = "data",
+ *     "uuid" = "uuid"
  *   },
  *   links = {
  *     "canonical" = "/metadata/{metastore_entity_metadata}",
@@ -204,5 +205,13 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
 
     return $fields;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTitle() {
+    return $this->get('title')->value;
+  }
+
 
 }

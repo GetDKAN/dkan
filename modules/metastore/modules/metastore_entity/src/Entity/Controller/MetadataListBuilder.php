@@ -77,7 +77,6 @@ class MetadataListBuilder extends EntityListBuilder {
   public function buildHeader() {
     $header['id'] = $this->t('ID');
     $header['title'] = $this->t('Title');
-    $header['data'] = $this->t('Data');
     return $header + parent::buildHeader();
   }
 
@@ -86,9 +85,8 @@ class MetadataListBuilder extends EntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     /* @var $entity \Drupal\metastore_entity\Entity\Metadata */
-    $row['id'] = $entity->id();
-    $row['title'] = $entity->toLink()->toString();
-    $row['data'] = $entity->data->value;
+    $row['id'] = $entity->uuid();
+    $row['title'] = $entity->toLink($entity->getTitle())->toString();
     return $row + parent::buildRow($entity);
   }
 
