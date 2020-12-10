@@ -121,13 +121,13 @@ class DatasetTest extends ExistingSiteBase {
    */
   public function test3() {
 
-    // Test the resource purger by posting a dataset, then updating its file.
-    $this->storeDatasetRunQueues(111, '1.1', ['1.csv']);
-    $this->storeDatasetRunQueues(111, '1.2', ['2.csv'], 'put');
+    // Post then update a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues(111, '1.2', ['2.csv', '4.csv'], 'put');
 
-    // Verify only 2.csv remains in the resources folder, and 1 datastore table.
-    $this->assertEquals(['2.csv'], $this->checkFiles());
-    $this->assertEquals(1, $this->countTables());
+    // Verify only the 2 most recent resources remain.
+    $this->assertEquals(['2.csv', '4.csv'], $this->checkFiles());
+    $this->assertEquals(2, $this->countTables());
   }
 
   /**
