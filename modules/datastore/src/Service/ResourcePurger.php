@@ -195,7 +195,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $vids = array_reverse($this->storage->getNodeStorage()->revisionIds($dataset));
 
     return array_filter($vids, function ($vid) use ($initialVid) {
-      return $vid <= $initialVid;
+      return $vid < $initialVid;
     });
   }
 
