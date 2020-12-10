@@ -168,7 +168,7 @@ class ResourcePurger implements ContainerInjectionInterface {
 
     foreach ($this->getOlderRevisionIds($initialVid, $node) as $vid) {
       list($published, $resource) = $this->getRevisionData($vid);
-      $purge[$vid] = $resource;
+      $purge = array_merge($purge, $resource);
       $publishedCount = $published ? $publishedCount + 1 : $publishedCount;
       if (!$prior && $publishedCount >= 2) {
         break;
@@ -208,16 +208,14 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The revisions important to keep.
    */
   private function getResourcesToKeep(string $uuid) : array {
-    $resourcesToKeep = [];
-
-    // Always keep the resource associated with the latest revision.
+    // Always keep resources associated with the latest revision.
     $latestRevision = $this->storage->getNodeLatestRevision($uuid);
-    $resourcesToKeep[] = $this->getResources($latestRevision);
+    $resourcesToKeep = $this->getResources($latestRevision);
 
-    // Keep the resource of the currently published revision, if any.
+    // Keep resources of the currently published revision, if any.
     $currentlyPublished = $this->storage->getNodePublishedRevision($uuid);
     if ($currentlyPublished) {
-      $resourcesToKeep[] = $this->getResources($currentlyPublished);
+      $resourcesToKeep = array_merge($resourcesToKeep, $this->getResources($currentlyPublished));
     }
 
     return array_unique($resourcesToKeep);
@@ -241,19 +239,26 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Get a dataset's resource identifier and version.
+   * Get all resources' identifier and version from a dataset.
    *
    * @param \Drupal\node\NodeInterface $dataset
    *   The dataset.
    *
-   * @return false|string
-   *   Json string of array containing resource identifier and version.
+   * @return array
+   *   Array of resource identifiers and versions. Each array element is a
+   *   JSON-encoded array containing a resource's identifier and version.
    */
   private function getResources(NodeInterface $dataset) {
+    $resources = [];
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
-    $refDistData = $metadata->{'%Ref:distribution'}[0]->data;
-    $resource = $refDistData->{'%Ref:downloadURL'}[0]->data;
-    return json_encode([$resource->identifier, $resource->version]);
+    $distributions = $metadata->{'%Ref:distribution'};
+
+    foreach ($distributions as $distribution) {
+      $resource = $distribution->data->{'%Ref:downloadURL'}[0]->data;
+      $resources[] = json_encode([$resource->identifier, $resource->version]);
+    }
+
+    return $resources;
   }
 
   /**
