@@ -48,9 +48,41 @@ entity.metastore_entity_metadata.delete_form:
     _entity_access: 'metastore_entity_metadata.delete'
 
 metastore_entity.metadata_settings:
-  path: 'admin/structure/metadata/settings'
+  path: '/admin/structure/metadata/settings'
   defaults:
     _form: '\Drupal\metastore_entity\Form\MetadataSettingsForm'
     _title: 'Metadata Settings'
   requirements:
-    _permission: 'administer metadata entity'
+    _permission: 'administer metastore entity settings'
+
+entity.metadata_schema.collection:
+  path: '/admin/structure/metadata/schemas'
+  defaults:
+    _entity_list: 'metadata_schema'
+    _title: 'Metadata schemas'
+  requirements:
+    _permission: 'administer metadata schemas'
+
+metastore_entity.metadata_schema_add:
+  path: '/admin/structure/metadata/schemas/add'
+  defaults:
+    _entity_form: 'metadata_schema.add'
+    _title: 'Add schema'
+  requirements:
+    _permission: 'administer metadata schemas'
+
+metastore_entity.metadata_schema_add.edit_form:
+  path: '/admin/structure/metadata/schemas/manage/{node_type}'
+  defaults:
+    _entity_form: 'metadata_schema.edit'
+    _title_callback: '\Drupal\Core\Entity\Controller\EntityController::title'
+  requirements:
+    _permission: 'administer metadata schemas'
+
+metastore_entity.metadata_schema_add.delete_form:
+  path: '/admin/structure/metadata/schemas/manage/{node_type}/delete'
+  defaults:
+    _entity_form: 'metadata_schema.delete'
+    _title: 'Delete'
+  requirements:
+    _entity_access: 'metadata_schema.delete'

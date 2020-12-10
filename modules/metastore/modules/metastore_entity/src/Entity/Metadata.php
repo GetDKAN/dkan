@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\metastore_entity\MetadataInterface;
 use Drupal\user\UserInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
+use Drupal\user\EntityOwnerTrait;
 
 /**
  * Defines the Metadata entity.
@@ -21,7 +22,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *  is read and cached. Don't forget to clear cache after changes.
  *
  * @ContentEntityType(
- *   id = "metastore_entity_metadata",
+ *   id = "metadata",
  *   label = @Translation("Metadata entity"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
@@ -39,22 +40,38 @@ use Drupal\Core\Entity\EntityChangedTrait;
  *   admin_permission = "administer metadata entity",
  *   entity_keys = {
  *     "id" = "id",
- *     "title" = "title",
- *     "data" = "data",
- *     "uuid" = "uuid"
+ *     "revision" = "vid",
+ *     "bundle" = "schema",
+ *     "label" = "schema",
+ *     "langcode" = "langcode",
+ *     "uuid" = "uuid",
+ *     "status" = "status",
+ *     "published" = "status",
+ *     "uid" = "uid",
+ *     "owner" = "uid",
  *   },
+ *   revision_metadata_keys = {
+ *     "revision_owner" = "revision_uid",
+ *     "revision_created" = "revision_timestamp",
+ *     "revision_log_message" = "revision_log"
+ *   },
+ *   bundle_label = @Translation("Metadata schema"),
+ *   common_reference_target = TRUE,
+ *   permission_granularity = "bundle",
+ *   field_ui_base_route = "metastore_entity.metadata_settings",
  *   links = {
  *     "canonical" = "/metadata/{metastore_entity_metadata}",
- *     "edit-form" = "/metadata/{metastore_entity_metadata}/edit",
  *     "delete-form" = "/metadata/{metastore_entity_metadata}/delete",
- *     "collection" = "/metadata/list"
- *   },
- *   field_ui_base_route = "metastore_entity.metadata_settings",
+ *     "delete-multiple-form" = "/admin/content/node/delete",
+ *     "edit-form" = "/metadata/{metastore_entity_metadata}/edit",
+ *     "version-history" = "/metadata/{metastore_entity_metadata}/revisions",
+ *     "revision" = "/metadata/{metastore_entity_metadata}/revisions/{metadata_revision}/view",
+ *   }
  * )
  */
-
 class Metadata extends ContentEntityBase implements MetadataInterface {
   use EntityChangedTrait;
+  use EntityOwnerTrait;
 
   /**
    * {@inheritdoc}
@@ -111,17 +128,8 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
 
-    // Standard field, used as unique if primary index.
-    $fields['id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('ID'))
-      ->setDescription(t('The ID of the Metadata entity.'))
-      ->setReadOnly(TRUE);
-
-    // Standard field, unique outside of the scope of the current project.
-    $fields['uuid'] = BaseFieldDefinition::create('uuid')
-      ->setLabel(t('UUID'))
-      ->setDescription(t('The UUID of the Metadata entity.'))
-      ->setReadOnly(TRUE);
+    $fields = parent::baseFieldDefinitions($entity_type);
+    $fields += static::ownerBaseFieldDefinitions($entity_type);
 
     // Name field for the Metadata.
     // We set display options for the view as well as the form.
@@ -170,27 +178,25 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
     // Entity reference field, holds the reference to the user object.
     // The view shows the user name field of the user.
     // The form presents a auto complete field for the user name.
-    $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('User Name'))
-      ->setDescription(t('The Name of the associated user.'))
-      ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
+    $fields['uid']
+      ->setLabel(t('Authored by'))
+      ->setDescription(t('The username of the metadata owner.'))
+      ->setRevisionable(TRUE)
       ->setDisplayOptions('view', [
-        'label' => 'above',
+        'label' => 'hidden',
         'type' => 'author',
-        'weight' => -3,
+        'weight' => 0,
       ])
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
+        'weight' => 5,
         'settings' => [
           'match_operator' => 'CONTAINS',
-          'size' => 60,
+          'size' => '60',
           'placeholder' => '',
         ],
-        'weight' => -3,
       ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['langcode'] = BaseFieldDefinition::create('language')
       ->setLabel(t('Language code'))
@@ -213,5 +219,11 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
     return $this->get('title')->value;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getSchemaName() {
+    return $this->bundle();
+  }
 
 }

@@ -86,7 +86,7 @@ class MetadataListBuilder extends EntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     /* @var $entity \Drupal\metastore_entity\Entity\Metadata */
     $row['id'] = $entity->uuid();
-    $row['title'] = $entity->toLink($entity->getTitle())->toString();
+    $row['title'] = $entity->toLink($entity->label())->toString();
     return $row + parent::buildRow($entity);
   }
 
