@@ -213,12 +213,12 @@ class ResourcePurger implements ContainerInjectionInterface {
 
     // Always keep the resource associated with the latest revision.
     $latestRevision = $this->storage->getNodeLatestRevision($uuid);
-    $resourcesToKeep[] = $this->getResourceIdAndVersion($latestRevision);
+    $resourcesToKeep[] = $this->getResources($latestRevision);
 
     // Keep the resource of the currently published revision, if any.
     $currentlyPublished = $this->storage->getNodePublishedRevision($uuid);
     if ($currentlyPublished) {
-      $resourcesToKeep[] = $this->getResourceIdAndVersion($currentlyPublished);
+      $resourcesToKeep[] = $this->getResources($currentlyPublished);
     }
 
     return array_unique($resourcesToKeep);
@@ -237,7 +237,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $revision = $this->storage->getNodeStorage()->loadRevision($vid);
     return [
       $revision->get('moderation_state')->getString() == 'published',
-      $this->getResourceIdAndVersion($revision),
+      $this->getResources($revision),
     ];
   }
 
@@ -250,7 +250,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    * @return false|string
    *   Json string of array containing resource identifier and version.
    */
-  private function getResourceIdAndVersion(NodeInterface $dataset) {
+  private function getResources(NodeInterface $dataset) {
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
     $refDistData = $metadata->{'%Ref:distribution'}[0]->data;
     $resource = $refDistData->{'%Ref:downloadURL'}[0]->data;
