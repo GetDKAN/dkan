@@ -184,11 +184,13 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Perform a query on one or more datastore resources.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The json response.
+   * @return \Symfony\Component\HttpFoundation\JsonResponse|\Drupal\datastore\CsvResponse
+   *   The json or CSV response.
    */
   public function query() {
-    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    $request = $this->requestStack->getCurrentRequest();
+    $payloadJson = $request->getContent();
+    $format = $request->query->get('format');
 
     try {
       $datastoreQuery = new DatastoreQuery($payloadJson);
@@ -198,7 +200,34 @@ class WebServiceApi implements ContainerInjectionInterface {
       return $this->getResponseFromException($e, 400);
     }
 
-    return $this->getResponse($result->{"$"}, 200);
+    switch ($format) {
+      case 'csv':
+        return $this->formatCsv($result->{"$"});
+
+      case 'json':
+      default:
+        return $this->getResponse($result->{"$"}, 200);
+    }
+
+  }
+
+  /**
+   * Reformat and create CSV file.
+   *
+   * @param array $data
+   *   Data result with buried header info.
+   *
+   * @return \Drupal\datastore\CsvResponse
+   *   CSV file as a response.
+   */
+  protected function formatCsv(array $data) {
+    $header_row = array_keys(reset($data['schema'])['fields']);
+    if (is_array($header_row)) {
+      array_unshift($data['results'], $header_row);
+    }
+    $response = new CsvResponse($data['results'], 200);
+    $response->setFilename('data.csv');
+    return $response;
   }
 
   /**
