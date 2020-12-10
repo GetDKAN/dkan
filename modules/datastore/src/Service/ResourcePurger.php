@@ -191,7 +191,6 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   List of revisions to consider.
    */
   private function getOlderRevisionIds(int $initialVid, NodeInterface $dataset) : array {
-
     $vids = array_reverse($this->storage->getNodeStorage()->revisionIds($dataset));
 
     return array_filter($vids, function ($vid) use ($initialVid) {
@@ -309,7 +308,6 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Array of dataset identifiers indexed by their revision id.
    */
   private function getIndexedUuids(array $uuids) : array {
-
     $indexed = [];
 
     foreach ($uuids as $uuid) {
