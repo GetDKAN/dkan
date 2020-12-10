@@ -22,23 +22,40 @@ class DatasetTest extends ExistingSiteBase {
     return self::S3_PREFIX . '/' . $filename;
   }
 
-  private function getData($identifier, $title, $downloadUrl) {
-    return '
-    {
-      "title": "' . $title . '",
-      "description": "Yep",
-      "identifier": "' . $identifier . '",
-      "accessLevel": "public",
-      "modified": "06-04-2020",
-      "keyword": ["hello"],
-      "distribution": [
-        {
-          "title": "blah",
-          "downloadURL": "' . $this->getDownloadUrl($downloadUrl) . '",
-          "mediaType": "text/csv"
-        }
-      ]
-    }';
+  /**
+   * Generate dataset metadata, possibly with multiple distributions.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
+   * @param string $title
+   *   Dataset title.
+   * @param array $downloadUrls
+   *   Array of resource files URLs for this dataset.
+   *
+   * @return string|false
+   *   Json encoded string of this dataset's metadata, or FALSE if error.
+   */
+  private function getData(string $identifier, string $title, array $downloadUrls) {
+
+    $data = new \stdClass();
+    $data->title = $title;
+    $data->description = "Some description.";
+    $data->identifier = $identifier;
+    $data->accessLevel = "public";
+    $data->modified = "06-04-2020";
+    $data->keyword = ["some keyword"];
+    $data->distribution = [];
+
+    foreach ($downloadUrls as $key => $downloadUrl) {
+      $distribution = new \stdClass();
+      $distribution->title = "Distribution #{$key} for {$identifier}";
+      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
+      $distribution->mediaType = "text/csv";
+
+      $data->distribution[] = $distribution;
+    }
+
+    return json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
   }
 
   public function setUp() {
@@ -54,7 +71,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', 'district_centerpoints_small.csv');
+    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -79,7 +96,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', 'district_centerpoints_small.csv');
+    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
@@ -105,8 +122,8 @@ class DatasetTest extends ExistingSiteBase {
   public function test3() {
 
     // Test the resource purger by posting a dataset, then updating its file.
-    $this->storeDatasetRunQueues(111, '1.1', '1.csv');
-    $this->storeDatasetRunQueues(111, '1.2', '2.csv', 'put');
+    $this->storeDatasetRunQueues(111, '1.1', ['1.csv']);
+    $this->storeDatasetRunQueues(111, '1.2', ['2.csv'], 'put');
 
     // Verify only 2.csv remains in the resources folder, and 1 datastore table.
     $this->assertEquals(['2.csv'], $this->checkFiles());
@@ -124,10 +141,10 @@ class DatasetTest extends ExistingSiteBase {
     $defaultModerationState->save();
 
     // Test the resource purger by posting, updating and publishing.
-    $this->storeDatasetRunQueues(111, '1.1', '1.csv');
-    $this->storeDatasetRunQueues(111, '1.2', '2.csv', 'put');
+    $this->storeDatasetRunQueues(111, '1.1', ['1.csv']);
+    $this->storeDatasetRunQueues(111, '1.2', ['2.csv'], 'put');
     $this->getMetastore()->publish('dataset', 111);
-    $this->storeDatasetRunQueues(111, '1.3', '3.csv', 'put');
+    $this->storeDatasetRunQueues(111, '1.3', ['3.csv'], 'put');
 
     // Verify that only the resources associated with the published and the
     // latest revision.
@@ -141,8 +158,8 @@ class DatasetTest extends ExistingSiteBase {
   /**
    * Store or update a dataset,run datastore_import and resource_purger queues.
    */
-  private function storeDatasetRunQueues($identifier, $title, $filename, $method = 'post') {
-    $datasetJson = $this->getData($identifier, $title, $filename);
+  private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
+    $datasetJson = $this->getData($identifier, $title, $filenames);
     $this->httpVerbHandler($method, $datasetJson, json_decode($datasetJson));
 
     // Simulate a cron on queues relevant to this scenario.
