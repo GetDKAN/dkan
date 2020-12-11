@@ -63,8 +63,11 @@ class HarvestCommands extends DrushCommands {
 
   /**
    * Register a new harvest.
-   *
+   * @param string $text
+   *   Harvest plan configuration as JSON, wrapped in single quotes,
+   *   do not add spaces between elements.
    * @command dkan:harvest:register
+   * @usage dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
    * @aliases dkan-harvest:register
    * @deprecated dkan-harvest:register is deprecated and will be removed in a future Dkan release. Use dkan:harvest:register instead.
    */
