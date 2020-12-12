@@ -11,7 +11,8 @@ context('Administration pages', () => {
         cy.wrap($el).contains('DKAN').next('.toolbar-menu').then($el=>{
           cy.wrap($el).invoke('show')
           cy.wrap($el).contains('Dataset properties').click()
-          cy.get('.fieldset-legend').should('have.text', 'List of dataset properties with referencing and API endpoint')
+          cy.get('.fieldset-legend').first().should('have.text', 'List of dataset properties with referencing and API endpoint')
+          cy.get('.fieldset-legend').last().should('have.text', 'Orphaned content processing')
         })
     })
   })

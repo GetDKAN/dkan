@@ -42,11 +42,25 @@ class DkanDataSettingsForm extends ConfigFormBase {
     $config = $this->config('metastore.settings');
     $options = $this->retrieveSchemaProperties();
     $default_values = $config->get('property_list');
+    $default_processing = $config->get('orphan_processing') ? $config->get('orphan_processing') : 0;
     $form['property_list'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('List of dataset properties with referencing and API endpoint'),
+      '#description_display' => 'before',
+      '#description' => $this->t("Break out specific sub-elements of the dataset schema so that these elements can be worked with as individual objects. Each element is assigned a unique identifier in addition to it's original schema values."),
       '#options' => $options,
       '#default_value' => $default_values,
+    ];
+    $form['orphan_processing'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Orphaned content processing'),
+      '#description_display' => 'before',
+      '#description' => $this->t("Define how to process data content that is no longer assocciated with a dataset."),
+      '#default_value' => $default_processing,
+      '#options' => [
+        0 => $this->t('Delete'),
+        1 => $this->t('Unpublish'),
+      ],
     ];
     return parent::buildForm($form, $form_state);
   }
@@ -87,6 +101,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
 
     $this->config('metastore.settings')
       ->set('property_list', $form_state->getValue('property_list'))
+      ->set('orphan_processing', $form_state->getValue('orphan_processing'))
       ->save();
 
     // Rebuild routes, without clearing all caches.

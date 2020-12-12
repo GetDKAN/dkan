@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * Implements hook_uninstall()
+ */
+function sample_content_uninstall() {
+  \Drupal::database()->schema()->dropTable('harvest_sample_content_hash');
+}

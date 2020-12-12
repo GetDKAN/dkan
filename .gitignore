@@ -15,6 +15,7 @@ composer.lock
 docs
 .vscode
 coverage
+cypress/screenshots
 cypress/videos
 package-lock.json
 tagfile

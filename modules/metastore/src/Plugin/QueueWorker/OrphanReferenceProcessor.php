@@ -96,8 +96,29 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
       }
     }
 
-    // Value reference uuid not found in any dataset, therefore safe to delete.
-    $this->unpublishReference($metadataProperty, $identifier);
+    $this->processOption($metadataProperty, $identifier);
+
+  }
+
+  /**
+   * Run the process option.
+   *
+   * The value of the reference uuid was not found in any dataset,
+   * therefore safe to unpublish or delete.
+   *
+   * @param string $metadataProperty
+   *   The property id.
+   * @param string $identifier
+   *   The uuid.
+   */
+  protected function processOption($metadataProperty, $identifier) {
+    $config = \Drupal::config('metastore.settings')->get('orphan_processing');
+    if ($config == 1) {
+      $this->unpublishReference($metadataProperty, $identifier);
+    }
+    else {
+      $this->deleteReference($metadataProperty, $identifier);
+    }
   }
 
   /**
@@ -117,7 +138,35 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
               ]
           );
     if (FALSE !== ($reference = reset($references))) {
+      $reference->set('status', 0);
       $reference->set('moderation_state', 'draft');
+      try {
+        $reference->save();
+      }
+      catch (Exception $e) {
+        \Drupal::logger('type')->error($e->getMessage());
+      }
+    }
+  }
+
+  /**
+   * Delete a reference.
+   *
+   * @param string $property_id
+   *   The property id.
+   * @param string $uuid
+   *   The uuid.
+   */
+  protected function deleteReference(string $property_id, string $uuid) {
+    $references = $this->nodeStorage
+      ->loadByProperties(
+              [
+                'field_data_type' => $property_id,
+                'uuid' => $uuid,
+              ]
+          );
+    if (FALSE !== ($reference = reset($references))) {
+      $reference->delete();
     }
   }
 
