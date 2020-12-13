@@ -6,7 +6,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\metastore_entity\MetadataInterface;
+use Drupal\metastore_entity\MetastoreItemInterface;
 use Drupal\user\UserInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\user\EntityOwnerTrait;
@@ -22,27 +22,34 @@ use Drupal\user\EntityOwnerTrait;
  *  is read and cached. Don't forget to clear cache after changes.
  *
  * @ContentEntityType(
- *   id = "metadata",
- *   label = @Translation("Metadata entity"),
+ *   id = "metastore_item",
+ *   label = @Translation("Metastore entity"),
+ *   bundle_label = @Translation("Metastore schema"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\metastore_entity\Entity\Controller\MetadataListBuilder",
+ *     "list_builder" = "Drupal\metastore_entity\Entity\Controller\MetadataItemListBuilder",
  *     "form" = {
- *       "default" = "Drupal\metastore_entity\Form\MetadataForm",
- *       "add" = "Drupal\metastore_entity\Form\MetadataForm",
- *       "edit" = "Drupal\metastore_entity\Form\MetadataForm",
- *       "delete" = "Drupal\metastore_entity\Form\MetadataDeleteForm",
+ *       "default" = "Drupal\metastore_entity\Form\MetastoreItemForm",
+ *       "add" = "Drupal\metastore_entity\Form\MetastoreItemForm",
+ *       "edit" = "Drupal\metastore_entity\Form\MetastoreItemForm",
+ *       "delete" = "Drupal\metastore_entity\Form\MetastoreItemDeleteForm",
  *     },
- *     "access" = "Drupal\metastore_entity\MetadataAccessControlHandler",
+ *     "access" = "Drupal\metastore_entity\MetastoreItemAccessControlHandler",
  *   },
  *   list_cache_contexts = { "user" },
- *   base_table = "metadata",
- *   admin_permission = "administer metadata entity",
+ *   base_table = "metastore_item",
+ *   data_table = "metastore_item_field_data",
+ *   revision_table = "metastore_item_revision",
+ *   revision_data_table = "metastore_item_field_revision",
+ *   show_revision_ui = TRUE,
+ *   translatable = TRUE,
+ *   list_cache_contexts = { "user.metastore_entity_grants:view" },
+ *   admin_permission = "administer metastore entity",
  *   entity_keys = {
  *     "id" = "id",
  *     "revision" = "vid",
  *     "bundle" = "schema",
- *     "label" = "schema",
+ *     "label" = "title",
  *     "langcode" = "langcode",
  *     "uuid" = "uuid",
  *     "status" = "status",
@@ -55,21 +62,20 @@ use Drupal\user\EntityOwnerTrait;
  *     "revision_created" = "revision_timestamp",
  *     "revision_log_message" = "revision_log"
  *   },
- *   bundle_label = @Translation("Metadata schema"),
+ *   field_ui_base_route = "entity.metastore_schema.edit_form",
  *   common_reference_target = TRUE,
  *   permission_granularity = "bundle",
- *   field_ui_base_route = "metastore_entity.metadata_settings",
  *   links = {
- *     "canonical" = "/metadata/{metastore_entity_metadata}",
- *     "delete-form" = "/metadata/{metastore_entity_metadata}/delete",
- *     "delete-multiple-form" = "/admin/content/node/delete",
- *     "edit-form" = "/metadata/{metastore_entity_metadata}/edit",
- *     "version-history" = "/metadata/{metastore_entity_metadata}/revisions",
- *     "revision" = "/metadata/{metastore_entity_metadata}/revisions/{metadata_revision}/view",
+ *     "canonical" = "/metastore/{metastore_item}",
+ *     "delete-form" = "/metastore/{metastore_item}/delete",
+ *     "delete-multiple-form" = "/admin/content/metastore/delete",
+ *     "edit-form" = "/metastore/{metastore_item}/edit",
+ *     "version-history" = "/metastore/{metastore_item}/revisions",
+ *     "revision" = "/metadata/{metastore_item}/revisions/{metastore_revision}/view",
  *   }
  * )
  */
-class Metadata extends ContentEntityBase implements MetadataInterface {
+class MetastoreItem extends ContentEntityBase implements MetastoreItemInterface {
   use EntityChangedTrait;
   use EntityOwnerTrait;
 
@@ -112,7 +118,7 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
    * {@inheritdoc}
    */
   public function setOwner(UserInterface $account) {
-    $this->set('user_id', $account->id());
+    $this->set('uid', $account->id());
     return $this;
   }
 
@@ -155,10 +161,10 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['data'] = BaseFieldDefinition::create('string_long')
-      ->setLabel(t('Data'))
-      ->setDescription(t('Most likely JSON.'))
+      ->setLabel(t('Metadata'))
+      // ->setDescription(t('Most likely JSON.'))
       ->setSettings([
-        'default_value' => '',
+        'default_value' => '{}',
         'text_processing' => 0,
       ])
       ->setDisplayOptions('view', [
@@ -217,13 +223,6 @@ class Metadata extends ContentEntityBase implements MetadataInterface {
    */
   public function getTitle() {
     return $this->get('title')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSchemaName() {
-    return $this->bundle();
   }
 
 }

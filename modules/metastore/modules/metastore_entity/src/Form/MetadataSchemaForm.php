@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Form handler for node type forms.
  *
- * @internal
+ * @ingroup metastore_entity
  */
 class MetadataSchemaForm extends BundleEntityFormBase {
 

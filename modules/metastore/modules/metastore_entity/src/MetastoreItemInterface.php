@@ -13,6 +13,6 @@ use Drupal\Core\Entity\EntityChangedInterface;
  *
  * @ingroup metastore_entity
  */
-interface MetadataInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface {
+interface MetastoreItemInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface {
 
 }

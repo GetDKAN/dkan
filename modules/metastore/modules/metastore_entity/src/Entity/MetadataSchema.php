@@ -10,34 +10,34 @@ use Drupal\metastore_entity\MetadataSchemaInterface;
  * Defines the Node type configuration entity.
  *
  * @ConfigEntityType(
- *   id = "metadata_schema",
- *   label = @Translation("Metadata schema"),
- *   label_collection = @Translation("Metadata schemas"),
- *   label_singular = @Translation("metadata schema"),
- *   label_plural = @Translation("metadata schemas"),
+ *   id = "metastore_schema",
+ *   label = @Translation("Metastore schema"),
+ *   label_collection = @Translation("Metastore schemas"),
+ *   label_singular = @Translation("metastore schema"),
+ *   label_plural = @Translation("metastore schemas"),
  *   label_count = @PluralTranslation(
- *     singular = "@count metadata schema",
- *     plural = "@count Metadata schemas",
+ *     singular = "@count metastore schema",
+ *     plural = "@count metastore schemas",
  *   ),
  *   handlers = {
- *     "access" = "Drupal\metastore_entity\MetadataAccessControlHandler",
+ *     "access" = "Drupal\metastore_entity\MetastoreSchemaAccessControlHandler",
  *     "form" = {
- *       "add" = "Drupal\metastore_entity\Form\MetadataSchemaForm",
- *       "edit" = "Drupal\metastore_entity\Form\MetadataSchemaForm",
- *       "delete" = "Drupal\metastore_entity\Form\MetadataSchemaDeleteConfirm"
+ *       "add" = "Drupal\metastore_entity\Form\MetastoreSchemaForm",
+ *       "edit" = "Drupal\metastore_entity\Form\MetastoreSchemaForm",
+ *       "delete" = "Drupal\metastore_entity\Form\MetastoreSchemaDeleteConfirm"
  *     },
- *     "list_builder" = "Drupal\metastore_entity\Entity\Controller\MetadataSchemaListBuilder",
+ *     "list_builder" = "Drupal\metastore_entity\Entity\Controller\MetastoreSchemaListBuilder",
  *   },
- *   admin_permission = "administer metadata schemas",
+ *   admin_permission = "administer metastore schemas",
  *   config_prefix = "schema",
- *   bundle_of = "metadata",
+ *   bundle_of = "metastore_item",
  *   entity_keys = {
  *     "id" = "schema",
  *     "label" = "name"
  *   },
  *   links = {
- *     "edit-form" = "/admin/structure/schemas/manage/{metadata_schema}",
- *     "delete-form" = "/admin/structure/schemas/manage/{metadata_schema}/delete",
+ *     "edit-form" = "/admin/structure/schemas/manage/{metastore_schema}",
+ *     "delete-form" = "/admin/structure/schemas/manage/{metastore_schema}/delete",
  *     "collection" = "/admin/structure/schemas",
  *   },
  *   config_export = {
