@@ -1,74 +1,62 @@
 import groovy.json.JsonOutput
 
-def getGitBranchName() {
-    return scm.branches[0].name
-}
-
 pipeline {
     agent any
-    options {
-        ansiColor 'xterm'
-        skipDefaultCheckout(true)
-    }
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
-        USER = 'jenkins'
-        DKTL_VERSION = '4.1.0' //The latest version causes a composer error.
+        DKTL_VERSION = '4.1.0' //The latest version causes an error.
         DKTL_SLUG = "dkan$CHANGE_ID"
         DKTL_TRAEFIK = "proxy"
         WEB_DOMAIN = "ci.civicactions.net"
+        GITHUB_PROJECT = 'https://github.com/GetDKAN/dkan.git'
     }
     stages {
-        stage('Display Build Details') {
-          steps {
-              script {
-                  repo_name = env.GIT_URL.replaceFirst(/^.*\/([^\/]+?).git$/, '$1')
-                  branch_name = getGitBranchName()
-                  echo "Branch name: ${branch_name}"
-                  echo "Repo name: ${repo_name}"
-                  echo "Container name prefix: ${repo_name}_${DKTL_SLUG}_1"
-              }
-          }
-        }
-        stage('Setup environment') {
+        stage ('Preclean') {
             when { changeRequest() }
             steps {
                 script {
-                    try {
-                        sh '''
-                        containers_up=`ps -ef|grep ${DKTL_SLUG}`
-                        if [ !-z $containers_up ]
-                        then
-                          dktl down -r
-                        fi
-                        '''
-                    } catch (err) {
-                        echo "DKTL not present; skipping"
-                    }
+                    sh '''
+                    echo "Checking for existing containers"
+                    containers_up=`ps -ef|grep ${DKTL_SLUG}`
+                    if [ !-z $containers_up ]
+                    then
+                      echo "Shutting down existing containers"
+                      dktl down -r
+                    fi
+                    echo "Removing existing repos for dkan and dkan-tools"
+                    sudo rm -rf dkan*
+                    sudo rm -rf dkan-tools*
+                    '''
                 }
-                sh "rm -rf *"
-                dir("dkan") {
-                    checkout scm
+            }
+        }
+        stage ('Clone Repo') {
+            when { changeRequest() }
+            steps {
+                dir ("dkan") { 
+                    git url: GITHUB_PROJECT, branch: GITHUB_BRANCH
                 }
-                sh "curl -O -L https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
-                sh "unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip"
+            }
+        }
+        stage('Download dkan-tools') {
+            when { changeRequest() }
+            steps {
+                sh '''
+                curl -O -L "https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
+                unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip
+                '''
             }
         }
         stage('Build site') {
             when { changeRequest() }
-            environment {
-              DKTL_SLUG=
-            }
             steps {
-                dir("${DKTL_SLUG}") {
+                dir("dkan") {
                     script {
                         sh '''
                             cd ..
-                            dktl init
+                            dktl dc up -d
                             dktl make
-                            docker exec -it ${DKTL_SLUG}_cli_1 drush site:install standard --site-name \"Rhode Island\ -y"
-                            docker exec -it ${DKTL_SLUG}_cli_1 drush en dkan config_update_ui -y
-                            dktl frontend:get
+                            dktl install
                             dktl frontend:install
                             dktl frontend:build
                         '''
