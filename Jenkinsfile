@@ -20,23 +20,25 @@ pipeline {
         stage ('Preclean') {
             when { changeRequest() }
             steps {
-                script {
-                    sh '''
-                    echo "Checking for existing containers"
-                    containers_up=`ps -ef|grep ${DKTL_SLUG}`
-                    if [ !-z $containers_up ]
-                    then
-                      echo "Shutting down existing containers"
-                      dktl down -r
-                    fi
-                    echo "Removing existing repos for dkan and dkan-tools"
-                    sudo rm -rf dkan*
-                    sudo rm -rf dkan-tools*
-                    '''
+                dir ("dkan") {
+                    script {
+                        sh '''
+                        echo "Checking for existing containers"
+                        containers_up=`ps -ef|grep ${DKTL_SLUG}`
+                        if [ !-z $containers_up ]
+                        then
+                          echo "Shutting down existing containers"
+                          dktl down -r
+                        fi
+                        echo "Removing existing repos for dkan and dkan-tools"
+                        sudo rm -rf dkan*
+                        sudo rm -rf dkan-tools*
+                        '''
+                    }
                 }
             }
         }
-        stage ('Clone Repo') {
+        stage ('Clone DKAN Repo') {
             when { changeRequest() }
             steps {
                 dir ("dkan") { 
@@ -44,7 +46,7 @@ pipeline {
                 }
             }
         }
-        stage('Download dkan-tools') {
+        stage('Clone dkan-tools') {
             when { changeRequest() }
             steps {
                 sh '''
@@ -53,13 +55,12 @@ pipeline {
                 '''
             }
         }
-        stage('Build site') {
+        stage('Build QA Site') {
             when { changeRequest() }
             steps {
                 dir("dkan") {
                     script {
                         sh '''
-                            cd ..
                             dktl dc up -d
                             dktl make
                             dktl install
@@ -70,14 +71,24 @@ pipeline {
                 }
             }
         }
+        stage('Check QA Site') {
+            when { changeRequest() }
+            steps {
+                sh "echo QA site ready at http://${DKTL_SLUG}.${WEB_DOMAIN}/"
+                script {
+                    def target_url = "http://${DKTL_SLUG}.${WEB_DOMAIN}"
+                    setBuildStatus("QA site ready at ${target_url}", target_url, "success");
+                }
+                sh "curl `dktl docker:url`"
+            }
+        }
         //When merging the PR to master, remove the QA containers
         stage('Drop On Merge') {
             when { changeRequest target: 'master' }
             steps {
-                dir("${DKTL_SLUG}") {
+                dir("dkan") {
                     script {
                         '''
-                        cd ..
                         dktl dc down -r
                         '''
                     }
@@ -87,10 +98,32 @@ pipeline {
     }
     post {
         success {
-            slackSend (color: '#FFFF00', message: "DKAN2 QA Site Build - Success: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            script {
+                gitCommitMessage = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+                currentBuild.description = "${gitCommitMessage}"
+            }
         }
-        failure {
-            slackSend (color: '#FFFF00', message: "DKAN2 QA Site Build - Failure: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-        }
+    }
+}
+
+/**
+ * Report build status to github.
+ *
+ * @param message Message for status description
+ * @param target_url URL of the QA site we're building
+ * @param state State to report to Github (e.g. "success")
+ */
+void setBuildStatus(String message, String target_url, String state) {
+    withCredentials([string(credentialsId: 'dkanuploadassets',
+			  variable: 'GITHUB_API_TOKEN')]) {
+	def url = "https://api.github.com/repos/getdkan/dkan/statuses/$GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
+	def data = [
+	    target_url: target_url,
+	    state: state,
+	    description: message,
+	    context: "continuous-integration/jenkins/build-status"
+	]
+	def payload = JsonOutput.toJson(data)
+	sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${url}"
     }
 }
