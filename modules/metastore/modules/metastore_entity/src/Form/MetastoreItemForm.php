@@ -11,13 +11,12 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @ingroup metastore_entity
  */
-class MetadataForm extends ContentEntityForm {
+class MetastoreItemForm extends ContentEntityForm {
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /* @var $entity \Drupal\metastore_entity\Entity\Metadata */
     $form = parent::buildForm($form, $form_state);
     $entity = $this->entity;
 

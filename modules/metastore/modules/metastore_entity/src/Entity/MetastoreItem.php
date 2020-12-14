@@ -12,9 +12,9 @@ use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\user\EntityOwnerTrait;
 
 /**
- * Defines the Metadata entity.
+ * Defines the metastore content entity.
  *
- * @ingroup metadata_entity
+ * @ingroup metastore_entity
  *
  * [...]
  *
@@ -27,7 +27,7 @@ use Drupal\user\EntityOwnerTrait;
  *   bundle_label = @Translation("Metastore schema"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\metastore_entity\Entity\Controller\MetadataItemListBuilder",
+ *     "list_builder" = "Drupal\metastore_entity\Entity\Controller\MetastoreItemListBuilder",
  *     "form" = {
  *       "default" = "Drupal\metastore_entity\Form\MetastoreItemForm",
  *       "add" = "Drupal\metastore_entity\Form\MetastoreItemForm",
@@ -71,7 +71,7 @@ use Drupal\user\EntityOwnerTrait;
  *     "delete-multiple-form" = "/admin/content/metastore/delete",
  *     "edit-form" = "/metastore/{metastore_item}/edit",
  *     "version-history" = "/metastore/{metastore_item}/revisions",
- *     "revision" = "/metadata/{metastore_item}/revisions/{metastore_revision}/view",
+ *     "revision" = "/metastore/{metastore_item}/revisions/{metastore_item_revision}/view",
  *   }
  * )
  */
@@ -118,7 +118,7 @@ class MetastoreItem extends ContentEntityBase implements MetastoreItemInterface 
    * {@inheritdoc}
    */
   public function setOwner(UserInterface $account) {
-    $this->set('uid', $account->id());
+    $this->set('user_id', $account->id());
     return $this;
   }
 
@@ -184,7 +184,7 @@ class MetastoreItem extends ContentEntityBase implements MetastoreItemInterface 
     // Entity reference field, holds the reference to the user object.
     // The view shows the user name field of the user.
     // The form presents a auto complete field for the user name.
-    $fields['uid']
+    $fields['user_id']
       ->setLabel(t('Authored by'))
       ->setDescription(t('The username of the metadata owner.'))
       ->setRevisionable(TRUE)

@@ -10,7 +10,7 @@ use Drupal\Core\Session\AccountInterface;
 /**
  * Access controller for the metadata entity.
  */
-class MetadataAccessControlHandler extends EntityAccessControlHandler {
+class MetastoreItemAccessControlHandler extends EntityAccessControlHandler {
 
   /**
    * {@inheritdoc}

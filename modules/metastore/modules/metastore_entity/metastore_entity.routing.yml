@@ -1,88 +1,80 @@
 # Route name can be used in several places; e.g. links, redirects, and local
 # actions.
-entity.metastore_entity_metadata.canonical:
-  path: '/metadata/{metastore_entity_metadata}'
+entity.metastore_item.canonical:
+  path: '/metastore/{metastore_item}'
   defaults:
   # Calls the view controller, defined in the annotation of the metadata entity
-    _entity_view: 'metastore_entity_metadata'
-    _title: 'Metadata Content'
+    _entity_view: 'metastore_entity_metastore_item'
+    _title: 'Metastore item'
   requirements:
   # Calls the access controller of the entity, $operation 'view'
-    _entity_access: 'metastore_entity_metadata.view'
+    _entity_access: 'metastore_entity_metastore_item.view'
 
-entity.metastore_entity_metadata.collection:
-  path: '/metadata/list'
+entity.metastore_item.collection:
+  path: '/admin/content/metastore'
   defaults:
   # Calls the list controller, defined in the annotation of the metadata entity.
-    _entity_list: 'metastore_entity_metadata'
-    _title: 'Metadata List'
+    _entity_list: 'metastore_item'
+    _title: 'DKAN Metastore Item List'
   requirements:
   # Checks for permission directly.
-    _permission: 'administer metadata entity'
+    _permission: 'administer metastore entity'
 
-metastore_entity.metadata_add:
-  path: '/metadata/add'
+entity.metastore_item.add_form:
+  path: '/metastore/add/{metastore_schema}'
   defaults:
   # Calls the form.add controller, defined in the contact entity.
-    _entity_form: metastore_entity_metadata.default
-    _title: 'Add metadata'
+    _entity_form: metastore_item.default
+    _title: 'Add metastore item'
   requirements:
-    _entity_create_access: 'metastore_entity_metadata'
+    _entity_create_access: 'metastore_item'
 
-entity.metastore_entity_metadata.edit_form:
-  path: '/metadata/{metastore_entity_metadata}/edit'
+entity.metastore_item.edit_form:
+  path: '/metastore/{metastore_item}/edit'
   defaults:
   # Calls the form.edit controller, defined in the contact entity.
-    _entity_form: metastore_entity_metadata.default
-    _title: 'Edit Metadata'
+    _entity_form: metastore_item.default
+    _title: 'Edit metastore item'
   requirements:
-    _entity_access: 'metastore_entity_metadata.edit'
+    _entity_access: 'metastore_item.edit'
 
-entity.metastore_entity_metadata.delete_form:
-  path: '/metadata/{metastore_entity_metadata}/delete'
+entity.metastore_item.delete_form:
+  path: '/metadata/{metastore_item}/delete'
   defaults:
     # Calls the form.delete controller, defined in the contact entity.
-    _entity_form: metastore_entity_metadata.delete
-    _title: 'Delete Contact'
+    _entity_form: metastore_item.delete
+    _title: 'Delete metastore item'
   requirements:
-    _entity_access: 'metastore_entity_metadata.delete'
+    _entity_access: 'metastore_item.delete'
 
-metastore_entity.metadata_settings:
-  path: '/admin/structure/metadata/settings'
+entity.metastore_schema.collection:
+  path: '/admin/structure/metastore_schemas'
   defaults:
-    _form: '\Drupal\metastore_entity\Form\MetadataSettingsForm'
-    _title: 'Metadata Settings'
+    _entity_list: 'metastore_schema'
+    _title: 'Metastore schemas'
   requirements:
-    _permission: 'administer metastore entity settings'
+    _permission: 'administer metastore schemas'
 
-entity.metadata_schema.collection:
-  path: '/admin/structure/metadata/schemas'
+metastore_entity.metastore_schema_add:
+  path: '/admin/structure/metastore_schemas/add'
   defaults:
-    _entity_list: 'metadata_schema'
-    _title: 'Metadata schemas'
-  requirements:
-    _permission: 'administer metadata schemas'
-
-metastore_entity.metadata_schema_add:
-  path: '/admin/structure/metadata/schemas/add'
-  defaults:
-    _entity_form: 'metadata_schema.add'
+    _entity_form: 'metastore_schema.add'
     _title: 'Add schema'
   requirements:
-    _permission: 'administer metadata schemas'
+    _permission: 'administer metastore schemas'
 
-metastore_entity.metadata_schema_add.edit_form:
-  path: '/admin/structure/metadata/schemas/manage/{node_type}'
+metastore_entity.metastore_schema.edit_form:
+  path: '/admin/structure/metastore_schemas/manage/{metastore_schema}'
   defaults:
-    _entity_form: 'metadata_schema.edit'
-    _title_callback: '\Drupal\Core\Entity\Controller\EntityController::title'
+    _entity_form: 'metastore_schema.edit'
+    _title: 'Edit schema'
   requirements:
     _permission: 'administer metadata schemas'
 
-metastore_entity.metadata_schema_add.delete_form:
-  path: '/admin/structure/metadata/schemas/manage/{node_type}/delete'
+metastore_entity.metastore_schema.delete_form:
+  path: '/admin/structure/metastore_schemas/manage/{metastore_schema}/delete'
   defaults:
-    _entity_form: 'metadata_schema.delete'
-    _title: 'Delete'
+    _entity_form: 'metastore_schema.delete'
+    _title: 'Delete schema'
   requirements:
-    _entity_access: 'metadata_schema.delete'
+    _entity_access: 'metastore_schema.delete'

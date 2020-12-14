@@ -8,7 +8,7 @@ use Drupal\Core\Entity\RevisionableEntityBundleInterface;
 /**
  * Provides an interface defining a node type entity.
  */
-interface MetadataSchemaInterface extends ConfigEntityInterface, RevisionableEntityBundleInterface {
+interface MetastoreSchemaInterface extends ConfigEntityInterface, RevisionableEntityBundleInterface {
 
   /**
    * Determines whether the node type is locked.

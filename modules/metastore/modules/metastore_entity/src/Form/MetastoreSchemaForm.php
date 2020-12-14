@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup metastore_entity
  */
-class MetadataSchemaForm extends BundleEntityFormBase {
+class MetastoreSchemaForm extends BundleEntityFormBase {
 
   /**
    * The entity field manager.

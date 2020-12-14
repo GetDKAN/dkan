@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @ingroup metastore_entity
  */
-class MetadataListBuilder extends EntityListBuilder {
+class MetastoreItemListBuilder extends EntityListBuilder {
 
   /**
    * The url generator.

@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityInterface;
  *
  * @see \Drupal\node\Entity\NodeType
  */
-class MetadataSchemaListBuilder extends ConfigEntityListBuilder {
+class MetastoreSchemaListBuilder extends ConfigEntityListBuilder {
 
   /**
    * {@inheritdoc}
@@ -56,7 +56,7 @@ class MetadataSchemaListBuilder extends ConfigEntityListBuilder {
   public function render() {
     $build = parent::render();
     $build['table']['#empty'] = $this->t('No schemas available. <a href=":link">Add schema</a>.', [
-      ':link' => Url::fromRoute('metastore_entity.metadata_schema_add')->toString(),
+      ':link' => Url::fromRoute('metastore_entity.metastore_schema_add')->toString(),
     ]);
     return $build;
   }

@@ -1,17 +1,12 @@
 # Define the menu links for this module
 
-entity.metadata.collection:
-  title: 'Metastore Entity Listing'
-  route_name: entity.metastore_entity_metadata.collection
-  description: 'List metadata content'
-  weight: 10
-metastore_entity_metadata.admin.structure.settings:
-  title: Metastore Entity Settings
-  description: 'Configure Metadata entity'
-  route_name:  metastore_entity.metadata_settings
+entity.metastore_item.collection:
+  title: 'Metastore'
+  route_name: entity.metastore_item.collection
+  description: 'List metastore content'
+  parent: system.admin_content
+entity.metastore_schema.collection:
+  title: Metastore Schemas
+  description: 'Configure metastore schemas'
+  route_name:  entity.metastore_schema.collection
   parent: system.admin_structure
-entity.metadata_schema.collection:
-  title: 'Metadata schemas'
-  parent: system.admin_structure
-  description: 'Create and manage fields, forms, and display settings for your content.'
-  route_name: entity.metadata_schema.collection

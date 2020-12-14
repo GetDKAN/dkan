@@ -11,7 +11,7 @@ use Drupal\Core\Url;
  *
  * @ingroup metastore_entity
  */
-class MetadataDeleteForm extends ContentEntityConfirmFormBase {
+class MetastoreItemDeleteForm extends ContentEntityConfirmFormBase {
 
   /**
    * {@inheritdoc}

@@ -4,7 +4,7 @@ namespace Drupal\metastore_entity\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\metastore_entity\MetadataSchemaInterface;
+use Drupal\metastore_entity\MetastoreSchemaInterface;
 
 /**
  * Defines the Node type configuration entity.
@@ -38,7 +38,7 @@ use Drupal\metastore_entity\MetadataSchemaInterface;
  *   links = {
  *     "edit-form" = "/admin/structure/schemas/manage/{metastore_schema}",
  *     "delete-form" = "/admin/structure/schemas/manage/{metastore_schema}/delete",
- *     "collection" = "/admin/structure/schemas",
+ *     "collection" = "/admin/structure/metastore/schemas",
  *   },
  *   config_export = {
  *     "name",
@@ -51,7 +51,7 @@ use Drupal\metastore_entity\MetadataSchemaInterface;
  *   }
  * )
  */
-class MetadataSchema extends ConfigEntityBundleBase implements MetadataSchemaInterface {
+class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaInterface {
 
   /**
    * The machine name of this metadata schema.
@@ -117,7 +117,7 @@ class MetadataSchema extends ConfigEntityBundleBase implements MetadataSchemaInt
    * {@inheritdoc}
    */
   public function isLocked() {
-    $locked = \Drupal::state()->get('metadata.schema.locked');
+    $locked = \Drupal::state()->get('metastore.schema.locked');
     return isset($locked[$this->id()]) ? $locked[$this->id()] : FALSE;
   }
 
