@@ -1,4 +1,10 @@
-import groovy.json.JsonOutput
+/*
+On PR, builds QA environment.
+On resubmit of the same PR, rebuilds QA environment.
+On merge, tears down QA environment.
+*/
+
+mport groovy.json.JsonOutput
 
 pipeline {
     agent any
@@ -77,6 +83,14 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        success {
+            slackSend (color: '#FFFF00', message: "DKAN2 QA Site Build - Success: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+        failure {
+            slackSend (color: '#FFFF00', message: "DKAN2 QA Site Build - Failure: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
         }
     }
 }
