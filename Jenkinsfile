@@ -36,7 +36,7 @@ pipeline {
             when { changeRequest() }
             steps {
                 dir ("dkan") { 
-                    git url: GITHUB_PROJECT, branch: "${env.BRANCH_NAME}"
+                    git url: GITHUB_PROJECT, branch: "${env.CHANGE_BRANCH}"
                 }
             }
         }
