@@ -1,10 +1,4 @@
-/*
-On PR, builds QA environment.
-On resubmit of the same PR, rebuilds QA environment.
-On merge, tears down QA environment.
-*/
-
-mport groovy.json.JsonOutput
+import groovy.json.JsonOutput
 
 pipeline {
     agent any
@@ -42,7 +36,7 @@ pipeline {
             when { changeRequest() }
             steps {
                 dir ("dkan") { 
-                    git url: GITHUB_PROJECT, branch: GITHUB_BRANCH
+                    git url: GITHUB_PROJECT, branch: "${env.BRANCH_NAME}"
                 }
             }
         }
@@ -74,12 +68,16 @@ pipeline {
         stage('Check QA Site') {
             when { changeRequest() }
             steps {
-                sh "echo QA site ready at http://${DKTL_SLUG}.${WEB_DOMAIN}/"
-                script {
-                    def target_url = "http://${DKTL_SLUG}.${WEB_DOMAIN}"
-                    setBuildStatus("QA site ready at ${target_url}", target_url, "success");
+                dir("dkan") {
+                    script {
+                        def target_url = "http://${DKTL_SLUG}.${WEB_DOMAIN}"
+                        setBuildStatus("QA site ready at ${target_url}", target_url, "success");
+                    }
+                    sh '''
+                    echo QA site ready at http://${DKTL_SLUG}.${WEB_DOMAIN}/
+                    curl `dktl docker:url`
+                    '''
                 }
-                sh "curl `dktl docker:url`"
             }
         }
         //When merging the PR to master, remove the QA containers
