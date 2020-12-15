@@ -4,7 +4,7 @@ On resubmit of the same PR, rebuilds QA environment.
 On merge, tears down QA environment.
 */
 
-mport groovy.json.JsonOutput
+import groovy.json.JsonOutput
 
 pipeline {
     agent any
