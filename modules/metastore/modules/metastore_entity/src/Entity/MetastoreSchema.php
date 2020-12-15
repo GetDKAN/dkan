@@ -32,7 +32,7 @@ use Drupal\metastore_entity\MetastoreSchemaInterface;
  *   config_prefix = "schema",
  *   bundle_of = "metastore_item",
  *   entity_keys = {
- *     "id" = "schema",
+ *     "id" = "id",
  *     "label" = "name"
  *   },
  *   links = {
@@ -41,6 +41,7 @@ use Drupal\metastore_entity\MetastoreSchemaInterface;
  *     "collection" = "/admin/structure/metastore/schemas",
  *   },
  *   config_export = {
+ *     "id",
  *     "name",
  *     "schema",
  *     "description",
@@ -57,8 +58,13 @@ class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaI
    * The machine name of this metadata schema.
    *
    * @var string
+   */
+  protected $id;
+
+  /**
+   * The json for this metadata schema.
    *
-   * @todo Rename to $id.
+   * @var string
    */
   protected $schema;
 

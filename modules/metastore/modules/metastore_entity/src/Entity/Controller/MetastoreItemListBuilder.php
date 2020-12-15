@@ -59,7 +59,7 @@ class MetastoreItemListBuilder extends EntityListBuilder {
   public function render() {
     $build['description'] = [
       '#markup' => $this->t('Metastore Entity implements a Metadata model. These metadata are fieldable entities. You can manage the fields on the <a href="@adminlink">Metadata admin page</a>.', [
-        '@adminlink' => $this->urlGenerator->generateFromRoute('metastore_entity.metadata_settings'),
+        '@adminlink' => $this->urlGenerator->generateFromRoute('entity.metastore_schema.collection'),
       ]),
     ];
     $build['table'] = parent::render();

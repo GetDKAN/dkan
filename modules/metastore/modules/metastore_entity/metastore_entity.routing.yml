@@ -39,7 +39,7 @@ entity.metastore_item.edit_form:
     _entity_access: 'metastore_item.edit'
 
 entity.metastore_item.delete_form:
-  path: '/metadata/{metastore_item}/delete'
+  path: '/metastore/{metastore_item}/delete'
   defaults:
     # Calls the form.delete controller, defined in the contact entity.
     _entity_form: metastore_item.delete
@@ -69,7 +69,7 @@ metastore_entity.metastore_schema.edit_form:
     _entity_form: 'metastore_schema.edit'
     _title: 'Edit schema'
   requirements:
-    _permission: 'administer metadata schemas'
+    _permission: 'administer metastore schemas'
 
 metastore_entity.metastore_schema.delete_form:
   path: '/admin/structure/metastore_schemas/manage/{metastore_schema}/delete'

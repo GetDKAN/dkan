@@ -26,7 +26,7 @@ class MetastoreItemDeleteForm extends ContentEntityConfirmFormBase {
    * If the delete command is canceled, return to the metadata list.
    */
   public function getCancelUrl() {
-    return new Url('entity.metastore_entity_metadata.collection');
+    return new Url('entity.metastore_item.collection');
   }
 
   /**
@@ -50,7 +50,7 @@ class MetastoreItemDeleteForm extends ContentEntityConfirmFormBase {
         '@type' => $this->entity->bundle(),
         '%title' => $this->entity->label(),
       ]);
-    $form_state->setRedirect('entity.metastore_entity_metadata.collection');
+    $form_state->setRedirect('entity.metastore_item.collection');
   }
 
 }

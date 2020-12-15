@@ -16,11 +16,6 @@ use Drupal\user\EntityOwnerTrait;
  *
  * @ingroup metastore_entity
  *
- * [...]
- *
- *  The following annotation is the actual definition of the entity type which
- *  is read and cached. Don't forget to clear cache after changes.
- *
  * @ContentEntityType(
  *   id = "metastore_item",
  *   label = @Translation("Metastore entity"),
@@ -184,7 +179,7 @@ class MetastoreItem extends ContentEntityBase implements MetastoreItemInterface 
     // Entity reference field, holds the reference to the user object.
     // The view shows the user name field of the user.
     // The form presents a auto complete field for the user name.
-    $fields['user_id']
+    $fields['uid']
       ->setLabel(t('Authored by'))
       ->setDescription(t('The username of the metadata owner.'))
       ->setRevisionable(TRUE)

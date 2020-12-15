@@ -33,7 +33,7 @@ class MetastoreItemForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    $form_state->setRedirect('entity.metastore_entity_metadata.collection');
+    $form_state->setRedirect('entity.metastore_item.collection');
     $entity = $this->getEntity();
     $entity->save();
   }

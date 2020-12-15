@@ -56,12 +56,12 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
       // get the default values for workflow settings.
       // @todo Make it possible to get default values without an entity.
       //   https://www.drupal.org/node/2318187
-      $metadata = $this->entityTypeManager->getStorage('metadata')->create(['schema' => $schema->uuid()]);
+      $metastore_item = $this->entityTypeManager->getStorage('metastore_item')->create(['schema' => $schema->uuid()]);
     }
     else {
       $form['#title'] = $this->t('Edit %label schema', ['%label' => $schema->label()]);
-      $fields = $this->entityFieldManager->getFieldDefinitions('metadata', $schema->id());
-      $metadata = $this->entityTypeManager->getStorage('metadata')->create(['schema' => $schema->id()]);
+      $fields = $this->entityFieldManager->getFieldDefinitions('metastore_item', $schema->id());
+      $metastore_item = $this->entityTypeManager->getStorage('metastore_item')->create(['schema' => $schema->id()]);
     }
 
     $form['name'] = [
@@ -73,7 +73,7 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
       '#size' => 30,
     ];
 
-    $form['schema'] = [
+    $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $schema->id(),
       '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
@@ -92,6 +92,13 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
       '#type' => 'textarea',
       '#default_value' => $schema->getDescription(),
       '#description' => t('This text will be displayed on the <em>Add new metadata</em> page.'),
+    ];
+
+    $form['schema'] = [
+      '#title' => t('JSON Schema'),
+      '#type' => 'textarea',
+      '#default_value' => $schema->get('schema'),
+      '#description' => t('Validation schema'),
     ];
 
     // $form['additional_settings'] = [
@@ -135,7 +142,7 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
       '#group' => 'additional_settings',
     ];
     $workflow_options = [
-      'status' => $metadata->status->value,
+      'status' => $metastore_item->status->value,
       'revision' => $schema->shouldCreateNewRevision(),
     ];
     // Prepare workflow options to be used for 'checkboxes' form element.
@@ -158,7 +165,7 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
         '#group' => 'additional_settings',
       ];
 
-      $language_configuration = ContentLanguageSettings::loadByEntityTypeBundle('metadata', $schema->id());
+      $language_configuration = ContentLanguageSettings::loadByEntityTypeBundle('metastore_item', $schema->id());
       $form['language']['language_configuration'] = [
         '#type' => 'language_configuration',
         '#entity_information' => [
@@ -211,7 +218,7 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
   public function save(array $form, FormStateInterface $form_state) {
     $schema = $this->entity;
     $schema->setNewRevision($form_state->getValue(['options', 'revision']));
-    $schema->set('type', trim($schema->id()));
+    $schema->set('schema', trim($schema->id()));
     $schema->set('name', trim($schema->label()));
 
     $status = $schema->save();
@@ -224,10 +231,10 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
     elseif ($status == SAVED_NEW) {
       $this->messenger()->addStatus($this->t('The schema %name has been added.', $t_args));
       $context = array_merge($t_args, ['link' => $schema->toLink($this->t('View'), 'collection')->toString()]);
-      $this->logger('node')->notice('Added metadata schema %name.', $context);
+      $this->logger('metastore_entity')->notice('Added metastore schema %name.', $context);
     }
 
-    $fields = $this->entityFieldManager->getFieldDefinitions('metadata', $schema->id());
+    $fields = $this->entityFieldManager->getFieldDefinitions('metastore_schema', $schema->id());
     // Update title field definition.
     $title_field = $fields['title'];
     $title_label = $form_state->getValue('title_label');
@@ -237,13 +244,13 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
     // Update workflow options.
     // @todo Make it possible to get default values without an entity.
     //   https://www.drupal.org/node/2318187
-    $metadata = $this->entityTypeManager->getStorage('metadata')->create(['schema' => $schema->id()]);
+    $metastore_item = $this->entityTypeManager->getStorage('metastore_item')->create(['schema' => $schema->id()]);
     $value = (bool) $form_state->getValue(['options', 'status']);
-    if ($metadata->status->value != $value) {
+    if ($metastore_item->status->value != $value) {
       $fields['status']->getConfig($schema->id())->setDefaultValue($value)->save();
     }
     $this->entityFieldManager->clearCachedFieldDefinitions();
-    $form_state->setRedirectUrl($type->toUrl('collection'));
+    $form_state->setRedirectUrl($schema->toUrl('collection'));
   }
 
 }

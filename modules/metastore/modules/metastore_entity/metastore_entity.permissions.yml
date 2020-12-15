@@ -1,10 +1,10 @@
-'delete metadata entity':
-    title: Delete metadata content.
-'add metadata entity':
-    title: Add metadata content
-'view metadata entity':
-    title: View metadata content
-'edit metadata entity':
-    title: Edit metadata content
-'administer metadata entity':
-    title: Administer metadata settings
+'delete metastore entity':
+    title: Delete metastore content.
+'add metastore entity':
+    title: Add metastore content
+'view metastore entity':
+    title: View metastore content
+'edit metastore entity':
+    title: Edit metastore content
+'administer metastore entity':
+    title: Administer metastore settings
