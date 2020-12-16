@@ -110,8 +110,7 @@ class ArrayHelperTest extends TestCase {
             }
           }
         }
-      },
-      "type":"object"
+      }
     }';
     return $schema;
   }
