@@ -4,9 +4,7 @@ namespace Drupal\datastore;
 
 use Drupal\common\Resource;
 use Drupal\datastore\Service\DatastoreQuery;
-use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
@@ -37,9 +35,9 @@ class WebServiceApi implements ContainerInjectionInterface {
   private $requestStack;
 
   /**
-   * Reusable Query
+   * Reusable Query.
    *
-   * @var DatastoreQuery
+   * @var \Drupal\datastore\Service\DatastoreQuery
    */
   protected $datastoreQuery;
 
@@ -66,7 +64,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @param string $identifier
    *   Identifier.
    *
-   * @return JsonResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
   public function summary($identifier) {
@@ -151,7 +149,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Drop multiples.
    *
-   * @return JsonResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   Json response.
    */
   public function deleteMultiple() {
@@ -175,7 +173,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Returns a list of import jobs and data about their status.
    *
-   * @return JsonResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
   public function list() {
@@ -225,6 +223,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Get data from service.
    *
    * @return object|RootedJsonData|JsonResponse
+   *   Return data or an exception.
    */
   protected function getResults() {
     $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
@@ -261,20 +260,31 @@ class WebServiceApi implements ContainerInjectionInterface {
    *
    * @param array $data
    *   Data result.
-   * @return StreamedResponse
+   *
+   * @return \Symfony\Component\HttpFoundation\StreamedResponse
+   *   Return the StreamedResponse object.
    */
   protected function processStreamedCsv(array $data) {
     $max = $this->datastoreQuery->{"$.limit"};
-    $data = $this->addHeaderRow($data);
 
-    return new StreamedResponse(function() use (&$data, &$max){
+    // Disable extra queries.
+    $this->datastoreQuery->{"$.count"} = false;
+    $this->datastoreQuery->{"$.schema"} = false;
+
+    $data = $this->addHeaderRow($data);
+    $response = new StreamedResponse();
+    $response->headers->set('Content-Type', 'text/csv');
+    $response->headers->set('Content-Disposition', 'attachment; filename="data.csv"');
+    $response->headers->set('X-Accel-Buffering', 'no');
+    $response->setCallback(function () use (&$data, &$max) {
+      $i = 1;
       set_time_limit(0);
-      $handle = fopen('php://output', 'w');
+      $handle = fopen('php://output', 'wb');
+
       $this->sendRows($handle, $data);
-      $i=1;
       $count = count($data['results']);
+      // Count can be greater as we add a header row to the first time.
       while ($count >= $max) {
-        // Count can be greater as we add a header row the first time.
         $this->datastoreQuery->{"$.offset"} = $max * $i;
         $result = $this->datastoreService->runQuery($this->datastoreQuery);
         $data = $result->{"$"};
@@ -283,26 +293,29 @@ class WebServiceApi implements ContainerInjectionInterface {
         $count = count($data['results']);
       }
       fclose($handle);
-    }, 200, [
-      'Content-Type' => 'text/csv',
-      'Content-Disposition' => 'attachment; filename="data.csv"',
-    ]);
+    });
+    return $response;
   }
 
   /**
    * Loop through rows and send csv.
    *
-   * @param $handle
+   * @param resource $handle
    *   The file handler.
-   * @param $data
+   * @param array $data
    *   Data to send.
    */
-  private function sendRows($handle, $data) {
-    foreach($data['results'] as $row) {
+  private function sendRows($handle, array $data) {
+    foreach ($data['results'] as $row) {
       fputcsv($handle, $row);
     }
+    ob_flush();
+    flush();
   }
 
+  /**
+   * Add the header row.
+   */
   private function addHeaderRow(array $data) {
     $header_row = array_keys(reset($data['schema'])['fields']);
     if (is_array($header_row)) {
@@ -317,7 +330,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @param string $identifier
    *   The uuid of a resource.
    *
-   * @return JsonResponse
+   * @return \Symfony\Component\HttpFoundation\StreamedResponse
    *   The json response.
    */
   public function queryResource($identifier) {
@@ -345,7 +358,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Retrieve the datastore query schema.
    *
-   * @return JsonResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
   public function querySchema() {
