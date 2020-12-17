@@ -3,12 +3,15 @@
 namespace Drupal\metastore_entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Entity\RevisionableEntityBundleInterface;
 
 /**
  * Provides an interface defining a node type entity.
+ *
+ * @todo Make revisionable.
  */
-interface MetastoreSchemaInterface extends ConfigEntityInterface, RevisionableEntityBundleInterface {
+interface MetastoreSchemaInterface extends ConfigEntityInterface {
 
   /**
    * Determines whether the node type is locked.

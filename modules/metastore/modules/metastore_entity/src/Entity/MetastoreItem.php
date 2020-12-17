@@ -202,6 +202,12 @@ class MetastoreItem extends ContentEntityBase implements MetastoreItemInterface 
     $fields['langcode'] = BaseFieldDefinition::create('language')
       ->setLabel(t('Language code'))
       ->setDescription(t('The language code of the Metadata entity.'));
+
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Published'))
+      ->setDescription(t('Publishing status of dataset.'))
+      ->setDefaultValue(FALSE);
+
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the entity was created.'));

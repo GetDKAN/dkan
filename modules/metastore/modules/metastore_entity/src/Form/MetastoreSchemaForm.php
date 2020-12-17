@@ -2,11 +2,15 @@
 
 namespace Drupal\metastore_entity\Form;
 
+use Drupal\Console\Utils\Validator;
 use Drupal\Core\Entity\BundleEntityFormBase;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\language\Entity\ContentLanguageSettings;
+use Opis\JsonSchema\Schema;
+use Opis\JsonSchema\Validator as JsonSchemaValidator;
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -60,7 +64,6 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
     }
     else {
       $form['#title'] = $this->t('Edit %label schema', ['%label' => $schema->label()]);
-      $fields = $this->entityFieldManager->getFieldDefinitions('metastore_item', $schema->id());
       $metastore_item = $this->entityTypeManager->getStorage('metastore_item')->create(['schema' => $schema->id()]);
     }
 
@@ -96,50 +99,19 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
 
     $form['schema'] = [
       '#title' => t('JSON Schema'),
-      '#type' => 'textarea',
-      '#default_value' => $schema->get('schema'),
+      '#type' => 'text_format',
+      '#format' => 'json',
+      '#allowed_formats' => ['json'],
+      '#default_value' => $schema->getSchema(),
       '#description' => t('Validation schema'),
+      '#element_validate' => [[$this, 'validateSchema']],
     ];
 
-    // $form['additional_settings'] = [
-    //   '#type' => 'vertical_tabs',
-    //   '#attached' => [
-    //     'library' => ['node/drupal.content_types'],
-    //   ],
-    // ];
-
-    $form['submission'] = [
-      '#type' => 'details',
-      '#title' => t('Submission form settings'),
-      '#group' => 'additional_settings',
-      '#open' => TRUE,
-    ];
-    $form['submission']['title_label'] = [
-      '#title' => t('Title field label'),
-      '#type' => 'textfield',
-      '#default_value' => $fields['title']->getLabel(),
-      '#required' => TRUE,
-    ];
-    // $form['submission']['preview_mode'] = [
-    //   '#type' => 'radios',
-    //   '#title' => t('Preview before submitting'),
-    //   '#default_value' => $type->getPreviewMode(),
-    //   '#options' => [
-    //     DRUPAL_DISABLED => t('Disabled'),
-    //     DRUPAL_OPTIONAL => t('Optional'),
-    //     DRUPAL_REQUIRED => t('Required'),
-    //   ],
-    // ];
-    $form['submission']['help'] = [
-      '#type' => 'textarea',
-      '#title' => t('Explanation or submission guidelines'),
-      '#default_value' => $schema->getHelp(),
-      '#description' => t('This text will be displayed at the top of the page when creating or editing content of this type.'),
-    ];
     $form['workflow'] = [
       '#type' => 'details',
       '#title' => t('Publishing options'),
-      '#group' => 'additional_settings',
+      '#collapsed' => FALSE,
+      '#open' => TRUE,
     ];
     $workflow_options = [
       'status' => $metastore_item->status->value,
@@ -175,17 +147,6 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
         '#default_value' => $language_configuration,
       ];
     }
-    $form['display'] = [
-      '#type' => 'details',
-      '#title' => t('Display settings'),
-      '#group' => 'additional_settings',
-    ];
-    $form['display']['display_submitted'] = [
-      '#type' => 'checkbox',
-      '#title' => t('Display author and date information'),
-      '#default_value' => $schema->displaySubmitted(),
-      '#description' => t('Author username and publish date will be displayed.'),
-    ];
 
     return $this->protectBundleIdElement($form);
   }
@@ -212,13 +173,21 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
     }
   }
 
+  public function validateSchema($element, FormStateInterface $form_state, $form) {
+    try {
+      $test = new RootedJsonData("{}", $form_state->getValue('schema')['value']);
+    }
+    catch (\Exception $e) {
+      $form_state->setError($element, t('Schema failed validation with message: ":msg"', [':msg' => $e->getMessage()]));
+    }
+  }
+
   /**
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
     $schema = $this->entity;
-    $schema->setNewRevision($form_state->getValue(['options', 'revision']));
-    $schema->set('schema', trim($schema->id()));
+    $schema->set('id', trim($schema->id()));
     $schema->set('name', trim($schema->label()));
 
     $status = $schema->save();
@@ -234,13 +203,6 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
       $this->logger('metastore_entity')->notice('Added metastore schema %name.', $context);
     }
 
-    $fields = $this->entityFieldManager->getFieldDefinitions('metastore_schema', $schema->id());
-    // Update title field definition.
-    $title_field = $fields['title'];
-    $title_label = $form_state->getValue('title_label');
-    if ($title_field->getLabel() != $title_label) {
-      $title_field->getConfig($schema->id())->setLabel($title_label)->save();
-    }
     // Update workflow options.
     // @todo Make it possible to get default values without an entity.
     //   https://www.drupal.org/node/2318187

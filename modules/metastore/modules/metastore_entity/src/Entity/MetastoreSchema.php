@@ -3,7 +3,6 @@
 namespace Drupal\metastore_entity\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\metastore_entity\MetastoreSchemaInterface;
 
 /**
@@ -46,8 +45,6 @@ use Drupal\metastore_entity\MetastoreSchemaInterface;
  *     "schema",
  *     "description",
  *     "help",
- *     "new_revision",
- *     "preview_mode",
  *     "display_submitted",
  *   }
  * )
@@ -116,6 +113,26 @@ class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaI
    * {@inheritdoc}
    */
   public function id() {
+    return $this->id;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function label() {
+    return $this->name;
+  }
+
+  /**
+   * Get the JSON schema.
+   *
+   * @return string
+   *   A JSON Schema document.
+   */
+  public function getSchema() {
+    if (is_array($this->schema) && isset($this->schema['value'])) {
+      return $this->schema['value'];
+    }
     return $this->schema;
   }
 
@@ -179,25 +196,7 @@ class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaI
   /**
    * {@inheritdoc}
    */
-  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
-    parent::postSave($storage, $update);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function postDelete(EntityStorageInterface $storage, array $entities) {
-    parent::postDelete($storage, $entities);
-
-    // Clear the node type cache to reflect the removal.
-    $storage->resetCache(array_keys($entities));
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function shouldCreateNewRevision() {
     return $this->new_revision;
   }
-
 }

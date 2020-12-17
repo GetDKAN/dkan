@@ -63,7 +63,7 @@ metastore_entity.metastore_schema_add:
   requirements:
     _permission: 'administer metastore schemas'
 
-metastore_entity.metastore_schema.edit_form:
+entity.metastore_schema.edit_form:
   path: '/admin/structure/metastore_schemas/manage/{metastore_schema}'
   defaults:
     _entity_form: 'metastore_schema.edit'
@@ -71,7 +71,7 @@ metastore_entity.metastore_schema.edit_form:
   requirements:
     _permission: 'administer metastore schemas'
 
-metastore_entity.metastore_schema.delete_form:
+entity.metastore_schema.delete_form:
   path: '/admin/structure/metastore_schemas/manage/{metastore_schema}/delete'
   defaults:
     _entity_form: 'metastore_schema.delete'
