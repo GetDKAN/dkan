@@ -44,6 +44,12 @@
         "ui:options": {
           "widget": "hidden"
         }
+      },
+      "description": {
+        "ui:options": {
+          "widget": "textarea",
+          "rows": 5
+        }
       }
     }
   },
