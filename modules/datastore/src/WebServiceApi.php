@@ -4,10 +4,13 @@ namespace Drupal\datastore;
 
 use Drupal\common\Resource;
 use Drupal\datastore\Service\DatastoreQuery;
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Class Api.
@@ -34,6 +37,13 @@ class WebServiceApi implements ContainerInjectionInterface {
   private $requestStack;
 
   /**
+   * Reusable Query
+   *
+   * @var DatastoreQuery
+   */
+  protected $datastoreQuery;
+
+  /**
    * Api constructor.
    */
   public function __construct(Service $datastoreService, RequestStack $requestStack) {
@@ -56,7 +66,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @param string $identifier
    *   Identifier.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @return JsonResponse
    *   The json response.
    */
   public function summary($identifier) {
@@ -141,7 +151,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Drop multiples.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @return JsonResponse
    *   Json response.
    */
   public function deleteMultiple() {
@@ -165,7 +175,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Returns a list of import jobs and data about their status.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @return JsonResponse
    *   The json response.
    */
   public function list() {
@@ -184,21 +194,12 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Perform a query on one or more datastore resources.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse|\Drupal\datastore\CsvResponse
+   * @return CsvResponse|JsonResponse
    *   The json or CSV response.
    */
   public function query() {
-    $request = $this->requestStack->getCurrentRequest();
-    $payloadJson = $request->getContent();
-    $format = $request->query->get('format');
-
-    try {
-      $datastoreQuery = new DatastoreQuery($payloadJson);
-      $result = $this->datastoreService->runQuery($datastoreQuery);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
-    }
+    $result = $this->getResults();
+    $format = $this->requestStack->getCurrentRequest()->query->get('format');
 
     switch ($format) {
       case 'csv':
@@ -208,7 +209,35 @@ class WebServiceApi implements ContainerInjectionInterface {
       default:
         return $this->getResponse($result->{"$"}, 200);
     }
+  }
 
+  /**
+   * Perform a query with unlimited results.
+   */
+  public function fileQuery() {
+    $result = $this->getResults();
+
+    // @TODO: Streamed response for json
+    return $this->processStreamedCsv($result->{"$"});
+  }
+
+  /**
+   * Get data from service.
+   *
+   * @return object|RootedJsonData|JsonResponse
+   */
+  protected function getResults() {
+    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+
+    try {
+      $this->datastoreQuery = new DatastoreQuery($payloadJson);
+      $result = $this->datastoreService->runQuery($this->datastoreQuery);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 400);
+    }
+
+    return $result;
   }
 
   /**
@@ -221,13 +250,65 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   CSV file as a response.
    */
   protected function formatCsv(array $data) {
+    $data = $this->addHeaderRow($data);
+    $response = new CsvResponse($data['results'], 200);
+    $response->setFilename('data.csv');
+    return $response;
+  }
+
+  /**
+   * Setup the Streamed Response callback.
+   *
+   * @param array $data
+   *   Data result.
+   * @return StreamedResponse
+   */
+  protected function processStreamedCsv(array $data) {
+    $max = $this->datastoreQuery->{"$.limit"};
+    $data = $this->addHeaderRow($data);
+
+    return new StreamedResponse(function() use (&$data, &$max){
+      set_time_limit(0);
+      $handle = fopen('php://output', 'w');
+      $this->sendRows($handle, $data);
+      $i=1;
+      $count = count($data['results']);
+      while ($count >= $max) {
+        // Count can be greater as we add a header row the first time.
+        $this->datastoreQuery->{"$.offset"} = $max * $i;
+        $result = $this->datastoreService->runQuery($this->datastoreQuery);
+        $data = $result->{"$"};
+        $this->sendRows($handle, $data);
+        $i++;
+        $count = count($data['results']);
+      }
+      fclose($handle);
+    }, 200, [
+      'Content-Type' => 'text/csv',
+      'Content-Disposition' => 'attachment; filename="data.csv"',
+    ]);
+  }
+
+  /**
+   * Loop through rows and send csv.
+   *
+   * @param $handle
+   *   The file handler.
+   * @param $data
+   *   Data to send.
+   */
+  private function sendRows($handle, $data) {
+    foreach($data['results'] as $row) {
+      fputcsv($handle, $row);
+    }
+  }
+
+  private function addHeaderRow(array $data) {
     $header_row = array_keys(reset($data['schema'])['fields']);
     if (is_array($header_row)) {
       array_unshift($data['results'], $header_row);
     }
-    $response = new CsvResponse($data['results'], 200);
-    $response->setFilename('data.csv');
-    return $response;
+    return $data;
   }
 
   /**
@@ -236,7 +317,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @param string $identifier
    *   The uuid of a resource.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @return JsonResponse
    *   The json response.
    */
   public function queryResource($identifier) {
@@ -264,7 +345,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Retrieve the datastore query schema.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   * @return JsonResponse
    *   The json response.
    */
   public function querySchema() {

@@ -65,6 +65,16 @@ datastore.1.query.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
+datastore.1.query.file.post:
+  path: '/api/1/datastore/query/file'
+  methods: [POST]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::fileQuery'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 datastore.1.query.id.post:
   path: '/api/1/datastore/query/{identifier}'
   methods: [POST]

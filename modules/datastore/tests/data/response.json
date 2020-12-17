@@ -24,7 +24,6 @@
     }
   },
   "query": {
-    "limit": 10,
     "resources": [
       {
         "alias": "t",

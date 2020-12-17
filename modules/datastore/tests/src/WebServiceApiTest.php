@@ -1,8 +1,10 @@
 <?php
 
 use Drupal\datastore\CsvResponse;
+use Drupal\datastore\FileServiceApi;
 use MockChain\Options;
 use Drupal\datastore\Service;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
@@ -46,7 +48,6 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testQueryCsv() {
-
     $container = $this->getQueryContainer('csv');
     $webServiceApi = WebServiceApi::create($container);
     $result = $webServiceApi->query();
@@ -61,9 +62,26 @@ class WebServiceApiTest extends TestCase {
     $this->assertEquals('data.csv', $result->getFilename());
   }
 
-  private function getQueryContainer(string $format) {
-    $response = file_get_contents(__DIR__ . "/../data/response.json");
-    $response = new \RootedData\RootedJsonData($response);
+  /**
+   * Test big csv file.
+   */
+  public function testStreamedQueryCsv() {
+    // Need 2 json responses which get combined on output.
+    $container = $this->getQueryContainer('csv', 'multiple');
+    $webServiceApi = WebServiceApi::create($container);
+
+    ob_start();
+    $result = $webServiceApi->fileQuery();
+    $result->sendContent();
+    $csv = explode("\n", ob_get_contents());
+    ob_end_clean();
+    $this->assertEquals('record_number,data', $csv[0]);
+    $this->assertEquals('1,data', $csv[1]);
+    $this->assertEquals('50,data', $csv[50]);
+    $this->assertEquals('1,data', $csv[501]);
+  }
+
+  private function getQueryContainer(string $format, string $type = 'simple') {
     $paramBag = (new Chain($this))
       ->add(ParameterBag::class, 'get', $format)
       ->getMock();
@@ -86,11 +104,30 @@ class WebServiceApiTest extends TestCase {
       ->add("request_stack", RequestStack::class)
       ->index(0);
 
-    return (new Chain($this))
+    $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(Service::class, "runQuery", $response)
-      ->add(RequestStack::class, 'getCurrentRequest', $request)
-      ->getMock();
+      ->add(RequestStack::class, 'getCurrentRequest', $request);
+
+    if ($type == 'simple') {
+      $response = file_get_contents(__DIR__ . "/../data/response.json");
+      $response = new \RootedData\RootedJsonData($response);
+      $chain->add(Service::class, "runQuery", $response);
+
+    }
+    elseif ($type == 'multiple') {
+      $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
+    }
+    return $chain->getMock();
+  }
+
+  private function addMultipleResponses() {
+    $response1 = file_get_contents(__DIR__ . "/../data/response_big.json");
+    $response1 = new \RootedData\RootedJsonData($response1);
+
+    $response2 = file_get_contents(__DIR__ . "/../data/response.json");
+    $response2 = new \RootedData\RootedJsonData($response2);
+
+    return (new Sequence())->add($response1)->add($response2);
   }
 
   /**
