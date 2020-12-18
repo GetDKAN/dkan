@@ -184,6 +184,9 @@ class DatasetTest extends ExistingSiteBase {
     /** @var \Procrastinator\Result $result */
     $harvester->runHarvest('test5');
 
+    // Ensure different harvest run identifiers, since based on timestamp.
+    sleep(1);
+
     // Second harvest, with different catalog to simulate change.
     $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-step-2.json';
     $harvester->registerHarvest($plan);
