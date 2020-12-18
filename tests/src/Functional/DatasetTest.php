@@ -5,11 +5,13 @@ namespace Drupal\Tests\dkan\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Service as Metastore;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Harvest\ETL\Extract\DataJson;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 class DatasetTest extends ExistingSiteBase {
@@ -161,6 +163,19 @@ class DatasetTest extends ExistingSiteBase {
    * Test harvesting with new, changed, updated and removed datasets.
    */
   public function test5() {
+
+    // Harvest plan.
+    $plan = (object) [
+      'identifier' => 'test5',
+      'extract' => (object) [
+        'type' => DataJson::class,
+        'uri' => 'file://' . __DIR__ . '/../../files/catalog-step-1.json',
+      ],
+      'transforms' => [],
+      'load' => (object) [
+        'type' => Dataset::class,
+      ],
+    ];
 
   }
 
