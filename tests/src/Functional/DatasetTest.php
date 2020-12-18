@@ -60,6 +60,7 @@ class DatasetTest extends ExistingSiteBase {
 
   public function setUp() {
     parent::setUp();
+    $this->removeHarvests();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();
     $this->removeAllFileFetchingJobs();
