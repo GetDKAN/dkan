@@ -358,7 +358,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return string
    *   Either 'draft' or 'published'.
    */
-  private function getDefaultModerationState() {
+  public function getDefaultModerationState() {
     return $this->entityTypeManager->getStorage('workflow')
       ->load('dkan_publishing')
       ->getTypePlugin()

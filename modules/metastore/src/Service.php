@@ -231,6 +231,16 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Return the default moderation state of our custom dkan_publishing workflow.
+   *
+   * @return string
+   *   Either 'draft' or 'published'.
+   */
+  public function getDefaultModerationState() : string {
+    return $this->factory->getInstance('dataset')->getDefaultModerationState();
+  }
+
+  /**
    * Implements PUT method.
    *
    * @param string $schema_id
