@@ -5,6 +5,7 @@ namespace Drupal\Tests\dkan\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Service as Metastore;
 use Drupal\Tests\common\Traits\CleanUp;
@@ -277,6 +278,10 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getQueueService() : QueueFactory {
     return \Drupal::service('queue');
+  }
+
+  private function getHarvester() : Harvester {
+    return \Drupal::service('dkan.harvest.service');
   }
 
 }
