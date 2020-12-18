@@ -30,6 +30,7 @@ class QueryDataProvider {
       'nestedExpressionQuery',
       'badExpressionOperandQuery',
       'conditionQuery',
+      'likeConditionQuery',
       'arrayConditionQuery',
       'nestedConditionGroupQuery',
       'sortQuery',
@@ -224,6 +225,29 @@ class QueryDataProvider {
 
       case self::SQL:
         return "WHERE t.field1 = :db_condition_placeholder_0";
+
+      case self::EXCEPTION:
+        return FALSE;
+    }
+  }
+
+
+  public static function likeConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "%value%",
+            "operator" => "like",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
 
       case self::EXCEPTION:
         return FALSE;

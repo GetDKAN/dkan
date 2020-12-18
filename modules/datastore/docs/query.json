@@ -178,7 +178,7 @@
                  "operator": {
                      "type": "string",
                      "description": "Condition operator",
-                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ],
+                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "like", "between", "in", "not in" ],
                      "default": "="
                  }
             },
