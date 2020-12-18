@@ -6,7 +6,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Service;
+use Drupal\metastore\Service as Metastore;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -271,7 +271,7 @@ class DatasetTest extends ExistingSiteBase {
     return $identifier;
   }
 
-  private function getMetastore(): Service {
+  private function getMetastore(): Metastore {
     return \Drupal::service('dkan.metastore.service');
   }
 
