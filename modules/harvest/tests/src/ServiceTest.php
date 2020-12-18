@@ -75,7 +75,7 @@ class ServiceTest extends TestCase {
     $storedObject = json_decode($storedObject);
     $this->assertTrue(is_object($storedObject));
 
-    // Run havest again, no changes.
+    // Run harvest again, no changes.
     $result = $service->runHarvest('test_plan');
 
     $this->assertEquals("SUCCESS", $result['status']['extract']);
