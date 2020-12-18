@@ -177,6 +177,25 @@ class DatasetTest extends ExistingSiteBase {
       ],
     ];
 
+    $harvester = $this->getHarvester();
+
+    // First harvest.
+    $harvester->registerHarvest($plan);
+    /** @var \Procrastinator\Result $result */
+    $harvester->runHarvest('test5');
+
+    // Second harvest, with different catalog to simulate change.
+    $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-step-2.json';
+    $harvester->registerHarvest($plan);
+    $result = $harvester->runHarvest('test5');
+
+    // Test unchanged, updated and new datasets.
+    $expected = [
+      1 => 'UNCHANGED',
+      2 => 'UPDATED',
+      4 => 'NEW',
+    ];
+    $this->assertEquals($expected, $result['status']['load']);
   }
 
   /**
