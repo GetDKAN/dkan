@@ -1,0 +1,28 @@
+{
+  "dataset": [
+    {
+      "accessLevel": "public",
+      "description": "Unchanged between steps 1 and 2",
+      "identifier": "1",
+      "modified": "2019-12-31",
+      "title": "Unchanged",
+      "keyword": ["keyword"]
+    },
+    {
+      "accessLevel": "public",
+      "description": "Updated between steps 1 and 2",
+      "identifier": "2",
+      "modified": "2019-12-31",
+      "title": "Title",
+      "keyword": ["keyword"]
+    },
+    {
+      "accessLevel": "public",
+      "description": "Removed between steps 1 and 2",
+      "identifier": "3",
+      "modified": "2019-12-31",
+      "title": "Removed",
+      "keyword": ["keyword"]
+    }
+  ]
+}
