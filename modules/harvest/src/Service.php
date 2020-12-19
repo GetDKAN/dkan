@@ -184,7 +184,7 @@ class Service implements ContainerInjectionInterface {
    * @param string $id
    *   The harvest identifier.
    */
-  private function getLastHarvestRunInfo(string $id) {
+  private function getLastHarvestRunId(string $id) {
     $runs = $this->getAllHarvestRunInfo($id);
     rsort($runs);
     return reset($runs);
@@ -199,7 +199,7 @@ class Service implements ContainerInjectionInterface {
   public function publish(string $id) {
     $publishedIdentifiers = [];
 
-    $lastRunId = $this->getLastHarvestRunInfo($id);
+    $lastRunId = $this->getLastHarvestRunId($id);
     $lastRunInfoJsonString = $this->getHarvestRunInfo($id, $lastRunId);
     $lastRunInfoObj = json_decode($lastRunInfoJsonString);
 
