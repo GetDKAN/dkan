@@ -144,11 +144,34 @@ class Service implements ContainerInjectionInterface {
 
     $result = $harvester->harvest();
 
+    $result['status']['removed'] = $this->getRemovedDatasetIds($id, $result);
+
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
     $current_time = time();
     $run_store->store(json_encode($result), "{$current_time}");
 
     return $result;
+  }
+
+  /**
+   * Find the identifiers of datasets removed by this harvest.
+   *
+   * @param string $harvestId
+   * @param array $result
+   *
+   * @return array
+   */
+  private function getRemovedDatasetIds(string $harvestId, array $result) : array {
+    $lastRunId = $this->getLastHarvestRunId($harvestId);
+    if (!$lastRunId) {
+      return [];
+    }
+
+    $lastRunInfo = json_decode($this->getHarvestRunInfo($harvestId, $lastRunId));
+    $previouslyExtractedIds = $lastRunInfo->status->extracted_items_ids;
+    $latestExtractedIds = $result['status']['extracted_items_ids'];
+
+    return array_values(array_diff($previouslyExtractedIds, $latestExtractedIds));
   }
 
   /**
