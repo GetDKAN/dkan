@@ -148,44 +148,7 @@ class Service implements ContainerInjectionInterface {
     $current_time = time();
     $run_store->store(json_encode($result), "{$current_time}");
 
-    $this->checkForRemovedDatasets($id, $result);
-
     return $result;
-  }
-
-  /**
-   * Clean up any datasets removed since the previous harvest run.
-   *
-   * @param string $id
-   *   Harvest identifier.
-   * @param array $result
-   *   Result array.
-   */
-  private function checkForRemovedDatasets(string $id, array $result) {
-    $harvests = $this->getAllHarvestRunInfo($id);
-
-    // Without a previous harvest run, there's nothing to clean up.
-    if (count($harvests) <= 1)  {
-      return;
-    }
-
-    // Get the latest and previously extracted items ids.
-    $latestExtracted = $result['status']['extracted_items_ids'];
-
-    array_pop($harvests);
-    $previousRun = end($harvests);
-    $previousInfo = json_decode($this->getHarvestRunInfo($id, $previousRun));
-    $previouslyExtracted = $previousInfo->status->extracted_items_ids;
-
-    $removed = array_diff($previouslyExtracted, $latestExtracted);
-    print_r("\nremoved : \n");
-    print_r($removed);
-  }
-
-  private function removeDatasets(array $uuids) {
-    foreach ($uuids as $uuid) {
-
-    }
   }
 
   /**
