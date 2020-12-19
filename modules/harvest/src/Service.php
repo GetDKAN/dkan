@@ -150,6 +150,8 @@ class Service implements ContainerInjectionInterface {
     $current_time = time();
     $run_store->store(json_encode($result), "{$current_time}");
 
+    $this->archiveRemovedDatasetIds($result['status']['removed']);
+
     return $result;
   }
 
@@ -172,6 +174,17 @@ class Service implements ContainerInjectionInterface {
     $latestExtractedIds = $result['status']['extracted_items_ids'];
 
     return array_values(array_diff($previouslyExtractedIds, $latestExtractedIds));
+  }
+
+  /**
+   * Archive datasets removed.
+   *
+   * @param array $removedIds
+   */
+  private function archiveRemovedDatasetIds(array $removedIds) {
+    foreach ($removedIds as $removedId) {
+      // @todo Archive dataset $uuid.
+    }
   }
 
   /**
