@@ -1,0 +1,253 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "API Documentation",
+        "version": "Alpha"
+    },
+    "paths": {
+        "/api/1/datastore/sql": {
+            "get": {
+                "operationId": "datastore-query",
+                "summary": "Query resources in datastore",
+                "description": "Interact with resources in the datastore using an SQL-like syntax.\n",
+                "tags": [
+                    "SQL Query"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/imports": {
+            "get": {
+                "operationId": "datastore-list",
+                "summary": "List datastores",
+                "description": "Returns a list of all stored importers, with data about their file fetcher and status.\n",
+                "tags": [
+                    "Datastore"
+                ],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "object",
+                                        "properties": {
+                                            "fileName": {
+                                                "type": "string",
+                                                "pattern": "^[^<>:;,?\"*|/]+$"
+                                            },
+                                            "fileFetcherStatus": {
+                                                "type": "string",
+                                                "enum": [ "done", "waiting" ]
+                                            },
+                                            "fileFetcherBytes": { "type": "integer" },
+                                            "fileFetcherPercentDone": {
+                                                "type": "integer",
+                                                "minimum": 0,
+                                                "maximum": 100
+                                            },
+                                            "importerStatus": {
+                                                "type": "string",
+                                                "enum": [ "done", "waiting" ]
+                                            },
+                                            "importerBytes": { "type": "integer" },
+                                            "importerPercentDone": {
+                                                "type": "integer",
+                                                "minimum": 0,
+                                                "maximum": 100
+                                            }
+                                        },
+                                        "required": [ "fileName" ],
+                                        "additionalProperties": false
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "datastore-import",
+                "summary": "Datastore import",
+                "description": "Immediately starts the import process for a datastore.\n",
+                "tags": [ "Datastore" ],
+                "security": [{ "basicAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "resource_id": {
+                                        "type": "string",
+                                        "description": "UUID of a data resource"
+                                    }
+                                },
+                                "required": [ "resource_id" ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/imports/{identifier}": {
+            "get": {
+                "operationId": "datastore-get",
+                "summary": "Datastore statistics",
+                "description": "Returns the numbers of rows and columns, and a list of columns headers from the datastore.\n",
+                "tags": [
+                    "Datastore"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreUuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "numOfRows",
+                                        "numOfColumns",
+                                        "columns"
+                                    ],
+                                    "properties": {
+                                        "numOfRows": {
+                                            "type": "integer"
+                                        },
+                                        "numOfColumns": {
+                                            "type": "integer"
+                                        },
+                                        "columns": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "datastore-delete",
+                "summary": "Delete a datastore",
+                "description": "Delete one or more datastores. If the uuid parameter is that of a resource, delete that resource. If the uuid parameter is that of a dataset, delete all resources of that dataset.\n",
+                "tags": [
+                    "Datastore"
+                ],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreUuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dataset has been deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "datastoreUuid": {
+                "name": "identifier",
+                "in": "path",
+                "description": "A datastore uuid",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "DATASTORE-UUID"
+            },
+            "query": {
+                "name": "query",
+                "in": "query",
+                "description": "SQL query",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "[SELECT * FROM DATASTORE-UUID];"
+            }
+        },
+        "securitySchemes": {
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            }
+        }
+    }
+}

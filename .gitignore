@@ -12,7 +12,6 @@ composer.lock
 /docroot
 .docksal
 .idea
-docs
 .vscode
 coverage
 cypress/videos
