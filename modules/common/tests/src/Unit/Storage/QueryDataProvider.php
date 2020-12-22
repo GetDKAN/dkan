@@ -136,9 +136,11 @@ class QueryDataProvider {
             ],
           ],
         ];
-        $query->sort = [
-          "asc" => ["add_one"],
-          "desc" => [],
+        $query->sorts = [
+          (object) [
+            "property" => "add_one",
+            "order" => "asc",
+          ]
         ];
         return $query;
 
@@ -323,13 +325,21 @@ class QueryDataProvider {
     switch ($return) {
       case self::QUERY_OBJECT:
         $query = new Query();
-        $query->sort = [
-          "asc" => [],
-          "desc" => [
-            (object) [
-              "collection" => "t",
-              "property" => "field1",
-            ],
+        $query->sorts = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "order" => "desc",
+          ],
+          (object) [
+            "collection" => "t",
+            "property" => "field2",
+            "order" => "asc",
+          ],
+          (object) [
+            "collection" => "t",
+            "property" => "field3",
+            "order" => "desc",
           ],
         ];
         return $query;
@@ -346,7 +356,7 @@ class QueryDataProvider {
     switch ($return) {
       case self::QUERY_OBJECT:
         $query = new Query();
-        $query->sort = ["foo" => ["field1"]];
+        $query->sorts = ["foo" => ["field1"]];
         return $query;
 
       case self::SQL:

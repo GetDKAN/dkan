@@ -270,11 +270,14 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private function setQueryOrderBy(Select $db_query, Query $query) {
-    foreach ($query->sort as $direction => $sort) {
-      if (!in_array($direction, ["asc", "desc"])) {
-        throw new \Exception("Invalid sort.");
+    foreach ($query->sorts as $sort) {
+      if (is_object($sort) && !isset($sort->order)) {
+        $sort->order = "asc";
       }
-      $this->setQueryDirectionOrderBy($direction, $sort, $db_query);
+      if (!is_object($sort) || !in_array($sort->order, ["asc", "desc"])) {
+        throw new \InvalidArgumentException("Invalid sort.");
+      }
+      $this->setQueryDirectionOrderBy($sort, $db_query);
     }
   }
 
@@ -285,22 +288,19 @@ class SelectFactory {
    *
    * @param string $direction
    *   Sort direction - "asc" or "desc".
-   * @param array $sort
+   * @param object $sort
    *   The sort properties.
    * @param Drupal\Core\Database\Query\Select $db_query
    *   A Drupal database query API object.
    */
-  private function setQueryDirectionOrderBy(string $direction, array $sort, Select $db_query) {
-    foreach ($sort as $property) {
-      if (!is_string($property)) {
-        $nProperty = $this->normalizeProperty($property);
-        $propertyStr = "{$nProperty->collection}.{$nProperty->property}";
-      }
-      else {
-        $propertyStr = $property;
-      }
-      $db_query->orderBy($propertyStr, strtoupper($direction));
+  private function setQueryDirectionOrderBy(object $sort, Select $db_query) {
+    if (isset($sort->collection)) {
+      $propertyStr = "{$sort->collection}.{$sort->property}";
     }
+    else {
+      $propertyStr = $sort->property;
+    }
+    $db_query->orderBy($propertyStr, strtoupper($sort->order));
   }
 
   /**

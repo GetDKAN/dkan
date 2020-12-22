@@ -155,25 +155,11 @@ class QueryFactory {
    *   DKAN query object we're building.
    */
   private function populateQuerySorts(Query $query) {
-    if (isset($this->datastoreQuery->{"$.sort.asc"})) {
-      $this->populateQuerySortDirection($query, 'asc');
+    if (!$this->datastoreQuery->{"$.sorts"}) {
+      return;
     }
-    if (isset($this->datastoreQuery->{"$.sort.desc"})) {
-      $this->populateQuerySortDirection($query, 'desc');
-    }
-  }
-
-  /**
-   * Populate a specific sorting direction.
-   *
-   * @param mixed $query
-   *   DKAN query object we're building.
-   * @param mixed $direction
-   *   The specific sort direction to populate.
-   */
-  private function populateQuerySortDirection($query, $direction) {
-    foreach ($this->datastoreQuery->{"$.sort.$direction"} as $sort) {
-      $query->sort[$direction][] = $this->propertyConvert($sort);
+    foreach ($this->datastoreQuery->{"$.sorts"} as $sort) {
+      $query->sorts[] = (object) $this->resourceRename($sort);
     }
   }
 

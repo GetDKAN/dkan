@@ -48,11 +48,9 @@ class Query implements
    * Result sorting directives.
    *
    * @var array
-   *   Associative array containing:
-   *   - asc: Properties to sort by in ascending order
-   *   - desc: Properties to sort by in descending order
+   *   Array of sort objects.
    */
-  public $sort = ['asc' => [], 'desc' => []];
+  public $sorts = [];
 
   /**
    * Join against another table.
@@ -156,7 +154,10 @@ class Query implements
    *   Property to sort by in ascending order.
    */
   public function sortByAscending(string $property) {
-    $this->sort['asc'][] = $property;
+    $this->sorts[] = (object) [
+      "property" => $property,
+      "order" => "asc",
+    ];
   }
 
   /**
@@ -166,7 +167,10 @@ class Query implements
    *   Property to sort by in descending order.
    */
   public function sortByDescending(string $property) {
-    $this->sort['desc'][] = $property;
+    $this->sorts[] = (object) [
+      "property" => $property,
+      "order" => "desc",
+    ];
   }
 
   /**

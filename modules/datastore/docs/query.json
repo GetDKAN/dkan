@@ -83,13 +83,10 @@
             "description": "Number of records to offset by or skip before returning first record.",
             "default": 0
         },
-        "sort": {
-            "type": "object",
+        "sorts": {
+            "type": "array",
             "description": "Result sorting directives.",
-            "properties": {
-                "asc": {"$ref": "#/definitions/sort"},
-                "desc": {"$ref": "#/definitions/sort"}
-            }
+            "items": {"$ref": "#/definitions/sort"}
         },
         "count": {
             "description": "Return a count of the total rows returned by the query, ignoring the limit/offset.",
@@ -222,14 +219,16 @@
             }
         },
         "sort": {
-            "type": "array",
+            "type": "object",
             "description": "Properties to sort by in a particular order.",
-            "items": { 
-                "anyOf": [
-                    { "$ref": "#/definitions/resource" },
-                    { "$ref": "#/definitions/resourceProperty" }
-                ]
-                
+            "properties": { 
+                "resource": { "$ref": "#/definitions/resource" },
+                "property": { "$ref": "#/definitions/property" },
+                "order": {
+                    "type": "string",
+                    "description": "Order to sort in, lowercase.",
+                    "enum": ["asc", "desc"]
+                }
             }
         }
     }

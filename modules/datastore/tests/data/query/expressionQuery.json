@@ -24,7 +24,10 @@
             }
         }
     ],
-    "sort": {
-        "asc": ["add_one"]
-    }
+    "sorts": [
+        {
+            "property": "add_one",
+            "order": "asc"
+        }
+    ]
 }
