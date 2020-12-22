@@ -23,6 +23,14 @@
       "modified": "2019-12-31",
       "title": "Removed",
       "keyword": ["keyword"]
+    },
+    {
+      "accessLevel": "public",
+      "description": "Also removed between steps 1 and 2",
+      "identifier": "4",
+      "modified": "2019-12-31",
+      "title": "Another removed",
+      "keyword": ["keyword"]
     }
   ]
 }

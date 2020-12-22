@@ -196,7 +196,7 @@ class DatasetTest extends ExistingSiteBase {
     $expected = [
       '1' => 'UNCHANGED',
       '2' => 'UPDATED',
-      '4' => 'NEW',
+      '5' => 'NEW',
     ];
     $this->assertEquals($expected, $result['status']['load']);
   }
