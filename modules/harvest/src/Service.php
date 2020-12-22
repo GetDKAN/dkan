@@ -143,47 +143,52 @@ class Service implements ContainerInjectionInterface {
     $harvester = $this->getHarvester($id);
 
     $result = $harvester->harvest();
-
-    $result['status']['removed'] = $this->getRemovedDatasetIds($id, $result);
+    $result = $this->addOrphanDatasets($id, $result);
 
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
     $current_time = time();
     $run_store->store(json_encode($result), "{$current_time}");
 
-    $this->archiveRemovedDatasetIds($result['status']['removed']);
+    $this->processOrphanDatasets($result);
 
     return $result;
   }
 
   /**
-   * Find the identifiers of datasets removed by this harvest.
+   * Add the identifiers of datasets orphaned by this harvest, if any.
    *
    * @param string $harvestId
+   *   Harvest identifier.
    * @param array $result
+   *   Harvest result.
    *
    * @return array
+   *   Orphan dataset identifiers.
    */
-  private function getRemovedDatasetIds(string $harvestId, array $result) : array {
+  private function addOrphanDatasets(string $harvestId, array $result) : array {
+
     $lastRunId = $this->getLastHarvestRunId($harvestId);
     if (!$lastRunId) {
-      return [];
+      $result['status']['orphan_ids'] = [];
+      return $result;
     }
 
     $lastRunInfo = json_decode($this->getHarvestRunInfo($harvestId, $lastRunId));
     $previouslyExtractedIds = $lastRunInfo->status->extracted_items_ids;
     $latestExtractedIds = $result['status']['extracted_items_ids'];
-
-    return array_values(array_diff($previouslyExtractedIds, $latestExtractedIds));
+    $result['status']['orphan_ids'] = array_values(array_diff($previouslyExtractedIds, $latestExtractedIds));
+    return $result;
   }
 
   /**
-   * Archive datasets removed.
+   * Process orphan datasets.
    *
-   * @param array $removedIds
+   * @param array $result
+   *    Harvest result.
    */
-  private function archiveRemovedDatasetIds(array $removedIds) {
-    foreach ($removedIds as $removedId) {
-      // @todo Archive dataset $uuid.
+  private function processOrphanDatasets(array $result) {
+    foreach ($result['status']['orphan_ids'] as $uuid) {
+      // @todo Orphan dataset $uuid.
     }
   }
 
