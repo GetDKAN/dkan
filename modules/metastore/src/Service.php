@@ -231,13 +231,13 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Return the default moderation state of our custom dkan_publishing workflow.
+   * Return Drupal\metastore\Storage\Data's nodeStorage.
    *
-   * @return string
-   *   Either 'draft', 'published' or 'orphaned'.
+   * @return \Drupal\node\NodeStorageInterface
+   *   Node storage.
    */
-  public function getDefaultModerationState() : string {
-    return $this->factory->getInstance('dataset')->getDefaultModerationState();
+  public function getNodeStorage() {
+    return $this->factory->getInstance('dataset')->getNodeStorage();
   }
 
   /**
