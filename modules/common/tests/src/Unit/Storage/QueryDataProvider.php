@@ -345,7 +345,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "ORDER BY t.field1 DESC";
+        return "ORDER BY t.field1 DESC, t.field2 ASC, t.field3 DESC";
 
       case self::EXCEPTION:
         return FALSE;
