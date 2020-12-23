@@ -289,14 +289,13 @@ class SelectFactory {
     if (!is_object($sort) || !in_array($sort->order, ["asc", "desc"])) {
       throw new \InvalidArgumentException("Invalid sort.");
     }
-    if (is_object($sort) && !isset($sort->order)) {
+    if (!isset($sort->order)) {
       $sort->order = "asc";
     }
+
+    $propertyStr = $sort->property;
     if (isset($sort->collection)) {
-      $propertyStr = "{$sort->collection}.{$sort->property}";
-    }
-    else {
-      $propertyStr = $sort->property;
+      $propertyStr = "{$sort->collection}.{$propertyStr}";
     }
     $db_query->orderBy($propertyStr, strtoupper($sort->order));
   }
