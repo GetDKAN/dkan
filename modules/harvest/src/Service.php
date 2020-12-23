@@ -187,8 +187,18 @@ class Service implements ContainerInjectionInterface {
    *    Harvest result.
    */
   private function processOrphanDatasets(array $result) {
+    if (empty($result['status']['orphan_ids'])) {
+      return;
+    }
+
+    $nodeStorage = $this->metastore->getNodeStorage();
+
     foreach ($result['status']['orphan_ids'] as $uuid) {
-      // @todo Orphan dataset $uuid.
+      $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
+      if (FALSE !== ($dataset = reset($datasets))) {
+        $dataset->set('moderation_state', 'orphaned');
+        $dataset->save();
+      }
     }
   }
 
