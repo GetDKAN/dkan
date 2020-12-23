@@ -271,12 +271,6 @@ class SelectFactory {
    */
   private function setQueryOrderBy(Select $db_query, Query $query) {
     foreach ($query->sorts as $sort) {
-      if (is_object($sort) && !isset($sort->order)) {
-        $sort->order = "asc";
-      }
-      if (!is_object($sort) || !in_array($sort->order, ["asc", "desc"])) {
-        throw new \InvalidArgumentException("Invalid sort.");
-      }
       $this->setQueryDirectionOrderBy($sort, $db_query);
     }
   }
@@ -286,14 +280,18 @@ class SelectFactory {
    *
    * Set order by statements for a specific direction.
    *
-   * @param string $direction
-   *   Sort direction - "asc" or "desc".
    * @param object $sort
    *   The sort properties.
    * @param Drupal\Core\Database\Query\Select $db_query
    *   A Drupal database query API object.
    */
-  private function setQueryDirectionOrderBy(object $sort, Select $db_query) {
+  private function setQueryDirectionOrderBy($sort, Select $db_query) {
+    if (!is_object($sort) || !in_array($sort->order, ["asc", "desc"])) {
+      throw new \InvalidArgumentException("Invalid sort.");
+    }
+    if (is_object($sort) && !isset($sort->order)) {
+      $sort->order = "asc";
+    }
     if (isset($sort->collection)) {
       $propertyStr = "{$sort->collection}.{$sort->property}";
     }
