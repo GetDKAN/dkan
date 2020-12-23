@@ -356,7 +356,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * Return the default moderation state of our custom dkan_publishing workflow.
    *
    * @return string
-   *   Either 'draft' or 'published'.
+   *   Either 'draft', 'published' or 'orphaned'.
    */
   public function getDefaultModerationState() {
     return $this->entityTypeManager->getStorage('workflow')
