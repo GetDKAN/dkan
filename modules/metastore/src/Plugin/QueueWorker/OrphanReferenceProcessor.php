@@ -96,19 +96,19 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
       }
     }
 
-    // Value reference uuid not found in any dataset, therefore safe to orphan.
-    $this->orphanReference($metadataProperty, $identifier);
+    // Value reference uuid not found in any dataset, therefore safe to delete.
+    $this->unpublishReference($metadataProperty, $identifier);
   }
 
   /**
-   * Orphan a reference.
+   * Unpublish a reference.
    *
    * @param string $property_id
    *   The property id.
    * @param string $uuid
    *   The uuid.
    */
-  protected function orphanReference(string $property_id, string $uuid) {
+  protected function unpublishReference(string $property_id, string $uuid) {
     $references = $this->nodeStorage
       ->loadByProperties(
               [
@@ -117,7 +117,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
               ]
           );
     if (FALSE !== ($reference = reset($references))) {
-      $reference->set('moderation_state', 'orphaned');
+      $reference->set('moderation_state', 'draft');
     }
   }
 
