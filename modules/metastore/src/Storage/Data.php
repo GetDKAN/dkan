@@ -257,6 +257,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     // Dkan publishing's default moderation state.
     $node->set('moderation_state', $this->getDefaultModerationState());
 
+    $node->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
+    $node->setRevisionCreationTime(time());
     $node->save();
 
     return $node->uuid();
