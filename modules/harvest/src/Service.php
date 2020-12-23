@@ -3,6 +3,7 @@
 namespace Drupal\harvest;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 use Harvest\Harvester as DkanHarvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
@@ -26,6 +27,13 @@ class Service implements ContainerInjectionInterface {
   private $metastore;
 
   /**
+   * Entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   */
+  private $entityTypeManager;
+
+  /**
    * Create.
    *
    * @inheritdoc
@@ -33,16 +41,18 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new self(
       $container->get("dkan.harvest.storage.database_table"),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('entity_type.manager')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, Metastore $metastore) {
+  public function __construct(FactoryInterface $storeFactory, Metastore $metastore, EntityTypeManager $entityTypeManager) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -184,14 +194,14 @@ class Service implements ContainerInjectionInterface {
    * Process orphan datasets.
    *
    * @param array $result
-   *    Harvest result.
+   *   Harvest result.
    */
   private function processOrphanDatasets(array $result) {
     if (empty($result['status']['orphan_ids'])) {
       return;
     }
 
-    $nodeStorage = $this->metastore->getNodeStorage();
+    $nodeStorage = $this->entityTypeManager->getStorage('node');
 
     foreach ($result['status']['orphan_ids'] as $uuid) {
       $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
