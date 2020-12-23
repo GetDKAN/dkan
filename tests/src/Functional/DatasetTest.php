@@ -199,6 +199,24 @@ class DatasetTest extends ExistingSiteBase {
       '5' => 'NEW',
     ];
     $this->assertEquals($expected, $result['status']['load']);
+
+    $this->assertEquals('published', $this->getModerationState('1'));
+    $this->assertEquals('published', $this->getModerationState('2'));
+    $this->assertEquals('orphaned' , $this->getModerationState('3'));
+    $this->assertEquals('orphaned' , $this->getModerationState('4'));
+    $this->assertEquals('published', $this->getModerationState('5'));
+  }
+
+  /**
+   * Get a dataset's moderation state.
+   */
+  private function getModerationState(string $uuid) : string {
+    $nodeStorage = $this->getMetastore()->getNodeStorage();
+    $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
+    if (FALSE !== ($dataset = reset($datasets))) {
+      return $dataset->get('moderation_state')->getString();
+    }
+    return '';
   }
 
   /**
