@@ -4,11 +4,12 @@ namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
+use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 
 /**
  *
  */
-class DatabaseTableMock implements DatabaseTableInterface {
+class DatabaseTableMock extends ResourceMapperDatabaseTable {
   private $id = 0;
   private $store = [];
 
@@ -21,7 +22,7 @@ class DatabaseTableMock implements DatabaseTableInterface {
   /**
    *
    */
-  public function storeMultiple(array $data) {
+  public function storeMultiple(array $data): string {
     // TODO: Implement storeMultiple() method.
   }
 
@@ -42,7 +43,7 @@ class DatabaseTableMock implements DatabaseTableInterface {
   /**
    *
    */
-  public function query(Query $query) {
+  public function query(Query $query): array {
     $storeCopy = $this->store;
 
     foreach ($query->conditions as $property => $value) {
