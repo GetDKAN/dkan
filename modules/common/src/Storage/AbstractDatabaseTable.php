@@ -12,6 +12,7 @@ use Drupal\Core\Database\DatabaseExceptionWrapper;
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   use SqlStorageTrait;
   use QueryToQueryHelperTrait;
+  use SanitizedMessageTrait;
 
   protected $connection;
 
@@ -194,7 +195,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @param string|null $property
    *   The property to check the value against.
    */
-  public function removeByProperty(string $value, $property = null) {
+  public function removeByProperty(string $value, $property = NULL) {
     if (!isset($property)) {
       $this->remove($value);
     }
@@ -242,22 +243,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     }
 
     return $result;
-  }
-
-  /**
-   * Create a minimal error message that does not leak database information.
-   */
-  private function sanitizedErrorMessage(string $unsanitizedMessage) {
-    // Insert portions of exception messages you want caught here.
-    $messages = [
-      'Column not found',
-    ];
-    foreach ($messages as $message) {
-      if (strpos($unsanitizedMessage, $message) !== FALSE) {
-        return $message . ".";
-      }
-    }
-    return "Database internal error.";
   }
 
   /**

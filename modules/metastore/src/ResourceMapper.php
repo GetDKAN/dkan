@@ -3,7 +3,6 @@
 namespace Drupal\metastore;
 
 use Drupal\common\Resource;
-use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\Events\Registration;
@@ -21,7 +20,8 @@ class ResourceMapper {
   const DEREFERENCE_YES = 1;
 
   /**
-   * @var ResourceMapperDatabaseTable
+   * The resource mapper database table.
+   * @var \Drupal\metastore\Storage\ResourceMapperDatabaseTable;
    */
   private $store;
   private $eventDispatcher;
@@ -142,13 +142,12 @@ class ResourceMapper {
    * @return mixed
    *   object || False
    */
-  private function getLatestRevision($identifier, $perspective) : ?Resource
-  {
+  private function getLatestRevision($identifier, $perspective) : ?Resource {
     $query = $this->getCommonQuery($identifier, $perspective);
     $query->sortByDescending('version');
     $items = $this->store->query($query);
     $latest = reset($items);
-    return !empty($latest) ? Resource::hydrate(json_encode($latest)) : null;
+    return !empty($latest) ? Resource::hydrate(json_encode($latest)) : NULL;
   }
 
   /**
