@@ -1,9 +1,10 @@
 <?php
 
-
 namespace Drupal\common\Storage;
 
-
+/**
+ * Trait SanitizedMessageTrait.
+ */
 trait SanitizedMessageTrait {
 
   /**

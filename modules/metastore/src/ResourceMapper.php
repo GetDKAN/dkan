@@ -21,7 +21,8 @@ class ResourceMapper {
 
   /**
    * The resource mapper database table.
-   * @var \Drupal\metastore\Storage\ResourceMapperDatabaseTable;
+   *
+   * @var \Drupal\metastore\Storage\ResourceMapperDatabaseTable
    */
   private $store;
   private $eventDispatcher;
