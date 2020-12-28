@@ -115,7 +115,7 @@ class ResourceLocalizer {
     /** @var \Drupal\common\Resource $resource */
     $resource = $this->get($identifier, $version);
     if ($resource) {
-      $this->fileMapper->remove($resource);
+      $this->fileMapper->remove($resource->getIdentifier());
       if (file_exists($resource->getFilePath())) {
         unlink($resource->getFilePath());
       }
