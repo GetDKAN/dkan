@@ -8,6 +8,7 @@ use Drupal\common\Storage\Query;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\Events\Registration;
 use Drupal\metastore\Exception\AlreadyRegistered;
+use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 
 /**
  * ResourceMapper.
@@ -19,13 +20,16 @@ class ResourceMapper {
   const DEREFERENCE_NO = 0;
   const DEREFERENCE_YES = 1;
 
+  /**
+   * @var ResourceMapperDatabaseTable
+   */
   private $store;
   private $eventDispatcher;
 
   /**
    * Constructor.
    */
-  public function __construct(DatabaseTableInterface $store, ContainerAwareEventDispatcher $eventDispatcher) {
+  public function __construct(ResourceMapperDatabaseTable $store, ContainerAwareEventDispatcher $eventDispatcher) {
     $this->store = $store;
     $this->eventDispatcher = $eventDispatcher;
   }
@@ -119,10 +123,16 @@ class ResourceMapper {
 
   /**
    * Remove.
+   *
+   * @todo When a resource is removed should we remove all connected resources?
    */
-  public function remove(Resource $resource) {
-    if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
-      $this->store->remove($resource->getUniqueIdentifier());
+  public function remove(string $identifier) {
+    if ($this->exists($identifier, 'source')) {
+      $resource = $this->getLatestRevision($identifier, 'source');
+
+      if (isset($resource) && $resource instanceof Resource) {
+        $this->store->removeByProperty($resource->getIdentifier(), 'identifier');
+      }
     }
   }
 
@@ -132,11 +142,13 @@ class ResourceMapper {
    * @return mixed
    *   object || False
    */
-  private function getLatestRevision($identifier, $perspective) {
+  private function getLatestRevision($identifier, $perspective) : ?Resource
+  {
     $query = $this->getCommonQuery($identifier, $perspective);
     $query->sortByDescending('version');
     $items = $this->store->query($query);
-    return reset($items);
+    $latest = reset($items);
+    return !empty($latest) ? Resource::hydrate(json_encode($latest)) : null;
   }
 
   /**

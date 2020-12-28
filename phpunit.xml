@@ -21,6 +21,9 @@
             <directory>modules/harvest/tests</directory>
             <directory>modules/harvest/modules/harvest_dashboard/tests</directory>
         </testsuite>
+        <testsuite name="DkanFunctionalTests">
+          <directory>modules/datastore/tests/src/Functional</directory>
+        </testsuite>
     </testsuites>
 
     <groups>
@@ -50,12 +53,12 @@
           <directory>modules/frontend/src</directory>
           <directory>modules/harvest/src</directory>
           <directory>modules/harvest/modules/harvest_dashboard/src</directory>
-      <!-- By definition test classes have no tests. -->
-      <exclude>
-        <directory>modules/common/src/Tests</directory>
-        <directory suffix="Test.php">./</directory>
-        <directory suffix="TestBase.php">./</directory>
-      </exclude>
+          <!-- By definition test classes have no tests. -->
+          <exclude>
+            <directory>modules/common/src/Tests</directory>
+            <directory suffix="Test.php">./</directory>
+            <directory suffix="TestBase.php">./</directory>
+          </exclude>
         </whitelist>
     </filter>
 </phpunit>

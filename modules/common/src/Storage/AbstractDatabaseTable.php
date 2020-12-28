@@ -187,6 +187,26 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
+   * Remove records from the database that match a value for a property.
+   *
+   * @param string $value
+   *   If the property contains this value, remove the record.
+   * @param string|null $property
+   *   The property to check the value against.
+   */
+  public function removeByProperty(string $value, $property = null) {
+    if (!isset($property)) {
+      $this->remove($value);
+    }
+    else {
+      $tableName = $this->getTableName();
+      $this->connection->delete($tableName)
+        ->condition($property, $value)
+        ->execute();
+    }
+  }
+
+  /**
    * Count rows in table.
    */
   public function count(): int {
