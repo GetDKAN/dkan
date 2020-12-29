@@ -17,6 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Service implements ContainerInjectionInterface {
 
+  use OrphanDatasetsProcessor;
+
   private $storeFactory;
 
   /**
