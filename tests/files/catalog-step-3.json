@@ -2,10 +2,10 @@
   "dataset": [
     {
       "accessLevel": "public",
-      "description": "Removed in step 3.",
-      "identifier": "1",
+      "description": "Re-added in step 3",
+      "identifier": "2",
       "modified": "2019-12-31",
-      "title": "Title",
+      "title": "Re-added",
       "keyword": ["keyword"]
     }
   ]

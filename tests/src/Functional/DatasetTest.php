@@ -195,16 +195,27 @@ class DatasetTest extends ExistingSiteBase {
     // Test unchanged, updated and new datasets.
     $expected = [
       '1' => 'UNCHANGED',
-      '2' => 'UPDATED',
-      '5' => 'NEW',
     ];
     $this->assertEquals($expected, $result['status']['load']);
 
     $this->assertEquals('published', $this->getModerationState('1'));
+    $this->assertEquals('orphaned' , $this->getModerationState('2'));
+    $this->assertEquals('orphaned' , $this->getModerationState('3'));
+
+    // Third harvest removes 1, re-adds 2.
+    sleep(1);
+    $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-step-3.json';
+    $harvester->registerHarvest($plan);
+    $result = $harvester->runHarvest('test5');
+
+    $expected = [
+      '2' => 'UPDATED',
+    ];
+    $this->assertEquals($expected, $result['status']['load']);
+
+    $this->assertEquals('orphaned' , $this->getModerationState('1'));
     $this->assertEquals('published', $this->getModerationState('2'));
     $this->assertEquals('orphaned' , $this->getModerationState('3'));
-    $this->assertEquals('orphaned' , $this->getModerationState('4'));
-    $this->assertEquals('published', $this->getModerationState('5'));
   }
 
   /**
