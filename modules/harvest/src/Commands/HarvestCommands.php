@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\harvest\Commands;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\harvest\Drush\Helper;
+use Drupal\harvest\Service;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  *
  * @codeCoverageIgnore
  */
-class Drush extends DrushCommands {
+class HarvestCommands extends DrushCommands {
   use Helper;
 
   /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\harvest\Drush;
+namespace Drupal\harvest\Commands;
 
 use Drupal\harvest\Storage\DatabaseTable;
 use Harvest\ETL\Factory;
