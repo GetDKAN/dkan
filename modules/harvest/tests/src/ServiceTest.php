@@ -9,6 +9,7 @@ use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Service as HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\Service as Metastore;
+use Drupal\node\NodeStorage;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\Core\Entity\EntityTypeManager;
 use Harvest\ETL\Extract\DataJson;
@@ -210,7 +211,7 @@ class ServiceTest extends TestCase {
    */
   private function getEntityTypeManagerMockChain() {
     return (new Chain($this))
-      ->add(EntityTypeManager::class)
+      ->add(EntityTypeManager::class, 'getStorage', NodeStorage::class)
       ->getMock();
   }
 

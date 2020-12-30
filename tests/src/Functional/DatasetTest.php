@@ -9,6 +9,7 @@ use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Service as Metastore;
+use Drupal\node\NodeStorage;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Harvest\ETL\Extract\DataJson;
@@ -207,7 +208,7 @@ class DatasetTest extends ExistingSiteBase {
    * Get a dataset's moderation state.
    */
   private function getModerationState(string $uuid) : string {
-    $nodeStorage = $this->getMetastore()->getNodeStorage();
+    $nodeStorage = $this->getNodeStorage();
     $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
     if (FALSE !== ($dataset = reset($datasets))) {
       return $dataset->get('moderation_state')->getString();
@@ -340,6 +341,10 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getHarvester() : Harvester {
     return \Drupal::service('dkan.harvest.service');
+  }
+
+  private function getNodeStorage(): NodeStorage {
+    return \Drupal::service('entity_type.manager')->getStorage('node');
   }
 
 }
