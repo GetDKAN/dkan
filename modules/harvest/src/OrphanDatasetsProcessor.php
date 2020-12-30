@@ -3,7 +3,7 @@
 namespace Drupal\harvest;
 
 /**
- * Trait OrphanDatasetsProcessor
+ * Trait OrphanDatasetsProcessor.
  *
  * @package Drupal\harvest
  */
