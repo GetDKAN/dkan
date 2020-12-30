@@ -22,7 +22,7 @@ trait Helper {
   private function getHarvester($id) {
 
     if (!method_exists($this, 'getHarvestPlan')) {
-      throw new \Exception("Drupal\harvest\Drush\Helper requires the host to implement the getHarvestPlan method.");
+      throw new \Exception("Drupal\harvest\Commands\Helper requires the host to implement the getHarvestPlan method.");
     }
 
     return new Harvester(new Factory($this->getHarvestPlan($id),

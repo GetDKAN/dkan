@@ -160,7 +160,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   /**
-   * Test harvesting with new, changed, updated and removed datasets.
+   * Test harvesting when some datasets are removed.
    */
   public function test5() {
 
