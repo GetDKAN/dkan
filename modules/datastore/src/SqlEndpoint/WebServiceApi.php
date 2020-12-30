@@ -17,14 +17,29 @@ class WebServiceApi implements ContainerInjectionInterface {
   use JsonResponseTrait;
   use DataModifierPluginTrait;
 
+  /**
+   * DKAN SQL Endpoint service.
+   *
+   * @var \Drupal\datastore\SqlEndpoint
+   */
   private $service;
+
+  /**
+   * The Drupal database connection to use.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
   private $database;
+
+  /**
+   * API request data.
+   *
+   * @var Symfony\Component\HttpFoundation\RequestStack
+   */
   private $requestStack;
 
   /**
-   * Inherited.
-   *
-   * @{inheritdocs}
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(

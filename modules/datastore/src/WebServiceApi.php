@@ -3,6 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\common\Resource;
+use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -21,7 +22,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Datastore Service.
    *
-   * @var \Drupa\datastore\Service
+   * @var \Drupal\datastore\Service
    */
   protected $datastoreService;
 
@@ -88,7 +89,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $resourceId = $payload->resource_id;
       $identifier = NULL; $version = NULL;
-      [$identifier, $version] = Resource::getIdentifierAndVersion($resourceId);
+      list($identifier, $version) = Resource::getIdentifierAndVersion($resourceId);
       $results = $this->datastoreService->import($identifier, FALSE, $version);
       return $this->getResponse($results);
     }
@@ -120,7 +121,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Drop.
    *
    * @param string $identifier
-   *   The uuid of a dataset.
+   *   The uuid of a resource.
    */
   public function delete($identifier) {
     try {
@@ -128,7 +129,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       return $this->getResponse(
         [
           "identifier" => $identifier,
-          "message" => "The datastore for resource {$identifier} was succesfully dropped.",
+          "message" => "The datastore for resource {$identifier} was successfully dropped.",
         ]
       );
     }
@@ -178,6 +179,91 @@ class WebServiceApi implements ContainerInjectionInterface {
         404
       );
     }
+  }
+
+  /**
+   * Perform a query on one or more datastore resources.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function query() {
+    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+
+    try {
+      $datastoreQuery = new DatastoreQuery($payloadJson);
+      $result = $this->datastoreService->runQuery($datastoreQuery);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 400);
+    }
+
+    return $this->getResponse($result->{"$"}, 200);
+  }
+
+  /**
+   * Perform a query on a single datastore resource.
+   *
+   * @param string $identifier
+   *   The uuid of a resource.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function queryResource($identifier) {
+    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    try {
+      $this->prepareQueryResourcePayload($payloadJson, $identifier);
+      $datastoreQuery = new DatastoreQuery($payloadJson);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException(
+        new \Exception("Invalid query JSON: {$e->getMessage()}"),
+        400
+      );
+    }
+    try {
+      $result = $this->datastoreService->runQuery($datastoreQuery);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e);
+    }
+
+    return $this->getResponse($result, 200);
+  }
+
+  /**
+   * Retrieve the datastore query schema.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function querySchema() {
+    $schema = json_decode(file_get_contents(__DIR__ . "/../docs/query.json"), TRUE);
+    return $this->getResponse($schema, 200);
+  }
+
+  /**
+   * Normalize the simplified resource query to a standard datastore query.
+   *
+   * @param string $json
+   *   A JSON payload.
+   * @param mixed $identifier
+   *   Resource identifier to query against.
+   */
+  private function prepareQueryResourcePayload(&$json, $identifier) {
+    $data = json_decode($json);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+      throw new \Exception(json_last_error_msg());
+    }
+    if (!empty($data->resources) || !empty($data->joins)) {
+      throw new \Exception("Joins are not available and "
+        . "resources should not be explicitly passed when using the resource "
+        . "query endpoint. Try /api/1/datastore/query.");
+    }
+    $resource = (object) ["id" => $identifier, "alias" => "t"];
+    $data->resources = [$resource];
+    $json = json_encode($data);
   }
 
 }

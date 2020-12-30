@@ -1,0 +1,35 @@
+{
+    "resources": [
+        {
+            "id": "asdf",
+            "alias": "t"
+        },
+        {
+            "id": "table1",
+            "alias": "l"
+        }
+    ],
+    "properties": [
+        {
+            "resource": "t",
+            "property": "field2"
+        },
+        {
+            "resource": "l",
+            "property": "field3"
+        }
+    ],
+    "joins": [
+        {
+            "resource": "l",
+            "condition": {
+                "resource": "t",
+                "property": "field1",
+                "value": {
+                    "resource": "l",
+                    "property": "field1"
+                }
+            }
+        }
+    ]
+}

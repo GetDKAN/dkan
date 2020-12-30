@@ -1,0 +1,30 @@
+{
+    "resources": [
+        {
+            "id": "asdf",
+            "alias": "t"
+        }
+    ],
+    "properties": [
+        {
+            "alias": "nested",
+            "expression": {
+                "operator": "*",
+                "operands": [
+                    {
+                        "expression": {
+                            "operator": "+",
+                            "operands": ["field1", "field2"]
+                        }
+                    },
+                    {
+                        "expression": {
+                            "operator": "+",
+                            "operands": ["field3", "field4"]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

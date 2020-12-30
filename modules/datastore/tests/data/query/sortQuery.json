@@ -1,0 +1,25 @@
+{
+    "resources": [
+        {
+            "id": "asdf",
+            "alias": "t"
+        }
+    ],
+    "sorts": [
+        {
+            "resource": "t",
+            "property": "field1",
+            "order": "desc"
+        },
+        {
+            "resource": "t",
+            "property": "field2",
+            "order": "asc"
+        },
+        {
+            "resource": "t",
+            "property": "field3",
+            "order": "desc"
+        }
+    ]
+}

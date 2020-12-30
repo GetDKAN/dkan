@@ -40,7 +40,7 @@ class Docs implements ContainerInjectionInterface {
   /**
    * Serializer to translate yaml to json.
    *
-   * @var \Symfony\Component\Serializer\Serializer
+   * @var \Drupal\Component\Serialization\SerializationInterface
    */
   private $serializer;
 

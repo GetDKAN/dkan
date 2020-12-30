@@ -1,0 +1,8 @@
+{
+    "resources": {
+        "id": "asdf",
+        "alias": "t"
+    },
+    "properties": ["field1", "field2"],
+    "results": false
+}

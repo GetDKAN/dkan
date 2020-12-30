@@ -5,7 +5,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.0"
+      DKTL_VERSION: "4.2.1"
     steps:
       - checkout:
           path: dkan
