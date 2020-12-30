@@ -231,16 +231,6 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Return Drupal\metastore\Storage\Data's nodeStorage.
-   *
-   * @return \Drupal\node\NodeStorageInterface
-   *   Node storage.
-   */
-  public function getNodeStorage() {
-    return $this->factory->getInstance('dataset')->getNodeStorage();
-  }
-
-  /**
    * Implements PUT method.
    *
    * @param string $schema_id
