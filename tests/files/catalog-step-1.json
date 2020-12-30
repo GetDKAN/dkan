@@ -2,15 +2,15 @@
   "dataset": [
     {
       "accessLevel": "public",
-      "description": "Removed in step 3.",
+      "description": "Updated in step 2.",
       "identifier": "1",
       "modified": "2019-12-31",
-      "title": "Title",
+      "title": "Updated title",
       "keyword": ["keyword"]
     },
     {
       "accessLevel": "public",
-      "description": "Removed in step 2, re-added in step3.",
+      "description": "Removed in step 2.",
       "identifier": "2",
       "modified": "2019-12-31",
       "title": "Removed",
