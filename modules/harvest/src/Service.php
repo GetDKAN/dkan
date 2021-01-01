@@ -155,7 +155,8 @@ class Service implements ContainerInjectionInterface {
     $harvester = $this->getHarvester($id);
 
     $result = $harvester->harvest();
-    $result['status']['orphan_ids'] = $this->processOrphanDatasets($id, $result['status']['extracted_items_ids']);
+    $result['status']['orphan_ids'] = $this->getOrphanIdsFromResult($id, $result['status']['extracted_items_ids']);
+    $this->processOrphanIds($result['status']['orphan_ids']);
 
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
     $current_time = time();

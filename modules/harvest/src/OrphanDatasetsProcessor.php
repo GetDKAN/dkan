@@ -20,7 +20,7 @@ trait OrphanDatasetsProcessor {
    * @return array
    *   Orphan dataset identifiers.
    */
-  private function processOrphanDatasets(string $harvestId, array $extractedIds) : array {
+  private function getOrphanIdsFromResult(string $harvestId, array $extractedIds) : array {
 
     $lastRunId = $this->getLastHarvestRunId($harvestId);
     if (!$lastRunId) {
@@ -28,7 +28,6 @@ trait OrphanDatasetsProcessor {
     }
 
     $orphanIds = $this->findOrphansFromSpecificRun($harvestId, $lastRunId, $extractedIds);
-    $this->processOrphanDatasetIds($orphanIds);
 
     return $orphanIds;
   }
@@ -58,7 +57,7 @@ trait OrphanDatasetsProcessor {
    * @param array $orphanIds
    *   Orphan dataset identifiers.
    */
-  private function processOrphanDatasetIds(array $orphanIds) {
+  private function processOrphanIds(array $orphanIds) {
 
     $nodeStorage = $this->entityTypeManager->getStorage('node');
 
