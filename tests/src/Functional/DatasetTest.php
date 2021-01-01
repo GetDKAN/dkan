@@ -161,34 +161,21 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   /**
-   * Test harvesting when some datasets are removed.
+   * Test removal of datasets by a subsequent harvest.
    */
   public function test5() {
 
-    // Harvest plan.
-    $plan = (object) [
-      'identifier' => 'test5',
-      'extract' => (object) [
-        'type' => DataJson::class,
-        'uri' => 'file://' . __DIR__ . '/../../files/catalog-step-1.json',
-      ],
-      'transforms' => [],
-      'load' => (object) [
-        'type' => Dataset::class,
-      ],
-    ];
-
+    $plan = $this->getPlan('test5', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
+    $harvester->registerHarvest($plan);
 
     // First harvest.
-    $harvester->registerHarvest($plan);
-    /** @var \Procrastinator\Result $result */
     $harvester->runHarvest('test5');
 
     // Ensure different harvest run identifiers, since based on timestamp.
     sleep(1);
 
-    // Second harvest, with different catalog to simulate change.
+    // Second harvest, re-register with different catalog to simulate change.
     $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-step-2.json';
     $harvester->registerHarvest($plan);
     $result = $harvester->runHarvest('test5');
@@ -202,6 +189,23 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals('published', $this->getModerationState('1'));
     $this->assertEquals('orphaned' , $this->getModerationState('2'));
     $this->assertEquals('orphaned' , $this->getModerationState('3'));
+  }
+
+  /**
+   * Generate a harvest plan object.
+   */
+  private function getPlan(string $identifier, string $testFilename) : \stdClass {
+    return (object) [
+      'identifier' => $identifier,
+      'extract' => (object) [
+        'type' => DataJson::class,
+        'uri' => 'file://' . __DIR__ . '/../../files/' . $testFilename,
+      ],
+      'transforms' => [],
+      'load' => (object) [
+        'type' => Dataset::class,
+      ],
+    ];
   }
 
   /**
