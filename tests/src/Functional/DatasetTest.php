@@ -183,12 +183,15 @@ class DatasetTest extends ExistingSiteBase {
     // Test unchanged, updated and new datasets.
     $expected = [
       '1' => 'UNCHANGED',
+      '2' => 'UPDATED',
+      '4' => 'NEW',
     ];
     $this->assertEquals($expected, $result['status']['load']);
 
     $this->assertEquals('published', $this->getModerationState('1'));
-    $this->assertEquals('orphaned' , $this->getModerationState('2'));
+    $this->assertEquals('published' , $this->getModerationState('2'));
     $this->assertEquals('orphaned' , $this->getModerationState('3'));
+    $this->assertEquals('published' , $this->getModerationState('4'));
   }
 
   /**
