@@ -249,4 +249,38 @@ class HarvestCommands extends DrushCommands {
     $this->renderStatusTable($harvest_id, $run_id, $run);
   }
 
+  /**
+   * Orphan datasets from every run of a harvest.
+   *
+   * @param string $harvestId
+   *   Harvest identifier.
+   *
+   * @return int
+   *   Exit code.
+   *
+   * @command dkan:harvest:orphan-datasets
+   * @alias dkan:harvest:orphan
+   */
+  public function orphanDatasets(string $harvestId) : int {
+
+    if (!in_array($harvestId, $this->harvestService->getAllHarvestIds())) {
+      $this->logger()->error("Harvest id {$harvestId} not found.");
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    try {
+      $orphans = $this->harvestService->getOrphansFromCompleteHarvest($harvestId);
+      $this->harvestService->processOrphanIds($orphans);
+      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(", ", $orphans));
+      return DrushCommands::EXIT_SUCCESS;
+    }
+    catch (\Exception $e) {
+      $this->logger()->error("Error in orphaning datasets of harvest %harvest: %error", [
+        '%harvest' => $harvestId,
+        '%error' => $e->getMessage(),
+      ]);
+      return DrushCommands::EXIT_FAILURE;
+    }
+  }
+
 }

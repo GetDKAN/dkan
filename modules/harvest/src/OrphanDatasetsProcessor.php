@@ -57,7 +57,7 @@ trait OrphanDatasetsProcessor {
    * @param array $orphanIds
    *   Orphan dataset identifiers.
    */
-  private function processOrphanIds(array $orphanIds) {
+  public function processOrphanIds(array $orphanIds) {
 
     $nodeStorage = $this->entityTypeManager->getStorage('node');
 
@@ -68,6 +68,40 @@ trait OrphanDatasetsProcessor {
         $dataset->save();
       }
     }
+  }
+
+  public function getOrphansFromCompleteHarvest(string $harvestId) {
+
+    $cumulativelyRemovedIds = [];
+    $runIds = $this->getAllHarvestRunInfo($harvestId);
+
+    // Initialize with the first harvest run.
+    $previousRunId = array_shift($runIds);
+    $previousExtractedIds = $this->getExtractedIds($harvestId,$previousRunId);
+
+    foreach ($runIds as $runId) {
+      $extractedIds = $this->getExtractedIds($harvestId, $runId);
+
+      // Find and keep track of removed identifiers.
+      $removed = array_diff($previousExtractedIds, $extractedIds);
+      $cumulativelyRemovedIds = array_unique(array_merge($cumulativelyRemovedIds, $removed));
+      // Find but do not keep track of (re-)added identifiers.
+      $added = array_diff($extractedIds, $previousExtractedIds);
+      $cumulativelyRemovedIds = array_diff($cumulativelyRemovedIds, $added);
+
+      // Set up the next iteration by re-using this known result.
+      $previousExtractedIds = $extractedIds;
+    }
+
+    return $cumulativelyRemovedIds;
+  }
+
+  /**
+  * Get ids extracted by a specific harvest run.
+  */
+  private function getExtractedIds(string $harvestId, string $runId) : array {
+    $runInfo = json_decode($this->getHarvestRunInfo($harvestId, $runId));
+    return $runInfo->status->extracted_items_ids;
   }
 
 }
