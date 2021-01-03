@@ -241,6 +241,27 @@ class ServiceTest extends TestCase {
   }
 
   /**
+   *
+   */
+  public function testGetOrphansFromCompleteHarvest() {
+
+    $successiveExtractedIds = (new Options())
+      ->add('101', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
+      ->add('102', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 4]]]))
+      ->add('103', json_encode((object) ['status' => ['extracted_items_ids' => [1, 3]]]))
+      ->add('104', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
+      ->use('extractedIds');
+
+    $container = $this->getCommonMockChain()
+      ->add(DatabaseTable::class, 'retrieveAll', ['101', '102', '103', '104'])
+      ->add(DatabaseTable::class, 'retrieve', $successiveExtractedIds);
+    $service = HarvestService::create($container->getMock());
+    $removedIds = $service->getOrphansFromCompleteHarvest('1');
+
+    $this->assertEquals(['4'], array_values($removedIds));
+  }
+
+  /**
    * Private.
    */
   private function getCommonMockChain() {
