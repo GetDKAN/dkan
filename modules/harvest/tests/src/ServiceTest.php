@@ -256,7 +256,7 @@ class ServiceTest extends TestCase {
       ->add(DatabaseTable::class, 'retrieveAll', ['101', '102', '103', '104'])
       ->add(DatabaseTable::class, 'retrieve', $successiveExtractedIds);
     $service = HarvestService::create($container->getMock());
-    $removedIds = $service->getOrphansFromCompleteHarvest('1');
+    $removedIds = $service->getOrphanIdsFromCompleteHarvest('1');
 
     $this->assertEquals(['4'], array_values($removedIds));
   }

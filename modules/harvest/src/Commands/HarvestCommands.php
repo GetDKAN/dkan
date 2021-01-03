@@ -269,7 +269,7 @@ class HarvestCommands extends DrushCommands {
     }
 
     try {
-      $orphans = $this->harvestService->getOrphansFromCompleteHarvest($harvestId);
+      $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
       $this->harvestService->processOrphanIds($orphans);
       $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(", ", $orphans));
       return DrushCommands::EXIT_SUCCESS;
