@@ -52,7 +52,7 @@ trait OrphanDatasetsProcessor {
   }
 
   /**
-   * Get orphan datasets from a harvet's cumulative runs.
+   * Get orphan datasets from a harvest's cumulative runs.
    *
    * @param string $harvestId
    *   Harvest identifier.
