@@ -394,4 +394,44 @@ class Service implements ContainerInjectionInterface {
     return $this->queue;
   }
 
+  /**
+   * Public.
+   */
+  public function clearJobStore($uuid) {
+    $query = \Drupal::database()->query('Select version from dkan_metastore_resource_mapper where identifier = :id and perspective = :p', array(
+      ':id' => $uuid,
+      ':p' => 'local_file',
+    ));
+    $version = $query->fetchField();
+    $ref_uuid_f = $uuid . '_' . $version;
+    $ref_uuid_i = md5($uuid . '__' . $version . '__local_file');
+
+    try {
+      // Delete importer job.
+      $query = \Drupal::database()->query('Delete from jobstore_dkan_datastore_importer where ref_uuid = :id', array(
+        ':id' => $ref_uuid_i,
+      ));
+      $query->execute();
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('datastore')->error('Not able to delete the importer job with ref_uuid %id', array(
+        '%id' => $ref_uuid_i,
+      ));
+    }
+
+    try {
+      // Delete filefetcher job.
+      $query = \Drupal::database()->query('Delete from jobstore_filefetcher_filefetcher where ref_uuid = :id', array(
+        ':id' => $ref_uuid_f,
+      ));
+      $query->execute();
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('datastore')->error('Not able to delete the file fetcher job with ref_uuid %id', array(
+        '%id' => $ref_uuid_f,
+      ));
+    }
+
+  }
+
 }

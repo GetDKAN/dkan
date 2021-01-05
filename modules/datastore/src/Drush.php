@@ -5,6 +5,7 @@ namespace Drupal\datastore;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drush\Commands\DrushCommands;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
 
 /**
  * Drush commands for controlling the datastore.
@@ -12,6 +13,12 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
+  /**
+   * The metastore service.
+   *
+   * @var \Drupal\metastore\Service
+   */
+  protected $metastoreService;
 
   /**
    * The datastore service.
@@ -25,6 +32,7 @@ class Drush extends DrushCommands {
    */
   public function __construct() {
     $this->datastoreService = \Drupal::service('datastore.service');
+    $this->metastoreService = \Drupal::service('metastore.service');
   }
 
   /**
@@ -135,6 +143,82 @@ class Drush extends DrushCommands {
       $this->logger->error("We were not able to load the entity with uuid {$uuid}");
       $this->logger->debug($e->getMessage());
     }
+
+    try {
+      $this->datastoreService->clearJobStore($uuid);
+    }
+    catch (\Exception $e) {
+      $this->logger->error("We were not able to remove jobstore entries for uuid {$uuid}");
+      $this->logger->debug($e->getMessage());
+    }
+
   }
+
+  /**
+   * Drop a ALL datastore tables.
+   *
+   * @command dkan:datastore:drop-all
+   */
+  public function dropAll() {
+
+    foreach ($this->metastoreService->getAll('distribution') as $distribution) {
+      $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
+      try {
+        $this->datastoreService->drop($uuid);
+        $this->logger->notice("Successfully dropped the datastore for {$uuid}");
+      }
+      catch (\Exception $e) {
+        $this->logger->error("We were not able to load the entity with uuid {$uuid}");
+        $this->logger->debug($e->getMessage());
+      }
+      try {
+        $this->datastoreService->clearJobStore($uuid);
+      }
+      catch (\Exception $e) {
+        echo 'hi';
+        //$this->logger->error("We were not able to remove jobstore entries for uuid {$uuid}");
+        //$this->logger->debug($e->getMessage());
+      }
+    }
+  }
+
+  // /**
+  //  * Private.
+  //  */
+  // private function clearJobStore($uuid) {
+  //   echo "here i am";
+  //   $query = \Drupal::database()->query('Select version from dkan_metastore_resource_mapper where identifier = :id and perspective = :p', array(
+  //     ':id' => $uuid,
+  //     ':p' => 'local_file',
+  //   ));
+  //   $version = $query->fetchField();
+  //   $ref_uuid_f = $uuid . '_' . $version;
+  //   $ref_uuid_i = md5($uuid . '__' . $version . '__local_file');
+
+  //   try {
+  //     // Delete importer job.
+  //     $query = \Drupal::database()->query('Delete from jobstore_dkan_datastore_importer where ref_uuid = :id', array(
+  //       ':id' => $ref_uuid_i,
+  //     ));
+  //     $query->execute();
+  //   }
+  //   catch (\Exception $e) {
+  //     $this->logger->error("We were not able to delete the importer job with ref_uuid {$ref_uuid_i}");
+  //     $this->logger->debug($e->getMessage());
+  //   }
+
+  //   try {
+  //     // Delete filefetcher job.
+  //     $query = \Drupal::database()->query('Delete from jobstore_filefetcher_filefetcher where ref_uuid = :id', array(
+  //       ':id' => $ref_uuid_f,
+  //     ));
+  //     $query->execute();
+  //   }
+  //   catch (\Exception $e) {
+  //     $this->logger->error("We were not able to delete the file fetcher job with ref_uuid {$ref_uuid_f}");
+  //     $this->logger->debug($e->getMessage());
+  //   }
+
+  //}
 
 }
