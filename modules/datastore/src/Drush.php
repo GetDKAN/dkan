@@ -137,17 +137,19 @@ class Drush extends DrushCommands {
   public function drop($uuid) {
     try {
       $this->datastoreService->drop($uuid);
+      $this->logger->notice("Successfully dropped the datastore for {$uuid}");
     }
     catch (\Exception $e) {
-      $this->logger->error("We were not able to load the entity with uuid {$uuid}");
+      $this->logger->error("Not able to load the entity with uuid {$uuid}");
       $this->logger->debug($e->getMessage());
     }
 
     try {
       $this->datastoreService->clearJobStore($uuid);
+      $this->logger->notice("Successfully cleaned jobstore tables for {$uuid}");
     }
     catch (\Exception $e) {
-      $this->logger->error("We were not able to remove jobstore entries for uuid {$uuid}");
+      $this->logger->error("Not able to remove jobstore entries for uuid {$uuid}");
       $this->logger->debug($e->getMessage());
     }
 
