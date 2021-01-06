@@ -4,7 +4,11 @@ namespace Drupal\datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
+use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\datastore\Service as Datastore;
+use Drupal\metastore\Service as Metastore;
 use Drush\Commands\DrushCommands;
+use Drupal\datastore\PruneTrait;
 
 /**
  * Drush commands for controlling the datastore.
@@ -12,6 +16,7 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
+  use PruneTrait;
   /**
    * The metastore service.
    *
@@ -27,11 +32,24 @@ class Drush extends DrushCommands {
   protected $datastoreService;
 
   /**
+   * Resource localizer for handling remote resource URLs.
+   *
+   * @var \Drupal\datastore\Service\ResourceLocalizer
+   */
+  private $resourceLocalizer;
+
+  /**
    * Constructor for DkanDatastoreCommands.
    */
+  // public function __construct(ResourceLocalizer $resourceLocalizer, Metastore $metastoreService, Datastore $datastoreService) {
+  //   $this->datastoreService = $datastoreService;
+  //   $this->metastoreService = $metastoreService;
+  //   $this->resourceLocalizer = $resourceLocalizer;
+  // }
   public function __construct() {
     $this->datastoreService = \Drupal::service('datastore.service');
     $this->metastoreService = \Drupal::service('metastore.service');
+    $this->resourceLocalizer = \Drupal::service('dkan.datastore.service.resource_localizer');
   }
 
   /**
@@ -145,7 +163,7 @@ class Drush extends DrushCommands {
     }
 
     try {
-      $this->datastoreService->clearJobStore($uuid);
+      $this->jobstorePrune($uuid);
       $this->logger->notice("Successfully cleaned jobstore tables for {$uuid}");
     }
     catch (\Exception $e) {
@@ -173,7 +191,8 @@ class Drush extends DrushCommands {
         $this->logger->debug($e->getMessage());
       }
       try {
-        $this->datastoreService->clearJobStore($uuid);
+        $this->jobstorePrune($uuid);
+        $this->logger->notice("Successfully cleaned jobstore tables for {$uuid}");
       }
       catch (\Exception $e) {
         $this->logger->error("Not able to remove jobstore entries for uuid {$uuid}");

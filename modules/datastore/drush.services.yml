@@ -1,6 +1,10 @@
 services:
   datastore:commands:
     class: \Drupal\datastore\Drush
+    arguments:
+      - '@dkan.datastore.service'
+      - '@dkan.metastore.service'
+      - '@dkan.datastore.service.resource_localizer'
     tags:
       - { name: drush.command }
   datastore.purger.commands:
