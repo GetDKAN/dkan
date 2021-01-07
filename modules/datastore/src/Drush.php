@@ -8,7 +8,6 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\Service as Metastore;
 use Drush\Commands\DrushCommands;
-//use Drupal\datastore\PruneTrait;
 
 /**
  * Drush commands for controlling the datastore.
@@ -162,14 +161,7 @@ class Drush extends DrushCommands {
       return;
     }
 
-    try {
-      $this->jobstorePrune($uuid);
-      $this->logger->notice("Successfully cleaned jobstore tables for {$uuid}");
-    }
-    catch (\Exception $e) {
-      $this->logger->error("Not able to remove jobstore entries for uuid {$uuid}");
-      $this->logger->debug($e->getMessage());
-    }
+    $this->jobstorePrune($uuid);
 
   }
 
@@ -192,14 +184,8 @@ class Drush extends DrushCommands {
         continue;
       }
 
-      try {
-        $this->jobstorePrune($uuid);
-        $this->logger->notice("Successfully cleaned jobstore tables for {$uuid}");
-      }
-      catch (\Exception $e) {
-        $this->logger->error("Not able to remove jobstore entries for uuid {$uuid}");
-        $this->logger->debug($e->getMessage());
-      }
+      $this->jobstorePrune($uuid);
+
     }
   }
 

@@ -31,11 +31,12 @@ trait PruneTrait {
     try {
       foreach ($jobs as $job) {
         \Drupal::database()->delete($job['table'])->condition('ref_uuid', $job['id'])->execute();
+        $this->logger('datastore')->notice("Successfully removed the {$job['table']} record for ref_uuid {$job['id']}.");
       }
     }
     catch (\Exception $e) {
-      \Drupal::logger('datastore')->error('Not able to delete the importer job with ref_uuid %id', ['%id' => $job['id']]);
-      \Drupal::logger('datastore')->error($e->getMessage());
+      $this->logger('datastore')->error("Failed to delete the jobstore record for ref_uuid {$job['id']}");
+      $this->logger('datastore')->error($e->getMessage());
     }
   }
 
