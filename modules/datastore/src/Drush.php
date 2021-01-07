@@ -8,7 +8,7 @@ use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\Service as Metastore;
 use Drush\Commands\DrushCommands;
-use Drupal\datastore\PruneTrait;
+//use Drupal\datastore\PruneTrait;
 
 /**
  * Drush commands for controlling the datastore.
