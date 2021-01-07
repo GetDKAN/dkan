@@ -30,9 +30,7 @@ trait PruneTrait {
 
     try {
       foreach ($jobs as $job) {
-        $query = \Drupal::database()->delete($job['table']);
-        $query->condition('ref_uuid', $job['id']);
-        $query->execute();
+        $query = \Drupal::database()->delete($job['table'])->condition('ref_uuid', $job['id'])->execute();
       }
     }
     catch (\Exception $e) {

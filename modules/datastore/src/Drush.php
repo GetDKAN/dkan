@@ -182,7 +182,6 @@ class Drush extends DrushCommands {
 
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
       $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
-      $continue = TRUE;
       try {
         $this->datastoreService->drop($uuid);
         $this->logger->notice("Successfully dropped the datastore for {$uuid}");
@@ -190,17 +189,16 @@ class Drush extends DrushCommands {
       catch (\Exception $e) {
         $this->logger->error("Unable to find an entity with uuid {$uuid}");
         $this->logger->debug($e->getMessage());
-        $continue = FALSE;
+        continue;
       }
-      if ($continue) {
-        try {
-          $this->jobstorePrune($uuid);
-          $this->logger->notice("Successfully cleaned jobstore tables for {$uuid}");
-        }
-        catch (\Exception $e) {
-          $this->logger->error("Not able to remove jobstore entries for uuid {$uuid}");
-          $this->logger->debug($e->getMessage());
-        }
+
+      try {
+        $this->jobstorePrune($uuid);
+        $this->logger->notice("Successfully cleaned jobstore tables for {$uuid}");
+      }
+      catch (\Exception $e) {
+        $this->logger->error("Not able to remove jobstore entries for uuid {$uuid}");
+        $this->logger->debug($e->getMessage());
       }
     }
   }
