@@ -6,6 +6,7 @@ namespace Drupal\datastore;
  * PruneTrait.
  */
 trait PruneTrait {
+
   /**
    * Delete jobstore entries related to a datastore.
    */
@@ -16,29 +17,28 @@ trait PruneTrait {
     }
     $resource = $this->resourceLocalizer->get($uuid);
     $ref_uuid = $resource->getUniqueIdentifier();
-    $ref_uuid_f = substr(str_replace('__', '_', $ref_uuid), 0, -11);
-    $ref_uuid_i = md5($ref_uuid);
+    $jobs = [
+      [
+        "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
+        "table" => "jobstore_filefetcher_filefetcher",
+      ],
+      [
+        "id" => md5($ref_uuid),
+        "table" => "jobstore_dkan_datastore_importer",
+      ],
+    ];
 
     try {
-      $query = \Drupal::database()->delete('jobstore_dkan_datastore_importer');
-      $query->condition('ref_uuid', $ref_uuid_i);
-      $query->execute();
+      foreach ($jobs as $job) {
+        $query = \Drupal::database()->delete($job['table']);
+        $query->condition('ref_uuid', $job['id']);
+        $query->execute();
+      }
     }
     catch (\Exception $e) {
-      \Drupal::logger('datastore')->error('Not able to delete the importer job with ref_uuid %id', ['%id' => $ref_uuid_i]);
+      \Drupal::logger('datastore')->error('Not able to delete the importer job with ref_uuid %id', ['%id' => $job['id']]);
       \Drupal::logger('datastore')->error($e->getMessage());
     }
-
-    try {
-      $query = \Drupal::database()->delete('jobstore_filefetcher_filefetcher');
-      $query->condition('ref_uuid', $ref_uuid_f);
-      $query->execute();
-    }
-    catch (\Exception $e) {
-      \Drupal::logger('datastore')->error('Not able to delete the file fetcher job with ref_uuid %id', ['%id' => $ref_uuid_f]);
-      \Drupal::logger('datastore')->error($e->getMessage());
-    }
-
   }
 
 }
