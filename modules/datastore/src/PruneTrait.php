@@ -2,19 +2,10 @@
 
 namespace Drupal\datastore;
 
-//use Drupal\datastore\Service\ResourceLocalizer;
-
 /**
  * PruneTrait.
  */
 trait PruneTrait {
-  // /**
-  //  * Resource localizer for handling remote resource URLs.
-  //  *
-  //  * @var \Drupal\datastore\Service\ResourceLocalizer
-  //  */
-  // private $resourceLocalizer;
-
   /**
    * Delete jobstore entries related to a datastore.
    */
