@@ -35,8 +35,7 @@ trait PruneTrait {
       }
     }
     catch (\Exception $e) {
-      $this->logger('datastore')->error("Failed to delete the jobstore record for ref_uuid {$job['id']}");
-      $this->logger('datastore')->error($e->getMessage());
+      $this->logger('datastore')->error("Failed to delete the jobstore record for ref_uuid {$job['id']}.", $e->getMessage());
     }
   }
 
