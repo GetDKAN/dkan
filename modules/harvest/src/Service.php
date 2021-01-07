@@ -3,6 +3,7 @@
 namespace Drupal\harvest;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 use Harvest\Harvester as DkanHarvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
@@ -16,6 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Service implements ContainerInjectionInterface {
 
+  use OrphanDatasetsProcessor;
+
   private $storeFactory;
 
   /**
@@ -26,6 +29,13 @@ class Service implements ContainerInjectionInterface {
   private $metastore;
 
   /**
+   * Entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   */
+  private $entityTypeManager;
+
+  /**
    * Create.
    *
    * @inheritdoc
@@ -33,16 +43,18 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new self(
       $container->get("dkan.harvest.storage.database_table"),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('entity_type.manager')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $storeFactory, Metastore $metastore) {
+  public function __construct(FactoryInterface $storeFactory, Metastore $metastore, EntityTypeManager $entityTypeManager) {
     $this->storeFactory = $storeFactory;
     $this->metastore = $metastore;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -143,6 +155,8 @@ class Service implements ContainerInjectionInterface {
     $harvester = $this->getHarvester($id);
 
     $result = $harvester->harvest();
+    $result['status']['orphan_ids'] = $this->getOrphanIdsFromResult($id, $result['status']['extracted_items_ids']);
+    $this->processOrphanIds($result['status']['orphan_ids']);
 
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
     $current_time = time();
@@ -184,7 +198,7 @@ class Service implements ContainerInjectionInterface {
    * @param string $id
    *   The harvest identifier.
    */
-  private function getLastHarvestRunInfo(string $id) {
+  private function getLastHarvestRunId(string $id) {
     $runs = $this->getAllHarvestRunInfo($id);
     rsort($runs);
     return reset($runs);
@@ -199,7 +213,7 @@ class Service implements ContainerInjectionInterface {
   public function publish(string $id) {
     $publishedIdentifiers = [];
 
-    $lastRunId = $this->getLastHarvestRunInfo($id);
+    $lastRunId = $this->getLastHarvestRunId($id);
     $lastRunInfoJsonString = $this->getHarvestRunInfo($id, $lastRunId);
     $lastRunInfoObj = json_decode($lastRunInfoJsonString);
 

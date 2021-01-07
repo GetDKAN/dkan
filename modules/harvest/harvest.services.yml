@@ -4,6 +4,7 @@ services:
     arguments:
       - '@dkan.harvest.storage.database_table'
       - '@dkan.metastore.service'
+      - '@entity_type.manager'
   dkan.harvest.storage.database_table:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:
@@ -18,6 +19,7 @@ services:
     arguments:
       - '@dkan.harvest.storage.database_table'
       - '@dkan.metastore.service'
+      - '@entity_type.manager'
   harvest.storage.database_table:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:

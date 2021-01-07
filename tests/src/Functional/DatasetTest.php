@@ -5,10 +5,14 @@ namespace Drupal\Tests\dkan\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\harvest\Load\Dataset;
+use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Service;
+use Drupal\metastore\Service as Metastore;
+use Drupal\node\NodeStorage;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Harvest\ETL\Extract\DataJson;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 class DatasetTest extends ExistingSiteBase {
@@ -60,6 +64,7 @@ class DatasetTest extends ExistingSiteBase {
 
   public function setUp() {
     parent::setUp();
+    $this->removeHarvests();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();
     $this->removeAllFileFetchingJobs();
@@ -153,6 +158,69 @@ class DatasetTest extends ExistingSiteBase {
 
     $defaultModerationState->set('type_settings.default_moderation_state', 'published');
     $defaultModerationState->save();
+  }
+
+  /**
+   * Test removal of datasets by a subsequent harvest.
+   */
+  public function test5() {
+
+    $plan = $this->getPlan('test5', 'catalog-step-1.json');
+    $harvester = $this->getHarvester();
+    $harvester->registerHarvest($plan);
+
+    // First harvest.
+    $harvester->runHarvest('test5');
+
+    // Ensure different harvest run identifiers, since based on timestamp.
+    sleep(1);
+
+    // Second harvest, re-register with different catalog to simulate change.
+    $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-step-2.json';
+    $harvester->registerHarvest($plan);
+    $result = $harvester->runHarvest('test5');
+
+    // Test unchanged, updated and new datasets.
+    $expected = [
+      '1' => 'UNCHANGED',
+      '2' => 'UPDATED',
+      '4' => 'NEW',
+    ];
+    $this->assertEquals($expected, $result['status']['load']);
+
+    $this->assertEquals('published', $this->getModerationState('1'));
+    $this->assertEquals('published' , $this->getModerationState('2'));
+    $this->assertEquals('orphaned' , $this->getModerationState('3'));
+    $this->assertEquals('published' , $this->getModerationState('4'));
+  }
+
+  /**
+   * Generate a harvest plan object.
+   */
+  private function getPlan(string $identifier, string $testFilename) : \stdClass {
+    return (object) [
+      'identifier' => $identifier,
+      'extract' => (object) [
+        'type' => DataJson::class,
+        'uri' => 'file://' . __DIR__ . '/../../files/' . $testFilename,
+      ],
+      'transforms' => [],
+      'load' => (object) [
+        'type' => Dataset::class,
+      ],
+    ];
+  }
+
+  /**
+   * Get a dataset's moderation state.
+   */
+  private function getModerationState(string $uuid) : string {
+    $nodeStorage = $this->getNodeStorage();
+    $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
+    if (FALSE !== ($dataset = reset($datasets))) {
+      return $dataset->get('moderation_state')->getString();
+    }
+    return '';
   }
 
   /**
@@ -270,12 +338,20 @@ class DatasetTest extends ExistingSiteBase {
     return $identifier;
   }
 
-  private function getMetastore(): Service {
+  private function getMetastore(): Metastore {
     return \Drupal::service('dkan.metastore.service');
   }
 
   private function getQueueService() : QueueFactory {
     return \Drupal::service('queue');
+  }
+
+  private function getHarvester() : Harvester {
+    return \Drupal::service('dkan.harvest.service');
+  }
+
+  private function getNodeStorage(): NodeStorage {
+    return \Drupal::service('entity_type.manager')->getStorage('node');
   }
 
 }
