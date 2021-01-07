@@ -4,8 +4,6 @@ namespace Drupal\datastore;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\Service as Metastore;
@@ -17,7 +15,7 @@ use Drupal\datastore\PruneTrait;
  *
  * @codeCoverageIgnore
  */
-class Drush extends DrushCommands implements ContainerInjectionInterface {
+class Drush extends DrushCommands {
   use PruneTrait;
   /**
    * The metastore service.
@@ -41,17 +39,6 @@ class Drush extends DrushCommands implements ContainerInjectionInterface {
   private $resourceLocalizer;
 
   /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('dkan.metastore.service'),
-      $container->get('dkan.datastore.service'),
-      $container->get('dkan.datastore.service.resource_localizer')
-    );
-  }
-
-  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
@@ -63,11 +50,6 @@ class Drush extends DrushCommands implements ContainerInjectionInterface {
     $this->datastoreService = $datastoreService;
     $this->resourceLocalizer = $resourceLocalizer;
   }
-  // public function __construct() {
-  //   $this->datastoreService = \Drupal::service('datastore.service');
-  //   $this->metastoreService = \Drupal::service('metastore.service');
-  //   $this->resourceLocalizer = \Drupal::service('dkan.datastore.service.resource_localizer');
-  // }
 
   /**
    * Import a datastore.
