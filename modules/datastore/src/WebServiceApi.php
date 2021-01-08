@@ -268,8 +268,8 @@ class WebServiceApi implements ContainerInjectionInterface {
     $max = $this->datastoreQuery->{"$.limit"};
 
     // Disable extra queries.
-    $this->datastoreQuery->{"$.count"} = false;
-    $this->datastoreQuery->{"$.schema"} = false;
+    $this->datastoreQuery->{"$.count"} = FALSE;
+    $this->datastoreQuery->{"$.schema"} = FALSE;
 
     $data = $this->addHeaderRow($data);
     $response = new StreamedResponse();

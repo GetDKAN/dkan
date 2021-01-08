@@ -20,6 +20,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class WebServiceApiTest extends TestCase {
 
   /**
+   * @var
+   */
+  private $buffer;
+
+  /**
    *
    */
   public function testMultipleImports() {
@@ -69,12 +74,12 @@ class WebServiceApiTest extends TestCase {
     // Need 2 json responses which get combined on output.
     $container = $this->getQueryContainer('csv', 'multiple');
     $webServiceApi = WebServiceApi::create($container);
-
-    ob_start();
+    ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->fileQuery();
     $result->sendContent();
-    $csv = explode("\n", ob_get_contents());
-    ob_end_clean();
+
+    $csv = explode("\n", $this->buffer);
+    ob_get_clean();
     $this->assertEquals('record_number,data', $csv[0]);
     $this->assertEquals('1,data', $csv[1]);
     $this->assertEquals('50,data', $csv[50]);
@@ -148,4 +153,12 @@ class WebServiceApiTest extends TestCase {
       ->getMock();
   }
 
+  /**
+   * Callback to get output buffer.
+   *
+   * @param $buffer
+   */
+  protected function getBuffer($buffer) {
+    $this->buffer .= $buffer;
+  }
 }
