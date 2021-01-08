@@ -3,7 +3,9 @@
 namespace Drupal\datastore;
 
 /**
- * PruneTrait.
+ * Datastore Trait to assist Drush commands.
+ *
+ * @codeCoverageIgnore
  */
 trait PruneTrait {
 
