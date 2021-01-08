@@ -7,7 +7,7 @@ namespace Drupal\datastore;
  *
  * @codeCoverageIgnore
  */
-trait PruneTrait {
+trait TableTrait {
 
   /**
    * Delete jobstore entries related to a datastore.

@@ -15,7 +15,7 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
-  use PruneTrait;
+  use TableTrait;
   /**
    * The metastore service.
    *
