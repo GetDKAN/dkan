@@ -18,6 +18,7 @@ use Drupal\datastore\Storage\QueryFactory;
  * Main services for the datastore.
  */
 class Service implements ContainerInjectionInterface {
+
   /**
    * Resource localizer for handling remote resource URLs.
    *
