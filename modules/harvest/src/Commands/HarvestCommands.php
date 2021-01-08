@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\harvest;
+namespace Drupal\harvest\Commands;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\harvest\Drush\Helper;
+use Drupal\harvest\Service;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  *
  * @codeCoverageIgnore
  */
-class Drush extends DrushCommands {
+class HarvestCommands extends DrushCommands {
   use Helper;
 
   /**
@@ -247,6 +247,40 @@ class Drush extends DrushCommands {
     $run = json_decode($run, TRUE);
 
     $this->renderStatusTable($harvest_id, $run_id, $run);
+  }
+
+  /**
+   * Orphan datasets from every run of a harvest.
+   *
+   * @param string $harvestId
+   *   Harvest identifier.
+   *
+   * @return int
+   *   Exit code.
+   *
+   * @command dkan:harvest:orphan-datasets
+   * @alias dkan:harvest:orphan
+   */
+  public function orphanDatasets(string $harvestId) : int {
+
+    if (!in_array($harvestId, $this->harvestService->getAllHarvestIds())) {
+      $this->logger()->error("Harvest id {$harvestId} not found.");
+      return DrushCommands::EXIT_FAILURE;
+    }
+
+    try {
+      $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
+      $this->harvestService->processOrphanIds($orphans);
+      $this->logger()->notice("Orphaned ids from harvest {$harvestId}: " . implode(", ", $orphans));
+      return DrushCommands::EXIT_SUCCESS;
+    }
+    catch (\Exception $e) {
+      $this->logger()->error("Error in orphaning datasets of harvest %harvest: %error", [
+        '%harvest' => $harvestId,
+        '%error' => $e->getMessage(),
+      ]);
+      return DrushCommands::EXIT_FAILURE;
+    }
   }
 
 }

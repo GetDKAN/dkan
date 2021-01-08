@@ -4,7 +4,7 @@ namespace Drupal\sample_content;
 
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Drupal\harvest\Drush\Helper;
+use Drupal\harvest\Commands\Helper;
 
 /**
  * Class.

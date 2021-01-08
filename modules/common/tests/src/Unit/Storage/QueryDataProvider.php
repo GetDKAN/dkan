@@ -30,6 +30,7 @@ class QueryDataProvider {
       'nestedExpressionQuery',
       'badExpressionOperandQuery',
       'conditionQuery',
+      'likeConditionQuery',
       'arrayConditionQuery',
       'nestedConditionGroupQuery',
       'sortQuery',
@@ -135,9 +136,11 @@ class QueryDataProvider {
             ],
           ],
         ];
-        $query->sort = [
-          "asc" => ["add_one"],
-          "desc" => [],
+        $query->sorts = [
+          (object) [
+            "property" => "add_one",
+            "order" => "asc",
+          ]
         ];
         return $query;
 
@@ -231,6 +234,29 @@ class QueryDataProvider {
   }
 
 
+  public static function likeConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "%value%",
+            "operator" => "like",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
+
+      case self::EXCEPTION:
+        return FALSE;
+    }
+  }
+
+
   public static function arrayConditionQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -299,19 +325,27 @@ class QueryDataProvider {
     switch ($return) {
       case self::QUERY_OBJECT:
         $query = new Query();
-        $query->sort = [
-          "asc" => [],
-          "desc" => [
-            (object) [
-              "collection" => "t",
-              "property" => "field1",
-            ],
+        $query->sorts = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "order" => "desc",
+          ],
+          (object) [
+            "collection" => "t",
+            "property" => "field2",
+            "order" => "asc",
+          ],
+          (object) [
+            "collection" => "t",
+            "property" => "field3",
+            "order" => "desc",
           ],
         ];
         return $query;
 
       case self::SQL:
-        return "ORDER BY t.field1 DESC";
+        return "ORDER BY t.field1 DESC, t.field2 ASC, t.field3 DESC";
 
       case self::EXCEPTION:
         return FALSE;
@@ -322,7 +356,7 @@ class QueryDataProvider {
     switch ($return) {
       case self::QUERY_OBJECT:
         $query = new Query();
-        $query->sort = ["foo" => ["field1"]];
+        $query->sorts = ["foo" => ["field1"]];
         return $query;
 
       case self::SQL:

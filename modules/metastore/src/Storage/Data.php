@@ -257,6 +257,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     // Dkan publishing's default moderation state.
     $node->set('moderation_state', $this->getDefaultModerationState());
 
+    $node->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
+    $node->setRevisionCreationTime(time());
     $node->save();
 
     return $node->uuid();
@@ -354,9 +356,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * Return the default moderation state of our custom dkan_publishing workflow.
    *
    * @return string
-   *   Either 'draft' or 'published'.
+   *   Either 'draft', 'published' or 'orphaned'.
    */
-  private function getDefaultModerationState() {
+  public function getDefaultModerationState() {
     return $this->entityTypeManager->getStorage('workflow')
       ->load('dkan_publishing')
       ->getTypePlugin()

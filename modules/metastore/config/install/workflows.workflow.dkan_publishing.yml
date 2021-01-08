@@ -15,6 +15,11 @@ type_settings:
       published: false
       default_revision: false
       weight: 0
+    orphaned:
+      published: false
+      default_revision: true
+      label: Orphaned
+      weight: 2
     published:
       label: Published
       published: true
@@ -28,6 +33,13 @@ type_settings:
       from:
         - draft
         - published
+    orphan:
+      label: Orphan
+      from:
+        - draft
+        - published
+      to: orphaned
+      weight: 2
     publish:
       label: Publish
       to: published

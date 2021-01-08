@@ -53,7 +53,7 @@ class DatabaseTableMock implements DatabaseTableInterface {
       });
     }
 
-    $sortProperty = reset($query->sort['desc']);
+    $sortProperty = reset($query->sorts);
 
     if ($sortProperty) {
       usort($storeCopy, function ($a, $b) use ($sortProperty) {

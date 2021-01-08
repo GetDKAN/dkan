@@ -330,7 +330,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @param string $identifier
    *   The uuid of a resource.
    *
-   * @return \Symfony\Component\HttpFoundation\StreamedResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
   public function queryResource($identifier) {

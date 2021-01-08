@@ -12,7 +12,7 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "id": { 
+                    "id": {
                         "type": "string",
                         "description": "UUID of resource or distribution."
                     },
@@ -28,7 +28,7 @@
             "items": {
                 "anyOf": [
                     { "$ref": "#/definitions/resource" },
-                    { 
+                    {
                         "type": "object",
                         "title": "Aliased property from specific resource",
                         "properties": {
@@ -83,13 +83,10 @@
             "description": "Number of records to offset by or skip before returning first record.",
             "default": 0
         },
-        "sort": {
-            "type": "object",
+        "sorts": {
+            "type": "array",
             "description": "Result sorting directives.",
-            "properties": {
-                "asc": {"$ref": "#/definitions/sort"},
-                "desc": {"$ref": "#/definitions/sort"}
-            }
+            "items": {"$ref": "#/definitions/sort"}
         },
         "count": {
             "description": "Return a count of the total rows returned by the query, ignoring the limit/offset.",
@@ -117,7 +114,7 @@
             "type": "string",
             "description": "Alias to resource set in resources array. Not needed when only querying against one resource."
         },
-        "property": { 
+        "property": {
             "type": "string",
             "description": "The property/column or alias to filter by. Should not include collection/table alias.",
             "pattern": "^[^.]+$"
@@ -149,7 +146,7 @@
                         ]
                     }
                 }
-            }            
+            }
         },
         "condition": {
             "type": "object",
@@ -162,12 +159,12 @@
                     "anyOf": [
                         { "type": "string" },
                         { "type": "number" },
-                        { 
+                        {
                             "type": "array",
                             "items": {
                                 "anyOf": [
                                     { "type": "string" },
-                                    { "type": "number" }            
+                                    { "type": "number" }
                                 ]
                             }
                         },
@@ -178,11 +175,11 @@
                  "operator": {
                      "type": "string",
                      "description": "Condition operator",
-                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "BETWEEN", "IN", "NOT IN" ],
+                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "like", "between", "in", "not in" ],
                      "default": "="
                  }
             },
-            "required": [ "property", "value" ]            
+            "required": [ "property", "value" ]
         },
         "expression": {
             "type": "object",
@@ -192,7 +189,7 @@
                 "operator": {
                     "type": "string",
                     "enum": [
-                        "+", 
+                        "+",
                         "-",
                         "*",
                         "/",
@@ -222,14 +219,16 @@
             }
         },
         "sort": {
-            "type": "array",
+            "type": "object",
             "description": "Properties to sort by in a particular order.",
-            "items": { 
-                "anyOf": [
-                    { "$ref": "#/definitions/resource" },
-                    { "$ref": "#/definitions/resourceProperty" }
-                ]
-                
+            "properties": {
+                "resource": { "$ref": "#/definitions/resource" },
+                "property": { "$ref": "#/definitions/property" },
+                "order": {
+                    "type": "string",
+                    "description": "Order to sort in, lowercase.",
+                    "enum": ["asc", "desc"]
+                }
             }
         }
     }

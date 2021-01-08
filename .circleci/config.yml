@@ -5,7 +5,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "install-drush"
+      DKTL_VERSION: "4.2.1"
     steps:
       - checkout:
           path: dkan
@@ -38,7 +38,7 @@ jobs:
       TEST_RESULTS: /tmp/test-results
     steps:
       - attach-workspace:
-          at: ~/      
+          at: ~/
       - run:
           name: Set up DKAN Tools
           command: |
