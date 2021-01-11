@@ -6,6 +6,7 @@ use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\common\LoggerTrait;
+use Drupal\Core\Queue\RequeueException;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -67,8 +68,9 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
 
       $results = $datastore->import($identifier, FALSE, $version);
 
+      $queued = FALSE;
       foreach ($results as $result) {
-        $this->processResult($result, $data);
+        $queued = $this->processResult($result, $data, $queued);
       }
     }
     catch (\Exception $e) {
@@ -80,7 +82,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   /**
    * Private.
    */
-  private function processResult(Result $result, $data) {
+  private function processResult(Result $result, $data, $queued = FALSE) {
     $identifier = $data['identifier'];
     $version = $data['version'];
     $uid = "{$identifier}__{$version}";
@@ -90,8 +92,11 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     $status = $result->getStatus();
     switch ($status) {
       case Result::STOPPED:
-        $newQueueItemId = $this->requeue($data);
-        $message = "Import for {$uid} is requeueing. (ID:{$newQueueItemId}).";
+        if (!$queued) {
+          $newQueueItemId = $this->requeue($data);
+          $message = "Import for {$uid} is requeueing. (ID:{$newQueueItemId}).";
+          $queued = TRUE;
+        }
         break;
 
       case Result::IN_PROGRESS:
@@ -105,6 +110,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
         break;
     }
     $this->log('dkan', $message, [], $level);
+    return $queued;
   }
 
   /**
@@ -114,7 +120,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   Queue data.
    *
    * @return mixed
-   *   Queue ID or false if unsuccessfull.
+   *   Queue ID or false if unsuccessful.
    *
    * @todo: Clarify return value. Documentation suggests it should return ID.
    */
