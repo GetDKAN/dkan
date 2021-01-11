@@ -39,7 +39,7 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
   /**
    *
    */
-  public function test() {
+  public function testCanGetAnObjectFromDatasetSpecificDocumentation() {
 
     // Test posting a dataset to the metastore.
     $dataset = $this->getData($this->downloadUrl);

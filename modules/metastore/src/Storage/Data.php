@@ -98,11 +98,17 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   public function retrievePublished(string $uuid) : ?string {
     $node = $this->getNodePublishedRevision($uuid);
 
-    if ($node && $node->get('moderation_state')->getString() == 'published') {
-      return $node->get('field_json_metadata')->getString();
+    if (!$node) {
+      throw new \Exception("No data with that identifier was found.");
     }
 
-    throw new \Exception("No data with that identifier was found.");
+    $moderationState = $node->get('moderation_state')->getString();
+
+    if ($moderationState  != 'published') {
+      throw new \Exception("No data with that identifier was found.");
+    }
+
+    return $node->get('field_json_metadata')->getString();
   }
 
   /**
