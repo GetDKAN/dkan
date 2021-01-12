@@ -156,7 +156,7 @@ class Drush extends DrushCommands {
    * @aliases dkan-datastore:drop
    * @deprecated dkan-datastore:drop is deprecated and will be removed in a future Dkan release. Use dkan:datastore:drop instead.
    */
-  public function drop($uuid, $options = ['keepfile' => FALSE]) {
+  public function drop($uuid, array $options = ['keepfile' => FALSE]) {
     $keep = $options['keepfile'] ? TRUE : FALSE;
     try {
       $this->datastoreService->drop($uuid, $keep);
