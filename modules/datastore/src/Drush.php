@@ -146,8 +146,10 @@ class Drush extends DrushCommands {
    *
    * @param string $uuid
    *   The uuid of a dataset.
+   * @param array $options
+   *   Options.
    *
-   * @options keepfile Keep the local file.
+   * @option keepfile Keep the local file.
    *
    * @command dkan:datastore:drop
    *
