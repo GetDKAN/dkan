@@ -38,7 +38,7 @@ jobs:
       TEST_RESULTS: /tmp/test-results
     steps:
       - attach-workspace:
-          at: ~/      
+          at: ~/
       - run:
           name: Set up DKAN Tools
           command: |
@@ -83,37 +83,6 @@ jobs:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/videos
-  cypress_frontend:
-    machine:
-      image: circleci/classic:latest
-    environment:
-      TEST_RESULTS: /tmp/test-results
-    steps:
-      - attach-workspace:
-          at: ~/
-      - run:
-          name: Set up DKAN Tools
-          command: |
-            export PATH=~/dkan-tools/bin:$PATH
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            dktl dc up -d
-      - run:
-          name: Install Drupal
-          command: sleep 10 && dktl install
-      - run:
-          name: Run frontend cypress tests
-          command: |
-            dktl install
-            dktl install:sample
-            dktl frontend:get
-            dktl frontend:install
-            dktl frontend:build
-            dktl drush cr
-            dktl frontend:test
-      - store_artifacts:
-          path: src/frontend/cypress/screenshots
-      - store_artifacts:
-          path: src/frontend/cypress/videos
 workflows:
   version: 2
   build_and_test:
@@ -123,8 +92,5 @@ workflows:
           requires:
             - build
       - cypress_backend:
-          requires:
-            - build
-      - cypress_frontend:
           requires:
             - build
