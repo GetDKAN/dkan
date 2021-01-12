@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\Tests\metastore;
+namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\common\Resource;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\ResourceMapper;
+use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
-use Drupal\Tests\metastore\Unit\DatabaseTableMock;
 
 /**
  *
@@ -23,7 +23,10 @@ class ResourceMapperTest extends TestCase {
     $localUrl = "https://dkan.dkan/resources/file/blah.csv";
     $localUrl2 = "https://dkan.dkan/resources/file/newblah.csv";
 
-    $store = new DatabaseTableMock();
+    $store = (new Chain($this))
+      ->add(DatabaseTableMock::class)
+      ->getMock();
+    
     $eventDispatcher = new ContainerAwareEventDispatcher(new Container());
     $mapper = new ResourceMapper($store, $eventDispatcher);
 
