@@ -6,7 +6,6 @@ use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\common\LoggerTrait;
-use Drupal\Core\Queue\RequeueException;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
