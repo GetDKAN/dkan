@@ -19,12 +19,7 @@ trait Helper {
     }
     $resource = $this->resourceLocalizer->get($uuid);
     $ref_uuid = $resource->getUniqueIdentifier();
-    $jobs = [
-      [
-        "id" => md5($ref_uuid),
-        "table" => "jobstore_dkan_datastore_importer",
-      ],
-    ];
+    $jobs[] = ["id" => md5($ref_uuid), "table" => "jobstore_dkan_datastore_importer"];
     if (!$keep) {
       $jobs[] = [
         "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),

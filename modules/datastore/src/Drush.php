@@ -146,10 +146,9 @@ class Drush extends DrushCommands {
    *
    * @param string $uuid
    *   The uuid of a dataset.
-   *
+   * @options keepfile Keep the local file.
    * @command dkan:datastore:drop
    * @aliases dkan-datastore:drop
-   * @options keepfile Keep the local file.
    * @deprecated dkan-datastore:drop is deprecated and will be removed in a future Dkan release. Use dkan:datastore:drop instead.
    */
   public function drop($uuid, $options = ['keepfile' => FALSE]) {
@@ -171,8 +170,8 @@ class Drush extends DrushCommands {
   /**
    * Drop a ALL datastore tables.
    *
-   * @command dkan:datastore:drop-all
    * @options keepfile Keep the local file.
+   * @command dkan:datastore:drop-all
    */
   public function dropAll($options = ['keepfile' => FALSE]) {
     $keep = $options['keepfile'] ? TRUE : FALSE;
