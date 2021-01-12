@@ -7,6 +7,7 @@ use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\Service as Metastore;
+use Drupal\datastore\Drush\Helper;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -15,7 +16,7 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
-  use TableTrait;
+  use Helper;
   /**
    * The metastore service.
    *
@@ -148,11 +149,13 @@ class Drush extends DrushCommands {
    *
    * @command dkan:datastore:drop
    * @aliases dkan-datastore:drop
+   * @options keepfile Keep the local file.
    * @deprecated dkan-datastore:drop is deprecated and will be removed in a future Dkan release. Use dkan:datastore:drop instead.
    */
-  public function drop($uuid) {
+  public function drop($uuid, $options = ['keepfile' => FALSE]) {
+    $keep = $options['keepfile'] ? TRUE : FALSE;
     try {
-      $this->datastoreService->drop($uuid);
+      $this->datastoreService->drop($uuid, $keep);
       $this->logger->notice("Successfully dropped the datastore for {$uuid}");
     }
     catch (\Exception $e) {
@@ -161,7 +164,7 @@ class Drush extends DrushCommands {
       return;
     }
 
-    $this->jobstorePrune($uuid);
+    $this->jobstorePrune($uuid, $keep);
 
   }
 
@@ -169,9 +172,10 @@ class Drush extends DrushCommands {
    * Drop a ALL datastore tables.
    *
    * @command dkan:datastore:drop-all
+   * @options keepfile Keep the local file.
    */
-  public function dropAll() {
-
+  public function dropAll($options = ['keepfile' => FALSE]) {
+    $keep = $options['keepfile'] ? TRUE : FALSE;
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
       $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
       try {
@@ -184,7 +188,7 @@ class Drush extends DrushCommands {
         continue;
       }
 
-      $this->jobstorePrune($uuid);
+      $this->jobstorePrune($uuid, $keep);
 
     }
   }

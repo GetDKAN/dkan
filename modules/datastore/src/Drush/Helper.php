@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\datastore;
+namespace Drupal\datastore\Drush;
 
 /**
  * Datastore Trait to assist Drush commands.
  *
  * @codeCoverageIgnore
  */
-trait TableTrait {
+trait Helper {
 
   /**
    * Delete jobstore entries related to a datastore.
    */
-  public function jobstorePrune($uuid) {
+  public function jobstorePrune($uuid, $keep = FALSE) {
     if (!isset($this->resourceLocalizer)) {
       \Drupal::logger('datastore')->error('ResourceLocalizer is not set.');
       return;
@@ -21,14 +21,16 @@ trait TableTrait {
     $ref_uuid = $resource->getUniqueIdentifier();
     $jobs = [
       [
-        "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
-        "table" => "jobstore_filefetcher_filefetcher",
-      ],
-      [
         "id" => md5($ref_uuid),
         "table" => "jobstore_dkan_datastore_importer",
       ],
     ];
+    if (!$keep) {
+      $jobs[] = [
+        "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
+        "table" => "jobstore_filefetcher_filefetcher",
+      ];
+    }
 
     try {
       foreach ($jobs as $job) {
