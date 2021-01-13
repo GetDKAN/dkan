@@ -159,10 +159,10 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $identifier
    *   A resource's identifier.
-   * @param bool $keep
-   *   Keep the local file.
    * @param string|null $version
    *   A resource's version.
+   * @param bool $keep
+   *   Keep the local file.
    */
   public function drop(string $identifier, $version = NULL, $keep = FALSE) {
     $storage = $this->getStorage($identifier, $version);
