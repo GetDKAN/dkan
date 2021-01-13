@@ -1,6 +1,6 @@
 services:
   datastore:commands:
-    class: \Drupal\datastore\Drush
+    class: \Drupal\datastore\Commands\DatastoreCommands
     arguments:
       - '@dkan.metastore.service'
       - '@dkan.datastore.service'

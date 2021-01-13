@@ -1,13 +1,12 @@
 <?php
 
-namespace Drupal\datastore;
+namespace Drupal\datastore\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\Service as Metastore;
-use Drupal\datastore\Drush\Helper;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -15,7 +14,7 @@ use Drush\Commands\DrushCommands;
  *
  * @codeCoverageIgnore
  */
-class Drush extends DrushCommands {
+class DatastoreCommands extends DrushCommands {
   use Helper;
   /**
    * The metastore service.

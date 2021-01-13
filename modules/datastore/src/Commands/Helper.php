@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Drush;
+namespace Drupal\datastore\Commands;
 
 /**
  * Datastore Trait to assist Drush commands.
