@@ -158,7 +158,7 @@ class DatastoreCommands extends DrushCommands {
   public function drop($uuid, array $options = ['keepfile' => FALSE]) {
     $keep = $options['keepfile'] ? TRUE : FALSE;
     try {
-      $this->datastoreService->drop($uuid, $keep);
+      $this->datastoreService->drop($uuid, NULL, $keep);
       $this->logger->notice("Successfully dropped the datastore for {$uuid}");
     }
     catch (\Exception $e) {
@@ -183,7 +183,7 @@ class DatastoreCommands extends DrushCommands {
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
       $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
       try {
-        $this->datastoreService->drop($uuid);
+        $this->datastoreService->drop($uuid, NULL, $keep);
         $this->logger->notice("Successfully dropped the datastore for {$uuid}");
       }
       catch (\Exception $e) {

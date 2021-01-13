@@ -164,7 +164,7 @@ class Service implements ContainerInjectionInterface {
    * @param string|null $version
    *   A resource's version.
    */
-  public function drop(string $identifier, $keep = FALSE, $version = NULL) {
+  public function drop(string $identifier, $version = NULL, $keep = FALSE) {
     $storage = $this->getStorage($identifier, $version);
 
     if ($storage) {
