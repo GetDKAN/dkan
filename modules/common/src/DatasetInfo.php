@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\common;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -12,7 +14,7 @@ use Drupal\node\Entity\Node;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class DatasetInfo
+ * Extract helpful information from a dataset identifier.
  *
  * @package Drupal\common
  */
@@ -141,6 +143,15 @@ class DatasetInfo implements ContainerInjectionInterface {
     return $info;
   }
 
+  /**
+   * Get various information from a dataset node's specific revision.
+   *
+   * @param \Drupal\node\Entity\Node $node
+   *   Dataset node.
+   *
+   * @return array
+   *   Dataset node revision info.
+   */
   protected function getRevisionInfo(Node $node) : array {
     $revisionInfo = [];
 
@@ -152,26 +163,43 @@ class DatasetInfo implements ContainerInjectionInterface {
     return $revisionInfo;
   }
 
-  protected function getDistributions(Node $node) {
+  /**
+   * Get distributions.
+   *
+   * @param \Drupal\node\Entity\Node $node
+   *   A specific revision node of the uuid being queried.
+   *
+   * @return array
+   *   Distributions.
+   */
+  protected function getDistributions(Node $node) : array {
     $distributions = [];
     foreach ($this->metastore->getResources('dataset', $node->uuid()) as $key => $distribution) {
-      $distributions[$key] = $this->getResources($distribution);
+      $distributions[$key] = $this->getResourcesInfo($distribution);
     }
     return $distributions;
   }
 
-  protected function getResources(\stdClass $distribution) {
-    $resources = [];
+  /**
+   * Get resources information.
+   *
+   * @param \stdClass $distribution
+   *
+   * @return array
+   *   Resources information.
+   */
+  protected function getResourcesInfo(\stdClass $distribution) : array {
+    $resourcesInfo = [];
     foreach ($distribution->{'%Ref:downloadURL'} as $key => $resource) {
       $identifier = $resource->data->identifier;
       $version = $resource->data->version;
 
-      $resources[$key]['identifier'] = $identifier;
-      $resources[$key]['version'] = $version;
-      $resources[$key]['file path'] = $this->resourceMapper->get($identifier, 'local_file', $version)->getFilePath();
-      $resources[$key]['table name'] = $this->datastore->getStorage($identifier, $version)->getTableName();
+      $resourcesInfo[$key]['identifier'] = $identifier;
+      $resourcesInfo[$key]['version'] = $version;
+      $resourcesInfo[$key]['file path'] = $this->resourceMapper->get($identifier, 'local_file', $version)->getFilePath();
+      $resourcesInfo[$key]['table name'] = $this->datastore->getStorage($identifier, $version)->getTableName();
     }
-    return $resources;
+    return $resourcesInfo;
   }
 
 }
