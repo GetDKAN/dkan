@@ -8,6 +8,7 @@ use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Service as Metastore;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\node\Entity\Node;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -119,7 +120,7 @@ class DatasetInfo implements ContainerInjectionInterface {
     $info['uuid'] = $uuid;
 
     if (!$this->metastore) {
-      $info['notice'] = 'The DKAN Metastore module is not enabled, reducing the available information.';
+      $info['notice'] = 'The DKAN Metastore module is not enabled.';
       return $info;
     }
 
@@ -128,13 +129,49 @@ class DatasetInfo implements ContainerInjectionInterface {
       $info['notice'] = 'Not found.';
       return $info;
     }
+    $info['node id'] = $latestRevision->id();
+    $info['latest revision'] = $this->getRevisionInfo($latestRevision);
 
-    if (!$this->datastore) {
-      $info['notice'] = 'The DKAN Datastore module is not enabled, reducing the available information.';
-      return $info;
+    $latestRevisionIsDraft = 'draft' === $latestRevision->get('moderation_state')->getString();
+    $latestPublished = $this->storage->getNodePublishedRevision($uuid);
+    if ($latestRevisionIsDraft && $latestPublished) {
+      $info['published revision'] = $this->getRevisionInfo($latestPublished);
     }
 
     return $info;
+  }
+
+  protected function getRevisionInfo(Node $node) : array {
+    $revisionInfo = [];
+
+    $revisionInfo['revision id'] = $node->getRevisionId();
+    $revisionInfo['moderation state'] = $node->get('moderation_state')->getString();
+    $revisionInfo['modified date'] = $node->getChangedTime();
+    $revisionInfo['distributions'] = $this->getDistributions($node);
+
+    return $revisionInfo;
+  }
+
+  protected function getDistributions(Node $node) {
+    $distributions = [];
+    foreach ($this->metastore->getResources('dataset', $node->uuid()) as $key => $distribution) {
+      $distributions[$key] = $this->getResources($distribution);
+    }
+    return $distributions;
+  }
+
+  protected function getResources(\stdClass $distribution) {
+    $resources = [];
+    foreach ($distribution->{'%Ref:downloadURL'} as $key => $resource) {
+      $identifier = $resource->data->identifier;
+      $version = $resource->data->version;
+
+      $resources[$key]['identifier'] = $identifier;
+      $resources[$key]['version'] = $version;
+      $resources[$key]['file path'] = $this->resourceMapper->get($identifier, 'local_file', $version)->getFilePath();
+      $resources[$key]['table name'] = $this->datastore->getStorage($identifier, $version)->getTableName();
+    }
+    return $resources;
   }
 
 }
