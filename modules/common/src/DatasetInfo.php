@@ -20,6 +20,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DatasetInfo implements ContainerInjectionInterface {
 
+  /**
+   * Module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
   protected $moduleHandler;
 
   /**
@@ -32,14 +37,14 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Metastore.
    *
-   * @var Metastore
+   * @var \Drupal\metastore\Service
    */
   protected $metastore;
 
   /**
    * Datastore.
    *
-   * @var Datastore
+   * @var \Drupal\datastore\Service
    */
   protected $datastore;
 
@@ -101,7 +106,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static(
@@ -184,6 +189,7 @@ class DatasetInfo implements ContainerInjectionInterface {
    * Get resources information.
    *
    * @param \stdClass $distribution
+   *   A distribution object extracted from dataset metadata.
    *
    * @return array
    *   Resources information.
