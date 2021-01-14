@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Drupal\common\Commands;
 
 use Drupal\common\DatasetInfo;
@@ -42,12 +40,7 @@ class CommonCommands extends DrushCommands {
    * @command dkan:dataset-info
    */
   public function datasetInfo(string $uuid) {
-    if ($info = $this->datasetInfo->gather($uuid)) {
-      print_r(json_encode($info, JSON_PRETTY_PRINT));
-    }
-    else {
-      $this->logger()->info("Something went wrong.");
-    }
+    print_r(json_encode($this->datasetInfo->gather($uuid), JSON_PRETTY_PRINT));
   }
 
 }
