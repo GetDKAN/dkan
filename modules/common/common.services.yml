@@ -26,6 +26,15 @@ services:
     arguments:
       - '@dkan.common.job_store'
 
+  dkan.common.dataset_info:
+    class: \Drupal\common\DatasetInfo
+    arguments:
+      - '@module_handler'
+    calls:
+      - [setStorage, ['@?dkan.metastore.storage']]
+      - [setMetastore, ['@?dkan.metastore.service']]
+      - [setDatastore, ['@?dkan.datastore.service']]
+
   plugin.manager.common.data_modifier:
     class: \Drupal\common\Plugin\DataModifierManager
     parent: default_plugin_manager
