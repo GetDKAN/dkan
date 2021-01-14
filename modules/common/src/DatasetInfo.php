@@ -155,6 +155,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   protected function getDistributions(Node $node) {
     $distributions = [];
     foreach ($this->metastore->getResources('dataset', $node->uuid()) as $key => $distribution) {
+      print_r($distribution);
       $distributions[$key] = $this->getResources($distribution);
     }
     return $distributions;
