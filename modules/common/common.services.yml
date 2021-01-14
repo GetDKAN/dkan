@@ -34,6 +34,7 @@ services:
       - [setStorage, ['@?dkan.metastore.storage']]
       - [setMetastore, ['@?dkan.metastore.service']]
       - [setDatastore, ['@?dkan.datastore.service']]
+      - [setResourceMapper, ['@?dkan.metastore.resource_mapper']]
 
   plugin.manager.common.data_modifier:
     class: \Drupal\common\Plugin\DataModifierManager

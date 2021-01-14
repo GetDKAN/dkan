@@ -5,6 +5,7 @@ namespace Drupal\common;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\datastore\Service as Datastore;
+use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Service as Metastore;
 use Drupal\metastore\Storage\DataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -40,6 +41,13 @@ class DatasetInfo implements ContainerInjectionInterface {
   protected $datastore;
 
   /**
+   * Resource mapper.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  protected $resourceMapper;
+
+  /**
    * Set storage.
    *
    * @param \Drupal\metastore\Storage\DataFactory $dataFactory
@@ -67,6 +75,16 @@ class DatasetInfo implements ContainerInjectionInterface {
    */
   public function setDatastore(Datastore $datastore) {
     $this->datastore = $datastore;
+  }
+
+  /**
+   * Set the resource mapper.
+   *
+   * @param \Drupal\metastore\ResourceMapper $resourceMapper
+   *   Resource mapper service.
+   */
+  public function setResourceMapper(ResourceMapper $resourceMapper) {
+    $this->resourceMapper = $resourceMapper;
   }
 
   /**
@@ -100,7 +118,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   public function gather(string $uuid) {
     $info['uuid'] = $uuid;
 
-    if (!$this->metastore || !$this->storage) {
+    if (!$this->metastore || !$this->storage || !$this->resourceMapper) {
       $info['notice'] = 'The DKAN Metastore module is not enabled, reducing the available information.';
       return $info;
     }

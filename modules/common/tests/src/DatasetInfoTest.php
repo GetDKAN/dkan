@@ -6,6 +6,7 @@ use Drupal\common\DatasetInfo;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\datastore\Service as Datastore;
+use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Service as Metastore;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
@@ -20,6 +21,7 @@ class DatasetInfoTest extends TestCase {
     $datasetInfo->setMetastore($this->getMockMetastore()->getMock());
     $datasetInfo->setStorage($this->getMockStorage()->getMock());
     $datasetInfo->setDatastore($this->getMockDatastore()->getMock());
+    $datasetInfo->setResourceMapper($this->getMockResourceMapper()->getMock());
 
     $expected = [
       'uuid' => 'foo',
@@ -68,6 +70,11 @@ class DatasetInfoTest extends TestCase {
   private function getMockDatastore() {
     return (new Chain($this))
       ->add(Datastore::class);
+  }
+
+  private function getMockResourceMapper() {
+    return (new Chain($this))
+      ->add(ResourceMapper::class);
   }
 
   private function getCommonChain() {
