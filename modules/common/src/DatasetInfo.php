@@ -118,8 +118,14 @@ class DatasetInfo implements ContainerInjectionInterface {
   public function gather(string $uuid) {
     $info['uuid'] = $uuid;
 
-    if (!$this->metastore || !$this->storage || !$this->resourceMapper) {
+    if (!$this->metastore) {
       $info['notice'] = 'The DKAN Metastore module is not enabled, reducing the available information.';
+      return $info;
+    }
+
+    $latestRevision = $this->storage->getNodeLatestRevision($uuid);
+    if (!$latestRevision) {
+      $info['notice'] = 'Not found.';
       return $info;
     }
 
