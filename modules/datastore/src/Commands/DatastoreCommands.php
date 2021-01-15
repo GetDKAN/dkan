@@ -145,20 +145,15 @@ class DatastoreCommands extends DrushCommands {
    *
    * @param string $uuid
    *   The uuid of a dataset.
-   * @param array $options
-   *   Options.
-   *
-   * @option keepfile Keep the local file.
    *
    * @command dkan:datastore:drop
    *
    * @aliases dkan-datastore:drop
    * @deprecated dkan-datastore:drop is deprecated and will be removed in a future Dkan release. Use dkan:datastore:drop instead.
    */
-  public function drop($uuid, array $options = ['keepfile' => FALSE]) {
-    $keep = $options['keepfile'] ? TRUE : FALSE;
+  public function drop($uuid) {
     try {
-      $this->datastoreService->drop($uuid, NULL, $keep);
+      $this->datastoreService->drop($uuid);
       $this->logger->notice("Successfully dropped the datastore for {$uuid}");
     }
     catch (\Exception $e) {
@@ -167,23 +162,65 @@ class DatastoreCommands extends DrushCommands {
       return;
     }
 
-    $this->jobstorePrune($uuid, $keep);
+    $this->jobstorePruneImporter($uuid);
+    $this->jobstorePruneFilefetcher($uuid);
+  }
 
+  /**
+   * Drop a datastore table but keep the file.
+   *
+   * @param string $uuid
+   *   The uuid of a dataset.
+   *
+   * @command dkan:datastore:drop-table
+   *
+   */
+  public function dropTable($uuid) {
+    try {
+      $this->datastoreService->dropTable($uuid);
+      $this->logger->notice("Successfully dropped the datastore for {$uuid}");
+    }
+    catch (\Exception $e) {
+      $this->logger->error("Unable to find an entity with uuid {$uuid}");
+      $this->logger->debug($e->getMessage());
+      return;
+    }
+
+    $this->jobstorePruneImporter($uuid);
+  }
+
+  /**
+   * Drop a local file but keep the datastore.
+   *
+   * @param string $uuid
+   *   The uuid of a dataset.
+   *
+   * @command dkan:datastore:drop-file
+   */
+  public function dropFile($uuid) {
+    try {
+      $this->datastoreService->dropFile($uuid);
+      $this->logger->notice("Successfully dropped the file for {$uuid}");
+    }
+    catch (\Exception $e) {
+      $this->logger->error("Unable to find local file.");
+      $this->logger->debug($e->getMessage());
+      return;
+    }
+
+    $this->jobstorePruneFilefetcher($uuid);
   }
 
   /**
    * Drop a ALL datastore tables.
    *
-   * @options keepfile Keep the local file.
-   *
    * @command dkan:datastore:drop-all
    */
-  public function dropAll($options = ['keepfile' => FALSE]) {
-    $keep = $options['keepfile'] ? TRUE : FALSE;
+  public function dropAll() {
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
       $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
       try {
-        $this->datastoreService->drop($uuid, NULL, $keep);
+        $this->datastoreService->drop($uuid);
         $this->logger->notice("Successfully dropped the datastore for {$uuid}");
       }
       catch (\Exception $e) {
@@ -192,7 +229,8 @@ class DatastoreCommands extends DrushCommands {
         continue;
       }
 
-      $this->jobstorePrune($uuid, $keep);
+      $this->jobstorePruneImporter($uuid);
+      $this->jobstorePruneFilefetcher($uuid);
 
     }
   }

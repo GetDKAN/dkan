@@ -161,18 +161,40 @@ class Service implements ContainerInjectionInterface {
    *   A resource's identifier.
    * @param string|null $version
    *   A resource's version.
-   * @param bool $keep
-   *   Keep the local file.
    */
-  public function drop(string $identifier, $version = NULL, $keep = FALSE) {
-    $storage = $this->getStorage($identifier, $version);
+  public function drop(string $identifier, $version = NULL) {
+    $this->dropTable($identifier, $version);
+    $this->dropFile($identifier, $version);
+  }
 
+  /**
+   * Drop a resource's datastore table.
+   *
+   * @param string $identifier
+   *   A resource's identifier.
+   * @param string|null $version
+   *   A resource's version.
+   */
+  public function dropTable(string $identifier, $version = NULL) {
+    $storage = $this->getStorage($identifier, $version);
     if ($storage) {
       $storage->destroy();
     }
-    if (!$keep) {
-      $this->resourceLocalizer->remove($identifier, $version);
+    else {
+      throw new \Exception("no storage");
     }
+  }
+
+  /**
+   * Drop a resource's local file.
+   *
+   * @param string $identifier
+   *   A resource's identifier.
+   * @param string|null $version
+   *   A resource's version.
+   */
+  public function dropFile(string $identifier, $version = NULL) {
+    $this->resourceLocalizer->remove($identifier, $version);
   }
 
   /**
