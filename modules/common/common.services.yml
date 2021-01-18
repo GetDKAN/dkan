@@ -32,7 +32,6 @@ services:
       - '@module_handler'
     calls:
       - [setStorage, ['@?dkan.metastore.storage']]
-      - [setMetastore, ['@?dkan.metastore.service']]
       - [setDatastore, ['@?dkan.datastore.service']]
       - [setResourceMapper, ['@?dkan.metastore.resource_mapper']]
 
