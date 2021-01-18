@@ -182,6 +182,11 @@ class SchemaUiHandler implements ContainerInjectionInterface {
         $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
         $element['#access'] = FALSE;
         break;
+
+      case 'upload_or_link':
+        $element['#type'] = 'upload_or_link';
+        // ksm($element);
+        break;
     }
     return $element;
   }

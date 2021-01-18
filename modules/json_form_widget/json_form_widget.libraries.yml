@@ -1,0 +1,7 @@
+remote_url:
+  version: VERSION
+  js:
+    js/remote_url.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once

@@ -45,6 +45,11 @@
           "widget": "textarea",
           "rows": 5
         }
+      },
+      "downloadURL": {
+        "ui:options": {
+          "widget": "upload_or_link"
+        }
       }
     }
   },
