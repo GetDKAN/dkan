@@ -141,7 +141,7 @@ class DatasetInfo implements ContainerInjectionInterface {
 
     $latestRevisionIsDraft = 'draft' === $latest->get('moderation_state')->getString();
     $published = $this->storage->getNodePublishedRevision($uuid);
-    if ($latestRevisionIsDraft && $published && 'published' === $latest->get('moderation_state')->getString()) {
+    if ($latestRevisionIsDraft && $published && 'published' === $published->get('moderation_state')->getString()) {
       $info['published revision'] = $this->getRevisionInfo($published);
     }
 
@@ -163,7 +163,7 @@ class DatasetInfo implements ContainerInjectionInterface {
     $revisionInfo['revision id'] = $node->getRevisionId();
     $revisionInfo['moderation state'] = $node->get('moderation_state')->getString();
     $revisionInfo['modified date'] = $node->getChangedTime();
-    $revisionInfo['distributions'] = $this->getDistributions($node);
+    $revisionInfo['distributions'] = $this->getDistributionsInfo($node);
 
     return $revisionInfo;
   }
@@ -177,11 +177,14 @@ class DatasetInfo implements ContainerInjectionInterface {
    * @return array
    *   Distributions.
    */
-  protected function getDistributions(Node $node) : array {
+  protected function getDistributionsInfo(Node $node) {
     $distributions = [];
-    foreach ($this->metastore->getResources('dataset', $node->uuid()) as $key => $distribution) {
-      $distributions[$key] = $this->getResourcesInfo($distribution);
+
+    $metadata = $node->get('field_json_metadata')->getString();
+    foreach (json_decode($metadata)->distribution as $distribution) {
+      $distributions[] = $this->getResourcesInfo($distribution);
     }
+
     return $distributions;
   }
 
@@ -195,17 +198,19 @@ class DatasetInfo implements ContainerInjectionInterface {
    *   Resources information.
    */
   protected function getResourcesInfo(\stdClass $distribution) : array {
-    $resourcesInfo = [];
-    foreach ($distribution->{'%Ref:downloadURL'} as $key => $resource) {
-      $identifier = $resource->data->identifier;
-      $version = $resource->data->version;
 
-      $resourcesInfo[$key]['identifier'] = $identifier;
-      $resourcesInfo[$key]['version'] = $version;
-      $resourcesInfo[$key]['file path'] = $this->resourceMapper->get($identifier, 'local_file', $version)->getFilePath();
-      $resourcesInfo[$key]['table name'] = $this->datastore->getStorage($identifier, $version)->getTableName();
-    }
-    return $resourcesInfo;
+    // A distribution's first resource, regardless of perspective or index,
+    // should provide the information needed.
+    $resource = array_shift($distribution->{'%Ref:downloadURL'});
+    $identifier = $resource->data->identifier;
+    $version = $resource->data->version;
+
+    return [
+      'identifier' => $identifier,
+      'version' => $version,
+      'file path' => $this->resourceMapper->get($identifier, 'local_file', $version)->getFilePath(),
+      'table name' => $this->datastore->getStorage($identifier, $version)->getTableName(),
+    ];
   }
 
 }
