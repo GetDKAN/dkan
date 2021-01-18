@@ -169,7 +169,7 @@ class ArrayHelper implements ContainerInjectionInterface {
   /**
    * Handle single element from array.
    *
-   * Chooses wether element is simple or complex.
+   * Chooses whether element is simple or complex.
    */
   public function getSingleArrayElement($field_name, $i, $property_schema, $data, $form_state) {
     if (isset($property_schema->items->properties)) {
