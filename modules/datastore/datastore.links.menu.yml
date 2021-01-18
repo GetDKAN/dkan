@@ -3,3 +3,10 @@ datastore.settings_form:
   route_name: datastore.sql_endpoint.settings
   description: Configure SQL query API endpoint.
   parent: dkan.common.admin_config
+
+datastore.dkan_resource_settings:
+  title: Resources
+  description: Resource options.
+  parent: dkan.common.admin_config
+  route_name: datastore.dkan_resource_settings
+  weight: 10

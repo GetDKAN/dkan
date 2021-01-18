@@ -12,7 +12,7 @@ composer.lock
 /docroot
 .docksal
 .idea
-docs
+/docs
 .vscode
 coverage
 cypress/videos

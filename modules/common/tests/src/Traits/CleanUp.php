@@ -13,6 +13,17 @@ trait CleanUp {
   /**
    *
    */
+  private function removeHarvests() {
+    /* @var $service \Drupal\harvest\Service */
+    $service = \Drupal::service('dkan.harvest.service');
+    foreach ($service->getAllHarvestIds() as $id) {
+      $service->deregisterHarvest($id);
+    }
+  }
+
+  /**
+   *
+   */
   private function removeAllNodes() {
     $nodes = Node::loadMultiple();
     foreach ($nodes as $node) {
@@ -49,7 +60,7 @@ trait CleanUp {
    *
    */
   private function flushQueues() {
-    $dkanQueues = ['orphan_reference_processor', 'datastore_import'];
+    $dkanQueues = ['orphan_reference_processor', 'datastore_import', 'resource_purger'];
     foreach ($dkanQueues as $queueName) {
       /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
       $queueFactory = \Drupal::service('queue');

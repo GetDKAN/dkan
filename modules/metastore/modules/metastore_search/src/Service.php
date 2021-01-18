@@ -265,8 +265,8 @@ class Service implements ContainerInjectionInterface {
     else {
       $schema = $type;
     }
-    foreach ($this->metastoreService->getAll($schema) as $thing) {
-      $facet_name = empty($field) ? $thing->data : $thing->data->{$field};
+    foreach ($this->metastoreService->getAll($schema) as $collection) {
+      $facet_name = empty($field) ? $collection->data : $collection->data->{$field};
       $facets[] = $this->getFacetHelper($type, $facet_name);
     }
 

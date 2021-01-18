@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit\Events;
 
-use Drupal\metastore\Events\DatasetPublication;
+use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +14,7 @@ class DataPublicationTest extends TestCase {
       ->add(NodeInterface::class)
       ->getMock();
 
-    $datasetPublication = new DatasetPublication($mockNode);
+    $datasetPublication = new DatasetUpdate($mockNode);
 
     $this->assertEquals($mockNode, $datasetPublication->getNode());
   }

@@ -2,43 +2,81 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\harvest\Load\Dataset;
+use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Service;
+use Drupal\metastore\Service as Metastore;
+use Drupal\node\NodeStorage;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Harvest\ETL\Extract\DataJson;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 class DatasetTest extends ExistingSiteBase {
   use ServiceCheckTrait;
   use CleanUp;
 
-  private $downloadUrl = "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv";
+  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
+  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
-  private function getData($downloadUrl) {
-    return '
-    {
-      "title": "Test #1",
-      "description": "Yep",
-      "identifier": "123",
-      "accessLevel": "public",
-      "modified": "06-04-2020",
-      "keyword": ["hello"],
-        "distribution": [
-          {
-            "title": "blah",
-            "downloadURL": "' . $downloadUrl . '",
-            "mediaType": "text/csv"
-          }
-        ]
-    }';
+  private function getDownloadUrl(string $filename) {
+    return self::S3_PREFIX . '/' . $filename;
+  }
+
+  /**
+   * Generate dataset metadata, possibly with multiple distributions.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
+   * @param string $title
+   *   Dataset title.
+   * @param array $downloadUrls
+   *   Array of resource files URLs for this dataset.
+   *
+   * @return string|false
+   *   Json encoded string of this dataset's metadata, or FALSE if error.
+   */
+  private function getData(string $identifier, string $title, array $downloadUrls) {
+
+    $data = new \stdClass();
+    $data->title = $title;
+    $data->description = "Some description.";
+    $data->identifier = $identifier;
+    $data->accessLevel = "public";
+    $data->modified = "06-04-2020";
+    $data->keyword = ["some keyword"];
+    $data->distribution = [];
+
+    foreach ($downloadUrls as $key => $downloadUrl) {
+      $distribution = new \stdClass();
+      $distribution->title = "Distribution #{$key} for {$identifier}";
+      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
+      $distribution->mediaType = "text/csv";
+
+      $data->distribution[] = $distribution;
+    }
+
+    return json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+  }
+
+  public function setUp() {
+    parent::setUp();
+    $this->removeHarvests();
+    $this->removeAllNodes();
+    $this->removeAllMappedFiles();
+    $this->removeAllFileFetchingJobs();
+    $this->flushQueues();
+    $this->removeFiles();
+    $this->removeDatastoreTables();
   }
 
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -63,7 +101,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData($this->downloadUrl);
+    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
@@ -79,8 +117,162 @@ class DatasetTest extends ExistingSiteBase {
     $display = &drupal_static('metastore_resource_mapper_display');
     $display = ResourceLocalizer::LOCAL_URL_PERSPECTIVE;
     $localUrlDataset = json_decode($this->getMetastore()->get('dataset', json_decode($dataset)->identifier));
-    $this->assertNotEqual($localUrlDataset->distribution[0]->downloadURL,
-    $this->downloadUrl);
+    $this->assertNotEquals($localUrlDataset->distribution[0]->downloadURL,
+      $this->getDownloadUrl('district_centerpoints_small.csv'));
+  }
+
+  /**
+   * Test the resource purger when the default moderation state is 'published'.
+   */
+  public function test3() {
+
+    // Post then update a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues(111, '1.2', ['2.csv', '4.csv'], 'put');
+
+    // Verify only the 2 most recent resources remain.
+    $this->assertEquals(['2.csv', '4.csv'], $this->checkFiles());
+    $this->assertEquals(2, $this->countTables());
+  }
+
+  /**
+   * Test the resource purger when the default moderation state is 'draft'.
+   */
+  public function test4() {
+    /** @var \Drupal\Core\Config\ConfigFactory $config */
+    $config = \Drupal::service('config.factory');
+    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
+    $defaultModerationState->set('type_settings.default_moderation_state', 'draft');
+    $defaultModerationState->save();
+
+    // Post, update and publish a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues(111, '1.2', ['3.csv', '1.csv'], 'put');
+    $this->getMetastore()->publish('dataset', 111);
+    $this->storeDatasetRunQueues(111, '1.3', ['1.csv', '5.csv'], 'put');
+
+    // Verify that only the resources associated with the published and the
+    // latest revision.
+    $this->assertEquals(['1.csv', '3.csv', '5.csv'], $this->checkFiles());
+    $this->assertEquals(3, $this->countTables());
+
+    $defaultModerationState->set('type_settings.default_moderation_state', 'published');
+    $defaultModerationState->save();
+  }
+
+  /**
+   * Test removal of datasets by a subsequent harvest.
+   */
+  public function test5() {
+
+    $plan = $this->getPlan('test5', 'catalog-step-1.json');
+    $harvester = $this->getHarvester();
+    $harvester->registerHarvest($plan);
+
+    // First harvest.
+    $harvester->runHarvest('test5');
+
+    // Ensure different harvest run identifiers, since based on timestamp.
+    sleep(1);
+
+    // Second harvest, re-register with different catalog to simulate change.
+    $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-step-2.json';
+    $harvester->registerHarvest($plan);
+    $result = $harvester->runHarvest('test5');
+
+    // Test unchanged, updated and new datasets.
+    $expected = [
+      '1' => 'UNCHANGED',
+      '2' => 'UPDATED',
+      '4' => 'NEW',
+    ];
+    $this->assertEquals($expected, $result['status']['load']);
+
+    $this->assertEquals('published', $this->getModerationState('1'));
+    $this->assertEquals('published' , $this->getModerationState('2'));
+    $this->assertEquals('orphaned' , $this->getModerationState('3'));
+    $this->assertEquals('published' , $this->getModerationState('4'));
+  }
+
+  /**
+   * Generate a harvest plan object.
+   */
+  private function getPlan(string $identifier, string $testFilename) : \stdClass {
+    return (object) [
+      'identifier' => $identifier,
+      'extract' => (object) [
+        'type' => DataJson::class,
+        'uri' => 'file://' . __DIR__ . '/../../files/' . $testFilename,
+      ],
+      'transforms' => [],
+      'load' => (object) [
+        'type' => Dataset::class,
+      ],
+    ];
+  }
+
+  /**
+   * Get a dataset's moderation state.
+   */
+  private function getModerationState(string $uuid) : string {
+    $nodeStorage = $this->getNodeStorage();
+    $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
+    if (FALSE !== ($dataset = reset($datasets))) {
+      return $dataset->get('moderation_state')->getString();
+    }
+    return '';
+  }
+
+  /**
+   * Store or update a dataset,run datastore_import and resource_purger queues.
+   */
+  private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
+    $datasetJson = $this->getData($identifier, $title, $filenames);
+    $this->httpVerbHandler($method, $datasetJson, json_decode($datasetJson));
+
+    // Simulate a cron on queues relevant to this scenario.
+    $this->runQueues(['datastore_import', 'resource_purger']);
+  }
+
+  /**
+   * Process queues in a predictible order.
+   */
+  private function runQueues(array $relevantQueues = []) {
+    /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
+    $queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
+    foreach ($relevantQueues as $queueName) {
+      $worker = $queueWorkerManager->createInstance($queueName);
+      $queue = $this->getQueueService()->get($queueName);
+      while ($item = $queue->claimItem()) {
+        $worker->processItem($item->data);
+        $queue->deleteItem($item);
+      }
+    }
+  }
+
+  private function countTables() {
+    /* @var $db \Drupal\Core\Database\Connection */
+    $db = \Drupal::service('database');
+
+    $tables = $db->schema()->findTables("datastore_%");
+    return count($tables);
+  }
+
+  private function checkFiles() {
+    /** @var \Drupal\Core\File\FileSystemInterface $fileSystem */
+    $fileSystem = \Drupal::service('file_system');
+
+    $dir = DRUPAL_ROOT . "/sites/default/files/resources";
+    // Nothing to check if the resource folder does not exist.
+    if (!is_dir($dir)) {
+      return [];
+    }
+    $filesObjects = $fileSystem->scanDirectory($dir, "/.*\.csv$/i", ['recurse' => TRUE]);
+    $filenames = array_values(array_map(function ($obj) {
+      return str_replace(self::FILENAME_PREFIX, '', $obj->filename);
+    }, $filesObjects));
+    sort($filenames);
+    return $filenames;
   }
 
   private function queryResource($fileData) {
@@ -95,9 +287,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function datastoreProcesses($fileData) {
-    /* @var $queueFactory \Drupal\Core\Queue\QueueFactory */
-    $queueFactory = \Drupal::service('queue');
-    $queue = $queueFactory->get('datastore_import');
+    $queue = $this->getQueueService()->get('datastore_import');
     $this->assertEquals(1, $queue->numberOfItems());
 
     /* @var $datastore \Drupal\datastore\Service */
@@ -120,15 +310,7 @@ class DatasetTest extends ExistingSiteBase {
       $downloadUrl = $dataset->distribution[0]->downloadURL;
     }
 
-    if ($method == 'post') {
-      $identifier = $this->getMetastore()->post('dataset', $datasetJson);
-    }
-    else {
-      $id = $dataset->identifier;
-      $info = $this->getMetastore()->put('dataset', $id, $datasetJson);
-      $identifier = $info['identifier'];
-    }
-
+    $identifier = $this->httpVerbHandler($method, $datasetJson, $dataset);
     $this->assertEquals($dataset->identifier, $identifier);
 
     $datasetWithReferences = json_decode($this->getMetastore()->get('dataset', $identifier));
@@ -141,18 +323,35 @@ class DatasetTest extends ExistingSiteBase {
     return $fileData;
   }
 
-  private function getMetastore(): Service {
+  private function httpVerbHandler(string $method, string $json, $dataset) {
+
+    if ($method == 'post') {
+      $identifier = $this->getMetastore()->post('dataset', $json);
+    }
+    // PUT for now, refactor later if more verbs are needed.
+    else {
+      $id = $dataset->identifier;
+      $info = $this->getMetastore()->put('dataset', $id, $json);
+      $identifier = $info['identifier'];
+    }
+
+    return $identifier;
+  }
+
+  private function getMetastore(): Metastore {
     return \Drupal::service('dkan.metastore.service');
   }
 
-  public function tearDown() {
-    parent::tearDown();
-    $this->removeAllNodes();
-    $this->removeAllMappedFiles();
-    $this->removeAllFileFetchingJobs();
-    $this->flushQueues();
-    $this->removeFiles();
-    $this->removeDatastoreTables();
+  private function getQueueService() : QueueFactory {
+    return \Drupal::service('queue');
+  }
+
+  private function getHarvester() : Harvester {
+    return \Drupal::service('dkan.harvest.service');
+  }
+
+  private function getNodeStorage(): NodeStorage {
+    return \Drupal::service('entity_type.manager')->getStorage('node');
   }
 
 }

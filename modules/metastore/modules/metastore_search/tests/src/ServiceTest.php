@@ -99,7 +99,7 @@ class ServiceTest extends TestCase {
       ->add(Item::class, 'getId', 1)
       ->getMock();
 
-    $thing = (object) [
+    $collection = (object) [
       'title' => 'hello',
       'description' => 'goodbye',
       'publisher__name' => 'Steve',
@@ -118,7 +118,7 @@ class ServiceTest extends TestCase {
       ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
       ->add(ResultSet::class, 'getResultCount', 1)
       ->add(ResultSet::class, 'getResultItems', [$item])
-      ->add(Metastore::class, 'get', json_encode($thing))
+      ->add(Metastore::class, 'get', json_encode($collection))
       ->add(Metastore::class, 'getAll', [$facet]);
   }
 

@@ -45,13 +45,15 @@ class DatabaseTableMock implements DatabaseTableInterface {
   public function query(Query $query) {
     $storeCopy = $this->store;
 
-    foreach ($query->conditions as $property => $value) {
+    foreach ($query->conditions as $condition) {
+      $property = $condition->property;
+      $value = $condition->value;
       $storeCopy = array_filter($storeCopy, function ($item) use ($property, $value) {
         return $item->{$property} == $value;
       });
     }
 
-    $sortProperty = reset($query->sort['DESC']);
+    $sortProperty = reset($query->sorts);
 
     if ($sortProperty) {
       usort($storeCopy, function ($a, $b) use ($sortProperty) {

@@ -4,26 +4,50 @@ namespace Drupal\datastore;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\Service\DatastoreQuery;
 use Procrastinator\Result;
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\Import;
+use Drupal\datastore\Storage\QueryFactory;
 
 /**
  * Main services for the datastore.
  */
 class Service implements ContainerInjectionInterface {
 
+  /**
+   * Resource localizer for handling remote resource URLs.
+   *
+   * @var \Drupal\datastore\Service\ResourceLocalizer
+   */
   private $resourceLocalizer;
+
+  /**
+   * Datastore import factory class.
+   *
+   * @var \Drupal\datastore\Service\Factory\Import
+   */
   private $importServiceFactory;
+
+  /**
+   * Drupal queue.
+   *
+   * @var \Drupal\Core\Queue\QueueFactory
+   */
   private $queue;
+
+  /**
+   * JobStore factory object.
+   *
+   * @var \Drupal\common\Storage\JobStoreFactory
+   */
   private $jobStoreFactory;
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -39,7 +63,7 @@ class Service implements ContainerInjectionInterface {
    * Constructor for datastore service.
    */
   public function __construct(ResourceLocalizer $resourceLocalizer, Import $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory) {
-    $this->queue = $queue->get('datastore_import');
+    $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
@@ -52,8 +76,11 @@ class Service implements ContainerInjectionInterface {
    *   A resource identifier.
    * @param bool $deferred
    *   Send to the queue for later? Will import immediately if FALSE..
-   * @param string $version
+   * @param string|null $version
    *   A resource's version.
+   *
+   * @return array
+   *   Response.
    */
   public function import(string $identifier, bool $deferred = FALSE, $version = NULL): array {
 
@@ -65,8 +92,9 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
-    $resource = NULL; $result = NULL;
-    [$resource, $result] = $this->getResource($identifier, $version);
+    $resource = NULL;
+    $result = NULL;
+    list($resource, $result) = $this->getResource($identifier, $version);
 
     if (!$resource) {
       return $result;
@@ -98,8 +126,6 @@ class Service implements ContainerInjectionInterface {
    */
   private function getResource($identifier, $version) {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
-
-    /** @var \Drupal\common\Resource $resource */
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
     if ($resource) {
@@ -133,10 +159,10 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $identifier
    *   A resource's identifier.
-   * @param string $version
+   * @param string|null $version
    *   A resource's version.
    */
-  public function drop($identifier, $version = NULL) {
+  public function drop(string $identifier, $version = NULL) {
     $storage = $this->getStorage($identifier, $version);
 
     if ($storage) {
@@ -157,9 +183,10 @@ class Service implements ContainerInjectionInterface {
    * @return int
    *   Queue ID for new queued item.
    */
-  private function queueImport($identifier, $version) {
+  private function queueImport(string $identifier, string $version) {
     // Attempt to fetch the file in a queue so as to not block user.
-    $queueId = $this->queue->createItem(['identifier' => $identifier, 'version' => $version]);
+    $queueId = $this->queue->get('datastore_import')
+      ->createItem(['identifier' => $identifier, 'version' => $version]);
 
     if ($queueId === FALSE) {
       throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
@@ -170,9 +197,12 @@ class Service implements ContainerInjectionInterface {
 
   /**
    * Get a list of all stored importers and filefetchers, and their status.
+   *
+   * @return array
+   *   The importer list object.
    */
   public function list() {
-    /** @var \Drupal\datastore\Service\Factory\ImportInfoList $service */
+    /** @var \Drupal\datastore\Service\Info\ImportInfoList $service */
     $service = \Drupal::service('dkan.datastore.import_info_list');
     return $service->buildList();
   }
@@ -197,17 +227,171 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $identifier
    *   The unique identifier of a resource.
-   * @param string $version
+   * @param string|null $version
    *   The version of the resource.
+   *
+   * @return \Drupal\datastore\Storage\DatabaseTable
+   *   Storage object.
+   *
+   * @throws \Exception
    */
-  public function getStorage($identifier, $version = NULL) {
-    /** @var \Drupal\common\Resource $resource */
+  public function getStorage(string $identifier, $version = NULL) {
     $resource = $this->resourceLocalizer->get($identifier, $version);
     if ($resource) {
       $importService = $this->getImportService($resource);
       return $importService->getStorage();
     }
-    throw new \Exception("No datastore storage found for {$identifier}:{$version}.");
+    throw new \InvalidArgumentException("No datastore storage found for {$identifier}:{$version}.");
+  }
+
+  /**
+   * Run query.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   DKAN Datastore Query API object.
+   *
+   * @return object
+   *   Array of row/record objects.
+   */
+  public function runQuery(DatastoreQuery $datastoreQuery) {
+    $return = (object) [];
+    if ($datastoreQuery->{"$.results"} !== FALSE) {
+      $return->results = $this->runResultsQuery($datastoreQuery);
+    }
+
+    if ($datastoreQuery->{"$.count"} !== FALSE) {
+      $return->count = $this->runCountQuery($datastoreQuery);
+    }
+
+    if ($datastoreQuery->{"$.schema"} !== FALSE) {
+      $return->schema = $this->getSchema($datastoreQuery);
+    }
+
+    $return->query = $datastoreQuery->{"$"};
+    return new RootedJsonData(json_encode($return));
+  }
+
+  /**
+   * Get an a schema for each resource.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   DKAN Datastore Query API object.
+   *
+   * @return array
+   *   An assoc array containing a table schema for each resource.
+   */
+  private function getSchema(DatastoreQuery $datastoreQuery) {
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    $schema = [];
+    foreach ($datastoreQuery->{"$.resources"} as $resource) {
+      $storage = $storageMap[$resource["alias"]];
+      $schema[$resource["id"]] = $storage->getSchema();
+    }
+    return $schema;
+  }
+
+  /**
+   * Retrieve storage objects for all resources, and map to their aliases.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   DatastoreQuery object.
+   *
+   * @return array
+   *   Array of storage objects, keyed to resource aliases.
+   */
+  public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
+    $storageMap = [];
+    foreach ($datastoreQuery->{"$.resources"} as $resource) {
+      list($identifier, $version) = Resource::getIdentifierAndVersion($resource["id"]);
+      $storage = $this->getStorage($identifier, $version);
+      $storageMap[$resource["alias"]] = $storage;
+    }
+    return $storageMap;
+  }
+
+  /**
+   * Build query object for main "results query" for datastore.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   DatastoreQuery object.
+   *
+   * @return array
+   *   Array of result objects.
+   */
+  private function runResultsQuery(DatastoreQuery $datastoreQuery) {
+    $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
+    if (!$primaryAlias) {
+      return [];
+    }
+
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    $query = QueryFactory::create($datastoreQuery, $storageMap);
+
+    $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
+
+    if ($datastoreQuery->{"$.keys"} === FALSE) {
+      $result = array_map([$this, 'stripRowKeys'], $result);
+    }
+    return $result;
+
+  }
+
+  /**
+   * Strip keys from results row, convert to array.
+   *
+   * @param object $row
+   *   Query result row.
+   *
+   * @return array
+   *   Values only array.
+   */
+  private function stripRowKeys($row) {
+    $arrayRow = (array) $row;
+    $newRow = [];
+    foreach ($arrayRow as $value) {
+      $newRow[] = $value;
+    }
+    return $newRow;
+  }
+
+  /**
+   * Build count query object for datastore.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   DatastoreQuery object.
+   */
+  private function runCountQuery(DatastoreQuery $datastoreQuery) {
+    $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
+    if (!$primaryAlias) {
+      return 0;
+    }
+
+    $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    $query = QueryFactory::create($datastoreQuery, $storageMap);
+
+    unset($query->limit, $query->offset);
+    $query->count();
+    return $storageMap[$primaryAlias]->query($query, $primaryAlias)[0]->expression;
+  }
+
+  /**
+   * Return the resource localizer.
+   *
+   * @return \Drupal\datastore\Service\ResourceLocalizer
+   *   Resource localizer.
+   */
+  public function getResourceLocalizer() : ResourceLocalizer {
+    return $this->resourceLocalizer;
+  }
+
+  /**
+   * Return the queue factory.
+   *
+   * @return \Drupal\Core\Queue\QueueFactory
+   *   Queue factory.
+   */
+  public function getQueueFactory(): QueueFactory {
+    return $this->queue;
   }
 
 }

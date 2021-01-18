@@ -122,6 +122,13 @@ class Resource implements \JsonSerializable {
   /**
    * Getter.
    */
+  public function getFolder() {
+    return dirname($this->filePath);
+  }
+
+  /**
+   * Getter.
+   */
   public function getMimeType() {
     return $this->mimeType;
   }
@@ -225,7 +232,8 @@ class Resource implements \JsonSerializable {
     /** @var \Drupal\metastore\Storage\Data $storage */
     $storage = $factory->getInstance('distribution');
 
-    return json_decode($storage->retrieve($identifier));
+    $distroJson = $storage->retrieve($identifier);
+    return json_decode($distroJson);
   }
 
 }
