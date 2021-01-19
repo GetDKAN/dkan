@@ -1,5 +1,0 @@
-metastore_form:
-    version: 1.x
-    js: { js/app/build/static/js/loadme.js: {  }, js/app/build/static/js/2.73513c14.chunk.js: {  }, js/app/build/static/js/main.9b04434c.chunk.js: {  } }
-    css: { base: { js/app/build/static/css/2.416b3730.chunk.css: {  }, js/app/build/static/css/main.b9557a38.chunk.css: {  } } }
-    dependencies: [core/drupalSettings]

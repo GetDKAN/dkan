@@ -14,7 +14,6 @@
             <directory>modules/metastore/tests/src</directory>
             <directory>modules/metastore/modules/metastore/tests/src</directory>
             <directory>modules/metastore/modules/metastore_search/tests/src</directory>
-            <directory>modules/metastore/modules/metastore_form/tests/src</directory>
             <directory>modules/metastore/modules/metastore_admin/tests/src</directory>
             <directory>modules/datastore/tests/src</directory>
             <directory>modules/frontend/tests/src</directory>
@@ -28,7 +27,6 @@
           <directory>modules/metastore/tests/src/Unit</directory>
           <directory>modules/metastore/modules/metastore/tests/src/Unit</directory>
           <directory>modules/metastore/modules/metastore_search/tests/src/Unit</directory>
-          <directory>modules/metastore/modules/metastore_form/tests/src/Unit</directory>
           <directory>modules/metastore/modules/metastore_admin/tests/src/Unit</directory>
           <directory>modules/datastore/tests/src/Unit</directory>
           <directory>modules/frontend/tests/src/Unit</directory>
@@ -42,7 +40,6 @@
           <directory>modules/metastore/tests/src/Functional</directory>
           <directory>modules/metastore/modules/metastore/tests/src/Functional</directory>
           <directory>modules/metastore/modules/metastore_search/tests/src/Functional</directory>
-          <directory>modules/metastore/modules/metastore_form/tests/src/Functional</directory>
           <directory>modules/metastore/modules/metastore_admin/tests/src/Functional</directory>
           <directory>modules/datastore/tests/src/Functional</directory>
           <directory>modules/frontend/tests/src/Functional</directory>
@@ -72,7 +69,6 @@
           <directory>modules/metastore/src</directory>
           <directory>modules/metastore/modules/metastore/src</directory>
           <directory>modules/metastore/modules/metastore_search/src</directory>
-          <directory>modules/metastore/modules/metastore_form/src</directory>
           <directory>modules/metastore/modules/metastore_admin/src</directory>
           <directory>modules/datastore/src</directory>
           <directory>modules/frontend/src</directory>
