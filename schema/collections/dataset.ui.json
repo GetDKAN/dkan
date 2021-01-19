@@ -4,6 +4,11 @@
       "widget": "hidden"
     }
   },
+  "identifier": {
+    "ui:options": {
+      "widget": "dkan_uuid"
+    }
+  },
   "contactPoint": {
     "properties": {
       "@type": {
