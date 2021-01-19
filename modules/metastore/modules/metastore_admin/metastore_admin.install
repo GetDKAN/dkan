@@ -25,3 +25,10 @@ function metastore_admin_uninstall() {
   $config->save(TRUE);
   drupal_flush_all_caches();
 }
+
+/**
+ * Disable metastore_form.
+ */
+function metastore_admin_update_8002() {
+  \Drupal::service('module_installer')->uninstall(['metastore_form']);
+}
