@@ -1,7 +1,5 @@
-name: Metadata Form
-description: Provides an embedded React UI for creating and editing dataset metadata.
+name: Metadata Form - Deprecated
+description: Deprecated.
 package: DKAN
 type: module
 core_version_requirement: ^8 || ^9
-dependencies:
-  - metastore
