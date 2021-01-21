@@ -89,6 +89,34 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
+   * Get all dataset uuids, and schedule the purge of their unneeded resources.
+   *
+   * @param bool $deferred
+   *   Defaults to TRUE to process later, otherwise now.
+   * @param bool $prior
+   *   Defaults to FALSE to only consider last 2 published revisions, otherwise
+   *   consider all older revisions.
+   */
+  public function scheduleAllUuids(bool $deferred = TRUE, bool $prior = FALSE) {
+
+    $uuids = [];
+    $nodeStorage = $this->storage->getNodeStorage();
+
+    $nids = $nodeStorage->getQuery()
+      ->condition('type', 'data')
+      ->condition('field_data_type', 'dataset')
+      ->execute();
+
+    foreach ($nids as $nid) {;
+      if ($node = $nodeStorage->load($nid)) {
+        $uuids[] = $node->uuid();
+      }
+    }
+
+    $this->schedule($uuids, $deferred, $prior);
+  }
+
+  /**
    * Schedule purging to run at a later time.
    *
    * @param array $uuids
