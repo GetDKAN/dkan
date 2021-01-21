@@ -228,9 +228,6 @@
       "items": {
         "title": "Project Open Data Distribution",
         "type": "object",
-        "required": [
-          "title"
-        ],
         "properties": {
           "@type": {
             "title": "Metadata Context",
