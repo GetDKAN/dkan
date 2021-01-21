@@ -107,7 +107,7 @@ class ResourcePurger implements ContainerInjectionInterface {
       ->condition('field_data_type', 'dataset')
       ->execute();
 
-    foreach ($nids as $nid) {;
+    foreach ($nids as $nid) {
       if ($node = $nodeStorage->load($nid)) {
         $uuids[] = $node->uuid();
       }
