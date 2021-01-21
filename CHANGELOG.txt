@@ -1,3 +1,6 @@
+7.x-1.18.15
+- #3318 Drupal security upgrade to version 7.78.
+
 7.x-1.18.14
 -----------
 - #3274 Drupal security upgrade to version 7.75.
