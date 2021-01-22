@@ -147,7 +147,12 @@ class ResourcePurger implements ContainerInjectionInterface {
   public function purgeMultiple(array $uuids, bool $prior = FALSE) {
     if ($this->validate()) {
       foreach ($uuids as $vid => $uuid) {
-        $this->purge($vid, $uuid, $prior);
+        try {
+          $this->purge($vid, $uuid, $prior);
+        }
+        catch (\Exception $e) {
+          $this->error("Error purging uuid {$uuid}, revision id {$vid}: " . $e->getMessage());
+        }
       }
     }
   }
@@ -299,13 +304,19 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function delete(string $id, string $version) {
     if ($this->getPurgeFileSetting()) {
-      $this->datastore->getResourceLocalizer()->remove($id, $version);
+      try {
+        $this->datastore->getResourceLocalizer()->remove($id, $version);
+      }
+      catch (\Exception $e) {
+        $this->error("Error removing resource localizer id {$id}, version {$version}: " . $e->getMessage());
+      }
     }
     if ($this->getPurgeTableSetting()) {
       try {
         $this->datastore->getStorage($id, $version)->destroy();
       }
       catch (\Exception $e) {
+        $this->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());
       }
     }
   }
