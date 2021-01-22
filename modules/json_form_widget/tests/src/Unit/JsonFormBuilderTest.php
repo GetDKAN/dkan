@@ -10,6 +10,7 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\json_form_widget\FieldTypeRouter;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
@@ -33,6 +34,7 @@ class JsonFormBuilderTest extends TestCase {
       ->add('json_form.array_helper', ArrayHelper::class)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
       ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('json_form.router', FieldTypeRouter::class)
       ->index(0);
 
     $container_chain = (new Chain($this))
@@ -54,11 +56,11 @@ class JsonFormBuilderTest extends TestCase {
    * Test.
    */
   public function testSchema() {
+    $router = $this->getRouter();
+
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
-      ->add('json_form.string_helper', StringHelper::class)
-      ->add('json_form.object_helper', ObjectHelper::class)
-      ->add('json_form.array_helper', ArrayHelper::class)
+      ->add('json_form.router', $router)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('string_translation', TranslationManager::class)
@@ -257,6 +259,30 @@ class JsonFormBuilderTest extends TestCase {
     $result = $form_builder->getJsonForm([], $form_state);
     unset($result['keyword']['actions']);
     $this->assertEquals($result, $expected);
+  }
+
+  /**
+   * Return FieldTypeRouter object.
+   */
+  private function getRouter() {
+    $string_helper = new StringHelper();
+    $object_helper = new ObjectHelper();
+
+    $options = (new Options())
+      ->add('json_form.string_helper', $string_helper)
+      ->add('json_form.object_helper', $object_helper)
+      ->add('json_form.array_helper', ArrayHelper::class)
+      ->add('string_translation', TranslationManager::class)
+      ->index(0);
+
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options);
+
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+
+    $router = FieldTypeRouter::create($container);
+    return $router;
   }
 
 }
