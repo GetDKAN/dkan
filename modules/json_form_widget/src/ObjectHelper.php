@@ -10,7 +10,9 @@ class ObjectHelper {
   /**
    * Handle form element for an object.
    */
-  public function handleObjectElement($property_schema, $field_name, $data, $form_state, $parent) {
+  public function handleObjectElement($definition, $data, $form_state, $parent) {
+    $property_schema = $definition['schema'];
+    $field_name = $definition['name'];
     $element[$field_name] = [
       '#type' => 'details',
       '#open' => TRUE,
@@ -24,7 +26,11 @@ class ObjectHelper {
     foreach ($properties as $child) {
       $type = $property_schema->properties->{$child}->type ?? "string";
       $value = $data->{$child} ?? NULL;
-      $element[$field_name][$child] = $parent->getFormElement($type, $child, $property_schema->properties->{$child}, $value, $property_schema, $form_state);
+      $subdefinition = [
+        'name' => $child,
+        'schema' => $property_schema->properties->{$child},
+      ];
+      $element[$field_name][$child] = $parent->getFormElement($type, $subdefinition, $value, $property_schema, $form_state);
     }
     return $element;
   }

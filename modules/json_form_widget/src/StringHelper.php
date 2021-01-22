@@ -10,7 +10,7 @@ class StringHelper {
   /**
    * Builder object.
    *
-   * @var \Drupal\json_form_widget\FormBuilder
+   * @var \Drupal\json_form_widget\FieldTypeRouter
    */
   public $builder;
 
@@ -24,7 +24,9 @@ class StringHelper {
   /**
    * Handle form element for a string.
    */
-  public function handleStringElement($property, $field_name, $data, $object_schema = FALSE) {
+  public function handleStringElement($definition, $data, $object_schema = FALSE) {
+    $property = $definition['schema'];
+    $field_name = $definition['name'];
     // Basic definition.
     $element = [
       '#type' => $this->getElementType($property),

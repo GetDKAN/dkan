@@ -25,7 +25,7 @@ class ArrayHelper implements ContainerInjectionInterface {
   /**
    * Builder object.
    *
-   * @var \Drupal\json_form_widget\FormBuilder
+   * @var \Drupal\json_form_widget\FieldTypeRouter
    */
   public $builder;
 
@@ -76,11 +76,13 @@ class ArrayHelper implements ContainerInjectionInterface {
   /**
    * Handle form element for an array.
    */
-  public function handleArrayElement($property_schema, $field_name, $data, $form_state) {
+  public function handleArrayElement($definition, $data, $form_state) {
+    $property_schema = $definition['schema'];
+    $field_name = $definition['name'];
     // Save info about the arrays.
     $widget_array_info = $form_state->get('json_form_widget_array');
     $form_state->set('json_form_widget_schema', $this->builder->schema);
-    // Get amount of items to prinnt.
+    // Get amount of items to print.
     $amount = $this->getItemsNumber($form_state, $widget_array_info, $field_name, $data);
 
     $element = [
@@ -203,7 +205,11 @@ class ArrayHelper implements ContainerInjectionInterface {
    */
   public function getSingleComplexArrayElement($field_name, $i, $property_schema, $data, $form_state) {
     $value = isset($data[$i]) ? $data[$i] : '';
-    $element = $this->objectHelper->handleObjectElement($property_schema->items, $field_name, $value, $form_state, $this->builder);
+    $definition = [
+      'name' => $field_name,
+      'schema' => $property_schema->items,
+    ];
+    $element = $this->objectHelper->handleObjectElement($definition, $value, $form_state, $this->builder);
     return $element;
   }
 
