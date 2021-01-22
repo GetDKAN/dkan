@@ -10,6 +10,7 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\json_form_widget\FieldTypeRouter;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
@@ -28,12 +29,12 @@ class ArrayHelperTest extends TestCase {
     $object = $this->getExpectedObject();
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('json_form.router', FieldTypeRouter::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('json_form.object_helper', ObjectHelper::class)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('string_translation', TranslationManager::class)
-      // Maybe ignore this.
       ->add('json_form.array_helper', ArrayHelper::class)
       ->index(0);
 
@@ -48,16 +49,16 @@ class ArrayHelperTest extends TestCase {
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
 
-    $form_builder = FormBuilder::create($container);
-    $form_builder->setSchema('dataset');
-
     $form_state = new FormState();
-    $distribution_schema_object = json_decode($distribution_schema);
-
+    $router = FieldTypeRouter::create($container);
     $array_helper = ArrayHelper::create($container);
-    $array_helper->setBuilder($form_builder);
+    $array_helper->setBuilder($router);
 
-    $result = $array_helper->handleArrayElement($distribution_schema_object, 'distribution', [], $form_state);
+    $definition = [
+      'name' => 'distribution',
+      'schema' => json_decode($distribution_schema),
+    ];
+    $result = $array_helper->handleArrayElement($definition, [], $form_state);
     $expected = $this->getExpectedComplexArrayElement();
     unset($result['actions']);
     unset($result['distribution'][0]['distribution']['schema']['schema']['fields']['actions']);
