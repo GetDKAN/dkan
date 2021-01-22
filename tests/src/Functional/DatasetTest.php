@@ -151,6 +151,15 @@ class DatasetTest extends ExistingSiteBase {
     $this->getMetastore()->publish('dataset', 111);
     $this->storeDatasetRunQueues(111, '1.3', ['1.csv', '5.csv'], 'put');
 
+    // Verify dataset information.
+    /** @var \Drupal\common\DatasetInfo $datasetInfo */
+    $datasetInfo = \Drupal::service('dkan.common.dataset_info');
+    $info = $datasetInfo->gather('111');
+    $this->assertEquals('1.csv', substr($info['latest revision']['distributions'][0]['file path'], -5));
+    $this->assertEquals('5.csv', substr($info['latest revision']['distributions'][1]['file path'], -5));
+    $this->assertEquals('3.csv', substr($info['published revision']['distributions'][0]['file path'], -5));
+    $this->assertEquals('1.csv', substr($info['published revision']['distributions'][1]['file path'], -5));
+
     // Verify that only the resources associated with the published and the
     // latest revision.
     $this->assertEquals(['1.csv', '3.csv', '5.csv'], $this->checkFiles());
