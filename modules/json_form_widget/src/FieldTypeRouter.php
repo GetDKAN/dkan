@@ -96,4 +96,5 @@ class FieldTypeRouter implements ContainerInjectionInterface {
         return $this->stringHelper->handleStringElement($definition, $data, $object_schema);
     }
   }
+
 }
