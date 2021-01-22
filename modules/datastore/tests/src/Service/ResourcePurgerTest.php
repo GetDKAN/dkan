@@ -2,9 +2,11 @@
 
 namespace Drupal\Tests\datastore\Service;
 
+use Drupal\common\Resource;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\Container;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
@@ -12,11 +14,11 @@ use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorageInterface;
 use MockChain\Chain;
 use MockChain\Options;
-use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -66,6 +68,26 @@ class ResourcePurgerTest extends TestCase {
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
     $voidResult = $resourcePurger->schedule([1], FALSE);
+    $this->assertNull($voidResult);
+  }
+
+  /**
+   * Test the function called by dkan:datastore:purge-all.
+   */
+  public function testScheduleAllUuids() {
+
+    $chain = $this->getCommonChain()
+      ->add(Data::class, 'getNidFromUuid', 1)
+      ->add(Data::class, 'getNodeStorage', NodeStorageInterface::class)
+      ->add(NodeStorageInterface::class, 'getQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', [1])
+      ->add(NodeStorageInterface::class, 'load', Node::class)
+      ->add(Node::class, 'uuid', 'foo')
+      ->add(ImmutableConfig::class, 'get', 0);
+
+    $resourcePurger = ResourcePurger::create($chain->getMock());
+    $voidResult = $resourcePurger->scheduleAllUuids();
     $this->assertNull($voidResult);
   }
 
