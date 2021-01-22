@@ -77,34 +77,32 @@ class ArrayHelper implements ContainerInjectionInterface {
    * Handle form element for an array.
    */
   public function handleArrayElement($definition, $data, $form_state) {
-    $property_schema = $definition['schema'];
-    $field_name = $definition['name'];
     // Save info about the arrays.
     $widget_array_info = $form_state->get('json_form_widget_array');
     $form_state->set('json_form_widget_schema', $this->builder->schema);
     // Get amount of items to print.
-    $amount = $this->getItemsNumber($form_state, $widget_array_info, $field_name, $data);
+    $amount = $this->getItemsNumber($form_state, $widget_array_info, $definition['name'], $data);
 
     $element = [
       '#type' => 'fieldset',
-      '#title' => $field_name,
-      '#prefix' => '<div id="' . $field_name . '-fieldset-wrapper">',
+      '#title' => $definition['name'],
+      '#prefix' => '<div id="' . $definition['name'] . '-fieldset-wrapper">',
       '#suffix' => '</div>',
       '#tree' => TRUE,
     ];
 
-    if (isset($property_schema->title)) {
-      $element['#title'] = $property_schema->title;
+    if (isset($definition['schema']->title)) {
+      $element['#title'] = $definition['schema']->title;
     }
 
-    if (isset($property_schema->description)) {
-      $element['#description'] = $property_schema->description;
+    if (isset($definition['schema']->description)) {
+      $element['#description'] = $definition['schema']->description;
     }
 
     for ($i = 0; $i < $amount; $i++) {
-      $element[$field_name][$i] = $this->getSingleArrayElement($field_name, $i, $property_schema, $data, $form_state);
+      $element[$definition['name']][$i] = $this->getSingleArrayElement($definition, $i, $data, $form_state);
     }
-    $element['actions'] = $this->addArrayActions($amount, $field_name);
+    $element['actions'] = $this->addArrayActions($amount, $definition['name']);
 
     return $element;
   }
@@ -173,26 +171,26 @@ class ArrayHelper implements ContainerInjectionInterface {
    *
    * Chooses whether element is simple or complex.
    */
-  public function getSingleArrayElement($field_name, $i, $property_schema, $data, $form_state) {
-    if (isset($property_schema->items->properties)) {
+  public function getSingleArrayElement($definition, $i, $data, $form_state) {
+    if (isset($definition['schema']->items->properties)) {
       // Return complex.
-      return $this->getSingleComplexArrayElement($field_name, $i, $property_schema, $data, $form_state);
+      return $this->getSingleComplexArrayElement($definition, $i, $data, $form_state);
     }
     else {
       // Return simple.
-      return $this->getSingleSimpleArrayElement($field_name, $i, $property_schema, $data);
+      return $this->getSingleSimpleArrayElement($definition, $i, $data);
     }
   }
 
   /**
    * Returns single simple element from array.
    */
-  public function getSingleSimpleArrayElement($field_name, $i, $property_schema, $data) {
+  public function getSingleSimpleArrayElement($definition, $i, $data) {
     $element = [
       '#type' => 'textfield',
     ];
-    if (isset($property_schema->items->title)) {
-      $element['#title'] = $property_schema->items->title;
+    if (isset($definition['schema']->items->title)) {
+      $element['#title'] = $definition['schema']->items->title;
     }
     if (is_array($data) && isset($data[$i])) {
       $element['#default_value'] = $data[$i];
@@ -203,13 +201,13 @@ class ArrayHelper implements ContainerInjectionInterface {
   /**
    * Returns single complex element from array.
    */
-  public function getSingleComplexArrayElement($field_name, $i, $property_schema, $data, $form_state) {
+  public function getSingleComplexArrayElement($definition, $i, $data, $form_state) {
     $value = isset($data[$i]) ? $data[$i] : '';
-    $definition = [
-      'name' => $field_name,
-      'schema' => $property_schema->items,
+    $subdefinition = [
+      'name' => $definition['name'],
+      'schema' => $definition['schema']->items,
     ];
-    $element = $this->objectHelper->handleObjectElement($definition, $value, $form_state, $this->builder);
+    $element = $this->objectHelper->handleObjectElement($subdefinition, $value, $form_state, $this->builder);
     return $element;
   }
 
