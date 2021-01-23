@@ -181,6 +181,7 @@ class Query implements
    */
   public function count() {
     $this->count = TRUE;
+    unset($this->limit);
   }
 
 }
