@@ -295,7 +295,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Array of resource identifiers and versions. Each array element is a
    *   JSON-encoded array containing a resource's identifier and version.
    */
-  private function getResources(NodeInterface $dataset) {
+  private function getResources(NodeInterface $dataset) : array {
     $resources = [];
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
     $distributions = $metadata->{'%Ref:distribution'};
