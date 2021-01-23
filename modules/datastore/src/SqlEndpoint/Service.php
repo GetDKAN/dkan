@@ -259,11 +259,20 @@ class Service implements ContainerInjectionInterface {
     $rows_limit = $this->configFactory->get('datastore.settings')->get('rows_limit');
 
     $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
-    if (!empty($limit) && $limit[0] <= $rows_limit) {
-      $object->limitTo($limit[0]);
+
+    if (!empty($limit)) {
+      $limit = $limit[0];
     }
-    elseif ($object->count == FALSE) {
-      $object->limitTo($rows_limit);
+    else {
+      unset($limit);
+    }
+
+    if (!$object->count && isset($limit) && $limit > $rows_limit) {
+      $limit = $rows_limit;
+    }
+
+    if (isset($limit)) {
+      $object->limitTo($limit);
     }
 
     $offset = $this->getStringsFromStringMachine($state_machine->gsm('numeric2'));

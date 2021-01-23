@@ -124,6 +124,7 @@ class Query implements
     $this->conditions[] = (object) [
       'property' => $property,
       'value' => $value,
+      'operator' => 'LIKE'
     ];
   }
 
