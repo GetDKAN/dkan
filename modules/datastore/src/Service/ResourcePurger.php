@@ -147,13 +147,27 @@ class ResourcePurger implements ContainerInjectionInterface {
   public function purgeMultiple(array $uuids, bool $prior = FALSE) {
     if ($this->validate()) {
       foreach ($uuids as $vid => $uuid) {
-        try {
-          $this->purge($vid, $uuid, $prior);
-        }
-        catch (\Exception $e) {
-          $this->error("Error purging uuid {$uuid}, revision id {$vid}: " . $e->getMessage());
-        }
+        $this->purgeHelper($vid, $uuid, $prior);
       }
+    }
+  }
+
+  /**
+   * Helps reduce code complexity between purgeMultiple and purge.
+   *
+   * @param int $vid
+   *   The dataset revision.
+   * @param string $uuid
+   *   The dataset identifier.
+   * @param bool $prior
+   *   Whether to include all prior revisions.
+   */
+  public function purgeHelper(int $vid, string $uuid, bool $prior) {
+    try {
+      $this->purge($vid, $uuid, $prior);
+    }
+    catch (\Exception $e) {
+      $this->error("Error purging uuid {$uuid}, revision id {$vid}: " . $e->getMessage());
     }
   }
 
@@ -304,20 +318,44 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function delete(string $id, string $version) {
     if ($this->getPurgeFileSetting()) {
-      try {
-        $this->datastore->getResourceLocalizer()->remove($id, $version);
-      }
-      catch (\Exception $e) {
-        $this->error("Error removing resource localizer id {$id}, version {$version}: " . $e->getMessage());
-      }
+      $this->removeResourceLocalizer($id, $version);
     }
     if ($this->getPurgeTableSetting()) {
-      try {
-        $this->datastore->getStorage($id, $version)->destroy();
-      }
-      catch (\Exception $e) {
-        $this->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());
-      }
+      $this->removeDatastoreStorage($id, $version);
+    }
+  }
+
+  /**
+   * Helper to remove resource localizer.
+   *
+   * @param string $id
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   */
+  private function removeResourceLocalizer(string $id, string $version) {
+    try {
+      $this->datastore->getResourceLocalizer()->remove($id, $version);
+    }
+    catch (\Exception $e) {
+      $this->error("Error removing resource localizer id {$id}, version {$version}: " . $e->getMessage());
+    }
+  }
+
+  /**
+   * Helper to remove Datastore storage table.
+   *
+   * @param string $id
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   */
+  private function removeDatastoreStorage(string $id, string $version) {
+    try {
+      $this->datastore->getStorage($id, $version)->destroy();
+    }
+    catch (\Exception $e) {
+      $this->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());
     }
   }
 
