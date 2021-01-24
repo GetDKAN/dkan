@@ -7,4 +7,3 @@ dependencies:
   - common
   - basic_auth
   - content_moderation
-  - json_form_widget
