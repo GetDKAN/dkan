@@ -4,7 +4,7 @@
 
 Use drush commands to harvest data into your catalog.
 
-1. Register a new harvest source, passing in the harvest plan configuration as JSON, wrapped in single quotes, do not add spaces between elements:
+1. Register a new [harvest plan](#harvest-plan). A harvest plan is configuration as JSON, wrapped in single quotes, do not add spaces between elements:
   - Create a unique name as the **identifier**
   - Provide the **extract** object with type and uri values: type being the class that matches the data structure, (most likely "\\Harvest\\ETL\\Extract\\DataJson"), and the full URI for the source endpoint (such as `http://source/data.json` or `file://source/data.json`)
   - Provide the **load** object that defines the type of content you want to create, most likely datasets, so use: "\\Drupal\\harvest\\Load\\Dataset"
