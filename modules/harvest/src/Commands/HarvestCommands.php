@@ -160,7 +160,7 @@ class HarvestCommands extends DrushCommands {
         ->getAllHarvestRunInfo($id);
       $table = new Table(new ConsoleOutput());
       $table->setHeaders(["{$id} runs"]);
-      foreach (array_keys($runs) as $run_id) {
+      foreach ($runs as $run_id) {
         $table->addRow([$run_id]);
       }
       $table->render();
