@@ -228,7 +228,9 @@ class HarvestCommands extends DrushCommands {
     }
 
     if (empty($run_id)) {
-      $run_id = $run_id_all[0];
+      // Get the last run_id from the array.
+      $run_id = end($run_id_all);
+      reset($run_id_all);
     }
 
     if (array_search($run_id, $run_id_all) === FALSE) {
