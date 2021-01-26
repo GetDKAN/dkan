@@ -20,6 +20,7 @@
             <directory>modules/frontend/tests/src</directory>
             <directory>modules/harvest/tests/src</directory>
             <directory>modules/harvest/modules/harvest_dashboard/tests/src</directory>
+            <directory>modules/json_form_widget/tests/src</directory>
         </testsuite>
         <testsuite name="DkanUnitTests">
           <directory>tests/src/Unit</directory>
@@ -33,6 +34,7 @@
           <directory>modules/frontend/tests/src/Unit</directory>
           <directory>modules/harvest/tests/src/Unit</directory>
           <directory>modules/harvest/modules/harvest_dashboard/tests/src/Unit</directory>
+          <directory>modules/json_form_widget/tests/src/Unit</directory>
         </testsuite>
         <testsuite name="DkanFunctionalTests">
           <directory>tests/src/Functional</directory>
@@ -76,6 +78,7 @@
           <directory>modules/frontend/src</directory>
           <directory>modules/harvest/src</directory>
           <directory>modules/harvest/modules/harvest_dashboard/src</directory>
+          <directory>modules/json_form_widget/src</directory>
           <!-- By definition test classes have no tests. -->
           <exclude>
             <directory>modules/common/src/Tests</directory>
