@@ -89,17 +89,19 @@ trait Helper {
    * Render table for harvest run item status.
    */
   private function renderStatusTable($harvest_id, $run_id, $run) {
+    $consoleOutput = new ConsoleOutput();
+
     if (empty($run['status']['extracted_items_ids'])) {
       $extract_status = $run['status']['extract'];
 
-      (new ConsoleOutput())->writeln(
+      $consoleOutput->writeln(
         ["<warning>harvest id $harvest_id and run id $run_id extract status is $extract_status</warning>",
           "<warning>No items were extracted.</warning>",
         ]
       );
     }
     else {
-      $table = new Table(new ConsoleOutput());
+      $table = new Table($consoleOutput);
       $table->setHeaders(["item_id", "extract", "transform", "load"]);
 
       foreach ($run['status']['extracted_items_ids'] as $item_id) {
@@ -107,6 +109,9 @@ trait Helper {
         $table->addRow($row);
       }
 
+      $consoleOutput->writeln(
+        ["<info>$harvest_id run id $run_id status </info>"]
+      );
       $table->render();
     }
   }
