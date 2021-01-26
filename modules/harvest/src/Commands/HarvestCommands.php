@@ -254,9 +254,7 @@ class HarvestCommands extends DrushCommands {
       return DrushCommands::EXIT_FAILURE;
     }
 
-    $run = json_decode($run, TRUE);
-
-    $this->renderStatusTable($harvest_id, $run_id, $run);
+    $this->renderStatusTable($harvest_id, $run_id, json_decode($run, TRUE));
   }
 
   /**

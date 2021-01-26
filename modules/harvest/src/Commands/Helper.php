@@ -47,7 +47,7 @@ trait Helper {
   }
 
   /**
-   *
+   * Return Processed, Created, Updated, Failed counts from Harvest Run Result.
    */
   private function getResultCounts($result) {
     $interpreter = new ResultInterpreter($result);
@@ -72,7 +72,6 @@ trait Helper {
 
     foreach ($runInfos as $runInfo) {
       list($run_id, $result) = $runInfo;
-      $interpreter = new ResultInterpreter($result);
 
       $row = array_merge(
         [$run_id],
