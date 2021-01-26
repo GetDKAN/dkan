@@ -2,11 +2,9 @@
 
 namespace Drupal\Tests\datastore\Service;
 
-use Drupal\common\Resource;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
@@ -15,7 +13,6 @@ use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\Entity\Node;
-use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorageInterface;
 use MockChain\Chain;
 use MockChain\Options;
