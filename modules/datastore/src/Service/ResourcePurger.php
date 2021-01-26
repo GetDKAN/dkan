@@ -89,6 +89,34 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
+   * Get all dataset uuids, and schedule the purge of their unneeded resources.
+   *
+   * @param bool $deferred
+   *   Defaults to TRUE to process later, otherwise now.
+   * @param bool $prior
+   *   Defaults to FALSE to only consider last 2 published revisions, otherwise
+   *   consider all older revisions.
+   */
+  public function scheduleAllUuids(bool $deferred = TRUE, bool $prior = FALSE) {
+
+    $uuids = [];
+    $nodeStorage = $this->storage->getNodeStorage();
+
+    $nids = $nodeStorage->getQuery()
+      ->condition('type', 'data')
+      ->condition('field_data_type', 'dataset')
+      ->execute();
+
+    foreach ($nids as $nid) {
+      if ($node = $nodeStorage->load($nid)) {
+        $uuids[] = $node->uuid();
+      }
+    }
+
+    $this->schedule($uuids, $deferred, $prior);
+  }
+
+  /**
    * Schedule purging to run at a later time.
    *
    * @param array $uuids
@@ -119,8 +147,27 @@ class ResourcePurger implements ContainerInjectionInterface {
   public function purgeMultiple(array $uuids, bool $prior = FALSE) {
     if ($this->validate()) {
       foreach ($uuids as $vid => $uuid) {
-        $this->purge($vid, $uuid, $prior);
+        $this->purgeHelper($vid, $uuid, $prior);
       }
+    }
+  }
+
+  /**
+   * Helps reduce code complexity between purgeMultiple and purge.
+   *
+   * @param int $vid
+   *   The dataset revision.
+   * @param string $uuid
+   *   The dataset identifier.
+   * @param bool $prior
+   *   Whether to include all prior revisions.
+   */
+  public function purgeHelper(int $vid, string $uuid, bool $prior) {
+    try {
+      $this->purge($vid, $uuid, $prior);
+    }
+    catch (\Exception $e) {
+      $this->error("Error purging uuid {$uuid}, revision id {$vid}: " . $e->getMessage());
     }
   }
 
@@ -248,7 +295,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Array of resource identifiers and versions. Each array element is a
    *   JSON-encoded array containing a resource's identifier and version.
    */
-  private function getResources(NodeInterface $dataset) {
+  private function getResources(NodeInterface $dataset) : array {
     $resources = [];
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
     $distributions = $metadata->{'%Ref:distribution'};
@@ -271,14 +318,44 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function delete(string $id, string $version) {
     if ($this->getPurgeFileSetting()) {
-      $this->datastore->getResourceLocalizer()->remove($id, $version);
+      $this->removeResourceLocalizer($id, $version);
     }
     if ($this->getPurgeTableSetting()) {
-      try {
-        $this->datastore->getStorage($id, $version)->destroy();
-      }
-      catch (\Exception $e) {
-      }
+      $this->removeDatastoreStorage($id, $version);
+    }
+  }
+
+  /**
+   * Helper to remove resource localizer.
+   *
+   * @param string $id
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   */
+  private function removeResourceLocalizer(string $id, string $version) {
+    try {
+      $this->datastore->getResourceLocalizer()->remove($id, $version);
+    }
+    catch (\Exception $e) {
+      $this->error("Error removing resource localizer id {$id}, version {$version}: " . $e->getMessage());
+    }
+  }
+
+  /**
+   * Helper to remove Datastore storage table.
+   *
+   * @param string $id
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   */
+  private function removeDatastoreStorage(string $id, string $version) {
+    try {
+      $this->datastore->getStorage($id, $version)->destroy();
+    }
+    catch (\Exception $e) {
+      $this->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());
     }
   }
 

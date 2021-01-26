@@ -175,6 +175,8 @@ class Service implements ContainerInjectionInterface {
    *
    * @return array
    *   An array of resources.
+   *
+   * @todo Make this aware of revisions and moderation states.
    */
   public function getResources($schema_id, $identifier): array {
     $json = $this->getEngine($schema_id)

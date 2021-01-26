@@ -1,0 +1,7 @@
+services:
+  common.commands:
+    class: \Drupal\common\Commands\CommonCommands
+    tags:
+      - { name: drush.command }
+    arguments:
+      - '@dkan.common.dataset_info'

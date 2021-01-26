@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\SqlEndpoint;
+namespace Drupal\Tests\datastore\Unit\SqlEndpoint;
 
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
