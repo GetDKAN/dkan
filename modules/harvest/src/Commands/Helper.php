@@ -47,19 +47,41 @@ trait Helper {
   }
 
   /**
-   * Private..
+   *
    */
-  private function renderResult($result) {
+  private function getResultCounts($result) {
     $interpreter = new ResultInterpreter($result);
 
-    $table = new Table(new ConsoleOutput());
-    $table->setHeaders(['processed', 'created', 'updated', 'errors']);
-    $table->addRow([
+    return [
       $interpreter->countProcessed(),
       $interpreter->countCreated(),
       $interpreter->countUpdated(),
       $interpreter->countFailed(),
-    ]);
+    ];
+  }
+
+  /**
+   * Display a list of [runIds, runInfo].
+   *
+   * @param array $runInfos
+   *   Array of run Ids and HarvesterRunInfo association.
+   */
+  private function renderHarvestRunsInfo(array $runInfos) {
+    $table = new Table(new ConsoleOutput());
+    $table->setHeaders(['run_id', 'processed', 'created', 'updated', 'errors']);
+
+    foreach ($runInfos as $runInfo) {
+      list($run_id, $result) = $runInfo;
+      $interpreter = new ResultInterpreter($result);
+
+      $row = array_merge(
+        [$run_id],
+        $this->getResultCounts($result)
+      );
+
+      $table->addRow($row);
+    }
+
     $table->render();
   }
 
