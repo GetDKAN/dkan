@@ -4,20 +4,19 @@ context('Admin content and dataset views', () => {
         cy.drupalLogin('testeditor', 'testeditor')
     })
 
-    // Create a datasest.
     it('Admin can create a dataset with the json form UI.', () => {
-        cy.visit(baseurl + "/admin/dkan/dataset")
+        cy.visit(baseurl + "/node/add/data")
         cy.wait(2000)
-        cy.get('#root_title').type('DKANTEST2 dataset title', { force:true } )
-        cy.get('#root_description').type('DKANTEST2 dataset description.', { force:true } )
-        cy.get('#root_accessLevel').select('public', { force:true } )
-        cy.get('#root_modified').type('2020-02-02', { force:true } )
-        cy.get('#root_publisher_name').type('DKANTEST2 Publisher', { force:true } )
-        cy.get('#root_contactPoint_fn').type('DKANTEST2 Contact Name', { force:true } )
-        cy.get('#root_contactPoint_hasEmail').type('mailto:dkantest@test.com', { force:true } )
-        cy.get('#root_keyword_0').type('open data', { force:true } )
-        cy.get('.btn-success').click({ force:true })
-        cy.get('.toast-content-container > .toast-content').should('contain','has been created')
+        cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST2 dataset title', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-description').type('DKANTEST2 dataset description.', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-accesslevel').select('public', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-modified').type('2020-02-02', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name').type('DKANTEST2 Publisher', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type('DKANTEST2 Contact Name', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('mailto:dkantest@test.com', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0').type('open data', { force: true })
+        cy.get('#edit-submit').click({ force:true })
+        cy.get('.messages--status').should('contain','has been created')
     })
 
     // DKAN Content View.
@@ -55,18 +54,15 @@ context('Admin content and dataset views', () => {
     })
 
     // DKAN Dataset view
-    it('There is an "Add new dataset" button that takes user to the dataset json form. And a "Back to Datasets" button that returns user to the datasets view.', () => {
+    it('There is an "Add new dataset" button that takes user to the dataset json form.', () => {
         cy.visit(baseurl + "/admin/content/datasets")
         cy.get('h1').should('have.text', 'Datasets')
         cy.get('.view-header > .form-actions > .button').should('contain', 'Add new dataset').click({ force:true })
-        cy.get('#app > button.btn-default').should('contain', 'Back to Datasets').click({ force:true })
-        cy.get('h1').should('have.text', 'Datasets')
     })
 
-    it('The dataset data node titles should link to the REACT page. The edit link should go to the json form.', () => {
+    it('The dataset edit link should go to the json form.', () => {
         cy.visit(baseurl + "/admin/content/datasets")
-        //cy.get('tbody > :nth-child(1) > .views-field-title > a').invoke('attr', 'href').should('contain', '/dataset/')
-        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', 'admin/dkan/dataset/');
+        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', '/edit');
     })
 
     it('Admin user can delete a dataset', () => {
