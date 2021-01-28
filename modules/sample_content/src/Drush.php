@@ -21,8 +21,8 @@ class Drush extends DrushCommands {
     $this->createJson();
     $harvester = $this->getHarvester("sample_content");
     $result = $harvester->harvest();
-    $this->renderResult($result);
-    print_r($result);
+
+    $this->renderHarvestRunsInfo([['sample_content', $result]]);
   }
 
   /**
