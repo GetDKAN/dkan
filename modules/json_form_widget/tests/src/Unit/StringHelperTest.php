@@ -31,7 +31,7 @@ class StringHelperTest extends TestCase {
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
 
-    $string_helper = new StringHelper();
+    $string_helper = StringHelper::create($container);
     $element["#parents"] = [];
     $form = [
       "hasEmail" => [

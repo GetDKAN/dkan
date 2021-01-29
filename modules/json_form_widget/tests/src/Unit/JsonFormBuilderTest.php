@@ -7,6 +7,7 @@ use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\ArrayHelper;
 use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
+use Drupal\Component\Utility\EmailValidator;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StringTranslation\TranslationManager;
@@ -291,7 +292,8 @@ class JsonFormBuilderTest extends TestCase {
    * Return FieldTypeRouter object.
    */
   private function getRouter() {
-    $string_helper = new StringHelper();
+    $email_validator = new EmailValidator();
+    $string_helper = new StringHelper($email_validator);
     $object_helper = new ObjectHelper();
 
     $options = (new Options())

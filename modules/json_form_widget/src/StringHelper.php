@@ -2,14 +2,19 @@
 
 namespace Drupal\json_form_widget;
 
+use Drupal\Component\Utility\EmailValidator;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class StringHelper.
  */
-class StringHelper {
+class StringHelper implements ContainerInjectionInterface {
   use StringTranslationTrait;
+  use DependencySerializationTrait;
 
   /**
    * Builder object.
@@ -17,6 +22,31 @@ class StringHelper {
    * @var \Drupal\json_form_widget\FieldTypeRouter
    */
   public $builder;
+
+  /**
+   * Email validator service.
+   *
+   * @var \Drupal\Component\Utility\EmailValidator
+   */
+  public $emailValidator;
+
+  /**
+   * Inherited.
+   *
+   * @{inheritdocs}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('email.validator')
+    );
+  }
+
+  /**
+   * Constructor.
+   */
+  public function __construct(EmailValidator $email_validator) {
+    $this->emailValidator = $email_validator;
+  }
 
   /**
    * Set builder.
@@ -119,7 +149,7 @@ class StringHelper {
       return;
     }
 
-    if ($value !== '' && !\Drupal::service('email.validator')->isValid($value) || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+    if ($value !== '' && !$this->emailValidator->isValid($value) || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
       $form_state->setError($element, $this->t('The email address %mail is not valid.', ['%mail' => $value]));
     }
   }
