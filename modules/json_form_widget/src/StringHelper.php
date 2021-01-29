@@ -63,13 +63,11 @@ class StringHelper {
     if (isset($property->format) && $property->format == 'uri') {
       return 'url';
     }
-    if (isset($property->enum)) {
+    elseif (isset($property->enum)) {
       return 'select';
     }
-    if (isset($property->pattern)) {
-      if (preg_match('/\^mailto:/', $property->pattern) > 0) {
-        return 'email';
-      }
+    elseif (isset($property->pattern) && preg_match('/\^mailto:/', $property->pattern) > 0) {
+      return 'email';
     }
     return 'textfield';
   }
