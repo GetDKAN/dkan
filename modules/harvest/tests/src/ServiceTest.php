@@ -9,7 +9,9 @@ use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Service as HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\Service as Metastore;
+use Drupal\node\NodeStorage;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Drupal\Core\Entity\EntityTypeManager;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
 use MockChain\Chain;
@@ -33,6 +35,7 @@ class ServiceTest extends TestCase {
     $options = (new Options())
       ->add('dkan.harvest.storage.database_table', $this->getStorageFactory())
       ->add('dkan.metastore.service', $this->getMetastoreMockChain())
+      ->add('entity_type.manager', $this->getEntityTypeManagerMockChain())
       ->index(0);
 
     $this->checkService('dkan.harvest.storage.database_table', 'harvest');
@@ -75,7 +78,7 @@ class ServiceTest extends TestCase {
     $storedObject = json_decode($storedObject);
     $this->assertTrue(is_object($storedObject));
 
-    // Run havest again, no changes.
+    // Run harvest again, no changes.
     $result = $service->runHarvest('test_plan');
 
     $this->assertEquals("SUCCESS", $result['status']['extract']);
@@ -123,7 +126,7 @@ class ServiceTest extends TestCase {
       ->add(DatabaseTable::class, "retrieve", "Hello")
       ->getMock();
 
-    $service = new HarvestService($storeFactory, $this->getMetastoreMockChain());
+    $service = new HarvestService($storeFactory, $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain());
     $plan = $service->getHarvestPlan("test");
     $this->assertEquals("Hello", $plan);
   }
@@ -144,7 +147,7 @@ class ServiceTest extends TestCase {
       ->getMock();
 
     $service = $this->getMockBuilder(HarvestService::class)
-      ->setConstructorArgs([$storeFactory, $this->getMetastoreMockChain()])
+      ->setConstructorArgs([$storeFactory, $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain()])
       ->setMethods(['getDkanHarvesterInstance'])
       ->getMock();
 
@@ -204,6 +207,15 @@ class ServiceTest extends TestCase {
   }
 
   /**
+   * Private.
+   */
+  private function getEntityTypeManagerMockChain() {
+    return (new Chain($this))
+      ->add(EntityTypeManager::class, 'getStorage', NodeStorage::class)
+      ->getMock();
+  }
+
+  /**
    *
    */
   public function testPublish() {
@@ -229,6 +241,27 @@ class ServiceTest extends TestCase {
   }
 
   /**
+   *
+   */
+  public function testGetOrphansFromCompleteHarvest() {
+
+    $successiveExtractedIds = (new Options())
+      ->add('101', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
+      ->add('102', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 4]]]))
+      ->add('103', json_encode((object) ['status' => ['extracted_items_ids' => [1, 3]]]))
+      ->add('104', json_encode((object) ['status' => ['extracted_items_ids' => [1, 2, 3]]]))
+      ->use('extractedIds');
+
+    $container = $this->getCommonMockChain()
+      ->add(DatabaseTable::class, 'retrieveAll', ['101', '102', '103', '104'])
+      ->add(DatabaseTable::class, 'retrieve', $successiveExtractedIds);
+    $service = HarvestService::create($container->getMock());
+    $removedIds = $service->getOrphanIdsFromCompleteHarvest('1');
+
+    $this->assertEquals(['4'], array_values($removedIds));
+  }
+
+  /**
    * Private.
    */
   private function getCommonMockChain() {
@@ -236,6 +269,7 @@ class ServiceTest extends TestCase {
     $options = (new Options())
       ->add('dkan.harvest.storage.database_table', DatabaseTableFactory::class)
       ->add('dkan.metastore.service', Metastore::class)
+      ->add('entity_type.manager', EntityTypeManager::class)
       ->index(0);
 
     return (new Chain($this))

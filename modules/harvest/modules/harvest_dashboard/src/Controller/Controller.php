@@ -98,7 +98,7 @@ class Controller {
       return ['#markup' => "No Resources"];
     }
 
-    $headers = ["Identifier", "Local File", "", "Datastore", ""];
+    $headers = ["Identifier", "Drush ID", "Local File", "", "Datastore", ""];
     $renderArray = $this->table($headers);
 
     $service = \Drupal::service('dkan.datastore.import_info');
@@ -116,6 +116,7 @@ class Controller {
 
         $tds = [
           $identifier,
+          "{$resource->data->{"%Ref:downloadURL"}[0]->data->identifier}",
           $info->fileFetcherStatus,
           "{$info->fileFetcherPercentDone}%",
           $info->importerStatus,

@@ -36,9 +36,9 @@ class Drush extends DrushCommands {
   /**
    * Synchronize the module with the React app.
    *
-   * @command dkan:metadata-form:sync
-   * @aliases dkan-metadata-form:sync
-   * @deprecated dkan-metadata-form:sync is deprecated and will be removed in a future Dkan release. Use dkan:metadata-form:sync instead.
+   * @command dkan:metastore-form:sync
+   * @aliases dkan:metadata-form:sync dkan-metadata-form:sync
+   * @deprecated dkan-metadata-form:sync & dkan:metadata-form:sync are deprecated and will be removed in a future Dkan release. Use dkan:metastore-form:sync instead.
    */
   public function sync() {
     $this->createLoadMeJs();

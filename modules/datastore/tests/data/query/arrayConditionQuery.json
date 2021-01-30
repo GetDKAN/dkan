@@ -1,0 +1,16 @@
+{
+    "resources": [
+        {
+            "id": "asdf",
+            "alias": "t"
+        }
+    ],
+    "conditions": [
+        {
+            "resource": "t",
+            "property": "field1",
+            "value": [1,5],
+            "operator": "in"
+        }
+    ]
+}

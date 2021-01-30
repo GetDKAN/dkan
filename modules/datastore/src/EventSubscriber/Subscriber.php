@@ -38,7 +38,7 @@ class Subscriber implements EventSubscriberInterface {
     /** @var \Drupal\common\Resource $resouce */
     $resource = $event->getResource();
 
-    if ($this->isDataStorable($resource)) {
+    if ($resource->getPerspective() == 'source' && $this->isDataStorable($resource)) {
       try {
         /** @var \Drupal\datastore\Service $datastoreService */
         $datastoreService = \Drupal::service('dkan.datastore.service');

@@ -1,0 +1,235 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://getdkan.com/api/datastore.query.json",
+    "title": "Query",
+    "description": "Schema for DKAN database queries",
+    "type": "object",
+    "properties": {
+        "resources": {
+            "type": "array",
+            "title": "Resources",
+            "description": "Resources to query against and aliases. Usually you will add only one resource to this array, but if performing a join, list the primary resource first and then add resources to be used in the joins array.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": { 
+                        "type": "string",
+                        "description": "UUID of resource or distribution."
+                    },
+                    "alias": {
+                        "type": "string",
+                        "description": "Alias to use to refer to this resource elsewhere in the query."
+                    }
+                }
+            }
+        },
+        "properties": {
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    { "$ref": "#/definitions/resource" },
+                    { 
+                        "type": "object",
+                        "title": "Aliased property from specific resource",
+                        "properties": {
+                            "resource": { "$ref": "#/definitions/resource" },
+                            "property": { "$ref": "#/definitions/property" },
+                            "alias": { "type": "string" }
+                        },
+                        "required": [ "resource", "property" ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "Aliased expression",
+                        "properties": {
+                            "expression": { "$ref": "#/definitions/expression" },
+                            "alias": { "type": "string" }
+                        },
+                        "required": [ "expression", "alias" ]
+                    }
+                ]
+            }
+        },
+        "conditions": {
+            "type": "array",
+            "description": "Conditions or groups of conditions for the query, bound by 'and' operator.",
+            "items": {
+                "anyOf": [
+                    { "$ref": "#/definitions/condition" },
+                    { "$ref": "#/definitions/conditionGroup" }
+                ]
+            }
+        },
+        "joins": {
+            "type":"array",
+            "description":"Joins",
+            "items": {
+                "type":"object",
+                "properties": {
+                    "resource": { "$ref": "#/definitions/resource" },
+                    "condition": { "$ref": "#/definitions/condition" }
+                },
+                "required": ["resource", "condition"]
+            }
+        },
+        "limit": {
+            "type": "integer",
+            "maximum": 500,
+            "description": "Limit for maximum number of records returned. Pass zero for no limit (may be restricted by user permissions).",
+            "default": 500
+        },
+        "offset": {
+            "type": "integer",
+            "description": "Number of records to offset by or skip before returning first record.",
+            "default": 0
+        },
+        "sorts": {
+            "type": "array",
+            "description": "Result sorting directives.",
+            "items": {"$ref": "#/definitions/sort"}
+        },
+        "count": {
+            "description": "Return a count of the total rows returned by the query, ignoring the limit/offset.",
+            "type": "boolean",
+            "default": true
+        },
+        "results": {
+            "description": "Return the result set. Set to false and set count to true to receive only a count of matches.",
+            "type": "boolean",
+            "default": true
+        },
+        "schema": {
+            "description": "Return the schema for the datastore collection.",
+            "type": "boolean",
+            "default": true
+        },
+        "keys": {
+            "description": "Return results as an array of keyed objects, with the column machine names as keys. If false, results will be an array of simple arrays of values.",
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "definitions": {
+        "resource": {
+            "type": "string",
+            "description": "Alias to resource set in resources array. Not needed when only querying against one resource."
+        },
+        "property": { 
+            "type": "string",
+            "description": "The property/column or alias to filter by. Should not include collection/table alias.",
+            "pattern": "^[^.]+$"
+        },
+        "resourceProperty": {
+            "type": "object",
+            "description": "Property name with optional collection/table alias.",
+            "properties": {
+                "resource": { "$ref": "#/definitions/resource" },
+                "property": { "$ref": "#/definitions/property" }
+            },
+            "required": [ "property" ]
+        },
+        "conditionGroup": {
+            "type": "object",
+            "title": "Conditional group",
+            "description": "Group of conditions bound by 'and'/'or' operators.",
+            "properties": {
+                "groupOperator": {
+                    "type": "string",
+                    "enum": [ "and", "or" ]
+                },
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            { "$ref": "#/definitions/condition" },
+                            { "$ref": "#/definitions/conditionGroup" }
+                        ]
+                    }
+                }
+            }            
+        },
+        "condition": {
+            "type": "object",
+            "title": "Condition",
+            "description": "Condition object including property, value and operator. If querying only one resource, the \"resource\" does not need to be specified.",
+            "properties": {
+                "resource": { "$ref": "#/definitions/resource" },
+                "property": { "$ref": "#/definitions/property" },
+                "value": {
+                    "anyOf": [
+                        { "type": "string" },
+                        { "type": "number" },
+                        { 
+                            "type": "array",
+                            "items": {
+                                "anyOf": [
+                                    { "type": "string" },
+                                    { "type": "number" }            
+                                ]
+                            }
+                        },
+                        { "$ref": "#/definitions/resourceProperty" }
+                    ],
+                    "description": "The value to filter against."
+                 },
+                 "operator": {
+                     "type": "string",
+                     "description": "Condition operator",
+                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "like", "between", "in", "not in" ],
+                     "default": "="
+                 }
+            },
+            "required": [ "property", "value" ]            
+        },
+        "expression": {
+            "type": "object",
+            "title": "Expression",
+            "description": "Arithmetic or other expression performed on one or more properties. See operator property enum for currently supported expressions, and see https://dev.mysql.com/doc/refman/5.7/en/numeric-functions.html.",
+            "properties": {
+                "operator": {
+                    "type": "string",
+                    "enum": [
+                        "+", 
+                        "-",
+                        "*",
+                        "/",
+                        "%"
+                    ]
+                },
+                "operands": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "number",
+                                "title": "Number"
+                            },
+                            { "$ref": "#/definitions/property" },
+                            { "$ref": "#/definitions/resourceProperty" },
+                            {
+                                "type": "object",
+                                "title": "Expression",
+                                "properties": {
+                                    "expression": { "$ref": "#/definitions/expression" }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "sort": {
+            "type": "object",
+            "description": "Properties to sort by in a particular order.",
+            "properties": { 
+                "resource": { "$ref": "#/definitions/resource" },
+                "property": { "$ref": "#/definitions/property" },
+                "order": {
+                    "type": "string",
+                    "description": "Order to sort in, lowercase.",
+                    "enum": ["asc", "desc"]
+                }
+            }
+        }
+    }
+}

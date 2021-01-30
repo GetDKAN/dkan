@@ -1,0 +1,13 @@
+{
+    "resources": [
+        {
+            "id": "asdf",
+            "alias": "t"
+        }
+    ],
+    "conditions": [
+        {
+            "someWierdProperty": "foo"
+        }
+    ]
+}

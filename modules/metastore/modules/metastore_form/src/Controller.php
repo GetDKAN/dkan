@@ -10,6 +10,8 @@ use Drupal\Core\Messenger\MessengerTrait;
 
 /**
  * Controller.
+ *
+ * @codeCoverageIgnore
  */
 class Controller extends ControllerBase {
   use MessengerTrait;

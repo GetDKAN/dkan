@@ -72,8 +72,8 @@ class DatasetTest extends TestCase {
 
     \Drupal::setContainer($container);
 
-    $thing = (object) ['firstName' => 'hello', 'lastName' => 'goodbye', 'age' => 5000, 'occupations' => ['teacher']];
-    $json = json_encode($thing);
+    $collection = (object) ['firstName' => 'hello', 'lastName' => 'goodbye', 'age' => 5000, 'occupations' => ['teacher']];
+    $json = json_encode($collection);
     $dataset = new Dataset($json);
     $this->assertEquals($json, json_encode($dataset->getValue()));
 

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\harvest;
 
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\Service as Metastore;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Options;
@@ -57,7 +58,7 @@ class WebServiceApiTest extends TestCase {
   public function containerGet($input) {
     switch ($input) {
       case 'dkan.harvest.service':
-        return new Service(new MemoryFactory(), $this->getMetastoreMockChain());
+        return new Service(new MemoryFactory(), $this->getMetastoreMockChain(), $this->getEntityTypeManagerMockChain());
 
       break;
       case 'request_stack':
@@ -155,6 +156,15 @@ class WebServiceApiTest extends TestCase {
   private function getMetastoreMockChain() {
     return (new Chain($this))
       ->add(Metastore::class, 'publish', '1')
+      ->getMock();
+  }
+
+  /**
+   * Private.
+   */
+  private function getEntityTypeManagerMockChain() {
+    return (new Chain($this))
+      ->add(EntityTypeManager::class)
       ->getMock();
   }
 

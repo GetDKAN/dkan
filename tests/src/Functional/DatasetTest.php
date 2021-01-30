@@ -5,10 +5,14 @@ namespace Drupal\Tests\dkan\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\harvest\Load\Dataset;
+use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Service;
+use Drupal\metastore\Service as Metastore;
+use Drupal\node\NodeStorage;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
+use Harvest\ETL\Extract\DataJson;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 class DatasetTest extends ExistingSiteBase {
@@ -22,27 +26,45 @@ class DatasetTest extends ExistingSiteBase {
     return self::S3_PREFIX . '/' . $filename;
   }
 
-  private function getData($identifier, $title, $downloadUrl) {
-    return '
-    {
-      "title": "' . $title . '",
-      "description": "Yep",
-      "identifier": "' . $identifier . '",
-      "accessLevel": "public",
-      "modified": "06-04-2020",
-      "keyword": ["hello"],
-      "distribution": [
-        {
-          "title": "blah",
-          "downloadURL": "' . $this->getDownloadUrl($downloadUrl) . '",
-          "mediaType": "text/csv"
-        }
-      ]
-    }';
+  /**
+   * Generate dataset metadata, possibly with multiple distributions.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
+   * @param string $title
+   *   Dataset title.
+   * @param array $downloadUrls
+   *   Array of resource files URLs for this dataset.
+   *
+   * @return string|false
+   *   Json encoded string of this dataset's metadata, or FALSE if error.
+   */
+  private function getData(string $identifier, string $title, array $downloadUrls) {
+
+    $data = new \stdClass();
+    $data->title = $title;
+    $data->description = "Some description.";
+    $data->identifier = $identifier;
+    $data->accessLevel = "public";
+    $data->modified = "06-04-2020";
+    $data->keyword = ["some keyword"];
+    $data->distribution = [];
+
+    foreach ($downloadUrls as $key => $downloadUrl) {
+      $distribution = new \stdClass();
+      $distribution->title = "Distribution #{$key} for {$identifier}";
+      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
+      $distribution->mediaType = "text/csv";
+
+      $data->distribution[] = $distribution;
+    }
+
+    return json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
   }
 
   public function setUp() {
     parent::setUp();
+    $this->removeHarvests();
     $this->removeAllNodes();
     $this->removeAllMappedFiles();
     $this->removeAllFileFetchingJobs();
@@ -54,7 +76,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', 'district_centerpoints_small.csv');
+    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -79,7 +101,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', 'district_centerpoints_small.csv');
+    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
@@ -104,13 +126,13 @@ class DatasetTest extends ExistingSiteBase {
    */
   public function test3() {
 
-    // Test the resource purger by posting a dataset, then updating its file.
-    $this->storeDatasetRunQueues(111, '1.1', '1.csv');
-    $this->storeDatasetRunQueues(111, '1.2', '2.csv', 'put');
+    // Post then update a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues(111, '1.2', ['2.csv', '4.csv'], 'put');
 
-    // Verify only 2.csv remains in the resources folder, and 1 datastore table.
-    $this->assertEquals(['2.csv'], $this->checkFiles());
-    $this->assertEquals(1, $this->countTables());
+    // Verify only the 2 most recent resources remain.
+    $this->assertEquals(['2.csv', '4.csv'], $this->checkFiles());
+    $this->assertEquals(2, $this->countTables());
   }
 
   /**
@@ -123,26 +145,98 @@ class DatasetTest extends ExistingSiteBase {
     $defaultModerationState->set('type_settings.default_moderation_state', 'draft');
     $defaultModerationState->save();
 
-    // Test the resource purger by posting, updating and publishing.
-    $this->storeDatasetRunQueues(111, '1.1', '1.csv');
-    $this->storeDatasetRunQueues(111, '1.2', '2.csv', 'put');
+    // Post, update and publish a dataset with multiple, changing resources.
+    $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
+    $this->storeDatasetRunQueues(111, '1.2', ['3.csv', '1.csv'], 'put');
     $this->getMetastore()->publish('dataset', 111);
-    $this->storeDatasetRunQueues(111, '1.3', '3.csv', 'put');
+    $this->storeDatasetRunQueues(111, '1.3', ['1.csv', '5.csv'], 'put');
+
+    // Verify dataset information.
+    /** @var \Drupal\common\DatasetInfo $datasetInfo */
+    $datasetInfo = \Drupal::service('dkan.common.dataset_info');
+    $info = $datasetInfo->gather('111');
+    $this->assertEquals('1.csv', substr($info['latest revision']['distributions'][0]['file path'], -5));
+    $this->assertEquals('5.csv', substr($info['latest revision']['distributions'][1]['file path'], -5));
+    $this->assertEquals('3.csv', substr($info['published revision']['distributions'][0]['file path'], -5));
+    $this->assertEquals('1.csv', substr($info['published revision']['distributions'][1]['file path'], -5));
 
     // Verify that only the resources associated with the published and the
     // latest revision.
-    $this->assertEquals(['2.csv', '3.csv'], $this->checkFiles());
-    $this->assertEquals(2, $this->countTables());
+    $this->assertEquals(['1.csv', '3.csv', '5.csv'], $this->checkFiles());
+    $this->assertEquals(3, $this->countTables());
 
     $defaultModerationState->set('type_settings.default_moderation_state', 'published');
     $defaultModerationState->save();
   }
 
   /**
+   * Test removal of datasets by a subsequent harvest.
+   */
+  public function test5() {
+
+    $plan = $this->getPlan('test5', 'catalog-step-1.json');
+    $harvester = $this->getHarvester();
+    $harvester->registerHarvest($plan);
+
+    // First harvest.
+    $harvester->runHarvest('test5');
+
+    // Ensure different harvest run identifiers, since based on timestamp.
+    sleep(1);
+
+    // Second harvest, re-register with different catalog to simulate change.
+    $plan->extract->uri = 'file://' . __DIR__ . '/../../files/catalog-step-2.json';
+    $harvester->registerHarvest($plan);
+    $result = $harvester->runHarvest('test5');
+
+    // Test unchanged, updated and new datasets.
+    $expected = [
+      '1' => 'UNCHANGED',
+      '2' => 'UPDATED',
+      '4' => 'NEW',
+    ];
+    $this->assertEquals($expected, $result['status']['load']);
+
+    $this->assertEquals('published', $this->getModerationState('1'));
+    $this->assertEquals('published' , $this->getModerationState('2'));
+    $this->assertEquals('orphaned' , $this->getModerationState('3'));
+    $this->assertEquals('published' , $this->getModerationState('4'));
+  }
+
+  /**
+   * Generate a harvest plan object.
+   */
+  private function getPlan(string $identifier, string $testFilename) : \stdClass {
+    return (object) [
+      'identifier' => $identifier,
+      'extract' => (object) [
+        'type' => DataJson::class,
+        'uri' => 'file://' . __DIR__ . '/../../files/' . $testFilename,
+      ],
+      'transforms' => [],
+      'load' => (object) [
+        'type' => Dataset::class,
+      ],
+    ];
+  }
+
+  /**
+   * Get a dataset's moderation state.
+   */
+  private function getModerationState(string $uuid) : string {
+    $nodeStorage = $this->getNodeStorage();
+    $datasets = $nodeStorage->loadByProperties(['uuid' => $uuid]);
+    if (FALSE !== ($dataset = reset($datasets))) {
+      return $dataset->get('moderation_state')->getString();
+    }
+    return '';
+  }
+
+  /**
    * Store or update a dataset,run datastore_import and resource_purger queues.
    */
-  private function storeDatasetRunQueues($identifier, $title, $filename, $method = 'post') {
-    $datasetJson = $this->getData($identifier, $title, $filename);
+  private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
+    $datasetJson = $this->getData($identifier, $title, $filenames);
     $this->httpVerbHandler($method, $datasetJson, json_decode($datasetJson));
 
     // Simulate a cron on queues relevant to this scenario.
@@ -253,12 +347,20 @@ class DatasetTest extends ExistingSiteBase {
     return $identifier;
   }
 
-  private function getMetastore(): Service {
+  private function getMetastore(): Metastore {
     return \Drupal::service('dkan.metastore.service');
   }
 
   private function getQueueService() : QueueFactory {
     return \Drupal::service('queue');
+  }
+
+  private function getHarvester() : Harvester {
+    return \Drupal::service('dkan.harvest.service');
+  }
+
+  private function getNodeStorage(): NodeStorage {
+    return \Drupal::service('entity_type.manager')->getStorage('node');
   }
 
 }
