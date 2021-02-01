@@ -81,7 +81,7 @@ class PurgeCommands extends DrushCommands {
    */
   public function purgeAll(array $options = ['deferred' => FALSE, 'prior' => FALSE]) {
     try {
-      $this->resourcePurger->schedule([], $options['deferred'], $options['prior']);
+      $this->resourcePurger->scheduleAllUuids($options['deferred'], $options['prior']);
       $messagePrefix = $options['deferred'] ? 'Queued the purging of' : 'Purged';
       $this->logger()->info("{$messagePrefix} resources in every dataset.");
     }

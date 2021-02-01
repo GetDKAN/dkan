@@ -14,7 +14,7 @@
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.0",
         "getdkan/contracts": "^1.0.0",
-        "getdkan/datastore" : "^5.1.1",
+        "getdkan/datastore": "^5.1.2",
         "getdkan/file-fetcher" : "^4.0.0",
         "getdkan/harvest": "^1.0.0",
         "getdkan/json-schema-provider": "^0.1.2",
@@ -54,7 +54,7 @@
         "dkan-frontend": {
             "type": "vcs",
             "url": "https://github.com/GetDKAN/data-catalog-app",
-            "ref": "1.0.3"
+            "ref": "1.0.4"
         }
     }
 }

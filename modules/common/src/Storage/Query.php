@@ -124,6 +124,7 @@ class Query implements
     $this->conditions[] = (object) [
       'property' => $property,
       'value' => $value,
+      'operator' => 'LIKE',
     ];
   }
 
@@ -180,6 +181,7 @@ class Query implements
    */
   public function count() {
     $this->count = TRUE;
+    unset($this->limit);
   }
 
 }
