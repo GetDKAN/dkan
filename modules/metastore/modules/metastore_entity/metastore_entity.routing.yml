@@ -3,27 +3,22 @@
 entity.metastore_item.canonical:
   path: '/metastore/{metastore_item}'
   defaults:
-  # Calls the view controller, defined in the annotation of the metadata entity
     _entity_view: 'metastore_entity_metastore_item'
     _title: 'Metastore item'
   requirements:
-  # Calls the access controller of the entity, $operation 'view'
     _entity_access: 'metastore_entity_metastore_item.view'
 
 entity.metastore_item.collection:
   path: '/admin/content/metastore'
   defaults:
-  # Calls the list controller, defined in the annotation of the metadata entity.
     _entity_list: 'metastore_item'
     _title: 'DKAN Metastore Item List'
   requirements:
-  # Checks for permission directly.
     _permission: 'administer metastore entity'
 
 entity.metastore_item.add_form:
-  path: '/metastore/add/{metastore_schema}'
+  path: '/metastore/add/{schema}'
   defaults:
-  # Calls the form.add controller, defined in the contact entity.
     _entity_form: metastore_item.default
     _title: 'Add metastore item'
   requirements:
@@ -32,7 +27,6 @@ entity.metastore_item.add_form:
 entity.metastore_item.edit_form:
   path: '/metastore/{metastore_item}/edit'
   defaults:
-  # Calls the form.edit controller, defined in the contact entity.
     _entity_form: metastore_item.default
     _title: 'Edit metastore item'
   requirements:
@@ -41,7 +35,6 @@ entity.metastore_item.edit_form:
 entity.metastore_item.delete_form:
   path: '/metastore/{metastore_item}/delete'
   defaults:
-    # Calls the form.delete controller, defined in the contact entity.
     _entity_form: metastore_item.delete
     _title: 'Delete metastore item'
   requirements:
@@ -77,4 +70,12 @@ entity.metastore_schema.delete_form:
     _entity_form: 'metastore_schema.delete'
     _title: 'Delete schema'
   requirements:
-    _entity_access: 'metastore_schema.delete'
+    _permission: 'administer metastore schemas'
+
+metastore_entity.add_page:
+  path: '/metastore/add'
+  defaults:
+    _title: 'Add DKAN Metastore Item'
+    _controller: '\Drupal\metastore_entity\Entity\Controller\MetastoreItemController:addPage'
+  requirements:
+    _permission: 'add metastore entity'

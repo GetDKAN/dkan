@@ -59,7 +59,7 @@ use Drupal\user\EntityOwnerTrait;
  *   },
  *   field_ui_base_route = "entity.metastore_schema.edit_form",
  *   common_reference_target = TRUE,
- *   permission_granularity = "bundle",
+ *   permission_granularity = "entity_type",
  *   links = {
  *     "canonical" = "/metastore/{metastore_item}",
  *     "delete-form" = "/metastore/{metastore_item}/delete",
