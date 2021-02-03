@@ -175,7 +175,11 @@ class Drush extends DrushCommands {
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
       $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
       try {
+        if (empty($uuid)) {
+          throw new Exception("The reference identifier is undefined.");
+        }
         $this->datastoreService->drop($uuid);
+        $this->jobstorePrune($uuid);
         $this->logger->notice("Successfully dropped the datastore for {$uuid}");
       }
       catch (\Exception $e) {
@@ -183,9 +187,6 @@ class Drush extends DrushCommands {
         $this->logger->debug($e->getMessage());
         continue;
       }
-
-      $this->jobstorePrune($uuid);
-
     }
   }
 
