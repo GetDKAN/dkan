@@ -2,10 +2,19 @@
 
 namespace Drupal\json_form_widget;
 
+use Drupal\Component\Utility\EmailValidator;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class StringHelper.
  */
-class StringHelper {
+class StringHelper implements ContainerInjectionInterface {
+  use StringTranslationTrait;
+  use DependencySerializationTrait;
 
   /**
    * Builder object.
@@ -13,6 +22,31 @@ class StringHelper {
    * @var \Drupal\json_form_widget\FieldTypeRouter
    */
   public $builder;
+
+  /**
+   * Email validator service.
+   *
+   * @var \Drupal\Component\Utility\EmailValidator
+   */
+  public $emailValidator;
+
+  /**
+   * Inherited.
+   *
+   * @{inheritdocs}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('email.validator')
+    );
+  }
+
+  /**
+   * Constructor.
+   */
+  public function __construct(EmailValidator $email_validator) {
+    $this->emailValidator = $email_validator;
+  }
 
   /**
    * Set builder.
@@ -43,6 +77,12 @@ class StringHelper {
     if ($element['#type'] === 'select') {
       $element['#options'] = $this->getSelectOptions($property);
     }
+
+    // Add extra validate if element type is email.
+    if ($element['#type'] === 'email') {
+      $element['#element_validate'][] = [$this, 'validateEmail'];
+    }
+
     return $element;
   }
 
@@ -53,8 +93,11 @@ class StringHelper {
     if (isset($property->format) && $property->format == 'uri') {
       return 'url';
     }
-    if (isset($property->enum)) {
+    elseif (isset($property->enum)) {
       return 'select';
+    }
+    elseif (isset($property->pattern) && preg_match('/\^mailto:/', $property->pattern) > 0) {
+      return 'email';
     }
     return 'textfield';
   }
@@ -93,6 +136,22 @@ class StringHelper {
       $options = array_combine($property->enum, $property->enum);
     }
     return $options;
+  }
+
+  /**
+   * Validate email field.
+   */
+  public function validateEmail(&$element, FormStateInterface $form_state, &$complete_form) {
+    $value = trim($element['#value']);
+    $form_state->setValueForElement($element, $value);
+
+    if (empty($value)) {
+      return;
+    }
+
+    if ($value !== '' && !$this->emailValidator->isValid($value) || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+      $form_state->setError($element, $this->t('The email address %mail is not valid.', ['%mail' => $value]));
+    }
   }
 
 }

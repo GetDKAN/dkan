@@ -7,6 +7,7 @@ use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\ArrayHelper;
 use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
+use Drupal\Component\Utility\EmailValidator;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StringTranslation\TranslationManager;
@@ -162,6 +163,32 @@ class JsonFormBuilderTest extends TestCase {
     $default_data->test = "Some value.";
     $this->assertEquals($form_builder->getJsonForm($default_data), $expected);
 
+    // Test email.
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(SchemaRetriever::class, 'retrieve', '
+      {
+        "properties":{
+          "hasEmail": {
+            "title": "Email",
+            "description": "Email address for the contact name.",
+            "pattern": "^mailto:",
+            "type": "string"
+          }
+        },
+        "type":"object"
+      }')
+      ->add(SchemaUiHandler::class, 'setSchemaUi');
+
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+
+    $form_builder = FormBuilder::create($container);
+    $form_builder->setSchema('dataset');
+    $result = $form_builder->getJsonForm($default_data);
+    $this->assertEquals($result["hasEmail"]['#type'], "email");
+    $this->assertArrayHasKey("#element_validate", $result["hasEmail"]);
+
     // Test object.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"properties":{"publisher": {
       "$schema": "http://json-schema.org/draft-04/schema#",
@@ -265,7 +292,8 @@ class JsonFormBuilderTest extends TestCase {
    * Return FieldTypeRouter object.
    */
   private function getRouter() {
-    $string_helper = new StringHelper();
+    $email_validator = new EmailValidator();
+    $string_helper = new StringHelper($email_validator);
     $object_helper = new ObjectHelper();
 
     $options = (new Options())
