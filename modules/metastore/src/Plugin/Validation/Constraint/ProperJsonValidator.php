@@ -30,6 +30,8 @@ class ProperJsonValidator extends ConstraintValidator {
    *
    * @param string $value
    *   Value.
+   * @param string $schema
+   *   Schema ID.
    */
   protected function isProper($value, $schema = 'dataset') {
     // @codeCoverageIgnoreStart
