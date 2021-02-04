@@ -2,6 +2,10 @@
   "title": "Category",
   "description": "Main thematic category of the dataset.",
   "type": "object",
+  "required": [
+    "identifier",
+    "data"
+  ],
   "properties": {
     "identifier": {
       "title": "Identifier",
