@@ -16,7 +16,10 @@ class ProperJsonValidator extends ConstraintValidator {
    * {@inheritdoc}
    */
   public function validate($items, Constraint $constraint) {
-    $schema = $items->getParent()->getEntity()->get('field_data_type')->value;
+    $schema = 'dataset';
+    if (is_object($items) && $type = $items->getParent()->getEntity()->get('field_data_type')->value) {
+      $schema = $type;
+    }
     foreach ($items as $item) {
       $info = $this->isProper($item->value, $schema);
       if (!$info['valid']) {
