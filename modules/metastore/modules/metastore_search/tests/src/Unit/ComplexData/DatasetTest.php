@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore_search\ComplexData;
+namespace Drupal\Tests\metastore_search\Unit\ComplexData;
 
 use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\metastore_search\ComplexData\Dataset;
@@ -11,7 +11,10 @@ use MockChain\Options;
 use Drupal\Core\DependencyInjection\Container;
 
 /**
+ * Class DatasetTest.
  *
+ * @package Drupal\Tests\metastore_search\Unit\ComplexData
+ * @group metastore_search
  */
 class DatasetTest extends TestCase {
 
