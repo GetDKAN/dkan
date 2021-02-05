@@ -74,9 +74,9 @@ class MetastoreItemController extends ControllerBase implements ContainerInjecti
   public function addPage() {
     $build = [
       '#theme' => 'metastore_item_add_list',
-      '#cache' => [
-        'tags' => $this->entityTypeManager()->getDefinition('metastore_schema')->getListCacheTags(),
-      ],
+    //   '#cache' => [
+    //     'tags' => $this->entityTypeManager()->getDefinition('metastore_schema')->getListCacheTags(),
+    //   ],
     ];
 
     $schemas = [];

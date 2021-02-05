@@ -57,6 +57,7 @@ use Drupal\user\EntityOwnerTrait;
  *     "revision_created" = "revision_timestamp",
  *     "revision_log_message" = "revision_log"
  *   },
+ *   bundle_entity_type = "metastore_schema",
  *   field_ui_base_route = "entity.metastore_schema.edit_form",
  *   common_reference_target = TRUE,
  *   permission_granularity = "entity_type",

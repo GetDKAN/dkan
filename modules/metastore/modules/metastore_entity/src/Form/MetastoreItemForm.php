@@ -18,12 +18,12 @@ class MetastoreItemForm extends ContentEntityForm {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
-    $entity = $this->entity;
+    $item = $this->entity;
 
     $form['langcode'] = [
       '#title' => $this->t('Language'),
       '#type' => 'language_select',
-      '#default_value' => $entity->getUntranslated()->language()->getId(),
+      '#default_value' => $item->getUntranslated()->language()->getId(),
       '#languages' => Language::STATE_ALL,
     ];
     return $form;

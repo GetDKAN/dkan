@@ -55,11 +55,7 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
     $schema = $this->entity;
     if ($this->operation == 'add') {
       $form['#title'] = $this->t('Add schema');
-      $fields = $this->entityFieldManager->getBaseFieldDefinitions('node');
-      // Create a node with a fake bundle using the type's UUID so that we can
-      // get the default values for workflow settings.
-      // @todo Make it possible to get default values without an entity.
-      //   https://www.drupal.org/node/2318187
+      $fields = $this->entityFieldManager->getBaseFieldDefinitions('metastore_item');
       $metastore_item = $this->entityTypeManager->getStorage('metastore_item')->create(['schema' => $schema->uuid()]);
     }
     else {
@@ -204,8 +200,6 @@ class MetastoreSchemaForm extends BundleEntityFormBase {
     }
 
     // Update workflow options.
-    // @todo Make it possible to get default values without an entity.
-    //   https://www.drupal.org/node/2318187
     $metastore_item = $this->entityTypeManager->getStorage('metastore_item')->create(['schema' => $schema->id()]);
     $value = (bool) $form_state->getValue(['options', 'status']);
     if ($metastore_item->status->value != $value) {
