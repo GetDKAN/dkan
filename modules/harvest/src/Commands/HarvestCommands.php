@@ -123,7 +123,13 @@ class HarvestCommands extends DrushCommands {
     $result = $this->harvestService
       ->runHarvest($id);
 
-    $this->renderResult($result);
+    // Fetch run_id from the harvest service.
+    $run_ids = $this->harvestService
+      ->getAllHarvestRunInfo($id);
+
+    $this->renderHarvestRunsInfo([
+      [end($run_ids), $result],
+    ]);
   }
 
   /**
@@ -159,24 +165,26 @@ class HarvestCommands extends DrushCommands {
    * @deprecated dkan-harvest:info is deprecated and will be removed in a future Dkan release. Use dkan:harvest:info instead.
    */
   public function info($id, $run_id = NULL) {
+    $run_ids = [];
 
     if (!isset($run_id)) {
-      $runs = $this->harvestService
+      $run_ids = $this->harvestService
         ->getAllHarvestRunInfo($id);
-      $table = new Table(new ConsoleOutput());
-      $table->setHeaders(["{$id} runs"]);
-      foreach (array_keys($runs) as $run_id) {
-        $table->addRow([$run_id]);
-      }
-      $table->render();
     }
     else {
-      $run = $this->harvestService
-        ->getHarvestRunInfo($id, $run_id);
-      $result = json_decode($run);
-      print_r($result);
+      $run_ids = [$run_id];
     }
 
+    $run_infos = [];
+    foreach ($run_ids as $run_id) {
+      $run = $this->harvestService
+        ->getHarvestRunInfo($id, $run_id);
+      $result = json_decode($run, TRUE);
+
+      $run_infos[] = [$run_id, $result];
+    }
+
+    $this->renderHarvestRunsInfo($run_infos);
   }
 
   /**
@@ -233,7 +241,9 @@ class HarvestCommands extends DrushCommands {
     }
 
     if (empty($run_id)) {
-      $run_id = $run_id_all[0];
+      // Get the last run_id from the array.
+      $run_id = end($run_id_all);
+      reset($run_id_all);
     }
 
     if (array_search($run_id, $run_id_all) === FALSE) {
@@ -249,9 +259,7 @@ class HarvestCommands extends DrushCommands {
       return DrushCommands::EXIT_FAILURE;
     }
 
-    $run = json_decode($run, TRUE);
-
-    $this->renderStatusTable($harvest_id, $run_id, $run);
+    $this->renderStatusTable($harvest_id, $run_id, json_decode($run, TRUE));
   }
 
   /**
