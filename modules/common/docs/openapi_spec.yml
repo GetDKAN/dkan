@@ -35,14 +35,6 @@ components:
       schema:
         type: string
       example: PROPERTY-UUID
-    query:
-      name: query
-      in: query
-      description: SQL query
-      required: true
-      schema:
-        type: string
-      example: '[SELECT * FROM DATASTORE-UUID];'
     datastoreUuid:
       name: identifier
       in: path
@@ -428,7 +420,13 @@ paths:
       tags:
         - SQL Query
       parameters:
-        - $ref: '#/components/parameters/query'
+        - name: query
+          in: query
+          description: SQL query
+          required: true
+          schema:
+            type: string
+          example: '[SELECT * FROM DATASTORE-UUID];'
       responses:
         '200':
           description: Ok
