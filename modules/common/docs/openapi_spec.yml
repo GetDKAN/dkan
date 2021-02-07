@@ -427,6 +427,14 @@ paths:
           schema:
             type: string
           example: '[SELECT * FROM DATASTORE-UUID];'
+        - name: show-db-columns
+          in: query
+          description: |
+            Add `&show-db-columns` to return columns without spaces and in some cases, truncated names where the human
+            readable column header is very long.
+          schema:
+            type: boolean
+          allowEmptyValue: true
       responses:
         '200':
           description: Ok
