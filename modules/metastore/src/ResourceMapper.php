@@ -196,9 +196,9 @@ class ResourceMapper {
   /**
    * Private.
    */
-  private function exists($identifier, $perspective, $version = NULL) {
+  private function exists($identifier, $perspective, $version = NULL) : bool {
     $item = $this->get($identifier, $perspective, $version);
-    return isset($item) ? TRUE : FALSE;
+    return isset($item);
   }
 
 }
