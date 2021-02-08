@@ -425,11 +425,11 @@ paths:
           description: |
             A SQL-like query.
 
-            A `SELECT` using the `show-db-columns` parameter will make it easier to build queries against the data as
+            A `SELECT` using the `show_db_columns` parameter will make it easier to build queries against the data as
             it returns columns without spaces and in some cases, truncated names where the human readable column header
             is very long.
 
-            `/api/1/datastore/sql?query=[SELECT * FROM DATASTORE_UUID][LIMIT 1 OFFSET 0];&show-db-columns`
+            `/api/1/datastore/sql?query=[SELECT * FROM DATASTORE_UUID][LIMIT 1 OFFSET 0];&show_db_columns`
 
             You can then build the `SELECT` part of the query. Do not use spaces between its arguments.
 
@@ -437,13 +437,13 @@ paths:
 
             `WHERE` can use any column in the data.
 
-            `/api/1/datastore/sql?query=[SELECT a,b FROM DATASTORE_UUID][WHERE c = "CCC"];&show-db-columns`
+            `/api/1/datastore/sql?query=[SELECT a,b FROM DATASTORE_UUID][WHERE c = "CCC"];&show_db_columns`
 
             `LIMIT` and `OFFSET` allow you to get more than the 500 record limit, by using successive queries:
 
-            `/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = "CCC"][LIMIT 500 OFFSET 0];&show-db-columns`
+            `/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = "CCC"][LIMIT 500 OFFSET 0];&show_db_columns`
 
-            `/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = "DDD"][LIMIT 500 OFFSET 500];&show-db-columns`
+            `/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = "DDD"][LIMIT 500 OFFSET 500];&show_db_columns`
 
             Note: `SELECT`, `WHERE` and `LIMIT...OFFSET` clauses must each be included within brackets `[ ]`.
           required: true
