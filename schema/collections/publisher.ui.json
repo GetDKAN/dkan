@@ -1,0 +1,16 @@
+{
+  "identifier": {
+    "ui:options": {
+      "widget": "hidden"
+    }
+  },
+  "data": {
+    "properties": {
+      "@type": {
+        "ui:options": {
+          "widget": "hidden"
+        }
+      }
+    }
+  }
+}

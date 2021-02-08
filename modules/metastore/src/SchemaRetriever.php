@@ -46,6 +46,14 @@ class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface
       'catalog',
       'dataset',
       'dataset.ui',
+      'publisher',
+      'publisher.ui',
+      'distribution',
+      'distribution.ui',
+      'theme',
+      'theme.ui',
+      'keyword',
+      'keyword.ui',
     ];
   }
 
