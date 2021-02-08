@@ -93,7 +93,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     $pathsAndOperations = $fullSpec['paths'];
     $pathsAndOperations = $this->keepDatasetSpecificEndpoints($pathsAndOperations);
     $pathsAndOperations = $this->modifyDatasetEndpoints($pathsAndOperations, $identifier);
-    $pathsAndOperations = $this->modifySqlEndpoints($pathsAndOperations, $identifier, $fullSpec['components']['parameters']);
+    $pathsAndOperations = $this->modifySqlEndpoints($pathsAndOperations, $identifier);
 
     $fullSpec['paths'] = $pathsAndOperations;
     return $this->getResponse($fullSpec);
@@ -212,23 +212,19 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   The paths defined in the original spec.
    * @param string $identifier
    *   Dataset uuid.
-   * @param array $parameters
-   *   Original spec parameters.
    *
    * @return array
    *   Spec with dataset-specific datastore sql endpoint.
    */
-  private function modifySqlEndpoints(array $pathsAndOperations, string $identifier, array $parameters) {
+  private function modifySqlEndpoints(array $pathsAndOperations, string $identifier) : array {
     if ($this->modifyData($identifier)) {
       return $this->removeSqlEndpointPaths($pathsAndOperations);
     }
 
-    $query = $parameters['query'];
-
     foreach ($this->getSqlPathsAndOperations($pathsAndOperations) as $path => $operations) {
 
       foreach ($this->getDistributions($identifier) as $dist) {
-        list($newPath, $newOperations) = $this->modifySqlEndpoint($path, $operations, $dist, $query);
+        list($newPath, $newOperations) = $this->modifySqlEndpoint($path, $operations, $dist);
         $pathsAndOperations[$newPath] = $newOperations;
       }
 
@@ -266,11 +262,15 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function modifySqlEndpoint($path, $operations, $distribution, $query) {
+  private function modifySqlEndpoint($path, $operations, $distribution) {
     $newPath = "{$path}?query=[SELECT * FROM {$distribution->identifier}];";
 
-    $query['example'] = "[SELECT * FROM {$distribution->identifier}];";
-    $operations['get']['parameters'] = [$query];
+    // Replace schema's "DATASTORE-UUID" with the distribution's identifier.
+    $operations['get']['parameters'][0]['example'] = str_replace(
+      "DATASTORE-UUID",
+      $distribution->identifier,
+      $operations['get']['parameters'][0]['example']
+    );
 
     return [$newPath, $operations];
   }
