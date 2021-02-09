@@ -51,6 +51,7 @@ use Drupal\user\UserInterface;
  *     "label" = "name",
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
+ *     "data" = "data",
  *     "langcode" = "langcode",
  *     "published" = "status",
  *   },
@@ -235,15 +236,35 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemI
       ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'string',
-        'weight' => -4,
+        'weight' => -5,
       ])
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
-        'weight' => -4,
+        'weight' => -5,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(TRUE);
+
+    $fields['data'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('Metadata'))
+      // ->setDescription(t('Most likely JSON.'))
+      ->setSettings([
+        'default_value' => '{}',
+        'text_processing' => 0,
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'visible',
+        'type' => 'basic_string',
+        'weight' => -4,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textarea',
+        'weight' => -4,
+        'settings' => ['rows' => 10],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['status']->setDescription(t('A boolean indicating whether the Metastore item is published.'))
       ->setDisplayOptions('form', [

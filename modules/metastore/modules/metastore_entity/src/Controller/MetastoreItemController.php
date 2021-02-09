@@ -5,6 +5,7 @@ namespace Drupal\metastore_entity\Controller;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\metastore_entity\Entity\MetastoreItemInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -118,13 +119,13 @@ class MetastoreItemController extends ControllerBase implements ContainerInjecti
         // Use revision link to link to revisions that are not active.
         $date = $this->dateFormatter->format($revision->getRevisionCreationTime(), 'short');
         if ($vid != $metastore_item->getRevisionId()) {
-          $link = $this->l($date, new Url('entity.metastore_item.revision', [
+          $link = Link::fromTextAndUrl($date, new Url('entity.metastore_item.revision', [
             'metastore_item' => $metastore_item->id(),
             'metastore_item_revision' => $vid,
           ]));
         }
         else {
-          $link = $metastore_item->link($date);
+          $link = $metastore_item->toLink($date);
         }
 
         $row = [];
