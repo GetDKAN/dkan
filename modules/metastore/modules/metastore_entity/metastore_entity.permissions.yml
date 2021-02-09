@@ -1,0 +1,31 @@
+add metastore item entities:
+  title: 'Create new Metastore item entities'
+
+administer metastore item entities:
+  title: 'Administer Metastore item entities'
+  description: 'Allow to access the administration form to configure Metastore item entities.'
+  restrict access: true
+
+delete metastore item entities:
+  title: 'Delete Metastore item entities'
+
+edit metastore item entities:
+  title: 'Edit Metastore item entities'
+
+view published metastore item entities:
+  title: 'View published Metastore item entities'
+
+view unpublished metastore item entities:
+  title: 'View unpublished Metastore item entities'
+
+view all metastore item revisions:
+  title: 'View all Metastore item revisions'
+
+revert all metastore item revisions:
+  title: 'Revert all Metastore item revisions'
+  description: 'Role requires permission <em>view Metastore item revisions</em> and <em>edit rights</em> for metastore item entities in question or <em>administer metastore item entities</em>.'
+
+delete all metastore item revisions:
+  title: 'Delete all revisions'
+  description: 'Role requires permission to <em>view Metastore item revisions</em> and <em>delete rights</em> for metastore item entities in question or <em>administer metastore item entities</em>.'
+
