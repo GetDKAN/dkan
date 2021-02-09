@@ -48,7 +48,7 @@ use Drupal\user\UserInterface;
  *     "id" = "id",
  *     "revision" = "vid",
  *     "bundle" = "type",
- *     "label" = "name",
+ *     "label" = "title",
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
  *     "data" = "data",
@@ -130,18 +130,35 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemI
     }
   }
 
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTitle() {
+    return $this->get('title')->value;
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setTitle($title) {
+    $this->set('title', $title);
+    return $this;
+  }
+
   /**
    * {@inheritdoc}
    */
   public function getName() {
-    return $this->get('name')->value;
+    return $this->getTitle();
   }
 
   /**
    * {@inheritdoc}
    */
   public function setName($name) {
-    $this->set('name', $name);
+    $this->setTitle($name);
     return $this;
   }
 
@@ -224,9 +241,9 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemI
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['name'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Name'))
-      ->setDescription(t('The name of the Metastore item entity.'))
+    $fields['title'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Title'))
+      ->setDescription(t('The title of the Metastore item.'))
       ->setRevisionable(TRUE)
       ->setSettings([
         'max_length' => 50,

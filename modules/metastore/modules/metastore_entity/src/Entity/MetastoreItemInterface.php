@@ -20,23 +20,23 @@ interface MetastoreItemInterface extends ContentEntityInterface, RevisionLogInte
    */
 
   /**
-   * Gets the Metastore item name.
+   * Gets the Metastore item title.
    *
    * @return string
-   *   Name of the Metastore item.
+   *   Title of the Metastore item.
    */
-  public function getName();
+  public function getTitle();
 
   /**
-   * Sets the Metastore item name.
+   * Sets the Metastore item title.
    *
-   * @param string $name
-   *   The Metastore item name.
+   * @param string $title
+   *   The Metastore item title.
    *
    * @return \Drupal\metastore_entity\Entity\MetastoreItemInterface
    *   The called Metastore item entity.
    */
-  public function setName($name);
+  public function setTitle($title);
 
   /**
    * Gets the Metastore item creation timestamp.

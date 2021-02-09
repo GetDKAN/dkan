@@ -18,7 +18,7 @@ class MetastoreItemListBuilder extends EntityListBuilder {
    */
   public function buildHeader() {
     $header['id'] = $this->t('Metastore item ID');
-    $header['name'] = $this->t('Name');
+    $header['title'] = $this->t('Title');
     return $header + parent::buildHeader();
   }
 
@@ -28,7 +28,7 @@ class MetastoreItemListBuilder extends EntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     /* @var \Drupal\metastore_entity\Entity\MetastoreItem $entity */
     $row['id'] = $entity->id();
-    $row['name'] = Link::createFromRoute(
+    $row['title'] = Link::createFromRoute(
       $entity->label(),
       'entity.metastore_item.edit_form',
       ['metastore_item' => $entity->id()]

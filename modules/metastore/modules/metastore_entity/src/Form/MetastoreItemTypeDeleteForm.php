@@ -15,7 +15,7 @@ class MetastoreItemTypeDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete %name?', ['%name' => $this->entity->label()]);
+    return $this->t('Are you sure you want to delete %title?', ['%title' => $this->entity->label()]);
   }
 
   /**
