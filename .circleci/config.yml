@@ -5,7 +5,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "dev-project-drush"
+      DKTL_VERSION: "project-drush"
     steps:
       - checkout:
           path: dkan
