@@ -16,7 +16,7 @@ function metastore_admin_install() {
 }
 
 /**
- * Ensable standard content view.
+ * Enable standard content view.
  */
 function metastore_admin_uninstall() {
   $config_factory = \Drupal::configFactory();
