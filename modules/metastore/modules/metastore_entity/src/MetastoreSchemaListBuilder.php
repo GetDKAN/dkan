@@ -6,15 +6,15 @@ use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Provides a listing of Metastore item type entities.
+ * Provides a listing of Metastore schema entities.
  */
-class MetastoreItemTypeListBuilder extends ConfigEntityListBuilder {
+class MetastoreSchemaListBuilder extends ConfigEntityListBuilder {
 
   /**
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = $this->t('Metastore item type');
+    $header['label'] = $this->t('Schema label');
     $header['id'] = $this->t('Machine name');
     return $header + parent::buildHeader();
   }

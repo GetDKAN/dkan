@@ -19,7 +19,7 @@ use Drupal\user\UserInterface;
  * @ContentEntityType(
  *   id = "metastore_item",
  *   label = @Translation("Metastore item"),
- *   bundle_label = @Translation("Metastore item type"),
+ *   bundle_label = @Translation("Metastore schema"),
  *   handlers = {
  *     "storage" = "Drupal\metastore_entity\MetastoreItemStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
@@ -47,7 +47,7 @@ use Drupal\user\UserInterface;
  *   entity_keys = {
  *     "id" = "id",
  *     "revision" = "vid",
- *     "bundle" = "type",
+ *     "bundle" = "schema",
  *     "label" = "title",
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
@@ -63,7 +63,7 @@ use Drupal\user\UserInterface;
  *   links = {
  *     "canonical" = "/admin/structure/metastore_item/{metastore_item}",
  *     "add-page" = "/admin/structure/metastore_item/add",
- *     "add-form" = "/admin/structure/metastore_item/add/{metastore_item_type}",
+ *     "add-form" = "/admin/structure/metastore_item/add/{metastore_schema}",
  *     "edit-form" = "/admin/structure/metastore_item/{metastore_item}/edit",
  *     "delete-form" = "/admin/structure/metastore_item/{metastore_item}/delete",
  *     "version-history" = "/admin/structure/metastore_item/{metastore_item}/revisions",
@@ -73,8 +73,8 @@ use Drupal\user\UserInterface;
  *     "translation_revert" = "/admin/structure/metastore_item/{metastore_item}/revisions/{metastore_item_revision}/revert/{langcode}",
  *     "collection" = "/admin/structure/metastore_item",
  *   },
- *   bundle_entity_type = "metastore_item_type",
- *   field_ui_base_route = "entity.metastore_item_type.edit_form"
+ *   bundle_entity_type = "metastore_schema",
+ *   field_ui_base_route = "entity.metastore_schema.edit_form"
  * )
  */
 class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemInterface {

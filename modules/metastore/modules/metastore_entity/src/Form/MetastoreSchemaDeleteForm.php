@@ -7,9 +7,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
- * Builds the form to delete Metastore item type entities.
+ * Builds the form to delete Metastore schema entities.
  */
-class MetastoreItemTypeDeleteForm extends EntityConfirmFormBase {
+class MetastoreSchemaDeleteForm extends EntityConfirmFormBase {
 
   /**
    * {@inheritdoc}
@@ -22,7 +22,7 @@ class MetastoreItemTypeDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('entity.metastore_item_type.collection');
+    return new Url('entity.metastore_schema.collection');
   }
 
   /**

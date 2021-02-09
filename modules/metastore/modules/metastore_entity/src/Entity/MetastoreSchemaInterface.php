@@ -5,9 +5,9 @@ namespace Drupal\metastore_entity\Entity;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 
 /**
- * Provides an interface for defining Metastore item type entities.
+ * Provides an interface for defining Metastore schema entities.
  */
-interface MetastoreItemTypeInterface extends ConfigEntityInterface {
+interface MetastoreSchemaInterface extends ConfigEntityInterface {
 
   // Add get/set methods for your configuration properties here.
 }

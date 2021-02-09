@@ -8,10 +8,10 @@ entity.metastore_item.collection:
   weight: 100
 
 
-# Metastore item type menu items definition
-entity.metastore_item_type.collection:
-  title: 'Metastore item type'
-  route_name: entity.metastore_item_type.collection
-  description: 'List Metastore item type (bundles)'
+# Metastore schema menu items definition
+entity.metastore_schema.collection:
+  title: 'Metastore schemas'
+  route_name: entity.metastore_schema.collection
+  description: 'List Metastore schemas (bundles)'
   parent: system.admin_structure
   weight: 99
