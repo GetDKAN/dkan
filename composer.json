@@ -9,7 +9,6 @@
         "drupal/config_update": "^1.6",
         "drupal/search_api": "^1.15",
         "drupal/views_bulk_operations": "^3.6",
-        "drush/drush": "^10.2.2",
         "ext-json": "*",
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.0",
@@ -23,10 +22,10 @@
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.3",
         "ramsey/uuid" : "^3.8.0",
-        "weitzman/drupal-test-traits": "^1.5",
         "getdkan/rooted-json-data": "^0.0.2"
     },
     "require-dev": {
+        "weitzman/drupal-test-traits": "^1.5",
         "phpunit/phpunit": "^7.5"
     },
     "repositories": [
