@@ -4,6 +4,7 @@ namespace Drupal\metastore_entity\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use RootedData\RootedJsonData;
 
 /**
  * Class MetastoreSchemaForm.
@@ -35,9 +36,36 @@ class MetastoreSchemaForm extends EntityForm {
       '#disabled' => !$metastore_schema->isNew(),
     ];
 
-    /* You will need additional form elements for your custom properties. */
+    $form['json_data'] = [
+      '#title' => t('JSON Schema'),
+      '#type' => 'text_format',
+      '#format' => 'json',
+      '#allowed_formats' => ['json'],
+      '#default_value' => $metastore_schema->getSchema(),
+      '#description' => t('Validation schema'),
+      '#element_validate' => [[$this, 'validateSchema']],
+    ];
 
     return $form;
+  }
+
+  /**
+   * Validate the JSON schema. 
+   *
+   * @param mixed $element
+   *   Form element.
+   * @param FormStateInterface $form_state
+   *   Form state object
+   * @param mixed $form
+   *   Form array.
+   */
+  public function validateSchema($element, FormStateInterface $form_state, $form) {
+    try {
+      $test = new RootedJsonData("{}", $form_state->getValue('json_data')['value']);
+    }
+    catch (\Exception $e) {
+      $form_state->setError($element, t('Schema failed validation with message: ":msg"', [':msg' => $e->getMessage()]));
+    }
   }
 
   /**

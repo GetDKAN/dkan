@@ -33,7 +33,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *   config_export = {
  *     "id",
  *     "label",
- *     "schema",
+ *     "json_data",
  *     "description",
  *     "help",
  *     "display_submitted",
@@ -63,4 +63,16 @@ class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaI
    */
   protected $label;
 
+  /**
+   * Get the JSON schema.
+   *
+   * @return string
+   *   A JSON Schema document.
+   */
+  public function getSchema() {
+    if (is_array($this->json_data) && isset($this->json_data['value'])) {
+      return $this->json_data['value'];
+    }
+    return $this->json_data;
+  }
 }

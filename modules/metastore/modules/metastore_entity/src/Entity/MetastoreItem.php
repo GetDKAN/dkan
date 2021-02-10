@@ -51,7 +51,7 @@ use Drupal\user\UserInterface;
  *     "label" = "title",
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
- *     "data" = "data",
+ *     "json_data" = "json_data",
  *     "langcode" = "langcode",
  *     "published" = "status",
  *   },
@@ -263,7 +263,7 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemI
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(TRUE);
 
-    $fields['data'] = BaseFieldDefinition::create('string_long')
+    $fields['json_data'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Metadata'))
       // ->setDescription(t('Most likely JSON.'))
       ->setSettings([
