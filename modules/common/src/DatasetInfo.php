@@ -128,7 +128,7 @@ class DatasetInfo implements ContainerInjectionInterface {
     $latestRevisionIsDraft = 'draft' === $latest->get('moderation_state')->getString();
     $published = $this->storage->getNodePublishedRevision($uuid);
     if ($latestRevisionIsDraft && $published && 'published' === $published->get('moderation_state')->getString()) {
-      $info['publihed_revision'] = $this->getRevisionInfo($published);
+      $info['published_revision'] = $this->getRevisionInfo($published);
     }
 
     return $info;
