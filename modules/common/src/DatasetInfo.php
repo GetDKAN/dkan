@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace Drupal\common;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\datastore\Service as Datastore;
+use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\Entity\Node;
@@ -18,13 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\common
  */
 class DatasetInfo implements ContainerInjectionInterface {
-
-  /**
-   * Module handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
 
   /**
    * Metastore storage.
@@ -46,6 +39,13 @@ class DatasetInfo implements ContainerInjectionInterface {
    * @var \Drupal\metastore\ResourceMapper
    */
   protected $resourceMapper;
+
+  /**
+   * Import info service.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfo
+   */
+  protected $importInfo;
 
   /**
    * Set storage.
@@ -78,21 +78,28 @@ class DatasetInfo implements ContainerInjectionInterface {
   }
 
   /**
-   * DatasetInfo constructor.
+   * Set the import info service.
    *
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
-   *   Module handler service.
+   * @param \Drupal\datastore\Service\Info\ImportInfo $importInfo
+   *   Import info service.
    */
-  public function __construct(ModuleHandlerInterface $moduleHandler) {
-    $this->moduleHandler = $moduleHandler;
+  public function setImportInfo(ImportInfo $importInfo) {
+    $this->importInfo = $importInfo;
   }
 
   /**
-   * {@inheritdoc}
+   * Instantiates a new instance of this class.
+   *
+   * While the relevant services are each called conditionally, leaving none
+   * needed here, this function must still be implemented.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   The service container this instance should use.
+   *
+   * @return static
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('module_handler'),
     );
   }
 
@@ -105,9 +112,7 @@ class DatasetInfo implements ContainerInjectionInterface {
    * @return array
    *   Dataset information array.
    */
-  public function gather(string $uuid) {
-    $info['uuid'] = $uuid;
-
+  public function gather(string $uuid) : array {
     if (!$this->storage) {
       $info['notice'] = 'The DKAN Metastore module is not enabled.';
       return $info;
@@ -115,16 +120,15 @@ class DatasetInfo implements ContainerInjectionInterface {
 
     $latest = $this->storage->getNodeLatestRevision($uuid);
     if (!$latest) {
-      $info['notice'] = 'Not found.';
+      $info['notice'] = 'Not found';
       return $info;
     }
-    $info['node id'] = $latest->id();
-    $info['latest revision'] = $this->getRevisionInfo($latest);
+    $info['latest_revision'] = $this->getRevisionInfo($latest);
 
     $latestRevisionIsDraft = 'draft' === $latest->get('moderation_state')->getString();
     $published = $this->storage->getNodePublishedRevision($uuid);
     if ($latestRevisionIsDraft && $published && 'published' === $published->get('moderation_state')->getString()) {
-      $info['published revision'] = $this->getRevisionInfo($published);
+      $info['publihed_revision'] = $this->getRevisionInfo($published);
     }
 
     return $info;
@@ -140,30 +144,38 @@ class DatasetInfo implements ContainerInjectionInterface {
    *   Dataset node revision info.
    */
   protected function getRevisionInfo(Node $node) : array {
-    $revisionInfo = [];
 
-    $revisionInfo['revision id'] = $node->getRevisionId();
-    $revisionInfo['moderation state'] = $node->get('moderation_state')->getString();
-    $revisionInfo['modified date'] = $node->getChangedTime();
-    $revisionInfo['distributions'] = $this->getDistributionsInfo($node);
+    $metadata = json_decode($node->get('field_json_metadata')->getString());
 
-    return $revisionInfo;
+    return [
+      'uuid' => $node->uuid(),
+      'node_id' => $node->id(),
+      'revision_id' => $node->getRevisionId(),
+      'moderation_state' => $node->get('moderation_state')->getString(),
+      'title' => $metadata->title ?? 'Not found',
+      'modified_date_metadata' => $metadata->modified ?? 'Not found',
+      'modified_date_dkan' => $metadata->{'%modified'} ?? 'Not found',
+      'distributions' => $this->getDistributionsInfo($metadata),
+    ];
   }
 
   /**
-   * Get distributions.
+   * Get distributions info.
    *
-   * @param \Drupal\node\Entity\Node $node
-   *   A specific revision node of the uuid being queried.
+   * @param \stdClass $metadata
+   *   Dataset metadata object.
    *
    * @return array
    *   Distributions.
    */
-  protected function getDistributionsInfo(Node $node) {
+  protected function getDistributionsInfo(\stdClass $metadata) : array {
     $distributions = [];
 
-    $metadata = $node->get('field_json_metadata')->getString();
-    foreach (json_decode($metadata)->distribution as $distribution) {
+    if (!isset($metadata->{'%Ref:distribution'})) {
+      return ['Not found'];
+    }
+
+    foreach ($metadata->{'%Ref:distribution'} as $distribution) {
       $distributions[] = $this->getResourcesInfo($distribution);
     }
 
@@ -183,15 +195,22 @@ class DatasetInfo implements ContainerInjectionInterface {
 
     // A distribution's first resource, regardless of perspective or index,
     // should provide the information needed.
-    $resource = array_shift($distribution->{'%Ref:downloadURL'});
+    $resource = array_shift($distribution->data->{'%Ref:downloadURL'});
     $identifier = $resource->data->identifier;
     $version = $resource->data->version;
 
+    $info = $this->importInfo->getItem($identifier, $version);
+
     return [
-      'identifier' => $identifier,
-      'version' => $version,
-      'file path' => $this->resourceMapper->get($identifier, 'local_file', $version)->getFilePath(),
-      'table name' => $this->datastore->getStorage($identifier, $version)->getTableName(),
+      'distribution_uuid' => $distribution->identifier,
+      'resource_id' => $identifier,
+      'resource_version' => $version,
+      'fetcher_status' => $info->fileFetcherStatus,
+      'fetcher_percent_done' => $info->fileFetcherPercentDone,
+      'file_path' => $this->resourceMapper->get($identifier, 'local_file', $version)->getFilePath(),
+      'importer_status' => $info->importerStatus,
+      'importer_percent_done' => $info->importerPercentDone,
+      'table_name' => $this->datastore->getStorage($identifier, $version)->getTableName(),
     ];
   }
 

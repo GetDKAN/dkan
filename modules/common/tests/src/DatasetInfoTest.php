@@ -2,18 +2,12 @@
 
 namespace Drupal\Tests\common;
 
-use Drupal\common\Resource;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\datastore\Service as Datastore;
-use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Service as Metastore;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +18,6 @@ class DatasetInfoTest extends TestCase {
     $datasetInfo = DatasetInfo::create($this->getCommonChain()->getMock());
 
     $expected = [
-      'uuid' => 'foo',
       'notice' => 'The DKAN Metastore module is not enabled.',
     ];
     $result = $datasetInfo->gather('foo');
@@ -47,8 +40,7 @@ class DatasetInfoTest extends TestCase {
     $datasetInfo->setResourceMapper($mockResourceMapper->getMock());
 
     $expected = [
-      'uuid' => 'foo',
-      'notice' => 'Not found.',
+      'notice' => 'Not found',
     ];
     $result = $datasetInfo->gather('foo');
 
@@ -57,7 +49,6 @@ class DatasetInfoTest extends TestCase {
 
   private function getCommonChain() {
     $options = (new Options())
-      ->add('module_handler', ModuleHandlerInterface::class)
       ->index(0);
 
     return (new Chain($this))
