@@ -11,6 +11,28 @@ use Drupal\Core\Url;
 class Controller {
 
   /**
+   * Harvest service.
+   *
+   * @var \Drupal\harvest\Service
+   */
+  protected $harvest;
+
+  /**
+   * Dataset information service.
+   *
+   * @var \Drupal\common\DatasetInfo
+   */
+  protected $datasetInfo;
+
+  /**
+   * Controller constructor.
+   */
+  public function __construct() {
+    $this->harvest = \Drupal::service('dkan.harvest.service');
+    $this->datasetInfo = \Drupal::service('dkan.common.dataset_info');
+  }
+
+  /**
    * A list of harvests and some status info.
    */
   public function harvests(): array {
@@ -22,17 +44,14 @@ class Controller {
       '# of Datasets',
     ];
 
-    /** @var \Drupal\harvest\Service $harvestService */
-    $harvestService = \Drupal::service('dkan.harvest.service');
-
     date_default_timezone_set('EST');
 
     $rows = [];
-    foreach ($harvestService->getAllHarvestIds() as $harvestId) {
-      $runIds = $harvestService->getAllHarvestRunInfo($harvestId);
+    foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
+      $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
 
       if ($runId = end($runIds)) {
-        $info = json_decode($harvestService->getHarvestRunInfo($harvestId, $runId));
+        $info = json_decode($this->harvest->getHarvestRunInfo($harvestId, $runId));
 
         $rows[] = $this->buildHarvestRow($harvestId, $runId, $info);
       }
@@ -58,7 +77,6 @@ class Controller {
       'harvest_link' => Link::fromTextAndUrl($harvestId, $url),
       'extract_status' => [
         'data' => $info->status->extract,
-        // SUCCESS, FAILURE
         'class' => strtolower($info->status->extract),
       ],
       'last_run' => date('m/d/y H:m:s T', $runId),
@@ -85,12 +103,9 @@ class Controller {
     $load = $this->getHarvestLoadStatus($harvestId);
     $datasets = array_keys($load);
 
-    /** @var \Drupal\common\DatasetInfo $datasetInfoService */
-    $datasetInfoService = \Drupal::service('dkan.common.dataset_info');
-
     $rows = [];
     foreach ($datasets as $datasetId) {
-      $datasetInfo = $datasetInfoService->gather($datasetId);
+      $datasetInfo = $this->datasetInfo->gather($datasetId);
       $datasetRow = $this->buildDatasetRow($datasetInfo, $load[$datasetId]);
       $rows = array_merge($rows, $datasetRow);
     }
@@ -157,7 +172,6 @@ class Controller {
         $dist['distribution_uuid'],
         [
           'data' => $dist['fetcher_status'],
-          // stopped, in_progress, error, done.
           'class' => $dist['fetcher_status'] == 'in_progress' ? 'in-progress' : $dist['fetcher_status'],
         ],
         [
@@ -190,13 +204,10 @@ class Controller {
    * Private.
    */
   private function getHarvestLoadStatus($harvestId): array {
-    /** @var \Drupal\harvest\Service $harvest */
-    $harvest = \Drupal::service('dkan.harvest.service');
-
-    $runIds = $harvest->getAllHarvestRunInfo($harvestId);
+    $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
     $runId = end($runIds);
 
-    $json = $harvest->getHarvestRunInfo($harvestId, $runId);
+    $json = $this->harvest->getHarvestRunInfo($harvestId, $runId);
     $info = json_decode($json);
     $status = $info->status;
     return (array) $status->load;
