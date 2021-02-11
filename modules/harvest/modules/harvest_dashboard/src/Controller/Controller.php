@@ -227,7 +227,7 @@ class Controller {
     $info = json_decode($json);
     $loadExists = isset($info->status) && isset($info->status->load);
 
-    return $loadExists ?  (array) $info->status->load : [];
+    return $loadExists ? (array) $info->status->load : [];
   }
 
 }
