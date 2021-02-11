@@ -141,24 +141,24 @@ class Controller {
     foreach (array_values($revisions) as $i => $rev) {
       $row = [];
 
-      if ($count > 1) {
+      if ($count == 1) {
+        $row[] = $rev['uuid'];
+      }
+      else {
         if ($i == 0) {
           $row[] = ['data' => $rev['uuid'], 'rowspan' => $count];
         }
       }
-      else {
-        $row[] = $rev['uuid'];
-      }
 
-      $row[] = $rev['title'];
-      $row[] = $rev['revision_id'];
-      $row[] = ['data' => $rev['moderation_state'], 'class' => $rev['moderation_state']];
-      $row[] = ['data' => $harvestStatus, 'class' => strtolower($harvestStatus)];
-      $row[] = $rev['modified_date_metadata'];
-      $row[] = $rev['modified_date_dkan'];
-      $row[] = ['data' => $this->buildResourcesTable($rev['distributions'])];
-
-      $rows[] = $row;
+      $rows[] = array_merge($row, [
+        $rev['title'],
+        $rev['revision_id'],
+        ['data' => $rev['moderation_state'], 'class' => $rev['moderation_state']],
+        ['data' => $harvestStatus, 'class' => strtolower($harvestStatus)],
+        $rev['modified_date_metadata'],
+        $rev['modified_date_dkan'],
+        ['data' => $this->buildResourcesTable($rev['distributions'])],
+      ]);;
     }
 
     return $rows;
@@ -173,23 +173,10 @@ class Controller {
     foreach ($distributions as $dist) {
       $rows[] = [
         $dist['distribution_uuid'],
-        [
-          'data' => $dist['fetcher_status'],
-          'class' => $dist['fetcher_status'] == 'in_progress' ? 'in-progress' : $dist['fetcher_status'],
-        ],
-        [
-          'data' => $dist['fetcher_percent_done'],
-          'class' => (int) $dist['fetcher_percent_done'] == 100 ? 'done' : 'in-progress',
-        ],
-        [
-          'data' => $dist['importer_status'],
-          // stopped, in_progress, error, done.
-          'class' => $dist['importer_status'] == 'in_progress' ? 'in-progress' : $dist['importer_status'],
-        ],
-        [
-          'data' => $dist['importer_percent_done'],
-          'class' => (int) $dist['importer_percent_done'] == 100 ? 'done' : 'in-progress',
-        ],
+        $this->statusCell($dist['fetcher_status']),
+        $this->percentCell($dist['fetcher_percent_done']),
+        $this->statusCell($dist['importer_status']),
+        $this->percentCell($dist['importer_percent_done']),
       ];
     }
 
@@ -198,6 +185,26 @@ class Controller {
       '#header' => self::DISTRIBUTION_HEADERS,
       '#rows' => $rows,
       '#empty' => 'No resources',
+    ];
+  }
+
+  /**
+   * Private.
+   */
+  private function statusCell(string $status) {
+    return [
+      'data' => $status,
+      'class' => $status == 'in_progress' ? 'in-progress' : $status,
+    ];
+  }
+
+  /**
+   * Private.
+   */
+  private function percentCell(int $percent) {
+    return [
+      'data' => $percent,
+      'class' => $percent == 100 ? 'done' : 'in-progress',
     ];
   }
 
