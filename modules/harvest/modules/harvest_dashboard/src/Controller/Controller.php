@@ -114,6 +114,9 @@ class Controller {
     $rows = [];
     foreach ($datasets as $datasetId) {
       $datasetInfo = $this->datasetInfo->gather($datasetId);
+      if (empty($datasetInfo['latest_revision'])) {
+        continue;
+      }
       $datasetRow = $this->buildDatasetRow($datasetInfo, $load[$datasetId]);
       $rows = array_merge($rows, $datasetRow);
     }
