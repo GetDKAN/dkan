@@ -139,16 +139,8 @@ class Controller {
     $count = count($revisions);
 
     foreach (array_values($revisions) as $i => $rev) {
-      $row = [];
-
-      if ($count == 1) {
-        $row[] = $rev['uuid'];
-      }
-      else {
-        if ($i == 0) {
-          $row[] = ['data' => $rev['uuid'], 'rowspan' => $count];
-        }
-      }
+      $firstCell = $this->buildDatasetFirstCell($rev['uuid'], $i, $count);
+      $row = isset($firstCell) ? [$firstCell] : [];
 
       $rows[] = array_merge($row, [
         $rev['title'],
@@ -162,6 +154,22 @@ class Controller {
     }
 
     return $rows;
+  }
+
+  /**
+   * Private.
+   */
+  private function buildDatasetFirstCell(string $uuid, int $i, int $count) {
+    if ($count == 1) {
+      $row[] = $uuid;
+    }
+    else {
+      if ($i == 0) {
+        $row[] = ['data' => $uuid, 'rowspan' => $count];
+      }
+      return NULL;
+    }
+    return $row;
   }
 
   /**
