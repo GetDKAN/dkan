@@ -43,7 +43,8 @@ class Controller {
       '#header' => $harvestsHeader,
       '#rows' => $rows,
       '#attributes' => ['class' => 'dashboard-harvests'],
-      '#attached' => ['library' => ['harvest_dashboard/style']]
+      '#attached' => ['library' => ['harvest_dashboard/style']],
+      '#empty' => "No harvests found",
     ];
   }
 
@@ -99,7 +100,8 @@ class Controller {
       '#header' => $datasetsHeader,
       '#rows' => $rows,
       '#attributes' => ['class' => 'dashboard-datasets'],
-      '#attached' => ['library' => ['harvest_dashboard/style']]
+      '#attached' => ['library' => ['harvest_dashboard/style']],
+      '#empty' => 'No datasets found',
     ];
   }
 
@@ -108,26 +110,42 @@ class Controller {
    */
   private function buildDatasetRow(array $revisions, string $harvestStatus) : array {
     $rows = [];
+    $count = count($revisions);
 
-    foreach ($revisions as $revision) {
-      $rows[] = [
-        $revision['uuid'],
-        $revision['title'],
-        $revision['revision_id'],
-        [
-          'data' => $revision['moderation_state'],
-          // published, draft
-          'class' => $revision['moderation_state'],
-        ],
-        [
-          'data' => $harvestStatus,
-          // UNCHANGED, UPDATED, NEW
-          'class' => strtolower($harvestStatus),
-        ],
-        $revision['modified_date_metadata'],
-        $revision['modified_date_dkan'],
-        $this->buildResourcesTable($revision['distributions']),
+    foreach (array_values($revisions) as $i => $revision) {
+      $row = [];
+
+      if ($count > 1) {
+        if ($i == 0) {
+          $row[] = [
+            'data' => $revision['uuid'],
+            'rowspan' => $count,
+          ];
+        }
+      }
+      else {
+        $row[] = [
+          'data' => $revision['uuid'],
+        ];
+      }
+
+      $row[] = $revision['title'];
+      $row[] = $revision['revision_id'];
+      $row[] = [
+        'data' => $revision['moderation_state'],
+        // published, draft
+        'class' => $revision['moderation_state'],
       ];
+      $row[] = [
+        'data' => $harvestStatus,
+        // UNCHANGED, UPDATED, NEW
+        'class' => strtolower($harvestStatus),
+      ];
+      $row[] = $revision['modified_date_metadata'];
+      $row[] = $revision['modified_date_dkan'];
+      $row[] = $this->buildResourcesTable($revision['distributions']);
+
+      $rows[] = $row;
     }
 
     return $rows;
