@@ -161,15 +161,14 @@ class Controller {
    */
   private function buildDatasetFirstCell(string $uuid, int $i, int $count) {
     if ($count == 1) {
-      $row[] = $uuid;
+      return ['data' => $uuid];
     }
     else {
       if ($i == 0) {
-        $row[] = ['data' => $uuid, 'rowspan' => $count];
+        return ['data' => $uuid, 'rowspan' => $count];
       }
-      return NULL;
     }
-    return $row;
+    return NULL;
   }
 
   /**
