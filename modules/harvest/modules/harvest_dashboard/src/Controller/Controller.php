@@ -112,38 +112,25 @@ class Controller {
     $rows = [];
     $count = count($revisions);
 
-    foreach (array_values($revisions) as $i => $revision) {
+    foreach (array_values($revisions) as $i => $rev) {
       $row = [];
 
       if ($count > 1) {
         if ($i == 0) {
-          $row[] = [
-            'data' => $revision['uuid'],
-            'rowspan' => $count,
-          ];
+          $row[] = ['data' => $rev['uuid'], 'rowspan' => $count];
         }
       }
       else {
-        $row[] = [
-          'data' => $revision['uuid'],
-        ];
+        $row[] = $rev['uuid'];
       }
 
-      $row[] = $revision['title'];
-      $row[] = $revision['revision_id'];
-      $row[] = [
-        'data' => $revision['moderation_state'],
-        // published, draft
-        'class' => $revision['moderation_state'],
-      ];
-      $row[] = [
-        'data' => $harvestStatus,
-        // UNCHANGED, UPDATED, NEW
-        'class' => strtolower($harvestStatus),
-      ];
-      $row[] = $revision['modified_date_metadata'];
-      $row[] = $revision['modified_date_dkan'];
-      $row[] = $this->buildResourcesTable($revision['distributions']);
+      $row[] = $rev['title'];
+      $row[] = $rev['revision_id'];
+      $row[] = ['data' => $rev['moderation_state'], 'class' => $rev['moderation_state']];
+      $row[] = ['data' => $harvestStatus, 'class' => strtolower($harvestStatus)];
+      $row[] = $rev['modified_date_metadata'];
+      $row[] = $rev['modified_date_dkan'];
+      $row[] = $this->buildResourcesTable($rev['distributions']);
 
       $rows[] = $row;
     }
@@ -203,6 +190,7 @@ class Controller {
    * Private.
    */
   private function getHarvestLoadStatus($harvestId): array {
+    /** @var \Drupal\harvest\Service $harvest */
     $harvest = \Drupal::service('dkan.harvest.service');
 
     $runIds = $harvest->getAllHarvestRunInfo($harvestId);
