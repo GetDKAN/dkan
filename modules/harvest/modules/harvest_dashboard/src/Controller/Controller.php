@@ -42,6 +42,8 @@ class Controller {
       '#theme' => 'table',
       '#header' => $harvestsHeader,
       '#rows' => $rows,
+      '#attributes' => ['class' => 'dashboard-harvests'],
+      '#attached' => ['library' => ['harvest_dashboard/style']]
     ];
   }
 
@@ -53,7 +55,11 @@ class Controller {
 
     return [
       'harvest_link' => Link::fromTextAndUrl($harvestId, $url),
-      'extract_status' => $info->status->extract,
+      'extract_status' => [
+        'data' => $info->status->extract,
+        // SUCCESS, FAILURE
+        'class' => strtolower($info->status->extract),
+      ],
       'last_run' => date('m/d/y H:m:s T', $runId),
       'dataset_count' => count(array_keys((array) $info->status->load)),
     ];
@@ -92,6 +98,8 @@ class Controller {
       '#theme' => 'table',
       '#header' => $datasetsHeader,
       '#rows' => $rows,
+      '#attributes' => ['class' => 'dashboard-datasets'],
+      '#attached' => ['library' => ['harvest_dashboard/style']]
     ];
   }
 
@@ -106,8 +114,16 @@ class Controller {
         $revision['uuid'],
         $revision['title'],
         $revision['revision_id'],
-        $revision['moderation_state'],
-        $harvestStatus,
+        [
+          'data' => $revision['moderation_state'],
+          // published, draft
+          'class' => $revision['moderation_state'],
+        ],
+        [
+          'data' => $harvestStatus,
+          // UNCHANGED, UPDATED, NEW
+          'class' => strtolower($harvestStatus),
+        ],
         $revision['modified_date_metadata'],
         $revision['modified_date_dkan'],
         $this->buildResourcesTable($revision['distributions']),
@@ -131,13 +147,27 @@ class Controller {
     ];
 
     $rows = [];
-    foreach ($distributions as $distribution) {
+    foreach ($distributions as $dist) {
       $rows[] = [
-        $distribution['distribution_uuid'],
-        $distribution['fetcher_status'],
-        $distribution['fetcher_percent_done'],
-        $distribution['importer_status'],
-        $distribution['importer_percent_done'],
+        $dist['distribution_uuid'],
+        [
+          'data' => $dist['fetcher_status'],
+          // stopped, in_progress, error, done.
+          'class' => $dist['fetcher_status'] == 'in_progress' ? 'in-progress' : $dist['fetcher_status'],
+        ],
+        [
+          'data' => $dist['fetcher_percent_done'],
+          'class' => (int) $dist['fetcher_percent_done'] == 100 ? 'done' : 'in-progress',
+        ],
+        [
+          'data' => $dist['importer_status'],
+          // stopped, in_progress, error, done.
+          'class' => $dist['importer_status'] == 'in_progress' ? 'in-progress' : $dist['importer_status'],
+        ],
+        [
+          'data' => $dist['importer_percent_done'],
+          'class' => (int) $dist['importer_percent_done'] == 100 ? 'done' : 'in-progress',
+        ],
       ];
     }
 
