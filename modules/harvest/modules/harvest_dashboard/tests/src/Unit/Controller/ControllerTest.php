@@ -130,7 +130,6 @@ class ControllerTest extends TestCase {
 
     $controller = new Controller();
     $response = $controller->harvestDatasets('test');
-    print_r($response);
 
     $json = json_encode($response);
     $strings = array_merge(
