@@ -153,7 +153,7 @@ class Controller {
       $row[] = ['data' => $harvestStatus, 'class' => strtolower($harvestStatus)];
       $row[] = $rev['modified_date_metadata'];
       $row[] = $rev['modified_date_dkan'];
-      $row[] = $this->buildResourcesTable($rev['distributions']);
+      $row[] = ['data' => $this->buildResourcesTable($rev['distributions'])];
 
       $rows[] = $row;
     }
@@ -190,14 +190,12 @@ class Controller {
       ];
     }
 
-    $build['resourcesTable'] = [
+    return [
       '#theme' => 'table',
       '#header' => self::DISTRIBUTION_HEADERS,
       '#rows' => $rows,
       '#empty' => 'No resources',
     ];
-
-    return render($build);
   }
 
   /**
