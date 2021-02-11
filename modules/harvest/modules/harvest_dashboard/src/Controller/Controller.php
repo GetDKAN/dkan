@@ -67,6 +67,8 @@ class Controller {
 
     $rows = [];
     foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
+      // @todo Make Harvest Service's private getLastHarvestRunId() public,
+      //   And replace 7-8 cases where we recreate it.
       $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
 
       if ($runId = end($runIds)) {
