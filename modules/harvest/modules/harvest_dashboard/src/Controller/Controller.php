@@ -10,6 +10,32 @@ use Drupal\Core\Url;
  */
 class Controller {
 
+  const HARVEST_HEADERS = [
+    'Harvest ID',
+    'Extract Status',
+    'Last Run',
+    '# of Datasets',
+  ];
+
+  const DATASET_HEADERS = [
+    'Dataset UUID',
+    'Dataset Title',
+    'Revision ID',
+    'Publication Status',
+    'Harvest Status',
+    'Modified Date Metadata',
+    'Modified Date DKAN',
+    'Resources',
+  ];
+
+  const DISTRIBUTION_HEADERS = [
+    'Distribution UUID',
+    'Fetch',
+    '%',
+    'Store',
+    '%',
+  ];
+
   /**
    * Harvest service.
    *
@@ -37,13 +63,6 @@ class Controller {
    */
   public function harvests(): array {
 
-    $harvestsHeader = [
-      'Harvest ID',
-      'Extract Status',
-      'Last Run',
-      '# of Datasets',
-    ];
-
     date_default_timezone_set('EST');
 
     $rows = [];
@@ -59,7 +78,7 @@ class Controller {
 
     return [
       '#theme' => 'table',
-      '#header' => $harvestsHeader,
+      '#header' => self::HARVEST_HEADERS,
       '#rows' => $rows,
       '#attributes' => ['class' => 'dashboard-harvests'],
       '#attached' => ['library' => ['harvest_dashboard/style']],
@@ -89,17 +108,6 @@ class Controller {
    */
   public function harvestDatasets($harvestId) {
 
-    $datasetsHeader = [
-      'Dataset UUID',
-      'Dataset Title',
-      'Revision ID',
-      'Publication Status',
-      'Harvest Status',
-      'Modified Date Metadata',
-      'Modified Date DKAN',
-      'Resources',
-    ];
-
     $load = $this->getHarvestLoadStatus($harvestId);
     $datasets = array_keys($load);
 
@@ -112,7 +120,7 @@ class Controller {
 
     return [
       '#theme' => 'table',
-      '#header' => $datasetsHeader,
+      '#header' => self::DATASET_HEADERS,
       '#rows' => $rows,
       '#attributes' => ['class' => 'dashboard-datasets'],
       '#attached' => ['library' => ['harvest_dashboard/style']],
@@ -158,14 +166,6 @@ class Controller {
    */
   private function buildResourcesTable(array $distributions) {
 
-    $distributionsHeader = [
-      'Distribution UUID',
-      'Fetch',
-      '%',
-      'Store',
-      '%',
-    ];
-
     $rows = [];
     foreach ($distributions as $dist) {
       $rows[] = [
@@ -192,7 +192,7 @@ class Controller {
 
     $build['resourcesTable'] = [
       '#theme' => 'table',
-      '#header' => $distributionsHeader,
+      '#header' => self::DISTRIBUTION_HEADERS,
       '#rows' => $rows,
       '#empty' => 'No resources',
     ];
