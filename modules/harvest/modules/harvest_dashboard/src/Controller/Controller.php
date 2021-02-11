@@ -217,8 +217,9 @@ class Controller {
 
     $json = $this->harvest->getHarvestRunInfo($harvestId, $runId);
     $info = json_decode($json);
-    $status = $info->status;
-    return (array) $status->load;
+    $loadExists = isset($info->status) && isset($info->status->load);
+
+    return $loadExists ?  (array) $info->status->load : [];
   }
 
 }
