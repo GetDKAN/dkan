@@ -1,0 +1,27 @@
+{
+  "identifier": {
+    "ui:options": {
+      "widget": "hidden"
+    }
+  },
+  "data": {
+    "properties": {
+      "@type": {
+        "ui:options": {
+          "widget": "hidden"
+        }
+      },
+      "mediaType": {
+        "ui:options": {
+          "widget": "hidden"
+        }
+      },
+      "description": {
+        "ui:options": {
+          "widget": "textarea",
+          "rows": 5
+        }
+      }
+    }
+  }
+}

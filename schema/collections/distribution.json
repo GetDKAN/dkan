@@ -1,0 +1,94 @@
+{
+  "title": "Tags",
+  "description": "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.",
+  "type": "object",
+  "required": [
+    "identifier",
+    "data"
+  ],
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "type": "string"
+    },
+    "data": {
+      "title": "Project Open Data Distribution",
+      "type": "object",
+      "properties": {
+        "@type": {
+          "title": "Metadata Context",
+          "description": "IRI for the JSON-LD data type. This should be dcat:Distribution for each Distribution.",
+          "default": "dcat:Distribution",
+          "type": "string",
+          "readOnly": true
+        },
+        "title": {
+          "title": "Title",
+          "description": "Human-readable name of the distribution.",
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "title": "Description",
+          "description": "Human-readable description of the distribution.",
+          "type": "string",
+          "minLength": 1
+        },
+        "format": {
+          "title": "Format",
+          "description": "A human-readable description of the file format of a distribution (i.e. csv, pdf, xml, kml, etc.).",
+          "type": "string",
+          "examples": [
+            "arcgis",
+            "csv",
+            "esri rest",
+            "geojson",
+            "json",
+            "kml",
+            "pdf",
+            "tsv",
+            "xls",
+            "xlsx",
+            "xml",
+            "zip"
+          ]
+        },
+        "mediaType": {
+          "title": "Media Type",
+          "description": "The machine-readable file format (<a href=\"https://www.iana.org/assignments/media-types/media-types.xhtml\">IANA Media Type or MIME Type</a>) of the distribution’s downloadURL.",
+          "type": "string"
+        },
+        "downloadURL": {
+          "title": "Download URL",
+          "description": "URL providing direct access to a downloadable file of a dataset.",
+          "type": "string",
+          "format": "uri"
+        },
+        "accessURL": {
+          "title": "Access URL",
+          "description": "URL providing indirect access to a dataset.",
+          "type": "string",
+          "format": "uri"
+        },
+        "conformsTo": {
+          "title": "Data Standard",
+          "description": "URL providing indirect access to a dataset.",
+          "type": "string",
+          "format": "uri"
+        },
+        "describedBy": {
+          "title": "Data Dictionary",
+          "description": "URL to the data dictionary for the distribution found at the downloadURL.",
+          "type": "string",
+          "format": "uri"
+        },
+        "describedByType": {
+          "title": "Data Dictionary Type",
+          "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL.",
+          "pattern": "^[a-z]+?$",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

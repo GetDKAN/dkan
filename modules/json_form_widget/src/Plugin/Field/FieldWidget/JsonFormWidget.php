@@ -123,7 +123,8 @@ class JsonFormWidget extends WidgetBase {
     foreach ($items as $item) {
       $default_data = json_decode($item->value);
     }
-    $this->builder->setSchema($this->getSetting('schema'));
+    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
+    $this->builder->setSchema($this->getSetting('schema'), $type);
     $json_form = $this->builder->getJsonForm($default_data, $form_state);
 
     if ($json_form) {
@@ -136,11 +137,12 @@ class JsonFormWidget extends WidgetBase {
    */
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
     $field_name = $form_state->get('json_form_widget_field');
-    $schema = $form_state->get('json_form_widget_schema');
+    $schema = $this->builder->getSchema();
 
     $data = [];
     $properties = array_keys((array) $schema->properties);
     $values = $form_state->getValue($field_name)[0]['value'];
+
     foreach ($properties as $property) {
       $value = $this->valueHandler->flattenValues($values, $property, $schema->properties->{$property});
       if ($value) {

@@ -47,19 +47,40 @@ trait Helper {
   }
 
   /**
-   * Private..
+   * Return Processed, Created, Updated, Failed counts from Harvest Run Result.
    */
-  private function renderResult($result) {
+  private function getResultCounts($result) {
     $interpreter = new ResultInterpreter($result);
 
-    $table = new Table(new ConsoleOutput());
-    $table->setHeaders(['processed', 'created', 'updated', 'errors']);
-    $table->addRow([
+    return [
       $interpreter->countProcessed(),
       $interpreter->countCreated(),
       $interpreter->countUpdated(),
       $interpreter->countFailed(),
-    ]);
+    ];
+  }
+
+  /**
+   * Display a list of [runIds, runInfo].
+   *
+   * @param array $runInfos
+   *   Array of run Ids and HarvesterRunInfo association.
+   */
+  private function renderHarvestRunsInfo(array $runInfos) {
+    $table = new Table(new ConsoleOutput());
+    $table->setHeaders(['run_id', 'processed', 'created', 'updated', 'errors']);
+
+    foreach ($runInfos as $runInfo) {
+      list($run_id, $result) = $runInfo;
+
+      $row = array_merge(
+        [$run_id],
+        $this->getResultCounts($result)
+      );
+
+      $table->addRow($row);
+    }
+
     $table->render();
   }
 
@@ -67,17 +88,19 @@ trait Helper {
    * Render table for harvest run item status.
    */
   private function renderStatusTable($harvest_id, $run_id, $run) {
+    $consoleOutput = new ConsoleOutput();
+
     if (empty($run['status']['extracted_items_ids'])) {
       $extract_status = $run['status']['extract'];
 
-      (new ConsoleOutput())->writeln(
+      $consoleOutput->writeln(
         ["<warning>harvest id $harvest_id and run id $run_id extract status is $extract_status</warning>",
           "<warning>No items were extracted.</warning>",
         ]
       );
     }
     else {
-      $table = new Table(new ConsoleOutput());
+      $table = new Table($consoleOutput);
       $table->setHeaders(["item_id", "extract", "transform", "load"]);
 
       foreach ($run['status']['extracted_items_ids'] as $item_id) {
@@ -85,6 +108,9 @@ trait Helper {
         $table->addRow($row);
       }
 
+      $consoleOutput->writeln(
+        ["<info>$harvest_id run id $run_id status </info>"]
+      );
       $table->render();
     }
   }
