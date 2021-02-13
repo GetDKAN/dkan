@@ -33,7 +33,9 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *   config_export = {
  *     "id",
  *     "label",
- *     "json_data",
+ *     "behaviors",
+ *     "json_schema",
+ *     "ui_schema",
  *     "description",
  *     "help",
  *     "display_submitted",
@@ -48,6 +50,9 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  * )
  */
 class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaInterface {
+
+  const BEHAVIOR_DATASET = 1;
+  const BEHAVIOR_RESOURCE = 2;
 
   /**
    * The Metastore schema ID.
@@ -64,15 +69,73 @@ class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaI
   protected $label;
 
   /**
+   * The Metastore schema behaviors.
+   *
+   * @var array
+   */
+  protected $behaviors;
+
+  /**
+   * The main Metastore JSON schema.
+   *
+   * @var string
+   */
+  protected $json_schema;
+
+  /**
+   * The UI schema for this Metastore schema.
+   *
+   * @var string
+   */
+  protected $ui_schema;
+
+  /**
    * Get the JSON schema.
    *
    * @return string
    *   A JSON Schema document.
    */
   public function getSchema() {
-    if (is_array($this->json_data) && isset($this->json_data['value'])) {
-      return $this->json_data['value'];
+    if (is_array($this->json_schema) && isset($this->json_schema['value'])) {
+      return $this->json_schema['value'];
     }
-    return $this->json_data;
+    return $this->json_schema;
   }
+
+  /**
+   * Get the UI schema.
+   *
+   * @return string
+   *   A JSON document.
+   */
+  public function getUiSchema() {
+    if (is_array($this->ui_schema) && isset($this->ui_schema['value'])) {
+      return $this->ui_schema['value'];
+    }
+    return $this->ui_schema;
+  }
+
+  /**
+   * Get list of behaviors for this metastore schema.
+   *
+   * @return array
+   *   Array of behaviors
+   */
+  public function getBehaviors(): array {
+    return $this->behaviors ? $this->behaviors : [];
+  }
+
+  /**
+   * Check if schema has a particular behavior.
+   *
+   * @param int $behavior
+   *   One of the behaviors defined in MetastoreSchema() constants.
+   *
+   * @return bool
+   *   True of false has behavior.
+   */
+  public function hasBehavior(int $behavior): bool {
+    return in_array($behavior, $this->behaviors);
+  }
+
 }

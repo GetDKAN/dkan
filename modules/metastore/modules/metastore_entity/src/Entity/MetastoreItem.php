@@ -134,6 +134,13 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemI
   /**
    * {@inheritdoc}
    */
+  public function getSchema() {
+    return $this->get('schema')->target_id;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getTitle() {
     return $this->get('title')->value;
   }

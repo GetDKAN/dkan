@@ -4,6 +4,7 @@ namespace Drupal\metastore_entity\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\metastore_entity\Entity\MetastoreSchema;
 use RootedData\RootedJsonData;
 
 /**
@@ -36,13 +37,34 @@ class MetastoreSchemaForm extends EntityForm {
       '#disabled' => !$metastore_schema->isNew(),
     ];
 
-    $form['json_data'] = [
-      '#title' => t('JSON Schema'),
+    $form['behaviors'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Behaviors'),
+      '#default_value' => $metastore_schema->getBehaviors(),
+      '#options' => [
+        MetastoreSchema::BEHAVIOR_DATASET => $this->t('Dataset'),
+        MetastoreSchema::BEHAVIOR_RESOURCE => $this->t('Resource'),
+      ],
+    ];
+
+    $form['json_schema'] = [
+      '#title' => $this->t('JSON Schema'),
       '#type' => 'text_format',
       '#format' => 'json',
       '#allowed_formats' => ['json'],
       '#default_value' => $metastore_schema->getSchema(),
-      '#description' => t('Validation schema'),
+      '#description' => $this->t('Validation schema'),
+      '#element_validate' => [[$this, 'validateSchema']],
+      '#required' => TRUE,
+    ];
+
+    $form['ui_schema'] = [
+      '#title' => $this->t('UI Schema'),
+      '#type' => 'text_format',
+      '#format' => 'json',
+      '#allowed_formats' => ['json'],
+      '#default_value' => $metastore_schema->getSchema(),
+      '#description' => $this->t('UI schema'),
       '#element_validate' => [[$this, 'validateSchema']],
     ];
 
@@ -54,14 +76,14 @@ class MetastoreSchemaForm extends EntityForm {
    *
    * @param mixed $element
    *   Form element.
-   * @param FormStateInterface $form_state
-   *   Form state object
+   * @param Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state object.
    * @param mixed $form
    *   Form array.
    */
   public function validateSchema($element, FormStateInterface $form_state, $form) {
     try {
-      $test = new RootedJsonData("{}", $form_state->getValue('json_data')['value']);
+      $test = new RootedJsonData("{}", $form_state->getValue('json_schema')['value']);
     }
     catch (\Exception $e) {
       $form_state->setError($element, t('Schema failed validation with message: ":msg"', [':msg' => $e->getMessage()]));

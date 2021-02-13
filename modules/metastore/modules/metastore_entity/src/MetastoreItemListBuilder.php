@@ -27,7 +27,8 @@ class MetastoreItemListBuilder extends EntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     /* @var \Drupal\metastore_entity\Entity\MetastoreItem $entity */
-    $row['id'] = $entity->id();
+    $row['uuid'] = $entity->uuid();
+    $row['schema'] = $entity->getSchema();
     $row['title'] = Link::createFromRoute(
       $entity->label(),
       'entity.metastore_item.edit_form',
