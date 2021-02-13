@@ -47,20 +47,7 @@ class SchemaRetrieverTest extends TestCase {
   public function testGetAllIds() {
     $retriever = $this->getSchemaRetriever();
     $ids = $retriever->getAllIds();
-    $expected = [
-      'catalog',
-      'dataset',
-      'dataset.ui',
-      'publisher',
-      'publisher.ui',
-      'distribution',
-      'distribution.ui',
-      'theme',
-      'theme.ui',
-      'keyword',
-      'keyword.ui',
-    ];
-    $this->assertEquals($expected, $ids);
+    $this->assertEquals(['catalog', 'dataset', 'dataset.ui'], $ids);
   }
 
   /**

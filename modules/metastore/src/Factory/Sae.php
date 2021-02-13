@@ -63,15 +63,14 @@ class Sae implements FactoryInterface {
    *   Json schema.
    */
   private function getJsonSchema($schema_id) {
-    $schemas = $this->schemaRetriever->getAllIds();
 
     // @Todo: mechanism to validate against additional schemas. For now,
     // validate against the empty object, as it accepts any valid json.
-    if (!in_array($schema_id, $schemas)) {
+    if ($schema_id != 'dataset') {
       return '{ }';
     }
 
-    return $this->schemaRetriever->retrieve($schema_id);
+    return $this->schemaRetriever->retrieve('dataset');
   }
 
   /**
