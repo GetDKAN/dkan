@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Unit\Factory;
 
 use Drupal\metastore\Factory\Sae;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
@@ -20,7 +20,7 @@ class SaeTest extends TestCase {
    */
   public function test() {
     $schemaRetriever = (new Chain($this))
-      ->add(SchemaRetriever::class, "retrieve", "")
+      ->add(FileSchemaRetriever::class, "retrieve", "")
       ->getMock();
 
     $storage = (new Chain($this))

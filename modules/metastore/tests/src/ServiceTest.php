@@ -8,7 +8,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Service;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
@@ -26,7 +26,7 @@ class ServiceTest extends TestCase {
    */
   public function testGetSchemas() {
     $container = $this->getCommonMockChain()
-      ->add(SchemaRetriever::class, "getAllIds", ["1"]);
+      ->add(FileSchemaRetriever::class, "getAllIds", ["1"]);
 
     $service = Service::create($container->getMock());
     $this->assertEquals(json_encode(["1" => "blah"]), json_encode($service->getSchemas()));
@@ -281,7 +281,7 @@ EOF;
     $dataset = (object) ["foo" => "bar"];
 
     $container = $this->getCommonMockChain()
-      ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode($catalog))
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", [json_encode($dataset), json_encode($dataset)]);
 
@@ -298,7 +298,7 @@ EOF;
    */
   public function getCommonMockChain() {
     $options = (new Options())
-      ->add('metastore.schema_retriever', SchemaRetriever::class)
+      ->add('metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('metastore.sae_factory', Sae::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->index(0);
@@ -306,7 +306,7 @@ EOF;
     return (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode("blah"));
   }
 
 }

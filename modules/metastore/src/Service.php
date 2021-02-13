@@ -29,7 +29,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Schema retriever.
    *
-   * @var \Drupal\metastore\SchemaRetriever
+   * @var \Drupal\metastore\SchemaRetrieverInterface
    */
   private $schemaRetriever;
 
@@ -56,7 +56,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataFactory $factory) {
+  public function __construct(SchemaRetrieverInterface $schemaRetriever, Sae $saeFactory, DataFactory $factory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
     $this->factory = $factory;

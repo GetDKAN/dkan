@@ -14,7 +14,7 @@ use Drupal\json_form_widget\FieldTypeRouter;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use MockChain\Options;
 
 /**
@@ -28,7 +28,7 @@ class ArrayHelperTest extends TestCase {
   public function testComplex() {
     $object = $this->getExpectedObject();
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('json_form.router', FieldTypeRouter::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('json_form.object_helper', ObjectHelper::class)
@@ -42,7 +42,7 @@ class ArrayHelperTest extends TestCase {
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', $distribution_schema)
+      ->add(FileSchemaRetriever::class, 'retrieve', $distribution_schema)
       ->add(SchemaUiHandler::class, 'setSchemaUi')
       ->add(ObjectHelper::class, 'handleObjectElement', $object);
 

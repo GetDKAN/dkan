@@ -8,7 +8,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Service;
 use Drupal\metastore\WebServiceApi;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -398,7 +398,7 @@ EOF;
 
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', "{}")
+      ->add(FileSchemaRetriever::class, 'retrieve', "{}")
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'get', FALSE);
 

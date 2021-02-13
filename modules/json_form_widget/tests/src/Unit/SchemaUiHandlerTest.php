@@ -8,7 +8,7 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\json_form_widget\SchemaUiHandler;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use MockChain\Options;
 use phpDocumentor\Reflection\PseudoTypes\True_;
 
@@ -22,14 +22,14 @@ class SchemaUiHandlerTest extends TestCase {
    */
   public function testSchemaUi() {
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('uuid', Php::class)
       ->index(0);
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', '{"@test":{"ui:options":{"widget":"hidden"}},"textarea_text":{"ui:options":{"widget":"textarea","rows":4,"cols":45,"title":"Textarea field","description":"Test description"}},"date":{"ui:options":{"placeholder":"YYYY-MM-DD"}},"disabled":{"ui:options":{"disabled":true}}}')
+      ->add(FileSchemaRetriever::class, 'retrieve', '{"@test":{"ui:options":{"widget":"hidden"}},"textarea_text":{"ui:options":{"widget":"textarea","rows":4,"cols":45,"title":"Textarea field","description":"Test description"}},"date":{"ui:options":{"placeholder":"YYYY-MM-DD"}},"disabled":{"ui:options":{"disabled":true}}}')
       ->add(SchemaUiHandler::class, 'setSchemaUi');
 
     $container = $container_chain->getMock();
@@ -101,7 +101,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test dkan_uuid field with already existing value.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -129,7 +129,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test dkan_uuid field, adding new value.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -148,7 +148,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertNotEmpty($form['identifier']['#default_value']);
 
     // Test array field.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"references":{"ui:options":{"title":"Related documents","description":"Improved description"},"items":{"ui:options":{"title":"References","placeholder":"http://"}}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"references":{"ui:options":{"title":"Related documents","description":"Improved description"},"items":{"ui:options":{"title":"References","placeholder":"http://"}}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -209,7 +209,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test object field.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"publisher":{"properties":{"@type":{"ui:options":{"widget":"hidden"}},"name":{"ui:options":{"description":"Better description"}}}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"publisher":{"properties":{"@type":{"ui:options":{"widget":"hidden"}},"name":{"ui:options":{"description":"Better description"}}}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -265,7 +265,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test array field with object.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"distribution":{"items":{"@type":{"ui:options":{"widget":"hidden"}}}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"distribution":{"items":{"@type":{"ui:options":{"widget":"hidden"}}}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);

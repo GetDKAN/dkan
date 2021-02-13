@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Class.
  */
-class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface {
+class FileSchemaRetriever implements SchemaRetrieverInterface {
 
   /**
    * Directory.
