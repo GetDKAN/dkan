@@ -1,0 +1,18 @@
+uuid: c4a714cd-483e-41d8-9e6a-24baeac88b76
+langcode: en
+status: true
+dependencies: {  }
+id: publisher
+label: Publisher
+behaviors:
+  1: 0
+  2: 0
+json_schema:
+  value: "{\r\n    \"id\": \"https://project-open-data.cio.gov/v1.1/schema/organization.json#\",\r\n    \"title\": \"Organization\",\r\n    \"description\": \"A Dataset Publisher Organization.\",\r\n    \"type\": \"object\",\r\n    \"required\": [\r\n        \"name\"\r\n    ],\r\n    \"properties\": {\r\n        \"@type\": {\r\n            \"title\": \"Metadata Context\",\r\n            \"description\": \"IRI for the JSON-LD data type. This should be org:Organization for each publisher\",\r\n            \"type\": \"string\",\r\n            \"default\": \"org:Organization\"\r\n        },\r\n        \"name\": {\r\n            \"title\": \"Publisher Name\",\r\n            \"description\": \"\",\r\n            \"type\": \"string\",\r\n            \"minLength\": 1\r\n        },\r\n        \"subOrganizationOf\": {\r\n            \"title\": \"Parent Organization\",\r\n            \"type\": \"string\"\r\n        }\r\n    }\r\n}"
+  format: json
+ui_schema:
+  value: "{\r\n    \"@type\": {\r\n        \"ui:options\": {\r\n            \"widget\": \"hidden\"\r\n        }\r\n    }\r\n}"
+  format: json
+description: null
+help: null
+display_submitted: null
