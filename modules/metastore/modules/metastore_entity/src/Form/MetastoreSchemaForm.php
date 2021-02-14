@@ -5,7 +5,7 @@ namespace Drupal\metastore_entity\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\metastore_entity\Entity\MetastoreSchema;
-use RootedData\RootedJsonData;
+use Opis\JsonSchema\Schema;
 
 /**
  * Class MetastoreSchemaForm.
@@ -83,7 +83,7 @@ class MetastoreSchemaForm extends EntityForm {
    */
   public function validateSchema($element, FormStateInterface $form_state, $form) {
     try {
-      $test = new RootedJsonData("{}", $form_state->getValue('json_schema')['value']);
+      Schema::fromJsonString($form_state->getValue('json_schema')['value']);
     }
     catch (\Exception $e) {
       $form_state->setError($element, t('Schema failed validation with message: ":msg"', [':msg' => $e->getMessage()]));

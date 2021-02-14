@@ -15,7 +15,7 @@ services:
       - '@dkan.metastore.storage'
 
   dkan.metastore.schema_retriever:
-    class: \Drupal\metastore\SchemaRetriever
+    class: \Drupal\metastore\FileSchemaRetriever
     arguments:
       - '@app.root'
       - '@extension.list.module'
@@ -76,7 +76,7 @@ services:
       - '@dkan.metastore.storage'
 
   metastore.schema_retriever:
-    class: \Drupal\metastore\SchemaRetriever
+    class: \Drupal\metastore\FileSchemaRetriever
     arguments:
       - '@app.root'
       - '@extension.list.module'
