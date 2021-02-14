@@ -51,7 +51,6 @@ class MetastoreSchemaForm extends EntityForm {
       '#title' => $this->t('JSON Schema'),
       '#type' => 'text_format',
       '#format' => 'json',
-      '#allowed_formats' => ['json'],
       '#default_value' => $metastore_schema->getSchema(),
       '#description' => $this->t('Validation schema'),
       '#element_validate' => [[$this, 'validateSchema']],
@@ -62,8 +61,7 @@ class MetastoreSchemaForm extends EntityForm {
       '#title' => $this->t('UI Schema'),
       '#type' => 'text_format',
       '#format' => 'json',
-      '#allowed_formats' => ['json'],
-      '#default_value' => $metastore_schema->getSchema(),
+      '#default_value' => $metastore_schema->getUiSchema(),
       '#description' => $this->t('UI schema'),
       '#element_validate' => [[$this, 'validateSchema']],
     ];
