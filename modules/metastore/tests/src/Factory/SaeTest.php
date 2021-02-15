@@ -8,7 +8,7 @@ use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
-use Sae\Sae as Engine;
+use Drupal\metastore\Sae\Sae as Engine;
 
 /**
  *

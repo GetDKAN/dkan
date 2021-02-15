@@ -22,7 +22,7 @@ class DataTest extends TestCase {
       ->getMock();
 
     $data = new Data('dataset', $etm);
-    $this->assertInstanceOf(NodeStorage::class, $data->getNodeStorage());
+    $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
   }
 
 }
