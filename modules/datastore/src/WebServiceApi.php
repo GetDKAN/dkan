@@ -205,6 +205,10 @@ class WebServiceApi implements ContainerInjectionInterface {
 
       case 'json':
       default:
+        $parse = $result->{"$"};
+        if ($parse) {
+
+        }
         return $this->getResponse($result->{"$"}, 200);
     }
   }
@@ -216,7 +220,12 @@ class WebServiceApi implements ContainerInjectionInterface {
     $result = $this->getResults();
 
     // @TODO: Streamed response for json
-    return $this->processStreamedCsv($result->{"$"});
+    if ($data = $result->{"$"}) {
+      return $this->processStreamedCsv($data);
+    }
+    else {
+      return $this->processStreamedCsv([]);
+    }
   }
 
   /**
