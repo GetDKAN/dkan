@@ -6,7 +6,6 @@ dependencies:
   - metastore
   - admin_toolbar
   - breakpoint
-  - metastore_form
   - system
   - toolbar
   - user
