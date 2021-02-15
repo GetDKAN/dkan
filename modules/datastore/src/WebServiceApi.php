@@ -201,14 +201,16 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     switch ($format) {
       case 'csv':
-        return $this->formatCsv($result->{"$"});
+        if ($data = $result->{"$"}) {
+          return $this->formatCsv($data);
+        }
+        else {
+          // Allow for empty file to be returned.
+          return $this->formatCsv(['results' => [0 => 0]]);
+        }
 
       case 'json':
       default:
-        $parse = $result->{"$"};
-        if ($parse) {
-
-        }
         return $this->getResponse($result->{"$"}, 200);
     }
   }
