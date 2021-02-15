@@ -5,7 +5,7 @@ namespace Drupal\metastore\Factory;
 use Contracts\FactoryInterface;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\SchemaRetriever;
-use Sae\Sae as Engine;
+use Drupal\metastore\Sae\Sae as Engine;
 
 /**
  * Class Sae.

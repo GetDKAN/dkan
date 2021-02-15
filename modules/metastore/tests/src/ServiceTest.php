@@ -14,7 +14,7 @@ use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
-use Sae\Sae as Engine;
+use Drupal\metastore\Sae\Sae as Engine;
 
 /**
  *
