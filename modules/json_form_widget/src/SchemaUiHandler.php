@@ -184,9 +184,21 @@ class SchemaUiHandler implements ContainerInjectionInterface {
         break;
 
       case 'upload_or_link':
-        $element['#type'] = 'upload_or_link';
-        // ksm($element);
+        $element = $this->handleUploadOrLink($element);
         break;
+    }
+    return $element;
+  }
+
+  /**
+   * Handle configuration for upload_or_link elements.
+   */
+  public function handleUploadOrLink($element) {
+    $element['#type'] = 'upload_or_link';
+    $element['#upload_location'] = 'public://uploaded_resources';
+    if (isset($element['#default_value'])) {
+      $element['#uri'] = $element['#default_value'];
+      unset($element['#default_value']);
     }
     return $element;
   }
