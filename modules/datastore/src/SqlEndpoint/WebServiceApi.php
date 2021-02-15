@@ -76,8 +76,11 @@ class WebServiceApi implements ContainerInjectionInterface {
     $query = NULL;
     $query = $this->requestStack->getCurrentRequest()->get('query');
 
+    // @todo Deprecate parameter show-db-columns in favor of show_db_columns.
+    //   Dredd enforces RFC6570 which does not allow hyphens in parameter names.
     $flag = $this->requestStack->getCurrentRequest()->get('show-db-columns');
-    $showDbColumns = isset($flag) ? TRUE : FALSE;
+    $preferredFlag = $this->requestStack->getCurrentRequest()->get('show_db_columns');
+    $showDbColumns = isset($preferredFlag) || isset($flag);
 
     if (empty($query)) {
       return $this->getResponseFromException(

@@ -9,6 +9,7 @@ services:
     class: \Drupal\json_form_widget\ValueHandler
   json_form.string_helper:
     class: \Drupal\json_form_widget\StringHelper
+    arguments: ['@email.validator']
   json_form.object_helper:
     class: \Drupal\json_form_widget\ObjectHelper
   json_form.array_helper:

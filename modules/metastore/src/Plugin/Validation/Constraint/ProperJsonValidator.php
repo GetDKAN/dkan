@@ -16,8 +16,12 @@ class ProperJsonValidator extends ConstraintValidator {
    * {@inheritdoc}
    */
   public function validate($items, Constraint $constraint) {
+    $schema = 'dataset';
+    if (is_object($items) && $type = $items->getParent()->getEntity()->get('field_data_type')->value) {
+      $schema = $type;
+    }
     foreach ($items as $item) {
-      $info = $this->isProper($item->value);
+      $info = $this->isProper($item->value, $schema);
       if (!$info['valid']) {
         $this->addViolations($info['errors']);
       }
@@ -29,14 +33,16 @@ class ProperJsonValidator extends ConstraintValidator {
    *
    * @param string $value
    *   Value.
+   * @param string $schema
+   *   Schema ID.
    */
-  protected function isProper($value) {
+  protected function isProper($value, $schema = 'dataset') {
     // @codeCoverageIgnoreStart
     /** @var SaeFactory $saeFactory */
     $saeFactory = \Drupal::service("metastore.sae_factory");
 
     /** @var Sae $engine */
-    $engine = $saeFactory->getInstance('dataset');
+    $engine = $saeFactory->getInstance($schema);
 
     return $engine->validate($value);
     // @codeCoverageIgnoreEnd

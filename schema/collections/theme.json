@@ -1,0 +1,21 @@
+{
+  "title": "Category",
+  "description": "Main thematic category of the dataset.",
+  "type": "object",
+  "required": [
+    "identifier",
+    "data"
+  ],
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "type": "string"
+    },
+    "data": {
+      "type": "string",
+      "title": "Category",
+      "description": "Main thematic category of the dataset.",
+      "minLength": 1
+    }
+  }
+}

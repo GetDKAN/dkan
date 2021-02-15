@@ -1,0 +1,21 @@
+{
+  "title": "Tags",
+  "description": "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.",
+  "type": "object",
+  "required": [
+    "identifier",
+    "data"
+  ],
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "type": "string"
+    },
+    "data": {
+      "type": "string",
+      "title": "Tag",
+      "description": "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.",
+      "minLength": 1
+    }
+  }
+}
