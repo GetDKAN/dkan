@@ -66,11 +66,33 @@ class UploadOrLink extends ManagedFile {
    * TODO: update comment to reflect what this function does.
    */
   public static function processManagedFile(&$element, FormStateInterface $form_state, &$complete_form) {
-    // ksm($element, 'start');
+    // If removing, unset #uri.
+    $element['#uri'] = static::getDefaultUri($element, $form_state);
+
+    // Build element.
     $element = parent::processManagedFile($element, $form_state, $form);
     $file_url_type = static::getUrlType($element);
-    // $file_url_type = isset($element['#value']['file_url_type']) ? $element['#value']['file_url_type'] : NULL;
-    $file_url_remote = $element['#value']['file_url_remote'];
+
+    // Load default value.
+    if (isset($element['#uri'])) {
+      $files = \Drupal::entityTypeManager()
+        ->getStorage('file')
+        ->loadByProperties(['filename' => $element['#uri']]);
+      if ($file = reset($files)) {
+        $element['#files'][$file->id()] = $file;
+        $element['#value']['fids'][] = $file->id();
+        $element['#value']['file_url_type'] = "upload";
+        $element['fids']['#type'] = 'hidden';
+        $element['fids']['#value'][] = $file->id();
+        $file_link = [
+          '#theme' => 'file_link',
+          '#file' => $file,
+        ];
+        $element['file_' . $file->id()]['filename'] = $file_link + ['#weight' => -10];
+      }
+    }
+
+    $file_url_remote = isset($element['#value']['file_url_remote']) ? $element['#value']['file_url_remote'] : $element['#uri'];
     $file_url_remote_is_valid = UrlHelper::isValid($file_url_remote, TRUE);
     if ($file_url_remote_is_valid && $file_url_type) {
       $remote_file = RemoteFile::load($file_url_remote);
@@ -80,16 +102,12 @@ class UploadOrLink extends ManagedFile {
         '#title' => $remote_file->getFileUri(),
         '#url' => Url::fromUri($remote_file->getFileUri()),
       ];
-      if ($element['#multiple']) {
-        $element["file_{$file_url_remote}"]['selected'] = [
-          '#type' => 'checkbox',
-          '#title' => \Drupal::service('renderer')->renderPlain($file_link),
-        ];
-      }
-      else {
-        $element["file_{$file_url_remote}"]['filename'] = $file_link + ['#weight' => -10];
-      }
+      $element["file_{$file_url_remote}"]['filename'] = $file_link + ['#weight' => -10];
+      $element['#value']['file_url_type'] = static::TYPE_REMOTE;
+      $element['#value']['file_url_remote'] = $file_url_remote;
+      $element['#value']['upload'] = NULL;
     }
+
     $access_file_url_elements = (empty($element['#files']) && !$file_url_remote_is_valid) || !$file_url_type;
 
     // Build the file URL additional sub-elements.
@@ -145,7 +163,6 @@ class UploadOrLink extends ManagedFile {
 
     // Make sure the upload button is the last in form element.
     $element['upload_button']['#weight'] = 20;
-    ksm($element, 'end');
     return $element;
   }
 
@@ -160,8 +177,10 @@ class UploadOrLink extends ManagedFile {
       foreach ($fids as $fid) {
         if ($file = File::load($fid)) {
           $uri = $file->getFileUri();
+          $uri = file_create_url($uri);
         }
       }
+      $form_state->set('upload_or_link_element', $element['#parents']);
     }
     else {
       $uri = $element['#value']['file_url_remote'];
@@ -173,8 +192,11 @@ class UploadOrLink extends ManagedFile {
    * Helper function for getting the url type.
    */
   protected static function getUrlType($element) {
-    if (isset($element['#default_value'])) {
-      $uri = $element['#default_value'];
+    if (isset($element['#value']['file_url_type'])) {
+      return $element['#value']['file_url_type'];
+    }
+    elseif (isset($element['#uri'])) {
+      $uri = $element['#uri'];
       if (substr_count($uri, "http://") > 0 || substr_count($uri, "https://") > 0) {
         return static::TYPE_REMOTE;
       }
@@ -182,22 +204,19 @@ class UploadOrLink extends ManagedFile {
         return static::TYPE_UPLOAD;
       }
     }
-    return isset($element['#value']['file_url_type']) ? $element['#value']['file_url_type'] : NULL;
+    return NULL;
   }
 
   /**
-   * Helper function to know if user should have access to url type subfield.
+   * Helper function for getting the default URI.
    */
-  protected static function getUrlTypeAccess($element) {
-    if (isset($element['#default_value'])) {
-      $uri = $element['#default_value'];
-      if (substr_count($uri, "http://") > 0 || substr_count($uri, "https://") > 0) {
-        return static::TYPE_REMOTE;
-      } else {
-        return static::TYPE_UPLOAD;
-      }
+  protected static function getDefaultUri($element, FormStateInterface $form_state) {
+    $triggering = $form_state->getTriggeringElement();
+    $button = is_array($triggering) ? array_pop($triggering['#array_parents']) : '';
+    if ($button == 'remove_button') {
+      return '';
     }
-    return isset($element['#value']['file_url_type']) ? $element['#value']['file_url_type'] : NULL;
+    return $element['#uri'];
   }
 
   /**

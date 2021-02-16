@@ -62,11 +62,13 @@ function json_form_widget_save_dkan_file_submit($form, FormStateInterface $form_
     $uri = $form_state->getValue($parents);
     $files = \Drupal::entityTypeManager()
     ->getStorage('file')
-    ->loadByProperties(['uri' => $uri]);
-    $file = reset($files);
-    $file->setPermanent();
-    $file->save();
-    $file_usage = \Drupal::service('file.usage');
-    $file_usage->add($file, 'json_form_widget', 'json_form_widget', \Drupal::currentUser()->id());
+    ->loadByProperties(['filename' => $uri]);
+    if (!empty($files)) {
+      $file = reset($files);
+      $file->setPermanent();
+      $file->save();
+      $file_usage = \Drupal::service('file.usage');
+      $file_usage->add($file, 'json_form_widget', 'json_form_widget', \Drupal::currentUser()->id());
+    }
   }
 }
