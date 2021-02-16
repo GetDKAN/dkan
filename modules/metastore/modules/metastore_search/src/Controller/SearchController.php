@@ -1,22 +1,24 @@
 <?php
 
-namespace Drupal\metastore_search;
+namespace Drupal\metastore_search\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
+use Drupal\metastore_search\Search;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Controller.
  */
-class WebServiceApi implements ContainerInjectionInterface {
+class SearchController implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
   /**
    * Dkan search service.
    *
-   * @var \Drupal\metastore_search\Service
+   * @var \Drupal\metastore_search\Search
    */
   private $service;
 
@@ -28,15 +30,15 @@ class WebServiceApi implements ContainerInjectionInterface {
   private $requestStack;
 
   /**
-   * WebServiceApi constructor.
+   * SearchController constructor.
    *
-   * @param \Drupal\metastore_search\Service $service
+   * @param \Drupal\metastore_search\Search $service
    *   Dkan search service.
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   Request stack.
    */
   public function __construct(
-    Service $service,
+    Search $service,
     RequestStack $requestStack
   ) {
     $this->service = $service;
@@ -56,7 +58,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Search.
    */
-  public function search() {
+  public function search(): JsonResponse {
     $params = $this->getParams();
     $responseBody = $this->service->search($params);
     if ($params['facets'] == TRUE) {
@@ -71,8 +73,10 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function facets() {
     $responseBody = (object) [];
     $params = $this->getParams();
+    $start = microtime(TRUE);
     $facets = $this->service->facets($params);
     $responseBody->facets = $facets;
+    $responseBody->time = microtime(TRUE) - $start;
     return $this->getResponse($responseBody);
   }
 
