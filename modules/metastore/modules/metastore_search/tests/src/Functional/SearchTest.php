@@ -18,7 +18,7 @@ class SearchTest extends ExistingSiteBase {
   /**
    *
    */
-  public function testDushCommands() {
+  public function testDrushCommands() {
     $output = NULL;
     $return = NULL;
     exec('drush dkan:metastore-search:rebuild-tracker', $output, $return);
