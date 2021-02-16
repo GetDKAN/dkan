@@ -58,6 +58,17 @@ class UploadOrLink extends ManagedFile {
     ];
   }
 
+  private static function checkIfLocalFile($url) {
+    $filename = \Drupal::service('file_system')->basename($url);
+    $files = \Drupal::entityTypeManager()
+      ->getStorage('file')
+      ->loadByProperties(['filename' => $filename]);
+    if (!empty($files)) {
+      return reset($files);
+    }
+    return FALSE;
+  }
+
   /**
    * Render API callback: Expands the managed_file element type.
    *
@@ -68,17 +79,22 @@ class UploadOrLink extends ManagedFile {
   public static function processManagedFile(&$element, FormStateInterface $form_state, &$complete_form) {
     // If removing, unset #uri.
     $element['#uri'] = static::getDefaultUri($element, $form_state);
-
     // Build element.
     $element = parent::processManagedFile($element, $form_state, $form);
     $file_url_type = static::getUrlType($element);
 
+    $triggering = $form_state->getTriggeringElement();
+    $button = is_array($triggering) ? array_pop($triggering['#array_parents']) : '';
+    if ($button == 'remove_button') {
+      unset($element['#files']);
+      unset($element['file_' . reset($element['#value']['fids'])]);
+      $element['#value']['fids'] = [];
+    }
+
     // Load default value.
-    if (isset($element['#uri'])) {
-      $files = \Drupal::entityTypeManager()
-        ->getStorage('file')
-        ->loadByProperties(['filename' => $element['#uri']]);
-      if ($file = reset($files)) {
+    if (!empty($element['#uri'])) {
+      $file = static::checkIfLocalFile($element['#uri']);
+      if ($file && $element['#value']['file_url_type'] !== static::TYPE_REMOTE) {
         $element['#files'][$file->id()] = $file;
         $element['#value']['fids'][] = $file->id();
         $element['#value']['file_url_type'] = "upload";
@@ -94,7 +110,7 @@ class UploadOrLink extends ManagedFile {
 
     $file_url_remote = isset($element['#value']['file_url_remote']) ? $element['#value']['file_url_remote'] : $element['#uri'];
     $file_url_remote_is_valid = UrlHelper::isValid($file_url_remote, TRUE);
-    if ($file_url_remote_is_valid && $file_url_type) {
+    if ($file_url_remote_is_valid && $file_url_type == static::TYPE_REMOTE) {
       $remote_file = RemoteFile::load($file_url_remote);
       $element['#files'] = [$file_url_remote => $remote_file];
       $file_link = [
@@ -131,7 +147,6 @@ class UploadOrLink extends ManagedFile {
       '#title' => t('Remote URL'),
       '#title_display' => 'invisible',
       '#description' => t('This must be an external URL such as <em>http://example.com</em>.'),
-      // '#default_value' => isset($element['#default_value']) ? $element['#default_value'] : $file_url_remote,
       '#default_value' => $file_url_remote,
       // Only show this field when the 'remote' radio is selected.
       '#states' => ['visible' => $remote_visible],
@@ -141,7 +156,6 @@ class UploadOrLink extends ManagedFile {
         'library' => ['json_form_widget/remote_url'],
       ],
       '#attributes' => [
-        // Used by 'file_url/remote_url' library identify the text field.
         'data-drupal-file-url-remote' => TRUE,
       ],
       '#access' => $access_file_url_elements,
@@ -170,22 +184,24 @@ class UploadOrLink extends ManagedFile {
    * Render API callback: Validates the upload_or_link element.
    */
   public static function validateManagedFile(&$element, FormStateInterface $form_state, &$complete_form) {
-    $uri = NULL;
-    if (!empty($element['#value']['fids'])) {
-      parent::validateManagedFile($element, $form_state, $complete_form);
-      $fids = $element['fids']['#value'];
-      foreach ($fids as $fid) {
-        if ($file = File::load($fid)) {
-          $uri = $file->getFileUri();
-          $uri = file_create_url($uri);
-        }
+    $element['#uri'] = static::getDefaultUri($element, $form_state);
+    if ($element['#value']['file_url_type'] == static::TYPE_UPLOAD) {
+      if (!empty($element['#value']['fids'])) {
+        parent::validateManagedFile($element, $form_state, $complete_form);
+        // $fids = $element['fids']['#value'];
+        // foreach ($fids as $fid) {
+        //   if ($file = File::load($fid)) {
+        //     $uri = $file->getFileUri();
+        //     $element['#uri'] = file_create_url($uri);
+        //   }
+        // }
+        $form_state->set('upload_or_link_element', $element['#parents']);
       }
-      $form_state->set('upload_or_link_element', $element['#parents']);
     }
-    else {
-      $uri = $element['#value']['file_url_remote'];
+    if ($element['#value']['file_url_type'] == static::TYPE_REMOTE) {
+      $element['#uri'] = $element['#value']['file_url_remote'];
     }
-    $form_state->setValueForElement($element, $uri);
+    $form_state->setValueForElement($element, $element['#uri']);
   }
 
   /**
@@ -196,12 +212,11 @@ class UploadOrLink extends ManagedFile {
       return $element['#value']['file_url_type'];
     }
     elseif (isset($element['#uri'])) {
-      $uri = $element['#uri'];
-      if (substr_count($uri, "http://") > 0 || substr_count($uri, "https://") > 0) {
-        return static::TYPE_REMOTE;
+      if (static::checkIfLocalFile($element['#uri'])) {
+        return static::TYPE_UPLOAD;
       }
       else {
-        return static::TYPE_UPLOAD;
+        return static::TYPE_REMOTE;
       }
     }
     return NULL;
@@ -216,6 +231,21 @@ class UploadOrLink extends ManagedFile {
     if ($button == 'remove_button') {
       return '';
     }
+
+    switch ($element['#value']['file_url_type']) {
+      case static::TYPE_REMOTE:
+        return $element['#value']['file_url_remote'];
+
+      case static::TYPE_UPLOAD:
+        $fids = $element['fids']['#value'];
+        foreach ($fids as $fid) {
+          if ($file = File::load($fid)) {
+            $uri = $file->getFileUri();
+            return file_create_url($uri);
+          }
+        }
+    }
+
     return $element['#uri'];
   }
 

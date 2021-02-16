@@ -60,9 +60,10 @@ function json_form_widget_form_alter(&$form, FormStateInterface $form_state, $fo
 function json_form_widget_save_dkan_file_submit($form, FormStateInterface $form_state) {
   if ($parents = $form_state->get('upload_or_link_element')) {
     $uri = $form_state->getValue($parents);
+    $filename = \Drupal::service('file_system')->basename($uri);
     $files = \Drupal::entityTypeManager()
     ->getStorage('file')
-    ->loadByProperties(['filename' => $uri]);
+    ->loadByProperties(['filename' => $filename]);
     if (!empty($files)) {
       $file = reset($files);
       $file->setPermanent();
