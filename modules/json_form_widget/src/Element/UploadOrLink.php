@@ -184,24 +184,12 @@ class UploadOrLink extends ManagedFile {
    * Render API callback: Validates the upload_or_link element.
    */
   public static function validateManagedFile(&$element, FormStateInterface $form_state, &$complete_form) {
-    $element['#uri'] = static::getDefaultUri($element, $form_state);
-    if ($element['#value']['file_url_type'] == static::TYPE_UPLOAD) {
-      if (!empty($element['#value']['fids'])) {
-        parent::validateManagedFile($element, $form_state, $complete_form);
-        // $fids = $element['fids']['#value'];
-        // foreach ($fids as $fid) {
-        //   if ($file = File::load($fid)) {
-        //     $uri = $file->getFileUri();
-        //     $element['#uri'] = file_create_url($uri);
-        //   }
-        // }
-        $form_state->set('upload_or_link_element', $element['#parents']);
-      }
+    $uri = static::getDefaultUri($element, $form_state);
+    if ($element['#value']['file_url_type'] == static::TYPE_UPLOAD || !empty($element['#value']['fids'])) {
+      parent::validateManagedFile($element, $form_state, $complete_form);
+      $form_state->set('upload_or_link_element', $element['#parents']);
     }
-    if ($element['#value']['file_url_type'] == static::TYPE_REMOTE) {
-      $element['#uri'] = $element['#value']['file_url_remote'];
-    }
-    $form_state->setValueForElement($element, $element['#uri']);
+    $form_state->setValueForElement($element, $uri);
   }
 
   /**
@@ -232,18 +220,18 @@ class UploadOrLink extends ManagedFile {
       return '';
     }
 
-    switch ($element['#value']['file_url_type']) {
-      case static::TYPE_REMOTE:
-        return $element['#value']['file_url_remote'];
-
-      case static::TYPE_UPLOAD:
-        $fids = $element['fids']['#value'];
-        foreach ($fids as $fid) {
-          if ($file = File::load($fid)) {
-            $uri = $file->getFileUri();
-            return file_create_url($uri);
-          }
+    if ($element['#value']['file_url_type'] == static::TYPE_UPLOAD || !empty($element['#value']['fids'])) {
+      $fids = $element['fids']['#value'];
+      foreach ($fids as $fid) {
+        if ($file = File::load($fid)) {
+          $uri = $file->getFileUri();
+          return file_create_url($uri);
         }
+      }
+    }
+    elseif (!empty($element['#value']['file_url_remote'])) {
+      $uri = $element['#value']['file_url_remote'];
+      return $uri;
     }
 
     return $element['#uri'];
