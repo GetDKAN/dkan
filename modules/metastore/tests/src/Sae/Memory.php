@@ -1,6 +1,5 @@
 <?php
 
-namespace Drupal\Tests\metastore\Sae\Memory;
 namespace Drupal\Tests\metastore\Sae;
 
 use Contracts\BulkRetrieverInterface;

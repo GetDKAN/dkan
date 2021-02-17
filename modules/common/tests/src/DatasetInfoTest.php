@@ -28,7 +28,7 @@ class DatasetInfoTest extends TestCase {
   public function testUuidNotFound() {
     $mockStorage = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'getNodeLatestRevision', FALSE);
+      ->add(Data::class, 'getEntityLatestRevision', FALSE);
     $mockDatastore = (new Chain($this))
       ->add(Datastore::class);
     $mockResourceMapper = (new Chain($this))
