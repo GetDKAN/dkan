@@ -58,7 +58,7 @@ class Drush extends DrushCommands {
    * @param bool $deferred
    *   Whether or not the process should be deferred to a queue.
    *
-   * @TODO pass configurable options for csv delimiter, quite, and escape characters.
+   * @todo pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan:datastore:import
    * @aliases dkan-datastore:import
    * @deprecated dkan-datastore:import is deprecated and will be removed in a future Dkan release. Use dkan:datastore:import instead.
@@ -166,11 +166,10 @@ class Drush extends DrushCommands {
       // assume the issue is with the uuid.
       $this->logger->error("Unexpected entity uuid.");
       $this->logger->debug($e->getMessage());
-      continue;
+      return;
     }
 
     $this->jobstorePrune($uuid);
-
   }
 
   /**
@@ -179,29 +178,9 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:drop-all
    */
   public function dropAll() {
-
     foreach ($this->metastoreService->getAll('distribution') as $distribution) {
       $uuid = $distribution->data->{"%Ref:downloadURL"}[0]->data->identifier;
-      try {
-        $this->datastoreService->drop($uuid);
-        $this->logger->notice("Successfully dropped the datastore for {$uuid}");
-      }
-      catch (\Exception $e) {
-        $this->logger->error("Unable to find an entity with uuid {$uuid}");
-        $this->logger->debug($e->getMessage());
-        continue;
-      }
-      catch (\TypeError $e) {
-        // This will catch all TypeErrors with all arguments. Since we only
-        // pass the UUID to the DataStore::Service::drop method we can safely
-        // assume the issue is with the uuid.
-        $this->logger->error("Unexpected entity uuid.");
-        $this->logger->debug($e->getMessage());
-        continue;
-      }
-
-      $this->jobstorePrune($uuid);
-
+      $this->drop($uuid);
     }
   }
 
