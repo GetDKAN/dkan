@@ -156,7 +156,12 @@ class UploadOrLink extends ManagedFile {
 
     // Only show this field when the 'upload' radio is selected. Add also a
     // wrapper around file upload, so states knows what field to target.
-    $upload_visible = [$selector => ['value' => static::TYPE_UPLOAD]];
+    $selector_fids = ':input[name="' . $element['#name'] . '[fids]"]';
+    $upload_visible = [
+      [$selector_fids => ['empty' => FALSE]],
+      'or',
+      [$selector => ['value' => static::TYPE_UPLOAD]],
+    ];
     $element['upload']['#states']['visible'] = $upload_visible;
     $element['upload']['#theme_wrappers'][] = 'form_element';
     // The upload instructions are added directly to the file upload element.
