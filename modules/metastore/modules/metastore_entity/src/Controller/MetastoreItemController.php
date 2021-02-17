@@ -7,7 +7,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\metastore_entity\Entity\MetastoreItemInterface;
+use Drupal\metastore_entity\Entity\MetastoreItemEntityInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -79,13 +79,13 @@ class MetastoreItemController extends ControllerBase implements ContainerInjecti
   /**
    * Generates an overview table of older revisions of a Metastore item.
    *
-   * @param \Drupal\metastore_entity\Entity\MetastoreItemInterface $metastore_item
+   * @param \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface $metastore_item
    *   A Metastore item object.
    *
    * @return array
    *   An array as expected by drupal_render().
    */
-  public function revisionOverview(MetastoreItemInterface $metastore_item) {
+  public function revisionOverview(MetastoreItemEntityInterface $metastore_item) {
     $account = $this->currentUser();
     $metastore_item_storage = $this->entityTypeManager()->getStorage('metastore_item');
 

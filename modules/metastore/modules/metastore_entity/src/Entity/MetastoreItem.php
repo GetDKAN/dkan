@@ -77,7 +77,7 @@ use Drupal\user\UserInterface;
  *   field_ui_base_route = "entity.metastore_schema.edit_form"
  * )
  */
-class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemInterface {
+class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemEntityInterface {
 
   use EntityChangedTrait;
   use EntityPublishedTrait;

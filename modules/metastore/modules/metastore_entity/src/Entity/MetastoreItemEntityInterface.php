@@ -13,7 +13,7 @@ use Drupal\user\EntityOwnerInterface;
  *
  * @ingroup metastore_entity
  */
-interface MetastoreItemInterface extends ContentEntityInterface, RevisionLogInterface, EntityChangedInterface, EntityPublishedInterface, EntityOwnerInterface {
+interface MetastoreItemEntityInterface extends ContentEntityInterface, RevisionLogInterface, EntityChangedInterface, EntityPublishedInterface, EntityOwnerInterface {
 
   /**
    * Add get/set methods for your configuration properties here.
@@ -33,7 +33,7 @@ interface MetastoreItemInterface extends ContentEntityInterface, RevisionLogInte
    * @param string $title
    *   The Metastore item title.
    *
-   * @return \Drupal\metastore_entity\Entity\MetastoreItemInterface
+   * @return \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface
    *   The called Metastore item entity.
    */
   public function setTitle($title);
@@ -52,7 +52,7 @@ interface MetastoreItemInterface extends ContentEntityInterface, RevisionLogInte
    * @param int $timestamp
    *   The Metastore item creation timestamp.
    *
-   * @return \Drupal\metastore_entity\Entity\MetastoreItemInterface
+   * @return \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface
    *   The called Metastore item entity.
    */
   public function setCreatedTime($timestamp);
@@ -71,7 +71,7 @@ interface MetastoreItemInterface extends ContentEntityInterface, RevisionLogInte
    * @param int $timestamp
    *   The UNIX timestamp of when this revision was created.
    *
-   * @return \Drupal\metastore_entity\Entity\MetastoreItemInterface
+   * @return \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface
    *   The called Metastore item entity.
    */
   public function setRevisionCreationTime($timestamp);
@@ -90,7 +90,7 @@ interface MetastoreItemInterface extends ContentEntityInterface, RevisionLogInte
    * @param int $uid
    *   The user ID of the revision author.
    *
-   * @return \Drupal\metastore_entity\Entity\MetastoreItemInterface
+   * @return \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface
    *   The called Metastore item entity.
    */
   public function setRevisionUserId($uid);

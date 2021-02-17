@@ -5,7 +5,7 @@ namespace Drupal\metastore_entity;
 use Drupal\Core\Entity\ContentEntityStorageInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\metastore_entity\Entity\MetastoreItemInterface;
+use Drupal\metastore_entity\Entity\MetastoreItemEntityInterface;
 
 /**
  * Defines the storage handler class for Metastore item entities.
@@ -20,13 +20,13 @@ interface MetastoreItemStorageInterface extends ContentEntityStorageInterface {
   /**
    * Gets a list of Metastore item revision IDs for a specific Metastore item.
    *
-   * @param \Drupal\metastore_entity\Entity\MetastoreItemInterface $entity
+   * @param \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface $entity
    *   The Metastore item entity.
    *
    * @return int[]
    *   Metastore item revision IDs (in ascending order).
    */
-  public function revisionIds(MetastoreItemInterface $entity);
+  public function revisionIds(MetastoreItemEntityInterface $entity);
 
   /**
    * Gets a list of revision IDs having a given user as Metastore item author.
@@ -42,13 +42,13 @@ interface MetastoreItemStorageInterface extends ContentEntityStorageInterface {
   /**
    * Counts the number of revisions in the default language.
    *
-   * @param \Drupal\metastore_entity\Entity\MetastoreItemInterface $entity
+   * @param \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface $entity
    *   The Metastore item entity.
    *
    * @return int
    *   The number of revisions in the default language.
    */
-  public function countDefaultLanguageRevisions(MetastoreItemInterface $entity);
+  public function countDefaultLanguageRevisions(MetastoreItemEntityInterface $entity);
 
   /**
    * Unsets the language for all Metastore item with the given language.

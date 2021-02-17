@@ -5,7 +5,7 @@ namespace Drupal\metastore_entity\Form;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\metastore_entity\Entity\MetastoreItemInterface;
+use Drupal\metastore_entity\Entity\MetastoreItemEntityInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -18,7 +18,7 @@ class MetastoreItemRevisionRevertForm extends ConfirmFormBase {
   /**
    * The Metastore item revision.
    *
-   * @var \Drupal\metastore_entity\Entity\MetastoreItemInterface
+   * @var \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface
    */
   protected $revision;
 
@@ -118,15 +118,15 @@ class MetastoreItemRevisionRevertForm extends ConfirmFormBase {
   /**
    * Prepares a revision to be reverted.
    *
-   * @param \Drupal\metastore_entity\Entity\MetastoreItemInterface $revision
+   * @param \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface $revision
    *   The revision to be reverted.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
    *
-   * @return \Drupal\metastore_entity\Entity\MetastoreItemInterface
+   * @return \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface
    *   The prepared revision ready to be stored.
    */
-  protected function prepareRevertedRevision(MetastoreItemInterface $revision, FormStateInterface $form_state) {
+  protected function prepareRevertedRevision(MetastoreItemEntityInterface $revision, FormStateInterface $form_state) {
     $revision->setNewRevision();
     $revision->isDefaultRevision(TRUE);
     $revision->setRevisionCreationTime(REQUEST_TIME);

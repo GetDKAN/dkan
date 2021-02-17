@@ -18,7 +18,7 @@ class MetastoreItemAccessControlHandler extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
-    /** @var \Drupal\metastore_entity\Entity\MetastoreItemInterface $entity */
+    /** @var \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface $entity */
 
     switch ($operation) {
 

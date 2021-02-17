@@ -17,7 +17,7 @@ class MetastoreItemRevisionDeleteForm extends ConfirmFormBase {
   /**
    * The Metastore item revision.
    *
-   * @var \Drupal\metastore_entity\Entity\MetastoreItemInterface
+   * @var \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface
    */
   protected $revision;
 

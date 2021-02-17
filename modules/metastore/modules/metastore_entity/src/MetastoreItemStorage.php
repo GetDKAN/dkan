@@ -5,7 +5,7 @@ namespace Drupal\metastore_entity;
 use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Language\LanguageInterface;
-use Drupal\metastore_entity\Entity\MetastoreItemInterface;
+use Drupal\metastore_entity\Entity\MetastoreItemEntityInterface;
 
 /**
  * Defines the storage handler class for Metastore item entities.
@@ -20,7 +20,7 @@ class MetastoreItemStorage extends SqlContentEntityStorage implements MetastoreI
   /**
    * {@inheritdoc}
    */
-  public function revisionIds(MetastoreItemInterface $entity) {
+  public function revisionIds(MetastoreItemEntityInterface $entity) {
     return $this->database->query(
       'SELECT vid FROM {metastore_item_revision} WHERE id=:id ORDER BY vid',
       [':id' => $entity->id()]
@@ -40,7 +40,7 @@ class MetastoreItemStorage extends SqlContentEntityStorage implements MetastoreI
   /**
    * {@inheritdoc}
    */
-  public function countDefaultLanguageRevisions(MetastoreItemInterface $entity) {
+  public function countDefaultLanguageRevisions(MetastoreItemEntityInterface $entity) {
     return $this->database->query('SELECT COUNT(*) FROM {metastore_item_field_revision} WHERE id = :id AND default_langcode = 1', [':id' => $entity->id()])
       ->fetchField();
   }

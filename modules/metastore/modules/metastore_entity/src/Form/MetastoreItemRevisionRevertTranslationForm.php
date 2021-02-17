@@ -3,7 +3,7 @@
 namespace Drupal\metastore_entity\Form;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\metastore_entity\Entity\MetastoreItemInterface;
+use Drupal\metastore_entity\Entity\MetastoreItemEntityInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -72,10 +72,10 @@ class MetastoreItemRevisionRevertTranslationForm extends MetastoreItemRevisionRe
   /**
    * {@inheritdoc}
    */
-  protected function prepareRevertedRevision(MetastoreItemInterface $revision, FormStateInterface $form_state) {
+  protected function prepareRevertedRevision(MetastoreItemEntityInterface $revision, FormStateInterface $form_state) {
     $revert_untranslated_fields = $form_state->getValue('revert_untranslated_fields');
 
-    /** @var \Drupal\metastore_entity\Entity\MetastoreItemInterface $default_revision */
+    /** @var \Drupal\metastore_entity\Entity\MetastoreItemEntityInterface $default_revision */
     $latest_revision = $this->MetastoreItemStorage->load($revision->id());
     $latest_revision_translation = $latest_revision->getTranslation($this->langcode);
 
