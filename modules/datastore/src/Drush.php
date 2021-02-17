@@ -183,6 +183,14 @@ class Drush extends DrushCommands {
         $this->logger->debug($e->getMessage());
         continue;
       }
+      catch (\TypeError $e) {
+        // This will catch all TypeErrors with all arguments. Since we only
+        // pass the UUID to the DataStore::Service::drop method we can safely
+        // assume the issue is with the uuid.
+        $this->logger->error("Unexpected entity uuid.");
+        $this->logger->debug($e->getMessage());
+        continue;
+      }
 
       $this->jobstorePrune($uuid);
 
