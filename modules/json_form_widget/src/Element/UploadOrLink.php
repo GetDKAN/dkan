@@ -150,14 +150,6 @@ class UploadOrLink extends ManagedFile {
       '#default_value' => $file_url_remote,
       // Only show this field when the 'remote' radio is selected.
       '#states' => ['visible' => $remote_visible],
-      '#attached' => [
-        // Load the JS functionality that triggers automatically the 'Upload'
-        // button when a remote URL is entered.
-        'library' => ['json_form_widget/remote_url'],
-      ],
-      '#attributes' => [
-        'data-drupal-file-url-remote' => TRUE,
-      ],
       '#access' => $access_file_url_elements,
       '#weight' => 15,
     ];
