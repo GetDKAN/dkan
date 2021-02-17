@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\LifeCycle;
 
-use Drupal\metastore\NodeWrapper\Data as Wrapper;
+use Drupal\metastore\MetastoreItemInterface;
 
 /**
  * AbstractData.
@@ -14,7 +14,7 @@ abstract class AbstractData {
   /**
    * Constructor.
    */
-  public function __construct(Wrapper $data) {
+  public function __construct(MetastoreItemInterface $data) {
     $this->data = $data;
   }
 
@@ -22,7 +22,7 @@ abstract class AbstractData {
    * Protected.
    */
   protected function go($stage) {
-    $method = "{$this->data->getDataType()}{$stage}";
+    $method = "{$this->data->getSchemaId()}{$stage}";
     if (method_exists($this, $method)) {
       $this->{$method}();
     }

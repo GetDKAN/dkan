@@ -5,12 +5,13 @@ namespace Drupal\metastore\NodeWrapper;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
 /**
  * Data.
  */
-class Data {
+class Data implements MetastoreItemInterface {
   use LoggerTrait;
 
   /**
@@ -75,7 +76,7 @@ class Data {
   /**
    * Protected.
    */
-  public function getDataType() {
+  public function getSchemaId() {
     $this->fix();
     return $this->node->get('field_data_type')->value;
   }
