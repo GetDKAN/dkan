@@ -37,15 +37,9 @@ class UploadOrLink extends ManagedFile {
     $class = get_class($this);
     return [
       '#input' => TRUE,
-      '#process' => [
-        [$class, 'processManagedFile'],
-      ],
-      '#element_validate' => [
-        [$class, 'validateManagedFile'],
-      ],
-      '#pre_render' => [
-        [$class, 'preRenderManagedFile'],
-      ],
+      '#process' => [[$class, 'processManagedFile']],
+      '#element_validate' => [[$class, 'validateManagedFile']],
+      '#pre_render' => [[$class, 'preRenderManagedFile']],
       '#theme' => 'file_managed_file',
       '#theme_wrappers' => ['form_element'],
       '#progress_indicator' => 'throbber',
