@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Data factory.
  */
-class NodeStorageFactory implements FactoryInterface {
+class NodeStorageFactory implements MetastoreStorageFactoryInterface {
 
   /**
    * @var array
@@ -32,7 +32,7 @@ class NodeStorageFactory implements FactoryInterface {
    *
    * @inheritdoc
    */
-  public function getInstance(string $identifier, array $config = []) {
+  public function getInstance(string $identifier, array $config = []):NodeStorage {
     if (!isset($this->stores[$identifier])) {
       $entity_type = $this->getEntityTypeBySchema($identifier);
 

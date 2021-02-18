@@ -10,7 +10,7 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
-use Drupal\metastore\Storage\NodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -36,7 +36,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Storage.
    *
-   * @var \Drupal\metastore\Storage\NodeStorageFactory
+   * @var \Drupal\metastore\Storage\MetastoreStorageFactoryInterface
    */
   private $factory;
 
@@ -56,7 +56,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetrieverInterface $schemaRetriever, Sae $saeFactory, NodeStorageFactory $factory) {
+  public function __construct(SchemaRetrieverInterface $schemaRetriever, Sae $saeFactory, MetastoreStorageFactoryInterface $factory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
     $this->factory = $factory;

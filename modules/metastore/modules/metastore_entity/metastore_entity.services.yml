@@ -15,11 +15,11 @@ services:
 
 
   dkan.metastore.storage:
-    class: \Drupal\metastore_entity\Storage\MetastoreEntityStorage
+    class: \Drupal\metastore_entity\Storage\MetastoreEntityStorageFactory
     arguments:
       - '@entity_type.manager'
 
   metastore.storage:
-    class: \Drupal\metastore_entity\Storage\MetastoreEntityStorage
+    class: \Drupal\metastore_entity\Storage\MetastoreEntityStorageFactory
     arguments:
       - '@entity_type.manager'

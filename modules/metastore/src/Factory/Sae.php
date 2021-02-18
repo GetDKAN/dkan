@@ -3,9 +3,9 @@
 namespace Drupal\metastore\Factory;
 
 use Contracts\FactoryInterface;
-use Drupal\metastore\Storage\NodeStorageFactory;
 use Drupal\metastore\SchemaRetrieverInterface;
 use Drupal\metastore\Sae\Sae as Engine;
+use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 
 /**
  * Class Sae.
@@ -38,10 +38,10 @@ class Sae implements FactoryInterface {
    *
    * @param \Drupal\metastore\FileSchemaRetriever $schemaRetriever
    *   Schema retriever.
-   * @param \Drupal\metastore\Storage\NodeStorageFactory $factory
+   * @param \Drupal\metastore\Storage\MetastoreStorageFactoryInterface $factory
    *   A Data factory.
    */
-  public function __construct(SchemaRetrieverInterface $schemaRetriever, NodeStorageFactory $factory) {
+  public function __construct(SchemaRetrieverInterface $schemaRetriever, MetastoreStorageFactoryInterface $factory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->factory = $factory;
   }
