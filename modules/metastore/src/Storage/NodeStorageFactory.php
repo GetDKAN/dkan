@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Data factory.
  */
-class DataFactory implements FactoryInterface {
+class NodeStorageFactory implements FactoryInterface {
 
   /**
    * @var array
