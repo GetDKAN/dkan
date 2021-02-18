@@ -71,11 +71,11 @@ class DataFactory implements FactoryInterface {
    * @param string $identifier
    *   Schema id.
    *
-   * @return \Drupal\metastore\Storage\NodeData
+   * @return \Drupal\metastore\Storage\NodeStorage
    *   Storage object.
    */
   protected function createNodeInstance(string $identifier) {
-    return new NodeData($identifier, $this->entityTypeManager);
+    return new NodeStorage($identifier, $this->entityTypeManager);
   }
 
 }
