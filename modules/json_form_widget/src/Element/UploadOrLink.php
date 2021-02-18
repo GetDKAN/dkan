@@ -79,9 +79,7 @@ class UploadOrLink extends ManagedFile {
   /**
    * Render API callback: Expands the managed_file element type.
    *
-   * Expands the file type to include Upload and Remove buttons, as well as
-   * support for a default value.
-   * TODO: update comment to reflect what this function does.
+   * Expands file_managed type to include option for links to remote files/urls.
    */
   public static function processManagedFile(&$element, FormStateInterface $form_state, &$complete_form) {
     // If removing, unset #uri.
