@@ -203,7 +203,7 @@ class UploadOrLink extends ManagedFile {
     ];
     $element['upload']['#states']['visible'] = $upload_visible;
     $element['upload']['#theme_wrappers'][] = 'form_element';
-    $element['upload']['#description'] =  [
+    $element['upload']['#description'] = [
       '#theme' => 'file_upload_help',
       '#description' => '',
       '#upload_validators' => $element['#upload_validators'],
