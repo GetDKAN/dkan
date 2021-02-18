@@ -76,21 +76,101 @@ class UploadOrLink extends ManagedFile {
    * Expands file_managed type to include option for links to remote files/urls.
    */
   public static function processManagedFile(&$element, FormStateInterface $form_state, &$complete_form) {
-    // If removing, unset #uri.
     $element['#uri'] = static::getDefaultUri($element, $form_state);
     // Build element.
     $element = parent::processManagedFile($element, $form_state, $complete_form);
     $file_url_type = static::getUrlType($element);
+    $element = static::unsetFilesWhenRemoving($form_state->getTriggeringElement(), $element);
+    $element = static::loadFilesWhenLocal($element);
 
-    $triggering = $form_state->getTriggeringElement();
-    $button = is_array($triggering) ? array_pop($triggering['#array_parents']) : '';
+    $file_url_remote = isset($element['#value']['file_url_remote']) ? $element['#value']['file_url_remote'] : $element['#uri'];
+    $file_url_remote_is_valid = UrlHelper::isValid($file_url_remote, TRUE);
+    $is_remote = $file_url_remote_is_valid && $file_url_type == static::TYPE_REMOTE;
+    if ($is_remote) {
+      $element = static::loadRemoteFile($element, $file_url_remote);
+    }
+
+    $access_file_url_elements = (empty($element['#files']) && !$file_url_remote_is_valid) || !$file_url_type;
+    $file_url_type_selector = ':input[name="' . $element['#name'] . '[file_url_type]"]';
+    $remote_visible = [$file_url_type_selector => ['value' => static::TYPE_REMOTE]];
+
+    $element['file_url_type'] = static::getFileUrlTypeElement($file_url_type, $access_file_url_elements);
+    $element['file_url_remote'] = static::getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible);
+    $element = static::overrideUploadSubfield($element, $file_url_type_selector);
+
+    return $element;
+  }
+
+  /**
+   * Return file_url_type element.
+   */
+  private static function getFileUrlTypeElement($file_url_type, $access_file_url_elements) {
+    return [
+      '#type' => 'radios',
+      '#options' => [
+        static::TYPE_UPLOAD => t('Upload file'),
+        static::TYPE_REMOTE => t('Remote file URL'),
+      ],
+      '#default_value' => $file_url_type,
+      '#prefix' => '<div class="container-inline">',
+      '#suffix' => '</div>',
+      '#access' => $access_file_url_elements,
+      '#weight' => 5,
+    ];
+  }
+
+  /**
+   * Return file_url_remote element.
+   */
+  private static function getFileUrlRemoteElement($file_url_remote, $access_file_url_elements, $remote_visible) {
+    return [
+      '#type' => 'url',
+      '#title' => t('Remote URL'),
+      '#title_display' => 'invisible',
+      '#description' => t('This must be an external URL such as <em>http://example.com</em>.'),
+      '#default_value' => $file_url_remote,
+      // Only show this field when the 'remote' radio is selected.
+      '#states' => ['visible' => $remote_visible],
+      '#access' => $access_file_url_elements,
+      '#weight' => 15,
+    ];
+  }
+
+  /**
+   * Helper function to return element without files when removing.
+   */
+  private static function unsetFilesWhenRemoving($triggering_element, $element) {
+    $button = is_array($triggering_element) ? array_pop($triggering_element['#array_parents']) : '';
     if ($button == 'remove_button') {
       unset($element['#files']);
       unset($element['file_' . reset($element['#value']['fids'])]);
       $element['#value']['fids'] = [];
     }
+    return $element;
+  }
 
-    // Load default value.
+  /**
+   * Load remote file into element.
+   */
+  private static function loadRemoteFile($element, $file_url_remote) {
+    $remote_file = RemoteFile::load($file_url_remote);
+    $element['#files'] = [$file_url_remote => $remote_file];
+    $file_link = [
+      '#type' => 'link',
+      '#title' => $remote_file->getFileUri(),
+      '#url' => Url::fromUri($remote_file->getFileUri()),
+    ];
+    $element["file_{$file_url_remote}"]['filename'] = $file_link + ['#weight' => -10];
+    $element['#value']['file_url_type'] = static::TYPE_REMOTE;
+    $element['#value']['file_url_remote'] = $file_url_remote;
+    $element['#value']['upload'] = NULL;
+    return $element;
+  }
+
+  /**
+   * Helper function to load files when local.
+   */
+  private static function loadFilesWhenLocal($element) {
     if (!empty($element['#uri'])) {
       $file = static::checkIfLocalFile($element['#uri']);
       if ($file && $element['#value']['file_url_type'] !== static::TYPE_REMOTE) {
@@ -106,65 +186,24 @@ class UploadOrLink extends ManagedFile {
         $element['file_' . $file->id()]['filename'] = $file_link + ['#weight' => -10];
       }
     }
+    return $element;
+  }
 
-    $file_url_remote = isset($element['#value']['file_url_remote']) ? $element['#value']['file_url_remote'] : $element['#uri'];
-    $file_url_remote_is_valid = UrlHelper::isValid($file_url_remote, TRUE);
-    if ($file_url_remote_is_valid && $file_url_type == static::TYPE_REMOTE) {
-      $remote_file = RemoteFile::load($file_url_remote);
-      $element['#files'] = [$file_url_remote => $remote_file];
-      $file_link = [
-        '#type' => 'link',
-        '#title' => $remote_file->getFileUri(),
-        '#url' => Url::fromUri($remote_file->getFileUri()),
-      ];
-      $element["file_{$file_url_remote}"]['filename'] = $file_link + ['#weight' => -10];
-      $element['#value']['file_url_type'] = static::TYPE_REMOTE;
-      $element['#value']['file_url_remote'] = $file_url_remote;
-      $element['#value']['upload'] = NULL;
-    }
-
-    $access_file_url_elements = (empty($element['#files']) && !$file_url_remote_is_valid) || !$file_url_type;
-
-    // Build the file URL additional sub-elements.
-    $element['file_url_type'] = [
-      '#type' => 'radios',
-      '#options' => [
-        static::TYPE_UPLOAD => t('Upload file'),
-        static::TYPE_REMOTE => t('Remote file URL'),
-      ],
-      '#default_value' => $file_url_type,
-      '#prefix' => '<div class="container-inline">',
-      '#suffix' => '</div>',
-      '#access' => $access_file_url_elements,
-      '#weight' => 5,
-    ];
-
-    $selector = ':input[name="' . $element['#name'] . '[file_url_type]"]';
-    $remote_visible = [$selector => ['value' => static::TYPE_REMOTE]];
-    $element['file_url_remote'] = [
-      '#type' => 'url',
-      '#title' => t('Remote URL'),
-      '#title_display' => 'invisible',
-      '#description' => t('This must be an external URL such as <em>http://example.com</em>.'),
-      '#default_value' => $file_url_remote,
-      // Only show this field when the 'remote' radio is selected.
-      '#states' => ['visible' => $remote_visible],
-      '#access' => $access_file_url_elements,
-      '#weight' => 15,
-    ];
-
+  /**
+   * Helper function to override upload subelement.
+   */
+  private static function overrideUploadSubfield($element, $file_url_type_selector) {
     // Only show this field when the 'upload' radio is selected. Add also a
     // wrapper around file upload, so states knows what field to target.
     $selector_fids = ':input[name="' . $element['#name'] . '[fids]"]';
     $upload_visible = [
       [$selector_fids => ['empty' => FALSE]],
       'or',
-      [$selector => ['value' => static::TYPE_UPLOAD]],
+      [$file_url_type_selector => ['value' => static::TYPE_UPLOAD]],
     ];
     $element['upload']['#states']['visible'] = $upload_visible;
     $element['upload']['#theme_wrappers'][] = 'form_element';
-    // The upload instructions are added directly to the file upload element.
-    $element['upload']['#description'] = [
+    $element['upload']['#description'] =  [
       '#theme' => 'file_upload_help',
       '#description' => '',
       '#upload_validators' => $element['#upload_validators'],
