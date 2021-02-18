@@ -85,7 +85,7 @@ class UploadOrLink extends ManagedFile {
     // If removing, unset #uri.
     $element['#uri'] = static::getDefaultUri($element, $form_state);
     // Build element.
-    $element = parent::processManagedFile($element, $form_state, $form);
+    $element = parent::processManagedFile($element, $form_state, $complete_form);
     $file_url_type = static::getUrlType($element);
 
     $triggering = $form_state->getTriggeringElement();
