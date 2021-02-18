@@ -5,10 +5,10 @@ namespace Drupal\Tests\metastore\Unit\Sae\SaeTest;
 
 //use Contracts\StorerInterface;
 //use Contracts\RemoverInterface;
-use Drupal\metastore\Storage\DataInterface;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 
 //class UnsupportedMemory implements StorerInterface, RemoverInterface
-class UnsupportedMemory implements DataInterface
+class UnsupportedMemory implements MetastoreStorageInterface
 {
     private $storage = [];
 

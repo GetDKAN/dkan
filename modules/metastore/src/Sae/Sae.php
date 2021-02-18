@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\metastore\Sae;
 
-use Drupal\metastore\Storage\DataInterface;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 use JsonSchema\Validator;
 use Contracts\BulkRetrieverInterface;
 use Contracts\StorerInterface;
@@ -38,7 +38,7 @@ class Sae
     private $idGenerator;
 
 //    public function __construct(StorerInterface $storage, string $json_schema)
-    public function __construct(DataInterface $storage, string $json_schema)
+    public function __construct(MetastoreStorageInterface $storage, string $json_schema)
     {
         $this->storage = $storage;
         $this->jsonSchema = $json_schema;
