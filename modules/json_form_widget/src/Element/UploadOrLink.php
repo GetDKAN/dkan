@@ -223,19 +223,27 @@ class UploadOrLink extends ManagedFile {
     }
 
     if ($element['#value']['file_url_type'] == static::TYPE_UPLOAD || !empty($element['#value']['fids'])) {
-      $fids = $element['fids']['#value'];
-      foreach ($fids as $fid) {
-        if ($file = File::load($fid)) {
-          $uri = $file->getFileUri();
-          return file_create_url($uri);
-        }
-      }
+      return static::getLocalFileUrl($element);
     }
     elseif (!empty($element['#value']['file_url_remote'])) {
       $uri = $element['#value']['file_url_remote'];
       return $uri;
     }
 
+    return $element['#uri'];
+  }
+
+  /**
+   * Helper function to get the URL of a local file.
+   */
+  protected static function getLocalFileUrl($element) {
+    $fids = $element['fids']['#value'];
+    foreach ($fids as $fid) {
+      if ($file = File::load($fid)) {
+        $uri = $file->getFileUri();
+        return file_create_url($uri);
+      }
+    }
     return $element['#uri'];
   }
 
