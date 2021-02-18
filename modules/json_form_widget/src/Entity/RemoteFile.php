@@ -40,4 +40,5 @@ class RemoteFile extends File {
   public function id() {
     return $this->getFileUri();
   }
+
 }

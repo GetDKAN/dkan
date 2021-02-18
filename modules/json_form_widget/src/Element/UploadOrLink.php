@@ -27,6 +27,8 @@ class UploadOrLink extends ManagedFile {
   const TYPE_REMOTE = 'remote';
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}
    */
   public function getInfo() {
@@ -58,6 +60,9 @@ class UploadOrLink extends ManagedFile {
     ];
   }
 
+  /**
+   * Helper function to check a url and define if it corresponds to local file.
+   */
   private static function checkIfLocalFile($url) {
     $filename = \Drupal::service('file_system')->basename($url);
     $files = \Drupal::entityTypeManager()
