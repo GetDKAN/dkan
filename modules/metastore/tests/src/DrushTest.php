@@ -4,7 +4,7 @@ namespace Drupal\Tests\metastore;
 
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\metastore\Drush;
-use Drupal\metastore\Storage\Data;
+use Drupal\metastore\Storage\EntityStorage;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -20,8 +20,8 @@ class DrushTest extends TestCase {
    */
   public function testPublish() {
     $dataFactory = (new Chain($this))
-      ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'publish', '12345')
+      ->add(DataFactory::class, 'getInstance', EntityStorage::class)
+      ->add(EntityStorage::class, 'publish', '12345')
       ->getMock();
 
     $loggerChain = (new Chain($this))
@@ -41,8 +41,8 @@ class DrushTest extends TestCase {
    */
   public function testPublishException() {
     $dataFactory = (new Chain($this))
-      ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'publish', new \Exception("Some error."))
+      ->add(DataFactory::class, 'getInstance', EntityStorage::class)
+      ->add(EntityStorage::class, 'publish', new \Exception("Some error."))
       ->getMock();
 
     $loggerChain = (new Chain($this))

@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Data.
  */
-abstract class Data implements MetastoreStorageInterface {
+abstract class EntityStorage implements MetastoreStorageInterface {
 
   const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
 

@@ -77,7 +77,7 @@ class Sae implements FactoryInterface {
   /**
    * Get Storage.
    *
-   * @return \Drupal\metastore\Storage\Data
+   * @return \Drupal\metastore\Storage\EntityStorage
    *   Dataset
    */
   private function getStorage($schema_id) {

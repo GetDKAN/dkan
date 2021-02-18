@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Node Data.
  */
-class NodeData extends Data {
+class NodeData extends EntityStorage {
 
   /**
    * NodeData constructor.
