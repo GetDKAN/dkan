@@ -165,9 +165,18 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * Helper function for handling widgets.
    */
   public function updateWidgets($spec, $element) {
-    if (!isset($spec->widget)) {
+    if (isset($spec->widget)) {
+      return $this->getConfiguredWidget($spec, $element);
+    }
+    else {
       return $element;
     }
+  }
+
+  /**
+   * Helper function for getting element with configured widget.
+   */
+  public function getConfiguredWidget($spec, $element) {
     switch ($spec->widget) {
       case 'hidden':
         $element['#access'] = FALSE;
