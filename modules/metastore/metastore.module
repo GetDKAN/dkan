@@ -10,8 +10,8 @@ use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\Resource;
 use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\LifeCycle\Data as LifeCycle;
-use Drupal\metastore\NodeWrapper\Data;
-use Drupal\metastore\Storage\Data as MetastoreData;
+use Drupal\metastore\MetastoreDataNode;
+use Drupal\metastore\Storage\NodeStorage;
 use Drupal\node\NodeInterface;
 
 /**
@@ -76,7 +76,7 @@ function purgeResources(NodeInterface $node) {
       && $node->get('field_data_type')->getString() == 'dataset'
   ) {
     \Drupal::service('event_dispatcher')->dispatch(
-      MetastoreData::EVENT_DATASET_UPDATE,
+      NodeStorage::EVENT_DATASET_UPDATE,
       new DatasetUpdate($node)
     );
   }
@@ -100,7 +100,7 @@ function resource_mapper_new_revision() {
  * Create a LifeCycle object.
  */
 function metastore_get_data_node_lifecycle($entity) {
-  $data = new Data($entity);
+  $data = new MetastoreDataNode($entity);
 
   $lifeCycle = new LifeCycle($data);
   $lifeCycle->setFileMapper(\Drupal::service('dkan.metastore.resource_mapper'));
