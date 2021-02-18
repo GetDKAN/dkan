@@ -10,7 +10,7 @@ use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Service;
 use Drupal\metastore\FileSchemaRetriever;
 use Drupal\metastore\Storage\AbstractEntityStorage;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeStorageFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -300,12 +300,12 @@ EOF;
     $options = (new Options())
       ->add('metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('metastore.sae_factory', Sae::class)
-      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('dkan.metastore.storage', NodeStorageFactory::class)
       ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(DataFactory::class, 'getInstance', AbstractEntityStorage::class)
+      ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
       ->add(FileSchemaRetriever::class, "retrieve", json_encode("blah"));
   }
 

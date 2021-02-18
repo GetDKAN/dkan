@@ -8,7 +8,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\datastore\Service as Datastore;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeStorageFactory;
 use Drupal\node\Entity\Node;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -50,10 +50,10 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Set storage.
    *
-   * @param \Drupal\metastore\Storage\DataFactory $dataFactory
+   * @param \Drupal\metastore\Storage\NodeStorageFactory $dataFactory
    *   Metastore's data factory.
    */
-  public function setStorage(DataFactory $dataFactory) {
+  public function setStorage(NodeStorageFactory $dataFactory) {
     $this->storage = $dataFactory->getInstance('dataset');
   }
 

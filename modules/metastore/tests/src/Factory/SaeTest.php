@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\Unit\Factory;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\FileSchemaRetriever;
 use Drupal\metastore\Storage\AbstractEntityStorage;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeStorageFactory;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Drupal\metastore\Sae\Sae as Engine;
@@ -24,7 +24,7 @@ class SaeTest extends TestCase {
       ->getMock();
 
     $storage = (new Chain($this))
-      ->add(DataFactory::class, 'getInstance', AbstractEntityStorage::class)
+      ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
       ->getMock();
 
     $factory = new Sae($schemaRetriever, $storage);

@@ -20,7 +20,7 @@ use Drupal\datastore\Service\Import as ServiceImport;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\QueryFactory;
 use Drupal\metastore\Storage\AbstractEntityStorage;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeStorageFactory;
 use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
 
 /**
@@ -136,7 +136,7 @@ class QueryTest extends TestCase {
       ->add('queue', QueueFactory::class)
       ->add('request_stack', RequestStack::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
-      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('dkan.metastore.storage', NodeStorageFactory::class)
       ->index(0);
 
     $resource = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';
@@ -145,7 +145,7 @@ class QueryTest extends TestCase {
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(DataFactory::class, "getInstance", AbstractEntityStorage::class)
+      ->add(NodeStorageFactory::class, "getInstance", AbstractEntityStorage::class)
       ->add(AbstractEntityStorage::class, "retrieve", $resource)
       ->add(QueueFactory::class, "get", [])
       ->add(ResourceLocalizer::class, "get", Resource::class)

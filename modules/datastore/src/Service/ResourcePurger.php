@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\LoggerTrait;
 use Drupal\datastore\Service;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeStorageFactory;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -42,12 +42,12 @@ class ResourcePurger implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config.factory service.
-   * @param \Drupal\metastore\Storage\DataFactory $dataFactory
+   * @param \Drupal\metastore\Storage\NodeStorageFactory $dataFactory
    *   The dkan.metastore.storage service.
    * @param \Drupal\datastore\Service $datastore
    *   The dkan.datastore.service service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, DataFactory $dataFactory, Service $datastore) {
+  public function __construct(ConfigFactoryInterface $configFactory, NodeStorageFactory $dataFactory, Service $datastore) {
     $this->config = $configFactory->get('datastore.settings');
     $this->storage = $dataFactory->getInstance('dataset');
     $this->datastore = $datastore;

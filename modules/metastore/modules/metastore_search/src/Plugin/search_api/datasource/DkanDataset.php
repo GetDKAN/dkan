@@ -67,7 +67,7 @@ class DkanDataset extends DatasourcePluginBase {
    * @inheritdoc
    */
   public function loadMultiple(array $ids) {
-    /* @var   \Drupal\metastore\Storage\DataFactory $dataStorageFactory */
+    /* @var   \Drupal\metastore\Storage\NodeStorageFactory $dataStorageFactory */
     $dataStorageFactory = \Drupal::service("dkan.metastore.storage");
 
     /* @var \Drupal\metastore\Storage\Data $dataStorage */

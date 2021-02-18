@@ -22,7 +22,7 @@ services:
     shared: false
 
   dkan.metastore.storage:
-    class: \Drupal\metastore\Storage\DataFactory
+    class: \Drupal\metastore\Storage\NodeStorageFactory
     arguments:
       - '@entity_type.manager'
 
@@ -83,7 +83,7 @@ services:
     shared: false
 
   metastore.storage:
-    class: \Drupal\metastore\Storage\DataFactory
+    class: \Drupal\metastore\Storage\NodeStorageFactory
     arguments:
       - '@entity_type.manager'
   metastore.referencer:

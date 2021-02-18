@@ -11,7 +11,7 @@ use Drupal\Core\Queue\QueueInterface;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Storage\AbstractEntityStorage;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeStorageFactory;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorageInterface;
 use MockChain\Chain;
@@ -95,7 +95,7 @@ class ResourcePurgerTest extends TestCase {
 
     $options = (new Options())
       ->add('config.factory', ConfigFactoryInterface::class)
-      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('dkan.metastore.storage', NodeStorageFactory::class)
       ->add('dkan.datastore.service', Service::class)
       ->index(0);
 
@@ -103,7 +103,7 @@ class ResourcePurgerTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 1)
-      ->add(DataFactory::class, 'getInstance', AbstractEntityStorage::class);
+      ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class);
   }
 
 }
