@@ -7,7 +7,7 @@ namespace Drupal\metastore\Plugin\QueueWorker;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\metastore\NodeWrapper\Data;
+use Drupal\metastore\MetastoreDataNode;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -84,7 +84,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     $datasetNodes = $this->nodeStorage->loadByProperties($properties);
 
     foreach ($datasetNodes as $node) {
-      $data = new Data($node);
+      $data = new MetastoreDataNode($node);
       $raw = $data->getRawMetadata();
       $value = $raw->{$metadataProperty};
       // Check if uuid is found either directly or in an array.

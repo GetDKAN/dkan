@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\metastore\NodeWrapper\Data;
+use Drupal\metastore\MetastoreDataNode;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ class DataTest extends TestCase {
       ->add(EntityInterface::class)
       ->getMock();
 
-    new Data($entity);
+    new MetastoreDataNode($entity);
   }
 
   /**
@@ -36,7 +36,7 @@ class DataTest extends TestCase {
       ->add(Node::class, "bundle", "blah")
       ->getMock();
 
-    new Data($node);
+    new MetastoreDataNode($node);
   }
 
 }

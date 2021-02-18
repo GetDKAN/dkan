@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\NodeWrapper;
+namespace Drupal\metastore;
 
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
@@ -11,7 +11,7 @@ use Drupal\node\Entity\Node;
 /**
  * Data.
  */
-class Data implements MetastoreItemInterface {
+class MetastoreDataNode implements MetastoreItemInterface {
   use LoggerTrait;
 
   /**
@@ -42,7 +42,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getOriginal() {
     if (isset($this->node->original)) {
-      return new Data($this->node->original);
+      return new MetastoreDataNode($this->node->original);
     }
   }
 

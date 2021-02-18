@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Events;
 
-use Drupal\metastore\NodeWrapper\Data;
+use Drupal\metastore\MetastoreDataNode;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -14,14 +14,14 @@ class PreReference extends Event {
   /**
    * Constructor.
    */
-  public function __construct(Data $data) {
+  public function __construct(MetastoreDataNode $data) {
     $this->data = $data;
   }
 
   /**
    * Getter.
    */
-  public function getData(): Data {
+  public function getData(): MetastoreDataNode {
     return $this->data;
   }
 
