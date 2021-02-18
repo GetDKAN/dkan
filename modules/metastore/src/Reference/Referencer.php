@@ -212,7 +212,7 @@ class Referencer {
   public static function hostify($url) {
     $host = \Drupal::request()->getHost();
     $parsedUrl = parse_url($url);
-    if ($parsedUrl['host'] == $host) {
+    if (isset($parsedUrl['host']) && $parsedUrl['host'] == $host) {
       $parsedUrl['host'] = UrlHostTokenResolver::TOKEN;
       $url = self::unparseUrl($parsedUrl);
     }
