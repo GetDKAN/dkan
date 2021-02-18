@@ -9,7 +9,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Service;
 use Drupal\metastore\FileSchemaRetriever;
-use Drupal\metastore\Storage\EntityStorage;
+use Drupal\metastore\Storage\AbstractEntityStorage;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
 use MockChain\Options;
@@ -60,7 +60,7 @@ class ServiceTest extends TestCase {
    */
   public function testGet() {
     $container = $this->getCommonMockChain()
-      ->add(EntityStorage::class, "retrievePublished", json_encode("blah"));
+      ->add(AbstractEntityStorage::class, "retrievePublished", json_encode("blah"));
 
     $service = Service::create($container->getMock());
 
@@ -235,7 +235,7 @@ EOF;
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", "1")
-      ->add(EntityStorage::class, "publish", "1");
+      ->add(AbstractEntityStorage::class, "publish", "1");
 
     $service = Service::create($container->getMock());
     $result = $service->publish('dataset', 1);
@@ -305,7 +305,7 @@ EOF;
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(DataFactory::class, 'getInstance', EntityStorage::class)
+      ->add(DataFactory::class, 'getInstance', AbstractEntityStorage::class)
       ->add(FileSchemaRetriever::class, "retrieve", json_encode("blah"));
   }
 

@@ -10,7 +10,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
-use Drupal\metastore\Storage\EntityStorage;
+use Drupal\metastore\Storage\AbstractEntityStorage;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorageInterface;
@@ -59,8 +59,8 @@ class ResourcePurgerTest extends TestCase {
   public function testRevisionDisappearing() {
 
     $chain = $this->getCommonChain()
-      ->add(EntityStorage::class, 'getNidFromUuid', 1)
-      ->add(EntityStorage::class, 'getNodeStorage', NodeStorageInterface::class)
+      ->add(AbstractEntityStorage::class, 'getNidFromUuid', 1)
+      ->add(AbstractEntityStorage::class, 'getNodeStorage', NodeStorageInterface::class)
       ->add(NodeStorageInterface::class, 'getLatestRevisionId', 1);
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
@@ -74,8 +74,8 @@ class ResourcePurgerTest extends TestCase {
   public function testScheduleAllUuids() {
 
     $chain = $this->getCommonChain()
-      ->add(EntityStorage::class, 'getNidFromUuid', 1)
-      ->add(EntityStorage::class, 'getNodeStorage', NodeStorageInterface::class)
+      ->add(AbstractEntityStorage::class, 'getNidFromUuid', 1)
+      ->add(AbstractEntityStorage::class, 'getNodeStorage', NodeStorageInterface::class)
       ->add(NodeStorageInterface::class, 'getQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', [1])
@@ -103,7 +103,7 @@ class ResourcePurgerTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 1)
-      ->add(DataFactory::class, 'getInstance', EntityStorage::class);
+      ->add(DataFactory::class, 'getInstance', AbstractEntityStorage::class);
   }
 
 }

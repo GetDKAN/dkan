@@ -6,7 +6,7 @@ use Drupal\common\DatasetInfo;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\datastore\Service as Datastore;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\EntityStorage;
+use Drupal\metastore\Storage\AbstractEntityStorage;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
 use MockChain\Options;
@@ -27,8 +27,8 @@ class DatasetInfoTest extends TestCase {
 
   public function testUuidNotFound() {
     $mockStorage = (new Chain($this))
-      ->add(DataFactory::class, 'getInstance', EntityStorage::class)
-      ->add(EntityStorage::class, 'getEntityLatestRevision', FALSE);
+      ->add(DataFactory::class, 'getInstance', AbstractEntityStorage::class)
+      ->add(AbstractEntityStorage::class, 'getEntityLatestRevision', FALSE);
     $mockDatastore = (new Chain($this))
       ->add(Datastore::class);
     $mockResourceMapper = (new Chain($this))
