@@ -12,3 +12,14 @@ services:
       - '@entity_type.bundle.info'
       - '@entity_type.manager'
     shared: false
+
+
+  # dkan.metastore.storage:
+  #   class: \Drupal\metastore_entity\Storage\MetastoreEntityStorage
+  #   arguments:
+  #     - '@entity_type.manager'
+
+  # metastore.storage:
+  #   class: \Drupal\metastore_entity\Storage\MetastoreEntityStorage
+  #   arguments:
+  #     - '@entity_type.manager'

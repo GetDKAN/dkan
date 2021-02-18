@@ -9,6 +9,7 @@ use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\metastore\MetastoreItemInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -77,7 +78,7 @@ use Drupal\user\UserInterface;
  *   field_ui_base_route = "entity.metastore_schema.edit_form"
  * )
  */
-class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemEntityInterface {
+class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemEntityInterface, MetastoreItemInterface {
 
   use EntityChangedTrait;
   use EntityPublishedTrait;
@@ -134,7 +135,7 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemE
   /**
    * {@inheritdoc}
    */
-  public function getSchema() {
+  public function getSchemaId() {
     return $this->get('schema')->target_id;
   }
 
@@ -312,6 +313,48 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemE
       ->setTranslatable(TRUE);
 
     return $fields;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getModifiedDate() {
+    return $this->get('changed')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getIdentifier() {
+    return $this->uuid();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRawMetadata() {
+    return $this->get('json_data')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getMetaData() {
+    return $this->get('json_data')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */  
+  public function setMetadata($metadata) {
+    $this->set('json_data', json_encode($metadata));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setIdentifier($identifier) {
+    $this->set('uuid', $identifier);
   }
 
 }
