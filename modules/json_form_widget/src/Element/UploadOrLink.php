@@ -30,6 +30,8 @@ class UploadOrLink extends ManagedFile {
    * Inherited.
    *
    * {@inheritDoc}
+   *
+   * @codeCoverageIgnore
    */
   public function getInfo() {
     $class = get_class($this);
