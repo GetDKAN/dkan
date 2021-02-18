@@ -339,7 +339,7 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemE
   /**
    * {@inheritdoc}
    */
-  public function getMetaData() {
+  public function getMetadata() {
     return $this->get('json_data')->value;
   }
 

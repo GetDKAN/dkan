@@ -84,7 +84,7 @@ class MetastoreDataNode implements MetastoreItemInterface {
   /**
    * Protected.
    */
-  public function getMetaData() {
+  public function getMetadata() {
     $this->fix();
     return json_decode($this->node->get('field_json_metadata')->value);
   }

@@ -54,7 +54,7 @@ class Data extends AbstractData {
    * Private.
    */
   protected function datasetLoad() {
-    $metadata = $this->data->getMetaData();
+    $metadata = $this->data->getMetadata();
 
     // Dereference dataset properties.
     $dereferencer = \Drupal::service("metastore.dereferencer");
@@ -70,7 +70,7 @@ class Data extends AbstractData {
    * @todo Decouple "resource" functionality from specific dataset properties.
    */
   protected function distributionLoad() {
-    $metadata = $this->data->getMetaData();
+    $metadata = $this->data->getMetadata();
 
     if (!isset($metadata->data->downloadURL)) {
       return;
@@ -150,7 +150,7 @@ class Data extends AbstractData {
    * Private.
    */
   protected function datasetPresave() {
-    $metadata = $this->data->getMetaData();
+    $metadata = $this->data->getMetadata();
 
     $title = isset($metadata->title) ? $metadata->title : $metadata->name;
     $this->data->setTitle($title);
@@ -190,7 +190,7 @@ class Data extends AbstractData {
    * Private.
    */
   protected function distributionPresave() {
-    $metadata = $this->data->getMetaData();
+    $metadata = $this->data->getMetadata();
     $this->data->setMetadata($metadata);
   }
 

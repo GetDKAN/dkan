@@ -38,7 +38,7 @@ class MetastoreEntityStorage extends AbstractEntityStorage {
     foreach ($entity_ids as $id) {
       $metastore_item = $this->entityStorage->load($id);
       if ($metastore_item->get('moderation_state')->getString() === 'published') {
-        $all[] = $metastore_item->getMetaData();
+        $all[] = $metastore_item->getMetadata();
       }
     }
     return $all;

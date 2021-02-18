@@ -30,7 +30,7 @@ interface MetastoreItemInterface {
   /**
    * Protected.
    */
-  public function getMetaData();
+  public function getMetadata();
 
   /**
    * Protected.
