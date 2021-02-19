@@ -9,7 +9,9 @@ use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Service as Metastore;
+use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
+use Drupal\search_api\Entity\Index;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Harvest\ETL\Extract\DataJson;
@@ -164,6 +166,21 @@ class DatasetTest extends ExistingSiteBase {
     // latest revision.
     $this->assertEquals(['1.csv', '3.csv', '5.csv'], $this->checkFiles());
     $this->assertEquals(3, $this->countTables());
+
+    // Add more datasets, only publishing some.
+    $this->storeDatasetRunQueues(222, '2.1', []);
+    $this->storeDatasetRunQueues(333, '3.1', []);
+    $this->getMetastore()->publish('dataset', 222);
+    // Reindex.
+    $index = Index::load('dkan');
+    $index->clear();
+    $index->indexItems();
+    // Verify metastore search results contains 111, 222 but not 333.
+    $searchResults = $this->getMetastoreSearch()->search();
+    $this->assertEquals(2, $searchResults->total);
+    $this->assertTrue(isset($searchResults->results['dkan_dataset/111']));
+    $this->assertTrue(isset($searchResults->results['dkan_dataset/222']));
+    $this->assertTrue(!isset($searchResults->results['dkan_dataset/333']));
 
     $defaultModerationState->set('type_settings.default_moderation_state', 'published');
     $defaultModerationState->save();
@@ -361,6 +378,13 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getNodeStorage(): NodeStorage {
     return \Drupal::service('entity_type.manager')->getStorage('node');
+  }
+
+  /**
+   * @return \Drupal\metastore_search\Search
+   */
+  private function getMetastoreSearch() : Search {
+    return \Drupal::service('metastore_search.service');
   }
 
 }
