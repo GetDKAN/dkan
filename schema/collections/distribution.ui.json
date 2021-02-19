@@ -21,12 +21,6 @@
           "widget": "textarea",
           "rows": 5
         }
-      },
-      "downloadURL": {
-        "ui:options": {
-          "widget": "upload_or_link",
-          "extensions": "jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp csv"
-        }
       }
     }
   }
