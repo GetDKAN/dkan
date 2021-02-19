@@ -82,7 +82,7 @@ class UploadOrLink extends ManagedFile {
     $element = parent::processManagedFile($element, $form_state, $complete_form);
     $file_url_type = static::getUrlType($element);
     $element = static::unsetFilesWhenRemoving($form_state->getTriggeringElement(), $element);
-    $element = static::loadFilesWhenLocal($element);
+    $element = static::loadLocalFilesWhenDefault($element);
 
     $file_url_remote = isset($element['#value']['file_url_remote']) ? $element['#value']['file_url_remote'] : $element['#uri'];
     $file_url_remote_is_valid = UrlHelper::isValid($file_url_remote, TRUE);
@@ -144,9 +144,19 @@ class UploadOrLink extends ManagedFile {
     $button = is_array($triggering_element) ? array_pop($triggering_element['#array_parents']) : '';
     if ($button == 'remove_button') {
       unset($element['#files']);
-      unset($element['file_' . reset($element['#value']['fids'])]);
-      $element['#value']['fids'] = [];
+      $element = static::unsetFids($element);
     }
+    return $element;
+  }
+
+  /**
+   * Helper function to unsetFids.
+   */
+  private static function unsetFids($element) {
+    foreach ($element['#value']['fids'] as $fid) {
+      unset($element['file_' . $fid]);
+    }
+    $element['#value']['fids'] = [];
     return $element;
   }
 
@@ -171,15 +181,15 @@ class UploadOrLink extends ManagedFile {
   /**
    * Helper function to load files when local.
    */
-  private static function loadFilesWhenLocal($element) {
-    if (!empty($element['#uri'])) {
+  private static function loadLocalFilesWhenDefault($element) {
+    if (empty($element['#value']['fids']) && !empty($element['#uri'])) {
       $file = static::checkIfLocalFile($element['#uri']);
       if ($file && $element['#value']['file_url_type'] !== static::TYPE_REMOTE) {
         $element['#files'][$file->id()] = $file;
-        $element['#value']['fids'][] = $file->id();
+        $element['#value']['fids'] = [$file->id()];
         $element['#value']['file_url_type'] = "upload";
         $element['fids']['#type'] = 'hidden';
-        $element['fids']['#value'][] = $file->id();
+        $element['fids']['#value'] = [$file->id()];
         $file_link = [
           '#theme' => 'file_link',
           '#file' => $file,
