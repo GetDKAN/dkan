@@ -223,7 +223,13 @@ class UploadOrLink extends ManagedFile {
     $uri = static::getDefaultUri($element, $form_state);
     if ($element['#value']['file_url_type'] == static::TYPE_UPLOAD || !empty($element['#value']['fids'])) {
       parent::validateManagedFile($element, $form_state, $complete_form);
-      $form_state->set('upload_or_link_element', $element['#parents']);
+      if ($element_parents = $form_state->get('upload_or_link_element')) {
+        $element_parents[] = $element['#parents'];
+        $form_state->set('upload_or_link_element', $element_parents);
+      }
+      else {
+        $form_state->set('upload_or_link_element', [$element['#parents']]);
+      }
     }
     $form_state->setValueForElement($element, $uri);
   }
