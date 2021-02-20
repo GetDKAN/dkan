@@ -49,7 +49,7 @@ class DkanDatasetTest extends TestCase {
       ->add(QueryInterface::class, 'range', QueryInterface::class)
       ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
       ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'retrieve', '{}')
+      ->add(Data::class, 'retrievePublished', '{}')
       ->getMock();
 
     \Drupal::setContainer($container);
