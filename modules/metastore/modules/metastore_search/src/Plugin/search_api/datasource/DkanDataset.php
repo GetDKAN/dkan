@@ -79,7 +79,6 @@ class DkanDataset extends DatasourcePluginBase {
         $items[$id] = new Dataset($dataStorage->retrievePublished($id));
       }
       catch (\Exception $e) {
-
       }
     }
 
