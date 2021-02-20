@@ -4,22 +4,6 @@ context('Admin content and dataset views', () => {
         cy.drupalLogin('testeditor', 'testeditor')
     })
 
-    // Create a datasest.
-    it('Admin can create a dataset with the json form UI.', () => {
-        cy.visit(baseurl + "/admin/dkan/dataset")
-        cy.wait(2000)
-        cy.get('#root_title').type('DKANTEST2 dataset title', { force:true } )
-        cy.get('#root_description').type('DKANTEST2 dataset description.', { force:true } )
-        cy.get('#root_accessLevel').select('public', { force:true } )
-        cy.get('#root_modified').type('2020-02-02', { force:true } )
-        cy.get('#root_publisher_name').type('DKANTEST2 Publisher', { force:true } )
-        cy.get('#root_contactPoint_fn').type('DKANTEST2 Contact Name', { force:true } )
-        cy.get('#root_contactPoint_hasEmail').type('mailto:dkantest@test.com', { force:true } )
-        cy.get('#root_keyword_0').type('open data', { force:true } )
-        cy.get('.btn-success').click({ force:true })
-        cy.get('.toast-content-container > .toast-content').should('contain','has been created')
-    })
-
     // DKAN Content View.
     it('The admin content screen has an exposed data type filter that contains the values I expect.', () => {
         cy.visit(baseurl + "/admin/content/node")
@@ -36,7 +20,7 @@ context('Admin content and dataset views', () => {
         cy.get('#view-field-data-type-table-column > a').should('contain','Data Type');
     })
 
-    it('The dataset data node titles should link to the REACT dataset page', () => {
+    it('The dataset data node titles should link to the drupal node page', () => {
         cy.visit(baseurl + "/admin/content/node")
         cy.get('#edit-data-type').select('dataset',{ force:true })
         cy.get('#edit-submit-dkan-content').click({ force:true })
@@ -55,36 +39,15 @@ context('Admin content and dataset views', () => {
     })
 
     // DKAN Dataset view
-    it('There is an "Add new dataset" button that takes user to the dataset json form. And a "Back to Datasets" button that returns user to the datasets view.', () => {
+    it('There is an "Add new dataset" button that takes user to the dataset json form.', () => {
         cy.visit(baseurl + "/admin/content/datasets")
         cy.get('h1').should('have.text', 'Datasets')
         cy.get('.view-header > .form-actions > .button').should('contain', 'Add new dataset').click({ force:true })
-        cy.get('#app > button.btn-default').should('contain', 'Back to Datasets').click({ force:true })
-        cy.get('h1').should('have.text', 'Datasets')
     })
 
-    it('The dataset data node titles should link to the REACT page. The edit link should go to the json form.', () => {
+    it('The dataset edit link should go to the json form.', () => {
         cy.visit(baseurl + "/admin/content/datasets")
-        //cy.get('tbody > :nth-child(1) > .views-field-title > a').invoke('attr', 'href').should('contain', '/dataset/')
-        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', 'admin/dkan/dataset/');
-    })
-
-    it('Admin user can delete a dataset', () => {
-        cy.visit(baseurl + "/admin/content/datasets")
-        cy.wait(2000)
-        cy.get('#edit-node-bulk-form-0').check({ force:true })
-        cy.get('#edit-submit--2').click({ force:true })
-        cy.get('input[value="Delete"]').click({ force:true })
-        cy.get('.messages').should('contain','Deleted 1 content item.')
-    })
-
-    it('Admin user can delete a data node', () => {
-        cy.visit(baseurl + "/admin/content/node")
-        cy.wait(2000)
-        cy.get('#edit-node-bulk-form-0').check({ force:true })
-        cy.get('#edit-submit--2').click({ force:true })
-        cy.get('input[value="Delete"]').click({ force:true })
-        cy.get('.messages').should('contain','Deleted 1 content item.')
+        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', '/edit');
     })
 
 })
