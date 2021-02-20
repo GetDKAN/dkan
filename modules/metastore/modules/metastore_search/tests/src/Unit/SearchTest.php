@@ -1,10 +1,11 @@
 <?php
 
-namespace Drupal\metastore_search;
+namespace Drupal\Tests\metastore_search\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\metastore_search\Search;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\metastore\Service as Metastore;
 use Drupal\search_api\IndexInterface;
@@ -18,9 +19,12 @@ use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Dkan search service tests.
+ * Class SearchTest.
+ *
+ * @package Drupal\Tests\metastore_search\Unit
+ * @group metastore_search
  */
-class ServiceTest extends TestCase {
+class SearchTest extends TestCase {
   use ServiceCheckTrait;
 
   /**
@@ -31,7 +35,7 @@ class ServiceTest extends TestCase {
       ->add(EntityStorageInterface::class, 'load', NULL);
 
     $this->expectExceptionMessage('An index named [dkan] does not exist.');
-    Service::create($container->getMock());
+    Search::create($container->getMock());
   }
 
   /**
@@ -48,7 +52,7 @@ class ServiceTest extends TestCase {
       ],
     ];
 
-    $service = Service::create($this->getCommonMockChain()->getMock());
+    $service = Search::create($this->getCommonMockChain()->getMock());
 
     $this->assertEquals($expect, $service->search([
       'page' => 1,
@@ -64,16 +68,25 @@ class ServiceTest extends TestCase {
    * Test for facets().
    */
   public function testFacets() {
-    $expect = [[
+    $expect1 = [(object) [
       'type' => 'publisher__name',
       'name' => 'Steve',
       'total' => 1,
     ],
     ];
 
-    $service = Service::create($this->getCommonMockChain()->getMock());
+    $expect2 = [(object) [
+      'type' => 'publisher__name',
+      'name' => 'Steve',
+      'total' => 0,
+    ],
+    ];
 
-    $this->assertEquals($expect, $service->facets([
+    $service = Search::create($this->getCommonMockChain()->getMock());
+
+    $this->assertEquals($expect1, $service->facets([]));
+
+    $this->assertEquals($expect2, $service->facets([
       'page' => 1,
       'page-size' => 10,
       'fulltext' => 'hello',
@@ -107,6 +120,11 @@ class ServiceTest extends TestCase {
 
     $facet = (object) ['data' => (object) ['name' => 'Steve']];
 
+    $getAllOptions = (new Options())
+      ->add('keyword', [])
+      ->add('theme', [])
+      ->add('publisher', [$facet]);
+
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
@@ -119,7 +137,7 @@ class ServiceTest extends TestCase {
       ->add(ResultSet::class, 'getResultCount', 1)
       ->add(ResultSet::class, 'getResultItems', [$item])
       ->add(Metastore::class, 'get', json_encode($collection))
-      ->add(Metastore::class, 'getAll', [$facet]);
+      ->add(Metastore::class, 'getAll', $getAllOptions);
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore_search;
+namespace Drupal\metastore_search\Commands;
 
 use Drush\Commands\DrushCommands;
 use Drupal\search_api\Entity\Index;
@@ -8,9 +8,9 @@ use Drupal\search_api\Entity\Index;
 /**
  * Class DkanSearchCommands.
  *
- * @package Drupal\metastore_search\Drush
+ * @package Drupal\metastore_search\RebuildTrackerCommands
  */
-class Drush extends DrushCommands {
+class RebuildTrackerCommands extends DrushCommands {
 
   /**
    * Rebuild the search api tracker for the dkan index.
