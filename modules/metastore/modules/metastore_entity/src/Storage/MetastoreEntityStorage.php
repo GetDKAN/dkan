@@ -4,6 +4,7 @@ namespace Drupal\metastore_entity\Storage;
 
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\Storage\AbstractEntityStorage;
+use Drupal\metastore_entity\Entity\MetastoreItem;
 
 /**
  * Node Data.
@@ -43,5 +44,27 @@ class MetastoreEntityStorage extends AbstractEntityStorage {
     }
     return $all;
   }
+
+  /**
+   * Inherited.
+   *
+   * {@inheritdoc}.
+   */
+  public function retrieve(string $uuid) : ?string {
+
+    if ($this->getDefaultModerationState() === 'published') {
+      $entity = $this->getEntityPublishedRevision($uuid);
+    }
+    else {
+      $entity = $this->getEntityLatestRevision($uuid);
+    }
+
+    if ($entity && $entity instanceof MetastoreItem) {
+      return $entity->get('json_data')->getString();
+    }
+
+    throw new \Exception("No data with that identifier was found.");
+  }
+
 
 }
