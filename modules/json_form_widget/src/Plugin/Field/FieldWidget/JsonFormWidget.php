@@ -123,7 +123,7 @@ class JsonFormWidget extends WidgetBase {
     foreach ($items as $item) {
       $default_data = json_decode($item->value);
     }
-    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
+    $type = $form_state->getformObject()->getEntity()->getSchemaId();
     $this->builder->setSchema($this->getSetting('schema'), $type);
     $json_form = $this->builder->getJsonForm($default_data, $form_state);
 
