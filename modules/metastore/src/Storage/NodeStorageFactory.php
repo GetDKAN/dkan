@@ -32,7 +32,7 @@ class NodeStorageFactory implements MetastoreStorageFactoryInterface {
    *
    * @inheritdoc
    */
-  public function getInstance(string $identifier, array $config = []):NodeStorage {
+  public function getInstance(string $identifier, array $config = []):MetastoreStorageInterface {
     if (!isset($this->stores[$identifier])) {
       $entity_type = $this->getEntityTypeBySchema($identifier);
 
