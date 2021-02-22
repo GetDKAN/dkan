@@ -2,6 +2,7 @@
 On PR, builds QA environment.
 On resubmit of the same PR, rebuilds QA environment.
 On merge, tears down QA environment.
+Reaper job will remove environments up past 72 hours.
 */
 
 import groovy.json.JsonOutput
@@ -10,7 +11,6 @@ pipeline {
     agent any
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
-        DKTL_VERSION = '4.1.0' //The latest version causes an error.
         DKTL_SLUG = "dkan$CHANGE_ID"
         DKTL_TRAEFIK = "proxy"
         WEB_DOMAIN = "ci.civicactions.net"
@@ -50,6 +50,7 @@ pipeline {
             when { changeRequest() }
             steps {
                 sh '''
+                DKTL_VERSION=`curl -s https://api.github.com/repos/GetDKAN/dkan-tools/releases/latest|grep tag_name|awk '{ print $2 }'|cut -d '"' -f2`
                 curl -O -L "https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
                 unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip
                 '''
