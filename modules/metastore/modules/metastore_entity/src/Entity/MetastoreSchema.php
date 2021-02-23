@@ -35,6 +35,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *     "label",
  *     "behaviors",
  *     "json_schema",
+ *     "title_source",
  *     "ui_schema",
  *     "description",
  *     "help",
@@ -83,6 +84,13 @@ class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaI
   protected $json_schema;
 
   /**
+   * Field to use as entity title.
+   *
+   * @var string
+   */
+  protected $title_source;
+
+  /**
    * The UI schema for this Metastore schema.
    *
    * @var string
@@ -113,6 +121,10 @@ class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaI
       return $this->ui_schema['value'];
     }
     return $this->ui_schema;
+  }
+
+  public function getTitleSource() {
+    return $this->title_source;
   }
 
   /**

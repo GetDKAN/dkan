@@ -11,6 +11,7 @@ use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\user\UserInterface;
+use RootedData\RootedJsonData;
 
 /**
  * Defines the Metastore item entity.
@@ -115,6 +116,8 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemE
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
+    $this->setTitle();
+
     foreach (array_keys($this->getTranslationLanguages()) as $langcode) {
       $translation = $this->getTranslation($langcode);
 
@@ -131,6 +134,17 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemE
     }
   }
 
+  /**
+   * Get the MetastoreSchema bundle entity for this MetastoreItem entity.
+   * 
+   * @return Drupal\metastore_entity\Entity\MetastoreSchema
+   *   Full MetastoreSchema entity object.
+   */
+  public function getSchema():MetastoreSchema {
+    return $this->entityTypeManager()
+      ->getStorage('metastore_schema')
+      ->load($this->getSchemaId());
+  }
 
   /**
    * {@inheritdoc}
@@ -150,9 +164,26 @@ class MetastoreItem extends EditorialContentEntityBase implements MetastoreItemE
   /**
    * {@inheritdoc}
    */
-  public function setTitle($title) {
+  public function setTitle($title = NULL) {
+    if (!$title) {
+      $title = $this->buildtitle();
+    }
     $this->set('title', $title);
     return $this;
+  }
+
+  protected function buildTitle() {
+    $title = '';
+    $schema = $this->getSchema();
+    if ($schema->getTitleSource()) {
+      $metadata = new RootedJsonData($this->getMetadata());
+      $titlePath = '$.' . $schema->getTitleSource();
+      $title = $metadata->$titlePath;
+    }
+    if (!$title) {
+      $title = $schema->label() . ': ' . $this->getIdentifier();
+    }
+    return $title;
   }
 
   /**

@@ -46,6 +46,8 @@ class MetastoreItemForm extends ContentEntityForm {
       ];
     }
 
+    $form['title']['#access'] = FALSE;
+
     return $form;
   }
 

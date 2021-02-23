@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\metastore_entity\Entity\MetastoreSchema;
 use Opis\JsonSchema\Schema;
+use RootedData\RootedJsonData;
 
 /**
  * Class MetastoreSchemaForm.
@@ -47,6 +48,14 @@ class MetastoreSchemaForm extends EntityForm {
       ],
     ];
 
+    $form['title_source'] = [
+      '#title' => $this->t('Title source'),
+      '#type' => 'textfield',
+      '#default_value' => $metastore_schema->get('title_source'),
+      '#description' => $this->t("JSON property to use as this item's title for administrative purposes. If blank, or if property is missing in JSON submitted, titles will be set to \"[Schema]: [UUID]\""),
+      '#element_validate' => [[$this, 'validateTitleSource']],
+    ];
+    
     $form['json_schema'] = [
       '#title' => $this->t('JSON Schema'),
       '#type' => 'text_format',
@@ -63,7 +72,7 @@ class MetastoreSchemaForm extends EntityForm {
       '#format' => 'json',
       '#default_value' => $metastore_schema->getUiSchema(),
       '#description' => $this->t('UI schema'),
-      '#element_validate' => [[$this, 'validateSchema']],
+      '#element_validate' => [[$this, 'validateUiSchema']],
     ];
 
     return $form;
@@ -84,7 +93,52 @@ class MetastoreSchemaForm extends EntityForm {
       Schema::fromJsonString($form_state->getValue('json_schema')['value']);
     }
     catch (\Exception $e) {
-      $form_state->setError($element, t('Schema failed validation with message: ":msg"', [':msg' => $e->getMessage()]));
+      $form_state->setError($element, $this->t('Schema failed validation with message: ":msg"', [':msg' => $e->getMessage()]));
+    }
+  }
+
+  /**
+   * Validate the UI schema. 
+   *
+   * @param mixed $element
+   *   Form element.
+   * @param Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state object.
+   * @param mixed $form
+   *   Form array.
+   */
+  public function validateUiSchema($element, FormStateInterface $form_state, $form) {
+    try {
+      $uiSchema = new RootedJsonData($form_state->getValue('ui_schema')['value']);
+    }
+    catch (\Exception $e) {
+      $form_state->setError($element, $this->t('UI schema failed validation with message: ":msg"', [':msg' => $e->getMessage()]));
+    }
+  }
+
+  /**
+   * Validate the JSON schema. 
+   *
+   * @param mixed $element
+   *   Form element.
+   * @param Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state object.
+   * @param mixed $form
+   *   Form array.
+   */
+  public function validateTitleSource($element, FormStateInterface $form_state, $form) {
+    try {
+      $schemaJson = new RootedJsonData($form_state->getValue('json_schema')['value']);
+    }
+    catch (\Exception $e) {
+      $form_state->setError($element, $this->t('Could not validate title source because JSON schema invalid.'));
+    }
+    $path = '$.properties.' . $form_state->getValue('title_source');
+    if (!isset($schemaJson->$path)) {
+      $form_state->setError($element, $this->t('Title source not found among schema properties.'));
+    }
+    if ($schemaJson->{"$path.type"} != "string") {
+      $form_state->setError($element, $this->t('Title source must be a string; %type found.', ['%type' => $schemaJson->{"$path.type"}]));
     }
   }
 
