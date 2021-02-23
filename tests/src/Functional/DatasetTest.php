@@ -178,9 +178,9 @@ class DatasetTest extends ExistingSiteBase {
     // Verify metastore search results contains 111, 222 but not 333.
     $searchResults = $this->getMetastoreSearch()->search();
     $this->assertEquals(2, $searchResults->total);
-    $this->assertTrue(isset($searchResults->results['dkan_dataset/111']));
-    $this->assertTrue(isset($searchResults->results['dkan_dataset/222']));
-    $this->assertTrue(!isset($searchResults->results['dkan_dataset/333']));
+    $this->assertArrayHasKey('dkan_dataset/111', $searchResults->results);
+    $this->assertArrayHasKey('dkan_dataset/222', $searchResults->results);
+    $this->assertArrayNotHasKey('dkan_dataset/333', $searchResults->results);
 
     $defaultModerationState->set('type_settings.default_moderation_state', 'published');
     $defaultModerationState->save();
