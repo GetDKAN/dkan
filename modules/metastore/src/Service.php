@@ -11,6 +11,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -34,11 +35,18 @@ class Service implements ContainerInjectionInterface {
   private $schemaRetriever;
 
   /**
-   * Storage.
+   * Storage factory.
    *
    * @var \Drupal\metastore\Storage\MetastoreStorageFactoryInterface
    */
-  private $factory;
+  private $storageFactory;
+
+  /**
+   * Storages.
+   *
+   * @var array
+   */
+  private $storages;
 
   /**
    * Inherited.
@@ -59,7 +67,7 @@ class Service implements ContainerInjectionInterface {
   public function __construct(SchemaRetrieverInterface $schemaRetriever, Sae $saeFactory, MetastoreStorageFactoryInterface $factory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
-    $this->factory = $factory;
+    $this->storageFactory = $factory;
   }
 
   /**
@@ -93,6 +101,22 @@ class Service implements ContainerInjectionInterface {
     $schema = json_decode($schema);
 
     return $schema;
+  }
+
+  /**
+   * Get storage.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   *
+   * @return \Drupal\metastore\Storage\MetastoreStorageInterface
+   *   Entity storage.
+   */
+  private function getStorage(string $schema_id): MetastoreStorageInterface {
+    if (!isset($this->storages[$schema_id])) {
+      $this->storages[$schema_id] = $this->storageFactory->getInstance($schema_id);
+    }
+    return $this->storages[$schema_id];
   }
 
   /**
@@ -134,8 +158,7 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get($schema_id, $identifier): string {
-    $storage = $this->factory->getInstance($schema_id);
-    $data = $storage->retrievePublished($identifier);
+    $data = $this->getStorage($schema_id)->retrievePublished($identifier);
     if (!empty($this->plugins)) {
       $data = $this->modifyData($schema_id, $data);
     }
@@ -225,8 +248,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function publish(string $schema_id, string $identifier) {
     if ($this->objectExists($schema_id, $identifier)) {
-      $storage = $this->factory->getInstance($schema_id);
-      return $storage->publish($identifier);
+      return $this->getStorage($schema_id)->publish($identifier);
     }
 
     throw new MissingObjectException("No data with the identifier {$identifier} was found.");
