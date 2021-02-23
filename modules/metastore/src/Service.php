@@ -130,7 +130,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getAll($schema_id): array {
 
-    $datasets = $this->getEngine($schema_id)->get();
+    $datasets = $this->getStorage($schema_id)->retrieveAll();
 
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
@@ -202,8 +202,7 @@ class Service implements ContainerInjectionInterface {
    * @todo Make this aware of revisions and moderation states.
    */
   public function getResources($schema_id, $identifier): array {
-    $json = $this->getEngine($schema_id)
-      ->get($identifier);
+    $json = $this->getStorage($schema_id)->retrieve($identifier);
     $data = json_decode($json);
     /* @todo decouple from POD. */
     $resources = $data->distribution;
@@ -223,6 +222,8 @@ class Service implements ContainerInjectionInterface {
    *   The identifier.
    */
   public function post($schema_id, string $data): string {
+    $identifier = NULL;
+
     // If resource already exists, return HTTP 409 Conflict and existing uri.
     $decoded = json_decode($data, TRUE);
     if (isset($decoded['identifier'])) {
@@ -232,7 +233,7 @@ class Service implements ContainerInjectionInterface {
       }
     }
 
-    return $this->getEngine($schema_id)->post($data);
+    return $this->getStorage($schema_id)->store($data, $identifier);
   }
 
   /**
@@ -295,11 +296,11 @@ class Service implements ContainerInjectionInterface {
    */
   private function proceedWithPut($schema_id, $identifier, string $data): array {
     if ($this->objectExists($schema_id, $identifier)) {
-      $this->getEngine($schema_id)->put($identifier, $data);
+      $this->getStorage($schema_id)->store($data, $identifier);
       return ['identifier' => $identifier, 'new' => FALSE];
     }
     else {
-      $this->getEngine($schema_id)->post($data);
+      $this->getStorage($schema_id)->store($data);
       return ['identifier' => $identifier, 'new' => TRUE];
     }
   }
@@ -318,9 +319,9 @@ class Service implements ContainerInjectionInterface {
    *   The json response.
    */
   public function patch($schema_id, $identifier, $data) {
-    $engine = $this->getEngine($schema_id);
+    $storage = $this->getStorage($schema_id);
     if ($this->objectExists($schema_id, $identifier)) {
-      $engine->patch($identifier, $data);
+      $storage->store($data, $identifier);
       return $identifier;
     }
 
@@ -339,9 +340,9 @@ class Service implements ContainerInjectionInterface {
    *   Identifier.
    */
   public function delete($schema_id, $identifier) {
-    $engine = $this->getEngine($schema_id);
+    $storage = $this->getStorage($schema_id);
 
-    $engine->delete($identifier);
+    $storage->remove($identifier);
 
     return $identifier;
   }
@@ -364,7 +365,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function objectExists($schemaId, $identifier) {
     try {
-      $this->getEngine($schemaId)->get($identifier);
+      $this->getStorage($schemaId)->retrieve($identifier);
       return TRUE;
     }
     catch (\Exception $e) {
@@ -390,7 +391,7 @@ class Service implements ContainerInjectionInterface {
    *   TRUE if the metadata is equivalent, false otherwise.
    */
   private function objectIsEquivalent(string $schema_id, string $identifier, string $metadata) {
-    $existingMetadata = $this->getEngine($schema_id)->get($identifier);
+    $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
     $existing = json_decode($existingMetadata);
     $existing = self::removeReferences($existing);
     $new = json_decode($metadata);
@@ -415,13 +416,6 @@ class Service implements ContainerInjectionInterface {
     }
 
     return $object;
-  }
-
-  /**
-   * Get engine.
-   */
-  private function getEngine($schemaId) {
-    return $this->saeFactory->getInstance($schemaId);
   }
 
 }

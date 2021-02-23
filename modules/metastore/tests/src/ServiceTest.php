@@ -47,8 +47,7 @@ class ServiceTest extends TestCase {
    */
   public function testGetAll() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", [json_encode("blah")]);
+      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode("blah")]);
 
     $service = Service::create($container->getMock());
 
@@ -79,8 +78,7 @@ class ServiceTest extends TestCase {
     ];
 
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", json_encode($dataset));
+      ->add(AbstractEntityStorage::class, "retrieve", json_encode($dataset));
 
     $service = Service::create($container->getMock());
 
@@ -93,8 +91,7 @@ class ServiceTest extends TestCase {
    */
   public function testPost() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "post", "1");
+      ->add(AbstractEntityStorage::class, 'store', '1');
 
     $service = Service::create($container->getMock());
 
@@ -106,8 +103,7 @@ class ServiceTest extends TestCase {
    */
   public function testPostAlreadyExisting() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", "1");
+      ->add(AbstractEntityStorage::class, "retrieve", "1");
 
     $service = Service::create($container->getMock());
 
@@ -120,9 +116,8 @@ class ServiceTest extends TestCase {
    */
   public function testPut() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "put", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(AbstractEntityStorage::class, "retrieve", "1")
+      ->add(AbstractEntityStorage::class, "store", "1");
 
     $service = Service::create($container->getMock());
 
@@ -138,8 +133,7 @@ class ServiceTest extends TestCase {
     $updating = '{"identifier":"2","title":"Bar"}';
 
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(AbstractEntityStorage::class, "retrieve", $existing);
 
     $service = Service::create($container->getMock());
 
@@ -153,10 +147,8 @@ class ServiceTest extends TestCase {
   public function testPutResultingInNewData() {
     $data = '{"identifier":"3","title":"FooBar"}';
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception())
-      ->add(Engine::class, "put", "3")
-      ->add(Engine::class, "post", "3");
+      ->add(AbstractEntityStorage::class, "retrieve", new \Exception())
+      ->add(AbstractEntityStorage::class, "store", "3");
 
     $service = Service::create($container->getMock());
     $info = $service->put("dataset", "3", $data);
@@ -170,8 +162,7 @@ class ServiceTest extends TestCase {
     $existing = '{"identifier":"1","title":"Foo"}';
 
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(AbstractEntityStorage::class, "retrieve", $existing);
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
@@ -191,8 +182,7 @@ class ServiceTest extends TestCase {
 EOF;
 
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(AbstractEntityStorage::class, "retrieve", $existing);
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
@@ -204,9 +194,8 @@ EOF;
    */
   public function testPatch() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "patch", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(AbstractEntityStorage::class, "retrieve", "1")
+      ->add(AbstractEntityStorage::class, "store", "1");
 
     $service = Service::create($container->getMock());
 
@@ -220,8 +209,7 @@ EOF;
     $data = '{"identifier":"1","title":"FooBar"}';
 
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception());
+      ->add(AbstractEntityStorage::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
     $this->expectException(MissingObjectException::class);
@@ -233,8 +221,7 @@ EOF;
    */
   public function testPublish() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", "1")
+      ->add(AbstractEntityStorage::class, "retrieve", "1")
       ->add(AbstractEntityStorage::class, "publish", "1");
 
     $service = Service::create($container->getMock());
@@ -247,8 +234,7 @@ EOF;
    */
   public function testPublishMissingObjectExpection() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception());
+      ->add(AbstractEntityStorage::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
 
@@ -261,9 +247,8 @@ EOF;
    */
   public function testDelete() {
     $container = $this->getCommonMockChain()
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "delete", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(AbstractEntityStorage::class, "retrieve", "1")
+      ->add(AbstractEntityStorage::class, "remove", "1");
 
     $service = Service::create($container->getMock());
 
@@ -282,8 +267,7 @@ EOF;
 
     $container = $this->getCommonMockChain()
       ->add(FileSchemaRetriever::class, "retrieve", json_encode($catalog))
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", [json_encode($dataset), json_encode($dataset)]);
+      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)]);
 
     $service = Service::create($container->getMock());
     $catalog->dataset = [
