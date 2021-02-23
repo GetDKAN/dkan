@@ -24,7 +24,7 @@ abstract class AbstractEntityStorage implements MetastoreStorageInterface {
    *
    * @var string
    */
-  private $schemaId;
+  protected $schemaId;
 
   /**
    * Entity storage service.
