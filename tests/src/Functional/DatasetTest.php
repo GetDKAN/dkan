@@ -175,10 +175,11 @@ class DatasetTest extends ExistingSiteBase {
     $index = Index::load('dkan');
     $index->clear();
     $index->indexItems();
-    // Verify metastore search results contains 111, 222 but not 333.
+    // Verify search results contain the '1.2' version of 111, 222 but not 333.
     $searchResults = $this->getMetastoreSearch()->search();
     $this->assertEquals(2, $searchResults->total);
     $this->assertArrayHasKey('dkan_dataset/111', $searchResults->results);
+    $this->assertEquals('1.2', $searchResults->results['dkan_dataset/111']->title);
     $this->assertArrayHasKey('dkan_dataset/222', $searchResults->results);
     $this->assertArrayNotHasKey('dkan_dataset/333', $searchResults->results);
 
