@@ -3,16 +3,9 @@ services:
     class: \Drupal\metastore\Service
     arguments:
       - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.sae_factory'
       - '@dkan.metastore.storage'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
-
-  dkan.metastore.sae_factory:
-    class: \Drupal\metastore\Factory\Sae
-    arguments:
-      - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.storage'
 
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\FileSchemaRetriever
@@ -64,16 +57,9 @@ services:
     class: \Drupal\metastore\Service
     arguments:
       - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.sae_factory'
       - '@dkan.metastore.storage'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
-
-  metastore.sae_factory:
-    class: \Drupal\metastore\Factory\Sae
-    arguments:
-      - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.storage'
 
   metastore.schema_retriever:
     class: \Drupal\metastore\FileSchemaRetriever

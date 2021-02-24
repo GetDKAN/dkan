@@ -283,7 +283,6 @@ EOF;
   public function getCommonMockChain() {
     $options = (new Options())
       ->add('metastore.schema_retriever', FileSchemaRetriever::class)
-      ->add('metastore.sae_factory', Sae::class)
       ->add('dkan.metastore.storage', NodeStorageFactory::class)
       ->index(0);
 

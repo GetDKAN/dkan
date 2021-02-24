@@ -9,7 +9,6 @@ use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -19,13 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Service implements ContainerInjectionInterface {
   use DataModifierPluginTrait;
-
-  /**
-   * SAE Factory.
-   *
-   * @var \Drupal\metastore\Factory\Sae
-   */
-  private $saeFactory;
 
   /**
    * Schema retriever.
@@ -56,7 +48,6 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('metastore.schema_retriever'),
-      $container->get('metastore.sae_factory'),
       $container->get('dkan.metastore.storage')
     );
   }
@@ -64,9 +55,8 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetrieverInterface $schemaRetriever, Sae $saeFactory, MetastoreStorageFactoryInterface $factory) {
+  public function __construct(SchemaRetrieverInterface $schemaRetriever, MetastoreStorageFactoryInterface $factory) {
     $this->schemaRetriever = $schemaRetriever;
-    $this->saeFactory = $saeFactory;
     $this->storageFactory = $factory;
   }
 
