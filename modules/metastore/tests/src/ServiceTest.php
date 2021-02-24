@@ -14,7 +14,6 @@ use Drupal\metastore\Storage\NodeStorageFactory;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
-use Drupal\metastore\Sae\Sae as Engine;
 
 /**
  *
@@ -29,7 +28,7 @@ class ServiceTest extends TestCase {
       ->add(FileSchemaRetriever::class, "getAllIds", ["1"]);
 
     $service = Service::create($container->getMock());
-    $this->assertEquals(json_encode(["1" => "blah"]), json_encode($service->getSchemas()));
+    $this->assertEquals(json_encode(["1" => ['foo' => 'bar']]), json_encode($service->getSchemas()));
   }
 
   /**
@@ -39,7 +38,7 @@ class ServiceTest extends TestCase {
     $container = $this->getCommonMockChain();
 
     $service = Service::create($container->getMock());
-    $this->assertEquals(json_encode("blah"), json_encode($service->getSchema("1")));
+    $this->assertEquals(json_encode(['foo' => 'bar']), json_encode($service->getSchema("1")));
   }
 
   /**
@@ -95,7 +94,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals("1", $service->post("dataset", json_encode("blah")));
+    $this->assertEquals("1", $service->post("dataset", json_encode(['foo' => 'bar'])));
   }
 
   /**
@@ -289,7 +288,7 @@ EOF;
     return (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
-      ->add(FileSchemaRetriever::class, "retrieve", json_encode("blah"));
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
   }
 
 }

@@ -11,6 +11,8 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
+use RootedData\Exception\ValidationException;
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -175,6 +177,9 @@ class Service implements ContainerInjectionInterface {
       }
     }
 
+    // TODO: abandon the method and use RootedJsonData instead on JSON string.
+    $this->validateJson($schema_id, $data);
+
     return json_encode($dataObj);
   }
 
@@ -212,6 +217,9 @@ class Service implements ContainerInjectionInterface {
    *   The identifier.
    */
   public function post($schema_id, string $data): string {
+    // TODO: abandon the method and use RootedJsonData instead on JSON string.
+    $this->validateJson($schema_id, $data);
+
     $identifier = NULL;
 
     // If resource already exists, return HTTP 409 Conflict and existing uri.
@@ -259,6 +267,9 @@ class Service implements ContainerInjectionInterface {
    *   ["identifier" => string, "new" => boolean].
    */
   public function put($schema_id, $identifier, string $data): array {
+    // TODO: abandon the method and use RootedJsonData instead on JSON string.
+    $this->validateJson($schema_id, $data);
+
     $obj = json_decode($data);
     if (isset($obj->identifier) && $obj->identifier != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");
@@ -309,6 +320,9 @@ class Service implements ContainerInjectionInterface {
    *   The json response.
    */
   public function patch($schema_id, $identifier, $data) {
+    // TODO: abandon the method and use RootedJsonData instead on JSON string.
+    $this->validateJson($schema_id, $data);
+
     $storage = $this->getStorage($schema_id);
     if ($this->objectExists($schema_id, $identifier)) {
       $storage->store($data, $identifier);
@@ -406,6 +420,27 @@ class Service implements ContainerInjectionInterface {
     }
 
     return $object;
+  }
+
+  /**
+   * Temporary validate method.
+   *
+   * Using RootedJsonData instead of JSON string will make it redundant.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $json_data
+   *   Json payload.
+   *
+   * @return bool
+   */
+  private function validateJson(string $schema_id, string $json_data): bool {
+    $schema = $this->schemaRetriever->retrieve($schema_id);
+    $result = RootedJsonData::validate($json_data, $schema);
+    if (!$result->isValid()) {
+      throw new ValidationException("JSON Schema validation failed.", $result);
+    }
+    return TRUE;
   }
 
 }
