@@ -21,6 +21,17 @@ context('Admin content and dataset views', () => {
     })
 
     it('The dataset data node titles should link to the drupal node page', () => {
+        cy.visit(baseurl + "/node/add/data")
+        cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST dataset title', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-description').type('DKANTEST dataset description.', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-accesslevel').select('public', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-modified').type('2020-02-02', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name').type('DKANTEST Publisher', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type('DKANTEST Contact Name', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('dkantest@test.com', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0').type('open data', { force: true })
+        cy.get('#edit-submit').click({ force: true })
+        cy.get('.messages--status').should('contain', 'has been created')
         cy.visit(baseurl + "/admin/content/node")
         cy.get('#edit-data-type').select('dataset',{ force:true })
         cy.get('#edit-submit-dkan-content').click({ force:true })
