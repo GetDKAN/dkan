@@ -24,7 +24,7 @@ context('Admin dataset json form', () => {
         cy.get('#edit-field-json-metadata-0-value-modified').type('2020-02-02', { force:true } )
         cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name').type('DKANTEST Publisher', { force:true } )
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type('DKANTEST Contact Name', { force:true } )
-        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('mailto:dkantest@test.com', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('dkantest@test.com', { force:true } )
         cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0').type('open data', { force: true })
         cy.get('#edit-submit').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
