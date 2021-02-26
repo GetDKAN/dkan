@@ -122,7 +122,8 @@ class ResourceMapper {
    */
   public function remove(Resource $resource) {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
-      $this->store->remove($resource->getUniqueIdentifier());
+      $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
+      $this->store->remove($object->id);
     }
   }
 
@@ -163,6 +164,7 @@ class ResourceMapper {
       'perspective',
       'filePath',
       'mimeType',
+      'id',
     ];
     $query->conditionByIsEqualTo('identifier', $identifier);
     $query->conditionByIsEqualTo('perspective', $perspective);
