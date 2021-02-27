@@ -7,6 +7,7 @@ use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\Events\Registration;
+use Drupal\metastore\Events\ResourcePreRemove;
 use Drupal\metastore\Exception\AlreadyRegistered;
 
 /**
@@ -124,6 +125,9 @@ class ResourceMapper {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
       $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
       $this->store->remove($object->id);
+      print 'removed object >> ';
+      // Dispatch event to initiate file removal. run ResourceLocalizer->remove($resource);
+      $this->eventDispatcher->dispatch(ResourcePreRemove::EVENT_RESOURCE_PRE_REMOVE, new ResourcePreRemove($object));
     }
   }
 
