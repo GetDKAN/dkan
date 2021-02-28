@@ -16,7 +16,7 @@ class OrphaningDistribution extends Event {
    *
    * @Event
    */
-  const EVENT_ORPHANING_DISTRIBUTION = 'metastore.orphaning_distribution';
+  const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
   private $uuid;
 
   /**

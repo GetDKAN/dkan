@@ -38,11 +38,12 @@ class MapperCleanup implements EventSubscriberInterface {
    */
   public function cleanResourceMapperTable(OrphaningDistribution $event) {
     $uuid = $event->getUuid();
-
+    print 'uuid is: ' . $uuid . '-->';
     // Use the resourceMapper to build a resource object.
     $service = \Drupal::service('dkan.metastore.service');
     $resource = $service->get('distribution', $uuid);
     $resource = json_decode($resource);
+    var_dump($resource);
     $resourceMapper = \Drupal::service('dkan.metastore.resource_mapper');
     $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
     $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
@@ -54,6 +55,7 @@ class MapperCleanup implements EventSubscriberInterface {
     }
     catch (\Exception $e) {
       print 'nope';
+      \Drupal::logger('my_module')->notice('--hi--');
       $this->log('datastore', 'Failed to remove resource source mapping for @uuid. @message',
         [
           '@uuid' => $uuid,
