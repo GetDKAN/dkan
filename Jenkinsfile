@@ -15,6 +15,7 @@ pipeline {
         DKTL_TRAEFIK = "proxy"
         WEB_DOMAIN = "ci.civicactions.net"
         GITHUB_PROJECT = 'https://github.com/GetDKAN/dkan.git'
+        DKTL_VERSION = '4.1.0'
     }
     stages {
         stage ('Preclean') {
