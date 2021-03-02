@@ -113,7 +113,3 @@ services:
     tags:
       - { name: event_subscriber }
 
-  metastore.event_subscriber:
-    class: \Drupal\metastore\EventSubscriber\RemoveLocalFile
-    tags:
-      - { name: event_subscriber }

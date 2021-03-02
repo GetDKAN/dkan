@@ -3,10 +3,7 @@
 namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\metastore\Events\OrphaningDistribution;
-use Drupal\metastore\ResourceMapper;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-use Drupal\metastore\Service;
 
 /**
  * Class MapperCleanup.
@@ -14,18 +11,12 @@ use Drupal\metastore\Service;
 class MapperCleanup implements EventSubscriberInterface {
 
   /**
-   * The metastore service.
-   *
-   * @var \Drupal\metastore\Service
-   */
-  protected $metastoreService;
-
-  /**
    * Inherited.
    *
    * @inheritdoc
    */
   public static function getSubscribedEvents() {
+    $events = [];
     $events[OrphaningDistribution::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
     return $events;
   }
@@ -38,25 +29,21 @@ class MapperCleanup implements EventSubscriberInterface {
    */
   public function cleanResourceMapperTable(OrphaningDistribution $event) {
     $uuid = $event->getUuid();
-    print 'uuid is: ' . $uuid . '-->';
-    // Use the resourceMapper to build a resource object.
+    // Use the metastore service to build a resource object.
     $service = \Drupal::service('dkan.metastore.service');
     $resource = $service->get('distribution', $uuid);
     $resource = json_decode($resource);
-    var_dump($resource);
-    $resourceMapper = \Drupal::service('dkan.metastore.resource_mapper');
     $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
     $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
+    // Use the metastore resourceMapper to remove the source entry.
+    $resourceMapper = \Drupal::service('dkan.metastore.resource_mapper');
     try {
-      print 'removing source >> ';
       $resource = $resourceMapper->get($id, 'source', $version);
       $resourceMapper->remove($resource);
-      $this->log('datastore', 'Removing resource source mapping for @uuid', ['@uuid' => $uuid]);
+      \Drupal::logger('datastore')->notice('Removing resource source mapping for @uuid', ['@uuid' => $uuid]);
     }
     catch (\Exception $e) {
-      print 'nope';
-      \Drupal::logger('my_module')->notice('--hi--');
-      $this->log('datastore', 'Failed to remove resource source mapping for @uuid. @message',
+      \Drupal::logger('datastore')->error('Failed to remove resource source mapping for @uuid. @message',
         [
           '@uuid' => $uuid,
           '@message' => $e->getMessage(),

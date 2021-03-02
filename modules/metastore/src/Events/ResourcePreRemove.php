@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Events;
 
-use Symfony\Component\EventDispatcher\Event;
+use Drupal\Component\EventDispatcher\Event;
 
 /**
  * Initiate database clean up when a distribution is orphaned.

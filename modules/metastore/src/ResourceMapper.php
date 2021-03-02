@@ -125,9 +125,8 @@ class ResourceMapper {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
       $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
       $this->store->remove($object->id);
-      print 'removed object >> ';
       // Dispatch event to initiate file removal. run ResourceLocalizer->remove($resource);
-      $this->eventDispatcher->dispatch(ResourcePreRemove::EVENT_RESOURCE_PRE_REMOVE, new ResourcePreRemove($object));
+      $this->eventDispatcher->dispatch(new ResourcePreRemove($object), ResourcePreRemove::EVENT_RESOURCE_PRE_REMOVE);
     }
   }
 

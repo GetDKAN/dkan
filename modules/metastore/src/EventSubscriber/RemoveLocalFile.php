@@ -3,10 +3,7 @@
 namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\metastore\Events\ResourcePreRemove;
-use Drupal\datastore\Service\ResourceLocalizer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-use Drupal\datastore\Service;
 
 /**
  * Class RemoveLocalFile.
@@ -14,19 +11,12 @@ use Drupal\datastore\Service;
 class RemoveLocalFile implements EventSubscriberInterface {
 
   /**
-   * The datastore service.
-   *
-   * @var \Drupal\datastore\Service
-   */
-  protected $datastoreService;
-
-  /**
    * Inherited.
    *
    * @inheritdoc
    */
   public static function getSubscribedEvents() {
-    print 'subscribing to ResourcePreRemove';
+    $events = [];
     $events[ResourcePreRemove::EVENT_RESOURCE_PRE_REMOVE][] = ['fileCleanup'];
     return $events;
   }
@@ -42,8 +32,8 @@ class RemoveLocalFile implements EventSubscriberInterface {
     $object = $event->getObject();
     var_dump($object);
     // Use the resourceLocalizer to remove the file.
-    // $service = \Drupal::service('dkan.metastore.service');
-    // $resource = json_decode($service->get('distribution', $uuid));
+    $service = \Drupal::service('dkan.datastore.service.resource_localizer');
+    // $resource = json_decode($service->get('id', 'version', perspective));
     // $resourceMapper = \Drupal::service('dkan.metastore.resource_mapper');
     // $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
     // $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
