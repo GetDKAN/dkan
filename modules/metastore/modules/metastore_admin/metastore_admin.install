@@ -27,8 +27,9 @@ function metastore_admin_uninstall() {
 }
 
 /**
- * Disable metastore_form.
+ * Disable metastore_form and enable json_form_widget.
  */
 function metastore_admin_update_8002() {
   \Drupal::service('module_installer')->uninstall(['metastore_form']);
+  \Drupal::service('module_installer')->install(['json_form_widget']);
 }
