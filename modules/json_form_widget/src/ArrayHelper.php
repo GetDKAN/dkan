@@ -195,7 +195,9 @@ class ArrayHelper implements ContainerInjectionInterface {
     if (is_array($data) && isset($data[$i])) {
       $element['#default_value'] = $data[$i];
     }
-    if (in_array($definition['name'], $this->builder->getSchema()->required)) {
+    if (isset($this->builder->getSchema()->required)
+      && in_array($definition['name'], $this->builder->getSchema()->required)
+    ) {
       $element = $this->checkMinItems($element, $definition, $i);
     }
     return $element;
