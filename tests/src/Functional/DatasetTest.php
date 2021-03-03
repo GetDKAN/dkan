@@ -13,6 +13,7 @@ use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\Tests\common\Traits\GetDataTrait;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Harvest\ETL\Extract\DataJson;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -20,49 +21,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 class DatasetTest extends ExistingSiteBase {
   use ServiceCheckTrait;
   use CleanUp;
-
-  private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
-  private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
-
-  private function getDownloadUrl(string $filename) {
-    return self::S3_PREFIX . '/' . $filename;
-  }
-
-  /**
-   * Generate dataset metadata, possibly with multiple distributions.
-   *
-   * @param string $identifier
-   *   Dataset identifier.
-   * @param string $title
-   *   Dataset title.
-   * @param array $downloadUrls
-   *   Array of resource files URLs for this dataset.
-   *
-   * @return string|false
-   *   Json encoded string of this dataset's metadata, or FALSE if error.
-   */
-  private function getData(string $identifier, string $title, array $downloadUrls) {
-
-    $data = new \stdClass();
-    $data->title = $title;
-    $data->description = "Some description.";
-    $data->identifier = $identifier;
-    $data->accessLevel = "public";
-    $data->modified = "06-04-2020";
-    $data->keyword = ["some keyword"];
-    $data->distribution = [];
-
-    foreach ($downloadUrls as $key => $downloadUrl) {
-      $distribution = new \stdClass();
-      $distribution->title = "Distribution #{$key} for {$identifier}";
-      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      $distribution->mediaType = "text/csv";
-
-      $data->distribution[] = $distribution;
-    }
-
-    return json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
-  }
+  use GetDataTrait;
 
   public function setUp() {
     parent::setUp();
@@ -78,7 +37,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
+    $dataset = $this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Test that nothing changes on put.
@@ -103,7 +62,7 @@ class DatasetTest extends ExistingSiteBase {
   public function test2() {
 
     // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
+    $dataset = $this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']);
     $data1 = $this->checkDatasetIn($dataset);
 
     // Process datastore operations. This will include downloading the remote
@@ -254,7 +213,7 @@ class DatasetTest extends ExistingSiteBase {
    * Store or update a dataset,run datastore_import and resource_purger queues.
    */
   private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
-    $datasetJson = $this->getData($identifier, $title, $filenames);
+    $datasetJson = $this->getDataset($identifier, $title, $filenames);
     $this->httpVerbHandler($method, $datasetJson, json_decode($datasetJson));
 
     // Simulate a cron on queues relevant to this scenario.
@@ -296,7 +255,7 @@ class DatasetTest extends ExistingSiteBase {
     }
     $filesObjects = $fileSystem->scanDirectory($dir, "/.*\.csv$/i", ['recurse' => TRUE]);
     $filenames = array_values(array_map(function ($obj) {
-      return str_replace(self::FILENAME_PREFIX, '', $obj->filename);
+      return str_replace($this->FILENAME_PREFIX, '', $obj->filename);
     }, $filesObjects));
     sort($filenames);
     return $filenames;

@@ -14,6 +14,8 @@ use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\datastore\Events\DatastoreCleanup;
 
 /**
  * Resource localizer.
@@ -30,15 +32,17 @@ class ResourceLocalizer {
   private $fileFetcherFactory;
   private $drupalFiles;
   private $jobStoreFactory;
+  private $eventDispatcher;
 
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
+  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory, ContainerAwareEventDispatcher $eventDispatcher) {
     $this->fileMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -109,18 +113,37 @@ class ResourceLocalizer {
   }
 
   /**
-   * Remove.
+   * Remove local file.
    */
   public function remove($identifier, $version = NULL) {
     /** @var \Drupal\common\Resource $resource */
     $resource = $this->get($identifier, $version);
+    $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
     if ($resource) {
-      $this->fileMapper->remove($resource);
       if (file_exists($resource->getFilePath())) {
+        $f = $resource->getFilePath();
         unlink($resource->getFilePath());
       }
-      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($resource->getUniqueIdentifier());
+      $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
+
+      if ($uuid) {
+        $directory = drupal_realpath("public://resources/{$uuid}");
+        \Drupal::service('file_system')->deleteRecursive($directory);
+        \Drupal::service('file_system')->rmdir($directory);
+      }
+      $this->fileMapper->remove($resource);
     }
+
+    if ($resource2) {
+      $this->removeLocalUrl($resource2);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function removeLocalUrl(Resource $resource) {
+    return $this->fileMapper->remove($resource);
   }
 
   /**
