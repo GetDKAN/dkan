@@ -373,6 +373,38 @@ class SchemaUiHandlerTest extends TestCase {
     ];
 
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
+    // Test upload_or_link widget.
+    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"downloadURL":{"ui:options":{"widget":"upload_or_link", "extensions": "jpg pdf png csv"}}}');
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $ui_handler = SchemaUiHandler::create($container);
+    $ui_handler->setSchemaUi('dataset');
+    $form = [
+      'downloadURL' => [
+        '#type' => 'string',
+        '#title' => 'Download URL',
+        '#description' => 'Some description',
+        '#required' => FALSE,
+        '#default_value' => 'https://url.to.api.or.file',
+      ],
+    ];
+    $expected = [
+      'downloadURL' => [
+        '#type' => 'upload_or_link',
+        '#title' => 'Download URL',
+        '#description' => 'Some description',
+        '#required' => FALSE,
+        '#uri' => 'https://url.to.api.or.file',
+        '#upload_location' => 'public://uploaded_resources',
+        '#upload_validators' => [
+          'file_validate_extensions' => ['jpg pdf png csv'],
+        ],
+      ],
+    ];
+    $form = $ui_handler->applySchemaUi($form);
+
+    $this->assertEquals($form, $expected);
   }
 
 }

@@ -1,0 +1,32 @@
+/**
+ * Success.
+ */
+table.dashboard-harvests td.success,
+table.dashboard-datasets td.published,
+table.dashboard-datasets td.done
+{
+  color: #325e1c;
+  background-color: #f3faef;
+}
+
+/*
+ * Warning.
+ */
+table.dashboard-datasets td.draft,
+table.dashboard-datasets td.in-progress,
+table.dashboard-datasets td.stopped,
+table.dashboard-datasets td.waiting
+{
+  color: #734c00;
+  background-color: #fdf8ed;
+}
+
+/**
+ * Error.
+ */
+table.dashboard-harvests td.failure,
+table.dashboard-datasets td.error
+{
+  color: #a51b00;
+  background-color: #fcf4f2;
+}

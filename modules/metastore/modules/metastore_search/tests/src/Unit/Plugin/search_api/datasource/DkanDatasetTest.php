@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore_search\Plugin\search_api\datasource;
+namespace Drupal\Tests\metastore_search\Unit\Plugin\search_api\datasource;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -18,7 +18,10 @@ use Drupal\Core\Entity\EntityTypeRepository;
 use Drupal\metastore_search\ComplexData\Dataset;
 
 /**
+ * Class DkanDatasetTest.
  *
+ * @package Drupal\Tests\metastore_search\Unit\Plugin\search_api\datasource
+ * @group metastore_search
  */
 class DkanDatasetTest extends TestCase {
 
@@ -47,6 +50,8 @@ class DkanDatasetTest extends TestCase {
       ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
       ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
       ->add(AbstractEntityStorage::class, 'retrieve', '{}')
+      ->add(DataFactory::class, 'getInstance', Data::class)
+      ->add(Data::class, 'retrievePublished', '{}')
       ->getMock();
 
     \Drupal::setContainer($container);

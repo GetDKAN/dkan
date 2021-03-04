@@ -165,9 +165,18 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * Helper function for handling widgets.
    */
   public function updateWidgets($spec, $element) {
-    if (!isset($spec->widget)) {
+    if (isset($spec->widget)) {
+      return $this->getConfiguredWidget($spec, $element);
+    }
+    else {
       return $element;
     }
+  }
+
+  /**
+   * Helper function for getting element with configured widget.
+   */
+  public function getConfiguredWidget($spec, $element) {
     switch ($spec->widget) {
       case 'hidden':
         $element['#access'] = FALSE;
@@ -182,6 +191,26 @@ class SchemaUiHandler implements ContainerInjectionInterface {
         $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
         $element['#access'] = FALSE;
         break;
+
+      case 'upload_or_link':
+        $element = $this->handleUploadOrLink($element, $spec);
+        break;
+    }
+    return $element;
+  }
+
+  /**
+   * Handle configuration for upload_or_link elements.
+   */
+  public function handleUploadOrLink($element, $spec) {
+    $element['#type'] = 'upload_or_link';
+    $element['#upload_location'] = 'public://uploaded_resources';
+    if (isset($element['#default_value'])) {
+      $element['#uri'] = $element['#default_value'];
+      unset($element['#default_value']);
+    }
+    if (isset($spec->extensions)) {
+      $element['#upload_validators']['file_validate_extensions'][] = $spec->extensions;
     }
     return $element;
   }

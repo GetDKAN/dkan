@@ -29,7 +29,7 @@ trait OrphanDatasetsProcessor {
    */
   private function getExtractedIds(string $harvestId, string $runId) : array {
     $runInfo = json_decode($this->getHarvestRunInfo($harvestId, $runId));
-    return $runInfo->status->extracted_items_ids;
+    return $runInfo->status->extracted_items_ids ?? [];
   }
 
   /**
