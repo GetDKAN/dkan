@@ -350,15 +350,17 @@ class DatasetTest extends ExistingSiteBase {
     return $fileData;
   }
 
-  private function httpVerbHandler(string $method, string $json, $dataset) {
+  private function httpVerbHandler(string $method, string $json_string, $dataset) {
+
+    $data = $this->getMetastore()->jsonStringToRootedJsonData('dataset', $json_string);
 
     if ($method == 'post') {
-      $identifier = $this->getMetastore()->post('dataset', $json);
+      $identifier = $this->getMetastore()->post('dataset', $data);
     }
     // PUT for now, refactor later if more verbs are needed.
     else {
       $id = $dataset->identifier;
-      $info = $this->getMetastore()->put('dataset', $id, $json);
+      $info = $this->getMetastore()->put('dataset', $id, $data);
       $identifier = $info['identifier'];
     }
 

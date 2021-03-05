@@ -46,11 +46,12 @@ class ServiceTest extends TestCase {
    */
   public function testGetAll() {
     $container = $this->getCommonMockChain()
-      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode("blah")]);
+      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode(['foo' => 'bar'])]);
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode(["blah"]), json_encode($service->getAll("dataset")));
+    $expected = $service->jsonStringToRootedJsonData('blah', json_encode(['foo' => 'bar']));
+    $this->assertEquals([$expected], $service->getAll("dataset"));
   }
 
   /**
@@ -69,10 +70,10 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetResources() {
-    $dataset = (object) [
+    $dataset = [
       "identifier" => "1",
       "distribution" => [
-        (object) ["title" => "hello"],
+        ["title" => "hello"],
       ],
     ];
 
@@ -81,7 +82,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode([(object) ["title" => "hello"]]),
+    $this->assertEquals(json_encode([["title" => "hello"]]),
       json_encode($service->getResources("dataset", "1")));
   }
 
@@ -94,7 +95,8 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals("1", $service->post("dataset", json_encode(['foo' => 'bar'])));
+    $data = $service->jsonStringToRootedJsonData('blah', json_encode(['foo' => 'bar']));
+    $this->assertEquals("1", $service->post("dataset", $data));
   }
 
   /**
@@ -107,7 +109,9 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->expectException(ExistingObjectException::class);
-    $service->post("dataset", '{"identifier":1,"title":"FooBar"}');
+
+    $data = $service->jsonStringToRootedJsonData('blah', '{"identifier":1,"title":"FooBar"}');
+    $service->post("dataset", $data);
   }
 
   /**
@@ -120,7 +124,9 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $info = $service->put("dataset", "1", json_encode("blah"));
+    $data = $service->jsonStringToRootedJsonData('blah', json_encode(['foo' => 'bar']));
+    $info = $service->put("dataset", "1", $data);
+
     $this->assertEquals("1", $info['identifier']);
   }
 
@@ -137,7 +143,9 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->expectExceptionMessage("Identifier cannot be modified");
-    $service->put("dataset", "1", $updating);
+
+    $data = $service->jsonStringToRootedJsonData('blah', $updating);
+    $service->put("dataset", "1", $data);
   }
 
   /**
@@ -150,6 +158,8 @@ class ServiceTest extends TestCase {
       ->add(AbstractEntityStorage::class, "store", "3");
 
     $service = Service::create($container->getMock());
+
+    $data = $service->jsonStringToRootedJsonData('blah', $data);
     $info = $service->put("dataset", "3", $data);
     $this->assertEquals("3", $info['identifier']);
   }
@@ -165,7 +175,9 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
-    $service->put("dataset", "1", $existing);
+
+    $data = $service->jsonStringToRootedJsonData('blah', $existing);
+    $service->put("dataset", "1", $data);
   }
 
   /**
@@ -185,7 +197,9 @@ EOF;
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
-    $service->put("dataset", "1", $updating);
+
+    $data = $service->jsonStringToRootedJsonData('blah', $updating);
+    $service->put("dataset", "1", $data);
   }
 
   /**
@@ -198,7 +212,8 @@ EOF;
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals("1", $service->patch("dataset", "1", json_encode("blah")));
+    $data = $service->jsonStringToRootedJsonData('blah', json_encode(['foo' => 'bar']));
+    $this->assertEquals("1", $service->patch("dataset", "1", $data));
   }
 
   /**
@@ -212,6 +227,8 @@ EOF;
 
     $service = Service::create($container->getMock());
     $this->expectException(MissingObjectException::class);
+
+    $data = $service->jsonStringToRootedJsonData('blah', $data);
     $service->patch("dataset", "1", $data);
   }
 
@@ -262,13 +279,13 @@ EOF;
       "@id" => "http://catalog",
       "dataset" => [],
     ];
-    $dataset = (object) ["foo" => "bar"];
 
     $container = $this->getCommonMockChain()
       ->add(FileSchemaRetriever::class, "retrieve", json_encode($catalog))
-      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)]);
+      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode(["foo" => "bar"]), json_encode(["foo" => "bar"])]);
 
     $service = Service::create($container->getMock());
+    $dataset = $service->jsonStringToRootedJsonData('blah', json_encode(["foo" => "bar"]));
     $catalog->dataset = [
       $dataset,
       $dataset,
