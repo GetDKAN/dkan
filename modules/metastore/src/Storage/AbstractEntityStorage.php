@@ -4,6 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use RootedData\RootedJsonData;
 
 /**
  * Data.
@@ -109,6 +110,7 @@ abstract class AbstractEntityStorage implements MetastoreStorageInterface {
     foreach ($entity_ids as $nid) {
       $entity = $this->entityStorage->load($nid);
       if ($entity->get('moderation_state')->getString() === 'published') {
+        // TODO: consider transforming to RootedJsonData.
         $all[] = $entity->get('field_json_metadata')->getString();
       }
     }
@@ -124,6 +126,7 @@ abstract class AbstractEntityStorage implements MetastoreStorageInterface {
     $entity = $this->getEntityPublishedRevision($uuid);
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
+      // TODO: consider transforming to RootedJsonData.
       return $entity->get('field_json_metadata')->getString();
     }
 
@@ -227,8 +230,10 @@ abstract class AbstractEntityStorage implements MetastoreStorageInterface {
    *
    * {@inheritdoc}.
    */
-  public function store($data, string $uuid = NULL): string {
+  public function store(RootedJsonData $data, string $uuid = NULL): string {
     $data = json_decode($data);
+
+    // TODO: consider usind with RootedJsonData.
     $data = $this->filterHtml($data);
 
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;

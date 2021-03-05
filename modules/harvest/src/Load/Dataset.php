@@ -28,12 +28,13 @@ class Dataset extends Load {
       $item = json_encode($item);
     }
 
+    $schema_id = 'dataset';
+    $item = $service->jsonStringToRootedJsonData($schema_id, $item);
     try {
-      $service->post('dataset', $item);
+      $service->post($schema_id, $item);
     }
     catch (ExistingObjectException $e) {
-      $object = json_decode($item, TRUE);
-      $service->put('dataset', $object['identifier'], $item);
+      $service->put($schema_id, $item->{'$.identifier'}, $item);
     }
   }
 

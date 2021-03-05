@@ -6,6 +6,7 @@ use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\InvalidJsonException;
 use Drupal\metastore\Exception\MetastoreException;
 use Drupal\metastore\Exception\MissingPayloadException;
+use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -103,6 +104,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function get(string $schema_id, string $identifier) {
     try {
+      // TODO: use RootedJsonData.
       $object = json_decode($this->service->get($schema_id, $identifier));
       if ($this->wantObjectWithReferences()) {
         $object = $this->swapReferences($object);
@@ -189,6 +191,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $data = $this->getRequestContent();
       $this->checkData($data);
+
+      $data = $this->service->jsonStringToRootedJsonData($schema_id, $data);
+
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
@@ -242,6 +247,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $data = $this->getRequestContent();
       $this->checkData($data, $identifier);
+
+      $data = $this->service->jsonStringToRootedJsonData($schema_id, $data);
+
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);
@@ -270,6 +278,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $data = $this->getRequestContent();
       $this->checkData($data, $identifier);
+
+      $data = $this->service->jsonStringToRootedJsonData($schema_id, $data);
+
       $this->service->patch($schema_id, $identifier, $data);
       return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
     }
@@ -322,6 +333,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   private function checkData($data, $identifier = NULL) {
 
+    // TODO: work with RootedJsonData object. Not sure if needed.
     if (empty($data)) {
       throw new MissingPayloadException("Empty body");
     }

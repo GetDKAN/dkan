@@ -11,7 +11,6 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
-use RootedData\Exception\ValidationException;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -127,10 +126,11 @@ class Service implements ContainerInjectionInterface {
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
       function ($json_string) use ($schema_id) {
+        $data = $this->jsonStringToRootedJsonData($schema_id, $json_string);
         if (!empty($this->plugins)) {
-          $json_string = $this->modifyData($schema_id, $json_string);
+          $data = $this->modifyData($schema_id, $data);
         }
-        return json_decode($json_string);
+        return $data;
       },
       $datasets
     );
@@ -146,11 +146,12 @@ class Service implements ContainerInjectionInterface {
    * @param string $identifier
    *   Identifier.
    *
-   * @return string
+   * @return \RootedData\RootedJsonData
    *   The json data.
    */
-  public function get($schema_id, $identifier): string {
-    $data = $this->getStorage($schema_id)->retrievePublished($identifier);
+  public function get($schema_id, $identifier): RootedJsonData {
+    $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
+    $data = $this->jsonStringToRootedJsonData($schema_id, $json_string);
     if (!empty($this->plugins)) {
       $data = $this->modifyData($schema_id, $data);
     }
@@ -162,25 +163,39 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
-   * @param string $data
+   * @param \RootedData\RootedJsonData $data
    *   The Json input.
    *
-   * @return string
+   * @return \RootedData\RootedJsonData
    *   The Json, modified by each applicable discovered data modifier plugins.
    */
-  private function modifyData(string $schema_id, string $data) {
-    $dataObj = json_decode($data);
-
+  private function modifyData(string $schema_id, RootedJsonData $data): RootedJsonData {
     foreach ($this->plugins as $plugin) {
-      if ($plugin->requiresModification($schema_id, $dataObj)) {
-        $dataObj = $plugin->modify($schema_id, $dataObj);
+      // TODO: make sure plugins can work with RootedJsonData.
+      if ($plugin->requiresModification($schema_id, $data)) {
+        $data = $plugin->modify($schema_id, $data);
       }
     }
 
-    // TODO: abandon the method and use RootedJsonData instead on JSON string.
-    $this->validateJson($schema_id, $data);
+    return $data;
+  }
 
-    return json_encode($dataObj);
+  /**
+   * Converts Json string into RootedJsonData object.
+   *
+   * @param \Drupal\metastore\string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param \Drupal\metastore\string $json_string
+   *   Json string.
+   *
+   * @return \RootedData\RootedJsonData
+   *   RootedJsonData object.
+   *
+   * @throws \JsonPath\InvalidJsonException
+   */
+  public function jsonStringToRootedJsonData(string $schema_id, string $json_string): RootedJsonData {
+    $schema = $this->schemaRetriever->retrieve($schema_id);
+    return new RootedJsonData($json_string, $schema);
   }
 
   /**
@@ -197,10 +212,11 @@ class Service implements ContainerInjectionInterface {
    * @todo Make this aware of revisions and moderation states.
    */
   public function getResources($schema_id, $identifier): array {
-    $json = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = json_decode($json);
+    $json_string = $this->getStorage($schema_id)->retrieve($identifier);
+    $data = $this->jsonStringToRootedJsonData($schema_id, $json_string);
+
     /* @todo decouple from POD. */
-    $resources = $data->distribution;
+    $resources = $data->{"$.distribution"};;
 
     return $resources;
   }
@@ -210,22 +226,18 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
-   * @param string $data
+   * @param \RootedData\RootedJsonData $data
    *   Json payload.
    *
    * @return string
    *   The identifier.
    */
-  public function post($schema_id, string $data): string {
-    // TODO: abandon the method and use RootedJsonData instead on JSON string.
-    $this->validateJson($schema_id, $data);
-
+  public function post($schema_id, RootedJsonData $data): string {
     $identifier = NULL;
 
     // If resource already exists, return HTTP 409 Conflict and existing uri.
-    $decoded = json_decode($data, TRUE);
-    if (isset($decoded['identifier'])) {
-      $identifier = $decoded['identifier'];
+    if (!empty($data->{'$.identifier'})) {
+      $identifier = $data->{'$.identifier'};
       if ($this->objectExists($schema_id, $identifier)) {
         throw new ExistingObjectException("{$schema_id}/{$identifier} already exists.");
       }
@@ -260,18 +272,14 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
-   * @param string $data
+   * @param \RootedData\RootedJsonData $data
    *   Json payload.
    *
    * @return array
    *   ["identifier" => string, "new" => boolean].
    */
-  public function put($schema_id, $identifier, string $data): array {
-    // TODO: abandon the method and use RootedJsonData instead on JSON string.
-    $this->validateJson($schema_id, $data);
-
-    $obj = json_decode($data);
-    if (isset($obj->identifier) && $obj->identifier != $identifier) {
+  public function put($schema_id, $identifier, RootedJsonData $data): array {
+    if (!empty($data->{'$.identifier'}) && $data->{'$.identifier'} != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");
     }
     elseif ($this->objectExists($schema_id, $identifier) && $this->objectIsEquivalent($schema_id, $identifier, $data)) {
@@ -289,13 +297,13 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
-   * @param string $data
+   * @param \RootedData\RootedJsonData $data
    *   Json payload.
    *
    * @return array
    *   ["identifier" => string, "new" => boolean].
    */
-  private function proceedWithPut($schema_id, $identifier, string $data): array {
+  private function proceedWithPut($schema_id, $identifier, RootedJsonData $data): array {
     if ($this->objectExists($schema_id, $identifier)) {
       $this->getStorage($schema_id)->store($data, $identifier);
       return ['identifier' => $identifier, 'new' => FALSE];
@@ -313,16 +321,13 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
-   * @param mixed $data
+   * @param \RootedData\RootedJsonData $data
    *   Json payload.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function patch($schema_id, $identifier, $data) {
-    // TODO: abandon the method and use RootedJsonData instead on JSON string.
-    $this->validateJson($schema_id, $data);
-
+  public function patch($schema_id, $identifier, RootedJsonData $data) {
     $storage = $this->getStorage($schema_id);
     if ($this->objectExists($schema_id, $identifier)) {
       $storage->store($data, $identifier);
@@ -388,16 +393,17 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   The uuid.
-   * @param string $metadata
+   * @param \RootedData\RootedJsonData $metadata
    *   The new data being compared to the existing data.
    *
    * @return bool
    *   TRUE if the metadata is equivalent, false otherwise.
    */
-  private function objectIsEquivalent(string $schema_id, string $identifier, string $metadata) {
+  private function objectIsEquivalent(string $schema_id, string $identifier, RootedJsonData $metadata) {
     $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
     $existing = json_decode($existingMetadata);
     $existing = self::removeReferences($existing);
+    // TODO: find out if we can use RootedJsonData instead.
     $new = json_decode($metadata);
     return $new == $existing;
   }
@@ -406,6 +412,7 @@ class Service implements ContainerInjectionInterface {
    * Private.
    */
   public static function removeReferences($object, $prefix = "%") {
+    // TODO: consider replacing with RootedJsonData.
     $array = (array) $object;
     foreach ($array as $property => $value) {
       if (substr_count($property, $prefix) > 0) {
@@ -420,27 +427,6 @@ class Service implements ContainerInjectionInterface {
     }
 
     return $object;
-  }
-
-  /**
-   * Temporary validate method.
-   *
-   * Using RootedJsonData instead of JSON string will make it redundant.
-   *
-   * @param string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param string $json_data
-   *   Json payload.
-   *
-   * @return bool
-   */
-  private function validateJson(string $schema_id, string $json_data): bool {
-    $schema = $this->schemaRetriever->retrieve($schema_id);
-    $result = RootedJsonData::validate($json_data, $schema);
-    if (!$result->isValid()) {
-      throw new ValidationException("JSON Schema validation failed.", $result);
-    }
-    return TRUE;
   }
 
 }
