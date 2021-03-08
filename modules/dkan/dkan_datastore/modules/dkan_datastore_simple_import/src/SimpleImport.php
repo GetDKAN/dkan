@@ -44,7 +44,7 @@ class SimpleImport extends Manager {
 
     $finished = TRUE;
     $interrupt = $this->getInterrupt();
-    while ($chunk = fread($h, 32)) {
+    while ($chunk = fgets($h)) {
       if ($interrupt) {
         $finished = FALSE;
         break;
