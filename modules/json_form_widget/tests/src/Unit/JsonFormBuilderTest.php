@@ -286,6 +286,53 @@ class JsonFormBuilderTest extends TestCase {
     $result = $form_builder->getJsonForm([], $form_state);
     unset($result['keyword']['actions']);
     $this->assertEquals($result, $expected);
+
+    // Test array required.
+    $container_chain->add(SchemaRetriever::class, 'retrieve', '
+    {
+      "required": [
+        "keyword"
+      ],
+      "properties":{
+        "keyword": {
+          "title": "Tags",
+          "description": "Tags (or keywords).",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "title": "Tag"
+          },
+          "minItems": 1
+        }
+      },
+      "type":"object"
+    }');
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+
+    $form_builder = FormBuilder::create($container);
+    $form_builder->setSchema('dataset');
+    $expected = [
+      "keyword" => [
+        "#type" => "fieldset",
+        "#title" => "Tags",
+        "#prefix" => '<div id="keyword-fieldset-wrapper">',
+        "#suffix" => "</div>",
+        "#tree" => TRUE,
+        "#description" => "Tags (or keywords).",
+        "keyword" => [
+          0 => [
+            "#type" => "textfield",
+            "#title" => "Tag",
+            "#required" => TRUE,
+          ],
+        ],
+      ],
+    ];
+    $form_state = new FormState();
+    $result = $form_builder->getJsonForm([], $form_state);
+    unset($result['keyword']['actions']);
+    $this->assertEquals($result, $expected);
   }
 
   /**
