@@ -1,5 +1,27 @@
+uuid: 52ae0c02-4ea9-4589-9408-e960babc3964
 langcode: en
 status: true
+dependencies:
+  module:
+    - ace_editor
+_core:
+  default_config_hash: g9bszKLN5B_z7s681DQjxCc1EoHF1xg_BwFOQcvJO4c
 name: JSON
 format: json
 weight: 0
+filters:
+  ace_filter:
+    id: ace_filter
+    provider: ace_editor
+    status: false
+    weight: 0
+    settings:
+      theme: cobalt
+      syntax: html
+      height: 500px
+      width: 700px
+      font_size: 12pt
+      line_numbers: '1'
+      print_margins: '1'
+      show_invisibles: '0'
+      use_wrap_mode: '1'
