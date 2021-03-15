@@ -171,7 +171,7 @@ class JsonFormWidget extends WidgetBase {
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
     $field_name = $form_state->get('json_form_widget_field');
     // TODO: there is duplicated code here.
-    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
+    $type = $this->getSchemaIdFromEntity($form_state->getFormObject()->getEntity());
     $type = isset($type) ? $type : $this->getSetting('schema');
     $this->builder->setSchema($this->getSetting('schema'), $type);
     $schema = $this->builder->getSchema();
