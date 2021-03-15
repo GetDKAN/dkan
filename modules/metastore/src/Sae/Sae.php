@@ -66,7 +66,7 @@ class Sae
     {
         if (isset($id)) {
             return $this->storage->retrieve($id);
-        } elseif ($this->storage instanceof BulkRetrieverInterface) {
+        } elseif ($this->storage instanceof MetastoreStorageInterface) {
             return $this->storage->retrieveAll();
         } else {
             throw new \Exception(
