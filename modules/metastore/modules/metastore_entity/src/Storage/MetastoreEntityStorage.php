@@ -38,7 +38,7 @@ class MetastoreEntityStorage extends AbstractEntityStorage {
     $all = [];
     foreach ($entity_ids as $id) {
       $metastore_item = $this->entityStorage->load($id);
-      if ($metastore_item->get('moderation_state')->getString() === 'published') {
+      if ($metastore_item->get('status') == TRUE) {
         $all[] = $metastore_item->getMetadata();
       }
     }
@@ -66,5 +66,34 @@ class MetastoreEntityStorage extends AbstractEntityStorage {
     throw new \Exception("No data with that identifier was found.");
   }
 
+  /**
+   * Inherited.
+   *
+   * {@inheritdoc}.
+   */
+  public function getEntityIdFromUuid(string $uuid) : ?int {
+
+    $entity_ids = $this->entityStorage->getQuery()
+      ->condition('uuid', $uuid)
+      ->condition('schema', $this->schemaId)
+      ->execute();
+
+    return $entity_ids ? (int) reset($entity_ids) : NULL;
+  }
+
+  /**
+   * Inherited.
+   *
+   * {@inheritdoc}.
+   */
+  public function retrievePublished(string $uuid) : ?string {
+    $entity = $this->getEntityPublishedRevision($uuid);
+
+    if ($entity && $entity->get('moderation_state')->getString() == 'published') {
+      return $entity->get('json_data')->getString();
+    }
+
+    throw new \Exception("No data with that identifier was found.");
+  }
 
 }
