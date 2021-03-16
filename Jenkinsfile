@@ -2,12 +2,13 @@ pipeline {
     agent any
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
-        DKTL_SLUG = "dkan$CHANGE_ID"
+        DKTL_SLUG = "dkan_qa_$CHANGE_ID"
         DKTL_TRAEFIK = "proxy"
         WEB_DOMAIN = "ci.civicactions.net"
         GITHUB_PROJECT = 'https://github.com/GetDKAN/dkan.git'
-        DKTL_VERSION = '4.1.0'
+        DKTL_VERSION = 'master'
         DKTL_DIRECTORY = "$WORKSPACE/dkan-tools"
+        DKTL_PROJECT_DIRECTORY="$WORKSPACE/dkan"
     }
     stages {
         stage ('Preclean') {
@@ -17,33 +18,29 @@ pipeline {
                     sh '''
                     echo "Checking for existing containers"
                     containers_up=`ps -ef|grep ${DKTL_SLUG}`
-                    if [ !-z $containers_up ]
+                    if [ -n $containers_up ]
                     then
                         echo "Shutting down existing containers"
                         dktl down -r
                     fi
                     echo "Removing existing repos for dkan and dkan-tools"
                     sudo rm -rf dkan*
-                    sudo rm -rf dkan-tools*
                     '''
                 }
             }
         }
         stage ('Clone DKAN Repo') {
-            when { changeRequest() }
-            steps {
-                git url: GITHUB_PROJECT, branch: "${env.CHANGE_BRANCH}"
-            }
+                steps {
+                    dir ("dkan") {
+                        git url: GITHUB_PROJECT, branch: "${env.CHANGE_BRANCH}"
+                    }
+                }
         }
         stage('Clone dkan-tools') {
-            when { changeRequest() }
             steps {
                 sh '''
                 curl -O -L "https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
                 unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip
-                cat dkan-tools/bin/dktl|grep -vE '(^|\\s)proxy_setup($|\\s)'|grep -vE '(^|\\s)set_directory($|\\s)' >>dkan-tools/bin/dktl.fix
-                mv dkan-tools/bin/dktl.fix dkan-tools/bin/dktl
-                chmod 775 dkan-tools/bin/dktl
                 '''
             }
         }
@@ -52,9 +49,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        echo "PWD*************"
-                        pwd
-                        dktl init
+                        cd dkan
+                        dktl dc up -d
                         dktl make
                         dktl install
                         dktl frontend:install
