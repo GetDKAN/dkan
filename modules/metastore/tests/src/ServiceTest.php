@@ -6,7 +6,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Factory\Sae;
+use Drupal\metastore\RootedJsonDataWrapper;
 use Drupal\metastore\Service;
 use Drupal\metastore\FileSchemaRetriever;
 use Drupal\metastore\Storage\AbstractEntityStorage;
@@ -45,12 +45,14 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetAll() {
+    $expected = $this->getJsonWrapper()->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+
     $container = $this->getCommonMockChain()
-      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode(['foo' => 'bar'])]);
+      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $expected);
 
     $service = Service::create($container->getMock());
 
-    $expected = $service->jsonStringToRootedJsonData('blah', json_encode(['foo' => 'bar']));
     $this->assertEquals([$expected], $service->getAll("dataset"));
   }
 
@@ -58,12 +60,15 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+
     $container = $this->getCommonMockChain()
-      ->add(AbstractEntityStorage::class, "retrievePublished", json_encode("blah"));
+      ->add(AbstractEntityStorage::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $data);
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode("blah"), $service->get("dataset", "1"));
+    $this->assertEquals(json_encode(['foo' => 'bar']), $service->get("dataset", "1"));
   }
 
   /**
@@ -76,9 +81,11 @@ class ServiceTest extends TestCase {
         ["title" => "hello"],
       ],
     ];
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', json_encode($dataset));
 
     $container = $this->getCommonMockChain()
-      ->add(AbstractEntityStorage::class, "retrieve", json_encode($dataset));
+      ->add(AbstractEntityStorage::class, "retrieve", json_encode($dataset))
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $data);
 
     $service = Service::create($container->getMock());
 
@@ -95,7 +102,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $data = $service->jsonStringToRootedJsonData('blah', json_encode(['foo' => 'bar']));
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
     $this->assertEquals("1", $service->post("dataset", $data));
   }
 
@@ -110,7 +117,7 @@ class ServiceTest extends TestCase {
 
     $this->expectException(ExistingObjectException::class);
 
-    $data = $service->jsonStringToRootedJsonData('blah', '{"identifier":1,"title":"FooBar"}');
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', '{"identifier":1,"title":"FooBar"}');
     $service->post("dataset", $data);
   }
 
@@ -124,7 +131,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $data = $service->jsonStringToRootedJsonData('blah', json_encode(['foo' => 'bar']));
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
     $info = $service->put("dataset", "1", $data);
 
     $this->assertEquals("1", $info['identifier']);
@@ -144,7 +151,7 @@ class ServiceTest extends TestCase {
 
     $this->expectExceptionMessage("Identifier cannot be modified");
 
-    $data = $service->jsonStringToRootedJsonData('blah', $updating);
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', $updating);
     $service->put("dataset", "1", $data);
   }
 
@@ -152,14 +159,13 @@ class ServiceTest extends TestCase {
    *
    */
   public function testPutResultingInNewData() {
-    $data = '{"identifier":"3","title":"FooBar"}';
     $container = $this->getCommonMockChain()
       ->add(AbstractEntityStorage::class, "retrieve", new \Exception())
       ->add(AbstractEntityStorage::class, "store", "3");
 
     $service = Service::create($container->getMock());
 
-    $data = $service->jsonStringToRootedJsonData('blah', $data);
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', '{"identifier":"3","title":"FooBar"}');
     $info = $service->put("dataset", "3", $data);
     $this->assertEquals("3", $info['identifier']);
   }
@@ -176,7 +182,7 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
-    $data = $service->jsonStringToRootedJsonData('blah', $existing);
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', $existing);
     $service->put("dataset", "1", $data);
   }
 
@@ -198,7 +204,7 @@ EOF;
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
-    $data = $service->jsonStringToRootedJsonData('blah', $updating);
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', $updating);
     $service->put("dataset", "1", $data);
   }
 
@@ -212,7 +218,7 @@ EOF;
 
     $service = Service::create($container->getMock());
 
-    $data = $service->jsonStringToRootedJsonData('blah', json_encode(['foo' => 'bar']));
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
     $this->assertEquals("1", $service->patch("dataset", "1", $data));
   }
 
@@ -220,7 +226,7 @@ EOF;
    *
    */
   public function testPatchObjectNotFoundException() {
-    $data = '{"identifier":"1","title":"FooBar"}';
+    $data = $this->getJsonWrapper()->createRootedJsonData('dataset', '{"identifier":"1","title":"FooBar"}');
 
     $container = $this->getCommonMockChain()
       ->add(AbstractEntityStorage::class, "retrieve", new \Exception());
@@ -228,7 +234,6 @@ EOF;
     $service = Service::create($container->getMock());
     $this->expectException(MissingObjectException::class);
 
-    $data = $service->jsonStringToRootedJsonData('blah', $data);
     $service->patch("dataset", "1", $data);
   }
 
@@ -275,6 +280,8 @@ EOF;
    *
    */
   public function testGetCatalog() {
+    $dataset = $this->getJsonWrapper()->createRootedJsonData('blah', json_encode(["foo" => "bar"]));
+
     $catalog = (object) [
       "@id" => "http://catalog",
       "dataset" => [],
@@ -282,10 +289,11 @@ EOF;
 
     $container = $this->getCommonMockChain()
       ->add(FileSchemaRetriever::class, "retrieve", json_encode($catalog))
-      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode(["foo" => "bar"]), json_encode(["foo" => "bar"])]);
+      ->add(AbstractEntityStorage::class, 'retrieveAll', [json_encode(["foo" => "bar"]), json_encode(["foo" => "bar"])])
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $dataset);
 
     $service = Service::create($container->getMock());
-    $dataset = $service->jsonStringToRootedJsonData('blah', json_encode(["foo" => "bar"]));
+
     $catalog->dataset = [
       $dataset,
       $dataset,
@@ -300,12 +308,28 @@ EOF;
     $options = (new Options())
       ->add('metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('dkan.metastore.storage', NodeStorageFactory::class)
+      ->add('dkan.metastore.rooted_json_data_wrapper', RootedJsonDataWrapper::class)
       ->index(0);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
       ->add(FileSchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+  }
+
+  /**
+   * @return \Drupal\metastore\RootedJsonDataWrapper
+   */
+  public function getJsonWrapper() {
+    $options = (new Options())
+      ->add('metastore.schema_retriever', FileSchemaRetriever::class)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+
+    return RootedJsonDataWrapper::create($container->getMock());
   }
 
 }

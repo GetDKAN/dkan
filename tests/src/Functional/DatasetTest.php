@@ -352,7 +352,7 @@ class DatasetTest extends ExistingSiteBase {
 
   private function httpVerbHandler(string $method, string $json_string, $dataset) {
 
-    $data = $this->getMetastore()->jsonStringToRootedJsonData('dataset', $json_string);
+    $data = $this->getMetastore()->getRootedJsonDataWrapper()->createRootedJsonData('dataset', $json_string);
 
     if ($method == 'post') {
       $identifier = $this->getMetastore()->post('dataset', $data);
