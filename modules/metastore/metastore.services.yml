@@ -4,6 +4,7 @@ services:
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.rooted_json_data_wrapper'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
 
@@ -52,12 +53,18 @@ services:
     arguments:
       - '@database'
 
+  dkan.metastore.rooted_json_data_wrapper:
+    class: \Drupal\metastore\RootedJsonDataWrapper
+    arguments:
+      - '@dkan.metastore.schema_retriever'
+
   # @deprecated
   metastore.service:
     class: \Drupal\metastore\Service
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.rooted_json_data_wrapper'
     calls:
       - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
 

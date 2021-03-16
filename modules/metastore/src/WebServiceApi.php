@@ -192,7 +192,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       $data = $this->getRequestContent();
       $this->checkData($data);
 
-      $data = $this->service->jsonStringToRootedJsonData($schema_id, $data);
+      $data = $this->service->getRootedJsonDataWrapper()->createRootedJsonData($schema_id, $data);
 
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
@@ -248,7 +248,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       $data = $this->getRequestContent();
       $this->checkData($data, $identifier);
 
-      $data = $this->service->jsonStringToRootedJsonData($schema_id, $data);
+      $data = $this->service->getRootedJsonDataWrapper()->createRootedJsonData($schema_id, $data);
 
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
@@ -279,7 +279,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       $data = $this->getRequestContent();
       $this->checkData($data, $identifier);
 
-      $data = $this->service->jsonStringToRootedJsonData($schema_id, $data);
+      $data = $this->service->getRootedJsonDataWrapper()->createRootedJsonData($schema_id, $data);
 
       $this->service->patch($schema_id, $identifier, $data);
       return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);

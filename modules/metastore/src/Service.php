@@ -42,6 +42,13 @@ class Service implements ContainerInjectionInterface {
   private $storages;
 
   /**
+   * RootedJsonData wrapper.
+   *
+   * @var \Drupal\metastore\RootedJsonDataWrapper
+   */
+  private $rootedJsonDataWrapper;
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}
@@ -49,16 +56,18 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('metastore.schema_retriever'),
-      $container->get('dkan.metastore.storage')
+      $container->get('dkan.metastore.storage'),
+      $container->get('dkan.metastore.rooted_json_data_wrapper')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetrieverInterface $schemaRetriever, MetastoreStorageFactoryInterface $factory) {
+  public function __construct(SchemaRetrieverInterface $schemaRetriever, MetastoreStorageFactoryInterface $factory, RootedJsonDataWrapper $rootedJsonDataWrapper) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
+    $this->rootedJsonDataWrapper = $rootedJsonDataWrapper;
   }
 
   /**
@@ -126,7 +135,7 @@ class Service implements ContainerInjectionInterface {
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
       function ($json_string) use ($schema_id) {
-        $data = $this->jsonStringToRootedJsonData($schema_id, $json_string);
+        $data = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, $json_string);
         if (!empty($this->plugins)) {
           $data = $this->modifyData($schema_id, $data);
         }
@@ -151,7 +160,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function get($schema_id, $identifier): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
-    $data = $this->jsonStringToRootedJsonData($schema_id, $json_string);
+    $data = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, $json_string);
     if (!empty($this->plugins)) {
       $data = $this->modifyData($schema_id, $data);
     }
@@ -181,24 +190,6 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Converts Json string into RootedJsonData object.
-   *
-   * @param \Drupal\metastore\string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param \Drupal\metastore\string $json_string
-   *   Json string.
-   *
-   * @return \RootedData\RootedJsonData
-   *   RootedJsonData object.
-   *
-   * @throws \JsonPath\InvalidJsonException
-   */
-  public function jsonStringToRootedJsonData(string $schema_id, string $json_string): RootedJsonData {
-    $schema = $this->schemaRetriever->retrieve($schema_id);
-    return new RootedJsonData($json_string, $schema);
-  }
-
-  /**
    * GET all resources associated with a dataset.
    *
    * @param string $schema_id
@@ -213,12 +204,22 @@ class Service implements ContainerInjectionInterface {
    */
   public function getResources($schema_id, $identifier): array {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = $this->jsonStringToRootedJsonData($schema_id, $json_string);
+    $data = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, $json_string);
 
     /* @todo decouple from POD. */
     $resources = $data->{"$.distribution"};;
 
     return $resources;
+  }
+
+  /**
+   * Get rootedJsonDataWrapper.
+   *
+   * @return \Drupal\metastore\RootedJsonDataWrapper
+   *   rootedJsonDataWrapper.
+   */
+  public function getRootedJsonDataWrapper() {
+    return $this->rootedJsonDataWrapper;
   }
 
   /**
