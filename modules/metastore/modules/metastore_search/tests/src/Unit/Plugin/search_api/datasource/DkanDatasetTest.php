@@ -6,7 +6,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\metastore\Storage\AbstractEntityStorage;
+use Drupal\metastore\Storage\NodeStorage;
 use Drupal\metastore\Storage\NodeStorageFactory;
 use Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset;
 use Drupal\node\NodeInterface;
@@ -48,10 +48,9 @@ class DkanDatasetTest extends TestCase {
       ->add(QueryInterface::class, 'execute', $executeSequence)
       ->add(QueryInterface::class, 'range', QueryInterface::class)
       ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
-      ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
-      ->add(AbstractEntityStorage::class, 'retrieve', '{}')
-      ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'retrievePublished', '{}')
+      ->add(NodeStorageFactory::class, 'getInstance', NodeStorage::class)
+      ->add(NodeStorage::class, 'retrieve', '{}')
+      ->add(NodeStorage::class, 'retrievePublished', '{}')
       ->getMock();
 
     \Drupal::setContainer($container);
