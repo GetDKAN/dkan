@@ -45,6 +45,12 @@
           "widget": "textarea",
           "rows": 5
         }
+      },
+      "downloadURL": {
+        "ui:options": {
+          "widget": "plupload_or_link",
+          "extensions": "csv pdf xls xlsx"
+        }
       }
     }
   },

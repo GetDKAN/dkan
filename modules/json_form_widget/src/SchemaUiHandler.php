@@ -195,6 +195,10 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       case 'upload_or_link':
         $element = $this->handleUploadOrLink($element, $spec);
         break;
+      
+      case 'plupload_or_link':
+        $element = $this->handlePluploadOrLink($element, $spec);
+        break;
     }
     return $element;
   }
@@ -212,6 +216,16 @@ class SchemaUiHandler implements ContainerInjectionInterface {
     if (isset($spec->extensions)) {
       $element['#upload_validators']['file_validate_extensions'][] = $spec->extensions;
     }
+    return $element;
+  }
+
+  /**
+   * Handle configuration for upload_or_link elements.
+   */
+  public function handlePluploadOrLink($element, $spec) {
+    $element['#type'] = 'plupload_or_link';
+    $element['#autoupload'] = TRUE;
+    $element['#upload_validators']['file_validate_extensions'][] = $spec->extensions;
     return $element;
   }
 
