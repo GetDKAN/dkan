@@ -5,6 +5,8 @@ namespace Drupal\Tests\metastore_search\Unit;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\metastore\FileSchemaRetriever;
+use Drupal\metastore\RootedJsonDataWrapper;
 use Drupal\metastore_search\Search;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\metastore\Service as Metastore;
@@ -112,18 +114,20 @@ class SearchTest extends TestCase {
       ->add(Item::class, 'getId', 1)
       ->getMock();
 
-    $collection = (object) [
+    $collection = [
       'title' => 'hello',
       'description' => 'goodbye',
       'publisher__name' => 'Steve',
     ];
 
-    $facet = (object) ['data' => (object) ['name' => 'Steve']];
+    $facet = ['data' => ['name' => 'Steve']];
 
     $getAllOptions = (new Options())
       ->add('keyword', [])
       ->add('theme', [])
-      ->add('publisher', [$facet]);
+      ->add('publisher', [$this->getJsonWrapper()->createRootedJsonData('publisher', json_encode($facet))]);
+
+    $getData = $this->getJsonWrapper()->createRootedJsonData('dummy_schema_id', json_encode($collection));
 
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
@@ -136,8 +140,23 @@ class SearchTest extends TestCase {
       ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
       ->add(ResultSet::class, 'getResultCount', 1)
       ->add(ResultSet::class, 'getResultItems', [$item])
-      ->add(Metastore::class, 'get', json_encode($collection))
+      ->add(Metastore::class, 'get', $getData)
       ->add(Metastore::class, 'getAll', $getAllOptions);
+  }
+
+  /**
+   * @return \Drupal\metastore\RootedJsonDataWrapper
+   */
+  public function getJsonWrapper() {
+    $options = (new Options())
+      ->add('metastore.schema_retriever', FileSchemaRetriever::class)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+
+    return RootedJsonDataWrapper::create($container->getMock());
   }
 
 }
