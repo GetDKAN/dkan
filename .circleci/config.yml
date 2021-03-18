@@ -25,7 +25,7 @@ jobs:
       - run:
           name: Make DKAN
           command: dktl make
-       - run:
+      - run:
           name: Add Drush
           command: dktl composer require drush/drush
       - persist_to_workspace:
