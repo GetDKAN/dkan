@@ -36,6 +36,7 @@ class NodeStorageFactory implements MetastoreStorageFactoryInterface {
     if (!isset($this->stores[$identifier])) {
       $entity_type = $this->getEntityTypeBySchema($identifier);
 
+      // TODO: No need in this if it is only for nodes.
       switch ($entity_type) {
         case 'node':
         default:

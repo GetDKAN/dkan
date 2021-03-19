@@ -6,6 +6,8 @@ use Contracts\Mock\Storage\Memory;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\harvest\Load\Dataset;
 use Drupal\metastore\Exception\ExistingObjectException;
+use Drupal\metastore\FileSchemaRetriever;
+use Drupal\metastore\RootedJsonDataWrapper;
 use Drupal\metastore\Service;
 use MockChain\Chain;
 use MockChain\Options;
@@ -25,8 +27,13 @@ class DatasetTest extends TestCase {
       ->add('metastore.service', Service::class)
       ->index(0);
 
+    $object = (object) ["identifier" => "1"];
+    $expected = $this->getJsonWrapper()->createRootedJsonData('dummy_schema_id', json_encode($object));
+
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
+      ->add(Service::class, "getRootedJsonDataWrapper", RootedJsonDataWrapper::class)
+      ->add(RootedJsonDataWrapper::class, "createRootedJsonData", $expected)
       ->add(Service::class, "post", "1", 'post');
 
     $container = $containerChain->getMock();
@@ -38,14 +45,12 @@ class DatasetTest extends TestCase {
     $itemStorage = new Memory();
 
     $load = new Dataset($plan, $hashStorage, $itemStorage);
-    $object = (object) ["identifier" => "1"];
-
     $load->run($object);
 
     $input = $containerChain->getStoredInput('post');
 
     $this->assertEquals('dataset', $input[0]);
-    $this->assertEquals(json_encode($object), $input[1]);
+    $this->assertEquals($expected, $input[1]);
   }
 
   /**
@@ -56,8 +61,13 @@ class DatasetTest extends TestCase {
       ->add('metastore.service', Service::class)
       ->index(0);
 
+    $object = (object) ["identifier" => "1"];
+    $expected = $this->getJsonWrapper()->createRootedJsonData('dummy_schema_id', json_encode($object));
+
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
+      ->add(Service::class, "getRootedJsonDataWrapper", RootedJsonDataWrapper::class)
+      ->add(RootedJsonDataWrapper::class, "createRootedJsonData", $expected)
       ->add(Service::class, 'post', new ExistingObjectException())
       ->add(Service::class, "put", [], 'put');
 
@@ -70,15 +80,28 @@ class DatasetTest extends TestCase {
     $itemStorage = new Memory();
 
     $load = new Dataset($plan, $hashStorage, $itemStorage);
-    $object = (object) ["identifier" => "1"];
-
     $load->run($object);
 
     $input = $containerChain->getStoredInput('put');
 
     $this->assertEquals('dataset', $input[0]);
     $this->assertEquals('1', $input[1]);
-    $this->assertEquals(json_encode($object), $input[2]);
+    $this->assertEquals($expected, $input[2]);
+  }
+
+  /**
+   * @return \Drupal\metastore\RootedJsonDataWrapper
+   */
+  public function getJsonWrapper() {
+    $options = (new Options())
+      ->add('metastore.schema_retriever', FileSchemaRetriever::class)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+
+    return RootedJsonDataWrapper::create($container->getMock());
   }
 
 }
