@@ -288,7 +288,7 @@ class JsonFormBuilderTest extends TestCase {
     $this->assertEquals($result, $expected);
 
     // Test array required.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '
     {
       "required": [
         "keyword"

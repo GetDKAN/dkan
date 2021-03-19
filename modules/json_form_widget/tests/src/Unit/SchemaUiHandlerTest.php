@@ -10,7 +10,6 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\metastore\FileSchemaRetriever;
 use MockChain\Options;
-use phpDocumentor\Reflection\PseudoTypes\True_;
 
 /**
  * Test class for SchemaUiHandlerTest.
@@ -375,7 +374,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test upload_or_link widget.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"downloadURL":{"ui:options":{"widget":"upload_or_link", "extensions": "jpg pdf png csv"}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"downloadURL":{"ui:options":{"widget":"upload_or_link", "extensions": "jpg pdf png csv"}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
