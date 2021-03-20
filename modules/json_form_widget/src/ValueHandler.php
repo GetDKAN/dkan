@@ -33,6 +33,10 @@ class ValueHandler {
    * Flatten values for string properties.
    */
   public function handleStringValues($formValues, $property) {
+    // Handle select_or_other_select.
+    if (isset($formValues[$property]['select'])) {
+      return $formValues[$property][0];
+    }
     if (!empty($formValues[$property])) {
       return $formValues[$property];
     }

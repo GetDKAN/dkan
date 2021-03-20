@@ -204,6 +204,69 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       case 'upload_or_link':
         $element = $this->handleUploadOrLink($element, $spec);
         break;
+
+      case 'dropdown':
+        $element = $this->handleDropdown($element, $spec);
+        break;
+    }
+    return $element;
+  }
+
+  /**
+   * Handle configuration for dropdown elements.
+   */
+  public function handleDropdown($element, $spec) {
+    if (isset($spec->titleProperty)) {
+      if (isset($element[$spec->titleProperty])) {
+        $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec);
+      }
+    }
+    else {
+      $element = $this->getDropdownElement($element, $spec);
+    }
+    return $element;
+  }
+
+  /**
+   * Helper function to build a dropdown element.
+   */
+  public function getDropdownElement($element, $spec) {
+    $element['#type'] = $this->getSelectType($spec);
+    $element['#options'] = $this->getDropdownOptions($spec->source);
+    if ($element['#type'] === 'select_or_other_select') {
+      $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
+      $element['#input_type'] = isset($spec->other_type) ? $spec->other_type : 'textfield';
+    }
+    return $element;
+  }
+
+  /**
+   * Helper function to get type of pick list.
+   */
+  public function getSelectType($spec) {
+    if ($spec->type === 'select_other') {
+      return 'select_or_other_select';
+    }
+    return 'select';
+  }
+
+  /**
+   * Helper function to get options for dropdowns.
+   */
+  public function getDropdownOptions($source) {
+    if ($source->enum) {
+      return $this->stringHelper->getSelectOptions($source);
+    }
+  }
+
+  /**
+   * Helper function to add the value of other to current list of options.
+   */
+  private function handleSelectOtherDefaultValue($element, $options) {
+    if (!empty($element['#default_value'])) {
+      if (!array_key_exists($element['#default_value'], $options)) {
+        $element['#options'][$element['#default_value']] = $element['#default_value'];
+      }
     }
     return $element;
   }
