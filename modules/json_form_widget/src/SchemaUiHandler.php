@@ -42,6 +42,13 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   protected $uuidService;
 
   /**
+   * StringHelper Service.
+   *
+   * @var \Drupal\json_form_widget\StringHelper
+   */
+  protected $stringHelper;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -50,18 +57,20 @@ class SchemaUiHandler implements ContainerInjectionInterface {
     return new static(
       $container->get('dkan.metastore.schema_retriever'),
       $container->get('logger.factory'),
-      $container->get('uuid')
+      $container->get('uuid'),
+      $container->get('json_form.string_helper')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory, Php $uuid) {
+  public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory, Php $uuid, StringHelper $string_helper) {
     $this->schemaRetriever = $schema_retriever;
     $this->schemaUi = FALSE;
     $this->loggerFactory = $logger_factory;
     $this->uuidService = $uuid;
+    $this->stringHelper = $string_helper;
   }
 
   /**
