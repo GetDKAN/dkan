@@ -18,15 +18,32 @@
       }
     }
   },
+  "accessLevel": {
+    "ui:options": {
+      "description": "This refers to how the data can be accessed.s"
+    }
+  },
   "spatial": {
     "ui:options": {
       "widget": "textarea",
-      "rows": 5
+      "rows": 5,
+      "title": "Relevant Location",
+      "description": "If your dataset has a spatial component, please provide location such as place name or latitude/longitude pairs."
+    }
+  },
+  "isPartOf": {
+    "ui:options": {
+      "widget": "hidden"
     }
   },
   "publisher": {
     "properties": {
       "@type": {
+        "ui:options": {
+          "widget": "hidden"
+        }
+      },
+      "subOrganizationOf": {
         "ui:options": {
           "widget": "hidden"
         }
@@ -57,6 +74,16 @@
           "extensions": "csv pdf tsv jpg txt xls xlsx",
           "progress_indicator": "bar"
         }
+      }
+    }
+  },
+  "theme": {
+    "ui:options": {
+      "title": "Topics"
+    },
+    "items": {
+      "ui:options": {
+        "title": "Topic"
       }
     }
   },
