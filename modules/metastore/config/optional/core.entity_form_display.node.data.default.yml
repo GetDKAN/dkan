@@ -7,6 +7,7 @@ dependencies:
     - field.field.node.data.field_json_metadata
     - node.type.data
   module:
+    - json_form_widget
     - path
 id: node.data.default
 targetEntityType: node
@@ -22,10 +23,9 @@ content:
   field_json_metadata:
     weight: 6
     settings:
-      rows: 5
-      placeholder: ''
+      schema: dataset
     third_party_settings: {  }
-    type: string_textarea
+    type: json_form_widget
     region: content
   path:
     type: path
