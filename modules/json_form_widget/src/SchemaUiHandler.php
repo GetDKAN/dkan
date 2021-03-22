@@ -205,7 +205,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
         $element = $this->handleUploadOrLink($element, $spec);
         break;
 
-      case 'dropdown':
+      case 'options':
         $element = $this->handleDropdown($element, $spec);
         break;
     }
