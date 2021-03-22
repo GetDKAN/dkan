@@ -23,6 +23,7 @@ class SchemaUiHandlerTest extends TestCase {
   public function testSchemaUi() {
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('json_form.string_helper', StringHelper::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('uuid', Php::class)
       ->index(0);
