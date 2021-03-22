@@ -8,9 +8,10 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\json_form_widget\SchemaUiHandler;
+use Drupal\json_form_widget\StringHelper;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Service;
 use MockChain\Options;
-use phpDocumentor\Reflection\PseudoTypes\True_;
 
 /**
  * Test class for SchemaUiHandlerTest.
@@ -25,6 +26,7 @@ class SchemaUiHandlerTest extends TestCase {
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.metastore.service', Service::class)
       ->add('uuid', Php::class)
       ->index(0);
 
