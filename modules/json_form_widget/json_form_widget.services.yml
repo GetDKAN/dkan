@@ -17,4 +17,4 @@ services:
     arguments: ['@json_form.object_helper']
   json_form.schema_ui_handler:
     class: \Drupal\json_form_widget\SchemaUiHandler
-    arguments: ['@dkan.metastore.schema_retriever', '@logger.factory', '@uuid', '@json_form.string_helper']
+    arguments: ['@dkan.metastore.schema_retriever', '@logger.factory', '@uuid', '@json_form.string_helper', '@dkan.metastore.service']

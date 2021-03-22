@@ -7,6 +7,7 @@ use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Component\Uuid\Php;
+use Drupal\metastore\Service;
 
 /**
  * Class SchemaUiHandler.
@@ -49,6 +50,13 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   protected $stringHelper;
 
   /**
+   * Metastore Service.
+   *
+   * @var \Drupal\metastore\Service
+   */
+  protected $metastore;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -58,19 +66,21 @@ class SchemaUiHandler implements ContainerInjectionInterface {
       $container->get('dkan.metastore.schema_retriever'),
       $container->get('logger.factory'),
       $container->get('uuid'),
-      $container->get('json_form.string_helper')
+      $container->get('json_form.string_helper'),
+      $container->get('dkan.metastore.service')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory, Php $uuid, StringHelper $string_helper) {
+  public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory, Php $uuid, StringHelper $string_helper, Service $metastore) {
     $this->schemaRetriever = $schema_retriever;
     $this->schemaUi = FALSE;
     $this->loggerFactory = $logger_factory;
     $this->uuidService = $uuid;
     $this->stringHelper = $string_helper;
+    $this->metastore = $metastore;
   }
 
   /**
@@ -218,7 +228,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   public function handleDropdown($element, $spec) {
     if (isset($spec->titleProperty)) {
       if (isset($element[$spec->titleProperty])) {
-        $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec);
+        $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
       }
     }
     else {
@@ -230,12 +240,16 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   /**
    * Helper function to build a dropdown element.
    */
-  public function getDropdownElement($element, $spec) {
+  public function getDropdownElement($element, $spec, $titleProperty = FALSE) {
     $element['#type'] = $this->getSelectType($spec);
-    $element['#options'] = $this->getDropdownOptions($spec->source);
+    $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {
       $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
       $element['#input_type'] = isset($spec->other_type) ? $spec->other_type : 'textfield';
+    }
+    if ($element['#type'] === 'select2') {
+      $element['#multiple'] = $spec->multiple ? TRUE : FALSE;
+      $element['#autocreate'] = $spec->allowCreate ? TRUE : FALSE;
     }
     return $element;
   }
@@ -247,16 +261,39 @@ class SchemaUiHandler implements ContainerInjectionInterface {
     if ($spec->type === 'select_other') {
       return 'select_or_other_select';
     }
+    if ($spec->type === 'autocomplete') {
+      return 'select2';
+    }
     return 'select';
   }
 
   /**
    * Helper function to get options for dropdowns.
    */
-  public function getDropdownOptions($source) {
+  public function getDropdownOptions($source, $titleProperty = FALSE) {
     if ($source->enum) {
       return $this->stringHelper->getSelectOptions($source);
     }
+    if ($source->metastoreSchema) {
+      return $this->getOptionsFromMetastore($source, $titleProperty);
+    }
+  }
+
+  /**
+   * Helper function to get options from metastore.
+   */
+  public function getOptionsFromMetastore($source, $titleProperty = FALSE) {
+    $options = [];
+    $values = $this->metastore->getAll($source->metastoreSchema);
+    foreach ($values as $key => $value) {
+      if ($titleProperty) {
+        $options[$value->data->{$titleProperty}] = $value->data->{$titleProperty};
+      }
+      else {
+        $options[$value->data] = $value->data;
+      }
+    }
+    return $options;
   }
 
   /**
