@@ -5,8 +5,8 @@
  */
 
 /**
- * Install select_or_other.
+ * Install select_or_other and select2.
  */
 function json_form_widget_update_8001() {
-  \Drupal::service('module_installer')->install(['select_or_other']);
+  \Drupal::service('module_installer')->install(['select_or_other', 'select2']);
 }
