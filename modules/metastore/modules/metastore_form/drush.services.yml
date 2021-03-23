@@ -1,5 +1,0 @@
-services:
-  metastore_form:commands:
-    class: \Drupal\metastore_form\Drush
-    tags:
-      - { name: drush.command }
