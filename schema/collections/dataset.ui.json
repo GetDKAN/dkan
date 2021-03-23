@@ -83,6 +83,29 @@
           "widget": "textarea",
           "rows": 5
         }
+      },
+      "format": {
+        "ui:options": {
+          "widget": "options",
+          "type": "select_other",
+          "other_type": "textfield",
+          "source": {
+            "enum": [
+              "arcgis",
+              "csv",
+              "esri rest",
+              "geojson",
+              "json",
+              "kml",
+              "pdf",
+              "tsv",
+              "xls",
+              "xlsx",
+              "xml",
+              "zip"
+            ]
+          }
+        }
       }
     }
   },
