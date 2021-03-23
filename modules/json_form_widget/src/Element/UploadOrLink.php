@@ -43,7 +43,6 @@ class UploadOrLink extends ManagedFile {
       '#pre_render' => [[$class, 'preRenderManagedFile']],
       '#theme' => 'file_managed_file',
       '#theme_wrappers' => ['form_element'],
-      '#progress_indicator' => 'throbber',
       '#progress_message' => NULL,
       '#upload_validators' => [],
       '#upload_location' => NULL,
