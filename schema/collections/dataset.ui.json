@@ -20,7 +20,7 @@
   },
   "accessLevel": {
     "ui:options": {
-      "description": "This refers to how the data can be accessed.s"
+      "description": "This refers to how the data can be accessed."
     }
   },
   "spatial": {
