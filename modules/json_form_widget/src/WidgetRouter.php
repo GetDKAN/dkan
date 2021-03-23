@@ -59,28 +59,22 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function for getting element with configured widget.
    */
   public function getConfiguredWidget($spec, $element) {
-    switch ($spec->widget) {
-      case 'hidden':
-        $element['#access'] = FALSE;
-        break;
-
-      case 'textarea':
-        $element['#type'] = 'textarea';
-        $element = $this->getTextareaOptions($spec, $element);
-        break;
-
-      case 'dkan_uuid':
-        $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
-        $element['#access'] = FALSE;
-        break;
-
-      case 'upload_or_link':
-        $element = $this->handleUploadOrLink($element, $spec);
-        break;
-
-      case 'options':
-        $element = $this->handleDropdown($element, $spec);
-        break;
+    if ($spec->widget == 'hidden') {
+      $element['#access'] = FALSE;
+    }
+    elseif ($spec->widget == 'textarea') {
+      $element['#type'] = 'textarea';
+      $element = $this->getTextareaOptions($spec, $element);
+    }
+    elseif ($spec->widget == 'dkan_uuid') {
+      $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
+      $element['#access'] = FALSE;
+    }
+    elseif ($spec->widget == 'upload_or_link') {
+      $element = $this->handleUploadOrLink($element, $spec);
+    }
+    elseif ($spec->widget == 'options') {
+      $element = $this->handleDropdown($element, $spec);
     }
     return $element;
   }
