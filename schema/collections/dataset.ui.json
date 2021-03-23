@@ -33,6 +33,39 @@
       }
     }
   },
+  "license": {
+    "ui:options": {
+      "widget": "options",
+      "type": "select_other",
+      "other_type": "url",
+      "source": {
+        "enum": [
+          "https://creativecommons.org/licenses/by/4.0/",
+          "https://creativecommons.org/licenses/by-sa/4.0/",
+          "https://creativecommons.org/publicdomain/zero/1.0/",
+          "https://creativecommons.org/licenses/by-nc/2.5/",
+          "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+          "https://www.gnu.org/licenses/fdl.html",
+          "https://opendatacommons.org/licenses/by/1.0/",
+          "https://opendatacommons.org/licenses/odbl/1.0/",
+          "http://opendefinition.org/licenses/odc-pddl/",
+          "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/"
+        ],
+        "enumNames": [
+          "Creative Commons Attribution",
+          "Creative Commons Attribution Share-Alike",
+          "Creative Commons CCZero",
+          "Creative Commons Non-Commercial (2.5)",
+          "Attribution NonCommercial NoDerivatives 4.0 International",
+          "GNU Free Documentation License",
+          "Open Data Commons Attribution License",
+          "Open Data Commons Open Database License (ODbL)",
+          "Open Data Commons Public Domain Dedication and Licence (PDDL)",
+          "UK Open Government Licence (OGL)"
+        ]
+      }
+    }
+  },
   "distribution": {
     "items": {
       "@type": {
