@@ -115,10 +115,10 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function to get type of pick list.
    */
   public function getSelectType($spec) {
-    if ($spec->type === 'select_other') {
+    if (isset($spec->type) && $spec->type === 'select_other') {
       return 'select_or_other_select';
     }
-    if ($spec->type === 'autocomplete') {
+    elseif (isset($spec->type) && $spec->type === 'autocomplete') {
       return 'select2';
     }
     return 'select';
@@ -128,12 +128,14 @@ class WidgetRouter implements ContainerInjectionInterface {
    * Helper function to get options for dropdowns.
    */
   public function getDropdownOptions($source, $titleProperty = FALSE) {
-    if ($source->enum) {
-      return $this->stringHelper->getSelectOptions($source);
+    $options = [];
+    if (isset($source->enum)) {
+      $options = $this->stringHelper->getSelectOptions($source);
     }
-    if ($source->metastoreSchema) {
-      return $this->getOptionsFromMetastore($source, $titleProperty);
+    if (isset($source->metastoreSchema)) {
+      $options = $this->getOptionsFromMetastore($source, $titleProperty);
     }
+    return $options;
   }
 
   /**
