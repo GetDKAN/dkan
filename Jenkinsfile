@@ -18,34 +18,14 @@ pipeline {
                     sh '''
                     echo "If exist...remove containers and network for qa_$CHANGE_ID"
                     qa_container_ids=`docker ps|grep qa_$CHANGE_ID|awk '{ print $1 }'`
-                    traefik_container_id=`docker ps|grep traefik|awk '{ print $1 }'`
                     qa_network_id=`docker network ls|grep qa_$CHANGE_ID|awk '{ print $1 }'`
 
-                    if [ -n "$qa_network_id" ]
+                    if [ -n "$qa_container_ids" ]
                     then
-                      qa_traefik_connection_check=`docker network inspect $qa_network_id|grep -c $traefik_container_id`
-                    fi
-
-                    for i in $qa_container_ids
-                    do
-                      echo "Removing container ID $i"
-                      docker container stop $i
-                      docker container rm $i
-                    done
-
-                    if [ $qa_traefik_connection_check -gt 0 ]
-                    then
-                      echo "Disconnecting network ID $qa_network_id from Traefik"
-                      docker network disconnect $qa_network_id $traefik_container_id
-                    fi
-
-                    if [ -n "$qa_network_id" ]
-                    then
-                      echo "Removing network ID $qa_network_id"
-                      docker network rm $qa_network_id
-                    fi
-
-                    sudo rm -rf /var/jenkins_home/jobs/DKAN/jobs/DKAN/branches/$WORKSPACE/workspace/*
+                      cd projects/dkan
+                      dktl docker:compose stop
+                      dktl docker:compose rm -f
+                    fi                    
                     '''
                     deleteDir()
                 }
