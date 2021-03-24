@@ -2,13 +2,13 @@ pipeline {
     agent any
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
+        USER = 'jenkins'
         DKTL_SLUG = "dkan_qa_$CHANGE_ID"
         DKTL_TRAEFIK = "proxy"
         WEB_DOMAIN = "ci.civicactions.net"
-        GITHUB_PROJECT = 'https://github.com/GetDKAN/dkan.git'
-        DKTL_VERSION = 'master'
+        DKAN_REPO = 'https://github.com/GetDKAN/dkan.git'
+        DKTL_REPO = 'https://github.com/GetDKAN/dkan-tools.git'
         DKTL_DIRECTORY = "$WORKSPACE/dkan-tools"
-        DKTL_PROJECT_DIRECTORY="$WORKSPACE/dkan"
     }
     stages {
         stage ('Preclean') {
@@ -16,45 +16,66 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    echo "Checking for existing containers"
-                    containers_up=`ps -ef|grep ${DKTL_SLUG}`
-                    if [ -n $containers_up ]
+                    echo "If exist...remove containers and network for qa_$CHANGE_ID"
+                    qa_container_ids=`docker ps|grep qa_$CHANGE_ID|awk '{ print $1 }'`
+                    traefik_container_id=`docker ps|grep traefik|awk '{ print $1 }'`
+                    qa_network_id=`docker network ls|grep qa_$CHANGE_ID|awk '{ print $1 }'`
+
+                    if [ -n "$qa_network_id" ]
                     then
-                        echo "Shutting down existing containers"
-                        dktl down -r
+                      qa_traefik_connection_check=`docker network inspect $qa_network_id|grep -c $traefik_container_id`
                     fi
-                    echo "Removing existing repos for dkan and dkan-tools"
-                    sudo rm -rf dkan*
+
+                    for i in $qa_container_ids
+                    do
+                      echo "Removing container ID $i"
+                      docker container stop $i
+                      docker container rm $i
+                    done
+
+                    if [ $qa_traefik_connection_check -gt 0 ]
+                    then
+                      echo "Disconnecting network ID $qa_network_id from Traefik"
+                      docker network disconnect $qa_network_id $traefik_container_id
+                    fi
+
+                    if [ -n "$qa_network_id" ]
+                    then
+                      echo "Removing network ID $qa_network_id"
+                      docker network rm $qa_network_id
+                    fi
+
+                    sudo rm -rf /var/jenkins_home/jobs/DKAN/jobs/DKAN/branches/$WORKSPACE/workspace/*
                     '''
+                    deleteDir()
                 }
             }
         }
         stage ('Clone DKAN Repo') {
                 steps {
-                    dir ("dkan") {
-                        git url: GITHUB_PROJECT, branch: "${env.CHANGE_BRANCH}"
+                    dir ("projects/dkan") {
+                        git url: DKAN_REPO, branch: "${env.CHANGE_BRANCH}"
                     }
                 }
         }
-        stage('Clone dkan-tools') {
-            steps {
-                sh '''
-                curl -O -L "https://github.com/GetDKAN/dkan-tools/archive/${DKTL_VERSION}.zip"
-                unzip ${DKTL_VERSION}.zip && mv dkan-tools-${DKTL_VERSION} dkan-tools && rm ${DKTL_VERSION}.zip
-                '''
-            }
+        stage ('Clone dkan-tools') {
+                steps {
+                    dir ("dkan-tools") {
+                        git url: DKTL_REPO, branch: "master"
+                    }
+                }
         }
         stage('Build QA Site') {
             when { changeRequest() }
             steps {
                 script {
                     sh '''
-                        cd dkan
-                        dktl dc up -d
-                        dktl make
-                        dktl install
-                        dktl frontend:install
-                        dktl frontend:build
+                        cd projects
+                        export DKTL_DIRECTORY="$WORKSPACE/dkan-tools"
+                        echo $DKTL_DIRECTORY
+                        dktl init --dkan-local
+                        dktl demo
+                        sudo chown -R 1000:docker /var/jenkins_home/jobs/DKAN/jobs/DKAN/branches/PR-$CHANGE_ID/workspace/dkan-tools/vendor
                     '''
                 }
             }
@@ -68,7 +89,7 @@ pipeline {
                 }
                 sh '''
                 echo QA site ready at http://${DKTL_SLUG}.${WEB_DOMAIN}/
-                curl `dktl docker:url`
+                curl "http://${DKTL_SLUG}.${WEB_DOMAIN}"
                 '''
             }
         }
@@ -87,7 +108,7 @@ pipeline {
     post {
         success {
             script {
-                gitCommitMessage = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+                gitCommitMessage = sh(returnStdout: true, script: 'cd projects/dkan; git log -1 --pretty=%B').trim()
                 currentBuild.description = "${gitCommitMessage}"
             }
         }
@@ -102,7 +123,7 @@ pipeline {
  * @param state State to report to Github (e.g. "success")
  */
 void setBuildStatus(String message, String target_url, String state) {
-    withCredentials([string(credentialsId: 'nucivicmachine',
+    withCredentials([string(credentialsId: 'github-token',
 			  variable: 'GITHUB_API_TOKEN')]) {
 	def url = "https://api.github.com/repos/getdkan/dkan/statuses/$GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
 	def data = [
