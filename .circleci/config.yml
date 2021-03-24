@@ -5,7 +5,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.1"
+      DKTL_VERSION: "composer-project"
     steps:
       - checkout:
           path: dkan
