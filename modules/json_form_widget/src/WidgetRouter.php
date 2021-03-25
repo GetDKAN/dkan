@@ -73,9 +73,25 @@ class WidgetRouter implements ContainerInjectionInterface {
     elseif ($spec->widget == 'upload_or_link') {
       $element = $this->handleUploadOrLink($element, $spec);
     }
-    elseif ($spec->widget == 'options') {
+    elseif ($spec->widget == 'list') {
       $element = $this->handleDropdown($element, $spec);
     }
+    return $element;
+  }
+
+  /**
+   * Flatten array elements if hideActions is set.
+   */
+  public function flattenArrays($spec, $element) {
+    unset($element['actions']);
+    $default_value = [];
+    foreach ($element[$spec->child] as $key => $item) {
+      $default_value[$item['#default_value']] = $item['#default_value'];
+      if ($key != 0) {
+        unset($element[$spec->child][$key]);
+      }
+    }
+    $element[$spec->child][0]['#default_value'] = $default_value;
     return $element;
   }
 

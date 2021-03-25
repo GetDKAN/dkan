@@ -112,6 +112,9 @@ class SchemaUiHandler implements ContainerInjectionInterface {
         $item = $this->applyOnArrayFields($property, $spec->items, $item, $fields);
       }
     }
+    if (isset($spec->{"ui:options"}->hideActions)) {
+      $element = $this->widgetRouter->flattenArrays($spec->{"ui:options"}, $element);
+    }
     if (isset($spec->properties)) {
       $element[$property] = $this->applyOnBaseField($spec, $element[$property]);
       $element = $this->applyOnObjectFields($property, $spec->properties, $element);
