@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -25,7 +26,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetSchemas() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "getAllIds", ["1"]);
 
     $service = Service::create($container->getMock());
@@ -36,7 +37,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetSchema() {
-    $container = $this->getCommonMockChain();
+    $container = self::getCommonMockChain($this);
 
     $service = Service::create($container->getMock());
     $this->assertEquals(json_encode("blah"), json_encode($service->getSchema("1")));
@@ -46,9 +47,11 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetAll() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", [json_encode("blah")]);
+
+    \Drupal::setContainer($container->getMock());
 
     $service = Service::create($container->getMock());
 
@@ -59,8 +62,10 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrievePublished", json_encode("blah"));
+
+    \Drupal::setContainer($container->getMock());
 
     $service = Service::create($container->getMock());
 
@@ -78,7 +83,7 @@ class ServiceTest extends TestCase {
       ],
     ];
 
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", json_encode($dataset));
 
@@ -92,7 +97,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testPost() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "post", "1");
 
@@ -105,7 +110,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testPostAlreadyExisting() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", "1");
 
@@ -119,7 +124,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testPut() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "put", "1")
       ->add(Engine::class, "get", "1");
@@ -137,7 +142,7 @@ class ServiceTest extends TestCase {
     $existing = '{"identifier":"1","title":"Foo"}';
     $updating = '{"identifier":"2","title":"Bar"}';
 
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", $existing);
 
@@ -152,7 +157,7 @@ class ServiceTest extends TestCase {
    */
   public function testPutResultingInNewData() {
     $data = '{"identifier":"3","title":"FooBar"}';
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", new \Exception())
       ->add(Engine::class, "put", "3")
@@ -169,7 +174,7 @@ class ServiceTest extends TestCase {
   public function testPutObjectUnchangedException() {
     $existing = '{"identifier":"1","title":"Foo"}';
 
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", $existing);
 
@@ -190,7 +195,7 @@ class ServiceTest extends TestCase {
       }
 EOF;
 
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", $existing);
 
@@ -203,7 +208,7 @@ EOF;
    *
    */
   public function testPatch() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "patch", "1")
       ->add(Engine::class, "get", "1");
@@ -219,7 +224,7 @@ EOF;
   public function testPatchObjectNotFoundException() {
     $data = '{"identifier":"1","title":"FooBar"}';
 
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", new \Exception());
 
@@ -232,7 +237,7 @@ EOF;
    *
    */
   public function testPublish() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", "1")
       ->add(Data::class, "publish", "1");
@@ -246,7 +251,7 @@ EOF;
    *
    */
   public function testPublishMissingObjectExpection() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", new \Exception());
 
@@ -260,7 +265,7 @@ EOF;
    *
    */
   public function testDelete() {
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "delete", "1")
       ->add(Engine::class, "get", "1");
@@ -280,10 +285,12 @@ EOF;
     ];
     $dataset = (object) ["foo" => "bar"];
 
-    $container = $this->getCommonMockChain()
+    $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", [json_encode($dataset), json_encode($dataset)]);
+
+    \Drupal::setContainer($container->getMock());
 
     $service = Service::create($container->getMock());
     $catalog->dataset = [
@@ -296,15 +303,29 @@ EOF;
   /**
    * @return \Drupal\common\Tests\Mock\Chain
    */
-  public function getCommonMockChain() {
-    $options = (new Options())
-      ->add('metastore.schema_retriever', SchemaRetriever::class)
-      ->add('metastore.sae_factory', Sae::class)
-      ->add('dkan.metastore.storage', DataFactory::class)
-      ->index(0);
+  public static function getCommonMockChain(TestCase $case, Options $services = null) {
+    if (!$services) {
+      $services = new Options();
+    }
 
-    return (new Chain($this))
-      ->add(Container::class, "get", $options)
+    $myServices = [
+      'dkan.metastore.schema_retriever' => SchemaRetriever::class,
+      'dkan.metastore.sae_factory' => Sae::class,
+      'dkan.metastore.storage' => DataFactory::class,
+      'event_dispatcher' => ContainerAwareEventDispatcher::class
+    ];
+
+    foreach ($myServices as $serviceName => $class) {
+      $serviceClass = $services->return($serviceName);
+      if (!isset($serviceClass)) {
+        $services->add($serviceName, $class);
+      }
+    }
+
+    $services->index(0);
+
+    return (new Chain($case))
+      ->add(Container::class, "get", $services)
       ->add(DataFactory::class, 'getInstance', Data::class)
       ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
   }
