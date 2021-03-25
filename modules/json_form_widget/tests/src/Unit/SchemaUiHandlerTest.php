@@ -413,10 +413,10 @@ class SchemaUiHandlerTest extends TestCase {
 
     $this->assertEquals($form, $expected);
 
-    // Test options with select widget.
+    // Test list with select widget.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"format": {
         "ui:options": {
-          "widget": "options",
+          "widget": "list",
           "type": "select",
           "source": {
             "enum": ["arcgis","csv"]
@@ -453,10 +453,10 @@ class SchemaUiHandlerTest extends TestCase {
 
     $this->assertEquals($form, $expected);
 
-    // Test options with select other widget.
+    // Test list with select other widget.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"format": {
         "ui:options": {
-          "widget": "options",
+          "widget": "list",
           "type": "select_other",
           "other_type": "textfield",
           "source": {
@@ -516,7 +516,7 @@ class SchemaUiHandlerTest extends TestCase {
       ->add(SchemaRetriever::class, 'retrieve',
       '{"publisher": {
         "ui:options": {
-          "widget": "options",
+          "widget": "list",
           "type": "autocomplete",
           "titleProperty": "name",
           "allowCreate": "true",
@@ -563,6 +563,7 @@ class SchemaUiHandlerTest extends TestCase {
           ],
           '#multiple' => TRUE,
           '#autocreate' => TRUE,
+          '#target_type' => 'data',
         ],
       ],
     ];
@@ -589,7 +590,7 @@ class SchemaUiHandlerTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(SchemaRetriever::class, 'retrieve', '{"publisher": {
         "ui:options": {
-          "widget": "options",
+          "widget": "list",
           "type": "autocomplete",
           "allowCreate": "true",
           "multiple": "true",
@@ -624,6 +625,7 @@ class SchemaUiHandlerTest extends TestCase {
         ],
         '#multiple' => TRUE,
         '#autocreate' => TRUE,
+        '#target_type' => 'data',
       ],
     ];
     $form = $ui_handler->applySchemaUi($form);
