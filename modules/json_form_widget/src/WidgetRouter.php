@@ -108,6 +108,9 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element['#multiple'] = $spec->multiple ? TRUE : FALSE;
       $element['#autocreate'] = $spec->allowCreate ? TRUE : FALSE;
     }
+    if ($element['#autocreate']) {
+      $element['#target_type'] = 'data';
+    }
     return $element;
   }
 

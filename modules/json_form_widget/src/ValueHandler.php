@@ -72,9 +72,14 @@ class ValueHandler {
       return $this->getObjectInArrayData($formValues, $property, $subschema);
     }
 
-    foreach ($formValues[$property][$property] as $key => $value) {
-      if (!empty($value)) {
-        $data[$key] = $value;
+    foreach ($formValues[$property][$property] as $value) {
+      if (is_array($value)) {
+        foreach ($value as $item) {
+          $data[] = $item;
+        }
+      }
+      elseif (!empty($value)) {
+        $data[] = $value;
       }
     }
     return $data;
