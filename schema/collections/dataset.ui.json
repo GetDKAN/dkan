@@ -25,6 +25,15 @@
     }
   },
   "publisher": {
+    "ui:options": {
+      "widget": "list",
+      "type": "autocomplete",
+      "allowCreate": "true",
+      "titleProperty": "name",
+      "source": {
+        "metastoreSchema": "publisher"
+      }
+    },
     "properties": {
       "@type": {
         "ui:options": {
@@ -130,6 +139,39 @@
   "describedBy": {
     "ui:options": {
       "placeholder": "http://"
+    }
+  },
+  "theme": {
+    "ui:options": {
+      "hideActions": "true",
+      "child": "theme"
+    },
+    "items": {
+      "ui:options": {
+        "widget": "list",
+        "type": "autocomplete",
+        "multiple": "true",
+        "source": {
+          "metastoreSchema": "theme"
+        }
+      }
+    }
+  },
+  "keyword": {
+    "ui:options": {
+      "hideActions": "true",
+      "child": "keyword"
+    },
+    "items": {
+      "ui:options": {
+        "widget": "list",
+        "type": "autocomplete",
+        "allowCreate": "true",
+        "multiple": "true",
+        "source": {
+          "metastoreSchema": "keyword"
+        }
+      }
     }
   }
 }
