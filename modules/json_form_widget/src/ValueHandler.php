@@ -66,21 +66,31 @@ class ValueHandler {
    * Flatten values for array properties.
    */
   public function handleArrayValues($formValues, $property, $schema) {
-    $data = FALSE;
+    $data = [];
     $subschema = $schema->items;
     if ($subschema->type === "object") {
       return $this->getObjectInArrayData($formValues, $property, $subschema);
     }
 
     foreach ($formValues[$property][$property] as $value) {
-      if (is_array($value)) {
-        foreach ($value as $item) {
-          $data[] = $item;
-        }
+      $data = array_merge($data, $this->flattenArraysInArrays($value));
+    }
+    return !empty($data) ? $data : FALSE;
+  }
+
+  /**
+   * Flatten values for arrays in arrays.
+   */
+  private function flattenArraysInArrays($value) {
+    ksm($value);
+    $data = [];
+    if (is_array($value)) {
+      foreach ($value as $item) {
+        $data[] = $item;
       }
-      elseif (!empty($value)) {
-        $data[] = $value;
-      }
+    }
+    elseif (!empty($value)) {
+      $data[] = $value;
     }
     return $data;
   }
