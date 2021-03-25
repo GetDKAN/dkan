@@ -115,6 +115,13 @@
             ]
           }
         }
+      },
+      "downloadURL": {
+        "ui:options": {
+          "widget": "upload_or_link",
+          "extensions": "csv pdf tsv jpg txt xls xlsx",
+          "progress_indicator": "bar"
+        }
       }
     }
   },

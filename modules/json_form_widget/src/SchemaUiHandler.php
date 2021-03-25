@@ -176,6 +176,64 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   }
 
   /**
+   * Helper function for getting element with configured widget.
+   */
+  public function getConfiguredWidget($spec, $element) {
+    switch ($spec->widget) {
+      case 'hidden':
+        $element['#access'] = FALSE;
+        break;
+
+      case 'textarea':
+        $element['#type'] = 'textarea';
+        $element = $this->getTextareaOptions($spec, $element);
+        break;
+
+      case 'dkan_uuid':
+        $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
+        $element['#access'] = FALSE;
+        break;
+
+      case 'upload_or_link':
+        $element = $this->handleUploadOrLink($element, $spec);
+        break;
+    }
+    return $element;
+  }
+
+  /**
+   * Handle configuration for upload_or_link elements.
+   */
+  public function handleUploadOrLink($element, $spec) {
+    $element['#type'] = 'upload_or_link';
+    $element['#upload_location'] = 'public://uploaded_resources';
+    if (isset($element['#default_value'])) {
+      $element['#uri'] = $element['#default_value'];
+      unset($element['#default_value']);
+    }
+    if (isset($spec->extensions)) {
+      $element['#upload_validators']['file_validate_extensions'][] = $spec->extensions;
+    }
+    if (isset($spec->progress_indicator)) {
+      $element['#progress_indicator'] = $spec->progress_indicator;
+    }
+    return $element;
+  }
+
+  /**
+   * Helper function for getting textarea options.
+   */
+  private function getTextareaOptions($spec, $element) {
+    if (isset($spec->rows)) {
+      $element['#rows'] = $spec->rows;
+    }
+    if (isset($spec->cols)) {
+      $element['#cols'] = $spec->cols;
+    }
+    return $element;
+  }
+
+  /**
    * Helper function for disabling fields.
    */
   public function disableFields($spec, $element) {
