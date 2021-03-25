@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore_search;
 
+use Drupal\common\EventDispatcherTrait;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\Query;
 use Drupal\search_api\Query\QueryInterface;
@@ -13,6 +14,7 @@ use Drupal\search_api\Utility\QueryHelperInterface;
  * @package Drupal\metastore_search
  */
 trait QueryBuilderTrait {
+  use EventDispatcherTrait;
 
   /**
    * Private.
@@ -123,8 +125,15 @@ trait QueryBuilderTrait {
 
     foreach ($fields as $field) {
       if (isset($params[$field])) {
-        $conditions[$field] = $this->getValuesFromCommaSeparatedString($params[$field]);
-        $query = $this->createConditionGroup($query, $conditions);
+
+        $info = $this->dispatchEvent(Search::EVENT_SEARCH_QUERY_BUILDER_CONDITION,
+          [
+            'field' => $field,
+            'values' => $this->getValuesFromCommaSeparatedString($params[$field]),
+            'conjunction' => 'AND',
+          ]);
+        $conditions[$info['field']] = $info['values'];
+        $query = $this->createConditionGroup($query, $conditions, $info['conjunction']);
         $active = TRUE;
       }
     }

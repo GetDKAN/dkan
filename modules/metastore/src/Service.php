@@ -4,6 +4,7 @@ namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\DataModifierPluginTrait;
+use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Plugin\DataModifierManager;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
@@ -18,6 +19,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Service implements ContainerInjectionInterface {
   use DataModifierPluginTrait;
+  use EventDispatcherTrait;
+
+  const EVENT_DATA_GET = 'dkan_metastore_data_get';
+  const EVENT_DATA_GET_ALL = 'dkan_metastore_data_get_all';
 
   /**
    * SAE Factory.
@@ -47,8 +52,8 @@ class Service implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new Service(
-      $container->get('metastore.schema_retriever'),
-      $container->get('metastore.sae_factory'),
+      $container->get('dkan.metastore.schema_retriever'),
+      $container->get('dkan.metastore.sae_factory'),
       $container->get('dkan.metastore.storage')
     );
   }
@@ -119,6 +124,8 @@ class Service implements ContainerInjectionInterface {
       $datasets
     );
 
+    $unflattened = $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $unflattened);
+
     return $unflattened;
   }
 
@@ -139,6 +146,9 @@ class Service implements ContainerInjectionInterface {
     if (!empty($this->plugins)) {
       $data = $this->modifyData($schema_id, $data);
     }
+
+    $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+
     return $data;
   }
 
