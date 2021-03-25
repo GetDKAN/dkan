@@ -212,6 +212,9 @@ class SchemaUiHandler implements ContainerInjectionInterface {
     if (isset($spec->extensions)) {
       $element['#upload_validators']['file_validate_extensions'][] = $spec->extensions;
     }
+    if (isset($spec->progress_indicator)) {
+      $element['#progress_indicator'] = $spec->progress_indicator;
+    }
     return $element;
   }
 
