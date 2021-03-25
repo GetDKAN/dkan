@@ -77,7 +77,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $all = [];
     foreach ($node_ids as $nid) {
-      /* @var $node \Drupal\node\NodeInterface */
+      /** @var \Drupal\node\NodeInterface $node */
       $node = $this->nodeStorage->load($nid);
       if ($node->get('moderation_state')->getString() === 'published') {
         $all[] = $node->get('field_json_metadata')->getString();

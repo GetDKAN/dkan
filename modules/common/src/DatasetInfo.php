@@ -162,7 +162,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Get distributions info.
    *
-   * @param \stdClass $metadata
+   * @param object $metadata
    *   Dataset metadata object.
    *
    * @return array
@@ -185,7 +185,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Get resources information.
    *
-   * @param \stdClass $distribution
+   * @param object $distribution
    *   A distribution object extracted from dataset metadata.
    *
    * @return array
