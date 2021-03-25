@@ -563,7 +563,7 @@ class SchemaUiHandlerTest extends TestCase {
           ],
           '#multiple' => TRUE,
           '#autocreate' => TRUE,
-          '#target_type' => 'data',
+          '#target_type' => 'node',
         ],
       ],
     ];
@@ -625,7 +625,7 @@ class SchemaUiHandlerTest extends TestCase {
         ],
         '#multiple' => TRUE,
         '#autocreate' => TRUE,
-        '#target_type' => 'data',
+        '#target_type' => 'node',
       ],
     ];
     $form = $ui_handler->applySchemaUi($form);
