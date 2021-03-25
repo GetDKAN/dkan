@@ -157,6 +157,7 @@
       "ui:options": {
         "widget": "list",
         "type": "autocomplete",
+        "allowCreate": "true",
         "multiple": "true",
         "source": {
           "metastoreSchema": "theme"
