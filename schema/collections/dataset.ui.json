@@ -35,7 +35,7 @@
   },
   "license": {
     "ui:options": {
-      "widget": "options",
+      "widget": "list",
       "type": "select_other",
       "other_type": "url",
       "source": {
@@ -86,7 +86,7 @@
       },
       "format": {
         "ui:options": {
-          "widget": "options",
+          "widget": "list",
           "type": "select_other",
           "other_type": "textfield",
           "source": {
