@@ -82,6 +82,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     $keepRefs = $this->wantObjectWithReferences();
 
     $output = array_map(function ($object) use ($keepRefs) {
+      $object = json_decode($object);
       if ($keepRefs) {
         return $this->swapReferences($object);
       }
