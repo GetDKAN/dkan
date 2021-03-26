@@ -82,7 +82,6 @@ class ValueHandler {
    * Flatten values for arrays in arrays.
    */
   private function flattenArraysInArrays($value) {
-    ksm($value);
     $data = [];
     if (is_array($value)) {
       foreach ($value as $item) {
