@@ -4,6 +4,11 @@
       "widget": "hidden"
     }
   },
+  "identifier": {
+    "ui:options": {
+      "widget": "dkan_uuid"
+    }
+  },
   "contactPoint": {
     "properties": {
       "@type": {
@@ -44,6 +49,13 @@
         "ui:options": {
           "widget": "textarea",
           "rows": 5
+        }
+      },
+      "downloadURL": {
+        "ui:options": {
+          "widget": "upload_or_link",
+          "extensions": "csv pdf tsv jpg txt xls xlsx",
+          "progress_indicator": "bar"
         }
       }
     }

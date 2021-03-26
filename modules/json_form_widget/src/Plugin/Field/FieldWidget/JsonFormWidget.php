@@ -95,7 +95,7 @@ class JsonFormWidget extends WidgetBase {
    */
   public static function defaultSettings() {
     return [
-      'schema' => '',
+      'schema' => 'dataset',
     ] + parent::defaultSettings();
   }
 

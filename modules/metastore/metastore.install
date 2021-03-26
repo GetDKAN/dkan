@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Import config from metastore to use JSON Form Widget.
+ */
+function metastore_update_8002() {
+  $config_path = drupal_get_path('module', 'metastore') . '/config/optional';
+  $container = \Drupal::getContainer();
+  $drush_import = $container->get('config.import.commands');
+  $options = [
+    'source' => $config_path,
+    'partial' => true
+  ];
+  $result = $drush_import->import(NULL, $options);
+}
