@@ -60,7 +60,7 @@ class ValueHandlerTest extends TestCase {
     $result = $value_handler->flattenValues($values, $property, $schema);
     $this->assertEquals($result, $expected);
 
-    // Test array without values.
+    // Test arrays.
     $values = [
       "references" => [
         "references" => [
@@ -72,6 +72,32 @@ class ValueHandlerTest extends TestCase {
     $schema = json_decode('{"title":"Related documents","type":"array","items":{"type":"string","format":"uri"}}');
     $expected = [
       "http://google.com",
+    ];
+    $result = $value_handler->flattenValues($values, $property, $schema);
+    $this->assertEquals($result, $expected);
+
+    // Test arrays in arrays.
+    $values = [
+      "references" => [
+        "references" => [
+          0 => [
+            "http://google.com" => "http://google.com",
+            "http://url.com" => "http://url.com",
+          ],
+          1 => [
+            "http://otherurl.com" => "http://otherurl.com",
+            "http://evenanother.com" => "http://evenanother.com",
+          ]
+        ],
+      ],
+    ];
+    $property = "references";
+    $schema = json_decode('{"title":"Related documents","type":"array","items":{"type":"string","format":"uri"}}');
+    $expected = [
+      "http://google.com",
+      "http://url.com",
+      "http://otherurl.com",
+      "http://evenanother.com",
     ];
     $result = $value_handler->flattenValues($values, $property, $schema);
     $this->assertEquals($result, $expected);
