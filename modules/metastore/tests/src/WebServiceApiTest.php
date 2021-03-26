@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore;
 
+use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
@@ -27,15 +28,14 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testGetAll() {
-    $json = '{"name": "hello"}';
-    $object = json_decode($json);
-    $objects = [$object, $object, $object];
+    $json = ['name' => 'hello'];
+    $object = $this->getJsonWrapper()->createRootedJsonData('blah', json_encode($json));
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getAll', [$object, $object, $object]);
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
-    $this->assertEquals(json_encode($objects), $response->getContent());
+    $this->assertEquals(json_encode([$json, $json, $json]), $response->getContent());
   }
 
   /**
@@ -421,6 +421,21 @@ EOF;
       ->add(Request::class, 'get', FALSE);
 
     return $mockChain;
+  }
+
+  /**
+   * @return \Drupal\metastore\RootedJsonDataWrapper
+   */
+  public function getJsonWrapper() {
+    $options = (new Options())
+      ->add('metastore.schema_retriever', FileSchemaRetriever::class)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+
+    return RootedJsonDataWrapper::create($container->getMock());
   }
 
 }
