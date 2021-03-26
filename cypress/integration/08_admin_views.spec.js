@@ -20,16 +20,26 @@ context('Admin content and dataset views', () => {
         cy.get('#view-field-data-type-table-column > a').should('contain','Data Type');
     })
 
-    it('The dataset data node titles should link to the drupal node page', () => {
+    it.only('The dataset data node titles should link to the drupal node page', () => {
         cy.visit(baseurl + "/node/add/data")
         cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST dataset title', { force: true })
         cy.get('#edit-field-json-metadata-0-value-description').type('DKANTEST dataset description.', { force: true })
         cy.get('#edit-field-json-metadata-0-value-accesslevel').select('public', { force: true })
         cy.get('#edit-field-json-metadata-0-value-modified').type('2020-02-02', { force: true })
-        cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name').type('DKANTEST Publisher', { force: true })
+        // Fill select2 field for publisher.
+        cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
+        .find('.select2-selection')
+        .click({ force: true });
+        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]').type('DKANTEST Publisher{enter}')
+        // End filling up publisher.
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type('DKANTEST Contact Name', { force: true })
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('dkantest@test.com', { force: true })
-        cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0').type('open data', { force: true })
+        // Fill select2 field for keyword.
+        cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
+        .find('.select2-selection')
+        .click({ force: true });
+        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
+        // End filling up keyword.
         cy.get('#edit-submit').click({ force: true })
         cy.get('.messages--status').should('contain', 'has been created')
         cy.visit(baseurl + "/admin/content/node")
