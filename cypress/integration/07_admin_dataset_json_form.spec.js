@@ -15,6 +15,14 @@ context('Admin dataset json form', () => {
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').should('have.attr', 'required', 'required')
     })
 
+    it('License and format fields are select or other elements in dataset form', () => {
+      cy.visit(baseurl + '/node/add/data')
+      cy.get('#edit-field-json-metadata-0-value-license-select').select('select_or_other', { force: true })
+      cy.get('#edit-field-json-metadata-0-value-license-other.form-url').should('be.visible')
+      cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select').select('select_or_other', { force: true })
+      cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-other.form-text').should('be.visible')
+    })
+
     it('User can create and edit a dataset with the json form UI. User can delete a dataset.', () => {
         cy.visit(baseurl + "/node/add/data")
         cy.wait(2000)
