@@ -23,6 +23,7 @@
         "drupal/core-composer-scaffold": "~9.0.1",
         "drupal/core-project-message": "~9.0.1",
         "drupal/core-recommended": "~9.0.1",
+        "cweagans/composer-patches": "^1.7",
         "drush/drush": "^10.1",
         "getdkan/dkan": "^2.0"
     },
@@ -63,6 +64,7 @@
         "installer-types": [
             "bower-asset",
             "npm-asset"
-        ]
+        ],
+        "enable-patching": true
     }
 }
