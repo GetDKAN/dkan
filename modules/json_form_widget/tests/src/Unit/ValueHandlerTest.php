@@ -81,6 +81,19 @@ class ValueHandlerTest extends TestCase {
     $result = $value_handler->flattenValues([], "url", $schema);
     $this->assertEquals($result, FALSE);
 
+    // Test select other.
+    $schema = json_decode('{"type":"string"}');
+    $formValues = [
+      'license' => [
+        0 => 'option 1',
+        'select' => 'option 1',
+        'other' => '',
+      ]
+    ];
+    $result = $value_handler->flattenValues($formValues, "license", $schema);
+    $expected = 'option 1';
+    $this->assertEquals($result, $expected);
+
     // Test object without values.
     $schema = json_decode($this->getObjectSchema());
     $result = $value_handler->handleObjectValues(NULL, "publisher", $schema);
