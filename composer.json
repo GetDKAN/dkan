@@ -8,12 +8,16 @@
         "docs": "https://www.drupal.org/docs/user_guide/en/index.html",
         "chat": "https://www.drupal.org/node/314178"
     },
-    "repositories": [
-        {
+    "repositories": {
+        "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        "asset": {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
         }
-    ],
+    },
     "require": {
         "composer/installers": "^1.9",
         "drupal/core-composer-scaffold": "~9.0.1",
@@ -43,7 +47,11 @@
         },
         "installer-paths": {
             "docroot/core": ["type:drupal-core"],
-            "docroot/libraries/{$name}": ["type:drupal-library"],
+            "docroot/libraries/{$name}": [
+                "type:drupal-library",
+                "type:bower-asset",
+                "type:npm-asset"
+            ],
             "docroot/modules/contrib/{$name}": ["type:drupal-module"],
             "docroot/profiles/contrib/{$name}": ["type:drupal-profile"],
             "docroot/themes/contrib/{$name}": ["type:drupal-theme"],
@@ -51,6 +59,10 @@
             "docroot/modules/custom/{$name}": ["type:drupal-custom-module"],
             "docroot/profiles/custom/{$name}": ["type:drupal-custom-profile"],
             "docroot/themes/custom/{$name}": ["type:drupal-custom-theme"]
-        }
+        },
+        "installer-types": [
+            "bower-asset",
+            "npm-asset"
+        ]
     }
 }
