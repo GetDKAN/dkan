@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Unit;
+namespace Drupal\Tests\metastore\Unit\Reference;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
