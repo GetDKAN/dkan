@@ -5,6 +5,8 @@ datastore.1.datastore:
     { _controller: '\Drupal\common\Docs::getComplete'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: [ 'basic_auth', 'cookie' ]
 
 datastore.1.imports:
   path: '/api/1/datastore/imports'
@@ -34,6 +36,8 @@ datastore.1.imports.id:
     _controller: '\Drupal\datastore\WebServiceApi::summary'
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 datastore.1.imports.delete:
   path: '/api/1/datastore/imports'
