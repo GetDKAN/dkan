@@ -121,7 +121,6 @@ trait QueryBuilderTrait {
     $active = FALSE;
 
     $fields = array_keys($index->getFields());
-    $conditions = [];
 
     foreach ($fields as $field) {
       if (isset($params[$field])) {
@@ -132,6 +131,8 @@ trait QueryBuilderTrait {
             'values' => $this->getValuesFromCommaSeparatedString($params[$field]),
             'conjunction' => 'AND',
           ]);
+
+        $conditions = [];
         $conditions[$info['field']] = $info['values'];
         $query = $this->createConditionGroup($query, $conditions, $info['conjunction']);
         $active = TRUE;
