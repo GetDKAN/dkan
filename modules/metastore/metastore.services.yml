@@ -3,13 +3,6 @@ services:
     class: \Drupal\metastore\Service
     arguments:
       - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.sae_factory'
-      - '@dkan.metastore.storage'
-
-  dkan.metastore.sae_factory:
-    class: \Drupal\metastore\Factory\Sae
-    arguments:
-      - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
 
   dkan.metastore.schema_retriever:

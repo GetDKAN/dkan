@@ -2,13 +2,13 @@
 
 namespace Drupal\metastore;
 
+use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Storage\DataFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -36,11 +36,18 @@ class Service implements ContainerInjectionInterface {
   private $schemaRetriever;
 
   /**
-   * Storage.
+   * Storage factory.
    *
-   * @var \Drupal\metastore\Storage\DataFactory
+   * @var \Drupal\metastore\Storage\MetastoreStorageFactoryInterface
    */
-  private $factory;
+  private $storageFactory;
+
+  /**
+   * Storages.
+   *
+   * @var array
+   */
+  private $storages;
 
   /**
    * Inherited.
@@ -50,7 +57,6 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('dkan.metastore.schema_retriever'),
-      $container->get('dkan.metastore.sae_factory'),
       $container->get('dkan.metastore.storage')
     );
   }
@@ -58,10 +64,9 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataFactory $factory) {
+  public function __construct(SchemaRetriever $schemaRetriever, /*Sae $saeFactory,*/ DataFactory $factory) {
     $this->schemaRetriever = $schemaRetriever;
-    $this->saeFactory = $saeFactory;
-    $this->factory = $factory;
+    $this->storageFactory = $factory;
   }
 
   /**
@@ -98,6 +103,22 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Get storage.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   *
+   * @return \Drupal\metastore\Storage\StorerInterface
+   *   Entity storage.
+   */
+  private function getStorage(string $schema_id): StorerInterface {
+    if (!isset($this->storages[$schema_id])) {
+      $this->storages[$schema_id] = $this->storageFactory->getInstance($schema_id);
+    }
+    return $this->storages[$schema_id];
+  }
+
+  /**
    * Get all.
    *
    * @param string $schema_id
@@ -107,7 +128,7 @@ class Service implements ContainerInjectionInterface {
    *   All objects of the given schema_id.
    */
   public function getAll($schema_id): array {
-    $jsonStringsArray = $this->getEngine($schema_id)->get();
+    $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
 
     $objects = array_map(
       function ($jsonString) {
@@ -138,8 +159,7 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get($schema_id, $identifier): string {
-    $storage = $this->factory->getInstance($schema_id);
-    $data = $storage->retrievePublished($identifier);
+    $data = $this->getStorage($schema_id)->retrievePublished($identifier);
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     return $data;
   }
@@ -158,8 +178,7 @@ class Service implements ContainerInjectionInterface {
    * @todo Make this aware of revisions and moderation states.
    */
   public function getResources($schema_id, $identifier): array {
-    $json = $this->getEngine($schema_id)
-      ->get($identifier);
+    $json = $this->getStorage($schema_id)->retrieve($identifier);
     $data = json_decode($json);
     /* @todo decouple from POD. */
     $resources = $data->distribution;
@@ -179,6 +198,8 @@ class Service implements ContainerInjectionInterface {
    *   The identifier.
    */
   public function post($schema_id, string $data): string {
+    $identifier = NULL;
+
     // If resource already exists, return HTTP 409 Conflict and existing uri.
     $decoded = json_decode($data, TRUE);
     if (isset($decoded['identifier'])) {
@@ -188,7 +209,7 @@ class Service implements ContainerInjectionInterface {
       }
     }
 
-    return $this->getEngine($schema_id)->post($data);
+    return $this->getStorage($schema_id)->store($data, $identifier);
   }
 
   /**
@@ -204,8 +225,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function publish(string $schema_id, string $identifier) {
     if ($this->objectExists($schema_id, $identifier)) {
-      $storage = $this->factory->getInstance($schema_id);
-      return $storage->publish($identifier);
+      return $this->getStorage($schema_id)->publish($identifier);
     }
 
     throw new MissingObjectException("No data with the identifier {$identifier} was found.");
@@ -252,11 +272,11 @@ class Service implements ContainerInjectionInterface {
    */
   private function proceedWithPut($schema_id, $identifier, string $data): array {
     if ($this->objectExists($schema_id, $identifier)) {
-      $this->getEngine($schema_id)->put($identifier, $data);
+      $this->getStorage($schema_id)->store($data, $identifier);
       return ['identifier' => $identifier, 'new' => FALSE];
     }
     else {
-      $this->getEngine($schema_id)->post($data);
+      $this->getStorage($schema_id)->store($data);
       return ['identifier' => $identifier, 'new' => TRUE];
     }
   }
@@ -275,9 +295,9 @@ class Service implements ContainerInjectionInterface {
    *   The json response.
    */
   public function patch($schema_id, $identifier, $data) {
-    $engine = $this->getEngine($schema_id);
+    $storage = $this->getStorage($schema_id);
     if ($this->objectExists($schema_id, $identifier)) {
-      $engine->patch($identifier, $data);
+      $storage->store($data, $identifier);
       return $identifier;
     }
 
@@ -296,9 +316,9 @@ class Service implements ContainerInjectionInterface {
    *   Identifier.
    */
   public function delete($schema_id, $identifier) {
-    $engine = $this->getEngine($schema_id);
+    $storage = $this->getStorage($schema_id);
 
-    $engine->delete($identifier);
+    $storage->remove($identifier);
 
     return $identifier;
   }
@@ -321,7 +341,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function objectExists($schemaId, $identifier) {
     try {
-      $this->getEngine($schemaId)->get($identifier);
+      $this->getStorage($schemaId)->retrieve($identifier);
       return TRUE;
     }
     catch (\Exception $e) {
@@ -347,7 +367,7 @@ class Service implements ContainerInjectionInterface {
    *   TRUE if the metadata is equivalent, false otherwise.
    */
   private function objectIsEquivalent(string $schema_id, string $identifier, string $metadata) {
-    $existingMetadata = $this->getEngine($schema_id)->get($identifier);
+    $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
     $existing = json_decode($existingMetadata);
     $existing = self::removeReferences($existing);
     $new = json_decode($metadata);
@@ -372,13 +392,6 @@ class Service implements ContainerInjectionInterface {
     }
 
     return $object;
-  }
-
-  /**
-   * Get engine.
-   */
-  private function getEngine($schemaId) {
-    return $this->saeFactory->getInstance($schemaId);
   }
 
 }
