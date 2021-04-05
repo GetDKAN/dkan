@@ -50,8 +50,7 @@ class ServiceTest extends TestCase {
    */
   public function testGetAll() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", [json_encode("blah")]);
+      ->add(Data::class, 'retrieveAll', [json_encode("blah")]);
 
     \Drupal::setContainer($container->getMock());
 
@@ -114,8 +113,7 @@ class ServiceTest extends TestCase {
     ];
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", json_encode($dataset));
+      ->add(Data::class, "retrieve", json_encode($dataset));
 
     $service = Service::create($container->getMock());
 
@@ -128,8 +126,7 @@ class ServiceTest extends TestCase {
    */
   public function testPost() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "post", "1");
+      ->add(Data::class, 'store', '1');
 
     $service = Service::create($container->getMock());
 
@@ -141,8 +138,7 @@ class ServiceTest extends TestCase {
    */
   public function testPostAlreadyExisting() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", "1");
+      ->add(Data::class, "retrieve", "1");
 
     $service = Service::create($container->getMock());
 
@@ -155,9 +151,8 @@ class ServiceTest extends TestCase {
    */
   public function testPut() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "put", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(Data::class, "retrieve", "1")
+      ->add(Data::class, "store", "1");
 
     $service = Service::create($container->getMock());
 
@@ -173,8 +168,7 @@ class ServiceTest extends TestCase {
     $updating = '{"identifier":"2","title":"Bar"}';
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(Data::class, "retrieve", $existing);
 
     $service = Service::create($container->getMock());
 
@@ -188,10 +182,8 @@ class ServiceTest extends TestCase {
   public function testPutResultingInNewData() {
     $data = '{"identifier":"3","title":"FooBar"}';
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception())
-      ->add(Engine::class, "put", "3")
-      ->add(Engine::class, "post", "3");
+      ->add(Data::class, "retrieve", new \Exception())
+      ->add(Data::class, "store", "3");
 
     $service = Service::create($container->getMock());
     $info = $service->put("dataset", "3", $data);
@@ -205,8 +197,7 @@ class ServiceTest extends TestCase {
     $existing = '{"identifier":"1","title":"Foo"}';
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(Data::class, "retrieve", $existing);
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
@@ -226,8 +217,7 @@ class ServiceTest extends TestCase {
 EOF;
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(Data::class, "retrieve", $existing);
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
@@ -239,9 +229,8 @@ EOF;
    */
   public function testPatch() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "patch", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(Data::class, "retrieve", "1")
+      ->add(Data::class, "store", "1");
 
     $service = Service::create($container->getMock());
 
@@ -255,8 +244,7 @@ EOF;
     $data = '{"identifier":"1","title":"FooBar"}';
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception());
+      ->add(Data::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
     $this->expectException(MissingObjectException::class);
@@ -268,8 +256,7 @@ EOF;
    */
   public function testPublish() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", "1")
+      ->add(Data::class, "retrieve", "1")
       ->add(Data::class, "publish", "1");
 
     $service = Service::create($container->getMock());
@@ -282,8 +269,7 @@ EOF;
    */
   public function testPublishMissingObjectExpection() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception());
+      ->add(Data::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
 
@@ -296,9 +282,8 @@ EOF;
    */
   public function testDelete() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "delete", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(Data::class, "retrieve", "1")
+      ->add(Data::class, "remove", "1");
 
     $service = Service::create($container->getMock());
 
@@ -317,8 +302,7 @@ EOF;
 
     $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", [json_encode($dataset), json_encode($dataset)]);
+      ->add(Data::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)]);
 
     \Drupal::setContainer($container->getMock());
 
