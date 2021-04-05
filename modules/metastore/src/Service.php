@@ -10,12 +10,6 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
-use JsonSchema\Exception\ValidationException;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
-use RootedData\RootedJsonData;
-use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -70,7 +64,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory) {
+  public function __construct(SchemaRetriever $schemaRetriever, /*Sae $saeFactory,*/ DataFactory $factory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
   }
@@ -277,9 +271,6 @@ class Service implements ContainerInjectionInterface {
    *   ["identifier" => string, "new" => boolean].
    */
   private function proceedWithPut($schema_id, $identifier, string $data): array {
-    // TODO: abandon the method and use RootedJsonData instead on JSON string.
-    $this->validateJson($schema_id, $data);
-
     if ($this->objectExists($schema_id, $identifier)) {
       $this->getStorage($schema_id)->store($data, $identifier);
       return ['identifier' => $identifier, 'new' => FALSE];
@@ -415,52 +406,6 @@ class Service implements ContainerInjectionInterface {
     }
 
     return $object;
-  }
-
-  /**
-   * Get validation result.
-   *
-   * @param \Drupal\metastore\string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param \Drupal\metastore\string $json_data
-   *   Json payload.
-   *
-   * @return array
-   *   The validation result.
-   *
-   * @throws \Exception
-   */
-  public function getValidationInfo(string $schema_id, string $json_data): array {
-    $schema = $this->schemaRetriever->retrieve($schema_id);
-    $result = RootedJsonData::validate($json_data, $schema);
-    $presenter = new ValidationErrorPresenter(
-      new PresentedValidationErrorFactory(
-        new MessageFormatterFactory()
-      )
-    );
-    $presented = $presenter->present(...$result->getErrors());
-    return ['valid' => empty($presented), 'errors' => $presented];
-  }
-
-  /**
-   * Validate JSON.
-   *
-   * @param \Drupal\metastore\string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param \Drupal\metastore\string $json_data
-   *   Json payload.
-   *
-   * @return bool
-   *   Valid or not.
-   *
-   * @throws \Exception
-   */
-  public function validateJson(string $schema_id, string $json_data): bool {
-    $validation_info = $this->getValidationInfo($schema_id, $json_data);
-    if (!$validation_info['valid']) {
-      throw new ValidationException(json_encode((object) $validation_info['errors']));
-    }
-    return TRUE;
   }
 
 }
