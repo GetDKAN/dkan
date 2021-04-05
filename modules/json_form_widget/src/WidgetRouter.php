@@ -86,13 +86,23 @@ class WidgetRouter implements ContainerInjectionInterface {
     unset($element['actions']);
     $default_value = [];
     foreach ($element[$spec->child] as $key => $item) {
-      $default_value[$item['#default_value']] = $item['#default_value'];
+      $default_value = array_merge($default_value, $this->formatArrayDefaultValue($item));
       if ($key != 0) {
         unset($element[$spec->child][$key]);
       }
     }
     $element[$spec->child][0]['#default_value'] = $default_value;
     return $element;
+  }
+
+  /**
+   * Format default values for arrays (flattened).
+   */
+  private function formatArrayDefaultValue($item) {
+    if (!empty($item['#default_value'])) {
+      return [$item['#default_value'] => $item['#default_value']];
+    }
+    return [];
   }
 
   /**

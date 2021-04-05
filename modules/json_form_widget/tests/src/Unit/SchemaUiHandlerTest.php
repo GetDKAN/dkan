@@ -543,7 +543,7 @@ class SchemaUiHandlerTest extends TestCase {
           '#title' => 'Publisher',
           '#description' => 'Some description',
           '#required' => FALSE,
-        ]
+        ],
       ],
     ];
     $expected = [
@@ -626,6 +626,153 @@ class SchemaUiHandlerTest extends TestCase {
         '#multiple' => TRUE,
         '#autocreate' => TRUE,
         '#target_type' => 'node',
+      ],
+    ];
+    $form = $ui_handler->applySchemaUi($form);
+
+    $this->assertEquals($form, $expected);
+  }
+
+  /**
+   * Test actions are hidden.
+   */
+  public function testAutocompleteHideActions() {
+    // Test options with autocomplete widget and options from metastore.
+    $widget_router = $this->getRouter($this->getSimpleMetastoreResults());
+    $options = (new Options())
+      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('json_form.string_helper', StringHelper::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('uuid', Php::class)
+      ->add('json_form.widget_router', $widget_router)
+      ->index(0);
+
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(SchemaRetriever::class, 'retrieve', '{"theme": {
+        "ui:options": {
+          "hideActions": "true",
+          "child": "theme"
+        },
+        "items": {
+          "ui:options": {
+            "widget": "list",
+            "type": "autocomplete",
+            "allowCreate": "true",
+            "multiple": "true",
+            "source": {
+              "metastoreSchema": "theme"
+            }
+          }
+        }
+      }}')
+      ->add(SchemaUiHandler::class, 'setSchemaUi');
+
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $ui_handler = SchemaUiHandler::create($container);
+    $ui_handler->setSchemaUi('dataset');
+    $form = [
+      'theme' => [
+        '#type' => 'fieldset',
+        '#title' => 'Topic',
+        '#prefix' => '<div id="theme-fieldset-wrapper">',
+        '#suffix' => '</div>',
+        "#tree" => TRUE,
+        '#description' => 'Some description',
+        'theme' => [
+          0 => [
+            '#type' => 'textfield',
+            '#title' => 'Topic',
+            '#default_value' => 'Test',
+          ],
+          1 => [
+            '#type' => 'textfield',
+            '#title' => 'Topic',
+            '#default_value' => 'Test 2',
+          ],
+        ],
+        'actions' => [
+          '#type' => 'actions',
+          'actions' => ['add' => []],
+        ],
+      ],
+    ];
+    $expected = [
+      'theme' => [
+        '#type' => 'fieldset',
+        '#title' => 'Topic',
+        '#prefix' => '<div id="theme-fieldset-wrapper">',
+        '#suffix' => '</div>',
+        '#tree' => TRUE,
+        '#description' => 'Some description',
+        'theme' => [
+          0 => [
+            '#type' => 'select2',
+            '#title' => 'Topic',
+            '#options' => [
+              'Option 1' => 'Option 1',
+              'Option 2' => 'Option 2',
+            ],
+            '#multiple' => TRUE,
+            '#autocreate' => TRUE,
+            '#target_type' => 'node',
+            '#default_value' => [
+              'Test' => 'Test',
+              'Test 2' => 'Test 2',
+            ],
+          ],
+        ],
+      ],
+    ];
+    $form = $ui_handler->applySchemaUi($form);
+
+    $this->assertEquals($form, $expected);
+
+    // Test with no default value.
+    $form = [
+      'theme' => [
+        '#type' => 'fieldset',
+        '#title' => 'Topic',
+        '#prefix' => '<div id="theme-fieldset-wrapper">',
+        '#suffix' => '</div>',
+        "#tree" => TRUE,
+        '#description' => 'Some description',
+        'theme' => [
+          0 => [
+            '#type' => 'textfield',
+            '#title' => 'Topic',
+            '#default_value' => NULL,
+          ],
+        ],
+        'actions' => [
+          '#type' => 'actions',
+          'actions' => ['add' => []],
+        ],
+      ],
+    ];
+    $expected = [
+      'theme' => [
+        '#type' => 'fieldset',
+        '#title' => 'Topic',
+        '#prefix' => '<div id="theme-fieldset-wrapper">',
+        '#suffix' => '</div>',
+        '#tree' => TRUE,
+        '#description' => 'Some description',
+        'theme' => [
+          0 => [
+            '#type' => 'select2',
+            '#title' => 'Topic',
+            '#options' => [
+              'Option 1' => 'Option 1',
+              'Option 2' => 'Option 2',
+            ],
+            '#multiple' => TRUE,
+            '#autocreate' => TRUE,
+            '#target_type' => 'node',
+            '#default_value' => [],
+          ],
+        ],
       ],
     ];
     $form = $ui_handler->applySchemaUi($form);
