@@ -131,8 +131,8 @@ class WidgetRouter implements ContainerInjectionInterface {
       $element['#input_type'] = isset($spec->other_type) ? $spec->other_type : 'textfield';
     }
     if ($element['#type'] === 'select2') {
-      $element['#multiple'] = $spec->multiple ? TRUE : FALSE;
-      $element['#autocreate'] = $spec->allowCreate ? TRUE : FALSE;
+      $element['#multiple'] = isset($spec->multiple) ? TRUE : FALSE;
+      $element['#autocreate'] = isset($spec->allowCreate) ? TRUE : FALSE;
     }
     if (isset($element['#autocreate'])) {
       $element['#target_type'] = 'node';
