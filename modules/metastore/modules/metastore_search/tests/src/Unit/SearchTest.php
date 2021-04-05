@@ -69,6 +69,59 @@ class SearchTest extends TestCase {
     ]));
   }
 
+  public function testSearchParameterWithComma() {
+    $options = (new Options())
+      ->add('dkan.metastore.service', Metastore::class)
+      ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('search_api.query_helper', QueryHelperInterface::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->index(0);
+
+    $collection = [
+      'title' => 'hello',
+      'description' => 'goodbye',
+      'publisher__name' => 'Steve, and someone else',
+    ];
+
+    $facet = (object) ['data' => (object) ['name' => 'Steve, and someone else']];
+
+    $getAllOptions = (new Options())
+      ->add('keyword', [])
+      ->add('theme', [])
+      ->add('publisher', [$facet]);
+
+    $item = (new Chain($this))
+      ->add(Item::class, 'getId', 1)
+      ->getMock();
+
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, 'load', IndexInterface::class)
+      ->add(IndexInterface::class, 'getFields', ['description' => 'blah', 'publisher__name' => 'blah'])
+      ->add(IndexInterface::class, 'getFulltextFields', ['title'])
+
+      ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', ResultSet::class)
+      ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
+
+      ->add(ResultSet::class, 'getResultItems', [$item])
+      ->add(Metastore::class, 'get', json_encode($collection))
+      ->add(Metastore::class, 'getAll', $getAllOptions);
+
+    \Drupal::setContainer($container->getMock());
+
+    $service = Search::create($container->getMock());
+
+    $a = $service->search([
+      'page' => 1,
+      'facets' => true,
+      'page-size' => 10,
+      'publisher__name' => '"Steve, and someone else"',
+    ]);
+
+  }
+
   /**
    * Test for facets().
    */
