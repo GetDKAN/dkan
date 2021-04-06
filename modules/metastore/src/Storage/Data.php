@@ -231,6 +231,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $data = json_decode($data);
     $data = $this->filterHtml($data);
 
+    // @todo The identifier should not be a hard-coded property.
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
 
     if ($uuid) {

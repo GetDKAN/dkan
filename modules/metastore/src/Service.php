@@ -219,6 +219,7 @@ class Service implements ContainerInjectionInterface {
       }
     }
 
+    // Data is validated against the schema, and given to the storage.
     return $this->getEngine($schema_id)->post($data);
   }
 

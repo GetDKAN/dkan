@@ -35,11 +35,16 @@ class Referencer {
    *
    * @return object
    *   Json object modified with references to some of its properties' values.
+   *
+   * @todo This method should be schema dependent. Different schemas have
+   * different properties that need referenced.
    */
   public function reference($data) {
     if (!is_object($data)) {
       throw new \Exception("data must be an object.");
     }
+
+    // @todo properties to be treated as references should be at any level in a schema.
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
@@ -105,6 +110,7 @@ class Referencer {
    */
   private function referenceSingle(string $property_id, $value) {
 
+    // @todo There should be no special treatment of any property.
     if ($property_id == 'distribution') {
       $value = $this->distributionHandling($value);
     }
@@ -308,6 +314,7 @@ class Referencer {
     $data->identifier = $this->getUuidService()->generate($property_id, $value);
     $data->data = $value;
 
+    // @todo the DKAN storage mechanism should be called here.
     // Create node to store this reference.
     $node = $this->nodeStorage
       ->create([

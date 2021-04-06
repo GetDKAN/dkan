@@ -165,6 +165,7 @@ class Data extends AbstractData {
       $this->data->setIdentifier($metadata->identifier);
     }
 
+    // @todo Use new EventDispatcher trait.
     /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
     $eventDispatcher = \Drupal::service("event_dispatcher");
     $eventDispatcher->dispatch(self::EVENT_PRE_REFERENCE,
