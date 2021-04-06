@@ -12,8 +12,14 @@ use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
+/**
+ *
+ */
 class DatasetInfoTest extends TestCase {
 
+  /**
+   *
+   */
   public function testMetastoreNotEnabled() {
     $datasetInfo = DatasetInfo::create($this->getCommonChain()->getMock());
 
@@ -25,6 +31,9 @@ class DatasetInfoTest extends TestCase {
     $this->assertEquals($expected, $result);
   }
 
+  /**
+   *
+   */
   public function testUuidNotFound() {
     $mockStorage = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', Data::class)
@@ -47,6 +56,9 @@ class DatasetInfoTest extends TestCase {
     $this->assertEquals($expected, $result);
   }
 
+  /**
+   *
+   */
   private function getCommonChain() {
     $options = (new Options())
       ->index(0);

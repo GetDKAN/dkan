@@ -5,6 +5,9 @@ metastore_search.1.search:
     { _controller: '\Drupal\metastore_search\Controller\SearchController::search'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 dkan.metastore_search.api.facets:
   path: '/api/1/search/facets'
   methods: [GET]
@@ -12,3 +15,5 @@ dkan.metastore_search.api.facets:
     { _controller: '\Drupal\metastore_search\Controller\SearchController::facets'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']

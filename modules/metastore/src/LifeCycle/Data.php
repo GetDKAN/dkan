@@ -80,7 +80,8 @@ class Data extends AbstractData {
 
     if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
       $resourceIdentifier = $downloadUrl;
-      $ref = NULL; $original = NULL;
+      $ref = NULL;
+      $original = NULL;
       [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
 
       $downloadUrl = isset($original) ? $original : "";
