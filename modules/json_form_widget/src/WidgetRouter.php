@@ -91,6 +91,9 @@ class WidgetRouter implements ContainerInjectionInterface {
     elseif ($spec->widget == 'list') {
       $element = $this->handleDropdown($element, $spec);
     }
+    elseif ($spec->widget == 'date') {
+      $element['#type'] = 'date';
+    }
     return $element;
   }
 
