@@ -25,23 +25,24 @@
         "drupal/select_or_other": "1.x-dev",
         "drupal/select2": "1.x-dev",
         "npm-asset/select2": "^4.0",
-        "oomphinc/composer-installers-extender": "^2.0"
+        "oomphinc/composer-installers-extender": "^2.0",
+        "stolt/json-merge-patch": "^1.0"
     },
     "require-dev": {
         "getdkan/mock-chain": "^1.3.0",
         "weitzman/drupal-test-traits": "^1.5",
         "phpunit/phpunit": "^7.5"
     },
-    "repositories": {
-        "drupal": {
+    "repositories": [
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         },
-        "asset": {
+        {
             "type": "composer",
             "url": "https://asset-packagist.org"
         }
-    },
+    ],
     "autoload": {
         "psr-4": {
             "Social\\": "src"
