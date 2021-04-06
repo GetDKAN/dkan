@@ -20,13 +20,11 @@
         "getdkan/json-schema-provider": "^0.1.2",
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.3",
-        "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
         "ramsey/uuid" : "^3.8.0",
         "getdkan/rooted-json-data": "^0.0.2",
         "drupal/select_or_other": "1.x-dev",
         "drupal/select2": "1.x-dev",
         "npm-asset/select2": "^4.0",
-        "ilbee/csv-response": "^1.0",
         "oomphinc/composer-installers-extender": "^2.0",
         "stolt/json-merge-patch": "^1.0"
     },
@@ -35,16 +33,16 @@
         "weitzman/drupal-test-traits": "^1.5",
         "phpunit/phpunit": "^7.5"
     },
-    "repositories": {
-        "drupal": {
+    "repositories": [
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         },
-        "asset": {
+        {
             "type": "composer",
             "url": "https://asset-packagist.org"
         }
-    },
+    ],
     "autoload": {
         "psr-4": {
             "Social\\": "src"
