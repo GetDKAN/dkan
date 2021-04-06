@@ -61,6 +61,7 @@ class UploadOrLink extends ManagedFile {
    */
   private static function checkIfLocalFile($url) {
     $filename = \Drupal::service('file_system')->basename($url);
+    $filename = urldecode($filename);
     $files = \Drupal::entityTypeManager()
       ->getStorage('file')
       ->loadByProperties(['filename' => $filename]);
