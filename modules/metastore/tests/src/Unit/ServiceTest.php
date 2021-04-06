@@ -32,7 +32,7 @@ class ServiceTest extends TestCase {
       ->add(SchemaRetriever::class, "getAllIds", ["1"]);
 
     $service = Service::create($container->getMock());
-    $this->assertEquals(json_encode(["1" => "blah"]), json_encode($service->getSchemas()));
+    $this->assertEquals(json_encode(["1" => ['foo' => 'bar']]), json_encode($service->getSchemas()));
   }
 
   /**
@@ -42,7 +42,7 @@ class ServiceTest extends TestCase {
     $container = self::getCommonMockChain($this);
 
     $service = Service::create($container->getMock());
-    $this->assertEquals(json_encode("blah"), json_encode($service->getSchema("1")));
+    $this->assertEquals(json_encode(['foo' => 'bar']), json_encode($service->getSchema("1")));
   }
 
   /**
@@ -341,7 +341,7 @@ EOF;
     return (new Chain($case))
       ->add(Container::class, "get", $services)
       ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
+      ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
   }
 
 }
