@@ -272,7 +272,10 @@ class UploadOrLink extends ManagedFile {
       return '';
     }
 
-    if ($element['#value']['file_url_type'] == static::TYPE_UPLOAD || !empty($element['#value']['fids'])) {
+    if ((isset($element['#value']['file_url_type'])
+      && $element['#value']['file_url_type'] == static::TYPE_UPLOAD)
+      || !empty($element['#value']['fids'])
+    ) {
       return static::getLocalFileUrl($element);
     }
     elseif (!empty($element['#value']['file_url_remote'])) {
@@ -280,7 +283,7 @@ class UploadOrLink extends ManagedFile {
       return $uri;
     }
 
-    return $element['#uri'];
+    return isset($element['#uri']) ? $element['#uri'] : NULL;
   }
 
   /**
