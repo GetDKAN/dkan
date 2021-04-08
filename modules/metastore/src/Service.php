@@ -11,6 +11,9 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
 use JsonSchema\Exception\ValidationException;
+use OpisErrorPresenter\Implementation\MessageFormatterFactory;
+use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
+use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -430,7 +433,14 @@ class Service implements ContainerInjectionInterface {
     $schema = $this->schemaRetriever->retrieve($schema_id);
     $result = RootedJsonData::validate($json_data, $schema);
     if (!$result->isValid()) {
-      throw new ValidationException("JSON Schema validation failed.", $result);
+      $presenter = new ValidationErrorPresenter(
+        new PresentedValidationErrorFactory(
+          new MessageFormatterFactory()
+        )
+      );
+      $presented = $presenter->present(...$result->getErrors());
+
+      throw new ValidationException("JSON Schema validation failed. " . json_encode((object) $presented));
     }
     return TRUE;
   }
