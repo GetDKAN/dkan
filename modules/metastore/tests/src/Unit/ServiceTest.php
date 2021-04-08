@@ -324,7 +324,6 @@ EOF;
 
     $myServices = [
       'dkan.metastore.schema_retriever' => SchemaRetriever::class,
-      'dkan.metastore.sae_factory' => Sae::class,
       'dkan.metastore.storage' => DataFactory::class,
       'event_dispatcher' => ContainerAwareEventDispatcher::class
     ];

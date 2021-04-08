@@ -70,7 +70,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, /*Sae $saeFactory,*/ DataFactory $factory) {
+  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
   }
@@ -418,29 +418,47 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Temporary validate method.
+   * Get validation result.
    *
-   * Using RootedJsonData instead of JSON string will make it redundant.
-   *
-   * @param string $schema_id
+   * @param \Drupal\metastore\string $schema_id
    *   The {schema_id} slug from the HTTP request.
-   * @param string $json_data
+   * @param \Drupal\metastore\string $json_data
+   *   Json payload.
+   *
+   * @return array
+   *   The validation result.
+   *
+   * @throws \Exception
+   */
+  public function getValidationInfo(string $schema_id, string $json_data): array {
+    $schema = $this->schemaRetriever->retrieve($schema_id);
+    $result = RootedJsonData::validate($json_data, $schema);
+    $presenter = new ValidationErrorPresenter(
+      new PresentedValidationErrorFactory(
+        new MessageFormatterFactory()
+      )
+    );
+    $presented = $presenter->present(...$result->getErrors());
+    return ['valid' => empty($presented), 'errors' => $presented];
+  }
+
+  /**
+   * Validate JSON.
+   *
+   * @param \Drupal\metastore\string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param \Drupal\metastore\string $json_data
    *   Json payload.
    *
    * @return bool
+   *   Valid or not.
+   *
+   * @throws \Exception
    */
-  private function validateJson(string $schema_id, string $json_data): bool {
-    $schema = $this->schemaRetriever->retrieve($schema_id);
-    $result = RootedJsonData::validate($json_data, $schema);
-    if (!$result->isValid()) {
-      $presenter = new ValidationErrorPresenter(
-        new PresentedValidationErrorFactory(
-          new MessageFormatterFactory()
-        )
-      );
-      $presented = $presenter->present(...$result->getErrors());
-
-      throw new ValidationException("JSON Schema validation failed. " . json_encode((object) $presented));
+  public function validateJson(string $schema_id, string $json_data): bool {
+    $validation_info = $this->getValidationInfo($schema_id, $json_data);
+    if (!$validation_info['valid']) {
+      throw new ValidationException(json_encode((object) $validation_info['errors']));
     }
     return TRUE;
   }
