@@ -12,8 +12,8 @@ use FileFetcher\FileFetcher;
 class Factory implements FactoryInterface {
 
   private $factory;
-  private $config_default = [
-    'keep_original_filename' => True,
+  private $configDefault = [
+    'keep_original_filename' => TRUE,
   ];
 
   /**
@@ -29,7 +29,7 @@ class Factory implements FactoryInterface {
    * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
-    $config = array_merge($this->config_default, $config);
+    $config = array_merge($this->configDefault, $config);
     return FileFetcher::get($identifier, $this->getFileFetcherJobStore(), $config);
   }
 
