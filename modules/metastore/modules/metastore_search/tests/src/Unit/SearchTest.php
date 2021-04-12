@@ -104,6 +104,7 @@ class SearchTest extends TestCase {
       ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', ResultSet::class)
       ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
+      ->add(ConditionGroup::class, 'addCondition', null, 'condition_group')
 
       ->add(ResultSet::class, 'getResultItems', [$item])
       ->add(Metastore::class, 'get', json_encode($collection))
@@ -113,13 +114,14 @@ class SearchTest extends TestCase {
 
     $service = Search::create($container->getMock());
 
-    $a = $service->search([
-      'page' => 1,
-      'facets' => true,
-      'page-size' => 10,
-      'publisher__name' => '"Steve, and someone else"',
+    $service->search([
+      'publisher__name' => 'Normal Param, "Steve, and someone else"',
     ]);
 
+    $this->assertEquals(
+      'Steve, and someone else',
+      $container->getStoredInput('condition_group')[1]
+    );
   }
 
   /**
