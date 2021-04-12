@@ -77,23 +77,6 @@ class SearchTest extends TestCase {
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->index(0);
 
-    $collection = [
-      'title' => 'hello',
-      'description' => 'goodbye',
-      'publisher__name' => 'Steve, and someone else',
-    ];
-
-    $facet = (object) ['data' => (object) ['name' => 'Steve, and someone else']];
-
-    $getAllOptions = (new Options())
-      ->add('keyword', [])
-      ->add('theme', [])
-      ->add('publisher', [$facet]);
-
-    $item = (new Chain($this))
-      ->add(Item::class, 'getId', 1)
-      ->getMock();
-
     $container = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
@@ -104,11 +87,7 @@ class SearchTest extends TestCase {
       ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', ResultSet::class)
       ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
-      ->add(ConditionGroup::class, 'addCondition', null, 'condition_group')
-
-      ->add(ResultSet::class, 'getResultItems', [$item])
-      ->add(Metastore::class, 'get', json_encode($collection))
-      ->add(Metastore::class, 'getAll', $getAllOptions);
+      ->add(ConditionGroup::class, 'addCondition', null, 'condition_group');
 
     \Drupal::setContainer($container->getMock());
 
