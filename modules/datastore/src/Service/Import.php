@@ -5,6 +5,7 @@ namespace Drupal\datastore\Service;
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
 use Dkan\Datastore\Resource as DatastoreResource;
+use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
@@ -18,6 +19,9 @@ use Procrastinator\Result;
  */
 class Import {
   use LoggerTrait;
+  use EventDispatcherTrait;
+
+  const EVENT_CONFIGURE_PARSER = 'dkan_datastore_import_configure_parser';
 
   const DEFAULT_TIMELIMIT = 50;
 
@@ -128,7 +132,16 @@ class Import {
    *   A parser which does not keep track of every execution steps.
    */
   private function getNonRecordingParser(string $delimiter) : Csv {
-    $parser = Csv::getParser($delimiter);
+    $parserConfiguration = [
+      'delimiter' => $delimiter,
+      'quote' => '"',
+      'escape' => "\\",
+      'record_end' => ["\n", "\r"]
+    ];
+
+    $parserConfiguration = $this->dispatchEvent(self::EVENT_CONFIGURE_PARSER, $parserConfiguration);
+
+    $parser = Csv::getParser($parserConfiguration['delimiter'], $parserConfiguration['quote'], $parserConfiguration['escape'], $parserConfiguration['record_end']);
     $parser->machine->stopRecording();
     return $parser;
   }
