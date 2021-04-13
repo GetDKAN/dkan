@@ -136,7 +136,7 @@ class Import {
       'delimiter' => $delimiter,
       'quote' => '"',
       'escape' => "\\",
-      'record_end' => ["\n", "\r"]
+      'record_end' => ["\n", "\r"],
     ];
 
     $parserConfiguration = $this->dispatchEvent(self::EVENT_CONFIGURE_PARSER, $parserConfiguration);
