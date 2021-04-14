@@ -22,7 +22,6 @@
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.3",
         "ramsey/uuid" : "^3.8.0",
-        "weitzman/drupal-test-traits": "^1.5",
         "getdkan/rooted-json-data": "^0.0.2",
         "drupal/select_or_other": "1.x-dev",
         "drupal/select2": "1.x-dev",
