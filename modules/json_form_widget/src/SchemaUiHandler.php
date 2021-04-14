@@ -55,6 +55,13 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Constructor.
+   *
+   * @param Drupal\metastore\SchemaRetriever $schema_retriever
+   *   SchemaRetriever service.
+   * @param Drupal\Core\Logger\LoggerChannelFactory $logger_factory
+   *   LoggerChannelFactory service.
+   * @param WidgetRouter $widget_router
+   *   WidgetRouter service.
    */
   public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory, WidgetRouter $widget_router) {
     $this->schemaRetriever = $schema_retriever;
@@ -64,7 +71,10 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   }
 
   /**
-   * Set schema.
+   * Set schemaUi.
+   *
+   * @param mixed $schema_name
+   *   The schema name.
    */
   public function setSchemaUi($schema_name) {
     try {
@@ -77,7 +87,10 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   }
 
   /**
-   * Get schema UI.
+   * Get Schema UI object.
+   *
+   * @return object
+   *   Schema UI object.
    */
   public function getSchemaUi() {
     return $this->schemaUi;
@@ -85,6 +98,12 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Apply schema UI to form.
+   *
+   * @param mixed $form
+   *   The form to which the Schema UI should be applied.
+   *
+   * @return array
+   *   Form with Schema UI applied.
    */
   public function applySchemaUi($form) {
     if ($this->schemaUi) {
@@ -100,8 +119,20 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Helper function for handling Schema UI specs.
+   *
+   * @param mixed $property
+   *   Name of the property field.
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param mixed $element
+   *   Element to apply UI options.
+   * @param bool $in_array
+   *   Wether the property is inside of an array.
+   *
+   * @return array
+   *   Render array for the element with schema UI applied.
    */
-  public function handlePropertySpec($property, $spec, $element, $in_array = FALSE) {
+  public function handlePropertySpec($property, $spec, $element, bool $in_array = FALSE) {
     if ($in_array) {
       $element = $this->applyOnBaseField($spec, $element);
     }
@@ -121,8 +152,16 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Apply schema UI to simple fields.
+   *
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param array $element
+   *   Element to apply UI options.
+   *
+   * @return array
+   *   Element with widget configuration based on UI options.
    */
-  public function applyOnBaseField($spec, $element) {
+  public function applyOnBaseField($spec, array $element) {
     if (isset($spec->{"ui:options"})) {
       $element = $this->updateWidgets($spec->{"ui:options"}, $element);
       $element = $this->disableFields($spec->{"ui:options"}, $element);
@@ -138,6 +177,16 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Apply schema UI to object fields.
+   *
+   * @param mixed $property
+   *   Name of the property field.
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param mixed $element
+   *   Element to apply UI options.
+   *
+   * @return array
+   *   Render array for the element with schema UI applied.
    */
   public function applyOnObjectFields($property, $spec, $element) {
     foreach ((array) $spec as $field => $sub_spec) {
@@ -149,7 +198,19 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   }
 
   /**
-   * Apply schema UI to array fields.
+   * Apply schema UI to object fields.
+   *
+   * @param mixed $property
+   *   Name of the property field.
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param mixed $element
+   *   Element to apply UI options.
+   * @param mixed $fields
+   *   List of fields from array.
+   *
+   * @return array
+   *   Render array for the element with schema UI applied.
    */
   public function applyOnArrayFields($property, $spec, $element, $fields) {
     foreach ($fields as $field) {
@@ -165,8 +226,16 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Helper function for handling widgets.
+   *
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param array $element
+   *   Element to apply UI options.
+   *
+   * @return array
+   *   Element with configurations about widget.
    */
-  public function updateWidgets($spec, $element) {
+  public function updateWidgets($spec, array $element) {
     if (isset($spec->widget)) {
       return $this->widgetRouter->getConfiguredWidget($spec, $element);
     }
@@ -177,8 +246,16 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Helper function for disabling fields.
+   *
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param array $element
+   *   Element to apply UI options.
+   *
+   * @return array
+   *   Element with hints about whether it should be disabled.
    */
-  public function disableFields($spec, $element) {
+  public function disableFields($spec, array $element) {
     if (isset($spec->disabled)) {
       $element['#disabled'] = TRUE;
     }
@@ -187,8 +264,16 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Helper function for adding placeholders.
+   *
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param array $element
+   *   Element to apply UI options.
+   *
+   * @return array
+   *   Element with placeholder info.
    */
-  public function addPlaceholders($spec, $element) {
+  public function addPlaceholders($spec, array $element) {
     if (isset($spec->placeholder)) {
       $element['#attributes']['placeholder'] = $spec->placeholder;
     }
@@ -197,8 +282,16 @@ class SchemaUiHandler implements ContainerInjectionInterface {
 
   /**
    * Helper function for changing help text.
+   *
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param array $element
+   *   Element to apply UI options.
+   *
+   * @return array
+   *   Element with description/help text.
    */
-  public function changeFieldDescriptions($spec, $element) {
+  public function changeFieldDescriptions($spec, array $element) {
     if (isset($spec->description)) {
       $element['#description'] = $spec->description;
     }
@@ -206,9 +299,17 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   }
 
   /**
-   * Helper function for changing help text.
+   * Helper function for changing title.
+   *
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param array $element
+   *   Element to apply UI options.
+   *
+   * @return array
+   *   Element with title overriden.
    */
-  public function changeFieldTitle($spec, $element) {
+  public function changeFieldTitle($spec, array $element) {
     if (isset($spec->title)) {
       $element['#title'] = $spec->title;
     }
