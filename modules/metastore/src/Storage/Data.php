@@ -80,6 +80,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       /** @var \Drupal\node\NodeInterface $node */
       $node = $this->nodeStorage->load($nid);
       if ($node->get('moderation_state')->getString() === 'published') {
+        // TODO: consider transforming to RootedJsonData.
         $all[] = $node->get('field_json_metadata')->getString();
       }
     }
@@ -99,6 +100,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node = $this->getNodePublishedRevision($uuid);
 
     if ($node && $node->get('moderation_state')->getString() == 'published') {
+      // TODO: consider transforming to RootedJsonData.
       return $node->get('field_json_metadata')->getString();
     }
 
@@ -232,6 +234,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function store($data, string $uuid = NULL): string {
     $data = json_decode($data);
+
+    // TODO: consider transforming to RootedJsonData.
     $data = $this->filterHtml($data);
 
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;

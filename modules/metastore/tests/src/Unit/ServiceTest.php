@@ -8,7 +8,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Factory\Sae;
+use Drupal\metastore\RootedJsonDataWrapper;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\Data;
@@ -17,7 +17,7 @@ use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
-use Sae\Sae as Engine;
+use RootedData\RootedJsonData;
 
 /**
  *
@@ -49,14 +49,17 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetAll() {
+    $expected = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, 'retrieveAll', [json_encode("blah")]);
+      ->add(Data::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $expected);
 
     \Drupal::setContainer($container->getMock());
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode(["blah"]), json_encode($service->getAll("dataset")));
+    $this->assertEquals([$expected], $service->getAll("dataset"));
   }
 
   public function testGetAllException() {
@@ -91,33 +94,38 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrievePublished", json_encode("blah"));
+      ->add(Data::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $data);
 
     \Drupal::setContainer($container->getMock());
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode("blah"), $service->get("dataset", "1"));
+    $this->assertEquals(json_encode(['foo' => 'bar']), $service->get("dataset", "1"));
   }
 
   /**
    *
    */
   public function testGetResources() {
-    $dataset = (object) [
+    $dataset = [
       "identifier" => "1",
       "distribution" => [
-        (object) ["title" => "hello"],
+        ["title" => "hello"],
       ],
     ];
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode($dataset));
 
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", json_encode($dataset));
+      ->add(Data::class, "retrieve", json_encode($dataset))
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $data);
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode([(object) ["title" => "hello"]]),
+    $this->assertEquals(json_encode([["title" => "hello"]]),
       json_encode($service->getResources("dataset", "1")));
   }
 
@@ -130,7 +138,8 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals("1", $service->post("dataset", json_encode("blah")));
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+    $this->assertEquals("1", $service->post("dataset", $data));
   }
 
   /**
@@ -143,7 +152,9 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->expectException(ExistingObjectException::class);
-    $service->post("dataset", '{"identifier":1,"title":"FooBar"}');
+
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', '{"identifier":1,"title":"FooBar"}');
+    $service->post("dataset", $data);
   }
 
   /**
@@ -156,7 +167,9 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $info = $service->put("dataset", "1", json_encode("blah"));
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+    $info = $service->put("dataset", "1", $data);
+
     $this->assertEquals("1", $info['identifier']);
   }
 
@@ -173,19 +186,22 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->expectExceptionMessage("Identifier cannot be modified");
-    $service->put("dataset", "1", $updating);
+
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', $updating);
+    $service->put("dataset", "1", $data);
   }
 
   /**
    *
    */
   public function testPutResultingInNewData() {
-    $data = '{"identifier":"3","title":"FooBar"}';
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", new \Exception())
       ->add(Data::class, "store", "3");
 
     $service = Service::create($container->getMock());
+
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', '{"identifier":"3","title":"FooBar"}');
     $info = $service->put("dataset", "3", $data);
     $this->assertEquals("3", $info['identifier']);
   }
@@ -201,7 +217,9 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
-    $service->put("dataset", "1", $existing);
+
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', $existing);
+    $service->put("dataset", "1", $data);
   }
 
   /**
@@ -221,7 +239,9 @@ EOF;
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
-    $service->put("dataset", "1", $updating);
+
+    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', $updating);
+    $service->put("dataset", "1", $data);
   }
 
   /**
@@ -230,7 +250,8 @@ EOF;
   public function testPatch() {
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", "1")
-      ->add(Data::class, "store", "1");
+      ->add(Data::class, "store", "1")
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', RootedJsonData::class);
 
     $service = Service::create($container->getMock());
 
@@ -294,15 +315,17 @@ EOF;
    *
    */
   public function testGetCatalog() {
+    $dataset = self::getJsonWrapper($this)->createRootedJsonData('blah', json_encode(["foo" => "bar"]));
+
     $catalog = (object) [
       "@id" => "http://catalog",
       "dataset" => [],
     ];
-    $dataset = (object) ["foo" => "bar"];
 
     $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
-      ->add(Data::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)]);
+      ->add(Data::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)])
+      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $dataset);
 
     \Drupal::setContainer($container->getMock());
 
@@ -325,6 +348,7 @@ EOF;
     $myServices = [
       'dkan.metastore.schema_retriever' => SchemaRetriever::class,
       'dkan.metastore.storage' => DataFactory::class,
+      'dkan.metastore.rooted_json_data_wrapper' => RootedJsonDataWrapper::class,
       'event_dispatcher' => ContainerAwareEventDispatcher::class
     ];
 
@@ -341,6 +365,18 @@ EOF;
       ->add(Container::class, "get", $services)
       ->add(DataFactory::class, 'getInstance', Data::class)
       ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+  }
+
+  public static function getJsonWrapper(TestCase $case) {
+    $options = (new Options())
+      ->add('metastore.schema_retriever', SchemaRetriever::class)
+      ->index(0);
+
+    $container = (new Chain($case))
+      ->add(Container::class, "get", $options)
+      ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+
+    return RootedJsonDataWrapper::create($container->getMock());
   }
 
 }

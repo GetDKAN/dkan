@@ -81,6 +81,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     $keepRefs = $this->wantObjectWithReferences();
 
     $output = array_map(function ($object) use ($keepRefs) {
+      $object = json_decode($object);
       if ($keepRefs) {
         return $this->swapReferences($object);
       }
@@ -191,6 +192,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $data = $this->getRequestContent();
       $this->checkData($data);
+      $data = $this->service->getRootedJsonDataWrapper()->createRootedJsonData($schema_id, $data);
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
@@ -244,6 +246,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $data = $this->getRequestContent();
       $this->checkData($data, $identifier);
+      $data = $this->service->getRootedJsonDataWrapper()->createRootedJsonData($schema_id, $data);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);
@@ -324,6 +327,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   private function checkData($data, $identifier = NULL) {
 
+    // TODO: consider working with RootedJsonData.
     if (empty($data)) {
       throw new MissingPayloadException("Empty body");
     }
