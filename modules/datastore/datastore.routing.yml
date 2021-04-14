@@ -69,9 +69,29 @@ datastore.1.query.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
+datastore.1.query.get:
+  path: '/api/1/datastore/query'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::query'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 datastore.1.query.id.post:
   path: '/api/1/datastore/query/{identifier}'
   methods: [POST]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::queryResource'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.id.get:
+  path: '/api/1/datastore/query/{identifier}'
+  methods: [GET]
   defaults:
     _controller: '\Drupal\datastore\WebServiceApi::queryResource'
   requirements:
