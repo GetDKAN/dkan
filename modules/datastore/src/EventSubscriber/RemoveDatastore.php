@@ -2,13 +2,13 @@
 
 namespace Drupal\datastore\EventSubscriber;
 
-use Drupal\metastore\Events\ResourceCleanup;
+use Drupal\common\Events\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Resource;
 
 /**
- * Class MapperCleanup.
+ * Class RemoveDatastore.
  */
 class RemoveDatastore implements EventSubscriberInterface {
 
@@ -19,19 +19,19 @@ class RemoveDatastore implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = [];
-    $events[ResourceCleanup::EVENT_RESOURCE_CLEANUP][] = ['drop'];
+    $events[Event::EVENT_RESOURCE_CLEANUP][] = ['drop'];
     return $events;
   }
 
   /**
    * React to a distribution being orphaned.
    *
-   * @param \Drupal\metastore\Events\ResourceCleanup $event
+   * @param \Drupal\common\Events\Event $event
    *   The event object containing the resource object.
    */
-  public function drop(ResourceCleanup $event) {
-    /** @var \Drupal\common\Resource $resouce */
-    $resource = $event->getResource();
+  public function drop(Event $event) {
+    /** @var \Drupal\common\Resource $resource */
+    $resource = $event->getData();
     $ref_uuid = $resource->getUniqueIdentifier();
     $id = md5(str_replace('source', 'local_file', $ref_uuid));
     try {

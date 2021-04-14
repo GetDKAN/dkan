@@ -14,8 +14,7 @@ use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\datastore\Events\DatastoreCleanup;
+use Drupal\common\EventDispatcherTrait;
 
 /**
  * Resource localizer.
@@ -24,25 +23,26 @@ use Drupal\datastore\Events\DatastoreCleanup;
  */
 class ResourceLocalizer {
   use LoggerTrait;
+  use EventDispatcherTrait;
 
   const LOCAL_FILE_PERSPECTIVE = 'local_file';
   const LOCAL_URL_PERSPECTIVE = 'local_url';
+  const EVENT_DATASTORE_CLEANUP = 'dkan_datastore_table_cleanup';
+
 
   private $fileMapper;
   private $fileFetcherFactory;
   private $drupalFiles;
   private $jobStoreFactory;
-  private $eventDispatcher;
 
   /**
    * Constructor.
    */
-  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory, ContainerAwareEventDispatcher $eventDispatcher) {
+  public function __construct(ResourceMapper $fileMapper, FactoryInterface $fileFetcherFactory, DrupalFiles $drupalFiles, JobStoreFactory $jobStoreFactory) {
     $this->fileMapper = $fileMapper;
     $this->fileFetcherFactory = $fileFetcherFactory;
     $this->drupalFiles = $drupalFiles;
     $this->jobStoreFactory = $jobStoreFactory;
-    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -121,9 +121,9 @@ class ResourceLocalizer {
     $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
     if ($resource) {
       if (file_exists($resource->getFilePath())) {
-        $f = $resource->getFilePath();
         unlink($resource->getFilePath());
       }
+      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($resource->getUniqueIdentifier());
       $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
 
       if ($uuid) {
@@ -137,6 +137,8 @@ class ResourceLocalizer {
     if ($resource2) {
       $this->removeLocalUrl($resource2);
     }
+
+    $this->dispatchEvent(self::EVENT_DATASTORE_CLEANUP, $identifier);
   }
 
   /**

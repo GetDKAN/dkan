@@ -69,11 +69,6 @@ services:
     tags:
       - { name: event_subscriber }
 
-  dkan.metastore.event_subscriber.jobstore_cleanup:
-    class: \Drupal\metastore\EventSubscriber\RemoveFileFetcherJob
-    tags:
-      - { name: event_subscriber }
-
   # @deprecated
   metastore.service:
     class: \Drupal\metastore\Service

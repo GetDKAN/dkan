@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\EventSubscriber;
 
-use Drupal\metastore\Events\OrphaningDistribution;
+use Drupal\common\Events\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -17,18 +17,18 @@ class MapperCleanup implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = [];
-    $events[OrphaningDistribution::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
+    $events[Event::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
     return $events;
   }
 
   /**
    * React to a distribution being orphaned.
    *
-   * @param \Drupal\metastore\Events\OrphaningDistribution $event
+   * @param \Drupal\common\Events\Event $event
    *   The event object containing the resource uuid.
    */
-  public function cleanResourceMapperTable(OrphaningDistribution $event) {
-    $uuid = $event->getUuid();
+  public function cleanResourceMapperTable(Event $event) {
+    $uuid = $event->getData();
     // Use the metastore service to build a resource object.
     $service = \Drupal::service('dkan.metastore.service');
     $resource = $service->get('distribution', $uuid);
