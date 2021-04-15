@@ -60,7 +60,7 @@ class ValueHandlerTest extends TestCase {
     $result = $value_handler->flattenValues($values, $property, $schema);
     $this->assertEquals($result, $expected);
 
-    // Test array without values.
+    // Test arrays.
     $values = [
       "references" => [
         "references" => [
@@ -76,10 +76,49 @@ class ValueHandlerTest extends TestCase {
     $result = $value_handler->flattenValues($values, $property, $schema);
     $this->assertEquals($result, $expected);
 
+    // Test arrays in arrays.
+    $values = [
+      "references" => [
+        "references" => [
+          0 => [
+            "http://google.com" => "http://google.com",
+            "http://url.com" => "http://url.com",
+          ],
+          1 => [
+            "http://otherurl.com" => "http://otherurl.com",
+            "http://evenanother.com" => "http://evenanother.com",
+          ]
+        ],
+      ],
+    ];
+    $property = "references";
+    $schema = json_decode('{"title":"Related documents","type":"array","items":{"type":"string","format":"uri"}}');
+    $expected = [
+      "http://google.com",
+      "http://url.com",
+      "http://otherurl.com",
+      "http://evenanother.com",
+    ];
+    $result = $value_handler->flattenValues($values, $property, $schema);
+    $this->assertEquals($result, $expected);
+
     // Test strings without values.
     $schema = json_decode('{"type":"string","format":"uri"}');
     $result = $value_handler->flattenValues([], "url", $schema);
     $this->assertEquals($result, FALSE);
+
+    // Test select other.
+    $schema = json_decode('{"type":"string"}');
+    $formValues = [
+      'license' => [
+        0 => 'option 1',
+        'select' => 'option 1',
+        'other' => '',
+      ]
+    ];
+    $result = $value_handler->flattenValues($formValues, "license", $schema);
+    $expected = 'option 1';
+    $this->assertEquals($result, $expected);
 
     // Test object without values.
     $schema = json_decode($this->getObjectSchema());

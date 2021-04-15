@@ -33,6 +33,10 @@ class ValueHandler {
    * Flatten values for string properties.
    */
   public function handleStringValues($formValues, $property) {
+    // Handle select_or_other_select.
+    if (isset($formValues[$property]['select'])) {
+      return $formValues[$property][0];
+    }
     if (!empty($formValues[$property])) {
       return $formValues[$property];
     }
@@ -62,16 +66,30 @@ class ValueHandler {
    * Flatten values for array properties.
    */
   public function handleArrayValues($formValues, $property, $schema) {
-    $data = FALSE;
+    $data = [];
     $subschema = $schema->items;
     if ($subschema->type === "object") {
       return $this->getObjectInArrayData($formValues, $property, $subschema);
     }
 
-    foreach ($formValues[$property][$property] as $key => $value) {
-      if (!empty($value)) {
-        $data[$key] = $value;
+    foreach ($formValues[$property][$property] as $value) {
+      $data = array_merge($data, $this->flattenArraysInArrays($value));
+    }
+    return !empty($data) ? $data : FALSE;
+  }
+
+  /**
+   * Flatten values for arrays in arrays.
+   */
+  private function flattenArraysInArrays($value) {
+    $data = [];
+    if (is_array($value)) {
+      foreach ($value as $item) {
+        $data[] = $item;
       }
+    }
+    elseif (!empty($value)) {
+      $data[] = $value;
     }
     return $data;
   }
