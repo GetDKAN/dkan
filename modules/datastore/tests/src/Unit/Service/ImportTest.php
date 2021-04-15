@@ -1,8 +1,9 @@
 <?php
 
-namespace Drupal\Tests\datastore\Service;
+namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Logger\LoggerChannelFactory;
@@ -26,6 +27,12 @@ class ImportTest extends TestCase {
    *
    */
   public function test() {
+    $container = (new Chain($this))
+      ->add(\Symfony\Component\DependencyInjection\Container::class, 'get', ContainerAwareEventDispatcher::class)
+      ->getMock();
+
+    \Drupal::setContainer($container);
+
     $resource = new Resource("http://hello.goodby/text.csv", "text/csv");
 
     $jobStore = (new Chain($this))
