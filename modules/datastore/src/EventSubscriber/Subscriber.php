@@ -4,6 +4,7 @@ namespace Drupal\datastore\EventSubscriber;
 
 use Drupal\common\Resource;
 use Drupal\common\LoggerTrait;
+use Drupal\common\Events\Event;
 use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\Registration;
 use Drupal\metastore\ResourceMapper;
@@ -33,10 +34,10 @@ class Subscriber implements EventSubscriberInterface {
    *
    * @inheritdoc
    */
-  public function onRegistration(Registration $event) {
+  public function onRegistration(Event $event) {
 
     /** @var \Drupal\common\Resource $resouce */
-    $resource = $event->getResource();
+    $resource = $event->getData();
 
     if ($resource->getPerspective() == 'source' && $this->isDataStorable($resource)) {
       try {

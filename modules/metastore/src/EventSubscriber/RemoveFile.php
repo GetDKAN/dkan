@@ -5,6 +5,7 @@ namespace Drupal\metastore\EventSubscriber;
 use Drupal\common\Events\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\common\Resource;
+use Drupal\metastore\ResourceMapper;
 
 /**
  * Class RemoveFile.
@@ -18,7 +19,7 @@ class RemoveFile implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = [];
-    $events[Event::EVENT_RESOURCE_CLEANUP][] = ['fileCleanup'];
+    $events[ResourceMapper::EVENT_RESOURCE_CLEANUP][] = ['fileCleanup'];
     return $events;
   }
 

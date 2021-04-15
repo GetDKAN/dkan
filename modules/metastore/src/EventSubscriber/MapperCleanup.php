@@ -4,6 +4,7 @@ namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\common\Events\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 
 /**
  * Class MapperCleanup.
@@ -17,7 +18,7 @@ class MapperCleanup implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = [];
-    $events[Event::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
+    $events[OrphanReferenceProcessor::EVENT_ORPHANING_DISTRIBUTION][] = ['cleanResourceMapperTable'];
     return $events;
   }
 

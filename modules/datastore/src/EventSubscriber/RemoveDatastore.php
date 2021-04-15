@@ -6,6 +6,7 @@ use Drupal\common\Events\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Resource;
+use Drupal\metastore\ResourceMapper;
 
 /**
  * Class RemoveDatastore.
@@ -19,7 +20,7 @@ class RemoveDatastore implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = [];
-    $events[Event::EVENT_RESOURCE_CLEANUP][] = ['drop'];
+    $events[ResourceMapper::EVENT_RESOURCE_CLEANUP][] = ['drop'];
     return $events;
   }
 
