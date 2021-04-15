@@ -3,3 +3,5 @@ description: Provides a widget for generating a form based on JSON Schema.
 package: DKAN
 type: module
 core_version_requirement: ^8 || ^9
+dependencies:
+  - metastore

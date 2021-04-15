@@ -12,6 +12,8 @@ dkan.common.api:
     { _controller: '\Drupal\common\Docs::getVersions'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 dkan.common.api.version:
   path: '/api/1'
@@ -20,3 +22,5 @@ dkan.common.api.version:
     { _controller: '\Drupal\common\Docs::getComplete'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Drupal\common\Util\RequestParamNormalizer;
 
 /**
  * Class Api.
@@ -237,7 +238,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   Return data or an exception.
    */
   protected function getResults() {
-    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    $payloadJson = RequestParamNormalizer::getFixedJson(
+      $this->requestStack->getCurrentRequest(),
+      file_get_contents(__DIR__ . "/../docs/query.json")
+    );
 
     try {
       $this->datastoreQuery = new DatastoreQuery($payloadJson);
@@ -345,10 +349,9 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   The json response.
    */
   public function queryResource($identifier) {
-    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    $payloadJson = RequestParamNormalizer::getJson($this->requestStack->getCurrentRequest());
     try {
       $this->prepareQueryResourcePayload($payloadJson, $identifier);
-      $datastoreQuery = new DatastoreQuery($payloadJson);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException(
@@ -357,17 +360,19 @@ class WebServiceApi implements ContainerInjectionInterface {
       );
     }
     try {
+      $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../docs/query.json"));
+      $datastoreQuery = new DatastoreQuery($payloadJson);
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e);
+      return $this->getResponseFromException($e, 400);
     }
 
-    return $this->getResponse($result, 200);
+    return $this->getResponse($result->{"$"}, 200);
   }
 
   /**
-   * Retrieve the datastore query schema.
+   * Retrieve the datastore query schema. Used by datastore.1.query.schema.get.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.

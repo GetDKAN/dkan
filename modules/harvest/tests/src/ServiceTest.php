@@ -5,6 +5,7 @@ namespace Drupal\Tests\harvest;
 use Contracts\FactoryInterface;
 use Contracts\Mock\Storage\Memory;
 use Drupal\Component\DependencyInjection\Container;
+use Drupal\Core\Utility\Error;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Service as HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
@@ -259,6 +260,17 @@ class ServiceTest extends TestCase {
     $removedIds = $service->getOrphanIdsFromCompleteHarvest('1');
 
     $this->assertEquals(['4'], array_values($removedIds));
+  }
+
+  public function testGetAllHarvestIds() {
+    $container = $this->getCommonMockChain();
+
+    $service = HarvestService::create($container->getMock());
+
+    $expected = ['100', '102', '101'];
+
+    $actual = $service->getAllHarvestIds();
+    $this->assertEquals($expected, $actual);
   }
 
   /**

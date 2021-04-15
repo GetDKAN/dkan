@@ -5,6 +5,8 @@ datastore.1.datastore:
     { _controller: '\Drupal\common\Docs::getComplete'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: [ 'basic_auth', 'cookie' ]
 
 datastore.1.imports:
   path: '/api/1/datastore/imports'
@@ -34,6 +36,8 @@ datastore.1.imports.id:
     _controller: '\Drupal\datastore\WebServiceApi::summary'
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 datastore.1.imports.delete:
   path: '/api/1/datastore/imports'
@@ -75,9 +79,29 @@ datastore.1.query.file.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
+datastore.1.query.get:
+  path: '/api/1/datastore/query'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::query'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 datastore.1.query.id.post:
   path: '/api/1/datastore/query/{identifier}'
   methods: [POST]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::queryResource'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.id.get:
+  path: '/api/1/datastore/query/{identifier}'
+  methods: [GET]
   defaults:
     _controller: '\Drupal\datastore\WebServiceApi::queryResource'
   requirements:

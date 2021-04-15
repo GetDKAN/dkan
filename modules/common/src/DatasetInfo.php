@@ -162,7 +162,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Get distributions info.
    *
-   * @param \stdClass $metadata
+   * @param object $metadata
    *   Dataset metadata object.
    *
    * @return array
@@ -185,7 +185,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Get resources information.
    *
-   * @param \stdClass $distribution
+   * @param object $distribution
    *   A distribution object extracted from dataset metadata.
    *
    * @return array
@@ -200,17 +200,24 @@ class DatasetInfo implements ContainerInjectionInterface {
     $version = $resource->data->version;
 
     $info = $this->importInfo->getItem($identifier, $version);
+    $fileMapper = $this->resourceMapper->get($identifier, 'local_file', $version);
+
+    try {
+      $storage = $this->datastore->getStorage($identifier, $version);
+    }
+    catch (\Exception $e) {
+    }
 
     return [
       'distribution_uuid' => $distribution->identifier,
       'resource_id' => $identifier,
       'resource_version' => $version,
       'fetcher_status' => $info->fileFetcherStatus,
-      'fetcher_percent_done' => $info->fileFetcherPercentDone,
-      'file_path' => $this->resourceMapper->get($identifier, 'local_file', $version)->getFilePath(),
+      'fetcher_percent_done' => $info->fileFetcherPercentDone ?? 0,
+      'file_path' => isset($fileMapper) ? $fileMapper->getFilePath() : 'not found',
       'importer_status' => $info->importerStatus,
-      'importer_percent_done' => $info->importerPercentDone,
-      'table_name' => $this->datastore->getStorage($identifier, $version)->getTableName(),
+      'importer_percent_done' => $info->importerPercentDone ?? 0,
+      'table_name' => isset($storage) ? $storage->getTableName() : 'not found',
     ];
   }
 
