@@ -136,7 +136,7 @@
       "downloadURL": {
         "ui:options": {
           "widget": "upload_or_link",
-          "extensions": "csv pdf tsv jpg txt xls xlsx",
+          "extensions": "csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp",
           "progress_indicator": "bar"
         }
       }
