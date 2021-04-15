@@ -58,6 +58,18 @@ class RequestParamNormalizerTest extends TestCase {
     $this->assertEquals($requestJson, $sampleJson);
   }
 
+  /**
+   * Make sure we get what we expect with a delete
+   */
+  public function testDeleteNormalizer() {
+    $this->expectExceptionMessage("Only POST, PUT, PATCH and GET requests can be normalized");
+    $sampleJson = $this->getSampleJson();
+    $schema = $this->getSampleSchema();
+
+    $request = Request::create("http://example.com", "DELETE");
+    $requestJson = RequestParamNormalizer::getFixedJson($request, $schema);
+  }
+
 
   private function getSampleJson() {
     return file_get_contents(__DIR__ . "/../../files/query.json");
