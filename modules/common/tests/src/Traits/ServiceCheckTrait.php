@@ -112,7 +112,7 @@ trait ServiceCheckTrait {
    * Private.
    */
   private function getRelativeDrupalPath() {
-    return DRUPAL_ROOT;
+    return getenv('DRUPAL_ROOT');
   }
 
 }
