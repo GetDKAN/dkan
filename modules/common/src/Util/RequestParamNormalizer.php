@@ -6,7 +6,7 @@ use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class DkanRequestNormalizer.
+ * Class RequestParamNormalizer.
  *
  * This class provides public static functions to normalize different HTTP
  * request types into valid JSON data. Provides type casting from a JSON Schema
