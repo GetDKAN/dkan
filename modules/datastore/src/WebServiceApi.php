@@ -10,6 +10,8 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Drupal\common\Util\RequestParamNormalizer;
+use RootedData\RootedJsonData;
+use UnexpectedValueException;
 
 /**
  * Class Api.
@@ -34,13 +36,6 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   private $requestStack;
-
-  /**
-   * Reusable Query.
-   *
-   * @var \Drupal\datastore\Service\DatastoreQuery
-   */
-  protected $datastoreQuery;
 
   /**
    * Api constructor.
@@ -196,102 +191,105 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @return CsvResponse|JsonResponse
    *   The json or CSV response.
    */
-  public function query() {
-    $result = $this->getResults();
-    $format = $this->requestStack->getCurrentRequest()->query->get('format');
-
-    switch ($format) {
-      case 'csv':
-        if ($data = $result->{"$"}) {
-          return $this->formatCsv($data);
-        }
-        else {
-          // Allow for empty file to be returned.
-          return $this->formatCsv(['results' => [0 => 0]]);
-        }
-
-      case 'json':
-      default:
-        return $this->getResponse($result->{"$"}, 200);
-    }
-  }
-
-  /**
-   * Perform a query with unlimited results.
-   */
-  public function fileQuery() {
-    $result = $this->getResults();
-
-    // @TODO: Streamed response for json
-    if ($data = $result->{"$"}) {
-      return $this->processStreamedCsv($data);
-    }
-    else {
-      return $this->processStreamedCsv([]);
-    }
-  }
-
-  /**
-   * Get data from service.
-   *
-   * @return object|RootedJsonData|JsonResponse
-   *   Return data or an exception.
-   */
-  protected function getResults() {
+  public function query($stream = FALSE) {
     $payloadJson = RequestParamNormalizer::getFixedJson(
       $this->requestStack->getCurrentRequest(),
       file_get_contents(__DIR__ . "/../docs/query.json")
     );
 
     try {
-      $this->datastoreQuery = new DatastoreQuery($payloadJson);
-      $result = $this->datastoreService->runQuery($this->datastoreQuery);
+      $datastoreQuery = new DatastoreQuery($payloadJson);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
     }
 
-    return $result;
+    $result = $this->datastoreService->runQuery($datastoreQuery);
+
+    if ($stream) {
+      return $this->streamResponse($datastoreQuery, $result);
+    }
+
+    return $this->formatResponse($datastoreQuery, $result);
+  }
+
+  public function formatResponse($datastoreQuery, $result) {
+    switch ($datastoreQuery->{"$.format"}) {
+      case 'csv':
+        return $this->formatCsvResponse($result);
+
+      case 'json':
+      default:
+        return $this->getResponse($result->{"$"}, 200);
+    }
+
   }
 
   /**
    * Reformat and create CSV file.
    *
-   * @param array $data
-   *   Data result with buried header info.
+   * @param RootedData\RootedJsonData $result
+   *   A query result JSON object.
    *
    * @return \Drupal\datastore\CsvResponse
    *   CSV file as a response.
    */
-  protected function formatCsv(array $data) {
-    $data = $this->addHeaderRow($data);
+  protected function formatCsvResponse(RootedJsonData $result) {
+    $data = $result->{"$"} ? $result->{"$"} : [];
+    $this->addHeaderRow($data);
     $response = new CsvResponse($data['results'], 200);
     $response->setFilename('data.csv');
     return $response;
   }
 
   /**
+   * Stream an unlimited response as a file.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore Query object.
+   * @param \RootedData\RootedJsonData $result
+   *   Query result.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   An HTTP response.
+   */
+  protected function streamResponse($datastoreQuery, $result) {
+    switch ($datastoreQuery->{"$.format"}) {
+      case 'csv':
+        return $this->processStreamedCsv($datastoreQuery, $result);
+
+      case 'json':
+      default:
+        return $this->getResponseFromException(
+          new UnexpectedValueException("Streaming not currently available for JSON responses"),
+          400
+        );
+    }
+  }
+
+  /**
    * Setup the Streamed Response callback.
    *
-   * @param array $data
-   *   Data result.
+   * @param RootedData\RootedJsonData $result
+   *   Query result.
    *
    * @return \Symfony\Component\HttpFoundation\StreamedResponse
    *   Return the StreamedResponse object.
    */
-  protected function processStreamedCsv(array $data) {
-    $max = $this->datastoreQuery->{"$.limit"};
+  protected function processStreamedCsv($datastoreQuery, RootedJsonData $result) {
+    $data = $result->{"$"} ? $result->{"$"} : [];
+    $max = $datastoreQuery->{"$.limit"};
 
     // Disable extra queries.
-    $this->datastoreQuery->{"$.count"} = FALSE;
-    $this->datastoreQuery->{"$.schema"} = FALSE;
+    $datastoreQuery->{"$.count"} = FALSE;
+    $datastoreQuery->{"$.schema"} = FALSE;
 
-    $data = $this->addHeaderRow($data);
+    $this->addHeaderRow($data);
     $response = new StreamedResponse();
     $response->headers->set('Content-Type', 'text/csv');
     $response->headers->set('Content-Disposition', 'attachment; filename="data.csv"');
     $response->headers->set('X-Accel-Buffering', 'no');
-    $response->setCallback(function () use (&$data, &$max) {
+    $response->setCallback(function () use (&$data, &$max, $datastoreQuery) {
       $i = 1;
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
@@ -300,8 +298,8 @@ class WebServiceApi implements ContainerInjectionInterface {
       $count = count($data['results']);
       // Count can be greater as we add a header row to the first time.
       while ($count >= $max) {
-        $this->datastoreQuery->{"$.offset"} = $max * $i;
-        $result = $this->datastoreService->runQuery($this->datastoreQuery);
+        $datastoreQuery->{"$.offset"} = $max * $i;
+        $result = $this->datastoreService->runQuery($datastoreQuery);
         $data = $result->{"$"};
         $this->sendRows($handle, $data);
         $i++;
@@ -331,12 +329,11 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Add the header row.
    */
-  private function addHeaderRow(array $data) {
+  private function addHeaderRow(array &$data) {
     $header_row = array_keys(reset($data['schema'])['fields']);
     if (is_array($header_row)) {
       array_unshift($data['results'], $header_row);
     }
-    return $data;
   }
 
   /**
@@ -348,7 +345,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function queryResource($identifier) {
+  public function queryResource($identifier, $stream = FALSE) {
     $payloadJson = RequestParamNormalizer::getJson($this->requestStack->getCurrentRequest());
     try {
       $this->prepareQueryResourcePayload($payloadJson, $identifier);
@@ -368,7 +365,11 @@ class WebServiceApi implements ContainerInjectionInterface {
       return $this->getResponseFromException($e, 400);
     }
 
-    return $this->getResponse($result->{"$"}, 200);
+    if ($stream) {
+      return $this->streamResponse($datastoreQuery, $result);
+    }
+
+    return $this->formatResponse($datastoreQuery, $result);
   }
 
   /**

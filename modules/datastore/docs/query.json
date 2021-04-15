@@ -230,6 +230,12 @@
                     "enum": ["asc", "desc"]
                 }
             }
+        },
+        "format" : {
+            "type": "string",
+            "description": "Format to return data in. Default is JSON, can be set to CSV.",
+            "enum": ["csv, json"],
+            "default": "json"
         }
     }
 }

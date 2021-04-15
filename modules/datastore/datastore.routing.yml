@@ -69,21 +69,22 @@ datastore.1.query.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.file.post:
-  path: '/api/1/datastore/query/file'
-  methods: [POST]
-  defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::fileQuery'
-  requirements:
-    _permission: 'access content'
-  options:
-    _auth: ['basic_auth', 'cookie']
-
 datastore.1.query.get:
   path: '/api/1/datastore/query'
   methods: [GET]
   defaults:
     _controller: '\Drupal\datastore\WebServiceApi::query'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.fulldownload.get:
+  path: '/api/1/datastore/query/fulldownload'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::query'
+    stream: true
   requirements:
     _permission: 'access content'
   options:
@@ -104,6 +105,17 @@ datastore.1.query.id.get:
   methods: [GET]
   defaults:
     _controller: '\Drupal\datastore\WebServiceApi::queryResource'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.id.get:
+  path: '/api/1/datastore/query/{identifier}/fulldownload'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\WebServiceApi::queryResource'
+    stream: true
   requirements:
     _permission: 'access content'
   options:
