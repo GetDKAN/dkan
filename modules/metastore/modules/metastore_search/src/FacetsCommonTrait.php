@@ -19,11 +19,7 @@ trait FacetsCommonTrait {
    *   Values.
    */
   private function getValuesFromCommaSeparatedString(string $string): array {
-    $values = [];
-    foreach (explode(',', $string) as $value) {
-      $values[] = trim($value);
-    }
-    return $values;
+    return array_map('trim', str_getcsv($string));
   }
 
   /**
