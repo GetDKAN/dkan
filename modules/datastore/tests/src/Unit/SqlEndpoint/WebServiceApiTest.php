@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\SqlEndpoint;
 
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Database\Connection;
@@ -29,7 +30,9 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testGet() {
-    $controller = WebServiceApi::create($this->getCommonMockChain()->getMock());
+    $container = $this->getCommonMockChain()->getMock();
+    \Drupal::setContainer($container);
+    $controller = WebServiceApi::create($container);
     $response = $controller->runQueryGet();
     $this->assertEquals("[{\"column_1\":\"hello\",\"column_2\":\"goodbye\"}]", $response->getContent());
   }
@@ -50,7 +53,9 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testPost() {
-    $controller = WebServiceApi::create($this->getCommonMockChain()->getMock());
+    $container = $this->getCommonMockChain()->getMock();
+    \Drupal::setContainer($container);
+    $controller = WebServiceApi::create($container);
     $response = $controller->runQueryPost();
     $this->assertEquals("[{\"column_1\":\"hello\",\"column_2\":\"goodbye\"}]", $response->getContent());
   }
