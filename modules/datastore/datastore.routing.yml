@@ -110,7 +110,7 @@ datastore.1.query.id.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.id.get:
+datastore.1.query.id..fulldownload.get:
   path: '/api/1/datastore/query/{identifier}/fulldownload'
   methods: [GET]
   defaults:

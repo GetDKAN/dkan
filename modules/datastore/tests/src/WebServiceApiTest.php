@@ -57,7 +57,6 @@ class WebServiceApiTest extends TestCase {
     $webServiceApi = WebServiceApi::create($container);
     $result = $webServiceApi->query();
 
-
     $this->assertTrue($result instanceof CsvResponse);
     $this->assertEquals(200, $result->getStatusCode());
 
@@ -75,7 +74,7 @@ class WebServiceApiTest extends TestCase {
     $container = $this->getQueryContainer('csv', 'multiple');
     $webServiceApi = WebServiceApi::create($container);
     ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->fileQuery();
+    $result = $webServiceApi->query(TRUE);
     $result->sendContent();
 
     $csv = explode("\n", $this->buffer);
@@ -97,6 +96,7 @@ class WebServiceApiTest extends TestCase {
           "alias" => "t",
           "id" => "2"
         ]]]))
+      ->add(Request::class, 'getRealMethod', 'GET')
       ->getMock();
 
     $reflection = new ReflectionClass($request);
