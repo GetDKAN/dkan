@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Service;
+namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\common\Resource;
 use Drupal\Core\DependencyInjection\Container;
@@ -27,7 +27,7 @@ use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
  * @coversDefaultClass \Drupal\datastore\WebServiceApi
  * @group dkan
  */
-class QueryTest extends TestCase {
+class DatastoreQueryTest extends TestCase {
   use TestHelperTrait;
 
   /**
@@ -120,7 +120,7 @@ class QueryTest extends TestCase {
   }
 
   private function getDatastoreQueryFromJson($payloadName): DatastoreQuery {
-    $payload = file_get_contents(__DIR__ . "/../../data/query/$payloadName.json");
+    $payload = file_get_contents(__DIR__ . "/../../../data/query/$payloadName.json");
     return new DatastoreQuery($payload);
   }
 
@@ -130,7 +130,7 @@ class QueryTest extends TestCase {
   public function getCommonMockChain() {
 
     $options = (new Options())
-      ->add("datastore.service", Service::class)
+      ->add("dkan.datastore.service", Service::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add("dkan.datastore.service.factory.import", Import::class)
       ->add('queue', QueueFactory::class)

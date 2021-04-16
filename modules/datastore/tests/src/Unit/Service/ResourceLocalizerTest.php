@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\Tests\datastore\Unit\Service;
+
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
@@ -56,7 +58,7 @@ class ResourceLocalizerTest extends TestCase {
       $this->getJobStoreFactoryChain()->getMock()
     );
 
-    Drupal::setContainer($this->getContainer()->getMock());
+    \Drupal::setContainer($this->getContainer()->getMock());
 
     $this->assertNull($service->remove($resource->getIdentifier(), $resource->getVersion()));
   }
