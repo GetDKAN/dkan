@@ -2,8 +2,6 @@
 
 namespace Drupal\metastore;
 
-use Drupal\common\DataModifierPluginTrait;
-use Drupal\common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
@@ -14,7 +12,6 @@ use Drupal\common\Docs;
  */
 class WebServiceApiDocs implements ContainerInjectionInterface {
   use JsonResponseTrait;
-  use DataModifierPluginTrait;
 
   /**
    * List of endpoints to keep for dataset-specific docs.
@@ -50,7 +47,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     return new WebServiceApiDocs(
       $container->get("common.docs"),
       $container->get('dkan.metastore.service'),
-      $container->get('plugin.manager.common.data_modifier')
     );
   }
 
@@ -61,15 +57,10 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Serves openapi spec for dataset-related endpoints.
    * @param \Drupal\metastore\Service $metastoreService
    *   Metastore service.
-   * @param \Drupal\common\Plugin\DataModifierManager $pluginManager
-   *   Metastore plugin manager.
    */
-  public function __construct(Docs $docsController, Service $metastoreService, DataModifierManager $pluginManager) {
+  public function __construct(Docs $docsController, Service $metastoreService) {
     $this->docsController = $docsController;
     $this->metastoreService = $metastoreService;
-    $this->pluginManager = $pluginManager;
-
-    $this->plugins = $this->discover();
   }
 
   /**
@@ -217,9 +208,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Spec with dataset-specific datastore sql endpoint.
    */
   private function modifySqlEndpoints(array $pathsAndOperations, string $identifier) : array {
-    if ($this->modifyData($identifier)) {
-      return $this->removeSqlEndpointPaths($pathsAndOperations);
-    }
 
     foreach ($this->getSqlPathsAndOperations($pathsAndOperations) as $path => $operations) {
 
@@ -249,19 +237,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function removeSqlEndpointPaths($pathsAndOperations) {
-    foreach ($pathsAndOperations as $path => $operations) {
-      if (substr_count($path, 'sql') > 0) {
-
-        unset($pathsAndOperations[$path]);
-      }
-    }
-    return $pathsAndOperations;
-  }
-
-  /**
-   * Private.
-   */
   private function modifySqlEndpoint($path, $operations, $distribution) {
     $newPath = "{$path}?query=[SELECT * FROM {$distribution->identifier}];";
 
@@ -273,26 +248,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     );
 
     return [$newPath, $operations];
-  }
-
-  /**
-   * Provides data modifiers plugins an opportunity to act.
-   *
-   * @param string $identifier
-   *   The distribution's identifier.
-   *
-   * @return bool
-   *   TRUE if sql endpoint docs needs to be protected, FALSE otherwise.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\PluginException
-   */
-  private function modifyData(string $identifier) {
-    foreach ($this->plugins as $plugin) {
-      if ($plugin->requiresModification('distribution', $identifier)) {
-        return TRUE;
-      }
-    }
-    return FALSE;
   }
 
   /**

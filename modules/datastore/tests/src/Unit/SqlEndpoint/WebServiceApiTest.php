@@ -68,35 +68,15 @@ class WebServiceApiTest extends TestCase {
   }
 
   /**
-   *
-   */
-  public function testWithDataModifierPlugin() {
-    $pluginMessage = "Resource hidden since dataset access level is non-public.";
-    $pluginCode = 401;
-
-    $container = $this->getCommonMockChain("[SELECT * FROM 123456][WHERE abc = \"blah\"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];")
-      ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])
-      ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
-      ->add(DataModifierBase::class, 'requiresModification', TRUE)
-      ->add(DataModifierBase::class, 'message', $pluginMessage)
-      ->add(DataModifierBase::class, 'httpCode', $pluginCode);
-
-    $controller = WebServiceApi::create($container->getMock());
-    $response = $controller->runQueryGet();
-    $expected = '{"message":"Resource hidden since dataset access level is non-public."}';
-    $this->assertEquals($expected, $response->getContent());
-  }
-
-  /**
    * Getter.
    */
   public function getCommonMockChain($query = "[SELECT * FROM 123__456][WHERE abc = \"blah\"][ORDER BY abc DESC][LIMIT 1 OFFSET 3];") {
 
     $options = (new Options())
-      ->add('datastore.sql_endpoint.service', Service::class)
+      ->add('dkan.datastore.sql_endpoint.service', Service::class)
       ->add("database", Connection::class)
       ->add('request_stack', RequestStack::class)
-      ->add('plugin.manager.common.data_modifier', DataModifierManager::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->index(0);
 
     $body = json_encode(["query" => $query]);
@@ -110,9 +90,6 @@ class WebServiceApiTest extends TestCase {
       ->add(Request::class, 'getContent', $body)
       ->add(ConfigFactory::class, 'get', Config::class)
       ->add(Config::class, 'get', 1000)
-      ->add(DataModifierManager::class, 'getDefinitions', [])
-      ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
-      ->add(DataModifierBase::class, 'requiresModification', FALSE)
       ->add(Service::class, 'runQuery', [$row]);
   }
 
