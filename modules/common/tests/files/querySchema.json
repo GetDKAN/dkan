@@ -1,0 +1,80 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://getdkan.com/api/datastore.test.query.json",
+    "title": "Query",
+    "description": "Simplified schema for testing pseudo DKAN database queries",
+    "type": "object",
+    "properties": {
+        "conditions": {
+            "type": "array",
+            "description": "Conditions or groups of conditions for the query, bound by 'and' operator.",
+            "items": { "$ref": "#/definitions/condition" }
+        },
+        "limit": {
+            "type": "integer",
+            "maximum": 500,
+            "description": "Limit for maximum number of records returned. Pass zero for no limit (may be restricted by user permissions).",
+            "default": 500
+        },
+        "offset": {
+            "type": "integer",
+            "description": "Number of records to offset by or skip before returning first record.",
+            "default": 0
+        },
+        "sorts": {
+            "type": "array",
+            "description": "Result sorting directives.",
+            "items": {"$ref": "#/definitions/sort"}
+        },
+        "results": {
+            "description": "Return the result set. Set to false and set count to true to receive only a count of matches.",
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "definitions": {
+        "condition": {
+            "type": "object",
+            "title": "Condition",
+            "description": "Condition object including property, value and operator. If querying only one resource, the \"resource\" does not need to be specified.",
+            "properties": {
+                "property": { "type": "string" },
+                "value": {
+                    "anyOf": [
+                        { "type": "string" },
+                        { "type": "number" },
+                        { 
+                            "type": "array",
+                            "items": {
+                                "anyOf": [
+                                    { "type": "string" },
+                                    { "type": "number" }            
+                                ]
+                            }
+                        }
+                    ],
+                    "description": "The value to filter against."
+                 },
+                 "operator": {
+                     "type": "string",
+                     "description": "Condition operator",
+                     "enum": [ "=", "<>", "<", "<=", ">", ">=", "like", "between", "in", "not in" ],
+                     "default": "="
+                 }
+            },
+            "required": [ "property", "value" ]            
+        },
+        "sort": {
+            "type": "object",
+            "description": "Properties to sort by in a particular order.",
+            "properties": { 
+                "property": { "type": "string" },
+                "order": {
+                    "type": "string",
+                    "description": "Order to sort in, lowercase.",
+                    "enum": ["asc", "desc"]
+                }
+            }
+        }
+    }
+}
