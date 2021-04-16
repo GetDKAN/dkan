@@ -57,7 +57,7 @@
     <php>
         <!-- These variables may alternatively be set as environment variables. -->
         <!-- E.g., `DRUPAL_VERSION=V8 ./vendor/bin/phpunit` -->
-        <env name="DRUPAL_VERSION" value="V8"/>
+        <env name="DRUPAL_ROOT" value="/var/www/docroot"/>
         <env name="DTT_BASE_URL" value="http://web"/>
         <env name="SIMPLETEST_BASE_URL" value="http://web"/>
         <env name="SIMPLETEST_DB" value="mysql://drupal:123@db/drupal"/>
