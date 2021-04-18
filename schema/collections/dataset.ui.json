@@ -165,8 +165,14 @@
       }
     }
   },
+  "issued": {
+    "ui:options": {
+      "widget": "date"
+    }
+  },
   "modified": {
     "ui:options": {
+      "widget": "date",
       "placeholder": "YYYY-MM-DD"
     }
   },

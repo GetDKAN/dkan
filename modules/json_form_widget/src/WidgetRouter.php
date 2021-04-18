@@ -74,24 +74,29 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   Element with widget configuration based on UI options.
    */
   public function getConfiguredWidget($spec, array $element) {
-    if ($spec->widget == 'hidden') {
-      $element['#access'] = FALSE;
-    }
-    elseif ($spec->widget == 'textarea') {
-      $element['#type'] = 'textarea';
-      $element = $this->getTextareaOptions($spec, $element);
-    }
-    elseif ($spec->widget == 'dkan_uuid') {
-      $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
-      $element['#access'] = FALSE;
-    }
-    elseif ($spec->widget == 'upload_or_link') {
-      $element = $this->handleUploadOrLink($element, $spec);
-    }
-    elseif ($spec->widget == 'list') {
-      $element = $this->handleDropdown($element, $spec);
+    $widgets = $this->getWidgets();
+    if (in_array($spec->widget, array_keys($widgets))) {
+      $method_name = $widgets[$spec->widget];
+      $element = $this->$method_name($spec, $element);
     }
     return $element;
+  }
+
+  /**
+   * Get list of widgets available and functions to handle each widget.
+   *
+   * @return array
+   *   Associative array of widgets vrs functions to handle the elements.
+   */
+  public function getWidgets() {
+    return [
+      'hidden' => 'handleHiddenElement',
+      'textarea' => 'handleTextareaElement',
+      'dkan_uuid' => 'handleDkanUuidElement',
+      'upload_or_link' => 'handleUploadOrLinkElement',
+      'list' => 'handleListElement',
+      'date' => 'handleDateElement',
+    ];
   }
 
   /**
@@ -129,9 +134,17 @@ class WidgetRouter implements ContainerInjectionInterface {
   }
 
   /**
-   * Handle configuration for dropdown elements.
+   * Handle configuration for list elements.
+   *
+   * @param mixed $spec
+   *   Element to convert into list element.
+   * @param array $element
+   *   Object with spec for UI options.
+   *
+   * @return array
+   *   The element configured as a list element.
    */
-  public function handleDropdown($element, $spec) {
+  public function handleListElement($spec, array $element) {
     if (isset($spec->titleProperty)) {
       if (isset($element[$spec->titleProperty])) {
         $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
@@ -254,15 +267,15 @@ class WidgetRouter implements ContainerInjectionInterface {
   /**
    * Handle configuration for upload_or_link elements.
    *
-   * @param mixed $element
-   *   Element to convert into upload_or_link.
    * @param mixed $spec
+   *   Element to convert into upload_or_link.
+   * @param array $element
    *   Object with spec for UI options.
    *
    * @return array
    *   The element configured as upload_or_link.
    */
-  public function handleUploadOrLink($element, $spec) {
+  public function handleUploadOrLinkElement($spec, array $element) {
     $element['#type'] = 'upload_or_link';
     $element['#upload_location'] = 'public://uploaded_resources';
     if (isset($element['#default_value'])) {
@@ -276,15 +289,73 @@ class WidgetRouter implements ContainerInjectionInterface {
   }
 
   /**
-   * Helper function for getting textarea options.
+   * Helper function for getting a textarea element.
+   *
+   * @param mixed $spec
+   *   Element to convert into textarea.
+   * @param array $element
+   *   Object with spec for UI options.
+   *
+   * @return array
+   *   The element configured as textarea.
    */
-  private function getTextareaOptions($spec, $element) {
+  public function handleTextareaElement($spec, array $element) {
+    $element['#type'] = 'textarea';
     if (isset($spec->rows)) {
       $element['#rows'] = $spec->rows;
     }
     if (isset($spec->cols)) {
       $element['#cols'] = $spec->cols;
     }
+    return $element;
+  }
+
+  /**
+   * Helper function for hiding an element.
+   *
+   * @param mixed $spec
+   *   Element to convert into hidden.
+   * @param array $element
+   *   Object with spec for UI options.
+   *
+   * @return array
+   *   The element configured as hidden.
+   */
+  public function handleHiddenElement($spec, array $element) {
+    $element['#access'] = FALSE;
+    return $element;
+  }
+
+  /**
+   * Helper function for getting a dkan_uuid element.
+   *
+   * @param mixed $spec
+   *   Element to convert into hidden.
+   * @param array $element
+   *   Object with spec for UI options.
+   *
+   * @return array
+   *   The element configured as dkan_uuid.
+   */
+  public function handleDkanUuidElement($spec, array $element) {
+    $element['#default_value'] = !empty($element['#default_value']) ? $element['#default_value'] : $this->uuidService->generate();
+    $element['#access'] = FALSE;
+    return $element;
+  }
+
+  /**
+   * Helper function for getting a date element.
+   *
+   * @param mixed $spec
+   *   Element to convert into hidden.
+   * @param array $element
+   *   Object with spec for UI options.
+   *
+   * @return array
+   *   The element configured as date.
+   */
+  public function handleDateElement($spec, array $element) {
+    $element['#type'] = 'date';
     return $element;
   }
 
