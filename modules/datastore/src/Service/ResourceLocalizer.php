@@ -28,7 +28,6 @@ class ResourceLocalizer {
   const LOCAL_FILE_PERSPECTIVE = 'local_file';
   const LOCAL_URL_PERSPECTIVE = 'local_url';
 
-
   private $fileMapper;
   private $fileFetcherFactory;
   private $drupalFiles;
@@ -118,18 +117,20 @@ class ResourceLocalizer {
     /** @var \Drupal\common\Resource $resource */
     $resource = $this->get($identifier, $version);
     $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
+
     if ($resource) {
       if (file_exists($resource->getFilePath())) {
         unlink($resource->getFilePath());
       }
-      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($resource->getUniqueIdentifier());
       $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
 
       if ($uuid) {
+        // Remove the record from jobstore_filefetcher_filefetcher.
+        $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
+
         $directory = \Drupal::service('file_system')->realpath("public://resources/{$uuid}");
         if ($directory) {
           \Drupal::service('file_system')->deleteRecursive($directory);
-          //\Drupal::service('file_system')->rmdir($directory);
         }
       }
       $this->fileMapper->remove($resource);
