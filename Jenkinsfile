@@ -20,7 +20,7 @@ pipeline {
                     qa_container_ids=`docker ps|grep qa_$CHANGE_ID|awk '{ print $1 }'`
                     qa_network_id=`docker network ls|grep qa_$CHANGE_ID|awk '{ print $1 }'`
 
-                    if [ -n "$qa_container_ids" ]
+                    if [ $(docker ps|grep qa_$CHANGE_ID|awk '{ print $1 }') ]
                     then
                       cd projects/dkan
                       dktl docker:compose stop
