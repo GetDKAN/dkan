@@ -143,10 +143,13 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
 
     $node = $this->getNodeLatestRevision($uuid);
 
-    if ($node && $node->get('moderation_state') !== 'published') {
-      $node->set('moderation_state', 'published');
-      $node->save();
-      return $uuid;
+    if ($node) {
+      $moderationState = $node->moderation_state->value;
+      if ($moderationState !== 'published') {
+        $node->set('moderation_state', 'published');
+        $node->save();
+        return $uuid;
+      }
     }
 
     throw new \Exception("No data with that identifier was found.");

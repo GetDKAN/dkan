@@ -9,9 +9,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Drupal\common\Util\RequestParamNormalizer;
 use RootedData\RootedJsonData;
-use UnexpectedValueException;
+use Drupal\common\Util\RequestParamNormalizer;
 
 /**
  * Class Api.

@@ -1,7 +1,8 @@
 <?php
 
-namespace Drupal\Tests\datastore;
+namespace Drupal\Tests\datastore\Unit;
 
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\common\Resource;
@@ -38,7 +39,8 @@ class ServiceTest extends TestCase {
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
       ->add(ImportService::class, "import", NULL)
       ->add(ImportService::class, "getResult", new Result())
-      ->add(QueueFactory::class, "get", NULL);
+      ->add(QueueFactory::class, "get", NULL)
+      ->add(ContainerAwareEventDispatcher::class, "dispatch", NULL);
 
     $service = Service::create($chain->getMock());
     $result = $service->import("1");

@@ -69,6 +69,40 @@ class SearchTest extends TestCase {
     ]));
   }
 
+  public function testSearchParameterWithComma() {
+    $options = (new Options())
+      ->add('dkan.metastore.service', Metastore::class)
+      ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('search_api.query_helper', QueryHelperInterface::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, 'load', IndexInterface::class)
+      ->add(IndexInterface::class, 'getFields', ['description' => 'blah', 'publisher__name' => 'blah'])
+      ->add(IndexInterface::class, 'getFulltextFields', ['title'])
+
+      ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', ResultSet::class)
+      ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
+      ->add(ConditionGroup::class, 'addCondition', null, 'condition_group');
+
+    \Drupal::setContainer($container->getMock());
+
+    $service = Search::create($container->getMock());
+
+    $service->search([
+      'publisher__name' => 'Normal Param, "Steve, and someone else"',
+    ]);
+
+    $this->assertEquals(
+      'Steve, and someone else',
+      $container->getStoredInput('condition_group')[1]
+    );
+  }
+
   /**
    * Test for facets().
    */
