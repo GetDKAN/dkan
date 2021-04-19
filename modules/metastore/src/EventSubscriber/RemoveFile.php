@@ -43,15 +43,14 @@ class RemoveFile implements EventSubscriberInterface {
           ]);
       }
       // Remove the record from jobstore_filefetcher_filefetcher.
-      // $ref_uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
-      // try {
-      //   \Drupal::database()->delete('jobstore_filefetcher_filefetcher')->condition('ref_uuid', $ref_uuid, "=")->execute();
-      //   //\Drupal::service('dkan.common.job_store')->getInstance(Import::class)->remove($ref_uuid);
-      // }
-      // catch (\Exception $e) {
-      //   \Drupal::logger('datastore')->error('Failed to delete filefetcher job. @message', ['@message' => $e->getMessage()]);
-      // }
-
+      $ref_uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
+      try {
+        \Drupal::database()->delete('jobstore_filefetcher_filefetcher')->condition('ref_uuid', $ref_uuid, "=")->execute();
+        //\Drupal::service('dkan.common.job_store')->getInstance(Import::class)->remove($ref_uuid);
+      }
+      catch (\Exception $e) {
+        \Drupal::logger('datastore')->error('Failed to delete filefetcher job. @message', ['@message' => $e->getMessage()]);
+      }
     }
   }
 

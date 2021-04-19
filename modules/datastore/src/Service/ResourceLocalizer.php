@@ -27,7 +27,6 @@ class ResourceLocalizer {
 
   const LOCAL_FILE_PERSPECTIVE = 'local_file';
   const LOCAL_URL_PERSPECTIVE = 'local_url';
-  const EVENT_DATASTORE_CLEANUP = 'dkan_datastore_table_cleanup';
 
 
   private $fileMapper;
@@ -127,9 +126,11 @@ class ResourceLocalizer {
       $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
 
       if ($uuid) {
-        $directory = drupal_realpath("public://resources/{$uuid}");
-        \Drupal::service('file_system')->deleteRecursive($directory);
-        \Drupal::service('file_system')->rmdir($directory);
+        $directory = \Drupal::service('file_system')->realpath("public://resources/{$uuid}");
+        if ($directory) {
+          \Drupal::service('file_system')->deleteRecursive($directory);
+          //\Drupal::service('file_system')->rmdir($directory);
+        }
       }
       $this->fileMapper->remove($resource);
     }
@@ -137,8 +138,6 @@ class ResourceLocalizer {
     if ($resource2) {
       $this->removeLocalUrl($resource2);
     }
-
-    $this->dispatchEvent(self::EVENT_DATASTORE_CLEANUP, $identifier);
   }
 
   /**

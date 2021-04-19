@@ -16,6 +16,7 @@ class ResourceMapper {
 
   const EVENT_REGISTRATION = 'dkan_metastore_resource_mapper_registration';
   const EVENT_RESOURCE_CLEANUP = 'dkan_metastore_resource_cleanup';
+  const EVENT_DATASTORE_CLEANUP = 'dkan_metastore_table_cleanup';
 
   const DEREFERENCE_NO = 0;
   const DEREFERENCE_YES = 1;
@@ -122,6 +123,8 @@ class ResourceMapper {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
       $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
       if ($resource->getPerspective() == 'source') {
+        // Dispatch event to initiate removal of the datastore.
+        $this->dispatchEvent(self::EVENT_DATASTORE_CLEANUP, $resource);
         // Dispatch event to initiate removal of local file.
         $this->dispatchEvent(self::EVENT_RESOURCE_CLEANUP, $resource);
       }
