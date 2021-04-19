@@ -79,8 +79,8 @@ datastore.1.query.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.fulldownload.get:
-  path: '/api/1/datastore/query/fulldownload'
+datastore.1.query.download.get:
+  path: '/api/1/datastore/query/download'
   methods: [GET]
   defaults:
     _controller: '\Drupal\datastore\WebServiceApi::query'
@@ -110,8 +110,8 @@ datastore.1.query.id.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.id..fulldownload.get:
-  path: '/api/1/datastore/query/{identifier}/fulldownload'
+datastore.1.query.id.download.get:
+  path: '/api/1/datastore/query/{identifier}/download'
   methods: [GET]
   defaults:
     _controller: '\Drupal\datastore\WebServiceApi::queryResource'
