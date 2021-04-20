@@ -5,6 +5,7 @@ namespace Drupal\datastore\EventSubscriber;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Events\Event;
 use Drupal\metastore\ResourceMapper;
+use Dkan\Datastore\Importer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -50,9 +51,7 @@ class RemoveDatastore implements EventSubscriberInterface {
         ]);
     }
     try {
-      // ToDo: fix this to use the remove method to remove the record.
-      // \Drupal::service('dkan.common.job_store')->getInstance(Import::class)->remove($id);
-      \Drupal::database()->delete('jobstore_dkan_datastore_importer')->condition('ref_uuid', $id)->execute();
+      \Drupal::service('dkan.common.job_store')->getInstance(Importer::class)->remove($id);
     }
     catch (\Exception $e) {
       \Drupal::logger('datastore')->error('Failed to remove importer job. @message', ['@message' => $e->getMessage()]);

@@ -127,8 +127,6 @@ class ResourceLocalizer {
       if ($uuid) {
         // Remove the record from jobstore_filefetcher_filefetcher.
         $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
-        // Cheat.
-        \Drupal::database()->delete('jobstore_filefetcher_filefetcher')->condition('ref_uuid', $uuid)->execute();
 
         $directory = \Drupal::service('file_system')->realpath("public://resources/{$uuid}");
         if ($directory) {
