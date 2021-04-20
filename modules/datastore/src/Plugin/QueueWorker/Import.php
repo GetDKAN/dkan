@@ -63,7 +63,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $version = $data['version'];
 
       /** @var \Drupal\datastore\Service $datastore */
-      $datastore = $this->container->get('datastore.service');
+      $datastore = $this->container->get('dkan.datastore.service');
 
       $results = $datastore->import($identifier, FALSE, $version);
 

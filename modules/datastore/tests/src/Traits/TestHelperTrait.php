@@ -19,8 +19,8 @@ trait TestHelperTrait {
   private function getServices() {
     return (new Options())
       ->add('config.factory', ConfigFactory::class)
-      ->add('datastore.database_table_factory', DatabaseTableFactory::class)
-      ->add('datastore.service.factory.resource', ResourceServiceFactory::class)
+      ->add('dkan.datastore.database_table_factory', DatabaseTableFactory::class)
+      ->add('dkan.datastore.service.factory.resource', ResourceServiceFactory::class)
       ->add('database', Connection::class)
       ->index(0);
   }

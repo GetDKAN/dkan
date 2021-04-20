@@ -2,8 +2,7 @@
 
 namespace Drupal\datastore\SqlEndpoint;
 
-use Drupal\common\DataModifierPluginTrait;
-use Drupal\common\Plugin\DataModifierManager;
+use Drupal\common\EventDispatcherTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
@@ -15,7 +14,9 @@ use Drupal\common\JsonResponseTrait;
  */
 class WebServiceApi implements ContainerInjectionInterface {
   use JsonResponseTrait;
-  use DataModifierPluginTrait;
+  use EventDispatcherTrait;
+
+  const EVENT_RUN_QUERY = 'dkan_datastore_sql_run_query';
 
   /**
    * DKAN SQL Endpoint service.
@@ -43,10 +44,9 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('datastore.sql_endpoint.service'),
+      $container->get('dkan.datastore.sql_endpoint.service'),
       $container->get('database'),
       $container->get('request_stack'),
-      $container->get('plugin.manager.common.data_modifier')
     );
   }
 
@@ -56,16 +56,11 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function __construct(
     Service $service,
     Connection $database,
-    RequestStack $requestStack,
-    DataModifierManager $pluginManager
+    RequestStack $requestStack
   ) {
     $this->service = $service;
     $this->database = $database;
-
     $this->requestStack = $requestStack;
-    $this->pluginManager = $pluginManager;
-
-    $this->plugins = $this->discover();
   }
 
   /**
@@ -126,9 +121,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $uuid = $this->service->getResourceUuid($query);
 
-      if (isset($uuid) && $modifyResponse = $this->modifyData($uuid)) {
-        return $modifyResponse;
-      }
+      $this->dispatchEvent(self::EVENT_RUN_QUERY, $uuid);
 
       $result = $this->service->runQuery($query, $showDbColumns);
     }
@@ -137,24 +130,6 @@ class WebServiceApi implements ContainerInjectionInterface {
     }
 
     return $this->getResponse($result, 200);
-  }
-
-  /**
-   * Provides data modifiers plugins an opportunity to act.
-   *
-   * @param string $identifier
-   *   The distribution's identifier.
-   *
-   * @return object|bool
-   *   The json response if sql endpoint docs needs modifying, FALSE otherwise.
-   */
-  private function modifyData(string $identifier) {
-    foreach ($this->plugins as $plugin) {
-      if ($plugin->requiresModification('distribution', $identifier)) {
-        return $this->getResponse((object) ["message" => $plugin->message()], $plugin->httpCode());
-      }
-    }
-    return FALSE;
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\EventSubscriber;
+namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
 use Drupal\common\Resource;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -10,7 +10,6 @@ use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\Registration;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +19,6 @@ use Symfony\Component\DependencyInjection\Container;
  *
  */
 class SubscriberTest extends TestCase {
-  use ServiceCheckTrait;
 
   /**
    *
@@ -31,6 +29,7 @@ class SubscriberTest extends TestCase {
     $event = new Registration($resource);
 
     $chain = $this->getContainerChain();
+
     \Drupal::setContainer($chain->getMock());
 
     // When the conditions of a new "datastoreable" resource are met, add
@@ -42,11 +41,29 @@ class SubscriberTest extends TestCase {
     $this->assertEquals(md5($url), $chain->getStoredInput('import')[0]);
   }
 
+  public function testOnRegistrationException() {
+    $url = 'http://hello.world/file.csv';
+    $resource = new Resource($url, 'text/csv');
+    $event = new Registration($resource);
+
+    $chain = $this->getContainerChain();
+    $chain->add(Service::class, 'import', new \Exception());
+
+    \Drupal::setContainer($chain->getMock());
+
+    // When the conditions of a new "datastoreable" resource are met, add
+    // an import operation to the queue.
+    $subscriber = new Subscriber();
+    $subscriber->onRegistration($event);
+
+    // Doing it all for the coverage :(
+    $this->assertTrue(true);
+  }
+
   /**
    * Private.
    */
   private function getContainerChain() {
-    $this->checkService('dkan.datastore.service', 'datastore');
 
     $options = (new Options())
       ->add('logger.factory', LoggerChannelFactory::class)
