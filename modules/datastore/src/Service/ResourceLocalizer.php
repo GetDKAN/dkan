@@ -134,25 +134,19 @@ class ResourceLocalizer {
   }
 
   /**
-   * Private.
+   * Remove the local_url perspective.
    */
   private function removeLocalUrl(Resource $resource) {
     return $this->fileMapper->remove($resource);
   }
 
   /**
-   * Private.
+   * Remove the filefetcher job record.
    */
   private function removeJob($uuid) {
     if ($uuid) {
-      // Remove the record from jobstore_filefetcher_filefetcher.
-      // $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
+      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
       \Drupal::database()->delete('jobstore_filefetcher_filefetcher')->condition('ref_uuid', $uuid)->execute();
-
-      // $directory = \Drupal::service('file_system')->realpath("public://resources/{$uuid}");
-      // if ($directory) {
-      //   \Drupal::service('file_system')->rmdir($directory);
-      // }
     }
   }
 
