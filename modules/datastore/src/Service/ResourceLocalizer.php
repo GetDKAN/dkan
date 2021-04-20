@@ -119,11 +119,12 @@ class ResourceLocalizer {
     $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
 
     if ($resource) {
-      if (file_exists($resource->getFilePath())) {
-        unlink($resource->getFilePath());
-      }
       $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
-      $this->removeJunk($uuid);
+      if (file_exists($resource->getFilePath())) {
+        //unlink($resource->getFilePath());
+        \Drupal::service('file_system')->deleteRecursive("public://resources/{$uuid}");
+      }
+      $this->removeJob($uuid);
       $this->fileMapper->remove($resource);
     }
 
@@ -142,16 +143,16 @@ class ResourceLocalizer {
   /**
    * Private.
    */
-  private function removeJunk($uuid) {
+  private function removeJob($uuid) {
     if ($uuid) {
       // Remove the record from jobstore_filefetcher_filefetcher.
-      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
+      // $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
       \Drupal::database()->delete('jobstore_filefetcher_filefetcher')->condition('ref_uuid', $uuid)->execute();
 
-      $directory = \Drupal::service('file_system')->realpath("public://resources/{$uuid}");
-      if ($directory) {
-        \Drupal::service('file_system')->rmdir($directory);
-      }
+      // $directory = \Drupal::service('file_system')->realpath("public://resources/{$uuid}");
+      // if ($directory) {
+      //   \Drupal::service('file_system')->rmdir($directory);
+      // }
     }
   }
 
