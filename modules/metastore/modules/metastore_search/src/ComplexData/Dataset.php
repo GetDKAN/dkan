@@ -21,7 +21,7 @@ class Dataset extends ComplexDataFacade {
     $definitions = [];
 
     /* @var   \Drupal\metastore\SchemaRetriever $schemaRetriever */
-    $schemaRetriever = \Drupal::service("metastore.schema_retriever");
+    $schemaRetriever = \Drupal::service("dkan.metastore.schema_retriever");
     $json = $schemaRetriever->retrieve("dataset");
     $object = json_decode($json);
     $properties = array_keys((array) $object->properties);

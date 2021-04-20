@@ -3,9 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\DataModifierPluginTrait;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\Plugin\DataModifierManager;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -18,7 +16,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Service.
  */
 class Service implements ContainerInjectionInterface {
-  use DataModifierPluginTrait;
   use EventDispatcherTrait;
 
   const EVENT_DATA_GET = 'dkan_metastore_data_get';
@@ -110,23 +107,18 @@ class Service implements ContainerInjectionInterface {
    *   All objects of the given schema_id.
    */
   public function getAll($schema_id): array {
+    $jsonStringsArray = $this->getEngine($schema_id)->get();
 
-    $datasets = $this->getEngine($schema_id)->get();
-
-    // $datasets is an array of JSON encoded string. Needs to be unflattened.
-    $unflattened = array_map(
-      function ($json_string) use ($schema_id) {
-        if (!empty($this->plugins)) {
-          $json_string = $this->modifyData($schema_id, $json_string);
-        }
-        return json_decode($json_string);
+    $objects = array_map(
+      function ($jsonString) {
+        return json_decode($this->dispatchEvent(self::EVENT_DATA_GET, $jsonString));
       },
-      $datasets
+      $jsonStringsArray
     );
 
-    $unflattened = $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $unflattened);
+    $objects = $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects);
 
-    return $unflattened;
+    return $objects;
   }
 
   /**
@@ -143,36 +135,8 @@ class Service implements ContainerInjectionInterface {
   public function get($schema_id, $identifier): string {
     $storage = $this->factory->getInstance($schema_id);
     $data = $storage->retrievePublished($identifier);
-    if (!empty($this->plugins)) {
-      $data = $this->modifyData($schema_id, $data);
-    }
-
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
-
     return $data;
-  }
-
-  /**
-   * Provides data modifiers plugins an opportunity to act.
-   *
-   * @param string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param string $data
-   *   The Json input.
-   *
-   * @return string
-   *   The Json, modified by each applicable discovered data modifier plugins.
-   */
-  private function modifyData(string $schema_id, string $data) {
-    $dataObj = json_decode($data);
-
-    foreach ($this->plugins as $plugin) {
-      if ($plugin->requiresModification($schema_id, $dataObj)) {
-        $dataObj = $plugin->modify($schema_id, $dataObj);
-      }
-    }
-
-    return json_encode($dataObj);
   }
 
   /**
