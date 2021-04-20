@@ -3,12 +3,14 @@
 namespace Drupal\datastore\Service\Info;
 
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use FileFetcher\FileFetcher;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Definition of an "importer list" that allows for reporting.
  */
-class ImportInfoList {
+class ImportInfoList implements ContainerInjectionInterface {
 
   /**
    * A JobStore object.
@@ -18,6 +20,18 @@ class ImportInfoList {
   private $jobStoreFactory;
 
   private $importInfo;
+
+  /**
+   * Create.
+   *
+   * @inheritdoc
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.common.job_store'),
+      $container->get('dkan.datastore.import_info')
+    );
+  }
 
   /**
    * Constructor.

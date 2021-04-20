@@ -5,8 +5,6 @@ services:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.sae_factory'
       - '@dkan.metastore.storage'
-    calls:
-      - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
 
   dkan.metastore.sae_factory:
     class: \Drupal\metastore\Factory\Sae

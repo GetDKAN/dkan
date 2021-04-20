@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Service;
+namespace Drupal\Tests\datastore\Unit\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
