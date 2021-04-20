@@ -260,7 +260,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       case 'json':
       default:
         return $this->getResponseFromException(
-          new UnexpectedValueException("Streaming not currently available for JSON responses"),
+          new \UnexpectedValueException("Streaming not currently available for JSON responses"),
           400
         );
     }

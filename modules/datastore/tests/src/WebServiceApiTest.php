@@ -1,21 +1,16 @@
 <?php
 
 use Drupal\datastore\CsvResponse;
-use Drupal\datastore\FileServiceApi;
 use MockChain\Options;
 use Drupal\datastore\Service;
-use Drupal\datastore\Service\ResourceLocalizer;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\WebServiceApi;
-use Drupal\metastore\Service as MetastoreService;
 use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\Data;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
