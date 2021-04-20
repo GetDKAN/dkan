@@ -4,11 +4,16 @@ use Drupal\datastore\CsvResponse;
 use Drupal\datastore\FileServiceApi;
 use MockChain\Options;
 use Drupal\datastore\Service;
+use Drupal\datastore\Service\ResourceLocalizer;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\WebServiceApi;
+use Drupal\metastore\Service as MetastoreService;
+use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\Data;
+use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,8 +45,16 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testQueryJson() {
+    $data = json_encode([
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+      ],
+    ]);
 
-    $container = $this->getQueryContainer('json');
+    $container = $this->getQueryContainer($data);
     $webServiceApi = WebServiceApi::create($container);
     $result = $webServiceApi->query();
 
@@ -53,7 +66,17 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testQueryCsv() {
-    $container = $this->getQueryContainer('csv');
+    $data = json_encode([
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+      ],
+      "format" => "csv",
+    ]);
+
+    $container = $this->getQueryContainer($data);
     $webServiceApi = WebServiceApi::create($container);
     $result = $webServiceApi->query();
 
@@ -70,8 +93,17 @@ class WebServiceApiTest extends TestCase {
    * Test big csv file.
    */
   public function testStreamedQueryCsv() {
+    $data = json_encode([
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+      ],
+      "format" => "csv",
+    ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer('csv', 'multiple');
+    $container = $this->getQueryContainer($data, 'POST', TRUE);
     $webServiceApi = WebServiceApi::create($container);
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->query(TRUE);
@@ -85,26 +117,16 @@ class WebServiceApiTest extends TestCase {
     $this->assertEquals('1,data', $csv[501]);
   }
 
-  private function getQueryContainer(string $format, string $type = 'simple') {
-    $paramBag = (new Chain($this))
-      ->add(ParameterBag::class, 'get', $format)
-      ->getMock();
-
-    $request = (new Chain($this))
-      ->add(Request::class, 'getContent', json_encode((object) ["resources" =>
-        [ 0 => [
-          "alias" => "t",
-          "id" => "2"
-        ]]]))
-      ->add(Request::class, 'getRealMethod', 'GET')
-      ->getMock();
-
-    $reflection = new ReflectionClass($request);
-    $reflection_property = $reflection->getProperty('query');
-    $reflection_property->setAccessible(TRUE);
-    $reflection_property->setValue($request, $paramBag);
+  private function getQueryContainer($data, string $method = "POST", bool $stream = FALSE ) {
+    if ($method == "GET") {
+      $request = Request::create("http://example.com?$data", $method);
+    }
+    else {
+      $request = Request::create("http://example.com", $method, [], [], [], [], $data);
+    }
 
     $options = (new Options())
+      ->add("dkan.metastore.storage", DataFactory::class)
       ->add("datastore.service", Service::class)
       ->add("request_stack", RequestStack::class)
       ->index(0);
@@ -113,16 +135,17 @@ class WebServiceApiTest extends TestCase {
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', $request);
 
-    if ($type == 'simple') {
-      $response = file_get_contents(__DIR__ . "/../data/response.json");
-      $response = new \RootedData\RootedJsonData($response);
-      $chain->add(Service::class, "runQuery", $response);
-
-    }
-    elseif ($type == 'multiple') {
+    if ($stream) {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
     }
-    return $chain->getMock();
+    else {
+      $queryResult = new RootedJsonData(file_get_contents(__DIR__ . "/../data/response.json"));
+      $chain->add(Service::class, 'runQuery', $queryResult);
+    }
+
+    $container = $chain->getMock();
+    \Drupal::setContainer($container);
+    return $container;
   }
 
   private function addMultipleResponses() {
