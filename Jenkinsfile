@@ -9,6 +9,7 @@ pipeline {
         DKAN_REPO = 'https://github.com/GetDKAN/dkan.git'
         DKTL_REPO = 'https://github.com/GetDKAN/dkan-tools.git'
         DKTL_DIRECTORY = "$WORKSPACE/dkan-tools"
+	TARGET_URL = ""
     }
     stages {
         stage ('Preclean') {
@@ -65,8 +66,8 @@ pipeline {
             when { changeRequest() }
             steps {
                 script {
-                    def target_url = "http://${DKTL_SLUG}.${WEB_DOMAIN}"
-                    setBuildStatus("QA site ready at ${target_url}", target_url, "success");
+                    TARGET_URL = "http://${DKTL_SLUG}.${WEB_DOMAIN}"
+                    setBuildStatus("QA site ready at ${TARGET_URL}", TARGET_URL, "success");
                 }
                 sh '''
                 echo QA site ready at http://${DKTL_SLUG}.${WEB_DOMAIN}/
