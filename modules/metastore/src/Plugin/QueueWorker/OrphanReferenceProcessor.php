@@ -113,13 +113,12 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The uuid.
    */
   protected function unpublishReference(string $property_id, string $uuid) {
-    $references = $this->nodeStorage
-      ->loadByProperties(
-              [
-                'field_data_type' => $property_id,
-                'uuid' => $uuid,
-              ]
-          );
+    $references = $this->nodeStorage->loadByProperties(
+      [
+        'field_data_type' => $property_id,
+        'uuid' => $uuid,
+      ]
+    );
     if (FALSE !== ($reference = reset($references))) {
       // When orphaning distribution nodes, trigger database clean up.
       if ($property_id === 'distribution') {

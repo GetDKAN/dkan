@@ -125,7 +125,7 @@ class ResourceMapper {
       if ($resource->getPerspective() == 'source') {
         // Dispatch event to initiate removal of the the datastore.
         $this->dispatchEvent(self::EVENT_DATASTORE_DROP, $resource);
-        // Dispatch event to initiate removal of the the datastore and local file.
+        // Dispatch event to initiate removal of the local file.
         $this->dispatchEvent(self::EVENT_RESOURCE_CLEANUP, $resource);
       }
       // Remove the resource mapper source perspective.

@@ -4,7 +4,6 @@ namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\common\Events\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\common\Resource;
 use Drupal\metastore\ResourceMapper;
 
 /**
@@ -36,9 +35,8 @@ class RemoveFile implements EventSubscriberInterface {
         $resourceLocalizer->remove($resource->getIdentifier(), $resource->getVersion());
       }
       catch (\Exception $e) {
-        \Drupal::logger('datastore')->error('Failed to remove the file for @id. @message',
+        \Drupal::logger('datastore')->error('Failed file clean up. @message',
           [
-            '@id' => $obect->identifier,
             '@message' => $e->getMessage(),
           ]);
       }
@@ -46,4 +44,3 @@ class RemoveFile implements EventSubscriberInterface {
   }
 
 }
-

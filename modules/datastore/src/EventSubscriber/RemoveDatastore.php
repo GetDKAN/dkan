@@ -2,12 +2,10 @@
 
 namespace Drupal\datastore\EventSubscriber;
 
-
 use Drupal\common\LoggerTrait;
 use Drupal\common\Events\Event;
-use Drupal\common\Resource;
 use Drupal\metastore\ResourceMapper;
-use Drupal\datastore\Service\Factory\Import;
+// use Drupal\datastore\Service\Factory\Import;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

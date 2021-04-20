@@ -5,8 +5,6 @@ namespace Drupal\datastore\EventSubscriber;
 use Drupal\common\Resource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Events\Event;
-use Drupal\metastore\Events\DatasetUpdate;
-use Drupal\metastore\Events\Registration;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\Data;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
