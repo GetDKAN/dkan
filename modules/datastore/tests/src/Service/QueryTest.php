@@ -130,7 +130,7 @@ class QueryTest extends TestCase {
   public function getCommonMockChain() {
 
     $options = (new Options())
-      ->add("datastore.service", Service::class)
+      ->add("dkan.datastore.service", Service::class)
       ->add('dkan.datastore.service.resource_localizer', ResourceLocalizer::class)
       ->add("dkan.datastore.service.factory.import", Import::class)
       ->add('queue', QueueFactory::class)

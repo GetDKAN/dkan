@@ -32,7 +32,7 @@ class WebServiceApiTest extends TestCase {
    */
   private function getContainer() {
     $options = (new Options())
-      ->add("datastore.service", Service::class)
+      ->add("dkan.datastore.service", Service::class)
       ->add("request_stack", RequestStack::class)
       ->index(0);
 

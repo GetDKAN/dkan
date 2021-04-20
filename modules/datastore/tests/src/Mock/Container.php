@@ -63,11 +63,11 @@ class Container {
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
     $container->method('get')
-      ->with($this->testCase->logicalOr($this->testCase->equalTo('datastore.service')))
+      ->with($this->testCase->logicalOr($this->testCase->equalTo('dkan.datastore.service')))
       ->will($this->testCase->returnCallback(
         function ($serviceName) {
           switch ($serviceName) {
-            case 'datastore.service':
+            case 'dkan.datastore.service':
               $mockEntityRepository = $this->getEntityRepositoryMock();
               $mockConnection = $this->getConnectionMock();
               $mockQueueFactory = $this->getQueueFactoryMock();

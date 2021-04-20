@@ -170,7 +170,7 @@ class Data extends AbstractData {
     $eventDispatcher->dispatch(self::EVENT_PRE_REFERENCE,
       new PreReference($this->data));
 
-    $referencer = \Drupal::service("metastore.referencer");
+    $referencer = \Drupal::service("dkan.metastore.referencer");
     $metadata = $referencer->reference($metadata);
 
     $this->data->setMetadata($metadata);
