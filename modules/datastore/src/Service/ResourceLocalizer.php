@@ -123,16 +123,7 @@ class ResourceLocalizer {
         unlink($resource->getFilePath());
       }
       $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
-
-      if ($uuid) {
-        // Remove the record from jobstore_filefetcher_filefetcher.
-        $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
-
-        $directory = \Drupal::service('file_system')->realpath("public://resources/{$uuid}");
-        if ($directory) {
-          \Drupal::service('file_system')->deleteRecursive($directory);
-        }
-      }
+      $this->removeJunk($uuid);
       $this->fileMapper->remove($resource);
     }
 
@@ -146,6 +137,21 @@ class ResourceLocalizer {
    */
   private function removeLocalUrl(Resource $resource) {
     return $this->fileMapper->remove($resource);
+  }
+
+  /**
+   * Private.
+   */
+  private function removeJunk($uuid) {
+    if ($uuid) {
+      // Remove the record from jobstore_filefetcher_filefetcher.
+      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
+
+      $directory = \Drupal::service('file_system')->realpath("public://resources/{$uuid}");
+      if ($directory) {
+        \Drupal::service('file_system')->rmdir($directory);
+      }
+    }
   }
 
   /**

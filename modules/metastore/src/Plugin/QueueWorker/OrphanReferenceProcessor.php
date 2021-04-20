@@ -122,12 +122,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     if (FALSE !== ($reference = reset($references))) {
       // When orphaning distribution nodes, trigger database clean up.
       if ($property_id === 'distribution') {
-        try {
-          $this->dispatchEvent(self::EVENT_ORPHANING_DISTRIBUTION, $uuid);
-        }
-        catch (\Exception $e) {
-          print 'Message: ' . $e->getMessage();
-        }
+        $this->dispatchEvent(self::EVENT_ORPHANING_DISTRIBUTION, $uuid);
       }
       $reference->set('moderation_state', 'orphaned');
       $reference->save();
