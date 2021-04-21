@@ -38,7 +38,14 @@ class ProperJsonValidator extends ConstraintValidator {
    */
   protected function isProper($value, $schema_id = 'dataset') {
     // @codeCoverageIgnoreStart
-    return \Drupal::service("metastore.service")->getValidationInfo($schema_id, $value);
+    $validation_info = \Drupal::service("dkan.metastore.service")->getValidationInfo($schema_id, $value);
+    $validation_info['errors'] = array_map(
+      function($presented_error) {
+        return $presented_error->message();
+      },
+      $validation_info['errors']
+    );
+    return $validation_info;
     // @codeCoverageIgnoreEnd
   }
 
