@@ -45,12 +45,12 @@ class ProperJsonValidatorTest extends TestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    $this->schemaRetriever = $schema_retriever = $this->getMockBuilder(SchemaRetriever::class)
+    $this->schemaRetriever = $this->getMockBuilder(SchemaRetriever::class)
       ->disableOriginalConstructor()
       ->setMethods(["retrieve"])
       ->getMock();
 
-    $this->rootedJsonDataFactory = $rooted_json_data_factory = $this->getMockBuilder(RootedJsonDataWrapper::class)
+    $this->rootedJsonDataFactory = $this->getMockBuilder(RootedJsonDataWrapper::class)
       ->disableOriginalConstructor()
       ->setMethods(["getSchemaRetriever"])
       ->getMock();
