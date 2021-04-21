@@ -10,6 +10,11 @@ steps:
 
       apt-get update -y
 
+      echo "Use drush 8"
+      ln -s /usr/local/src/drush8/vendor/bin/drush /usr/local/bin/drush
+      echo "Use composer 1"
+      composer self-update --1
+
       echo "Install DKAN Tools"
       cd $SRC_DIR
       git clone  https://github.com/GetDKAN/dkan-tools.git
@@ -21,9 +26,6 @@ steps:
 
       echo "Create database"
       mysql -u root -pstrongpassword -e 'create database dkan;'
-
-      echo "Use drush 8"
-      ln -s /usr/local/src/drush8/vendor/bin/drush /usr/local/bin/drush
 
       echo "Initialize project directory"
       cd $SRC_DIR
