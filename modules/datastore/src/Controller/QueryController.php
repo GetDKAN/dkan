@@ -1,8 +1,7 @@
 <?php
 
-namespace Drupal\datastore;
+namespace Drupal\datastore\Controller;
 
-use Drupal\common\Resource;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -11,15 +10,15 @@ use Drupal\common\JsonResponseTrait;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use RootedData\RootedJsonData;
 use Drupal\common\Util\RequestParamNormalizer;
+use Ilbee\CSVResponse\CSVResponse as CsvResponse;
+use Drupal\datastore\Service;
 
 /**
  * Class Api.
  *
  * @package Drupal\datastore
- *
- * @codeCoverageIgnore
  */
-class WebServiceApi implements ContainerInjectionInterface {
+class QueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
   /**
@@ -50,138 +49,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     $datastoreService = $container->get('datastore.service');
     $requestStack = $container->get('request_stack');
-    return new WebServiceApi($datastoreService, $requestStack);
-  }
-
-  /**
-   * Returns the dataset along with datastore headers and statistics.
-   *
-   * @param string $identifier
-   *   Identifier.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The json response.
-   */
-  public function summary($identifier) {
-    try {
-      $data = $this->datastoreService->summary($identifier);
-      return $this->getResponse($data);
-    }
-    catch (\Exception $e) {
-      $exception = new \Exception("A datastore for resource {$identifier} does not exist.");
-      return $this->getResponseFromException($exception, 404);
-    }
-  }
-
-  /**
-   * Import.
-   */
-  public function import() {
-
-    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
-    $payload = json_decode($payloadJson);
-
-    if (isset($payload->resource_ids)) {
-      return $this->importMultiple($payload->resource_ids);
-    }
-
-    if (!isset($payload->resource_id)) {
-      return $this->getResponseFromException(new \Exception("Invalid payload."));
-    }
-
-    try {
-      $resourceId = $payload->resource_id;
-      $identifier = NULL; $version = NULL;
-      list($identifier, $version) = Resource::getIdentifierAndVersion($resourceId);
-      $results = $this->datastoreService->import($identifier, FALSE, $version);
-      return $this->getResponse($results);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e);
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function importMultiple(array $resourceIds) {
-
-    $responses = [];
-    foreach ($resourceIds as $identifier) {
-      try {
-        $results = $this->datastoreService->import($identifier, TRUE);
-        $responses[$identifier] = $results;
-      }
-      catch (\Exception $e) {
-        $responses[$identifier] = $e->getMessage();
-      }
-    }
-
-    return $this->getResponse($responses);
-  }
-
-  /**
-   * Drop.
-   *
-   * @param string $identifier
-   *   The uuid of a resource.
-   */
-  public function delete($identifier) {
-    try {
-      $this->datastoreService->drop($identifier);
-      return $this->getResponse(
-        [
-          "identifier" => $identifier,
-          "message" => "The datastore for resource {$identifier} was successfully dropped.",
-        ]
-      );
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e);
-    }
-  }
-
-  /**
-   * Drop multiples.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   Json response.
-   */
-  public function deleteMultiple() {
-    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
-    $payload = json_decode($payloadJson);
-
-    if (!isset($payload->resource_ids)) {
-      return $this->getResponseFromException(new \Exception("Invalid payload."));
-    }
-
-    $identifiers = $payload->resource_ids;
-
-    $responses = [];
-    foreach ($identifiers as $identifier) {
-      $responses[$identifier] = json_decode($this->delete($identifier)->getContent());
-    }
-
-    return $this->getResponse($responses);
-  }
-
-  /**
-   * Returns a list of import jobs and data about their status.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The json response.
-   */
-  public function list() {
-    try {
-      $data = $this->datastoreService->list();
-      return $this->getResponse($data);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException(
-        new \Exception("No importer data was returned. {$e->getMessage()}"),
-        404
-      );
-    }
+    return new QueryController($datastoreService, $requestStack);
   }
 
   /**
@@ -193,7 +61,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function query($stream = FALSE) {
     $payloadJson = RequestParamNormalizer::getFixedJson(
       $this->requestStack->getCurrentRequest(),
-      file_get_contents(__DIR__ . "/../docs/query.json")
+      file_get_contents(__DIR__ . "/../../docs/query.json")
     );
 
     try {
@@ -241,14 +109,12 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @param RootedData\RootedJsonData $result
    *   A query result JSON object.
    *
-   * @return \Drupal\datastore\CsvResponse
+   * @return \Ilbee\CSVResponse\CSVResponse
    *   CSV file as a response.
    */
   protected function formatCsvResponse(RootedJsonData $result) {
     $data = $result->{"$"} ? $result->{"$"} : [];
-    $this->addHeaderRow($data);
-    $response = new CsvResponse($data['results'], 200);
-    $response->setFilename('data.csv');
+    $response = new CsvResponse($data['results'], 'data', ',');
     return $response;
   }
 
@@ -382,7 +248,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       );
     }
     try {
-      $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../docs/query.json"));
+      $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../../docs/query.json"));
       $datastoreQuery = new DatastoreQuery($payloadJson);
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
@@ -404,7 +270,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   The json response.
    */
   public function querySchema() {
-    $schema = json_decode(file_get_contents(__DIR__ . "/../docs/query.json"), TRUE);
+    $schema = json_decode(file_get_contents(__DIR__ . "/../../docs/query.json"), TRUE);
     return $this->getResponse($schema, 200);
   }
 

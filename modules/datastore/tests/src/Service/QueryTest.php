@@ -24,7 +24,6 @@ use Drupal\metastore\Storage\DataFactory;
 use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
 
 /**
- * @coversDefaultClass \Drupal\datastore\WebServiceApi
  * @group dkan
  */
 class QueryTest extends TestCase {

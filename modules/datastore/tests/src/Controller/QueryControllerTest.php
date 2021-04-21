@@ -1,14 +1,14 @@
 <?php
 
-use Drupal\datastore\CsvResponse;
 use MockChain\Options;
 use Drupal\datastore\Service;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
-use Drupal\datastore\WebServiceApi;
+use Drupal\datastore\Controller\QueryController;
 use Drupal\metastore\Storage\DataFactory;
+use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,24 +17,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  *
  */
-class WebServiceApiTest extends TestCase {
+class QueryControllerTest extends TestCase {
 
-  /**
-   * @var
-   */
   private $buffer;
-
-  /**
-   *
-   */
-  public function testMultipleImports() {
-    $container = $this->getContainer();
-
-    $webServiceApi = WebServiceApi::create($container);
-    $result = $webServiceApi->import();
-
-    $this->assertTrue($result instanceof JsonResponse);
-  }
 
   /**
    *
@@ -50,7 +35,7 @@ class WebServiceApiTest extends TestCase {
     ]);
 
     $container = $this->getQueryContainer($data);
-    $webServiceApi = WebServiceApi::create($container);
+    $webServiceApi = QueryController::create($container);
     $result = $webServiceApi->query();
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -72,7 +57,7 @@ class WebServiceApiTest extends TestCase {
     ]);
 
     $container = $this->getQueryContainer($data);
-    $webServiceApi = WebServiceApi::create($container);
+    $webServiceApi = QueryController::create($container);
     $result = $webServiceApi->query();
 
     $this->assertTrue($result instanceof CsvResponse);
@@ -81,7 +66,7 @@ class WebServiceApiTest extends TestCase {
     $csv = explode("\n", $result->getContent());
     $this->assertEquals('record_number,data', $csv[0]);
     $this->assertEquals('1,data', $csv[1]);
-    $this->assertEquals('data.csv', $result->getFilename());
+    $this->assertContains('data.csv', $result->headers->get('Content-Disposition'));
   }
 
   /**
@@ -99,7 +84,7 @@ class WebServiceApiTest extends TestCase {
     ]);
     // Need 2 json responses which get combined on output.
     $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = WebServiceApi::create($container);
+    $webServiceApi = QueryController::create($container);
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->query(TRUE);
     $result->sendContent();
@@ -134,7 +119,7 @@ class WebServiceApiTest extends TestCase {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
     }
     else {
-      $queryResult = new RootedJsonData(file_get_contents(__DIR__ . "/../data/response.json"));
+      $queryResult = new RootedJsonData(file_get_contents(__DIR__ . "/../../data/response.json"));
       $chain->add(Service::class, 'runQuery', $queryResult);
     }
 
@@ -144,31 +129,13 @@ class WebServiceApiTest extends TestCase {
   }
 
   private function addMultipleResponses() {
-    $response1 = file_get_contents(__DIR__ . "/../data/response_big.json");
+    $response1 = file_get_contents(__DIR__ . "/../../data/response_big.json");
     $response1 = new \RootedData\RootedJsonData($response1);
 
-    $response2 = file_get_contents(__DIR__ . "/../data/response.json");
+    $response2 = file_get_contents(__DIR__ . "/../../data/response.json");
     $response2 = new \RootedData\RootedJsonData($response2);
 
     return (new Sequence())->add($response1)->add($response2);
-  }
-
-  /**
-   * Private.
-   */
-  private function getContainer() {
-    $options = (new Options())
-      ->add("datastore.service", Service::class)
-      ->add("request_stack", RequestStack::class)
-      ->index(0);
-
-    return (new Chain($this))
-      ->add(Container::class, "get", $options)
-      ->add(Service::class, "drop", NULL)
-      ->add(Service::class, "import", [])
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getContent', json_encode((object) ['resource_ids' => ["1", "2"]]))
-      ->getMock();
   }
 
   /**
@@ -179,4 +146,5 @@ class WebServiceApiTest extends TestCase {
   protected function getBuffer($buffer) {
     $this->buffer .= $buffer;
   }
+
 }
