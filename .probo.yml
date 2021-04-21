@@ -1,4 +1,4 @@
-image: proboci/ubuntu-16.04-lamp:php-7.2
+image: proboci/ubuntu:18.04-php7.3
 steps:
   - name: Setup QA site
     plugin: Script
@@ -9,6 +9,11 @@ steps:
       cp -a $SRC_DIR/. ~/dkan/
 
       apt-get update -y
+
+      echo "Use drush 8"
+      ln -s /usr/local/src/drush8/vendor/bin/drush /usr/local/bin/drush
+      echo "Use composer 1"
+      composer self-update --1
 
       echo "Install DKAN Tools"
       cd $SRC_DIR
