@@ -22,6 +22,9 @@ steps:
       echo "Create database"
       mysql -u root -pstrongpassword -e 'create database dkan;'
 
+      echo "Use drush 8"
+      ln -s /usr/local/src/drush8/vendor/bin/drush /usr/local/bin/drush
+
       echo "Initialize project directory"
       cd $SRC_DIR
       dktl init
