@@ -780,6 +780,10 @@ paths:
       responses:
         '200':
           description: ok
+          content:
+            application/json:
+              schema:
+               type: object
     get:
       operationId: datastore-query-get
       summary: Query one or more datastore resources
@@ -798,11 +802,15 @@ paths:
       responses:
         '200':
           description: ok
+          content:
+            application/json:
+              schema:
+               type: object
 
   /api/1/datastore/query/download:
     post:
-      operationId: datastore-query-post
-      summary: Query one or more datastore resources
+      operationId: datastore-query-download-post
+      summary: Query one or more datastore resources for file download
       tags:
         - Datastore
       security:
@@ -817,9 +825,13 @@ paths:
       responses:
         '200':
           description: ok
+          content:
+            application/json:
+              schema:
+               type: object
     get:
-      operationId: datastore-query-get
-      summary: Query one or more datastore resources
+      operationId: datastore-query-download-get
+      summary: Query one or more datastore resources for file download with get
       tags:
         - Datastore
       security:
@@ -835,22 +847,22 @@ paths:
       responses:
         '200':
           description: ok
+          content:
+            application/json:
+              schema:
+               type: object
       
       
   /api/1/datastore/query/{identifier}:
+    parameters:
+      - $ref: '#/components/parameters/distributionUuid'
     post:
       operationId: datastore-query-post
-      summary: Query a single datastore resources
+      summary: Query a single datastore resource
       tags:
         - Datastore
       security:
         - basicAuth: []
-      parameters:
-        - in: path
-          name: identifier
-          required: true
-          schema:
-            $ref: '#/components/parameters/distributionUuid'
       requestBody:
         required: true
         content:
@@ -861,19 +873,18 @@ paths:
       responses:
         '200':
           description: ok
+          content:
+            application/json:
+              schema:
+               type: object
     get:
       operationId: datastore-query-get
-      summary: Query a single datastore resources
+      summary: Query a single datastore resource with get
       tags:
         - Datastore
       security:
         - basicAuth: []
       parameters:
-        - in: path
-          name: identifier
-          required: true
-          schema:
-            $ref: '#/components/parameters/distributionUuid'
         - in: query
           name: query
           content:
@@ -884,6 +895,36 @@ paths:
       responses:
         '200':
           description: ok
+          content:
+            application/json:
+              schema:
+               type: object
+
+  /api/1/datastore/query/{identifier}/download:
+    parameters:
+      - $ref: '#/components/parameters/distributionUuid'
+    get:
+      operationId: datastore-query-download-get
+      summary: Query a single datastore resources for file download
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      parameters:
+        - in: query
+          name: query
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Coming soon, for now refer to /api/1/datastore/query/schema. However, do not include a "resources" array on this endpoint.
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+               type: object
 
   /api/1/metastore/schemas/dataset/items/{identifier}/docs:
     get:
