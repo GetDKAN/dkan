@@ -3,14 +3,15 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
+//use OpisErrorPresenter\Implementation\MessageFormatterFactory;
+//use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
+//use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Service.
+ * TODO: rename it
  */
 class RootedJsonDataWrapper implements ContainerInjectionInterface {
 
@@ -43,6 +44,13 @@ class RootedJsonDataWrapper implements ContainerInjectionInterface {
   }
 
   /**
+   * @return \Drupal\metastore\SchemaRetriever
+   */
+  public function getSchemaRetriever() {
+    return $this->schemaRetriever;
+  }
+
+  /**
    * Converts Json string into RootedJsonData object.
    *
    * @param \Drupal\metastore\string $schema_id
@@ -56,33 +64,8 @@ class RootedJsonDataWrapper implements ContainerInjectionInterface {
    * @throws \JsonPath\InvalidJsonException
    */
   public function createRootedJsonData(string $schema_id, string $json_string): RootedJsonData {
-    $schema = $this->schemaRetriever->retrieve($schema_id);
+    $schema = $this->getSchemaRetriever()->retrieve($schema_id);
     return new RootedJsonData($json_string, $schema);
-  }
-
-  /**
-   * Get validation result.
-   *
-   * @param string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param string $json_data
-   *   Json payload.
-   *
-   * @return array
-   *   The validation result.
-   *
-   * @throws \Exception
-   */
-  public function getValidationInfo(string $schema_id, string $json_string) {
-    $schema = $this->schemaRetriever->retrieve($schema_id);
-    $result = RootedJsonData::validate($json_string, $schema);
-    $presenter = new ValidationErrorPresenter(
-      new PresentedValidationErrorFactory(
-        new MessageFormatterFactory()
-      )
-    );
-    $presented = $presenter->present(...$result->getErrors());
-    return ['valid' => empty($presented), 'errors' => $presented];
   }
 
 }

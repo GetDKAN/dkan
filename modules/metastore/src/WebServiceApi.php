@@ -136,6 +136,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Private.
    */
   private function swapReferences($object) {
+    // TODO: use RootedJsonData instead.
     $array = (array) $object;
     foreach ($array as $property => $value) {
       if (substr_count($property, "%Ref:") > 0) {
@@ -325,9 +326,9 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function checkData($data, $identifier = NULL) {
+  private function checkData(string $data, $identifier = NULL) {
 
-    // TODO: consider working with RootedJsonData.
+    // TODO: use RootedJsonData.
     if (empty($data)) {
       throw new MissingPayloadException("Empty body");
     }
