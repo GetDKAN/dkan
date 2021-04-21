@@ -212,7 +212,18 @@ class WebServiceApi implements ContainerInjectionInterface {
     return $this->formatResponse($datastoreQuery, $result);
   }
 
-  public function formatResponse($datastoreQuery, $result) {
+  /**
+   * Return correct JSON or CSV response.
+   *
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore query object.
+   * @param RootedData\RootedJsonData $result
+   *   The result of the datastore query.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   The json response.
+   */
+  public function formatResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
         return $this->formatCsvResponse($result);
@@ -252,7 +263,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\Response
    *   An HTTP response.
    */
-  protected function streamResponse($datastoreQuery, $result) {
+  protected function streamResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
         return $this->processStreamedCsv($datastoreQuery, $result);
@@ -267,15 +278,17 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
-   * Setup the Streamed Response callback.
+   * Set up the Streamed Response callback.
    *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore Query object.
    * @param RootedData\RootedJsonData $result
    *   Query result.
    *
    * @return \Symfony\Component\HttpFoundation\StreamedResponse
    *   Return the StreamedResponse object.
    */
-  protected function processStreamedCsv($datastoreQuery, RootedJsonData $result) {
+  protected function processStreamedCsv(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $data = $result->{"$"} ? $result->{"$"} : [];
     $max = $datastoreQuery->{"$.limit"};
 
@@ -284,10 +297,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     $datastoreQuery->{"$.schema"} = FALSE;
 
     $this->addHeaderRow($data);
-    $response = new StreamedResponse();
-    $response->headers->set('Content-Type', 'text/csv');
-    $response->headers->set('Content-Disposition', 'attachment; filename="data.csv"');
-    $response->headers->set('X-Accel-Buffering', 'no');
+    $response = $this->initStreamedCsvResponse();
     $response->setCallback(function () use (&$data, &$max, $datastoreQuery) {
       $i = 1;
       set_time_limit(0);
@@ -306,6 +316,20 @@ class WebServiceApi implements ContainerInjectionInterface {
       }
       fclose($handle);
     });
+    return $response;
+  }
+
+  /**
+   * Create initial streamed response object.
+   *
+   * @return Symfony\Component\HttpFoundation\StreamedResponse
+   *   A streamed response object set up for data.csv file.
+   */
+  private function initStreamedCsvResponse($filename = "data.csv") {
+    $response = new StreamedResponse();
+    $response->headers->set('Content-Type', 'text/csv');
+    $response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
+    $response->headers->set('X-Accel-Buffering', 'no');
     return $response;
   }
 
@@ -340,11 +364,13 @@ class WebServiceApi implements ContainerInjectionInterface {
    *
    * @param string $identifier
    *   The uuid of a resource.
+   * @param bool $stream
+   *   Whether to return result as a streamed file.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function queryResource($identifier, $stream = FALSE) {
+  public function queryResource(string $identifier, bool $stream = FALSE) {
     $payloadJson = RequestParamNormalizer::getJson($this->requestStack->getCurrentRequest());
     try {
       $this->prepareQueryResourcePayload($payloadJson, $identifier);
