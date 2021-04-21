@@ -313,6 +313,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *   Filtered output.
    */
   private function filterHtml($input) {
+    // TODO: find out if we still need it.
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);

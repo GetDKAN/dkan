@@ -10,10 +10,6 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
-use JsonSchema\Exception\ValidationException;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -326,6 +322,7 @@ class Service implements ContainerInjectionInterface {
         );
 
         $new = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, json_encode($patched));
+//        $storage->store("$new", "{$identifier}");
         $storage->store($new, "{$identifier}");
         return $identifier;
       }
@@ -397,7 +394,7 @@ class Service implements ContainerInjectionInterface {
    * @return bool
    *   TRUE if the metadata is equivalent, false otherwise.
    */
-  private function objectIsEquivalent(string $schema_id, string $identifier, string $metadata) {
+  private function objectIsEquivalent(string $schema_id, string $identifier, RootedJsonData $metadata) {
     $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
     $existing = json_decode($existingMetadata);
     $existing = self::removeReferences($existing);
