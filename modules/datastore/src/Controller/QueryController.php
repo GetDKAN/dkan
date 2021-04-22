@@ -55,7 +55,7 @@ class QueryController implements ContainerInjectionInterface {
   /**
    * Perform a query on one or more datastore resources.
    *
-   * @return CsvResponse|JsonResponse
+   * @return Ilbee\CSVResponse\CSVResponse|Symfony\Component\HttpFoundation\JsonResponse
    *   The json or CSV response.
    */
   public function query($stream = FALSE) {
