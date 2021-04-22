@@ -111,7 +111,12 @@ class Service implements ContainerInjectionInterface {
 
     $objects = array_map(
       function ($jsonString) {
-        return json_decode($this->dispatchEvent(self::EVENT_DATA_GET, $jsonString));
+        try {
+          return json_decode($this->dispatchEvent(self::EVENT_DATA_GET, $jsonString));
+        }
+        catch (\Exception $e) {
+          return (object) ["message" => $e->getMessage()];
+        }
       },
       $jsonStringsArray
     );
