@@ -94,28 +94,13 @@ class QueryController implements ContainerInjectionInterface {
   public function formatResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
-        return $this->formatCsvResponse($result);
+        return new CsvResponse($result->{"$.results"}, 'data', ',');
 
       case 'json':
       default:
         return $this->getResponse($result->{"$"}, 200);
     }
 
-  }
-
-  /**
-   * Reformat and create CSV file.
-   *
-   * @param RootedData\RootedJsonData $result
-   *   A query result JSON object.
-   *
-   * @return \Ilbee\CSVResponse\CSVResponse
-   *   CSV file as a response.
-   */
-  protected function formatCsvResponse(RootedJsonData $result) {
-    $data = $result->{"$"} ? $result->{"$"} : [];
-    $response = new CsvResponse($data['results'], 'data', ',');
-    return $response;
   }
 
   /**
