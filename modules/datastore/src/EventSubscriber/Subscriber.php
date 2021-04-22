@@ -49,7 +49,6 @@ class Subscriber implements EventSubscriberInterface {
         $this->log('datastore', $e->getMessage());
       }
     }
-
   }
 
   /**

@@ -22,7 +22,7 @@ class DatasetTest extends TestCase {
    */
   public function testNew() {
     $containerOptions = (new Options())
-      ->add('metastore.service', Service::class)
+      ->add('dkan.metastore.service', Service::class)
       ->index(0);
 
     $containerChain = (new Chain($this))
@@ -53,7 +53,7 @@ class DatasetTest extends TestCase {
    */
   public function testUpdate() {
     $containerOptions = (new Options())
-      ->add('metastore.service', Service::class)
+      ->add('dkan.metastore.service', Service::class)
       ->index(0);
 
     $containerChain = (new Chain($this))

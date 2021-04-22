@@ -39,7 +39,7 @@ class ProperJsonValidator extends ConstraintValidator {
   protected function isProper($value, $schema = 'dataset') {
     // @codeCoverageIgnoreStart
     /** @var SaeFactory $saeFactory */
-    $saeFactory = \Drupal::service("metastore.sae_factory");
+    $saeFactory = \Drupal::service("dkan.metastore.sae_factory");
 
     /** @var Sae $engine */
     $engine = $saeFactory->getInstance($schema);
