@@ -138,7 +138,7 @@ class Service implements ContainerInjectionInterface {
       function ($jsonString) use ($schema_id) {
         $data = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, $jsonString);
         try {
-          return json_decode($this->dispatchEvent(self::EVENT_DATA_GET, $data));
+          return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
         }
         catch (\Exception $e) {
           return (object) ["message" => $e->getMessage()];
