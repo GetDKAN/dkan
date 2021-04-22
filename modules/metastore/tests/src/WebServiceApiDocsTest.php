@@ -22,8 +22,9 @@ class WebServiceApiDocsTest extends TestCase {
    * Tests dataset-specific docs when SQL endpoint is protected.
    */
   public function testDatasetSpecificDocsWithSqlModifier() {
+    $get = ServiceTest::getJsonWrapper($this)->createRootedJsonData('dataset', '{}');
     $mockChain = $this->getCommonMockChain()
-      ->add(Service::class, "get", "{}")
+      ->add(Service::class, "get", $get)
       ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])
       ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
       ->add(DataModifierBase::class, 'requiresModification', TRUE);
