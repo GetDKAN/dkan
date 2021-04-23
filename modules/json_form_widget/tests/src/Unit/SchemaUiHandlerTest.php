@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
+use Drupal\Tests\metastore\Unit\ServiceTest;
 use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
@@ -23,6 +24,18 @@ use stdClass;
  * Test class for SchemaUiHandlerTest.
  */
 class SchemaUiHandlerTest extends TestCase {
+
+  /**
+   * The RootedJsonDataWrapper class used for testing.
+   *
+   * @var \Drupal\metastore\RootedJsonDataWrapper|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $rootedJsonDataFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->rootedJsonDataFactory = ServiceTest::getJsonWrapper($this);
+  }
 
   /**
    * Test.
@@ -878,26 +891,21 @@ class SchemaUiHandlerTest extends TestCase {
    * Dummy list of simple metastore results.
    */
   private function getSimpleMetastoreResults() {
-    $options = [];
-    $options[0] = new stdClass();
-    $options[0]->data = "Option 1";
-    $options[1] = new stdClass();
-    $options[1]->data = "Option 2";
-    return $options;
+    return [
+      $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['data' => 'Option 1'])),
+      $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['data' => 'Option 2'])),
+    ];
+
   }
 
   /**
    * Dummy list of complex metastore results.
    */
   private function getComplexMetastoreResults() {
-    $options = [];
-    $options[0] = new stdClass();
-    $options[0]->data = new stdClass();
-    $options[0]->data->name = "Option 1";
-    $options[1] = new stdClass();
-    $options[1]->data = new stdClass();
-    $options[1]->data->name = "Option 2";
-    return $options;
+    return [
+      $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['data' => ['name' => 'Option 1']])),
+      $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['data' => ['name' => 'Option 2']])),
+    ];
   }
 
 }
