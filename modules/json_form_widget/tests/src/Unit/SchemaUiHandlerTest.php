@@ -15,7 +15,6 @@ use Drupal\json_form_widget\WidgetRouter;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Service;
 use MockChain\Options;
-use stdClass;
 
 /**
  * Test class for SchemaUiHandlerTest.

@@ -20,6 +20,18 @@ use PHPUnit\Framework\TestCase;
 class DatasetTest extends TestCase {
 
   /**
+   * The RootedJsonDataWrapper class used for testing.
+   *
+   * @var \Drupal\metastore\RootedJsonDataWrapper|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $rootedJsonDataFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->rootedJsonDataFactory = ServiceTest::getJsonWrapper($this);
+  }
+
+  /**
    *
    */
   public function testNew() {
@@ -28,7 +40,7 @@ class DatasetTest extends TestCase {
       ->index(0);
 
     $object = (object) ["identifier" => "1"];
-    $expected = ServiceTest::getJsonWrapper($this)->createRootedJsonData('dummy_schema_id', json_encode($object));
+    $expected = $this->rootedJsonDataFactory->createRootedJsonData('dummy_schema_id', json_encode($object));
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
@@ -62,7 +74,7 @@ class DatasetTest extends TestCase {
       ->index(0);
 
     $object = (object) ["identifier" => "1"];
-    $expected = ServiceTest::getJsonWrapper($this)->createRootedJsonData('dummy_schema_id', json_encode($object));
+    $expected = $this->rootedJsonDataFactory->createRootedJsonData('dummy_schema_id', json_encode($object));
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
