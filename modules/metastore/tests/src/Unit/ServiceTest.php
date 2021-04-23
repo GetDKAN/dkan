@@ -25,6 +25,18 @@ use RootedData\RootedJsonData;
 class ServiceTest extends TestCase {
 
   /**
+   * The RootedJsonDataWrapper class used for testing.
+   *
+   * @var \Drupal\metastore\RootedJsonDataWrapper|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $rootedJsonDataFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->rootedJsonDataFactory = self::getJsonWrapper($this);
+  }
+
+  /**
    *
    */
   public function testGetSchemas() {
@@ -49,7 +61,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetAll() {
-    $expected = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+    $expected = $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
 
     $container = self::getCommonMockChain($this)
       ->add(Data::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
@@ -94,7 +106,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
 
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrievePublished", json_encode(['foo' => 'bar']))
@@ -117,7 +129,7 @@ class ServiceTest extends TestCase {
         ["title" => "hello"],
       ],
     ];
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode($dataset));
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode($dataset));
 
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", json_encode($dataset))
@@ -138,7 +150,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
     $this->assertEquals("1", $service->post("dataset", $data));
   }
 
@@ -153,7 +165,7 @@ class ServiceTest extends TestCase {
 
     $this->expectException(ExistingObjectException::class);
 
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', '{"identifier":1,"title":"FooBar"}');
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', '{"identifier":1,"title":"FooBar"}');
     $service->post("dataset", $data);
   }
 
@@ -167,7 +179,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
     $info = $service->put("dataset", "1", $data);
 
     $this->assertEquals("1", $info['identifier']);
@@ -187,7 +199,7 @@ class ServiceTest extends TestCase {
 
     $this->expectExceptionMessage("Identifier cannot be modified");
 
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', $updating);
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $updating);
     $service->put("dataset", "1", $data);
   }
 
@@ -201,7 +213,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', '{"identifier":"3","title":"FooBar"}');
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', '{"identifier":"3","title":"FooBar"}');
     $info = $service->put("dataset", "3", $data);
     $this->assertEquals("3", $info['identifier']);
   }
@@ -218,7 +230,7 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', $existing);
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $existing);
     $service->put("dataset", "1", $data);
   }
 
@@ -240,7 +252,7 @@ EOF;
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
-    $data = self::getJsonWrapper($this)->createRootedJsonData('dataset', $updating);
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $updating);
     $service->put("dataset", "1", $data);
   }
 
@@ -315,7 +327,7 @@ EOF;
    *
    */
   public function testGetCatalog() {
-    $dataset = self::getJsonWrapper($this)->createRootedJsonData('blah', json_encode(["foo" => "bar"]));
+    $dataset = $this->rootedJsonDataFactory->createRootedJsonData('blah', json_encode(["foo" => "bar"]));
 
     $catalog = (object) [
       "@id" => "http://catalog",

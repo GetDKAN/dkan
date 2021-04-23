@@ -25,11 +25,23 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class WebServiceApiTest extends TestCase {
 
   /**
+   * The RootedJsonDataWrapper class used for testing.
+   *
+   * @var \Drupal\metastore\RootedJsonDataWrapper|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $rootedJsonDataFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->rootedJsonDataFactory = ServiceTest::getJsonWrapper($this);
+  }
+
+  /**
    *
    */
   public function testGetAll() {
     $json = ['name' => 'hello'];
-    $object = ServiceTest::getJsonWrapper($this)->createRootedJsonData('blah', json_encode($json));
+    $object = $this->rootedJsonDataFactory->createRootedJsonData('blah', json_encode($json));
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getAll', [$object, $object, $object]);
 
