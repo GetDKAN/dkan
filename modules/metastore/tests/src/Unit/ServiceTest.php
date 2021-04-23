@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
+use Drupal\common\Events\Event;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\Exception\ExistingObjectException;
@@ -14,6 +15,7 @@ use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
 use MockChain\Options;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Sae\Sae as Engine;
 
@@ -56,6 +58,34 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->assertEquals(json_encode(["blah"]), json_encode($service->getAll("dataset")));
+  }
+
+  public function testGetAllException() {
+    $data = "blah";
+
+    $event = new Event($data);
+    $event->setException(new \Exception("blah"));
+
+    $event2 = new Event($data);
+    $event2->setData([$data]);
+
+    $sequence = (new Sequence())
+      ->add($event)
+      ->add($event2);
+
+    $container = self::getCommonMockChain($this)
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "get", [json_encode($data)])
+      ->add(ContainerAwareEventDispatcher::class, 'dispatch', $sequence);
+
+    \Drupal::setContainer($container->getMock());
+
+    $service = Service::create($container->getMock());
+
+    $this->assertEquals(
+      json_encode([$data]),
+      json_encode($service->getAll("dataset"))
+    );
   }
 
   /**
