@@ -192,7 +192,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function post(string $schema_id) {
     try {
       $data = $this->getRequestContent();
-      $this->checkData($data);
+      $this->checkIdentifier($data);
       $data = $this->service->getRootedJsonDataWrapper()->createRootedJsonData($schema_id, $data);
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
@@ -246,7 +246,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function put($schema_id, string $identifier) {
     try {
       $data = $this->getRequestContent();
-      $this->checkData($data, $identifier);
+      $this->checkIdentifier($data, $identifier);
       $data = $this->service->getRootedJsonDataWrapper()->createRootedJsonData($schema_id, $data);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
@@ -275,7 +275,16 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     try {
       $data = $this->getRequestContent();
-      $this->checkData($data, $identifier);
+
+      if (empty($data)) {
+        throw new MissingPayloadException("Empty body");
+      }
+      $obj = json_decode($data);
+      if (!$obj) {
+        throw new InvalidJsonException("Invalid JSON");
+      }
+      $this->checkIdentifier($data, $identifier);
+
       $this->service->patch($schema_id, $identifier, $data);
       return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
     }
@@ -324,21 +333,10 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Checks identifier.
    */
-  private function checkData(string $data, $identifier = NULL) {
-
-    // TODO: use RootedJsonData.
-    if (empty($data)) {
-      throw new MissingPayloadException("Empty body");
-    }
-
+  private function checkIdentifier(string $data, $identifier = NULL) {
     $obj = json_decode($data);
-
-    if (!$obj) {
-      throw new InvalidJsonException("Invalid JSON");
-    }
-
     if (isset($identifier) && isset($obj->identifier) && $obj->identifier != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");
     }
