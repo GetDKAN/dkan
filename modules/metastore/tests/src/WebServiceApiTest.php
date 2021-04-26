@@ -188,26 +188,26 @@ class WebServiceApiTest extends TestCase {
   /**
    *
    */
-  public function testPutInvalidJsonException() {
+  public function testPatchInvalidJsonException() {
     $mockChain = $this->getCommonMockChain()
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', "{");
 
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->put(1, 'dataset');
+    $response = $controller->patch(1, 'dataset');
     $this->assertEquals('{"message":"Invalid JSON"}', $response->getContent());
   }
 
   /**
    *
    */
-  public function testPutMissingPayloadException() {
+  public function testPatchMissingPayloadException() {
     $mockChain = $this->getCommonMockChain()
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', "");
 
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->put(1, 'dataset');
+    $response = $controller->patch(1, 'dataset');
     $this->assertEquals('{"message":"Empty body"}', $response->getContent());
   }
 
