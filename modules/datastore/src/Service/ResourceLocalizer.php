@@ -117,19 +117,16 @@ class ResourceLocalizer {
     /** @var \Drupal\common\Resource $resource */
     $resource = $this->get($identifier, $version);
     $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
-
+    if ($resource2) {
+      $this->removeLocalUrl($resource2);
+    }
     if ($resource) {
       $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
       if (file_exists($resource->getFilePath())) {
-        //unlink($resource->getFilePath());
         \Drupal::service('file_system')->deleteRecursive("public://resources/{$uuid}");
       }
       $this->removeJob($uuid);
       $this->fileMapper->remove($resource);
-    }
-
-    if ($resource2) {
-      $this->removeLocalUrl($resource2);
     }
   }
 
@@ -146,7 +143,6 @@ class ResourceLocalizer {
   private function removeJob($uuid) {
     if ($uuid) {
       $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
-      \Drupal::database()->delete('jobstore_filefetcher_filefetcher')->condition('ref_uuid', $uuid)->execute();
     }
   }
 
