@@ -322,7 +322,6 @@ class Service implements ContainerInjectionInterface {
         );
 
         $new = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, json_encode($patched));
-//        $storage->store("$new", "{$identifier}");
         $storage->store($new, "{$identifier}");
         return $identifier;
       }
@@ -406,7 +405,6 @@ class Service implements ContainerInjectionInterface {
    * Private.
    */
   public static function removeReferences($object, $prefix = "%") {
-    // TODO: consider using RootedJsonData.
     $array = (array) $object;
     foreach ($array as $property => $value) {
       if (substr_count($property, $prefix) > 0) {
