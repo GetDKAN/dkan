@@ -8,7 +8,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\RootedJsonDataWrapper;
+use Drupal\metastore\RootedJsonDataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\Data;
@@ -25,9 +25,9 @@ use RootedData\RootedJsonData;
 class ServiceTest extends TestCase {
 
   /**
-   * The RootedJsonDataWrapper class used for testing.
+   * The RootedJsonDataFactory class used for testing.
    *
-   * @var \Drupal\metastore\RootedJsonDataWrapper|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\RootedJsonDataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $rootedJsonDataFactory;
 
@@ -65,7 +65,7 @@ class ServiceTest extends TestCase {
 
     $container = self::getCommonMockChain($this)
       ->add(Data::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
-      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $expected);
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', $expected);
 
     \Drupal::setContainer($container->getMock());
 
@@ -110,7 +110,7 @@ class ServiceTest extends TestCase {
 
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrievePublished", json_encode(['foo' => 'bar']))
-      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $data);
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', $data);
 
     \Drupal::setContainer($container->getMock());
 
@@ -133,7 +133,7 @@ class ServiceTest extends TestCase {
 
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", json_encode($dataset))
-      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $data);
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', $data);
 
     $service = Service::create($container->getMock());
 
@@ -263,7 +263,7 @@ EOF;
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", "1")
       ->add(Data::class, "store", "1")
-      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', RootedJsonData::class);
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', RootedJsonData::class);
 
     $service = Service::create($container->getMock());
 
@@ -337,7 +337,7 @@ EOF;
     $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
       ->add(Data::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)])
-      ->add(RootedJsonDataWrapper::class, 'createRootedJsonData', $dataset);
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', $dataset);
 
     \Drupal::setContainer($container->getMock());
 
@@ -360,7 +360,7 @@ EOF;
     $myServices = [
       'dkan.metastore.schema_retriever' => SchemaRetriever::class,
       'dkan.metastore.storage' => DataFactory::class,
-      'dkan.metastore.rooted_json_data_wrapper' => RootedJsonDataWrapper::class,
+      'dkan.metastore.rooted_json_data_wrapper' => RootedJsonDataFactory::class,
       'event_dispatcher' => ContainerAwareEventDispatcher::class
     ];
 
@@ -388,7 +388,7 @@ EOF;
       ->add(Container::class, "get", $options)
       ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
 
-    return RootedJsonDataWrapper::create($container->getMock());
+    return RootedJsonDataFactory::create($container->getMock());
   }
 
 }

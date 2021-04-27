@@ -3,17 +3,13 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-//use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-//use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-//use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Service.
- * TODO: rename it
  */
-class RootedJsonDataWrapper implements ContainerInjectionInterface {
+class RootedJsonDataFactory implements ContainerInjectionInterface {
 
   /**
    * Schema retriever.
@@ -34,7 +30,7 @@ class RootedJsonDataWrapper implements ContainerInjectionInterface {
   }
 
   /**
-   * RootedJsonDataWrapper constructor.
+   * RootedJsonDataFactory constructor.
    *
    * @param \Drupal\metastore\SchemaRetriever $schemaRetriever
    *   dkan.metastore.schema_retriever service.

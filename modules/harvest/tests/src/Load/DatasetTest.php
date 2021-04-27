@@ -6,7 +6,7 @@ use Contracts\Mock\Storage\Memory;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\harvest\Load\Dataset;
 use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\RootedJsonDataWrapper;
+use Drupal\metastore\RootedJsonDataFactory;
 use Drupal\metastore\Service;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 use MockChain\Chain;
@@ -20,9 +20,9 @@ use PHPUnit\Framework\TestCase;
 class DatasetTest extends TestCase {
 
   /**
-   * The RootedJsonDataWrapper class used for testing.
+   * The RootedJsonDataFactory class used for testing.
    *
-   * @var \Drupal\metastore\RootedJsonDataWrapper|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\RootedJsonDataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $rootedJsonDataFactory;
 
@@ -44,8 +44,8 @@ class DatasetTest extends TestCase {
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
-      ->add(Service::class, "getRootedJsonDataWrapper", RootedJsonDataWrapper::class)
-      ->add(RootedJsonDataWrapper::class, "createRootedJsonData", $expected)
+      ->add(Service::class, "getRootedJsonDataFactory", RootedJsonDataFactory::class)
+      ->add(RootedJsonDataFactory::class, "createRootedJsonData", $expected)
       ->add(Service::class, "post", "1", 'post');
 
     $container = $containerChain->getMock();
@@ -78,8 +78,8 @@ class DatasetTest extends TestCase {
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
-      ->add(Service::class, "getRootedJsonDataWrapper", RootedJsonDataWrapper::class)
-      ->add(RootedJsonDataWrapper::class, "createRootedJsonData", $expected)
+      ->add(Service::class, "getRootedJsonDataFactory", RootedJsonDataFactory::class)
+      ->add(RootedJsonDataFactory::class, "createRootedJsonData", $expected)
       ->add(Service::class, 'post', new ExistingObjectException())
       ->add(Service::class, "put", [], 'put');
 

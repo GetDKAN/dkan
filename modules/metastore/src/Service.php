@@ -47,9 +47,9 @@ class Service implements ContainerInjectionInterface {
   /**
    * RootedJsonData wrapper.
    *
-   * @var \Drupal\metastore\RootedJsonDataWrapper
+   * @var \Drupal\metastore\RootedJsonDataFactory
    */
-  private $rootedJsonDataWrapper;
+  private $rootedJsonDataFactory;
 
   /**
    * Inherited.
@@ -67,10 +67,10 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory, RootedJsonDataWrapper $rootedJsonDataWrapper) {
+  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory, RootedJsonDataFactory $rootedJsonDataFactory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
-    $this->rootedJsonDataWrapper = $rootedJsonDataWrapper;
+    $this->rootedJsonDataFactory = $rootedJsonDataFactory;
   }
 
   /**
@@ -136,7 +136,7 @@ class Service implements ContainerInjectionInterface {
 
     $objects = array_map(
       function ($jsonString) use ($schema_id) {
-        $data = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, $jsonString);
+        $data = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, $jsonString);
         try {
           return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
         }
@@ -165,7 +165,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function get($schema_id, $identifier): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
-    $data = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, $json_string);
+    $data = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, $json_string);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     return $data;
@@ -186,7 +186,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getResources($schema_id, $identifier): array {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, $json_string);
+    $data = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, $json_string);
 
     /* @todo decouple from POD. */
     $resources = $data->{"$.distribution"};;
@@ -195,13 +195,13 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Get rootedJsonDataWrapper.
+   * Get RootedJsonDataFactory.
    *
-   * @return \Drupal\metastore\RootedJsonDataWrapper
+   * @return \Drupal\metastore\RootedJsonDataFactory
    *   rootedJsonDataWrapper.
    */
-  public function getRootedJsonDataWrapper() {
-    return $this->rootedJsonDataWrapper;
+  public function getRootedJsonDataFactory() {
+    return $this->rootedJsonDataFactory;
   }
 
   /**
@@ -321,7 +321,7 @@ class Service implements ContainerInjectionInterface {
           json_decode($json_data)
         );
 
-        $new = $this->rootedJsonDataWrapper->createRootedJsonData($schema_id, json_encode($patched));
+        $new = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, json_encode($patched));
 //        $storage->store("$new", "{$identifier}");
         $storage->store($new, "{$identifier}");
         return $identifier;

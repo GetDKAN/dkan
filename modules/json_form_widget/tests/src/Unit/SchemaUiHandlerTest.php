@@ -25,9 +25,9 @@ use MockChain\Options;
 class SchemaUiHandlerTest extends TestCase {
 
   /**
-   * The RootedJsonDataWrapper class used for testing.
+   * The RootedJsonDataFactory class used for testing.
    *
-   * @var \Drupal\metastore\RootedJsonDataWrapper|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\RootedJsonDataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $rootedJsonDataFactory;
 

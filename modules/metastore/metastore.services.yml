@@ -52,6 +52,6 @@ services:
       - '@database'
 
   dkan.metastore.rooted_json_data_wrapper:
-    class: \Drupal\metastore\RootedJsonDataWrapper
+    class: \Drupal\metastore\RootedJsonDataFactory
     arguments:
       - '@dkan.metastore.schema_retriever'
