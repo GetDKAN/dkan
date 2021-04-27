@@ -75,7 +75,7 @@ class ServiceTest extends TestCase {
   }
 
   public function testGetAllException() {
-    $data = "blah";
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
 
     $event = new Event($data);
     $event->setException(new \Exception("blah"));
@@ -88,8 +88,8 @@ class ServiceTest extends TestCase {
       ->add($event2);
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", [json_encode($data)])
+      ->add(Data::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', $data)
       ->add(ContainerAwareEventDispatcher::class, 'dispatch', $sequence);
 
     \Drupal::setContainer($container->getMock());
