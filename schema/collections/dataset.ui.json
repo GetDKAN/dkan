@@ -142,16 +142,6 @@
       }
     }
   },
-  "theme": {
-    "ui:options": {
-      "title": "Topics"
-    },
-    "items": {
-      "ui:options": {
-        "title": "Topic"
-      }
-    }
-  },
   "description": {
     "ui:options": {
       "widget": "textarea",
@@ -183,11 +173,13 @@
   },
   "theme": {
     "ui:options": {
+      "title": "Topics",
       "hideActions": "true",
       "child": "theme"
     },
     "items": {
       "ui:options": {
+        "title": "Topic",
         "widget": "list",
         "type": "autocomplete",
         "allowCreate": "true",
