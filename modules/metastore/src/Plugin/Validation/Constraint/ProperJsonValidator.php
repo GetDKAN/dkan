@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Plugin\Validation\Constraint;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\RootedJsonDataWrapper;
+use Drupal\metastore\RootedJsonDataFactory;
 use InvalidArgumentException;
 use OpisErrorPresenter\Implementation\MessageFormatterFactory;
 use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
@@ -19,7 +19,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 class ProperJsonValidator extends ConstraintValidator implements ContainerInjectionInterface {
 
   /**
-   * @var \Drupal\metastore\RootedJsonDataWrapper
+   * @var \Drupal\metastore\RootedJsonDataFactory
    */
   protected $rootedJsonDataFactory;
 
@@ -31,10 +31,10 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   /**
    * ProperJsonValidator constructor.
    *
-   * @param \Drupal\metastore\RootedJsonDataWrapper $rooted_json_data_factory
+   * @param \Drupal\metastore\RootedJsonDataFactory $rooted_json_data_factory
    *   dkan.metastore.rooted_json_data_wrapper service.
    */
-  public function __construct(RootedJsonDataWrapper $rooted_json_data_factory) {
+  public function __construct(RootedJsonDataFactory $rooted_json_data_factory) {
     $this->rootedJsonDataFactory = $rooted_json_data_factory;
     $this->presenter = new ValidationErrorPresenter(
       new PresentedValidationErrorFactory(

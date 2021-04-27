@@ -46,7 +46,7 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
 
     /** @var \Drupal\metastore\Service $metastore */
     $metastore = \Drupal::service('dkan.metastore.service');
-    $dataset = $metastore->getRootedJsonDataWrapper()->createRootedJsonData('dataset', $dataset);
+    $dataset = $metastore->getRootedJsonDataFactory()->createRootedJsonData('dataset', $dataset);
     $metastore->post('dataset', $dataset);
 
     $webService = WebServiceApiDocs::create(\Drupal::getContainer());

@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Plugin\Validation\Constraint;
 
 use Drupal\metastore\Plugin\Validation\Constraint\ProperJsonValidator;
-use Drupal\metastore\RootedJsonDataWrapper;
+use Drupal\metastore\RootedJsonDataFactory;
 use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Count;
@@ -23,9 +23,9 @@ class ProperJsonValidatorTest extends TestCase {
   protected $schemaRetriever;
 
   /**
-   * The RootedJsonDataWrapper class used for testing.
+   * The RootedJsonDataFactory class used for testing.
    *
-   * @var \Drupal\metastore\RootedJsonDataWrapper|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\RootedJsonDataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $rootedJsonDataFactory;
 
@@ -51,7 +51,7 @@ class ProperJsonValidatorTest extends TestCase {
       ->setMethods(["retrieve"])
       ->getMock();
 
-    $this->rootedJsonDataFactory = $this->getMockBuilder(RootedJsonDataWrapper::class)
+    $this->rootedJsonDataFactory = $this->getMockBuilder(RootedJsonDataFactory::class)
       ->disableOriginalConstructor()
       ->setMethods(["getSchemaRetriever"])
       ->getMock();
