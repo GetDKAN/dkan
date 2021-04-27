@@ -240,7 +240,7 @@ class QueryControllerTest extends TestCase {
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
-      ->add("datastore.service", Service::class)
+      ->add("dkan.datastore.service", Service::class)
       ->add("request_stack", RequestStack::class)
       ->index(0);
 

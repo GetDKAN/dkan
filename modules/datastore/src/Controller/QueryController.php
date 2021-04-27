@@ -47,7 +47,7 @@ class QueryController implements ContainerInjectionInterface {
    * Create controller object from dependency injection container.
    */
   public static function create(ContainerInterface $container) {
-    $datastoreService = $container->get('datastore.service');
+    $datastoreService = $container->get('dkan.datastore.service');
     $requestStack = $container->get('request_stack');
     return new QueryController($datastoreService, $requestStack);
   }
