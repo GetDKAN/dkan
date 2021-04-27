@@ -3,6 +3,7 @@
 namespace Drupal\json_form_widget;
 
 use Drupal\Component\Uuid\Php;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -96,6 +97,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       'upload_or_link' => 'handleUploadOrLinkElement',
       'list' => 'handleListElement',
       'date' => 'handleDateElement',
+      'datetime' => 'handleDatetimeElement',
     ];
   }
 
@@ -356,6 +358,28 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleDateElement($spec, array $element) {
     $element['#type'] = 'date';
+    $format = $spec->format ? $spec->format : 'Y-m-d';
+    $date = new DrupalDateTime($element['#default_value']);
+    $element['#default_value'] = $date->format($format);
+    $element['#date_date_format'] = $format;
+    return $element;
+  }
+
+  /**
+   * Helper function for getting a datetime element.
+   *
+   * @param mixed $spec
+   *   Element to convert into hidden.
+   * @param array $element
+   *   Object with spec for UI options.
+   *
+   * @return array
+   *   The element configured as date.
+   */
+  public function handleDatetimeElement($spec, array $element) {
+    $element['#type'] = 'datetime';
+    $date = new DrupalDateTime($element['#default_value']);
+    $element['#default_value'] = $date;
     return $element;
   }
 

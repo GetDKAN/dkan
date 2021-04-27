@@ -2,6 +2,8 @@
 
 namespace Drupal\json_form_widget;
 
+use Drupal\Core\Datetime\DrupalDateTime;
+
 /**
  * Class ValueHandler.
  */
@@ -33,6 +35,10 @@ class ValueHandler {
    * Flatten values for string properties.
    */
   public function handleStringValues($formValues, $property) {
+    // Handle datetime elements.
+    if ($formValues[$property] instanceof DrupalDateTime) {
+      return $formValues[$property]->__toString();
+    }
     // Handle select_or_other_select.
     if (isset($formValues[$property]['select'])) {
       return $formValues[$property][0];
