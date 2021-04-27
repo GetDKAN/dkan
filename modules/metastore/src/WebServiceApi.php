@@ -136,7 +136,6 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Private.
    */
   private function swapReferences($object) {
-    // TODO: use RootedJsonData instead.
     $array = (array) $object;
     foreach ($array as $property => $value) {
       if (substr_count($property, "%Ref:") > 0) {
