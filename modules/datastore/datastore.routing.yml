@@ -90,6 +90,17 @@ datastore.1.query.download.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
+datastore.1.query.download.post:
+  path: '/api/1/datastore/query/download'
+  methods: [POST]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::query'
+    stream: true
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 datastore.1.query.id.post:
   path: '/api/1/datastore/query/{identifier}'
   methods: [POST]
@@ -113,6 +124,17 @@ datastore.1.query.id.get:
 datastore.1.query.id.download.get:
   path: '/api/1/datastore/query/{identifier}/download'
   methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
+    stream: true
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.id.download.post:
+  path: '/api/1/datastore/query/{identifier}/download'
+  methods: [POST]
   defaults:
     _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
     stream: true
