@@ -36,7 +36,7 @@ class ValueHandler {
    */
   public function handleStringValues($formValues, $property) {
     // Handle datetime elements.
-    if ($formValues[$property] instanceof DrupalDateTime) {
+    if (isset($formValues[$property]) && $formValues[$property] instanceof DrupalDateTime) {
       return $formValues[$property]->__toString();
     }
     // Handle select_or_other_select.

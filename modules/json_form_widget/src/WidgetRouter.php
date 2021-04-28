@@ -358,7 +358,7 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleDateElement($spec, array $element) {
     $element['#type'] = 'date';
-    $format = $spec->format ? $spec->format : 'Y-m-d';
+    $format = isset($spec->format) ? $spec->format : 'Y-m-d';
     if (isset($element['#default_value'])) {
       $date = new DrupalDateTime($element['#default_value']);
       $element['#default_value'] = $date->format($format);

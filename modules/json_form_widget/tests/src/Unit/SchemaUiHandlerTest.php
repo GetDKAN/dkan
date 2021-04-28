@@ -96,6 +96,7 @@ class SchemaUiHandlerTest extends TestCase {
         "#attributes" => [
           "placeholder" => "YYYY-MM-DD",
         ],
+        '#date_date_format' => 'Y-m-d',
       ],
       "disabled" => [
         "#type" => "textfield",
