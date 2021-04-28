@@ -142,16 +142,6 @@
       }
     }
   },
-  "theme": {
-    "ui:options": {
-      "title": "Topics"
-    },
-    "items": {
-      "ui:options": {
-        "title": "Topic"
-      }
-    }
-  },
   "description": {
     "ui:options": {
       "widget": "textarea",
@@ -167,12 +157,13 @@
   },
   "issued": {
     "ui:options": {
-      "widget": "date"
+      "widget": "flexible_datetime"
     }
   },
   "modified": {
     "ui:options": {
-      "widget": "date",
+      "widget": "flexible_datetime",
+      "timeRequired": false,
       "placeholder": "YYYY-MM-DD"
     }
   },
@@ -183,11 +174,13 @@
   },
   "theme": {
     "ui:options": {
+      "title": "Topics",
       "hideActions": "true",
       "child": "theme"
     },
     "items": {
       "ui:options": {
+        "title": "Topic",
         "widget": "list",
         "type": "autocomplete",
         "allowCreate": "true",

@@ -2,8 +2,14 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Language\LanguageDefault;
+use Drupal\Core\Language\LanguageManager;
 use PHPUnit\Framework\TestCase;
 use Drupal\json_form_widget\ValueHandler;
+use MockChain\Chain;
+use MockChain\Options;
 
 /**
  * Test class for ValueHandlerTest.
@@ -125,6 +131,32 @@ class ValueHandlerTest extends TestCase {
     $result = $value_handler->handleObjectValues(NULL, "publisher", $schema);
     $this->assertEquals($result, FALSE);
 
+  }
+
+  /**
+   * Test values for datetime elements.
+   */
+  public function testDatetimeValues() {
+    $language_manager = new LanguageManager(new LanguageDefault(['en']));
+    $options = (new Options())
+      ->add('language_manager', $language_manager)
+      ->index(0);
+
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options);
+
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $value_handler = new ValueHandler();
+
+    // Test flexible_datetime.
+    $date = new DrupalDateTime('2020-05-11T15:06:39.000Z');
+    $formValues = [
+      'modified' => $date,
+    ];
+    $expected = $date->__toString();
+    $result = $value_handler->handleStringValues($formValues, 'modified');
+    $this->assertEquals($result, $expected);
   }
 
   /**
