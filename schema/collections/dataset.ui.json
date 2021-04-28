@@ -157,12 +157,13 @@
   },
   "issued": {
     "ui:options": {
-      "widget": "date"
+      "widget": "flexible_datetime"
     }
   },
   "modified": {
     "ui:options": {
-      "widget": "date",
+      "widget": "flexible_datetime",
+      "timeRequired": false,
       "placeholder": "YYYY-MM-DD"
     }
   },
