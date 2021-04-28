@@ -395,29 +395,28 @@ class Service implements ContainerInjectionInterface {
    */
   private function objectIsEquivalent(string $schema_id, string $identifier, RootedJsonData $metadata) {
     $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
-    $existing = json_decode($existingMetadata);
+    $existing = $this->getRootedJsonDataFactory()->createRootedJsonData($schema_id, $existingMetadata);
     $existing = self::removeReferences($existing);
-    $new = json_decode($metadata);
-    return $new == $existing;
+    return $metadata->get('$') == $existing->get('$');
   }
 
   /**
    * Private.
    */
-  public static function removeReferences($object, $prefix = "%") {
-    $array = (array) $object;
+  public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData{
+    $array = $object->get('$');
+
     foreach ($array as $property => $value) {
       if (substr_count($property, $prefix) > 0) {
         unset($array[$property]);
       }
     }
 
-    $object = (object) $array;
-
-    if (isset($object->distribution[0]->{"%Ref:downloadURL"})) {
-      unset($object->distribution[0]->{"%Ref:downloadURL"});
+    if (isset($array['distribution'][0]['%Ref:downloadURL'])) {
+      unset($array['distribution'][0]['%Ref:downloadURL']);
     }
 
+    $object->set('$', $array);
     return $object;
   }
 

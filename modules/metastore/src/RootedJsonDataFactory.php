@@ -49,9 +49,9 @@ class RootedJsonDataFactory implements ContainerInjectionInterface {
   /**
    * Converts Json string into RootedJsonData object.
    *
-   * @param \Drupal\metastore\string $schema_id
+   * @param string|NULL $schema_id
    *   The {schema_id} slug from the HTTP request.
-   * @param \Drupal\metastore\string $json_string
+   * @param string $json_string
    *   Json string.
    *
    * @return \RootedData\RootedJsonData
@@ -59,8 +59,8 @@ class RootedJsonDataFactory implements ContainerInjectionInterface {
    *
    * @throws \JsonPath\InvalidJsonException
    */
-  public function createRootedJsonData(string $schema_id, string $json_string): RootedJsonData {
-    $schema = $this->getSchemaRetriever()->retrieve($schema_id);
+  public function createRootedJsonData(string $schema_id = NULL, string $json_string): RootedJsonData {
+    $schema = !empty($schema_id) ? $this->getSchemaRetriever()->retrieve($schema_id) : '{}';
     return new RootedJsonData($json_string, $schema);
   }
 
