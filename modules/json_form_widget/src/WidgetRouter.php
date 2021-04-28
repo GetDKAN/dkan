@@ -383,9 +383,9 @@ class WidgetRouter implements ContainerInjectionInterface {
     if (isset($element['#default_value'])) {
       $date = new DrupalDateTime($element['#default_value']);
       $element['#default_value'] = $date;
-      if (isset($spec->timeRequired) && is_bool($spec->timeRequired)) {
-        $element['#date_time_required'] = $spec->timeRequired;
-      }
+    }
+    if (isset($spec->timeRequired) && is_bool($spec->timeRequired)) {
+      $element['#date_time_required'] = $spec->timeRequired;
     }
     return $element;
   }
