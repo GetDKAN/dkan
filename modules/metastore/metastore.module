@@ -114,9 +114,10 @@ function metastore_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form
     if (empty($json)) {
       return;
     }
-    $object = json_decode($json);
+    // TODO: use an actual schema id.
+    $object = \Drupal::service('dkan.metastore.rooted_json_data_wrapper')->createRootedJsonData(NULL, $json);
     $object = \Drupal\metastore\Service::removeReferences($object);
-    $form['field_json_metadata']['widget'][0]['value']['#default_value'] = json_encode($object);
+    $form['field_json_metadata']['widget'][0]['value']['#default_value'] = $object->pretty();
   }
 }
 
@@ -126,8 +127,9 @@ function metastore_entity_view_alter(array &$build, Drupal\Core\Entity\EntityInt
     if (empty($json)) {
       return;
     }
-    $object = json_decode($json);
+    // TODO: use an actual schema id.
+    $object = \Drupal::service('dkan.metastore.rooted_json_data_wrapper')->createRootedJsonData(NULL, $json);
     $object = \Drupal\metastore\Service::removeReferences($object);
-    $build['field_json_metadata'][0]['#context']['value'] = json_encode($object);
+    $build['field_json_metadata'][0]['#context']['value'] = $object->pretty();
   }
 }

@@ -173,14 +173,19 @@ class ServiceTest extends TestCase {
    *
    */
   public function testPut() {
+    $existing = '{"identifier":"1","title":"Foo"}';
+    $updating = '{"identifier":"1","title":"Bar"}';
+
+    $data_existing = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", "1")
-      ->add(Data::class, "store", "1");
+      ->add(Data::class, "retrieve", $existing)
+      ->add(Data::class, "store", "1")
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', $data_existing);
 
     $service = Service::create($container->getMock());
 
-    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['foo' => 'bar']));
-    $info = $service->put("dataset", "1", $data);
+    $data_updating = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $updating);
+    $info = $service->put("dataset", "1", $data_updating);
 
     $this->assertEquals("1", $info['identifier']);
   }
@@ -224,13 +229,14 @@ class ServiceTest extends TestCase {
   public function testPutObjectUnchangedException() {
     $existing = '{"identifier":"1","title":"Foo"}';
 
+    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", $existing);
+      ->add(Data::class, "retrieve", $existing)
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', $data);
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
-    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $existing);
     $service->put("dataset", "1", $data);
   }
 
@@ -246,14 +252,16 @@ class ServiceTest extends TestCase {
       }
 EOF;
 
+    $data_existing = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", $existing);
+      ->add(Data::class, "retrieve", $existing)
+      ->add(RootedJsonDataFactory::class, 'createRootedJsonData', $data_existing);
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
-    $data = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $updating);
-    $service->put("dataset", "1", $data);
+    $data_updating = $this->rootedJsonDataFactory->createRootedJsonData('dataset', $updating);
+    $service->put("dataset", "1", $data_updating);
   }
 
   /**
