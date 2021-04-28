@@ -97,7 +97,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       'upload_or_link' => 'handleUploadOrLinkElement',
       'list' => 'handleListElement',
       'date' => 'handleDateElement',
-      'datetime' => 'handleDatetimeElement',
+      'flexible_datetime' => 'handleDatetimeElement',
     ];
   }
 
@@ -359,8 +359,10 @@ class WidgetRouter implements ContainerInjectionInterface {
   public function handleDateElement($spec, array $element) {
     $element['#type'] = 'date';
     $format = $spec->format ? $spec->format : 'Y-m-d';
-    $date = new DrupalDateTime($element['#default_value']);
-    $element['#default_value'] = $date->format($format);
+    if (isset($element['#default_value'])) {
+      $date = new DrupalDateTime($element['#default_value']);
+      $element['#default_value'] = $date->format($format);
+    }
     $element['#date_date_format'] = $format;
     return $element;
   }
@@ -377,9 +379,14 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   The element configured as date.
    */
   public function handleDatetimeElement($spec, array $element) {
-    $element['#type'] = 'datetime';
-    $date = new DrupalDateTime($element['#default_value']);
-    $element['#default_value'] = $date;
+    $element['#type'] = 'flexible_datetime';
+    if (isset($element['#default_value'])) {
+      $date = new DrupalDateTime($element['#default_value']);
+      $element['#default_value'] = $date;
+      if (isset($spec->timeRequired) && is_bool($spec->timeRequired)) {
+        $element['#date_time_required'] = $spec->timeRequired;
+      }
+    }
     return $element;
   }
 
