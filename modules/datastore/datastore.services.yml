@@ -14,7 +14,6 @@ services:
       - '@dkan.common.file_fetcher'
       - '@dkan.common.drupal_files'
       - '@dkan.common.job_store'
-      - '@event_dispatcher'
 
   dkan.datastore.service.resource_purger:
     class: \Drupal\datastore\Service\ResourcePurger

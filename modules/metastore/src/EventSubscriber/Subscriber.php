@@ -7,9 +7,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 
 /**
- * Class MapperCleanup.
+ * Class Subscriber.
  */
-class MapperCleanup implements EventSubscriberInterface {
+class Subscriber implements EventSubscriberInterface {
 
   /**
    * Inherited.

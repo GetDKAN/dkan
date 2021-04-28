@@ -57,7 +57,7 @@ services:
     arguments:
       - '@database'
 
-  dkan.metastore.event_subscriber.mapper_cleanup:
-    class: \Drupal\metastore\EventSubscriber\MapperCleanup
+  dkan.metastore.event_subscriber:
+    class: \Drupal\metastore\EventSubscriber\Subscriber
     tags:
       - { name: event_subscriber }
