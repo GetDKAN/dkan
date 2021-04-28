@@ -57,11 +57,6 @@ services:
     arguments:
       - '@database'
 
-  dkan.metastore.event_subscriber.remove_file:
-    class: \Drupal\metastore\EventSubscriber\RemoveFile
-    tags:
-      - { name: event_subscriber }
-
   dkan.metastore.event_subscriber.mapper_cleanup:
     class: \Drupal\metastore\EventSubscriber\MapperCleanup
     tags:

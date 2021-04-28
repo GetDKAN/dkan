@@ -21,7 +21,7 @@ class RemoveDatastore implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events = [];
-    $events[ResourceMapper::EVENT_DATASTORE_DROP][] = ['drop'];
+    $events[ResourceMapper::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE][] = ['drop'];
     return $events;
   }
 
