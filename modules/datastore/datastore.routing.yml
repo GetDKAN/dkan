@@ -12,7 +12,7 @@ datastore.1.imports:
   path: '/api/1/datastore/imports'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::list'
+    _controller: '\Drupal\datastore\Controller\ImportController::list'
   requirements:
     _permission: 'datastore_api_import'
   options:
@@ -22,7 +22,7 @@ datastore.1.imports.post:
   path: '/api/1/datastore/imports'
   methods: [POST]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::import'
+    _controller: '\Drupal\datastore\Controller\ImportController::import'
     deferred: false
   requirements:
     _permission: 'datastore_api_import'
@@ -33,7 +33,7 @@ datastore.1.imports.id:
   path: '/api/1/datastore/imports/{identifier}'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::summary'
+    _controller: '\Drupal\datastore\Controller\ImportController::summary'
   requirements:
     _permission: 'access content'
   options:
@@ -43,7 +43,7 @@ datastore.1.imports.delete:
   path: '/api/1/datastore/imports'
   methods: [DELETE]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::deleteMultiple'
+    _controller: '\Drupal\datastore\Controller\ImportController::deleteMultiple'
   requirements:
     _permission: 'datastore_api_drop'
   options:
@@ -53,7 +53,7 @@ datastore.1.imports.id.delete:
   path: '/api/1/datastore/imports/{identifier}'
   methods: [DELETE]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::delete'
+    _controller: '\Drupal\datastore\Controller\ImportController::delete'
   requirements:
     _permission: 'datastore_api_drop'
   options:
@@ -63,7 +63,7 @@ datastore.1.query.post:
   path: '/api/1/datastore/query'
   methods: [POST]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::query'
+    _controller: '\Drupal\datastore\Controller\QueryController::query'
   requirements:
     _permission: 'access content'
   options:
@@ -73,7 +73,18 @@ datastore.1.query.get:
   path: '/api/1/datastore/query'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::query'
+    _controller: '\Drupal\datastore\Controller\QueryController::query'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.download.get:
+  path: '/api/1/datastore/query/download'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::query'
+    stream: true
   requirements:
     _permission: 'access content'
   options:
@@ -83,7 +94,7 @@ datastore.1.query.id.post:
   path: '/api/1/datastore/query/{identifier}'
   methods: [POST]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::queryResource'
+    _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
   requirements:
     _permission: 'access content'
   options:
@@ -93,7 +104,18 @@ datastore.1.query.id.get:
   path: '/api/1/datastore/query/{identifier}'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::queryResource'
+    _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.id.download.get:
+  path: '/api/1/datastore/query/{identifier}/download'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
+    stream: true
   requirements:
     _permission: 'access content'
   options:
@@ -103,7 +125,7 @@ datastore.1.query.schema.get:
   path: '/api/1/datastore/query/schema'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\datastore\WebServiceApi::querySchema'
+    _controller: '\Drupal\datastore\Controller\QueryController::querySchema'
   requirements:
     _permission: 'access content'
   options:
