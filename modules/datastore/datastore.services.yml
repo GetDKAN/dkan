@@ -51,11 +51,6 @@ services:
     tags:
       - { name: event_subscriber }
 
-  dkan.datastore.event_remove_datastore:
-    class: \Drupal\datastore\EventSubscriber\RemoveDatastore
-    tags:
-      - { name: event_subscriber }
-
   dkan.datastore.import_info:
     class: \Drupal\datastore\Service\Info\ImportInfo
     arguments:
