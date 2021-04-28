@@ -137,7 +137,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    * Helper function to add actions to array.
    */
   private function addArrayActions($amount, $field_name) {
-    $actions['#type'] = ['actions'];
+    $actions['#type'] = 'actions';
     $title = $this->t('Add one more');
     $actions['actions']['add'] = $this->getAction($title, 'json_form_widget_add_one', $field_name);
 
