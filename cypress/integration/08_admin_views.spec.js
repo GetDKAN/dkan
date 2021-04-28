@@ -25,7 +25,7 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST dataset title', { force: true })
         cy.get('#edit-field-json-metadata-0-value-description').type('DKANTEST dataset description.', { force: true })
         cy.get('#edit-field-json-metadata-0-value-accesslevel').select('public', { force: true })
-        cy.get('#edit-field-json-metadata-0-value-modified').type('2020-02-02', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-modified-date').type('2020-02-02', { force: true })
         // Fill select2 field for publisher.
         cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
         .find('.select2-selection')
