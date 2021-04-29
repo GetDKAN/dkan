@@ -56,7 +56,7 @@ class RequestParamNormalizer {
         return $request->getContent();
 
       case "GET":
-        return json_encode($request->query->all());
+        return json_encode((object) $request->query->all());
 
       default:
         throw new \UnexpectedValueException("Only POST, PUT, PATCH and GET requests can be normalized.");

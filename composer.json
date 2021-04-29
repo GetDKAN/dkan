@@ -26,6 +26,7 @@
         "drupal/select_or_other": "1.x-dev",
         "drupal/select2": "1.x-dev",
         "npm-asset/select2": "^4.0",
+        "ilbee/csv-response": "^1.0",
         "oomphinc/composer-installers-extender": "^2.0"
     },
     "require-dev": {

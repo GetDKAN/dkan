@@ -250,7 +250,7 @@ class Service implements ContainerInjectionInterface {
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DKAN Datastore Query API object.
    *
-   * @return object
+   * @return \RootedData\RootedJsonData
    *   Array of row/record objects.
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {
