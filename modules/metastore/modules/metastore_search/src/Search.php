@@ -126,12 +126,8 @@ class Search implements ContainerInjectionInterface {
    *   Array of facets, each containing type, name, total.
    */
   public function facets(array $params) : array {
-
-    $facetIrrelevantProperties = ['page-size', 'page'];
-
-    $params = array_filter($params, function ($param, $key) use ($facetIrrelevantProperties) {
-      return !in_array($key, $facetIrrelevantProperties);
-    }, ARRAY_FILTER_USE_BOTH);
+    $params['page-size'] = PHP_INT_MAX;
+    $params['page'] = 1;
 
     list($query, $activeConditions) = $this->getQuery($params, $this->index, $this->queryHelper);
 
