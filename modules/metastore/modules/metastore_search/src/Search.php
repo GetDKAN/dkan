@@ -129,7 +129,7 @@ class Search implements ContainerInjectionInterface {
 
     $facetIrrelevantProperties = ['page-size', 'page'];
 
-    $params = array_filter($params, function($param, $key) use ($facetIrrelevantProperties) {
+    $params = array_filter($params, function ($param, $key) use ($facetIrrelevantProperties) {
       return !in_array($key, $facetIrrelevantProperties);
     }, ARRAY_FILTER_USE_BOTH);
 
