@@ -9,7 +9,7 @@ use Drupal\datastore\EventSubscriber\Subscriber;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Events\DatasetUpdate;
-use Drupal\metastore\Events\Registration;
+use Drupal\common\Events\Event;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ class SubscriberTest extends TestCase {
   public function test() {
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
-    $event = new Registration($resource);
+    $event = new Event($resource);
 
     $chain = $this->getContainerChain();
 
@@ -41,10 +41,13 @@ class SubscriberTest extends TestCase {
     $this->assertEquals(md5($url), $chain->getStoredInput('import')[0]);
   }
 
+  /**
+   * Test Registration.
+   */
   public function testOnRegistrationException() {
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
-    $event = new Registration($resource);
+    $event = new Event($resource);
 
     $chain = $this->getContainerChain();
     $chain->add(Service::class, 'import', new \Exception());
@@ -56,8 +59,8 @@ class SubscriberTest extends TestCase {
     $subscriber = new Subscriber();
     $subscriber->onRegistration($event);
 
-    // Doing it all for the coverage :(
-    $this->assertTrue(true);
+    // Doing it all for the coverage.
+    $this->assertTrue(TRUE);
   }
 
   /**
@@ -79,6 +82,11 @@ class SubscriberTest extends TestCase {
    * Test ResourcePurger-related parts.
    */
   public function testResourcePurging() {
+    $mockedNode = (new Chain($this))
+      ->add(ContentEntityInterface::class, 'uuid', '123')
+      ->getMock();
+
+    $event = new Event($mockedNode);
 
     $mockDatasetPublication = (new Chain($this))
       ->add(DatasetUpdate::class, 'getNode', ContentEntityInterface::class)
@@ -96,8 +104,31 @@ class SubscriberTest extends TestCase {
     \Drupal::setContainer($containerChain->getMock());
 
     $subscriber = new Subscriber();
-    $voidReturn = $subscriber->purgeResources($mockDatasetPublication);
+    $voidReturn = $subscriber->purgeResources($event);
     $this->assertNull($voidReturn);
+  }
+
+  /**
+   * Test drop.
+   */
+  public function testDropException() {
+    $resource = (object) [
+      'identifier' => '123',
+      'version' => 123,
+      'perspective' => 'source',
+    ];
+    $event = new Event($resource);
+
+    $chain = $this->getContainerChain();
+    $chain->add(Resource::class, 'getUniqueIdentifier');
+
+    \Drupal::setContainer($chain->getMock());
+
+    $subscriber = new Subscriber();
+    $subscriber->drop($event);
+
+    // Doing it all for the coverage.
+    $this->assertTrue(TRUE);
   }
 
 }

@@ -19,6 +19,7 @@ class Subscriber implements EventSubscriberInterface {
   /**
    * Inherited.
    *
+   * @codeCoverageIgnore
    * @inheritdoc
    */
   public static function getSubscribedEvents() {
