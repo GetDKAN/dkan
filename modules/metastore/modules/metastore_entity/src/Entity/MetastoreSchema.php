@@ -3,6 +3,7 @@
 namespace Drupal\metastore_entity\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
+use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
  * Defines the Metastore schema entity.
@@ -148,6 +149,28 @@ class MetastoreSchema extends ConfigEntityBundleBase implements MetastoreSchemaI
    */
   public function hasBehavior(int $behavior): bool {
     return in_array($behavior, $this->behaviors);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+    // Add the DKAN workflow if a new schema.
+    if (!$update) {
+      $this->addDkanWorkflow();
+    }
+  }
+
+  /**
+   * Add the DKAN Publishing workflow to new schemas.
+   *
+   * @todo Make this more dynamic, workflow optional.
+   */
+  private function addDkanWorkflow() {
+    $workflow = $this->entityTypeManager()->getStorage('workflow')->load('dkan_publishing');
+    $workflow->getTypePlugin()->addEntityTypeAndBundle('metastore_item', $this->id());
+    $workflow->save();
   }
 
 }
