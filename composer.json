@@ -9,6 +9,7 @@
         "drupal/config_update": "^1.6",
         "drupal/select_or_other": "1.x-dev",
         "drupal/select2": "1.x-dev",
+        "drupal/ace_editor": "^1.3",
         "npm-asset/select2": "^4.0",
         "cweagans/composer-patches": "^1.7",
         "drupal/search_api": "^1.15",
