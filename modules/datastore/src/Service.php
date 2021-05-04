@@ -202,7 +202,7 @@ class Service implements ContainerInjectionInterface {
    *   The importer list object.
    */
   public function list() {
-    /** @var \Drupal\datastore\Service\Info\ImportInfoList $service */
+    /* @var \Drupal\datastore\Service\Info\ImportInfoList $service */
     $service = \Drupal::service('dkan.datastore.import_info_list');
     return $service->buildList();
   }
@@ -250,7 +250,7 @@ class Service implements ContainerInjectionInterface {
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DKAN Datastore Query API object.
    *
-   * @return object
+   * @return \RootedData\RootedJsonData
    *   Array of row/record objects.
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {

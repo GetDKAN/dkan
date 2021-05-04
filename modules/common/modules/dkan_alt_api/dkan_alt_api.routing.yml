@@ -16,7 +16,7 @@ dkan_alt_api.1.metastore.schemas.id.items.id:
   requirements:
     _permission: 'get data through the alternate metastore api'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan_alt_api.get.api:
   path: '/alt/api/1/datastore/sql'
@@ -26,7 +26,7 @@ dkan_alt_api.get.api:
   requirements:
     _permission: 'query the alternate sql endpoint api'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan_alt_api.post.api:
   path: '/alt/api/1/datastore/sql'
@@ -36,4 +36,4 @@ dkan_alt_api.post.api:
   requirements:
     _permission: 'query the alternate sql endpoint api'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']

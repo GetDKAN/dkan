@@ -317,11 +317,11 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Resource version.
    */
   private function delete(string $id, string $version) {
-    if ($this->getPurgeFileSetting()) {
-      $this->removeResourceLocalizer($id, $version);
-    }
     if ($this->getPurgeTableSetting()) {
       $this->removeDatastoreStorage($id, $version);
+    }
+    if ($this->getPurgeFileSetting()) {
+      $this->removeResourceLocalizer($id, $version);
     }
   }
 

@@ -1,0 +1,27 @@
+{
+    "conditions": [
+        {
+            "property": "state",
+            "value": "AL",
+            "operator": "="
+        },
+        {
+            "property": "record_number",
+            "value": "%1%",
+            "operator": "LIKE"
+        }
+    ],
+    "sort": [
+        {
+            "property": "record_number",
+            "order": "asc"
+        },
+        {
+            "property": "state",
+            "order": "desc"
+        }
+    ],
+    "limit": 50,
+    "offset": 25,
+    "results": true
+}

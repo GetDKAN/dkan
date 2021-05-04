@@ -43,7 +43,6 @@ class UploadOrLink extends ManagedFile {
       '#pre_render' => [[$class, 'preRenderManagedFile']],
       '#theme' => 'file_managed_file',
       '#theme_wrappers' => ['form_element'],
-      '#progress_indicator' => 'throbber',
       '#progress_message' => NULL,
       '#upload_validators' => [],
       '#upload_location' => NULL,
@@ -62,6 +61,7 @@ class UploadOrLink extends ManagedFile {
    */
   private static function checkIfLocalFile($url) {
     $filename = \Drupal::service('file_system')->basename($url);
+    $filename = urldecode($filename);
     $files = \Drupal::entityTypeManager()
       ->getStorage('file')
       ->loadByProperties(['filename' => $filename]);
@@ -272,7 +272,10 @@ class UploadOrLink extends ManagedFile {
       return '';
     }
 
-    if ($element['#value']['file_url_type'] == static::TYPE_UPLOAD || !empty($element['#value']['fids'])) {
+    if ((isset($element['#value']['file_url_type'])
+      && $element['#value']['file_url_type'] == static::TYPE_UPLOAD)
+      || !empty($element['#value']['fids'])
+    ) {
       return static::getLocalFileUrl($element);
     }
     elseif (!empty($element['#value']['file_url_remote'])) {
@@ -280,7 +283,7 @@ class UploadOrLink extends ManagedFile {
       return $uri;
     }
 
-    return $element['#uri'];
+    return isset($element['#uri']) ? $element['#uri'] : NULL;
   }
 
   /**

@@ -76,7 +76,7 @@ class ImportTest extends TestCase {
   private function getContainerChain($result) {
     $options = (new Options())
       ->add("logger.factory", LoggerChannelFactory::class)
-      ->add("datastore.service", Service::class)
+      ->add("dkan.datastore.service", Service::class)
       ->add('queue', QueueFactory::class)
       ->index(0);
 

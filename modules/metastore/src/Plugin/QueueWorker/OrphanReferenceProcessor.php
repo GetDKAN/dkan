@@ -74,7 +74,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     $metadataProperty = $data[0];
     $identifier = $data[1];
 
-    // @Todo: Search for uuid directly within the loadByProperties array.
+    // @todo Search for uuid directly within the loadByProperties array.
     // Search datasets using this uuid for this property id.
     $properties = [
       'type' => 'data',

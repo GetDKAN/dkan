@@ -45,7 +45,7 @@ class Data extends AbstractData {
     $raw = $this->data->getRawMetadata();
 
     if (is_object($raw)) {
-      $referencer = \Drupal::service("metastore.orphan_checker");
+      $referencer = \Drupal::service("dkan.metastore.orphan_checker");
       $referencer->processReferencesInDeletedDataset($raw);
     }
   }
@@ -57,7 +57,7 @@ class Data extends AbstractData {
     $metadata = $this->data->getMetadata();
 
     // Dereference dataset properties.
-    $dereferencer = \Drupal::service("metastore.dereferencer");
+    $dereferencer = \Drupal::service("dkan.metastore.dereferencer");
     $metadata = $dereferencer->dereference($metadata);
     $metadata = $this->addNodeModifiedDate($metadata);
 
@@ -80,7 +80,8 @@ class Data extends AbstractData {
 
     if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
       $resourceIdentifier = $downloadUrl;
-      $ref = NULL; $original = NULL;
+      $ref = NULL;
+      $original = NULL;
       [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
 
       $downloadUrl = isset($original) ? $original : "";
@@ -169,7 +170,7 @@ class Data extends AbstractData {
     $eventDispatcher->dispatch(self::EVENT_PRE_REFERENCE,
       new PreReference($this->data));
 
-    $referencer = \Drupal::service("metastore.referencer");
+    $referencer = \Drupal::service("dkan.metastore.referencer");
     $metadata = $referencer->reference($metadata);
 
     $this->data->setMetadata($metadata);

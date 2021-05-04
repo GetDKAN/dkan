@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore_search\Unit;
 
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
@@ -31,7 +32,7 @@ class SearchTest extends TestCase {
    * Test for missing search index.
    */
   public function testNoSearchIndex() {
-    $container = $this->getCommonMockChain()
+    $container = $this->getCommonMockChain($this)
       ->add(EntityStorageInterface::class, 'load', NULL);
 
     $this->expectExceptionMessage('An index named [dkan] does not exist.');
@@ -52,7 +53,11 @@ class SearchTest extends TestCase {
       ],
     ];
 
-    $service = Search::create($this->getCommonMockChain()->getMock());
+    $container = $this->getCommonMockChain($this)->getMock();
+
+    \Drupal::setContainer($container);
+
+    $service = Search::create($container);
 
     $this->assertEquals($expect, $service->search([
       'page' => 1,
@@ -62,6 +67,40 @@ class SearchTest extends TestCase {
       'sort' => 'description',
       'sort-order' => 'asc',
     ]));
+  }
+
+  public function testSearchParameterWithComma() {
+    $options = (new Options())
+      ->add('dkan.metastore.service', Metastore::class)
+      ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('search_api.query_helper', QueryHelperInterface::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, 'load', IndexInterface::class)
+      ->add(IndexInterface::class, 'getFields', ['description' => 'blah', 'publisher__name' => 'blah'])
+      ->add(IndexInterface::class, 'getFulltextFields', ['title'])
+
+      ->add(QueryHelperInterface::class, 'createQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', ResultSet::class)
+      ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
+      ->add(ConditionGroup::class, 'addCondition', null, 'condition_group');
+
+    \Drupal::setContainer($container->getMock());
+
+    $service = Search::create($container->getMock());
+
+    $service->search([
+      'publisher__name' => 'Normal Param, "Steve, and someone else"',
+    ]);
+
+    $this->assertEquals(
+      'Steve, and someone else',
+      $container->getStoredInput('condition_group')[1]
+    );
   }
 
   /**
@@ -82,7 +121,11 @@ class SearchTest extends TestCase {
     ],
     ];
 
-    $service = Search::create($this->getCommonMockChain()->getMock());
+    $container = $this->getCommonMockChain($this)->getMock();
+
+    \Drupal::setContainer($container);
+
+    $service = Search::create($container);
 
     $this->assertEquals($expect1, $service->facets([]));
 
@@ -97,26 +140,40 @@ class SearchTest extends TestCase {
   }
 
   /**
-   * Common mock chain.
+   *
    */
-  public function getCommonMockChain() {
-    $this->checkService('dkan.metastore.service', 'metastore');
+  public static function getCommonMockChain(TestCase $case, Options $services = NULL, $collection = NULL) {
+    if (!$services) {
+      $services = new Options();
+    }
 
-    $options = (new Options())
-      ->add('dkan.metastore.service', Metastore::class)
-      ->add('entity_type.manager', EntityTypeManager::class)
-      ->add('search_api.query_helper', QueryHelperInterface::class)
-      ->index(0);
+    $myServices = [
+      'dkan.metastore.service' => Metastore::class,
+      'entity_type.manager' => EntityTypeManager::class,
+      'search_api.query_helper' => QueryHelperInterface::class,
+      'event_dispatcher' => ContainerAwareEventDispatcher::class,
+    ];
 
-    $item = (new Chain($this))
+    foreach ($myServices as $serviceName => $class) {
+      $serviceClass = $services->return($serviceName);
+      if (!isset($serviceClass)) {
+        $services->add($serviceName, $class);
+      }
+    }
+
+    $services->index(0);
+
+    $item = (new Chain($case))
       ->add(Item::class, 'getId', 1)
       ->getMock();
 
-    $collection = (object) [
-      'title' => 'hello',
-      'description' => 'goodbye',
-      'publisher__name' => 'Steve',
-    ];
+    if (!isset($collection)) {
+      $collection = (object) [
+        'title' => 'hello',
+        'description' => 'goodbye',
+        'publisher__name' => 'Steve',
+      ];
+    }
 
     $facet = (object) ['data' => (object) ['name' => 'Steve']];
 
@@ -125,8 +182,8 @@ class SearchTest extends TestCase {
       ->add('theme', [])
       ->add('publisher', [$facet]);
 
-    return (new Chain($this))
-      ->add(Container::class, 'get', $options)
+    return (new Chain($case))
+      ->add(Container::class, 'get', $services)
       ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
       ->add(EntityStorageInterface::class, 'load', IndexInterface::class)
       ->add(IndexInterface::class, 'getFields', ['description' => 'blah', 'publisher__name' => 'blah'])
