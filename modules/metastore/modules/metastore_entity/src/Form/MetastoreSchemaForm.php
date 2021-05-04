@@ -127,6 +127,9 @@ class MetastoreSchemaForm extends EntityForm {
    *   Form array.
    */
   public function validateTitleSource($element, FormStateInterface $form_state, $form) {
+    if (!$form_state->getValue('title_source')) {
+      return TRUE;
+    }
     try {
       $schemaJson = new RootedJsonData($form_state->getValue('json_schema')['value']);
     }
