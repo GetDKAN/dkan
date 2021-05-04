@@ -73,10 +73,11 @@ class MetastoreEntityStorage extends AbstractEntityStorage {
    */
   public function getEntityIdFromUuid(string $uuid) : ?int {
 
-    $entity_ids = $this->entityStorage->getQuery()
+    $query = $this->entityStorage->getQuery()
       ->condition('uuid', $uuid)
-      ->condition('schema', $this->schemaId)
-      ->execute();
+      ->condition('schema', $this->bundle);
+
+    $entity_ids = $query->execute();
 
     return $entity_ids ? (int) reset($entity_ids) : NULL;
   }
