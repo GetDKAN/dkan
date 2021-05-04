@@ -1,5 +1,12 @@
+system.admin_dkan:
+  title: 'DKAN'
+  description: 'Administer DKAN catalog.'
+  route_name: entity.metastore_item.collection
+  parent: 'system.admin'
+  weight: 4
+
 dkan.common.admin_config:
   route_name: dkan.common.admin_config
-  title: DKAN
-  parent: system.admin_config
+  title: DKAN Settings
+  parent: system.admin_dkan
   description: Modify DKAN configuration.
