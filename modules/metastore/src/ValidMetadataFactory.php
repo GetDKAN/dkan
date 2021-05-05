@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Service.
  */
-class RootedJsonDataFactory implements ContainerInjectionInterface {
+class ValidMetadataFactory implements ContainerInjectionInterface {
 
   /**
    * Schema retriever.
@@ -30,7 +30,7 @@ class RootedJsonDataFactory implements ContainerInjectionInterface {
   }
 
   /**
-   * RootedJsonDataFactory constructor.
+   * ValidMetadataFactory constructor.
    *
    * @param \Drupal\metastore\SchemaRetriever $schemaRetriever
    *   dkan.metastore.schema_retriever service.
@@ -59,7 +59,7 @@ class RootedJsonDataFactory implements ContainerInjectionInterface {
    *
    * @throws \JsonPath\InvalidJsonException
    */
-  public function createRootedJsonData(string $schema_id = NULL, string $json_string): RootedJsonData {
+  public function get(string $schema_id = NULL, string $json_string): RootedJsonData {
     $schema = !empty($schema_id) ? $this->getSchemaRetriever()->retrieve($schema_id) : '{}';
     return new RootedJsonData($json_string, $schema);
   }

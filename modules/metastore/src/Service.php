@@ -47,9 +47,9 @@ class Service implements ContainerInjectionInterface {
   /**
    * RootedJsonData wrapper.
    *
-   * @var \Drupal\metastore\RootedJsonDataFactory
+   * @var \Drupal\metastore\ValidMetadataFactory
    */
-  private $rootedJsonDataFactory;
+  private $validMetadataFactory;
 
   /**
    * Inherited.
@@ -60,17 +60,17 @@ class Service implements ContainerInjectionInterface {
     return new Service(
       $container->get('dkan.metastore.schema_retriever'),
       $container->get('dkan.metastore.storage'),
-      $container->get('dkan.metastore.rooted_json_data_wrapper')
+      $container->get('dkan.metastore.valid_metadata')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory, RootedJsonDataFactory $rootedJsonDataFactory) {
+  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory, ValidMetadataFactory $validMetadataFactory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
-    $this->rootedJsonDataFactory = $rootedJsonDataFactory;
+    $this->validMetadataFactory = $validMetadataFactory;
   }
 
   /**
@@ -136,7 +136,7 @@ class Service implements ContainerInjectionInterface {
 
     $objects = array_map(
       function ($jsonString) use ($schema_id) {
-        $data = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, $jsonString);
+        $data = $this->validMetadataFactory->get($schema_id, $jsonString);
         try {
           return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
         }
@@ -165,7 +165,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function get($schema_id, $identifier): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
-    $data = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, $json_string);
+    $data = $this->validMetadataFactory->get($schema_id, $json_string);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     return $data;
@@ -186,7 +186,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getResources($schema_id, $identifier): array {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, $json_string);
+    $data = $this->validMetadataFactory->get($schema_id, $json_string);
 
     /* @todo decouple from POD. */
     $resources = $data->{"$.distribution"};;
@@ -195,13 +195,13 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Get RootedJsonDataFactory.
+   * Get ValidMetadataFactory.
    *
-   * @return \Drupal\metastore\RootedJsonDataFactory
+   * @return \Drupal\metastore\ValidMetadataFactory
    *   rootedJsonDataWrapper.
    */
-  public function getRootedJsonDataFactory() {
-    return $this->rootedJsonDataFactory;
+  public function getValidMetadataFactory() {
+    return $this->validMetadataFactory;
   }
 
   /**
@@ -321,7 +321,7 @@ class Service implements ContainerInjectionInterface {
           json_decode($json_data)
         );
 
-        $new = $this->rootedJsonDataFactory->createRootedJsonData($schema_id, json_encode($patched));
+        $new = $this->validMetadataFactory->get($schema_id, json_encode($patched));
         $storage->store($new, "{$identifier}");
         return $identifier;
       }
@@ -395,7 +395,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function objectIsEquivalent(string $schema_id, string $identifier, RootedJsonData $metadata) {
     $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
-    $existing = $this->getRootedJsonDataFactory()->createRootedJsonData($schema_id, $existingMetadata);
+    $existing = $this->getValidMetadataFactory()->get($schema_id, $existingMetadata);
     $existing = self::removeReferences($existing);
     return $metadata->get('$') == $existing->get('$');
   }

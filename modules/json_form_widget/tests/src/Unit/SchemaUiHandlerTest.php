@@ -25,15 +25,15 @@ use MockChain\Options;
 class SchemaUiHandlerTest extends TestCase {
 
   /**
-   * The RootedJsonDataFactory class used for testing.
+   * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\RootedJsonDataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
-  protected $rootedJsonDataFactory;
+  protected $validMetadataFactory;
 
   protected function setUp(): void {
     parent::setUp();
-    $this->rootedJsonDataFactory = ServiceTest::getJsonWrapper($this);
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   /**
@@ -891,8 +891,8 @@ class SchemaUiHandlerTest extends TestCase {
    */
   private function getSimpleMetastoreResults() {
     return [
-      $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['data' => 'Option 1'])),
-      $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['data' => 'Option 2'])),
+      $this->validMetadataFactory->get('dataset', json_encode(['data' => 'Option 1'])),
+      $this->validMetadataFactory->get('dataset', json_encode(['data' => 'Option 2'])),
     ];
 
   }
@@ -902,8 +902,8 @@ class SchemaUiHandlerTest extends TestCase {
    */
   private function getComplexMetastoreResults() {
     return [
-      $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['data' => ['name' => 'Option 1']])),
-      $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode(['data' => ['name' => 'Option 2']])),
+      $this->validMetadataFactory->get('dataset', json_encode(['data' => ['name' => 'Option 1']])),
+      $this->validMetadataFactory->get('dataset', json_encode(['data' => ['name' => 'Option 2']])),
     ];
   }
 

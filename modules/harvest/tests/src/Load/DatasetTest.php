@@ -6,7 +6,7 @@ use Contracts\Mock\Storage\Memory;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\harvest\Load\Dataset;
 use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\RootedJsonDataFactory;
+use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 use MockChain\Chain;
@@ -20,15 +20,15 @@ use PHPUnit\Framework\TestCase;
 class DatasetTest extends TestCase {
 
   /**
-   * The RootedJsonDataFactory class used for testing.
+   * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\RootedJsonDataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
-  protected $rootedJsonDataFactory;
+  protected $validMetadataFactory;
 
   protected function setUp(): void {
     parent::setUp();
-    $this->rootedJsonDataFactory = ServiceTest::getJsonWrapper($this);
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   /**
@@ -40,12 +40,12 @@ class DatasetTest extends TestCase {
       ->index(0);
 
     $object = (object) ["identifier" => "1"];
-    $expected = $this->rootedJsonDataFactory->createRootedJsonData('dummy_schema_id', json_encode($object));
+    $expected = $this->validMetadataFactory->get('dummy_schema_id', json_encode($object));
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
-      ->add(Service::class, "getRootedJsonDataFactory", RootedJsonDataFactory::class)
-      ->add(RootedJsonDataFactory::class, "createRootedJsonData", $expected)
+      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(ValidMetadataFactory::class, "get", $expected)
       ->add(Service::class, "post", "1", 'post');
 
     $container = $containerChain->getMock();
@@ -74,12 +74,12 @@ class DatasetTest extends TestCase {
       ->index(0);
 
     $object = (object) ["identifier" => "1"];
-    $expected = $this->rootedJsonDataFactory->createRootedJsonData('dummy_schema_id', json_encode($object));
+    $expected = $this->validMetadataFactory->get('dummy_schema_id', json_encode($object));
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
-      ->add(Service::class, "getRootedJsonDataFactory", RootedJsonDataFactory::class)
-      ->add(RootedJsonDataFactory::class, "createRootedJsonData", $expected)
+      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(ValidMetadataFactory::class, "get", $expected)
       ->add(Service::class, 'post', new ExistingObjectException())
       ->add(Service::class, "put", [], 'put');
 

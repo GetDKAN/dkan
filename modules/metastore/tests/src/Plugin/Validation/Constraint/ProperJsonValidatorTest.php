@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Plugin\Validation\Constraint;
 
 use Drupal\metastore\Plugin\Validation\Constraint\ProperJsonValidator;
-use Drupal\metastore\RootedJsonDataFactory;
+use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Count;
@@ -23,11 +23,11 @@ class ProperJsonValidatorTest extends TestCase {
   protected $schemaRetriever;
 
   /**
-   * The RootedJsonDataFactory class used for testing.
+   * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\RootedJsonDataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
-  protected $rootedJsonDataFactory;
+  protected $validMetadataFactory;
 
   /**
    * The container used for testing.
@@ -51,11 +51,11 @@ class ProperJsonValidatorTest extends TestCase {
       ->setMethods(["retrieve"])
       ->getMock();
 
-    $this->rootedJsonDataFactory = $this->getMockBuilder(RootedJsonDataFactory::class)
+    $this->validMetadataFactory = $this->getMockBuilder(ValidMetadataFactory::class)
       ->disableOriginalConstructor()
       ->setMethods(["getSchemaRetriever"])
       ->getMock();
-    $this->rootedJsonDataFactory->method('getSchemaRetriever')->willReturn($this->schemaRetriever);
+    $this->validMetadataFactory->method('getSchemaRetriever')->willReturn($this->schemaRetriever);
 
     $this->container = $this->getMockBuilder(ContainerInterface::class)
       ->setMethods(['get'])
@@ -63,8 +63,8 @@ class ProperJsonValidatorTest extends TestCase {
       ->getMockForAbstractClass();
 
     $this->container->method('get')
-      ->with('dkan.metastore.rooted_json_data_wrapper')
-      ->willReturn($this->rootedJsonDataFactory);
+      ->with('dkan.metastore.valid_metadata')
+      ->willReturn($this->validMetadataFactory);
 
     $this->context = $this->getMockBuilder(ExecutionContext::class)
       ->setMethods(["addViolation"])
