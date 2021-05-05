@@ -4,7 +4,7 @@ services:
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
-      - '@dkan.metastore.rooted_json_data_wrapper'
+      - '@dkan.metastore.valid_metadata'
 
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
@@ -51,7 +51,7 @@ services:
     arguments:
       - '@database'
 
-  dkan.metastore.rooted_json_data_wrapper:
-    class: \Drupal\metastore\RootedJsonDataFactory
+  dkan.metastore.valid_metadata:
+    class: \Drupal\metastore\ValidMetadataFactory
     arguments:
       - '@dkan.metastore.schema_retriever'

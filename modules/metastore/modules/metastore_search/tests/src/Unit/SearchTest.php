@@ -181,9 +181,9 @@ class SearchTest extends TestCase {
     $getAllOptions = (new Options())
       ->add('keyword', [])
       ->add('theme', [])
-      ->add('publisher', [ServiceTest::getJsonWrapper($case)->createRootedJsonData('publisher', json_encode($facet))]);
+      ->add('publisher', [ServiceTest::getValidMetadataFactory($case)->get('publisher', json_encode($facet))]);
 
-    $getData = ServiceTest::getJsonWrapper($case)->createRootedJsonData('dummy_schema_id', json_encode($collection));
+    $getData = ServiceTest::getValidMetadataFactory($case)->get('dummy_schema_id', json_encode($collection));
 
     return (new Chain($case))
       ->add(Container::class, 'get', $services)

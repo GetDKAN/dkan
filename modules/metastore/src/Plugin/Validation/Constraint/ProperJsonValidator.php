@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Plugin\Validation\Constraint;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\RootedJsonDataFactory;
+use Drupal\metastore\ValidMetadataFactory;
 use InvalidArgumentException;
 use OpisErrorPresenter\Implementation\MessageFormatterFactory;
 use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
@@ -19,9 +19,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 class ProperJsonValidator extends ConstraintValidator implements ContainerInjectionInterface {
 
   /**
-   * @var \Drupal\metastore\RootedJsonDataFactory
+   * @var \Drupal\metastore\ValidMetadataFactory
    */
-  protected $rootedJsonDataFactory;
+  protected $validMetadataFactory;
 
   /**
    * @var \OpisErrorPresenter\Implementation\ValidationErrorPresenter
@@ -31,11 +31,11 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   /**
    * ProperJsonValidator constructor.
    *
-   * @param \Drupal\metastore\RootedJsonDataFactory $rooted_json_data_factory
-   *   dkan.metastore.rooted_json_data_wrapper service.
+   * @param \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory
+   *   dkan.metastore.valid_metadata service.
    */
-  public function __construct(RootedJsonDataFactory $rooted_json_data_factory) {
-    $this->rootedJsonDataFactory = $rooted_json_data_factory;
+  public function __construct(ValidMetadataFactory $valid_metadata_factory) {
+    $this->validMetadataFactory = $valid_metadata_factory;
     $this->presenter = new ValidationErrorPresenter(
       new PresentedValidationErrorFactory(
         new MessageFormatterFactory()
@@ -48,7 +48,7 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.metastore.rooted_json_data_wrapper')
+      $container->get('dkan.metastore.valid_metadata')
     );
   }
 
@@ -65,7 +65,7 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
     foreach ($items as $item) {
       $errors = [];
       try {
-        $this->rootedJsonDataFactory->createRootedJsonData($schema, $item->value);
+        $this->validMetadataFactory->get($schema, $item->value);
       }
       catch (ValidationException $e) {
         $errors = $this->getValidationErrorsMessages($e->getResult()->getErrors());

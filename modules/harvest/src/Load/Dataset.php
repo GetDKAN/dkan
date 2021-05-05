@@ -29,7 +29,7 @@ class Dataset extends Load {
     }
 
     $schema_id = 'dataset';
-    $item = $service->getRootedJsonDataFactory()->createRootedJsonData($schema_id, $item);
+    $item = $service->getValidMetadataFactory()->get($schema_id, $item);
     try {
       $service->post($schema_id, $item);
     }

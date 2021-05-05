@@ -29,7 +29,7 @@ class DatasetTest extends ExistingSiteBase {
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
-  private $rootedJsonDataFactory;
+  private $validMetadataFactory;
 
   public function setUp(): void {
     parent::setUp();
@@ -43,7 +43,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->setDefaultModerationState();
     $this->changeDatasetsResourceOutputPerspective();
 
-    $this->rootedJsonDataFactory = ServiceTest::getJsonWrapper($this);
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   public function testChangingDatasetResourcePerspectiveOnOutput() {
@@ -243,7 +243,7 @@ class DatasetTest extends ExistingSiteBase {
       $data->distribution[] = $distribution;
     }
 
-    return $this->rootedJsonDataFactory->createRootedJsonData('dataset', json_encode($data));
+    return $this->validMetadataFactory->get('dataset', json_encode($data));
   }
 
   /**

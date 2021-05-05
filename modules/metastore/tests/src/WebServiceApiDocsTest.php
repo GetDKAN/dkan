@@ -19,22 +19,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class WebServiceApiDocsTest extends TestCase {
 
   /**
-   * The RootedJsonDataFactory class used for testing.
+   * The ValidMetadataFactory class used for testing.
    *
-   * @var \Drupal\metastore\RootedJsonDataFactory|\PHPUnit\Framework\MockObject\MockObject
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
    */
-  protected $rootedJsonDataFactory;
+  protected $validMetadataFactory;
 
   protected function setUp(): void {
     parent::setUp();
-    $this->rootedJsonDataFactory = ServiceTest::getJsonWrapper($this);
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   /**
    * Tests dataset-specific docs when SQL endpoint is protected.
    */
   public function testDatasetSpecificDocsWithSqlModifier() {
-    $get = $this->rootedJsonDataFactory->createRootedJsonData('dataset', '{}');
+    $get = $this->validMetadataFactory->get('dataset', '{}');
     $mockChain = $this->getCommonMockChain()
       ->add(Service::class, "get", $get)
       ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])
