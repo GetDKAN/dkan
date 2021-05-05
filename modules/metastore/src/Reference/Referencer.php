@@ -257,6 +257,10 @@ class Referencer {
     if (isset($metadata->data->mediaType)) {
       $mimeType = $metadata->data->mediaType;
     }
+    elseif (isset($metadata->data->downloadURL)) {
+      $headers = get_headers($metadata->data->downloadURL, 1);
+      $mimeType = isset($headers['Content-Type']) ? $headers['Content-Type'] : $mimeType;
+    }
     return $mimeType;
   }
 
