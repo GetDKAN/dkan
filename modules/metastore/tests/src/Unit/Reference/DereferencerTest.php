@@ -23,7 +23,7 @@ class DereferencerTest extends TestCase {
   public function testDereference() {
     $node = (object) [
       "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => (object) ['name' => 'Gerardo', 'company' => 'CivicActions']]),
+        "value" => json_encode((object) ['name' => 'Gerardo', 'company' => 'CivicActions']),
       ],
     ];
 
@@ -56,13 +56,13 @@ class DereferencerTest extends TestCase {
   public function testDereferenceMultiple() {
     $node1 = (object) [
       "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => "Gerardo"]),
+        "value" => json_encode("Gerardo"),
       ],
     ];
 
     $node2 = (object) [
       "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => "CivicActions"]),
+        "value" => json_encode("CivicActions"),
       ],
     ];
 

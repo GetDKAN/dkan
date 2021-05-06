@@ -307,19 +307,14 @@ class Referencer {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   private function createPropertyReference(string $property_id, $value) {
-    // Create json metadata for the reference.
-    $data = new \stdClass();
-    $data->identifier = $this->getUuidService()->generate($property_id, $value);
-    $data->data = $value;
-
     // Create node to store this reference.
     $node = $this->nodeStorage
       ->create([
         'title' => md5(json_encode($value)),
         'type' => 'data',
-        'uuid' => $data->identifier,
+        'uuid' => $this->getUuidService()->generate($property_id, $value),
         'field_data_type' => $property_id,
-        'field_json_metadata' => json_encode($data),
+        'field_json_metadata' => json_encode($value),
         // Unlike datasets, always publish references immediately.
         'moderation_state' => 'published',
       ]);
