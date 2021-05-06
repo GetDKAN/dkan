@@ -19,11 +19,15 @@ use Symfony\Component\Validator\ConstraintValidator;
 class ProperJsonValidator extends ConstraintValidator implements ContainerInjectionInterface {
 
   /**
+   * Service dkan.metastore.valid_metadata.
+   *
    * @var \Drupal\metastore\ValidMetadataFactory
    */
   protected $validMetadataFactory;
 
   /**
+   * ValidationErrorPresenter.
+   *
    * @var \OpisErrorPresenter\Implementation\ValidationErrorPresenter
    */
   protected $presenter;
@@ -32,7 +36,7 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
    * ProperJsonValidator constructor.
    *
    * @param \Drupal\metastore\ValidMetadataFactory $valid_metadata_factory
-   *   dkan.metastore.valid_metadata service.
+   *   Service dkan.metastore.valid_metadata.
    */
   public function __construct(ValidMetadataFactory $valid_metadata_factory) {
     $this->validMetadataFactory = $valid_metadata_factory;
@@ -73,7 +77,9 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
       catch (InvalidArgumentException $e) {
         $errors[] = $e->getMessage();
       }
-      if (!empty($errors)) $this->addViolations($errors);
+      if (!empty($errors)) {
+        $this->addViolations($errors);
+      }
     }
   }
 
@@ -89,7 +95,7 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   private function getValidationErrorsMessages(array $errors): array {
     $presented = $this->presenter->present(...$errors);
     return array_map(
-      function($presented_error) {
+      function ($presented_error) {
         return $presented_error->message();
       },
       $presented

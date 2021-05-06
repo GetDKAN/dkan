@@ -33,14 +33,17 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    * ValidMetadataFactory constructor.
    *
    * @param \Drupal\metastore\SchemaRetriever $schemaRetriever
-   *   dkan.metastore.schema_retriever service.
+   *   Service dkan.metastore.schema_retriever.
    */
   public function __construct(SchemaRetriever $schemaRetriever) {
     $this->schemaRetriever = $schemaRetriever;
   }
 
   /**
+   * Gets schema retriever.
+   *
    * @return \Drupal\metastore\SchemaRetriever
+   *   Service metastore.schema_retriever.
    */
   public function getSchemaRetriever() {
     return $this->schemaRetriever;
@@ -49,7 +52,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
   /**
    * Converts Json string into RootedJsonData object.
    *
-   * @param string|NULL $schema_id
+   * @param string|null $schema_id
    *   The {schema_id} slug from the HTTP request.
    * @param string $json_string
    *   Json string.
