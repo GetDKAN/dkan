@@ -63,9 +63,12 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
    */
   public function validate($items, Constraint $constraint) {
     $schema = 'dataset';
-    if (is_object($items) && $type = $items->getParent()->getEntity()->get('field_data_type')->value) {
-      $schema = $type;
+    if (is_object($items)) {
+      if ($type = $items->getParent()->getEntity()->get('field_data_type')->value) {
+        $schema = $type;
+      }
     }
+
     foreach ($items as $item) {
       $errors = [];
       try {
