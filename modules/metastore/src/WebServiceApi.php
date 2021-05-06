@@ -150,7 +150,9 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   private function swapReference($property, $value, RootedJsonData $object): RootedJsonData {
     $original = str_replace("%Ref:", "", $property);
-    if ($object->__isset("$.{$original}")) $object->set("$.{$original}", $value);
+    if ($object->__isset("$.{$original}")) {
+      $object->set("$.{$original}", $value);
+    }
     return $object;
   }
 

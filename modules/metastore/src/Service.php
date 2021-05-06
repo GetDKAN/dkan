@@ -403,7 +403,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData{
+  public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
     $array = $object->get('$');
 
     foreach ($array as $property => $value) {
