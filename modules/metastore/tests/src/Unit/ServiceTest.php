@@ -11,13 +11,13 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Factory\Sae;
 use Drupal\metastore\Service;
 use Drupal\metastore\FileSchemaRetriever;
-use Drupal\metastore\Storage\AbstractEntityStorage;
-use Drupal\metastore\Storage\NodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreDataNodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreDataNodeStorage;
+use Drupal\metastore\Sae\Sae as Engine;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
-use Drupal\metastore\Sae\Sae as Engine;
 
 /**
  *
@@ -28,7 +28,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetSchemas() {
-    $container = $this->getCommonMockChain()
+    $container = $this->getCommonMockChain($this)
       ->add(FileSchemaRetriever::class, "getAllIds", ["1"]);
 
     $service = Service::create($container->getMock());
@@ -92,8 +92,9 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
-    $container = $this->getCommonMockChain()
-      ->add(AbstractEntityStorage::class, "retrievePublished", json_encode("blah"));
+    $container = $this->getCommonMockChain($this)
+      ->add(MetastoreDataNodeStorage::class, "retrievePublished", json_encode("blah"))
+      ->add(MetastoreDataNodeStorage::class, "retrieveAll", [json_encode("blah")]);
 
     \Drupal::setContainer($container->getMock());
 
@@ -270,7 +271,7 @@ EOF;
     $container = self::getCommonMockChain($this)
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", "1")
-      ->add(AbstractEntityStorage::class, "publish", "1");
+      ->add(MetastoreDataNodeStorage::class, "publish", "1");
 
     $service = Service::create($container->getMock());
     $result = $service->publish('dataset', 1);
@@ -341,8 +342,8 @@ EOF;
     $myServices = [
       'dkan.metastore.schema_retriever' => FileSchemaRetriever::class,
       'dkan.metastore.sae_factory' => Sae::class,
-      'dkan.metastore.storage' => DataFactory::class,
-      'event_dispatcher' => ContainerAwareEventDispatcher::class
+      'dkan.metastore.storage' => MetastoreDataNodeStorageFactory::class,
+      'event_dispatcher' => ContainerAwareEventDispatcher::class,
     ];
 
     foreach ($myServices as $serviceName => $class) {
@@ -356,7 +357,8 @@ EOF;
 
     return (new Chain($case))
       ->add(Container::class, "get", $services)
-      ->add(DataFactory::class, 'getInstance', Data::class)
+      ->add(MetastoreDataNodeStorageFactory::class, 'getInstance', MetastoreDataNodeStorage::class)
+      ->add(MetastoreDataNodeStorage::class, 'getEntityIdFromUuid', 1)
       ->add(FileSchemaRetriever::class, "retrieve", json_encode("blah"));
   }
 

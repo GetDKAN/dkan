@@ -4,7 +4,7 @@ namespace Drupal\Tests\metastore\Storage;
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\Storage\NodeStorage as MetastoreNodeStorage;
+use Drupal\metastore\Storage\MetastoreDataNodeStorage as MetastoreNodeStorage;
 use Drupal\node\NodeStorage;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;

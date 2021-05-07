@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Data factory.
  */
-class NodeStorageFactory implements MetastoreStorageFactoryInterface {
+class MetastoreDataNodeStorageFactory implements MetastoreStorageFactoryInterface {
 
   /**
    * @var array
@@ -71,11 +71,11 @@ class NodeStorageFactory implements MetastoreStorageFactoryInterface {
    * @param string $identifier
    *   Schema id.
    *
-   * @return \Drupal\metastore\Storage\NodeStorage
+   * @return \Drupal\metastore\Storage\MetastoreDataNodeStorage
    *   Storage object.
    */
   protected function createNodeInstance(string $identifier) {
-    return new NodeStorage($identifier, $this->entityTypeManager);
+    return new MetastoreDataNodeStorage($identifier, $this->entityTypeManager);
   }
 
 }

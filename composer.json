@@ -28,6 +28,7 @@
         "justinrainbow/json-schema": "^5.2",
         "ramsey/uuid" : "^3.8.0",
         "getdkan/rooted-json-data": "^0.0.2",
+        "ilbee/csv-response": "^1.0",
         "oomphinc/composer-installers-extender": "^2.0"
     },
     "require-dev": {
