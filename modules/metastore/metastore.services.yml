@@ -56,3 +56,8 @@ services:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
     arguments:
       - '@database'
+
+  dkan.metastore.metastore_item_factory:
+    class: \Drupal\metastore\Factory\MetastoreDataNodeFactory
+    arguments:
+      - '@entity.repository'

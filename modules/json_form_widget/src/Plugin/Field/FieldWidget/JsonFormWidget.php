@@ -11,6 +11,7 @@ use Drupal\json_form_widget\FormBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\json_form_widget\ValueHandler;
+use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 
 /**
@@ -44,6 +45,13 @@ class JsonFormWidget extends WidgetBase {
   protected $valueHandler;
 
   /**
+   * Metastore Item factory/wrapper for entities.
+   *
+   * @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface
+   */
+  protected $metastoreItemFactory;
+
+  /**
    * Constructs a WidgetBase object.
    *
    * @param string $plugin_id
@@ -58,8 +66,10 @@ class JsonFormWidget extends WidgetBase {
    *   Any third party settings.
    * @param \Drupal\json_form_widget\FormBuilder $builder
    *   The JsonFormBuilder service.
-   * @param \Drupal\json_form_widget\ValueHandler $value_handler
+   * @param \Drupal\json_form_widget\ValueHandler $valueHandler
    *   The JsonFormValueHandler service.
+   * @param \Drupal\metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory
+   *   A factory service for creating metastore items using standard nodes.
    */
   public function __construct(
     $plugin_id,
@@ -68,11 +78,13 @@ class JsonFormWidget extends WidgetBase {
     array $settings,
     array $third_party_settings,
     FormBuilder $builder,
-    ValueHandler $value_handler
+    ValueHandler $valueHandler,
+    MetastoreItemFactoryInterface $metastoreItemFactory
   ) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->builder = $builder;
-    $this->valueHandler = $value_handler;
+    $this->valueHandler = $valueHandler;
+    $this->metastoreItemFactory = $metastoreItemFactory;
   }
 
   /**
@@ -86,7 +98,8 @@ class JsonFormWidget extends WidgetBase {
       $configuration['settings'],
       $configuration['third_party_settings'],
       $container->get('json_form.builder'),
-      $container->get('json_form.value_handler')
+      $container->get('json_form.value_handler'),
+      $container->get('dkan.metastore.metastore_item_factory')
     );
   }
 
@@ -156,13 +169,8 @@ class JsonFormWidget extends WidgetBase {
    *   The Schema ID.
    */
   private function getSchemaIdFromEntity(ContentEntityInterface $entity) {
-    switch ($entity->getEntityTypeId()) {
-      case 'node':
-        return $entity->get('field_data_type')->value;
-
-      case 'metastore_item':
-        return $entity->getSchemaId();
-    }
+    $metastoreItem = $this->metastoreItemFactory->getInstance($entity->uuid());
+    return $metastoreItem->getSchemaId();
   }
 
   /**

@@ -14,8 +14,9 @@ function metastore_search_search_api_tracking(EntityInterface $entity, string $o
     return;
   }
 
-  $wrapper = new Drupal\metastore\NodeWrapper\Data($entity);
-  if ($wrapper->getDataType() != 'dataset') {
+  $factory = \Drupal::service("dkan.metastore.metastore_item_factory");
+  $wrapper = $factory->getInstance($entity->uuid());
+  if ($wrapper->getSchemaId() != 'dataset') {
     return;
   }
 
