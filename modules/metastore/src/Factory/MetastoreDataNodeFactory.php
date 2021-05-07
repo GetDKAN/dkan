@@ -33,4 +33,13 @@ class MetastoreDataNodeFactory implements MetastoreItemFactoryInterface {
     return new MetastoreDataNode($dataNode);
   }
 
+  /**
+   * @param mixed $dataNode
+   * 
+   * @return [type]
+   */
+  public function wrap($dataNode) {
+    return new MetastoreDataNode($dataNode);
+  }
+
 }
