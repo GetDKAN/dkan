@@ -51,9 +51,9 @@ class DkanDatasetTest extends TestCase {
       ->add(QueryInterface::class, 'range', QueryInterface::class)
       ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
       ->add(MetastoreDataNodeStorageFactory::class, 'getInstance', MetastoreDataNodeStorage::class)
-      ->add(NodeStorage::class, 'retrieve', '{}')
-      ->add(NodeStorage::class, 'getEntityIdFromUuid', 1)
-      ->add(Data::class, 'retrievePublished', '{}')
+      ->add(MetastoreDataNodeStorage::class, 'retrieve', '{}')
+      ->add(MetastoreDataNodeStorage::class, 'getEntityIdFromUuid', 1)
+      ->add(MetastoreDataNodeStorage::class, 'retrievePublished', '{}')
       ->getMock();
 
     \Drupal::setContainer($container);

@@ -878,9 +878,9 @@ class SchemaUiHandlerTest extends TestCase {
    */
   private function getSimpleMetastoreResults() {
     $options = [];
-    $options[0] = new stdClass();
+    $options[0] = new \stdClass();
     $options[0]->data = "Option 1";
-    $options[1] = new stdClass();
+    $options[1] = new \stdClass();
     $options[1]->data = "Option 2";
     return $options;
   }
@@ -890,11 +890,11 @@ class SchemaUiHandlerTest extends TestCase {
    */
   private function getComplexMetastoreResults() {
     $options = [];
-    $options[0] = new stdClass();
-    $options[0]->data = new stdClass();
+    $options[0] = new \stdClass();
+    $options[0]->data = new \stdClass();
     $options[0]->data->name = "Option 1";
-    $options[1] = new stdClass();
-    $options[1]->data = new stdClass();
+    $options[1] = new \stdClass();
+    $options[1]->data = new \stdClass();
     $options[1]->data->name = "Option 2";
     return $options;
   }

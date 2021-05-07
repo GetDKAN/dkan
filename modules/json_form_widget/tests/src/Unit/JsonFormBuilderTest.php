@@ -300,7 +300,8 @@ class JsonFormBuilderTest extends TestCase {
           "type": "array",
           "items": {
             "type": "string",
-            "title": "Tag"
+            "title": "Tag",
+            "#required" => TRUE,
           },
           "minItems": 1
         }
@@ -324,7 +325,6 @@ class JsonFormBuilderTest extends TestCase {
           0 => [
             "#type" => "textfield",
             "#title" => "Tag",
-            "#required" => TRUE,
           ],
         ],
       ],

@@ -11,7 +11,8 @@ use Drupal\Core\Queue\QueueInterface;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\Storage\AbstractEntityStorage;
-use Drupal\metastore\Storage\NodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreDataNodeStorage;
+use Drupal\metastore\Storage\MetastoreDataNodeStorageFactory;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorageInterface;
 use MockChain\Chain;
@@ -59,8 +60,8 @@ class ResourcePurgerTest extends TestCase {
   public function testRevisionDisappearing() {
 
     $chain = $this->getCommonChain()
-      ->add(AbstractEntityStorage::class, 'getEntityIdFromUuid', 1)
-      ->add(AbstractEntityStorage::class, 'getEntityStorage', NodeStorageInterface::class)
+      ->add(MetastoreDataNodeStorage::class, 'getEntityIdFromUuid', 1)
+      ->add(MetastoreDataNodeStorage::class, 'getEntityStorage', NodeStorageInterface::class)
       ->add(NodeStorageInterface::class, 'getLatestRevisionId', 1);
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
@@ -74,8 +75,8 @@ class ResourcePurgerTest extends TestCase {
   public function testScheduleAllUuids() {
 
     $chain = $this->getCommonChain()
-      ->add(AbstractEntityStorage::class, 'getEntityIdFromUuid', 1)
-      ->add(AbstractEntityStorage::class, 'getEntityStorage', NodeStorageInterface::class)
+      ->add(MetastoreDataNodeStorage::class, 'getEntityIdFromUuid', 1)
+      ->add(MetastoreDataNodeStorage::class, 'getEntityStorage', NodeStorageInterface::class)
       ->add(NodeStorageInterface::class, 'getQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', [1])
@@ -95,7 +96,7 @@ class ResourcePurgerTest extends TestCase {
 
     $options = (new Options())
       ->add('config.factory', ConfigFactoryInterface::class)
-      ->add('dkan.metastore.storage', NodeStorageFactory::class)
+      ->add('dkan.metastore.storage', MetastoreDataNodeStorageFactory::class)
       ->add('dkan.datastore.service', Service::class)
       ->index(0);
 
@@ -103,7 +104,7 @@ class ResourcePurgerTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 1)
-      ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class);
+      ->add(MetastoreDataNodeStorageFactory::class, 'getInstance', MetastoreDataNodeStorage::class);
   }
 
 }
