@@ -20,6 +20,10 @@ class Data extends AbstractData {
    */
   public function load() {
     $this->go('Load');
+    $type = $this->data->getDataType();
+//    if ($this->data->getDataType() !== 'dataset') {
+//      $this->resourceLoad();
+//    }
   }
 
   /**
@@ -96,7 +100,22 @@ class Data extends AbstractData {
 
     $metadata->downloadURL = $downloadUrl;
 
+//    $wrapped_data = new \stdClass();
+//    $wrapped_data->identifier = $this->data->getIdentifier();
+//    $wrapped_data->data = $metadata;
+//
+//    $this->data->setMetadata($wrapped_data);
+
     $this->data->setMetadata($metadata);
+
+  }
+
+  protected function resourceLoad() {
+    $metadata = $this->data->getMetaData();
+    if (!isset($metadata->identifier)) {
+      $wrapped_metadata = $this->wrapMetadata($this->data->getIdentifier(), $metadata);
+      $this->data->setMetadata($wrapped_metadata);
+    }
   }
 
   /**
@@ -140,11 +159,22 @@ class Data extends AbstractData {
   /**
    * Private.
    */
-  private function createResourceReference(Resource $resource): object {
+  private function wrapMetadata($uuid, $metadata): object {
     return (object) [
-      "identifier" => $resource->getUniqueIdentifier(),
-      "data" => $resource,
+      "identifier" => $uuid,
+      "data" => $metadata,
     ];
+  }
+
+  /**
+   * Private.
+   */
+  private function createResourceReference(Resource $resource): object {
+//    return (object) [
+//      "identifier" => $resource->getUniqueIdentifier(),
+//      "data" => $resource,
+//    ];
+    return $this->wrapMetadata($resource->getUniqueIdentifier(), $resource);
   }
 
   /**
