@@ -50,7 +50,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Set storage.
    *
-   * @param \Drupal\metastore\Storage\NodeStorageFactory $dataFactory
+   * @param \Drupal\metastore\Storage\MetastoreStorageFactoryInterface $dataFactory
    *   Metastore's data factory.
    */
   public function setStorage(MetastoreStorageFactoryInterface $dataFactory) {

@@ -3,11 +3,13 @@
 namespace Drupal\Tests\dkan\Functional;
 
 use Drupal\common\Resource;
+use Drupal\Core\Entity\ContentEntityStorageInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\Storage\MetastoreDataNodeStorage;
 use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
@@ -359,7 +361,7 @@ class DatasetTest extends ExistingSiteBase {
     return \Drupal::service('dkan.harvest.service');
   }
 
-  private function getNodeStorage(): NodeStorage {
+  private function getNodeStorage(): ContentEntityStorageInterface {
     return \Drupal::service('entity_type.manager')->getStorage('node');
   }
 

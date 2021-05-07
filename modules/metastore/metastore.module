@@ -11,7 +11,7 @@ use Drupal\common\Resource;
 use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\LifeCycle\Data as LifeCycle;
 use Drupal\metastore\MetastoreDataNode;
-use Drupal\metastore\Storage\NodeStorage;
+use Drupal\metastore\Storage\MetastoreDataNodeStorage;
 use Drupal\node\NodeInterface;
 
 /**
@@ -76,7 +76,7 @@ function purgeResources(NodeInterface $node) {
       && $node->get('field_data_type')->getString() == 'dataset'
   ) {
     \Drupal::service('event_dispatcher')->dispatch(
-      NodeStorage::EVENT_DATASET_UPDATE,
+      MetastoreDataNodeStorage::EVENT_DATASET_UPDATE,
       new DatasetUpdate($node)
     );
   }

@@ -21,7 +21,6 @@ use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\QueryFactory;
 use Drupal\metastore\Storage\MetastoreDataNodeStorage;
 use Drupal\metastore\Storage\MetastoreDataNodeStorageFactory;
-use Drupal\metastore\Storage\NodeStorageFactory;
 use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
 
 /**

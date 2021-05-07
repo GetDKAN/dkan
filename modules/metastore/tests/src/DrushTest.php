@@ -4,8 +4,8 @@ namespace Drupal\Tests\metastore;
 
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\metastore\Drush;
-use Drupal\metastore\Storage\AbstractEntityStorage;
-use Drupal\metastore\Storage\NodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreDataNodeStorage;
+use Drupal\metastore\Storage\MetastoreDataNodeStorageFactory;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -20,8 +20,8 @@ class DrushTest extends TestCase {
    */
   public function testPublish() {
     $dataFactory = (new Chain($this))
-      ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
-      ->add(AbstractEntityStorage::class, 'publish', '12345')
+      ->add(MetastoreDataNodeStorageFactory::class, 'getInstance', MetastoreDataNodeStorage::class)
+      ->add(MetastoreDataNodeStorage::class, 'publish', '12345')
       ->getMock();
 
     $loggerChain = (new Chain($this))
@@ -41,8 +41,8 @@ class DrushTest extends TestCase {
    */
   public function testPublishException() {
     $dataFactory = (new Chain($this))
-      ->add(NodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
-      ->add(AbstractEntityStorage::class, 'publish', new \Exception("Some error."))
+      ->add(MetastoreDataNodeStorageFactory::class, 'getInstance', MetastoreDataNodeStorage::class)
+      ->add(MetastoreDataNodeStorage::class, 'publish', new \Exception("Some error."))
       ->getMock();
 
     $loggerChain = (new Chain($this))
