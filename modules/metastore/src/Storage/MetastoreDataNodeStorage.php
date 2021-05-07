@@ -15,7 +15,7 @@ class MetastoreDataNodeStorage extends AbstractEntityStorage implements Metastor
    * NodeData constructor.
    */
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
-    parent::__construct($schemaId, $entityTypeManager);
+    parent::__construct($schemaId, $entityTypeManager, 'node');
   }
 
   /**

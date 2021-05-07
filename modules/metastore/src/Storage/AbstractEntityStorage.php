@@ -49,9 +49,9 @@ abstract class AbstractEntityStorage {
   /**
    * Constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
+  public function __construct(string $schemaId, EntityTypeManager $entityTypeManager, $entityType) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
+    $this->entityStorage = $this->entityTypeManager->getStorage($entityType);
     $this->schemaId = $schemaId;
 
     $this->bundleKey = $this->entityStorage->getEntityType()->getKey('bundle');

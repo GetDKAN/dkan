@@ -4,6 +4,7 @@ namespace Drupal\metastore\Factory;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityRepository;
+use Drupal\metastore\MetastoreItemInterface;
 
 /**
  * Interface MetastoreItemFactoryInterface.
@@ -28,5 +29,12 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * @return Drupal\metastore\MetastoreItemInterface
    */
   public function getInstance(string $identifier, array $config = []);
+
+  /**
+   * @param mixed $input
+   * 
+   * @return Drupal\metastore\MetastoreItemInterface
+   */
+  public function wrap($input);
 
 }
