@@ -4,50 +4,36 @@
  * @file
  */
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\Resource;
 use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\LifeCycle\Data as LifeCycle;
-use Drupal\metastore\MetastoreDataNode;
 use Drupal\metastore\Storage\MetastoreDataNodeStorage;
+use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_node_load().
  */
 function metastore_node_load(array $entities) {
-
-  foreach ($entities as $entity) {
-    try {
-      metastore_get_data_node_lifecycle($entity)->load();
-    }
-    catch (DataNodeLifeCycleEntityValidationException $e) {
-    }
+  foreach($entities as $entity) {
+    metastore_data_node_lifecycle($entity, "load");
   }
 }
 
 /**
  * Implements hook_entity_presave().
  */
-function metastore_entity_presave(EntityInterface $entity) {
-  try {
-    metastore_get_data_node_lifecycle($entity)->presave();
-  }
-  catch (DataNodeLifeCycleEntityValidationException $e) {
-  }
+function metastore_entity_presave(ContentEntityInterface $entity) {
+  metastore_data_node_lifecycle($entity, "presave");
 }
 
 /**
- * Implements hook_ENTITY_TYPE_predelete().
+ * Implements hook_entity_predelete().
  */
-function metastore_node_predelete(EntityInterface $entity) {
-  try {
-    metastore_get_data_node_lifecycle($entity)->predelete();
-  }
-  catch (DataNodeLifeCycleEntityValidationException $e) {
-  }
+function metastore_node_predelete(ContentEntityInterface $entity) {
+  metastore_data_node_lifecycle($entity, "predelete");
 }
 
 /**
@@ -98,16 +84,55 @@ function resource_mapper_new_revision() {
 
 /**
  * Create a LifeCycle object.
+ *
+ * @param Drupal\Core\Entity\ContentEntityInterface $entity
+ *
+ * @return Drupal\metastore\LifeCycle\Data
+ *   Lifecycle object.
  */
-function metastore_get_data_node_lifecycle($entity) {
-  $data = new MetastoreDataNode($entity);
+function metastore_data_node_lifecycle(ContentEntityInterface $entity, string $hook) {
 
-  $lifeCycle = new LifeCycle($data);
-  $lifeCycle->setFileMapper(\Drupal::service('dkan.metastore.resource_mapper'));
+  if (metastore_entity_is_valid_item($entity)) {
+    $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
+    $metastoreItem = $itemFactory->wrap($entity);
+    $lifeCycle = new LifeCycle($metastoreItem);
+    $lifeCycle->setFileMapper(\Drupal::service('dkan.metastore.resource_mapper'));
+    $lifeCycle->$hook();  
+  }
 
-  return $lifeCycle;
+  return FALSE;
 }
 
+/**
+ * Check if the entity is part of the metastore.
+ *
+ * @param Drupal\Core\Entity\ContentEntityInterface $entity
+ *   A Drupal content entity.
+ * 
+ * @return bool
+ *   Returns true if the entity is used by the metastore.
+ */
+function metastore_entity_is_valid_item(ContentEntityInterface $entity) {
+  $storageFactory = \Drupal::service('dkan.metastore.storage');
+  $storageClass = $storageFactory::getStorageClass();
+
+  // If the storage class used implements the entity storage interface, continue.
+  if (!is_a($storageClass, MetastoreEntityStorageInterface::class, true)) {
+    return FALSE;
+  }
+
+  // If the type and bundle are correct, return true.
+  if ($entity->getEntityTypeId() != $storageClass::getEntityType()) {
+    return FALSE;
+  }
+  if (in_array($entity->bundle(), $storageClass::getBundles())) {
+    return TRUE;
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
 function metastore_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   if (isset($form['field_json_metadata']['widget'][0]['value']['#default_value'])) {
     $json = $form['field_json_metadata']['widget'][0]['value']['#default_value'];
@@ -120,6 +145,9 @@ function metastore_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form
   }
 }
 
+/**
+ * Implements hook_entity_view_alter.
+ */
 function metastore_entity_view_alter(array &$build, Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display) {
   if (isset($build['field_json_metadata'][0]['#context']['value'])) {
     $json = $build['field_json_metadata'][0]['#context']['value'];
