@@ -67,14 +67,7 @@ abstract class AbstractEntityStorage {
   public function getEntityStorage() {
     return $this->entityStorage;
   }
-
-  /**
-   * Private.
-   */
-  private function setSchema($schemaId) {
-    $this->schemaId = $schemaId;
-  }
-
+ 
   /**
    * Load a Data entity's published revision.
    *
