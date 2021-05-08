@@ -18,4 +18,13 @@ interface MetastoreStorageFactoryInterface extends FactoryInterface {
    *   A metastore storage obeject.
    */
   public function getInstance(string $identifier, array $config = []):MetastoreStorageInterface;
+
+  /**
+   * Get the storage class this factory will use.
+   *
+   * @return string
+   *   The metastore storage class used by this factory.
+   */
+  public static function getStorageClass();
+
 }

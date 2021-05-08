@@ -7,6 +7,8 @@ use Drupal\metastore\MetastoreDataNode;
 
 /**
  * Class MetastoreDataNodeFactory.
+ *
+ * Build a MetastoreItemInterface object from a simple node.
  */
 class MetastoreDataNodeFactory implements MetastoreItemFactoryInterface {
 
@@ -40,6 +42,27 @@ class MetastoreDataNodeFactory implements MetastoreItemFactoryInterface {
    */
   public function wrap($dataNode) {
     return new MetastoreDataNode($dataNode);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getEntityType() {
+    return 'node';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getBundles() {
+    return ['data'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getMetadataField() {
+    return 'field_json_metadata';
   }
 
 }

@@ -5,7 +5,7 @@ namespace Drupal\metastore\Storage;
 use Drupal\Core\Entity\EntityTypeManager;
 
 /**
- * Data.
+ * Abstract class to use for creating entity-based metastore storage classes.
  */
 abstract class AbstractEntityStorage {
 
@@ -67,7 +67,7 @@ abstract class AbstractEntityStorage {
   public function getEntityStorage() {
     return $this->entityStorage;
   }
- 
+
   /**
    * Load a Data entity's published revision.
    *

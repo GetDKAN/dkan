@@ -11,6 +11,8 @@ use Drupal\Core\Entity\EntityTypeManager;
 class MetastoreDataNodeStorageFactory implements MetastoreStorageFactoryInterface {
 
   /**
+   * Array of storage classes for entity types.
+   *
    * @var array
    */
   private $stores = [];
@@ -76,6 +78,16 @@ class MetastoreDataNodeStorageFactory implements MetastoreStorageFactoryInterfac
    */
   protected function createNodeInstance(string $identifier) {
     return new MetastoreDataNodeStorage($identifier, $this->entityTypeManager);
+  }
+
+  /**
+   * Get the storage class name for this factory.
+   *
+   * @return string
+   *   Qualified storage class name.
+   */
+  public static function getStorageClass() {
+    return MetastoreDataNodeStorage::class;
   }
 
 }

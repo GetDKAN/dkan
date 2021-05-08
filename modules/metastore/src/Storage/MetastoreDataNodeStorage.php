@@ -9,7 +9,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Node Data.
  */
-class MetastoreDataNodeStorage extends AbstractEntityStorage implements MetastoreStorageInterface {
+class MetastoreDataNodeStorage extends AbstractEntityStorage implements MetastoreEntityStorageInterface {
 
   /**
    * NodeData constructor.
@@ -162,6 +162,27 @@ class MetastoreDataNodeStorage extends AbstractEntityStorage implements Metastor
     else {
       return $this->createNewEntity($uuid, $data);
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getEntityType() {
+    return 'node';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getBundles() {
+    return ['data'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getMetadataField() {
+    return 'field_json_metadata';
   }
 
 }
