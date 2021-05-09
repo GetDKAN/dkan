@@ -68,11 +68,11 @@ class Subscriber implements EventSubscriberInterface {
    *   Dataset publication.
    */
   public function purgeResources(DatasetUpdate $event) {
-    $node = $event->getNode();
+    $item = $event->getItem();
 
     /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */
     $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    $resourcePurger->schedule([$node->uuid()]);
+    $resourcePurger->schedule([$item->getIdentifier()]);
   }
 
 }

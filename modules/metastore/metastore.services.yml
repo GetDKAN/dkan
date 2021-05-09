@@ -12,6 +12,7 @@ services:
       - '@dkan.metastore.referencer'
       - '@dkan.metastore.dereferencer'
       - '@dkan.metastore.orphan_checker'
+      - '@dkan.metastore.resource_mapper'
       - '@date.formatter'
 
   dkan.metastore.sae_factory:

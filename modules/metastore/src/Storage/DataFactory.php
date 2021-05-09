@@ -78,4 +78,14 @@ class DataFactory implements FactoryInterface {
     return new NodeData($identifier, $this->entityTypeManager);
   }
 
+  /**
+   * Get the storage class name for this factory.
+   *
+   * @return string
+   *   Qualified storage class name.
+   */
+  public static function getStorageClass() {
+    return NodeData::class;
+  }
+
 }

@@ -6,9 +6,12 @@
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\common\Resource;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\metastore\Events\DatasetUpdate;
-use Drupal\metastore\Storage\Data as DataStorage;
+use Drupal\metastore\Service;
+use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\node\NodeInterface;
 
@@ -36,6 +39,13 @@ function metastore_node_predelete(EntityInterface $entity) {
 }
 
 /**
+ * Implements hook_entity_update().
+ */
+function metastore_entity_update(EntityInterface $entity) {
+  metastore_data_node_lifecycle($entity, "update");
+}
+
+/**
  * Implements hook_entity_bundle_field_info_alter().
  */
 function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
@@ -43,27 +53,6 @@ function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
     if (isset($fields['field_json_metadata'])) {
       $fields['field_json_metadata']->addConstraint('ProperJson', []);
     }
-  }
-}
-
-/**
- * Implements hook_ENTITY_TYPE_update().
- */
-function metastore_node_update(NodeInterface $node) {
-  purgeResources($node);
-}
-
-/**
- * Purge resources (if unneeded) of any updated dataset.
- */
-function purgeResources(NodeInterface $node) {
-  if ($node->bundle() == 'data'
-      && $node->get('field_data_type')->getString() == 'dataset'
-  ) {
-    \Drupal::service('event_dispatcher')->dispatch(
-      DataStorage::EVENT_DATASET_UPDATE,
-      new DatasetUpdate($node)
-    );
   }
 }
 
@@ -89,14 +78,14 @@ function resource_mapper_new_revision() {
  * @return Drupal\metastore\LifeCycle\Data
  *   LifeCycle object.
  */
-function metastore_data_node_lifecycle(EntityInterface $entity, string $hook) {
+function metastore_data_node_lifecycle(EntityInterface $entity, string $stage) {
 
   if (metastore_entity_is_valid_item($entity)) {
     $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
     $metastoreItem = $itemFactory->wrap($entity);
     $lifeCycle = \Drupal::service('dkan.metastore.lifecycle');
     $lifeCycle->setFileMapper(\Drupal::service('dkan.metastore.resource_mapper'));
-    $lifeCycle->$hook($metastoreItem);  
+    $lifeCycle->go($stage, $metastoreItem);
   }
 
   return FALSE;
@@ -112,8 +101,7 @@ function metastore_data_node_lifecycle(EntityInterface $entity, string $hook) {
  *   Returns true if the entity is used by the metastore.
  */
 function metastore_entity_is_valid_item(EntityInterface $entity) {
-  $storageFactory = \Drupal::service('dkan.metastore.storage');
-  $storageClass = $storageFactory::getStorageClass();
+  $storageClass = metastore_storage_class();
 
   // If the storage class used implements the entity storage interface, continue.
   if (!is_a($storageClass, MetastoreEntityStorageInterface::class, true)) {
@@ -130,31 +118,45 @@ function metastore_entity_is_valid_item(EntityInterface $entity) {
 }
 
 /**
+ * Get the storage class currently in use.
+ *
+ * @return string
+ *   Qualified storage class name.
+ */
+function metastore_storage_class() {
+  $storageFactory = \Drupal::service('dkan.metastore.storage');
+  return $storageFactory::getStorageClass();
+}
+
+/**
  * Implements hook_form_alter().
  */
-function metastore_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  if (isset($form['field_json_metadata']['widget'][0]['value']['#default_value'])) {
-    $json = $form['field_json_metadata']['widget'][0]['value']['#default_value'];
+function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $fieldName = metastore_storage_class()::getMetadataField();
+  if (isset($form[$fieldName]['widget'][0]['value']['#default_value'])) {
+    $json = $form[$fieldName]['widget'][0]['value']['#default_value'];
     if (empty($json)) {
       return;
     }
     $object = json_decode($json);
     $object = \Drupal\metastore\Service::removeReferences($object);
-    $form['field_json_metadata']['widget'][0]['value']['#default_value'] = json_encode($object);
+    $form[$fieldName]['widget'][0]['value']['#default_value'] = json_encode($object);
   }
 }
 
 /**
  * Implements hook_entity_view_alter.
  */
-function metastore_entity_view_alter(array &$build, Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display) {
-  if (isset($build['field_json_metadata'][0]['#context']['value'])) {
-    $json = $build['field_json_metadata'][0]['#context']['value'];
+function metastore_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+  $fieldName = metastore_storage_class()::getMetadataField();
+
+  if (isset($build[$fieldName][0]['#context']['value'])) {
+    $json = $build[$fieldName][0]['#context']['value'];
     if (empty($json)) {
       return;
     }
     $object = json_decode($json);
-    $object = \Drupal\metastore\Service::removeReferences($object);
-    $build['field_json_metadata'][0]['#context']['value'] = json_encode($object);
+    $object = Service::removeReferences($object);
+    $build[$fieldName][0]['#context']['value'] = json_encode($object);
   }
 }

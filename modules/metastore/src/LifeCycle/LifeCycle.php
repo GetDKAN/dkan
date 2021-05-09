@@ -7,18 +7,20 @@ use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\PreReference;
-use Drupal\metastore\NodeWrapper\Data;
+use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
+use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Traits\ResourceMapperTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Data.
  */
-class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
+class LifeCycle implements ContainerInjectionInterface {
   use ResourceMapperTrait;
   use EventDispatcherTrait;
 
@@ -27,7 +29,7 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
   /**
    * A metastore item.
    *
-   * @var Drupal\metastore\NodeWrapper\Data
+   * @var \Drupal\metastore\MetastoreItemInterface
    */
   protected $data;
 
@@ -53,6 +55,13 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
   protected $orphanChecker;
 
   /**
+   * ResourceMapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  protected $resourceMapper;
+
+  /**
    * DateFormatter service.
    *
    * @var \Drupal\Core\Datetime\DateFormatter
@@ -66,60 +75,52 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
     Referencer $referencer,
     Dereferencer $dereferencer,
     OrphanChecker $orphanChecker,
+    ResourceMapper $resourceMapper,
     DateFormatter $dateFormatter
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
     $this->orphanChecker = $orphanChecker;
+    $this->resourceMapper = $resourceMapper;
     $this->dateFormatter = $dateFormatter;
   }
 
+  /**
+   * Factory method.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   */
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.metastore.referencer'),
       $container->get('dkan.metastore.dereferencer'),
       $container->get('dkan.metastore.orphan_checker'),
+      $container->get('dkan.metastore.resource_mapper'),
       $container->get('date.formatter')
     );
   }
 
   /**
-   * Protected.
+   * Entry point for LifeCycle functions.
+   *
+   * @param string $stage
+   *   Stage or hook name for execution.
+   * @param Drupal\metastore\MetastoreItemInterface $data
+   *   Metastore item object.
    */
-  protected function go($stage) {
-    $method = "{$this->data->getDataType()}{$stage}";
+  public function go($stage, MetastoreItemInterface $data) {
+    $this->data = $data;
+    $stage = ucwords($stage);
+    $method = "{$this->data->getSchemaId()}{$stage}";
     if (method_exists($this, $method)) {
       $this->{$method}();
     }
   }
 
   /**
-   * Load.
+   * Dataset preDelete.
    */
-  public function load(Data $data) {
-    $this->go('Load');
-  }
-
-  /**
-   * Presave.
-   *
-   * Activities to move a data node through during presave.
-   */
-  public function presave(Data $data) {
-    $this->go('Presave');
-  }
-
-  /**
-   * Predelete.
-   */
-  public function predelete(Data $data) {
-    $this->go('Predelete');
-  }
-
-  /**
-   * Protected.
-   */
-  protected function datasetPredelete(Data $data) {
+  protected function datasetPredelete() {
     $raw = $this->data->getRawMetadata();
 
     if (is_object($raw)) {
@@ -129,17 +130,23 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Dataset load.
    */
   protected function datasetLoad() {
     $metadata = $this->data->getMetaData();
 
     // Dereference dataset properties.
-    $dereferencer = \Drupal::service("dkan.metastore.dereferencer");
-    $metadata = $dereferencer->dereference($metadata);
-    $metadata = $this->addNodeModifiedDate($metadata);
+    $metadata = $this->dereferencer->dereference($metadata);
+    $metadata = $this->addDatasetModifiedDate($metadata);
 
     $this->data->setMetadata($metadata);
+  }
+
+  /**
+   * Purge resources (if unneeded) of any updated dataset.
+   */
+  protected function datasetUpdate() {
+    $this->dispatchEvent($this->data::EVENT_DATASET_UPDATE, new DatasetUpdate($this->data));
   }
 
   /**
@@ -178,17 +185,27 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Get a download URL.
+   *
+   * @param string $resourceIdentifier
+   *   Identifier for resource.
+   *
+   * @return array
+   *   Array of reference and original.
    */
-  private function retrieveDownloadUrlFromResourceMapper($resourceIdentifier) {
+  private function retrieveDownloadUrlFromResourceMapper(string $resourceIdentifier) {
     $reference = [];
     $original = NULL;
 
     $fileMapperInfo = Resource::parseUniqueIdentifier($resourceIdentifier);
 
-    /** @var \Drupal\common\Resource $sourceResource */
-    $sourceResource = $this->getFileMapper()->get($fileMapperInfo['identifier'],
-      Resource::DEFAULT_SOURCE_PERSPECTIVE, $fileMapperInfo['version']);
+    // Load resource object.
+    $sourceResource = $this->resourceMapper->get(
+      $fileMapperInfo['identifier'],
+      Resource::DEFAULT_SOURCE_PERSPECTIVE,
+      $fileMapperInfo['version']
+    );
+
     if (!$sourceResource) {
       return [$reference, $original];
     }
@@ -197,11 +214,10 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
 
     $perspective = resource_mapper_display();
 
-    /** @var \Drupal\common\Resource $sourceResource */
     $resource = $sourceResource;
 
     if ($perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE) {
-      $new = $this->getFileMapper()->get(
+      $new = $this->resourceMapper->get(
         $fileMapperInfo['identifier'],
         $perspective,
         $fileMapperInfo['version']);
@@ -243,10 +259,7 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
       $this->data->setIdentifier($metadata->identifier);
     }
 
-    /** @var \Symfony\Component\EventDispatcher\EventDispatcher $eventDispatcher */
-    $eventDispatcher = \Drupal::service("event_dispatcher");
-    $eventDispatcher->dispatch(self::EVENT_PRE_REFERENCE,
-      new PreReference($this->data));
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, new PreReference($this->data));
 
     $referencer = \Drupal::service("dkan.metastore.referencer");
     $metadata = $referencer->reference($metadata);
@@ -256,11 +269,7 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
     // Check for possible orphan property references when updating a dataset.
     if (!$this->data->isNew()) {
       $raw = $this->data->getRawMetadata();
-      $orphanChecker = \Drupal::service("dkan.metastore.orphan_checker");
-      $orphanChecker->processReferencesInUpdatedDataset(
-        $raw,
-        $metadata
-      );
+      $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }
 
   }
@@ -276,9 +285,8 @@ class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function addNodeModifiedDate($metadata) {
-    $formattedChangedDate = \Drupal::service('date.formatter')
-      ->format($this->data->getModifiedDate(), 'html_date');
+  private function addDatasetModifiedDate($metadata) {
+    $formattedChangedDate = $this->dateFormatter->format($this->data->getModifiedDate(), 'html_date');
     $metadata->{'%modified'} = $formattedChangedDate;
     return $metadata;
   }

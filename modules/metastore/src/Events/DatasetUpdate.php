@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Events;
 
-use Drupal\node\NodeInterface;
+use Drupal\metastore\MetastoreItemInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -15,28 +15,28 @@ class DatasetUpdate extends Event {
   /**
    * Dataset node.
    *
-   * @var \Drupal\node\NodeInterface
+   * @var \Drupal\metastore\MetastoreItemInterface
    */
   protected $node;
 
   /**
    * Constructor.
    *
-   * @param \Drupal\node\NodeInterface $node
+   * @param \Drupal\metastore\MetastoreItemInterface
    *   Dataset node just published.
    */
-  public function __construct(NodeInterface $node) {
-    $this->node = $node;
+  public function __construct(MetastoreItemInterface $item) {
+    $this->item = $item;
   }
 
   /**
    * Getter.
    *
-   * @return \Drupal\node\NodeInterface
+   * @return \Drupal\metastore\MetastoreItemInterface
    *   Dataset node just published.
    */
-  public function getNode() {
-    return $this->node;
+  public function getItem() {
+    return $this->item;
   }
 
 }

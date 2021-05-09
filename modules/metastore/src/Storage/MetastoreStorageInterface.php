@@ -2,8 +2,10 @@
 
 namespace Drupal\metastore\Storage;
 
-interface MetastoreStorageInterface
-{
+/**
+ * Interface for all metastore storage classes.
+ */
+interface MetastoreStorageInterface {
 
   /**
    * Retrieve.
@@ -11,7 +13,7 @@ interface MetastoreStorageInterface
    * @param string $id
    *   The identifier for the data.
    *
-   * @return string | HydratableInterface
+   * @return string|HydratableInterface
    *   The data or null if no data could be retrieved.
    */
   public function retrieve(string $id);
