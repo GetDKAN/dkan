@@ -1,0 +1,283 @@
+<?php
+
+namespace Drupal\metastore\LifeCycle;
+
+use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Resource;
+use Drupal\common\UrlHostTokenResolver;
+use Drupal\Core\Datetime\DateFormatter;
+use Drupal\metastore\Events\PreReference;
+use Drupal\metastore\MetastoreItemInterface;
+use Drupal\metastore\Reference\Dereferencer;
+use Drupal\metastore\Reference\OrphanChecker;
+use Drupal\metastore\Reference\Referencer;
+use Drupal\metastore\Traits\ResourceMapperTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+/**
+ * Data.
+ */
+class LifeCycle implements LifeCycleInterface {
+  use ResourceMapperTrait;
+  use EventDispatcherTrait;
+
+  const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
+
+  /**
+   * A metastore item.
+   *
+   * @var \Drupal\metastore\MetastoreItemInterface
+   */
+  protected $metastoreItem;
+
+  /**
+   * Referencer service.
+   *
+   * @var \Drupal\metastore\Reference\Referencer
+   */
+  protected $referencer;
+
+  /**
+   * Dereferencer.
+   *
+   * @var \Drupal\metastore\Reference\Dereferencer
+   */
+  protected $dereferencer;
+
+  /**
+   * OrphanChecker service.
+   *
+   * @var \Drupal\metastore\Reference\OrphanChecker
+   */
+  protected $orphanChecker;
+
+  /**
+   * DateFormatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatter
+   */
+  protected $dateFormatter;
+
+  /**
+   * Constructor.
+   */
+  public function __construct(
+    Referencer $referencer,
+    Dereferencer $dereferencer,
+    OrphanChecker $orphanChecker,
+    DateFormatter $dateFormatter
+  ) {
+    $this->referencer = $referencer;
+    $this->dereferencer = $dereferencer;
+    $this->orphanChecker = $orphanChecker;
+    $this->dateFormatter = $dateFormatter;
+  }
+
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.metastore.referencer'),
+      $container->get('dkan.metastore.dereferencer'),
+      $container->get('dkan.metastore.orphan_checker'),
+      $container->get('date.formatter')
+    );
+  }
+
+  /**
+   * Protected.
+   */
+  protected function go($stage) {
+    $method = "{$this->metastoreItem->getSchemaId()}{$stage}";
+    if (method_exists($this, $method)) {
+      $this->{$method}($this->metastoreItem);
+    }
+  }
+
+  /**
+   * Load.
+   */
+  public function load(MetastoreItemInterface $metastoreItem) {
+    $this->metastoreItem = $metastoreItem;
+    $this->go('Load');
+  }
+
+  /**
+   * Presave.
+   *
+   * Activities to move a data node through during presave.
+   */
+  public function presave(MetastoreItemInterface $metastoreItem) {
+    $this->metastoreItem = $metastoreItem;
+    $this->go('Presave');
+  }
+
+  /**
+   * Predelete.
+   */
+  public function predelete(MetastoreItemInterface $metastoreItem) {
+    $this->metastoreItem = $metastoreItem;
+    $this->go('Predelete');
+  }
+
+  /**
+   * Protected.
+   */
+  protected function datasetPredelete() {
+    $raw = $this->metastoreItem->getRawMetadata();
+
+    if (is_object($raw)) {
+      $this->orphanChecker->processReferencesInDeletedDataset($raw);
+    }
+  }
+
+  /**
+   * Private.
+   */
+  protected function datasetLoad() {
+    $metadata = json_decode($this->metastoreItem->getMetadata());
+
+    // Dereference dataset properties.
+    $metadata = $this->dereferencer->dereference($metadata);
+    $metadata = $this->addNodeModifiedDate($metadata);
+
+    $this->metastoreItem->setMetadata($metadata);
+  }
+
+  /**
+   * Private.
+   */
+  protected function datasetPresave() {
+    $metadata = json_decode($this->metastoreItem->getMetadata());
+
+    $title = isset($metadata->title) ? $metadata->title : $metadata->name;
+    $this->metastoreItem->setTitle($title);
+
+    // If there is no uuid add one.
+    if (!isset($metadata->identifier)) {
+      $metadata->identifier = $this->metastoreItem->getIdentifier();
+    }
+    // If one exists in the uuid it should be the same in the table.
+    else {
+      $this->metastoreItem->setIdentifier($metadata->identifier);
+    }
+
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, new PreReference($this->metastoreItem));
+
+    $metadata = $this->referencer->reference($metadata);
+
+    $this->metastoreItem->setMetadata($metadata);
+
+    // Check for possible orphan property references when updating a dataset.
+    if (!$this->metastoreItem->isNew()) {
+      $raw = $this->metastoreItem->getRawMetadata();
+      $this->orphanChecker->processReferencesInUpdatedDataset(
+        $raw,
+        $metadata
+      );
+    }
+
+  }
+
+  /**
+   * Private.
+   *
+   * @todo Decouple "resource" functionality from specific dataset properties.
+   */
+  protected function distributionLoad() {
+    $metadata = $this->metastoreItem->getMetadata();
+
+    if (!isset($metadata->data->downloadURL)) {
+      return;
+    }
+
+    $downloadUrl = $metadata->data->downloadURL;
+
+    if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
+      $resourceIdentifier = $downloadUrl;
+      $ref = NULL;
+      $original = NULL;
+      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
+
+      $downloadUrl = isset($original) ? $original : "";
+
+      $refProperty = "%Ref:downloadURL";
+      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
+    }
+
+    if (is_string($downloadUrl)) {
+      $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
+    }
+
+    $metadata->data->downloadURL = $downloadUrl;
+
+    $this->metastoreItem->setMetadata($metadata);
+  }
+
+  /**
+   * Private.
+   */
+  private function retrieveDownloadUrlFromResourceMapper($resourceIdentifier) {
+    $reference = [];
+    $original = NULL;
+
+    $fileMapperInfo = Resource::parseUniqueIdentifier($resourceIdentifier);
+
+    /** @var \Drupal\common\Resource $sourceResource */
+    $sourceResource = $this->getFileMapper()->get($fileMapperInfo['identifier'],
+      Resource::DEFAULT_SOURCE_PERSPECTIVE, $fileMapperInfo['version']);
+    if (!$sourceResource) {
+      return [$reference, $original];
+    }
+
+    $reference[] = $this->createResourceReference($sourceResource);
+
+    $perspective = resource_mapper_display();
+
+    /** @var \Drupal\common\Resource $sourceResource */
+    $resource = $sourceResource;
+
+    if ($perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE) {
+      $new = $this->getFileMapper()->get(
+        $fileMapperInfo['identifier'],
+        $perspective,
+        $fileMapperInfo['version']);
+      if ($new) {
+        $resource = $new;
+        $reference[] = $this->createResourceReference($resource);
+      }
+    }
+    $original = $resource->getFilePath();
+
+    return [$reference, $original];
+  }
+
+  /**
+   * Private.
+   */
+  private function createResourceReference(Resource $resource): object {
+    return (object) [
+      "identifier" => $resource->getUniqueIdentifier(),
+      "data" => $resource,
+    ];
+  }
+
+  /**
+   * Private.
+   */
+  protected function distributionPresave() {
+    $metadata = $this->metastoreItem->getMetadata();
+    $this->metastoreItem->setMetadata($metadata);
+  }
+
+  /**
+   * Private.
+   */
+  private function addNodeModifiedDate($metadata) {
+    $formattedChangedDate = $this->dateFormatter->format(
+      $this->metastoreItem->getModifiedDate(),
+      'html_date'
+    );
+    $metadata->{'%modified'} = $formattedChangedDate;
+    return $metadata;
+  }
+
+}
