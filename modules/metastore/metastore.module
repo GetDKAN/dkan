@@ -4,11 +4,10 @@
  * @file
  */
 
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\common\Resource;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\metastore\Events\DatasetUpdate;
-use Drupal\metastore\LifeCycle\Data as LifeCycle;
 use Drupal\metastore\Storage\MetastoreDataNodeStorage;
 use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\node\NodeInterface;
@@ -25,14 +24,14 @@ function metastore_node_load(array $entities) {
 /**
  * Implements hook_entity_presave().
  */
-function metastore_entity_presave(ContentEntityInterface $entity) {
+function metastore_entity_presave(EntityInterface $entity) {
   metastore_data_node_lifecycle($entity, "presave");
 }
 
 /**
  * Implements hook_entity_predelete().
  */
-function metastore_node_predelete(ContentEntityInterface $entity) {
+function metastore_node_predelete(EntityInterface $entity) {
   metastore_data_node_lifecycle($entity, "predelete");
 }
 
@@ -88,16 +87,16 @@ function resource_mapper_new_revision() {
  * @param Drupal\Core\Entity\ContentEntityInterface $entity
  *
  * @return Drupal\metastore\LifeCycle\Data
- *   Lifecycle object.
+ *   LifeCycle object.
  */
-function metastore_data_node_lifecycle(ContentEntityInterface $entity, string $hook) {
+function metastore_data_node_lifecycle(EntityInterface $entity, string $hook) {
 
   if (metastore_entity_is_valid_item($entity)) {
     $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
     $metastoreItem = $itemFactory->wrap($entity);
-    $lifeCycle = new LifeCycle($metastoreItem);
+    $lifeCycle = \Drupal::service('dkan.metastore.lifecycle');
     $lifeCycle->setFileMapper(\Drupal::service('dkan.metastore.resource_mapper'));
-    $lifeCycle->$hook();  
+    $lifeCycle->$hook($metastoreItem);  
   }
 
   return FALSE;
@@ -112,7 +111,7 @@ function metastore_data_node_lifecycle(ContentEntityInterface $entity, string $h
  * @return bool
  *   Returns true if the entity is used by the metastore.
  */
-function metastore_entity_is_valid_item(ContentEntityInterface $entity) {
+function metastore_entity_is_valid_item(EntityInterface $entity) {
   $storageFactory = \Drupal::service('dkan.metastore.storage');
   $storageClass = $storageFactory::getStorageClass();
 
