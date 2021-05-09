@@ -2,23 +2,101 @@
 
 namespace Drupal\metastore\LifeCycle;
 
+use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
+use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\Events\PreReference;
+use Drupal\metastore\NodeWrapper\Data;
+use Drupal\metastore\Reference\Dereferencer;
+use Drupal\metastore\Reference\OrphanChecker;
+use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\Traits\ResourceMapperTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Data.
  */
-class Data extends AbstractData {
+class LifeCycle implements LifeCycleInterface, ContainerInjectionInterface {
   use ResourceMapperTrait;
+  use EventDispatcherTrait;
 
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
 
   /**
+   * A metastore item.
+   *
+   * @var Drupal\metastore\NodeWrapper\Data
+   */
+  protected $data;
+
+  /**
+   * Referencer service.
+   *
+   * @var \Drupal\metastore\Reference\Referencer
+   */
+  protected $referencer;
+
+  /**
+   * Dereferencer.
+   *
+   * @var \Drupal\metastore\Reference\Dereferencer
+   */
+  protected $dereferencer;
+
+  /**
+   * OrphanChecker service.
+   *
+   * @var \Drupal\metastore\Reference\OrphanChecker
+   */
+  protected $orphanChecker;
+
+  /**
+   * DateFormatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatter
+   */
+  protected $dateFormatter;
+
+  /**
+   * Constructor.
+   */
+  public function __construct(
+    Referencer $referencer,
+    Dereferencer $dereferencer,
+    OrphanChecker $orphanChecker,
+    DateFormatter $dateFormatter
+  ) {
+    $this->referencer = $referencer;
+    $this->dereferencer = $dereferencer;
+    $this->orphanChecker = $orphanChecker;
+    $this->dateFormatter = $dateFormatter;
+  }
+
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.metastore.referencer'),
+      $container->get('dkan.metastore.dereferencer'),
+      $container->get('dkan.metastore.orphan_checker'),
+      $container->get('date.formatter')
+    );
+  }
+
+  /**
+   * Protected.
+   */
+  protected function go($stage) {
+    $method = "{$this->data->getDataType()}{$stage}";
+    if (method_exists($this, $method)) {
+      $this->{$method}();
+    }
+  }
+
+  /**
    * Load.
    */
-  public function load() {
+  public function load(Data $data) {
     $this->go('Load');
   }
 
@@ -27,21 +105,21 @@ class Data extends AbstractData {
    *
    * Activities to move a data node through during presave.
    */
-  public function presave() {
+  public function presave(Data $data) {
     $this->go('Presave');
   }
 
   /**
    * Predelete.
    */
-  public function predelete() {
+  public function predelete(Data $data) {
     $this->go('Predelete');
   }
 
   /**
    * Protected.
    */
-  protected function datasetPredelete() {
+  protected function datasetPredelete(Data $data) {
     $raw = $this->data->getRawMetadata();
 
     if (is_object($raw)) {
