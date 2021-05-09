@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Storage;
 
-interface DataInterface
+interface MetastoreStorageInterface
 {
 
   /**
