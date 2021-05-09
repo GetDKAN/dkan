@@ -6,8 +6,6 @@ namespace Drupal\metastore;
  * Data.
  */
 interface MetastoreItemInterface {
-  const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
-
   /**
    * Getter.
    */

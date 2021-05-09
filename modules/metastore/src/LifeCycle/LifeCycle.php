@@ -15,13 +15,13 @@ use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Traits\ResourceMapperTrait;
+use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Data.
  */
 class LifeCycle implements ContainerInjectionInterface {
-  use ResourceMapperTrait;
   use EventDispatcherTrait;
 
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
@@ -76,7 +76,7 @@ class LifeCycle implements ContainerInjectionInterface {
     Dereferencer $dereferencer,
     OrphanChecker $orphanChecker,
     ResourceMapper $resourceMapper,
-    DateFormatter $dateFormatter
+    DateFormatter $dateFormatter.
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
@@ -146,7 +146,10 @@ class LifeCycle implements ContainerInjectionInterface {
    * Purge resources (if unneeded) of any updated dataset.
    */
   protected function datasetUpdate() {
-    $this->dispatchEvent($this->data::EVENT_DATASET_UPDATE, new DatasetUpdate($this->data));
+    $this->dispatchEvent(
+      MetastoreEntityStorageInterface::EVENT_DATASET_UPDATE,
+      new DatasetUpdate($this->data)
+    );
   }
 
   /**
@@ -261,8 +264,7 @@ class LifeCycle implements ContainerInjectionInterface {
 
     $this->dispatchEvent(self::EVENT_PRE_REFERENCE, new PreReference($this->data));
 
-    $referencer = \Drupal::service("dkan.metastore.referencer");
-    $metadata = $referencer->reference($metadata);
+    $metadata = $this->referencer->reference($metadata);
 
     $this->data->setMetadata($metadata);
 

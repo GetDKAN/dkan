@@ -6,6 +6,8 @@ namespace Drupal\metastore\Storage;
  * Storage interface specifically for using drupal entities.
  */
 interface MetastoreEntityStorageInterface extends MetastoreStorageInterface {
+  const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
+
   /**
    * Get the entity type used in this storage class.
    *
