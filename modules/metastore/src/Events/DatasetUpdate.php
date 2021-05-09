@@ -17,7 +17,7 @@ class DatasetUpdate extends Event {
    *
    * @var \Drupal\metastore\MetastoreItemInterface
    */
-  protected $node;
+  protected $item;
 
   /**
    * Constructor.

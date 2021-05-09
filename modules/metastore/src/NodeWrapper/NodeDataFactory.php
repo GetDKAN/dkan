@@ -1,16 +1,17 @@
 <?php
 
-namespace Drupal\metastore\Factory;
+namespace Drupal\metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityRepository;
+use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 use Drupal\metastore\NodeWrapper\Data;
 
 /**
- * Class MetastoreDataNodeFactory.
+ * Class NodeDataFactory.
  *
  * Build a MetastoreItemInterface object from a simple node.
  */
-class MetastoreDataNodeFactory implements MetastoreItemFactoryInterface {
+class NodeDataFactory implements MetastoreItemFactoryInterface {
 
   /**
    * @var Drupal\Core\Entity\EntityRepository

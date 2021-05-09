@@ -67,6 +67,6 @@ services:
       - '@database'
 
   dkan.metastore.metastore_item_factory:
-    class: \Drupal\metastore\Factory\NodeDataFactory
+    class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:
       - '@entity.repository'

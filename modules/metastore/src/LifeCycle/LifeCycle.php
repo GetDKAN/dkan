@@ -76,7 +76,7 @@ class LifeCycle implements ContainerInjectionInterface {
     Dereferencer $dereferencer,
     OrphanChecker $orphanChecker,
     ResourceMapper $resourceMapper,
-    DateFormatter $dateFormatter.
+    DateFormatter $dateFormatter
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;

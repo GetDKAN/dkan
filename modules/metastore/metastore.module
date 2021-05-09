@@ -81,7 +81,6 @@ function metastore_data_node_lifecycle(EntityInterface $entity, string $stage) {
     $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
     $metastoreItem = $itemFactory->wrap($entity);
     $lifeCycle = \Drupal::service('dkan.metastore.lifecycle');
-    $lifeCycle->setFileMapper(\Drupal::service('dkan.metastore.resource_mapper'));
     $lifeCycle->go($stage, $metastoreItem);
   }
 

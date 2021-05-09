@@ -5,6 +5,7 @@ namespace Drupal\metastore\Factory;
 use Contracts\FactoryInterface;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 use Sae\Sae as Engine;
 
 /**
@@ -77,7 +78,7 @@ class Sae implements FactoryInterface {
   /**
    * Get Storage.
    *
-   * @return \Drupal\metastore\Storage\Data
+   * @return \Drupal\metastore\Storage\MetastoreStorageInterface
    *   Dataset
    */
   private function getStorage($schema_id) {
