@@ -80,8 +80,7 @@ function metastore_data_node_lifecycle(EntityInterface $entity, string $stage) {
   if (metastore_entity_is_valid_item($entity)) {
     $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
     $metastoreItem = $itemFactory->wrap($entity);
-    $lifeCycle = \Drupal::service('dkan.metastore.lifecycle');
-    $lifeCycle->go($stage, $metastoreItem);
+    \Drupal::service('dkan.metastore.lifecycle')->go($stage, $metastoreItem);
   }
 
   return FALSE;

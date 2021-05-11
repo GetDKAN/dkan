@@ -6,6 +6,7 @@ use Drupal\common\Resource;
 use Drupal\common\LoggerTrait;
 use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\Registration;
+use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -24,7 +25,7 @@ class Subscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     $events = [];
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
-    $events[MetastoreEntityStorageInterface::EVENT_DATASET_UPDATE][] = ['purgeResources'];
+    $events[LifeCycle::EVENT_DATASET_UPDATE][] = ['purgeResources'];
     return $events;
   }
 

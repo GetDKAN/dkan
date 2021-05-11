@@ -6,7 +6,6 @@ use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\PreReference;
 use Drupal\metastore\MetastoreItemInterface;
@@ -14,24 +13,15 @@ use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Traits\ResourceMapperTrait;
-use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Data.
  */
-class LifeCycle implements ContainerInjectionInterface {
+class LifeCycle {
   use EventDispatcherTrait;
 
+  const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
-
-  /**
-   * A metastore item.
-   *
-   * @var \Drupal\metastore\MetastoreItemInterface
-   */
-  protected $data;
 
   /**
    * Referencer service.
@@ -86,21 +76,6 @@ class LifeCycle implements ContainerInjectionInterface {
   }
 
   /**
-   * Factory method.
-   *
-   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('dkan.metastore.referencer'),
-      $container->get('dkan.metastore.dereferencer'),
-      $container->get('dkan.metastore.orphan_checker'),
-      $container->get('dkan.metastore.resource_mapper'),
-      $container->get('date.formatter')
-    );
-  }
-
-  /**
    * Entry point for LifeCycle functions.
    *
    * @param string $stage
@@ -109,19 +84,18 @@ class LifeCycle implements ContainerInjectionInterface {
    *   Metastore item object.
    */
   public function go($stage, MetastoreItemInterface $data) {
-    $this->data = $data;
     $stage = ucwords($stage);
-    $method = "{$this->data->getSchemaId()}{$stage}";
+    $method = "{$data->getSchemaId()}{$stage}";
     if (method_exists($this, $method)) {
-      $this->{$method}();
+      $this->{$method}($data);
     }
   }
 
   /**
    * Dataset preDelete.
    */
-  protected function datasetPredelete() {
-    $raw = $this->data->getRawMetadata();
+  protected function datasetPredelete(MetastoreItemInterface $data) {
+    $raw = $data->getRawMetadata();
 
     if (is_object($raw)) {
       $referencer = \Drupal::service("dkan.metastore.orphan_checker");
@@ -132,23 +106,23 @@ class LifeCycle implements ContainerInjectionInterface {
   /**
    * Dataset load.
    */
-  protected function datasetLoad() {
-    $metadata = $this->data->getMetaData();
+  protected function datasetLoad(MetastoreItemInterface $data) {
+    $metadata = $data->getMetaData();
 
     // Dereference dataset properties.
     $metadata = $this->dereferencer->dereference($metadata);
-    $metadata = $this->addDatasetModifiedDate($metadata);
+    $metadata = $this->addDatasetModifiedDate($metadata, $data->getModifiedDate());
 
-    $this->data->setMetadata($metadata);
+    $data->setMetadata($metadata);
   }
 
   /**
    * Purge resources (if unneeded) of any updated dataset.
    */
-  protected function datasetUpdate() {
+  protected function datasetUpdate(MetastoreItemInterface $data) {
     $this->dispatchEvent(
-      MetastoreEntityStorageInterface::EVENT_DATASET_UPDATE,
-      new DatasetUpdate($this->data)
+      self::EVENT_DATASET_UPDATE,
+      new DatasetUpdate($data)
     );
   }
 
@@ -157,8 +131,8 @@ class LifeCycle implements ContainerInjectionInterface {
    *
    * @todo Decouple "resource" functionality from specific dataset properties.
    */
-  protected function distributionLoad() {
-    $metadata = $this->data->getMetaData();
+  protected function distributionLoad(MetastoreItemInterface $data) {
+    $metadata = $data->getMetaData();
 
     if (!isset($metadata->data->downloadURL)) {
       return;
@@ -184,7 +158,7 @@ class LifeCycle implements ContainerInjectionInterface {
 
     $metadata->data->downloadURL = $downloadUrl;
 
-    $this->data->setMetadata($metadata);
+    $data->setMetadata($metadata);
   }
 
   /**
@@ -247,30 +221,30 @@ class LifeCycle implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  protected function datasetPresave() {
-    $metadata = $this->data->getMetaData();
+  protected function datasetPresave(MetastoreItemInterface $data) {
+    $metadata = $data->getMetaData();
 
     $title = isset($metadata->title) ? $metadata->title : $metadata->name;
-    $this->data->setTitle($title);
+    $data->setTitle($title);
 
     // If there is no uuid add one.
     if (!isset($metadata->identifier)) {
-      $metadata->identifier = $this->data->getIdentifier();
+      $metadata->identifier = $data->getIdentifier();
     }
     // If one exists in the uuid it should be the same in the table.
     else {
-      $this->data->setIdentifier($metadata->identifier);
+      $data->setIdentifier($metadata->identifier);
     }
 
-    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, new PreReference($this->data));
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, new PreReference($data));
 
     $metadata = $this->referencer->reference($metadata);
 
-    $this->data->setMetadata($metadata);
+    $data->setMetadata($metadata);
 
     // Check for possible orphan property references when updating a dataset.
-    if (!$this->data->isNew()) {
-      $raw = $this->data->getRawMetadata();
+    if (!$data->isNew()) {
+      $raw = $data->getRawMetadata();
       $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }
 
@@ -279,16 +253,16 @@ class LifeCycle implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  protected function distributionPresave() {
-    $metadata = $this->data->getMetaData();
-    $this->data->setMetadata($metadata);
+  protected function distributionPresave(MetastoreItemInterface $data) {
+    $metadata = $data->getMetaData();
+    $data->setMetadata($metadata);
   }
 
   /**
    * Private.
    */
-  private function addDatasetModifiedDate($metadata) {
-    $formattedChangedDate = $this->dateFormatter->format($this->data->getModifiedDate(), 'html_date');
+  private function addDatasetModifiedDate($metadata, $date) {
+    $formattedChangedDate = $this->dateFormatter->format($date, 'html_date');
     $metadata->{'%modified'} = $formattedChangedDate;
     return $metadata;
   }

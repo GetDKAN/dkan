@@ -177,7 +177,7 @@ abstract class Data implements MetastoreStorageInterface {
    * @param string $uuid
    *   The dataset identifier.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity's published revision, if found.
    */
   public function getEntityPublishedRevision(string $uuid) {
