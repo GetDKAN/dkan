@@ -62,28 +62,58 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
    * {@inheritdoc}
    */
   public function validate($items, Constraint $constraint) {
-    $schema = 'dataset';
-    if (is_object($items) && $entity = $items->getParent()->getEntity()) {
-      if ($type = $entity->get('field_data_type')->value) {
-        $schema = $type;
-      }
-    }
-
+    $schema_id = $this->getSchemaIdFromEntity($items);
     foreach ($items as $item) {
-      $errors = [];
-      try {
-        $this->validMetadataFactory->get($schema, $item->value);
-      }
-      catch (ValidationException $e) {
-        $errors = $this->getValidationErrorsMessages($e->getResult()->getErrors());
-      }
-      catch (InvalidArgumentException $e) {
-        $errors[] = $e->getMessage();
-      }
+      $errors = $this->doValidate($schema_id, $item);
       if (!empty($errors)) {
         $this->addViolations($errors);
       }
     }
+  }
+
+  /**
+   * Gets schema id from the entity field_data_type field.
+   *
+   * @param object|mixed $items
+   *   Entity.
+   *
+   * @return string
+   *   Schema id.
+   */
+  private function getSchemaIdFromEntity($items): string {
+    $schema = 'dataset';
+    if (is_object($items) && $type = $items->getParent()->getEntity()->get('field_data_type')->value) {
+      $schema = $type;
+    }
+    return $schema;
+  }
+
+  /**
+   * A wrapper to call the validation service and collect errors.
+   *
+   * @param string $schema_id
+   *   Schema id.
+   * @param object $item
+   *   JSON metadata value.
+   *
+   * @return array
+   *   Errors array.
+   *
+   * @throws \RootedData\Exception\ValidationException
+   * @throws \JsonPath\InvalidJsonException
+   */
+  private function doValidate(string $schema_id, $item): array {
+    $errors = [];
+    try {
+      $this->validMetadataFactory->get($schema_id, $item->value);
+    }
+    catch (ValidationException $e) {
+      $errors = $this->getValidationErrorsMessages($e->getResult()->getErrors());
+    }
+    catch (InvalidArgumentException $e) {
+      $errors[] = $e->getMessage();
+    }
+    return $errors;
   }
 
   /**
