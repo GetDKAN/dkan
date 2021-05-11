@@ -6,6 +6,7 @@ use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\InvalidJsonException;
 use Drupal\metastore\Exception\MetastoreException;
 use Drupal\metastore\Exception\MissingPayloadException;
+use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -81,10 +82,8 @@ class WebServiceApi implements ContainerInjectionInterface {
     $keepRefs = $this->wantObjectWithReferences();
 
     $output = array_map(function ($object) use ($keepRefs) {
-      if ($keepRefs) {
-        return $this->swapReferences($object);
-      }
-      return Service::removeReferences($object);
+      $modified_object = $keepRefs ? $this->swapReferences($object) : Service::removeReferences($object);
+      return (object) $modified_object->get('$');
     }, $this->service->getAll($schema_id));
 
     return $this->getResponse($output);
@@ -103,13 +102,14 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function get(string $schema_id, string $identifier) {
     try {
-      $object = json_decode($this->service->get($schema_id, $identifier));
+      $object = $this->service->get($schema_id, $identifier);
       if ($this->wantObjectWithReferences()) {
         $object = $this->swapReferences($object);
       }
       else {
         $object = Service::removeReferences($object);
       }
+      $object = (object) $object->get('$');
       return $this->getResponse($object);
     }
     catch (\Exception $e) {
@@ -134,28 +134,26 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function swapReferences($object) {
-    $array = (array) $object;
-    foreach ($array as $property => $value) {
+  private function swapReferences(RootedJsonData $object): RootedJsonData {
+    $no_schema_object = $this->service->getValidMetadataFactory()->get(NULL, $object->__toString());
+    foreach ($no_schema_object->get('$') as $property => $value) {
       if (substr_count($property, "%Ref:") > 0) {
-        $array = $this->swapReference($property, $value, $array);
+        $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
       }
     }
 
-    $object = (object) $array;
-
-    return Service::removeReferences($object, "%Ref");
+    return Service::removeReferences($no_schema_object, "%Ref");
   }
 
   /**
    * Private.
    */
-  private function swapReference($property, $value, $array) {
+  private function swapReference($property, $value, RootedJsonData $object): RootedJsonData {
     $original = str_replace("%Ref:", "", $property);
-    if (isset($array[$original])) {
-      $array[$original] = $value;
+    if ($object->__isset("$.{$original}")) {
+      $object->set("$.{$original}", $value);
     }
-    return $array;
+    return $object;
   }
 
   /**
@@ -190,7 +188,8 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function post(string $schema_id) {
     try {
       $data = $this->getRequestContent();
-      $this->checkData($data);
+      $this->checkIdentifier($data);
+      $data = $this->service->getValidMetadataFactory()->get($schema_id, $data);
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
@@ -243,7 +242,8 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function put($schema_id, string $identifier) {
     try {
       $data = $this->getRequestContent();
-      $this->checkData($data, $identifier);
+      $this->checkIdentifier($data, $identifier);
+      $data = $this->service->getValidMetadataFactory()->get($schema_id, $data);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);
@@ -271,7 +271,16 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     try {
       $data = $this->getRequestContent();
-      $this->checkData($data, $identifier);
+
+      if (empty($data)) {
+        throw new MissingPayloadException("Empty body");
+      }
+      $obj = json_decode($data);
+      if (!$obj) {
+        throw new InvalidJsonException("Invalid JSON");
+      }
+      $this->checkIdentifier($data, $identifier);
+
       $this->service->patch($schema_id, $identifier, $data);
       return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
     }
@@ -320,20 +329,10 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Checks identifier.
    */
-  private function checkData($data, $identifier = NULL) {
-
-    if (empty($data)) {
-      throw new MissingPayloadException("Empty body");
-    }
-
+  private function checkIdentifier(string $data, $identifier = NULL) {
     $obj = json_decode($data);
-
-    if (!$obj) {
-      throw new InvalidJsonException("Invalid JSON");
-    }
-
     if (isset($identifier) && isset($obj->identifier) && $obj->identifier != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");
     }

@@ -5,13 +5,16 @@ namespace Drupal\Tests\metastore;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
+use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Service;
 use Drupal\metastore\WebServiceApi;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\Tests\metastore\Unit\ServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -22,18 +25,29 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class WebServiceApiTest extends TestCase {
 
   /**
+   * The ValidMetadataFactory class used for testing.
+   *
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $validMetadataFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+  }
+
+  /**
    *
    */
   public function testGetAll() {
-    $json = '{"name": "hello"}';
-    $object = json_decode($json);
-    $objects = [$object, $object, $object];
+    $json = ['name' => 'hello'];
+    $object = $this->validMetadataFactory->get('blah', json_encode($json));
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getAll', [$object, $object, $object]);
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
-    $this->assertEquals(json_encode($objects), $response->getContent());
+    $this->assertEquals(json_encode([$json, $json, $json]), $response->getContent());
   }
 
   /**
@@ -42,7 +56,7 @@ class WebServiceApiTest extends TestCase {
   public function testGet() {
     $json = '{"name": "hello"}';
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', $json);
+    $mockChain->add(Service::class, 'get', new RootedJsonData($json));
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
@@ -94,6 +108,8 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
     $mockChain->add(Request::class, 'getContent', '{"identifier": "1"}');
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, 'post', "1");
 
     $controller = WebServiceApi::create($mockChain->getMock());
@@ -109,6 +125,8 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
     $mockChain->add(Request::class, 'getContent', '{ }');
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, 'post', "1");
 
     $controller = WebServiceApi::create($mockChain->getMock());
@@ -124,6 +142,8 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
     $mockChain->add(Request::class, 'getContent', '{ }');
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, 'post', new \Exception("bad"));
 
     $controller = WebServiceApi::create($mockChain->getMock());
@@ -139,6 +159,8 @@ class WebServiceApiTest extends TestCase {
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getRequestUri', "http://blah")
       ->add(Request::class, 'getContent', '{"identifier": "1"}')
+      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
       ->add(Service::class, 'post', new ExistingObjectException("Already exists"));
 
     $controller = WebServiceApi::create($mockChain->getMock());
@@ -154,6 +176,8 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $mockChain->add(Request::class, 'getContent', "{ }");
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, "put", ["identifier" => "1", "new" => FALSE]);
 
     $controller = WebServiceApi::create($mockChain->getMock());
@@ -164,26 +188,26 @@ class WebServiceApiTest extends TestCase {
   /**
    *
    */
-  public function testPutInvalidJsonException() {
+  public function testPatchInvalidJsonException() {
     $mockChain = $this->getCommonMockChain()
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', "{");
 
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->put(1, 'dataset');
+    $response = $controller->patch(1, 'dataset');
     $this->assertEquals('{"message":"Invalid JSON"}', $response->getContent());
   }
 
   /**
    *
    */
-  public function testPutMissingPayloadException() {
+  public function testPatchMissingPayloadException() {
     $mockChain = $this->getCommonMockChain()
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', "");
 
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->put(1, 'dataset');
+    $response = $controller->patch(1, 'dataset');
     $this->assertEquals('{"message":"Empty body"}', $response->getContent());
   }
 
@@ -203,6 +227,8 @@ EOF;
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', $updating)
       ->add(Request::class, 'getRequestUri', "http://blah")
+      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
       ->add(Service::class, "put", new UnmodifiedObjectException("No changes"));
 
     $controller = WebServiceApi::create($mockChain->getMock());
@@ -232,6 +258,8 @@ EOF;
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $mockChain->add(Request::class, 'getContent', json_encode($collection));
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+    $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, "patch", "1");
 
     $controller = WebServiceApi::create($mockChain->getMock());
@@ -279,6 +307,8 @@ EOF;
     $mockChain = $this->getCommonMockChain()
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', '{"identifier":"1","title":"foo"}')
+      ->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class)
+      ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
       ->add(Service::class, "patch", new MissingObjectException("Not found"));
 
     $controller = WebServiceApi::create($mockChain->getMock());

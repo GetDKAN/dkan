@@ -10,10 +10,6 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
-use JsonSchema\Exception\ValidationException;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,13 +22,6 @@ class Service implements ContainerInjectionInterface {
 
   const EVENT_DATA_GET = 'dkan_metastore_data_get';
   const EVENT_DATA_GET_ALL = 'dkan_metastore_data_get_all';
-
-  /**
-   * SAE Factory.
-   *
-   * @var \Drupal\metastore\Factory\Sae
-   */
-  private $saeFactory;
 
   /**
    * Schema retriever.
@@ -56,6 +45,13 @@ class Service implements ContainerInjectionInterface {
   private $storages;
 
   /**
+   * RootedJsonData wrapper.
+   *
+   * @var \Drupal\metastore\ValidMetadataFactory
+   */
+  private $validMetadataFactory;
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}
@@ -63,16 +59,18 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('dkan.metastore.schema_retriever'),
-      $container->get('dkan.metastore.storage')
+      $container->get('dkan.metastore.storage'),
+      $container->get('dkan.metastore.valid_metadata')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory) {
+  public function __construct(SchemaRetriever $schemaRetriever, DataFactory $factory, ValidMetadataFactory $validMetadataFactory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
+    $this->validMetadataFactory = $validMetadataFactory;
   }
 
   /**
@@ -137,9 +135,10 @@ class Service implements ContainerInjectionInterface {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
 
     $objects = array_map(
-      function ($jsonString) {
+      function ($jsonString) use ($schema_id) {
+        $data = $this->validMetadataFactory->get($schema_id, $jsonString);
         try {
-          return json_decode($this->dispatchEvent(self::EVENT_DATA_GET, $jsonString));
+          return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
         }
         catch (\Exception $e) {
           return (object) ["message" => $e->getMessage()];
@@ -161,11 +160,13 @@ class Service implements ContainerInjectionInterface {
    * @param string $identifier
    *   Identifier.
    *
-   * @return string
+   * @return \RootedData\RootedJsonData
    *   The json data.
    */
-  public function get($schema_id, $identifier): string {
-    $data = $this->getStorage($schema_id)->retrievePublished($identifier);
+  public function get($schema_id, $identifier): RootedJsonData {
+    $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
+    $data = $this->validMetadataFactory->get($schema_id, $json_string);
+
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     return $data;
   }
@@ -184,12 +185,23 @@ class Service implements ContainerInjectionInterface {
    * @todo Make this aware of revisions and moderation states.
    */
   public function getResources($schema_id, $identifier): array {
-    $json = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = json_decode($json);
+    $json_string = $this->getStorage($schema_id)->retrieve($identifier);
+    $data = $this->validMetadataFactory->get($schema_id, $json_string);
+
     /* @todo decouple from POD. */
-    $resources = $data->distribution;
+    $resources = $data->{"$.distribution"};;
 
     return $resources;
+  }
+
+  /**
+   * Get ValidMetadataFactory.
+   *
+   * @return \Drupal\metastore\ValidMetadataFactory
+   *   rootedJsonDataWrapper.
+   */
+  public function getValidMetadataFactory() {
+    return $this->validMetadataFactory;
   }
 
   /**
@@ -197,19 +209,18 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
-   * @param string $data
+   * @param \RootedData\RootedJsonData $data
    *   Json payload.
    *
    * @return string
    *   The identifier.
    */
-  public function post($schema_id, string $data): string {
+  public function post($schema_id, RootedJsonData $data): string {
     $identifier = NULL;
 
     // If resource already exists, return HTTP 409 Conflict and existing uri.
-    $decoded = json_decode($data, TRUE);
-    if (isset($decoded['identifier'])) {
-      $identifier = $decoded['identifier'];
+    if (!empty($data->{'$.identifier'})) {
+      $identifier = $data->{'$.identifier'};
       if ($this->objectExists($schema_id, $identifier)) {
         throw new ExistingObjectException("{$schema_id}/{$identifier} already exists.");
       }
@@ -244,15 +255,14 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
-   * @param string $data
+   * @param \RootedData\RootedJsonData $data
    *   Json payload.
    *
    * @return array
    *   ["identifier" => string, "new" => boolean].
    */
-  public function put($schema_id, $identifier, string $data): array {
-    $obj = json_decode($data);
-    if (isset($obj->identifier) && $obj->identifier != $identifier) {
+  public function put($schema_id, $identifier, RootedJsonData $data): array {
+    if (!empty($data->{'$.identifier'}) && $data->{'$.identifier'} != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");
     }
     elseif ($this->objectExists($schema_id, $identifier) && $this->objectIsEquivalent($schema_id, $identifier, $data)) {
@@ -270,16 +280,13 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
-   * @param string $data
+   * @param \RootedData\RootedJsonData $data
    *   Json payload.
    *
    * @return array
    *   ["identifier" => string, "new" => boolean].
    */
-  private function proceedWithPut($schema_id, $identifier, string $data): array {
-    // TODO: abandon the method and use RootedJsonData instead on JSON string.
-    $this->validateJson($schema_id, $data);
-
+  private function proceedWithPut($schema_id, $identifier, RootedJsonData $data): array {
     if ($this->objectExists($schema_id, $identifier)) {
       $this->getStorage($schema_id)->store($data, $identifier);
       return ['identifier' => $identifier, 'new' => FALSE];
@@ -314,10 +321,7 @@ class Service implements ContainerInjectionInterface {
           json_decode($json_data)
         );
 
-        $new = json_encode($patched);
-        // TODO: abandon the method and use RootedJsonData instead on JSON string.
-        $this->validateJson($schema_id, $new);
-
+        $new = $this->validMetadataFactory->get($schema_id, json_encode($patched));
         $storage->store($new, "{$identifier}");
         return $identifier;
       }
@@ -383,84 +387,37 @@ class Service implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   The uuid.
-   * @param string $metadata
+   * @param \RootedData\RootedJsonData $metadata
    *   The new data being compared to the existing data.
    *
    * @return bool
    *   TRUE if the metadata is equivalent, false otherwise.
    */
-  private function objectIsEquivalent(string $schema_id, string $identifier, string $metadata) {
+  private function objectIsEquivalent(string $schema_id, string $identifier, RootedJsonData $metadata) {
     $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
-    $existing = json_decode($existingMetadata);
+    $existing = $this->getValidMetadataFactory()->get($schema_id, $existingMetadata);
     $existing = self::removeReferences($existing);
-    $new = json_decode($metadata);
-    return $new == $existing;
+    return $metadata->get('$') == $existing->get('$');
   }
 
   /**
    * Private.
    */
-  public static function removeReferences($object, $prefix = "%") {
-    $array = (array) $object;
+  public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
+    $array = $object->get('$');
+
     foreach ($array as $property => $value) {
       if (substr_count($property, $prefix) > 0) {
         unset($array[$property]);
       }
     }
 
-    $object = (object) $array;
-
-    if (isset($object->distribution[0]->{"%Ref:downloadURL"})) {
-      unset($object->distribution[0]->{"%Ref:downloadURL"});
+    if (isset($array['distribution'][0]['%Ref:downloadURL'])) {
+      unset($array['distribution'][0]['%Ref:downloadURL']);
     }
 
+    $object->set('$', $array);
     return $object;
-  }
-
-  /**
-   * Get validation result.
-   *
-   * @param \Drupal\metastore\string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param \Drupal\metastore\string $json_data
-   *   Json payload.
-   *
-   * @return array
-   *   The validation result.
-   *
-   * @throws \Exception
-   */
-  public function getValidationInfo(string $schema_id, string $json_data): array {
-    $schema = $this->schemaRetriever->retrieve($schema_id);
-    $result = RootedJsonData::validate($json_data, $schema);
-    $presenter = new ValidationErrorPresenter(
-      new PresentedValidationErrorFactory(
-        new MessageFormatterFactory()
-      )
-    );
-    $presented = $presenter->present(...$result->getErrors());
-    return ['valid' => empty($presented), 'errors' => $presented];
-  }
-
-  /**
-   * Validate JSON.
-   *
-   * @param \Drupal\metastore\string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param \Drupal\metastore\string $json_data
-   *   Json payload.
-   *
-   * @return bool
-   *   Valid or not.
-   *
-   * @throws \Exception
-   */
-  public function validateJson(string $schema_id, string $json_data): bool {
-    $validation_info = $this->getValidationInfo($schema_id, $json_data);
-    if (!$validation_info['valid']) {
-      throw new ValidationException(json_encode((object) $validation_info['errors']));
-    }
-    return TRUE;
   }
 
 }

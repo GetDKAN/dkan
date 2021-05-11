@@ -63,7 +63,7 @@ trait FacetsFromIndexTrait {
       $schema = $type;
     }
     foreach ($this->metastoreService->getAll($schema) as $collection) {
-      $facet_name = empty($field) ? $collection->data : $collection->data->{$field};
+      $facet_name = empty($field) ? $collection->{'$.data'} : $collection->{'$.data.' . $field};
       $facets[] = $this->getFacet($type, $facet_name, $query);
     }
 

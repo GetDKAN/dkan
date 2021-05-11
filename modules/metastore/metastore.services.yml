@@ -4,6 +4,7 @@ services:
     arguments:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.valid_metadata'
 
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
@@ -49,3 +50,8 @@ services:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
     arguments:
       - '@database'
+
+  dkan.metastore.valid_metadata:
+    class: \Drupal\metastore\ValidMetadataFactory
+    arguments:
+      - '@dkan.metastore.schema_retriever'
