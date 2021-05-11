@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\Resource;
-use Drupal\metastore\Events\DatasetUpdate;
+use Drupal\common\Events\Event;
 use Drupal\metastore\LifeCycle\Data as LifeCycle;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\Storage\Data as MetastoreData;
@@ -77,7 +77,7 @@ function purgeResources(NodeInterface $node) {
   ) {
     \Drupal::service('event_dispatcher')->dispatch(
       MetastoreData::EVENT_DATASET_UPDATE,
-      new DatasetUpdate($node)
+      new Event($node)
     );
   }
 }

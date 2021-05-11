@@ -11,7 +11,6 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\EventSubscriber\Subscriber;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
-use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\common\Events\Event;
 use MockChain\Chain;
 use MockChain\Options;
@@ -90,7 +89,7 @@ class SubscriberTest extends TestCase {
   public function testResourcePurging() {
 
     $mockDatasetPublication = (new Chain($this))
-      ->add(DatasetUpdate::class, 'getNode', ContentEntityInterface::class)
+      ->add(Event::class, 'getData', ContentEntityInterface::class)
       ->getMock();
 
     $options = (new Options())

@@ -34,7 +34,8 @@ class OrphanCheckerTest extends ExistingSiteBase {
     $service->post('dataset', $this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']));
     $this->runQueues(['datastore_import']);
     $service->delete('dataset', 123);
-    $this->runQueues(['orphan_reference_processor']);
+    $success = $this->runQueues(['orphan_reference_processor']);
+    $this->assertNull($success);
   }
 
   private function runQueues(array $relevantQueues = []) {
