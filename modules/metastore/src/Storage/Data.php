@@ -66,12 +66,6 @@ abstract class Data implements MetastoreStorageInterface {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->setSchema($schemaId);
-
-    $this->bundleKey = $this->entityStorage->getEntityType()->getKey('bundle');
-    $this->labelKey = $this->entityStorage->getEntityType()->getKey('label');
-
-    // Set up bundle default value.
-    $this->bundle = $schemaId;
   }
 
   /**

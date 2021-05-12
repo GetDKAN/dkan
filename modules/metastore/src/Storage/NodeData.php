@@ -14,8 +14,10 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
    */
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityType = 'node';
-    parent::__construct($schemaId, $entityTypeManager);
     $this->bundle = 'data';
+    $this->bundleKey = "type";
+    $this->labelKey = "title";
+    parent::__construct($schemaId, $entityTypeManager);
   }
 
   /**
