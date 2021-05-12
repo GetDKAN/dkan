@@ -26,7 +26,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * The dataset storage.
    *
-   * @var \Drupal\metastore\Storage\NodeData
+   * @var \Drupal\metastore\Storage\Data
    */
   private $storage;
 

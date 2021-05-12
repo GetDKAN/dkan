@@ -22,7 +22,7 @@ class DatasetInfo implements ContainerInjectionInterface {
   /**
    * Metastore storage.
    *
-   * @var \Drupal\metastore\Storage\NodeData
+   * @var \Drupal\metastore\Storage\Data
    */
   protected $storage;
 
