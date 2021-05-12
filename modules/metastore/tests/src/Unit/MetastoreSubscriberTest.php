@@ -24,6 +24,7 @@ class MetastoreSubscriberTest extends TestCase {
    */
   public function testResourceMapperCleanUp() {
     $logger = $this->getLoggerChain();
+    $this->setLoggerFactory($logger->getMock());
 
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');

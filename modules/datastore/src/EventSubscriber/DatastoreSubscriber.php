@@ -9,13 +9,19 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\Data;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Dkan\Datastore\Importer;
-use Psr\Log\LogLevel;
 
 /**
  * Subscriber.
  */
 class DatastoreSubscriber implements EventSubscriberInterface {
   use LoggerTrait;
+
+  /**
+   * Constructor.
+   */
+  public function __construct() {
+    $this->loggerService = \Drupal::logger('datastore');
+  }
 
   /**
    * Inherited.
@@ -48,7 +54,6 @@ class DatastoreSubscriber implements EventSubscriberInterface {
         $datastoreService->import($resource->getIdentifier(), TRUE, $resource->getVersion());
       }
       catch (\Exception $e) {
-        $this->setLoggerFactory(\Drupal::service('logger.factory'));
         $this->log('datastore', $e->getMessage());
       }
     }
@@ -93,12 +98,10 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       /** @var \Drupal\datastore\Service $datastoreService */
       $datastoreService = \Drupal::service('dkan.datastore.service');
       $datastoreService->drop($resource->getIdentifier(), $resource->getVersion());
-      $this->setLoggerFactory(\Drupal::service('logger.factory'));
-      $this->log('datastore', 'Dropping datastore for @id', ['@id' => $id], LogLevel::NOTICE);
+      $this->notice('Dropping datastore for @id', ['@id' => $id]);
     }
     catch (\Exception $e) {
-      $this->setLoggerFactory(\Drupal::service('logger.factory'));
-      $this->log('datastore', 'Failed to drop datastore for @id. @message',
+      $this->error('Failed to drop datastore for @id. @message',
       [
         '@id' => $id,
         '@message' => $e->getMessage(),
@@ -108,8 +111,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       \Drupal::service('dkan.common.job_store')->getInstance(Importer::class)->remove($id);
     }
     catch (\Exception $e) {
-      $this->setLoggerFactory(\Drupal::service('logger.factory'));
-      $this->log('datastore', 'Failed to remove importer job. @message',
+      $this->error('Failed to remove importer job. @message',
       [
         '@message' => $e->getMessage(),
       ]);

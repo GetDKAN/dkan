@@ -6,7 +6,6 @@ use Drupal\common\Resource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobstoreFactory;
 use Drupal\common\Events\Event;
-use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelFactory;
@@ -25,7 +24,6 @@ use Drupal\datastore\Service\Import as ImportService;
  * Class DatastoreSubscriber.
  */
 class DatastoreSubscriberTest extends TestCase {
-  use LoggerTrait;
 
   /**
    *
@@ -56,14 +54,22 @@ class DatastoreSubscriberTest extends TestCase {
     $resource = new Resource($url, 'text/csv');
     $event = new Event($resource);
 
-    $chain = $this->getContainerChain();
-    $chain->add(Service::class, 'import', new \Exception());
+    $logger = $this->getLoggerChain();
+    $options = (new Options())
+      ->add('logger.factory', $logger->getMock())
+      ->add('dkan.datastore.service', Service::class)
+      ->index(0);
+
+    $chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(Service::class, 'import', new \Exception());
 
     \Drupal::setContainer($chain->getMock());
 
     // When the conditions of a new "datastoreable" resource are met, add
     // an import operation to the queue.
     $subscriber = new DatastoreSubscriber();
+    $subscriber->setLoggerFactory($logger->getMock());
     $subscriber->onRegistration($event);
 
     // Doing it all for the coverage.
@@ -74,9 +80,9 @@ class DatastoreSubscriberTest extends TestCase {
    * Private.
    */
   private function getContainerChain() {
-
+    $logger = $this->getLoggerChain();
     $options = (new Options())
-      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('logger.factory', $logger->getMock())
       ->add('dkan.datastore.service', Service::class)
       ->index(0);
 
@@ -94,8 +100,10 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(Event::class, 'getData', ContentEntityInterface::class)
       ->getMock();
 
+    $logger = $this->getLoggerChain();
     $options = (new Options())
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
+      ->add('logger.factory', $logger->getMock())
       ->index(0);
 
     $containerChain = (new Chain($this))
@@ -114,13 +122,12 @@ class DatastoreSubscriberTest extends TestCase {
    * Test drop.
    */
   public function testDrop() {
-    $logger = $this->getLoggerChain();
-
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
     $event = new Event($resource);
     $db = \Drupal::service('database');
 
+    $logger = $this->getLoggerChain();
     $options = (new Options())
       ->add('logger.factory', $logger->getMock())
       ->add('dkan.datastore.service', Service::class)
@@ -139,6 +146,7 @@ class DatastoreSubscriberTest extends TestCase {
     \Drupal::setContainer($chain->getMock());
 
     $subscriber = new DatastoreSubscriber();
+    $subscriber->setLoggerFactory($logger->getMock());
     $test = $subscriber->drop($event);
     $this->assertContains('Dropping datastore', $logger->getStoredInput('notices')[0]);
     $this->assertEmpty($logger->getStoredInput('errors'));
@@ -206,6 +214,7 @@ class DatastoreSubscriberTest extends TestCase {
     \Drupal::setContainer($chain->getMock());
 
     $subscriber = new DatastoreSubscriber();
+    $subscriber->setLoggerFactory($logger->getMock());
     $test = $subscriber->drop($event);
     $this->assertContains('Failed to remove', $logger->getStoredInput('errors')[0]);
   }

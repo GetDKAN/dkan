@@ -6,13 +6,19 @@ use Drupal\common\Events\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\common\LoggerTrait;
-use Psr\Log\LogLevel;
 
 /**
  * Class MetastoreSubscriber.
  */
 class MetastoreSubscriber implements EventSubscriberInterface {
   use LoggerTrait;
+
+  /**
+   * Constructor.
+   */
+  public function __construct() {
+    $this->loggerService = \Drupal::logger('datastore');
+  }
 
   /**
    * Inherited.
@@ -47,13 +53,11 @@ class MetastoreSubscriber implements EventSubscriberInterface {
       $resourceMapper->remove($resource);
     }
     catch (\Exception $e) {
-      $this->setLoggerFactory(\Drupal::service('logger.factory'));
-      $this->log('datastore', 'Failed to remove resource source mapping for @uuid. @message',
+      $this->error('Failed to remove resource source mapping for @uuid. @message',
         [
           '@uuid' => $uuid,
           '@message' => $e->getMessage(),
-        ],
-        LogLevel::ERROR
+        ]
       );
     }
   }
