@@ -9,6 +9,7 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\Data;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Dkan\Datastore\Importer;
+use Psr\Log\LogLevel;
 
 /**
  * Subscriber.
@@ -92,21 +93,26 @@ class Subscriber implements EventSubscriberInterface {
       /** @var \Drupal\datastore\Service $datastoreService */
       $datastoreService = \Drupal::service('dkan.datastore.service');
       $datastoreService->drop($resource->getIdentifier(), $resource->getVersion());
-
-      \Drupal::logger('datastore')->notice('Dropping datastore for @id', ['@id' => $id]);
+      $this->setLoggerFactory(\Drupal::service('logger.factory'));
+      $this->log('datastore', 'Dropping datastore for @id', ['@id' => $id], LogLevel::NOTICE);
     }
     catch (\Exception $e) {
-      \Drupal::logger('datastore')->error('Failed to drop datastore for @id. @message',
-        [
-          '@uuid' => $id,
-          '@message' => $e->getMessage(),
-        ]);
+      $this->setLoggerFactory(\Drupal::service('logger.factory'));
+      $this->log('datastore', 'Failed to drop datastore for @id. @message',
+      [
+        '@id' => $id,
+        '@message' => $e->getMessage(),
+      ]);
     }
     try {
       \Drupal::service('dkan.common.job_store')->getInstance(Importer::class)->remove($id);
     }
     catch (\Exception $e) {
-      \Drupal::logger('datastore')->error('Failed to remove importer job. @message', ['@message' => $e->getMessage()]);
+      $this->setLoggerFactory(\Drupal::service('logger.factory'));
+      $this->log('datastore', 'Failed to remove importer job. @message',
+      [
+        '@message' => $e->getMessage(),
+      ]);
     }
   }
 
