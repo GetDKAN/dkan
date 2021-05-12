@@ -19,7 +19,7 @@ use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Import as ServiceImport;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\QueryFactory;
-use Drupal\metastore\Storage\Data;
+use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\Tests\common\Unit\Storage\QueryDataProvider as QueryData;
 
@@ -144,8 +144,8 @@ class DatastoreQueryTest extends TestCase {
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(DataFactory::class, "getInstance", Data::class)
-      ->add(Data::class, "retrieve", $resource)
+      ->add(DataFactory::class, "getInstance", NodeData::class)
+      ->add(NodeData::class, "retrieve", $resource)
       ->add(QueueFactory::class, "get", [])
       ->add(ResourceLocalizer::class, "get", Resource::class)
       ->add(Import::class, "getInstance", ServiceImport::class)
