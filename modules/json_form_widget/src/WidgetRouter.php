@@ -98,6 +98,7 @@ class WidgetRouter implements ContainerInjectionInterface {
       'list' => 'handleListElement',
       'date' => 'handleDateElement',
       'flexible_datetime' => 'handleDatetimeElement',
+      'date_range' => 'handleDateRangeElement',
     ];
   }
 
@@ -384,6 +385,25 @@ class WidgetRouter implements ContainerInjectionInterface {
       $date = new DrupalDateTime($element['#default_value']);
       $element['#default_value'] = $date;
     }
+    if (isset($spec->timeRequired) && is_bool($spec->timeRequired)) {
+      $element['#date_time_required'] = $spec->timeRequired;
+    }
+    return $element;
+  }
+
+  /**
+   * Helper function for getting a date_range element.
+   *
+   * @param mixed $spec
+   *   Element to convert into date_range.
+   * @param array $element
+   *   Object with spec for UI options.
+   *
+   * @return array
+   *   The element configured as date_range.
+   */
+  public function handleDateRangeElement($spec, array $element) {
+    $element['#type'] = 'date_range';
     if (isset($spec->timeRequired) && is_bool($spec->timeRequired)) {
       $element['#date_time_required'] = $spec->timeRequired;
     }

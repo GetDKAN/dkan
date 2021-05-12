@@ -35,9 +35,11 @@ class ValueHandler {
    * Flatten values for string properties.
    */
   public function handleStringValues($formValues, $property) {
-    // Handle datetime elements.
     if (isset($formValues[$property]) && $formValues[$property] instanceof DrupalDateTime) {
       return $formValues[$property]->__toString();
+    }
+    if (!empty($formValues[$property]) && isset($formValues[$property]['date_range'])) {
+      return $formValues[$property]['date_range'];
     }
     // Handle select_or_other_select.
     if (isset($formValues[$property]['select'])) {
