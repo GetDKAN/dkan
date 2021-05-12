@@ -2,12 +2,13 @@
 
 namespace Drupal\metastore\Storage;
 
+use Contracts\BulkRetrieverInterface;
 use Contracts\StorerInterface;
 
 /**
  * Interface for all metastore storage classes.
  */
-interface MetastoreStorageInterface extends StorerInterface {
+interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterface {
 
   /**
    * Retrieve.
