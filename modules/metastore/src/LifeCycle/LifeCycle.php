@@ -3,10 +3,10 @@
 namespace Drupal\metastore\LifeCycle;
 
 use Drupal\common\EventDispatcherTrait;
+use Drupal\common\Events\Event;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
-use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\PreReference;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
@@ -120,10 +120,7 @@ class LifeCycle {
    * Purge resources (if unneeded) of any updated dataset.
    */
   protected function datasetUpdate(MetastoreItemInterface $data) {
-    $this->dispatchEvent(
-      self::EVENT_DATASET_UPDATE,
-      new DatasetUpdate($data)
-    );
+    $this->dispatchEvent(self::EVENT_DATASET_UPDATE, $data);
   }
 
   /**
