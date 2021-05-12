@@ -3,27 +3,29 @@
 namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
 use Drupal\common\Resource;
+use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobstoreFactory;
+use Drupal\common\Events\Event;
+use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\datastore\EventSubscriber\Subscriber;
+use Drupal\datastore\EventSubscriber\DatastoreSubscriber;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
-use Drupal\common\Events\Event;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
 use Drupal\datastore\Service\Import as ImportService;
-use Drupal\common\Storage\JobStore;
 
 /**
- *
+ * Class DatastoreSubscriber.
  */
-class SubscriberTest extends TestCase {
+class DatastoreSubscriberTest extends TestCase {
+  use LoggerTrait;
 
   /**
    *
@@ -39,7 +41,7 @@ class SubscriberTest extends TestCase {
 
     // When the conditions of a new "datastoreable" resource are met, add
     // an import operation to the queue.
-    $subscriber = new Subscriber();
+    $subscriber = new DatastoreSubscriber();
     $subscriber->onRegistration($event);
 
     // The resource identifier is registered with the datastore service.
@@ -61,7 +63,7 @@ class SubscriberTest extends TestCase {
 
     // When the conditions of a new "datastoreable" resource are met, add
     // an import operation to the queue.
-    $subscriber = new Subscriber();
+    $subscriber = new DatastoreSubscriber();
     $subscriber->onRegistration($event);
 
     // Doing it all for the coverage.
@@ -103,7 +105,7 @@ class SubscriberTest extends TestCase {
 
     \Drupal::setContainer($containerChain->getMock());
 
-    $subscriber = new Subscriber();
+    $subscriber = new DatastoreSubscriber();
     $voidReturn = $subscriber->purgeResources($mockDatasetPublication);
     $this->assertNull($voidReturn);
   }
@@ -136,7 +138,7 @@ class SubscriberTest extends TestCase {
 
     \Drupal::setContainer($chain->getMock());
 
-    $subscriber = new Subscriber();
+    $subscriber = new DatastoreSubscriber();
     $test = $subscriber->drop($event);
     $this->assertContains('Dropping datastore', $logger->getStoredInput('notices')[0]);
     $this->assertEmpty($logger->getStoredInput('errors'));
@@ -170,7 +172,7 @@ class SubscriberTest extends TestCase {
 
     \Drupal::setContainer($chain->getMock());
 
-    $subscriber = new Subscriber();
+    $subscriber = new DatastoreSubscriber();
     $test = $subscriber->drop($event);
     $this->assertContains('Failed to drop', $logger->getStoredInput('errors')[0]);
   }
@@ -203,11 +205,14 @@ class SubscriberTest extends TestCase {
 
     \Drupal::setContainer($chain->getMock());
 
-    $subscriber = new Subscriber();
+    $subscriber = new DatastoreSubscriber();
     $test = $subscriber->drop($event);
     $this->assertContains('Failed to remove', $logger->getStoredInput('errors')[0]);
   }
 
+  /**
+   * Logger chain.
+   */
   private function getLoggerChain() {
     return (new Chain($this))
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
@@ -215,6 +220,9 @@ class SubscriberTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
   }
 
+  /**
+   * Connection.
+   */
   private function getConnection() {
     $fieldInfo = [
       (object) ['Field' => "ref_uuid"],

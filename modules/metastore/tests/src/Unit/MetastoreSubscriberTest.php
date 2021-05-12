@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Symfony\Component\DependencyInjection\Container;
-use Drupal\metastore\EventSubscriber\Subscriber;
+use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
 use Drupal\metastore\Service;
 use Drupal\metastore\ResourceMapper;
 
@@ -44,7 +44,7 @@ class MetastoreSubscriberTest extends TestCase {
 
     \Drupal::setContainer($chain->getMock());
 
-    $subscriber = new Subscriber();
+    $subscriber = new MetastoreSubscriber();
     $test = $subscriber->cleanResourceMapperTable($event);
     $this->assertEmpty($logger->getStoredInput('errors'));
   }
@@ -74,7 +74,7 @@ class MetastoreSubscriberTest extends TestCase {
 
     \Drupal::setContainer($chain->getMock());
 
-    $subscriber = new Subscriber();
+    $subscriber = new MetastoreSubscriber();
     $test = $subscriber->cleanResourceMapperTable($event);
     $this->assertContains('Failed to remove', $logger->getStoredInput('errors')[0]);
   }

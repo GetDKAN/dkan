@@ -58,6 +58,6 @@ services:
       - '@database'
 
   dkan.metastore.event_subscriber:
-    class: \Drupal\metastore\EventSubscriber\Subscriber
+    class: \Drupal\metastore\EventSubscriber\MetastoreSubscriber
     tags:
       - { name: event_subscriber }

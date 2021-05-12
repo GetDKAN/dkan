@@ -14,7 +14,7 @@ use Psr\Log\LogLevel;
 /**
  * Subscriber.
  */
-class Subscriber implements EventSubscriberInterface {
+class DatastoreSubscriber implements EventSubscriberInterface {
   use LoggerTrait;
 
   /**
