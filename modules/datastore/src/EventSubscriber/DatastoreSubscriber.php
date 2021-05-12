@@ -2,25 +2,56 @@
 
 namespace Drupal\datastore\EventSubscriber;
 
+use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\common\Resource;
-use Drupal\common\LoggerTrait;
 use Drupal\common\Events\Event;
+use Drupal\datastore\Service;
+use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\Data;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Dkan\Datastore\Importer;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Subscriber.
  */
 class DatastoreSubscriber implements EventSubscriberInterface {
-  use LoggerTrait;
+
+  /**
+   * Logger service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactory
+   */
+  protected $loggerFactory;
+
+  /**
+   * Inherited.
+   *
+   * @{inheritdocs}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('logger.factory'),
+      $container->get('dkan.datastore.service'),
+      $container->get('dkan.datastore.service.resource_purger')
+    );
+  }
 
   /**
    * Constructor.
+   *
+   * @param Drupal\Core\Logger\LoggerChannelFactory $logger_factory
+   *   LoggerChannelFactory service.
+   * @param \Drupal\datastore\Service $datastore
+   *   The dkan.datastore.service service.
+   * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
+   *   The dkan.datastore.service.resource_purger service.
    */
-  public function __construct() {
-    $this->loggerService = \Drupal::logger('datastore');
+  public function __construct(LoggerChannelFactory $logger_factory, Service $datastore, ResourcePurger $resourcePurger) {
+    $this->loggerFactory = $logger_factory;
+    $this->datastore = $datastore;
+    $this->resourcePurger = $resourcePurger;
   }
 
   /**
@@ -54,7 +85,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
         $datastoreService->import($resource->getIdentifier(), TRUE, $resource->getVersion());
       }
       catch (\Exception $e) {
-        $this->log('datastore', $e->getMessage());
+        $this->loggerFactory->get('datastore')->error($e->getMessage());
       }
     }
   }
@@ -77,10 +108,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    */
   public function purgeResources(Event $event) {
     $node = $event->getData();
-
-    /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */
-    $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    $resourcePurger->schedule([$node->uuid()]);
+    $this->resourcePurger->schedule([$node->uuid()]);
   }
 
   /**
@@ -95,13 +123,11 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $ref_uuid = $resource->getUniqueIdentifier();
     $id = md5(str_replace('source', 'local_file', $ref_uuid));
     try {
-      /** @var \Drupal\datastore\Service $datastoreService */
-      $datastoreService = \Drupal::service('dkan.datastore.service');
-      $datastoreService->drop($resource->getIdentifier(), $resource->getVersion());
-      $this->notice('Dropping datastore for @id', ['@id' => $id]);
+      $this->datastore->drop($resource->getIdentifier(), $resource->getVersion());
+      $this->loggerFactory->get('datastore')->notice('Dropping datastore for @id', ['@id' => $id]);
     }
     catch (\Exception $e) {
-      $this->error('Failed to drop datastore for @id. @message',
+      $this->loggerFactory->get('datastore')->error('Failed to drop datastore for @id. @message',
       [
         '@id' => $id,
         '@message' => $e->getMessage(),
@@ -111,7 +137,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       \Drupal::service('dkan.common.job_store')->getInstance(Importer::class)->remove($id);
     }
     catch (\Exception $e) {
-      $this->error('Failed to remove importer job. @message',
+      $this->loggerFactory->get('datastore')->error('Failed to remove importer job. @message',
       [
         '@message' => $e->getMessage(),
       ]);
