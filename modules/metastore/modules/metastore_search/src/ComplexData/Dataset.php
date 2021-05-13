@@ -153,6 +153,11 @@ class Dataset extends ComplexDataFacade {
    * Private.
    */
   private function getArrayValues($property_name) {
+
+    if ($property_name == 'keyword') {
+      $a = 1;
+    }
+
     $values = [];
     $matches = [];
     if (preg_match('/(.*)__item__(.*)/', $property_name, $matches)

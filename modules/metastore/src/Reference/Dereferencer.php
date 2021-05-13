@@ -136,8 +136,8 @@ class Dereferencer {
 //
 //        return [$dereferenced_data, $metadata];
 
-        // TODO: it makes no sense.
-        return [$metadata, $metadata];
+//         TODO: it makes no sense.
+        return [$metadata, $metadata->data];
       }
     }
     // If a property node was not found, it most likely means it was deleted
