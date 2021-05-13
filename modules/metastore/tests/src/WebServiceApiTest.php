@@ -413,6 +413,21 @@ EOF;
   }
 
   /**
+   * @todo Silly test. Improve it.
+   */
+  public function testGetSchema() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(SchemaRetriever::class, 'getAllIds', ['dataset']);
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->getSchemas();
+    $this->assertEquals('["dataset"]', $response->getContent());
+
+    $schemaId = json_decode($response->getContent())[0];
+    $schemaResponse = $controller->getSchema($schemaId);
+    $this->assertEquals('{"id":"http:\/\/schema"}', $schemaResponse->getContent());
+  }
+
+  /**
    *
    */
   public function testGetCatalogException() {
@@ -435,7 +450,8 @@ EOF;
 
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', "{}")
+      ->add(Service::class, 'getSchemas', ['dataset'])
+      ->add(Service::class, 'getSchema', (object) ["id" => "http://schema"])
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'get', FALSE);
 
