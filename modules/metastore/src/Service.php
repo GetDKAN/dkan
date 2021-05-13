@@ -110,11 +110,8 @@ class Service implements ContainerInjectionInterface {
     $jsonStringsArray = $this->getEngine($schema_id)->get();
 
     $objects = array_map(
-      function ($jsonString) use ($schema_id) {
+      function ($jsonString) {
         try {
-//          return json_decode($this->dispatchEvent(self::EVENT_DATA_GET, $jsonString));
-//          $metadata = json_decode($this->dispatchEvent(self::EVENT_DATA_GET, $jsonString));
-//          $a = $this->factory->getInstance($schema_id);
           return json_decode($this->dispatchEvent(self::EVENT_DATA_GET, $jsonString));
         }
         catch (\Exception $e) {
@@ -147,13 +144,13 @@ class Service implements ContainerInjectionInterface {
     return $data;
   }
 
-  private function wrapMatadata($uuid, $metadata) {
-    $wrapped_data = new \stdClass();
-    $wrapped_data->identifier = $this->data->getIdentifier();
-    $wrapped_data->data = $metadata;
-
-    return $wrapped_data;
-  }
+//  private function wrapMatadata($uuid, $metadata) {
+//    $wrapped_data = new \stdClass();
+//    $wrapped_data->identifier = $this->data->getIdentifier();
+//    $wrapped_data->data = $metadata;
+//
+//    return $wrapped_data;
+//  }
 
   /**
    * GET all resources associated with a dataset.

@@ -21,9 +21,11 @@ class Data extends AbstractData {
   public function load() {
     $this->go('Load');
     $type = $this->data->getDataType();
-//    if ($this->data->getDataType() !== 'dataset') {
-//      $this->resourceLoad();
-//    }
+
+    // TODO: set a global variable in the controller.
+    if ($this->data->getDataType() !== 'dataset') {
+      $this->resourceLoad();
+    }
   }
 
   /**
@@ -76,11 +78,11 @@ class Data extends AbstractData {
   protected function distributionLoad() {
     $metadata = $this->data->getMetaData();
 
-    if (!isset($metadata->downloadURL)) {
+    if (!isset($metadata->data->downloadURL)) {
       return;
     }
 
-    $downloadUrl = $metadata->downloadURL;
+    $downloadUrl = $metadata->data->downloadURL;
 
     if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
       $resourceIdentifier = $downloadUrl;
@@ -91,14 +93,14 @@ class Data extends AbstractData {
       $downloadUrl = isset($original) ? $original : "";
 
       $refProperty = "%Ref:downloadURL";
-      $metadata->{$refProperty} = count($ref) == 0 ? NULL : $ref;
+      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
     }
 
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
 
-    $metadata->downloadURL = $downloadUrl;
+    $metadata->data->downloadURL = $downloadUrl;
 
 //    $wrapped_data = new \stdClass();
 //    $wrapped_data->identifier = $this->data->getIdentifier();
@@ -110,7 +112,7 @@ class Data extends AbstractData {
 
   }
 
-  protected function resourceLoad() {
+  private function resourceLoad() {
     $metadata = $this->data->getMetaData();
     if (!isset($metadata->identifier)) {
       $wrapped_metadata = $this->wrapMetadata($this->data->getIdentifier(), $metadata);

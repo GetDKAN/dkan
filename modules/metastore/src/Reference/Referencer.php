@@ -105,8 +105,6 @@ class Referencer {
    */
   private function referenceSingle(string $property_id, $value) {
 
-//    $value = $value->data;
-
     if ($property_id == 'distribution') {
       $value = $this->distributionHandling($value);
     }

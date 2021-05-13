@@ -155,7 +155,7 @@ class DatasetInfo implements ContainerInjectionInterface {
       'title' => $metadata->title ?? 'Not found',
       'modified_date_metadata' => $metadata->modified ?? 'Not found',
       'modified_date_dkan' => $metadata->{'%modified'} ?? 'Not found',
-      'distributions' => $this->getDistributionsInfo($metadata, $node->rawMetadata),
+      'distributions' => $this->getDistributionsInfo($metadata),
     ];
   }
 
@@ -168,16 +168,14 @@ class DatasetInfo implements ContainerInjectionInterface {
    * @return array
    *   Distributions.
    */
-  protected function getDistributionsInfo(\stdClass $metadata, $raw_metadata) : array {
+  protected function getDistributionsInfo(\stdClass $metadata) : array {
     $distributions = [];
 
     if (!isset($metadata->{'%Ref:distribution'})) {
       return ['Not found'];
     }
 
-    $raw_metadata = json_decode($raw_metadata);
-    foreach ($metadata->{'%Ref:distribution'} as $index => $distribution) {
-      $distribution->identifier = $raw_metadata->distribution[$index];
+    foreach ($metadata->{'%Ref:distribution'} as $distribution) {
       $distributions[] = $this->getResourcesInfo($distribution);
     }
 
@@ -197,10 +195,8 @@ class DatasetInfo implements ContainerInjectionInterface {
 
     // A distribution's first resource, regardless of perspective or index,
     // should provide the information needed.
-//    $resource = array_shift($distribution->data->{'%Ref:downloadURL'});
-    $resource = array_shift($distribution->{'%Ref:downloadURL'});
+    $resource = array_shift($distribution->data->{'%Ref:downloadURL'});
     $identifier = $resource->data->identifier;
-
     $version = $resource->data->version;
 
     $info = $this->importInfo->getItem($identifier, $version);
@@ -212,12 +208,8 @@ class DatasetInfo implements ContainerInjectionInterface {
     catch (\Exception $e) {
     }
 
-//    $distribution_id = \Drupal::service('dkan.metastore.referencer')->checkExistingReference('distribution', $distribution);
-
     return [
       'distribution_uuid' => $distribution->identifier,
-//      'distribution_uuid' => $distribution_id,
-//      'distribution_uuid' => NULL,
       'resource_id' => $identifier,
       'resource_version' => $version,
       'fetcher_status' => $info->fileFetcherStatus,
