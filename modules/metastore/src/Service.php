@@ -420,4 +420,15 @@ class Service implements ContainerInjectionInterface {
     return $object;
   }
 
+  /**
+   * Wraps metadata with [{"data":{},"identifier":""}].
+   *
+   */
+  public static function wrapMetadata($uuid, $matadata) {
+    return (object) [
+      'identifier' => $uuid,
+      'data' => $matadata,
+    ];
+  }
+
 }

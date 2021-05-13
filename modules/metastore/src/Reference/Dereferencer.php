@@ -5,6 +5,7 @@ namespace Drupal\metastore\Reference;
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\LoggerTrait;
+use Drupal\metastore\Service;
 
 /**
  * Metastore dereferencer.
@@ -129,7 +130,8 @@ class Dereferencer {
 
     if ($value) {
       $metadata = json_decode($value);
-      return [$metadata, $metadata->data];
+      $wrapped_metadata = Service::wrapMetadata($uuid, $metadata);
+      return [$wrapped_metadata, $metadata];
     }
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
