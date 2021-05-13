@@ -137,8 +137,8 @@ class Data implements MetastoreItemInterface {
    * Private.
    */
   private function fixDataType() {
-    if (empty($this->node->get('field_data_type')->value)) {
-      $this->node->get('field_data_type')->value = 'dataset';
+    if (empty($this->node->get('field_data_type')->getValue())) {
+      $this->node->set('field_data_type', 'dataset');
     }
   }
 
@@ -148,8 +148,8 @@ class Data implements MetastoreItemInterface {
   private function saveRawMetadata() {
     // Temporarily save the raw json metadata, for later use.
     if (!isset($this->node->rawMetadata)) {
-      $raw = $this->node->get('field_json_metadata')->value;
-      $this->node->rawMetadata = $raw;
+      $raw = $this->node->get('field_json_metadata')->getValue();
+      $this->node->set('rawMetadata', $raw);
     }
   }
 
@@ -158,7 +158,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getSchemaId() {
     $this->fix();
-    return $this->node->get('field_data_type')->value;
+    return $this->node->get('field_data_type')->getValue();
   }
 
 }

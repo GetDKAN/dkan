@@ -2,8 +2,10 @@
 
 namespace Drupal\Tests\metastore\NodeWrapper;
 
+use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\metastore\NodeWrapper\Data;
+use Drupal\Core\Entity\EntityRepository;
+use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -19,24 +21,48 @@ class DataTest extends TestCase {
   public function testNotNode() {
     $this->expectExceptionMessage("We only work with nodes.");
 
-    $entity = (new Chain($this))
-      ->add(EntityInterface::class)
+    $entityRepository = (new Chain($this))
+      ->add(EntityRepository::class, 'loadEntityByUuid', EntityInterface::class)
       ->getMock();
 
-    new Data($entity);
+    $factory = new NodeDataFactory($entityRepository);
+    $factory->getInstance("123");
   }
 
   /**
    *
    */
-  public function testNonDataNode() {
+  public function testNotDataNode() {
     $this->expectExceptionMessage("We only work with data nodes.");
 
-    $node = (new Chain($this))
-      ->add(Node::class, "bundle", "blah")
+    $entityRepository = (new Chain($this))
+      ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
+      ->add(Node::class, 'bundle', 'blah')
       ->getMock();
 
-    new Data($node);
+    $factory = new NodeDataFactory($entityRepository);
+    $factory->getInstance("123");
   }
+
+  /**
+   *
+   */
+  public function testDataNodeWrap() {
+    $entityRepository = (new Chain($this))
+      ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
+      ->getMock();
+
+    $entity = (new Chain($this))
+      ->add(Node::class, 'bundle', 'data')
+      ->add(Node::class, 'uuid', '123')
+      ->add(ContentEntityBase::class, 'getValue', '')
+      ->add(Node::class, 'set', TRUE)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository);
+    $data = $factory->wrap($entity);
+    $this->assertEquals('123', $data->getIdentifier());
+  }
+
 
 }
