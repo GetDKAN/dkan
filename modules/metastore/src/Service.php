@@ -358,7 +358,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getCatalog() {
     $catalog = $this->getSchema('catalog');
-    $catalog->dataset = $this->getAll('dataset');
+    $catalog->dataset = array_values($this->getAll('dataset'));
 
     return $catalog;
   }
