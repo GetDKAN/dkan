@@ -90,7 +90,7 @@ class DateRange extends Datetime {
   }
 
   /**
-   * {@inheritDoc}
+   * Callback for processing the date_range element.
    */
   public static function processDateRange(&$element, FormStateInterface $form_state, &$complete_form) {
     $element['start_date'] = [
