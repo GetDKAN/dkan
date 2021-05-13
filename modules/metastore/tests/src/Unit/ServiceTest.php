@@ -11,7 +11,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\Storage\Data;
+use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
 use MockChain\Options;
@@ -109,7 +109,7 @@ class ServiceTest extends TestCase {
     $data = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
 
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
       ->add(ValidMetadataFactory::class, 'get', $data);
 
     \Drupal::setContainer($container->getMock());
@@ -297,8 +297,8 @@ EOF;
    */
   public function testPublish() {
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", "1")
-      ->add(Data::class, "publish", "1");
+      ->add(NodeData::class, "retrieve", "1")
+      ->add(NodeData::class, "publish", "1");
 
     $service = Service::create($container->getMock());
     $result = $service->publish('dataset', 1);

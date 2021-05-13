@@ -5,12 +5,13 @@ namespace Drupal\metastore\NodeWrapper;
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
 /**
- * Data.
+ * MetastoreItem object that wraps a data node, provides additional methods.
  */
-class Data {
+class Data implements MetastoreItemInterface {
   use LoggerTrait;
 
   /**
@@ -33,16 +34,6 @@ class Data {
    */
   private function fix() {
     $this->fixDataType();
-    $this->saveRawMetadata();
-  }
-
-  /**
-   * Get a wrapped version of the original node.
-   */
-  public function getOriginal() {
-    if (isset($this->node->original)) {
-      return new Data($this->node->original);
-    }
   }
 
   /**
@@ -67,9 +58,7 @@ class Data {
    */
   public function getRawMetadata() {
     $this->fix();
-    if (isset($this->node->rawMetadata)) {
-      return json_decode($this->node->rawMetadata);
-    }
+    return $this->node->get('field_json_metadata')->getString();
   }
 
   /**
@@ -85,7 +74,7 @@ class Data {
    */
   public function getMetaData() {
     $this->fix();
-    return json_decode($this->node->get('field_json_metadata')->value);
+    return json_decode($this->node->get('field_json_metadata')->getString());
   }
 
   /**
@@ -136,20 +125,18 @@ class Data {
    * Private.
    */
   private function fixDataType() {
-    if (empty($this->node->get('field_data_type')->value)) {
-      $this->node->get('field_data_type')->value = 'dataset';
+    if (empty($this->node->get('field_data_type')->getString())) {
+      $this->node->set('field_data_type', 'dataset');
     }
   }
 
   /**
-   * Private.
+   * Protected.
    */
-  private function saveRawMetadata() {
-    // Temporarily save the raw json metadata, for later use.
-    if (!isset($this->node->rawMetadata)) {
-      $raw = $this->node->get('field_json_metadata')->value;
-      $this->node->rawMetadata = $raw;
-    }
+  public function getSchemaId() {
+    $this->fix();
+    $schemaId = $this->node->get('field_data_type')->getString();
+    return $schemaId;
   }
 
 }

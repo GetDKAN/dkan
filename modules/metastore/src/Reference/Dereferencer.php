@@ -7,12 +7,17 @@ use Drupal\common\LoggerTrait;
 use Drupal\node\NodeStorageInterface;
 
 /**
- * Dereferencer.
+ * Metastore dereferencer.
  */
 class Dereferencer {
   use HelperTrait;
   use LoggerTrait;
 
+  /**
+   * Node storate service.
+   *
+   * @var \Drupal\node\NodeStorageInterface
+   */
   private $nodeStorage;
 
   /**
