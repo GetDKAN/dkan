@@ -67,7 +67,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getRawMetadata() {
     $this->fix();
-    return $this->node->get('field_json_metadata')->getValue();
+    return $this->node->get('field_json_metadata')->getString();
   }
 
   /**

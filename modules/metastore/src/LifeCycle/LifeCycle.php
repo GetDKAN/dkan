@@ -231,7 +231,7 @@ class LifeCycle {
 
     // Check for possible orphan property references when updating a dataset.
     if (!$data->isNew()) {
-      $raw = $data->getRawMetadata();
+      $raw = json_decode($data->getRawMetadata());
       $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }
 
