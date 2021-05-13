@@ -3,7 +3,6 @@
 namespace Drupal\metastore\LifeCycle;
 
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\Events\Event;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
@@ -171,34 +170,25 @@ class LifeCycle {
     $reference = [];
     $original = NULL;
 
-    $fileMapperInfo = Resource::parseUniqueIdentifier($resourceIdentifier);
+    $info = Resource::parseUniqueIdentifier($resourceIdentifier);
 
     // Load resource object.
-    $sourceResource = $this->resourceMapper->get(
-      $fileMapperInfo['identifier'],
-      Resource::DEFAULT_SOURCE_PERSPECTIVE,
-      $fileMapperInfo['version']
-    );
+    $sourceResource = $this->resourceMapper->get($info['identifier'], Resource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
 
     if (!$sourceResource) {
       return [$reference, $original];
     }
 
     $reference[] = $this->createResourceReference($sourceResource);
-
     $perspective = resource_mapper_display();
-
     $resource = $sourceResource;
 
     if ($perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE) {
-      $new = $this->resourceMapper->get(
-        $fileMapperInfo['identifier'],
-        $perspective,
-        $fileMapperInfo['version']);
-      if ($new) {
-        $resource = $new;
-        $reference[] = $this->createResourceReference($resource);
-      }
+      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version']);
+    }
+    if ($new) {
+      $resource = $new;
+      $reference[] = $this->createResourceReference($resource);
     }
     $original = $resource->getFilePath();
 

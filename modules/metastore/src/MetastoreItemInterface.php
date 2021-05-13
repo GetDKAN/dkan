@@ -6,6 +6,7 @@ namespace Drupal\metastore;
  * Data.
  */
 interface MetastoreItemInterface {
+
   /**
    * Getter.
    */

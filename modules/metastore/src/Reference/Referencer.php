@@ -10,12 +10,17 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\node\NodeStorageInterface;
 
 /**
- * Referencer.
+ * Metastore referencer service.
  */
 class Referencer {
   use HelperTrait;
   use LoggerTrait;
 
+  /**
+   * Node storage service.
+   *
+   * @var \Drupal\node\NodeStorageInterface
+   */
   private $nodeStorage;
 
   /**

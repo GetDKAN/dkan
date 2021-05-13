@@ -9,7 +9,7 @@ use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
 /**
- * Data.
+ * MetastoreItem object that wraps a data node, provides additional methods.
  */
 class Data implements MetastoreItemInterface {
   use LoggerTrait;

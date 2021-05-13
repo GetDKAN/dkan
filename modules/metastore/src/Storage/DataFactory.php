@@ -11,11 +11,15 @@ use Drupal\Core\Entity\EntityTypeManager;
 class DataFactory implements FactoryInterface {
 
   /**
+   * Array of storage engines.
+   *
    * @var array
    */
   private $stores = [];
 
   /**
+   * Entity type manager service.
+   *
    * @var \Drupal\Core\Entity\EntityTypeManager
    */
   private $entityTypeManager;
@@ -58,7 +62,7 @@ class DataFactory implements FactoryInterface {
    *   Entity type
    */
   private function getEntityTypeBySchema(string $schema_id) : string {
-    // TODO: should be configurable. Different from site to site.
+    // @todo Should be configurable. Different from site to site.
     $mapping = [
       'dataset' => 'node',
     ];
