@@ -144,14 +144,6 @@ class Service implements ContainerInjectionInterface {
     return $data;
   }
 
-//  private function wrapMatadata($uuid, $metadata) {
-//    $wrapped_data = new \stdClass();
-//    $wrapped_data->identifier = $this->data->getIdentifier();
-//    $wrapped_data->data = $metadata;
-//
-//    return $wrapped_data;
-//  }
-
   /**
    * GET all resources associated with a dataset.
    *

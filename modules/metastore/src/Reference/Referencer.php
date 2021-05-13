@@ -278,13 +278,7 @@ class Referencer {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-//  private function checkExistingReference(string $property_id, $data) {
-  public function checkExistingReference(string $property_id, $data) {
-    if (is_object($data)) {
-//      $data = \Drupal::service('dkan.metastore.service')->removeReferences($data);
-//      $data = \Drupal::service('dkan.metastore.dereferencer')->dereference($data);
-    }
-
+  private function checkExistingReference(string $property_id, $data) {
     $nodes = $this->nodeStorage
       ->loadByProperties([
         'field_data_type' => $property_id,

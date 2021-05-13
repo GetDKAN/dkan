@@ -128,15 +128,6 @@ class Dereferencer {
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
-
-//        // Create json metadata for the reference.
-//        $dereferenced_data = new \stdClass();
-//        $dereferenced_data->identifier = $uuid;
-//        $dereferenced_data->data = $metadata;
-//
-//        return [$dereferenced_data, $metadata];
-
-//         TODO: it makes no sense.
         return [$metadata, $metadata->data];
       }
     }

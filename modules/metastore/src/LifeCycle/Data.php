@@ -20,11 +20,19 @@ class Data extends AbstractData {
    */
   public function load() {
     $this->go('Load');
-    $type = $this->data->getDataType();
-
-    // TODO: set a global variable in the controller.
     if ($this->data->getDataType() !== 'dataset') {
       $this->resourceLoad();
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function resourceLoad() {
+    $metadata = $this->data->getMetaData();
+    if (!isset($metadata->identifier)) {
+      $wrapped_metadata = $this->wrapMetadata($this->data->getIdentifier(), $metadata);
+      $this->data->setMetadata($wrapped_metadata);
     }
   }
 
@@ -78,12 +86,10 @@ class Data extends AbstractData {
   protected function distributionLoad() {
     $metadata = $this->data->getMetaData();
 
-//    if (!isset($metadata->data->downloadURL)) {
     if (!isset($metadata->downloadURL)) {
       return;
     }
 
-//    $downloadUrl = $metadata->data->downloadURL;
     $downloadUrl = $metadata->downloadURL;
 
     if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
@@ -95,7 +101,6 @@ class Data extends AbstractData {
       $downloadUrl = isset($original) ? $original : "";
 
       $refProperty = "%Ref:downloadURL";
-//      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
       $metadata->{$refProperty} = count($ref) == 0 ? NULL : $ref;
     }
 
@@ -103,25 +108,9 @@ class Data extends AbstractData {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
 
-//    $metadata->data->downloadURL = $downloadUrl;
     $metadata->downloadURL = $downloadUrl;
 
-//    $wrapped_data = new \stdClass();
-//    $wrapped_data->identifier = $this->data->getIdentifier();
-//    $wrapped_data->data = $metadata;
-//
-//    $this->data->setMetadata($wrapped_data);
-
     $this->data->setMetadata($metadata);
-
-  }
-
-  private function resourceLoad() {
-    $metadata = $this->data->getMetaData();
-    if (!isset($metadata->identifier)) {
-      $wrapped_metadata = $this->wrapMetadata($this->data->getIdentifier(), $metadata);
-      $this->data->setMetadata($wrapped_metadata);
-    }
   }
 
   /**
@@ -165,22 +154,18 @@ class Data extends AbstractData {
   /**
    * Private.
    */
-  private function wrapMetadata($uuid, $metadata): object {
-    return (object) [
-      "identifier" => $uuid,
-      "data" => $metadata,
-    ];
+  private function createResourceReference(Resource $resource): object {
+    return $this->wrapMetadata($resource->getUniqueIdentifier(), $resource);
   }
 
   /**
    * Private.
    */
-  private function createResourceReference(Resource $resource): object {
-//    return (object) [
-//      "identifier" => $resource->getUniqueIdentifier(),
-//      "data" => $resource,
-//    ];
-    return $this->wrapMetadata($resource->getUniqueIdentifier(), $resource);
+  private function wrapMetadata($uuid, $metadata): object {
+    return (object) [
+      "identifier" => $uuid,
+      "data" => $metadata,
+    ];
   }
 
   /**
