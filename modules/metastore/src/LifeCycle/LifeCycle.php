@@ -183,10 +183,10 @@ class LifeCycle {
     $perspective = resource_mapper_display();
     $resource = $sourceResource;
 
-    if ($perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE) {
-      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version']);
-    }
-    if ($new) {
+    if (
+      $perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE &&
+      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
+    ) {
       $resource = $new;
       $reference[] = $this->createResourceReference($resource);
     }

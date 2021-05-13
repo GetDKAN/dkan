@@ -34,7 +34,6 @@ class Data implements MetastoreItemInterface {
    */
   private function fix() {
     $this->fixDataType();
-    $this->saveRawMetadata();
   }
 
   /**
@@ -68,9 +67,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getRawMetadata() {
     $this->fix();
-    if (isset($this->node->rawMetadata)) {
-      return json_decode($this->node->rawMetadata);
-    }
+    return $this->node->get('field_json_metadata')->getValue();
   }
 
   /**
@@ -86,7 +83,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getMetaData() {
     $this->fix();
-    return json_decode($this->node->get('field_json_metadata')->value);
+    return json_decode($this->node->get('field_json_metadata')->getString());
   }
 
   /**
@@ -143,22 +140,12 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
-   */
-  private function saveRawMetadata() {
-    // Temporarily save the raw json metadata, for later use.
-    if (!isset($this->node->rawMetadata)) {
-      $raw = $this->node->get('field_json_metadata')->getValue();
-      $this->node->set('rawMetadata', $raw);
-    }
-  }
-
-  /**
    * Protected.
    */
   public function getSchemaId() {
     $this->fix();
-    return $this->node->get('field_data_type')->getValue();
+    $schemaId = $this->node->get('field_data_type')->getString();
+    return $schemaId;
   }
 
 }
