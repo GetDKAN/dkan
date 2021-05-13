@@ -176,6 +176,36 @@ class SchemaUiHandlerTest extends TestCase {
     $expected['modified']['#default_value'] = $date;
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
+    // Test date_range.
+    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"temporal":{"ui:options":{"widget":"date_range"}}}');
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $ui_handler = SchemaUiHandler::create($container);
+    $ui_handler->setSchemaUi('dataset');
+    $form = [
+      "temporal" => [
+        "#type" => "textfield",
+        "#title" => "Temporal Date Range",
+        "#default_value" => '2020-05-11T15:06:39.000Z/2020-05-15T15:00:00.000Z',
+        "#required" => FALSE,
+      ],
+    ];
+    $date = new DrupalDateTime('2020-05-11T15:06:39.000Z');
+    $expected = [
+      "temporal" => [
+        "#type" => "date_range",
+        "#title" => "Temporal Date Range",
+        "#default_value" => '2020-05-11T15:06:39.000Z/2020-05-15T15:00:00.000Z',
+        "#required" => FALSE,
+      ],
+    ];
+    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
+    // Test date range without default value.
+    $form['temporal']['#default_value'] = NULL;
+    $expected['temporal']['#default_value'] = '';
+    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
     // Test dkan_uuid field with already existing value.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
     $container = $container_chain->getMock();

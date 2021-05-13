@@ -157,6 +157,20 @@ class ValueHandlerTest extends TestCase {
     $expected = $date->__toString();
     $result = $value_handler->handleStringValues($formValues, 'modified');
     $this->assertEquals($result, $expected);
+
+    // Test date_range.
+    $date = new DrupalDateTime('2020-05-11T15:06:39.000Z');
+    $date2 = new DrupalDateTime('2020-05-15T15:00:00.000Z');
+    $formValues = [
+      'temporal' => [
+        'date_range' => '2020-05-11T15:06:39.000Z/2020-05-15T15:00:00.000Z',
+        'start_date' => $date,
+        'end_date' => $date2,
+      ],
+    ];
+    $expected = '2020-05-11T15:06:39.000Z/2020-05-15T15:00:00.000Z';
+    $result = $value_handler->handleStringValues($formValues, 'temporal');
+    $this->assertEquals($result, $expected);
   }
 
   /**
