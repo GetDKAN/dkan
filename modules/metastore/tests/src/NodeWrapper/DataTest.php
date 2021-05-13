@@ -65,4 +65,15 @@ class DataTest extends TestCase {
     $this->assertEquals('123', $data->getIdentifier());
   }
 
+  public function testDataNodeAdditionalMethods() {
+    $entityRepository = (new Chain($this))
+      ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
+      ->getMock();
+
+    $factory = new NodeDataFactory($entityRepository);
+      $this->assertEquals('node', $factory->getEntityType());
+      $this->assertEquals(['data'], $factory->getBundles());
+      $this->assertEquals('field_json_metadata', $factory->getMetadataField());
+  }
+
 }

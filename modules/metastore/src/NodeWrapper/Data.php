@@ -37,15 +37,6 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Get a wrapped version of the original node.
-   */
-  public function getOriginal() {
-    if (isset($this->node->original)) {
-      return new Data($this->node->original);
-    }
-  }
-
-  /**
    * Getter.
    */
   public function getModifiedDate() {
