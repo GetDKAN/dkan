@@ -45,10 +45,7 @@ class ValueHandler {
     if (isset($formValues[$property]['select'])) {
       return $formValues[$property][0];
     }
-    if (!empty($formValues[$property])) {
-      return $formValues[$property];
-    }
-    return FALSE;
+    return !empty($formValues[$property]) ? $formValues[$property] : FALSE;
   }
 
   /**

@@ -17,7 +17,7 @@ use Drupal\Component\Utility\NestedArray;
 class DateRange extends Datetime {
 
   /**
-   * {@inheritdoc}
+   * Get info.
    */
   public function getInfo() {
     $class = get_class($this);
@@ -25,14 +25,19 @@ class DateRange extends Datetime {
     $time_format = '';
     if (!defined('MAINTENANCE_MODE')) {
       if ($date_format_entity = DateFormat::load('html_date')) {
-        /** @var $date_format_entity \Drupal\Core\Datetime\DateFormatInterface */
         $date_format = $date_format_entity->getPattern();
       }
       if ($time_format_entity = DateFormat::load('html_time')) {
-        /** @var $time_format_entity \Drupal\Core\Datetime\DateFormatInterface */
         $time_format = $time_format_entity->getPattern();
       }
     }
+    return $this->getElementInfo($class, $date_format, $time_format);
+  }
+
+  /**
+   * Get element info array.
+   */
+  private function getElementInfo($class, $date_format, $time_format) {
     return [
       '#input' => TRUE,
       '#element_validate' => [
@@ -55,7 +60,7 @@ class DateRange extends Datetime {
   }
 
   /**
-   * {@inheritdoc}
+   * Callback for getting the value of the date range element.
    */
   public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
     $element += ['#date_timezone' => date_default_timezone_get()];
