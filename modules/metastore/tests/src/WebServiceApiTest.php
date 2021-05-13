@@ -48,7 +48,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
     $controller = WebServiceApi::create($mockChain->getMock());
-    // TODO: test getALL distributions separately.
+
     $response = $controller->getAll('dataset');
     $this->assertEquals(json_encode([$data, $data]), $response->getContent());
   }
@@ -61,6 +61,23 @@ class WebServiceApiTest extends TestCase {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
     $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+
+    $response = $controller->getAll('distribution');
+    $distributions = [
+      [
+        'identifier' => 0,
+        'data' => $object,
+      ],
+      [
+        'identifier' => 1,
+        'data' => $object,
+      ],
+      [
+        'identifier' => 2,
+        'data' => $object,
+      ],
+    ];
+    $this->assertEquals(json_encode($distributions), $response->getContent());
 
     // Try with show ref ids.
     $mockChain->add(Request::class, 'get', TRUE);
@@ -91,6 +108,15 @@ class WebServiceApiTest extends TestCase {
     $jsonWithSwappedRefs = '{"name":{"identifier":"123","data":[]}}';
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
+
+    $response = $controller->get('distribution', 'distribution-id');
+    $distribution = [
+      'identifier' => 'distribution-id',
+      'data' => [
+        'name' => 'hello'
+      ],
+    ];
+    $this->assertEquals(json_encode($distribution), $response->getContent());
 
     // Try with show ref ids.
     $mockChain->add(Request::class, 'get', TRUE);
