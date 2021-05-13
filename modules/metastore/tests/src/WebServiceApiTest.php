@@ -48,6 +48,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
     $controller = WebServiceApi::create($mockChain->getMock());
+    // TODO: test getALL distributions separately.
     $response = $controller->getAll('dataset');
     $this->assertEquals(json_encode([$data, $data]), $response->getContent());
   }
