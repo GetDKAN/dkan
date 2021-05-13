@@ -65,6 +65,7 @@ class DateRange extends Datetime {
   public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
     $element += ['#date_timezone' => date_default_timezone_get()];
     if ($input !== FALSE) {
+      $input['date_range'] = '';
       if (!empty($input['start_date']['date']) && !empty($input['end_date']['date'])) {
         $date_format = $element['#date_date_element'] != 'none' ? static::getHtml5DateFormat($element) : '';
         $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
