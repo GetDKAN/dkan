@@ -404,9 +404,6 @@ class WidgetRouter implements ContainerInjectionInterface {
    */
   public function handleDateRangeElement($spec, array $element) {
     $element['#type'] = 'date_range';
-    if (isset($spec->timeRequired) && is_bool($spec->timeRequired)) {
-      $element['#date_time_required'] = $spec->timeRequired;
-    }
     return $element;
   }
 
