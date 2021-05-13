@@ -5,6 +5,7 @@ namespace Drupal\Tests\metastore\NodeWrapper;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
@@ -55,7 +56,8 @@ class DataTest extends TestCase {
     $entity = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->add(Node::class, 'uuid', '123')
-      ->add(ContentEntityBase::class, 'getValue', '')
+      ->add(Node::class, 'get', FieldItemListInterface::class)
+      ->add(FieldItemListInterface::class, 'getString', '')
       ->add(Node::class, 'set', TRUE)
       ->getMock();
 

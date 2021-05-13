@@ -134,7 +134,7 @@ class Data implements MetastoreItemInterface {
    * Private.
    */
   private function fixDataType() {
-    if (empty($this->node->get('field_data_type')->getValue())) {
+    if (empty($this->node->get('field_data_type')->getString())) {
       $this->node->set('field_data_type', 'dataset');
     }
   }
