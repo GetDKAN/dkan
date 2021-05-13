@@ -25,29 +25,66 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testGetAll() {
-    $json = '{"name": "hello"}';
+    $json = '{"name":"hello"}';
+    $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
+    $jsonWithSwappedRefs = '{"name":{"identifier":"123","data":[]}}';
     $object = json_decode($json);
-    $objects = [$object, $object, $object];
+    $objectWithRefs = json_decode($jsonWithRefs);
+    $objectWithSwappedRefs = json_decode($jsonWithSwappedRefs);
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'getAll', [$object, $object, $object]);
+    $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
-    $this->assertEquals(json_encode($objects), $response->getContent());
+    $this->assertEquals(json_encode([$object, $object]), $response->getContent());
+
+    // Try with show ref ids.
+    $mockChain->add(Request::class, 'get', TRUE);
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->getAll('dataset');
+    $this->assertEquals(
+      json_encode([$objectWithSwappedRefs, $objectWithSwappedRefs]),
+      $response->getContent()
+    );
   }
 
   /**
    *
    */
   public function testGet() {
-    $json = '{"name": "hello"}';
+    $json = '{"name":"hello"}';
+    $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
+    $jsonWithSwappedRefs = '{"name":{"identifier":"123","data":[]}}';
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', $json);
+    $mockChain->add(Service::class, 'get', $jsonWithRefs);
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
-    $this->assertEquals('{"name":"hello"}', $response->getContent());
+    $this->assertEquals($json, $response->getContent());
+
+    // Try with show ref ids.
+    $mockChain->add(Request::class, 'get', TRUE);
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->get(1, 'dataset');
+    $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
   }
+
+
+  /**
+   *
+   */
+  public function testGetReferences() {
+    $json = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Service::class, 'get', $json);
+    $mockChain->add(Request::class, 'get', TRUE);
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->get(1, 'dataset');
+    // References should be swapped.
+    $this->assertEquals('{"name":{"identifier":"123","data":[]}}', $response->getContent());
+  }
+
 
   /**
    *

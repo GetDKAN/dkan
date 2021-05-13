@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\metastore\NodeWrapper;
 
-use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -65,6 +64,5 @@ class DataTest extends TestCase {
     $data = $factory->wrap($entity);
     $this->assertEquals('123', $data->getIdentifier());
   }
-
 
 }
