@@ -23,29 +23,28 @@ class MetastoreSubscriberTest extends TestCase {
    * Test clean up.
    */
   public function testResourceMapperCleanUp() {
-    $logger = $this->getLoggerChain();
-    $this->setLoggerFactory($logger->getMock());
 
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
     $event = new Event($resource);
 
-    $options = (new Options())
-      ->add('logger.factory', $logger->getMock())
-      ->add('dkan.metastore.service', Service::class)
-      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
-      ->index(0);
+    $logger = $this->getLoggerChain();
 
-    $chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
+    $metastoreService = (new Chain($this))
       ->add(Service::class, 'get', $dist)
+      ->getMock();
+
+    $resourceMapper = (new Chain($this))
       ->add(ResourceMapper::class, 'get', $resource)
-      ->add(ResourceMapper::class, 'remove');
+      ->add(ResourceMapper::class, 'remove')
+      ->getMock();
 
-    \Drupal::setContainer($chain->getMock());
-
-    $subscriber = new MetastoreSubscriber();
+    $subscriber = new MetastoreSubscriber(
+      $logger->getMock(),
+      $metastoreService,
+      $resourceMapper
+    );
     $test = $subscriber->cleanResourceMapperTable($event);
     $this->assertEmpty($logger->getStoredInput('errors'));
   }
@@ -54,30 +53,31 @@ class MetastoreSubscriberTest extends TestCase {
    * Test exception.
    */
   public function testResourceMapperCleanUpException() {
-    $logger = $this->getLoggerChain();
 
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
     $event = new Event($resource);
 
-    $options = (new Options())
-      ->add('logger.factory', $logger->getMock())
-      ->add('dkan.metastore.service', Service::class)
-      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
-      ->index(0);
+    $logger = $this->getLoggerChain();
 
-    $chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
+    $metastoreService = (new Chain($this))
       ->add(Service::class, 'get', $dist)
+      ->getMock();
+
+    $resourceMapper = (new Chain($this))
       ->add(ResourceMapper::class, 'get', $resource)
-      ->add(ResourceMapper::class, 'remove', new \Exception('error'));
+      ->add(ResourceMapper::class, 'remove', new \Exception('error'))
+      ->getMock();
 
-    \Drupal::setContainer($chain->getMock());
-
-    $subscriber = new MetastoreSubscriber();
+    $subscriber = new MetastoreSubscriber(
+      $logger->getMock(),
+      $metastoreService,
+      $resourceMapper
+    );
     $test = $subscriber->cleanResourceMapperTable($event);
     $this->assertContains('Failed to remove', $logger->getStoredInput('errors')[0]);
+
   }
 
   private function getLoggerChain() {
