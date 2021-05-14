@@ -40,14 +40,14 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * @param Drupal\Core\Logger\LoggerChannelFactory $logger_factory
    *   LoggerChannelFactory service.
-   * @param \Drupal\metastore\Service $metastore
+   * @param \Drupal\metastore\Service $service
    *   The dkan.metastore.service service.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   The dkan.metastore.resource_mapper.
    */
-  public function __construct(LoggerChannelFactory $logger_factory, Service $metastore, ResourceMapper $resourceMapper) {
+  public function __construct(LoggerChannelFactory $logger_factory, Service $service, ResourceMapper $resourceMapper) {
     $this->loggerFactory = $logger_factory;
-    $this->metastore = $metastore;
+    $this->service = $service;
     $this->resourceMapper = $resourceMapper;
   }
 
@@ -71,7 +71,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   public function cleanResourceMapperTable(Event $event) {
     $uuid = $event->getData();
     // Use the metastore service to build a resource object.
-    $resource = $this->metastore->get('distribution', $uuid);
+    $resource = $this->service->get('distribution', $uuid);
     $resource = json_decode($resource);
     $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
     $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective;

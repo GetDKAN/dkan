@@ -43,14 +43,14 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *
    * @param Drupal\Core\Logger\LoggerChannelFactory $logger_factory
    *   LoggerChannelFactory service.
-   * @param \Drupal\datastore\Service $datastore
+   * @param \Drupal\datastore\Service $service
    *   The dkan.datastore.service service.
    * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
    *   The dkan.datastore.service.resource_purger service.
    */
-  public function __construct(LoggerChannelFactory $logger_factory, Service $datastore, ResourcePurger $resourcePurger) {
+  public function __construct(LoggerChannelFactory $logger_factory, Service $service, ResourcePurger $resourcePurger) {
     $this->loggerFactory = $logger_factory;
-    $this->datastore = $datastore;
+    $this->service = $service;
     $this->resourcePurger = $resourcePurger;
   }
 
@@ -80,9 +80,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
 
     if ($resource->getPerspective() == 'source' && $this->isDataStorable($resource)) {
       try {
-        /** @var \Drupal\datastore\Service $datastoreService */
-        $datastoreService = \Drupal::service('dkan.datastore.service');
-        $datastoreService->import($resource->getIdentifier(), TRUE, $resource->getVersion());
+        $this->service->import($resource->getIdentifier(), TRUE, $resource->getVersion());
       }
       catch (\Exception $e) {
         $this->loggerFactory->get('datastore')->error($e->getMessage());
@@ -123,7 +121,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $ref_uuid = $resource->getUniqueIdentifier();
     $id = md5(str_replace('source', 'local_file', $ref_uuid));
     try {
-      $this->datastore->drop($resource->getIdentifier(), $resource->getVersion());
+      $this->service->drop($resource->getIdentifier(), $resource->getVersion());
       $this->loggerFactory->get('datastore')->notice('Dropping datastore for @id', ['@id' => $id]);
     }
     catch (\Exception $e) {
