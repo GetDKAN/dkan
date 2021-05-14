@@ -71,12 +71,12 @@ class DateRange extends Datetime {
         $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
         $date_time_format = trim($date_format . ' ' . $time_format);
 
-        $start_time = !empty($input['start_date']['time']) ? $input['start_date']['time'] : '00:00:00';
+        $start_time = static::getFormattedTime($input['start_date']['time']);
         $start_input = $input['start_date']['date'] . ' ' . $start_time;
         $start = DrupalDateTime::createFromFormat($date_time_format, $start_input, $element['#date_timezone']);
         $start = $start->format('c', ['timezone' => 'UTC']);
 
-        $end_time = !empty($input['end_date']['time']) ? $input['end_date']['time'] : '00:00:00';
+        $end_time = static::getFormattedTime($input['end_date']['time']);
         $end_input = $input['end_date']['date'] . ' ' . $end_time;
         $end = DrupalDateTime::createFromFormat($date_time_format, $end_input, $element['#date_timezone']);
         $end = $end->format('c', ['timezone' => 'UTC']);
@@ -88,6 +88,23 @@ class DateRange extends Datetime {
       }
     }
     return $input;
+  }
+
+  /**
+   * Get time formatted as H:i:S.
+   *
+   * @param mixed $time
+   *   Time to format.
+   *
+   * @return mixed
+   *   Formatted time.
+   */
+  public static function getFormattedTime($time) {
+    $formatted = !empty($time) ? $time : '00:00:00';
+    if (strlen($formatted) == 5) {
+      $formatted = $formatted . ':00';
+    }
+    return $formatted;
   }
 
   /**
