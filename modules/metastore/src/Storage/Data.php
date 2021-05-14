@@ -101,7 +101,7 @@ abstract class Data implements MetastoreStorageInterface {
     foreach ($entity_ids as $nid) {
       $entity = $this->entityStorage->load($nid);
       if ($entity->get('moderation_state')->getString() === 'published') {
-        $all[$node->uuid()] = $entity->get('field_json_metadata')->getString();
+        $all[$entity->uuid()] = $entity->get('field_json_metadata')->getString();
       }
     }
     return $all;
