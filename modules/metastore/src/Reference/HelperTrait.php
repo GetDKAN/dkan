@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\metastore\Service\Uuid5;
 
 /**
- * HelperTrait.
+ * HelperTrait for referencer classes.
  */
 trait HelperTrait {
   /**

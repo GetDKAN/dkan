@@ -6,6 +6,15 @@ services:
       - '@dkan.metastore.sae_factory'
       - '@dkan.metastore.storage'
 
+  dkan.metastore.lifecycle:
+    class: \Drupal\metastore\LifeCycle\LifeCycle
+    arguments:
+      - '@dkan.metastore.referencer'
+      - '@dkan.metastore.dereferencer'
+      - '@dkan.metastore.orphan_checker'
+      - '@dkan.metastore.resource_mapper'
+      - '@date.formatter'
+
   dkan.metastore.sae_factory:
     class: \Drupal\metastore\Factory\Sae
     arguments:
@@ -56,3 +65,8 @@ services:
     class: \Drupal\metastore\Storage\ResourceMapperDatabaseTable
     arguments:
       - '@database'
+
+  dkan.metastore.metastore_item_factory:
+    class: \Drupal\metastore\NodeWrapper\NodeDataFactory
+    arguments:
+      - '@entity.repository'
