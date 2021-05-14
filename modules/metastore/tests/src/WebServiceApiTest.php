@@ -62,6 +62,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
     $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
+    // Distribution should be wrapped with [{"data":{},"identifier":""}].
     $response = $controller->getAll('distribution');
     $distributions = [
       [
@@ -70,10 +71,6 @@ class WebServiceApiTest extends TestCase {
       ],
       [
         'identifier' => 1,
-        'data' => $object,
-      ],
-      [
-        'identifier' => 2,
         'data' => $object,
       ],
     ];
@@ -87,6 +84,20 @@ class WebServiceApiTest extends TestCase {
       json_encode([$dataWithSwappedRefs, $dataWithSwappedRefs]),
       $response->getContent()
     );
+
+    // Distributions with ref ids.
+    $response = $controller->getAll('distribution');
+    $distributions = [
+      [
+        'identifier' => 0,
+        'data' => $objectWithSwappedRefs,
+      ],
+      [
+        'identifier' => 1,
+        'data' => $objectWithSwappedRefs,
+      ],
+    ];
+    $this->assertEquals(json_encode($distributions), $response->getContent());
   }
 
   /**
@@ -109,12 +120,12 @@ class WebServiceApiTest extends TestCase {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
 
+    // Distribution should be wrapped with [{"data":{},"identifier":""}].
+    $object = json_decode($json);
     $response = $controller->get('distribution', 'distribution-id');
     $distribution = [
       'identifier' => 'distribution-id',
-      'data' => [
-        'name' => 'hello'
-      ],
+      'data' => $object,
     ];
     $this->assertEquals(json_encode($distribution), $response->getContent());
 
@@ -123,6 +134,15 @@ class WebServiceApiTest extends TestCase {
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->get('dataset', 'dataset-id');
     $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
+
+    // Distribution with ref ids.
+    $objectWithSwappedRefs = json_decode($jsonWithSwappedRefs);
+    $response = $controller->get('distribution', 'distribution-id');
+    $distribution = [
+      'identifier' => 'distribution-id',
+      'data' => $objectWithSwappedRefs,
+    ];
+    $this->assertEquals(json_encode($distribution), $response->getContent());
   }
 
 
