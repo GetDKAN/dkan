@@ -41,24 +41,32 @@ class WebServiceApiTest extends TestCase {
    */
   public function testGetAll() {
     $data = ['name' => 'hello'];
-    $dataWithRefs = ["name" => "hello", "%Ref:name" => ["identifier" => "123", "data" => []]];
-    $dataWithSwappedRefs = ["name" => ["identifier" => "123", "data" => []]];
-    $object = $this->validMetadataFactory->get('blah', json_encode($data));
+    $dataWithRefs = ["name" => "hello", '%Ref:name' => ["identifier" => "123", "data" => "hello"]];
     $objectWithRefs = $this->validMetadataFactory->get('blah', json_encode($dataWithRefs));
-    $objectWithSwappedRefs = $this->validMetadataFactory->get('blah', json_encode($dataWithSwappedRefs));
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
-    $this->assertEquals(json_encode([$objectWithRefs, $objectWithRefs]), $response->getContent());
+    $this->assertEquals(json_encode([$data, $data]), $response->getContent());
+  }
+
+  public function testGetAllRefs() {
+    $dataWithRefs = ["name" => "hello", '%Ref:name' => ["identifier" => "123", "data" => "hello"]];
+    $dataWithSwappedRefs = ["name" => ["identifier" => "123", "data" => "hello"]];
+    $objectWithRefs = $this->validMetadataFactory->get('blah', json_encode($dataWithRefs));
+
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
     // Try with show ref ids.
     $mockChain->add(Request::class, 'get', TRUE);
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
     $this->assertEquals(
-      json_encode([$objectWithSwappedRefs, $objectWithSwappedRefs]),
+      json_encode([$dataWithSwappedRefs, $dataWithSwappedRefs]),
       $response->getContent()
     );
   }

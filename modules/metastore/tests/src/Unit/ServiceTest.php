@@ -11,6 +11,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
@@ -64,7 +65,7 @@ class ServiceTest extends TestCase {
     $expected = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
 
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
       ->add(ValidMetadataFactory::class, 'get', $expected);
 
     \Drupal::setContainer($container->getMock());
@@ -88,7 +89,7 @@ class ServiceTest extends TestCase {
       ->add($event2);
 
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
       ->add(ValidMetadataFactory::class, 'get', $data)
       ->add(ContainerAwareEventDispatcher::class, 'dispatch', $sequence);
 
@@ -271,7 +272,7 @@ EOF;
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", "1")
       ->add(Data::class, "store", "1")
-      ->add(ValidMetadataFactory::class, 'get', RootedJsonData::class);
+      ->add(ValidMetadataFactory::class, 'get', new RootedJsonData('{"id":"1"}'));
 
     $service = Service::create($container->getMock());
 
@@ -344,7 +345,7 @@ EOF;
 
     $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
-      ->add(Data::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)])
+      ->add(NodeData::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)])
       ->add(ValidMetadataFactory::class, 'get', $dataset);
 
     \Drupal::setContainer($container->getMock());
@@ -383,7 +384,9 @@ EOF;
 
     return (new Chain($case))
       ->add(Container::class, "get", $services)
-      ->add(DataFactory::class, 'getInstance', Data::class)
+      ->add(DataFactory::class, 'getInstance', NodeData::class)
+      // ->add(NodeData::class, 'getDefaultModerationState', 'published')
+      ->add(NodeData::class, 'retrieve', '{"data":"somedata"}')
       ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
   }
 
