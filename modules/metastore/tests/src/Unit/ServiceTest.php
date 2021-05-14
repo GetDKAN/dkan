@@ -147,7 +147,7 @@ class ServiceTest extends TestCase {
    */
   public function testPost() {
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, 'store', '1');
+      ->add(NodeData::class, 'store', '1');
 
     $service = Service::create($container->getMock());
 
@@ -179,8 +179,8 @@ class ServiceTest extends TestCase {
 
     $data_existing = $this->validMetadataFactory->get('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", $existing)
-      ->add(Data::class, "store", "1")
+      ->add(NodeData::class, "retrieve", $existing)
+      ->add(NodeData::class, "store", "1")
       ->add(ValidMetadataFactory::class, 'get', $data_existing);
 
     $service = Service::create($container->getMock());
@@ -214,8 +214,8 @@ class ServiceTest extends TestCase {
    */
   public function testPutResultingInNewData() {
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", new \Exception())
-      ->add(Data::class, "store", "3");
+      ->add(NodeData::class, "retrieve", new \Exception())
+      ->add(NodeData::class, "store", "3");
 
     $service = Service::create($container->getMock());
 
@@ -270,8 +270,8 @@ EOF;
    */
   public function testPatch() {
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", "1")
-      ->add(Data::class, "store", "1")
+      ->add(NodeData::class, "retrieve", "1")
+      ->add(NodeData::class, "store", "1")
       ->add(ValidMetadataFactory::class, 'get', new RootedJsonData('{"id":"1"}'));
 
     $service = Service::create($container->getMock());
@@ -286,7 +286,7 @@ EOF;
     $data = '{"identifier":"1","title":"FooBar"}';
 
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", new \Exception());
+      ->add(NodeData::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
     $this->expectException(MissingObjectException::class);
@@ -311,7 +311,7 @@ EOF;
    */
   public function testPublishMissingObjectExpection() {
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", new \Exception());
+      ->add(NodeData::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
 
@@ -324,8 +324,8 @@ EOF;
    */
   public function testDelete() {
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", "1")
-      ->add(Data::class, "remove", "1");
+      ->add(NodeData::class, "retrieve", "1")
+      ->add(NodeData::class, "remove", "1");
 
     $service = Service::create($container->getMock());
 
