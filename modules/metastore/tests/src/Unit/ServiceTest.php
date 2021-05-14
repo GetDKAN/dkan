@@ -4,21 +4,12 @@ namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\common\Events\Event;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\Core\DependencyInjection\Container;
-use Drupal\metastore\Exception\ExistingObjectException;
-use Drupal\metastore\Exception\MissingObjectException;
-use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\NodeData;
-use Drupal\metastore\Storage\DataFactory;
-use MockChain\Chain;
-use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
-use RootedData\RootedJsonData;
 
 /**
  *
