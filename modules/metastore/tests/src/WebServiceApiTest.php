@@ -79,16 +79,22 @@ class WebServiceApiTest extends TestCase {
     $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
     $jsonWithSwappedRefs = '{"name":{"identifier":"123","data":[]}}';
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', $jsonWithRefs);
+    $mockChain->add(Service::class, 'get', new RootedJsonData($json));
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
     $this->assertEquals($json, $response->getContent());
+  }
+
+  public function testGetWithRefs() {
+    $json = '{"name":"hello"}';
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Service::class, 'get', new RootedJsonData($json));
 
     // Try with show ref ids.
     $mockChain->add(Request::class, 'get', TRUE);
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->get(1, 'dataset');
+    $response = $controller->get('dataset', '1');
     $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
   }
 
@@ -490,6 +496,7 @@ EOF;
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(Service::class, 'getSchemas', ['dataset'])
+      ->add(Service::class, 'getSchema', (object) ["id" => "http://schema"])
       ->add(Service::class, 'getSchema', (object) ["id" => "http://schema"])
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'get', FALSE);
