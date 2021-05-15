@@ -285,7 +285,7 @@ abstract class Data implements MetastoreStorageInterface {
     $entity = $this->entityStorage
       ->create(
         [
-          $this->labelKey => $title,
+          $this->labelKey => md5(json_encode($title)),
           $this->bundleKey => $this->bundle,
           'uuid' => $uuid,
           'field_data_type' => $this->schemaId,

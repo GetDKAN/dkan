@@ -41,4 +41,26 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
     return 'field_json_metadata';
   }
 
+  /**
+   * Retrieve by hash.
+   *
+   * @param string $hash
+   *   The hash for the data.
+   * @param string $schema_id
+   *   The schema ID.
+   *
+   * @return string|null
+   *   The uuid of the item with that hash.
+   */
+  public function retrieveByHash($hash, $schema_id) {
+    $nodes = $this->getEntityStorage()->loadByProperties([
+      $this->labelKey => $hash,
+      'field_data_type' => $schema_id,
+    ]);
+    if ($node = reset($nodes)) {
+      return $node->uuid();
+    }
+    return NULL;
+  }
+
 }

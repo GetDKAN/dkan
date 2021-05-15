@@ -37,7 +37,7 @@ services:
     class: \Drupal\metastore\Reference\Referencer
     arguments:
       - '@config.factory'
-      - '@dkan.common.node_storage'
+      - '@dkan.metastore.storage'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
 
