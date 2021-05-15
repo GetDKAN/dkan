@@ -4,12 +4,20 @@ namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\common\Events\Event;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\metastore\Exception\ExistingObjectException;
+use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
+use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
+use MockChain\Options;
+use RootedData\RootedJsonData;
 
 /**
  *
@@ -353,28 +361,16 @@ EOF;
    * @return \Drupal\common\Tests\Mock\Chain
    */
   public static function getCommonMockChain(TestCase $case, Options $services = null) {
-    if (!$services) {
-      $services = new Options();
-    }
 
-    $myServices = [
-      'dkan.metastore.schema_retriever' => SchemaRetriever::class,
-      'dkan.metastore.storage' => DataFactory::class,
-      'dkan.metastore.valid_metadata' => ValidMetadataFactory::class,
-      'event_dispatcher' => ContainerAwareEventDispatcher::class
-    ];
-
-    foreach ($myServices as $serviceName => $class) {
-      $serviceClass = $services->return($serviceName);
-      if (!isset($serviceClass)) {
-        $services->add($serviceName, $class);
-      }
-    }
-
-    $services->index(0);
+    $options = (new Options)
+      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
+      ->index(0);
 
     return (new Chain($case))
-      ->add(Container::class, "get", $services)
+      ->add(Container::class, "get", $options)
       ->add(DataFactory::class, 'getInstance', NodeData::class)
       // ->add(NodeData::class, 'getDefaultModerationState', 'published')
       ->add(NodeData::class, 'retrieve', '{"data":"somedata"}')
