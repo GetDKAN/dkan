@@ -31,7 +31,7 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
    * {@inheritdoc}
    */
   public static function getType() {
-    return StreamWrapperInterface::HIDDEN;
+    return StreamWrapperInterface::READ_VISIBLE;
   }
 
   /**
@@ -53,20 +53,6 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
   /**
    * {@inheritdoc}
    */
-  public function dir_readdir() {
-    return FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function dir_rewinddir() {
-    return FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function stream_open($path, $mode, $options, &$opened_path) {
     $allowed_modes = ['r', 'rb'];
     if (!in_array($mode, $allowed_modes)) {
@@ -77,26 +63,4 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
     $this->handle = ($options && STREAM_REPORT_ERRORS) ? fopen($url, $mode) : @fopen($url, $mode);
     return (bool) $this->handle;
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function stream_eof() {
-    return feof($this->handle);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function stream_stat() {
-    return FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function stream_read($count) {
-    return fread($this->handle, $count);
-  }
-
 }
