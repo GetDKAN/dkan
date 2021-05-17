@@ -144,7 +144,7 @@ class Service implements ContainerInjectionInterface {
         $object = (object) ["message" => $e->getMessage()];
       }
       if ($schema_id != 'dataset') {
-        $object = Service::wrapMetadata($id, $object);
+        $object = self::wrapMetadata($id, $object);
       }
       $objects[] = $object;
     }
@@ -171,7 +171,7 @@ class Service implements ContainerInjectionInterface {
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     if ($schema_id != 'dataset') {
-      $data = Service::wrapMetadata($identifier, json_decode($data));
+      $data = self::wrapMetadata($identifier, json_decode($data));
       $data = json_encode($data);
     }
     return $data;
