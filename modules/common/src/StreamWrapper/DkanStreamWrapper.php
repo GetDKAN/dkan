@@ -7,8 +7,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\Url;
 
 /**
- * DKAN stream wrapper for creating full, domain-agnostic URLs to DKAN API 
- * endpoints.
+ * DKAN stream wrapper for creating domain-agnostic URLs to DKAN API endpoints.
  */
 class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInterface {
 
@@ -39,7 +38,7 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
    * {@inheritdoc}
    */
   public function getExternalUrl() {
-    $url = Url::fromUserInput("/api/1/" . $this->getTarget(), ['absolute' => true]);
+    $url = Url::fromUserInput("/api/1/" . $this->getTarget(), ['absolute' => TRUE]);
     return $url->toString();
   }
 
@@ -47,7 +46,7 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
    * {@inheritdoc}
    */
   public function getDirectoryPath() {
-    $url = Url::fromUserInput("/api/1/", ['absolute' => true]);
+    $url = Url::fromUserInput("/api/1/", ['absolute' => TRUE]);
     return $url->toString();
   }
 
@@ -69,7 +68,7 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
    * {@inheritdoc}
    */
   public function stream_open($path, $mode, $options, &$opened_path) {
-    $allowed_modes = array('r', 'rb');
+    $allowed_modes = ['r', 'rb'];
     if (!in_array($mode, $allowed_modes)) {
       return FALSE;
     }
