@@ -64,30 +64,49 @@ class DateRange extends Datetime {
    */
   public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
     $element += ['#date_timezone' => date_default_timezone_get()];
-    if ($input !== FALSE) {
-      $input['date_range'] = '';
-      if (!empty($input['start_date']['date']) && !empty($input['end_date']['date'])) {
-        $date_format = $element['#date_date_element'] != 'none' ? static::getHtml5DateFormat($element) : '';
-        $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
-        $date_time_format = trim($date_format . ' ' . $time_format);
+    if ($input == FALSE) {
+      return $input;
+    }
+    $input['date_range'] = '';
+    if (!empty($input['start_date']['date']) && !empty($input['end_date']['date'])) {
+      $date_format = $element['#date_date_element'] != 'none' ? static::getHtml5DateFormat($element) : '';
+      $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
+      $date_time_format = trim($date_format . ' ' . $time_format);
 
-        $start_time = static::getFormattedTime($input['start_date']['time']);
-        $start_input = $input['start_date']['date'] . ' ' . $start_time;
-        $start = DrupalDateTime::createFromFormat($date_time_format, $start_input, $element['#date_timezone']);
-        $start = $start->format('c', ['timezone' => 'UTC']);
+      $start_time = static::getFormattedTime($input['start_date']['time']);
+      $start = static::getDateTimeElement($input['start_date']['date'], $start_time, $date_time_format, $element['#date_timezone']);
 
-        $end_time = static::getFormattedTime($input['end_date']['time']);
-        $end_input = $input['end_date']['date'] . ' ' . $end_time;
-        $end = DrupalDateTime::createFromFormat($date_time_format, $end_input, $element['#date_timezone']);
-        $end = $end->format('c', ['timezone' => 'UTC']);
-        $input = [
-          'start' => $start,
-          'end' => $end,
-          'date_range' => $start . '/' . $end,
-        ];
-      }
+      $end_time = static::getFormattedTime($input['end_date']['time']);
+      $end = static::getDateTimeElement($input['end_date']['date'], $end_time, $date_time_format, $element['#date_timezone']);
+
+      $input = [
+        'start' => $start,
+        'end' => $end,
+        'date_range' => $start . '/' . $end,
+      ];
     }
     return $input;
+  }
+
+  /**
+   * Get the date time element formatted.
+   *
+   * @param string $date
+   *   The date.
+   * @param string $time
+   *   The time formatted.
+   * @param string $format
+   *   The format in which the date should be formatted.
+   * @param mixed $timezone
+   *   The timezone of the date.
+   *
+   * @return string
+   *   The date formatted.
+   */
+  public static function getDateTimeElement($date, $time, $format, $timezone) {
+    $input = $date . ' ' . $time;
+    $date_time = DrupalDateTime::createFromFormat($format, $input, $timezone);
+    return $date_time->format('c', ['timezone' => 'UTC']);
   }
 
   /**
@@ -183,7 +202,7 @@ class DateRange extends Datetime {
    */
   public static function missingStartDate(array $input, array $element, FormStateInterface $form_state) {
     if (empty($input['start_date']) && !empty($input['end_date'])) {
-      $form_state->setError($element['end_date'], t('Please enter a start date.'));
+      $form_state->setError($element['start_date'], t('Please enter a start date.'));
     }
   }
 
