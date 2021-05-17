@@ -10,7 +10,7 @@ use Drupal\metastore\Events\Registration;
 use Drupal\metastore\Exception\AlreadyRegistered;
 
 /**
- * ResourceMapper.
+ * Map resource URLs to local files.
  */
 class ResourceMapper {
 
@@ -19,7 +19,18 @@ class ResourceMapper {
   const DEREFERENCE_NO = 0;
   const DEREFERENCE_YES = 1;
 
+  /**
+   * Database storage service.
+   *
+   * @var \Drupal\common\Storage\DatabaseTableInterface
+   */
   private $store;
+
+  /**
+   * Event dispatcher service.
+   *
+   * @var \Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher
+   */
   private $eventDispatcher;
 
   /**

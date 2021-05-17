@@ -126,7 +126,11 @@ class Service implements ContainerInjectionInterface {
    *   Boolean.
    */
   public function deregisterHarvest(string $id) {
-    $this->revertHarvest($id);
+    try {
+      $this->revertHarvest($id);
+    }
+    catch (\Exception $e) {
+    }
 
     $plan_store = $this->storeFactory->getInstance("harvest_plans");
 
@@ -212,6 +216,9 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $id
    *   Harvest identifier.
+   *
+   * @return array
+   *   The uuids of the published datasets.
    */
   public function publish(string $id) {
     $publishedIdentifiers = [];

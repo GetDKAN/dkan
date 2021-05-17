@@ -2,67 +2,32 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
+use Drupal\common\Resource;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service as Harvester;
-use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Service as Metastore;
+use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
+use Drupal\search_api\Entity\Index;
 use Drupal\Tests\common\Traits\CleanUp;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Harvest\ETL\Extract\DataJson;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
+/**
+ * Class DatasetTest
+ *
+ * @package Drupal\Tests\dkan\Functional
+ * @group dkan
+ */
 class DatasetTest extends ExistingSiteBase {
-  use ServiceCheckTrait;
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
-  private function getDownloadUrl(string $filename) {
-    return self::S3_PREFIX . '/' . $filename;
-  }
-
-  /**
-   * Generate dataset metadata, possibly with multiple distributions.
-   *
-   * @param string $identifier
-   *   Dataset identifier.
-   * @param string $title
-   *   Dataset title.
-   * @param array $downloadUrls
-   *   Array of resource files URLs for this dataset.
-   *
-   * @return string|false
-   *   Json encoded string of this dataset's metadata, or FALSE if error.
-   */
-  private function getData(string $identifier, string $title, array $downloadUrls) {
-
-    $data = new \stdClass();
-    $data->title = $title;
-    $data->description = "Some description.";
-    $data->identifier = $identifier;
-    $data->accessLevel = "public";
-    $data->modified = "06-04-2020";
-    $data->keyword = ["some keyword"];
-    $data->distribution = [];
-
-    foreach ($downloadUrls as $key => $downloadUrl) {
-      $distribution = new \stdClass();
-      $distribution->title = "Distribution #{$key} for {$identifier}";
-      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
-      $distribution->mediaType = "text/csv";
-
-      $data->distribution[] = $distribution;
-    }
-
-    return json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
-  }
-
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
     $this->removeHarvests();
     $this->removeAllNodes();
@@ -71,54 +36,24 @@ class DatasetTest extends ExistingSiteBase {
     $this->flushQueues();
     $this->removeFiles();
     $this->removeDatastoreTables();
+    $this->setDefaultModerationState();
+    $this->changeDatasetsResourceOutputPerspective();
   }
 
-  public function test() {
-
-    // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
-    $data1 = $this->checkDatasetIn($dataset);
-
-    // Test that nothing changes on put.
-    try {
-      $this->checkDatasetIn($dataset, 'put');
-      $this->assertTrue(FALSE);
-    }
-    catch(UnmodifiedObjectException $e) {
-      $this->assertTrue(TRUE);
-    }
-
-    // Test a new file/resource revision is created.
-    $rev = &drupal_static('metastore_resource_mapper_new_revision');
-    $rev = 1;
-    $object = json_decode($dataset);
-    $object->modified = "06-05-2020";
-    $dataset = json_encode($object);
-    $data3 = $this->checkDatasetIn($dataset, 'put');
-    $this->assertNotEquals($data1, $data3);
-  }
-
-  public function test2() {
-
-    // Test posting a dataset to the metastore.
-    $dataset = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
-    $data1 = $this->checkDatasetIn($dataset);
-
-    // Process datastore operations. This will include downloading the remote
-    // CSV file and registering a local url and file with the resource mapper.
-    $this->datastoreProcesses($data1);
-
-    // Check that the imported file can be queried with the SQL Endpoint.
-    $this->queryResource($data1);
+  public function testChangingDatasetResourcePerspectiveOnOutput() {
+    $this->datastoreImportAndQuery();
 
     drupal_flush_all_caches();
 
-    // Test that local url is displayed.
-    $display = &drupal_static('metastore_resource_mapper_display');
-    $display = ResourceLocalizer::LOCAL_URL_PERSPECTIVE;
-    $localUrlDataset = json_decode($this->getMetastore()->get('dataset', json_decode($dataset)->identifier));
-    $this->assertNotEquals($localUrlDataset->distribution[0]->downloadURL,
-      $this->getDownloadUrl('district_centerpoints_small.csv'));
+    $this->changeDatasetsResourceOutputPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE);
+
+    $metadata = $this->getMetastore()->get('dataset', 123);
+    $dataset = json_decode($metadata);
+
+    $this->assertNotEquals(
+      $dataset->distribution[0]->downloadURL,
+      $this->getDownloadUrl('district_centerpoints_small.csv')
+    );
   }
 
   /**
@@ -139,11 +74,7 @@ class DatasetTest extends ExistingSiteBase {
    * Test the resource purger when the default moderation state is 'draft'.
    */
   public function test4() {
-    /** @var \Drupal\Core\Config\ConfigFactory $config */
-    $config = \Drupal::service('config.factory');
-    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
-    $defaultModerationState->set('type_settings.default_moderation_state', 'draft');
-    $defaultModerationState->save();
+    $this->setDefaultModerationState('draft');
 
     // Post, update and publish a dataset with multiple, changing resources.
     $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
@@ -151,8 +82,6 @@ class DatasetTest extends ExistingSiteBase {
     $this->getMetastore()->publish('dataset', 111);
     $this->storeDatasetRunQueues(111, '1.3', ['1.csv', '5.csv'], 'put');
 
-    // Verify dataset information.
-    /** @var \Drupal\common\DatasetInfo $datasetInfo */
     $datasetInfo = \Drupal::service('dkan.common.dataset_info');
     $info = $datasetInfo->gather('111');
     $this->assertEquals('1.csv', substr($info['latest_revision']['distributions'][0]['file_path'], -5));
@@ -165,8 +94,21 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals(['1.csv', '3.csv', '5.csv'], $this->checkFiles());
     $this->assertEquals(3, $this->countTables());
 
-    $defaultModerationState->set('type_settings.default_moderation_state', 'published');
-    $defaultModerationState->save();
+    // Add more datasets, only publishing some.
+    $this->storeDatasetRunQueues(222, '2.1', []);
+    $this->storeDatasetRunQueues(333, '3.1', []);
+    $this->getMetastore()->publish('dataset', 222);
+    // Reindex.
+    $index = Index::load('dkan');
+    $index->clear();
+    $index->indexItems();
+    // Verify search results contain the '1.2' version of 111, 222 but not 333.
+    $searchResults = $this->getMetastoreSearch()->search();
+    $this->assertEquals(2, $searchResults->total);
+    $this->assertArrayHasKey('dkan_dataset/111', $searchResults->results);
+    $this->assertEquals('1.2', $searchResults->results['dkan_dataset/111']->title);
+    $this->assertArrayHasKey('dkan_dataset/222', $searchResults->results);
+    $this->assertArrayNotHasKey('dkan_dataset/333', $searchResults->results);
   }
 
   /**
@@ -201,6 +143,102 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals('published' , $this->getModerationState('2'));
     $this->assertEquals('orphaned' , $this->getModerationState('3'));
     $this->assertEquals('published' , $this->getModerationState('4'));
+  }
+
+  private function datasetPostAndRetrieve(): object {
+    $datasetJson = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
+    $dataset = json_decode($datasetJson);
+
+    $uuid = $this->getMetastore()->post('dataset', $datasetJson);
+
+    $this->assertEquals(
+      $dataset->identifier,
+      $uuid
+    );
+
+    $datasetJson = $this->getMetastore()->get('dataset', $uuid);
+    $this->assertIsString($datasetJson);
+
+    $retrievedDataset = json_decode($datasetJson);
+
+    $this->assertEquals(
+      $retrievedDataset->identifier,
+      $uuid
+    );
+
+    return $retrievedDataset;
+  }
+
+  private function datastoreImportAndQuery() {
+    $dataset = $this->datasetPostAndRetrieve();
+    $resource = $this->getResourceFromDataset($dataset);
+
+    $this->runQueues(['datastore_import']);
+
+    $queryString = "[SELECT * FROM {$this->getResourceDatastoreTable($resource)}][WHERE lon = \"61.33\"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];";
+    $this->queryResource($resource, $queryString);
+
+    /**/
+  }
+
+  private function changeDatasetsResourceOutputPerspective(string $perspective = Resource::DEFAULT_SOURCE_PERSPECTIVE) {
+    $display = &drupal_static('metastore_resource_mapper_display');
+    $display = $perspective;
+  }
+
+  private function getResourceDatastoreTable(object $resource) {
+    return "{$resource->identifier}__{$resource->version}";
+  }
+
+  private function getResourceFromDataset(object $dataset) {
+    $this->assertTrue(isset($dataset->{"%Ref:distribution"}));
+    $this->assertTrue(isset($dataset->{"%Ref:distribution"}[0]));
+    $this->assertTrue(isset($dataset->{"%Ref:distribution"}[0]->data));
+    $this->assertTrue(isset($dataset->{"%Ref:distribution"}[0]->data->{"%Ref:downloadURL"}));
+    $this->assertTrue(isset($dataset->{"%Ref:distribution"}[0]->data->{"%Ref:downloadURL"}[0]));
+    $this->assertTrue(isset($dataset->{"%Ref:distribution"}[0]->data->{"%Ref:downloadURL"}[0]->data));
+
+    return $dataset->{"%Ref:distribution"}[0]->data->{"%Ref:downloadURL"}[0]->data;
+  }
+
+  private function getDownloadUrl(string $filename) {
+    return self::S3_PREFIX . '/' . $filename;
+  }
+
+  /**
+   * Generate dataset metadata, possibly with multiple distributions.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
+   * @param string $title
+   *   Dataset title.
+   * @param array $downloadUrls
+   *   Array of resource files URLs for this dataset.
+   *
+   * @return string|false
+   *   Json encoded string of this dataset's metadata, or FALSE if error.
+   */
+  private function getData(string $identifier, string $title, array $downloadUrls): string {
+
+    $data = new \stdClass();
+    $data->title = $title;
+    $data->description = "Some description.";
+    $data->identifier = $identifier;
+    $data->accessLevel = "public";
+    $data->modified = "06-04-2020";
+    $data->keyword = ["some keyword"];
+    $data->distribution = [];
+
+    foreach ($downloadUrls as $key => $downloadUrl) {
+      $distribution = new \stdClass();
+      $distribution->title = "Distribution #{$key} for {$identifier}";
+      $distribution->downloadURL = $this->getDownloadUrl($downloadUrl);
+      $distribution->mediaType = "text/csv";
+
+      $data->distribution[] = $distribution;
+    }
+
+    return json_encode($data);
   }
 
   /**
@@ -244,7 +282,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   /**
-   * Process queues in a predictible order.
+   * Process queues in a predictable order.
    */
   private function runQueues(array $relevantQueues = []) {
     /** @var \Drupal\Core\Queue\QueueWorkerManager $queueWorkerManager */
@@ -284,52 +322,11 @@ class DatasetTest extends ExistingSiteBase {
     return $filenames;
   }
 
-  private function queryResource($fileData) {
+  private function queryResource(object $resource, string $queryString) {
     /* @var $sqlEndpoint \Drupal\datastore\SqlEndpoint\Service */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
-
-    $table = "{$fileData->identifier}__{$fileData->version}";
-    $queryString = "[SELECT * FROM {$table}][WHERE lon = \"61.33\"][ORDER BY lat DESC][LIMIT 1 OFFSET 0];";
-
     $results = $sqlEndpoint->runQuery($queryString);
     $this->assertGreaterThan(0, count($results));
-  }
-
-  private function datastoreProcesses($fileData) {
-    $queue = $this->getQueueService()->get('datastore_import');
-    $this->assertEquals(1, $queue->numberOfItems());
-
-    /* @var $datastore \Drupal\datastore\Service */
-    $datastore = \Drupal::service('dkan.datastore.service');
-
-    $queueWorker = Import::create(\Drupal::getContainer(), [], 'blah', 'blah');
-    $queueWorker->processItem((object) ['data' => [
-      'identifier' => $fileData->identifier,
-      'version' => $fileData->version,
-    ]]);
-
-    $result = $datastore->list();
-    $this->assertEquals(1, count($result));
-  }
-
-  private function checkDatasetIn($datasetJson, $method = 'post', $downloadUrl = null) {
-    $dataset = json_decode($datasetJson);
-
-    if (!isset($downloadUrl)) {
-      $downloadUrl = $dataset->distribution[0]->downloadURL;
-    }
-
-    $identifier = $this->httpVerbHandler($method, $datasetJson, $dataset);
-    $this->assertEquals($dataset->identifier, $identifier);
-
-    $datasetWithReferences = json_decode($this->getMetastore()->get('dataset', $identifier));
-    $fileData = $datasetWithReferences->{"%Ref:distribution"}[0]
-      ->data->{"%Ref:downloadURL"}[0]
-      ->data;
-
-    $this->assertEquals($downloadUrl, $fileData->filePath);
-
-    return $fileData;
   }
 
   private function httpVerbHandler(string $method, string $json, $dataset) {
@@ -347,8 +344,12 @@ class DatasetTest extends ExistingSiteBase {
     return $identifier;
   }
 
-  private function getMetastore(): Metastore {
-    return \Drupal::service('dkan.metastore.service');
+  private function setDefaultModerationState($state = 'published') {
+    /** @var \Drupal\Core\Config\ConfigFactory $config */
+    $config = \Drupal::service('config.factory');
+    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
+    $defaultModerationState->set('type_settings.default_moderation_state', $state);
+    $defaultModerationState->save();
   }
 
   private function getQueueService() : QueueFactory {
@@ -361,6 +362,17 @@ class DatasetTest extends ExistingSiteBase {
 
   private function getNodeStorage(): NodeStorage {
     return \Drupal::service('entity_type.manager')->getStorage('node');
+  }
+
+  /**
+   * @return \Drupal\metastore_search\Search
+   */
+  private function getMetastoreSearch() : Search {
+    return \Drupal::service('metastore_search.service');
+  }
+
+  private function getMetastore(): Metastore {
+    return \Drupal::service('dkan.metastore.service');
   }
 
 }

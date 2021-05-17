@@ -5,6 +5,8 @@ dkan.harvest.1.harvest:
     { _controller: '\Drupal\common\Docs::getComplete'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: [ 'basic_auth', 'cookie' ]
 
 dkan.harvest.api.plans:
   path: '/api/1/harvest/plans'
@@ -14,7 +16,7 @@ dkan.harvest.api.plans:
   requirements:
     _permission: 'harvest_api_index'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan.harvest.api.plans.post:
   path: '/api/1/harvest/plans'
@@ -24,7 +26,7 @@ dkan.harvest.api.plans.post:
   requirements:
     _permission: 'harvest_api_register'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan.harvest.api.plans_id:
   path: '/api/1/harvest/plans/{identifier}'
@@ -34,7 +36,7 @@ dkan.harvest.api.plans_id:
   requirements:
     _permission: 'harvest_api_index'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan.harvest.api.plans_id.delete:
   path: '/api/1/harvest/plans/{identifier}'
@@ -44,7 +46,7 @@ dkan.harvest.api.plans_id.delete:
   requirements:
     _permission: 'harvest_api_run'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan.harvest.api.runs:
   path: '/api/1/harvest/runs'
@@ -54,7 +56,7 @@ dkan.harvest.api.runs:
   requirements:
     _permission: 'harvest_api_info'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan.harvest.api.runs.post:
   path: '/api/1/harvest/runs'
@@ -64,7 +66,7 @@ dkan.harvest.api.runs.post:
   requirements:
     _permission: 'harvest_api_run'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan.harvest.api.runs.delete:
   path: '/api/1/harvest/runs'
@@ -74,7 +76,7 @@ dkan.harvest.api.runs.delete:
   requirements:
     _permission: 'harvest_api_run'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 dkan.harvest.api.runs_id:
   path: '/api/1/harvest/runs/{identifier}'
@@ -84,4 +86,4 @@ dkan.harvest.api.runs_id:
   requirements:
     _permission: 'harvest_api_info'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']

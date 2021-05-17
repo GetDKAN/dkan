@@ -20,6 +20,9 @@ class QueryDataProvider {
   const SQL = 2;
   const EXCEPTION = 3;
 
+  /**
+   *
+   */
   public function getAllData($return) {
     $tests = [
       'noPropertiesQuery',
@@ -52,6 +55,9 @@ class QueryDataProvider {
     return $data;
   }
 
+  /**
+   *
+   */
   public static function noPropertiesQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -66,6 +72,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function propertiesQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -81,6 +90,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function badPropertyQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -97,6 +109,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function unsafePropertyQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -113,6 +128,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function expressionQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -140,7 +158,7 @@ class QueryDataProvider {
           (object) [
             "property" => "add_one",
             "order" => "asc",
-          ]
+          ],
         ];
         return $query;
 
@@ -152,6 +170,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function nestedExpressionQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -188,6 +209,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function badExpressionOperandQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -212,6 +236,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function conditionQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -233,7 +260,9 @@ class QueryDataProvider {
     }
   }
 
-
+  /**
+   *
+   */
   public static function likeConditionQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -256,7 +285,9 @@ class QueryDataProvider {
     }
   }
 
-
+  /**
+   *
+   */
   public static function arrayConditionQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -279,6 +310,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function nestedConditionGroupQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -307,7 +341,7 @@ class QueryDataProvider {
                     "value" => "value3",
                   ],
                 ],
-              ]
+              ],
             ],
           ],
         ];
@@ -321,6 +355,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function sortQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -352,6 +389,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function badSortQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -368,6 +408,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function offsetQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -383,6 +426,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function limitOffsetQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -399,6 +445,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function joinsQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -413,7 +462,7 @@ class QueryDataProvider {
               "value" => (object) [
                 "collection" => "l",
                 "property" => "field1",
-              ]
+              ],
             ],
           ],
         ];
@@ -427,6 +476,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function joinWithPropertiesFromBothQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:
@@ -462,6 +514,9 @@ class QueryDataProvider {
     }
   }
 
+  /**
+   *
+   */
   public static function countQuery($return) {
     switch ($return) {
       case self::QUERY_OBJECT:

@@ -34,10 +34,6 @@ services:
       - [setResourceMapper, ['@?dkan.metastore.resource_mapper']]
       - [setImportInfo, ['@?dkan.datastore.import_info']]
 
-  plugin.manager.common.data_modifier:
-    class: \Drupal\common\Plugin\DataModifierManager
-    parent: default_plugin_manager
-
   # @deprecated
   common.docs:
     class: \Drupal\common\Docs

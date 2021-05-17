@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\metastore\Service\Uuid5;
 
 /**
- * HelperTrait.
+ * HelperTrait for referencer classes.
  */
 trait HelperTrait {
   /**
@@ -29,7 +29,7 @@ trait HelperTrait {
    * @return array
    *   List of dataset properties.
    *
-   * @Todo: consolidate with common RouteProvider's getPropertyList.
+   * @todo consolidate with common RouteProvider's getPropertyList.
    */
   private function getPropertyList() : array {
     if (isset($this->configService)) {

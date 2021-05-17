@@ -14,6 +14,9 @@ use Drupal\search_api\Datasource\DatasourcePluginBase;
  *   id = "dkan_dataset",
  *   label = "DKAN Dataset",
  * )
+ *
+ * @todo We should rely more in the metastore instead of direct
+ * entity queries and direct connections to storage classes.
  */
 class DkanDataset extends DatasourcePluginBase {
 
@@ -75,7 +78,11 @@ class DkanDataset extends DatasourcePluginBase {
 
     $items = [];
     foreach ($ids as $id) {
-      $items[$id] = new Dataset($dataStorage->retrieve($id));
+      try {
+        $items[$id] = new Dataset($dataStorage->retrievePublished($id));
+      }
+      catch (\Exception $e) {
+      }
     }
 
     return $items;

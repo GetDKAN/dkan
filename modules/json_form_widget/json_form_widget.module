@@ -44,3 +44,35 @@ function json_form_widget_remove_one(array &$form, FormStateInterface $form_stat
   // don't do this, the form builder will not call buildForm().
   $form_state->setRebuild();
 }
+
+/**
+ * Add custom submit handler to data form.
+ */
+function json_form_widget_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id === "node_data_form" || $form_id === "node_data_edit_form") {
+    $form['actions']['submit']['#submit'][] = 'json_form_widget_save_dkan_file_submit';
+  }
+}
+
+/**
+ * Submit handler for uploaded elements on upload_or_link.
+ */
+function json_form_widget_save_dkan_file_submit($form, FormStateInterface $form_state) {
+  if ($parents = $form_state->get('upload_or_link_element')) {
+    foreach ($parents as $parent) {
+      $uri = $form_state->getValue($parent);
+      $filename = \Drupal::service('file_system')->basename($uri);
+      $filename = urldecode($filename);
+      $files = \Drupal::entityTypeManager()
+        ->getStorage('file')
+        ->loadByProperties(['filename' => $filename]);
+      if (!empty($files)) {
+        $file = reset($files);
+        $file->setPermanent();
+        $file->save();
+        $file_usage = \Drupal::service('file.usage');
+        $file_usage->add($file, 'json_form_widget', 'json_form_widget', \Drupal::currentUser()->id());
+      }
+    }
+  }
+}

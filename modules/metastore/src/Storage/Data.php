@@ -2,33 +2,20 @@
 
 namespace Drupal\metastore\Storage;
 
-use Contracts\BulkRetrieverInterface;
-use Contracts\RemoverInterface;
-use Contracts\RetrieverInterface;
-use Contracts\StorerInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\node\NodeInterface;
 
 /**
  * Data.
  */
-class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
-
-  const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
+abstract class Data implements MetastoreStorageInterface {
 
   /**
    * Entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManager
    */
-  private $entityTypeManager;
-
-  /**
-   * Node storage service.
-   *
-   * @var \Drupal\node\NodeStorageInterface
-   */
-  private $nodeStorage;
+  protected $entityTypeManager;
 
   /**
    * Represents the data type passed via the HTTP request url schema_id slug.
@@ -38,22 +25,57 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   private $schemaId;
 
   /**
+   * Entity storage service.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface|mixed|object
+   */
+  protected $entityStorage;
+
+  /**
+   * Entity label key.
+   *
+   * @var string
+   */
+  protected $labelKey;
+
+  /**
+   * Entity bundle key.
+   *
+   * @var string
+   */
+  protected $bundleKey;
+
+  /**
+   * Entity type.
+   *
+   * @var string
+   */
+  protected $entityType;
+
+  /**
+   * Entity bundle.
+   *
+   * @var string
+   */
+  protected $bundle;
+
+  /**
    * Constructor.
    */
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->nodeStorage = $this->entityTypeManager->getStorage('node');
+    $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->setSchema($schemaId);
   }
 
   /**
-   * Get node storage.
+   * Get entity storage.
    *
-   * @return \Drupal\node\NodeStorageInterface
-   *   Node storage.
+   * @return \Drupal\Core\Entity\EntityStorageInterface|mixed|object
+   *   Entity storage.
    */
-  public function getNodeStorage() {
-    return $this->nodeStorage;
+  public function getEntityStorage() {
+    return $this->entityStorage;
   }
 
   /**
@@ -70,36 +92,31 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function retrieveAll(): array {
 
-    $node_ids = $this->nodeStorage->getQuery()
-      ->condition('type', $this->getType())
+    $entity_ids = $this->entityStorage->getQuery()
+      ->condition('type', $this->bundle)
       ->condition('field_data_type', $this->schemaId)
       ->execute();
 
     $all = [];
-    foreach ($node_ids as $nid) {
-      /* @var $node \Drupal\node\NodeInterface */
-      $node = $this->nodeStorage->load($nid);
-      if ($node->get('moderation_state')->getString() === 'published') {
-        $all[] = $node->get('field_json_metadata')->getString();
+    foreach ($entity_ids as $nid) {
+      $entity = $this->entityStorage->load($nid);
+      if ($entity->get('moderation_state')->getString() === 'published') {
+        $all[] = $entity->get('field_json_metadata')->getString();
       }
     }
     return $all;
   }
 
   /**
-   * Retrieve the json metadata from a node only if it is published.
+   * Inherited.
    *
-   * @param string $uuid
-   *   The identifier.
-   *
-   * @return string|null
-   *   The node's json metadata, or NULL if the node was not found.
+   * {@inheritdoc}.
    */
   public function retrievePublished(string $uuid) : ?string {
-    $node = $this->getNodePublishedRevision($uuid);
+    $entity = $this->getEntityPublishedRevision($uuid);
 
-    if ($node && $node->get('moderation_state')->getString() == 'published') {
-      return $node->get('field_json_metadata')->getString();
+    if ($entity && $entity->get('moderation_state')->getString() == 'published') {
+      return $entity->get('field_json_metadata')->getString();
     }
 
     throw new \Exception("No data with that identifier was found.");
@@ -113,27 +130,23 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   public function retrieve(string $uuid) : ?string {
 
     if ($this->getDefaultModerationState() === 'published') {
-      $node = $this->getNodePublishedRevision($uuid);
+      $entity = $this->getEntityPublishedRevision($uuid);
     }
     else {
-      $node = $this->getNodeLatestRevision($uuid);
+      $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if ($node) {
-      return $node->get('field_json_metadata')->getString();
+    if ($entity) {
+      return $entity->get('field_json_metadata')->getString();
     }
 
     throw new \Exception("No data with that identifier was found.");
   }
 
   /**
-   * Publish the latest version of a data node.
+   * Inherited.
    *
-   * @param string $uuid
-   *   Identifier.
-   *
-   * @return string
-   *   Identifier.
+   * {@inheritdoc}.
    */
   public function publish(string $uuid) : string {
 
@@ -141,11 +154,11 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       throw new \Exception("Publishing currently only implemented for datasets.");
     }
 
-    $node = $this->getNodeLatestRevision($uuid);
+    $entity = $this->getEntityLatestRevision($uuid);
 
-    if ($node && $node->get('moderation_state') !== 'published') {
-      $node->set('moderation_state', 'published');
-      $node->save();
+    if ($entity && $entity->get('moderation_state') !== 'published') {
+      $entity->set('moderation_state', 'published');
+      $entity->save();
       return $uuid;
     }
 
@@ -153,60 +166,60 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   }
 
   /**
-   * Load a Data node's published revision.
+   * Load a Data entity's published revision.
    *
    * @param string $uuid
    *   The dataset identifier.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
-   *   The node's published revision, if found.
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
+   *   The entity's published revision, if found.
    */
-  public function getNodePublishedRevision(string $uuid) {
+  public function getEntityPublishedRevision(string $uuid) {
 
-    $nid = $this->getNidFromUuid($uuid);
-
-    return $nid ? $this->nodeStorage->load($nid) : NULL;
+    $entity_id = $this->getEntityIdFromUuid($uuid);
+    // TODO: extract an actual published revision.
+    return $entity_id ? $this->entityStorage->load($entity_id) : NULL;
   }
 
   /**
-   * Load a node's latest revision, given a dataset's uuid.
+   * Load a entity's latest revision, given a dataset's uuid.
    *
    * @param string $uuid
    *   The dataset identifier.
    *
    * @return \Drupal\Core\Entity\EntityInterface|null
-   *   The node's latest revision, if found.
+   *   The entity's latest revision, if found.
    */
-  public function getNodeLatestRevision(string $uuid) {
+  public function getEntityLatestRevision(string $uuid) {
 
-    $nid = $this->getNidFromUuid($uuid);
+    $entity_id = $this->getEntityIdFromUuid($uuid);
 
-    if ($nid) {
-      $revision_id = $this->nodeStorage->getLatestRevisionId($nid);
-      return $this->nodeStorage->loadRevision($revision_id);
+    if ($entity_id) {
+      $revision_id = $this->entityStorage->getLatestRevisionId($entity_id);
+      return $this->entityStorage->loadRevision($revision_id);
     }
 
     return NULL;
   }
 
   /**
-   * Get the node id from the dataset identifier.
+   * Get the entity id from the dataset identifier.
    *
    * @param string $uuid
    *   The dataset identifier.
    *
    * @return int|null
-   *   The node id, if found.
+   *   The entity id, if found.
    */
-  public function getNidFromUuid(string $uuid) : ?int {
+  public function getEntityIdFromUuid(string $uuid) : ?int {
 
-    $nids = $this->nodeStorage->getQuery()
+    $entity_ids = $this->entityStorage->getQuery()
       ->condition('uuid', $uuid)
-      ->condition('type', $this->getType())
+      ->condition($this->bundleKey, $this->bundle)
       ->condition('field_data_type', $this->schemaId)
       ->execute();
 
-    return $nids ? (int) reset($nids) : NULL;
+    return $entity_ids ? (int) reset($entity_ids) : NULL;
   }
 
   /**
@@ -216,9 +229,9 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   public function remove(string $uuid) {
 
-    $node = $this->getNodeLatestRevision($uuid);
-    if ($node) {
-      return $node->delete();
+    $entity = $this->getEntityLatestRevision($uuid);
+    if ($entity) {
+      return $entity->delete();
     }
   }
 
@@ -234,66 +247,56 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
 
     if ($uuid) {
-      $node = $this->getNodeLatestRevision($uuid);
+      $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if (isset($node) && $node instanceof NodeInterface) {
-      return $this->updateExistingNode($node, $data);
+    if (isset($entity) && $entity instanceof EntityInterface) {
+      return $this->updateExistingEntity($entity, $data);
     }
-    // Create new node.
+    // Create new entity.
     else {
-      return $this->createNewNode($uuid, $data);
+      return $this->createNewEntity($uuid, $data);
     }
   }
 
   /**
    * Private.
    */
-  private function updateExistingNode(NodeInterface $node, $data) {
-    $node->field_data_type = $this->schemaId;
+  private function updateExistingEntity(EntityInterface $entity, $data) {
+    $entity->field_data_type = $this->schemaId;
     $new_data = json_encode($data);
-    $node->field_json_metadata = $new_data;
+    $entity->field_json_metadata = $new_data;
 
     // Dkan publishing's default moderation state.
-    $node->set('moderation_state', $this->getDefaultModerationState());
+    $entity->set('moderation_state', $this->getDefaultModerationState());
 
-    $node->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
-    $node->setRevisionCreationTime(time());
-    $node->save();
+    $entity->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
+    $entity->setRevisionCreationTime(time());
+    $entity->save();
 
-    return $node->uuid();
+    return $entity->uuid();
   }
 
   /**
    * Private.
    */
-  private function createNewNode($uuid, $data) {
+  private function createNewEntity($uuid, $data) {
     $title = isset($data->title) ? $data->title : $data->name;
-    $node = $this->nodeStorage
+    $entity = $this->entityStorage
       ->create(
         [
-          'title' => $title,
-          'type' => 'data',
+          $this->labelKey => $title,
+          $this->bundleKey => $this->bundle,
           'uuid' => $uuid,
           'field_data_type' => $this->schemaId,
           'field_json_metadata' => json_encode($data),
         ]
       );
-    $node->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
+    $entity->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
 
-    $node->save();
+    $entity->save();
 
-    return $node->uuid();
-  }
-
-  /**
-   * Get type.
-   *
-   * @return string
-   *   Type of node.
-   */
-  private function getType() {
-    return 'data';
+    return $entity->uuid();
   }
 
   /**

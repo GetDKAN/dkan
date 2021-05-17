@@ -65,7 +65,7 @@ class Sae implements FactoryInterface {
   private function getJsonSchema($schema_id) {
     $schemas = $this->schemaRetriever->getAllIds();
 
-    // @Todo: mechanism to validate against additional schemas. For now,
+    // @todo mechanism to validate against additional schemas. For now,
     // validate against the empty object, as it accepts any valid json.
     if (!in_array($schema_id, $schemas)) {
       return '{ }';
@@ -77,7 +77,7 @@ class Sae implements FactoryInterface {
   /**
    * Get Storage.
    *
-   * @return \Drupal\metastore\Storage\Data
+   * @return \Drupal\metastore\Storage\MetastoreStorageInterface
    *   Dataset
    */
   private function getStorage($schema_id) {

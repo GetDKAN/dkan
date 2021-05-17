@@ -123,7 +123,9 @@ class WebServiceApi implements ContainerInjectionInterface {
   private function wantObjectWithReferences() {
     $param = $this->requestStack->getCurrentRequest()
       ->get('show-reference-ids', FALSE);
-    if ($param === FALSE) {
+    $param2 = $this->requestStack->getCurrentRequest()
+      ->get('show_reference_ids', FALSE);
+    if ($param === FALSE && $param2 === FALSE) {
       return FALSE;
     }
     return TRUE;

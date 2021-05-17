@@ -2,12 +2,12 @@
 
 namespace Drupal\datastore\EventSubscriber;
 
+use Drupal\common\Events\Event;
 use Drupal\common\Resource;
 use Drupal\common\LoggerTrait;
-use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\Registration;
+use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\Data;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -24,7 +24,7 @@ class Subscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     $events = [];
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
-    $events[Data::EVENT_DATASET_UPDATE][] = ['purgeResources'];
+    $events[LifeCycle::EVENT_DATASET_UPDATE][] = ['purgeResources'];
     return $events;
   }
 
@@ -49,7 +49,6 @@ class Subscriber implements EventSubscriberInterface {
         $this->log('datastore', $e->getMessage());
       }
     }
-
   }
 
   /**
@@ -65,15 +64,15 @@ class Subscriber implements EventSubscriberInterface {
   /**
    * Purge resources.
    *
-   * @param \Drupal\metastore\Events\DatasetUpdate $event
+   * @param \Drupal\common\Events\Event $event
    *   Dataset publication.
    */
-  public function purgeResources(DatasetUpdate $event) {
-    $node = $event->getNode();
+  public function purgeResources(Event $event) {
+    $item = $event->getData();
 
     /** @var \Drupal\datastore\Service\ResourcePurger $resourcePurger */
     $resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    $resourcePurger->schedule([$node->uuid()]);
+    $resourcePurger->schedule([$item->getIdentifier()]);
   }
 
 }

@@ -5,8 +5,15 @@ services:
       - '@dkan.metastore.schema_retriever'
       - '@dkan.metastore.sae_factory'
       - '@dkan.metastore.storage'
-    calls:
-      - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
+
+  dkan.metastore.lifecycle:
+    class: \Drupal\metastore\LifeCycle\LifeCycle
+    arguments:
+      - '@dkan.metastore.referencer'
+      - '@dkan.metastore.dereferencer'
+      - '@dkan.metastore.orphan_checker'
+      - '@dkan.metastore.resource_mapper'
+      - '@date.formatter'
 
   dkan.metastore.sae_factory:
     class: \Drupal\metastore\Factory\Sae
@@ -59,51 +66,7 @@ services:
     arguments:
       - '@database'
 
-  # @deprecated
-  metastore.service:
-    class: \Drupal\metastore\Service
+  dkan.metastore.metastore_item_factory:
+    class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:
-      - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.sae_factory'
-      - '@dkan.metastore.storage'
-    calls:
-      - [setDataModifierPlugins, ['@plugin.manager.common.data_modifier']]
-
-  metastore.sae_factory:
-    class: \Drupal\metastore\Factory\Sae
-    arguments:
-      - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.storage'
-
-  metastore.schema_retriever:
-    class: \Drupal\metastore\SchemaRetriever
-    arguments:
-      - '@app.root'
-      - '@extension.list.module'
-    shared: false
-
-  metastore.storage:
-    class: \Drupal\metastore\Storage\DataFactory
-    arguments:
-      - '@entity_type.manager'
-  metastore.referencer:
-    class: \Drupal\metastore\Reference\Referencer
-    arguments:
-      - '@config.factory'
-      - '@dkan.common.node_storage'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
-
-  metastore.dereferencer:
-    class: \Drupal\metastore\Reference\Dereferencer
-    arguments:
-      - '@config.factory'
-      - '@dkan.common.node_storage'
-    calls:
-      - [setLoggerFactory, ['@logger.factory']]
-
-  metastore.orphan_checker:
-    class: \Drupal\metastore\Reference\OrphanChecker
-    arguments:
-      - '@config.factory'
-      - '@queue'
+      - '@entity.repository'

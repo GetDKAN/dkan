@@ -9,6 +9,9 @@ use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Drupal\Tests\common\Unit\Connection;
 
+/**
+ *
+ */
 class SelectFactoryTest extends TestCase {
   private $query;
   private $selectFactory;
@@ -29,10 +32,16 @@ class SelectFactoryTest extends TestCase {
     }
   }
 
+  /**
+   *
+   */
   private function getSelectFactory() {
     return new SelectFactory($this->getConnection());
   }
 
+  /**
+   *
+   */
   private function getConnection() {
     return (new Chain($this))
       ->add(
@@ -43,17 +52,27 @@ class SelectFactoryTest extends TestCase {
       ->getMock();
   }
 
+  /**
+   *
+   */
   private function selectToString(Select $select): string {
     return preg_replace("/\n/", " ", "$select");
   }
 
+  /**
+   *
+   */
   private function queryDebug() {
     print_r($this->query);
     print "\n" . $this->selectToString($this->selectFactory->create($this->query));
   }
 
+  /**
+   *
+   */
   public function setUp() {
     $this->query = new Query();
     $this->selectFactory = $this->getSelectFactory();
   }
+
 }

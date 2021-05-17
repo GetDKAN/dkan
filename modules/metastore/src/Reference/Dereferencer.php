@@ -7,12 +7,17 @@ use Drupal\common\LoggerTrait;
 use Drupal\node\NodeStorageInterface;
 
 /**
- * Dereferencer.
+ * Metastore dereferencer.
  */
 class Dereferencer {
   use HelperTrait;
   use LoggerTrait;
 
+  /**
+   * Node storate service.
+   *
+   * @var \Drupal\node\NodeStorageInterface
+   */
   private $nodeStorage;
 
   /**
@@ -37,7 +42,8 @@ class Dereferencer {
       throw new \Exception("data must be an object.");
     }
     // Cycle through the dataset properties we seek to dereference.
-    $ref = NULL; $actual = NULL;
+    $ref = NULL;
+    $actual = NULL;
     foreach ($this->getPropertyList() as $propertyId) {
       if (isset($data->{$propertyId})) {
         $referenceProperty = "%Ref:{$propertyId}";
@@ -91,7 +97,8 @@ class Dereferencer {
   private function dereferenceMultiple(string $property_id, array $uuids) : array {
     $result = [];
     $reference = [];
-    $ref = NULL; $actual = NULL;
+    $ref = NULL;
+    $actual = NULL;
     foreach ($uuids as $uuid) {
       [$ref, $actual] = $this->dereferenceSingle($property_id, $uuid);
       if (NULL !== $ref && NULL !== $actual) {
