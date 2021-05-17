@@ -151,7 +151,8 @@ function metastore_entity_view_alter(array &$build, EntityInterface $entity, Ent
     if (empty($json)) {
       return;
     }
-    $object = json_decode($json);
+
+    $object = \Drupal::service('dkan.metastore.valid_metadata')->get(NULL, $json);
     $object = Service::removeReferences($object);
     $build[$fieldName][0]['#context']['value'] = json_encode($object);
   }
