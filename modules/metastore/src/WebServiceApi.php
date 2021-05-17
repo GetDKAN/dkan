@@ -82,7 +82,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     $keepRefs = $this->wantObjectWithReferences();
 
     $output = array_map(function ($object) use ($keepRefs) {
-      $modified_object = $keepRefs ? $this->swapReferences($object) : Service::removeReferences($object);
+      $modified_object = $keepRefs ? $this->swapReferences($object) : $this->service->removeReferences($object);
       return (object) $modified_object->get('$');
     }, $this->service->getAll($schema_id));
 
@@ -135,7 +135,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Private.
    */
   private function swapReferences(RootedJsonData $object): RootedJsonData {
-    $no_schema_object = $this->service->getValidMetadataFactory()->get(NULL, $object->__toString());
+    $no_schema_object = $this->service->getValidMetadataFactory()->get(NULL, "$object");
     foreach ($no_schema_object->get('$') as $property => $value) {
       if (substr_count($property, "%Ref:") > 0) {
         $no_schema_object = $this->swapReference($property, $value, $no_schema_object);

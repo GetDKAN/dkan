@@ -53,7 +53,8 @@ class DatasetTest extends ExistingSiteBase {
 
     $this->changeDatasetsResourceOutputPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE);
 
-    $dataset = json_decode($this->getMetastore()->get('dataset', 123));
+    $metadata = $this->getMetastore()->get('dataset', 123);
+    $dataset = json_decode($metadata);
 
     $this->assertNotEquals(
       $dataset->distribution[0]->downloadURL,

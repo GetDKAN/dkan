@@ -40,28 +40,80 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testGetAll() {
-    $json = ['name' => 'hello'];
-    $object = $this->validMetadataFactory->get('blah', json_encode($json));
+    $data = ['name' => 'hello'];
+    $dataWithRefs = ["name" => "hello", '%Ref:name' => ["identifier" => "123", "data" => "hello"]];
+    $objectWithRefs = $this->validMetadataFactory->get('blah', json_encode($dataWithRefs));
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'getAll', [$object, $object, $object]);
+    $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
-    $this->assertEquals(json_encode([$json, $json, $json]), $response->getContent());
+    $this->assertEquals(json_encode([$data, $data]), $response->getContent());
+  }
+
+  public function testGetAllRefs() {
+    $dataWithRefs = ["name" => "hello", '%Ref:name' => ["identifier" => "123", "data" => "hello"]];
+    $dataWithSwappedRefs = ["name" => ["identifier" => "123", "data" => "hello"]];
+    $objectWithRefs = $this->validMetadataFactory->get('blah', json_encode($dataWithRefs));
+
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
+    $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
+
+    // Try with show ref ids.
+    $mockChain->add(Request::class, 'get', TRUE);
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->getAll('dataset');
+    $this->assertEquals(
+      json_encode([$dataWithSwappedRefs, $dataWithSwappedRefs]),
+      $response->getContent()
+    );
   }
 
   /**
    *
    */
   public function testGet() {
-    $json = '{"name": "hello"}';
+    $json = '{"name":"hello"}';
+    $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', new RootedJsonData($json));
+    $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
-    $this->assertEquals('{"name":"hello"}', $response->getContent());
+    $this->assertEquals($json, $response->getContent());
   }
+
+  public function testGetWithRefs() {
+    $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
+    $jsonWithSwappedRefs = '{"name":{"identifier":"123","data":[]}}';
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
+
+    // Try with show ref ids.
+    $mockChain->add(Request::class, 'get', TRUE);
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->get('dataset', '1');
+    $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
+  }
+
+
+  /**
+   *
+   */
+  public function testGetReferences() {
+    $json = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Service::class, 'get', new RootedJsonData($json));
+    $mockChain->add(Request::class, 'get', TRUE);
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->get(1, 'dataset');
+    // References should be swapped.
+    $this->assertEquals('{"name":{"identifier":"123","data":[]}}', $response->getContent());
+  }
+
 
   /**
    *
@@ -406,6 +458,21 @@ EOF;
   }
 
   /**
+   * @todo Silly test. Improve it.
+   */
+  public function testGetSchema() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(SchemaRetriever::class, 'getAllIds', ['dataset']);
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->getSchemas();
+    $this->assertEquals('["dataset"]', $response->getContent());
+
+    $schemaId = json_decode($response->getContent())[0];
+    $schemaResponse = $controller->getSchema($schemaId);
+    $this->assertEquals('{"id":"http:\/\/schema"}', $schemaResponse->getContent());
+  }
+
+  /**
    *
    */
   public function testGetCatalogException() {
@@ -428,7 +495,9 @@ EOF;
 
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', "{}")
+      ->add(Service::class, 'getSchemas', ['dataset'])
+      ->add(Service::class, 'getSchema', (object) ["id" => "http://schema"])
+      ->add(Service::class, 'getValidMetadataFactory', ValidMetadataFactory::class)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'get', FALSE);
 
