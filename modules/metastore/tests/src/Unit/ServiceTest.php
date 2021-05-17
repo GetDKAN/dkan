@@ -72,6 +72,15 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->assertEquals([$expected], $service->getAll("dataset"));
+
+    // Distribution should be wrapped with [{"data":{},"identifier":""}].
+    $distributions = [
+      [
+        'identifier' => 0,
+        'data' => 'blah'
+      ],
+    ];
+    $this->assertEquals(json_encode($distributions), json_encode($service->getAll("distribution")));
   }
 
   public function testGetAllException() {
@@ -117,6 +126,13 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->assertEquals(json_encode(['foo' => 'bar']), $service->get("dataset", "1"));
+
+    // Distribution should be wrapped with [{"data":{},"identifier":""}].
+    $distribution = [
+      'identifier' => '1',
+      'data' => 'blah'
+    ];
+    $this->assertEquals(json_encode($distribution), $service->get("distribution", "1"));
   }
 
   /**

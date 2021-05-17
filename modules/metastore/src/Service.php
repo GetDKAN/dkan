@@ -134,18 +134,20 @@ class Service implements ContainerInjectionInterface {
   public function getAll($schema_id): array {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
 
-    $objects = array_map(
-      function ($jsonString) use ($schema_id) {
-        $data = $this->validMetadataFactory->get($schema_id, $jsonString);
-        try {
-          return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
-        }
-        catch (\Exception $e) {
-          return (object) ["message" => $e->getMessage()];
-        }
-      },
-      $jsonStringsArray
-    );
+    $objects = [];
+    foreach ($jsonStringsArray as $id => $jsonString) {
+      $data = $this->validMetadataFactory->get($schema_id, $jsonString);
+      try {
+        $object = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+      }
+      catch (\Exception $e) {
+        $object = (object) ["message" => $e->getMessage()];
+      }
+      if ($schema_id != 'dataset') {
+        $object = Service::wrapMetadata($id, $object);
+      }
+      $objects[] = $object;
+    }
 
     $objects = $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects);
 
@@ -168,6 +170,10 @@ class Service implements ContainerInjectionInterface {
     $data = $this->validMetadataFactory->get($schema_id, $json_string);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+    if ($schema_id != 'dataset') {
+      $data = Service::wrapMetadata($identifier, json_decode($data));
+      $data = json_encode($data);
+    }
     return $data;
   }
 
