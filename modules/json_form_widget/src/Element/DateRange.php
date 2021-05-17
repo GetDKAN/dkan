@@ -64,21 +64,22 @@ class DateRange extends Datetime {
    */
   public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
     $element += ['#date_timezone' => date_default_timezone_get()];
-    if ($input == FALSE) {
-      return $input;
-    }
-    $input['date_range'] = '';
-    if (!empty($input['start_date']['date']) && !empty($input['end_date']['date'])) {
+    if ($input !== FALSE) {
+      $input['date_range'] = '';
       $date_format = $element['#date_date_element'] != 'none' ? static::getHtml5DateFormat($element) : '';
       $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
       $date_time_format = trim($date_format . ' ' . $time_format);
 
-      $start_time = static::getFormattedTime($input['start_date']['time']);
-      $start = static::getDateTimeElement($input['start_date']['date'], $start_time, $date_time_format, $element['#date_timezone']);
-
-      $end_time = static::getFormattedTime($input['end_date']['time']);
-      $end = static::getDateTimeElement($input['end_date']['date'], $end_time, $date_time_format, $element['#date_timezone']);
-
+      $start = '';
+      if (!empty($input['start_date']['date'])) {
+        $start_time = static::getFormattedTime($input['start_date']['time']);
+        $start = static::getDateTimeElement($input['start_date']['date'], $start_time, $date_time_format, $element['#date_timezone']);
+      }
+      $end = '';
+      if (!empty($input['end_date']['date'])) {
+        $end_time = static::getFormattedTime($input['end_date']['time']);
+        $end = static::getDateTimeElement($input['end_date']['date'], $end_time, $date_time_format, $element['#date_timezone']);
+      }
       $input = [
         'start' => $start,
         'end' => $end,
