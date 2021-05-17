@@ -63,4 +63,5 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
     $this->handle = ($options && STREAM_REPORT_ERRORS) ? fopen($url, $mode) : @fopen($url, $mode);
     return (bool) $this->handle;
   }
+
 }
