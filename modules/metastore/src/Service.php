@@ -189,7 +189,7 @@ class Service implements ContainerInjectionInterface {
     $data = $this->validMetadataFactory->get($schema_id, $json_string);
 
     /* @todo decouple from POD. */
-    $resources = $data->{"$.distribution"};;
+    $resources = $data->{"$.distribution"};
 
     return $resources;
   }
