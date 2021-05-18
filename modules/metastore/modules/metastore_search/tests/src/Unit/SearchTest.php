@@ -15,6 +15,7 @@ use Drupal\search_api\Query\ConditionGroup;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ResultSet;
 use Drupal\search_api\Utility\QueryHelperInterface;
+use Drupal\Tests\metastore\Unit\ServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -168,19 +169,21 @@ class SearchTest extends TestCase {
       ->getMock();
 
     if (!isset($collection)) {
-      $collection = (object) [
+      $collection = [
         'title' => 'hello',
         'description' => 'goodbye',
         'publisher__name' => 'Steve',
       ];
     }
 
-    $facet = (object) ['data' => (object) ['name' => 'Steve']];
+    $facet = ['data' => ['name' => 'Steve']];
 
     $getAllOptions = (new Options())
       ->add('keyword', [])
       ->add('theme', [])
-      ->add('publisher', [$facet]);
+      ->add('publisher', [ServiceTest::getValidMetadataFactory($case)->get('publisher', json_encode($facet))]);
+
+    $getData = ServiceTest::getValidMetadataFactory($case)->get('dummy_schema_id', json_encode($collection));
 
     return (new Chain($case))
       ->add(Container::class, 'get', $services)
@@ -193,7 +196,7 @@ class SearchTest extends TestCase {
       ->add(QueryInterface::class, 'createConditionGroup', ConditionGroup::class)
       ->add(ResultSet::class, 'getResultCount', 1)
       ->add(ResultSet::class, 'getResultItems', [$item])
-      ->add(Metastore::class, 'get', json_encode($collection))
+      ->add(Metastore::class, 'get', $getData)
       ->add(Metastore::class, 'getAll', $getAllOptions);
   }
 
