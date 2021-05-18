@@ -71,11 +71,11 @@ class NodeStorageFactory implements MetastoreStorageFactoryInterface {
    * @param string $identifier
    *   Schema id.
    *
-   * @return \Drupal\metastore\Storage\NodeStorage
+   * @return \Drupal\metastore\Storage\MetastoreNodeStorage
    *   Storage object.
    */
   protected function createNodeInstance(string $identifier) {
-    return new NodeStorage($identifier, $this->entityTypeManager);
+    return new MetastoreNodeStorage($identifier, $this->entityTypeManager);
   }
 
 }

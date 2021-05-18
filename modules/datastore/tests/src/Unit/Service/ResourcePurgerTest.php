@@ -10,7 +10,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
-use Drupal\metastore\Storage\NodeStorage;
+use Drupal\metastore\Storage\MetastoreNodeStorage;
 use Drupal\metastore\Storage\NodeStorageFactory;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorageInterface;
@@ -103,7 +103,7 @@ class ResourcePurgerTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 1)
-      ->add(NodeStorageFactory::class, 'getInstance', NodeStorage::class);
+      ->add(NodeStorageFactory::class, 'getInstance', MetastoreNodeStorage::class);
   }
 
 }
