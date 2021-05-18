@@ -3,13 +3,13 @@
 namespace Drupal\metastore_entity\Storage;
 
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\Storage\AbstractEntityStorage;
+use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
 use Drupal\metastore_entity\Entity\MetastoreItem;
 
 /**
  * Node Data.
  */
-class MetastoreEntityStorage extends AbstractEntityStorage {
+class MetastoreEntityStorage implements MetastoreEntityStorageInterface {
 
   /**
    * NodeData constructor.
@@ -23,6 +23,50 @@ class MetastoreEntityStorage extends AbstractEntityStorage {
     $this->bundleKey = $this->entityStorage->getEntityType()->getKey('bundle');
     $this->labelKey = $this->entityStorage->getEntityType()->getKey('label');
   }
+
+  public static function getEntityType() {
+    return 'metastore_item';
+  }
+
+  public static function getBundles() { 
+
+  }
+
+  public static function getMetadataField() {
+    return 'json_data';
+  }
+
+  public function getEntityLatestRevision(string $uuid) {
+
+    $entity_id = $this->getEntityIdFromUuid($uuid);
+
+    if ($entity_id) {
+      $revision_id = $this->entityStorage->getLatestRevisionId($entity_id);
+      return $this->entityStorage->loadRevision($revision_id);
+    }
+
+    return NULL;
+  }
+
+  public function publish(string $uuid): string {
+    if ($this->schemaId !== 'dataset') {
+      throw new \Exception("Publishing currently only implemented for datasets.");
+    }
+
+    $entity = $this->getEntityLatestRevision($uuid);
+
+    if ($entity && $entity->get('moderation_state') !== 'published') {
+      $entity->set('moderation_state', 'published');
+      $entity->save();
+      return $uuid;
+    }
+
+    throw new \Exception("No data with that identifier was found.");
+  }
+
+  public function remove(string $id) { }
+
+  public function store($data, ?string $id = NULL): string { }
 
   /**
    * Inherited.

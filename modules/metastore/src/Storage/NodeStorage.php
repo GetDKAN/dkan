@@ -10,53 +10,37 @@ use Drupal\Core\Entity\EntityTypeManager;
 class NodeStorage extends AbstractEntityStorage {
 
   /**
-   * NodeData constructor.
+   * Constructor.
    */
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
+    // Set up bundle default value.
     $this->entityType = 'node';
-    parent::__construct($schemaId, $entityTypeManager);
     $this->bundle = 'data';
+    $this->metadataField = 'field_json_metadata';
+    $this->schemaField = 'field_data_type';
+
+    parent::__construct($schemaId, $entityTypeManager);
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
-  public function retrieve(string $uuid) : ?string {
-
-    if ($this->getDefaultModerationState() === 'published') {
-      $entity = $this->getEntityPublishedRevision($uuid);
-    }
-    else {
-      $entity = $this->getEntityLatestRevision($uuid);
-    }
-
-    if ($entity) {
-      return $entity->get('field_json_metadata')->getString();
-    }
-
-    throw new \Exception("No data with that identifier was found.");
+  public static function getEntityType() {
+    return 'node';
   }
 
   /**
-   * Get the entity id from the dataset identifier.
-   *
-   * @param string $uuid
-   *   The dataset identifier.
-   *
-   * @return int|null
-   *   The entity id, if found.
+   * {@inheritdoc}
    */
-  public function getEntityIdFromUuid(string $uuid) : ?int {
+  public static function getBundles() {
+    return ['data'];
+  }
 
-    $entity_ids = $this->entityStorage->getQuery()
-      ->condition('uuid', $uuid)
-      ->condition($this->bundleKey, $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->execute();
-
-    return $entity_ids ? (int) reset($entity_ids) : NULL;
+  /**
+   * {@inheritdoc}
+   */
+  public static function getMetadataField() {
+    return 'field_json_data';
   }
 
 }

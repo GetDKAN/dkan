@@ -2,7 +2,6 @@
 
 namespace Drupal\metastore;
 
-use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\metastore\Exception\CannotChangeUuidException;
@@ -10,12 +9,13 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Service.
+ * Metastore general service, powers the API via WebServiceApi.
  */
 class Service implements ContainerInjectionInterface {
   use EventDispatcherTrait;
@@ -74,17 +74,6 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Setter to discover data modifier plugins.
-   *
-   * @param \Drupal\common\Plugin\DataModifierManager $pluginManager
-   *   Injected plugin manager.
-   */
-  public function setDataModifierPlugins(DataModifierManager $pluginManager) {
-    $this->pluginManager = $pluginManager;
-    $this->plugins = $this->discover();
-  }
-
-  /**
    * Get schemas.
    */
   public function getSchemas() {
@@ -112,10 +101,10 @@ class Service implements ContainerInjectionInterface {
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
    *
-   * @return \Drupal\metastore\Storage\StorerInterface
+   * @return \Drupal\metastore\Storage\MetastoreStorageInterface
    *   Entity storage.
    */
-  private function getStorage(string $schema_id): StorerInterface {
+  private function getStorage(string $schema_id): MetastoreStorageInterface {
     if (!isset($this->storages[$schema_id])) {
       $this->storages[$schema_id] = $this->storageFactory->getInstance($schema_id);
     }

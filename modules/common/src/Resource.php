@@ -229,7 +229,7 @@ class Resource implements \JsonSerializable {
     /** @var \Drupal\metastore\Storage\NodeStorageFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
 
-    /** @var \Drupal\metastore\Storage\AbstractEntityStorage $storage */
+    /** @var \Drupal\metastore\Storage\MetastoreStorageInterface $storage */
     $storage = $factory->getInstance('distribution');
 
     $distroJson = $storage->retrieve($identifier);
