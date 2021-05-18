@@ -40,3 +40,8 @@ services:
     arguments:
       - '@module_handler'
       - '@request_stack'
+
+  dkan.stream_wrapper:
+    class: \Drupal\common\StreamWrapper\DkanStreamWrapper
+    tags:
+      - { name: stream_wrapper, scheme: dkan }
