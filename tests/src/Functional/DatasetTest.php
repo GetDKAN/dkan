@@ -368,7 +368,7 @@ class DatasetTest extends ExistingSiteBase {
    * @return \Drupal\metastore_search\Search
    */
   private function getMetastoreSearch() : Search {
-    return \Drupal::service('metastore_search.service');
+    return \Drupal::service('dkan.metastore_search.service');
   }
 
   private function getMetastore(): Metastore {
