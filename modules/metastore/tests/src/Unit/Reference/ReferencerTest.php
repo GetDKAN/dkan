@@ -7,6 +7,8 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeData;
 use Drupal\node\NodeStorage;
 use MockChain\Chain;
 use MockChain\Options;
@@ -66,13 +68,11 @@ class ReferencerTest extends TestCase {
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
 
-    $node = new class {
-      public function uuid() {
-        return '0398f054-d712-4e20-ad1e-a03193d6ab33';
-      }
-    };
-    $nodeStorage = (new Chain($this))
-      ->add(NodeStorage::class, 'loadByProperties', [$node])
+    $uuid = '0398f054-d712-4e20-ad1e-a03193d6ab33';
+
+    $storageFactory = (new Chain($this))
+      ->add(DataFactory::class, 'getInstance', NodeData::class)
+      ->add(NodeData::class, 'retrieveByHash', $uuid)
       ->getMock();
 
     $options = (new Options())
@@ -90,7 +90,7 @@ class ReferencerTest extends TestCase {
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
 
-    $referencer = new Referencer($configService, $nodeStorage);
+    $referencer = new Referencer($configService, $storageFactory);
     $data = $this->getData('https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv');
     $metadata = $referencer->reference($data);
     $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
