@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\json_form_widget\Unit;
 
+use Drupal\Tests\metastore\Unit\ServiceTest;
 use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
@@ -9,12 +10,14 @@ use Drupal\Component\Uuid\Php;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\Component\Utility\EmailValidator;
+use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Language\LanguageDefault;
+use Drupal\Core\Language\LanguageManager;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\json_form_widget\WidgetRouter;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Service;
 use MockChain\Options;
-use stdClass;
 
 /**
  * Test class for SchemaUiHandlerTest.
@@ -22,16 +25,30 @@ use stdClass;
 class SchemaUiHandlerTest extends TestCase {
 
   /**
+   * The ValidMetadataFactory class used for testing.
+   *
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $validMetadataFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+  }
+
+  /**
    * Test.
    */
   public function testSchemaUi() {
     $widget_router = $this->getRouter([]);
+    $language_manager = new LanguageManager(new LanguageDefault(['en']));
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('uuid', Php::class)
       ->add('json_form.widget_router', $widget_router)
+      ->add('language_manager', $language_manager)
       ->index(0);
 
     $container_chain = (new Chain($this))
@@ -60,7 +77,7 @@ class SchemaUiHandlerTest extends TestCase {
       "date" => [
         "#type" => "textfield",
         "#title" => "Test field",
-        "#default_value" => NULL,
+        "#default_value" => '2020-05-11T15:06:39.000Z',
         "#required" => FALSE,
       ],
       "disabled" => [
@@ -91,11 +108,12 @@ class SchemaUiHandlerTest extends TestCase {
       "date" => [
         "#type" => "date",
         "#title" => "Test field",
-        "#default_value" => NULL,
+        "#default_value" => '2020-05-11',
         "#required" => FALSE,
         "#attributes" => [
           "placeholder" => "YYYY-MM-DD",
         ],
+        '#date_date_format' => 'Y-m-d',
       ],
       "disabled" => [
         "#type" => "textfield",
@@ -105,6 +123,69 @@ class SchemaUiHandlerTest extends TestCase {
         "#disabled" => TRUE,
       ],
     ];
+    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
+    // Test flexible datetime without default value.
+    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"modified":{"ui:options":{"widget":"flexible_datetime","timeRequired": true}}}');
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $ui_handler = SchemaUiHandler::create($container);
+    $ui_handler->setSchemaUi('dataset');
+    $form = [
+      "modified" => [
+        "#type" => "textfield",
+        "#title" => "Flexible datetime field",
+        "#default_value" => NULL,
+        "#required" => FALSE,
+      ],
+    ];
+    $expected = [
+      "modified" => [
+        "#type" => "flexible_datetime",
+        "#title" => "Flexible datetime field",
+        "#default_value" => NULL,
+        "#required" => FALSE,
+        "#date_time_required" => TRUE,
+      ],
+    ];
+    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
+    // Test flexible datetime with date format 2020-05-11T15:06:39.000Z.
+    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"modified":{"ui:options":{"widget":"flexible_datetime","timeRequired": false}}}');
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $ui_handler = SchemaUiHandler::create($container);
+    $ui_handler->setSchemaUi('dataset');
+    $form = [
+      "modified" => [
+        "#type" => "textfield",
+        "#title" => "Flexible datetime field",
+        "#default_value" => '2020-05-11T15:06:39.000Z',
+        "#required" => FALSE,
+      ],
+    ];
+    $date = new DrupalDateTime('2020-05-11T15:06:39.000Z');
+    $expected = [
+      "modified" => [
+        "#type" => "flexible_datetime",
+        "#title" => "Flexible datetime field",
+        "#default_value" => $date,
+        "#required" => FALSE,
+        "#date_time_required" => FALSE,
+      ],
+    ];
+    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
+    // Test flexible datetime with date format 2020-05-11 15:06:39.000.
+    $form['modified']['#default_value'] = '2020-05-11 15:06:39.000';
+    $date = new DrupalDateTime('2020-05-11 15:06:39.000');
+    $expected['modified']['#default_value'] = $date;
+    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
+    // Test flexible datetime with date format 2020-05-09.
+    $form['modified']['#default_value'] = '2020-05-09';
+    $date = new DrupalDateTime('2020-05-09');
+    $expected['modified']['#default_value'] = $date;
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test dkan_uuid field with already existing value.
@@ -809,26 +890,21 @@ class SchemaUiHandlerTest extends TestCase {
    * Dummy list of simple metastore results.
    */
   private function getSimpleMetastoreResults() {
-    $options = [];
-    $options[0] = new stdClass();
-    $options[0]->data = "Option 1";
-    $options[1] = new stdClass();
-    $options[1]->data = "Option 2";
-    return $options;
+    return [
+      $this->validMetadataFactory->get('dataset', json_encode(['data' => 'Option 1'])),
+      $this->validMetadataFactory->get('dataset', json_encode(['data' => 'Option 2'])),
+    ];
+
   }
 
   /**
    * Dummy list of complex metastore results.
    */
   private function getComplexMetastoreResults() {
-    $options = [];
-    $options[0] = new stdClass();
-    $options[0]->data = new stdClass();
-    $options[0]->data->name = "Option 1";
-    $options[1] = new stdClass();
-    $options[1]->data = new stdClass();
-    $options[1]->data->name = "Option 2";
-    return $options;
+    return [
+      $this->validMetadataFactory->get('dataset', json_encode(['data' => ['name' => 'Option 1']])),
+      $this->validMetadataFactory->get('dataset', json_encode(['data' => ['name' => 'Option 2']])),
+    ];
   }
 
 }

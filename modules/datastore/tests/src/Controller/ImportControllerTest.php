@@ -5,7 +5,7 @@ use Drupal\datastore\Service;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
-use Drupal\datastore\WebServiceApi;
+use Drupal\datastore\Controller\ImportController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  *
  */
-class WebServiceApiTest extends TestCase {
+class ImportControllerTest extends TestCase {
 
   /**
    *
@@ -21,7 +21,7 @@ class WebServiceApiTest extends TestCase {
   public function testMultipleImports() {
     $container = $this->getContainer();
 
-    $webServiceApi = WebServiceApi::create($container);
+    $webServiceApi = ImportController::create($container);
     $result = $webServiceApi->import();
 
     $this->assertTrue($result instanceof JsonResponse);

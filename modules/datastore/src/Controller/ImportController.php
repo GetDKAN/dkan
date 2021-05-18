@@ -1,14 +1,13 @@
 <?php
 
-namespace Drupal\datastore;
+namespace Drupal\datastore\Controller;
 
 use Drupal\common\Resource;
-use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
-use Drupal\common\Util\RequestParamNormalizer;
+use Drupal\datastore\Service;
 
 /**
  * Class Api.
@@ -17,7 +16,7 @@ use Drupal\common\Util\RequestParamNormalizer;
  *
  * @codeCoverageIgnore
  */
-class WebServiceApi implements ContainerInjectionInterface {
+class ImportController implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
   /**
@@ -48,7 +47,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     $datastoreService = $container->get('dkan.datastore.service');
     $requestStack = $container->get('request_stack');
-    return new WebServiceApi($datastoreService, $requestStack);
+    return new ImportController($datastoreService, $requestStack);
   }
 
   /**
@@ -180,95 +179,6 @@ class WebServiceApi implements ContainerInjectionInterface {
         404
       );
     }
-  }
-
-  /**
-   * Perform a query on one or more datastore resources.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The json response.
-   */
-  public function query() {
-    $payloadJson = RequestParamNormalizer::getFixedJson(
-      $this->requestStack->getCurrentRequest(),
-      file_get_contents(__DIR__ . "/../docs/query.json")
-    );
-
-    try {
-      $datastoreQuery = new DatastoreQuery($payloadJson);
-      $result = $this->datastoreService->runQuery($datastoreQuery);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
-    }
-
-    return $this->getResponse($result->{"$"}, 200);
-  }
-
-  /**
-   * Perform a query on a single datastore resource.
-   *
-   * @param string $identifier
-   *   The uuid of a resource.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The json response.
-   */
-  public function queryResource($identifier) {
-    $payloadJson = RequestParamNormalizer::getJson($this->requestStack->getCurrentRequest());
-    try {
-      $this->prepareQueryResourcePayload($payloadJson, $identifier);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException(
-        new \Exception("Invalid query JSON: {$e->getMessage()}"),
-        400
-      );
-    }
-    try {
-      $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../docs/query.json"));
-      $datastoreQuery = new DatastoreQuery($payloadJson);
-      $result = $this->datastoreService->runQuery($datastoreQuery);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
-    }
-
-    return $this->getResponse($result->{"$"}, 200);
-  }
-
-  /**
-   * Retrieve the datastore query schema. Used by datastore.1.query.schema.get.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The json response.
-   */
-  public function querySchema() {
-    $schema = json_decode(file_get_contents(__DIR__ . "/../docs/query.json"), TRUE);
-    return $this->getResponse($schema, 200);
-  }
-
-  /**
-   * Normalize the simplified resource query to a standard datastore query.
-   *
-   * @param string $json
-   *   A JSON payload.
-   * @param mixed $identifier
-   *   Resource identifier to query against.
-   */
-  private function prepareQueryResourcePayload(&$json, $identifier) {
-    $data = json_decode($json);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-      throw new \Exception(json_last_error_msg());
-    }
-    if (!empty($data->resources) || !empty($data->joins)) {
-      throw new \Exception("Joins are not available and "
-        . "resources should not be explicitly passed when using the resource "
-        . "query endpoint. Try /api/1/datastore/query.");
-    }
-    $resource = (object) ["id" => $identifier, "alias" => "t"];
-    $data->resources = [$resource];
-    $json = json_encode($data);
   }
 
 }

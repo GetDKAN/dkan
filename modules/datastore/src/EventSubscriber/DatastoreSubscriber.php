@@ -8,7 +8,7 @@ use Drupal\common\Events\Event;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\Data;
+use Drupal\metastore\LifeCycle\LifeCycle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Dkan\Datastore\Importer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -64,7 +64,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $events = [];
     $events[ResourceMapper::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE][] = ['drop'];
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
-    $events[Data::EVENT_DATASET_UPDATE][] = ['purgeResources'];
+    $events[LifeCycle::EVENT_DATASET_UPDATE][] = ['purgeResources'];
     return $events;
   }
 

@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Storage;
 
 use Drupal\Core\Entity\EntityTypeManager;
-use Drupal\metastore\Storage\Data;
+use Drupal\metastore\Storage\NodeData;
 use Drupal\node\NodeStorage;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -21,8 +21,9 @@ class DataTest extends TestCase {
       ->add(EntityTypeManager::class, 'getStorage', NodeStorage::class)
       ->getMock();
 
-    $data = new Data('dataset', $etm);
-    $this->assertInstanceOf(NodeStorage::class, $data->getNodeStorage());
+    $data = new NodeData('dataset', $etm);
+    $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
+    $this->assertEquals('field_json_metadata', $data->getMetadataField());
   }
 
 }

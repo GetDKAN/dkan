@@ -6,12 +6,14 @@ use Drupal\common\Events\Event;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
+use Drupal\common\Events\Event;
+use Drupal\metastore\MetastoreItemInterface;
 
 class DataPublicationTest extends TestCase {
 
   public function test() {
-    $mockNode = (new Chain($this))
-      ->add(NodeInterface::class)
+    $mockItem = (new Chain($this))
+      ->add(MetastoreItemInterface::class)
       ->getMock();
 
     $datasetPublication = new Event($mockNode);

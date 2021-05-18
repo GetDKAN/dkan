@@ -21,6 +21,15 @@ endpointsToSkip = [
   '/api/1/datastore/imports > Datastore import > 200 > application/json',
   '/api/1/datastore/imports/{identifier} > Datastore statistics > 200 > application/json',
   '/api/1/datastore/imports/{identifier} > Delete a datastore > 200 > application/json',
+  '/api/1/datastore/imports/{identifier} > Delete a datastore > 200 > application/json',
+  '/api/1/datastore/query > Query one or more datastore resources > 200 > application/json',
+  '/api/1/datastore/query/download > Query one or more datastore resources for file download > 200 > application/json',
+  '/api/1/datastore/query/download > Query one or more datastore resources for file download with get > 200 > application/json',
+  '/api/1/datastore/query/{identifier} > Query a single datastore resource > 200 > application/json',
+  '/api/1/datastore/query/{identifier} > Query a single datastore resource with get > 200 > application/json',
+  '/api/1/datastore/query/{identifier}/download > Query a single datastore resources for file download > 200 > application/json',
+  '/api/1/datastore/query/{identifier}/download > Query a single datastore resources for file download with get > 200 > application/json'
+
 ];
 endpointsToSkip.forEach(endpoint => hooks.before(endpoint, (transaction) => {
   transaction.skip = true;

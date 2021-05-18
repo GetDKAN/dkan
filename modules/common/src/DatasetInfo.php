@@ -118,7 +118,7 @@ class DatasetInfo implements ContainerInjectionInterface {
       return $info;
     }
 
-    $latest = $this->storage->getNodeLatestRevision($uuid);
+    $latest = $this->storage->getEntityLatestRevision($uuid);
     if (!$latest) {
       $info['notice'] = 'Not found';
       return $info;
@@ -126,7 +126,7 @@ class DatasetInfo implements ContainerInjectionInterface {
     $info['latest_revision'] = $this->getRevisionInfo($latest);
 
     $latestRevisionIsDraft = 'draft' === $latest->get('moderation_state')->getString();
-    $published = $this->storage->getNodePublishedRevision($uuid);
+    $published = $this->storage->getEntityPublishedRevision($uuid);
     if ($latestRevisionIsDraft && $published && 'published' === $published->get('moderation_state')->getString()) {
       $info['published_revision'] = $this->getRevisionInfo($published);
     }
