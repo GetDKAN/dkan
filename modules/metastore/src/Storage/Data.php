@@ -282,11 +282,14 @@ abstract class Data implements MetastoreStorageInterface {
    * Private.
    */
   private function createNewEntity($uuid, $data) {
-    $title = isset($data->title) ? $data->title : $data->name;
+    $title = md5(json_encode($data));
+    if ($this->bundle === 'dataset') {
+      $title = isset($data->title) ? $data->title : $data->name;
+    }
     $entity = $this->entityStorage
       ->create(
         [
-          $this->labelKey => md5(json_encode($title)),
+          $this->labelKey => $title,
           $this->bundleKey => $this->bundle,
           'uuid' => $uuid,
           'field_data_type' => $this->schemaId,
