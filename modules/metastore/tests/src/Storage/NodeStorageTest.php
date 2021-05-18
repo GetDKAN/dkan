@@ -25,5 +25,6 @@ class NodeStorageTest extends TestCase {
 
     $data = new MetastoreNodeStorage('dataset', $etm);
     $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
+    $this->assertEquals('field_json_metadata', $data->getMetadataField());
   }
 }

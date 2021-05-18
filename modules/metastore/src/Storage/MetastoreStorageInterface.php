@@ -2,8 +2,13 @@
 
 namespace Drupal\metastore\Storage;
 
-interface MetastoreStorageInterface
-{
+use Contracts\BulkRetrieverInterface;
+use Contracts\StorerInterface;
+
+/**
+ * Interface for all metastore storage classes.
+ */
+interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterface {
 
   /**
    * Retrieve.
@@ -11,7 +16,7 @@ interface MetastoreStorageInterface
    * @param string $id
    *   The identifier for the data.
    *
-   * @return string | HydratableInterface
+   * @return string|HydratableInterface
    *   The data or null if no data could be retrieved.
    */
   public function retrieve(string $id);
@@ -69,6 +74,6 @@ interface MetastoreStorageInterface
    * @throws \Exception
    *   Issues storing the data.
    */
-  public function store($data, string $id = null): string;
+  public function store($data, string $id = NULL): string;
 
 }

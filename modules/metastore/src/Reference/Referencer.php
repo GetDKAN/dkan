@@ -10,12 +10,17 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\node\NodeStorageInterface;
 
 /**
- * Referencer.
+ * Metastore referencer service.
  */
 class Referencer {
   use HelperTrait;
   use LoggerTrait;
 
+  /**
+   * Node storage service.
+   *
+   * @var \Drupal\node\NodeStorageInterface
+   */
   private $nodeStorage;
 
   /**
@@ -256,6 +261,10 @@ class Referencer {
     $mimeType = "text/plain";
     if (isset($metadata->data->mediaType)) {
       $mimeType = $metadata->data->mediaType;
+    }
+    elseif (isset($metadata->data->downloadURL)) {
+      $headers = get_headers($metadata->data->downloadURL, 1);
+      $mimeType = isset($headers['Content-Type']) ? $headers['Content-Type'] : $mimeType;
     }
     return $mimeType;
   }

@@ -2,14 +2,15 @@
 
 namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
+use Drupal\common\Events\Event;
 use Drupal\common\Resource;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\datastore\EventSubscriber\Subscriber;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
-use Drupal\metastore\Events\DatasetUpdate;
 use Drupal\metastore\Events\Registration;
+use Drupal\metastore\MetastoreItemInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -81,7 +82,8 @@ class SubscriberTest extends TestCase {
   public function testResourcePurging() {
 
     $mockDatasetPublication = (new Chain($this))
-      ->add(DatasetUpdate::class, 'getNode', ContentEntityInterface::class)
+      ->add(Event::class, 'getData', MetastoreItemInterface::class)
+      ->add(MetastoreItemInterface::class, 'getIdentifier', '123')
       ->getMock();
 
     $options = (new Options())
