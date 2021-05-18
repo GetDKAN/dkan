@@ -7,7 +7,8 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Service\Uuid5;
-use Drupal\node\NodeStorageInterface;
+use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeData;
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -21,14 +22,11 @@ class DereferencerTest extends TestCase {
    *
    */
   public function testDereference() {
-    $node = (object) [
-      "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => (object) ['name' => 'Gerardo', 'company' => 'CivicActions']]),
-      ],
-    ];
+    $metadata = '{"data":{"name":"Gerardo","company":"CivicActions"}}';
 
-    $nodeStorage = (new Chain($this))
-      ->add(NodeStorageInterface::class, 'loadByProperties', [$node])
+    $storageFactory = (new Chain($this))
+      ->add(DataFactory::class, 'getInstance', NodeData::class)
+      ->add(NodeData::class, 'retrieve', $metadata)
       ->getMock();
 
     $uuidService = new Uuid5();
@@ -43,7 +41,7 @@ class DereferencerTest extends TestCase {
       ->add(QueueFactory::class)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $nodeStorage);
+    $valueReferencer = new Dereferencer($configService, $storageFactory);
     $referenced = $valueReferencer->dereference((object) ['publisher' => $uuid]);
 
     $this->assertTrue(is_object($referenced));
@@ -54,24 +52,16 @@ class DereferencerTest extends TestCase {
    *
    */
   public function testDereferenceMultiple() {
-    $node1 = (object) [
-      "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => "Gerardo"]),
-      ],
-    ];
+    $keyword1 = '{"data":"Gerardo"}';
+    $keyword2 = '{"data":"CivicActions"}';
 
-    $node2 = (object) [
-      "field_json_metadata" => (object) [
-        "value" => json_encode((object) ["data" => "CivicActions"]),
-      ],
-    ];
+    $keywords = (new Sequence())
+      ->add($keyword1)
+      ->add($keyword2);
 
-    $nodes = (new Sequence())
-      ->add([$node1])
-      ->add([$node2]);
-
-    $nodeStorage = (new Chain($this))
-      ->add(NodeStorageInterface::class, 'loadByProperties', $nodes)
+    $storageFactory = (new Chain($this))
+      ->add(DataFactory::class, 'getInstance', NodeData::class)
+      ->add(NodeData::class, 'retrieve', $keywords)
       ->getMock();
 
     $uuidService = new Uuid5();
@@ -85,7 +75,7 @@ class DereferencerTest extends TestCase {
       ->add(QueueFactory::class)
       ->getMock();
 
-    $valueReferencer = new Dereferencer($configService, $nodeStorage);
+    $valueReferencer = new Dereferencer($configService, $storageFactory);
     $referenced = $valueReferencer->dereference((object) ['keyword' => ['123456789', '987654321']]);
 
     $this->assertTrue(is_object($referenced));
