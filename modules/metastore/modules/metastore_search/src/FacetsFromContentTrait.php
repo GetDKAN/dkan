@@ -130,8 +130,7 @@ trait FacetsFromContentTrait {
 
       foreach ($allFacets as $facet) {
 
-        $facet = $facet->data;
-        $facet = isset($field) ? $facet->{$field} : $facet;
+        $facet = isset($field) ? $facet->{"$.data." . $field} : $facet->{"$.data"};
 
         $facets["{$type}:{$facet}"] = (object) [
           'type' => $type,

@@ -3,8 +3,8 @@ services:
     class: \Drupal\metastore\Service
     arguments:
       - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.sae_factory'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.valid_metadata'
 
   dkan.metastore.lifecycle:
     class: \Drupal\metastore\LifeCycle\LifeCycle
@@ -14,13 +14,6 @@ services:
       - '@dkan.metastore.orphan_checker'
       - '@dkan.metastore.resource_mapper'
       - '@date.formatter'
-
-  dkan.metastore.sae_factory:
-    class: \Drupal\metastore\Factory\Sae
-    arguments:
-      - '@dkan.metastore.schema_retriever'
-      - '@dkan.metastore.storage'
-
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
@@ -66,6 +59,11 @@ services:
     arguments:
       - '@database'
 
+  dkan.metastore.valid_metadata:
+    class: \Drupal\metastore\ValidMetadataFactory
+    arguments:
+      - '@dkan.metastore.schema_retriever'
+  
   dkan.metastore.metastore_item_factory:
     class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:

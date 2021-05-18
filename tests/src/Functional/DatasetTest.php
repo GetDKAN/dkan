@@ -12,7 +12,9 @@ use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
 use Drupal\Tests\common\Traits\CleanUp;
+use Drupal\Tests\metastore\Unit\ServiceTest;
 use Harvest\ETL\Extract\DataJson;
+use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
@@ -27,6 +29,8 @@ class DatasetTest extends ExistingSiteBase {
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
   private const FILENAME_PREFIX = 'dkan_default_content_files_s3_amazonaws_com_phpunit_';
 
+  private $validMetadataFactory;
+
   public function setUp(): void {
     parent::setUp();
     $this->removeHarvests();
@@ -38,6 +42,8 @@ class DatasetTest extends ExistingSiteBase {
     $this->removeDatastoreTables();
     $this->setDefaultModerationState();
     $this->changeDatasetsResourceOutputPerspective();
+
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   public function testChangingDatasetResourcePerspectiveOnOutput() {
@@ -146,20 +152,20 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function datasetPostAndRetrieve(): object {
-    $datasetJson = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
-    $dataset = json_decode($datasetJson);
+    $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
+    $dataset = json_decode($datasetRootedJsonData);
 
-    $uuid = $this->getMetastore()->post('dataset', $datasetJson);
+    $uuid = $this->getMetastore()->post('dataset', $datasetRootedJsonData);
 
     $this->assertEquals(
       $dataset->identifier,
       $uuid
     );
 
-    $datasetJson = $this->getMetastore()->get('dataset', $uuid);
-    $this->assertIsString($datasetJson);
+    $datasetRootedJsonData = $this->getMetastore()->get('dataset', $uuid);
+    $this->assertIsString("$datasetRootedJsonData");
 
-    $retrievedDataset = json_decode($datasetJson);
+    $retrievedDataset = json_decode($datasetRootedJsonData);
 
     $this->assertEquals(
       $retrievedDataset->identifier,
@@ -218,7 +224,7 @@ class DatasetTest extends ExistingSiteBase {
    * @return string|false
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
-  private function getData(string $identifier, string $title, array $downloadUrls): string {
+  private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {
 
     $data = new \stdClass();
     $data->title = $title;
@@ -238,7 +244,7 @@ class DatasetTest extends ExistingSiteBase {
       $data->distribution[] = $distribution;
     }
 
-    return json_encode($data);
+    return $this->validMetadataFactory->get('dataset', json_encode($data));
   }
 
   /**
@@ -274,8 +280,8 @@ class DatasetTest extends ExistingSiteBase {
    * Store or update a dataset,run datastore_import and resource_purger queues.
    */
   private function storeDatasetRunQueues(string $identifier, string $title, array $filenames, string $method = 'post') {
-    $datasetJson = $this->getData($identifier, $title, $filenames);
-    $this->httpVerbHandler($method, $datasetJson, json_decode($datasetJson));
+    $datasetRootedJsonData = $this->getData($identifier, $title, $filenames);
+    $this->httpVerbHandler($method, $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Simulate a cron on queues relevant to this scenario.
     $this->runQueues(['datastore_import', 'resource_purger']);
@@ -329,7 +335,7 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertGreaterThan(0, count($results));
   }
 
-  private function httpVerbHandler(string $method, string $json, $dataset) {
+  private function httpVerbHandler(string $method, RootedJsonData $json, $dataset) {
 
     if ($method == 'post') {
       $identifier = $this->getMetastore()->post('dataset', $json);
@@ -368,7 +374,7 @@ class DatasetTest extends ExistingSiteBase {
    * @return \Drupal\metastore_search\Search
    */
   private function getMetastoreSearch() : Search {
-    return \Drupal::service('metastore_search.service');
+    return \Drupal::service('dkan.metastore_search.service');
   }
 
   private function getMetastore(): Metastore {

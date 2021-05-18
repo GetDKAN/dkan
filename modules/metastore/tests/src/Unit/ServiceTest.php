@@ -4,25 +4,37 @@ namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\common\Events\Event;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\Core\DependencyInjection\Container;
+use Drupal\Component\DependencyInjection\Container;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Factory\Sae;
+use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\Storage\NodeData;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\NodeData;
 use MockChain\Chain;
-use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
-use Sae\Sae as Engine;
+use MockChain\Options;
+use RootedData\RootedJsonData;
 
 /**
  *
  */
 class ServiceTest extends TestCase {
+
+  /**
+   * The ValidMetadataFactory class used for testing.
+   *
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $validMetadataFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->validMetadataFactory = self::getValidMetadataFactory($this);
+  }
 
   /**
    *
@@ -32,7 +44,7 @@ class ServiceTest extends TestCase {
       ->add(SchemaRetriever::class, "getAllIds", ["1"]);
 
     $service = Service::create($container->getMock());
-    $this->assertEquals(json_encode(["1" => "blah"]), json_encode($service->getSchemas()));
+    $this->assertEquals(json_encode(["1" => ['foo' => 'bar']]), json_encode($service->getSchemas()));
   }
 
   /**
@@ -42,26 +54,28 @@ class ServiceTest extends TestCase {
     $container = self::getCommonMockChain($this);
 
     $service = Service::create($container->getMock());
-    $this->assertEquals(json_encode("blah"), json_encode($service->getSchema("1")));
+    $this->assertEquals(json_encode(['foo' => 'bar']), json_encode($service->getSchema("1")));
   }
 
   /**
    *
    */
   public function testGetAll() {
+    $expected = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
+
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", [json_encode("blah")]);
+      ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(ValidMetadataFactory::class, 'get', $expected);
 
     \Drupal::setContainer($container->getMock());
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode(["blah"]), json_encode($service->getAll("dataset")));
+    $this->assertEquals([$expected], $service->getAll("dataset"));
   }
 
   public function testGetAllException() {
-    $data = "blah";
+    $data = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
 
     $event = new Event($data);
     $event->setException(new \Exception("blah"));
@@ -74,8 +88,8 @@ class ServiceTest extends TestCase {
       ->add($event2);
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", [json_encode($data)])
+      ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(ValidMetadataFactory::class, 'get', $data)
       ->add(ContainerAwareEventDispatcher::class, 'dispatch', $sequence);
 
     \Drupal::setContainer($container->getMock());
@@ -92,34 +106,38 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
+    $data = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
+
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrievePublished", json_encode("blah"));
+      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(ValidMetadataFactory::class, 'get', $data);
 
     \Drupal::setContainer($container->getMock());
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode("blah"), $service->get("dataset", "1"));
+    $this->assertEquals(json_encode(['foo' => 'bar']), $service->get("dataset", "1"));
   }
 
   /**
    *
    */
   public function testGetResources() {
-    $dataset = (object) [
+    $dataset = [
       "identifier" => "1",
       "distribution" => [
-        (object) ["title" => "hello"],
+        ["title" => "hello"],
       ],
     ];
+    $data = $this->validMetadataFactory->get('dataset', json_encode($dataset));
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", json_encode($dataset));
+      ->add(Data::class, "retrieve", json_encode($dataset))
+      ->add(ValidMetadataFactory::class, 'get', $data);
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode([(object) ["title" => "hello"]]),
+    $this->assertEquals(json_encode([["title" => "hello"]]),
       json_encode($service->getResources("dataset", "1")));
   }
 
@@ -128,12 +146,12 @@ class ServiceTest extends TestCase {
    */
   public function testPost() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "post", "1");
+      ->add(NodeData::class, 'store', '1');
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals("1", $service->post("dataset", json_encode("blah")));
+    $data = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
+    $this->assertEquals("1", $service->post("dataset", $data));
   }
 
   /**
@@ -141,27 +159,34 @@ class ServiceTest extends TestCase {
    */
   public function testPostAlreadyExisting() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", "1");
+      ->add(Data::class, "retrieve", "1");
 
     $service = Service::create($container->getMock());
 
     $this->expectException(ExistingObjectException::class);
-    $service->post("dataset", '{"identifier":1,"title":"FooBar"}');
+
+    $data = $this->validMetadataFactory->get('dataset', '{"identifier":1,"title":"FooBar"}');
+    $service->post("dataset", $data);
   }
 
   /**
    *
    */
   public function testPut() {
+    $existing = '{"identifier":"1","title":"Foo"}';
+    $updating = '{"identifier":"1","title":"Bar"}';
+
+    $data_existing = $this->validMetadataFactory->get('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "put", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(NodeData::class, "retrieve", $existing)
+      ->add(NodeData::class, "store", "1")
+      ->add(ValidMetadataFactory::class, 'get', $data_existing);
 
     $service = Service::create($container->getMock());
 
-    $info = $service->put("dataset", "1", json_encode("blah"));
+    $data_updating = $this->validMetadataFactory->get('dataset', $updating);
+    $info = $service->put("dataset", "1", $data_updating);
+
     $this->assertEquals("1", $info['identifier']);
   }
 
@@ -173,27 +198,27 @@ class ServiceTest extends TestCase {
     $updating = '{"identifier":"2","title":"Bar"}';
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(Data::class, "retrieve", $existing);
 
     $service = Service::create($container->getMock());
 
     $this->expectExceptionMessage("Identifier cannot be modified");
-    $service->put("dataset", "1", $updating);
+
+    $data = $this->validMetadataFactory->get('dataset', $updating);
+    $service->put("dataset", "1", $data);
   }
 
   /**
    *
    */
   public function testPutResultingInNewData() {
-    $data = '{"identifier":"3","title":"FooBar"}';
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception())
-      ->add(Engine::class, "put", "3")
-      ->add(Engine::class, "post", "3");
+      ->add(NodeData::class, "retrieve", new \Exception())
+      ->add(NodeData::class, "store", "3");
 
     $service = Service::create($container->getMock());
+
+    $data = $this->validMetadataFactory->get('dataset', '{"identifier":"3","title":"FooBar"}');
     $info = $service->put("dataset", "3", $data);
     $this->assertEquals("3", $info['identifier']);
   }
@@ -204,13 +229,15 @@ class ServiceTest extends TestCase {
   public function testPutObjectUnchangedException() {
     $existing = '{"identifier":"1","title":"Foo"}';
 
+    $data = $this->validMetadataFactory->get('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(Data::class, "retrieve", $existing)
+      ->add(ValidMetadataFactory::class, 'get', $data);
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
-    $service->put("dataset", "1", $existing);
+
+    $service->put("dataset", "1", $data);
   }
 
   /**
@@ -225,13 +252,16 @@ class ServiceTest extends TestCase {
       }
 EOF;
 
+    $data_existing = $this->validMetadataFactory->get('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", $existing);
+      ->add(Data::class, "retrieve", $existing)
+      ->add(ValidMetadataFactory::class, 'get', $data_existing);
 
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
-    $service->put("dataset", "1", $updating);
+
+    $data_updating = $this->validMetadataFactory->get('dataset', $updating);
+    $service->put("dataset", "1", $data_updating);
   }
 
   /**
@@ -239,9 +269,9 @@ EOF;
    */
   public function testPatch() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "patch", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(NodeData::class, "retrieve", "1")
+      ->add(NodeData::class, "store", "1")
+      ->add(ValidMetadataFactory::class, 'get', new RootedJsonData('{"id":"1"}'));
 
     $service = Service::create($container->getMock());
 
@@ -255,8 +285,7 @@ EOF;
     $data = '{"identifier":"1","title":"FooBar"}';
 
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception());
+      ->add(NodeData::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
     $this->expectException(MissingObjectException::class);
@@ -268,8 +297,7 @@ EOF;
    */
   public function testPublish() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", "1")
+      ->add(NodeData::class, "retrieve", "1")
       ->add(NodeData::class, "publish", "1");
 
     $service = Service::create($container->getMock());
@@ -282,8 +310,7 @@ EOF;
    */
   public function testPublishMissingObjectExpection() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", new \Exception());
+      ->add(NodeData::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
 
@@ -296,9 +323,8 @@ EOF;
    */
   public function testDelete() {
     $container = self::getCommonMockChain($this)
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "delete", "1")
-      ->add(Engine::class, "get", "1");
+      ->add(NodeData::class, "retrieve", "1")
+      ->add(NodeData::class, "remove", "1");
 
     $service = Service::create($container->getMock());
 
@@ -309,16 +335,17 @@ EOF;
    *
    */
   public function testGetCatalog() {
+    $dataset = $this->validMetadataFactory->get('blah', json_encode(["foo" => "bar"]));
+
     $catalog = (object) [
       "@id" => "http://catalog",
       "dataset" => [],
     ];
-    $dataset = (object) ["foo" => "bar"];
 
     $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
-      ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", [json_encode($dataset), json_encode($dataset)]);
+      ->add(NodeData::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)])
+      ->add(ValidMetadataFactory::class, 'get', $dataset);
 
     \Drupal::setContainer($container->getMock());
 
@@ -334,30 +361,32 @@ EOF;
    * @return \Drupal\common\Tests\Mock\Chain
    */
   public static function getCommonMockChain(TestCase $case, Options $services = null) {
-    if (!$services) {
-      $services = new Options();
-    }
 
-    $myServices = [
-      'dkan.metastore.schema_retriever' => SchemaRetriever::class,
-      'dkan.metastore.sae_factory' => Sae::class,
-      'dkan.metastore.storage' => DataFactory::class,
-      'event_dispatcher' => ContainerAwareEventDispatcher::class
-    ];
-
-    foreach ($myServices as $serviceName => $class) {
-      $serviceClass = $services->return($serviceName);
-      if (!isset($serviceClass)) {
-        $services->add($serviceName, $class);
-      }
-    }
-
-    $services->index(0);
+    $options = (new Options)
+      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
+      ->index(0);
 
     return (new Chain($case))
-      ->add(Container::class, "get", $services)
+      ->add(Container::class, "get", $options)
       ->add(DataFactory::class, 'getInstance', NodeData::class)
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
+      // ->add(NodeData::class, 'getDefaultModerationState', 'published')
+      ->add(NodeData::class, 'retrieve', '{"data":"somedata"}')
+      ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+  }
+
+  public static function getValidMetadataFactory(TestCase $case) {
+    $options = (new Options())
+      ->add('metastore.schema_retriever', SchemaRetriever::class)
+      ->index(0);
+
+    $container = (new Chain($case))
+      ->add(Container::class, "get", $options)
+      ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+
+    return ValidMetadataFactory::create($container->getMock());
   }
 
 }

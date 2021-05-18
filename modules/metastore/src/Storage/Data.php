@@ -242,6 +242,7 @@ abstract class Data implements MetastoreStorageInterface {
    */
   public function store($data, string $uuid = NULL): string {
     $data = json_decode($data);
+
     $data = $this->filterHtml($data);
 
     $uuid = (!$uuid && isset($data->identifier)) ? $data->identifier : $uuid;
@@ -309,6 +310,7 @@ abstract class Data implements MetastoreStorageInterface {
    *   Filtered output.
    */
   private function filterHtml($input) {
+    // TODO: find out if we still need it.
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);
