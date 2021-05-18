@@ -8,7 +8,6 @@ use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\MetastoreStorageInterface;
 
 /**
  * Metastore referencer service.
