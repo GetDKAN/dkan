@@ -2,13 +2,12 @@
 
 namespace Drupal\metastore\Storage;
 
-use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 
 /**
  * Data factory.
  */
-class NodeStorageFactory implements MetastoreStorageFactoryInterface {
+class MetastoreNodeStorageFactory implements MetastoreStorageFactoryInterface {
 
   /**
    * @var array

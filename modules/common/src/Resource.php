@@ -226,7 +226,7 @@ class Resource implements \JsonSerializable {
    * Private.
    */
   private static function getDistribution($identifier) {
-    /** @var \Drupal\metastore\Storage\NodeStorageFactory $factory */
+    /** @var \Drupal\metastore\Storage\MetastoreNodeStorageFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
 
     /** @var \Drupal\metastore\Storage\MetastoreStorageInterface $storage */
