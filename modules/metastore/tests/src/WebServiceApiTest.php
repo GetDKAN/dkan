@@ -9,6 +9,8 @@ use Drupal\metastore\Storage\AbstractEntityStorage;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\WebServiceApi;
+use Drupal\Tests\metastore\Unit\ServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;

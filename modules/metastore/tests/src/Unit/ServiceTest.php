@@ -11,7 +11,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\FileSchemaRetriever;
-use Drupal\metastore\NodeWrapper\MetastoreNodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreNodeStorageFactory;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\MetastoreNodeStorage;
 use MockChain\Chain;
@@ -41,7 +41,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetSchemas() {
-    $container = $this->getCommonMockChain()
+    $container = $this->getCommonMockChain($this)
       ->add(FileSchemaRetriever::class, "getAllIds", ["1"]);
 
     $service = Service::create($container->getMock());
@@ -344,7 +344,7 @@ EOF;
     ];
 
     $container = self::getCommonMockChain($this)
-      ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode($catalog))
       ->add(MetastoreNodeStorage::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)])
       ->add(ValidMetadataFactory::class, 'get', $dataset);
 
@@ -364,7 +364,7 @@ EOF;
   public static function getCommonMockChain(TestCase $case, Options $services = null) {
 
     $options = (new Options)
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('dkan.metastore.storage', MetastoreNodeStorageFactory::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
@@ -375,17 +375,17 @@ EOF;
       ->add(MetastoreNodeStorageFactory::class, 'getInstance', MetastoreNodeStorage::class)
       // ->add(MetastoreNodeStorage::class, 'getDefaultModerationState', 'published')
       ->add(MetastoreNodeStorage::class, 'retrieve', '{"data":"somedata"}')
-      ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
   }
 
   public static function getValidMetadataFactory(TestCase $case) {
     $options = (new Options())
-      ->add('metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->index(0);
 
     $container = (new Chain($case))
       ->add(Container::class, "get", $options)
-      ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
+      ->add(FileSchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
 
     return ValidMetadataFactory::create($container->getMock());
   }

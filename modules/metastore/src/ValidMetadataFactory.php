@@ -25,17 +25,17 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('metastore.schema_retriever'),
+      $container->get('dkan.metastore.schema_retriever'),
     );
   }
 
   /**
    * ValidMetadataFactory constructor.
    *
-   * @param \Drupal\metastore\SchemaRetriever $schemaRetriever
+   * @param \Drupal\metastore\SchemaRetrieverInterface $schemaRetriever
    *   Service dkan.metastore.schema_retriever.
    */
-  public function __construct(SchemaRetriever $schemaRetriever) {
+  public function __construct(SchemaRetrieverInterface $schemaRetriever) {
     $this->schemaRetriever = $schemaRetriever;
   }
 

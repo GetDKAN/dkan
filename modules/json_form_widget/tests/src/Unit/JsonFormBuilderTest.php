@@ -17,7 +17,6 @@ use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\metastore\FileSchemaRetriever;
 use MockChain\Options;
-use stdClass;
 
 /**
  * Test class for JsonFormWidget.
@@ -159,9 +158,10 @@ class JsonFormBuilderTest extends TestCase {
         ],
       ],
     ];
-    $default_data = new stdClass();
+    $default_data = new \stdClass();
     $default_data->test = "Some value.";
-    $this->assertEquals($form_builder->getJsonForm($default_data), $expected);
+    $jsonForm = $form_builder->getJsonForm($default_data);
+    $this->assertEquals($jsonForm, $expected);
 
     // Test email.
     $container_chain = (new Chain($this))
@@ -288,7 +288,7 @@ class JsonFormBuilderTest extends TestCase {
     $this->assertEquals($result, $expected);
 
     // Test array required.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '
     {
       "required": [
         "keyword"

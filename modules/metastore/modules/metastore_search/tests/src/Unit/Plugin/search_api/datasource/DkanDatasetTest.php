@@ -49,9 +49,8 @@ class DkanDatasetTest extends TestCase {
       ->add(QueryInterface::class, 'execute', $executeSequence)
       ->add(QueryInterface::class, 'range', QueryInterface::class)
       ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
-      ->add(MetastoreNodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
-      ->add(AbstractEntityStorage::class, 'retrieve', '{}')
-      ->add(DataFactory::class, 'getInstance', MetastoreNodeStorage::class)
+      ->add(MetastoreNodeStorageFactory::class, 'getInstance', MetastoreNodeStorage::class)
+      ->add(MetastoreNodeStorage::class, 'retrieve', '{}')
       ->add(MetastoreNodeStorage::class, 'retrievePublished', '{}')
       ->getMock();
 
