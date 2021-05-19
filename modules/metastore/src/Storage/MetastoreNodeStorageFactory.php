@@ -77,4 +77,13 @@ class MetastoreNodeStorageFactory implements MetastoreStorageFactoryInterface {
     return new MetastoreNodeStorage($identifier, $this->entityTypeManager);
   }
 
+  /**
+   * Get the storage class name for this factory.
+   *
+   * @return string
+   *   Qualified storage class name.
+   */
+  public static function getStorageClass() {
+    return MetastoreNodeStorage::class;
+  }
 }

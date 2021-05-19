@@ -5,7 +5,7 @@ namespace Drupal\Tests\common;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\datastore\Service as Datastore;
-use Drupal\metastore\NodeWrapper\MetastoreNodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreNodeStorageFactory;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\MetastoreNodeStorage;
 use MockChain\Chain;

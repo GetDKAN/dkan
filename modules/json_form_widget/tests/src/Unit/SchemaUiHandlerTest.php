@@ -9,13 +9,13 @@ use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Uuid\Php;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\json_form_widget\SchemaUiHandler;
-use Drupal\metastore\FileSchemaRetriever;
 use Drupal\Component\Utility\EmailValidator;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Language\LanguageDefault;
 use Drupal\Core\Language\LanguageManager;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\json_form_widget\WidgetRouter;
+use Drupal\metastore\FileSchemaRetriever;
 use Drupal\metastore\Service;
 use MockChain\Options;
 
@@ -53,7 +53,7 @@ class SchemaUiHandlerTest extends TestCase {
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(FileSchemaRetriever::class, 'retrieve', '{"@test":{"ui:options":{"widget":"hidden"}},"textarea_text":{"ui:options":{"widget":"textarea","rows":4,"cols":45,"title":"Textarea field","description":"Test description"}},"date":{"ui:options":{"placeholder":"YYYY-MM-DD"}},"disabled":{"ui:options":{"disabled":true}}}')
+      ->add(FileSchemaRetriever::class, 'retrieve', '{"@test":{"ui:options":{"widget":"hidden"}},"textarea_text":{"ui:options":{"widget":"textarea","rows":4,"cols":45,"title":"Textarea field","description":"Test description"}},"date":{"ui:options":{"widget":"date","placeholder":"YYYY-MM-DD"}},"disabled":{"ui:options":{"disabled":true}}}')
       ->add(SchemaUiHandler::class, 'setSchemaUi');
 
     $container = $container_chain->getMock();
@@ -186,6 +186,36 @@ class SchemaUiHandlerTest extends TestCase {
     $form['modified']['#default_value'] = '2020-05-09';
     $date = new DrupalDateTime('2020-05-09');
     $expected['modified']['#default_value'] = $date;
+    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
+    // Test date_range.
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"temporal":{"ui:options":{"widget":"date_range"}}}');
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $ui_handler = SchemaUiHandler::create($container);
+    $ui_handler->setSchemaUi('dataset');
+    $form = [
+      "temporal" => [
+        "#type" => "textfield",
+        "#title" => "Temporal Date Range",
+        "#default_value" => '2020-05-11T15:06:39.000Z/2020-05-15T15:00:00.000Z',
+        "#required" => FALSE,
+      ],
+    ];
+    $date = new DrupalDateTime('2020-05-11T15:06:39.000Z');
+    $expected = [
+      "temporal" => [
+        "#type" => "date_range",
+        "#title" => "Temporal Date Range",
+        "#default_value" => '2020-05-11T15:06:39.000Z/2020-05-15T15:00:00.000Z',
+        "#required" => FALSE,
+      ],
+    ];
+    $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
+
+    // Test date range without default value.
+    $form['temporal']['#default_value'] = NULL;
+    $expected['temporal']['#default_value'] = '';
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test dkan_uuid field with already existing value.

@@ -14,7 +14,7 @@ function metastore_search_search_api_tracking(EntityInterface $entity, string $o
     return;
   }
 
-  $wrapper = new Drupal\metastore\NodeWrapper\Data($entity);
+  $wrapper = new Drupal\metastore\Storage\Data($entity);
   if ($wrapper->getDataType() != 'dataset') {
     return;
   }

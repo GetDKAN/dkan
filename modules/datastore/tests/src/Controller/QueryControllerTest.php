@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryController;
-use Drupal\metastore\NodeWrapper\MetastoreNodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreNodeStorageFactory;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
