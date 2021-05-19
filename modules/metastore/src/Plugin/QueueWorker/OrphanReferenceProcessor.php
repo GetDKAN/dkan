@@ -113,12 +113,10 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The uuid.
    */
   protected function unpublishReference(string $property_id, string $uuid) {
-    print 'prop ' . $property_id . ', ';
-    print 'uuid ' . $uuid;
     $references = $this->nodeStorage->loadByProperties(
       [
-        'field_data_type' => $property_id,
         'uuid' => $uuid,
+        'field_data_type' => $property_id,
       ]
     );
     if (FALSE !== ($reference = reset($references))) {

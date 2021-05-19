@@ -94,7 +94,7 @@ class LifeCycle {
    * Dataset preDelete.
    */
   protected function datasetPredelete(MetastoreItemInterface $data) {
-    $raw = json_decode($data->getRawMetadata());
+    $raw = $data->getRawMetadata();
 
     if (is_object($raw)) {
       $this->orphanChecker->processReferencesInDeletedDataset($raw);

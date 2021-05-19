@@ -66,8 +66,8 @@ class Data implements MetastoreItemInterface {
    */
   public function getRawMetadata() {
     $this->fix();
-    if (isset($this->rawMetadata)) {
-      return json_decode($this->rawMetadata);
+    if (isset($this->node->rawMetadata)) {
+      return json_decode($this->node->rawMetadata);
     }
   }
 
@@ -154,9 +154,9 @@ class Data implements MetastoreItemInterface {
    */
   private function saveRawMetadata() {
     // Temporarily save the raw json metadata, for later use.
-    if (!isset($this->rawMetadata)) {
+    if (!isset($this->node->rawMetadata)) {
       $raw = $this->node->get('field_json_metadata')->value;
-      $this->rawMetadata = $raw;
+      $this->node->rawMetadata = $raw;
     }
   }
 
