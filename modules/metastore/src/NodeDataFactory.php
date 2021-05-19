@@ -6,11 +6,11 @@ use Drupal\Core\Entity\EntityRepository;
 use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 
 /**
- * Class NodeDataFactory.
+ * Class MetastoreNodeStorageFactory.
  *
  * Build a MetastoreItemInterface object from a simple node.
  */
-class NodeDataFactory implements MetastoreItemFactoryInterface {
+class MetastoreNodeStorageFactory implements MetastoreItemFactoryInterface {
 
   /**
    * EntityRepository object.

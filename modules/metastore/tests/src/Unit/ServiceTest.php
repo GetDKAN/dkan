@@ -11,9 +11,9 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\FileSchemaRetriever;
+use Drupal\metastore\NodeWrapper\MetastoreNodeStorageFactory;
 use Drupal\metastore\SchemaRetriever;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\NodeData;
+use Drupal\metastore\Storage\MetastoreNodeStorage;
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -65,7 +65,7 @@ class ServiceTest extends TestCase {
     $expected = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
 
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(MetastoreNodeStorage::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
       ->add(ValidMetadataFactory::class, 'get', $expected);
 
     \Drupal::setContainer($container->getMock());
@@ -89,7 +89,7 @@ class ServiceTest extends TestCase {
       ->add($event2);
 
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(MetastoreNodeStorage::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
       ->add(ValidMetadataFactory::class, 'get', $data)
       ->add(ContainerAwareEventDispatcher::class, 'dispatch', $sequence);
 
@@ -110,7 +110,7 @@ class ServiceTest extends TestCase {
     $data = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
 
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(MetastoreNodeStorage::class, "retrievePublished", json_encode(['foo' => 'bar']))
       ->add(ValidMetadataFactory::class, 'get', $data);
 
     \Drupal::setContainer($container->getMock());
@@ -133,7 +133,7 @@ class ServiceTest extends TestCase {
     $data = $this->validMetadataFactory->get('dataset', json_encode($dataset));
 
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", json_encode($dataset))
+      ->add(MetastoreNodeStorage::class, "retrieve", json_encode($dataset))
       ->add(ValidMetadataFactory::class, 'get', $data);
 
     $service = Service::create($container->getMock());
@@ -147,7 +147,7 @@ class ServiceTest extends TestCase {
    */
   public function testPost() {
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, 'store', '1');
+      ->add(MetastoreNodeStorage::class, 'store', '1');
 
     $service = Service::create($container->getMock());
 
@@ -160,7 +160,7 @@ class ServiceTest extends TestCase {
    */
   public function testPostAlreadyExisting() {
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", "1");
+      ->add(MetastoreNodeStorage::class, "retrieve", "1");
 
     $service = Service::create($container->getMock());
 
@@ -179,8 +179,8 @@ class ServiceTest extends TestCase {
 
     $data_existing = $this->validMetadataFactory->get('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrieve", $existing)
-      ->add(NodeData::class, "store", "1")
+      ->add(MetastoreNodeStorage::class, "retrieve", $existing)
+      ->add(MetastoreNodeStorage::class, "store", "1")
       ->add(ValidMetadataFactory::class, 'get', $data_existing);
 
     $service = Service::create($container->getMock());
@@ -199,7 +199,7 @@ class ServiceTest extends TestCase {
     $updating = '{"identifier":"2","title":"Bar"}';
 
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", $existing);
+      ->add(MetastoreNodeStorage::class, "retrieve", $existing);
 
     $service = Service::create($container->getMock());
 
@@ -214,8 +214,8 @@ class ServiceTest extends TestCase {
    */
   public function testPutResultingInNewData() {
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrieve", new \Exception())
-      ->add(NodeData::class, "store", "3");
+      ->add(MetastoreNodeStorage::class, "retrieve", new \Exception())
+      ->add(MetastoreNodeStorage::class, "store", "3");
 
     $service = Service::create($container->getMock());
 
@@ -232,7 +232,7 @@ class ServiceTest extends TestCase {
 
     $data = $this->validMetadataFactory->get('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", $existing)
+      ->add(MetastoreNodeStorage::class, "retrieve", $existing)
       ->add(ValidMetadataFactory::class, 'get', $data);
 
     $service = Service::create($container->getMock());
@@ -255,7 +255,7 @@ EOF;
 
     $data_existing = $this->validMetadataFactory->get('dataset', $existing);
     $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", $existing)
+      ->add(MetastoreNodeStorage::class, "retrieve", $existing)
       ->add(ValidMetadataFactory::class, 'get', $data_existing);
 
     $service = Service::create($container->getMock());
@@ -270,8 +270,8 @@ EOF;
    */
   public function testPatch() {
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrieve", "1")
-      ->add(NodeData::class, "store", "1")
+      ->add(MetastoreNodeStorage::class, "retrieve", "1")
+      ->add(MetastoreNodeStorage::class, "store", "1")
       ->add(ValidMetadataFactory::class, 'get', new RootedJsonData('{"id":"1"}'));
 
     $service = Service::create($container->getMock());
@@ -286,7 +286,7 @@ EOF;
     $data = '{"identifier":"1","title":"FooBar"}';
 
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrieve", new \Exception());
+      ->add(MetastoreNodeStorage::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
     $this->expectException(MissingObjectException::class);
@@ -298,8 +298,8 @@ EOF;
    */
   public function testPublish() {
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrieve", "1")
-      ->add(NodeData::class, "publish", "1");
+      ->add(MetastoreNodeStorage::class, "retrieve", "1")
+      ->add(MetastoreNodeStorage::class, "publish", "1");
 
     $service = Service::create($container->getMock());
     $result = $service->publish('dataset', 1);
@@ -311,7 +311,7 @@ EOF;
    */
   public function testPublishMissingObjectExpection() {
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrieve", new \Exception());
+      ->add(MetastoreNodeStorage::class, "retrieve", new \Exception());
 
     $service = Service::create($container->getMock());
 
@@ -324,8 +324,8 @@ EOF;
    */
   public function testDelete() {
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrieve", "1")
-      ->add(NodeData::class, "remove", "1");
+      ->add(MetastoreNodeStorage::class, "retrieve", "1")
+      ->add(MetastoreNodeStorage::class, "remove", "1");
 
     $service = Service::create($container->getMock());
 
@@ -345,7 +345,7 @@ EOF;
 
     $container = self::getCommonMockChain($this)
       ->add(SchemaRetriever::class, "retrieve", json_encode($catalog))
-      ->add(NodeData::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)])
+      ->add(MetastoreNodeStorage::class, 'retrieveAll', [json_encode($dataset), json_encode($dataset)])
       ->add(ValidMetadataFactory::class, 'get', $dataset);
 
     \Drupal::setContainer($container->getMock());
@@ -365,16 +365,16 @@ EOF;
 
     $options = (new Options)
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
-      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('dkan.metastore.storage', MetastoreNodeStorageFactory::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->add('dkan.metastore.valid_metadata', ValidMetadataFactory::class)
       ->index(0);
 
     return (new Chain($case))
       ->add(Container::class, "get", $options)
-      ->add(DataFactory::class, 'getInstance', NodeData::class)
-      // ->add(NodeData::class, 'getDefaultModerationState', 'published')
-      ->add(NodeData::class, 'retrieve', '{"data":"somedata"}')
+      ->add(MetastoreNodeStorageFactory::class, 'getInstance', MetastoreNodeStorage::class)
+      // ->add(MetastoreNodeStorage::class, 'getDefaultModerationState', 'published')
+      ->add(MetastoreNodeStorage::class, 'retrieve', '{"data":"somedata"}')
       ->add(SchemaRetriever::class, "retrieve", json_encode(['foo' => 'bar']));
   }
 

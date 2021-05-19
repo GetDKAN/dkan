@@ -12,7 +12,7 @@ use Drupal\metastore_entity\Entity\MetastoreItem;
 class MetastoreEntityStorage implements MetastoreEntityStorageInterface {
 
   /**
-   * NodeData constructor.
+   * MetastoreNodeStorage constructor.
    */
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityType = "metastore_item";

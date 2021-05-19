@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\NodeWrapper;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\metastore\NodeWrapper\NodeDataFactory;
+use Drupal\metastore\NodeWrapper\MetastoreNodeStorageFactory;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class DataTest extends TestCase {
       ->add(EntityRepository::class, 'loadEntityByUuid', EntityInterface::class)
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $factory = new MetastoreNodeStorageFactory($entityRepository);
     $factory->getInstance("123");
   }
 
@@ -40,7 +40,7 @@ class DataTest extends TestCase {
       ->add(Node::class, 'bundle', 'blah')
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $factory = new MetastoreNodeStorageFactory($entityRepository);
     $factory->getInstance("123");
   }
 
@@ -60,7 +60,7 @@ class DataTest extends TestCase {
       ->add(Node::class, 'set', TRUE)
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $factory = new MetastoreNodeStorageFactory($entityRepository);
     $data = $factory->wrap($entity);
     $this->assertEquals('123', $data->getIdentifier());
   }
@@ -70,7 +70,7 @@ class DataTest extends TestCase {
       ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
       ->getMock();
 
-    $factory = new NodeDataFactory($entityRepository);
+    $factory = new MetastoreNodeStorageFactory($entityRepository);
     $this->assertEquals('node', $factory->getEntityType());
     $this->assertEquals(['data'], $factory->getBundles());
     $this->assertEquals('field_json_metadata', $factory->getMetadataField());

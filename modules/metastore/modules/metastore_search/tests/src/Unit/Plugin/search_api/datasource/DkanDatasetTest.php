@@ -15,6 +15,7 @@ use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeRepository;
+use Drupal\metastore\Storage\MetastoreNodeStorage;
 use Drupal\metastore_search\ComplexData\Dataset;
 
 /**
@@ -50,8 +51,8 @@ class DkanDatasetTest extends TestCase {
       ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
       ->add(MetastoreNodeStorageFactory::class, 'getInstance', AbstractEntityStorage::class)
       ->add(AbstractEntityStorage::class, 'retrieve', '{}')
-      ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'retrievePublished', '{}')
+      ->add(DataFactory::class, 'getInstance', MetastoreNodeStorage::class)
+      ->add(MetastoreNodeStorage::class, 'retrievePublished', '{}')
       ->getMock();
 
     \Drupal::setContainer($container);

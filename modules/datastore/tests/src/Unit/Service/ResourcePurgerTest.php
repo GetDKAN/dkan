@@ -59,8 +59,8 @@ class ResourcePurgerTest extends TestCase {
   public function testRevisionDisappearing() {
 
     $chain = $this->getCommonChain()
-      ->add(Data::class, 'getEntityIdFromUuid', 1)
-      ->add(Data::class, 'getEntityStorage', NodeStorageInterface::class)
+      ->add(MetastoreNodeStorage::class, 'getEntityIdFromUuid', 1)
+      ->add(MetastoreNodeStorage::class, 'getEntityStorage', NodeStorageInterface::class)
       ->add(NodeStorageInterface::class, 'getLatestRevisionId', 1);
 
     $resourcePurger = ResourcePurger::create($chain->getMock());
@@ -74,8 +74,8 @@ class ResourcePurgerTest extends TestCase {
   public function testScheduleAllUuids() {
 
     $chain = $this->getCommonChain()
-      ->add(Data::class, 'getEntityIdFromUuid', 1)
-      ->add(Data::class, 'getEntityStorage', NodeStorageInterface::class)
+      ->add(MetastoreNodeStorage::class, 'getEntityIdFromUuid', 1)
+      ->add(MetastoreNodeStorage::class, 'getEntityStorage', NodeStorageInterface::class)
       ->add(NodeStorageInterface::class, 'getQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', [1])

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryController;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\NodeWrapper\MetastoreNodeStorageFactory;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -239,7 +239,7 @@ class QueryControllerTest extends TestCase {
     }
 
     $options = (new Options())
-      ->add("dkan.metastore.storage", DataFactory::class)
+      ->add("dkan.metastore.storage", MetastoreNodeStorageFactory::class)
       ->add("dkan.datastore.service", Service::class)
       ->add("request_stack", RequestStack::class)
       ->index(0);

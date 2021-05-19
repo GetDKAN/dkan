@@ -8,7 +8,7 @@ use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
@@ -67,7 +67,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetrieverInterface $schemaRetriever, DataFactory $factory, ValidMetadataFactory $validMetadataFactory) {
+  public function __construct(SchemaRetrieverInterface $schemaRetriever, MetastoreStorageFactoryInterface $factory, ValidMetadataFactory $validMetadataFactory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
     $this->validMetadataFactory = $validMetadataFactory;

@@ -75,11 +75,11 @@ class DataFactory implements FactoryInterface {
    * @param string $identifier
    *   Schema id.
    *
-   * @return \Drupal\metastore\Storage\NodeData
+   * @return \Drupal\metastore\Storage\MetastoreNodeStorage
    *   Storage object.
    */
   protected function createNodeInstance(string $identifier) {
-    return new NodeData($identifier, $this->entityTypeManager);
+    return new MetastoreNodeStorage($identifier, $this->entityTypeManager);
   }
 
   /**
@@ -89,7 +89,7 @@ class DataFactory implements FactoryInterface {
    *   Qualified storage class name.
    */
   public static function getStorageClass() {
-    return NodeData::class;
+    return MetastoreNodeStorage::class;
   }
 
 }
