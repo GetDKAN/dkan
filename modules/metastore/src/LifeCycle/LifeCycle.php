@@ -94,11 +94,10 @@ class LifeCycle {
    * Dataset preDelete.
    */
   protected function datasetPredelete(MetastoreItemInterface $data) {
-    $raw = $data->getRawMetadata();
+    $raw = json_decode($data->getRawMetadata());
 
     if (is_object($raw)) {
-      $referencer = \Drupal::service("dkan.metastore.orphan_checker");
-      $referencer->processReferencesInDeletedDataset($raw);
+      $this->orphanChecker->processReferencesInDeletedDataset($raw);
     }
   }
 
