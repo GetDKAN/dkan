@@ -283,7 +283,13 @@ abstract class AbstractEntityStorage implements MetastoreEntityStorageInterface 
    * Private.
    */
   protected function createNewEntity($uuid, $data) {
-    $title = isset($data->title) ? $data->title : $data->name;
+    $title = '';
+    if ($this->schemaId === 'dataset') {
+      $title = isset($data->title) ? $data->title : $data->name;
+    }
+    else {
+      $title = md5(json_encode($data->data));
+    }
     $entity = $this->entityStorageCreate([
       $this->labelKey => $title,
       $this->bundleKey => $this->bundle,

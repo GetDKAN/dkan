@@ -31,6 +31,12 @@
       "description": "If your dataset has a spatial component, please provide location such as place name or latitude/longitude pairs."
     }
   },
+  "temporal": {
+    "ui:options": {
+      "description": "The <a href=\"https://project-open-data.cio.gov/v1.1/schema/#temporal\">start and end dates</a> for which the dataset is applicable.",
+      "widget": "date_range"
+    }
+  },
   "isPartOf": {
     "ui:options": {
       "widget": "hidden"

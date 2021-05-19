@@ -2,9 +2,9 @@
 
 namespace Drupal\metastore\Reference;
 
+use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\LoggerTrait;
-use Drupal\node\NodeStorageInterface;
 
 /**
  * Metastore dereferencer.
@@ -14,18 +14,18 @@ class Dereferencer {
   use LoggerTrait;
 
   /**
-   * Node storate service.
+   * Storage factory interface service.
    *
-   * @var \Drupal\node\NodeStorageInterface
+   * @var \Contracts\FactoryInterface
    */
-  private $nodeStorage;
+  private $storageFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, NodeStorageInterface $nodeStorage) {
+  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
     $this->setConfigService($configService);
-    $this->nodeStorage = $nodeStorage;
+    $this->storageFactory = $storageFactory;
   }
 
   /**
@@ -124,17 +124,12 @@ class Dereferencer {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   private function dereferenceSingle(string $property_id, string $uuid) {
-    $nodes = $this->nodeStorage
-      ->loadByProperties([
-        'field_data_type' => $property_id,
-        'uuid' => $uuid,
-      ]);
+    $storage = $this->storageFactory->getInstance($property_id);
+    $value = $storage->retrieve($uuid);
 
-    if ($node = reset($nodes)) {
-      if (isset($node->field_json_metadata->value)) {
-        $metadata = json_decode($node->field_json_metadata->value);
-        return [$metadata, $metadata->data];
-      }
+    if ($value) {
+      $metadata = json_decode($value);
+      return [$metadata, $metadata->data];
     }
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
