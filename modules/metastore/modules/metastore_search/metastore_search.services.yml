@@ -1,5 +1,5 @@
 services:
-  metastore_search.service:
+  dkan.metastore_search.service:
     class: \Drupal\metastore_search\Search
     arguments:
       - '@dkan.metastore.service'

@@ -50,7 +50,7 @@ class SearchController implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('metastore_search.service'),
+      $container->get('dkan.metastore_search.service'),
       $container->get('request_stack')
     );
   }
