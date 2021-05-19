@@ -166,7 +166,7 @@ class DateRange extends Datetime {
     $input_exists = FALSE;
     $input = NestedArray::getValue($form_state->getValues(), $element['#parents'], $input_exists);
     if ($input_exists) {
-      if (isset($input['start_date']) && isset($input['end_date'])) {
+      if ($input['start_date'] instanceof DrupalDateTime && $input['end_date'] instanceof DrupalDateTime) {
         static::validateInterval($input['start_date'], $input['end_date'], $element, $form_state);
         return;
       }
