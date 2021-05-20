@@ -49,7 +49,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.datastore.service service.
    * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
    *   The dkan.datastore.service.resource_purger service.
-   * @param \Drupal\common\Storage\JobStoreFactory
+   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
+   *   The dkan.common.job_store service.
    */
   public function __construct(LoggerChannelFactory $logger_factory, Service $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
     $this->loggerFactory = $logger_factory;
