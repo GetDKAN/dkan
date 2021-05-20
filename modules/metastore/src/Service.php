@@ -139,13 +139,14 @@ class Service implements ContainerInjectionInterface {
       $data = $this->validMetadataFactory->get($schema_id, $jsonString);
       try {
         $object = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+        if ($schema_id != 'dataset') {
+          $object = $this->wrapMetadata($id, $object);
+        }
       }
       catch (\Exception $e) {
-        $object = (object) ["message" => $e->getMessage()];
+        $data = $this->validMetadataFactory->get(NULL, json_encode(["message" => $e->getMessage()]));
       }
-      if ($schema_id != 'dataset') {
-        $object = self::wrapMetadata($id, $object);
-      }
+
       $objects[] = $object;
     }
 
@@ -168,11 +169,9 @@ class Service implements ContainerInjectionInterface {
   public function get($schema_id, $identifier): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
     $data = $this->validMetadataFactory->get($schema_id, $json_string);
-
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     if ($schema_id != 'dataset') {
-      $data = self::wrapMetadata($identifier, json_decode($data));
-      $data = json_encode($data);
+      $data = $this->wrapMetadata($identifier, $data);
     }
     return $data;
   }
@@ -429,11 +428,14 @@ class Service implements ContainerInjectionInterface {
   /**
    * Wraps metadata with [{"data":{},"identifier":""}].
    */
-  public static function wrapMetadata($uuid, $matadata) {
-    return (object) [
+  public function wrapMetadata($uuid, RootedJsonData $metadata): RootedJsonData {
+    $wrapped_metadata = [
       'identifier' => $uuid,
-      'data' => $matadata,
+      'data' => $metadata->get('$'),
     ];
+
+    // TODO: use the legacy schema
+    return $this->getValidMetadataFactory()->get(NULL, json_encode($wrapped_metadata));
   }
 
 }

@@ -72,15 +72,41 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->assertEquals([$expected], $service->getAll("dataset"));
+  }
+
+  public function testGetAllDistributions() {
+    $distributionData = $this->validMetadataFactory->get('distribution', json_encode(['foo' => 'bar']));
+    $distributionDataWrapped = $this->validMetadataFactory->get('distribution', json_encode([
+      'identifier' => '0',
+      'data' => [
+        'foo' => 'bar',
+      ],
+    ]));
+
+
+    $getSequence = (new Sequence())
+      ->add($distributionData)
+      ->add($distributionDataWrapped);
+
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
+      ->add(ValidMetadataFactory::class, 'get', $getSequence);
+
+    \Drupal::setContainer($container->getMock());
+
+    $service = Service::create($container->getMock());
 
     // Distribution should be wrapped with [{"data":{},"identifier":""}].
-    $distributions = [
+    $distributionsExpected = [
       [
-        'identifier' => 0,
-        'data' => 'blah'
+        'identifier' => '0',
+        'data' => [
+          'foo' => 'bar',
+        ],
       ],
     ];
-    $this->assertEquals(json_encode($distributions), json_encode($service->getAll("distribution")));
+    $distributionsActual = array_map('json_decode', $service->getAll("distribution"));
+    $this->assertEquals(json_encode($distributionsExpected), json_encode($distributionsActual));
   }
 
   public function testGetAllException() {
@@ -126,13 +152,36 @@ class ServiceTest extends TestCase {
     $service = Service::create($container->getMock());
 
     $this->assertEquals(json_encode(['foo' => 'bar']), $service->get("dataset", "1"));
+  }
+
+  public function testGetDistribution() {
+    $distributionData = $this->validMetadataFactory->get('distribution', json_encode(['foo' => 'bar']));
+    $distributionDataWrapped = $this->validMetadataFactory->get('distribution', json_encode([
+      'identifier' => '1',
+      'data' => [
+        'foo' => 'bar',
+      ],
+    ]));
+    $getSequence = (new Sequence())
+      ->add($distributionData)
+      ->add($distributionDataWrapped);
+
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(ValidMetadataFactory::class, 'get', $getSequence);
+
+    \Drupal::setContainer($container->getMock());
+
+    $service = Service::create($container->getMock());
 
     // Distribution should be wrapped with [{"data":{},"identifier":""}].
-    $distribution = [
+    $distributionExpected = [
       'identifier' => '1',
-      'data' => 'blah'
+      'data' => [
+        'foo' => 'bar',
+      ],
     ];
-    $this->assertEquals(json_encode($distribution), $service->get("distribution", "1"));
+    $this->assertEquals(json_encode($distributionExpected), $service->get("distribution", "1")->__toString());
   }
 
   /**
@@ -371,6 +420,26 @@ EOF;
       $dataset,
     ];
     $this->assertEquals($catalog, $service->getCatalog());
+  }
+
+  public function testWrapMetadata() {
+    $container = self::getCommonMockChain($this)
+      ->add(ValidMetadataFactory::class, 'get', RootedJsonData::class, 'wrapped_metadata');
+    $service = Service::create($container->getMock());
+
+    $data = $this->validMetadataFactory->get('blah', json_encode(["foo" => "bar"]));
+    $service->wrapMetadata('1', $data);
+
+    $wrappedData = [
+      'identifier' => '1',
+      'data' => [
+        'foo' => 'bar',
+      ],
+    ];
+    $this->assertEquals(
+      json_encode($wrappedData),
+      $container->getStoredInput('wrapped_metadata')[1]
+    );
   }
 
   /**

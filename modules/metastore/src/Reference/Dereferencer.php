@@ -22,11 +22,23 @@ class Dereferencer {
   private $storageFactory;
 
   /**
+   * Metastore service.
+   *
+   * @var \Drupal\metastore\Service
+   */
+  private $service;
+
+  /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
+  public function __construct(
+    ConfigFactoryInterface $configService,
+    FactoryInterface $storageFactory,
+    Service $service
+  ) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
+    $this->service = $service;
   }
 
   /**
@@ -49,8 +61,8 @@ class Dereferencer {
       if (isset($data->{$propertyId})) {
         $referenceProperty = "%Ref:{$propertyId}";
         [$ref, $actual] = $this->dereferenceProperty($propertyId, $data->{$propertyId});
-        $data->{$referenceProperty} = $ref;
-        $data->{$propertyId} = $actual;
+        $data->{$referenceProperty} = json_decode($ref);
+        $data->{$propertyId} = json_decode($actual);
       }
     }
     return $data;
@@ -129,8 +141,8 @@ class Dereferencer {
     $value = $storage->retrieve($uuid);
 
     if ($value) {
-      $metadata = json_decode($value);
-      $wrapped_metadata = Service::wrapMetadata($uuid, $metadata);
+      $metadata = $this->service->getValidMetadataFactory()->get($property_id, $value);
+      $wrapped_metadata = $this->service->wrapMetadata($uuid, $metadata);
       return [$wrapped_metadata, $metadata];
     }
     // If a property node was not found, it most likely means it was deleted
