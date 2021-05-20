@@ -51,6 +51,7 @@ services:
       - '@logger.factory'
       - '@dkan.datastore.service'
       - '@dkan.datastore.service.resource_purger'
+      - '@dkan.common.job_store'
     tags:
       - { name: event_subscriber }
 

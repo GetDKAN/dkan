@@ -4,6 +4,7 @@ namespace Drupal\Tests\metastore\Unit\EventSubscriber;
 
 use Drupal\common\Resource;
 use Drupal\common\Events\Event;
+use Drupal\common\Storage\JobStore;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -29,22 +30,26 @@ class MetastoreSubscriberTest extends TestCase {
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
     $event = new Event($resource);
 
-    $logger = $this->getLoggerChain();
+    $options = (new Options())
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add("database", Connection::class)
+      ->index(0);
 
-    $metastoreService = (new Chain($this))
+    $chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
       ->add(Service::class, 'get', $dist)
-      ->getMock();
-
-    $resourceMapper = (new Chain($this))
       ->add(ResourceMapper::class, 'get', $resource)
-      ->add(ResourceMapper::class, 'remove')
-      ->getMock();
+      ->add(ResourceMapper::class, 'remove', new \Exception('error'))
+      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(JobStore::class, 'remove', new \Exception('error'))
+      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
+      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
+      ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
 
-    $subscriber = new MetastoreSubscriber(
-      $logger->getMock(),
-      $metastoreService,
-      $resourceMapper
-    );
+    $subscriber = MetastoreSubscriber::create($chain->getMock());
     $test = $subscriber->cleanResourceMapperTable($event);
     $this->assertEmpty($logger->getStoredInput('errors'));
   }
@@ -59,32 +64,46 @@ class MetastoreSubscriberTest extends TestCase {
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
     $event = new Event($resource);
 
-    $logger = $this->getLoggerChain();
+    // $logger = $this->getLoggerChain();
 
-    $metastoreService = (new Chain($this))
+    // $metastoreService = (new Chain($this))
+    //   ->add(Service::class, 'get', $dist)
+    //   ->getMock();
+
+    // $resourceMapper = (new Chain($this))
+    //   ->add(ResourceMapper::class, 'get', $resource)
+    //   ->add(ResourceMapper::class, 'remove', new \Exception('error'))
+    //   ->getMock();
+
+    // $subscriber = new MetastoreSubscriber(
+    //   $logger->getMock(),
+    //   $metastoreService,
+    //   $resourceMapper
+    // );
+
+    $options = (new Options())
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add("database", Connection::class)
+      ->index(0);
+
+    $chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
       ->add(Service::class, 'get', $dist)
-      ->getMock();
-
-    $resourceMapper = (new Chain($this))
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove', new \Exception('error'))
-      ->getMock();
-
-    $subscriber = new MetastoreSubscriber(
-      $logger->getMock(),
-      $metastoreService,
-      $resourceMapper
-    );
-    $test = $subscriber->cleanResourceMapperTable($event);
-    $this->assertContains('Failed to remove', $logger->getStoredInput('errors')[0]);
-
-  }
-
-  private function getLoggerChain() {
-    return (new Chain($this))
+      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
+      ->add(JobStore::class, 'remove', new \Exception('error'))
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, "errors")
+      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
       ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
+
+    $subscriber = MetastoreSubscriber::create($chain->getMock());
+    $test = $subscriber->cleanResourceMapperTable($event);
+    $this->assertContains('Failed to remove', $chain->getStoredInput('errors')[0]);
+
   }
 
 }
