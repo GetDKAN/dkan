@@ -102,7 +102,6 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'drop')
       ->add(DatabaseTable::class, 'drop')
-      ->add(DatabaseTable::class, 'hydrate')
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'remove')
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
@@ -114,8 +113,7 @@ class DatastoreSubscriberTest extends TestCase {
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $test = $subscriber->drop($event);
     $this->assertContains('Dropping datastore', $chain->getStoredInput('notices')[0]);
-    //$this->assertEmpty($chain->getStoredInput('errors'));
-    $this->assertContains('Failed to drop', $chain->getStoredInput('errors')[0]);
+    $this->assertEmpty($chain->getStoredInput('errors'));
   }
 
   /**
@@ -191,6 +189,7 @@ class DatastoreSubscriberTest extends TestCase {
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.datastore.service', Service::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
+      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->index(0);
 
     return (new Chain($this))

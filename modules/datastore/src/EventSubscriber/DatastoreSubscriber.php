@@ -11,6 +11,7 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\LifeCycle\LifeCycle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Dkan\Datastore\Importer;
+use Drupal\common\Storage\JobStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -34,7 +35,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     return new static(
       $container->get('logger.factory'),
       $container->get('dkan.datastore.service'),
-      $container->get('dkan.datastore.service.resource_purger')
+      $container->get('dkan.datastore.service.resource_purger'),
+      $container->get('dkan.common.job_store')
     );
   }
 
@@ -47,11 +49,13 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    *   The dkan.datastore.service service.
    * @param \Drupal\datastore\Service\ResourcePurger $resourcePurger
    *   The dkan.datastore.service.resource_purger service.
+   * @param \Drupal\common\Storage\JobStoreFactory
    */
-  public function __construct(LoggerChannelFactory $logger_factory, Service $service, ResourcePurger $resourcePurger) {
+  public function __construct(LoggerChannelFactory $logger_factory, Service $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
     $this->loggerFactory = $logger_factory;
     $this->service = $service;
     $this->resourcePurger = $resourcePurger;
+    $this->jobStoreFactory = $jobStoreFactory;
   }
 
   /**
@@ -132,7 +136,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       ]);
     }
     try {
-      \Drupal::service('dkan.common.job_store')->getInstance(Importer::class)->remove($id);
+      $this->jobStoreFactory->getInstance(Importer::class)->remove($id);
     }
     catch (\Exception $e) {
       $this->loggerFactory->get('datastore')->error('Failed to remove importer job. @message',
