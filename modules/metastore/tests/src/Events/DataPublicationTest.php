@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\metastore\Unit\Events;
 
-use Drupal\common\Events\Event;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
