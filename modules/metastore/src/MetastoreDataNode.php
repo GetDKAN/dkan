@@ -1,17 +1,16 @@
 <?php
 
-namespace Drupal\metastore\NodeWrapper;
+namespace Drupal\metastore;
 
 use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\metastore\MetastoreItemInterface;
 use Drupal\node\Entity\Node;
 
 /**
  * MetastoreItem object that wraps a data node, provides additional methods.
  */
-class Data implements MetastoreItemInterface {
+class MetastoreDataNode implements MetastoreItemInterface {
   use LoggerTrait;
 
   /**
@@ -64,7 +63,7 @@ class Data implements MetastoreItemInterface {
   /**
    * Protected.
    */
-  public function getDataType() {
+  public function getSchemaId() {
     $this->fix();
     return $this->node->get('field_data_type')->value;
   }
@@ -72,7 +71,7 @@ class Data implements MetastoreItemInterface {
   /**
    * Protected.
    */
-  public function getMetaData() {
+  public function getMetadata() {
     $this->fix();
     return json_decode($this->node->get('field_json_metadata')->getString());
   }
@@ -128,15 +127,6 @@ class Data implements MetastoreItemInterface {
     if (empty($this->node->get('field_data_type')->getString())) {
       $this->node->set('field_data_type', 'dataset');
     }
-  }
-
-  /**
-   * Protected.
-   */
-  public function getSchemaId() {
-    $this->fix();
-    $schemaId = $this->node->get('field_data_type')->getString();
-    return $schemaId;
   }
 
 }

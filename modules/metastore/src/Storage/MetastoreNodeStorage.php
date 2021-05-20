@@ -7,16 +7,18 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Node Data.
  */
-class NodeData extends Data implements MetastoreEntityStorageInterface {
+class MetastoreNodeStorage extends AbstractEntityStorage {
 
   /**
-   * NodeData constructor.
+   * Constructor.
    */
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
+    // Set up bundle default value.
     $this->entityType = 'node';
     $this->bundle = 'data';
-    $this->bundleKey = "type";
-    $this->labelKey = "title";
+    $this->metadataField = 'field_json_metadata';
+    $this->schemaField = 'field_data_type';
+
     parent::__construct($schemaId, $entityTypeManager);
   }
 
@@ -38,7 +40,7 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
    * {@inheritdoc}
    */
   public static function getMetadataField() {
-    return 'field_json_metadata';
+    return 'field_json_data';
   }
 
   /**

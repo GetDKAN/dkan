@@ -2,6 +2,8 @@
 
 namespace Drupal\json_form_widget\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -9,6 +11,7 @@ use Drupal\json_form_widget\FormBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\json_form_widget\ValueHandler;
+use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 
 /**
  * Plugin implementation of the 'json_form_widget'.
@@ -58,7 +61,15 @@ class JsonFormWidget extends WidgetBase {
    * @param \Drupal\json_form_widget\ValueHandler $value_handler
    *   The JsonFormValueHandler service.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, FormBuilder $builder, ValueHandler $value_handler) {
+  public function __construct(
+    $plugin_id,
+    $plugin_definition,
+    FieldDefinitionInterface $field_definition,
+    array $settings,
+    array $third_party_settings,
+    FormBuilder $builder,
+    ValueHandler $value_handler
+  ) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->builder = $builder;
     $this->valueHandler = $value_handler;
@@ -123,7 +134,8 @@ class JsonFormWidget extends WidgetBase {
     foreach ($items as $item) {
       $default_data = json_decode($item->value);
     }
-    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
+
+    $type = $this->getSchemaIdFromEntity($form_state->getFormObject()->getEntity());
     $type = isset($type) ? $type : $this->getSetting('schema');
     $this->builder->setSchema($this->getSetting('schema'), $type);
     $this->schema = $this->builder->getSchema();
@@ -135,12 +147,31 @@ class JsonFormWidget extends WidgetBase {
   }
 
   /**
+   * Hack solution to get schema ID while we develop a better abstraction.
+   *
+   * @param Drupal\Core\Entity\ContentEntityInterface $entity
+   *   A metastore item entity from one of the two supported storage systems.
+   * 
+   * @return string
+   *   The Schema ID.
+   */
+  private function getSchemaIdFromEntity(ContentEntityInterface $entity) {
+    switch ($entity->getEntityTypeId()) {
+      case 'node':
+        return $entity->get('field_data_type')->value;
+
+      case 'metastore_item':
+        return $entity->getSchemaId();
+    }
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
     $field_name = $form_state->get('json_form_widget_field');
     // TODO: there is duplicated code here.
-    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
+    $type = $this->getSchemaIdFromEntity($form_state->getFormObject()->getEntity());
     $type = isset($type) ? $type : $this->getSetting('schema');
     $this->builder->setSchema($this->getSetting('schema'), $type);
     $schema = $this->builder->getSchema();

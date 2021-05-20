@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore;
 
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreStorageFactoryInterface;
 use Drush\Commands\DrushCommands;
 
 /**
@@ -13,17 +13,17 @@ class Drush extends DrushCommands {
   /**
    * Metastore data storage service.
    *
-   * @var \Drupal\metastore\Storage\DataFactory
+   * @var \Drupal\metastore\Storage\MetastoreStorageFactoryInterface
    */
   protected $factory;
 
   /**
    * Drush constructor.
    *
-   * @param \Drupal\metastore\Storage\DataFactory $factory
+   * @param \Drupal\metastore\Storage\MetastoreStorageFactoryInterface $factory
    *   A data factory.
    */
-  public function __construct(DataFactory $factory) {
+  public function __construct(MetastoreStorageFactoryInterface $factory) {
     parent::__construct();
     $this->factory = $factory;
   }

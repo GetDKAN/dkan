@@ -15,14 +15,14 @@ services:
       - '@dkan.metastore.resource_mapper'
       - '@date.formatter'
   dkan.metastore.schema_retriever:
-    class: \Drupal\metastore\SchemaRetriever
+    class: \Drupal\metastore\FileSchemaRetriever
     arguments:
       - '@app.root'
       - '@extension.list.module'
     shared: false
 
   dkan.metastore.storage:
-    class: \Drupal\metastore\Storage\DataFactory
+    class: \Drupal\metastore\Storage\MetastoreNodeStorageFactory
     arguments:
       - '@entity_type.manager'
 
@@ -65,6 +65,6 @@ services:
       - '@dkan.metastore.schema_retriever'
   
   dkan.metastore.metastore_item_factory:
-    class: \Drupal\metastore\NodeWrapper\NodeDataFactory
+    class: \Drupal\metastore\Storage\MetastoreNodeStorageFactory
     arguments:
       - '@entity.repository'

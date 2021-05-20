@@ -15,9 +15,8 @@ use Drupal\json_form_widget\FieldTypeRouter;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use MockChain\Options;
-use stdClass;
 
 /**
  * Test class for JsonFormWidget.
@@ -29,7 +28,7 @@ class JsonFormBuilderTest extends TestCase {
    */
   public function testNoSchema() {
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('json_form.object_helper', ObjectHelper::class)
       ->add('json_form.array_helper', ArrayHelper::class)
@@ -40,7 +39,7 @@ class JsonFormBuilderTest extends TestCase {
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', '')
+      ->add(FileSchemaRetriever::class, 'retrieve', '')
       ->add(SchemaUiHandler::class, 'setSchemaUi');
 
     $container = $container_chain->getMock();
@@ -60,7 +59,7 @@ class JsonFormBuilderTest extends TestCase {
     $router = $this->getRouter();
 
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('json_form.router', $router)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
       ->add('logger.factory', LoggerChannelFactory::class)
@@ -69,7 +68,7 @@ class JsonFormBuilderTest extends TestCase {
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', '
+      ->add(FileSchemaRetriever::class, 'retrieve', '
       {
         "required": [
           "accessLevel"
@@ -159,14 +158,15 @@ class JsonFormBuilderTest extends TestCase {
         ],
       ],
     ];
-    $default_data = new stdClass();
+    $default_data = new \stdClass();
     $default_data->test = "Some value.";
-    $this->assertEquals($form_builder->getJsonForm($default_data), $expected);
+    $jsonForm = $form_builder->getJsonForm($default_data);
+    $this->assertEquals($jsonForm, $expected);
 
     // Test email.
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', '
+      ->add(FileSchemaRetriever::class, 'retrieve', '
       {
         "properties":{
           "hasEmail": {
@@ -190,7 +190,7 @@ class JsonFormBuilderTest extends TestCase {
     $this->assertArrayHasKey("#element_validate", $result["hasEmail"]);
 
     // Test object.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"properties":{"publisher": {
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"properties":{"publisher": {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
       "title": "Organization",
@@ -246,7 +246,7 @@ class JsonFormBuilderTest extends TestCase {
     $this->assertEquals($form_builder->getJsonForm([]), $expected);
 
     // Test array.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '
     {
       "properties":{
         "keyword": {
@@ -288,7 +288,7 @@ class JsonFormBuilderTest extends TestCase {
     $this->assertEquals($result, $expected);
 
     // Test array required.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '
     {
       "required": [
         "keyword"

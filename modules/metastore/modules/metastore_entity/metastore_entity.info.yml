@@ -1,0 +1,7 @@
+name: 'Metastore Entity'
+type: module
+description: 'Custom entity for metastore storage'
+core_version_requirement: ^8 || ^9
+package: 'DKAN'
+dependencies:
+  - ace_editor

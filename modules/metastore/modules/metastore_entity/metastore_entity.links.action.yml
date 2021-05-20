@@ -1,0 +1,10 @@
+entity.metastore_item.add_form:
+  route_name: entity.metastore_item.add_page
+  title: 'Add metastore item'
+  appears_on:
+    - entity.metastore_item.collection
+entity.metastore_schema.add_form:
+  route_name: entity.metastore_schema.add_form
+  title: 'Add schema'
+  appears_on:
+    - entity.metastore_schema.collection

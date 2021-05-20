@@ -1,0 +1,12 @@
+metastore_entity.metastore_schema.*:
+  type: config_entity
+  label: 'Metastore schema config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    uuid:
+      type: string

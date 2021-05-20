@@ -1,0 +1,25 @@
+services:
+  dkan.metastore.schema_retriever:
+    class: \Drupal\metastore_entity\MetastoreEntitySchemaRetriever
+    arguments:
+      - '@entity_type.bundle.info'
+      - '@entity_type.manager'
+    shared: false
+
+  metastore.schema_retriever:
+    class: \Drupal\metastore_entity\MetastoreEntitySchemaRetriever
+    arguments:
+      - '@entity_type.bundle.info'
+      - '@entity_type.manager'
+    shared: false
+
+
+  dkan.metastore.storage:
+    class: \Drupal\metastore_entity\Storage\MetastoreEntityStorageFactory
+    arguments:
+      - '@entity_type.manager'
+
+  metastore.storage:
+    class: \Drupal\metastore_entity\Storage\MetastoreEntityStorageFactory
+    arguments:
+      - '@entity_type.manager'

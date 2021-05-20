@@ -1,0 +1,16 @@
+# Metastore item menu items definition
+entity.metastore_item.collection:
+  title: 'Metastore content'
+  route_name: entity.metastore_item.collection
+  description: 'List Metastore items'
+  parent: system.admin_dkan
+  weight: 100
+
+
+# Metastore schema menu items definition
+entity.metastore_schema.collection:
+  title: 'Metastore schemas'
+  route_name: entity.metastore_schema.collection
+  description: 'List Metastore schemas'
+  parent: system.admin_dkan
+  weight: 99

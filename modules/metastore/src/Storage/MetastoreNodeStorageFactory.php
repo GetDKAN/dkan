@@ -2,24 +2,19 @@
 
 namespace Drupal\metastore\Storage;
 
-use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 
 /**
  * Data factory.
  */
-class DataFactory implements FactoryInterface {
+class MetastoreNodeStorageFactory implements MetastoreStorageFactoryInterface {
 
   /**
-   * Array of storage engines.
-   *
    * @var array
    */
   private $stores = [];
 
   /**
-   * Entity type manager service.
-   *
    * @var \Drupal\Core\Entity\EntityTypeManager
    */
   private $entityTypeManager;
@@ -36,7 +31,7 @@ class DataFactory implements FactoryInterface {
    *
    * @inheritdoc
    */
-  public function getInstance(string $identifier, array $config = []) {
+  public function getInstance(string $identifier, array $config = []):MetastoreStorageInterface {
     if (!isset($this->stores[$identifier])) {
       $entity_type = $this->getEntityTypeBySchema($identifier);
 
@@ -62,7 +57,7 @@ class DataFactory implements FactoryInterface {
    *   Entity type
    */
   private function getEntityTypeBySchema(string $schema_id) : string {
-    // @todo Should be configurable. Different from site to site.
+    // TODO: should be configurable. Different from site to site.
     $mapping = [
       'dataset' => 'node',
     ];
@@ -75,11 +70,11 @@ class DataFactory implements FactoryInterface {
    * @param string $identifier
    *   Schema id.
    *
-   * @return \Drupal\metastore\Storage\NodeData
+   * @return \Drupal\metastore\Storage\MetastoreNodeStorage
    *   Storage object.
    */
   protected function createNodeInstance(string $identifier) {
-    return new NodeData($identifier, $this->entityTypeManager);
+    return new MetastoreNodeStorage($identifier, $this->entityTypeManager);
   }
 
   /**
@@ -89,7 +84,6 @@ class DataFactory implements FactoryInterface {
    *   Qualified storage class name.
    */
   public static function getStorageClass() {
-    return NodeData::class;
+    return MetastoreNodeStorage::class;
   }
-
 }

@@ -1,0 +1,18 @@
+uuid: 4dda1f56-c430-4bfc-b414-8eb5287861bb
+langcode: en
+status: true
+dependencies: {  }
+id: keyword
+label: Keyword
+behaviors:
+  1: 0
+  2: 0
+json_schema:
+  value: "{\r\n    \"type\": \"string\",\r\n    \"title\": \"Tag\",\r\n    \"description\": \"Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.\",\r\n    \"minLength\": 1\r\n}"
+  format: json
+ui_schema:
+  value: '{}'
+  format: json
+description: null
+help: null
+display_submitted: null

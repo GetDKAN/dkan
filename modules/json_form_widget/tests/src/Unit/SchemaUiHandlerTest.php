@@ -15,7 +15,7 @@ use Drupal\Core\Language\LanguageDefault;
 use Drupal\Core\Language\LanguageManager;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\json_form_widget\WidgetRouter;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use Drupal\metastore\Service;
 use MockChain\Options;
 
@@ -43,7 +43,7 @@ class SchemaUiHandlerTest extends TestCase {
     $widget_router = $this->getRouter([]);
     $language_manager = new LanguageManager(new LanguageDefault(['en']));
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('uuid', Php::class)
@@ -53,7 +53,7 @@ class SchemaUiHandlerTest extends TestCase {
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', '{"@test":{"ui:options":{"widget":"hidden"}},"textarea_text":{"ui:options":{"widget":"textarea","rows":4,"cols":45,"title":"Textarea field","description":"Test description"}},"date":{"ui:options":{"widget":"date","placeholder":"YYYY-MM-DD"}},"disabled":{"ui:options":{"disabled":true}}}')
+      ->add(FileSchemaRetriever::class, 'retrieve', '{"@test":{"ui:options":{"widget":"hidden"}},"textarea_text":{"ui:options":{"widget":"textarea","rows":4,"cols":45,"title":"Textarea field","description":"Test description"}},"date":{"ui:options":{"widget":"date","placeholder":"YYYY-MM-DD"}},"disabled":{"ui:options":{"disabled":true}}}')
       ->add(SchemaUiHandler::class, 'setSchemaUi');
 
     $container = $container_chain->getMock();
@@ -126,7 +126,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test flexible datetime without default value.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"modified":{"ui:options":{"widget":"flexible_datetime","timeRequired": true}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"modified":{"ui:options":{"widget":"flexible_datetime","timeRequired": true}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -151,7 +151,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test flexible datetime with date format 2020-05-11T15:06:39.000Z.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"modified":{"ui:options":{"widget":"flexible_datetime","timeRequired": false}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"modified":{"ui:options":{"widget":"flexible_datetime","timeRequired": false}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -189,7 +189,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test date_range.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"temporal":{"ui:options":{"widget":"date_range"}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"temporal":{"ui:options":{"widget":"date_range"}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -219,7 +219,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test dkan_uuid field with already existing value.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -247,7 +247,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test dkan_uuid field, adding new value.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"identifier":{"ui:options":{"widget":"dkan_uuid"}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -266,7 +266,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertNotEmpty($form['identifier']['#default_value']);
 
     // Test array field.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"references":{"ui:options":{"title":"Related documents","description":"Improved description"},"items":{"ui:options":{"title":"References","placeholder":"http://"}}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"references":{"ui:options":{"title":"Related documents","description":"Improved description"},"items":{"ui:options":{"title":"References","placeholder":"http://"}}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -327,7 +327,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test object field.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"publisher":{"properties":{"@type":{"ui:options":{"widget":"hidden"}},"name":{"ui:options":{"description":"Better description"}}}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"publisher":{"properties":{"@type":{"ui:options":{"widget":"hidden"}},"name":{"ui:options":{"description":"Better description"}}}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -383,7 +383,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test array field with object.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"distribution":{"items":{"@type":{"ui:options":{"widget":"hidden"}}}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"distribution":{"items":{"@type":{"ui:options":{"widget":"hidden"}}}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -493,7 +493,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($ui_handler->applySchemaUi($form), $expected);
 
     // Test upload_or_link widget.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"downloadURL":{"ui:options":{"widget":"upload_or_link", "extensions": "jpg pdf png csv"}}}');
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"downloadURL":{"ui:options":{"widget":"upload_or_link", "extensions": "jpg pdf png csv"}}}');
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
     $ui_handler = SchemaUiHandler::create($container);
@@ -525,7 +525,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($form, $expected);
 
     // Test list with select widget.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"format": {
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"format": {
         "ui:options": {
           "widget": "list",
           "type": "select",
@@ -565,7 +565,7 @@ class SchemaUiHandlerTest extends TestCase {
     $this->assertEquals($form, $expected);
 
     // Test list with select other widget.
-    $container_chain->add(SchemaRetriever::class, 'retrieve', '{"format": {
+    $container_chain->add(FileSchemaRetriever::class, 'retrieve', '{"format": {
         "ui:options": {
           "widget": "list",
           "type": "select_other",
@@ -615,7 +615,7 @@ class SchemaUiHandlerTest extends TestCase {
     // Test options with autocomplete widget, titleProperty and options from metastore.
     $widget_router = $this->getRouter($this->getComplexMetastoreResults());
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('uuid', Php::class)
@@ -624,7 +624,7 @@ class SchemaUiHandlerTest extends TestCase {
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve',
+      ->add(FileSchemaRetriever::class, 'retrieve',
       '{"publisher": {
         "ui:options": {
           "widget": "list",
@@ -690,7 +690,7 @@ class SchemaUiHandlerTest extends TestCase {
     // Test options with autocomplete widget and options from metastore.
     $widget_router = $this->getRouter($this->getSimpleMetastoreResults());
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('uuid', Php::class)
@@ -699,7 +699,7 @@ class SchemaUiHandlerTest extends TestCase {
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', '{"publisher": {
+      ->add(FileSchemaRetriever::class, 'retrieve', '{"publisher": {
         "ui:options": {
           "widget": "list",
           "type": "autocomplete",
@@ -751,7 +751,7 @@ class SchemaUiHandlerTest extends TestCase {
     // Test options with autocomplete widget and options from metastore.
     $widget_router = $this->getRouter($this->getSimpleMetastoreResults());
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('uuid', Php::class)
@@ -760,7 +760,7 @@ class SchemaUiHandlerTest extends TestCase {
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(SchemaRetriever::class, 'retrieve', '{"theme": {
+      ->add(FileSchemaRetriever::class, 'retrieve', '{"theme": {
         "ui:options": {
           "hideActions": "true",
           "child": "theme"

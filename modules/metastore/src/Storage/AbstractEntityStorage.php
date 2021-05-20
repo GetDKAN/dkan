@@ -2,13 +2,15 @@
 
 namespace Drupal\metastore\Storage;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EditorialContentEntityBase;
 use Drupal\Core\Entity\EntityTypeManager;
 
 /**
  * Data.
  */
-abstract class Data implements MetastoreStorageInterface {
+abstract class AbstractEntityStorage implements MetastoreEntityStorageInterface {
+
+  const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
 
   /**
    * Entity type manager.
@@ -27,7 +29,7 @@ abstract class Data implements MetastoreStorageInterface {
   /**
    * Entity storage service.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface|mixed|object
+   * @var \Drupal\Core\Entity\ContentEntityStorageInterface
    */
   protected $entityStorage;
 
@@ -46,6 +48,13 @@ abstract class Data implements MetastoreStorageInterface {
   protected $bundleKey;
 
   /**
+   * Entity field used to store the schema.
+   *
+   * @var string
+   */
+  protected $schemaField;
+
+  /**
    * Entity type.
    *
    * @var string
@@ -60,12 +69,22 @@ abstract class Data implements MetastoreStorageInterface {
   protected $bundle;
 
   /**
+   * Field/property where metadata is stored.
+   *
+   * @var string
+   */
+  protected $metadataField;
+
+  /**
    * Constructor.
    */
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->setSchema($schemaId);
+
+    $this->bundleKey = $this->entityStorage->getEntityType()->getKey('bundle');
+    $this->labelKey = $this->entityStorage->getEntityType()->getKey('label');
   }
 
   /**
@@ -93,16 +112,14 @@ abstract class Data implements MetastoreStorageInterface {
   public function retrieveAll(): array {
 
     $entity_ids = $this->entityStorage->getQuery()
-      ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
+      ->condition($this->bundleKey, $this->bundle)
+      ->condition($this->schemaField, $this->schemaId)
       ->execute();
 
     $all = [];
-    foreach ($entity_ids as $nid) {
-      $entity = $this->entityStorage->load($nid);
-      if ($entity->get('moderation_state')->getString() === 'published') {
-        $all[] = $entity->get('field_json_metadata')->getString();
-      }
+    foreach ($entity_ids as $entity_id) {
+      $entity = $this->getEntityPublishedRevision($entity_id);
+      $all[] = $entity->get($this->metadataField)->getString();
     }
     return $all;
   }
@@ -116,7 +133,7 @@ abstract class Data implements MetastoreStorageInterface {
     $entity = $this->getEntityPublishedRevision($uuid);
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
-      return $entity->get('field_json_metadata')->getString();
+      return $entity->get($this->metadataField)->getString();
     }
 
     throw new \Exception("No data with that identifier was found.");
@@ -137,7 +154,7 @@ abstract class Data implements MetastoreStorageInterface {
     }
 
     if ($entity) {
-      return $entity->get('field_json_metadata')->getString();
+      return $entity->get($this->metadataField)->getString();
     }
 
     throw new \Exception("No data with that identifier was found.");
@@ -166,18 +183,12 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Load a Data entity's published revision.
-   *
-   * @param string $uuid
-   *   The dataset identifier.
-   *
-   * @return \Drupal\Core\Entity\ContentEntityInterface|null
-   *   The entity's published revision, if found.
+   * {@inheritdoc}
    */
   public function getEntityPublishedRevision(string $uuid) {
 
     $entity_id = $this->getEntityIdFromUuid($uuid);
-    // TODO: extract an actual published revision.
+    // @todo extract an actual published revision.
     return $entity_id ? $this->entityStorage->load($entity_id) : NULL;
   }
 
@@ -187,7 +198,7 @@ abstract class Data implements MetastoreStorageInterface {
    * @param string $uuid
    *   The dataset identifier.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity's latest revision, if found.
    */
   public function getEntityLatestRevision(string $uuid) {
@@ -203,29 +214,21 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Get the entity id from the dataset identifier.
-   *
-   * @param string $uuid
-   *   The dataset identifier.
-   *
-   * @return int|null
-   *   The entity id, if found.
+   * {@inheritdoc}
    */
   public function getEntityIdFromUuid(string $uuid) : ?int {
 
     $entity_ids = $this->entityStorage->getQuery()
       ->condition('uuid', $uuid)
       ->condition($this->bundleKey, $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
+      ->condition($this->schemaField, $this->schemaId)
       ->execute();
 
     return $entity_ids ? (int) reset($entity_ids) : NULL;
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function remove(string $uuid) {
 
@@ -236,9 +239,7 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function store($data, string $uuid = NULL): string {
     $data = json_decode($data);
@@ -251,7 +252,7 @@ abstract class Data implements MetastoreStorageInterface {
       $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if (isset($entity) && $entity instanceof EntityInterface) {
+    if (isset($entity) && $entity instanceof EditorialContentEntityBase) {
       return $this->updateExistingEntity($entity, $data);
     }
     // Create new entity.
@@ -263,10 +264,10 @@ abstract class Data implements MetastoreStorageInterface {
   /**
    * Private.
    */
-  private function updateExistingEntity(EntityInterface $entity, $data) {
-    $entity->field_data_type = $this->schemaId;
+  private function updateExistingEntity(EditorialContentEntityBase $entity, $data) {
+    $entity->{$this->schemaField} = $this->schemaId;
     $new_data = json_encode($data);
-    $entity->field_json_metadata = $new_data;
+    $entity->{$this->metadataField} = $new_data;
 
     // Dkan publishing's default moderation state.
     $entity->set('moderation_state', $this->getDefaultModerationState());
@@ -281,7 +282,7 @@ abstract class Data implements MetastoreStorageInterface {
   /**
    * Private.
    */
-  private function createNewEntity($uuid, $data) {
+  protected function createNewEntity($uuid, $data) {
     $title = '';
     if ($this->schemaId === 'dataset') {
       $title = isset($data->title) ? $data->title : $data->name;
@@ -289,21 +290,32 @@ abstract class Data implements MetastoreStorageInterface {
     else {
       $title = md5(json_encode($data->data));
     }
-    $entity = $this->entityStorage
-      ->create(
-        [
-          $this->labelKey => $title,
-          $this->bundleKey => $this->bundle,
-          'uuid' => $uuid,
-          'field_data_type' => $this->schemaId,
-          'field_json_metadata' => json_encode($data),
-        ]
-      );
+    $entity = $this->entityStorageCreate([
+      $this->labelKey => $title,
+      $this->bundleKey => $this->bundle,
+      'uuid' => $uuid,
+      $this->schemaField => $this->schemaId,
+      $this->metadataField => json_encode($data),
+    ]);
     $entity->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
 
     $entity->save();
 
     return $entity->uuid();
+  }
+
+  /**
+   * Create a storage, implement EditorialContentEntityBase.
+   *
+   * @param array $values
+   *   Values array to use to build entity.
+   *
+   * @return \Drupal\Core\Entity\EditorialContentEntityBase
+   *   New content entity.
+   */
+  protected function entityStorageCreate(array $values) {
+    $entity = $this->entityStorage->create($values);
+    return $entity;
   }
 
   /**
@@ -315,8 +327,7 @@ abstract class Data implements MetastoreStorageInterface {
    * @return mixed
    *   Filtered output.
    */
-  private function filterHtml($input) {
-    // TODO: find out if we still need it.
+  protected function filterHtml($input) {
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);
@@ -347,7 +358,7 @@ abstract class Data implements MetastoreStorageInterface {
    *
    * @codeCoverageIgnore
    */
-  private function htmlPurifier(string $input) {
+  protected function htmlPurifier(string $input) {
     $filter = new \HTMLPurifier();
     return $filter->purify($input);
   }
@@ -358,16 +369,13 @@ abstract class Data implements MetastoreStorageInterface {
    * @return string
    *   Current timestamp, formatted.
    */
-  private function formattedTimestamp() : string {
+  protected function formattedTimestamp() : string {
     $now = new \DateTime('now');
     return $now->format(\DateTime::ATOM);
   }
 
   /**
-   * Return the default moderation state of our custom dkan_publishing workflow.
-   *
-   * @return string
-   *   Either 'draft', 'published' or 'orphaned'.
+   * {@inheritdoc}
    */
   public function getDefaultModerationState() {
     return $this->entityTypeManager->getStorage('workflow')

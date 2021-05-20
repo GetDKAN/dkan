@@ -4,7 +4,7 @@ namespace Drupal\Tests\schema;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Extension\ModuleExtensionList;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -109,7 +109,7 @@ class SchemaRetrieverTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(ModuleExtensionList::class, 'getPathname', "tmp");
 
-    return SchemaRetriever::create($chain->getMock());
+    return FileSchemaRetriever::create($chain->getMock());
   }
 
 }

@@ -1,0 +1,18 @@
+uuid: dbca5df6-19a9-43ca-9b9f-9e8e9a6d979a
+langcode: en
+status: true
+dependencies: {  }
+id: theme
+label: Theme
+behaviors:
+  1: 0
+  2: 0
+json_schema:
+  value: "{\r\n    \"title\": \"Category\",\r\n    \"description\": \"Main thematic category of the dataset.\",\r\n    \"type\": \"string\",\r\n    \"minLength\": 1\r\n}"
+  format: json
+ui_schema:
+  value: '{}'
+  format: json
+description: null
+help: null
+display_submitted: null

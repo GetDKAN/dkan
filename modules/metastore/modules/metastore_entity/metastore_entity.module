@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Contains metastore_entity.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function metastore_entity_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the metastore_entity module.
+    case 'help.page.metastore_entity':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom entity for metastore storage') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function metastore_entity_theme() {
+  $theme = [];
+  $theme['metastore_item'] = [
+    'render element' => 'elements',
+    'file' => 'metastore_item.page.inc',
+    'template' => 'metastore_item',
+  ];
+  $theme['metastore_item_content_add_list'] = [
+    'render element' => 'content',
+    'variables' => ['content' => NULL],
+    'file' => 'metastore_item.page.inc',
+  ];
+  return $theme;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function metastore_entity_theme_suggestions_metastore_item(array $variables) {
+  $suggestions = [];
+  $entity = $variables['elements']['#metastore_item'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions[] = 'metastore_item__' . $sanitized_view_mode;
+  $suggestions[] = 'metastore_item__' . $entity->bundle();
+  $suggestions[] = 'metastore_item__' . $entity->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'metastore_item__' . $entity->id();
+  $suggestions[] = 'metastore_item__' . $entity->id() . '__' . $sanitized_view_mode;
+  return $suggestions;
+}

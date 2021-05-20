@@ -5,11 +5,11 @@ namespace Drupal\Tests\metastore;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
+use Drupal\metastore\Storage\AbstractEntityStorage;
 use Drupal\metastore\ValidMetadataFactory;
-use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Service;
-use Drupal\metastore\WebServiceApi;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\WebServiceApi;
 use Drupal\Tests\metastore\Unit\ServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
@@ -341,8 +341,8 @@ EOF;
    */
   public function testPatchBadPayload() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Data::class, 'retrieve', "{ }");
-    $mockChain->add(Data::class, 'store', new \Exception("Could not store"));
+    $mockChain->add(AbstractEntityStorage::class, 'retrieve', "{ }");
+    $mockChain->add(AbstractEntityStorage::class, 'store', new \Exception("Could not store"));
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $mockChain->add(Request::class, 'getContent', "{");
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");

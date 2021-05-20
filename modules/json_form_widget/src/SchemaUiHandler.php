@@ -3,9 +3,9 @@
 namespace Drupal\json_form_widget;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\metastore\SchemaRetrieverInterface;
 
 /**
  * Class SchemaUiHandler.
@@ -63,7 +63,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @param WidgetRouter $widget_router
    *   WidgetRouter service.
    */
-  public function __construct(SchemaRetriever $schema_retriever, LoggerChannelFactory $logger_factory, WidgetRouter $widget_router) {
+  public function __construct(SchemaRetrieverInterface $schema_retriever, LoggerChannelFactory $logger_factory, WidgetRouter $widget_router) {
     $this->schemaRetriever = $schema_retriever;
     $this->schemaUi = FALSE;
     $this->loggerFactory = $logger_factory;

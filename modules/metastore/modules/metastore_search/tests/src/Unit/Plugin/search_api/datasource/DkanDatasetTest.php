@@ -6,8 +6,8 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
-use Drupal\metastore\Storage\Data;
-use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\AbstractEntityStorage;
+use Drupal\metastore\Storage\MetastoreNodeStorageFactory;
 use Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
@@ -15,6 +15,7 @@ use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeRepository;
+use Drupal\metastore\Storage\MetastoreNodeStorage;
 use Drupal\metastore_search\ComplexData\Dataset;
 
 /**
@@ -32,7 +33,7 @@ class DkanDatasetTest extends TestCase {
     $containerOptions = (new Options())
       ->add('entity_type.manager', EntityTypeManager::class)
       ->add('entity_type.repository', EntityTypeRepository::class)
-      ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('dkan.metastore.storage', MetastoreNodeStorageFactory::class)
       ->index(0);
 
     $nids = [1, 2];
@@ -48,8 +49,9 @@ class DkanDatasetTest extends TestCase {
       ->add(QueryInterface::class, 'execute', $executeSequence)
       ->add(QueryInterface::class, 'range', QueryInterface::class)
       ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
-      ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'retrievePublished', '{}')
+      ->add(MetastoreNodeStorageFactory::class, 'getInstance', MetastoreNodeStorage::class)
+      ->add(MetastoreNodeStorage::class, 'retrieve', '{}')
+      ->add(MetastoreNodeStorage::class, 'retrievePublished', '{}')
       ->getMock();
 
     \Drupal::setContainer($container);

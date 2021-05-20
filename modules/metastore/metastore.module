@@ -16,7 +16,7 @@ use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
  * Implements hook_entity_load().
  */
 function metastore_entity_load(array $entities) {
-  foreach($entities as $entity) {
+  foreach ($entities as $entity) {
     metastore_data_lifecycle($entity, "load");
   }
 }
@@ -70,7 +70,7 @@ function resource_mapper_new_revision() {
 /**
  * Create a LifeCycle object.
  *
- * @param Drupal\Core\Entity\ContentEntityInterface $entity
+ * @param Drupal\Core\Entity\EntityInterface $entity
  *
  * @return Drupal\metastore\LifeCycle\Data
  *   LifeCycle object.
@@ -89,7 +89,7 @@ function metastore_data_lifecycle(EntityInterface $entity, string $stage) {
 /**
  * Check if the entity is part of the metastore.
  *
- * @param Drupal\Core\Entity\ContentEntityInterface $entity
+ * @param Drupal\Core\Entity\EntityInterface $entity
  *   A Drupal content entity.
  * 
  * @return bool
@@ -99,7 +99,7 @@ function metastore_entity_is_valid_item(EntityInterface $entity) {
   $storageClass = metastore_storage_class();
 
   // If the storage class used implements the entity storage interface, continue.
-  if (!is_a($storageClass, MetastoreEntityStorageInterface::class, true)) {
+  if (!is_a($storageClass, MetastoreEntityStorageInterface::class, TRUE)) {
     return FALSE;
   }
 
@@ -135,13 +135,13 @@ function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) 
     }
     // TODO: use an actual schema id.
     $object = \Drupal::service('dkan.metastore.valid_metadata')->get(NULL, $json);
-    $object = \Drupal\metastore\Service::removeReferences($object);
+    $object = Service::removeReferences($object);
     $form[$fieldName]['widget'][0]['value']['#default_value'] = json_encode($object);
   }
 }
 
 /**
- * Implements hook_entity_view_alter.
+ * Implements hook_entity_view_alter().
  */
 function metastore_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
   $fieldName = metastore_storage_class()::getMetadataField();

@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore_search\Unit\ComplexData;
 use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\metastore_search\ComplexData\Dataset;
 use MockChain\Chain;
-use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\FileSchemaRetriever;
 use PHPUnit\Framework\TestCase;
 use MockChain\Options;
 use Drupal\Core\DependencyInjection\Container;
@@ -64,13 +64,13 @@ class DatasetTest extends TestCase {
     ';
 
     $options = (new Options())
-      ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
+      ->add('dkan.metastore.schema_retriever', FileSchemaRetriever::class)
       ->add('typed_data_manager', TypedDataManagerInterface::class)
       ->index(0);
 
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(SchemaRetriever::class, 'retrieve', $schema)
+      ->add(FileSchemaRetriever::class, 'retrieve', $schema)
       ->getMock();
 
     \Drupal::setContainer($container);
