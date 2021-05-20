@@ -199,14 +199,4 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(ResourcePurger::class, 'schedule');
   }
 
-  /**
-   * Private.
-   */
-  private function getLoggerChain() {
-    return (new Chain($this))
-      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, "errors")
-      ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
-  }
-
 }
