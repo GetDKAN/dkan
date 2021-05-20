@@ -144,7 +144,7 @@ class Service implements ContainerInjectionInterface {
         }
       }
       catch (\Exception $e) {
-        $data = $this->validMetadataFactory->get(NULL, json_encode(["message" => $e->getMessage()]));
+        $object = $this->validMetadataFactory->get(NULL, json_encode(["message" => $e->getMessage()]));
       }
 
       $objects[] = $object;
