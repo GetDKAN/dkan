@@ -1,26 +1,49 @@
 {
-  "identifier": {
-    "ui:options": {
-      "widget": "hidden"
-    }
-  },
-  "data": {
-    "properties": {
-      "@type": {
-        "ui:options": {
-          "widget": "hidden"
+  "properties": {
+    "@type": {
+      "ui:options": {
+        "widget": "hidden"
+      }
+    },
+    "mediaType": {
+      "ui:options": {
+        "widget": "hidden"
+      }
+    },
+    "description": {
+      "ui:options": {
+        "widget": "textarea",
+        "rows": 5
+      }
+    },
+    "format": {
+      "ui:options": {
+        "widget": "list",
+        "type": "select_other",
+        "other_type": "textfield",
+        "source": {
+          "enum": [
+            "arcgis",
+            "csv",
+            "esri rest",
+            "geojson",
+            "json",
+            "kml",
+            "pdf",
+            "tsv",
+            "xls",
+            "xlsx",
+            "xml",
+            "zip"
+          ]
         }
-      },
-      "mediaType": {
-        "ui:options": {
-          "widget": "hidden"
-        }
-      },
-      "description": {
-        "ui:options": {
-          "widget": "textarea",
-          "rows": 5
-        }
+      }
+    },
+    "downloadURL": {
+      "ui:options": {
+        "widget": "upload_or_link",
+        "extensions": "csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp",
+        "progress_indicator": "bar"
       }
     }
   }
