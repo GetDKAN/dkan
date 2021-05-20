@@ -101,6 +101,7 @@ abstract class Data implements MetastoreStorageInterface {
     foreach ($entity_ids as $nid) {
       $entity = $this->entityStorage->load($nid);
       if ($entity->get('moderation_state')->getString() === 'published') {
+        // TODO: unwrap the data if it came wrapped from the db.
         $all[$entity->uuid()] = $entity->get('field_json_metadata')->getString();
       }
     }
@@ -116,6 +117,7 @@ abstract class Data implements MetastoreStorageInterface {
     $entity = $this->getEntityPublishedRevision($uuid);
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
+      // TODO: unwrap the data if it came wrapped from the db.
       return $entity->get('field_json_metadata')->getString();
     }
 
@@ -137,6 +139,7 @@ abstract class Data implements MetastoreStorageInterface {
     }
 
     if ($entity) {
+      // TODO: unwrap the data if it came wrapped from the db.
       return $entity->get('field_json_metadata')->getString();
     }
 

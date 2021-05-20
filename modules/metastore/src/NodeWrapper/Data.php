@@ -74,6 +74,7 @@ class Data implements MetastoreItemInterface {
    */
   public function getMetaData() {
     $this->fix();
+    // TODO: unwrap the data if it came wrapped from the db.
     return json_decode($this->node->get('field_json_metadata')->getString());
   }
 
