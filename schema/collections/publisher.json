@@ -1,5 +1,4 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
   "title": "Organization",
   "description": "A Dataset Publisher Organization.",
