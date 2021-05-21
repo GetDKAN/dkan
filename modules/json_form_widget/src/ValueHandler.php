@@ -45,7 +45,7 @@ class ValueHandler {
     if (isset($formValues[$property]['select'])) {
       return $formValues[$property][0];
     }
-    return !empty($formValues[$property]) ? $formValues[$property] : FALSE;
+    return !empty($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
   }
 
   /**
@@ -61,7 +61,7 @@ class ValueHandler {
     foreach ($properties as $sub_property) {
       $value = $this->flattenValues($formValues, $sub_property, $schema->properties->$sub_property);
       if ($value) {
-        $data[$sub_property] = $this->cleanSelectId($value);
+        $data[$sub_property] = $value;
       }
     }
     return $data;
