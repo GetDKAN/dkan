@@ -61,8 +61,8 @@ class Dereferencer {
       if (isset($data->{$propertyId})) {
         $referenceProperty = "%Ref:{$propertyId}";
         [$ref, $actual] = $this->dereferenceProperty($propertyId, $data->{$propertyId});
-        $data->{$referenceProperty} = array_map('json_decode', $ref);
-        $data->{$propertyId} = array_map('json_decode', $actual);
+        $data->{$referenceProperty} = is_array($ref) ? array_map('json_decode', $ref) : json_decode($ref);
+        $data->{$propertyId} = is_array($actual) ? array_map('json_decode', $actual) : json_decode($actual);
       }
     }
     return $data;
