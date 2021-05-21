@@ -294,7 +294,7 @@ abstract class Data implements MetastoreStorageInterface {
       $title = isset($data->title) ? $data->title : $data->name;
     }
     else {
-      $title = md5(json_encode($data->data));
+      $title = md5(json_encode($data));
     }
     $entity = $this->entityStorage
       ->create(
