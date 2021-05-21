@@ -9,7 +9,7 @@ dependencies:
     - node
     - user
 _core:
-  default_config_hash: qCGAkDEe97G4CZAZwMoO-yLCCrpZrWZkbGUztjjJlpw
+  default_config_hash: JJ6DPebkL1IQR5zAMGv3XEHJ7DDkhUeD2jgxJ4X7dKU
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
@@ -714,7 +714,7 @@ display:
             group_items: {  }
           plugin_id: string
       sorts: {  }
-      title: Datasets
+      title: 'DKAN Metastore (Datasets)'
       empty:
         area_text_custom:
           id: area_text_custom
