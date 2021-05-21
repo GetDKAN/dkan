@@ -34,7 +34,7 @@ class ValueHandlerTest extends TestCase {
                     "fields" => [
                       0 => [
                         "fields" => [
-                          "name" => "Field name",
+                          "name" => "\$ID:Field name",
                           "title" => "Field title",
                         ],
                       ],
