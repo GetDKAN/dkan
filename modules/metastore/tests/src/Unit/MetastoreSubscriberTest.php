@@ -64,23 +64,6 @@ class MetastoreSubscriberTest extends TestCase {
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
     $event = new Event($resource);
 
-    // $logger = $this->getLoggerChain();
-
-    // $metastoreService = (new Chain($this))
-    //   ->add(Service::class, 'get', $dist)
-    //   ->getMock();
-
-    // $resourceMapper = (new Chain($this))
-    //   ->add(ResourceMapper::class, 'get', $resource)
-    //   ->add(ResourceMapper::class, 'remove', new \Exception('error'))
-    //   ->getMock();
-
-    // $subscriber = new MetastoreSubscriber(
-    //   $logger->getMock(),
-    //   $metastoreService,
-    //   $resourceMapper
-    // );
-
     $options = (new Options())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', Service::class)
