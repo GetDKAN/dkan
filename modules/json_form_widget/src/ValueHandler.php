@@ -61,7 +61,7 @@ class ValueHandler {
     foreach ($properties as $sub_property) {
       $value = $this->flattenValues($formValues, $sub_property, $schema->properties->$sub_property);
       if ($value) {
-        $data[$sub_property] = $value;
+        $data[$sub_property] = $this->cleanSelectId($value);
       }
     }
     return $data;
@@ -90,13 +90,29 @@ class ValueHandler {
     $data = [];
     if (is_array($value)) {
       foreach ($value as $item) {
-        $data[] = $item;
+        $data[] = $this->cleanSelectId($item);
       }
     }
     elseif (!empty($value)) {
-      $data[] = $value;
+      $data[] = $this->cleanSelectId($value);
     }
     return $data;
+  }
+
+  /**
+   * Clear item from select2 $ID.
+   *
+   * @param string $value
+   *   Value that we want to clean.
+   *
+   * @return array
+   *   String without $ID:.
+   */
+  private function cleanSelectId($value) {
+    if (substr($value, 0, 4) === "\$ID:") {
+      return substr($value, 4);
+    }
+    return $value;
   }
 
   /**
