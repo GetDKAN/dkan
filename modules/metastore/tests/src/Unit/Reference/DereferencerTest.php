@@ -73,15 +73,15 @@ class DereferencerTest extends TestCase {
     $referenced = $valueReferencer->dereference((object) ['publisher' => $uuid]);
 
     $this->assertTrue(is_object($referenced));
-    $this->assertEquals((object) ['name' => 'Gerardo', 'company' => 'CivicActions'], json_decode($referenced->publisher));
+    $this->assertEquals((object) ['name' => 'Gerardo', 'company' => 'CivicActions'], $referenced->publisher);
   }
 
   /**
    *
    */
   public function testDereferenceMultiple() {
-    $keyword1 = '{"Gerardo"}';
-    $keyword2 = '{"CivicActions"}';
+    $keyword1 = json_encode('Gerardo');
+    $keyword2 = json_encode('CivicActions');
 
     $keywords = (new Sequence())
       ->add($keyword1)
