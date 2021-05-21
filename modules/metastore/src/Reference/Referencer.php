@@ -2,12 +2,12 @@
 
 namespace Drupal\metastore\Reference;
 
+use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\ResourceMapper;
-use Drupal\node\NodeStorageInterface;
 
 /**
  * Metastore referencer service.
@@ -17,18 +17,18 @@ class Referencer {
   use LoggerTrait;
 
   /**
-   * Node storage service.
+   * Storage factory interface service.
    *
-   * @var \Drupal\node\NodeStorageInterface
+   * @var \Contracts\FactoryInterface
    */
-  private $nodeStorage;
+  private $storageFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, NodeStorageInterface $nodeStorage) {
+  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
     $this->setConfigService($configService);
-    $this->nodeStorage = $nodeStorage;
+    $this->storageFactory = $storageFactory;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
   }
 
@@ -321,20 +321,12 @@ class Referencer {
     $data = new \stdClass();
     $data->identifier = $this->getUuidService()->generate($property_id, $value);
     $data->data = $value;
+    $json = json_encode($data);
 
     // Create node to store this reference.
-    $node = $this->nodeStorage
-      ->create([
-        'title' => md5(json_encode($value)),
-        'type' => 'data',
-        'uuid' => $data->identifier,
-        'field_data_type' => $property_id,
-        'field_json_metadata' => json_encode($data),
-        // Unlike datasets, always publish references immediately.
-        'moderation_state' => 'published',
-      ]);
-    $node->save();
-    return $node->uuid();
+    $storage = $this->storageFactory->getInstance($property_id);
+    $entity_uuid = $storage->store($json, $data->identifier);
+    return $entity_uuid;
   }
 
 }

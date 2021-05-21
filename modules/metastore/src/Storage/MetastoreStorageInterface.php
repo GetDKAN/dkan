@@ -76,4 +76,17 @@ interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterf
    */
   public function store($data, string $id = NULL): string;
 
+  /**
+   * Retrieve by hash.
+   *
+   * @param string $hash
+   *   The hash for the data.
+   * @param string $schemaId
+   *   The schema ID.
+   *
+   * @return string|null
+   *   The uuid of the item with that hash.
+   */
+  public function retrieveByHash($hash, $schemaId);
+
 }
