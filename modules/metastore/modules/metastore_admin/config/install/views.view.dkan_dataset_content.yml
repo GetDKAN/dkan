@@ -60,17 +60,28 @@ display:
           description: ''
           columns:
             node_bulk_form: node_bulk_form
+            uuid: uuid
+            nid: nid
             title: title
-            type: type
+            field_data_type: field_data_type
             name: name
             status: status
             changed: changed
-            edit_node: edit_node
-            delete_node: delete_node
-            dropbutton: dropbutton
-            timestamp: title
+            nothing: nothing
           info:
             node_bulk_form:
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            uuid:
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            nid:
+              sortable: false
+              default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
@@ -82,7 +93,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            type:
+            field_data_type:
               sortable: true
               default_sort_order: asc
               align: ''
@@ -90,7 +101,7 @@ display:
               empty_column: false
               responsive: ''
             name:
-              sortable: false
+              sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
@@ -110,28 +121,7 @@ display:
               separator: ''
               empty_column: false
               responsive: priority-low
-            edit_node:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            delete_node:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            dropbutton:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            timestamp:
+            nothing:
               sortable: false
               default_sort_order: asc
               align: ''
