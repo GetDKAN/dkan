@@ -119,7 +119,7 @@ metastore.data_json:
     _auth: ['basic_auth', 'cookie']
 
 dkan.metastore.config_properties:
-  path: '/admin/config/dkan/properties'
+  path: '/admin/dkan/properties'
   defaults:
     _form: '\Drupal\metastore\Form\DkanDataSettingsForm'
   requirements:

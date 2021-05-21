@@ -3,12 +3,13 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.storage.node.field_data_type
     - system.menu.admin
   module:
     - node
     - user
 _core:
-  default_config_hash: ayMn8Dqvkbh9zfi5TpHKQi1ZV3yGOOTXvEWnhrHwSfQ
+  default_config_hash: qCGAkDEe97G4CZAZwMoO-yLCCrpZrWZkbGUztjjJlpw
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
@@ -392,6 +393,69 @@ display:
           entity_type: node
           entity_field: title
           plugin_id: field
+        field_data_type:
+          id: field_data_type
+          table: node__field_data_type
+          field: field_data_type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Data Type'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          plugin_id: field
         name:
           id: name
           table: users_field_data
@@ -595,49 +659,6 @@ display:
           plugin_id: boolean
           entity_type: node
           entity_field: status
-        langcode:
-          id: langcode
-          table: node_field_data
-          field: langcode
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: in
-          value: {  }
-          group: 1
-          exposed: true
-          expose:
-            operator_id: langcode_op
-            label: Language
-            description: ''
-            use_operator: false
-            operator: langcode_op
-            identifier: langcode
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-            reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          plugin_id: language
-          entity_type: node
-          entity_field: langcode
         status_extra:
           id: status_extra
           table: node_field_data
@@ -658,24 +679,27 @@ display:
           group_type: group
           admin_label: ''
           operator: '='
-          value: dataset
+          value: ''
           group: 1
-          exposed: false
+          exposed: true
           expose:
-            operator_id: ''
-            label: ''
+            operator_id: field_data_type_value_op
+            label: 'Data Type'
             description: ''
             use_operator: false
-            operator: ''
-            identifier: ''
+            operator: field_data_type_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: data-type
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              api_user: '0'
             placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -750,16 +774,17 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       max-age: 0
-      tags: {  }
+      tags:
+        - 'config:field.storage.node.field_data_type'
   page_1:
     display_options:
-      path: admin/content/datasets
+      path: admin/dkan/datasets
       menu:
         type: normal
         title: Datasets
-        description: ''
+        description: 'Adminster all content in the DKAN metastore'
         expanded: false
-        parent: system.admin_content
+        parent: system.admin_dkan
         weight: -10
         context: '0'
         menu_name: admin
@@ -784,4 +809,5 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       max-age: 0
-      tags: {  }
+      tags:
+        - 'config:field.storage.node.field_data_type'
