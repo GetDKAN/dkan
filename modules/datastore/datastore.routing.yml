@@ -175,6 +175,7 @@ datastore.sql_endpoint.settings:
   path: '/admin/dkan/sql_endpoint'
   defaults:
     _form: '\Drupal\datastore\SqlEndpoint\Form\DkanSqlEndpointSettingsForm'
+    _title: "Datastore SQL endpoint settings"
   requirements:
     _permission: 'access administration pages'
   options:

@@ -42,9 +42,12 @@ class DkanDataSettingsForm extends ConfigFormBase {
     $config = $this->config('metastore.settings');
     $options = $this->retrieveSchemaProperties();
     $default_values = $config->get('property_list');
+    $form['description'] = [
+      '#markup' => $this->t('Select properties on the dataset schema which should reference another object in the metastore even when passed directly with the dataset.'),
+    ];
     $form['property_list'] = [
       '#type' => 'checkboxes',
-      '#title' => $this->t('List of dataset properties with referencing and API endpoint'),
+      '#title' => $this->t('Dataset properties'),
       '#options' => $options,
       '#default_value' => $default_values,
     ];

@@ -2,6 +2,7 @@ system.admin_dkan:
   path: '/admin/dkan'
   defaults:
     _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: "DKAN"
   requirements:
     _permission: 'access administration pages'
 

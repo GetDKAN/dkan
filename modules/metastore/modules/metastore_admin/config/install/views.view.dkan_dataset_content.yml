@@ -772,7 +772,7 @@ display:
       menu:
         type: normal
         title: Datasets
-        description: 'Adminster all content in the DKAN metastore'
+        description: 'Administer all content in the DKAN metastore'
         expanded: false
         parent: system.admin_dkan
         weight: -10
