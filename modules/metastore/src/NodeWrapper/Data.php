@@ -139,4 +139,10 @@ class Data implements MetastoreItemInterface {
     return $schemaId;
   }
 
+  public function getOriginal() {
+    if (isset($this->node->original)) {
+      return new Data($this->node->original);
+    }
+  }
+
 }
