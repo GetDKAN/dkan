@@ -74,17 +74,6 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Setter to discover data modifier plugins.
-   *
-   * @param \Drupal\common\Plugin\DataModifierManager $pluginManager
-   *   Injected plugin manager.
-   */
-  public function setDataModifierPlugins(DataModifierManager $pluginManager) {
-    $this->pluginManager = $pluginManager;
-    $this->plugins = $this->discover();
-  }
-
-  /**
    * Get schemas.
    */
   public function getSchemas() {
