@@ -6,11 +6,19 @@ use Dkan\Datastore\Importer;
 use Drupal\Core\Database\Database;
 use Procrastinator\Result;
 
-class FastImporter extends Importer
-{
+/**
+ * Class FastImporter.
+ *
+ * @package Drupal\datastore\Service
+ */
+class FastImporter extends Importer {
 
-  protected function runIt()
-  {
+  /**
+   * Override.
+   *
+   * {@inheritdoc}
+   */
+  protected function runIt() {
     $fileSystem = \Drupal::service('file_system');
     $filename = $fileSystem->realpath($this->resource->getFilePath());
 
@@ -33,17 +41,12 @@ class FastImporter extends Importer
       'LINES TERMINATED BY \'\n\'',
       'IGNORE 1 ROWS',
       '(' . implode(',', $header) . ')',
-      'SET record_number = NULL;'
+      'SET record_number = NULL;',
     ];
 
-    $sqlStatement =  implode(' ', $sqlStatementLines);
+    $sqlStatement = implode(' ', $sqlStatementLines);
 
-    $options = \Drupal::database()->getConnectionOptions();
-    $options['pdo'][\PDO::MYSQL_ATTR_LOCAL_INFILE] = 1;
-    Database::addConnectionInfo('extra', 'default', $options);
-    Database::setActiveConnection('extra');
-
-    $db = Database::getConnection();
+    $db = $this->getDatabaseConnectionCapableOfDataLoad();
     $db->query($sqlStatement)->execute();
 
     Database::setActiveConnection();
@@ -51,6 +54,18 @@ class FastImporter extends Importer
     $this->getResult()->setStatus(Result::DONE);
 
     return $this->getResult();
+  }
+
+  /**
+   * Private.
+   */
+  private function getDatabaseConnectionCapableOfDataLoad() {
+    $options = \Drupal::database()->getConnectionOptions();
+    $options['pdo'][\PDO::MYSQL_ATTR_LOCAL_INFILE] = 1;
+    Database::addConnectionInfo('extra', 'default', $options);
+    Database::setActiveConnection('extra');
+
+    return Database::getConnection();
   }
 
 }
