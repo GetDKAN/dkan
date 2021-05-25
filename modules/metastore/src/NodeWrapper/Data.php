@@ -76,9 +76,7 @@ class Data implements MetastoreItemInterface {
   public function getMetaData() {
     $this->fix();
     $metadata = $this->node->get('field_json_metadata')->getString();
-    if (Storage::isWrappedMetadata($metadata)) {
-      $metadata = Storage::unwrapMetadata($metadata);
-    }
+    $metadata = Storage::unwrapMetadata($metadata);
     return json_decode($metadata);
   }
 

@@ -100,14 +100,11 @@ abstract class Data implements MetastoreStorageInterface {
     $all = [];
     foreach ($entity_ids as $nid) {
       $entity = $this->entityStorage->load($nid);
-      if ($entity->get('moderation_state')->getString() === 'published') {
-        // TODO: unwrap the data if it came wrapped from the db.
-        $metadata = $entity->get('field_json_metadata')->getString();
-        if (self::isWrappedMetadata($metadata)) {
-          $metadata = self::unwrapMetadata($metadata);
-        }
-        $all[$entity->uuid()] = $metadata;
+      if ($entity->get('moderation_state')->getString() !== 'published') {
+        continue;
       }
+      $metadata = $entity->get('field_json_metadata')->getString();
+      $all[$entity->uuid()] = self::unwrapMetadata($metadata);
     }
     return $all;
   }
@@ -122,10 +119,7 @@ abstract class Data implements MetastoreStorageInterface {
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
       $metadata = $entity->get('field_json_metadata')->getString();
-      if (self::isWrappedMetadata($metadata)) {
-        $metadata = self::unwrapMetadata($metadata);
-      }
-      return $metadata;
+      return self::unwrapMetadata($metadata);
     }
 
     throw new \Exception("Error retrieving published dataset: {$uuid} not found.");
@@ -145,15 +139,12 @@ abstract class Data implements MetastoreStorageInterface {
       $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if ($entity) {
-      $metadata = $entity->get('field_json_metadata')->getString();
-      if (self::isWrappedMetadata($metadata)) {
-        $metadata = self::unwrapMetadata($metadata);
-      }
-      return $metadata;
+    if (!$entity) {
+      throw new \Exception("Error retrieving dataset: {$uuid} not found.");
     }
 
-    throw new \Exception("Error retrieving dataset: {$uuid} not found.");
+    $metadata = $entity->get('field_json_metadata')->getString();
+    return self::unwrapMetadata($metadata);
   }
 
   /**
@@ -394,29 +385,20 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Checks if metadata is wrapped with [{"data":{},"identifier":""}].
-   *
-   * @param string $jsonString
-   *   Metadata.
-   *
-   * @return bool
-   */
-  public static function isWrappedMetadata(string $jsonString) {
-    $metadata = json_decode($jsonString, TRUE);
-    return is_array($metadata) && count($metadata) == 2 && isset($metadata['identifier']) && isset($metadata['data']);
-  }
-
-  /**
    * Unwraps metadata.
    *
    * @param string $jsonString
    *   Metadata.
    *
-   * @return false|string
+   * @return string
+   *   Unwrapped metadata.
    */
   public static function unwrapMetadata(string $jsonString) {
-    $metadata = json_decode($jsonString);
-    return json_encode($metadata->data);
+    $metadata = json_decode($jsonString, TRUE);
+    if (is_array($metadata) && count($metadata) == 2 && isset($metadata['identifier']) && isset($metadata['data'])) {
+      return json_encode($metadata['data']);
+    }
+    return $jsonString;
   }
 
 }
