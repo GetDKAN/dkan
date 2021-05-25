@@ -45,7 +45,7 @@ class ValueHandler {
     if (isset($formValues[$property]['select'])) {
       return $formValues[$property][0];
     }
-    return !empty($formValues[$property]) ? $formValues[$property] : FALSE;
+    return !empty($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
   }
 
   /**
@@ -90,13 +90,29 @@ class ValueHandler {
     $data = [];
     if (is_array($value)) {
       foreach ($value as $item) {
-        $data[] = $item;
+        $data[] = $this->cleanSelectId($item);
       }
     }
     elseif (!empty($value)) {
-      $data[] = $value;
+      $data[] = $this->cleanSelectId($value);
     }
     return $data;
+  }
+
+  /**
+   * Clear item from select2 $ID.
+   *
+   * @param string $value
+   *   Value that we want to clean.
+   *
+   * @return array
+   *   String without $ID:.
+   */
+  private function cleanSelectId($value) {
+    if (substr($value, 0, 4) === "\$ID:") {
+      return substr($value, 4);
+    }
+    return $value;
   }
 
   /**
