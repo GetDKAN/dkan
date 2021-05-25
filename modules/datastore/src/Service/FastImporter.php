@@ -25,14 +25,18 @@ class FastImporter extends Importer
     $storage = $this->dataStorage;
     $storage->count();
 
-    $sqlStatement = 'LOAD DATA LOCAL INFILE \'' . $filename . '\' ' .
-      'INTO TABLE ' . $storage->getTableName() . ' ' .
-      'FIELDS TERMINATED BY \',\' ' .
-      'ENCLOSED BY \'\"\' ' .
-      'LINES TERMINATED BY \'\n\' ' .
-      'IGNORE 1 ROWS ' .
-      '(' . implode(',', $header) . ') ' .
-      'SET record_number = NULL;';
+    $sqlStatementLines = [
+      'LOAD DATA LOCAL INFILE \'' . $filename . '\'',
+      'INTO TABLE ' . $storage->getTableName(),
+      'FIELDS TERMINATED BY \',\'',
+      'ENCLOSED BY \'\"\'',
+      'LINES TERMINATED BY \'\n\'',
+      'IGNORE 1 ROWS',
+      '(' . implode(',', $header) . ')',
+      'SET record_number = NULL;'
+    ];
+
+    $sqlStatement =  implode(' ', $sqlStatementLines);
 
     $options = \Drupal::database()->getConnectionOptions();
     $options['pdo'][\PDO::MYSQL_ATTR_LOCAL_INFILE] = 1;

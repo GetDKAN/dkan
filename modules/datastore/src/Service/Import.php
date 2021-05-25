@@ -39,6 +39,9 @@ class Import {
     $this->databaseTableFactory = $databaseTableFactory;
   }
 
+  /**
+   * Setter.
+   */
   public function setImporterClass($className) {
     $this->importerClass = $className;
   }
