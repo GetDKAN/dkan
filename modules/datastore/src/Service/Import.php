@@ -22,8 +22,9 @@ class Import {
   use EventDispatcherTrait;
 
   const EVENT_CONFIGURE_PARSER = 'dkan_datastore_import_configure_parser';
-
   const DEFAULT_TIMELIMIT = 50;
+
+  private $importerClass = Importer::class;
 
   private $resource;
   private $jobStoreFactory;
@@ -36,6 +37,10 @@ class Import {
     $this->initializeResource($resource);
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
+  }
+
+  public function setImporterClass($className) {
+    $this->importerClass = $className;
   }
 
   /**
@@ -104,7 +109,8 @@ class Import {
       $delimiter = "\t";
     }
 
-    $importer = Importer::get($this->resource->getId(),
+    $importer = call_user_func([$this->importerClass, 'get'],
+      $this->resource->getId(),
       $this->jobStoreFactory->getInstance(Importer::class),
       [
         "storage" => $this->getStorage(),

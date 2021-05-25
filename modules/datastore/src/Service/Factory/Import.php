@@ -3,6 +3,7 @@
 namespace Drupal\datastore\Service\Factory;
 
 use Contracts\FactoryInterface;
+use Drupal\datastore\Service\FastImporter;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Service\Import as Instance;
 use Drupal\common\Storage\JobStoreFactory;
@@ -40,7 +41,9 @@ class Import implements FactoryInterface {
     $resource = $config['resource'];
 
     if (!isset($this->services[$identifier])) {
-      $this->services[$identifier] = new Instance($resource, $this->jobStoreFactory, $this->databaseTableFactory);
+      $importer = new Instance($resource, $this->jobStoreFactory, $this->databaseTableFactory);
+      $importer->setImporterClass(FastImporter::class);
+      $this->services[$identifier] = $importer;
     }
 
     return $this->services[$identifier];
