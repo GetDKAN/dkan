@@ -102,7 +102,11 @@ abstract class Data implements MetastoreStorageInterface {
       $entity = $this->entityStorage->load($nid);
       if ($entity->get('moderation_state')->getString() === 'published') {
         // TODO: unwrap the data if it came wrapped from the db.
-        $all[$entity->uuid()] = $entity->get('field_json_metadata')->getString();
+        $metadata = $entity->get('field_json_metadata')->getString();
+        if (self::isWrappedMetadata($metadata)) {
+          $metadata = self::unwrapMetadata($metadata);
+        }
+        $all[$entity->uuid()] = $metadata;
       }
     }
     return $all;
@@ -117,8 +121,11 @@ abstract class Data implements MetastoreStorageInterface {
     $entity = $this->getEntityPublishedRevision($uuid);
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
-      // TODO: unwrap the data if it came wrapped from the db.
-      return $entity->get('field_json_metadata')->getString();
+      $metadata = $entity->get('field_json_metadata')->getString();
+      if (self::isWrappedMetadata($metadata)) {
+        $metadata = self::unwrapMetadata($metadata);
+      }
+      return $metadata;
     }
 
     throw new \Exception("Error retrieving published dataset: {$uuid} not found.");
@@ -139,8 +146,11 @@ abstract class Data implements MetastoreStorageInterface {
     }
 
     if ($entity) {
-      // TODO: unwrap the data if it came wrapped from the db.
-      return $entity->get('field_json_metadata')->getString();
+      $metadata = $entity->get('field_json_metadata')->getString();
+      if (self::isWrappedMetadata($metadata)) {
+        $metadata = self::unwrapMetadata($metadata);
+      }
+      return $metadata;
     }
 
     throw new \Exception("Error retrieving dataset: {$uuid} not found.");
@@ -381,6 +391,32 @@ abstract class Data implements MetastoreStorageInterface {
       ->load('dkan_publishing')
       ->getTypePlugin()
       ->getConfiguration()['default_moderation_state'];
+  }
+
+  /**
+   * Checks if metadata is wrapped with [{"data":{},"identifier":""}].
+   *
+   * @param string $jsonString
+   *   Metadata.
+   *
+   * @return bool
+   */
+  public static function isWrappedMetadata(string $jsonString) {
+    $metadata = json_decode($jsonString, TRUE);
+    return is_array($metadata) && count($metadata) == 2 && isset($metadata['identifier']) && isset($metadata['data']);
+  }
+
+  /**
+   * Unwraps metadata.
+   *
+   * @param string $jsonString
+   *   Metadata.
+   *
+   * @return false|string
+   */
+  public static function unwrapMetadata(string $jsonString) {
+    $metadata = json_decode($jsonString);
+    return json_encode($metadata->data);
   }
 
 }
