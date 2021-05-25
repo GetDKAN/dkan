@@ -433,6 +433,7 @@ class Service implements ContainerInjectionInterface {
       'identifier' => $uuid,
       'data' => $metadata->get('$'),
     ];
+
     return $this->getValidMetadataFactory()->get('legacy', json_encode($wrapped_metadata));
   }
 
