@@ -58,6 +58,7 @@ pipeline {
                         echo $DKTL_DIRECTORY
                         dktl init --dkan-local
                         dktl demo
+			dktl drush user:password admin mayisnice
                         sudo chown -R 1000:docker $WORKSPACE/dkan-tools/vendor
                     '''
                 }
