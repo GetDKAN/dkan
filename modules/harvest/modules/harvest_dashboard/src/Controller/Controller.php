@@ -3,12 +3,15 @@
 namespace Drupal\harvest_dashboard\Controller;
 
 use Drupal\Core\Link;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 
 /**
  * Controller.
  */
 class Controller {
+
+  use StringTranslationTrait;
 
   const HARVEST_HEADERS = [
     'Harvest ID',
@@ -131,6 +134,14 @@ class Controller {
       '#attached' => ['library' => ['harvest_dashboard/style']],
       '#empty' => 'No datasets found',
     ];
+  }
+
+
+  /**
+   * Datasets information for a specific harvest.
+   */
+  public function harvestDatasetsTitle($harvestId) {
+    return $this->t("Harvest %harvest", ['%harvest' => $harvestId]);
   }
 
   /**

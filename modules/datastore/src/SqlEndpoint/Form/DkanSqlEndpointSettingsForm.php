@@ -6,10 +6,11 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class DkanSqlEndpointSettingsForm.
+ * Settings form for the SQL endpoint.
  *
  * @package Drupal\sql_endpoint\Form
  * @codeCoverageIgnore
+ * @todo Add test coverage
  */
 class DkanSqlEndpointSettingsForm extends ConfigFormBase {
 
@@ -46,6 +47,7 @@ class DkanSqlEndpointSettingsForm extends ConfigFormBase {
       '#max' => 9999,
       '#title' => $this->t('Rows limit'),
       '#default_value' => $config->get('rows_limit'),
+      '#description' => $this->t('Maximum number of rows the datastore SQL query endpoint can return in a single request.'),
     ];
     return parent::buildForm($form, $form_state);
   }

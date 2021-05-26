@@ -27,7 +27,7 @@ function metastore_admin_update_8003() {
 }
 
 /**
- * Re-enable default content admin and override datasets view
+ * Admin updates.
  */
 function metastore_admin_update_8004() {
   $config_factory = \Drupal::configFactory();
@@ -41,7 +41,6 @@ function metastore_admin_update_8004() {
   $options = [
     'source' => $config_path,
     'partial' => TRUE,
-    'quiet' => TRUE,
   ];
   $drush_import->import(NULL, $options);
 
