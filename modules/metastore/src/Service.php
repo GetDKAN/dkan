@@ -237,7 +237,7 @@ class Service implements ContainerInjectionInterface {
    * @param string $identifier
    *   Identifier.
    *
-   * @return bool Identifier.
+   * @return bool
    *   True if the dataset is successfully published, false otherwise.
    */
   public function publish(string $schema_id, string $identifier): bool {
