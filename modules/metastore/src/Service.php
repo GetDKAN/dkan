@@ -237,10 +237,10 @@ class Service implements ContainerInjectionInterface {
    * @param string $identifier
    *   Identifier.
    *
-   * @return string
-   *   Identifier.
+   * @return bool Identifier.
+   *   True if the dataset is successfully published, false otherwise.
    */
-  public function publish(string $schema_id, string $identifier) {
+  public function publish(string $schema_id, string $identifier): bool {
     if ($this->objectExists($schema_id, $identifier)) {
       return $this->getStorage($schema_id)->publish($identifier);
     }
