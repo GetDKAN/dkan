@@ -104,6 +104,7 @@ abstract class Data implements MetastoreStorageInterface {
         continue;
       }
       $metadata = $entity->get('field_json_metadata')->getString();
+      // Legacy metadata could come unwrapped from the db.
       $all[$entity->uuid()] = self::unwrapMetadata($metadata);
     }
     return $all;
@@ -119,6 +120,7 @@ abstract class Data implements MetastoreStorageInterface {
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
       $metadata = $entity->get('field_json_metadata')->getString();
+      // Legacy metadata could come unwrapped from the db.
       return self::unwrapMetadata($metadata);
     }
 
@@ -144,6 +146,7 @@ abstract class Data implements MetastoreStorageInterface {
     }
 
     $metadata = $entity->get('field_json_metadata')->getString();
+    // Legacy metadata could come unwrapped from the db.
     return self::unwrapMetadata($metadata);
   }
 
