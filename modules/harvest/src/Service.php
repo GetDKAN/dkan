@@ -234,8 +234,10 @@ class Service implements ContainerInjectionInterface {
     foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
       if (isset($lastRunInfoObj->status->load) &&
         $lastRunInfoObj->status->load->{$uuid} &&
-        $lastRunInfoObj->status->load->{$uuid} != "FAILURE") {
-        $publishedIdentifiers[] = $this->metastore->publish('dataset', $uuid);
+        $lastRunInfoObj->status->load->{$uuid} != "FAILURE" &&
+        $this->metastore->publish('dataset', $uuid)) {
+
+        $publishedIdentifiers[] = $uuid;
       }
     }
 
