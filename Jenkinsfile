@@ -12,8 +12,7 @@ pipeline {
 	TARGET_URL = ""
     }
     stages {
-        stage ('Preclean') {
-            when { changeRequest() }
+        stage ('Clean-Preclean') {
             steps {
                 script {
                     sh '''
@@ -34,6 +33,7 @@ pipeline {
             }
         }
         stage ('Clone DKAN Repo') {
+            when { allOf { changeRequest(); not { branch '2.x' } } }
                 steps {
                     dir ("projects/dkan") {
                         git url: DKAN_REPO, branch: "${env.CHANGE_BRANCH}"
@@ -41,6 +41,7 @@ pipeline {
                 }
         }
         stage ('Clone dkan-tools') {
+            when { allOf { changeRequest(); not { branch '2.x' } } }
                 steps {
                     dir ("dkan-tools") {
                         git url: DKTL_REPO, branch: "master"
@@ -48,7 +49,7 @@ pipeline {
                 }
         }
         stage('Build QA Site') {
-            when { changeRequest() }
+            when { allOf { changeRequest(); not { branch '2.x' } } }
             steps {
                 script {
                     sh '''
@@ -57,31 +58,20 @@ pipeline {
                         echo $DKTL_DIRECTORY
                         dktl init --dkan-local
                         dktl demo
-                        sudo chown -R 1000:docker /var/jenkins_home/jobs/DKAN/jobs/DKAN/branches/PR-$CHANGE_ID/workspace/dkan-tools/vendor
+                        sudo chown -R 1000:docker $WORKSPACE/dkan-tools/vendor
                     '''
                 }
             }
         }
         stage('Check QA Site') {
-            when { changeRequest() }
+            when { allOf { changeRequest(); not { branch '2.x' } } }
             steps {
                 script {
-                    TARGET_URL = "http://${DKTL_SLUG}.${WEB_DOMAIN}"
-                    setBuildStatus("QA site ready at ${TARGET_URL}", TARGET_URL, "success");
-                }
-                sh '''
-                echo QA site ready at http://${DKTL_SLUG}.${WEB_DOMAIN}/
-                curl "http://${DKTL_SLUG}.${WEB_DOMAIN}"
-                '''
-            }
-        }
-        //When merging the PR to master, remove the QA containers
-        stage('Drop On Merge') {
-            when { changeRequest target: 'master' }
-            steps {
-                script {
-                    '''
-                    dktl dc down -r
+                    sh '''
+                    QA_SITE_WEB_ID=`docker ps|grep qa_$CHANGE_ID|grep web|awk '{ print $1 }'`
+                    QA_SITE_PORT=`docker container port $QA_SITE_WEB_ID|grep 80|awk '{ print $3 }'|awk 'BEGIN { FS = ":" };{ print $2 }'`
+                    echo QA site readt at http://jenkins.ci.civicactions.net:$QA_SITE_PORT
+                    curl "http://jenkins.ci.civicactions.net:$QA_SITE_PORT"
                     '''
                 }
             }
