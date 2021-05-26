@@ -47,7 +47,7 @@ context('Admin dataset json form', () => {
         cy.get('#edit-submit').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
         // Editing dataset.
-        cy.visit(baseurl + "/admin/content/datasets")
+        cy.visit(baseurl + "/admin/dkan/datasets")
         cy.get('#edit-title').type('DKANTEST dataset title', { force:true } )
         cy.get('#edit-submit-dkan-dataset-content').click({ force:true })
         cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
@@ -65,7 +65,7 @@ context('Admin dataset json form', () => {
         cy.get('#edit-submit').click({ force:true })
         cy.get('.messages--status').should('contain','has been updated')
         // Delete dataset.
-        cy.visit(baseurl + "/admin/content/datasets")
+        cy.visit(baseurl + "/admin/dkan/datasets")
         cy.wait(2000)
         cy.get('#edit-node-bulk-form-0').check({ force:true })
         cy.get('#edit-submit--2').click({ force:true })
