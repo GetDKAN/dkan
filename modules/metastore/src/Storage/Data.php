@@ -119,7 +119,7 @@ abstract class Data implements MetastoreStorageInterface {
       return $entity->get('field_json_metadata')->getString();
     }
 
-    throw new \Exception("No data with that identifier was found.");
+    throw new \Exception("Error retrieving published dataset: {$uuid} not found.");
   }
 
   /**
@@ -140,7 +140,7 @@ abstract class Data implements MetastoreStorageInterface {
       return $entity->get('field_json_metadata')->getString();
     }
 
-    throw new \Exception("No data with that identifier was found.");
+    throw new \Exception("Error retrieving dataset: {$uuid} not found.");
   }
 
   /**
@@ -157,7 +157,7 @@ abstract class Data implements MetastoreStorageInterface {
     $entity = $this->getEntityLatestRevision($uuid);
 
     if (!$entity) {
-      throw new \Exception("No data with that identifier was found.");
+      throw new \Exception("Error publishing dataset: {$uuid} not found.");
     }
     elseif ('published' !== $entity->get('moderation_state')) {
       $entity->set('moderation_state', 'published');
