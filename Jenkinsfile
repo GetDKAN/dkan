@@ -57,8 +57,10 @@ pipeline {
                         export DKTL_DIRECTORY="$WORKSPACE/dkan-tools"
                         echo $DKTL_DIRECTORY
                         dktl init --dkan-local
+                        dktl proxy:connect
+                        sleep 90
                         dktl demo
-			dktl drush user:password admin mayisnice
+                        dktl drush user:password admin mayisnice
                         sudo chown -R 1000:docker $WORKSPACE/dkan-tools/vendor
                     '''
                 }
