@@ -4,6 +4,7 @@ namespace Drupal\Tests\dashboard\Unit\Controller;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\DatasetInfo;
+use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\harvest\Service as Harvest;
 use Drupal\harvest_dashboard\Controller\Controller;
 use MockChain\Chain;
@@ -142,12 +143,16 @@ class ControllerTest extends TestCase {
     foreach ($strings as $string) {
       $this->assertStringContainsString($string, $json);
     }
+
+    $title = (string) $controller->harvestDatasetsTitle('test');
+    $this->assertEquals('Harvest <em class="placeholder">test</em>', $title);
   }
 
   private function getCommonMockChain() : Chain {
     $options = (new Options())
       ->add('dkan.harvest.service', Harvest::class)
       ->add('dkan.common.dataset_info', DatasetInfo::class)
+      ->add('string_translation', TranslationManager::class)
       ->index(0);
 
     $runInfo = (object) [
