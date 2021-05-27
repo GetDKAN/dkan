@@ -47,7 +47,7 @@ pipeline {
             when { allOf { changeRequest(); not { branch '2.x' } } }
                 steps {
                     dir ("dkan-tools") {
-                        git url: DKTL_REPO, branch: "master"
+                        git url: DKTL_REPO, branch: "dkan-qa-builder"
                     }
                 }
         }
