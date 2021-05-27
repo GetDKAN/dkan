@@ -238,7 +238,7 @@ class ServiceTest extends TestCase {
 
     $service = HarvestService::create($container->getMock());
     $result = $service->publish('1');
-    $this->assertEquals($result, ['1', '1', '1']);
+    $this->assertEquals($result, $datasetUuids);
   }
 
   /**
