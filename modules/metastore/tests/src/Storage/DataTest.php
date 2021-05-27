@@ -40,22 +40,14 @@ class DataTest extends TestCase {
       ->add('moderation_state', ModerationStateFieldItemList::class)
       ->add('field_json_metadata', FieldItemListInterface::class);
 
-
-    $etm = (new Chain($this))
-      ->add(EntityTypeManager::class, 'getStorage', NodeStorage::class)
-
-      ->add(NodeStorage::class, 'getQuery', QueryInterface::class)
-      ->add(QueryInterface::class, 'condition', QueryInterface::class)
-      ->add(QueryInterface::class, 'execute', [1])
-
+    $etmMock = $this->getEtmChain()
       ->add(NodeStorage::class, 'load', NodeInterface::class)
       ->add(NodeInterface::class, 'get', $getOptions)
       ->add(ModerationStateFieldItemList::class, 'getString', 'published')
       ->add(FieldItemListInterface::class, 'getString', $json)
-
       ->getMock();
 
-    $storage = new NodeData('keyword', $etm);
+    $storage = new NodeData('keyword', $etmMock);
     $this->assertEquals(json_encode('blah'), $storage->retrievePublished(1));
   }
 
