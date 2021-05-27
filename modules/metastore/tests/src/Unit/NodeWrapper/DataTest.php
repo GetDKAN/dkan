@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Container;
 
 class DataTest extends TestCase
 {
-  public function test() {
+  public function testGetOriginalGetUsAWrapper() {
     $node = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
       ->addd('__isset', true)
@@ -26,6 +26,24 @@ class DataTest extends TestCase
     $wrapper = new Data($node);
     $this->assertTrue(
       $wrapper->getOriginal() instanceof Data
+    );
+  }
+
+  public function testGetOriginalGiveUsNull() {
+    $node = (new Chain($this))
+      ->add(Node::class, 'bundle', 'data')
+      ->addd('__isset', false)
+      ->getMock();
+
+    $container = (new Chain($this))
+      ->add(Container::class)
+      ->getMock();
+
+    \Drupal::setContainer($container);
+
+    $wrapper = new Data($node);
+    $this->assertNull(
+      $wrapper->getOriginal()
     );
   }
 }
