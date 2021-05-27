@@ -17,15 +17,18 @@ pipeline {
                 script {
                     sh '''
                     echo "If exist...remove containers and network for qa_$CHANGE_ID"
-                    qa_container_ids=`docker ps|grep qa_$CHANGE_ID|awk '{ print $1 }'`
-                    qa_network_id=`docker network ls|grep qa_$CHANGE_ID|awk '{ print $1 }'`
+                    qa_container_ids=`docker ps -f name=$DKTL_SLUG -q`
+                    qa_network_id=`docker network ls -f name=$DKTL_SLUG -q`
 
-                    if [ $(docker ps|grep qa_$CHANGE_ID|awk '{ print $1 }') ]
+                    if [ -n "$qa_container_ids" ]
                     then
-                      cd projects/dkan
-                      dktl docker:compose stop
-                      dktl docker:compose rm -f
-                      docker network rm dkan_qa_$CHANGE_ID_default
+                      for i in $qa_container_ids
+                      do
+                        docker container stop $i
+                        docker container rm $i
+                      done
+
+                      docker network rm $qa_network_id
                     fi
                     '''
                     deleteDir()
