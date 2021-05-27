@@ -22,16 +22,10 @@ pipeline {
 
                     if [ $(docker ps|grep qa_$CHANGE_ID|awk '{ print $1 }') ]
                     then
-                      for i in `docker ps|grep dkan_qa|awk '{ print $1 }'`
-                      do 
-                        docker container stop $i
-                        docker container rm $i
-                      done
-
-                      for j in `docker network ls|grep dkan_qa|awk '{ print $1 }'`
-                      do
-                        docker network rm $j
-                      done
+                      cd projects/dkan
+                      dktl docker:compose stop
+                      dktl docker:compose rm -f
+                      docker network rm dkan_qa_$CHANGE_ID_default
                     fi
                     '''
                     deleteDir()
