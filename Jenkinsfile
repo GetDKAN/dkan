@@ -60,8 +60,6 @@ pipeline {
                         export DKTL_DIRECTORY="$WORKSPACE/dkan-tools"
                         echo $DKTL_DIRECTORY
                         dktl init --dkan-local
-                        dktl proxy:connect
-                        sleep 90
                         dktl demo
                         dktl drush user:password admin mayisnice
                         sudo chown -R 1000:docker $WORKSPACE/dkan-tools/vendor
@@ -76,8 +74,8 @@ pipeline {
                     sh '''
                     QA_SITE_WEB_ID=`docker ps|grep qa_$CHANGE_ID|grep web|awk '{ print $1 }'`
                     QA_SITE_PORT=`docker container port $QA_SITE_WEB_ID|grep 80|awk '{ print $3 }'|awk 'BEGIN { FS = ":" };{ print $2 }'`
-                    echo QA site readt at http://jenkins.ci.civicactions.net:$QA_SITE_PORT
-                    curl "http://jenkins.ci.civicactions.net:$QA_SITE_PORT"
+                    echo QA site ready at http://$DKTL_SLUG.$WEB_DOMAIN
+                    curl -I "http://$DKTL_SLUG.$WEB_DOMAIN"
                     '''
                 }
             }
