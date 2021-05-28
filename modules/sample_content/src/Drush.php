@@ -20,7 +20,12 @@ class Drush extends DrushCommands {
   public function create() {
     $this->createJson();
     $harvester = $this->getHarvester("sample_content");
-    $result = $harvester->harvest();
+    try {
+      $result = $harvester->harvest();
+    }
+    catch (\Exception $e) {
+      print $e->getMessage() . " hello \n\n";
+    }
 
     $this->renderHarvestRunsInfo([['sample_content', $result]]);
   }
@@ -70,6 +75,8 @@ class Drush extends DrushCommands {
    */
   private function detokenize($content) {
     $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'sample_content') . "/files";
+    $output = new ConsoleOutput();
+    $output->write("{$absolute_module_path} is the absolute module path. \n\n");
     return str_replace("<!*path*!>", $absolute_module_path, $content);
   }
 
