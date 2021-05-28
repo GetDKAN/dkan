@@ -2,14 +2,15 @@
 
 namespace Drupal\harvest;
 
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityTypeManager;
-use Harvest\Harvester as DkanHarvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\common\LoggerTrait;
 use Drupal\metastore\Service as Metastore;
 use Harvest\ETL\Factory;
+use Harvest\Harvester as DkanHarvester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -17,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Service implements ContainerInjectionInterface {
 
+  use LoggerTrait;
   use OrphanDatasetsProcessor;
 
   private $storeFactory;
@@ -232,12 +234,17 @@ class Service implements ContainerInjectionInterface {
     }
 
     foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
-      if (isset($lastRunInfoObj->status->load) &&
-        $lastRunInfoObj->status->load->{$uuid} &&
-        $lastRunInfoObj->status->load->{$uuid} != "FAILURE" &&
-        $this->metastore->publish('dataset', $uuid)) {
+      try {
+        if (isset($lastRunInfoObj->status->load) &&
+          $lastRunInfoObj->status->load->{$uuid} &&
+          $lastRunInfoObj->status->load->{$uuid} != "FAILURE" &&
+          $this->metastore->publish('dataset', $uuid)) {
 
-        $publishedIdentifiers[] = $uuid;
+          $publishedIdentifiers[] = $uuid;
+        }
+      }
+      catch (\Exception $e) {
+        $this->error("Error publishing dataset {$uuid} in harvest {$id}: {$e->getMessage()}");
       }
     }
 
