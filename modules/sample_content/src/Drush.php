@@ -20,12 +20,8 @@ class Drush extends DrushCommands {
   public function create() {
     $this->createJson();
     $harvester = $this->getHarvester("sample_content");
-    try {
-      $result = $harvester->harvest();
-    }
-    catch (\Exception $e) {
-      print $e->getMessage() . " hello \n\n";
-    }
+    $result = $harvester->harvest();
+    print_r($result);
 
     $this->renderHarvestRunsInfo([['sample_content', $result]]);
   }
