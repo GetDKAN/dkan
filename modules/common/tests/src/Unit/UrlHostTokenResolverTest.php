@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\Tests\common\Unit;
+
 use Drupal\Core\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\common\UrlHostTokenResolver;
