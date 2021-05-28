@@ -138,18 +138,27 @@ class Service implements ContainerInjectionInterface {
       function ($jsonString) use ($schema_id) {
         $data = $this->validMetadataFactory->get($schema_id, $jsonString);
         try {
-          return $this->dispatchEvent(self::EVENT_DATA_GET, $data);
+          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
+            return $data instanceof RootedJsonData;
+          });
         }
         catch (\Exception $e) {
-          return (object) ["message" => $e->getMessage()];
+          return new RootedJsonData(json_encode(["message" => $e->getMessage()]));
         }
       },
       $jsonStringsArray
     );
 
-    $objects = $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects);
+    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
+      if (!is_array($data)) {
+        return FALSE;
+      }
+      if (count($data) == 0) {
+        return TRUE;
+      }
+      return $data[0] instanceof RootedJsonData;
+    });
 
-    return $objects;
   }
 
   /**
