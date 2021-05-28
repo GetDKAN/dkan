@@ -2,14 +2,15 @@
 
 namespace Drupal\harvest;
 
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityTypeManager;
-use Harvest\Harvester as DkanHarvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\common\LoggerTrait;
 use Drupal\metastore\Service as Metastore;
 use Harvest\ETL\Factory;
+use Harvest\Harvester as DkanHarvester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -17,6 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Service implements ContainerInjectionInterface {
 
+  use LoggerTrait;
   use OrphanDatasetsProcessor;
 
   private $storeFactory;
@@ -220,28 +222,53 @@ class Service implements ContainerInjectionInterface {
    * @return array
    *   The uuids of the published datasets.
    */
-  public function publish(string $id) {
-    $publishedIdentifiers = [];
+  public function publish(string $id): array {
 
-    $lastRunId = $this->getLastHarvestRunId($id);
-    $lastRunInfoJsonString = $this->getHarvestRunInfo($id, $lastRunId);
-    $lastRunInfoObj = json_decode($lastRunInfoJsonString);
-
+    $lastRunInfoObj = $this->getLastRunInfoObj($id);
     if (!isset($lastRunInfoObj->status->extracted_items_ids)) {
-      return $publishedIdentifiers;
+      return [];
     }
 
-    foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
-      if (isset($lastRunInfoObj->status->load) &&
-        $lastRunInfoObj->status->load->{$uuid} &&
-        $lastRunInfoObj->status->load->{$uuid} != "FAILURE" &&
-        $this->metastore->publish('dataset', $uuid)) {
+    return $this->publishHelper($id, $lastRunInfoObj->status);
+  }
 
-        $publishedIdentifiers[] = $uuid;
+  /**
+   * Private.
+   */
+  private function getLastRunInfoObj(string $harvestId) {
+    $lastRunId = $this->getLastHarvestRunId($harvestId);
+    $lastRunInfoJsonString = $this->getHarvestRunInfo($harvestId, $lastRunId);
+    return json_decode($lastRunInfoJsonString);
+  }
+
+  /**
+   * Private.
+   */
+  private function publishHelper(string $harvestId, $lastRunStatus): array {
+    $publishedIdentifiers = [];
+
+    foreach ($lastRunStatus->extracted_items_ids as $uuid) {
+      try {
+        if ($this->metastorePublishHelper($lastRunStatus, $uuid)) {
+          $publishedIdentifiers[] = $uuid;
+        }
+      }
+      catch (\Exception $e) {
+        $this->error("Error publishing dataset {$uuid} in harvest {$harvestId}: {$e->getMessage()}");
       }
     }
 
     return $publishedIdentifiers;
+  }
+
+  /**
+   * Private.
+   */
+  private function metastorePublishHelper($runInfoStatus, string $uuid): bool {
+    return isset($runInfoStatus->load) &&
+      $runInfoStatus->load->{$uuid} &&
+      $runInfoStatus->load->{$uuid} != 'FAILURE' &&
+      $this->metastore->publish('dataset', $uuid);
   }
 
   /**
