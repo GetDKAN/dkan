@@ -249,11 +249,7 @@ class Service implements ContainerInjectionInterface {
 
     foreach ($lastRunStatus->extracted_items_ids as $uuid) {
       try {
-        if (isset($runInfoStatus->load) &&
-          $runInfoStatus->load->{$uuid} &&
-          $runInfoStatus->load->{$uuid} != 'FAILURE' &&
-          $this->metastore->publish('dataset', $uuid)) {
-
+        if ($this->metastorePublishHelper($lastRunStatus, $uuid)) {
           $publishedIdentifiers[] = $uuid;
         }
       }
@@ -263,6 +259,16 @@ class Service implements ContainerInjectionInterface {
     }
 
     return $publishedIdentifiers;
+  }
+
+  /**
+   * Private.
+   */
+  private function metastorePublishHelper($runInfoStatus, string $uuid): bool {
+    return isset($runInfoStatus->load) &&
+      $runInfoStatus->load->{$uuid} &&
+      $runInfoStatus->load->{$uuid} != 'FAILURE' &&
+      $this->metastore->publish('dataset', $uuid);
   }
 
   /**
