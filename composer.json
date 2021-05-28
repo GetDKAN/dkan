@@ -22,7 +22,7 @@
         "guzzlehttp/guzzle" : "^6.3",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
         "ramsey/uuid" : "^3.8.0",
-        "getdkan/rooted-json-data": "^0.0.2",
+        "getdkan/rooted-json-data": "dev-improve-error-message",
         "drupal/select_or_other": "1.x-dev",
         "drupal/select2": "1.x-dev",
         "npm-asset/select2": "^4.0",
