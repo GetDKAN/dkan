@@ -14,11 +14,24 @@ use Symfony\Component\DependencyInjection\Container;
 use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
 use Drupal\metastore\Service;
 use Drupal\metastore\ResourceMapper;
+use Drupal\Tests\metastore\Unit\ServiceTest;
 
 /**
  *
  */
 class MetastoreSubscriberTest extends TestCase {
+
+  /**
+   * The ValidMetadataFactory class used for testing.
+   *
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $validMetadataFactory;
+
+  protected function setUp(): void {
+    parent::setUp();
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+  }
 
   /**
    * Test clean up.
@@ -28,13 +41,13 @@ class MetastoreSubscriberTest extends TestCase {
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
+    $dist = $this->validMetadataFactory->get('distribution', $dist);
     $event = new Event($resource);
 
     $options = (new Options())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', Service::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add("database", Connection::class)
       ->index(0);
 
@@ -42,16 +55,13 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'get', $dist)
       ->add(ResourceMapper::class, 'get', $resource)
-      ->add(ResourceMapper::class, 'remove', new \Exception('error'))
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'remove', new \Exception('error'))
+      ->add(ResourceMapper::class, 'remove')
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
-      ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
+      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 
     $subscriber = MetastoreSubscriber::create($chain->getMock());
     $test = $subscriber->cleanResourceMapperTable($event);
-    $this->assertEmpty($logger->getStoredInput('errors'));
+    $this->assertEmpty($chain->getStoredInput('errors'));
   }
 
   /**
@@ -62,13 +72,13 @@ class MetastoreSubscriberTest extends TestCase {
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
+    $dist = $this->validMetadataFactory->get('distribution', $dist);
     $event = new Event($resource);
 
     $options = (new Options())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', Service::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
-      ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add("database", Connection::class)
       ->index(0);
 
@@ -77,11 +87,8 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(Service::class, 'get', $dist)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove', new \Exception('error'))
-      ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'remove', new \Exception('error'))
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors')
-      ->add(LoggerChannelInterface::class, 'notice', NULL, "notices");
+      ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 
     $subscriber = MetastoreSubscriber::create($chain->getMock());
     $test = $subscriber->cleanResourceMapperTable($event);
