@@ -27,7 +27,8 @@ pipeline {
                         docker container stop $i
                         docker container rm $i
                       done
-
+		      
+		      docker network disconnect $qa_network_id proxy
                       docker network rm $qa_network_id
                     fi
                     '''
@@ -38,7 +39,7 @@ pipeline {
         stage ('Clone DKAN Repo') {
             when { allOf { changeRequest(); not { branch '2.x' } } }
                 steps {
-                    dir ("projects/dkan") {
+                    dir ("dkan") {
                         git url: DKAN_REPO, branch: "${env.CHANGE_BRANCH}"
                     }
                 }
@@ -56,10 +57,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        cd projects
                         export DKTL_DIRECTORY="$WORKSPACE/dkan-tools"
                         echo $DKTL_DIRECTORY
-                        dktl init --dkan-local
+                        dktl init
                         dktl demo
                         dktl drush user:password admin mayisnice
                         sudo chown -R 1000:docker $WORKSPACE/dkan-tools/vendor
@@ -84,7 +84,7 @@ pipeline {
     post {
         success {
             script {
-                gitCommitMessage = sh(returnStdout: true, script: 'cd projects/dkan; git log -1 --pretty=%B').trim()
+                gitCommitMessage = sh(returnStdout: true, script: 'cd dkan; git log -1 --pretty=%B').trim()
                 currentBuild.description = "${gitCommitMessage}"
             }
         }
