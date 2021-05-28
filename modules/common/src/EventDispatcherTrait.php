@@ -25,12 +25,12 @@ trait EventDispatcherTrait {
    * @throws \Exception
    *   If any of the subscribers registered and Exception it is thrown.
    */
-  private function dispatchEvent($eventName, $data) {
+  private function dispatchEvent($eventName, $data, $validator = null) {
     /* @var ContainerAwareEventDispatcher $dispatcher */
     $dispatcher = \Drupal::service('event_dispatcher');
 
     /* @var \Drupal\common\Events\Event $event */
-    if ($event = $dispatcher->dispatch($eventName, new Event($data))) {
+    if ($event = $dispatcher->dispatch($eventName, new Event($data, $validator))) {
       if ($e = $event->getException()) {
         throw $e;
       }
