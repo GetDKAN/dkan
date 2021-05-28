@@ -284,11 +284,11 @@ class Referencer {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   private function checkExistingReference(string $property_id, $data) {
-    $nodes = $this->nodeStorage
-      ->loadByProperties([
-        'field_data_type' => $property_id,
-        'title' => md5(json_encode($data)),
-      ]);
+    $storage = $this->storageFactory->getInstance($property_id);
+    $nodes = $storage->getEntityStorage()->loadByProperties([
+      'field_data_type' => $property_id,
+      'title' => md5(json_encode($data)),
+    ]);
 
     if ($node = reset($nodes)) {
       // If an existing but orphaned data node is found,
