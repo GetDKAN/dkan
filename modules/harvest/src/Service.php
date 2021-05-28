@@ -222,17 +222,14 @@ class Service implements ContainerInjectionInterface {
    * @return array
    *   The uuids of the published datasets.
    */
-  public function publish(string $id) {
-    $publishedIdentifiers = [];
+  public function publish(string $id): array {
 
-    $lastRunId = $this->getLastHarvestRunId($id);
-    $lastRunInfoJsonString = $this->getHarvestRunInfo($id, $lastRunId);
-    $lastRunInfoObj = json_decode($lastRunInfoJsonString);
-
+    $lastRunInfoObj = $this->getLastRunInfoObj($id);
     if (!isset($lastRunInfoObj->status->extracted_items_ids)) {
-      return $publishedIdentifiers;
+      return [];
     }
 
+    $publishedIdentifiers = [];
     foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
       try {
         if ($this->metastorePublishHelper($lastRunInfoObj->status, $uuid)) {
@@ -250,11 +247,20 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
+  private function getLastRunInfoObj(string $harvestId) {
+    $lastRunId = $this->getLastHarvestRunId($harvestId);
+    $lastRunInfoJsonString = $this->getHarvestRunInfo($harvestId, $lastRunId);
+    return json_decode($lastRunInfoJsonString);
+  }
+
+  /**
+   * Private.
+   */
   private function metastorePublishHelper($runInfoStatus, string $uuid): bool {
-    return isset($runInfoStatus->load)
-      && $runInfoStatus->load->{$uuid}
-      && $runInfoStatus->load->{$uuid} != 'FAILURE'
-      && $this->metastore->publish('dataset', $uuid);
+    return isset($runInfoStatus->load) &&
+      $runInfoStatus->load->{$uuid} &&
+      $runInfoStatus->load->{$uuid} != 'FAILURE' &&
+      $this->metastore->publish('dataset', $uuid);
   }
 
   /**
