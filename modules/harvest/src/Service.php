@@ -229,19 +229,7 @@ class Service implements ContainerInjectionInterface {
       return [];
     }
 
-    $publishedIdentifiers = [];
-    foreach ($lastRunInfoObj->status->extracted_items_ids as $uuid) {
-      try {
-        if ($this->metastorePublishHelper($lastRunInfoObj->status, $uuid)) {
-          $publishedIdentifiers[] = $uuid;
-        }
-      }
-      catch (\Exception $e) {
-        $this->error("Error publishing dataset {$uuid} in harvest {$id}: {$e->getMessage()}");
-      }
-    }
-
-    return $publishedIdentifiers;
+    return $this->publishHelper($id, $lastRunInfoObj->status);
   }
 
   /**
@@ -256,11 +244,25 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function metastorePublishHelper($runInfoStatus, string $uuid): bool {
-    return isset($runInfoStatus->load) &&
-      $runInfoStatus->load->{$uuid} &&
-      $runInfoStatus->load->{$uuid} != 'FAILURE' &&
-      $this->metastore->publish('dataset', $uuid);
+  private function publishHelper(string $harvestId, $lastRunStatus): array {
+    $publishedIdentifiers = [];
+
+    foreach ($lastRunStatus->extracted_items_ids as $uuid) {
+      try {
+        if (isset($runInfoStatus->load) &&
+          $runInfoStatus->load->{$uuid} &&
+          $runInfoStatus->load->{$uuid} != 'FAILURE' &&
+          $this->metastore->publish('dataset', $uuid)) {
+
+          $publishedIdentifiers[] = $uuid;
+        }
+      }
+      catch (\Exception $e) {
+        $this->error("Error publishing dataset {$uuid} in harvest {$harvestId}: {$e->getMessage()}");
+      }
+    }
+
+    return $publishedIdentifiers;
   }
 
   /**
