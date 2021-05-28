@@ -19,7 +19,8 @@ trait EventDispatcherTrait {
    * @param mixed $data
    *   The data that will be given to the listeners/subscribers.
    * @param mixed $validator
-   *   A callable used to validate that the data in the event as it is modified keeps its integrity.
+   *   A callable used to validate that the data in the event as it is modified
+   *   keeps its integrity.
    *
    * @return mixed
    *   The data returned by the listeners/subscribers.
