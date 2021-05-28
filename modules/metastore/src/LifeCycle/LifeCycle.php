@@ -6,7 +6,6 @@ use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
-use Drupal\metastore\Events\PreReference;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Reference\OrphanChecker;
@@ -223,7 +222,7 @@ class LifeCycle {
       $data->setIdentifier($metadata->identifier);
     }
 
-    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function($data) {
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
       return $data instanceof MetastoreItemInterface;
     });
 
