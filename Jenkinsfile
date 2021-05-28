@@ -3,7 +3,7 @@ pipeline {
     environment {
         PATH = "$WORKSPACE/dkan-tools/bin:$PATH"
         USER = 'jenkins'
-        DKTL_SLUG = "dkan_qa_$CHANGE_ID"
+        DKTL_SLUG = "dkan-qa-$CHANGE_ID"
         DKTL_TRAEFIK = "proxy"
         WEB_DOMAIN = "ci.civicactions.net"
         DKAN_REPO = 'https://github.com/GetDKAN/dkan.git'
