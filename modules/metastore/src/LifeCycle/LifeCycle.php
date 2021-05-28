@@ -223,7 +223,9 @@ class LifeCycle {
       $data->setIdentifier($metadata->identifier);
     }
 
-    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, new PreReference($data));
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function($data) {
+      return $data instanceof MetastoreItemInterface;
+    });
 
     $metadata = $this->referencer->reference($metadata);
 
