@@ -5,6 +5,7 @@ namespace Drupal\Tests\metastore\Functional;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
+use Drupal\Tests\metastore\Unit\ServiceTest;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
@@ -17,6 +18,13 @@ class OrphanCheckerTest extends ExistingSiteBase {
   use GetDataTrait;
   use CleanUp;
 
+  /**
+   * The ValidMetadataFactory class used for testing.
+   *
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $validMetadataFactory;
+
   public function setUp() {
     parent::setUp();
     $this->removeHarvests();
@@ -26,12 +34,14 @@ class OrphanCheckerTest extends ExistingSiteBase {
     $this->flushQueues();
     $this->removeFiles();
     $this->removeDatastoreTables();
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   public function test() {
     /* @var $service \Drupal\metastore\Service */
     $service = \Drupal::service('dkan.metastore.service');
-    $service->post('dataset', $this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']));
+    $dataset = $this->validMetadataFactory->get('dataset', $this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']));
+    $service->post('dataset', $dataset);
     $this->runQueues(['datastore_import']);
     $service->delete('dataset', 123);
     $success = $this->runQueues(['orphan_reference_processor']);
