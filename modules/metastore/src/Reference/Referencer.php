@@ -313,6 +313,7 @@ class Referencer {
     // Create node to store this reference.
     $storage = $this->storageFactory->getInstance($property_id);
     $entity_uuid = $storage->store($json, $data->identifier);
+    $storage->publish($entity_uuid);
     return $entity_uuid;
   }
 
