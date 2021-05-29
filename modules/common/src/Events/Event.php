@@ -12,12 +12,27 @@ use Symfony\Component\EventDispatcher\Event as SymfonyEvent;
 class Event extends SymfonyEvent {
   private $data;
   private $exception;
+  private $validator;
 
   /**
    * Constructor.
    */
-  public function __construct($data) {
-    $this->data = $data;
+  public function __construct($data, $validator = NULL) {
+    if (!isset($validator)) {
+      $validator = function ($data) {
+        return TRUE;
+      };
+    }
+
+    $this->validator = $validator;
+
+    if (call_user_func($this->validator, $data)) {
+      $this->data = $data;
+    }
+    else {
+      throw new \Exception("Invalid event data.");
+    }
+
     $this->exception = NULL;
   }
 
@@ -32,7 +47,12 @@ class Event extends SymfonyEvent {
    * Setter.
    */
   public function setData($data): void {
-    $this->data = $data;
+    if (call_user_func($this->validator, $data)) {
+      $this->data = $data;
+    }
+    else {
+      throw new \Exception("Invalid event data.");
+    }
   }
 
   /**
