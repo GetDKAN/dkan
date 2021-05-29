@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Util;
+namespace Drupal\Tests\common\Unit\Util;
 
 use Drupal\common\Util\RequestParamNormalizer;
 use PHPUnit\Framework\TestCase;
@@ -72,11 +72,11 @@ class RequestParamNormalizerTest extends TestCase {
 
 
   private function getSampleJson() {
-    return file_get_contents(__DIR__ . "/../../files/query.json");
+    return file_get_contents(__DIR__ . "/../../../files/query.json");
   }
 
   private function getSampleSchema() {
-    return file_get_contents(__DIR__ . "/../../files/querySchema.json");
+    return file_get_contents(__DIR__ . "/../../../files/querySchema.json");
   }
 
 }

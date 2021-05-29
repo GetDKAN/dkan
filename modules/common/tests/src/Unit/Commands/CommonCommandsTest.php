@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\Tests\common\Unit\Commands;
+
 use Drupal\common\Commands\CommonCommands;
 use Drupal\common\DatasetInfo;
 use MockChain\Chain;

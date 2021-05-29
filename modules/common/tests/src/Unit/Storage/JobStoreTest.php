@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Storage;
+namespace Drupal\Tests\common\Unit\Storage;
 
 use Contracts\Mock\Storage\Memory;
 use Drupal\Core\Database\Connection;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common;
+namespace Drupal\Tests\common\Unit;
 
 use Drupal\Core\Extension\Extension;
 use Drupal\common\Docs;
@@ -74,7 +74,7 @@ class DocsTest extends TestCase {
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(ModuleHandlerInterface::class, 'getModule', Extension::class)
-      ->add(Extension::class, 'getPath', __DIR__ . "/..");
+      ->add(Extension::class, 'getPath', __DIR__ . "/../..");
 
     return $mockChain;
   }

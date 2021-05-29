@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common;
+namespace Drupal\Tests\common\Unit;
 
 use Drupal\common\DatasetInfo;
 use Drupal\Core\DependencyInjection\Container;

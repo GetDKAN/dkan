@@ -1,5 +1,6 @@
-dkan.common.admin_config:
-  route_name: dkan.common.admin_config
-  title: DKAN
-  parent: system.admin_config
-  description: Modify DKAN configuration.
+system.admin_dkan:
+  title: 'DKAN'
+  description: 'Administer DKAN catalog.'
+  route_name: system.admin_dkan
+  parent: 'system.admin'
+  weight: 4
