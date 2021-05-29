@@ -4,7 +4,6 @@ namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobstoreFactory;
-use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
@@ -20,6 +19,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
 use Drupal\datastore\Service\Import as ImportService;
 use Drupal\common\Storage\JobStore;
+use Drupal\metastore\MetastoreItemInterface;
 
 /**
  *
@@ -71,11 +71,11 @@ class DatastoreSubscriberTest extends TestCase {
   public function testResourcePurging() {
 
     $mockDatasetPublication = (new Chain($this))
-      ->add(Event::class, 'getData', ContentEntityInterface::class)
+      ->add(Event::class, 'getData', MetastoreItemInterface::class)
       ->getMock();
 
     $chain = $this->getContainerChain();
-    $chain->add(ContentEntityInterface::class, 'uuid', 1);
+    $chain->add(MetastoreItemInterface::class, 'getIdentifier', 1);
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $voidReturn = $subscriber->purgeResources($mockDatasetPublication);
