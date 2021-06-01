@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common;
+namespace Drupal\Tests\common\Unit;
 
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Tests\common\Unit\Mocks\Logging;

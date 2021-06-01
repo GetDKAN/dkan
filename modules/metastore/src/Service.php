@@ -139,9 +139,16 @@ class Service implements ContainerInjectionInterface {
       $objects[] = $object;
     }
 
-    $objects = $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects);
+    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
+      if (!is_array($data)) {
+        return FALSE;
+      }
+      if (count($data) == 0) {
+        return TRUE;
+      }
+      return $data[0] instanceof RootedJsonData;
+    });
 
-    return $objects;
   }
 
   /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\common\Storage;
+namespace Drupal\Tests\common\Unit\Storage;
 
 use Drupal\common\Storage\Query;
 use Drupal\common\Storage\SelectFactory;
