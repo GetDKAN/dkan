@@ -51,13 +51,6 @@ class DataTest extends TestCase {
     $this->assertEquals(json_encode('blah'), $storage->retrievePublished(1));
   }
 
-  public function testPublishNonDataset() {
-
-    $this->expectExceptionMessage('Publishing currently only implemented for datasets.');
-    $nodeData = new NodeData('foobar', $this->getEtmChain()->getMock());
-    $nodeData->publish('1');
-  }
-
   public function testPublishDatasetNotFound() {
 
     $etmMock = $this->getEtmChain()

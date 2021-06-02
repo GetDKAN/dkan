@@ -5,16 +5,17 @@ namespace Drupal\metastore;
 use Drupal\common\Resource;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
-use Drupal\metastore\Events\Registration;
+use Drupal\common\EventDispatcherTrait;
 use Drupal\metastore\Exception\AlreadyRegistered;
 
 /**
  * Map resource URLs to local files.
  */
 class ResourceMapper {
+  use EventDispatcherTrait;
 
   const EVENT_REGISTRATION = 'dkan_metastore_resource_mapper_registration';
+  const EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE = 'dkan_metastore_pre_remove_source';
 
   const DEREFERENCE_NO = 0;
   const DEREFERENCE_YES = 1;
@@ -36,9 +37,8 @@ class ResourceMapper {
   /**
    * Constructor.
    */
-  public function __construct(DatabaseTableInterface $store, ContainerAwareEventDispatcher $eventDispatcher) {
+  public function __construct(DatabaseTableInterface $store) {
     $this->store = $store;
-    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -50,7 +50,7 @@ class ResourceMapper {
   public function register(Resource $resource) : bool {
     $this->filePathExists($resource->getFilePath());
     $this->store->store(json_encode($resource));
-    $this->eventDispatcher->dispatch(self::EVENT_REGISTRATION, new Registration($resource));
+    $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
 
     return TRUE;
   }
@@ -65,7 +65,7 @@ class ResourceMapper {
     if ($this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       if (!$this->exists($identifier, $perspective, $version)) {
         $this->store->store(json_encode($resource));
-        $this->eventDispatcher->dispatch(self::EVENT_REGISTRATION, new Registration($resource));
+        $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
       }
       else {
         throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
@@ -82,8 +82,7 @@ class ResourceMapper {
   public function registerNewVersion(Resource $resource) {
     $this->validateNewVersion($resource);
     $this->store->store(json_encode($resource));
-    $this->eventDispatcher->dispatch(self::EVENT_REGISTRATION,
-      new Registration($resource));
+    $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
   }
 
   /**
@@ -133,7 +132,14 @@ class ResourceMapper {
    */
   public function remove(Resource $resource) {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
-      $this->store->remove($resource->getUniqueIdentifier());
+      $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
+      if ($resource->getPerspective() == 'source') {
+        // Dispatch event to initiate removal of
+        // the the datastore and local file.
+        $this->dispatchEvent(self::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE, $resource);
+      }
+      // Remove the resource mapper perspective.
+      $this->store->remove($object->id);
     }
   }
 
@@ -174,6 +180,7 @@ class ResourceMapper {
       'perspective',
       'filePath',
       'mimeType',
+      'id',
     ];
     $query->conditionByIsEqualTo('identifier', $identifier);
     $query->conditionByIsEqualTo('perspective', $perspective);

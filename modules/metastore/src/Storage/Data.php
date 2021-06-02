@@ -157,10 +157,6 @@ abstract class Data implements MetastoreStorageInterface {
    */
   public function publish(string $uuid) : string {
 
-    if ($this->schemaId !== 'dataset') {
-      throw new \Exception("Publishing currently only implemented for datasets.");
-    }
-
     $entity = $this->getEntityLatestRevision($uuid);
 
     if (!$entity) {

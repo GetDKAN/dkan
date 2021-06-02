@@ -10,13 +10,13 @@ use Drupal\metastore\MetastoreItemInterface;
 class DataPublicationTest extends TestCase {
 
   public function test() {
-    $mockItem = (new Chain($this))
+    $mockNode = (new Chain($this))
       ->add(MetastoreItemInterface::class)
       ->getMock();
 
-    $datasetPublication = new Event($mockItem);
+    $datasetPublication = new Event($mockNode);
 
-    $this->assertEquals($mockItem, $datasetPublication->getData());
+    $this->assertEquals($mockNode, $datasetPublication->getData());
   }
 
 }

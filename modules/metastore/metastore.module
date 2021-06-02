@@ -91,7 +91,7 @@ function metastore_data_lifecycle(EntityInterface $entity, string $stage) {
  *
  * @param Drupal\Core\Entity\ContentEntityInterface $entity
  *   A Drupal content entity.
- * 
+ *
  * @return bool
  *   Returns true if the entity is used by the metastore.
  */

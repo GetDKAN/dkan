@@ -96,8 +96,7 @@ class LifeCycle {
     $raw = $data->getRawMetadata();
 
     if (is_object($raw)) {
-      $referencer = \Drupal::service("dkan.metastore.orphan_checker");
-      $referencer->processReferencesInDeletedDataset($raw);
+      $this->orphanChecker->processReferencesInDeletedDataset($raw);
     }
   }
 
@@ -232,7 +231,7 @@ class LifeCycle {
 
     // Check for possible orphan property references when updating a dataset.
     if (!$data->isNew()) {
-      $raw = json_decode($data->getRawMetadata());
+      $raw = $data->getRawMetadata();
       $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }
 

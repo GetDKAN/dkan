@@ -23,6 +23,13 @@ class Data implements MetastoreItemInterface {
   protected $node;
 
   /**
+   * Referenced raw metadata string.
+   *
+   * @var string
+   */
+  protected $rawMetadata;
+
+  /**
    * Constructor.
    */
   public function __construct(EntityInterface $entity) {
@@ -35,6 +42,7 @@ class Data implements MetastoreItemInterface {
    */
   private function fix() {
     $this->fixDataType();
+    $this->saveRawMetadata();
   }
 
   /**
@@ -59,7 +67,9 @@ class Data implements MetastoreItemInterface {
    */
   public function getRawMetadata() {
     $this->fix();
-    return $this->node->get('field_json_metadata')->getString();
+    if (isset($this->node->rawMetadata)) {
+      return json_decode($this->node->rawMetadata);
+    }
   }
 
   /**
@@ -141,6 +151,17 @@ class Data implements MetastoreItemInterface {
     $this->fix();
     $schemaId = $this->node->get('field_data_type')->getString();
     return $schemaId;
+  }
+
+  /**
+   * Private.
+   */
+  private function saveRawMetadata() {
+    // Temporarily save the raw json metadata, for later use.
+    if (!isset($this->node->rawMetadata)) {
+      $raw = $this->node->get('field_json_metadata')->value;
+      $this->node->rawMetadata = $raw;
+    }
   }
 
   /**

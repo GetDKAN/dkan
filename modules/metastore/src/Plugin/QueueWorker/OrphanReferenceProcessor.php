@@ -10,6 +10,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\common\EventDispatcherTrait;
 
 /**
  * Verifies if a dataset property reference is orphaned, then deletes it.
@@ -24,6 +25,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
   use LoggerTrait;
+  use EventDispatcherTrait;
+
+  const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
 
   /**
    * The node storage service.
@@ -109,15 +113,19 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The uuid.
    */
   protected function unpublishReference(string $property_id, string $uuid) {
-    $references = $this->nodeStorage
-      ->loadByProperties(
-              [
-                'field_data_type' => $property_id,
-                'uuid' => $uuid,
-              ]
-          );
+    $references = $this->nodeStorage->loadByProperties(
+      [
+        'uuid' => $uuid,
+        'field_data_type' => $property_id,
+      ]
+    );
     if (FALSE !== ($reference = reset($references))) {
-      $reference->set('moderation_state', 'draft');
+      // When orphaning distribution nodes, trigger database clean up.
+      if ($property_id === 'distribution') {
+        $this->dispatchEvent(self::EVENT_ORPHANING_DISTRIBUTION, $uuid);
+      }
+      $reference->set('moderation_state', 'orphaned');
+      $reference->save();
     }
   }
 

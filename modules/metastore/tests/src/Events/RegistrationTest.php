@@ -3,7 +3,7 @@
 namespace Drupal\Tests\metastore\Unit\Events;
 
 use Drupal\common\Resource;
-use Drupal\metastore\Events\Registration;
+use Drupal\common\Events\Event;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
@@ -14,9 +14,9 @@ class RegistrationTest extends TestCase {
       ->add(Resource::class)
       ->getMock();
 
-    $registration = new Registration($mockResource);
+    $registration = new Event($mockResource);
 
-    $this->assertEquals($mockResource, $registration->getResource());
+    $this->assertEquals($mockResource, $registration->getData());
   }
 
 }

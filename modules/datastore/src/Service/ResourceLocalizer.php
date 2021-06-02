@@ -14,6 +14,7 @@ use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
+use Drupal\common\EventDispatcherTrait;
 
 /**
  * Resource localizer.
@@ -22,6 +23,7 @@ use Procrastinator\Result;
  */
 class ResourceLocalizer {
   use LoggerTrait;
+  use EventDispatcherTrait;
 
   const LOCAL_FILE_PERSPECTIVE = 'local_file';
   const LOCAL_URL_PERSPECTIVE = 'local_url';
@@ -109,17 +111,38 @@ class ResourceLocalizer {
   }
 
   /**
-   * Remove.
+   * Remove local file.
    */
   public function remove($identifier, $version = NULL) {
     /** @var \Drupal\common\Resource $resource */
     $resource = $this->get($identifier, $version);
+    $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
+    if ($resource2) {
+      $this->removeLocalUrl($resource2);
+    }
     if ($resource) {
-      $this->fileMapper->remove($resource);
+      $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
       if (file_exists($resource->getFilePath())) {
-        unlink($resource->getFilePath());
+        \Drupal::service('file_system')->deleteRecursive("public://resources/{$uuid}");
       }
-      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($resource->getUniqueIdentifier());
+      $this->removeJob($uuid);
+      $this->fileMapper->remove($resource);
+    }
+  }
+
+  /**
+   * Remove the local_url perspective.
+   */
+  private function removeLocalUrl(Resource $resource) {
+    return $this->fileMapper->remove($resource);
+  }
+
+  /**
+   * Remove the filefetcher job record.
+   */
+  private function removeJob($uuid) {
+    if ($uuid) {
+      $this->getJobStoreFactory()->getInstance(FileFetcher::class)->remove($uuid);
     }
   }
 

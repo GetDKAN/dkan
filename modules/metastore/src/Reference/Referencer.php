@@ -285,7 +285,20 @@ class Referencer {
    */
   private function checkExistingReference(string $property_id, $data) {
     $storage = $this->storageFactory->getInstance($property_id);
-    return $storage->retrieveByHash(md5(json_encode($data)), $property_id);
+    $nodes = $storage->getEntityStorage()->loadByProperties([
+      'field_data_type' => $property_id,
+      'title' => md5(json_encode($data)),
+    ]);
+
+    if ($node = reset($nodes)) {
+      // If an existing but orphaned data node is found,
+      // change the state back to published.
+      // @ToDo: if the referencing node is in a draft state, do not publish the referenced node.
+      $node->set('moderation_state', 'published');
+      $node->save();
+      return $node->uuid();
+    }
+    return NULL;
   }
 
   /**
