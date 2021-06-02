@@ -210,13 +210,20 @@ class Service implements ContainerInjectionInterface {
   /**
    * Summary.
    */
-  public function summary($identifier) {
+  public function summary($identifier, $show_id = NULL) {
     $id = NULL; $version = NULL;
     [$id, $version] = Resource::getIdentifierAndVersion($identifier);
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {
       $data = $storage->getSummary();
+
+      // Hide identifier field by default.
+      if (empty($show_id) && isset($data->columns['record_number'])) {
+        unset($data->columns['record_number']);
+        $data->numOfColumns--;
+      }
+
       return $data;
     }
     throw new \Exception("no storage");
@@ -285,7 +292,11 @@ class Service implements ContainerInjectionInterface {
     $schema = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
       $storage = $storageMap[$resource["alias"]];
-      $schema[$resource["id"]] = $storage->getSchema();
+      $schemaItem = $storage->getSchema();
+      if (empty($datastoreQuery->{"$.show_id"})) {
+        $schemaItem['fields'] = $this->filterSchemaFields($schemaItem);
+      }
+      $schema[$resource["id"]] = $schemaItem;
     }
     return $schema;
   }
@@ -325,6 +336,14 @@ class Service implements ContainerInjectionInterface {
     }
 
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
+
+    if (empty($datastoreQuery->{"$.show_id"})) {
+      $schema = $storageMap[$primaryAlias]->getSchema();
+      if (empty($datastoreQuery->{"$.properties"})) {
+        $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
+      }
+    }
+
     $query = QueryFactory::create($datastoreQuery, $storageMap);
 
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
@@ -334,6 +353,23 @@ class Service implements ContainerInjectionInterface {
     }
     return $result;
 
+  }
+
+  /**
+   * Filters schema fields.
+   *
+   * @param array $schema
+   *   Schema.
+   *
+   * @return array
+   *   Filtered schema fields.
+   */
+  private function filterSchemaFields(array $schema) : array {
+    // Hide identifier field by default.
+    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == 'record_number') {
+      unset($schema['fields']['record_number']);
+    }
+    return $schema['fields'];
   }
 
   /**
