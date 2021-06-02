@@ -24,13 +24,6 @@ class DataTest extends TestCase {
     $this->assertEquals('field_json_metadata', $data->getMetadataField());
   }
 
-  public function testPublishNonDataset() {
-
-    $this->expectExceptionMessage('Publishing currently only implemented for datasets.');
-    $nodeData = new NodeData('foobar', $this->getEtmChain()->getMock());
-    $nodeData->publish('1');
-  }
-
   public function testPublishDatasetNotFound() {
 
     $etmMock = $this->getEtmChain()
