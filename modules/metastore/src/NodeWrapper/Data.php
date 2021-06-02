@@ -6,6 +6,7 @@ use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\metastore\MetastoreItemInterface;
+use Drupal\metastore\Storage\Data as Storage;
 use Drupal\node\Entity\Node;
 
 /**
@@ -22,6 +23,13 @@ class Data implements MetastoreItemInterface {
   protected $node;
 
   /**
+   * Referenced raw metadata string.
+   *
+   * @var string
+   */
+  protected $rawMetadata;
+
+  /**
    * Constructor.
    */
   public function __construct(EntityInterface $entity) {
@@ -34,6 +42,7 @@ class Data implements MetastoreItemInterface {
    */
   private function fix() {
     $this->fixDataType();
+    $this->saveRawMetadata();
   }
 
   /**
@@ -58,7 +67,9 @@ class Data implements MetastoreItemInterface {
    */
   public function getRawMetadata() {
     $this->fix();
-    return $this->node->get('field_json_metadata')->getString();
+    if (isset($this->node->rawMetadata)) {
+      return json_decode($this->node->rawMetadata);
+    }
   }
 
   /**
@@ -74,7 +85,10 @@ class Data implements MetastoreItemInterface {
    */
   public function getMetaData() {
     $this->fix();
-    return json_decode($this->node->get('field_json_metadata')->getString());
+    $metadata = $this->node->get('field_json_metadata')->getString();
+    // Legacy metadata could come unwrapped from the db.
+    $metadata = Storage::unwrapMetadata($metadata);
+    return json_decode($metadata);
   }
 
   /**
@@ -137,6 +151,26 @@ class Data implements MetastoreItemInterface {
     $this->fix();
     $schemaId = $this->node->get('field_data_type')->getString();
     return $schemaId;
+  }
+
+  /**
+   * Private.
+   */
+  private function saveRawMetadata() {
+    // Temporarily save the raw json metadata, for later use.
+    if (!isset($this->node->rawMetadata)) {
+      $raw = $this->node->get('field_json_metadata')->value;
+      $this->node->rawMetadata = $raw;
+    }
+  }
+
+  /**
+   * Getter.
+   */
+  public function getOriginal() {
+    if (isset($this->node->original)) {
+      return new Data($this->node->original);
+    }
   }
 
 }
