@@ -20,7 +20,7 @@ dkan.common.api.version:
   path: '/api/1'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\common\Docs::getComplete'}
+    { _controller: '\Drupal\common\Controller\OpenApiController::getComplete'}
   requirements:
     _permission: 'access content'
   options:
