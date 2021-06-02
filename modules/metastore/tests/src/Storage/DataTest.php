@@ -2,12 +2,16 @@
 
 namespace Drupal\Tests\metastore\Storage;
 
+use Drupal\content_moderation\Plugin\Field\ModerationStateFieldItemList;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorage;
 use MockChain\Chain;
+use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,6 +26,29 @@ class DataTest extends TestCase {
     $data = new NodeData('dataset', $this->getEtmChain()->getMock());
     $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
     $this->assertEquals('field_json_metadata', $data->getMetadataField());
+  }
+
+  public function testGetRetrievePublishedLegacy() {
+    $json = json_encode(
+      [
+        'identifier' => 1,
+        'data' => 'blah',
+      ]
+    );
+
+    $getOptions = (new Options())
+      ->add('moderation_state', ModerationStateFieldItemList::class)
+      ->add('field_json_metadata', FieldItemListInterface::class);
+
+    $etmMock = $this->getEtmChain()
+      ->add(NodeStorage::class, 'load', NodeInterface::class)
+      ->add(NodeInterface::class, 'get', $getOptions)
+      ->add(ModerationStateFieldItemList::class, 'getString', 'published')
+      ->add(FieldItemListInterface::class, 'getString', $json)
+      ->getMock();
+
+    $storage = new NodeData('keyword', $etmMock);
+    $this->assertEquals(json_encode('blah'), $storage->retrievePublished(1));
   }
 
   public function testPublishNonDataset() {

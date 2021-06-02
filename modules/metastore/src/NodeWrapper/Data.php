@@ -6,6 +6,7 @@ use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\metastore\MetastoreItemInterface;
+use Drupal\metastore\Storage\Data as Storage;
 use Drupal\node\Entity\Node;
 
 /**
@@ -74,7 +75,10 @@ class Data implements MetastoreItemInterface {
    */
   public function getMetaData() {
     $this->fix();
-    return json_decode($this->node->get('field_json_metadata')->getString());
+    $metadata = $this->node->get('field_json_metadata')->getString();
+    // Legacy metadata could come unwrapped from the db.
+    $metadata = Storage::unwrapMetadata($metadata);
+    return json_decode($metadata);
   }
 
   /**

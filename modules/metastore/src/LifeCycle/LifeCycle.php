@@ -129,11 +129,11 @@ class LifeCycle {
   protected function distributionLoad(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
 
-    if (!isset($metadata->data->downloadURL)) {
+    if (!isset($metadata->downloadURL)) {
       return;
     }
 
-    $downloadUrl = $metadata->data->downloadURL;
+    $downloadUrl = $metadata->downloadURL;
 
     if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
       $resourceIdentifier = $downloadUrl;
@@ -144,14 +144,14 @@ class LifeCycle {
       $downloadUrl = isset($original) ? $original : "";
 
       $refProperty = "%Ref:downloadURL";
-      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
+      $metadata->{$refProperty} = count($ref) == 0 ? NULL : $ref;
     }
 
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
 
-    $metadata->data->downloadURL = $downloadUrl;
+    $metadata->downloadURL = $downloadUrl;
 
     $data->setMetadata($metadata);
   }

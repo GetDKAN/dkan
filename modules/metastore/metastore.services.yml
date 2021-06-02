@@ -39,6 +39,7 @@ services:
     arguments:
       - '@config.factory'
       - '@dkan.metastore.storage'
+      - '@dkan.metastore.service'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
 
@@ -63,7 +64,7 @@ services:
     class: \Drupal\metastore\ValidMetadataFactory
     arguments:
       - '@dkan.metastore.schema_retriever'
-  
+
   dkan.metastore.metastore_item_factory:
     class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:
