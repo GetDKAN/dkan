@@ -6,7 +6,6 @@ use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
-use Drupal\metastore\Events\PreReference;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Reference\OrphanChecker;
@@ -129,11 +128,11 @@ class LifeCycle {
   protected function distributionLoad(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
 
-    if (!isset($metadata->data->downloadURL)) {
+    if (!isset($metadata->downloadURL)) {
       return;
     }
 
-    $downloadUrl = $metadata->data->downloadURL;
+    $downloadUrl = $metadata->downloadURL;
 
     if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
       $resourceIdentifier = $downloadUrl;
@@ -144,14 +143,14 @@ class LifeCycle {
       $downloadUrl = isset($original) ? $original : "";
 
       $refProperty = "%Ref:downloadURL";
-      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
+      $metadata->{$refProperty} = count($ref) == 0 ? NULL : $ref;
     }
 
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
 
-    $metadata->data->downloadURL = $downloadUrl;
+    $metadata->downloadURL = $downloadUrl;
 
     $data->setMetadata($metadata);
   }
@@ -222,7 +221,9 @@ class LifeCycle {
       $data->setIdentifier($metadata->identifier);
     }
 
-    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, new PreReference($data));
+    $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
+      return $data instanceof MetastoreItemInterface;
+    });
 
     $metadata = $this->referencer->reference($metadata);
 
