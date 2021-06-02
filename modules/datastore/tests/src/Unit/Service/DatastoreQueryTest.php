@@ -151,7 +151,7 @@ class DatastoreQueryTest extends TestCase {
       ->add(Import::class, "getInstance", ServiceImport::class)
       ->add(ServiceImport::class, "getStorage", DatabaseTable::class)
       ->add(DatabaseTable::class, "query", $queryResult)
-      ->add(DatabaseTable::class, "getSchema", ["fields" => ["a", "b"]])
+      ->add(DatabaseTable::class, "getSchema", ["fields" => ["a" => "a", "b" => "b"]])
       ->add(DatabaseTable::class, "getTableName", "table2");
 
     $container = $chain->getMock();
