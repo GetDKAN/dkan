@@ -5,7 +5,6 @@ namespace Drupal\metastore\Reference;
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\LoggerTrait;
-use Drupal\metastore\Service;
 
 /**
  * Metastore dereferencer.
@@ -22,23 +21,11 @@ class Dereferencer {
   private $storageFactory;
 
   /**
-   * Metastore service.
-   *
-   * @var \Drupal\metastore\Service
-   */
-  private $service;
-
-  /**
    * Constructor.
    */
-  public function __construct(
-    ConfigFactoryInterface $configService,
-    FactoryInterface $storageFactory,
-    Service $service
-  ) {
+  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
-    $this->service = $service;
   }
 
   /**
@@ -61,8 +48,8 @@ class Dereferencer {
       if (isset($data->{$propertyId})) {
         $referenceProperty = "%Ref:{$propertyId}";
         [$ref, $actual] = $this->dereferenceProperty($propertyId, $data->{$propertyId});
-        $data->{$referenceProperty} = is_array($ref) ? array_map('json_decode', $ref) : json_decode($ref);
-        $data->{$propertyId} = is_array($actual) ? array_map('json_decode', $actual) : json_decode($actual);
+        $data->{$referenceProperty} = $ref;
+        $data->{$propertyId} = $actual;
       }
     }
     return $data;
@@ -141,9 +128,8 @@ class Dereferencer {
     $value = $storage->retrieve($uuid);
 
     if ($value) {
-      $metadata = $this->service->getValidMetadataFactory()->get($property_id, $value);
-      $wrapped_metadata = $this->service->wrapMetadata($uuid, $metadata);
-      return [$wrapped_metadata, $metadata];
+      $metadata = json_decode($value);
+      return [$metadata, $metadata->data];
     }
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.

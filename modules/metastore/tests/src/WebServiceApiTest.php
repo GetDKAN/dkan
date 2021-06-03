@@ -81,7 +81,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
 
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->get('dataset', 'dataset-id');
+    $response = $controller->get(1, 'dataset');
     $this->assertEquals($json, $response->getContent());
   }
 
@@ -94,7 +94,7 @@ class WebServiceApiTest extends TestCase {
     // Try with show ref ids.
     $mockChain->add(Request::class, 'get', TRUE);
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->get('dataset', 'dataset-id');
+    $response = $controller->get('dataset', '1');
     $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
   }
 
@@ -109,7 +109,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(Request::class, 'get', TRUE);
 
     $controller = WebServiceApi::create($mockChain->getMock());
-    $response = $controller->get('dataset', 'dataset-id');
+    $response = $controller->get(1, 'dataset');
     // References should be swapped.
     $this->assertEquals('{"name":{"identifier":"123","data":[]}}', $response->getContent());
   }

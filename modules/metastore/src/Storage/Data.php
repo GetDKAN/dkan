@@ -100,12 +100,9 @@ abstract class Data implements MetastoreStorageInterface {
     $all = [];
     foreach ($entity_ids as $nid) {
       $entity = $this->entityStorage->load($nid);
-      if ($entity->get('moderation_state')->getString() !== 'published') {
-        continue;
+      if ($entity->get('moderation_state')->getString() === 'published') {
+        $all[] = $entity->get('field_json_metadata')->getString();
       }
-      $metadata = $entity->get('field_json_metadata')->getString();
-      // Legacy metadata could come unwrapped from the db.
-      $all[$entity->uuid()] = self::unwrapMetadata($metadata);
     }
     return $all;
   }
@@ -119,9 +116,7 @@ abstract class Data implements MetastoreStorageInterface {
     $entity = $this->getEntityPublishedRevision($uuid);
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
-      $metadata = $entity->get('field_json_metadata')->getString();
-      // Legacy metadata could come unwrapped from the db.
-      return self::unwrapMetadata($metadata);
+      return $entity->get('field_json_metadata')->getString();
     }
 
     throw new \Exception("Error retrieving published dataset: {$uuid} not found.");
@@ -141,13 +136,11 @@ abstract class Data implements MetastoreStorageInterface {
       $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if (!$entity) {
-      throw new \Exception("Error retrieving dataset: {$uuid} not found.");
+    if ($entity) {
+      return $entity->get('field_json_metadata')->getString();
     }
 
-    $metadata = $entity->get('field_json_metadata')->getString();
-    // Legacy metadata could come unwrapped from the db.
-    return self::unwrapMetadata($metadata);
+    throw new \Exception("Error retrieving dataset: {$uuid} not found.");
   }
 
   /**
@@ -294,7 +287,7 @@ abstract class Data implements MetastoreStorageInterface {
       $title = isset($data->title) ? $data->title : $data->name;
     }
     else {
-      $title = md5(json_encode($data));
+      $title = md5(json_encode($data->data));
     }
     $entity = $this->entityStorage
       ->create(
@@ -381,23 +374,6 @@ abstract class Data implements MetastoreStorageInterface {
       ->load('dkan_publishing')
       ->getTypePlugin()
       ->getConfiguration()['default_moderation_state'];
-  }
-
-  /**
-   * Unwraps metadata.
-   *
-   * @param string $jsonString
-   *   Metadata.
-   *
-   * @return string
-   *   Unwrapped metadata.
-   */
-  public static function unwrapMetadata(string $jsonString) {
-    $metadata = json_decode($jsonString, TRUE);
-    if (is_array($metadata) && count($metadata) == 2 && isset($metadata['identifier']) && isset($metadata['data'])) {
-      return json_encode($metadata['data']);
-    }
-    return $jsonString;
   }
 
 }
