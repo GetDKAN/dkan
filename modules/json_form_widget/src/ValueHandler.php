@@ -2,6 +2,8 @@
 
 namespace Drupal\json_form_widget;
 
+use Drupal\Core\Datetime\DrupalDateTime;
+
 /**
  * Class ValueHandler.
  */
@@ -33,10 +35,17 @@ class ValueHandler {
    * Flatten values for string properties.
    */
   public function handleStringValues($formValues, $property) {
-    if (!empty($formValues[$property])) {
-      return $formValues[$property];
+    if (isset($formValues[$property]) && $formValues[$property] instanceof DrupalDateTime) {
+      return $formValues[$property]->__toString();
     }
-    return FALSE;
+    if (!empty($formValues[$property]) && isset($formValues[$property]['date_range'])) {
+      return $formValues[$property]['date_range'];
+    }
+    // Handle select_or_other_select.
+    if (isset($formValues[$property]['select'])) {
+      return $formValues[$property][0];
+    }
+    return !empty($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
   }
 
   /**
@@ -62,18 +71,48 @@ class ValueHandler {
    * Flatten values for array properties.
    */
   public function handleArrayValues($formValues, $property, $schema) {
-    $data = FALSE;
+    $data = [];
     $subschema = $schema->items;
     if ($subschema->type === "object") {
       return $this->getObjectInArrayData($formValues, $property, $subschema);
     }
 
-    foreach ($formValues[$property][$property] as $key => $value) {
-      if (!empty($value)) {
-        $data[$key] = $value;
+    foreach ($formValues[$property][$property] as $value) {
+      $data = array_merge($data, $this->flattenArraysInArrays($value));
+    }
+    return !empty($data) ? $data : FALSE;
+  }
+
+  /**
+   * Flatten values for arrays in arrays.
+   */
+  private function flattenArraysInArrays($value) {
+    $data = [];
+    if (is_array($value)) {
+      foreach ($value as $item) {
+        $data[] = $this->cleanSelectId($item);
       }
     }
+    elseif (!empty($value)) {
+      $data[] = $this->cleanSelectId($value);
+    }
     return $data;
+  }
+
+  /**
+   * Clear item from select2 $ID.
+   *
+   * @param string $value
+   *   Value that we want to clean.
+   *
+   * @return array
+   *   String without $ID:.
+   */
+  private function cleanSelectId($value) {
+    if (substr($value, 0, 4) === "\$ID:") {
+      return substr($value, 4);
+    }
+    return $value;
   }
 
   /**

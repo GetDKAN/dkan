@@ -28,7 +28,7 @@ services:
     class: \Drupal\datastore\Service\Factory\Import
     arguments:
       - '@dkan.common.job_store'
-      - '@datastore.database_table_factory'
+      - '@dkan.datastore.database_table_factory'
 
   dkan.datastore.logger_channel:
     parent: logger.channel_base
@@ -46,7 +46,12 @@ services:
       - '@config.factory'
 
   dkan.datastore.event_subscriber:
-    class: \Drupal\datastore\EventSubscriber\Subscriber
+    class: \Drupal\datastore\EventSubscriber\DatastoreSubscriber
+    arguments:
+      - '@logger.factory'
+      - '@dkan.datastore.service'
+      - '@dkan.datastore.service.resource_purger'
+      - '@dkan.common.job_store'
     tags:
       - { name: event_subscriber }
 
@@ -62,36 +67,3 @@ services:
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
-
-
-
-  # @deprecated
-
-  datastore.service:
-    class: \Drupal\datastore\Service
-    arguments:
-      - '@dkan.datastore.service.resource_localizer'
-      - '@dkan.datastore.service.factory.import'
-      - '@queue'
-      - '@dkan.common.job_store'
-
-  datastore.service.factory.import:
-    class: \Drupal\datastore\Service\Factory\Import
-    arguments:
-      - '@dkan.common.job_store'
-      - '@datastore.database_table_factory'
-
-  datastore.logger_channel:
-    parent: logger.channel_base
-    arguments: ['datastore']
-
-  datastore.database_table_factory:
-    class: \Drupal\datastore\Storage\DatabaseTableFactory
-    arguments:
-      - '@database'
-
-  datastore.sql_endpoint.service:
-    class: \Drupal\datastore\SqlEndpoint\Service
-    arguments:
-      - '@dkan.datastore.service'
-      - '@config.factory'

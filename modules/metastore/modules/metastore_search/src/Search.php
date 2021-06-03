@@ -19,7 +19,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Search implements ContainerInjectionInterface {
   use QueryBuilderTrait;
   use FacetsFromIndexTrait;
+  // @todo Use real classes to get proper encapsulation.
   use FacetsFromContentTrait;
+
+  const EVENT_SEARCH = 'dkan_metastore_search_search';
+  const EVENT_SEARCH_PARAMS = 'dkan_metastore_search_search_params';
+
+  // @todo this constant is used by QueryBuilder, maybe we need a class.
+  const EVENT_SEARCH_QUERY_BUILDER_CONDITION = 'dkan_metastore_search_query_builder_condition';
 
   /**
    * The search index.
@@ -94,11 +101,14 @@ class Search implements ContainerInjectionInterface {
    *   Search parameters.
    */
   public function search(array $params = []) {
+    $params = $this->dispatchEvent(self::EVENT_SEARCH_PARAMS, $params);
     $query = $this->getQuery($params, $this->index, $this->queryHelper)[0];
     $result = $query->execute();
 
     $count = $result->getResultCount();
     $data = $this->getData($result);
+
+    $data = $this->dispatchEvent(self::EVENT_SEARCH, $data);
 
     return (object) [
       'total' => $count,
@@ -116,6 +126,8 @@ class Search implements ContainerInjectionInterface {
    *   Array of facets, each containing type, name, total.
    */
   public function facets(array $params) : array {
+    $params['page-size'] = PHP_INT_MAX;
+    $params['page'] = 1;
 
     list($query, $activeConditions) = $this->getQuery($params, $this->index, $this->queryHelper);
 

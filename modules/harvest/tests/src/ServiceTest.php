@@ -5,18 +5,20 @@ namespace Drupal\Tests\harvest;
 use Contracts\FactoryInterface;
 use Contracts\Mock\Storage\Memory;
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\Core\Utility\Error;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\harvest\Service as HarvestService;
 use Drupal\harvest\Storage\DatabaseTableFactory;
 use Drupal\metastore\Service as Metastore;
 use Drupal\node\NodeStorage;
-use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use Drupal\Core\Entity\EntityTypeManager;
 use Harvest\ETL\Extract\DataJson;
 use Harvest\ETL\Load\Simple;
 use MockChain\Chain;
 use MockChain\Options;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -221,7 +223,7 @@ class ServiceTest extends TestCase {
    */
   public function testPublish() {
 
-    $datasetUuids = ['abcd-1001', 'abcd-1002', 'abcd-1003'];
+    $datasetUuids = ['abcd-1001', 'abcd-1002', 'abcd-1003', 'abcd-1004'];
     $lastRunInfo = (object) [
       'status' => [
         'extracted_items_ids' => $datasetUuids,
@@ -229,16 +231,36 @@ class ServiceTest extends TestCase {
           'abcd-1001' => "SUCCESS",
           'abcd-1002' => "SUCCESS",
           'abcd-1003' => "SUCCESS",
+          'abcd-1004' => "FAILURE",
         ],
       ],
     ];
 
+    $metastorePublicationResults = (new Sequence())
+      // abcd-1001 will be skipped since already published.
+      ->add(FALSE)
+      // abcd-1002 will be skipped due to exception.
+      ->add(new \Exception('FooBar'))
+      // abcd-1003 should be published without issue.
+      ->add(TRUE);
+
+    $logger = (new Chain($this))
+      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
+      ->add(LoggerChannelInterface::class, 'error', NULL, 'error');
+
     $container = $this->getCommonMockChain()
-      ->add(DatabaseTable::class, "retrieve", json_encode($lastRunInfo));
+      ->add(DatabaseTable::class, "retrieve", json_encode($lastRunInfo))
+      ->add(Metastore::class, 'publish', $metastorePublicationResults);
 
     $service = HarvestService::create($container->getMock());
+    $service->setLoggerFactory($logger->getMock());
     $result = $service->publish('1');
-    $this->assertEquals($result, ['1', '1', '1']);
+
+    $this->assertEquals(['abcd-1003'], $result);
+
+    $loggerResult = $logger->getStoredInput('error')[0];
+    $error = 'Error publishing dataset abcd-1002 in harvest 1: FooBar';
+    $this->assertEquals($error, $loggerResult);
   }
 
   /**

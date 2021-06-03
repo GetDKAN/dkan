@@ -5,12 +5,16 @@ namespace Drupal\common\Storage;
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
+use Drupal\common\EventDispatcherTrait;
 
 /**
  * AbstractDatabaseTable class.
  */
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   use SqlStorageTrait;
+  use EventDispatcherTrait;
+
+  const EVENT_TABLE_CREATE = 'dkan_common_table_create';
 
   /**
    * Drupal DB connection object.
@@ -62,12 +66,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   public function retrieve(string $id) {
     $this->setTable();
 
-    /** @var \Drupal\Core\Database\Query\Select $select */
+    /* @var \Drupal\Core\Database\Query\Select $select */
     $select = $this->connection->select($this->getTableName(), 't')
       ->fields('t', array_keys($this->getSchema()['fields']))
       ->condition($this->primaryKey(), $id);
 
-    /** @var \Drupal\Core\Database\StatementInterface $statement */
+    /* @var \Drupal\Core\Database\StatementInterface $statement */
     $statement = $select->execute();
 
     // The docs do not mention it, but fetch can return false.
@@ -276,6 +280,8 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Create a table given a name and schema.
    */
   private function tableCreate($table_name, $schema) {
+    // Opportunity to alter the schema before table creation.
+    $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
     $this->connection->schema()->createTable($table_name, $schema);
   }
 

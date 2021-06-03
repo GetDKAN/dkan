@@ -2,25 +2,30 @@
 
 namespace Drupal\metastore\Reference;
 
+use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\LoggerTrait;
-use Drupal\node\NodeStorageInterface;
 
 /**
- * Dereferencer.
+ * Metastore dereferencer.
  */
 class Dereferencer {
   use HelperTrait;
   use LoggerTrait;
 
-  private $nodeStorage;
+  /**
+   * Storage factory interface service.
+   *
+   * @var \Contracts\FactoryInterface
+   */
+  private $storageFactory;
 
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, NodeStorageInterface $nodeStorage) {
+  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
     $this->setConfigService($configService);
-    $this->nodeStorage = $nodeStorage;
+    $this->storageFactory = $storageFactory;
   }
 
   /**
@@ -37,7 +42,8 @@ class Dereferencer {
       throw new \Exception("data must be an object.");
     }
     // Cycle through the dataset properties we seek to dereference.
-    $ref = NULL; $actual = NULL;
+    $ref = NULL;
+    $actual = NULL;
     foreach ($this->getPropertyList() as $propertyId) {
       if (isset($data->{$propertyId})) {
         $referenceProperty = "%Ref:{$propertyId}";
@@ -91,7 +97,8 @@ class Dereferencer {
   private function dereferenceMultiple(string $property_id, array $uuids) : array {
     $result = [];
     $reference = [];
-    $ref = NULL; $actual = NULL;
+    $ref = NULL;
+    $actual = NULL;
     foreach ($uuids as $uuid) {
       [$ref, $actual] = $this->dereferenceSingle($property_id, $uuid);
       if (NULL !== $ref && NULL !== $actual) {
@@ -117,17 +124,12 @@ class Dereferencer {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   private function dereferenceSingle(string $property_id, string $uuid) {
-    $nodes = $this->nodeStorage
-      ->loadByProperties([
-        'field_data_type' => $property_id,
-        'uuid' => $uuid,
-      ]);
+    $storage = $this->storageFactory->getInstance($property_id);
+    $value = $storage->retrieve($uuid);
 
-    if ($node = reset($nodes)) {
-      if (isset($node->field_json_metadata->value)) {
-        $metadata = json_decode($node->field_json_metadata->value);
-        return [$metadata, $metadata->data];
-      }
+    if ($value) {
+      $metadata = json_decode($value);
+      return [$metadata, $metadata->data];
     }
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.

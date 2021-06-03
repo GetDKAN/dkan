@@ -3,5 +3,10 @@
     "ui:options": {
       "widget": "hidden"
     }
+  },
+  "data": {
+    "ui:options": {
+      "title": "Topic"
+    }
   }
 }

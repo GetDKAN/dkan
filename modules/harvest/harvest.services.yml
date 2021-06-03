@@ -5,6 +5,8 @@ services:
       - '@dkan.harvest.storage.database_table'
       - '@dkan.metastore.service'
       - '@entity_type.manager'
+    calls:
+      - [ setLoggerFactory, [ '@logger.factory' ] ]
   dkan.harvest.storage.database_table:
     class: Drupal\harvest\Storage\DatabaseTableFactory
     arguments:

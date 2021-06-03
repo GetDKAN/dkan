@@ -12,7 +12,7 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "id": { 
+                    "id": {
                         "type": "string",
                         "description": "UUID of resource or distribution."
                     },
@@ -28,7 +28,7 @@
             "items": {
                 "anyOf": [
                     { "$ref": "#/definitions/resource" },
-                    { 
+                    {
                         "type": "object",
                         "title": "Aliased property from specific resource",
                         "properties": {
@@ -114,7 +114,7 @@
             "type": "string",
             "description": "Alias to resource set in resources array. Not needed when only querying against one resource."
         },
-        "property": { 
+        "property": {
             "type": "string",
             "description": "The property/column or alias to filter by. Should not include collection/table alias.",
             "pattern": "^[^.]+$"
@@ -146,7 +146,7 @@
                         ]
                     }
                 }
-            }            
+            }
         },
         "condition": {
             "type": "object",
@@ -159,12 +159,12 @@
                     "anyOf": [
                         { "type": "string" },
                         { "type": "number" },
-                        { 
+                        {
                             "type": "array",
                             "items": {
                                 "anyOf": [
                                     { "type": "string" },
-                                    { "type": "number" }            
+                                    { "type": "number" }
                                 ]
                             }
                         },
@@ -179,7 +179,7 @@
                      "default": "="
                  }
             },
-            "required": [ "property", "value" ]            
+            "required": [ "property", "value" ]
         },
         "expression": {
             "type": "object",
@@ -189,7 +189,7 @@
                 "operator": {
                     "type": "string",
                     "enum": [
-                        "+", 
+                        "+",
                         "-",
                         "*",
                         "/",
@@ -221,7 +221,7 @@
         "sort": {
             "type": "object",
             "description": "Properties to sort by in a particular order.",
-            "properties": { 
+            "properties": {
                 "resource": { "$ref": "#/definitions/resource" },
                 "property": { "$ref": "#/definitions/property" },
                 "order": {
@@ -230,6 +230,12 @@
                     "enum": ["asc", "desc"]
                 }
             }
+        },
+        "format" : {
+            "type": "string",
+            "description": "Format to return data in. Default is JSON, can be set to CSV.",
+            "enum": ["csv, json"],
+            "default": "json"
         }
     }
 }

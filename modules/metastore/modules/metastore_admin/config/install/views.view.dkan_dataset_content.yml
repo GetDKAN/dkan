@@ -3,12 +3,13 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.storage.node.field_data_type
     - system.menu.admin
   module:
     - node
     - user
 _core:
-  default_config_hash: ayMn8Dqvkbh9zfi5TpHKQi1ZV3yGOOTXvEWnhrHwSfQ
+  default_config_hash: JJ6DPebkL1IQR5zAMGv3XEHJ7DDkhUeD2jgxJ4X7dKU
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
@@ -16,7 +17,6 @@ description: 'Find and manage content.'
 tag: default
 base_table: node_field_data
 base_field: nid
-core_version_requirement: ^8 || ^9
 display:
   default:
     display_options:
@@ -60,17 +60,28 @@ display:
           description: ''
           columns:
             node_bulk_form: node_bulk_form
+            uuid: uuid
+            nid: nid
             title: title
-            type: type
+            field_data_type: field_data_type
             name: name
             status: status
             changed: changed
-            edit_node: edit_node
-            delete_node: delete_node
-            dropbutton: dropbutton
-            timestamp: title
+            nothing: nothing
           info:
             node_bulk_form:
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            uuid:
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            nid:
+              sortable: false
+              default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
@@ -82,7 +93,7 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            type:
+            field_data_type:
               sortable: true
               default_sort_order: asc
               align: ''
@@ -90,7 +101,7 @@ display:
               empty_column: false
               responsive: ''
             name:
-              sortable: false
+              sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
@@ -110,28 +121,7 @@ display:
               separator: ''
               empty_column: false
               responsive: priority-low
-            edit_node:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            delete_node:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            dropbutton:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            timestamp:
+            nothing:
               sortable: false
               default_sort_order: asc
               align: ''
@@ -262,6 +252,72 @@ display:
           entity_type: node
           entity_field: uuid
           plugin_id: field
+        nid:
+          id: nid
+          table: node_field_data
+          field: nid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_integer
+          settings:
+            thousand_separator: ''
+            prefix_suffix: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: node
+          entity_field: nid
+          plugin_id: field
         title:
           id: title
           table: node_field_data
@@ -326,6 +382,69 @@ display:
           field_api_classes: false
           entity_type: node
           entity_field: title
+          plugin_id: field
+        field_data_type:
+          id: field_data_type
+          table: node__field_data_type
+          field: field_data_type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Data Type'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: string
+          settings:
+            link_to_entity: false
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
           plugin_id: field
         name:
           id: name
@@ -403,7 +522,7 @@ display:
             alter_text: true
             text: edit
             make_link: true
-            path: '/admin/dkan/dataset/{{ uuid }}'
+            path: '/node/{{ nid }}/edit'
             absolute: false
             external: false
             replace_spaces: false
@@ -530,49 +649,6 @@ display:
           plugin_id: boolean
           entity_type: node
           entity_field: status
-        langcode:
-          id: langcode
-          table: node_field_data
-          field: langcode
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: in
-          value: {  }
-          group: 1
-          exposed: true
-          expose:
-            operator_id: langcode_op
-            label: Language
-            description: ''
-            use_operator: false
-            operator: langcode_op
-            identifier: langcode
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-            reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          plugin_id: language
-          entity_type: node
-          entity_field: langcode
         status_extra:
           id: status_extra
           table: node_field_data
@@ -593,24 +669,27 @@ display:
           group_type: group
           admin_label: ''
           operator: '='
-          value: dataset
+          value: ''
           group: 1
-          exposed: false
+          exposed: true
           expose:
-            operator_id: ''
-            label: ''
+            operator_id: field_data_type_value_op
+            label: 'Data Type'
             description: ''
             use_operator: false
-            operator: ''
-            identifier: ''
+            operator: field_data_type_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: data-type
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              api_user: '0'
             placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -625,7 +704,7 @@ display:
             group_items: {  }
           plugin_id: string
       sorts: {  }
-      title: Datasets
+      title: 'DKAN Metastore (Datasets)'
       empty:
         area_text_custom:
           id: area_text_custom
@@ -659,7 +738,7 @@ display:
           admin_label: 'Add dataset button'
           empty: true
           tokenize: false
-          content: '<div class="form-actions"><a class="button button--primary" href="/admin/dkan/dataset">+ Add new dataset</a></div>'
+          content: '<div class="form-actions"><a class="button button--primary" href="/node/add/data">+ Add new dataset</a></div>'
           plugin_id: text_custom
         result:
           id: result
@@ -685,16 +764,17 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       max-age: 0
-      tags: {  }
+      tags:
+        - 'config:field.storage.node.field_data_type'
   page_1:
     display_options:
-      path: admin/content/datasets
+      path: admin/dkan/datasets
       menu:
         type: normal
         title: Datasets
-        description: ''
+        description: 'Administer all content in the DKAN metastore'
         expanded: false
-        parent: system.admin_content
+        parent: system.admin_dkan
         weight: -10
         context: '0'
         menu_name: admin
@@ -719,4 +799,5 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       max-age: 0
-      tags: {  }
+      tags:
+        - 'config:field.storage.node.field_data_type'

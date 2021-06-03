@@ -62,6 +62,7 @@ function json_form_widget_save_dkan_file_submit($form, FormStateInterface $form_
     foreach ($parents as $parent) {
       $uri = $form_state->getValue($parent);
       $filename = \Drupal::service('file_system')->basename($uri);
+      $filename = urldecode($filename);
       $files = \Drupal::entityTypeManager()
         ->getStorage('file')
         ->loadByProperties(['filename' => $filename]);

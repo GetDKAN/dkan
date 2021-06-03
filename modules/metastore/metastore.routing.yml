@@ -5,6 +5,8 @@ metastore.1.metastore:
     { _controller: '\Drupal\common\Docs::getComplete'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 metastore.1.metastore.schemas:
   path: '/api/1/metastore/schemas'
@@ -13,6 +15,8 @@ metastore.1.metastore.schemas:
     { _controller: '\Drupal\metastore\WebServiceApi::getSchemas'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 metastore.1.metastore.schemas.id:
   path: '/api/1/metastore/schemas/{identifier}'
@@ -21,6 +25,8 @@ metastore.1.metastore.schemas.id:
     { _controller: '\Drupal\metastore\WebServiceApi::getSchema'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 metastore.1.metastore.schemas.id.items:
   path: '/api/1/metastore/schemas/{schema_id}/items'
@@ -29,6 +35,8 @@ metastore.1.metastore.schemas.id.items:
     { _controller: '\Drupal\metastore\WebServiceApi::getAll'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 metastore.1.metastore.schemas.id.items.post:
   path: '/api/1/metastore/schemas/{schema_id}/items'
@@ -47,6 +55,8 @@ metastore.1.metastore.schemas.id.items.id:
     { _controller: '\Drupal\metastore\WebServiceApi::get'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 metastore.1.metastore.schemas.id.items.id.publish:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/publish'
@@ -76,7 +86,7 @@ metastore.1.metastore.schemas.id.items.id.patch:
   requirements:
     _permission: 'post put delete datasets through the api'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 metastore.1.metastore.schemas.id.items.id.delete:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
@@ -86,7 +96,7 @@ metastore.1.metastore.schemas.id.items.id.delete:
   requirements:
     _permission: 'post put delete datasets through the api'
   options:
-    _auth: ['basic_auth']
+    _auth: ['basic_auth', 'cookie']
 
 metastore.1.metastore.schemas.dataset.items.id.docs:
   path: '/api/1/metastore/schemas/dataset/items/{identifier}/docs'
@@ -95,6 +105,8 @@ metastore.1.metastore.schemas.dataset.items.id.docs:
     { _controller: '\Drupal\metastore\WebServiceApiDocs::getDatasetSpecific'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 metastore.data_json:
   path: '/data.json'
@@ -103,11 +115,14 @@ metastore.data_json:
     { _controller: '\Drupal\metastore\WebServiceApi::getCatalog'}
   requirements:
     _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
 
 dkan.metastore.config_properties:
-  path: '/admin/config/dkan/properties'
+  path: '/admin/dkan/properties'
   defaults:
     _form: '\Drupal\metastore\Form\DkanDataSettingsForm'
+    _title: 'DKAN metastore referencer configuration'
   requirements:
     _permission: 'access administration pages'
   options:

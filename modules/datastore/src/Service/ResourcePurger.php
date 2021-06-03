@@ -100,7 +100,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   public function scheduleAllUuids(bool $deferred = TRUE, bool $prior = FALSE) {
 
     $uuids = [];
-    $nodeStorage = $this->storage->getNodeStorage();
+    $nodeStorage = $this->storage->getEntityStorage();
 
     $nids = $nodeStorage->getQuery()
       ->condition('type', 'data')
@@ -182,7 +182,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Whether to include all prior revisions.
    */
   private function purge(int $vid, string $uuid, bool $prior) {
-    $node = $this->storage->getNodeStorage()->loadRevision($vid);
+    $node = $this->storage->getEntityStorage()->loadRevision($vid);
     if (!$node) {
       return;
     }
@@ -238,7 +238,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   List of revisions to consider.
    */
   private function getOlderRevisionIds(int $initialVid, NodeInterface $dataset) : array {
-    $vids = array_reverse($this->storage->getNodeStorage()->revisionIds($dataset));
+    $vids = array_reverse($this->storage->getEntityStorage()->revisionIds($dataset));
 
     return array_filter($vids, function ($vid) use ($initialVid) {
       return $vid < $initialVid;
@@ -256,11 +256,11 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function getResourcesToKeep(string $uuid) : array {
     // Always keep resources associated with the latest revision.
-    $latestRevision = $this->storage->getNodeLatestRevision($uuid);
+    $latestRevision = $this->storage->getEntityLatestRevision($uuid);
     $resourcesToKeep = $this->getResources($latestRevision);
 
     // Keep resources of the currently published revision, if any.
-    $currentlyPublished = $this->storage->getNodePublishedRevision($uuid);
+    $currentlyPublished = $this->storage->getEntityPublishedRevision($uuid);
     if ($currentlyPublished) {
       $resourcesToKeep = array_merge($resourcesToKeep, $this->getResources($currentlyPublished));
     }
@@ -278,7 +278,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The revision's moderation state, and resource information json string.
    */
   private function getRevisionData(string $vid) : array {
-    $revision = $this->storage->getNodeStorage()->loadRevision($vid);
+    $revision = $this->storage->getEntityStorage()->loadRevision($vid);
     return [
       $revision->get('moderation_state')->getString() == 'published',
       $this->getResources($revision),
@@ -317,11 +317,11 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Resource version.
    */
   private function delete(string $id, string $version) {
-    if ($this->getPurgeFileSetting()) {
-      $this->removeResourceLocalizer($id, $version);
-    }
     if ($this->getPurgeTableSetting()) {
       $this->removeDatastoreStorage($id, $version);
+    }
+    if ($this->getPurgeFileSetting()) {
+      $this->removeResourceLocalizer($id, $version);
     }
   }
 
@@ -393,9 +393,9 @@ class ResourcePurger implements ContainerInjectionInterface {
     $indexed = [];
 
     foreach ($uuids as $uuid) {
-      $nid = $this->storage->getNidFromUuid($uuid);
+      $nid = $this->storage->getEntityIdFromUuid($uuid);
       if ($nid) {
-        $vid = $this->storage->getNodeStorage()->getLatestRevisionId($nid);
+        $vid = $this->storage->getEntityStorage()->getLatestRevisionId($nid);
         $indexed[$vid] = $uuid;
       }
     }

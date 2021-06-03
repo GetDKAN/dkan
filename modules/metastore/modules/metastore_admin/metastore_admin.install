@@ -5,20 +5,31 @@
  */
 
 /**
- * Disable standard content view.
+ * Disable metastore_form and enable json_form_widget.
  */
-function metastore_admin_install() {
-  $config_factory = \Drupal::configFactory();
-  $config = $config_factory->getEditable('views.view.content');
-  $config->set('status', FALSE);
-  $config->save(TRUE);
-  drupal_flush_all_caches();
+function metastore_admin_update_8002() {
+  \Drupal::service('module_installer')->uninstall(['metastore_form']);
+  \Drupal::service('module_installer')->install(['json_form_widget']);
 }
 
 /**
- * Enable standard content view.
+ * Import config from metastore_admin to have the right links in the admin form.
  */
-function metastore_admin_uninstall() {
+function metastore_admin_update_8003() {
+  $config_path = drupal_get_path('module', 'metastore_admin') . '/config/install';
+  $container = \Drupal::getContainer();
+  $drush_import = $container->get('config.import.commands');
+  $options = [
+    'source' => $config_path,
+    'partial' => true
+  ];
+  $result = $drush_import->import(NULL, $options);
+}
+
+/**
+ * Re-enable default content admin
+ */
+function metastore_admin_update_8004() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.content');
   $config->set('status', TRUE);
