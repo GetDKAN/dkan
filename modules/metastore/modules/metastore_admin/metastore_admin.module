@@ -49,7 +49,8 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
     $entity_id = $entity->id();
 
     // Modify data titles to display the metadata title values rather than uuids.
-    $data = json_decode($entity->field_json_metadata->value, TRUE);
+    $data = json_decode($entity->field_json_metadata->value);
+    $title = (array) $data;
 
     if ($vars['field']->field == 'title') {
       switch ($entity->field_data_type->value) {
@@ -57,23 +58,26 @@ function metastore_admin_preprocess_views_view_field(&$vars) {
         case 'theme':
           $vars['output'] = [
             '#markup' => Markup::create(
-              metastore_admin_create_text_link($data, 'internal:/node/' . $entity_id)
+              metastore_admin_create_text_link($title['data'], 'internal:/node/' . $entity_id)
             ),
           ];
           break;
 
         case 'publisher':
+          $name = (array) $title['data'];
+
           $vars['output'] = [
             '#markup' => Markup::create(
-              metastore_admin_create_text_link($data['name'], 'internal:/node/' . $entity_id)
+              metastore_admin_create_text_link($name['name'], 'internal:/node/' . $entity_id)
             ),
           ];
           break;
 
         case 'distribution':
-          $mediatype = isset($data['mediaType']) ? $entity_id . ' ' . $data['mediaType'] : '';
-          $format = isset($data['format']) ? $entity_id . ' ' . $data['format'] : $mediatype;
-          $title = $data['title'] ?? $format;
+          $dist = (array) $title['data'];
+          $mediatype = isset($dist['mediaType']) ? $entity_id . ' ' . $dist['mediaType'] : '';
+          $format = isset($dist['format']) ? $entity_id . ' ' . $dist['format'] : $mediatype;
+          $title = $dist['title'] ?? $format;
 
           $vars['output'] = [
             '#markup' => Markup::create(
