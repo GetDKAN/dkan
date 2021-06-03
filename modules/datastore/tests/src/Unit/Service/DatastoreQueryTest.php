@@ -117,20 +117,31 @@ class DatastoreQueryTest extends TestCase {
   }
 
   public function testRowIdsQuery() {
-    $container = $this->getCommonMockChain();
+    $container = $this->getCommonMockChain()
+      ->add(DatabaseTable::class, "getSchema", [
+        "fields" => [
+          "record_number" => 1,
+          "a" => "a",
+          "b" => "b",
+          ],
+        "primary key" => ["record_number"],
+      ]);
+
     \Drupal::setContainer($container->getMock());
     $datastoreService = Service::create($container->getMock());
 
     $datastoreQuery = $this->getDatastoreQueryFromJson('rowIdsQuery');
-    $datastoreService->runQuery($datastoreQuery);
+    $result = $datastoreService->runQuery($datastoreQuery);
     $this->assertEmpty($container->getStoredInput('DatabaseTableQuery')[0]->properties);
+    $this->assertArrayHasKey('record_number', $result->{"$.schema"}["asdf"]["fields"]);
 
     $datastoreQuery = $this->getDatastoreQueryFromJson('defaultQuery');
-    $datastoreService->runQuery($datastoreQuery);
+    $result = $datastoreService->runQuery($datastoreQuery);
     $this->assertEquals(
       ["a", "b"],
       $container->getStoredInput('DatabaseTableQuery')[0]->properties
     );
+    $this->assertArrayNotHasKey('record_number', $result->{"$.schema"}["asdf"]["fields"]);
   }
 
   /**
