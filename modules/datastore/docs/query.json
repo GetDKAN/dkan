@@ -236,6 +236,11 @@
             "description": "Format to return data in. Default is JSON, can be set to CSV.",
             "enum": ["csv, json"],
             "default": "json"
+        },
+        "show_id": {
+            "description": "Flag to include the result_number column in output. Default is FALSE",
+            "type": "boolean",
+            "default": false
         }
     }
 }
