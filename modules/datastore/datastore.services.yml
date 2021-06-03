@@ -6,7 +6,6 @@ services:
       - '@dkan.datastore.service.factory.import'
       - '@queue'
       - '@dkan.common.job_store'
-      - '@request_stack'
 
   dkan.datastore.service.resource_localizer:
     class: \Drupal\datastore\Service\ResourceLocalizer
