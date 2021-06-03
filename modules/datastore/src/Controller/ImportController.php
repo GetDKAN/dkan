@@ -61,7 +61,7 @@ class ImportController implements ContainerInjectionInterface {
    */
   public function summary($identifier) {
     try {
-      $data = $this->datastoreService->summary($identifier, $this->requestStack->getCurrentRequest()->query->get('rowIds'));
+      $data = $this->datastoreService->summary($identifier);
       return $this->getResponse($data);
     }
     catch (\Exception $e) {

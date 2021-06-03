@@ -210,20 +210,13 @@ class Service implements ContainerInjectionInterface {
   /**
    * Summary.
    */
-  public function summary($identifier, $rowIds = NULL) {
+  public function summary($identifier) {
     $id = NULL; $version = NULL;
     [$id, $version] = Resource::getIdentifierAndVersion($identifier);
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {
       $data = $storage->getSummary();
-
-      // Hide identifier field by default.
-      if (empty($rowIds) && isset($data->columns['record_number'])) {
-        unset($data->columns['record_number']);
-        $data->numOfColumns--;
-      }
-
       return $data;
     }
     throw new \Exception("no storage");
