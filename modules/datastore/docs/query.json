@@ -237,7 +237,7 @@
             "enum": ["csv, json"],
             "default": "json"
         },
-        "show_id": {
+        "rowIds": {
             "description": "Flag to include the result_number column in output. Default is FALSE",
             "type": "boolean",
             "default": false

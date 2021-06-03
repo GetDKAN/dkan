@@ -116,12 +116,12 @@ class DatastoreQueryTest extends TestCase {
     $datastoreService->runQuery($datastoreQuery);
   }
 
-  public function testShowIdQuery() {
+  public function testRowIdsQuery() {
     $container = $this->getCommonMockChain();
     \Drupal::setContainer($container->getMock());
     $datastoreService = Service::create($container->getMock());
 
-    $datastoreQuery = $this->getDatastoreQueryFromJson('showIdQuery');
+    $datastoreQuery = $this->getDatastoreQueryFromJson('rowIdsQuery');
     $datastoreService->runQuery($datastoreQuery);
     $this->assertEmpty($container->getStoredInput('DatabaseTableQuery')[0]->properties);
 

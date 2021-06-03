@@ -210,7 +210,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Summary.
    */
-  public function summary($identifier, $show_id = NULL) {
+  public function summary($identifier, $rowIds = NULL) {
     $id = NULL; $version = NULL;
     [$id, $version] = Resource::getIdentifierAndVersion($identifier);
     $storage = $this->getStorage($id, $version);
@@ -219,7 +219,7 @@ class Service implements ContainerInjectionInterface {
       $data = $storage->getSummary();
 
       // Hide identifier field by default.
-      if (empty($show_id) && isset($data->columns['record_number'])) {
+      if (empty($rowIds) && isset($data->columns['record_number'])) {
         unset($data->columns['record_number']);
         $data->numOfColumns--;
       }
@@ -293,7 +293,7 @@ class Service implements ContainerInjectionInterface {
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
       $storage = $storageMap[$resource["alias"]];
       $schemaItem = $storage->getSchema();
-      if (empty($datastoreQuery->{"$.show_id"})) {
+      if (empty($datastoreQuery->{"$.rowIds"})) {
         $schemaItem['fields'] = $this->filterSchemaFields($schemaItem);
       }
       $schema[$resource["id"]] = $schemaItem;
@@ -337,7 +337,7 @@ class Service implements ContainerInjectionInterface {
 
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
-    if (empty($datastoreQuery->{"$.show_id"})) {
+    if (empty($datastoreQuery->{"$.rowIds"})) {
       $schema = $storageMap[$primaryAlias]->getSchema();
       if (empty($datastoreQuery->{"$.properties"})) {
         $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
