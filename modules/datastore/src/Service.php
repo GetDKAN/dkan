@@ -314,11 +314,9 @@ class Service implements ContainerInjectionInterface {
 
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
-    if (empty($datastoreQuery->{"$.rowIds"})) {
+    if (empty($datastoreQuery->{"$.rowIds"}) && empty($datastoreQuery->{"$.properties"})) {
       $schema = $storageMap[$primaryAlias]->getSchema();
-      if (empty($datastoreQuery->{"$.properties"})) {
-        $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
-      }
+      $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
     }
 
     $query = QueryFactory::create($datastoreQuery, $storageMap);
