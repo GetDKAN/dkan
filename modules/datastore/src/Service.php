@@ -86,7 +86,14 @@ class Service implements ContainerInjectionInterface {
 
     // If we passed $deferred, immediately add to the queue for later.
     if ($deferred == TRUE) {
-      $this->queueImport($identifier, $version);
+      // Attempt to fetch the file in a queue so as to not block user.
+      $queueId = $this->queue->get('datastore_import')
+        ->createItem(['identifier' => $identifier, 'version' => $version]);
+
+      if ($queueId === FALSE) {
+        throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
+      }
+
       return [
         'message' => "Resource {$identifier}:{$version} has been queued to be imported.",
       ];
@@ -170,29 +177,6 @@ class Service implements ContainerInjectionInterface {
     }
 
     $this->resourceLocalizer->remove($identifier, $version);
-  }
-
-  /**
-   * Queue a resource for import.
-   *
-   * @param string $identifier
-   *   A resource's identifier.
-   * @param string $version
-   *   A resource's version.
-   *
-   * @return int
-   *   Queue ID for new queued item.
-   */
-  private function queueImport(string $identifier, string $version) {
-    // Attempt to fetch the file in a queue so as to not block user.
-    $queueId = $this->queue->get('datastore_import')
-      ->createItem(['identifier' => $identifier, 'version' => $version]);
-
-    if ($queueId === FALSE) {
-      throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
-    }
-
-    return $queueId;
   }
 
   /**
