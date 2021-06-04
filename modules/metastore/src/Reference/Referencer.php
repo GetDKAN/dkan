@@ -285,7 +285,20 @@ class Referencer {
    */
   private function checkExistingReference(string $property_id, $data) {
     $storage = $this->storageFactory->getInstance($property_id);
-    return $storage->retrieveByHash(md5(json_encode($data)), $property_id);
+    $nodes = $storage->getEntityStorage()->loadByProperties([
+      'field_data_type' => $property_id,
+      'title' => md5(json_encode($data)),
+    ]);
+
+    if ($node = reset($nodes)) {
+      // If an existing but orphaned data node is found,
+      // change the state back to published.
+      // @ToDo: if the referencing node is in a draft state, do not publish the referenced node.
+      $node->set('moderation_state', 'published');
+      $node->save();
+      return $node->uuid();
+    }
+    return NULL;
   }
 
   /**
@@ -304,16 +317,14 @@ class Referencer {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   private function createPropertyReference(string $property_id, $value) {
-    // Create json metadata for the reference.
-    $data = new \stdClass();
-    $data->identifier = $this->getUuidService()->generate($property_id, $value);
-    $data->data = $value;
-    $json = json_encode($data);
+    $json = json_encode($value);
+    $identifier = $this->getUuidService()->generate($property_id, $value);
 
     // Create node to store this reference.
     $storage = $this->storageFactory->getInstance($property_id);
-    $entity_uuid = $storage->store($json, $data->identifier);
+    $entity_uuid = $storage->store($json, $identifier);
     return $entity_uuid;
+
   }
 
 }

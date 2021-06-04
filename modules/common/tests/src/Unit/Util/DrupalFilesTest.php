@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\Tests\common\Unit\Util;
+
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
@@ -20,7 +22,7 @@ class DrupalFilesTest extends TestCase {
   public function test() {
     $drupalFiles = DrupalFiles::create($this->getContainer());
     $drupalFiles->retrieveFile(
-      "file://" . __DIR__ . "/../../files/hello.txt",
+      "file://" . __DIR__ . "/../../../files/hello.txt",
       "public://tmp");
     $this->assertTrue(file_exists("/tmp/hello.txt"));
   }

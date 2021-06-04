@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\metastore\NodeWrapper;
 
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\Core\Entity\EntityFieldManager;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -59,6 +61,13 @@ class DataTest extends TestCase {
       ->add(FieldItemListInterface::class, 'getString', '')
       ->add(Node::class, 'set', TRUE)
       ->getMock();
+
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', EntityFieldManager::class)
+      ->add(EntityFieldManager::class, 'getFieldDefinitions', []);
+
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
 
     $factory = new NodeDataFactory($entityRepository);
     $data = $factory->wrap($entity);

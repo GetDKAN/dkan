@@ -46,7 +46,12 @@ services:
       - '@config.factory'
 
   dkan.datastore.event_subscriber:
-    class: \Drupal\datastore\EventSubscriber\Subscriber
+    class: \Drupal\datastore\EventSubscriber\DatastoreSubscriber
+    arguments:
+      - '@logger.factory'
+      - '@dkan.datastore.service'
+      - '@dkan.datastore.service.resource_purger'
+      - '@dkan.common.job_store'
     tags:
       - { name: event_subscriber }
 

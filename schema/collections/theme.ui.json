@@ -1,12 +1,5 @@
 {
-  "identifier": {
-    "ui:options": {
-      "widget": "hidden"
-    }
-  },
-  "data": {
-    "ui:options": {
-      "title": "Topic"
-    }
+  "ui:options": {
+    "title": "Topic"
   }
 }

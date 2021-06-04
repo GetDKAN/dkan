@@ -7,6 +7,7 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\ResourceMapper;
 use MockChain\Chain;
+use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,9 +27,17 @@ class ResourceMapperTest extends TestCase {
     $store = (new Chain($this))
       ->add(DatabaseTableMock::class)
       ->getMock();
-    
-    $eventDispatcher = new ContainerAwareEventDispatcher(new Container());
-    $mapper = new ResourceMapper($store, $eventDispatcher);
+
+    $options = (new Options())
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->index(0);
+
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $mapper = new ResourceMapper($store);
 
     // Register a resource.
     $resource1 = $this->getResource($url);
