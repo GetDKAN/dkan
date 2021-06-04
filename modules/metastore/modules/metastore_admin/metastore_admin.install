@@ -27,12 +27,22 @@ function metastore_admin_update_8003() {
 }
 
 /**
- * Re-enable default content admin
+ * Admin updates.
  */
 function metastore_admin_update_8004() {
   $config_factory = \Drupal::configFactory();
   $config = $config_factory->getEditable('views.view.content');
   $config->set('status', TRUE);
   $config->save(TRUE);
+
+  $config_path = drupal_get_path('module', 'metastore_admin') . '/config/install';
+  $container = \Drupal::getContainer();
+  $drush_import = $container->get('config.import.commands');
+  $options = [
+    'source' => $config_path,
+    'partial' => TRUE,
+  ];
+  $drush_import->import(NULL, $options);
+
   drupal_flush_all_caches();
 }
