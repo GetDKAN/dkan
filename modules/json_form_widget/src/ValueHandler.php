@@ -81,28 +81,24 @@ class ValueHandler {
    *   Processed form values.
    */
   private function processTypeValue(array $formValues): array {
-    $empty = TRUE;
-    foreach ($formValues as $key => $value) {
-      if ($key == '@type') {
-        continue;
-      }
-      $empty = $this->isValueEmpty($value);
-      if (!$empty) {
-        break;
+    // $formValues without the '@type' key.
+    $formValuesNoType = array_diff_key($formValues, array_flip(['@type']));
+
+    foreach ($formValuesNoType as $value) {
+      // If a single value is not empty - return the original $formValues array.
+      if (!$this->isValueEmpty($value)) {
+        return $formValues;
       }
     }
 
-    if ($empty) {
-      $formValues['@type'] = NULL;
-    }
-
-    return $formValues;
+    // All values are empty. '@type' needs to be empty too.
+    return array_merge(['@type' => NULL], $formValuesNoType);
   }
 
   /**
    * Check if a values id empty.
    *
-   * @param $value
+   * @param mixed $value
    *   A form value.
    *
    * @return bool
@@ -111,15 +107,10 @@ class ValueHandler {
   private function isValueEmpty($value): bool {
     if (is_scalar($value)) {
       return empty($value);
-    } else {
-      $value = (array) $value;
-      foreach ($value as $subValue) {
-        if (!$this->isValueEmpty($subValue)) {
-          return FALSE;
-        }
-      }
     }
-    return TRUE;
+
+    $value = (array) $value;
+    return empty(array_filter($value));
   }
 
   /**
