@@ -56,6 +56,10 @@ class ValueHandler {
       return FALSE;
     }
 
+    if (isset($formValues['@type'])) {
+      $formValues = $this->processTypeValue($formValues);
+    }
+
     $properties = array_keys((array) $schema->properties);
     $data = FALSE;
     foreach ($properties as $sub_property) {
@@ -65,6 +69,57 @@ class ValueHandler {
       }
     }
     return $data;
+  }
+
+  /**
+   * Sets '@type' to null if other fields are empty.
+   *
+   * @param array $formValues
+   *   Form values.
+   *
+   * @return array
+   *   Processed form values.
+   */
+  private function processTypeValue(array $formValues): array {
+    $empty = TRUE;
+    foreach ($formValues as $key => $value) {
+      if ($key == '@type') {
+        continue;
+      }
+      $empty = $this->isValueEmpty($value);
+      if (!$empty) {
+        break;
+      }
+    }
+
+    if ($empty) {
+      $formValues['@type'] = NULL;
+    }
+
+    return $formValues;
+  }
+
+  /**
+   * Check if a values id empty.
+   *
+   * @param $value
+   *   A form value.
+   *
+   * @return bool
+   *   TRUE if the value is empty, FALSE if it is not.
+   */
+  private function isValueEmpty($value): bool {
+    if (is_scalar($value)) {
+      return empty($value);
+    } else {
+      $value = (array) $value;
+      foreach ($value as $subValue) {
+        if (!$this->isValueEmpty($subValue)) {
+          return FALSE;
+        }
+      }
+    }
+    return TRUE;
   }
 
   /**
