@@ -86,7 +86,14 @@ class Service implements ContainerInjectionInterface {
 
     // If we passed $deferred, immediately add to the queue for later.
     if ($deferred == TRUE) {
-      $this->queueImport($identifier, $version);
+      // Attempt to fetch the file in a queue so as to not block user.
+      $queueId = $this->queue->get('datastore_import')
+        ->createItem(['identifier' => $identifier, 'version' => $version]);
+
+      if ($queueId === FALSE) {
+        throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
+      }
+
       return [
         'message' => "Resource {$identifier}:{$version} has been queued to be imported.",
       ];
@@ -170,29 +177,6 @@ class Service implements ContainerInjectionInterface {
     }
 
     $this->resourceLocalizer->remove($identifier, $version);
-  }
-
-  /**
-   * Queue a resource for import.
-   *
-   * @param string $identifier
-   *   A resource's identifier.
-   * @param string $version
-   *   A resource's version.
-   *
-   * @return int
-   *   Queue ID for new queued item.
-   */
-  private function queueImport(string $identifier, string $version) {
-    // Attempt to fetch the file in a queue so as to not block user.
-    $queueId = $this->queue->get('datastore_import')
-      ->createItem(['identifier' => $identifier, 'version' => $version]);
-
-    if ($queueId === FALSE) {
-      throw new \RuntimeException("Failed to create file fetcher queue for {$identifier}:{$version}");
-    }
-
-    return $queueId;
   }
 
   /**
@@ -285,7 +269,11 @@ class Service implements ContainerInjectionInterface {
     $schema = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
       $storage = $storageMap[$resource["alias"]];
-      $schema[$resource["id"]] = $storage->getSchema();
+      $schemaItem = $storage->getSchema();
+      if (empty($datastoreQuery->{"$.rowIds"})) {
+        $schemaItem['fields'] = $this->filterSchemaFields($schemaItem);
+      }
+      $schema[$resource["id"]] = $schemaItem;
     }
     return $schema;
   }
@@ -325,6 +313,12 @@ class Service implements ContainerInjectionInterface {
     }
 
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
+
+    if (empty($datastoreQuery->{"$.rowIds"}) && empty($datastoreQuery->{"$.properties"})) {
+      $schema = $storageMap[$primaryAlias]->getSchema();
+      $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
+    }
+
     $query = QueryFactory::create($datastoreQuery, $storageMap);
 
     $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
@@ -334,6 +328,23 @@ class Service implements ContainerInjectionInterface {
     }
     return $result;
 
+  }
+
+  /**
+   * Filters schema fields.
+   *
+   * @param array $schema
+   *   Schema.
+   *
+   * @return array
+   *   Filtered schema fields.
+   */
+  private function filterSchemaFields(array $schema) : array {
+    // Hide identifier field by default.
+    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == 'record_number') {
+      unset($schema['fields']['record_number']);
+    }
+    return $schema['fields'];
   }
 
   /**
