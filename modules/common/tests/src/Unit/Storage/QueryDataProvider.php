@@ -153,6 +153,15 @@ class QueryDataProvider {
               ],
             ],
           ],
+          (object) [
+            "alias" => "sum",
+            "expression" => (object) [
+              "operator" => "SUM",
+              "operands" => [
+                (object) ["collection" => "t", "property" => "field2"],
+              ],
+            ],
+          ],
         ];
         $query->sorts = [
           (object) [
@@ -163,7 +172,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "SELECT (t.field1 + 1) AS add_one, (t.field2 + 2) AS add_two FROM {table} t ORDER BY add_one ASC";
+        return "SELECT (t.field1 + 1) AS add_one, (t.field2 + 2) AS add_two, (SUM(t.field2)) AS sum FROM {table} t ORDER BY add_one ASC";
 
       case self::EXCEPTION:
         return FALSE;
