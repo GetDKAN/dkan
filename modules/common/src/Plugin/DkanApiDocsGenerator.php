@@ -19,10 +19,11 @@ class DkanApiDocsGenerator implements ContainerInjectionInterface {
 
   public function buildSpec() {
     $docPluginDefinitions = $this->docManager->getDefinitions();
-    $items = [];
+    $spec = [];
     foreach ($docPluginDefinitions as $definition) {
-      $items[] = $definition['class']::spec();
+      $pluginSpec = $this->docManager->createInstance($definition['id'])->spec();
+      $spec = array_merge_recursive($spec, $pluginSpec);
     }
-    return $items;
+    return $spec;
   }
 }

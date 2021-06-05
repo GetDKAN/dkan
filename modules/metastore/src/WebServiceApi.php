@@ -66,7 +66,12 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Get schema.
    */
   public function getSchema(string $identifier) {
-    return $this->getResponse($this->service->getSchema($identifier));
+    try {
+      return $this->getResponse($this->service->getSchema($identifier));
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 404);
+    }
   }
 
   /**

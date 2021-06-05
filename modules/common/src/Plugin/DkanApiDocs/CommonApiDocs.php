@@ -12,8 +12,13 @@ use Drupal\common\Plugin\DkanApiDocsBase;
  */
 class CommonApiDocs extends DkanApiDocsBase {
 
-    public function spec() {
-        return ['foo' => 'bar'];
-    }
-    
+  /**
+   * Um.
+   *
+   * @return string|false 
+   */
+  public function spec() {
+    return json_decode(file_get_contents($this->docsPath('common')), TRUE);
+  }
+
 }

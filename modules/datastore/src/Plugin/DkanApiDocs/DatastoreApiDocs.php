@@ -15,7 +15,6 @@ use Drupal\common\Plugin\DkanApiDocsBase;
 class DatastoreApiDocs extends DkanApiDocsBase {
 
   public function spec() {
-    return ['foo' => 'bar'];
+    return json_decode(file_get_contents($this->docsPath('datastore')), TRUE);
   }
-
 }

@@ -1,0 +1,15 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "API Documentation",
+        "version": "Alpha"
+    },
+    "components": {
+        "securitySchemes": {
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            }
+        }
+    }
+}

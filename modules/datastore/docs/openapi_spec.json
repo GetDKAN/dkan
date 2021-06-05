@@ -1,0 +1,475 @@
+{
+    "components": {
+        "parameters": {
+            "datastoreUuid": {
+                "name": "identifier",
+                "in": "path",
+                "description": "A datastore id",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "distributionUuid": {
+                "name": "identifier",
+                "in": "path",
+                "description": "A distribution id",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/1/datastore/sql": {
+            "get": {
+                "operationId": "datastore-sql",
+                "summary": "Query resources in datastore",
+                "description": "Interact with resources in the datastore using an SQL-like syntax.\n",
+                "tags": ["SQL Query"],
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "A SQL-like query.\n\nA `SELECT` using the `show_db_columns` parameter will make it easier to build queries against the data as\nit returns columns without spaces and in some cases, truncated names where the human readable column header\nis very long.\n\n`/api/1/datastore/sql?query=[SELECT * FROM DATASTORE_UUID][LIMIT 1 OFFSET 0];&show_db_columns`\n\nYou can then build the `SELECT` part of the query. Do not use spaces between its arguments.\n\n`/api/1/datastore/sql?query=[SELECT a,b,c, FROM DATASTORE_UUID]`\n\n`WHERE` can use any column in the data.\n\n`/api/1/datastore/sql?query=[SELECT a,b FROM DATASTORE_UUID][WHERE c = \"CCC\"];&show_db_columns`\n\n`LIMIT` and `OFFSET` allow you to get more than the 500 record limit, by using successive queries:\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"CCC\"][LIMIT 500 OFFSET 0];&show_db_columns`\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"DDD\"][LIMIT 500 OFFSET 500];&show_db_columns`\n\nNote: `SELECT`, `WHERE` and `LIMIT...OFFSET` clauses must each be included within brackets `[ ]`.\n",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "[SELECT * FROM DATASTORE-UUID];"
+                    }, {
+                        "name": "show_db_columns",
+                        "in": "query",
+                        "description": "Add `&show_db_columns` to return columns without spaces and in some cases, truncated names where the human\nreadable column header is very long.\n",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/imports": {
+            "get": {
+                "operationId": "datastore-list",
+                "summary": "List datastores",
+                "description": "Returns a list of all stored importers, with data about their file fetcher and status.\n",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "datastore-import",
+                "summary": "Datastore import",
+                "description": "Immediately starts the import process for a datastore.\n",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["resource_id"],
+                                "properties": {
+                                    "plan_id": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/imports/{identifier}": {
+            "get": {
+                "operationId": "datastore-get",
+                "summary": "Datastore statistics",
+                "description": "Returns the numbers of rows and columns, and a list of columns headers from the datastore.\n",
+                "tags": ["Datastore"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreUuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "numOfRows", "numOfColumns", "columns"
+                                    ],
+                                    "properties": {
+                                        "numOfRows": {
+                                            "type": "integer"
+                                        },
+                                        "numOfColumns": {
+                                            "type": "integer"
+                                        },
+                                        "columns": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "datastore-delete",
+                "summary": "Delete a datastore",
+                "description": "Delete one or more datastores. If the uuid parameter is that of a resource, delete that resource. If the uuid parameter is that of a dataset, delete all resources of that dataset.\n",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreUuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dataset has been deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["message"],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/query": {
+            "post": {
+                "operationId": "datastore-query-post",
+                "summary": "Query one or more datastore resources",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "operationId": "datastore-query-get",
+                "summary": "Query one or more datastore resources",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Coming soon, for now refer to /api/1/datastore/query/schema"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/query/download": {
+            "post": {
+                "operationId": "datastore-query-download-post",
+                "summary": "Query one or more datastore resources for file download",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Coming soon, for now refer to /api/1/datastore/query/schema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "operationId": "datastore-query-download-get",
+                "summary": "Query one or more datastore resources for file download with get",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Coming soon, for now refer to /api/1/datastore/query/schema"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/query/{identifier}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/distributionUuid"
+                }
+            ],
+            "post": {
+                "operationId": "datastore-resource-query-post",
+                "summary": "Query a single datastore resource",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Coming soon, for now refer to /api/1/datastore/query/schema. However, do not include a \"resources\" array on this endpoint."
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "operationId": "datastore-resource-query-get",
+                "summary": "Query a single datastore resource with get",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Coming soon, for now refer to /api/1/datastore/query/schema. However, do not include a \"resources\" array on this endpoint."
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/query/{identifier}/download": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/distributionUuid"
+                }
+            ],
+            "get": {
+                "operationId": "datastore-resource-query-download-get",
+                "summary": "Query a single datastore resources for file download",
+                "tags": ["Datastore"],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Coming soon, for now refer to /api/1/datastore/query/schema. However, do not include a \"resources\" array on this endpoint."
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
