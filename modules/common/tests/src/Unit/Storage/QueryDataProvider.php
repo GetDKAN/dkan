@@ -220,7 +220,7 @@ class QueryDataProvider {
           (object) [
             "alias" => "bad_expression",
             "expression" => (object) [
-              "operator" => "AVG",
+              "operator" => "VARIANCE",
               "operands" => ["field1", "field2"],
             ],
           ],
@@ -231,7 +231,7 @@ class QueryDataProvider {
         return FALSE;
 
       case self::EXCEPTION:
-        return "Only basic arithmetic expressions currently supported.";
+        return "Only basic arithmetic expressions and basic SQL functions currently supported.";
 
     }
   }
