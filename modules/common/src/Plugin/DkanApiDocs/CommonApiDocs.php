@@ -18,7 +18,7 @@ class CommonApiDocs extends DkanApiDocsBase {
    * @return string|false 
    */
   public function spec() {
-    return json_decode(file_get_contents($this->docsPath('common')), TRUE);
+    return $this->getDoc('common');
   }
 
 }

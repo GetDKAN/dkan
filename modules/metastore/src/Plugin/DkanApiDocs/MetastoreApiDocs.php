@@ -6,7 +6,6 @@ use Drupal\common\Plugin\DkanApiDocsBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\metastore\Service;
-use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -18,6 +17,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class MetastoreApiDocs extends DkanApiDocsBase {
+
+  /**
+   * The DKAN metastore service.
+   *
+   * @var Drupal\metastore\Service
+   */
+  private $metastore;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -80,16 +86,18 @@ class MetastoreApiDocs extends DkanApiDocsBase {
   public function spec() {
     $schemas = $this->metastore->getSchemas();
     $schemaIds = array_filter(array_keys($schemas), [$this, 'filterSchemaIds']);
-    $spec = json_decode(file_get_contents($this->docsPath('metastore')), TRUE);
+    $spec = $this->getDoc('metastore');
     foreach ($schemaIds as $schemaId) {
+      $spec["components"]["schemas"] += $this->schemaComponent($schemaId);
       $spec["components"]["parameters"]["schemaId"]["examples"]["$schemaId"] = ['value' => $schemaId];
-      $spec['paths'] += $this->schemaDocs($schemaId);
+      $spec["components"]["parameters"] += $this->schemaParameters($schemaId);
+      $spec['paths'] += $this->schemaPaths($schemaId);
     }
     return $spec;
   }
 
   private function filterSchemaIds($schemaId) {
-    if (in_array($schemaId, ["legacy", "catalog", "distribution"])) {
+    if (in_array($schemaId, ["legacy", "catalog"])) {
       return FALSE;
     }
     if (substr($schemaId, -3) == ".ui") {
@@ -99,37 +107,18 @@ class MetastoreApiDocs extends DkanApiDocsBase {
   }
 
   private function makeIdentifierOptional($schema, $identifierProperty = "identifier") {
-    $schemaObject = new RootedJsonData(json_encode($schema));
-    $required = $schemaObject->{'$.required'};
+    $required = $schema["required"];
     $key = array_search($identifierProperty, $required);
     if (!empty($required) && ($key !== FALSE)) {
       unset($required[$key]);
-      $required = array_values($required);
-      $schemaObject->{'$.required'} = $required;
-      $note = $this->t("Required except when creating a new item.");
-      $schemaObject->{"$.properties.$identifierProperty.description"} .= " $note";
-      $schema = $schemaObject->{'$'};
+      $schema["required"] = array_values($required);
     }
     return $schema;
   }
 
-  private function filterJsonSchemaUnsupported($schema) {
+  private function makeAllOptional($schema) {
     $filteredSchema = self::nestedFilterKeys($schema, function ($prop) {
-      $notSupported = [
-        '$schema',
-        'additionalItems',
-        'const',
-        'contains',
-        'dependencies',
-        'id',
-        '$id',
-        'patternProperties',
-        'propertyNames',
-        'enumNames',
-        'examples',
-      ];
-
-      if (!is_numeric($prop) && in_array($prop, $notSupported)) {
+      if ($prop == 'required') {
         return FALSE;
       }
       return TRUE;
@@ -138,35 +127,126 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return $filteredSchema;
   }
 
-  private static function nestedFilterKeys(array $array, callable $callable) {
-    $array = array_filter($array, $callable, ARRAY_FILTER_USE_KEY);
-    foreach ($array as &$element) {
-      if (is_array($element)) {
-        $element = static::nestedFilterKeys($element, $callable);
-      }
-    }
-    return $array;
+  private function schemaComponent($schemaId) {
+    $schema = json_decode(json_encode($this->metastore->getSchema($schemaId)), TRUE);
+    $doc = [
+      "{$schemaId}" => self::filterJsonSchemaUnsupported($schema),
+    ];
+
+    return $doc;
   }
 
-  private function schemaDocs($schemaId) {
+  private function schemaParameters($schemaId) {
+    $doc = [
+      "{$schemaId}Uuid" => [
+        "name" => "identifier",
+        "in" => "path",
+        "description" => t("A :schemaId identifier", [":schemaId" => $schemaId]),
+        "required" => true,
+        "schema" => ["type" => "string"],
+        "example" => $this->getExampleIdentifier($schemaId) ?: "00000000-0000-0000-0000-000000000000",
+      ],
+    ];
+
+    return $doc;
+  }
+
+  private function getExampleIdentifier($schemaId) {
+    if ($first = $this->metastore->getAll($schemaId)) {
+      return $first[0]->{"$.identifier"};
+    }
+    return FALSE;
+  }
+
+  private function schemaPaths($schemaId) {
     $schema = json_decode(json_encode($this->metastore->getSchema($schemaId)), TRUE);
-    $this->filterJsonSchemaUnsupported($schema);
+    $tSchema = [':schemaId' => $schemaId];
     $doc = [];
 
     $doc["/api/1/metastore/schemas/$schemaId/items"] = [
 
       "post" => [
         "operationId" => "$schemaId-post",
-        "summary" => "Create a new $schemaId.",
-        "tags" => ["Metastore: create"],
+        "summary" => $this->t("Create a new :schemaId.", $tSchema),
+        "tags" => [$this->t("Metastore: create")],
         "security" => [
           ['basicAuth' => []],
         ],
         "requestBody" => [
           "required" => TRUE,
+          "description" => $this->t("Takes the standard :schemaId schema, but does not require identifier.", $tSchema),
           "content" => [
             "application/json" => [
-              "schema" => $this->filterJsonSchemaUnsupported($this->makeIdentifierOptional($schema)),
+              "schema" => self::filterJsonSchemaUnsupported($this->makeIdentifierOptional($schema)),
+            ],
+          ],
+        ],
+        "responses" => [
+          "200" => [
+            "description" => "Ok.",
+          ],
+        ],
+      ],
+    ];
+
+    $doc["/api/1/metastore/schemas/$schemaId/items/{identifier}"] = [
+      "get" => [
+        "operationId" => "$schemaId-get-item",
+        "summary" => $this->t("Get a single :schemaId.", $tSchema),
+        "tags" => [$this->t("Metastore: get")],
+        "parameters" => [
+          ['$ref' => "#/components/parameters/{$schemaId}Uuid"],
+          ['$ref' => "#/components/parameters/showReferenceIds"],
+        ],
+        "responses" => [
+          "200" => [
+            "description" => $this->t("Full :schemaId item.", $tSchema),
+            "content" => [
+              "application/json" => [
+                "schema" => ['$ref' => "#/components/schemas/$schemaId"],
+              ],
+            ],
+          ],
+        ],
+      ],
+
+      "put" => [
+        "operationId" => "$schemaId-put",
+        "summary" => $this->t("Fully replace an existing :schemaId", $tSchema),
+        "tags" => [$this->t("Metastore: replace")],
+        "security" => [
+          ['basicAuth' => []],
+        ],
+        "parameters" => [['$ref' => "#/components/parameters/{$schemaId}Uuid"]],
+        "requestBody" => [
+          "required" => TRUE,
+          "content" => [
+            "application/json" => [
+              "schema" => ['$ref' => "#/components/schemas/$schemaId"],
+            ],
+          ],
+        ],
+        "responses" => [
+          "200" => [
+            "description" => "Ok.",
+          ],
+        ],
+      ],
+
+      "patch" => [
+        "operationId" => "$schemaId-put",
+        "summary" => $this->t("Modify an existing :schemaId", $tSchema),
+        "description" => $this->t("Values provided will replace existing values, but required values may be omitted."),
+        "tags" => ["Metastore: patch"],
+        "security" => [
+          ['basicAuth' => []],
+        ],
+        "parameters" => [['$ref' => "#/components/parameters/{$schemaId}Uuid"]],
+        "requestBody" => [
+          "required" => TRUE,
+          "content" => [
+            "application/json" => [
+              "schema" => self::filterJsonSchemaUnsupported($this->makeAllOptional($schema)),
             ],
           ],
         ],

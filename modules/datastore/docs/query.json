@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "https://getdkan.com/api/datastore.query.json",
-    "title": "Query",
-    "description": "Schema for DKAN database queries",
+    "title": "Datastore Query",
+    "description": "Schema for DKAN datastore queries",
     "type": "object",
     "properties": {
         "resources": {
