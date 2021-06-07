@@ -189,7 +189,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $data = $this->getRequestContent();
       $this->checkIdentifier($data);
-      $data = $this->service->getValidMetadataFactory()->get($schema_id, $data);
+      $data = $this->service->getValidMetadataFactory()->get($schema_id, $data, ['method' => 'POST']);
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
