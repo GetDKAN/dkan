@@ -156,7 +156,7 @@ class QueryDataProvider {
           (object) [
             "alias" => "sum",
             "expression" => (object) [
-              "operator" => "SUM",
+              "operator" => "sum",
               "operands" => [
                 (object) ["collection" => "t", "property" => "field2"],
               ],
