@@ -43,7 +43,7 @@ class ValueHandler {
     }
     // Handle select_or_other_select.
     if (isset($formValues[$property]['select'])) {
-      return $formValues[$property][0];
+      return isset($formValues[$property][0]) ? $formValues[$property][0] : NULL;
     }
     return !empty($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
   }
@@ -56,6 +56,10 @@ class ValueHandler {
       return FALSE;
     }
 
+    if (isset($formValues['@type'])) {
+      $formValues = $this->processTypeValue($formValues);
+    }
+
     $properties = array_keys((array) $schema->properties);
     $data = FALSE;
     foreach ($properties as $sub_property) {
@@ -65,6 +69,48 @@ class ValueHandler {
       }
     }
     return $data;
+  }
+
+  /**
+   * Sets '@type' to null if other fields are empty.
+   *
+   * @param array $formValues
+   *   Form values.
+   *
+   * @return array
+   *   Processed form values.
+   */
+  private function processTypeValue(array $formValues): array {
+    // $formValues without the '@type' key.
+    $formValuesNoType = array_diff_key($formValues, array_flip(['@type']));
+
+    foreach ($formValuesNoType as $value) {
+      // If a single value is not empty - return the original $formValues array.
+      if (!$this->isValueEmpty($value)) {
+        return $formValues;
+      }
+    }
+
+    // All values are empty. '@type' needs to be empty too.
+    return array_merge(['@type' => NULL], $formValuesNoType);
+  }
+
+  /**
+   * Check if a values id empty.
+   *
+   * @param mixed $value
+   *   A form value.
+   *
+   * @return bool
+   *   TRUE if the value is empty, FALSE if it is not.
+   */
+  private function isValueEmpty($value): bool {
+    if (is_scalar($value)) {
+      return empty($value);
+    }
+
+    $value = (array) $value;
+    return empty(array_filter($value));
   }
 
   /**
