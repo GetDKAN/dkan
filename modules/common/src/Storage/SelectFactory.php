@@ -163,7 +163,7 @@ class SelectFactory {
     if (!ctype_alnum($expression->operator)) {
       $expressionStr = implode(" $expression->operator ", $operands);
     }
-    elseif (in_array($expression->operator, $supportedFunctions)) {
+    elseif (in_array(strtolower($expression->operator), $supportedFunctions)) {
       $operator = strtoupper($expression->operator);
       $column = reset($operands);
       $expressionStr = "$operator($column)";
