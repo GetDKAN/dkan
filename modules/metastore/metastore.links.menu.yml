@@ -1,5 +1,5 @@
 dkan.metastore.config_properties:
-  title: Configure referencing
+  title: Metastore referencer
   route_name: dkan.metastore.config_properties
   description: Configure dataset properties for referencing an API endpoint.
   parent: system.admin_dkan

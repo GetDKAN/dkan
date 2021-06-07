@@ -74,6 +74,17 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Setter to discover data modifier plugins.
+   *
+   * @param \Drupal\common\Plugin\DataModifierManager $pluginManager
+   *   Injected plugin manager.
+   */
+  public function setDataModifierPlugins(DataModifierManager $pluginManager) {
+    $this->pluginManager = $pluginManager;
+    $this->plugins = $this->discover();
+  }
+
+  /**
    * Get schemas.
    */
   public function getSchemas() {
@@ -123,21 +134,20 @@ class Service implements ContainerInjectionInterface {
   public function getAll($schema_id): array {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
 
-    $objects = [];
-    foreach ($jsonStringsArray as $id => $jsonString) {
-      $data = $this->validMetadataFactory->get($schema_id, $jsonString);
-      try {
-        $object = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
-        if ($schema_id != 'dataset') {
-          $object = $this->wrapMetadata($id, $object);
+    $objects = array_map(
+      function ($jsonString) use ($schema_id) {
+        $data = $this->validMetadataFactory->get($schema_id, $jsonString);
+        try {
+          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
+            return $data instanceof RootedJsonData;
+          });
         }
-      }
-      catch (\Exception $e) {
-        $object = $this->validMetadataFactory->get(NULL, json_encode(["message" => $e->getMessage()]));
-      }
-
-      $objects[] = $object;
-    }
+        catch (\Exception $e) {
+          return new RootedJsonData(json_encode(["message" => $e->getMessage()]));
+        }
+      },
+      $jsonStringsArray
+    );
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
       if (!is_array($data)) {
@@ -165,10 +175,8 @@ class Service implements ContainerInjectionInterface {
   public function get($schema_id, $identifier): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
     $data = $this->validMetadataFactory->get($schema_id, $json_string);
+
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
-    if ($schema_id != 'dataset') {
-      $data = $this->wrapMetadata($identifier, $data);
-    }
     return $data;
   }
 
@@ -359,7 +367,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getCatalog() {
     $catalog = $this->getSchema('catalog');
-    $catalog->dataset = array_values($this->getAll('dataset'));
+    $catalog->dataset = $this->getAll('dataset');
 
     return $catalog;
   }
@@ -419,18 +427,6 @@ class Service implements ContainerInjectionInterface {
 
     $object->set('$', $array);
     return $object;
-  }
-
-  /**
-   * Wraps metadata with [{"data":{},"identifier":""}].
-   */
-  public function wrapMetadata($uuid, RootedJsonData $metadata): RootedJsonData {
-    $wrapped_metadata = [
-      'identifier' => $uuid,
-      'data' => $metadata->get('$'),
-    ];
-
-    return $this->getValidMetadataFactory()->get('legacy', json_encode($wrapped_metadata));
   }
 
 }

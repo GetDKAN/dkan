@@ -8,7 +8,7 @@ context('Administration pages', () => {
     cy.visit(baseurl + "/admin")
     cy.get('.toolbar-icon-system-admin-dkan').contains('DKAN').next('.toolbar-menu').then($el=>{
         cy.wrap($el).invoke('show')
-        cy.wrap($el).contains('Configure referencing')
+        cy.wrap($el).contains('Metastore referencer')
     })
     cy.visit(baseurl + "/admin/dkan/properties")
     cy.get('.option').should('contain.text', 'Distribution (distribution)')

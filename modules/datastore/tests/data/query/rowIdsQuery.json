@@ -1,0 +1,9 @@
+{
+    "resources": [
+        {
+            "id": "asdf",
+            "alias": "t"
+        }
+    ],
+    "rowIds": true
+}
