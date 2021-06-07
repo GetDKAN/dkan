@@ -381,8 +381,7 @@
                         "required": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "example": "[SELECT * FROM DATASTORE-UUID];"
+                        }
                     },
                     {
                         "name": "show_db_columns",

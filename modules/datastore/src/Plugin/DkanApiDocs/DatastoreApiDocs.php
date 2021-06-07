@@ -101,7 +101,9 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     $spec["components"]["schemas"]["datastoreResourceQuery"] = $resourceQuerySchema;
 
     // Fill in examples.
-    $spec["components"]["parameters"]["datastoreDistributionUuid"]["example"] = $this->getExampleIdentifier();
+    $exampleId = $this->getExampleIdentifier();
+    $spec["components"]["parameters"]["datastoreDistributionUuid"]["example"] = $exampleId;
+    $spec["paths"]["/api/1/datastore/sql"]["get"]["parameters"][0]["example"] = $this->sqlQueryExample($exampleId);
 
     // Convert json schema to params.
     $spec = $this->setUpGetParameters($spec);
@@ -135,7 +137,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   private function replaceRefs($schema) {
     $newSchema = $schema;
     array_walk_recursive($newSchema, function (&$value, $key) {
-      if ($key == '$ref') {
+      if ($key === '$ref') {
         $parts = explode("/", $value);
         $value = "#/components/schemas/datastoreQuery" . ucfirst($parts[2]);
       }
@@ -149,6 +151,10 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     $schema["title"] = $this->t("Datastore Resource Query");
     $schema["description"] .= ". When querying against a specific resource, the \"resource\" property is always optional. If you want to set it explicitly, note that it will be aliased to simply \"t\".";
     return $schema;
+  }
+
+  private function sqlQueryExample($exampleId) {
+    return "[SELECT * FROM $exampleId][LIMIT 2]";
   }
 
   private function getExampleIdentifier() {

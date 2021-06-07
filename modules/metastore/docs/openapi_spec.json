@@ -103,7 +103,7 @@
                 "operationId": "docs-get-dataset-specific",
                 "summary": "Dataset-specific json documentation",
                 "tags": [
-                    "Metastore: Documentation"
+                    "Metastore: documentation"
                 ],
                 "parameters": [
                     { "$ref": "#/components/parameters/datasetUuid" }
