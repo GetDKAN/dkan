@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DatastoreApiDocs extends DkanApiDocsBase {
 
-    /**
+  /**
    * The DKAN metastore service.
    *
    * @var Drupal\metastore\Service
