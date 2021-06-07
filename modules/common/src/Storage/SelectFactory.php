@@ -164,8 +164,9 @@ class SelectFactory {
       $expressionStr = implode(" $expression->operator ", $operands);
     }
     elseif (in_array($expression->operator, $supportedFunctions)) {
+      $operator = strtoupper($expression->operator);
       $column = reset($operands);
-      $expressionStr = "$expression->operator($column)";
+      $expressionStr = "$operator($column)";
     }
     else {
       throw new \Exception("Only basic arithmetic expressions and basic SQL functions currently supported.");
@@ -179,11 +180,11 @@ class SelectFactory {
    */
   private function getSupportedFunctions() {
     return [
-      'SUM',
-      'COUNT',
-      'AVG',
-      'MAX',
-      'MIN',
+      'sum',
+      'count',
+      'avg',
+      'max',
+      'min',
     ];
   }
 

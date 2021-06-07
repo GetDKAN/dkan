@@ -194,11 +194,11 @@
                         "*",
                         "/",
                         "%",
-                        "SUM",
-                        "COUNT",
-                        "AVG",
-                        "MAX",
-                        "MIN"
+                        "sum",
+                        "count",
+                        "avg",
+                        "max",
+                        "min"
                     ]
                 },
                 "operands": {
