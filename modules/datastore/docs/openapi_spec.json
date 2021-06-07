@@ -21,60 +21,17 @@
             }
         },
         "schemas": {
-            "datastoreQuery": {}
+            "datastoreQuery": {},
+            "datastoreResourceQuery": {}
         }
     },
     "paths": {
-        "/api/1/datastore/sql": {
-            "get": {
-                "operationId": "datastore-sql",
-                "summary": "Query resources in datastore",
-                "description": "Interact with resources in the datastore using an SQL-like syntax.\n",
-                "tags": ["SQL Query"],
-                "parameters": [
-                    {
-                        "name": "query",
-                        "in": "query",
-                        "description": "A SQL-like query.\n\nA `SELECT` using the `show_db_columns` parameter will make it easier to build queries against the data as\nit returns columns without spaces and in some cases, truncated names where the human readable column header\nis very long.\n\n`/api/1/datastore/sql?query=[SELECT * FROM DATASTORE_UUID][LIMIT 1 OFFSET 0];&show_db_columns`\n\nYou can then build the `SELECT` part of the query. Do not use spaces between its arguments.\n\n`/api/1/datastore/sql?query=[SELECT a,b,c, FROM DATASTORE_UUID]`\n\n`WHERE` can use any column in the data.\n\n`/api/1/datastore/sql?query=[SELECT a,b FROM DATASTORE_UUID][WHERE c = \"CCC\"];&show_db_columns`\n\n`LIMIT` and `OFFSET` allow you to get more than the 500 record limit, by using successive queries:\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"CCC\"][LIMIT 500 OFFSET 0];&show_db_columns`\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"DDD\"][LIMIT 500 OFFSET 500];&show_db_columns`\n\nNote: `SELECT`, `WHERE` and `LIMIT...OFFSET` clauses must each be included within brackets `[ ]`.\n",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "[SELECT * FROM DATASTORE-UUID];"
-                    },
-                    {
-                        "name": "show_db_columns",
-                        "in": "query",
-                        "description": "Add `&show_db_columns` to return columns without spaces and in some cases, truncated names where the human\nreadable column header is very long.\n",
-                        "schema": {
-                            "type": "boolean"
-                        },
-                        "allowEmptyValue": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Ok",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/1/datastore/imports": {
             "get": {
                 "operationId": "datastore-list",
                 "summary": "List datastores",
                 "description": "Returns a list of all stored importers, with data about their file fetcher and status.\n",
-                "tags": ["Datastore"],
+                "tags": ["Datastore: import"],
                 "security": [
                     {
                         "basicAuth": []
@@ -100,7 +57,7 @@
                 "operationId": "datastore-import",
                 "summary": "Datastore import",
                 "description": "Immediately starts the import process for a datastore.\n",
-                "tags": ["Datastore"],
+                "tags": ["Datastore: import"],
                 "security": [
                     {
                         "basicAuth": []
@@ -144,7 +101,7 @@
                 "operationId": "datastore-get",
                 "summary": "Datastore statistics",
                 "description": "Returns the numbers of rows and columns, and a list of columns headers from the datastore.\n",
-                "tags": ["Datastore"],
+                "tags": ["Datastore: import"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreUuid"
@@ -184,7 +141,7 @@
                 "operationId": "datastore-delete",
                 "summary": "Delete a datastore",
                 "description": "Delete one or more datastores. If the uuid parameter is that of a resource, delete that resource. If the uuid parameter is that of a dataset, delete all resources of that dataset.\n",
-                "tags": ["Datastore"],
+                "tags": ["Datastore: import"],
                 "security": [
                     {
                         "basicAuth": []
@@ -219,19 +176,12 @@
             "post": {
                 "operationId": "datastore-query-post",
                 "summary": "Query one or more datastore resources",
-                "tags": ["Datastore"],
-                "security": [
-                    {
-                        "basicAuth": []
-                    }
-                ],
+                "tags": ["Datastore: query"],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
-                            "schema": {
-                                "type": "object"
-                            }
+                            "schema": { "$ref": "#/components/schemas/datastoreQuery" }
                         }
                     }
                 },
@@ -251,26 +201,9 @@
             "get": {
                 "operationId": "datastore-query-get",
                 "summary": "Query one or more datastore resources",
-                "tags": ["Datastore"],
-                "security": [
-                    {
-                        "basicAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "query",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "description": "Coming soon, for now refer to /api/1/datastore/query/schema"
-                                }
-                            }
-                        }
-                    }
-                ],
+                "tags": ["Datastore: query"],
+                "description": "This is a description",
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "ok",
@@ -289,15 +222,12 @@
             "post": {
                 "operationId": "datastore-query-download-post",
                 "summary": "Query one or more datastore resources for file download",
-                "tags": ["Datastore"],
+                "tags": ["Datastore: query"],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Coming soon, for now refer to /api/1/datastore/query/schema"
-                            }
+                            "schema": { "$ref": "#/components/schemas/datastoreQuery" }
                         }
                     }
                 },
@@ -317,7 +247,7 @@
             "get": {
                 "operationId": "datastore-query-download-get",
                 "summary": "Query one or more datastore resources for file download with get",
-                "tags": ["Datastore"],
+                "tags": ["Datastore: query"],
                 "parameters": [
                     {
                         "in": "query",
@@ -347,20 +277,20 @@
             }
         },
         "/api/1/datastore/query/{identifier}": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/datastoreDistributionUuid"
-                }
-            ],
             "post": {
                 "operationId": "datastore-resource-query-post",
                 "summary": "Query a single datastore resource",
-                "tags": ["Datastore"],
+                "tags": ["Datastore: query"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionUuid"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
-                            "schema": { "$ref": "#/components/schemas/datastoreQuery" }
+                            "schema": { "$ref": "#/components/schemas/datastoreResourceQuery" }
                         }
                     }
                 },
@@ -380,7 +310,32 @@
             "get": {
                 "operationId": "datastore-resource-query-get",
                 "summary": "Query a single datastore resource with get",
-                "tags": ["Datastore"],
+                "tags": ["Datastore: query"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionUuid"
+                    }
+                ],
+                
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/query/{identifier}/download": {
+            "get": {
+                "operationId": "datastore-resource-query-download-get",
+                "summary": "Query a single datastore resource for file download",
+                "tags": ["Datastore: query"],
                 "parameters": [
                     {
                         "in": "query",
@@ -393,6 +348,9 @@
                                 }
                             }
                         }
+                    },
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionUuid"
                     }
                 ],
                 "responses": {
@@ -409,37 +367,43 @@
                 }
             }
         },
-        "/api/1/datastore/query/{identifier}/download": {
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/datastoreDistributionUuid"
-                }
-            ],
+        "/api/1/datastore/sql": {
             "get": {
-                "operationId": "datastore-resource-query-download-get",
-                "summary": "Query a single datastore resource for file download",
-                "tags": ["Datastore"],
+                "operationId": "datastore-sql",
+                "summary": "Query resources in datastore",
+                "description": "Interact with resources in the datastore using an SQL-like syntax.\n",
+                "tags": ["Datastore: SQL Query"],
                 "parameters": [
                     {
-                        "in": "query",
                         "name": "query",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "description": "Coming soon, for now refer to /api/1/datastore/query/schema. However, do not include a \"resources\" array on this endpoint."
-                                }
-                            }
-                        }
+                        "in": "query",
+                        "description": "A SQL-like query.\n\nA `SELECT` using the `show_db_columns` parameter will make it easier to build queries against the data as\nit returns columns without spaces and in some cases, truncated names where the human readable column header\nis very long.\n\n`/api/1/datastore/sql?query=[SELECT * FROM DATASTORE_UUID][LIMIT 1 OFFSET 0];&show_db_columns`\n\nYou can then build the `SELECT` part of the query. Do not use spaces between its arguments.\n\n`/api/1/datastore/sql?query=[SELECT a,b,c, FROM DATASTORE_UUID]`\n\n`WHERE` can use any column in the data.\n\n`/api/1/datastore/sql?query=[SELECT a,b FROM DATASTORE_UUID][WHERE c = \"CCC\"];&show_db_columns`\n\n`LIMIT` and `OFFSET` allow you to get more than the 500 record limit, by using successive queries:\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"CCC\"][LIMIT 500 OFFSET 0];&show_db_columns`\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"DDD\"][LIMIT 500 OFFSET 500];&show_db_columns`\n\nNote: `SELECT`, `WHERE` and `LIMIT...OFFSET` clauses must each be included within brackets `[ ]`.\n",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "[SELECT * FROM DATASTORE-UUID];"
+                    },
+                    {
+                        "name": "show_db_columns",
+                        "in": "query",
+                        "description": "Add `&show_db_columns` to return columns without spaces and in some cases, truncated names where the human\nreadable column header is very long.\n",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "allowEmptyValue": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "ok",
+                        "description": "Ok",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
                                 }
                             }
                         }

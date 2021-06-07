@@ -118,7 +118,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
 
   private function makeAllOptional($schema) {
     $filteredSchema = self::nestedFilterKeys($schema, function ($prop) {
-      if ($prop == 'required') {
+      if ($prop === 'required') {
         return FALSE;
       }
       return TRUE;
@@ -234,7 +234,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       ],
 
       "patch" => [
-        "operationId" => "$schemaId-put",
+        "operationId" => "$schemaId-patch",
         "summary" => $this->t("Modify an existing :schemaId", $tSchema),
         "description" => $this->t("Values provided will replace existing values, but required values may be omitted."),
         "tags" => ["Metastore: patch"],
