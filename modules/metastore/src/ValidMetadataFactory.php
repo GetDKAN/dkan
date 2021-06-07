@@ -66,7 +66,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    *
    * @throws \JsonPath\InvalidJsonException
    */
-  public function get($schema_id = NULL, string $json_string, $options = []): RootedJsonData {
+  public function get($schema_id = NULL, string $json_string, array $options = []): RootedJsonData {
 
     // Add identifier for new objects if necessary.
     if (isset($options['method']) && $options['method'] == 'POST') {
