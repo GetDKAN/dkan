@@ -6,7 +6,7 @@
     },
     "components": {
         "securitySchemes": {
-            "basicAuth": {
+            "basic_auth": {
                 "type": "http",
                 "scheme": "basic"
             }
