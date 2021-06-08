@@ -42,7 +42,7 @@ class WebServiceApiTest extends TestCase {
   public function testGetAll() {
     $data = ['name' => 'hello'];
     $dataWithRefs = ["name" => "hello", '%Ref:name' => ["identifier" => "123", "data" => "hello"]];
-    $objectWithRefs = $this->validMetadataFactory->get('blah', json_encode($dataWithRefs));
+    $objectWithRefs = $this->validMetadataFactory->get(json_encode($dataWithRefs), 'blah');
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
     $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
@@ -55,7 +55,7 @@ class WebServiceApiTest extends TestCase {
   public function testGetAllRefs() {
     $dataWithRefs = ["name" => "hello", '%Ref:name' => ["identifier" => "123", "data" => "hello"]];
     $dataWithSwappedRefs = ["name" => ["identifier" => "123", "data" => "hello"]];
-    $objectWithRefs = $this->validMetadataFactory->get('blah', json_encode($dataWithRefs));
+    $objectWithRefs = $this->validMetadataFactory->get(json_encode($dataWithRefs), 'blah');
 
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);

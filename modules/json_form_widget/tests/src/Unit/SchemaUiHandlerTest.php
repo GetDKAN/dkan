@@ -921,8 +921,8 @@ class SchemaUiHandlerTest extends TestCase {
    */
   private function getSimpleMetastoreResults() {
     return [
-      $this->validMetadataFactory->get('dataset', json_encode(['data' => 'Option 1'])),
-      $this->validMetadataFactory->get('dataset', json_encode(['data' => 'Option 2'])),
+      $this->validMetadataFactory->get(json_encode(['data' => 'Option 1']), 'dataset'),
+      $this->validMetadataFactory->get(json_encode(['data' => 'Option 2']), 'dataset'),
     ];
 
   }
@@ -932,8 +932,8 @@ class SchemaUiHandlerTest extends TestCase {
    */
   private function getComplexMetastoreResults() {
     return [
-      $this->validMetadataFactory->get('dataset', json_encode(['data' => ['name' => 'Option 1']])),
-      $this->validMetadataFactory->get('dataset', json_encode(['data' => ['name' => 'Option 2']])),
+      $this->validMetadataFactory->get(json_encode(['data' => ['name' => 'Option 1']]), 'dataset'),
+      $this->validMetadataFactory->get(json_encode(['data' => ['name' => 'Option 2']]), 'dataset'),
     ];
   }
 

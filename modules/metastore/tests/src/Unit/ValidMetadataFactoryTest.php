@@ -18,12 +18,12 @@ class ValidMetadataFactoryTest extends TestCase {
   public function testGetNoIdentifierException() {
     $validMetadataFactory = ValidMetadataFactory::create($this->getCommonMockChain()->getMock());
     $this->expectException(ValidationException::class);
-    $validMetadataFactory->get('dataset', json_encode(['title' => 'blah']));
+    $validMetadataFactory->get(json_encode(['title' => 'blah']), 'dataset');
   }
 
   public function testGetNoIdentifier() {
     $validMetadataFactory = ValidMetadataFactory::create($this->getCommonMockChain()->getMock());
-    $result = $validMetadataFactory->get('dataset', json_encode(['title' => 'blah']), ['method' => 'POST']);
+    $result = $validMetadataFactory->get(json_encode(['title' => 'blah']), 'dataset', ['method' => 'POST']);
     $this->assertTrue(isset($result->{'$.identifier'}));
   }
 

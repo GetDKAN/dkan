@@ -54,10 +54,10 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
   /**
    * Converts Json string into RootedJsonData object.
    *
-   * @param string|null $schema_id
-   *   The {schema_id} slug from the HTTP request.
    * @param string $json_string
    *   Json string.
+   * @param string|null $schema_id
+   *   The {schema_id} slug from the HTTP request.
    * @param array $options
    *   Options array.
    *
@@ -66,7 +66,7 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    *
    * @throws \JsonPath\InvalidJsonException
    */
-  public function get($schema_id = NULL, string $json_string, array $options = []): RootedJsonData {
+  public function get(string $json_string, $schema_id = NULL, array $options = []): RootedJsonData {
 
     // Add identifier for new objects if necessary.
     if (isset($options['method']) && $options['method'] == 'POST') {

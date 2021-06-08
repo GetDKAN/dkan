@@ -105,7 +105,7 @@ class ProperJsonValidator extends ConstraintValidator implements ContainerInject
   private function doValidate(string $schema_id, $item): array {
     $errors = [];
     try {
-      $this->validMetadataFactory->get($schema_id, $item->value);
+      $this->validMetadataFactory->get($item->value, $schema_id);
     }
     catch (ValidationException $e) {
       $errors = $this->getValidationErrorsMessages($e->getResult()->getErrors());
