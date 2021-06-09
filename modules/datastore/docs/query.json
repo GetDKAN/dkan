@@ -204,7 +204,7 @@
                 },
                 "operands": {
                     "type": "array",
-                    "description": "Arithmatic operators will require two operands, aggregate operators should take only one. Do not combine arithmatic and aggregate operators in a single query.",
+                    "description": "Arithmetic operators will require two operands, aggregate operators should take only one. Do not combine arithmetic and aggregate operators in a single query.",
                     "items": {
                         "anyOf": [
                             {
