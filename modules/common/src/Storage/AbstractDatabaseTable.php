@@ -233,10 +233,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   private function sanitizedErrorMessage(string $unsanitizedMessage) {
     // Insert portions of exception messages you want caught here.
     $messages = [
-      'Column not found',
+      // Portion of the message => User friendly message.
+      'Column not found' => 'Column not found',
+      'Mixing of GROUP columns' => 'You may not mix simple properties and aggregation expressions in a single query. If one of your properties includes an expression with a sum, count, avg, min or max operator, remove other properties from your query and try again',
     ];
-    foreach ($messages as $message) {
-      if (strpos($unsanitizedMessage, $message) !== FALSE) {
+    foreach ($messages as $portion => $message) {
+      if (strpos($unsanitizedMessage, $portion) !== FALSE) {
         return $message . ".";
       }
     }
