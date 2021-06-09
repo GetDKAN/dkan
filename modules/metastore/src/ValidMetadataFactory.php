@@ -3,7 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\Reference\HelperTrait;
+use Drupal\metastore\Service\Uuid5;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -11,7 +11,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Service.
  */
 class ValidMetadataFactory implements ContainerInjectionInterface {
-  use HelperTrait;
 
   /**
    * Schema retriever.
@@ -93,7 +92,8 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
    */
   private function addIdentifier(string $schema_id, string $json_string): string {
     $json_data = json_decode($json_string);
-    $json_data->identifier = $this->getUuidService()->generate($schema_id, $json_string);
+    $uuid5 = new Uuid5();
+    $json_data->identifier = $uuid5->generate($schema_id, $json_string);
     return json_encode($json_data);
   }
 
