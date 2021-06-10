@@ -5,6 +5,7 @@ namespace Drupal\metastore\Reference;
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\LoggerTrait;
+use Drupal\metastore\Exception\MissingObjectException;
 
 /**
  * Metastore dereferencer.
@@ -125,12 +126,18 @@ class Dereferencer {
    */
   private function dereferenceSingle(string $property_id, string $uuid) {
     $storage = $this->storageFactory->getInstance($property_id);
-    $value = $storage->retrieve($uuid);
+    try {
+      $value = $storage->retrieve($uuid);
+    }
+    catch (MissingObjectException $exception) {
+      $value = FALSE;
+    }
 
     if ($value) {
       $metadata = json_decode($value);
       return [$metadata, $metadata->data];
     }
+
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
     $this->log(

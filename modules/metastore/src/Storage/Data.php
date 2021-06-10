@@ -4,6 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\metastore\Exception\MissingObjectException;
 
 /**
  * Data.
@@ -119,7 +120,7 @@ abstract class Data implements MetastoreStorageInterface {
       return $entity->get('field_json_metadata')->getString();
     }
 
-    throw new \Exception("Error retrieving published dataset: {$uuid} not found.");
+    throw new MissingObjectException("Error retrieving published dataset: {$uuid} not found.");
   }
 
   /**
@@ -140,7 +141,7 @@ abstract class Data implements MetastoreStorageInterface {
       return $entity->get('field_json_metadata')->getString();
     }
 
-    throw new \Exception("Error retrieving dataset: {$uuid} not found.");
+    throw new MissingObjectException("Error retrieving dataset: {$uuid} not found.");
   }
 
   /**
