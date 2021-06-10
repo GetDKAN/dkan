@@ -130,7 +130,73 @@ class ValueHandlerTest extends TestCase {
     $schema = json_decode($this->getObjectSchema());
     $result = $value_handler->handleObjectValues(NULL, "publisher", $schema);
     $this->assertEquals($result, FALSE);
+  }
 
+  public function testFlattenValuesEmptyDistribution() {
+    $value_handler = new ValueHandler();
+
+    // Test object where only the '@type' field is not empty.
+    $shortEmptyDistributionSchema = '{
+      "title": "Distribution",
+      "description": "Description.",
+      "type": "array",
+      "items": {
+        "title": "Project Open Data Distribution",
+        "type": "object",
+        "properties": {
+          "@type": {
+            "title": "Metadata Context",
+            "description": "Test Description.",
+            "default": "dcat:Distribution",
+            "type": "string",
+            "readOnly": true
+          },
+          "title": {
+            "title": "Title",
+            "description": "Human-readable name of the distribution.",
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "title": "Description",
+            "description": "Human-readable description of the distribution.",
+            "type": "string",
+            "minLength": 1
+          },
+          "format": {
+            "title": "Format",
+            "description": "A human-readable description of the file format of a distribution (i.e. csv, pdf, xml, kml, etc.).",
+            "type": "string",
+            "examples": [
+              "csv",
+              "json"
+            ]
+          }
+        }
+      }
+    }';
+    $schema = json_decode($shortEmptyDistributionSchema);
+
+    $formValues = [
+      "distribution" => [
+        "distribution" => [
+          0 => [
+            "distribution" => [
+              "@type" => "dcat:Distribution",
+              'title' => '',
+              'description' => '',
+              'format' => [
+                  'select' => '',
+                  'other' => '',
+              ],
+            ],
+          ],
+        ],
+      ],
+    ];
+
+    $result = $value_handler->flattenValues($formValues, "distribution", $schema);
+    $this->assertEquals([], $result);
   }
 
   /**

@@ -195,20 +195,27 @@
         "expression": {
             "type": "object",
             "title": "Expression",
-            "description": "Arithmetic or other expression performed on one or more properties. See operator property enum for currently supported expressions, and see https://dev.mysql.com/doc/refman/5.7/en/numeric-functions.html.",
+            "description": "Arithmetic or aggregate expression performed on one or more properties.",
             "properties": {
                 "operator": {
                     "type": "string",
+                    "description": "Expression operator. Note that performing expressions on text or other non-numeric data types my yeild unexpected results.",
                     "enum": [
                         "+",
                         "-",
                         "*",
                         "/",
-                        "%"
+                        "%",
+                        "sum",
+                        "count",
+                        "avg",
+                        "max",
+                        "min"
                     ]
                 },
                 "operands": {
                     "type": "array",
+                    "description": "Arithmetic operators will require two operands, aggregate operators should take only one. Do not combine arithmetic and aggregate operators in a single query.",
                     "items": {
                         "anyOf": [
                             {

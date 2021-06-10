@@ -22,6 +22,18 @@
                     2
                 ]
             }
+        },
+        {
+          "alias": "sum",
+          "expression": {
+            "operator": "sum",
+            "operands": [
+              {
+                "resource": "t",
+                "property": "field2"
+              }
+            ]
+          }
         }
     ],
     "sorts": [
