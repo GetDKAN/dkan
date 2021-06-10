@@ -1,0 +1,8 @@
+name: Datastore Fast Import
+description: Provides a fast Importer class.
+type: module
+core_version_requirement: ^8 || ^9
+package: DKAN
+dependencies:
+  - common
+  - metastore
