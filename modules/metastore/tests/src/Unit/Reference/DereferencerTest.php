@@ -5,6 +5,7 @@ namespace Drupal\Tests\metastore\Unit\Reference;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Service\Uuid5;
 use Drupal\metastore\Storage\DataFactory;
@@ -46,6 +47,26 @@ class DereferencerTest extends TestCase {
 
     $this->assertTrue(is_object($referenced));
     $this->assertEquals((object) ['name' => 'Gerardo', 'company' => 'CivicActions'], $referenced->publisher);
+  }
+
+  public function testDereferenceDeletedReference() {
+    $storageFactory = (new Chain($this))
+      ->add(DataFactory::class, 'getInstance', NodeData::class)
+      ->add(NodeData::class, 'retrieve', new MissingObjectException("bad"))
+      ->getMock();
+
+    $configService = (new Chain($this))
+      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', ['distribution'])
+      ->getMock();
+
+    $uuidService = new Uuid5();
+    $uuid = $uuidService->generate('dataset', "some value");
+
+    $valueReferencer = new Dereferencer($configService, $storageFactory);
+    $referenced = $valueReferencer->dereference((object) ['distribution' => $uuid]);
+
+    $this->assertEquals((object) ['distribution' => NULL, '%Ref:distribution' => NULL], $referenced);
   }
 
   /**
