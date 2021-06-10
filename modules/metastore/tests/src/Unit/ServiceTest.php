@@ -61,7 +61,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGetAll() {
-    $expected = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
+    $expected = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
 
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, 'retrieveAll', [json_encode(['foo' => 'bar'])])
@@ -75,7 +75,7 @@ class ServiceTest extends TestCase {
   }
 
   public function testGetAllException() {
-    $data = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
+    $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
 
     $event = new Event($data);
     $event->setException(new \Exception("blah"));
@@ -106,7 +106,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
-    $data = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
+    $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
 
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
@@ -129,7 +129,7 @@ class ServiceTest extends TestCase {
         ["title" => "hello"],
       ],
     ];
-    $data = $this->validMetadataFactory->get('dataset', json_encode($dataset));
+    $data = $this->validMetadataFactory->get(json_encode($dataset), 'dataset');
 
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", json_encode($dataset))
@@ -150,7 +150,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $data = $this->validMetadataFactory->get('dataset', json_encode(['foo' => 'bar']));
+    $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
     $this->assertEquals("1", $service->post("dataset", $data));
   }
 
@@ -165,7 +165,7 @@ class ServiceTest extends TestCase {
 
     $this->expectException(ExistingObjectException::class);
 
-    $data = $this->validMetadataFactory->get('dataset', '{"identifier":1,"title":"FooBar"}');
+    $data = $this->validMetadataFactory->get('{"identifier":1,"title":"FooBar"}', 'dataset');
     $service->post("dataset", $data);
   }
 
@@ -176,7 +176,7 @@ class ServiceTest extends TestCase {
     $existing = '{"identifier":"1","title":"Foo"}';
     $updating = '{"identifier":"1","title":"Bar"}';
 
-    $data_existing = $this->validMetadataFactory->get('dataset', $existing);
+    $data_existing = $this->validMetadataFactory->get($existing, 'dataset');
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, "retrieve", $existing)
       ->add(NodeData::class, "store", "1")
@@ -184,7 +184,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $data_updating = $this->validMetadataFactory->get('dataset', $updating);
+    $data_updating = $this->validMetadataFactory->get($updating, 'dataset');
     $info = $service->put("dataset", "1", $data_updating);
 
     $this->assertEquals("1", $info['identifier']);
@@ -204,7 +204,7 @@ class ServiceTest extends TestCase {
 
     $this->expectExceptionMessage("Identifier cannot be modified");
 
-    $data = $this->validMetadataFactory->get('dataset', $updating);
+    $data = $this->validMetadataFactory->get($updating, 'dataset');
     $service->put("dataset", "1", $data);
   }
 
@@ -218,7 +218,7 @@ class ServiceTest extends TestCase {
 
     $service = Service::create($container->getMock());
 
-    $data = $this->validMetadataFactory->get('dataset', '{"identifier":"3","title":"FooBar"}');
+    $data = $this->validMetadataFactory->get('{"identifier":"3","title":"FooBar"}', 'dataset');
     $info = $service->put("dataset", "3", $data);
     $this->assertEquals("3", $info['identifier']);
   }
@@ -229,7 +229,7 @@ class ServiceTest extends TestCase {
   public function testPutObjectUnchangedException() {
     $existing = '{"identifier":"1","title":"Foo"}';
 
-    $data = $this->validMetadataFactory->get('dataset', $existing);
+    $data = $this->validMetadataFactory->get($existing, 'dataset');
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", $existing)
       ->add(ValidMetadataFactory::class, 'get', $data);
@@ -252,7 +252,7 @@ class ServiceTest extends TestCase {
       }
 EOF;
 
-    $data_existing = $this->validMetadataFactory->get('dataset', $existing);
+    $data_existing = $this->validMetadataFactory->get($existing, 'dataset');
     $container = self::getCommonMockChain($this)
       ->add(Data::class, "retrieve", $existing)
       ->add(ValidMetadataFactory::class, 'get', $data_existing);
@@ -260,7 +260,7 @@ EOF;
     $service = Service::create($container->getMock());
     $this->expectException(UnmodifiedObjectException::class);
 
-    $data_updating = $this->validMetadataFactory->get('dataset', $updating);
+    $data_updating = $this->validMetadataFactory->get($updating, 'dataset');
     $service->put("dataset", "1", $data_updating);
   }
 
@@ -335,7 +335,7 @@ EOF;
    *
    */
   public function testGetCatalog() {
-    $dataset = $this->validMetadataFactory->get('blah', json_encode(["foo" => "bar"]));
+    $dataset = $this->validMetadataFactory->get(json_encode(["foo" => "bar"]), 'blah');
 
     $catalog = (object) [
       "@id" => "http://catalog",

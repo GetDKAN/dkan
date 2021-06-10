@@ -34,7 +34,7 @@ class WebServiceApiDocsTest extends TestCase {
    * Tests dataset-specific docs when SQL endpoint is protected.
    */
   public function testDatasetSpecificDocsWithSqlModifier() {
-    $get = $this->validMetadataFactory->get('dataset', '{}');
+    $get = $this->validMetadataFactory->get('{}', 'dataset');
     $mockChain = $this->getCommonMockChain()
       ->add(Service::class, "get", $get)
       ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])

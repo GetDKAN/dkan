@@ -244,7 +244,7 @@ class DatasetTest extends ExistingSiteBase {
       $data->distribution[] = $distribution;
     }
 
-    return $this->validMetadataFactory->get('dataset', json_encode($data));
+    return $this->validMetadataFactory->get(json_encode($data), 'dataset');
   }
 
   /**

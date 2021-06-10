@@ -40,7 +40,7 @@ class DatasetTest extends TestCase {
       ->index(0);
 
     $object = (object) ["identifier" => "1"];
-    $expected = $this->validMetadataFactory->get('dummy_schema_id', json_encode($object));
+    $expected = $this->validMetadataFactory->get(json_encode($object), 'dummy_schema_id');
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
@@ -74,7 +74,7 @@ class DatasetTest extends TestCase {
       ->index(0);
 
     $object = (object) ["identifier" => "1"];
-    $expected = $this->validMetadataFactory->get('dummy_schema_id', json_encode($object));
+    $expected = $this->validMetadataFactory->get(json_encode($object), 'dummy_schema_id');
 
     $containerChain = (new Chain($this))
       ->add(Container::class, "get", $containerOptions)
