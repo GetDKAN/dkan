@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Drupal\common\Controller;
 
 use Drupal\common\Plugin\DkanApiDocsGenerator;
+use Drupal\common\Plugin\DkanApiDocsPluginManager;
+use Drupal\common\Plugin\OpenApiSpec;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -17,11 +19,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class OpenApiController extends ControllerBase {
 
   /**
-   * The API array spec, to ease manipulation, before json encoding.
+   * API Docs generator class.
    *
-   * @var array
+   * @var Drupal\common\Controller\DkanApiDocsGenerator
    */
-  private $spec;
+  protected $generator;
 
   /**
    * Module handler.
@@ -50,7 +52,8 @@ class OpenApiController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new OpenApiController(
       $container->get('module_handler'),
-      $container->get('request_stack')
+      $container->get('request_stack'),
+      $container->get('plugin.manager.dkan_api_docs')
     );
   }
 
@@ -59,12 +62,12 @@ class OpenApiController extends ControllerBase {
    */
   public function __construct(
     ModuleHandlerInterface $moduleHandler,
-    RequestStack $requestStack
+    RequestStack $requestStack,
+    DkanApiDocsPluginManager $manager
   ) {
     $this->moduleHandler = $moduleHandler;
     $this->requestStack = $requestStack;
-    $generator = new DkanApiDocsGenerator(\Drupal::service('plugin.manager.dkan_api_docs'));
-    $this->spec = $generator->buildSpec();
+    $this->generator = new DkanApiDocsGenerator($manager);
   }
 
   /**
@@ -81,12 +84,11 @@ class OpenApiController extends ControllerBase {
    *   OpenAPI spec response.
    */
   public function getComplete() {
-    // if ($this->requestStack->getCurrentRequest()->get('authentication') === "false") {
-    //   $spec = $this->getPublic();
-    // }
-    // else {
-      $spec = $this->spec;
-    // }
+    $spec = $this->generator->buildSpec();
+
+    if ($this->requestStack->getCurrentRequest()->get('authentication') === "false") {
+      $this->filterAuthenticatedMethods($spec);
+    }
 
     $jsonSpec = json_encode($spec);
     return $this->sendResponse($jsonSpec);
@@ -101,11 +103,11 @@ class OpenApiController extends ControllerBase {
    * @return array
    *   The modified API spec, without authentication-related items.
    */
-  private function getPublic() {
-    $publicSpec = $this->removeAuthenticatedEndpoints($this->spec);
+  private function filterAuthenticatedMethods(OpenApiSpec $spec) {
+    $publicSpec = $this->removeAuthenticatedEndpoints($spec->{"$"});
     $cleanSpec = $this->cleanUpEndpoints($publicSpec);
     unset($cleanSpec['components']['securitySchemes']);
-    return $cleanSpec;
+    return new OpenApiSpec(json_encode($cleanSpec));
   }
 
   /**

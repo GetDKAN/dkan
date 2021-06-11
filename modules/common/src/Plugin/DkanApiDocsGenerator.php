@@ -27,20 +27,6 @@ class DkanApiDocsGenerator implements ContainerInjectionInterface {
       $spec = array_merge_recursive($spec, $pluginSpec);
     }
 
-    $router = \Drupal::service('router.no_access_checks');
-    $path = 'api/1/metastore/schemas/{schema_id}/items';
-    $collection = \Drupal::service('router.route_provider')->getRoutesByPattern($path);
-    $all = $collection->all();
-    foreach (array_keys($spec["paths"]) as $path) {
-      $route = $router->match($path);
-      if (!isset($route['_route_object'])) {
-        continue;
-      }
-      if ($auth = $route['_route_object']->getOption("auth")) {
-        
-      }
-    }
-
-    return $spec;
+    return new OpenApiSpec(json_encode($spec));
   }
 }
