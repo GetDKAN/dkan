@@ -10,6 +10,43 @@
                 "type": "http",
                 "scheme": "basic"
             }
+        },
+        "responses": {
+            "400BadJson": {
+                "description": "Bad request, usually JSON schema validation failure.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error message."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "404IdNotFound": {
+                "description": "Not found, usually due to incorrect identifier.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error message."
+                                }
+                            }
+                        },
+                        "example": {
+                            "message": "Error retrieving metadata: 00000000-0000-0000-0000-000000000000 not found."
+                        }
+                    }
+                }
+            }
         }
     }
 }

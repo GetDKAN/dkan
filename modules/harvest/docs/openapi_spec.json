@@ -1,5 +1,4 @@
 {
-    "parameters": null,
     "components": {
         "parameters": {
             "harvestPlanId": {
@@ -18,7 +17,8 @@
                 "required": true,
                 "schema": {
                     "type": "string"
-                }
+                },
+                "style": "form"
             },
             "harvestRunId": {
                 "name": "run_id",
@@ -29,6 +29,47 @@
                     "type": "string"
                 },
                 "example": "HARVEST-RUN-ID"
+            }
+        },
+        "schemas": {
+            "harvestPlan": {
+                "type": "object",
+                "required": [
+                    "identifier",
+                    "extract",
+                    "load"
+                ],
+                "properties": {
+                    "identifier": {
+                        "type": "string"
+                    },
+                    "extract": {
+                        "type": "object",
+                        "required": [
+                            "type",
+                            "uri"
+                        ],
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            },
+                            "uri": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "load": {
+                        "type": "object",
+                        "required": [
+                            "type"
+                        ],
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         }
     },
@@ -43,7 +84,7 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
+                        "basic_auth": []
                     }
                 ],
                 "responses": {
@@ -74,7 +115,7 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
+                        "basic_auth": []
                     }
                 ],
                 "requestBody": {
@@ -82,7 +123,18 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object"
+                                "$ref": "#/components/schemas/harvestPlan"    
+                            },
+                            "example": {
+                                "identifier": "h1",
+                                "extract": {
+                                  "type": "\\Harvest\\ETL\\Extract\\DataJson",
+                                  "uri": "https://dkan-default-content-files.s3.amazonaws.com/data.json"
+                                },
+                                "transforms": [],
+                                "load": {
+                                  "type": "\\Drupal\\harvest\\Load\\Dataset"
+                                }
                             }
                         }
                     }
@@ -94,10 +146,7 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "required": [
-                                        "endpoint",
-                                        "identifier"
-                                    ],
+                                    "required": [ "identifier" ],
                                     "properties": {
                                         "endpoint": {
                                             "type": "string"
@@ -109,6 +158,9 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad request. Usually a mistake in the JSON."
                     },
                     "401": {
                         "description": "Unauthorized"
@@ -131,7 +183,7 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
+                        "basic_auth": []
                     }
                 ],
                 "responses": {
@@ -140,43 +192,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "required": [
-                                        "identifier",
-                                        "extract",
-                                        "load"
-                                    ],
-                                    "properties": {
-                                        "identifier": {
-                                            "type": "string"
-                                        },
-                                        "extract": {
-                                            "type": "object",
-                                            "required": [
-                                                "type",
-                                                "uri"
-                                            ],
-                                            "properties": {
-                                                "type": {
-                                                    "type": "string"
-                                                },
-                                                "uri": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        },
-                                        "load": {
-                                            "type": "object",
-                                            "required": [
-                                                "type"
-                                            ],
-                                            "properties": {
-                                                "type": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/harvestPlan"    
                                 }
                             }
                         }
@@ -197,7 +213,7 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
+                        "basic_auth": []
                     }
                 ],
                 "parameters": [
@@ -232,11 +248,11 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
+                        "basic_auth": []
                     }
                 ],
                 "parameters": [
-                    { "$ref": "#/components/parameters/harvestPlanIdQuery"}
+                    { "$ref": "#/components/parameters/harvestPlanId" }
                 ],
                 "responses": {
                     "200": {
@@ -266,7 +282,7 @@
                 ],
                 "security": [
                     {
-                        "basicAuth": []
+                        "basic_auth": []
                     }
                 ],
                 "requestBody": {

@@ -1,14 +1,17 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Drupal\common\Controller;
 
+use Drupal\common\JsonResponseTrait;
 use Drupal\common\Plugin\DkanApiDocsGenerator;
 use Drupal\common\Plugin\DkanApiDocsPluginManager;
-use Drupal\common\Plugin\OpenApiSpec;
-use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use OpisErrorPresenter\Implementation\MessageFormatterFactory;
+use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
+use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
+use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
+use RootedData\Exception\ValidationException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -16,7 +19,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Serves openapi spec for dataset-related endpoints.
  */
-class OpenApiController extends ControllerBase {
+class OpenApiController implements ContainerInjectionInterface {
+  use JsonResponseTrait;
 
   /**
    * API Docs generator class.
@@ -84,103 +88,25 @@ class OpenApiController extends ControllerBase {
    *   OpenAPI spec response.
    */
   public function getComplete() {
-    $spec = $this->generator->buildSpec();
-
+    try {
+      $spec = $this->generator->buildSpec();
+    }
+    catch (ValidationException $e) {
+      $result = $e->getResult();
+      $presenter = new ValidationErrorPresenter(
+        new PresentedValidationErrorFactory(
+            new MessageFormatterFactory()
+        ),
+        new BestMatchError()
+      );
+      $presented = $presenter->present(...$result->getErrors());
+      return $this->getResponse($presented);
+    }
     if ($this->requestStack->getCurrentRequest()->get('authentication') === "false") {
-      $this->filterAuthenticatedMethods($spec);
+      $publicSpec = AuthCleanupHelper::makePublicSpec($spec);
+      return $this->getResponse($publicSpec->{'$'});
     }
-
-    $jsonSpec = json_encode($spec);
-    return $this->sendResponse($jsonSpec);
-  }
-
-  /**
-   * Return a publicly-accessible version of the API spec.
-   *
-   * Remove any endpoint requiring authentication, as well as the security
-   * schemes components from the api spec.
-   *
-   * @return array
-   *   The modified API spec, without authentication-related items.
-   */
-  private function filterAuthenticatedMethods(OpenApiSpec $spec) {
-    $publicSpec = $this->removeAuthenticatedEndpoints($spec->{"$"});
-    $cleanSpec = $this->cleanUpEndpoints($publicSpec);
-    unset($cleanSpec['components']['securitySchemes']);
-    return new OpenApiSpec(json_encode($cleanSpec));
-  }
-
-  /**
-   * Remove API spec endpoints requiring authentication.
-   *
-   * @param array $spec
-   *   The original spec.
-   *
-   * @return array
-   *   The modified API spec, without authenticated endpoints.
-   */
-  private function removeAuthenticatedEndpoints(array $spec) {
-    foreach ($spec['paths'] as $path => $operations) {
-      $this->removeAuthenticatedOperations($operations, $path, $spec);
-    }
-    return $spec;
-  }
-
-  /**
-   * Within a path, remove operations requiring authentication.
-   *
-   * @param array $operations
-   *   Operations for the current path.
-   * @param string $path
-   *   The path being processed.
-   * @param array $spec
-   *   Our modified dataset-specific openapi spec.
-   */
-  private function removeAuthenticatedOperations(array $operations, string $path, array &$spec) {
-    foreach ($operations as $operation => $details) {
-      if (isset($spec['paths'][$path][$operation]['security'])) {
-        unset($spec['paths'][$path][$operation]);
-      }
-    }
-  }
-
-  /**
-   * Clean up empty endpoints from the spec.
-   *
-   * @param array $spec
-   *   The original spec.
-   *
-   * @return array
-   *   The cleaned up API spec.
-   */
-  private function cleanUpEndpoints(array $spec) {
-    foreach ($spec['paths'] as $path => $operations) {
-      if (empty($operations)) {
-        unset($spec['paths'][$path]);
-      }
-    }
-    return $spec;
-  }
-
-  /**
-   * Helper function to set headers and send response.
-   *
-   * @param string $jsonSpec
-   *   OpenAPI spec encoded json response.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   OpenAPI spec response.
-   */
-  private function sendResponse(string $jsonSpec) {
-    return new JsonResponse(
-              $jsonSpec,
-              200,
-              [
-                'Content-type' => 'application/json',
-                'Access-Control-Allow-Origin' => '*',
-              ],
-              TRUE
-          );
+    return $this->getResponse($spec->{'$'});
   }
 
 }

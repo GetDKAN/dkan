@@ -19,8 +19,12 @@ trait JsonResponseTrait {
   /**
    * Private.
    */
-  private function getResponseFromException(\Exception $e, int $code = 400):JsonResponse {
-    return $this->getResponse((object) ['message' => $e->getMessage()], $code);
+  private function getResponseFromException(\Exception $e, int $code = 400, $data = []):JsonResponse {
+    $body = ['message' => $e->getMessage()];
+    if (!empty($data) && !empty(json_encode($data))) {
+      $body['data'] = $data;
+    } 
+    return $this->getResponse((object) $body, $code);
   }
 
 }

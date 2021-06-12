@@ -3,9 +3,13 @@
 namespace Drupal\datastore\Plugin\DkanApiDocs;
 
 use Drupal\common\Plugin\DkanApiDocsBase;
+use Drupal\common\Plugin\OpenApiSpec;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\datastore\Service as DatastoreService;
+use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\metastore\Service;
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -17,6 +21,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class DatastoreApiDocs extends DkanApiDocsBase {
+
+  const ID_TYPE_DISTRIBUTION = 1;
+  const ID_TYPE_RESOURCE = 2;
 
   /**
    * The DKAN metastore service.
@@ -47,10 +54,12 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     $pluginDefinition,
     ModuleHandlerInterface $moduleHandler,
     TranslationInterface $stringTranslation,
-    Service $metastore
+    Service $metastore,
+    ImportInfo $importInfo
   ) {
     parent::__construct($configuration, $pluginId, $pluginDefinition, $moduleHandler, $stringTranslation);
     $this->metastore = $metastore;
+    $this->importInfo = $importInfo;
   }
 
   /**
@@ -79,7 +88,8 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $pluginDefinition,
       $container->get('module_handler'),
       $container->get('string_translation'),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('dkan.datastore.import_info')
     );
   }
 
@@ -101,13 +111,26 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     $spec["components"]["schemas"]["datastoreResourceQuery"] = $resourceQuerySchema;
 
     // Fill in examples.
-    $exampleId = $this->getExampleIdentifier();
-    $spec["components"]["parameters"]["datastoreDistributionUuid"]["example"] = $exampleId;
-    $spec["paths"]["/api/1/datastore/sql"]["get"]["parameters"][0]["example"] = $this->sqlQueryExample($exampleId);
-
+    $spec = $this->setUpExamples($spec);
     // Convert json schema to params.
     $spec = $this->setUpGetParameters($spec);
 
+    return $spec;
+  }
+
+  private function setUpExamples($spec){
+    $exampleIds = $this->getExampleIdentifiers();
+    $spec["components"]["parameters"]["datastoreDistributionUuid"]["example"] = $exampleIds['distribution'];
+    $spec["paths"]["/api/1/datastore/query"]["post"]["requestBody"]["content"]["application/json"]["example"] 
+      = $this->queryExample($exampleIds['distribution']);
+    $spec["paths"]["/api/1/datastore/query/download"]["post"]["requestBody"]["content"]["application/json"]["example"] 
+      = $this->queryExample($exampleIds['distribution'], "csv");
+    $spec["paths"]["/api/1/datastore/query/{identifier}"]["post"]["requestBody"]["content"]["application/json"]["example"] 
+      = $this->queryExample();
+
+    $spec['components']['parameters']['datastoreUuid']["example"] = $exampleIds['datastore'];
+
+    $spec["paths"]["/api/1/datastore/sql"]["get"]["parameters"][0]["example"] = $this->sqlQueryExample($exampleIds['distribution']);
     return $spec;
   }
 
@@ -125,6 +148,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       ];
       $ref = ['$ref' => "#/components/parameters/$propertyKey"];
       $spec["paths"]["/api/1/datastore/query"]["get"]["parameters"][] = $ref;
+      $spec["paths"]["/api/1/datastore/query/download"]["get"]["parameters"][] = $ref;
     }
     foreach ($spec["components"]["schemas"]["datastoreResourceQuery"]["properties"] as $key => $property) {
       $propertyKey = 'datastoreQuery' . ucfirst($key);
@@ -157,27 +181,96 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return "[SELECT * FROM $exampleId][LIMIT 2]";
   }
 
-  private function getExampleIdentifier() {
+  private function queryExample($exampleId = NULL, $format = NULL) {
+    $query = [
+      'conditions' => [
+        [
+          'resource' => 't',
+          'property' => 'record_number',
+          'value' => 1,
+          'operator' => '>',
+        ],
+      ],
+      'limit' => 3,
+    ];
+    if (isset($exampleId)) {
+      $query['resources'] = [
+        ['id' => $exampleId, 'alias' => 't'],
+      ];
+    }
+    if (isset($format)) {
+      $query['format'] = $format;
+    }
+    return $query;
+  }
+
+  private function getExampleIdentifiers() {
     $all = $this->metastore->getAll("dataset");
     $i = 0;
     $datastore = FALSE;
-    $identifier = NULL;
+    $identifiers = [];
     while ($datastore == FALSE && $i < count($all)) {
       $item = $all[$i];
       $i++;
-      if (!isset($item->{'$.distribution[0]'})) {
-        continue;
-      }
-      if (!isset($item->{'$[distribution][0]["%Ref:downloadURL"][0][identifier]'})) {
-        continue;
-      }
-      $identifier = $item->{'$["%Ref:distribution"][0][identifier]'};
-      if (!$identifier) {
+      if (!($identifiers = $this->getDatastoreIds($item))) {
         continue;
       }
       $datastore = TRUE;
     }
-    return $identifier ?: "00000000-0000-0000-0000-000000000000";
+    if (empty($identifiers)) {
+      $identifiers = [
+        'resource' => '00000000000000000000000000000000__0000000000__source',
+        'distribution' => "00000000-0000-0000-0000-000000000000",
+      ];
+    }
+    return $identifiers;
+  }
+
+  private function getDatastoreIds(RootedJsonData $dataset) {
+    if (!isset($dataset->{'$.distribution[0]'})) {
+      return FALSE;
+    }
+    foreach ($dataset->{'$[\'%Ref:distribution\']'} as $distribution) {
+      $identifiers = [];
+      if (!($resourceId = $distribution["data"]["%Ref:downloadURL"][0]["identifier"])) {
+        continue;
+      }
+      if (!$this->resourceHasDatastore($resourceId)) {
+        continue;
+      }
+      $identifiers = [
+        'distribution' => $distribution["identifier"],
+        'datastore' => $resourceId,
+      ];
+    }
+    if (empty($identifiers)) {
+      return FALSE;
+    }
+    return $identifiers;
+  }
+
+  private function removePerspective($resourceId) {
+    $parts = explode("__", $resourceId);
+    if (count($parts) != 3) {
+      return $resourceId;
+    }
+    unset($parts[2]);
+    return implode("_", $parts);
+  }
+
+  private function resourceHasDatastore($resourceId) {
+    $resourceId = $this->removePerspective($resourceId);
+    $parts = explode("_", $resourceId);
+    try {
+      $import = $this->importInfo->getItem($parts[0], $parts[1]);
+    }
+    catch (\Exception $e) {
+      return FALSE;
+    }
+    if (isset($import->importerPercentDone) && ($import->importerPercentDone == 100)) {
+      return TRUE;
+    }
+    return FALSE;
   }
 
 }

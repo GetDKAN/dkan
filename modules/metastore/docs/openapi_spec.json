@@ -9,6 +9,7 @@
                     "type": "boolean",
                     "default": false
                 },
+                "style": "form",
                 "allowEmptyValue": true
             },
             "schemaId": {
@@ -30,7 +31,7 @@
             "get": {
                 "operationId": "metastore-get-schemas",
                 "summary": "Get list of all schemas",
-                "tags": [ "Metastore: schemas" ],
+                "tags": [ "Metastore" ],
                 "responses": {
                     "200": {
                         "description": "List of metastore schemas.",
@@ -50,7 +51,7 @@
             "get": {
                 "operationId": "metastore-get-schema",
                 "summary": "Get a specific schema",
-                "tags": [ "Metastore: schemas" ],
+                "tags": [ "Metastore" ],
                 "parameters": [
                     { "$ref": "#/components/parameters/schemaId" }
                 ],
@@ -76,7 +77,7 @@
             "get": {
                 "operationId": "metastore-get-all",
                 "summary": "Get all items for a specific schema (e.g., \"dataset\")",
-                "tags": [ "Metastore: get" ],
+                "tags": [ "Metastore" ],
                 "parameters": [
                     { "$ref": "#/components/parameters/schemaId" },
                     { "$ref": "#/components/parameters/showReferenceIds" }

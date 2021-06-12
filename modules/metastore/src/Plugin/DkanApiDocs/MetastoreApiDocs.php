@@ -170,7 +170,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         "summary" => $this->t("Create a new :schemaId.", $tSchema),
         "tags" => [$this->t("Metastore: create")],
         "security" => [
-          ['basicAuth' => []],
+          ['basic_auth' => []],
         ],
         "requestBody" => [
           "required" => TRUE,
@@ -207,6 +207,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
               ],
             ],
           ],
+          "404" => ['$ref' => '#/components/responses/404IdNotFound'],
         ],
       ],
 
@@ -215,7 +216,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         "summary" => $this->t("Fully replace an existing :schemaId", $tSchema),
         "tags" => [$this->t("Metastore: replace")],
         "security" => [
-          ['basicAuth' => []],
+          ['basic_auth' => []],
         ],
         "parameters" => [['$ref' => "#/components/parameters/{$schemaId}Uuid"]],
         "requestBody" => [
@@ -239,7 +240,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         "description" => $this->t("Values provided will replace existing values, but required values may be omitted."),
         "tags" => ["Metastore: patch"],
         "security" => [
-          ['basicAuth' => []],
+          ['basic_auth' => []],
         ],
         "parameters" => [['$ref' => "#/components/parameters/{$schemaId}Uuid"]],
         "requestBody" => [
