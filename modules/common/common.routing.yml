@@ -26,6 +26,17 @@ dkan.common.api.version:
   options:
     _auth: ['basic_auth', 'cookie']
 
+dkan.common.api.version.yaml:
+  path: '/api/1.yml'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\common\Controller\OpenApiController::getComplete'
+    format: yaml
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 dkan.common.api_admin:
   path: '/admin/dkan/api'
   defaults:
