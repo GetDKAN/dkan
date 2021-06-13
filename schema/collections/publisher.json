@@ -1,6 +1,6 @@
 {
-  "title": "Tags",
-  "description": "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.",
+  "title": "Publisher",
+  "description": "A Dataset Publisher Organization.",
   "type": "object",
   "required": [
     "identifier",
