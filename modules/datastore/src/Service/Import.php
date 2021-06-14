@@ -47,7 +47,6 @@ class Import {
     $this->importerClass = $className;
   }
 
-
   /**
    * Initialize resource.
    *
