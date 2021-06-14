@@ -136,7 +136,12 @@ class Service implements ContainerInjectionInterface {
 
     $objects = array_map(
       function ($jsonString) use ($schema_id) {
-        $data = $this->validMetadataFactory->get($schema_id, $jsonString);
+        try {
+          $data = $this->validMetadataFactory->get($schema_id, $jsonString);
+        }
+        catch (\Exception $e) {
+          return NULL;
+        }
         try {
           return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
             return $data instanceof RootedJsonData;
@@ -148,6 +153,8 @@ class Service implements ContainerInjectionInterface {
       },
       $jsonStringsArray
     );
+
+    $objects = array_filter($objects);
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
       if (!is_array($data)) {
