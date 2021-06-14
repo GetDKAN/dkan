@@ -85,8 +85,9 @@ class MetastoreApiDocs extends DkanApiDocsBase {
 
   public function spec() {
     $schemas = $this->metastore->getSchemas();
-    $schemaIds = array_filter(array_keys($schemas), [$this, 'filterSchemaIds']);
+    $schemaIds = array_values(array_filter(array_keys($schemas), [$this, 'filterSchemaIds']));
     $spec = $this->getDoc('metastore');
+    $spec["components"]["parameters"]["schemaId"]["schema"]["example"] = $schemaIds[0];
     foreach ($schemaIds as $schemaId) {
       $spec["components"]["schemas"] += $this->schemaComponent($schemaId);
       $spec["components"]["parameters"]["schemaId"]["examples"]["$schemaId"] = ['value' => $schemaId];
@@ -183,7 +184,12 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         ],
         "responses" => [
           "200" => [
-            "description" => "Ok.",
+            "description" => "Metadata creation successful.",
+            "content" => [
+              "application/json" => [
+                "schema" => ['$ref' => '#/components/schemas/metastoreWriteResponse'],
+              ],
+            ],
           ],
         ],
       ],
@@ -231,6 +237,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
           "200" => [
             "description" => "Ok.",
           ],
+          "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
         ],
       ],
 
@@ -255,6 +262,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
           "200" => [
             "description" => "Ok.",
           ],
+          "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
         ],
       ],
     ];

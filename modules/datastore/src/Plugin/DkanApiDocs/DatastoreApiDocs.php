@@ -22,9 +22,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DatastoreApiDocs extends DkanApiDocsBase {
 
-  const ID_TYPE_DISTRIBUTION = 1;
-  const ID_TYPE_RESOURCE = 2;
-
   /**
    * The DKAN metastore service.
    *
