@@ -5,6 +5,7 @@ namespace Drupal\metastore;
 use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\common\LoggerTrait;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -19,6 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Service implements ContainerInjectionInterface {
   use EventDispatcherTrait;
+  use LoggerTrait;
 
   const EVENT_DATA_GET = 'dkan_metastore_data_get';
   const EVENT_DATA_GET_ALL = 'dkan_metastore_data_get_all';
@@ -138,17 +140,17 @@ class Service implements ContainerInjectionInterface {
       function ($jsonString) use ($schema_id) {
         try {
           $data = $this->validMetadataFactory->get($jsonString, $schema_id);
-        }
-        catch (\Exception $e) {
-          return NULL;
-        }
-        try {
           return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
             return $data instanceof RootedJsonData;
           });
         }
         catch (\Exception $e) {
-          return new RootedJsonData(json_encode(["message" => $e->getMessage()]));
+          $this->log(
+            'metastore',
+            'A JSON string vailed validation.',
+            [ '@schema_id' => $schema_id, '@json' => $jsonString,]
+          );
+          return NULL;
         }
       },
       $jsonStringsArray
