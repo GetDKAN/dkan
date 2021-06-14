@@ -41,7 +41,7 @@ class MetastoreSubscriberTest extends TestCase {
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
-    $dist = $this->validMetadataFactory->get('distribution', $dist);
+    $dist = $this->validMetadataFactory->get($dist, 'distribution');
     $event = new Event($resource);
 
     $options = (new Options())
@@ -72,7 +72,7 @@ class MetastoreSubscriberTest extends TestCase {
     $url = 'http://hello.world/file.csv';
     $resource = new Resource($url, 'text/csv');
     $dist = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop","perspective":"source"}}]}}';
-    $dist = $this->validMetadataFactory->get('distribution', $dist);
+    $dist = $this->validMetadataFactory->get($dist, 'distribution');
     $event = new Event($resource);
 
     $options = (new Options())

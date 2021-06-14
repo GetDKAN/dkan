@@ -136,7 +136,7 @@ class Service implements ContainerInjectionInterface {
 
     $objects = array_map(
       function ($jsonString) use ($schema_id) {
-        $data = $this->validMetadataFactory->get($schema_id, $jsonString);
+        $data = $this->validMetadataFactory->get($jsonString, $schema_id);
         try {
           return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
             return $data instanceof RootedJsonData;
@@ -174,7 +174,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function get($schema_id, $identifier): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
-    $data = $this->validMetadataFactory->get($schema_id, $json_string);
+    $data = $this->validMetadataFactory->get($json_string, $schema_id);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     return $data;
@@ -195,7 +195,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getResources($schema_id, $identifier): array {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = $this->validMetadataFactory->get($schema_id, $json_string);
+    $data = $this->validMetadataFactory->get($json_string, $schema_id);
 
     /* @todo decouple from POD. */
     $resources = $data->{"$.distribution"};
@@ -330,7 +330,7 @@ class Service implements ContainerInjectionInterface {
           json_decode($json_data)
         );
 
-        $new = $this->validMetadataFactory->get($schema_id, json_encode($patched));
+        $new = $this->validMetadataFactory->get(json_encode($patched), $schema_id);
         $storage->store($new, "{$identifier}");
         return $identifier;
       }
@@ -404,7 +404,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function objectIsEquivalent(string $schema_id, string $identifier, RootedJsonData $metadata) {
     $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
-    $existing = $this->getValidMetadataFactory()->get($schema_id, $existingMetadata);
+    $existing = $this->getValidMetadataFactory()->get($existingMetadata, $schema_id);
     $existing = self::removeReferences($existing);
     return $metadata->get('$') == $existing->get('$');
   }
