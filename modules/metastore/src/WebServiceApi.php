@@ -66,7 +66,12 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Get schema.
    */
   public function getSchema(string $identifier) {
-    return $this->getResponse($this->service->getSchema($identifier));
+    try {
+      return $this->getResponse($this->service->getSchema($identifier));
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e, 404);
+    }
   }
 
   /**
@@ -135,7 +140,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Private.
    */
   private function swapReferences(RootedJsonData $object): RootedJsonData {
-    $no_schema_object = $this->service->getValidMetadataFactory()->get(NULL, "$object");
+    $no_schema_object = $this->service->getValidMetadataFactory()->get("$object", NULL);
     foreach ($no_schema_object->get('$') as $property => $value) {
       if (substr_count($property, "%Ref:") > 0) {
         $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
@@ -189,7 +194,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $data = $this->getRequestContent();
       $this->checkIdentifier($data);
-      $data = $this->service->getValidMetadataFactory()->get($schema_id, $data);
+      $data = $this->service->getValidMetadataFactory()->get($data, $schema_id, ['method' => 'POST']);
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
@@ -243,7 +248,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $data = $this->getRequestContent();
       $this->checkIdentifier($data, $identifier);
-      $data = $this->service->getValidMetadataFactory()->get($schema_id, $data);
+      $data = $this->service->getValidMetadataFactory()->get($data, $schema_id);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);

@@ -3,6 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\metastore\Service\Uuid5;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -52,19 +53,48 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
   /**
    * Converts Json string into RootedJsonData object.
    *
-   * @param string|null $schema_id
-   *   The {schema_id} slug from the HTTP request.
    * @param string $json_string
    *   Json string.
+   * @param string|null $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param array $options
+   *   Options array.
    *
    * @return \RootedData\RootedJsonData
    *   RootedJsonData object.
    *
    * @throws \JsonPath\InvalidJsonException
    */
-  public function get(string $schema_id = NULL, string $json_string): RootedJsonData {
+  public function get(string $json_string, $schema_id = NULL, array $options = []): RootedJsonData {
+
+    // Add identifier for new objects if necessary.
+    if (isset($options['method']) && $options['method'] == 'POST') {
+      $data = json_decode($json_string);
+      if (!isset($data->identifier)) {
+        $json_string = $this->addIdentifier($schema_id, $json_string);
+      }
+    }
+
     $schema = !empty($schema_id) ? $this->getSchemaRetriever()->retrieve($schema_id) : '{}';
     return new RootedJsonData($json_string, $schema);
+  }
+
+  /**
+   * Adds identifier to JSON payload.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $json_string
+   *   Json string with no identifier.
+   *
+   * @return string
+   *   Json string with the identifier.
+   */
+  private function addIdentifier(string $schema_id, string $json_string): string {
+    $json_data = json_decode($json_string);
+    $uuid5 = new Uuid5();
+    $json_data->identifier = $uuid5->generate($schema_id, $json_string);
+    return json_encode($json_data);
   }
 
 }
