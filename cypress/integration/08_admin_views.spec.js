@@ -37,7 +37,28 @@ context('Admin content and dataset views', () => {
 
     it('The dataset edit link should go to the json form.', () => {
         cy.visit(baseurl + "/admin/dkan/datasets")
-        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', '/edit');
+        cy.get('.view-header > .form-actions > .button').click({ force: true })
+        cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST dataset title', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-description').type('DKANTEST dataset description.', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-accesslevel').select('public', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-modified-date').type('2020-02-02', { force: true })
+        // Fill select2 field for publisher.
+        cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
+        .find('.select2-selection')
+        .click({ force: true });
+        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]').type('DKANTEST Publisher{enter}')
+        // End filling up publisher.
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type('DKANTEST Contact Name', { force: true })
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('dkantest@test.com', { force: true })
+        // Fill select2 field for keyword.
+        cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
+        .find('.select2-selection')
+        .click({ force: true });
+        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
+        // End filling up keyword.
+        cy.get('#edit-submit').click({ force: true })
+        cy.get('.messages--status').should('contain', 'has been created')
+        cy.get('table .views-field.views-field-nothing > a').invoke('attr', 'href').should('contain', '/edit');
     })
 
 })

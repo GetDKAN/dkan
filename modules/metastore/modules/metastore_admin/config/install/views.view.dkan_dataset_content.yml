@@ -9,7 +9,7 @@ dependencies:
     - node
     - user
 _core:
-  default_config_hash: JJ6DPebkL1IQR5zAMGv3XEHJ7DDkhUeD2jgxJ4X7dKU
+  default_config_hash: 0NJOmqzHFD4tr5p2Gh12RsF6qxDspzU4rCD1y12yBgU
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
@@ -669,7 +669,7 @@ display:
           group_type: group
           admin_label: ''
           operator: '='
-          value: ''
+          value: dataset
           group: 1
           exposed: true
           expose:
