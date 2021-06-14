@@ -139,7 +139,7 @@ class Service implements ContainerInjectionInterface {
     $objects = array_map(
       function ($jsonString) use ($schema_id) {
         try {
-          $data = $this->validMetadataFactory->get($schema_id, $jsonString);
+          $data = $this->validMetadataFactory->get($jsonString, $schema_id);
           return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
             return $data instanceof RootedJsonData;
           });
