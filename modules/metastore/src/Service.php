@@ -156,7 +156,7 @@ class Service implements ContainerInjectionInterface {
       $jsonStringsArray
     );
 
-    $objects = array_filter($objects);
+    $objects = array_values(array_filter($objects));
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
       if (!is_array($data)) {
