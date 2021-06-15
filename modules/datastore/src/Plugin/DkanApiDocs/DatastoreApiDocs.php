@@ -261,13 +261,15 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   }
 
   /**
-   * Generate resource and distribution identifiers for documentation examples.
+   * Get some example identifiers to populate docs.
+   * 
+   * @return array 
+   *   An array, with keys resource and distribution.
    *
-   * @return array
-   *   An array of identifiers with keys 'resource' and 'distribution'.
+   * @todo Page through results in case 20 isn't enough.
    */
   private function getExampleIdentifiers() {
-    $all = $this->metastore->getAll("dataset");
+    $all = $this->metastore->getRange("dataset", 0, 20);
     $i = 0;
     $datastore = FALSE;
     $identifiers = [];
