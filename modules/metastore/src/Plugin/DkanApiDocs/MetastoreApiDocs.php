@@ -153,7 +153,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
   }
 
   private function getExampleIdentifier($schemaId) {
-    if ($first = $this->metastore->getAll($schemaId)) {
+    if ($first = $this->metastore->getRange($schemaId, 0, 1)) {
       return $first[0]->{"$.identifier"};
     }
     return FALSE;

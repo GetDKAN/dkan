@@ -11,6 +11,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
+use Exception;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -135,28 +136,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getAll($schema_id): array {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
-
-    $objects = array_map(
-      function ($jsonString) use ($schema_id) {
-        try {
-          $data = $this->validMetadataFactory->get($jsonString, $schema_id);
-          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
-            return $data instanceof RootedJsonData;
-          });
-        }
-        catch (\Exception $e) {
-          $this->log(
-            'metastore', 
-            'A JSON string vailed validation.',
-            [ '@schema_id' => $schema_id, '@json' => $jsonString,]
-          );
-          return NULL;
-        }
-      },
-      $jsonStringsArray
-    );
-
-    $objects = array_values(array_filter($objects));
+    $objects = $this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id);
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
       if (!is_array($data)) {
@@ -170,6 +150,58 @@ class Service implements ContainerInjectionInterface {
 
   }
 
+  /**
+   * 
+   * @param string $schema_id 
+   * @param int $start 
+   * @param int $length 
+   * @return array 
+   * @throws Exception 
+   */
+  public function getRange(string $schema_id, int $start, int $length):array {
+    $jsonStringsArray = $this->getStorage($schema_id)->retrieveRange($start, $end);
+    $objects = $this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id);
+
+    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
+      if (!is_array($data)) {
+        return FALSE;
+      }
+      if (count($data) == 0) {
+        return TRUE;
+      }
+      return $data[0] instanceof RootedJsonData;
+    });
+
+  }
+
+  /**
+   * 
+   * @param array $jsonStringsArray 
+   * @return array 
+   */
+  private function jsonStringsArrayToObjects(array $jsonStringsArray, string $schema_id) {
+    $objects = array_map(
+      function ($jsonString) use ($schema_id) {
+        try {
+          $data = $this->validMetadataFactory->get($jsonString, $schema_id);
+          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
+            return $data instanceof RootedJsonData;
+          });
+        }
+        catch (\Exception $e) {
+          $this->log(
+            'metastore', 
+            'A JSON string vailed validation.',
+            ['@schema_id' => $schema_id, '@json' => $jsonString,]
+          );
+          return NULL;
+        }
+      },
+      $jsonStringsArray
+    );
+
+    return array_values(array_filter($objects));
+  }
   /**
    * Implements GET method.
    *
