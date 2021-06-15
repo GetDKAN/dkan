@@ -157,3 +157,12 @@ function metastore_entity_view_alter(array &$build, EntityInterface $entity, Ent
     $build[$fieldName][0]['#context']['value'] = (string) $object;
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter
+ *
+ * Alters the data node form to hide the preview button.
+ */
+function metastore_form_node_data_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $form['actions']['preview']['#access'] = FALSE;
+}
