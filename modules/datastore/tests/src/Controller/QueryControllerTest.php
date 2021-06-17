@@ -231,7 +231,58 @@ class QueryControllerTest extends TestCase {
     $this->assertContains("json-schema.org", $result->getContent());
   }
 
-  private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE ) {
+  /**
+   *
+   */
+  public function testDistributionIndexWrongIdentifier() {
+    $data = json_encode([
+      "results" => TRUE,
+    ]);
+    $info = ['notice' => 'Not found'];
+
+    $container = $this->getQueryContainer($data, "GET", FALSE, $info);
+    $webServiceApi = QueryController::create($container);
+    $result = $webServiceApi->queryDatasetResource("2", "0");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(400, $result->getStatusCode());
+  }
+
+  /**
+   *
+   */
+  public function testDistributionIndexWrongIndex() {
+    $data = json_encode([
+      "results" => TRUE,
+    ]);
+    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
+
+    $container = $this->getQueryContainer($data, "GET", FALSE, $info);
+    $webServiceApi = QueryController::create($container);
+    $result = $webServiceApi->queryDatasetResource("2", "1");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(400, $result->getStatusCode());
+  }
+
+  /**
+   *
+   */
+  public function testDistributionIndex() {
+    $data = json_encode([
+      "results" => TRUE,
+    ]);
+    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
+
+    $container = $this->getQueryContainer($data, "GET", FALSE, $info);
+    $webServiceApi = QueryController::create($container);
+    $result = $webServiceApi->queryDatasetResource("2", "0");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(200, $result->getStatusCode());
+  }
+
+  private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE, array $info = []) {
     if ($method == "GET") {
       $request = Request::create("http://example.com?$data", $method);
     }
@@ -249,7 +300,7 @@ class QueryControllerTest extends TestCase {
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', $request)
-      ->add(DatasetInfo::class, "gather", []);
+      ->add(DatasetInfo::class, "gather", $info);
 
     if ($stream) {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
