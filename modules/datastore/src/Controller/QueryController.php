@@ -276,13 +276,10 @@ class QueryController implements ContainerInjectionInterface {
     if (!isset($metadata['latest_revision'])) {
       return $this->getResponse((object) ['message' => "No dataset found with the identifier $dataset"], 400);
     }
-    if (!isset($metadata['latest_revision']['distributions'][$index])) {
+    if (!isset($metadata['latest_revision']['distributions'][$index]['distribution_uuid'])) {
       return $this->getResponse((object) ['message' => "No resource found at index $index"], 400);
     }
     $identifier = $metadata['latest_revision']['distributions'][$index]['distribution_uuid'];
-    if (!$identifier) {
-      return $this->getResponse((object) ['message' => "Distribution not found."], 400);
-    }
     return $this->queryResource($identifier, $stream);
   }
 
