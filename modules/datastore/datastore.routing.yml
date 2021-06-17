@@ -121,6 +121,16 @@ datastore.1.query.id.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
+datastore.1.query.dataset.index.get:
+  path: '/api/1/datastore/query/{dataset}/{index}'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 datastore.1.query.id.download.get:
   path: '/api/1/datastore/query/{identifier}/download'
   methods: [GET]
