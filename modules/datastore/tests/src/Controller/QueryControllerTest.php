@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\common\DatasetInfo;
 use MockChain\Options;
 use Drupal\datastore\Service;
 use MockChain\Sequence;
@@ -242,11 +243,13 @@ class QueryControllerTest extends TestCase {
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", Service::class)
       ->add("request_stack", RequestStack::class)
+      ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->index(0);
 
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(RequestStack::class, 'getCurrentRequest', $request);
+      ->add(RequestStack::class, 'getCurrentRequest', $request)
+      ->add(DatasetInfo::class, "gather", []);
 
     if ($stream) {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
