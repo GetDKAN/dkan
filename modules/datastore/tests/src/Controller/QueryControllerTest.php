@@ -221,6 +221,30 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals('1,data', $csv[501]);
   }
 
+  /**
+   * Test streamed resource csv through dataset distribution index.
+   */
+  public function testStreamedResourceQueryCsvDatasetDistIndex() {
+    $data = json_encode([
+      "format" => "csv",
+    ]);
+    // Need 2 json responses which get combined on output.
+    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
+
+    $container = $this->getQueryContainer($data, 'POST', TRUE, $info);
+    $webServiceApi = QueryController::create($container);
+    ob_start(['self', 'getBuffer']);
+    $result = $webServiceApi->queryDatasetResource("2", "0", TRUE);
+    $result->sendContent();
+
+    $csv = explode("\n", $this->buffer);
+    ob_get_clean();
+    $this->assertEquals('record_number,data', $csv[0]);
+    $this->assertEquals('1,data', $csv[1]);
+    $this->assertEquals('50,data', $csv[50]);
+    $this->assertEquals('1,data', $csv[501]);
+  }
+
   public function testQuerySchema() {
     $container = $this->getQueryContainer();
     $webServiceApi = QueryController::create($container);
