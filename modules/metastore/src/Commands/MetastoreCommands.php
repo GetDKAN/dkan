@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\metastore\Commands;
 
 use Drupal\metastore\Storage\DataFactory;
 use Drush\Commands\DrushCommands;
@@ -8,7 +8,7 @@ use Drush\Commands\DrushCommands;
 /**
  * Metastore drush commands.
  */
-class Drush extends DrushCommands {
+class MetastoreCommands extends DrushCommands {
 
   /**
    * Metastore data storage service.

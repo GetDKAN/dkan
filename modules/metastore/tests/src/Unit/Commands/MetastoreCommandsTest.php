@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\Tests\metastore;
+namespace Drupal\Tests\metastore\Unit\Commands;
 
 use Drupal\Core\Logger\LoggerChannel;
-use Drupal\metastore\Drush;
+use Drupal\metastore\Commands\MetastoreCommands;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use MockChain\Chain;
@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 /**
  *
  */
-class DrushTest extends TestCase {
+class MetastoreCommandsTest extends TestCase {
 
   /**
    *
@@ -29,7 +29,7 @@ class DrushTest extends TestCase {
 
     $logger = $loggerChain->getMock();
 
-    $drush = new Drush($dataFactory);
+    $drush = new MetastoreCommands($dataFactory);
     $drush->setLogger($logger);
     $drush->publish('12345');
 
@@ -50,7 +50,7 @@ class DrushTest extends TestCase {
 
     $logger = $loggerChain->getMock();
 
-    $drush = new Drush($dataFactory);
+    $drush = new MetastoreCommands($dataFactory);
     $drush->setLogger($logger);
 
     $drush->publish('12345');
