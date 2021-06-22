@@ -20,6 +20,7 @@ class LifeCycle {
 
   const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
+  const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
 
   /**
    * Referencer service.
@@ -153,6 +154,33 @@ class LifeCycle {
     $metadata->data->downloadURL = $downloadUrl;
 
     $data->setMetadata($metadata);
+  }
+
+  /**
+   * Distribution predelete.
+   */
+  protected function distributionPredelete(MetastoreItemInterface $data) {
+    $distributionUuid = $data->getIdentifier();
+
+    // TODO: dependency injection.
+    // TODO: implement Service::get() independent from the moderation status.
+    $storage = \Drupal::service('dkan.metastore.storage')->getInstance('distribution');
+    $resource = $storage->retrieve($distributionUuid);
+
+    // TODO: rewrite for RootedJsonData.
+    $resource = json_decode($resource);
+
+    $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
+    $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective;
+    $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
+
+    // TODO: dependency injection.
+    \Drupal::service('queue')->get('orphan_resource_remover')->createItem([
+      $id,
+      $perspective,
+      $version,
+      $distributionUuid
+    ]);
   }
 
   /**
