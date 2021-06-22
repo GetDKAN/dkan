@@ -93,8 +93,7 @@ class OpenApiController implements ContainerInjectionInterface {
       return $this->getResponseFromException($e);
     }
     if ($this->requestStack->getCurrentRequest()->get('authentication') === "false") {
-      $publicSpec = AuthCleanupHelper::makePublicSpec($spec);
-      return $this->getResponse($publicSpec->{'$'});
+      $spec = AuthCleanupHelper::makePublicSpec($spec);
     }
     if ($format == "yaml") {
       return $this->getYamlResponse($spec->{'$'});

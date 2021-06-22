@@ -122,6 +122,9 @@ class AuthCleanupHelper {
    *   Array to store the used parameters as they're found.
    */
   private static function getParametersFromMethod($method, &$usedParameters) {
+    if (!isset($method["parameters"])) {
+      return;
+    }
     foreach ($method["parameters"] as $parameter) {
       if (isset($parameter['$ref'])) {
         $parts = explode('/', $parameter['$ref']);
@@ -145,7 +148,8 @@ class AuthCleanupHelper {
 
   public static function schemaIsUsed(string $schemaKey, OpenApiSpec $spec) {
     $used = FALSE;
-    array_walk_recursive($spec->{'$'}, function ($value, $key) use (&$used, $schemaKey) {
+    $data = $spec->{'$'};
+    array_walk_recursive($data, function ($value, $key) use (&$used, $schemaKey) {
       $pattern = "/^#\/components\/schemas\/$schemaKey([^a-z]|\$)/";
       if ($key == '$ref' && $used === FALSE && preg_match($pattern, $value)) {
         $used = TRUE;
