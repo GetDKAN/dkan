@@ -120,7 +120,7 @@ abstract class Data implements MetastoreStorageInterface {
       return $entity->get('field_json_metadata')->getString();
     }
 
-    throw new MissingObjectException("Error retrieving published dataset: {$uuid} not found.");
+    throw new MissingObjectException("Error retrieving published dataset: {$this->schemaId} {$uuid} not found.");
   }
 
   /**
@@ -141,7 +141,7 @@ abstract class Data implements MetastoreStorageInterface {
       return $entity->get('field_json_metadata')->getString();
     }
 
-    throw new MissingObjectException("Error retrieving dataset: {$uuid} not found.");
+    throw new MissingObjectException("Error retrieving dataset: {$this->schemaId} {$uuid} not found.");
   }
 
   /**
