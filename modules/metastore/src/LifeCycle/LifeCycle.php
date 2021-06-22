@@ -178,7 +178,7 @@ class LifeCycle {
     \Drupal::service('queue')->get('orphan_resource_remover')->createItem([
       $id,
       $perspective,
-      $version
+      $version,
     ]);
   }
 

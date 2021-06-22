@@ -145,20 +145,14 @@ class Service implements ContainerInjectionInterface {
           });
         }
         catch (\Exception $e) {
-          $this->log(
-            'metastore',
-            'A JSON string failed validation.',
-            [ '@schema_id' => $schema_id, '@json' => $jsonString,]
+          $this->log('metastore', 'A JSON string failed validation.',
+            ['@schema_id' => $schema_id, '@json' => $jsonString]
           );
           return NULL;
         }
-      },
-      $jsonStringsArray
-    );
+      }, $jsonStringsArray);
 
-    $objects = array_filter($objects);
-
-    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
+    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, array_filter($objects), function ($data) {
       if (!is_array($data)) {
         return FALSE;
       }

@@ -36,9 +36,9 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
-   * @param $pluginId
+   * @param string $pluginId
    *   The plugin_id for the plugin instance.
-   * @param $pluginDefinition
+   * @param mixed $pluginDefinition
    *   The plugin implementation definition.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   Resource mapper service.
