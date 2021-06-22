@@ -68,14 +68,12 @@ class OrphanResourceRemover extends QueueWorkerBase implements ContainerFactoryP
    * {@inheritdoc}
    */
   public function processItem($data) {
-    list($id, $perspective, $version, $distributionUuid) = $data;
+    list($id, $perspective, $version) = $data;
+
     // Use the metastore resourceMapper to remove the source entry.
-    try {
-      $resource = $this->resourceMapper->get($id, $perspective, $version);
+    $resource = $this->resourceMapper->get($id, $perspective, $version);
+    if ($resource) {
       $this->resourceMapper->remove($resource);
-    }
-    catch (\Exception $e) {
-      $this->log('metastore', "Failed to remove resource source mapping for {$distributionUuid}. $e->getMessage()");
     }
 
   }
