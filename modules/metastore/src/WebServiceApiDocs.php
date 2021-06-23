@@ -5,7 +5,7 @@ namespace Drupal\metastore;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
-use Drupal\common\Docs;
+use Drupal\common\Plugin\DkanApiDocsGenerator;
 
 /**
  * Provides dataset-specific OpenAPI documentation.
@@ -21,31 +21,21 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *
    * @var array
    */
-  private $endpointsToKeep = [
-    'metastore/schemas/dataset/items/{identifier}' => ['get'],
-    'datastore/sql' => ['get'],
-  ];
+  private $endpointsToKeep;
 
   /**
    * OpenAPI spec for dataset-related endpoints.
    *
-   * @var \Drupal\common\Docs
+   * @var \Drupal\common\Plugin\DkanApiDocsGenerator
    */
-  private $docsController;
-
-  /**
-   * Metastore service.
-   *
-   * @var \Drupal\metastore\Service
-   */
-  private $metastoreService;
+  private $docsGenerator;
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApiDocs(
-      $container->get("common.docs"),
+      $container->get('dkan.common.docs_generator'),
       $container->get('dkan.metastore.service'),
     );
   }
@@ -53,14 +43,20 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Constructs a new WebServiceApiDocs.
    *
-   * @param \Drupal\common\Docs $docsController
-   *   Serves openapi spec for dataset-related endpoints.
-   * @param \Drupal\metastore\Service $metastoreService
-   *   Metastore service.
+   * @param \Drupal\common\Plugin\DkanApiDocsGenerator $docsGenerator
+   *   Serves openapi spec.
    */
-  public function __construct(Docs $docsController, Service $metastoreService) {
-    $this->docsController = $docsController;
-    $this->metastoreService = $metastoreService;
+  public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore) {
+    $this->docsGenerator = $docsGenerator;
+    $this->metastore = $metastore;
+
+    $this->endpointsToKeep = [
+      'metastore/schemas/dataset/items/{identifier}' => ['get'],
+      'datastore/sql' => ['get'],
+    ];
+
+    $this->parametersToKeep = ['datasetUuid', 'showReferenceIds'];
+    $this->schemasToKeep = ['dataset', 'errorResponse'];
   }
 
   /**
@@ -73,21 +69,48 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   OpenAPI spec response.
    */
   public function getDatasetSpecific(string $identifier) {
-    $fullSpec = $this->docsController->getJsonFromYmlFile();
+    $fullSpec = $this->docsGenerator->buildSpec(['metastore_api_docs', 'datastore_api_docs'])->{"$"};
 
     // Remove the security schemes.
     unset($fullSpec['components']['securitySchemes']);
 
     // Tags can be added later when needed, remove them for now.
-    $fullSpec['tags'] = [];
+    unset($fullSpec['tags']);
 
     $pathsAndOperations = $fullSpec['paths'];
     $pathsAndOperations = $this->keepDatasetSpecificEndpoints($pathsAndOperations);
-    $pathsAndOperations = $this->modifyDatasetEndpoints($pathsAndOperations, $identifier);
     $pathsAndOperations = $this->modifySqlEndpoints($pathsAndOperations, $identifier);
+    $parameters = $this->datasetSpecificParameters($fullSpec['components']['parameters'], $identifier);
+    $schemas = $this->datasetSpecificSchemas($fullSpec['components']['schemas']);
+    $responses = ["404IdNotFound" => $fullSpec["components"]["responses"]["404IdNotFound"]];
 
     $fullSpec['paths'] = $pathsAndOperations;
+    $fullSpec['components']['parameters'] = $parameters;
+    $fullSpec['components']['responses'] = $responses;
+    $fullSpec['components']['schemas'] = $schemas;
+
     return $this->getResponse($fullSpec);
+  }
+
+  private function datasetSpecificSchemas(array $schemas) {
+    $newSchemas = array_filter($schemas, function ($key) {
+      if (in_array($key, $this->schemasToKeep)) {
+        return TRUE;
+      }
+      return FALSE;
+    }, ARRAY_FILTER_USE_KEY);
+    return $newSchemas;
+  }
+
+  private function datasetSpecificParameters(array $parameters, $identifier) {
+    $newParameters = array_filter($parameters, function ($key) {
+      if (in_array($key, $this->parametersToKeep)) {
+        return TRUE;
+      }
+      return FALSE;
+    }, ARRAY_FILTER_USE_KEY);
+    $newParameters['datasetUuid']['example'] = $identifier;
+    return $newParameters;
   }
 
   /**
@@ -128,75 +151,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   }
 
   /**
-   * Modify the generic dataset endpoint to be specific to the current dataset.
-   *
-   * @param array $pathsAndOperations
-   *   The paths defined in the original spec.
-   * @param string $identifier
-   *   Dataset uuid.
-   *
-   * @return array
-   *   Spec with dataset-specific metastore get endpoint.
-   */
-  private function modifyDatasetEndpoints(array $pathsAndOperations, string $identifier) {
-
-    foreach ($pathsAndOperations as $path => $operations) {
-      $newPath = $path;
-      $newOperations = $operations;
-      unset($pathsAndOperations[$path]);
-      [$newPath, $newOperations] = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
-      $pathsAndOperations[$newPath] = $newOperations;
-    }
-
-    return $pathsAndOperations;
-  }
-
-  /**
-   * Private.
-   */
-  private function modifyDatasetEndpoint($path, $operations, $identifier) {
-    $newOperations = $this->getModifyDatasetEndpointNewOperations($operations, $identifier);
-
-    if (!isset($newOperations)) {
-      return [$path, $operations];
-    }
-
-    $newPath = str_replace("{identifier}", $identifier, $path);
-
-    return [$newPath, $newOperations];
-  }
-
-  /**
-   * Private.
-   */
-  private function getModifyDatasetEndpointNewOperations($operations, $identifier) {
-    $modified = FALSE;
-    foreach ($operations as $operation => $info) {
-      $newParameters = $this->getModifyDatasetEndpointNewParameters($info['parameters'], $identifier);
-      if ($newParameters) {
-        $operations[$operation]['parameters'] = $newParameters;
-        $modified = TRUE;
-      }
-    }
-
-    return ($modified) ? $operations : NULL;
-  }
-
-  /**
-   * Private.
-   */
-  private function getModifyDatasetEndpointNewParameters(array $parameters, $identifier): ?array {
-    $modified = FALSE;
-    foreach ($parameters as $key => $parameter) {
-      if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
-        $parameters[$key]['example'] = $identifier;
-        $modified = TRUE;
-      }
-    }
-    return ($modified) ? $parameters : NULL;
-  }
-
-  /**
    * Modify the generic sql endpoint to be specific to the current dataset.
    *
    * @param array $pathsAndOperations
@@ -212,21 +166,19 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     foreach ($this->getSqlPathsAndOperations($pathsAndOperations) as $path => $operations) {
 
       foreach ($this->getDistributions($identifier) as $dist) {
-        list($newPath, $newOperations) = $this->modifySqlEndpoint($path, $operations, $dist);
-        $pathsAndOperations[$newPath] = $newOperations;
+        $newOperations = $this->modifySqlEndpoint($operations, $dist);
+        $pathsAndOperations[$path] = $newOperations;
       }
-
-      unset($pathsAndOperations[$path]);
     }
 
     return $pathsAndOperations;
   }
 
   /**
-   * Private.
+   * Arrange paths for SQL endpoint.
    */
   private function getSqlPathsAndOperations($pathsAndOperations) {
-    foreach ($pathsAndOperations as $path => $operations) {
+    foreach (array_keys($pathsAndOperations) as $path) {
       if (substr_count($path, 'sql') == 0) {
         unset($pathsAndOperations[$path]);
       }
@@ -237,17 +189,14 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function modifySqlEndpoint($path, $operations, $distribution) {
-    $newPath = "{$path}?query=[SELECT * FROM {$distribution->identifier}];";
-
-    // Replace schema's "DATASTORE-UUID" with the distribution's identifier.
-    $operations['get']['parameters'][0]['example'] = str_replace(
-      "DATASTORE-UUID",
-      $distribution->identifier,
-      $operations['get']['parameters'][0]['example']
-    );
-
-    return [$newPath, $operations];
+  private function modifySqlEndpoint($operations, $distribution) {
+    $distKey = isset($distribution->title) ? $distribution->title : $distribution->identifier;
+    unset($operations['get']['parameters'][0]['example']);
+    $operations['get']['parameters'][0]['examples'][$distKey] = [
+      "summary" => "Query distribution {$distribution->identifier}",
+      "value" => "[SELECT * {$distribution->identifier}][LIMIT 2]",
+    ];
+    return $operations;
   }
 
   /**
@@ -261,7 +210,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    */
   private function getDistributions(string $identifier) {
 
-    $data = json_decode($this->metastoreService->get("dataset", $identifier));
+    $data = json_decode($this->metastore->get("dataset", $identifier));
 
     // Create and customize a path for each dataset distribution/resource.
     $distributionRefProperty = "%Ref:distribution";

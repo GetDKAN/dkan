@@ -6,7 +6,7 @@ use Drupal\common\Plugin\DataModifierManager;
 use Drupal\common\Plugin\DataModifierBase;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Serialization\Yaml;
-use Drupal\common\Docs;
+use Drupal\common\Controller\OpenApiController;
 use MockChain\Chain;
 use MockChain\Options;
 use Drupal\metastore\Service;

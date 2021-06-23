@@ -1,9 +1,8 @@
 services:
-  dkan.common.docs:
-    class: \Drupal\common\Docs
+  dkan.common.docs_generator:
+    class: \Drupal\common\Plugin\DkanApiDocsGenerator
     arguments:
-      - '@module_handler'
-      - '@request_stack'
+      - '@plugin.manager.dkan_api_docs'
 
   dkan.common.job_store:
     class: \Drupal\common\Storage\JobStoreFactory
@@ -40,7 +39,7 @@ services:
 
   # @deprecated
   common.docs:
-    class: \Drupal\common\Docs
+    class: \Drupal\common\Controller\OpenApiController
     arguments:
       - '@module_handler'
       - '@request_stack'

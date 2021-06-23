@@ -7,7 +7,7 @@ use Drupal\common\Plugin\DkanApiDocsBase;
 /**
  * @DkanApiDocs(
  *  id = "common_dkan_api_docs",
- *  description = "whatever"
+ *  description = "Base API docs plugin."
  * )
  */
 class CommonApiDocs extends DkanApiDocsBase {
