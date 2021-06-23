@@ -6,11 +6,13 @@ use Drupal\common\EventDispatcherTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Reference\OrphanChecker;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\Storage\DataFactory;
 
 /**
  * Data.
@@ -58,6 +60,20 @@ class LifeCycle {
   protected $dateFormatter;
 
   /**
+   * Metastore storage service.
+   *
+   * @var \Drupal\metastore\Storage\DataFactory
+   */
+  protected $dataFactory;
+
+  /**
+   * Queue service.
+   *
+   * @var \Drupal\Core\Queue\QueueFactory
+   */
+  protected $queueFactory;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -65,13 +81,17 @@ class LifeCycle {
     Dereferencer $dereferencer,
     OrphanChecker $orphanChecker,
     ResourceMapper $resourceMapper,
-    DateFormatter $dateFormatter
+    DateFormatter $dateFormatter,
+    DataFactory $dataFactory,
+    QueueFactory $queueFactory
   ) {
     $this->referencer = $referencer;
     $this->dereferencer = $dereferencer;
     $this->orphanChecker = $orphanChecker;
     $this->resourceMapper = $resourceMapper;
     $this->dateFormatter = $dateFormatter;
+    $this->dataFactory = $dataFactory;
+    $this->queueFactory = $queueFactory;
   }
 
   /**
@@ -162,20 +182,15 @@ class LifeCycle {
   protected function distributionPredelete(MetastoreItemInterface $data) {
     $distributionUuid = $data->getIdentifier();
 
-    // TODO: dependency injection.
-    // TODO: implement Service::get() independent from the moderation status.
-    $storage = \Drupal::service('dkan.metastore.storage')->getInstance('distribution');
+    $storage = $this->dataFactory->getInstance('distribution');
     $resource = $storage->retrieve($distributionUuid);
-
-    // TODO: rewrite for RootedJsonData.
     $resource = json_decode($resource);
 
     $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
     $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective;
     $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
 
-    // TODO: dependency injection.
-    \Drupal::service('queue')->get('orphan_resource_remover')->createItem([
+    $this->queueFactory->get('orphan_resource_remover')->createItem([
       $id,
       $perspective,
       $version,
