@@ -10,7 +10,7 @@ dkan.common.api:
   path: '/api'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\common\Docs::getVersions'}
+    { _controller: '\Drupal\common\Controller\OpenApiController::getVersions'}
   requirements:
     _permission: 'access content'
   options:
