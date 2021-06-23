@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Serves openapi spec for dataset-related endpoints.
+ * 
+ * @codeCoverageIgnore
  */
 class OpenApiController implements ContainerInjectionInterface {
   use JsonResponseTrait;

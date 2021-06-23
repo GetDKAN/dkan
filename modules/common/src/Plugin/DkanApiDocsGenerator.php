@@ -3,9 +3,7 @@
 namespace Drupal\common\Plugin;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Routing\RouteProvider;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class DkanApiDocsGenerator implements ContainerInjectionInterface {
 

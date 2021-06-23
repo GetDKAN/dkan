@@ -125,7 +125,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     $spec["paths"]["/api/1/datastore/query/{identifier}"]["post"]["requestBody"]["content"]["application/json"]["example"] 
       = $this->queryExample();
 
-    $spec['components']['parameters']['datastoreUuid']["example"] = $exampleIds['datastore'];
+    $spec['components']['parameters']['datastoreUuid']["example"] = $exampleIds['resource'];
 
     $spec["paths"]["/api/1/datastore/sql"]["get"]["parameters"][0]["example"] = $this->sqlQueryExample($exampleIds['distribution']);
     return $spec;

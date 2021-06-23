@@ -41,6 +41,9 @@ class AuthCleanupHelper {
     }
     static::cleanUpEndpoints($specArr);
     unset($specArr['components']['securitySchemes']);
+    if (empty($specArr['components'])) {
+      unset($specArr['components']);
+    }
     return new OpenApiSpec(json_encode($specArr));
   }
 
@@ -91,6 +94,9 @@ class AuthCleanupHelper {
     foreach ($specArr['paths'] as $pathMethods) {
       static::getParametersFromMethods($pathMethods, $usedParameters);
     }
+    if (empty($specArr["components"]) || empty($specArr["components"]["parameters"])) {
+      return new OpenApiSpec(json_encode($specArr));
+    }
     foreach (array_keys($specArr["components"]["parameters"]) as $parameter) {
       if (!in_array($parameter, $usedParameters)) {
         unset($specArr["components"]["parameters"][$parameter]);
@@ -138,6 +144,9 @@ class AuthCleanupHelper {
 
   public static function cleanUpSchemas(OpenApiSpec $spec) {
     $specArr = $spec->{"$"};
+    if (empty($specArr["components"]) || empty($specArr["components"]["parameters"])) {
+      return $spec;
+    }
     foreach (array_keys($specArr['components']['schemas']) as $schemaKey) {
       if (!static::schemaIsUsed($schemaKey, $spec)) {
         unset($specArr['components']['schemas'][$schemaKey]);
