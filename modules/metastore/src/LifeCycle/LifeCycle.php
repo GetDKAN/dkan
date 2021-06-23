@@ -22,7 +22,6 @@ class LifeCycle {
 
   const EVENT_DATASET_UPDATE = 'dkan_metastore_dataset_update';
   const EVENT_PRE_REFERENCE = 'dkan_metastore_metadata_pre_reference';
-  const EVENT_ORPHANING_DISTRIBUTION = 'metastore_orphaning_distribution';
 
   /**
    * Referencer service.
