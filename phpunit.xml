@@ -9,7 +9,6 @@
 
     <testsuites>
         <testsuite name="DKAN Test Suite">
-            <directory>tests/src</directory>
             <directory>modules/common/tests/src</directory>
             <directory>modules/metastore/tests/src</directory>
             <directory>modules/metastore/modules/metastore/tests/src</directory>
@@ -20,6 +19,7 @@
             <directory>modules/harvest/tests/src</directory>
             <directory>modules/harvest/modules/harvest_dashboard/tests/src</directory>
             <directory>modules/json_form_widget/tests/src</directory>
+            <directory>tests/src</directory>
         </testsuite>
         <testsuite name="DkanUnitTests">
           <directory>tests/src/Unit</directory>
