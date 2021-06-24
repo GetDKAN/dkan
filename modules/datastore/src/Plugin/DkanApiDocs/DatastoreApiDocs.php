@@ -274,10 +274,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     while ($datastore == FALSE && $i < count($all)) {
       $item = $all[$i];
       $i++;
-      if (!($identifiers = $this->getDatastoreIds($item))) {
-        continue;
-      }
-      $datastore = TRUE;
+      $datastore = (bool) ($identifiers = $this->getDatastoreIds($item));
     }
     if (empty($identifiers)) {
       $identifiers = [
