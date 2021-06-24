@@ -10,13 +10,12 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
-use Exception;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Service.
+ * The metastore service.
  */
 class Service implements ContainerInjectionInterface {
   use EventDispatcherTrait;
@@ -72,17 +71,6 @@ class Service implements ContainerInjectionInterface {
     $this->schemaRetriever = $schemaRetriever;
     $this->storageFactory = $factory;
     $this->validMetadataFactory = $validMetadataFactory;
-  }
-
-  /**
-   * Setter to discover data modifier plugins.
-   *
-   * @param \Drupal\common\Plugin\DataModifierManager $pluginManager
-   *   Injected plugin manager.
-   */
-  public function setDataModifierPlugins(DataModifierManager $pluginManager) {
-    $this->pluginManager = $pluginManager;
-    $this->plugins = $this->discover();
   }
 
   /**
@@ -149,12 +137,17 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * 
-   * @param string $schema_id 
-   * @param int $start 
-   * @param int $length 
-   * @return array 
-   * @throws Exception 
+   * Get a subset of metastore items according to a range.
+   *
+   * @param string $schema_id
+   *   Schema ID.
+   * @param int $start
+   *   Start offset.
+   * @param int $length
+   *   Number of items to retrieve.
+   *
+   * @return array
+   *   Array of RootedJsonData objects.
    */
   public function getRange(string $schema_id, int $start, int $length):array {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveRange($start, $length);
@@ -173,12 +166,20 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * 
-   * @param array $jsonStringsArray 
-   * @return array 
+   * Create array of RootedJsonData objects from array of strings.
+   *
+   * @param array $jsonStringsArray
+   *   Array of JSON strings.
+   * @param string $schema_id
+   *   Schema ID.
+   *
+   * @return array
+   *   Array of objects.
+   *
+   * @todo Exception should not be caught; let controller handle it.
    */
   private function jsonStringsArrayToObjects(array $jsonStringsArray, string $schema_id) {
-    $objects = array_map(
+    return array_map(
       function ($jsonString) use ($schema_id) {
         $data = $this->validMetadataFactory->get($jsonString, $schema_id);
         try {
@@ -192,18 +193,8 @@ class Service implements ContainerInjectionInterface {
       },
       $jsonStringsArray
     );
-
-    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
-      if (!is_array($data)) {
-        return FALSE;
-      }
-      if (count($data) == 0) {
-        return TRUE;
-      }
-      return $data[0] instanceof RootedJsonData;
-    });
-
   }
+
   /**
    * Implements GET method.
    *
