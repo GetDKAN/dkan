@@ -45,6 +45,8 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *
    * @param \Drupal\common\Plugin\DkanApiDocsGenerator $docsGenerator
    *   Serves openapi spec.
+   * @param \Drupal\metastore\Service $metastore
+   *   The metastore service.
    */
   public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore) {
     $this->docsGenerator = $docsGenerator;
@@ -69,7 +71,9 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   OpenAPI spec response.
    */
   public function getDatasetSpecific(string $identifier) {
-    $fullSpec = $this->docsGenerator->buildSpec(['metastore_api_docs', 'datastore_api_docs'])->{"$"};
+    $fullSpec = $this->docsGenerator->buildSpec(
+      ['metastore_api_docs', 'datastore_api_docs']
+    )->{"$"};
 
     // Remove the security schemes.
     unset($fullSpec['components']['securitySchemes']);
@@ -92,6 +96,15 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     return $this->getResponse($fullSpec);
   }
 
+  /**
+   * Get just the schemas we need.
+   *
+   * @param array $schemas
+   *   Schemas array from spec.
+   *
+   * @return array
+   *   Filtered array.
+   */
   private function datasetSpecificSchemas(array $schemas) {
     $newSchemas = array_filter($schemas, function ($key) {
       if (in_array($key, $this->schemasToKeep)) {
@@ -102,6 +115,17 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     return $newSchemas;
   }
 
+  /**
+   * Just the parameters we need.
+   *
+   * @param array $parameters
+   *   Parameters array.
+   * @param mixed $identifier
+   *   Dataset identifier.
+   *
+   * @return array
+   *   Filtered parameters.
+   */
   private function datasetSpecificParameters(array $parameters, $identifier) {
     $newParameters = array_filter($parameters, function ($key) {
       if (in_array($key, $this->parametersToKeep)) {

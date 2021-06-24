@@ -109,7 +109,7 @@ class AuthCleanupHelper {
    * Get all used parameters from an element of the spec's paths array.
    *
    * @param array $pathMethods
-   *   A single element of the paths array. Keys should be methods (get, post etc).
+   *   A single element of the paths array. Keys should be methods.
    * @param array $usedParameters
    *   Array to store the used parameters as they're found.
    */
@@ -120,14 +120,14 @@ class AuthCleanupHelper {
   }
 
   /**
-   * Get all used parameters from a method element of a single paths array element.
+   * Get all used parameters from a method element of a single paths array.
    *
    * @param array $method
    *   A single method element (post, get etc) of the paths array.
    * @param array $usedParameters
    *   Array to store the used parameters as they're found.
    */
-  private static function getParametersFromMethod($method, &$usedParameters) {
+  private static function getParametersFromMethod(array $method, array &$usedParameters) {
     if (!isset($method["parameters"])) {
       return;
     }
@@ -142,6 +142,15 @@ class AuthCleanupHelper {
     }
   }
 
+  /**
+   * Remove unneeded schemas.
+   *
+   * @param Drupal\common\Plugin\OpenApiSpec $spec
+   *   Full spec.
+   *
+   * @return Drupal\common\Plugin\OpenApiSpec
+   *   Spec without unneeded schemas.
+   */
   public static function cleanUpSchemas(OpenApiSpec $spec) {
     $specArr = $spec->{"$"};
     if (empty($specArr["components"]) || empty($specArr["components"]["parameters"])) {
@@ -155,6 +164,17 @@ class AuthCleanupHelper {
     return new OpenApiSpec(json_encode($specArr));
   }
 
+  /**
+   * Determine whether schema is needed.
+   *
+   * @param string $schemaKey
+   *   Schema key from components array.
+   * @param Drupal\common\Plugin\OpenApiSpec $spec
+   *   Full spec.
+   *
+   * @return bool
+   *   Whether it's used, true or false.
+   */
   public static function schemaIsUsed(string $schemaKey, OpenApiSpec $spec) {
     $used = FALSE;
     $data = $spec->{'$'};
@@ -166,4 +186,5 @@ class AuthCleanupHelper {
     });
     return $used;
   }
+
 }
