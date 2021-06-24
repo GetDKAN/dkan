@@ -97,11 +97,9 @@ class AuthCleanupHelper {
     if (empty($specArr["components"]) || empty($specArr["components"]["parameters"])) {
       return new OpenApiSpec(json_encode($specArr));
     }
-    foreach (array_keys($specArr["components"]["parameters"]) as $parameter) {
-      if (!in_array($parameter, $usedParameters)) {
-        unset($specArr["components"]["parameters"][$parameter]);
-      }
-    }
+    array_filter($specArr['components']['parameters'], function ($parameter) use ($usedParameters) {
+      return in_array($parameter, $usedParameters);
+    }, ARRAY_FILTER_USE_KEY);
     return new OpenApiSpec(json_encode($specArr));
   }
 
