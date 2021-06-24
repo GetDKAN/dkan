@@ -232,113 +232,169 @@ class MetastoreApiDocs extends DkanApiDocsBase {
    */
   private function schemaPaths($schemaId) {
     $schema = json_decode(json_encode($this->metastore->getSchema($schemaId)), TRUE);
-    $tSchema = [':schemaId' => $schemaId];
     $doc = [];
 
     $doc["/api/1/metastore/schemas/$schemaId/items"] = [
+      "post" => $this->schemaItemPost($schemaId, $schema),
+    ];
 
-      "post" => [
-        "operationId" => "$schemaId-post",
-        "summary" => $this->t("Create a new :schemaId.", $tSchema),
-        "tags" => [$this->t("Metastore: create")],
-        "security" => [
-          ['basic_auth' => []],
-        ],
-        "requestBody" => [
-          "required" => TRUE,
-          "description" => $this->t("Takes the standard :schemaId schema, but does not require identifier.", $tSchema),
-          "content" => [
-            "application/json" => [
-              "schema" => self::filterJsonSchemaUnsupported($this->makeIdentifierOptional($schema)),
-            ],
+    $doc["/api/1/metastore/schemas/$schemaId/items/{identifier}"] = [
+      "get" => $this->schemaItemGet($schemaId),
+      "put" => $this->schemaItemPut($schemaId),
+      "patch" => $this->schemaItemPatch($schemaId),
+    ];
+
+    return $doc;
+  }
+
+  /**
+   * Create the openapi post method for a metastore item.
+   *
+   * @param string $schemaId
+   *   A schema ID, e.g. "dataset".
+   * @param array $schema
+   *   The full metastore schema.
+   *
+   * @return array
+   *   Full request array to be added to spec.
+   */
+  private function schemaItemPost($schemaId, array $schema) {
+    $tSchema = [':schemaId' => $schemaId];
+    return [
+      "operationId" => "$schemaId-post",
+      "summary" => $this->t("Create a new :schemaId.", $tSchema),
+      "tags" => [$this->t("Metastore: create")],
+      "security" => [
+        ['basic_auth' => []],
+      ],
+      "requestBody" => [
+        "required" => TRUE,
+        "description" => $this->t("Takes the standard :schemaId schema, but does not require identifier.", $tSchema),
+        "content" => [
+          "application/json" => [
+            "schema" => self::filterJsonSchemaUnsupported($this->makeIdentifierOptional($schema)),
           ],
         ],
-        "responses" => [
-          "200" => [
-            "description" => "Metadata creation successful.",
-            "content" => [
-              "application/json" => [
-                "schema" => ['$ref' => '#/components/schemas/metastoreWriteResponse'],
-              ],
+      ],
+      "responses" => [
+        "200" => [
+          "description" => "Metadata creation successful.",
+          "content" => [
+            "application/json" => [
+              "schema" => ['$ref' => '#/components/schemas/metastoreWriteResponse'],
             ],
           ],
         ],
       ],
     ];
+  }
 
-    $doc["/api/1/metastore/schemas/$schemaId/items/{identifier}"] = [
-      "get" => [
-        "operationId" => "$schemaId-get-item",
-        "summary" => $this->t("Get a single :schemaId.", $tSchema),
-        "tags" => [$this->t("Metastore: get")],
-        "parameters" => [
-          ['$ref' => "#/components/parameters/{$schemaId}Uuid"],
-          ['$ref' => "#/components/parameters/showReferenceIds"],
-        ],
-        "responses" => [
-          "200" => [
-            "description" => $this->t("Full :schemaId item.", $tSchema),
-            "content" => [
-              "application/json" => [
-                "schema" => ['$ref' => "#/components/schemas/$schemaId"],
-              ],
-            ],
-          ],
-          "404" => ['$ref' => '#/components/responses/404IdNotFound'],
-        ],
+  /**
+   * Create the openapi get method for a metastore item.
+   *
+   * @param string $schemaId
+   *   A schema ID, e.g. "dataset".
+   *
+   * @return array
+   *   Full request array to be added to spec.
+   */
+  private function schemaItemGet($schemaId) {
+    $tSchema = [':schemaId' => $schemaId];
+    return [
+      "operationId" => "$schemaId-get-item",
+      "summary" => $this->t("Get a single :schemaId.", $tSchema),
+      "tags" => [$this->t("Metastore: get")],
+      "parameters" => [
+        ['$ref' => "#/components/parameters/{$schemaId}Uuid"],
+        ['$ref' => "#/components/parameters/showReferenceIds"],
       ],
-
-      "put" => [
-        "operationId" => "$schemaId-put",
-        "summary" => $this->t("Fully replace an existing :schemaId", $tSchema),
-        "tags" => [$this->t("Metastore: replace")],
-        "security" => [
-          ['basic_auth' => []],
-        ],
-        "parameters" => [['$ref' => "#/components/parameters/{$schemaId}Uuid"]],
-        "requestBody" => [
-          "required" => TRUE,
+      "responses" => [
+        "200" => [
+          "description" => $this->t("Full :schemaId item.", $tSchema),
           "content" => [
             "application/json" => [
               "schema" => ['$ref' => "#/components/schemas/$schemaId"],
             ],
           ],
         ],
-        "responses" => [
-          "200" => [
-            "description" => "Ok.",
-          ],
-          "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
-        ],
-      ],
-
-      "patch" => [
-        "operationId" => "$schemaId-patch",
-        "summary" => $this->t("Modify an existing :schemaId", $tSchema),
-        "description" => $this->t("Values provided will replace existing values, but required values may be omitted."),
-        "tags" => ["Metastore: patch"],
-        "security" => [
-          ['basic_auth' => []],
-        ],
-        "parameters" => [['$ref' => "#/components/parameters/{$schemaId}Uuid"]],
-        "requestBody" => [
-          "required" => TRUE,
-          "content" => [
-            "application/json" => [
-              "schema" => self::filterJsonSchemaUnsupported($this->makeAllOptional($schema)),
-            ],
-          ],
-        ],
-        "responses" => [
-          "200" => [
-            "description" => "Ok.",
-          ],
-          "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
-        ],
+        "404" => ['$ref' => '#/components/responses/404IdNotFound'],
       ],
     ];
+  }
 
-    return $doc;
+  /**
+   * Create the openapi put method for a metastore item.
+   *
+   * @param string $schemaId
+   *   A schema ID, e.g. "dataset".
+   *
+   * @return array
+   *   Full request array to be added to spec.
+   */
+  private function schemaItemPut($schemaId) {
+    $tSchema = [':schemaId' => $schemaId];
+    return [
+      "operationId" => "$schemaId-put",
+      "summary" => $this->t("Fully replace an existing :schemaId", $tSchema),
+      "tags" => [$this->t("Metastore: replace")],
+      "security" => [
+        ['basic_auth' => []],
+      ],
+      "parameters" => [['$ref' => "#/components/parameters/{$schemaId}Uuid"]],
+      "requestBody" => [
+        "required" => TRUE,
+        "content" => [
+          "application/json" => [
+            "schema" => ['$ref' => "#/components/schemas/$schemaId"],
+          ],
+        ],
+      ],
+      "responses" => [
+        "200" => [
+          "description" => "Ok.",
+        ],
+        "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
+      ],
+    ];
+  }
+
+  /**
+   * Create the openapi patch method for a metastore item.
+   *
+   * @param string $schemaId
+   *   A schema ID, e.g. "dataset".
+   * @param array $schema
+   *   The full metastore schema.
+   *
+   * @return array
+   *   Full request array to be added to spec.
+   */
+  private function schemaItemPatch($schemaId, array $schema) {
+    $tSchema = [':schemaId' => $schemaId];
+    return [
+      "operationId" => "$schemaId-patch",
+      "summary" => $this->t("Modify an existing :schemaId", $tSchema),
+      "description" => $this->t("Values provided will replace existing values, but required values may be omitted."),
+      "tags" => ["Metastore: patch"],
+      "security" => [
+        ['basic_auth' => []],
+      ],
+      "parameters" => [['$ref' => "#/components/parameters/{$schemaId}Uuid"]],
+      "requestBody" => [
+        "required" => TRUE,
+        "content" => [
+          "application/json" => [
+            "schema" => self::filterJsonSchemaUnsupported($this->makeAllOptional($schema)),
+          ],
+        ],
+      ],
+      "responses" => [
+        "200" => [
+          "description" => "Ok.",
+        ],
+        "412" => ['$ref' => '#/components/responses/412MetadataObjectNotFound'],
+      ],
+    ];
   }
 
 }
