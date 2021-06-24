@@ -100,7 +100,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     // Reformat definitions.
     foreach ($querySchema["definitions"] as $key => $def) {
       $schemaName = "datastoreQuery" . ucfirst($key);
-      $def["title"] = "Datastore Query: " . (isset($definition["title"]) ? $def["title"] : $key);
+      $def["title"] = "Datastore Query: " . (isset($def["title"]) ? $def["title"] : $key);
       $spec["components"]["schemas"][$schemaName] = $def;
     }
     unset($querySchema["definitions"]);
@@ -299,22 +299,34 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       return FALSE;
     }
     foreach ($dataset->{'$[\'%Ref:distribution\']'} as $distribution) {
-      $identifiers = [];
-      if (!($resourceId = $distribution["data"]["%Ref:downloadURL"][0]["identifier"])) {
-        continue;
+      if ($identifiers = $this->getIdentifiersFromDistribution($distribution)) {
+        break;
       }
-      if (!$this->resourceHasDatastore($resourceId)) {
-        continue;
-      }
-      $identifiers = [
-        'distribution' => $distribution["identifier"],
-        'datastore' => $resourceId,
-      ];
-    }
-    if (empty($identifiers)) {
-      return FALSE;
     }
     return $identifiers;
+  }
+
+  /**
+   * Get the identifiers array from a distribution array.
+   *
+   * @param array $distribution
+   *   A distribution extracted from a dataset item.
+   *
+   * @return false|array
+   *   An array of distribution and datastore IDs, or false.
+   */
+  private function getIdentifiersFromDistribution(array $distribution) {
+    if (!($resourceId = $distribution["data"]["%Ref:downloadURL"][0]["identifier"])) {
+      return FALSE;
+    }
+    if (!$this->resourceHasDatastore($resourceId)) {
+      return FALSE;
+    }
+    return [
+      'distribution' => $distribution["identifier"],
+      'datastore' => $resourceId,
+    ];
+
   }
 
   /**

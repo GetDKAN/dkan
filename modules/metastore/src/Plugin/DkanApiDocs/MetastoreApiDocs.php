@@ -241,7 +241,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     $doc["/api/1/metastore/schemas/$schemaId/items/{identifier}"] = [
       "get" => $this->schemaItemGet($schemaId),
       "put" => $this->schemaItemPut($schemaId),
-      "patch" => $this->schemaItemPatch($schemaId),
+      "patch" => $this->schemaItemPatch($schemaId, $schema),
     ];
 
     return $doc;
