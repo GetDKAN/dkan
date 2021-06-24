@@ -36,6 +36,8 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
    *   The plugin implementation definition.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
    *   The module handler service.
+   * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
+   *   String translation service.
    */
   public function __construct(
     array $configuration,
@@ -52,7 +54,7 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface&ContainerInterface $container
+   * @param \Drupal\common\Plugin\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -82,11 +84,23 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
    * Retrieve the @description property from the annotation and return it.
    *
    * @return string
+   *   Description.
    */
   public function description() {
     return $this->pluginDefinition['description'];
   }
 
+  /**
+   * Return a JSON openapi document as a decoded array.
+   *
+   * @param mixed|null $module
+   *   Module machine name.
+   * @param string $docName
+   *   Filename, without .json extension, to retrieve from modulename/docs.
+   *
+   * @return array|false
+   *   Decoded document.
+   */
   protected function getDoc($module = NULL, $docName = "openapi_spec") {
     if ($module) {
       $path = $this->moduleHandler->getModule($module)->getPath() . "/docs/$docName.json";
@@ -95,7 +109,16 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
     return FALSE;
   }
 
-  protected static function filterJsonSchemaUnsupported($schema) {
+  /**
+   * Remove JSON Schema properties not supported by OpenAPI 3.
+   *
+   * @param array $schema
+   *   A JSON schema, decoded to an associative array.
+   *
+   * @return array
+   *   Filtered schema.
+   */
+  protected static function filterJsonSchemaUnsupported(array $schema) {
     $filteredSchema = self::nestedFilterKeys($schema, function ($prop) {
       $notSupported = [
         '$schema',
@@ -120,6 +143,17 @@ abstract class DkanApiDocsBase extends PluginBase implements DkanApiDocsInterfac
     return $filteredSchema;
   }
 
+  /**
+   * Recursively filter an array by keys.
+   *
+   * @param array $array
+   *   The array to filter.
+   * @param callable $callable
+   *   Callback function.
+   *
+   * @return array
+   *   The filtered array.
+   */
   protected static function nestedFilterKeys(array $array, callable $callable) {
     $array = array_filter($array, $callable, ARRAY_FILTER_USE_KEY);
     foreach ($array as &$element) {

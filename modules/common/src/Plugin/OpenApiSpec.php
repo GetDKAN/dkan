@@ -19,4 +19,5 @@ class OpenApiSpec extends RootedJsonData {
     $schema = file_get_contents(__DIR__ . "/../../docs/open-api-schema.3.0.json");
     parent::__construct($json, $schema);
   }
+
 }
