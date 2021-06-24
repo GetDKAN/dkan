@@ -126,17 +126,29 @@ class AuthCleanupHelper {
    *   Array to store the used parameters as they're found.
    */
   private static function getParametersFromMethod(array $method, array &$usedParameters) {
-    if (!isset($method["parameters"])) {
+    if (empty($method["parameters"])) {
       return;
     }
     foreach ($method["parameters"] as $parameter) {
-      if (isset($parameter['$ref'])) {
-        $parts = explode('/', $parameter['$ref']);
-        $parameterKey = end($parts);
-      }
-      if (isset($parameterKey) && !in_array($parameterKey, $usedParameters)) {
-        $usedParameters[] = $parameterKey;
-      }
+      static::getUsedParameters($parameter, $usedParameters);
+    }
+  }
+
+  /**
+   * Figure out if a parameter is used in any refs.
+   *
+   * @param array $parameter
+   *   A parameter array.
+   * @param array $usedParameters
+   *   Array of used parameter keys.
+   */
+  private static function getUsedParameters(array $parameter, array &$usedParameters) {
+    if (isset($parameter['$ref'])) {
+      $parts = explode('/', $parameter['$ref']);
+      $parameterKey = end($parts);
+    }
+    if (isset($parameterKey) && !in_array($parameterKey, $usedParameters)) {
+      $usedParameters[] = $parameterKey;
     }
   }
 
