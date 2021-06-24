@@ -83,9 +83,15 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function spec() {
     $schemas = $this->metastore->getSchemas();
-    $schemaIds = array_values(array_filter(array_keys($schemas), [$this, 'filterSchemaIds']));
+    $schemaIds = array_values(array_filter(
+      array_keys($schemas),
+      [$this, 'filterSchemaIds']
+    ));
     $spec = $this->getDoc('metastore');
     $spec["components"]["parameters"]["schemaId"]["schema"]["example"] = $schemaIds[0];
     foreach ($schemaIds as $schemaId) {
@@ -97,6 +103,15 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return $spec;
   }
 
+  /**
+   * Determine whether a schemaID should be used in the docs.
+   *
+   * @param string $schemaId
+   *   A schema ID.
+   *
+   * @return bool
+   *   TRUE if it should be included.
+   */
   private function filterSchemaIds($schemaId) {
     if (in_array($schemaId, ["legacy", "catalog"])) {
       return FALSE;
@@ -107,7 +122,18 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return TRUE;
   }
 
-  private function makeIdentifierOptional($schema, $identifierProperty = "identifier") {
+  /**
+   * Alter the metastore schema to make identifiers optional for posts.
+   *
+   * @param array $schema
+   *   An openapi schema array.
+   * @param string $identifierProperty
+   *   The property in the schema that holds the required identifier.
+   *
+   * @return array
+   *   Altered schema.
+   */
+  private function makeIdentifierOptional(array $schema, $identifierProperty = "identifier") {
     $required = $schema["required"];
     $key = array_search($identifierProperty, $required);
     if (!empty($required) && ($key !== FALSE)) {
@@ -117,7 +143,16 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return $schema;
   }
 
-  private function makeAllOptional($schema) {
+  /**
+   * Make all properties optional (for patch).
+   *
+   * @param array $schema
+   *   Schema array.
+   *
+   * @return array
+   *   Altered schema.
+   */
+  private function makeAllOptional(array $schema) {
     $filteredSchema = self::nestedFilterKeys($schema, function ($prop) {
       if ($prop === 'required') {
         return FALSE;
@@ -128,6 +163,15 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return $filteredSchema;
   }
 
+  /**
+   * Add filtered schema to components from schemaId.
+   *
+   * @param string $schemaId
+   *   Schema ID.
+   *
+   * @return array
+   *   An array with one key, the schemaID.
+   */
   private function schemaComponent($schemaId) {
     $schema = json_decode(json_encode($this->metastore->getSchema($schemaId)), TRUE);
     $doc = [
@@ -137,13 +181,22 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return $doc;
   }
 
+  /**
+   * Create parameters with examples for each schema ID.
+   *
+   * @param string $schemaId
+   *   The schema ID (e.g. "dataset).
+   *
+   * @return array
+   *   Array with single key, value is full parameter array.
+   */
   private function schemaParameters($schemaId) {
     $doc = [
       "{$schemaId}Uuid" => [
         "name" => "identifier",
         "in" => "path",
         "description" => t("A :schemaId identifier", [":schemaId" => $schemaId]),
-        "required" => true,
+        "required" => TRUE,
         "schema" => ["type" => "string"],
         "example" => $this->getExampleIdentifier($schemaId) ?: "00000000-0000-0000-0000-000000000000",
       ],
@@ -152,6 +205,15 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return $doc;
   }
 
+  /**
+   * Get a working example identifier for the schema ID.
+   *
+   * @param string $schemaId
+   *   A schema ID.
+   *
+   * @return string
+   *   An identifier.
+   */
   private function getExampleIdentifier($schemaId) {
     if ($first = $this->metastore->getAll($schemaId)) {
       return $first[0]->{"$.identifier"};
@@ -159,6 +221,15 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return FALSE;
   }
 
+  /**
+   * Create set of paths for a specific schema.
+   *
+   * @param string $schemaId
+   *   A schema ID.
+   *
+   * @return array
+   *   An array of paths for openapi.
+   */
   private function schemaPaths($schemaId) {
     $schema = json_decode(json_encode($this->metastore->getSchema($schemaId)), TRUE);
     $tSchema = [':schemaId' => $schemaId];

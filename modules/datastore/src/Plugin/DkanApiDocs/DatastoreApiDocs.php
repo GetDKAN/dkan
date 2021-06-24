@@ -3,10 +3,8 @@
 namespace Drupal\datastore\Plugin\DkanApiDocs;
 
 use Drupal\common\Plugin\DkanApiDocsBase;
-use Drupal\common\Plugin\OpenApiSpec;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\TranslationInterface;
-use Drupal\datastore\Service as DatastoreService;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\metastore\Service;
 use RootedData\RootedJsonData;
@@ -44,6 +42,8 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   The module handler service.
    * @param \Drupal\metastore\Service $metastore
    *   The module handler service.
+   * @param Drupal\datastore\Service\Info\ImportInfo $importInfo
+   *   Import info datastoer service.
    */
   public function __construct(
     array $configuration,
@@ -90,6 +90,9 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function spec() {
     $spec = $this->getDoc('datastore');
     $querySchema = self::filterJsonSchemaUnsupported($this->replaceRefs($this->getDoc('datastore', 'query')));
@@ -115,14 +118,23 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return $spec;
   }
 
-  private function setUpExamples($spec){
+  /**
+   * Set up examples throughout spec from real data.
+   *
+   * @param array $spec
+   *   Openapi spec.
+   *
+   * @return array
+   *   Modified spec.
+   */
+  private function setUpExamples(array $spec) {
     $exampleIds = $this->getExampleIdentifiers();
     $spec["components"]["parameters"]["datastoreDistributionUuid"]["example"] = $exampleIds['distribution'];
-    $spec["paths"]["/api/1/datastore/query"]["post"]["requestBody"]["content"]["application/json"]["example"] 
+    $spec["paths"]["/api/1/datastore/query"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample($exampleIds['distribution']);
-    $spec["paths"]["/api/1/datastore/query/download"]["post"]["requestBody"]["content"]["application/json"]["example"] 
+    $spec["paths"]["/api/1/datastore/query/download"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample($exampleIds['distribution'], "csv");
-    $spec["paths"]["/api/1/datastore/query/{identifier}"]["post"]["requestBody"]["content"]["application/json"]["example"] 
+    $spec["paths"]["/api/1/datastore/query/{identifier}"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample();
 
     $spec['components']['parameters']['datastoreUuid']["example"] = $exampleIds['resource'];
@@ -131,7 +143,16 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return $spec;
   }
 
-  private function setUpGetParameters($spec) {
+  /**
+   * Set up the GET parameters for datastore queries. WIP.
+   *
+   * @param array $spec
+   *   OpenApi spec.
+   *
+   * @return array
+   *   Modified spec.
+   */
+  private function setUpGetParameters(array $spec) {
     foreach ($spec["components"]["schemas"]["datastoreQuery"]["properties"] as $key => $property) {
       $propertyKey = 'datastoreQuery' . ucfirst($key);
       $spec["components"]["parameters"][$propertyKey] = [
@@ -155,7 +176,16 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return $spec;
   }
 
-  private function replaceRefs($schema) {
+  /**
+   * Fix schema references to reflect name normalization.
+   *
+   * @param array $schema
+   *   OpenApi datastore schema.
+   *
+   * @return array
+   *   Modified schema.
+   */
+  private function replaceRefs(array $schema) {
     $newSchema = $schema;
     array_walk_recursive($newSchema, function (&$value, $key) {
       if ($key === '$ref') {
@@ -166,7 +196,16 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return $newSchema;
   }
 
-  private function resourceQueryAlter($schema) {
+  /**
+   * Modify the query api schema for resource-specific endpoint.
+   *
+   * @param array $schema
+   *   The datastore query schema.
+   *
+   * @return array
+   *   Modified schema.
+   */
+  private function resourceQueryAlter(array $schema) {
     unset($schema["properties"]["resources"]);
     unset($schema["properties"]["joins"]);
     $schema["title"] = $this->t("Datastore Resource Query");
@@ -174,10 +213,30 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return $schema;
   }
 
-  private function sqlQueryExample($exampleId) {
+  /**
+   * Generate an example SQL query string.
+   *
+   * @param string $exampleId
+   *   Example distirbution/resource identifier.
+   *
+   * @return string
+   *   SQL query string.
+   */
+  private function sqlQueryExample(string $exampleId) {
     return "[SELECT * FROM $exampleId][LIMIT 2]";
   }
 
+  /**
+   * Generate an example query array for an ID.
+   *
+   * @param string|null $exampleId
+   *   The datastore resource identifier.
+   * @param string|null $format
+   *   Format property for the query.
+   *
+   * @return array
+   *   Query array.
+   */
   private function queryExample($exampleId = NULL, $format = NULL) {
     $query = [
       'conditions' => [
@@ -201,6 +260,12 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return $query;
   }
 
+  /**
+   * Generate resource and distribution identifiers for documentation examples.
+   *
+   * @return array
+   *   An array of identifiers with keys 'resource' and 'distribution'.
+   */
   private function getExampleIdentifiers() {
     $all = $this->metastore->getAll("dataset");
     $i = 0;
@@ -223,6 +288,15 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return $identifiers;
   }
 
+  /**
+   * Get the datastore identifiers for a dataset.
+   *
+   * @param \RootedData\RootedJsonData $dataset
+   *   Dataset JSON data object.
+   *
+   * @return false|array
+   *   FALSE if none found, distribution/datastore array if found.
+   */
   private function getDatastoreIds(RootedJsonData $dataset) {
     if (!isset($dataset->{'$.distribution[0]'})) {
       return FALSE;
@@ -246,6 +320,15 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return $identifiers;
   }
 
+  /**
+   * Make 3-part resource ID into 2-part.
+   *
+   * @param string $resourceId
+   *   A three-part resource ID.
+   *
+   * @return string
+   *   A two-part resource ID.
+   */
   private function removePerspective($resourceId) {
     $parts = explode("__", $resourceId);
     if (count($parts) != 3) {
@@ -255,6 +338,15 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     return implode("_", $parts);
   }
 
+  /**
+   * Determine if this resource has been imported to the datastore.
+   *
+   * @param string $resourceId
+   *   A resource ID.
+   *
+   * @return bool
+   *   TRUE if imported.
+   */
   private function resourceHasDatastore($resourceId) {
     $resourceId = $this->removePerspective($resourceId);
     $parts = explode("_", $resourceId);

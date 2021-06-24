@@ -2,24 +2,10 @@
 
 namespace Drupal\common\Plugin;
 
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-class DkanApiDocsGenerator implements ContainerInjectionInterface {
-
-  /**
-   * Dependency injection create method.
-   *
-   * @param Symfony\Component\DependencyInjection\ContainerInterface $container
-   *   The service container.
-   * @return DkanApiDocsGenerator
-   *   Docs generator object.
-   */
-  public static function create(ContainerInterface $container) {
-    return new DkanApiDocsGenerator(
-      $container->get('plugin.manager.dkan_api_docs')
-    );
-  }
+/**
+ * Generator for DKAN OpenApi docs.
+ */
+class DkanApiDocsGenerator {
 
   /**
    * Constructor.
@@ -36,8 +22,9 @@ class DkanApiDocsGenerator implements ContainerInjectionInterface {
    *
    * @param array $plugins
    *   Array of plugin ids to include. Will use all if empty.
+   *
    * @return Drupal\common\Plugin\OpenApiSpec
-   *   Valid opepapi spec. 
+   *   Valid openapi spec.
    */
   public function buildSpec(array $plugins = []) {
     $docPluginDefinitions = $this->docManager->getDefinitions();
