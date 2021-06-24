@@ -264,9 +264,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       "operationId" => "$schemaId-post",
       "summary" => $this->t("Create a new :schemaId.", $tSchema),
       "tags" => [$this->t("Metastore: create")],
-      "security" => [
-        ['basic_auth' => []],
-      ],
+      "security" => [['basic_auth' => []]],
       "requestBody" => [
         "required" => TRUE,
         "description" => $this->t("Takes the standard :schemaId schema, but does not require identifier.", $tSchema),
@@ -280,9 +278,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         "200" => [
           "description" => "Metadata creation successful.",
           "content" => [
-            "application/json" => [
-              "schema" => ['$ref' => '#/components/schemas/metastoreWriteResponse'],
-            ],
+            "application/json" => ["schema" => ['$ref' => '#/components/schemas/metastoreWriteResponse']],
           ],
         ],
       ],
