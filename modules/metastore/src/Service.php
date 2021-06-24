@@ -157,7 +157,7 @@ class Service implements ContainerInjectionInterface {
    * @throws Exception 
    */
   public function getRange(string $schema_id, int $start, int $length):array {
-    $jsonStringsArray = $this->getStorage($schema_id)->retrieveRange($start, $end);
+    $jsonStringsArray = $this->getStorage($schema_id)->retrieveRange($start, $length);
     $objects = $this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id);
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
