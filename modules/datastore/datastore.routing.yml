@@ -111,11 +111,31 @@ datastore.1.query.id.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
+datastore.1.query.dataset.index.post:
+  path: '/api/1/datastore/query/{dataset}/{index}'
+  methods: [POST]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 datastore.1.query.id.get:
   path: '/api/1/datastore/query/{identifier}'
   methods: [GET]
   defaults:
     _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.dataset.index.get:
+  path: '/api/1/datastore/query/{dataset}/{index}'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
   requirements:
     _permission: 'access content'
   options:
@@ -132,11 +152,33 @@ datastore.1.query.id.download.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
+datastore.1.query.dataset.index.download.get:
+  path: '/api/1/datastore/query/{dataset}/{index}/download'
+  methods: [GET]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
+    stream: true
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
 datastore.1.query.id.download.post:
   path: '/api/1/datastore/query/{identifier}/download'
   methods: [POST]
   defaults:
     _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
+    stream: true
+  requirements:
+    _permission: 'access content'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+datastore.1.query.dataset.index.download.post:
+  path: '/api/1/datastore/query/{dataset}/{index}/download'
+  methods: [POST]
+  defaults:
+    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
     stream: true
   requirements:
     _permission: 'access content'
