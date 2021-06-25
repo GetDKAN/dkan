@@ -218,7 +218,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     unset($operations['get']['parameters'][0]['example']);
     $operations['get']['parameters'][0]['examples'][$distKey] = [
       "summary" => "Query distribution {$distribution->identifier}",
-      "value" => "[SELECT * {$distribution->identifier}][LIMIT 2]",
+      "value" => "[SELECT * FROM {$distribution->identifier}][LIMIT 2]",
     ];
     return $operations;
   }
