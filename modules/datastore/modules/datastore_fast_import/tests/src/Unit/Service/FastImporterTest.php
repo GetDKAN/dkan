@@ -14,6 +14,7 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Procrastinator\Result;
 use Dkan\Datastore\Importer;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\File\FileSystem;
 use Drupal\datastore_fast_import\Service\FastImporter;
 use MockChain\Options;
@@ -30,9 +31,10 @@ class FastImporterTest extends TestCase {
     $options = (new Options())
       ->add('file_system', FileSystem::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('database', Connection::class)
       ->index(0);
 
-    $filepath = realpath("http://hello.goodby/text.csv");
+    $filepath = "file://" . __DIR__ . "/../../../../../../tests/data/countries.csv";
 
     $container = (new Chain($this))
       ->add(Container::class, 'get', $options)
@@ -52,6 +54,7 @@ class FastImporterTest extends TestCase {
 
     $databaseTableFactory = (new Chain($this))
       ->add(DatabaseTableFactory::class, "getInstance", DatabaseTable::class)
+      ->add(DatabaseTable::class, 'count', 4)
       ->getMock();
 
     $jobStoreFactory = (new Chain($this))
@@ -62,7 +65,8 @@ class FastImporterTest extends TestCase {
     $service->setImporterClass(FastImporter::class);
     $service->import();
 
-    $this->assertTrue($service->getResult() instanceof Result);
+    $result = $service->getResult();
+    $this->assertTrue($result instanceof Result);
   }
 
 }
