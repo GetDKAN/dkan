@@ -4,9 +4,7 @@ namespace Drupal\common\Controller;
 
 use Drupal\common\JsonResponseTrait;
 use Drupal\common\Plugin\DkanApiDocsGenerator;
-use Drupal\common\Plugin\DkanApiDocsPluginManager;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Serialization\Yaml;
 use RootedData\Exception\ValidationException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,13 +28,6 @@ class OpenApiController implements ContainerInjectionInterface {
   protected $generator;
 
   /**
-   * Module handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
-
-  /**
    * Request stack.
    *
    * @var \Symfony\Component\HttpFoundation\RequestStack
@@ -55,23 +46,25 @@ class OpenApiController implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new OpenApiController(
-      $container->get('module_handler'),
       $container->get('request_stack'),
-      $container->get('plugin.manager.dkan_api_docs')
+      $container->get('dkan.common.docs_generator')
     );
   }
 
   /**
    * Constructor.
+   *
+   * @param Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   Request stack.
+   * @param \Drupal\common\Plugin\DkanApiDocsGenerator $generator
+   *   API Docs generator.
    */
   public function __construct(
-    ModuleHandlerInterface $moduleHandler,
     RequestStack $requestStack,
-    DkanApiDocsPluginManager $manager
+    DkanApiDocsGenerator $generator
   ) {
-    $this->moduleHandler = $moduleHandler;
     $this->requestStack = $requestStack;
-    $this->generator = new DkanApiDocsGenerator($manager);
+    $this->generator = $generator;
   }
 
   /**

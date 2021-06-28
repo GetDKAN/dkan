@@ -14,8 +14,14 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * Test the DKAN Docs controller.
+ */
 class OpenApiControllerTest extends TestCase {
 
+  /**
+   * Test spec generation from sample yaml file.
+   */
   public function testGetComplete() {
     $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
     $request = new Request();
@@ -30,6 +36,9 @@ class OpenApiControllerTest extends TestCase {
     $this->assertArrayHasKey('components', $data);
   }
 
+  /**
+   * Test invalid spec.
+   */
   public function testGetInvalid() {
     $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
     unset($spec['openapi']);
@@ -44,6 +53,9 @@ class OpenApiControllerTest extends TestCase {
     $this->assertEquals("JSON Schema validation failed.", $data['message']);
   }
 
+  /**
+   * Test removal of authenticated methods.
+   */
   public function testGetPublic() {
     $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
     $request = new Request(['authentication' => 'false']);
@@ -57,6 +69,9 @@ class OpenApiControllerTest extends TestCase {
     $this->assertArrayNotHasKey('components', $data);
   }
 
+  /**
+   * Generate mock container.
+   */
   private function getContainerMock($spec, Request $request) {
     $options = (new Options())
       ->add('module_handler', ModuleHandler::class)
@@ -82,4 +97,5 @@ class OpenApiControllerTest extends TestCase {
       ->add(RequestStack::class, 'getCurrentRequest', $request)
       ->getMock();
   }
+
 }

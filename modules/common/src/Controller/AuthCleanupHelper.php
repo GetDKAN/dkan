@@ -163,7 +163,7 @@ class AuthCleanupHelper {
    */
   public static function cleanUpSchemas(OpenApiSpec $spec) {
     $specArr = $spec->{"$"};
-    if (empty($specArr["components"]) || empty($specArr["components"]["parameters"])) {
+    if (empty($specArr["components"]) || empty($specArr["components"]["schemas"])) {
       return $spec;
     }
     foreach (array_keys($specArr['components']['schemas']) as $schemaKey) {
