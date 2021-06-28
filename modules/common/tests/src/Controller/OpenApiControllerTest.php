@@ -4,6 +4,7 @@ namespace Drupal\Tests\common\Controller;
 
 use Drupal\common\Controller\OpenApiController;
 use Drupal\common\Plugin\DkanApiDocsBase;
+use Drupal\common\Plugin\DkanApiDocsGenerator;
 use Drupal\common\Plugin\DkanApiDocsPluginManager;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Extension\ModuleHandler;
@@ -25,9 +26,7 @@ class OpenApiControllerTest extends TestCase {
   public function testGetComplete() {
     $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
     $request = new Request();
-    $container = $this->getContainerMock($spec, $request);
-
-    $controller = OpenApiController::create($container);
+    $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
     $data = json_decode($response->getContent(), TRUE);
@@ -43,9 +42,7 @@ class OpenApiControllerTest extends TestCase {
     $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
     unset($spec['openapi']);
     $request = new Request();
-    $container = $this->getContainerMock($spec, $request);
-
-    $controller = OpenApiController::create($container);
+    $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
     $data = json_decode($response->getContent(), TRUE);
@@ -59,9 +56,7 @@ class OpenApiControllerTest extends TestCase {
   public function testGetPublic() {
     $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
     $request = new Request(['authentication' => 'false']);
-    $container = $this->getContainerMock($spec, $request);
-
-    $controller = OpenApiController::create($container);
+    $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
 
     $data = json_decode($response->getContent(), TRUE);
@@ -72,7 +67,7 @@ class OpenApiControllerTest extends TestCase {
   /**
    * Generate mock container.
    */
-  private function getContainerMock($spec, Request $request) {
+  private function getControllerMock($spec, Request $request) {
     $options = (new Options())
       ->add('module_handler', ModuleHandler::class)
       ->add('request_stack', RequestStack::class)
@@ -90,12 +85,15 @@ class OpenApiControllerTest extends TestCase {
       ->add(DkanApiDocsBase::class, 'spec', $spec)
       ->getMock();
 
-    return (new Chain($this))
+    $container = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(DkanApiDocsPluginManager::class, 'getDefinitions', [$pluginDefinition])
       ->add(DkanApiDocsPluginManager::class, 'createInstance', $pluginMock)
       ->add(RequestStack::class, 'getCurrentRequest', $request)
       ->getMock();
+
+    $generator = new DkanApiDocsGenerator($container->get('plugin.manager.dkan_api_docs'));
+    return new OpenApiController($container->get('request_stack'), $generator);
   }
 
 }
