@@ -1,6 +1,6 @@
 services:
   dkan.common.docs_generator:
-    class: \Drupal\common\Plugin\DkanApiDocsGenerator
+    class: \Drupal\common\DkanApiDocsGenerator
     arguments:
       - '@plugin.manager.dkan_api_docs'
 

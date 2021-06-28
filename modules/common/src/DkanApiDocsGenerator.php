@@ -1,6 +1,9 @@
 <?php
 
-namespace Drupal\common\Plugin;
+namespace Drupal\common;
+
+use Drupal\common\Plugin\DkanApiDocsPluginManager;
+use Drupal\common\Plugin\OpenApiSpec;
 
 /**
  * Generator for DKAN OpenApi docs.

@@ -5,7 +5,7 @@ namespace Drupal\metastore;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
-use Drupal\common\Plugin\DkanApiDocsGenerator;
+use Drupal\common\DkanApiDocsGenerator;
 
 /**
  * Provides dataset-specific OpenAPI documentation.
@@ -26,7 +26,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * OpenAPI spec for dataset-related endpoints.
    *
-   * @var \Drupal\common\Plugin\DkanApiDocsGenerator
+   * @var \Drupal\common\DkanApiDocsGenerator
    */
   private $docsGenerator;
 
@@ -43,7 +43,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Constructs a new WebServiceApiDocs.
    *
-   * @param \Drupal\common\Plugin\DkanApiDocsGenerator $docsGenerator
+   * @param \Drupal\common\DkanApiDocsGenerator $docsGenerator
    *   Serves openapi spec.
    * @param \Drupal\metastore\Service $metastore
    *   The metastore service.

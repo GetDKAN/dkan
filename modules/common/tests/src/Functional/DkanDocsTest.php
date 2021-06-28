@@ -74,9 +74,8 @@ class DkanDocsTest extends ExistingSiteBase {
     }
 
     return new OpenApiController(
-      \Drupal::service('module_handler'),
       $requestStack,
-      \Drupal::service('plugin.manager.dkan_api_docs')  
+      \Drupal::service('dkan.common.docs_generator')
     );
   }
 
