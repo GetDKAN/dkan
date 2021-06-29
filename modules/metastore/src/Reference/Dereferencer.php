@@ -39,9 +39,8 @@ class Dereferencer {
    *   Modified json metadata object.
    */
   public function dereference($data) {
-    if (!is_object($data)) {
-      throw new \Exception("data must be an object.");
-    }
+    $this->validate($data);
+
     // Cycle through the dataset properties we seek to dereference.
     $ref = NULL;
     $actual = NULL;
@@ -59,6 +58,20 @@ class Dereferencer {
       }
     }
     return $data;
+  }
+
+  /**
+   * Validates data.
+   *
+   * @param object $data
+   *   The json metadata object.
+   *
+   * @throws \Exception
+   */
+  private function validate($data) {
+    if (!is_object($data)) {
+      throw new \Exception("data must be an object.");
+    }
   }
 
   /**
