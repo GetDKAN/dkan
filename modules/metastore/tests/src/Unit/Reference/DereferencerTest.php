@@ -66,7 +66,7 @@ class DereferencerTest extends TestCase {
     $valueReferencer = new Dereferencer($configService, $storageFactory);
     $referenced = $valueReferencer->dereference((object) ['distribution' => $uuid]);
 
-    $this->assertEquals((object) ['distribution' => NULL, '%Ref:distribution' => NULL], $referenced);
+    $this->assertEmpty((array) $referenced);
   }
 
   /**
