@@ -267,7 +267,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       "security" => [['basic_auth' => []]],
       "requestBody" => [
         "required" => TRUE,
-        "description" => $this->t("Takes the standard :schemaId schema, but does not require identifier.", $tSchema),
+        "description" => $this->t("Takes the standard :schemaId schema, but does not require identifier.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, removing the identifier property, and pasting to test.", $tSchema),
         "content" => [
           "application/json" => [
             "schema" => self::filterJsonSchemaUnsupported($this->makeIdentifierOptional($schema)),
@@ -332,6 +332,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return [
       "operationId" => "$schemaId-put",
       "summary" => $this->t("Fully replace an existing :schemaId", $tSchema),
+      "description" => $this->t("Object will be completely replaced; optional properties not included in the request will be deleted.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, changing values, and pasting to test.", $tSchema),
       "tags" => [$this->t("Metastore: replace")],
       "security" => [
         ['basic_auth' => []],
@@ -370,7 +371,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return [
       "operationId" => "$schemaId-patch",
       "summary" => $this->t("Modify an existing :schemaId", $tSchema),
-      "description" => $this->t("Values provided will replace existing values, but required values may be omitted."),
+      "description" => $this->t("Values provided will replace existing values, but required values may be omitted.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, changing values, removing unchanged properties, and pasting to test.", $tSchema),
       "tags" => ["Metastore: patch"],
       "security" => [
         ['basic_auth' => []],
