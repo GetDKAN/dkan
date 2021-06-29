@@ -49,8 +49,13 @@ class Dereferencer {
       if (isset($data->{$propertyId})) {
         $referenceProperty = "%Ref:{$propertyId}";
         [$ref, $actual] = $this->dereferenceProperty($propertyId, $data->{$propertyId});
-        $data->{$referenceProperty} = $ref;
-        $data->{$propertyId} = $actual;
+        if (!empty($ref) && !empty($actual)) {
+          $data->{$referenceProperty} = $ref;
+          $data->{$propertyId} = $actual;
+        }
+        else {
+          unset($data->{$propertyId});
+        }
       }
     }
     return $data;
