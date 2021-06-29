@@ -252,7 +252,7 @@
                     }
                 ],
                 "parameters": [
-                    { "$ref": "#/components/parameters/harvestPlanId" }
+                    { "$ref": "#/components/parameters/harvestPlanIdQuery" }
                 ],
                 "responses": {
                     "200": {
