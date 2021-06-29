@@ -321,10 +321,22 @@
             "get": {
                 "operationId": "datastore-resource-query-download-get",
                 "summary": "Query a single datastore resource for file download",
+                "description": "Like the other datastore query GET endpoints, additional parameters may be added by serializing a query JSON object (documented in the POST endpoints) into a query string.",
                 "tags": ["Datastore: query"],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDistributionUuid"
+                    },
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "csv",
+                        "description": "Response format. Currently, only csv is supported.",
+                        "style": "deepObject"
                     }
                 ],
                 "responses": {
