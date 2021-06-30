@@ -113,6 +113,29 @@ abstract class Data implements MetastoreStorageInterface {
    *
    * {@inheritdoc}.
    */
+  public function retrieveRange($start, $length): array {
+
+    $entity_ids = $this->entityStorage->getQuery()
+      ->condition('type', $this->bundle)
+      ->condition('field_data_type', $this->schemaId)
+      ->range($start, $length)
+      ->execute();
+
+    $all = [];
+    foreach ($entity_ids as $nid) {
+      $entity = $this->entityStorage->load($nid);
+      if ($entity->get('moderation_state')->getString() === 'published') {
+        $all[] = $entity->get('field_json_metadata')->getString();
+      }
+    }
+    return $all;
+  }
+
+  /**
+   * Inherited.
+   *
+   * {@inheritdoc}.
+   */
   public function retrievePublished(string $uuid) : ?string {
     $entity = $this->getEntityPublishedRevision($uuid);
 
@@ -141,7 +164,7 @@ abstract class Data implements MetastoreStorageInterface {
       return $entity->get('field_json_metadata')->getString();
     }
 
-    throw new MissingObjectException("Error retrieving dataset: {$this->schemaId} {$uuid} not found.");
+    throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
   }
 
   /**

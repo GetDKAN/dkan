@@ -248,7 +248,8 @@ class QueryController implements ContainerInjectionInterface {
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+      $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
+      return $this->getResponseFromException($e, $code);
     }
 
     if ($stream) {
