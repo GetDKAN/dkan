@@ -124,7 +124,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getAll($schema_id): array {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
-    $objects = $this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id);
+    $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
       if (!is_array($data)) {
@@ -153,7 +153,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getRange(string $schema_id, int $start, int $length):array {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveRange($start, $length);
-    $objects = $this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id);
+    $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
       if (!is_array($data)) {
@@ -196,17 +196,6 @@ class Service implements ContainerInjectionInterface {
           return NULL;
         }
       }, $jsonStringsArray);
-
-    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, array_filter($objects), function ($data) {
-      if (!is_array($data)) {
-        return FALSE;
-      }
-      if (count($data) == 0) {
-        return TRUE;
-      }
-      return $data[0] instanceof RootedJsonData;
-    });
-
   }
 
   /**
