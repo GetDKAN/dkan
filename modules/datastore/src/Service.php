@@ -382,7 +382,7 @@ class Service implements ContainerInjectionInterface {
 
     unset($query->limit, $query->offset);
     $query->count();
-    return $storageMap[$primaryAlias]->query($query, $primaryAlias)[0]->expression;
+    return (int) $storageMap[$primaryAlias]->query($query, $primaryAlias)[0]->expression;
   }
 
   /**

@@ -7,8 +7,6 @@ use Drupal\Core\Config\Config;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
-use Drupal\common\Plugin\DataModifierBase;
-use Drupal\common\Plugin\DataModifierManager;
 use Drupal\Tests\datastore\Traits\TestHelperTrait;
 use MockChain\Chain;
 use MockChain\Options;
@@ -41,12 +39,12 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testNoQueryString() {
-    $message = ["message" => "Missing 'query' query parameter"];
+    $message = "Missing 'query' query parameter";
     $expectedResponse = new JsonResponse($message);
 
     $controller = WebServiceApi::create($this->getCommonMockChain("")->getMock());
     $response = $controller->runQueryGet();
-    $this->assertEquals($expectedResponse->getContent(), $response->getContent());
+    $this->assertContains($expectedResponse->getContent(), $response->getContent());
   }
 
   /**
@@ -64,12 +62,12 @@ class WebServiceApiTest extends TestCase {
    *
    */
   public function testNoQueryPayload() {
-    $message = ["message" => "Missing 'query' property in the request's body."];
+    $message = "Missing 'query' property in the request's body.";
     $expectedResponse = new JsonResponse($message);
 
     $controller = WebServiceApi::create($this->getCommonMockChain("")->getMock());
     $response = $controller->runQueryPost();
-    $this->assertEquals($expectedResponse->getContent(), $response->getContent());
+    $this->assertContains($expectedResponse->getContent(), $response->getContent());
   }
 
   /**

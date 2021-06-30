@@ -1,6 +1,6 @@
 {
   "title": "Distribution",
-  "description": "A container for the array of Distribution objects (data files).",
+  "description": "Distribution object, based on DCAT-US.",
   "type": "object",
   "required": [
     "identifier",
