@@ -2,7 +2,6 @@
 
 namespace Drupal\metastore;
 
-use Contracts\StorerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\metastore\Exception\CannotChangeUuidException;
@@ -10,12 +9,13 @@ use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 use RootedData\RootedJsonData;
 use Rs\Json\Merge\Patch;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Service.
+ * The metastore service.
  */
 class Service implements ContainerInjectionInterface {
   use EventDispatcherTrait;
@@ -74,17 +74,6 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Setter to discover data modifier plugins.
-   *
-   * @param \Drupal\common\Plugin\DataModifierManager $pluginManager
-   *   Injected plugin manager.
-   */
-  public function setDataModifierPlugins(DataModifierManager $pluginManager) {
-    $this->pluginManager = $pluginManager;
-    $this->plugins = $this->discover();
-  }
-
-  /**
    * Get schemas.
    */
   public function getSchemas() {
@@ -112,10 +101,10 @@ class Service implements ContainerInjectionInterface {
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
    *
-   * @return \Drupal\metastore\Storage\StorerInterface
+   * @return \Drupal\metastore\Storage\MetastoreStorageInterface
    *   Entity storage.
    */
-  private function getStorage(string $schema_id): StorerInterface {
+  private function getStorage(string $schema_id): MetastoreStorageInterface {
     if (!isset($this->storages[$schema_id])) {
       $this->storages[$schema_id] = $this->storageFactory->getInstance($schema_id);
     }
@@ -133,21 +122,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getAll($schema_id): array {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
-
-    $objects = array_map(
-      function ($jsonString) use ($schema_id) {
-        $data = $this->validMetadataFactory->get($schema_id, $jsonString);
-        try {
-          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
-            return $data instanceof RootedJsonData;
-          });
-        }
-        catch (\Exception $e) {
-          return new RootedJsonData(json_encode(["message" => $e->getMessage()]));
-        }
-      },
-      $jsonStringsArray
-    );
+    $objects = $this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id);
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
       if (!is_array($data)) {
@@ -159,6 +134,65 @@ class Service implements ContainerInjectionInterface {
       return $data[0] instanceof RootedJsonData;
     });
 
+  }
+
+  /**
+   * Get a subset of metastore items according to a range.
+   *
+   * @param string $schema_id
+   *   Schema ID.
+   * @param int $start
+   *   Start offset.
+   * @param int $length
+   *   Number of items to retrieve.
+   *
+   * @return array
+   *   Array of RootedJsonData objects.
+   */
+  public function getRange(string $schema_id, int $start, int $length):array {
+    $jsonStringsArray = $this->getStorage($schema_id)->retrieveRange($start, $length);
+    $objects = $this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id);
+
+    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
+      if (!is_array($data)) {
+        return FALSE;
+      }
+      if (count($data) == 0) {
+        return TRUE;
+      }
+      return $data[0] instanceof RootedJsonData;
+    });
+
+  }
+
+  /**
+   * Create array of RootedJsonData objects from array of strings.
+   *
+   * @param array $jsonStringsArray
+   *   Array of JSON strings.
+   * @param string $schema_id
+   *   Schema ID.
+   *
+   * @return array
+   *   Array of objects.
+   *
+   * @todo Exception should not be caught; let controller handle it.
+   */
+  private function jsonStringsArrayToObjects(array $jsonStringsArray, string $schema_id) {
+    return array_map(
+      function ($jsonString) use ($schema_id) {
+        $data = $this->validMetadataFactory->get($jsonString, $schema_id);
+        try {
+          return $this->dispatchEvent(self::EVENT_DATA_GET, $data, function ($data) {
+            return $data instanceof RootedJsonData;
+          });
+        }
+        catch (\Exception $e) {
+          return new RootedJsonData(json_encode(["message" => $e->getMessage()]));
+        }
+      },
+      $jsonStringsArray
+    );
   }
 
   /**
@@ -174,7 +208,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function get($schema_id, $identifier): RootedJsonData {
     $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
-    $data = $this->validMetadataFactory->get($schema_id, $json_string);
+    $data = $this->validMetadataFactory->get($json_string, $schema_id);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     return $data;
@@ -195,7 +229,7 @@ class Service implements ContainerInjectionInterface {
    */
   public function getResources($schema_id, $identifier): array {
     $json_string = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = $this->validMetadataFactory->get($schema_id, $json_string);
+    $data = $this->validMetadataFactory->get($json_string, $schema_id);
 
     /* @todo decouple from POD. */
     $resources = $data->{"$.distribution"};
@@ -330,7 +364,7 @@ class Service implements ContainerInjectionInterface {
           json_decode($json_data)
         );
 
-        $new = $this->validMetadataFactory->get($schema_id, json_encode($patched));
+        $new = $this->validMetadataFactory->get(json_encode($patched), $schema_id);
         $storage->store($new, "{$identifier}");
         return $identifier;
       }
@@ -404,7 +438,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function objectIsEquivalent(string $schema_id, string $identifier, RootedJsonData $metadata) {
     $existingMetadata = $this->getStorage($schema_id)->retrieve($identifier);
-    $existing = $this->getValidMetadataFactory()->get($schema_id, $existingMetadata);
+    $existing = $this->getValidMetadataFactory()->get($existingMetadata, $schema_id);
     $existing = self::removeReferences($existing);
     return $metadata->get('$') == $existing->get('$');
   }

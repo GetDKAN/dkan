@@ -154,17 +154,38 @@ class SelectFactory {
    */
   private function expressionToString($expression) {
     $operands = [];
+    $expressionStr = "";
+    $supportedFunctions = $this->getSupportedFunctions();
     foreach ($expression->operands as $operand) {
       $operands[] = $this->normalizeOperand($operand);
     }
 
-    if (ctype_alnum($expression->operator)) {
-      throw new \Exception("Only basic arithmetic expressions currently supported.");
+    if (!ctype_alnum($expression->operator)) {
+      $expressionStr = implode(" $expression->operator ", $operands);
+    }
+    elseif (in_array(strtolower($expression->operator), $supportedFunctions)) {
+      $operator = strtoupper($expression->operator);
+      $column = reset($operands);
+      $expressionStr = "$operator($column)";
+    }
+    else {
+      throw new \Exception("Only basic arithmetic expressions and basic SQL functions currently supported.");
     }
 
-    $expressionStr = implode(" $expression->operator ", $operands);
-
     return "($expressionStr)";
+  }
+
+  /**
+   * Return supported SQL functions.
+   */
+  private function getSupportedFunctions() {
+    return [
+      'sum',
+      'count',
+      'avg',
+      'max',
+      'min',
+    ];
   }
 
   /**

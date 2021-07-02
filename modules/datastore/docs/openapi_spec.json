@@ -1,0 +1,396 @@
+{
+    "components": {
+        "parameters": {
+            "datastoreUuid": {
+                "name": "identifier",
+                "in": "path",
+                "description": "A datastore id. Note: there is an inconsistency in this API that will be addressed in the future: The expected format is different from the format supplied in /api/1/datastore/imports.",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "datastoreDistributionUuid": {
+                "name": "identifier",
+                "in": "path",
+                "description": "A distribution id",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "schemas": {
+            "datastoreQuery": {},
+            "datastoreResourceQuery": {}
+        },
+        "responses": {
+            "200DatastoreCsvOk": {
+                "description": "Ok, CSV successfully generated.",
+                "content": {
+                    "text/csv": {
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "200JsonOrCsvQueryOk": {
+                "description": "Ok. JSON or CSV datastore response, depending on query.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                },
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Schema of all resources queries, keyed by ID."
+                                },
+                                "query": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "text/csv": {
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/1/datastore/imports": {
+            "get": {
+                "operationId": "datastore-list",
+                "summary": "List datastores",
+                "description": "Returns a list of all stored importers, with data about their file fetcher and status.\n",
+                "tags": ["Datastore: import"],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "datastore-import",
+                "summary": "Datastore import",
+                "description": "Immediately starts the import process for a datastore.\n",
+                "tags": ["Datastore: import"],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["resource_id"],
+                                "properties": {
+                                    "plan_id": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/imports/{identifier}": {
+            "get": {
+                "operationId": "datastore-get",
+                "summary": "Datastore statistics",
+                "description": "Returns the numbers of rows and columns, and a list of columns headers from the datastore.\n",
+                "tags": ["Datastore: import"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreUuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "numOfRows", "numOfColumns", "columns"
+                                    ],
+                                    "properties": {
+                                        "numOfRows": {
+                                            "type": "integer"
+                                        },
+                                        "numOfColumns": {
+                                            "type": "integer"
+                                        },
+                                        "columns": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "datastore-delete",
+                "summary": "Delete a datastore",
+                "description": "Delete one or more datastores. If the uuid parameter is that of a resource, delete that resource. If the uuid parameter is that of a dataset, delete all resources of that dataset.\n",
+                "tags": ["Datastore: import"],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreUuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Dataset has been deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": ["message"],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/datastore/query": {
+            "post": {
+                "operationId": "datastore-query-post",
+                "summary": "Query one or more datastore resources",
+                "tags": ["Datastore: query"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/datastoreQuery" }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk" },
+                    "400": { "$ref": "#/components/responses/400BadJson" }
+                }
+            },
+            "get": {
+                "operationId": "datastore-query-get",
+                "summary": "Query one or more datastore resources",
+                "description": "Simple GET equivalent of a POST query. Note that parameter format is not fully supported by current Swagger UI and examples may not work. For more reliable queries, write your query in JSON and then convert to a multidimensional query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
+                "tags": ["Datastore: query"],
+                "parameters": [],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
+                    "400": { "$ref": "#/components/responses/400BadJson" }
+                }
+            }
+        },
+        "/api/1/datastore/query/download": {
+            "post": {
+                "operationId": "datastore-query-download-post",
+                "summary": "Query one or more datastore resources for file download",
+                "tags": ["Datastore: query"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/datastoreQuery" }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200DatastoreCsvOk" },
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            },
+            "get": {
+                "operationId": "datastore-query-download-get",
+                "summary": "Query one or more datastore resources for file download with get",
+                "description": "Simple GET equivalent of a POST query. Note that parameter format is not fully supported by current Swagger UI and examples may not work. For more reliable queries, write your query in JSON and then convert to a multidimensional query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
+                "tags": ["Datastore: query"],
+                "parameters": [],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200DatastoreCsvOk" },
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            }
+        },
+        "/api/1/datastore/query/{identifier}": {
+            "post": {
+                "operationId": "datastore-resource-query-post",
+                "summary": "Query a single datastore resource",
+                "tags": ["Datastore: query"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionUuid"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/datastoreResourceQuery" }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            },
+            "get": {
+                "operationId": "datastore-resource-query-get",
+                "summary": "Query a single datastore resource with get",
+                "description": "Simple GET equivalent of a POST query. Note that parameter format is not fully supported by current Swagger UI and examples may not work. For more reliable queries, write your query in JSON and then convert to a multidimensional query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
+                "tags": ["Datastore: query"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionUuid"
+                    }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            }
+        },
+        "/api/1/datastore/query/{identifier}/download": {
+            "get": {
+                "operationId": "datastore-resource-query-download-get",
+                "summary": "Query a single datastore resource for file download",
+                "description": "Like the other datastore query GET endpoints, additional parameters may be added by serializing a query JSON object (documented in the POST endpoints) into a query string.",
+                "tags": ["Datastore: query"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionUuid"
+                    },
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "csv",
+                        "description": "Response format. Currently, only csv is supported.",
+                        "style": "deepObject"
+                    }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200DatastoreCsvOk"},
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            }
+        },
+        "/api/1/datastore/sql": {
+            "get": {
+                "operationId": "datastore-sql",
+                "summary": "Query resources in datastore",
+                "description": "Interact with resources in the datastore using an SQL-like syntax.\n",
+                "tags": ["Datastore: SQL Query"],
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "A SQL-like query.\n\nA `SELECT` using the `show_db_columns` parameter will make it easier to build queries against the data as\nit returns columns without spaces and in some cases, truncated names where the human readable column header\nis very long.\n\n`/api/1/datastore/sql?query=[SELECT * FROM DATASTORE_UUID][LIMIT 1 OFFSET 0];&show_db_columns`\n\nYou can then build the `SELECT` part of the query. Do not use spaces between its arguments.\n\n`/api/1/datastore/sql?query=[SELECT a,b,c, FROM DATASTORE_UUID]`\n\n`WHERE` can use any column in the data.\n\n`/api/1/datastore/sql?query=[SELECT a,b FROM DATASTORE_UUID][WHERE c = \"CCC\"];&show_db_columns`\n\n`LIMIT` and `OFFSET` allow you to get more than the 500 record limit, by using successive queries:\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"CCC\"][LIMIT 500 OFFSET 0];&show_db_columns`\n\n`/api/1/datastore/sql?query=[SELECT a,b,c FROM DATASTORE_UUID][WHERE d = \"DDD\"][LIMIT 500 OFFSET 500];&show_db_columns`\n\nNote: `SELECT`, `WHERE` and `LIMIT...OFFSET` clauses must each be included within brackets `[ ]`.\n",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form"
+                    },
+                    {
+                        "name": "show_db_columns",
+                        "in": "query",
+                        "description": "Add `&show_db_columns` to return columns without spaces and in some cases, truncated names where the human\nreadable column header is very long.\n",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "allowEmptyValue": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok. Query successful.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "description": "Simple result row, key/value pairs."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

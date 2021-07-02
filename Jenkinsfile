@@ -30,6 +30,8 @@ pipeline {
 		      
 		      docker network disconnect $qa_network_id proxy
                       docker network rm $qa_network_id
+		      
+		      sudo rm -r $WORKSPACE/*
                     fi
                     '''
                     deleteDir()
