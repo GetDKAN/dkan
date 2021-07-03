@@ -36,7 +36,7 @@ class ValueHandler {
    */
   public function handleStringValues($formValues, $property) {
     if (isset($formValues[$property]) && $formValues[$property] instanceof DrupalDateTime) {
-      return $formValues[$property]->__toString();
+      return $formValues[$property]->format('c', ['timezone' => 'UTC']);
     }
     if (!empty($formValues[$property]) && isset($formValues[$property]['date_range'])) {
       return $formValues[$property]['date_range'];
