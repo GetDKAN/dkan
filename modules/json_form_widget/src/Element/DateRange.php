@@ -80,10 +80,11 @@ class DateRange extends Datetime {
         $end_time = static::getFormattedTime($input['end_date']['time']);
         $end = static::getDateTimeElement($input['end_date']['date'], $end_time, $date_time_format, $element['#date_timezone']);
       }
+      $range = (empty($start) && empty($end)) ? '' : $start . '/' . $end;
       $input = [
         'start' => $start,
         'end' => $end,
-        'date_range' => $start . '/' . $end,
+        'date_range' => $range,
       ];
     }
     return $input;
