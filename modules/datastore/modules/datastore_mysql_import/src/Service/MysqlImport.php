@@ -35,16 +35,7 @@ class MysqlImport extends Importer {
     $storage = $this->dataStorage;
     $storage->count();
 
-    $sqlStatementLines = [
-      'LOAD DATA LOCAL INFILE \'' . $filename . '\'',
-      'INTO TABLE ' . $storage->getTableName(),
-      'FIELDS TERMINATED BY \',\'',
-      'ENCLOSED BY \'\"\'',
-      'LINES TERMINATED BY \'\n\'',
-      'IGNORE 1 ROWS',
-      '(' . implode(',', $header) . ')',
-      'SET record_number = NULL;',
-    ];
+    $sqlStatementLines = $this->getSqlStatement($filename, $storage, $header);
 
     $sqlStatement = implode(' ', $sqlStatementLines);
 
@@ -91,6 +82,22 @@ class MysqlImport extends Importer {
       $row[] = $new;
     }
     return $row;
+  }
+
+  /**
+   * Private.
+   */
+  private function getSqlStatement($filename, $storage, $header) {
+    return [
+      'LOAD DATA LOCAL INFILE \'' . $filename . '\'',
+      'INTO TABLE ' . $storage->getTableName(),
+      'FIELDS TERMINATED BY \',\'',
+      'ENCLOSED BY \'\"\'',
+      'LINES TERMINATED BY \'\n\'',
+      'IGNORE 1 ROWS',
+      '(' . implode(',', $header) . ')',
+      'SET record_number = NULL;',
+    ];
   }
 
 }
