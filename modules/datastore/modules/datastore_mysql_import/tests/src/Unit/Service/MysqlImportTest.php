@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dastastore_fast_import\Unit\Service;
+namespace Drupal\Tests\dastastore_mysql_import\Unit\Service;
 
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
@@ -16,18 +16,18 @@ use Procrastinator\Result;
 use Dkan\Datastore\Importer;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\File\FileSystem;
-use Drupal\datastore_fast_import\Service\FastImporter;
+use Drupal\datastore_mysql_import\Service\MysqlImport;
 use MockChain\Options;
 
 /**
  *
  */
-class FastImporterTest extends TestCase {
+class MysqlImportTest extends TestCase {
 
   /**
    *
    */
-  public function testFastImporter() {
+  public function testMysqlImporter() {
     $options = (new Options())
       ->add('file_system', FileSystem::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
@@ -62,7 +62,7 @@ class FastImporterTest extends TestCase {
       ->getMock();
 
     $service = new Service($resource, $jobStoreFactory, $databaseTableFactory);
-    $service->setImporterClass(FastImporter::class);
+    $service->setImporterClass(MysqlImport::class);
     $service->import();
 
     $result = $service->getResult();
