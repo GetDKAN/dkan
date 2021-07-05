@@ -230,3 +230,15 @@ datastore.dkan_resource_settings:
     _form: 'Drupal\datastore\Form\ResourceSettingsForm'
   requirements:
     _permission: 'administer site configuration'
+
+datastore.datasets_import_status_dashboard:
+  path: '/admin/dkan/datasets_import_status_dashboard/{harvestId}'
+  methods: [ GET ]
+  defaults:
+    _controller: \Drupal\datastore\Controller\DashboardController::datasetsImportStatus
+    _title_callback: \Drupal\datastore\Controller\DashboardController::datasetsImportStatusTitle
+    harvestId: NULL
+  requirements:
+    _permission: 'dkan.harvest.dashboard'
+  options:
+    _auth: [ 'basic_auth', 'cookie' ]
