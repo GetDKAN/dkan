@@ -1,17 +1,18 @@
 <?php
 
-namespace Drupal\datastore_fast_import\Service;
+namespace Drupal\datastore_mysql_import\Service;
 
 use Dkan\Datastore\Importer;
 use Drupal\Core\Database\Database;
 use Procrastinator\Result;
 
 /**
- * Class FastImporter.
+ * Class MysqlImport.
  *
- * @package Drupal\datastore_fast_import\Service
+ * @package Drupal\datastore_mysql_import\Service
+ * @codeCoverageIgnore
  */
-class FastImporter extends Importer {
+class MysqlImport extends Importer {
 
   /**
    * Override.
