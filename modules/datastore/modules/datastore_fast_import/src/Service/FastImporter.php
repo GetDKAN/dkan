@@ -26,6 +26,7 @@ class FastImporter extends Importer {
     $line = fgets($f);
     fclose($f);
     $header = str_getcsv($line);
+    $header = $this->cleanHeaders($header);
 
     $this->setStorageSchema($header);
 
@@ -66,6 +67,29 @@ class FastImporter extends Importer {
     Database::setActiveConnection('extra');
 
     return Database::getConnection();
+  }
+
+  /**
+   * Private.
+   */
+  private function cleanHeaders($headers) {
+    $row = [];
+    foreach ($headers as $field) {
+      $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
+      $new = trim($new);
+      $new = strtolower($new);
+      $new = str_replace(" ", "_", $new);
+
+      $mysqlMaxColLength = 64;
+      if (strlen($new) > $mysqlMaxColLength) {
+        $strings = str_split($new, $mysqlMaxColLength - 5);
+        $token = substr(md5($field), 0, 4);
+        $new = $strings[0] . "_{$token}";
+      }
+
+      $row[] = $new;
+    }
+    return $row;
   }
 
 }
