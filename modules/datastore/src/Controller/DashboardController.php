@@ -110,11 +110,10 @@ class DashboardController implements ContainerInjectionInterface {
    * Datasets information. Title callback.
    */
   public function datasetsImportStatusTitle($harvestId) {
-    $defaultTitle = 'Datastore Import Status';
     if (!empty($harvestId)) {
-      return $this->t($defaultTitle .= ". Harvest %harvest", ['%harvest' => $harvestId]);
+      return $this->t("Datastore Import Status. Harvest %harvest", ['%harvest' => $harvestId]);
     }
-    return $this->t($defaultTitle);
+    return $this->t('Datastore Import Status');
   }
 
   /**
