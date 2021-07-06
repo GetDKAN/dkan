@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\Tests\dashboard\Unit\Controller;
+namespace Drupal\Tests\harvest;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\StringTranslation\TranslationManager;
+use Drupal\harvest\DashboardController;
 use Drupal\harvest\Service as Harvest;
-use Drupal\harvest_dashboard\Controller\Controller;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
-class ControllerTest extends TestCase {
+class DashboardControllerTest extends TestCase {
 
   public function testNoHarvests() {
     $container = $this->getCommonMockChain()
@@ -20,11 +20,11 @@ class ControllerTest extends TestCase {
 
     \Drupal::setContainer($container);
 
-    $controller = new Controller();
+    $controller = new DashboardController();
     $response = $controller->harvests();
 
     $json = json_encode($response);
-    $strings = array_merge(Controller::HARVEST_HEADERS, ['No harvests found']);
+    $strings = array_merge(DashboardController::HARVEST_HEADERS, ['No harvests found']);
 
     foreach ($strings as $string) {
       $this->assertStringContainsString($string, $json);
@@ -38,11 +38,11 @@ class ControllerTest extends TestCase {
 
     \Drupal::setContainer($container);
 
-    $controller = new Controller();
+    $controller = new DashboardController();
     $response = $controller->harvests();
 
     $json = json_encode($response);
-    $strings = array_merge(Controller::HARVEST_HEADERS, ['No harvests found']);
+    $strings = array_merge(DashboardController::HARVEST_HEADERS, ['No harvests found']);
 
     foreach ($strings as $string) {
       $this->assertStringContainsString($string, $json);
@@ -58,11 +58,11 @@ class ControllerTest extends TestCase {
 
     \Drupal::setContainer($container);
 
-    $controller = new Controller();
+    $controller = new DashboardController();
     $response = $controller->harvests();
 
     $json = json_encode((array)$response);
-    $strings = array_merge(Controller::HARVEST_HEADERS, [
+    $strings = array_merge(DashboardController::HARVEST_HEADERS, [
       'harvest_link',
       'SUCCESS',
       json_encode(date('m/d/y H:m:s T', $time)),

@@ -1,6 +1,5 @@
 <?php
 
-//namespace Drupal\harvest_dashboard\Controller;
 namespace Drupal\harvest;
 
 use Drupal\Core\Link;
