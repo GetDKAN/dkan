@@ -5,6 +5,7 @@ namespace Drupal\metastore\Reference;
 use Contracts\FactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\common\LoggerTrait;
+use Drupal\metastore\Exception\MissingObjectException;
 
 /**
  * Metastore dereferencer.
@@ -38,21 +39,37 @@ class Dereferencer {
    *   Modified json metadata object.
    */
   public function dereference($data) {
-    if (!is_object($data)) {
-      throw new \Exception("data must be an object.");
-    }
+    $this->validate($data);
+
     // Cycle through the dataset properties we seek to dereference.
-    $ref = NULL;
-    $actual = NULL;
     foreach ($this->getPropertyList() as $propertyId) {
       if (isset($data->{$propertyId})) {
-        $referenceProperty = "%Ref:{$propertyId}";
-        [$ref, $actual] = $this->dereferenceProperty($propertyId, $data->{$propertyId});
-        $data->{$referenceProperty} = $ref;
-        $data->{$propertyId} = $actual;
+        $this->dereferenceProperty($propertyId, $data);
       }
     }
     return $data;
+  }
+
+  /**
+   * Dereferences property and handles empty values if any.
+   *
+   * @param string $propertyId
+   *   The dataset property id.
+   * @param object $data
+   *   Modified json metadata object.
+   */
+  private function dereferenceProperty(string $propertyId, $data) {
+    $referenceProperty = "%Ref:{$propertyId}";
+    $ref = NULL;
+    $actual = NULL;
+    [$ref, $actual] = $this->dereferencePropertyUuid($propertyId, $data->{$propertyId});
+    if (!empty($ref) && !empty($actual)) {
+      $data->{$referenceProperty} = $ref;
+      $data->{$propertyId} = $actual;
+    }
+    else {
+      unset($data->{$propertyId});
+    }
   }
 
   /**
@@ -66,7 +83,7 @@ class Dereferencer {
    * @return mixed
    *   An array of dereferenced values, a single one, or NULL.
    */
-  private function dereferenceProperty(string $property_id, $uuid) {
+  private function dereferencePropertyUuid(string $property_id, $uuid) {
     if (is_array($uuid)) {
       return $this->dereferenceMultiple($property_id, $uuid);
     }
@@ -125,12 +142,18 @@ class Dereferencer {
    */
   private function dereferenceSingle(string $property_id, string $uuid) {
     $storage = $this->storageFactory->getInstance($property_id);
-    $value = $storage->retrieve($uuid);
+    try {
+      $value = $storage->retrieve($uuid);
+    }
+    catch (MissingObjectException $exception) {
+      $value = FALSE;
+    }
 
     if ($value) {
       $metadata = json_decode($value);
       return [$metadata, $metadata->data];
     }
+
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
     $this->log(
@@ -143,6 +166,20 @@ class Dereferencer {
     );
 
     return [NULL, NULL];
+  }
+
+  /**
+   * Validates data.
+   *
+   * @param object $data
+   *   The json metadata object.
+   *
+   * @throws \Exception
+   */
+  private function validate($data) {
+    if (!is_object($data)) {
+      throw new \Exception("data must be an object.");
+    }
   }
 
 }

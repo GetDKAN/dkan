@@ -119,6 +119,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
         'field_data_type' => $property_id,
       ]
     );
+    // The reference might be deleted manually beforehand.
     if (FALSE !== ($reference = reset($references))) {
       // When orphaning distribution nodes, trigger database clean up.
       if ($property_id === 'distribution') {
