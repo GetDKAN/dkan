@@ -10,7 +10,7 @@ use Drupal\Core\Extension\ModuleHandler;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 
 /**
- * Class Import.
+ * Importer factory.
  *
  * @codeCoverageIgnore
  */

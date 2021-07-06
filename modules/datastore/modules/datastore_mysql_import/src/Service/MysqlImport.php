@@ -7,9 +7,8 @@ use Drupal\Core\Database\Database;
 use Procrastinator\Result;
 
 /**
- * Class MysqlImport.
+ * Expiremental MySQL LOAD DATA importer.
  *
- * @package Drupal\datastore_mysql_import\Service
  * @codeCoverageIgnore
  */
 class MysqlImport extends Importer {
