@@ -1,5 +1,5 @@
-name: Datastore Fast Import
-description: Provides a fast Importer class.
+name: Datastore MySQL Import
+description: Provides a MySQL Importer class.
 type: module
 core_version_requirement: ^8 || ^9
 package: DKAN
