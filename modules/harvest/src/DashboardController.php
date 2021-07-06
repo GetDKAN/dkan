@@ -1,6 +1,7 @@
 <?php
 
-namespace Drupal\harvest_dashboard\Controller;
+//namespace Drupal\harvest_dashboard\Controller;
+namespace Drupal\harvest;
 
 use Drupal\Core\Link;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -9,7 +10,7 @@ use Drupal\Core\Url;
 /**
  * Controller.
  */
-class Controller {
+class DashboardController {
 
   use StringTranslationTrait;
 
