@@ -79,7 +79,12 @@ class MetastoreSubscriber implements EventSubscriberInterface {
     // Use the metastore resourceMapper to remove the source entry.
     try {
       $resource = $this->resourceMapper->get($id, $perspective, $version);
-      $this->resourceMapper->remove($resource);
+      if ($resource) {
+        $this->resourceMapper->remove($resource);
+      }
+      else {
+        $this->loggerFactory->get('metastore')->error('Missing resource');
+      }
     }
     catch (\Exception $e) {
       $this->loggerFactory->get('metastore')->error('Failed to remove resource source mapping for @uuid. @message',
