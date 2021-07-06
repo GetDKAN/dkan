@@ -46,9 +46,6 @@ class Dereferencer {
       if (isset($data->{$propertyId})) {
         $this->dereferenceProperty($propertyId, $data);
       }
-      else {
-        unset($data->$propertyId);
-      }
     }
     return $data;
   }
