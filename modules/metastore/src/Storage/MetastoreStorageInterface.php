@@ -25,9 +25,21 @@ interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterf
    * Retrieve all.
    *
    * @return array
-   *   An array of ids.
+   *   An array of metadata objects.
    */
   public function retrieveAll(): array;
+
+  /**
+   * Retrieve a limited range of metadata items.
+   *
+   * @param int $start
+   *   Offset.
+   * @param int $length 
+   *   Number to retrieve.
+   * @return array
+   *   An array of metadata objects.
+   */
+  public function retrieveRange(int $start, int $length): array;
 
   /**
    * Retrieve the json metadata from an entity only if it is published.

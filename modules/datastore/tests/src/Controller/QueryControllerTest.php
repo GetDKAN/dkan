@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\common\DatasetInfo;
 use MockChain\Options;
 use Drupal\datastore\Service;
 use MockChain\Sequence;
@@ -220,6 +221,30 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals('1,data', $csv[501]);
   }
 
+  /**
+   * Test streamed resource csv through dataset distribution index.
+   */
+  public function testStreamedResourceQueryCsvDatasetDistIndex() {
+    $data = json_encode([
+      "format" => "csv",
+    ]);
+    // Need 2 json responses which get combined on output.
+    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
+
+    $container = $this->getQueryContainer($data, 'POST', TRUE, $info);
+    $webServiceApi = QueryController::create($container);
+    ob_start(['self', 'getBuffer']);
+    $result = $webServiceApi->queryDatasetResource("2", "0", TRUE);
+    $result->sendContent();
+
+    $csv = explode("\n", $this->buffer);
+    ob_get_clean();
+    $this->assertEquals('record_number,data', $csv[0]);
+    $this->assertEquals('1,data', $csv[1]);
+    $this->assertEquals('50,data', $csv[50]);
+    $this->assertEquals('1,data', $csv[501]);
+  }
+
   public function testQuerySchema() {
     $container = $this->getQueryContainer();
     $webServiceApi = QueryController::create($container);
@@ -230,7 +255,58 @@ class QueryControllerTest extends TestCase {
     $this->assertContains("json-schema.org", $result->getContent());
   }
 
-  private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE ) {
+  /**
+   *
+   */
+  public function testDistributionIndexWrongIdentifier() {
+    $data = json_encode([
+      "results" => TRUE,
+    ]);
+    $info = ['notice' => 'Not found'];
+
+    $container = $this->getQueryContainer($data, "GET", FALSE, $info);
+    $webServiceApi = QueryController::create($container);
+    $result = $webServiceApi->queryDatasetResource("2", "0");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(400, $result->getStatusCode());
+  }
+
+  /**
+   *
+   */
+  public function testDistributionIndexWrongIndex() {
+    $data = json_encode([
+      "results" => TRUE,
+    ]);
+    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
+
+    $container = $this->getQueryContainer($data, "GET", FALSE, $info);
+    $webServiceApi = QueryController::create($container);
+    $result = $webServiceApi->queryDatasetResource("2", "1");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(400, $result->getStatusCode());
+  }
+
+  /**
+   *
+   */
+  public function testDistributionIndex() {
+    $data = json_encode([
+      "results" => TRUE,
+    ]);
+    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
+
+    $container = $this->getQueryContainer($data, "GET", FALSE, $info);
+    $webServiceApi = QueryController::create($container);
+    $result = $webServiceApi->queryDatasetResource("2", "0");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(200, $result->getStatusCode());
+  }
+
+  private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE, array $info = []) {
     if ($method == "GET") {
       $request = Request::create("http://example.com?$data", $method);
     }
@@ -242,11 +318,13 @@ class QueryControllerTest extends TestCase {
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", Service::class)
       ->add("request_stack", RequestStack::class)
+      ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->index(0);
 
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(RequestStack::class, 'getCurrentRequest', $request);
+      ->add(RequestStack::class, 'getCurrentRequest', $request)
+      ->add(DatasetInfo::class, "gather", $info);
 
     if ($stream) {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());

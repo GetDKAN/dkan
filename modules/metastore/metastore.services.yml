@@ -14,6 +14,8 @@ services:
       - '@dkan.metastore.orphan_checker'
       - '@dkan.metastore.resource_mapper'
       - '@date.formatter'
+      - '@dkan.metastore.storage'
+      - '@queue'
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
@@ -72,7 +74,7 @@ services:
     class: \Drupal\metastore\ValidMetadataFactory
     arguments:
       - '@dkan.metastore.schema_retriever'
-  
+
   dkan.metastore.metastore_item_factory:
     class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:

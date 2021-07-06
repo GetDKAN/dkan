@@ -50,8 +50,10 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
     $metastore->post('dataset', $dataset);
 
     $webService = WebServiceApiDocs::create(\Drupal::getContainer());
-    $respose = $webService->getDatasetSpecific('123');
-    $this->assertTrue(is_object(json_decode($respose->getContent())));
+    $response = $webService->getDatasetSpecific('123');
+    $spec = json_decode($response->getContent());
+    $this->assertTrue(is_object($spec));
+    $this->assertEquals("123", $spec->components->parameters->datasetUuid->example);
   }
 
   /**

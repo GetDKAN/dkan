@@ -151,6 +151,32 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals('published' , $this->getModerationState('4'));
   }
 
+  /**
+   * Test resource removal on distribution deleting.
+   */
+  public function testDeleteDistribution() {
+
+    // Post a dataset with a single distribution.
+    $this->storeDatasetRunQueues(111, '1.1', ['1.csv']);
+
+    // Get distribution id.
+    $dataset = $this->getMetastore()->get('dataset', 111);
+    $datasetMetadata = $dataset->{'$'};
+    $distributionId = $datasetMetadata["%Ref:distribution"][0]["identifier"];
+
+    // Load distribution node.
+    $distributionNode = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => $distributionId]);
+    $distributionNode = reset($distributionNode);
+
+    // Delete distribution node.
+    $distributionNode->delete();
+    $this->runQueues(['orphan_resource_remover']);
+
+    // Verify that the resources are deleted.
+    $this->assertEquals([], $this->checkFiles());
+    $this->assertEquals(0, $this->countTables());
+  }
+
   private function datasetPostAndRetrieve(): object {
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $dataset = json_decode($datasetRootedJsonData);

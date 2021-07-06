@@ -1,0 +1,336 @@
+{
+    "components": {
+        "parameters": {
+            "harvestPlanId": {
+                "name": "plan_id",
+                "in": "path",
+                "description": "A harvest plan identifier",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "harvestPlanIdQuery": {
+                "name": "plan",
+                "in": "query",
+                "description": "A harvest plan identifier",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "style": "form"
+            },
+            "harvestRunId": {
+                "name": "run_id",
+                "in": "path",
+                "description": "A harvest run identifier",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "HARVEST-RUN-ID"
+            }
+        },
+        "schemas": {
+            "harvestPlan": {
+                "type": "object",
+                "required": [
+                    "identifier",
+                    "extract",
+                    "load"
+                ],
+                "properties": {
+                    "identifier": {
+                        "type": "string"
+                    },
+                    "extract": {
+                        "type": "object",
+                        "required": [
+                            "type",
+                            "uri"
+                        ],
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            },
+                            "uri": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "load": {
+                        "type": "object",
+                        "required": [
+                            "type"
+                        ],
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/1/harvest/plans": {
+            "get": {
+                "operationId": "harvest-get-all",
+                "summary": "List harvest identifiers",
+                "description": "Lists the identifiers of all registered harvests.\n",
+                "tags": [
+                    "Harvest"
+                ],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "harvest-register",
+                "summary": "Register a new harvest",
+                "description": "Registers a new harvest, after validating against our schema.\n",
+                "tags": [
+                    "Harvest"
+                ],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/harvestPlan"    
+                            },
+                            "example": {
+                                "identifier": "h1",
+                                "extract": {
+                                  "type": "\\Harvest\\ETL\\Extract\\DataJson",
+                                  "uri": "https://dkan-default-content-files.s3.amazonaws.com/data.json"
+                                },
+                                "transforms": [],
+                                "load": {
+                                  "type": "\\Drupal\\harvest\\Load\\Dataset"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [ "identifier" ],
+                                    "properties": {
+                                        "endpoint": {
+                                            "type": "string"
+                                        },
+                                        "identifier": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. Usually a mistake in the JSON."
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/1/harvest/plans/{plan_id}": {
+            "get": {
+                "operationId": "harvest-get-single",
+                "summary": "Get single harvest plan",
+                "description": "Get the json plan of a registered harvest, based on the its harvest id.\n",
+                "tags": [
+                    "Harvest"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/harvestPlanId"
+                    }
+                ],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/harvestPlan"    
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/1/harvest/runs/{run_id}": {
+            "get": {
+                "operationId": "harvest-run-info",
+                "summary": "Information about a previous run",
+                "description": "Gives information about a previous run for a specific harvest run.\n",
+                "tags": [
+                    "Harvest"
+                ],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/harvestRunId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/1/harvest/runs": {
+            "get": {
+                "operationId": "harvest-info",
+                "summary": "List previous runs for a harvest id",
+                "description": "Lists the identifiers (timestamps) of previous runs for a particular harvest id.\n",
+                "tags": [
+                    "Harvest"
+                ],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/harvestPlanIdQuery" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "harvest-run",
+                "summary": "Run a harvest",
+                "description": "Runs a harvest for a specific plan identifier inside json object payload.\n",
+                "tags": [
+                    "Harvest"
+                ],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "plan_id"
+                                ],
+                                "properties": {
+                                    "plan_id": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "identifier",
+                                        "result"
+                                    ],
+                                    "properties": {
+                                        "identifier": {
+                                            "type": "string"
+                                        },
+                                        "result": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        }
+    }
+}

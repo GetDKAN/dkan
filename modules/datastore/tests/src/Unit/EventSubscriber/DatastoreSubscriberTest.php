@@ -3,7 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
 use Drupal\common\Resource;
-use Drupal\common\Storage\JobstoreFactory;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;

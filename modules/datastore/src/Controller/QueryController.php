@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Controller;
 
+use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -36,11 +37,19 @@ class QueryController implements ContainerInjectionInterface {
   private $requestStack;
 
   /**
+   * DatasetInfo Service.
+   *
+   * @var \Drupal\common\DatasetInfo
+   */
+  protected $datasetInfo;
+
+  /**
    * Api constructor.
    */
-  public function __construct(Service $datastoreService, RequestStack $requestStack) {
+  public function __construct(Service $datastoreService, RequestStack $requestStack, DatasetInfo $datasetInfo) {
     $this->datastoreService = $datastoreService;
     $this->requestStack = $requestStack;
+    $this->datasetInfo = $datasetInfo;
   }
 
   /**
@@ -49,7 +58,8 @@ class QueryController implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     $datastoreService = $container->get('dkan.datastore.service');
     $requestStack = $container->get('request_stack');
-    return new QueryController($datastoreService, $requestStack);
+    $datasetInfo = $container->get('dkan.common.dataset_info');
+    return new QueryController($datastoreService, $requestStack, $datasetInfo);
   }
 
   /**
@@ -238,7 +248,8 @@ class QueryController implements ContainerInjectionInterface {
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+      $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
+      return $this->getResponseFromException($e, $code);
     }
 
     if ($stream) {
@@ -246,6 +257,31 @@ class QueryController implements ContainerInjectionInterface {
     }
 
     return $this->formatResponse($datastoreQuery, $result);
+  }
+
+  /**
+   * Perform a query on a single datastore resource.
+   *
+   * @param string $dataset
+   *   The uuid of a dataset.
+   * @param string $index
+   *   The index of the resource in the dataset array.
+   * @param bool $stream
+   *   Whether to return result as a streamed file.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function queryDatasetResource(string $dataset, string $index, bool $stream = FALSE) {
+    $metadata = $this->datasetInfo->gather($dataset);
+    if (!isset($metadata['latest_revision'])) {
+      return $this->getResponse((object) ['message' => "No dataset found with the identifier $dataset"], 400);
+    }
+    if (!isset($metadata['latest_revision']['distributions'][$index]['distribution_uuid'])) {
+      return $this->getResponse((object) ['message' => "No resource found at index $index"], 400);
+    }
+    $identifier = $metadata['latest_revision']['distributions'][$index]['distribution_uuid'];
+    return $this->queryResource($identifier, $stream);
   }
 
   /**
