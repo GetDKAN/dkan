@@ -184,12 +184,10 @@ class Service implements ContainerInjectionInterface {
    *
    * @return array
    *   The importer list object.
+   *
+   * @todo Refactor to use dependency injection.
    */
   public function list() {
-    /**
-     * @var \Drupal\datastore\Service\Info\ImportInfoList $service
-     * @todo Refactor to use dependency injection.
-     */
     $service = \Drupal::service('dkan.datastore.import_info_list');
     return $service->buildList();
   }
