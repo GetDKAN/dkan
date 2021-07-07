@@ -39,7 +39,7 @@ class MysqlImport extends Importer {
     $sqlStatement = implode(' ', $sqlStatementLines);
 
     $db = $this->getDatabaseConnectionCapableOfDataLoad();
-    $db->query($sqlStatement)->execute();
+    $db->query($sqlStatement);
 
     Database::setActiveConnection();
 
