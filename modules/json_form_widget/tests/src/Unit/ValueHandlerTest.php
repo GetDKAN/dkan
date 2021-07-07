@@ -220,7 +220,7 @@ class ValueHandlerTest extends TestCase {
     $formValues = [
       'modified' => $date,
     ];
-    $expected = $date->__toString();
+    $expected = $date->format('c', ['timezone' => 'UTC']);
     $result = $value_handler->handleStringValues($formValues, 'modified');
     $this->assertEquals($result, $expected);
 

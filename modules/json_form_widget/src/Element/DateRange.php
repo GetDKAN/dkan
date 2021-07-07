@@ -65,28 +65,42 @@ class DateRange extends Datetime {
   public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
     $element += ['#date_timezone' => date_default_timezone_get()];
     if ($input !== FALSE) {
-      $input['date_range'] = '';
-      $date_format = $element['#date_date_element'] != 'none' ? static::getHtml5DateFormat($element) : '';
-      $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
-      $date_time_format = trim($date_format . ' ' . $time_format);
-
-      $start = '';
-      if (!empty($input['start_date']['date'])) {
-        $start_time = static::getFormattedTime($input['start_date']['time']);
-        $start = static::getDateTimeElement($input['start_date']['date'], $start_time, $date_time_format, $element['#date_timezone']);
-      }
-      $end = '';
-      if (!empty($input['end_date']['date'])) {
-        $end_time = static::getFormattedTime($input['end_date']['time']);
-        $end = static::getDateTimeElement($input['end_date']['date'], $end_time, $date_time_format, $element['#date_timezone']);
-      }
+      $start = static::getDateValue('start_date', $element, $input);
+      $end = static::getDateValue('end_date', $element, $input);
+      $range = (empty($start) && empty($end)) ? '' : $start . '/' . $end;
       $input = [
         'start' => $start,
         'end' => $end,
-        'date_range' => $start . '/' . $end,
+        'date_range' => $range,
       ];
     }
     return $input;
+  }
+
+  /**
+   * Get date value for date sub element.
+   *
+   * @param string $date_field
+   *   The name of the date field (for example: start_date or end_date).
+   * @param array $element
+   *   The element.
+   * @param array $input
+   *   Input to take the value from.
+   *
+   * @return string
+   *   Date element formatted as string.
+   */
+  public static function getDateValue($date_field, array $element, array $input) {
+    $input['date_range'] = '';
+    $date_format = $element['#date_date_element'] != 'none' ? static::getHtml5DateFormat($element) : '';
+    $time_format = $element['#date_time_element'] != 'none' ? static::getHtml5TimeFormat($element) : '';
+    $date_time_format = trim($date_format . ' ' . $time_format);
+
+    if (!empty($input[$date_field]['date'])) {
+      $time = static::getFormattedTime($input[$date_field]['time']);
+      return static::getDateTimeElement($input[$date_field]['date'], $time, $date_time_format, $element['#date_timezone']);
+    }
+    return '';
   }
 
   /**
