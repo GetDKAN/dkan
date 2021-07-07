@@ -15,6 +15,7 @@
             <directory>modules/metastore/modules/metastore_search/tests/src</directory>
             <directory>modules/metastore/modules/metastore_admin/tests/src</directory>
             <directory>modules/datastore/tests/src</directory>
+            <directory>modules/datastore/modules/datastore_fast_import/tests/src</directory>
             <directory>modules/frontend/tests/src</directory>
             <directory>modules/harvest/tests/src</directory>
             <directory>modules/harvest/modules/harvest_dashboard/tests/src</directory>
@@ -29,6 +30,7 @@
           <directory>modules/metastore/modules/metastore_search/tests/src/Unit</directory>
           <directory>modules/metastore/modules/metastore_admin/tests/src/Unit</directory>
           <directory>modules/datastore/tests/src/Unit</directory>
+          <directory>modules/datastore/modules/datastore_fast_import/tests/src/Unit</directory>
           <directory>modules/frontend/tests/src/Unit</directory>
           <directory>modules/harvest/tests/src/Unit</directory>
           <directory>modules/harvest/modules/harvest_dashboard/tests/src/Unit</directory>
@@ -71,6 +73,7 @@
           <directory>modules/metastore/modules/metastore_search/src</directory>
           <directory>modules/metastore/modules/metastore_admin/src</directory>
           <directory>modules/datastore/src</directory>
+          <directory>modules/datastore/modules/datastore_fast_import/src</directory>
           <directory>modules/frontend/src</directory>
           <directory>modules/harvest/src</directory>
           <directory>modules/harvest/modules/harvest_dashboard/src</directory>

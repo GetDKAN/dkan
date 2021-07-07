@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\datastore\Service\Factory\Import;
+use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Storage\QueryFactory;
 
 /**
@@ -29,7 +29,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Datastore import factory class.
    *
-   * @var \Drupal\datastore\Service\Factory\Import
+   * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
    */
   private $importServiceFactory;
 
@@ -62,7 +62,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor for datastore service.
    */
-  public function __construct(ResourceLocalizer $resourceLocalizer, Import $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory) {
+  public function __construct(ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
@@ -184,9 +184,10 @@ class Service implements ContainerInjectionInterface {
    *
    * @return array
    *   The importer list object.
+   *
+   * @todo Refactor to use dependency injection.
    */
   public function list() {
-    /* @var \Drupal\datastore\Service\Info\ImportInfoList $service */
     $service = \Drupal::service('dkan.datastore.import_info_list');
     return $service->buildList();
   }
@@ -195,7 +196,8 @@ class Service implements ContainerInjectionInterface {
    * Summary.
    */
   public function summary($identifier) {
-    $id = NULL; $version = NULL;
+    $id = NULL;
+    $version = NULL;
     [$id, $version] = Resource::getIdentifierAndVersion($identifier);
     $storage = $this->getStorage($id, $version);
 
