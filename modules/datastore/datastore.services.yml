@@ -29,7 +29,6 @@ services:
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.database_table_factory'
-      - '@module_handler'
 
   dkan.datastore.logger_channel:
     parent: logger.channel_base

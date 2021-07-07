@@ -30,7 +30,9 @@ class MysqlImport extends Importer {
 
     $this->setStorageSchema($header);
 
-    /* @var $storage \Drupal\datastore\Storage\DatabaseTable */
+    /**
+     * @var \Drupal\datastore\Storage\DatabaseTable $storage
+     */
     $storage = $this->dataStorage;
     $storage->count();
 

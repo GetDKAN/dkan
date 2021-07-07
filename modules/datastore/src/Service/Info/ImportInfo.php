@@ -4,7 +4,7 @@ namespace Drupal\datastore\Service\Info;
 
 use Dkan\Datastore\Importer;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\datastore\Service\Factory\Import;
+use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
 use FileFetcher\FileFetcher;
 use Procrastinator\Job\Job;
@@ -29,7 +29,7 @@ class ImportInfo {
   /**
    * Constructor.
    */
-  public function __construct(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resourceLocalizer, Import $importServiceFactory) {
+  public function __construct(JobStoreFactory $jobStoreFactory, ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory) {
     $this->jobStoreFactory = $jobStoreFactory;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
