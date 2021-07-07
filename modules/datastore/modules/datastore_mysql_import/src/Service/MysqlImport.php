@@ -40,7 +40,7 @@ class MysqlImport extends Importer {
     $sqlStatement = implode(' ', $sqlStatementLines);
 
     $db = $this->getDatabaseConnectionCapableOfDataLoad();
-    $db->query($sqlStatement)->execute();
+    $db->query($sqlStatement);
 
     Database::setActiveConnection();
 
@@ -90,6 +90,7 @@ class MysqlImport extends Importer {
   private function getSqlStatement($filename, $storage, $header) {
     return [
       'LOAD DATA LOCAL INFILE \'' . $filename . '\'',
+      'IGNORE ',
       'INTO TABLE ' . $storage->getTableName(),
       'FIELDS TERMINATED BY \',\'',
       'ENCLOSED BY \'\"\'',
