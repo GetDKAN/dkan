@@ -4,6 +4,8 @@ namespace Drupal\Tests\datastore\Controller;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\DatasetInfo;
+use Drupal\Core\Pager\Pager;
+use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\datastore\Controller\DashboardController;
 use Drupal\harvest\Service as Harvest;
@@ -43,7 +45,7 @@ class DashboardControllerTest extends TestCase {
     $json = json_encode($response);
     $strings = array_merge(DashboardController::DATASET_HEADERS,);
 
-    $this->assertEmpty($response['#rows']);
+    $this->assertEmpty($response['table']['#rows']);
     foreach ($strings as $string) {
       $this->assertStringContainsString($string, $json);
     }
@@ -165,15 +167,15 @@ class DashboardControllerTest extends TestCase {
     $response = $controller->datasetsImportStatus(NULL);
 
     // Assert that there are both datasets: harvested and non-harvested.
-    $this->assertEquals(2, count($response['#rows']));
+    $this->assertEquals(2, count($response["table"]['#rows']));
 
-    $this->assertEquals('dataset-1', $response["#rows"][0][0]["data"]);
-    $this->assertEquals('Dataset 1', $response["#rows"][0][1]);
-    $this->assertEquals('NEW', $response["#rows"][0][4]["data"]);
+    $this->assertEquals('dataset-1', $response["table"]["#rows"][0][0]["data"]);
+    $this->assertEquals('Dataset 1', $response["table"]["#rows"][0][1]);
+    $this->assertEquals('NEW', $response["table"]["#rows"][0][4]["data"]);
 
-    $this->assertEquals('non-harvest-dataset', $response["#rows"][1][0]["data"]);
-    $this->assertEquals('Non-Harvest Dataset', $response["#rows"][1][1]);
-    $this->assertEquals('N/A', $response["#rows"][1][4]["data"]);
+    $this->assertEquals('non-harvest-dataset', $response["table"]["#rows"][1][0]["data"]);
+    $this->assertEquals('Non-Harvest Dataset', $response["table"]["#rows"][1][1]);
+    $this->assertEquals('N/A', $response["table"]["#rows"][1][4]["data"]);
 
     $title = (string) $controller->datasetsImportStatusTitle(NULL);
     $this->assertEquals('Datastore Import Status', $title);
@@ -184,6 +186,7 @@ class DashboardControllerTest extends TestCase {
       ->add('dkan.harvest.service', Harvest::class)
       ->add('dkan.common.dataset_info', DatasetInfo::class)
       ->add('dkan.metastore.service', MetastoreService::class)
+      ->add('pager.manager', PagerManagerInterface::class)
       ->add('string_translation', TranslationManager::class)
       ->index(0);
 
@@ -199,7 +202,9 @@ class DashboardControllerTest extends TestCase {
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(Harvest::class, 'getAllHarvestIds', ['test'])
-      ->add(Harvest::class,'getHarvestRunInfo', json_encode($runInfo));
+      ->add(Harvest::class,'getHarvestRunInfo', json_encode($runInfo))
+      ->add(PagerManagerInterface::class,'createPager', Pager::class)
+      ->add(Pager::class,'getCurrentPage', 0);
   }
 
 }

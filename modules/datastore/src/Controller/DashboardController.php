@@ -3,6 +3,7 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\common\DatasetInfo;
+use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\harvest\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -60,6 +61,20 @@ class DashboardController implements ContainerInjectionInterface {
   protected $metastore;
 
   /**
+   * Pager manager service.
+   *
+   * @var \Drupal\Core\Pager\PagerManagerInterface
+   */
+  protected $pagerManager;
+
+  /**
+   * Items per page.
+   *
+   * @var int
+   */
+  protected $itemsPerPage;
+
+  /**
    * DashboardController constructor.
    *
    * @param \Drupal\harvest\Service $harvestService
@@ -68,11 +83,20 @@ class DashboardController implements ContainerInjectionInterface {
    *   Dataset information service.
    * @param \Drupal\metastore\Service $metastoreService
    *   Metastore service.
+   * @param \Drupal\Core\Pager\PagerManagerInterface $pagerManager
+   *   Pager manager service.
    */
-  public function __construct(Service $harvestService, DatasetInfo $datasetInfo, MetastoreService $metastoreService) {
+  public function __construct(
+    Service $harvestService,
+    DatasetInfo $datasetInfo,
+    MetastoreService $metastoreService,
+    PagerManagerInterface $pagerManager
+  ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
     $this->metastore = $metastoreService;
+    $this->pagerManager = $pagerManager;
+    $this->itemsPerPage = 10;
   }
 
   /**
@@ -82,7 +106,8 @@ class DashboardController implements ContainerInjectionInterface {
     return new static(
       $container->get('dkan.harvest.service'),
       $container->get('dkan.common.dataset_info'),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('pager.manager')
     );
   }
 
@@ -102,13 +127,20 @@ class DashboardController implements ContainerInjectionInterface {
       $datasets = $this->getAllDatasetUuids();
     }
 
+    $rows = $this->buildDatasetRows($datasets, $harvestLoad);
+
     return [
-      '#theme' => 'table',
-      '#header' => self::DATASET_HEADERS,
-      '#rows' => $this->buildDatasetRows($datasets, $harvestLoad),
-      '#attributes' => ['class' => 'dashboard-datasets'],
-      '#attached' => ['library' => ['harvest_dashboard/style']],
-      '#empty' => 'No datasets found',
+      'table' => [
+        '#theme' => 'table',
+        '#header' => self::DATASET_HEADERS,
+        '#rows' => $this->pagerArray($rows, $this->itemsPerPage),
+        '#attributes' => ['class' => 'dashboard-datasets'],
+        '#attached' => ['library' => ['harvest_dashboard/style']],
+        '#empty' => 'No datasets found',
+      ],
+      'pager' => [
+        '#type' => 'pager',
+      ],
     ];
   }
 
@@ -255,6 +287,24 @@ class DashboardController implements ContainerInjectionInterface {
       'data' => $percent,
       'class' => $percent == 100 ? 'done' : 'in-progress',
     ];
+  }
+
+  /**
+   * Returns pager array.
+   *
+   * @param array $items
+   *   Table rows.
+   * @param int $itemsPerPage
+   *   Items per page.
+   *
+   * @return array
+   *   Table rows chunk.
+   */
+  private function pagerArray(array $items, int $itemsPerPage) : array {
+    $total = count($items);
+    $currentPage = $this->pagerManager->createPager($total, $itemsPerPage)->getCurrentPage();
+    $chunks = array_chunk($items, $itemsPerPage);
+    return !empty($chunks) ? $chunks[$currentPage] : [];
   }
 
 }
