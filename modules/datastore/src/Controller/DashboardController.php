@@ -90,10 +90,11 @@ class DashboardController implements ContainerInjectionInterface {
    * Datasets information.
    */
   public function datasetsImportStatus($harvestId) {
-    if(!empty($harvestId)) {
+    if (!empty($harvestId)) {
       $harvestLoad = $this->getHarvestLoadStatus($harvestId);
       $datasets = array_keys($harvestLoad);
-    } else {
+    }
+    else {
       $harvestLoad = [];
       foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
         $harvestLoad += $this->getHarvestLoadStatus($harvestId);
@@ -101,21 +102,10 @@ class DashboardController implements ContainerInjectionInterface {
       $datasets = $this->getAllDatasetUuids();
     }
 
-    $rows = [];
-    foreach ($datasets as $datasetId) {
-      $datasetInfo = $this->datasetInfo->gather($datasetId);
-      if (empty($datasetInfo['latest_revision'])) {
-        continue;
-      }
-      $harvestStatus = isset($harvestLoad[$datasetId]) ? $harvestLoad[$datasetId] : 'N/A';
-      $datasetRow = $this->buildDatasetRow($datasetInfo, $harvestStatus);
-      $rows = array_merge($rows, $datasetRow);
-    }
-
     return [
       '#theme' => 'table',
       '#header' => self::DATASET_HEADERS,
-      '#rows' => $rows,
+      '#rows' => $this->buildDatasetRows($datasets, $harvestLoad),
       '#attributes' => ['class' => 'dashboard-datasets'],
       '#attached' => ['library' => ['harvest_dashboard/style']],
       '#empty' => 'No datasets found',
@@ -156,6 +146,31 @@ class DashboardController implements ContainerInjectionInterface {
     $loadExists = isset($info->status) && isset($info->status->load);
 
     return $loadExists ? (array) $info->status->load : [];
+  }
+
+  /**
+   * Builds dataset rows array to be themed as a table.
+   *
+   * @param array $datasets
+   *   Dataset uuids array.
+   * @param array $harvestLoad
+   *   Harvest statuses by dataset array.
+   *
+   * @return array
+   *   Table rows.
+   */
+  private function buildDatasetRows(array $datasets, array $harvestLoad) {
+    $rows = [];
+    foreach ($datasets as $datasetId) {
+      $datasetInfo = $this->datasetInfo->gather($datasetId);
+      if (empty($datasetInfo['latest_revision'])) {
+        continue;
+      }
+      $harvestStatus = isset($harvestLoad[$datasetId]) ? $harvestLoad[$datasetId] : 'N/A';
+      $datasetRow = $this->buildDatasetRow($datasetInfo, $harvestStatus);
+      $rows = array_merge($rows, $datasetRow);
+    }
+    return $rows;
   }
 
   /**
