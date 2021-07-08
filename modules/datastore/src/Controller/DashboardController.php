@@ -7,6 +7,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\harvest\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\metastore\Service as MetastoreService;
 
 /**
  * Class Api.
@@ -52,16 +53,26 @@ class DashboardController implements ContainerInjectionInterface {
   protected $datasetInfo;
 
   /**
+   * Metastore service.
+   *
+   * @var \Drupal\metastore\Service
+   */
+  protected $metastore;
+
+  /**
    * DashboardController constructor.
    *
    * @param \Drupal\harvest\Service $harvestService
    *   Harvest service.
    * @param \Drupal\common\DatasetInfo $datasetInfo
    *   Dataset information service.
+   * @param \Drupal\metastore\Service $metastoreService
+   *   Metastore service.
    */
-  public function __construct(Service $harvestService, DatasetInfo $datasetInfo) {
+  public function __construct(Service $harvestService, DatasetInfo $datasetInfo, MetastoreService $metastoreService) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
+    $this->metastore = $metastoreService;
   }
 
   /**
@@ -70,7 +81,8 @@ class DashboardController implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.harvest.service'),
-      $container->get('dkan.common.dataset_info')
+      $container->get('dkan.common.dataset_info'),
+      $container->get('dkan.metastore.service')
     );
   }
 
@@ -78,13 +90,16 @@ class DashboardController implements ContainerInjectionInterface {
    * Datasets information.
    */
   public function datasetsImportStatus($harvestId) {
-    $harvestIds = !empty($harvestId) ? [$harvestId] : $this->harvest->getAllHarvestIds();
-
-    $load = [];
-    foreach ($harvestIds as $harvestId) {
-      $load += $this->getHarvestLoadStatus($harvestId);
+    if(!empty($harvestId)) {
+      $harvestLoad = $this->getHarvestLoadStatus($harvestId);
+      $datasets = array_keys($harvestLoad);
+    } else {
+      $harvestLoad = [];
+      foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
+        $harvestLoad += $this->getHarvestLoadStatus($harvestId);
+      }
+      $datasets = $this->getAllDatasetUuids();
     }
-    $datasets = array_keys($load);
 
     $rows = [];
     foreach ($datasets as $datasetId) {
@@ -92,7 +107,8 @@ class DashboardController implements ContainerInjectionInterface {
       if (empty($datasetInfo['latest_revision'])) {
         continue;
       }
-      $datasetRow = $this->buildDatasetRow($datasetInfo, $load[$datasetId]);
+      $harvestStatus = isset($harvestLoad[$datasetId]) ? $harvestLoad[$datasetId] : 'N/A';
+      $datasetRow = $this->buildDatasetRow($datasetInfo, $harvestStatus);
       $rows = array_merge($rows, $datasetRow);
     }
 
@@ -104,6 +120,18 @@ class DashboardController implements ContainerInjectionInterface {
       '#attached' => ['library' => ['harvest_dashboard/style']],
       '#empty' => 'No datasets found',
     ];
+  }
+
+  /**
+   * Gets all dataset uuids from metadata.
+   *
+   * @return array
+   *   Dataset uuids array.
+   */
+  private function getAllDatasetUuids() : array {
+    return array_map(function ($datasetMetadata) {
+      return $datasetMetadata->{"$.identifier"};
+    }, $this->metastore->getAll('dataset'));
   }
 
   /**

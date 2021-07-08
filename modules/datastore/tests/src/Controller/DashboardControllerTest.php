@@ -7,6 +7,7 @@ use Drupal\common\DatasetInfo;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\datastore\Controller\DashboardController;
 use Drupal\harvest\Service as Harvest;
+use Drupal\metastore\Service as MetastoreService;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -91,6 +92,7 @@ class DashboardControllerTest extends TestCase {
     $options = (new Options())
       ->add('dkan.harvest.service', Harvest::class)
       ->add('dkan.common.dataset_info', DatasetInfo::class)
+      ->add('dkan.metastore.service', MetastoreService::class)
       ->add('string_translation', TranslationManager::class)
       ->index(0);
 
