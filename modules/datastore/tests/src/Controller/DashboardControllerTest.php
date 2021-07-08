@@ -8,11 +8,24 @@ use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\datastore\Controller\DashboardController;
 use Drupal\harvest\Service as Harvest;
 use Drupal\metastore\Service as MetastoreService;
+use Drupal\Tests\metastore\Unit\ServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 class DashboardControllerTest extends TestCase {
+
+  /**
+   * The ValidMetadataFactory class used for testing.
+   *
+   * @var \Drupal\metastore\ValidMetadataFactory|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $validMetadataFactory;
+
+  public function setUp() {
+    parent::setUp();
+    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+  }
 
   public function testNoDatasets() {
     $time = time();
@@ -86,6 +99,84 @@ class DashboardControllerTest extends TestCase {
 
     $title = (string) $controller->datasetsImportStatusTitle('test');
     $this->assertEquals('Datastore Import Status. Harvest <em class="placeholder">test</em>', $title);
+  }
+
+  public function testAllDatasets() {
+    $time = time();
+
+    $metastoreGetAllDatasets = [
+      $this->validMetadataFactory->get(json_encode(["identifier" => "dataset-1"]), 'blah'),
+      $this->validMetadataFactory->get(json_encode(["identifier" => "non-harvest-dataset"]), 'blah'),
+    ];
+
+    $dataset1Info = [
+      'latest_revision' => [
+        'uuid' => 'dataset-1',
+        'revision_id' => '1',
+        'moderation_state' => 'published',
+        'title' => 'Dataset 1',
+        'modified_date_metadata' => '2019-08-12',
+        'modified_date_dkan' => '2021-07-08',
+        'distributions' => [
+          [
+            'distribution_uuid' => 'dist-1',
+            'fetcher_status' => 'waiting',
+            'fetcher_percent_done' => 0,
+            'importer_status' => 'waiting',
+            'importer_percent_done' => 0,
+          ],
+        ],
+      ],
+    ];
+
+    $nonHarvestDatasetInfo = [
+      'latest_revision' => [
+        'uuid' => 'non-harvest-dataset',
+        'revision_id' => '1',
+        'moderation_state' => 'published',
+        'title' => 'Non-Harvest Dataset',
+        'modified_date_metadata' => '2019-08-12',
+        'modified_date_dkan' => '2021-07-08',
+        'distributions' => [
+          [
+            'distribution_uuid' => 'dist-2',
+            'fetcher_status' => 'done',
+            'fetcher_percent_done' => 100,
+            'importer_status' => 'done',
+            'importer_percent_done' => 100,
+          ],
+        ],
+      ],
+    ];
+
+    $datasetInfoOptions = (new Options())
+      ->add('dataset-1', $dataset1Info)
+      ->add('non-harvest-dataset', $nonHarvestDatasetInfo);
+
+    $container = $this->getCommonMockChain()
+      ->add(Harvest::class, 'getAllHarvestRunInfo', [$time])
+      ->add(MetastoreService::class, 'getAll', $metastoreGetAllDatasets)
+      ->add(DatasetInfo::class, 'gather', $datasetInfoOptions);
+
+    \Drupal::setContainer($container->getMock());
+
+    $controller = DashboardController::create($container->getMock());
+
+    $response = $controller->datasetsImportStatus(NULL);
+
+    // Assert that there are both datasets: harvested and non-harvested.
+    $this->assertEquals(2, count($response['#rows']));
+
+    $this->assertEquals('dataset-1', $response["#rows"][0][0]["data"]);
+    $this->assertEquals('Dataset 1', $response["#rows"][0][1]);
+    $this->assertEquals('NEW', $response["#rows"][0][4]["data"]);
+
+    $this->assertEquals('non-harvest-dataset', $response["#rows"][1][0]["data"]);
+    $this->assertEquals('Non-Harvest Dataset', $response["#rows"][1][1]);
+    $this->assertEquals('N/A', $response["#rows"][1][4]["data"]);
+
+    $title = (string) $controller->datasetsImportStatusTitle(NULL);
+    $this->assertEquals('Datastore Import Status', $title);
   }
 
   private function getCommonMockChain() : Chain {
