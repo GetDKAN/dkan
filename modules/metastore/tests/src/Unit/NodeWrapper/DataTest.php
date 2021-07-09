@@ -13,6 +13,9 @@ use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
+/**
+ * Testing the NodeWrapper.
+ */
 class DataTest extends TestCase
 {
   public function testGetOriginalGetUsAWrapper() {
