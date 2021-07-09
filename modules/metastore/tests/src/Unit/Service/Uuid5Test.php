@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\metastore\Tests\Unit;
+namespace Drupal\Tests\metastore\Unit\Service;
 
 use Drupal\metastore\Service\Uuid5;
 use PHPUnit\Framework\TestCase;
