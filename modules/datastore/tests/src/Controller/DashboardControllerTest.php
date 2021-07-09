@@ -181,6 +181,36 @@ class DashboardControllerTest extends TestCase {
     $this->assertEquals('Datastore Import Status', $title);
   }
 
+  public function testDatasetNoDistribution() {
+    $time = time();
+
+    $dataset1Info = [
+      'latest_revision' => [
+        'uuid' => 'dataset-1',
+        'revision_id' => '1',
+        'moderation_state' => 'published',
+        'title' => 'Dataset 1',
+        'modified_date_metadata' => '2019-08-12',
+        'modified_date_dkan' => '2021-07-08',
+        'distributions' => [
+          'Not found'
+        ],
+      ],
+    ];
+
+    $container = $this->getCommonMockChain()
+      ->add(Harvest::class, 'getAllHarvestRunInfo', [$time])
+      ->add(DatasetInfo::class, 'gather', $dataset1Info);
+
+    \Drupal::setContainer($container->getMock());
+
+    $controller = DashboardController::create($container->getMock());
+
+    $response = $controller->datasetsImportStatus('test');
+
+    $this->assertEmpty($response["table"]["#rows"][0][7]["data"]["#rows"]);
+  }
+
   private function getCommonMockChain() : Chain {
     $options = (new Options())
       ->add('dkan.harvest.service', Harvest::class)

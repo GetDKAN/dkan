@@ -14,8 +14,6 @@ use Drupal\metastore\Service as MetastoreService;
  * Class Api.
  *
  * @package Drupal\datastore
- *
- * @codeCoverageIgnore
  */
 class DashboardController implements ContainerInjectionInterface {
   use StringTranslationTrait;
@@ -252,13 +250,15 @@ class DashboardController implements ContainerInjectionInterface {
 
     $rows = [];
     foreach ($distributions as $dist) {
-      $rows[] = [
-        $dist['distribution_uuid'],
-        $this->statusCell($dist['fetcher_status']),
-        $this->percentCell($dist['fetcher_percent_done']),
-        $this->statusCell($dist['importer_status']),
-        $this->percentCell($dist['importer_percent_done']),
-      ];
+      if (isset($dist['distribution_uuid'])) {
+        $rows[] = [
+          $dist['distribution_uuid'],
+          $this->statusCell($dist['fetcher_status']),
+          $this->percentCell($dist['fetcher_percent_done']),
+          $this->statusCell($dist['importer_status']),
+          $this->percentCell($dist['importer_percent_done']),
+        ];
+      }
     }
 
     return [
