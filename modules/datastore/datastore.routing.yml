@@ -230,3 +230,11 @@ datastore.dkan_resource_settings:
     _form: 'Drupal\datastore\Form\ResourceSettingsForm'
   requirements:
     _permission: 'administer site configuration'
+
+datastore.settings:
+  path: '/admin/dkan/datastore'
+  defaults:
+    _title: 'Datastore Settings'
+    _form: 'Drupal\datastore\Form\DatastoreSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

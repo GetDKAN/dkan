@@ -10,3 +10,10 @@ datastore.dkan_resource_settings:
   parent: system.admin_dkan
   route_name: datastore.dkan_resource_settings
   weight: 10
+
+datastore.triggering_settings:
+  title: Datastore settings
+  description: Datastore settings.
+  parent: system.admin_dkan
+  route_name: datastore.settings
+  weight: 10
