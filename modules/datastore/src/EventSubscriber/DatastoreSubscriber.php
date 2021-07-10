@@ -158,6 +158,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $data = $event->getData();
     $original = $data->getOriginal();
     $field = \Drupal::service('config.factory')->getEditable('datastore.settings')->get('triggering_property');
+    $field = $field ? $field : 'modified';
     if ($original) {
       $old = $original->getMetaData();
       $new = $data->getMetaData();
