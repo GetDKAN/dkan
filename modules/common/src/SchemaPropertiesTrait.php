@@ -26,7 +26,8 @@ trait SchemaPropertiesTrait {
     foreach ($schema_object->properties as $property_id => $property_object) {
       if (isset($property_object->title)) {
         $property_list[$property_id] = "{$property_object->title} ({$property_id})";
-      } else {
+      }
+      else {
         $property_list[$property_id] = ucfirst($property_id);
       }
     }
