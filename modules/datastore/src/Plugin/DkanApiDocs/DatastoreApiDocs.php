@@ -130,11 +130,15 @@ class DatastoreApiDocs extends DkanApiDocsBase {
   private function setUpExamples(array $spec) {
     $exampleIds = $this->getExampleIdentifiers();
     $spec["components"]["parameters"]["datastoreDistributionUuid"]["example"] = $exampleIds['distribution'];
+    $spec["components"]["parameters"]["datastoreDatasetUuid"]["example"] = $exampleIds['dataset'];
+    $spec["components"]["parameters"]["datastoreDistributionIndex"]["example"] = $exampleIds['datasetDistributionIndex'];
     $spec["paths"]["/api/1/datastore/query"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample($exampleIds['distribution']);
     $spec["paths"]["/api/1/datastore/query/download"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample($exampleIds['distribution'], "csv");
-    $spec["paths"]["/api/1/datastore/query/{identifier}"]["post"]["requestBody"]["content"]["application/json"]["example"]
+    $spec["paths"]["/api/1/datastore/query/{distributionId}"]["post"]["requestBody"]["content"]["application/json"]["example"]
+      = $this->queryExample();
+    $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["post"]["requestBody"]["content"]["application/json"]["example"]
       = $this->queryExample();
 
     $spec['components']['parameters']['datastoreUuid']["example"] = $exampleIds['resource'];
@@ -171,7 +175,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
     foreach ($spec["components"]["schemas"]["datastoreResourceQuery"]["properties"] as $key => $property) {
       $propertyKey = 'datastoreQuery' . ucfirst($key);
       $ref = ['$ref' => "#/components/parameters/$propertyKey"];
-      $spec["paths"]["/api/1/datastore/query/{identifier}"]["get"]["parameters"][] = $ref;
+      $spec["paths"]["/api/1/datastore/query/{distributionId}"]["get"]["parameters"][] = $ref;
     }
     return $spec;
   }
@@ -282,6 +286,8 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $identifiers = [
         'resource' => '00000000000000000000000000000000__0000000000__source',
         'distribution' => "00000000-0000-0000-0000-000000000000",
+        'dataset' => "00000000-0000-0000-0000-000000000000",
+        'distributionIndex' => 0,
       ];
     }
     return $identifiers;
@@ -294,14 +300,16 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   Dataset JSON data object.
    *
    * @return false|array
-   *   FALSE if none found, distribution/datastore array if found.
+   *   FALSE if none found, resource/datastore/dataset array if found.
    */
   private function getDatastoreIds(RootedJsonData $dataset) {
     if (!isset($dataset->{'$.distribution[0]'})) {
       return FALSE;
     }
-    foreach ($dataset->{'$[\'%Ref:distribution\']'} as $distribution) {
+    foreach ($dataset->{'$[\'%Ref:distribution\']'} as $index => $distribution) {
       if ($identifiers = $this->getIdentifiersFromDistribution($distribution)) {
+        $identifiers['dataset'] = $dataset->{'$.identifier'};
+        $identifiers['datasetDistributionIndex'] = (string) $index;
         break;
       }
     }
