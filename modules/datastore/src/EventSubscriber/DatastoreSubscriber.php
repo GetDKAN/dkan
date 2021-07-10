@@ -70,6 +70,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $events[ResourceMapper::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE][] = ['drop'];
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
     $events[LifeCycle::EVENT_DATASET_UPDATE][] = ['purgeResources'];
+    $events[LifeCycle::EVENT_PRE_REFERENCE][] = ['onPreReference'];
     return $events;
   }
 
@@ -144,6 +145,27 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       [
         '@message' => $e->getMessage(),
       ]);
+    }
+  }
+
+  /**
+   * React to a preReference to check if datastore update should be triggered.
+   *
+   * @param \Drupal\common\Events\Event $event
+   *   The event object containing the resource uuid.
+   */
+  public function onPreReference(Event $event) {
+    $data = $event->getData();
+    $original = $data->getOriginal();
+    $field = \Drupal::service('config.factory')->getEditable('datastore.settings')->get('triggering_property');
+    if ($original) {
+      $old = $original->getMetaData();
+      $new = $data->getMetaData();
+      if ($old->{$field} != $new->{$field}) {
+        // Assign value to static variable.
+        $rev = &drupal_static('metastore_resource_mapper_new_revision');
+        $rev = 1;
+      }
     }
   }
 
