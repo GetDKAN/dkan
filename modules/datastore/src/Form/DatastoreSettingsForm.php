@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Form;
 
+use Drupal\common\SchemaPropertiesTrait;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -12,6 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
  * @codeCoverageIgnore
  */
 class DatastoreSettingsForm extends ConfigFormBase {
+  use SchemaPropertiesTrait;
 
   /**
    * {@inheritdoc}
@@ -53,32 +55,6 @@ class DatastoreSettingsForm extends ConfigFormBase {
       ->set('triggering_property', $form_state->getValue('triggering_property'))
       ->save();
     parent::submitForm($form, $form_state);
-  }
-
-  /**
-   * Retrieve schema properties.
-   *
-   * @return array
-   *   List of schema properties' title and description.
-   */
-  public function retrieveSchemaProperties(): array {
-    // Create a json object from our schema.
-    $schemaRetriever = \Drupal::service('dkan.metastore.schema_retriever');
-    $schema = $schemaRetriever->retrieve('dataset');
-    $schema_object = json_decode($schema);
-
-    // Build a list of the schema properties' title and description.
-    $property_list = [];
-    foreach ($schema_object->properties as $property_id => $property_object) {
-      if (isset($property_object->title)) {
-        $property_list[$property_id] = "{$property_object->title} ({$property_id})";
-      }
-      else {
-        $property_list[$property_id] = ucfirst($property_id);
-      }
-    }
-
-    return $property_list;
   }
 
 }
