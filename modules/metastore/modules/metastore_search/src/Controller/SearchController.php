@@ -63,7 +63,7 @@ class SearchController implements ContainerInjectionInterface {
       $params = $this->getParams();
       $responseBody = $this->service->search($params);
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       return $this->getResponseFromException($e);
     }
     if ($params['facets'] == TRUE) {

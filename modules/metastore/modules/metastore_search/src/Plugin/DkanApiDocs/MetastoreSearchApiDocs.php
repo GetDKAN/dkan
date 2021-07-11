@@ -127,4 +127,5 @@ class MetastoreSearchApiDocs extends DkanApiDocsBase {
     $fields[] = 'search_api_relevance';
     return $fields;
   }
+
 }
