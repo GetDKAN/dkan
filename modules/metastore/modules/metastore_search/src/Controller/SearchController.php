@@ -59,8 +59,13 @@ class SearchController implements ContainerInjectionInterface {
    * Search.
    */
   public function search(): JsonResponse {
-    $params = $this->getParams();
-    $responseBody = $this->service->search($params);
+    try {
+      $params = $this->getParams();
+      $responseBody = $this->service->search($params);
+    }
+    catch (Exception $e) {
+      return $this->getResponseFromException($e);
+    }
     if ($params['facets'] == TRUE) {
       $responseBody->facets = $this->service->facets($params);
     }
@@ -95,6 +100,10 @@ class SearchController implements ContainerInjectionInterface {
 
     foreach ($defaults as $param => $default) {
       $params[$param] = isset($params[$param]) ? $params[$param] : $default;
+    }
+
+    if (!is_numeric($params['page-size']) || !is_numeric($params['page'])) {
+      throw new \InvalidArgumentException("Pagination arguments must be numeric.");
     }
 
     if ($params["page-size"] > 100) {
