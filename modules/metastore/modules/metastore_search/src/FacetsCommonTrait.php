@@ -30,6 +30,8 @@ trait FacetsCommonTrait {
    *
    * @return string[]
    *   The relevant facet types.
+   *
+   * @todo Stop hard-coding the approved facet types; get from index.
    */
   private function getFacetsTypes(array $params): array {
     $facetsTypes = [];
