@@ -287,7 +287,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
         'resource' => '00000000000000000000000000000000__0000000000__source',
         'distribution' => "00000000-0000-0000-0000-000000000000",
         'dataset' => "00000000-0000-0000-0000-000000000000",
-        'distributionIndex' => 0,
+        'datasetDistributionIndex' => 0,
       ];
     }
     return $identifiers;
