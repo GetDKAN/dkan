@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Controller;
 
-use Drupal\common\CachableResponseTrait;
+use Drupal\common\CacheableResponseTrait;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -22,7 +22,7 @@ use Drupal\datastore\Service;
  */
 class QueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
-  use CachableResponseTrait;
+  use CacheableResponseTrait;
 
   /**
    * Datastore Service.

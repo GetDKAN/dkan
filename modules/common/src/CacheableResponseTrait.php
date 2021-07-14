@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Cachable Response Trait.
  */
-trait CachableResponseTrait {
+trait CacheableResponseTrait {
 
   /**
    * Cache page max age config value.

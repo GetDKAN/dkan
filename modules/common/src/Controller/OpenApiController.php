@@ -2,7 +2,7 @@
 
 namespace Drupal\common\Controller;
 
-use Drupal\common\CachableResponseTrait;
+use Drupal\common\CacheableResponseTrait;
 use Drupal\common\JsonResponseTrait;
 use Drupal\common\DkanApiDocsGenerator;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class OpenApiController implements ContainerInjectionInterface {
   use JsonResponseTrait;
-  use CachableResponseTrait;
+  use CacheableResponseTrait;
 
   /**
    * API Docs generator class.

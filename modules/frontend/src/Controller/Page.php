@@ -2,7 +2,7 @@
 
 namespace Drupal\frontend\Controller;
 
-use Drupal\common\CachableResponseTrait;
+use Drupal\common\CacheableResponseTrait;
 use Drupal\frontend\Page as PageBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +12,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
  * An ample controller.
  */
 class Page implements ContainerInjectionInterface {
-  use CachableResponseTrait;
+  use CacheableResponseTrait;
 
   private $pageBuilder;
 

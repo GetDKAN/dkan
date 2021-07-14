@@ -13,7 +13,7 @@ use RootedData\Exception\ValidationException;
  * Json Response Trait.
  */
 trait JsonResponseTrait {
-  use CachableResponseTrait;
+  use CacheableResponseTrait;
 
   /**
    * Private.
