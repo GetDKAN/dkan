@@ -13,12 +13,14 @@ use RootedData\Exception\ValidationException;
  * Json Response Trait.
  */
 trait JsonResponseTrait {
+  use CachableResponseTrait;
 
   /**
    * Private.
    */
   private function getResponse($message, int $code = 200): JsonResponse {
-    return new JsonResponse($message, $code, []);
+    $response = new JsonResponse($message, $code, []);
+    return $this->addCacheHeaders($response);
   }
 
   /**
