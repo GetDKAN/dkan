@@ -33,13 +33,15 @@ trait CacheableResponseTrait {
     if (!isset($this->maxAge)) {
       $this->maxAge = \Drupal::config('system.performance')->get('cache.page.max_age');
     }
-    $response->setCache([
-      'public' => TRUE,
-      'private' => FALSE,
-      'max_age' => $this->maxAge,
-      'last_modified' => new \DateTime(),
-    ]);
-    $response->setVary('Cookie');
+    if ($this->maxAge !== 0) {
+      $response->setCache([
+        'public' => TRUE,
+        'private' => FALSE,
+        'max_age' => $this->maxAge,
+        'last_modified' => new \DateTime(),
+      ]);
+      $response->setVary('Cookie');
+    }
     return $response;
   }
 
