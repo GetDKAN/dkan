@@ -73,7 +73,8 @@ class OpenApiController implements ContainerInjectionInterface {
    * Get version.
    */
   public function getVersions() {
-    return new JsonResponse(["version" => 1, "url" => "/api/1"]);
+    $response = new JsonResponse(["version" => 1, "url" => "/api/1"]);
+    return $this->addCacheHeaders($response);
   }
 
   /**
