@@ -83,7 +83,7 @@ class OpenApiControllerTest extends TestCase {
     $generator = new DkanApiDocsGenerator($container->getMock()->get('plugin.manager.dkan_api_docs'));
     $controller = new OpenApiController($container->getMock()->get('request_stack'), $generator);
 
-    // JSON. Cache on
+    // JSON. Caching on.
     $response = $controller->getComplete();
     $headers = $response->headers;
 
@@ -92,7 +92,7 @@ class OpenApiControllerTest extends TestCase {
     $this->assertEquals('Cookie', $headers->get('vary'));
     $this->assertNotEmpty($headers->get('last-modified'));
 
-    // YAML. Cache on
+    // YAML. Caching on.
     $response = $controller->getComplete('yaml');
     $headers = $response->headers;
 
@@ -108,7 +108,7 @@ class OpenApiControllerTest extends TestCase {
     $generator = new DkanApiDocsGenerator($container->getMock()->get('plugin.manager.dkan_api_docs'));
     $controller = new OpenApiController($container->getMock()->get('request_stack'), $generator);
 
-    // JSON. No cache.
+    // JSON. No caching.
     $response = $controller->getComplete();
     $headers = $response->headers;
 
@@ -117,7 +117,7 @@ class OpenApiControllerTest extends TestCase {
     $this->assertEmpty($headers->get('vary'));
     $this->assertEmpty($headers->get('last-modified'));
 
-    // YAML. No cache.
+    // YAML. No caching.
     $response = $controller->getComplete('yaml');
     $headers = $response->headers;
 
