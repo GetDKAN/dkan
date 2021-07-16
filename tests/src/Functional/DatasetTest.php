@@ -195,11 +195,27 @@ class DatasetTest extends ExistingSiteBase {
     $dataset = $this->getMetastore()->get('dataset', 111);
     $datasetMetadata = $dataset->{'$'};
     $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
-    $folderName = $resourceId[0] . '_' . $resourceId[1];
+    $refUuid = $resourceId[0] . '_' . $resourceId[1];
 
     // Assert the local resource folder doesn't exist.
     $this->assertDirectoryExists('public://resources/');
-    $this->assertDirectoryNotExists('public://resources/' . $folderName);
+    $this->assertDirectoryNotExists('public://resources/' . $refUuid);
+
+    $database = \Drupal::database();
+
+    // Assert that there is no record in the filefetcher table.
+    $query = $database->select('jobstore_filefetcher_filefetcher', 'ff');
+    $query->condition('ff.ref_uuid', $refUuid);
+    $num_rows = $query->countQuery()->execute()->fetchField();
+    $this->assertEqual($num_rows, 0);
+
+    // Assert that there is no record in the resource mapper table.
+    $query = $database->select('dkan_metastore_resource_mapper', 'rm');
+    $query->condition('rm.identifier', $resourceId[0]);
+    $query->condition('rm.version', $resourceId[1]);
+    $query->condition('rm.perspective', ['local_file', 'local_url'], 'IN');
+    $num_rows = $query->countQuery()->execute()->fetchField();
+    $this->assertEqual($num_rows, 0);
 
     // delete_local_resource is off.
     $datastoreSettings->set('delete_local_resource', 0)->save();
@@ -211,10 +227,25 @@ class DatasetTest extends ExistingSiteBase {
     $dataset = $this->getMetastore()->get('dataset', 222);
     $datasetMetadata = $dataset->{'$'};
     $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
-    $folderName = $resourceId[0] . '_' . $resourceId[1];
+    $refUuid = $resourceId[0] . '_' . $resourceId[1];
 
     // Assert the local resource folder exists.
-    $this->assertDirectoryExists('public://resources/' . $folderName);
+    $this->assertDirectoryExists('public://resources/' . $refUuid);
+
+    // Assert that there is a record in the filefetcher table.
+    $database = \Drupal::database();
+    $query = $database->select('jobstore_filefetcher_filefetcher', 'ff');
+    $query->condition('ff.ref_uuid', $refUuid);
+    $num_rows = $query->countQuery()->execute()->fetchField();
+    $this->assertEqual($num_rows, 1);
+
+    // Assert that there are 2 records (local_file & local_url) in the resource mapper table.
+    $query = $database->select('dkan_metastore_resource_mapper', 'rm');
+    $query->condition('rm.identifier', $resourceId[0]);
+    $query->condition('rm.version', $resourceId[1]);
+    $query->condition('rm.perspective', ['local_file', 'local_url'], 'IN');
+    $num_rows = $query->countQuery()->execute()->fetchField();
+    $this->assertEqual($num_rows, 2);
 
     // Restore the original config value.
     $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();
