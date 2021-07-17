@@ -2,9 +2,10 @@
 
 namespace Drupal\datastore\Form;
 
-use Drupal\common\SchemaPropertiesTrait;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\metastore\SchemaPropertiesHelper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class DatastoreSettingsForm.
@@ -13,7 +14,32 @@ use Drupal\Core\Form\FormStateInterface;
  * @codeCoverageIgnore
  */
 class DatastoreSettingsForm extends ConfigFormBase {
-  use SchemaPropertiesTrait;
+
+  /**
+   * SchemaPropertiesHelper service.
+   *
+   * @var \Drupal\metastore\SchemaPropertiesHelper
+   */
+  private $schemaHelper;
+
+  /**
+   * Constructs form.
+   *
+   * @param \Drupal\metastore\SchemaPropertiesHelper $schemaHelper
+   *   The schema properties helper service.
+   */
+  public function __construct(SchemaPropertiesHelper $schemaHelper) {
+    $this->schemaHelper = $schemaHelper;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.metastore.schema_properties_helper'),
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -41,7 +67,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
     $form['fieldset']['triggering_property'] = [
       '#type' => 'select',
       '#title' => $this->t('Datastore triggering property'),
-      '#options' => $this->retrieveSchemaProperties(),
+      '#options' => $this->schemaHelper->retrieveSchemaProperties('dataset'),
       '#default_value' => $this->config('datastore.settings')->get('triggering_property'),
     ];
     return parent::buildForm($form, $form_state);

@@ -2,9 +2,11 @@
 
 namespace Drupal\metastore\Form;
 
-use Drupal\common\SchemaPropertiesTrait;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteBuilderInterface;
+use Drupal\metastore\SchemaPropertiesHelper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class DkanDataSettingsForm.
@@ -13,7 +15,43 @@ use Drupal\Core\Form\FormStateInterface;
  * @codeCoverageIgnore
  */
 class DkanDataSettingsForm extends ConfigFormBase {
-  use SchemaPropertiesTrait;
+
+  /**
+   * SchemaPropertiesHelper service.
+   *
+   * @var \Drupal\metastore\SchemaPropertiesHelper
+   */
+  private $schemaHelper;
+
+  /**
+   * Route Builder service.
+   *
+   * @var \Drupal\Core\Routing\RouteBuilder
+   */
+  private $routeBuilder;
+
+  /**
+   * Constructs form.
+   *
+   * @param \Drupal\metastore\SchemaPropertiesHelper $schemaHelper
+   *   The schema properties helper service.
+   * @param \Drupal\Core\Routing\RouteBuilderInterface $routeBuilder
+   *   The route builder service.
+   */
+  public function __construct(SchemaPropertiesHelper $schemaHelper, RouteBuilderInterface $routeBuilder) {
+    $this->schemaHelper = $schemaHelper;
+    $this->routeBuilder = $routeBuilder;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.metastore.schema_properties_helper'),
+      $container->get('router.builder')
+    );
+  }
 
   /**
    * Inherited.
@@ -42,7 +80,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('metastore.settings');
-    $options = $this->retrieveSchemaProperties();
+    $options = $this->schemaHelper->retrieveSchemaProperties('dataset');
     $default_values = $config->get('property_list');
     $form['description'] = [
       '#markup' => $this->t(
@@ -72,7 +110,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       ->save();
 
     // Rebuild routes, without clearing all caches.
-    \Drupal::service("router.builder")->rebuild();
+    $this->routeBuilder->rebuild();
   }
 
 }
