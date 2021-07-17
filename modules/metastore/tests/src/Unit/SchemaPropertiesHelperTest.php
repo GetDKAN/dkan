@@ -24,8 +24,6 @@ class SchemaPropertiesHelperTest extends TestCase {
           "title":"Test field"
         },
         "downloadURL":{
-          "title":"Download URL",
-          "description":"This is an URL field.",
           "type":"string",
           "format":"uri"
         }
@@ -34,7 +32,7 @@ class SchemaPropertiesHelperTest extends TestCase {
     }';
     $expected = [
       'test' => 'Test field (test)',
-      'downloadURL' => 'Download URL (downloadURL)',
+      'downloadURL' => 'DownloadURL',
     ];
 
     $chain = (new Chain($this))
