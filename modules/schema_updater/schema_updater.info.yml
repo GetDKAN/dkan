@@ -1,0 +1,7 @@
+name: Schema Updater
+description: Provides an event subscriber to alter table schemas before datastore import.
+type: module
+core_version_requirement: ^8.8 || ^9
+package: DKAN
+dependencies:
+  - datastore
