@@ -2,6 +2,7 @@
 
 namespace Drupal\common\Controller;
 
+use Drupal\common\CacheableResponseTrait;
 use Drupal\common\JsonResponseTrait;
 use Drupal\common\DkanApiDocsGenerator;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class OpenApiController implements ContainerInjectionInterface {
   use JsonResponseTrait;
+  use CacheableResponseTrait;
 
   /**
    * API Docs generator class.
@@ -71,7 +73,8 @@ class OpenApiController implements ContainerInjectionInterface {
    * Get version.
    */
   public function getVersions() {
-    return new JsonResponse(["version" => 1, "url" => "/api/1"]);
+    $response = new JsonResponse(["version" => 1, "url" => "/api/1"]);
+    return $this->addCacheHeaders($response);
   }
 
   /**
@@ -108,7 +111,8 @@ class OpenApiController implements ContainerInjectionInterface {
    *   OpenAPI spec response.
    */
   private function getYamlResponse($spec, $code = 200) {
-    return new Response(Yaml::encode($spec), 200, ['Content-type' => 'application/vnd.oai.openapi']);
+    $response = new Response(Yaml::encode($spec), 200, ['Content-type' => 'application/vnd.oai.openapi']);
+    return $this->addCacheHeaders($response);
   }
 
 }

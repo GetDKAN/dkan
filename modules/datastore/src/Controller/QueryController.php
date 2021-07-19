@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Controller;
 
+use Drupal\common\CacheableResponseTrait;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,6 +22,7 @@ use Drupal\datastore\Service;
  */
 class QueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
+  use CacheableResponseTrait;
 
   /**
    * Datastore Service.
@@ -104,7 +106,8 @@ class QueryController implements ContainerInjectionInterface {
   public function formatResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
-        return new CsvResponse($result->{"$.results"}, 'data', ',');
+        $response = new CsvResponse($result->{"$.results"}, 'data', ',');
+        return $this->addCacheHeaders($response);
 
       case 'json':
       default:

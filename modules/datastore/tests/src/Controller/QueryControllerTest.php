@@ -1,6 +1,8 @@
 <?php
 
 use Drupal\common\DatasetInfo;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 use MockChain\Options;
 use Drupal\datastore\Service;
 use MockChain\Sequence;
@@ -33,7 +35,7 @@ class QueryControllerTest extends TestCase {
     ]);
 
     $container = $this->getQueryContainer($data);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->query();
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -46,7 +48,7 @@ class QueryControllerTest extends TestCase {
     ]);
 
     $container = $this->getQueryContainer($data);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->query();
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -58,7 +60,7 @@ class QueryControllerTest extends TestCase {
     $data = "{[";
 
     $container = $this->getQueryContainer($data);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->queryResource("2");
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -70,7 +72,7 @@ class QueryControllerTest extends TestCase {
       "conditions" => "nope",
     ]);
     $container = $this->getQueryContainer($data);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->queryResource("2");
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -85,7 +87,7 @@ class QueryControllerTest extends TestCase {
       ],
     ]);
     $container = $this->getQueryContainer($data);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->queryResource("2");
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -101,7 +103,7 @@ class QueryControllerTest extends TestCase {
     ]);
 
     $container = $this->getQueryContainer($data);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->queryResource("2");
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -123,7 +125,7 @@ class QueryControllerTest extends TestCase {
     ]);
 
     $container = $this->getQueryContainer($data);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->query();
 
     $this->assertTrue($result instanceof CsvResponse);
@@ -145,7 +147,7 @@ class QueryControllerTest extends TestCase {
     ]);
 
     $container = $this->getQueryContainer($data);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->queryResource("2");
 
     $this->assertTrue($result instanceof CsvResponse);
@@ -167,7 +169,7 @@ class QueryControllerTest extends TestCase {
     ]);
     // Need 2 json responses which get combined on output.
     $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->query(TRUE);
     $result->sendContent();
@@ -194,7 +196,7 @@ class QueryControllerTest extends TestCase {
     ]);
     // Need 2 json responses which get combined on output.
     $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->query(TRUE);
     $this->assertEquals(400, $result->getStatusCode());
   }
@@ -208,7 +210,7 @@ class QueryControllerTest extends TestCase {
     ]);
     // Need 2 json responses which get combined on output.
     $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->queryResource("2", TRUE);
     $result->sendContent();
@@ -232,7 +234,7 @@ class QueryControllerTest extends TestCase {
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
     $container = $this->getQueryContainer($data, 'POST', TRUE, $info);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->queryDatasetResource("2", "0", TRUE);
     $result->sendContent();
@@ -247,7 +249,7 @@ class QueryControllerTest extends TestCase {
 
   public function testQuerySchema() {
     $container = $this->getQueryContainer();
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->querySchema();
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -265,7 +267,7 @@ class QueryControllerTest extends TestCase {
     $info = ['notice' => 'Not found'];
 
     $container = $this->getQueryContainer($data, "GET", FALSE, $info);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->queryDatasetResource("2", "0");
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -282,7 +284,7 @@ class QueryControllerTest extends TestCase {
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
     $container = $this->getQueryContainer($data, "GET", FALSE, $info);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->queryDatasetResource("2", "1");
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -299,11 +301,57 @@ class QueryControllerTest extends TestCase {
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
     $container = $this->getQueryContainer($data, "GET", FALSE, $info);
-    $webServiceApi = QueryController::create($container);
+    $webServiceApi = QueryController::create($container->getMock());
     $result = $webServiceApi->queryDatasetResource("2", "0");
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
+  }
+
+  /**
+   *
+   */
+  public function testQueryCsvCacheHeaders() {
+    $data = json_encode([
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+      ],
+      "format" => "csv",
+    ]);
+
+    // Create a container with caching turned on.
+    $container = $this->getQueryContainer($data)
+      ->add(Container::class, 'has', TRUE)
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', 600);
+    \Drupal::setContainer($container->getMock());
+
+    // CSV. Caching on.
+    $webServiceApi = QueryController::create($container->getMock());
+    $response = $webServiceApi->query();
+    $headers = $response->headers;
+
+    $this->assertEquals('text/csv', $headers->get('content-type'));
+    $this->assertEquals('max-age=600, public', $headers->get('cache-control'));
+    $this->assertEquals('Cookie', $headers->get('vary'));
+    $this->assertNotEmpty($headers->get('last-modified'));
+
+    // Turn caching off.
+    $container->add(ImmutableConfig::class, 'get', 0);
+    \Drupal::setContainer($container->getMock());
+
+    // CSV. No caching.
+    $webServiceApi = QueryController::create($container->getMock());
+    $response = $webServiceApi->query();
+    $headers = $response->headers;
+
+    $this->assertEquals('text/csv', $headers->get('content-type'));
+    $this->assertEquals('no-cache, private', $headers->get('cache-control'));
+    $this->assertEmpty($headers->get('vary'));
+    $this->assertEmpty($headers->get('last-modified'));
   }
 
   private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE, array $info = []) {
@@ -319,6 +367,7 @@ class QueryControllerTest extends TestCase {
       ->add("dkan.datastore.service", Service::class)
       ->add("request_stack", RequestStack::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
+      ->add('config.factory', ConfigFactoryInterface::class)
       ->index(0);
 
     $chain = (new Chain($this))
@@ -334,9 +383,7 @@ class QueryControllerTest extends TestCase {
       $chain->add(Service::class, 'runQuery', $queryResult);
     }
 
-    $container = $chain->getMock();
-    \Drupal::setContainer($container);
-    return $container;
+    return $chain;
   }
 
   private function addMultipleResponses() {
