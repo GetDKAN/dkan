@@ -9,10 +9,11 @@ pipeline {
         DKAN_REPO = 'https://github.com/GetDKAN/dkan.git'
         DKTL_REPO = 'https://github.com/GetDKAN/dkan-tools.git'
         DKTL_DIRECTORY = "$WORKSPACE/dkan-tools"
-	TARGET_URL = ""
+        TARGET_URL = ""
     }
     stages {
         stage ('Clean-Preclean') {
+            when { changeRequest(); }
             steps {
                 script {
                     sh '''
@@ -39,7 +40,7 @@ pipeline {
             }
         }
         stage ('Clone DKAN Repo') {
-            when { allOf { changeRequest(); not { branch '2.x' } } }
+            when { changeRequest(); }
                 steps {
                     dir ("projects/dkan") {
                         git url: DKAN_REPO, branch: "${env.CHANGE_BRANCH}"
@@ -47,7 +48,7 @@ pipeline {
                 }
         }
         stage ('Clone dkan-tools') {
-            when { allOf { changeRequest(); not { branch '2.x' } } }
+            when { changeRequest(); }
                 steps {
                     dir ("dkan-tools") {
                         git url: DKTL_REPO, branch: "dkan-qa-builder"
@@ -55,7 +56,7 @@ pipeline {
                 }
         }
         stage('Build QA Site') {
-            when { allOf { changeRequest(); not { branch '2.x' } } }
+            when { changeRequest(); }
             steps {
                 script {
                     sh '''
@@ -71,7 +72,7 @@ pipeline {
             }
         }
         stage('Check QA Site') {
-            when { allOf { changeRequest(); not { branch '2.x' } } }
+            when { changeRequest(); }
             steps {
                 script {
                     sh '''
