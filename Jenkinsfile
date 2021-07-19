@@ -28,10 +28,10 @@ pipeline {
                         docker container rm $i
                       done
 		      
-		      docker network disconnect $qa_network_id proxy
+                      docker network disconnect $qa_network_id proxy
                       docker network rm $qa_network_id
 		      
-		      sudo rm -r $WORKSPACE/*
+                    sudo rm -r $WORKSPACE/*
                     fi
                     '''
                     deleteDir()
@@ -59,7 +59,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-		    	cd projects
+                        cd projects
                         export DKTL_DIRECTORY="$WORKSPACE/dkan-tools"
                         echo $DKTL_DIRECTORY
                         dktl init --dkan-local
@@ -85,6 +85,11 @@ pipeline {
         }
     }
     post {
+        always {
+            script {
+                sudo chown -R 1000:docker $WORKSPACE
+            }
+        }
         success {
             script {
                 gitCommitMessage = sh(returnStdout: true, script: 'cd projects/dkan; git log -1 --pretty=%B').trim()
