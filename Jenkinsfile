@@ -88,7 +88,9 @@ pipeline {
     post {
         always {
             script {
+                sh '''
                 sudo chown -R 1000:docker $WORKSPACE
+                '''
             }
         }
         success {
