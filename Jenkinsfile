@@ -101,25 +101,3 @@ pipeline {
         }
     }
 }
-
-/**
- * Report build status to github.
- *
- * @param message Message for status description
- * @param target_url URL of the QA site we're building
- * @param state State to report to Github (e.g. "success")
- */
-void setBuildStatus(String message, String target_url, String state) {
-    withCredentials([string(credentialsId: 'github-token',
-			  variable: 'GITHUB_API_TOKEN')]) {
-	def url = "https://api.github.com/repos/getdkan/dkan/statuses/env.GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
-	def data = [
-	    target_url: target_url,
-	    state: state,
-	    description: message,
-	    context: "continuous-integration/jenkins/build-status"
-	]
-	def payload = JsonOutput.toJson(data)
-	sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${url}"
-    }
-}
