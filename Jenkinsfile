@@ -95,7 +95,7 @@ pipeline {
         }
         success {
             script {
-                gitCommitMessage = sh(returnStdout: true, script: 'cd projects/dkan; git log -1 --pretty=%B').trim()
+                gitCommitMessage = sh(returnStdout: true, script: '[ -d projects/dkan ] && cd projects/dkan && git log -1 --pretty=%B').trim()
                 currentBuild.description = "${gitCommitMessage}"
             }
         }
