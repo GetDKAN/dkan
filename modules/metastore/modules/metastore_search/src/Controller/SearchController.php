@@ -77,7 +77,14 @@ class SearchController implements ContainerInjectionInterface {
    */
   public function facets() {
     $responseBody = (object) [];
-    $params = $this->getParams();
+    try {
+      $params = $this->getParams();
+      $responseBody = $this->service->search($params);
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e);
+    }
+
     $start = microtime(TRUE);
     $facets = $this->service->facets($params);
     $responseBody->facets = $facets;

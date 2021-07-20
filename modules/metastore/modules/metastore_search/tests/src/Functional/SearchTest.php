@@ -35,6 +35,7 @@ class SearchTest extends ExistingSiteBase {
     $client = new Client([
       'base_uri' => \Drupal::request()->getSchemeAndHttpHost(),
       'timeout'  => 2.0,
+      'http_errors' => FALSE,
     ]);
 
     $routes = [
@@ -45,14 +46,17 @@ class SearchTest extends ExistingSiteBase {
     foreach ($routes as $route) {
       $response = $client->get($route);
       $this->assertEquals('200', $response->getStatusCode());
+
+      $response = $client->get($route, ['query' => ['page-size' => 'foo']]);
+      $this->assertEquals('400', $response->getStatusCode());
     }
 
     $controller = SearchController::create(\Drupal::getContainer());
 
-    $response = $controller->search([]);
+    $response = $controller->search();
     $this->assertEquals('200', $response->getStatusCode());
 
-    $response = $controller->facets([]);
+    $response = $controller->facets();
     $this->assertEquals('200', $response->getStatusCode());
 
   }
