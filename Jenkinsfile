@@ -9,6 +9,7 @@ pipeline {
         DKAN_REPO = 'https://github.com/GetDKAN/dkan.git'
         DKTL_REPO = 'https://github.com/GetDKAN/dkan-tools.git'
         DKTL_DIRECTORY = "$WORKSPACE/dkan-tools"
+        DKTL_NO_PROXY = "1"
         TARGET_URL = ""
     }
     stages {
@@ -51,7 +52,7 @@ pipeline {
             when { changeRequest(); }
                 steps {
                     dir ("dkan-tools") {
-                        git url: DKTL_REPO, branch: "dkan-qa-builder"
+                        git url: DKTL_REPO, branch: "dkan-qa-builder-no-proxy"
                     }
                 }
         }
