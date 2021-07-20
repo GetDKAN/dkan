@@ -157,7 +157,11 @@ class DatastoreApiDocs extends DkanApiDocsBase {
    *   Modified spec.
    */
   private function setUpGetParameters(array $spec) {
-    foreach ($spec["components"]["schemas"]["datastoreQuery"]["properties"] as $key => $property) {
+    $flatQueryProperties = array_filter(
+      $spec["components"]["schemas"]["datastoreQuery"]["properties"],
+      [$this, 'propertyIsFlat']
+    );
+    foreach (array_keys($flatQueryProperties) as $key) {
       $propertyKey = 'datastoreQuery' . ucfirst($key);
       $spec["components"]["parameters"][$propertyKey] = [
         "name" => $key,
@@ -172,12 +176,33 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $spec["paths"]["/api/1/datastore/query"]["get"]["parameters"][] = $ref;
       $spec["paths"]["/api/1/datastore/query/download"]["get"]["parameters"][] = $ref;
     }
-    foreach ($spec["components"]["schemas"]["datastoreResourceQuery"]["properties"] as $key => $property) {
+
+    $flatResourceQueryProperties = array_filter(
+      $spec["components"]["schemas"]["datastoreResourceQuery"]["properties"],
+      [$this, 'propertyIsFlat']
+    );
+    foreach (array_keys($flatResourceQueryProperties) as $key) {
       $propertyKey = 'datastoreQuery' . ucfirst($key);
       $ref = ['$ref' => "#/components/parameters/$propertyKey"];
       $spec["paths"]["/api/1/datastore/query/{distributionId}"]["get"]["parameters"][] = $ref;
     }
     return $spec;
+  }
+
+  /**
+   * Check to see if a property can be used for GET params.
+   *
+   * @param array $property
+   *   Property definition from spec.
+   *
+   * @return bool
+   *   False if array or object property.
+   */
+  private function propertyIsFlat(array $property): bool {
+    if (in_array($property['type'], ['array', 'object'])) {
+      return FALSE;
+    }
+    return TRUE;
   }
 
   /**
