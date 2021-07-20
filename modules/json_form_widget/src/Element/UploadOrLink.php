@@ -290,7 +290,7 @@ class UploadOrLink extends ManagedFile {
    * Helper function to get the URL of a local file.
    */
   protected static function getLocalFileUrl($element) {
-    $fids = $element['fids']['#value'];
+    $fids = $element['#value']['fids'];
     foreach ($fids as $fid) {
       if ($file = File::load($fid)) {
         $uri = $file->getFileUri();
