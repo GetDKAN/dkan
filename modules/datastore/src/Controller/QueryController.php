@@ -214,10 +214,17 @@ class QueryController implements ContainerInjectionInterface {
   }
 
   /**
-   * Add the header row.
+   * Add the header row, from specified properties, if any, or the schema.
    */
   private function addHeaderRow(array &$data) {
-    $header_row = array_keys(reset($data['schema'])['fields']);
+
+    if (!empty($data['query']['properties'])) {
+      $header_row = $data['query']['properties'];
+    }
+    else {
+      $header_row = array_keys(reset($data['schema'])['fields']);
+    }
+
     if (is_array($header_row)) {
       array_unshift($data['results'], $header_row);
     }
