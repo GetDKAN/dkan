@@ -30,7 +30,7 @@ pipeline {
                         docker container rm $i
                       done
 		      
-                      docker network disconnect $qa_network_id proxy
+                      docker network disconnect $qa_network_id proxy || true
                       docker network rm $qa_network_id
 		      
                     sudo rm -r $WORKSPACE/*
