@@ -180,9 +180,6 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   The dataset identifier.
    * @param bool $prior
    *   Whether to include all prior revisions.
-   *
-   * @throws \UnexpectedValueException
-   *   When a missing resource ID or version is encountered.
    */
   private function purge(int $vid, string $uuid, bool $prior) {
     $node = $this->storage->getEntityStorage()->loadRevision($vid);
@@ -192,19 +189,10 @@ class ResourcePurger implements ContainerInjectionInterface {
     $keep = $this->getResourcesToKeep($uuid);
     $purge = $this->getResourcesToPurge($vid, $node, $prior);
 
-    $missing_resource_count = 0;
     foreach (array_diff($purge, $keep) as $idAndVersion) {
       // $idAndVersion is a json encoded array with resource's id and version.
       list($id, $version) = json_decode($idAndVersion);
-      if (isset($id, $version)) {
-        $this->delete($id, $version);
-      }
-      else {
-        $missing_resource_count++;
-      }
-    }
-    if ($missing_resource_count > 0) {
-      throw new \UnexpectedValueException("Missing required ID or version for {$missing_resource_count} resources.");
+      $this->delete($id, $version);
     }
   }
 
