@@ -1,0 +1,5 @@
+services:
+  schema_updater.event_subscriber:
+    class: \Drupal\schema_updater\EventSubscriber\CustomSubscriber
+    tags:
+      - { name: event_subscriber }
