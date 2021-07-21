@@ -70,14 +70,24 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    */
   public function cleanResourceMapperTable(Event $event) {
     $uuid = $event->getData();
-    // Use the metastore service to build a resource object.
-    $resource = $this->service->get('distribution', $uuid);
-    $resource = json_decode($resource);
-    $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
-    $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective;
-    $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
+    // Use the metastore service to build a distribution object.
+    $distribution = $this->service->get('distribution', $uuid);
+    $distribution = json_decode($distribution);
+    // Attempt to extract the resource for the given distribution.
+    $resource = $distribution->data->{'%Ref:downloadURL'} ?? [];
+    $resource = array_shift($resource);
+    // Retrieve the distributions ID, perspective, and version metadata.
+    $id = $resource->data->identifier ?? NULL;
+    $perspective = $resource->data->perspective ?? NULL;
+    $version = $resource->data->version ?? NULL;
+
     // Use the metastore resourceMapper to remove the source entry.
     try {
+      // Ensure a valid ID, perspective, and version were found for the given
+      // distribution.
+      if (!isset($id, $perspective, $version)) {
+        throw new \UnexpectedValueException('Distribution does not have resource.');
+      }
       $resource = $this->resourceMapper->get($id, $perspective, $version);
       if ($resource) {
         $this->resourceMapper->remove($resource);
