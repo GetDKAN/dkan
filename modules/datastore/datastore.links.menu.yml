@@ -10,3 +10,10 @@ datastore.dkan_resource_settings:
   parent: system.admin_dkan
   route_name: datastore.dkan_resource_settings
   weight: 10
+
+datastore.datasets_import_status_dashboard:
+  title: 'Datastore Import Status'
+  parent: system.admin_dkan
+  description: 'View status information on DKAN datastore imports.'
+  route_name: datastore.datasets_import_status_dashboard
+  weight: 10
