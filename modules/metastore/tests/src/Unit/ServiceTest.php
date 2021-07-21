@@ -37,6 +37,23 @@ class ServiceTest extends TestCase {
   }
 
   /**
+   * Get a dataset.
+   */
+  public function testGet() {
+    $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
+
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(ValidMetadataFactory::class, 'get', $data);
+
+    \Drupal::setContainer($container->getMock());
+
+    $service = Service::create($container->getMock());
+
+    $this->assertEquals(json_encode(['foo' => 'bar']), $service->get("dataset", "1"));
+  }
+
+  /**
    *
    */
   public function testGetSchemas() {
@@ -100,23 +117,6 @@ class ServiceTest extends TestCase {
       json_encode([$data]),
       json_encode($service->getAll("dataset"))
     );
-  }
-
-  /**
-   *
-   */
-  public function testGet() {
-    $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
-
-    $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
-      ->add(ValidMetadataFactory::class, 'get', $data);
-
-    \Drupal::setContainer($container->getMock());
-
-    $service = Service::create($container->getMock());
-
-    $this->assertEquals(json_encode(['foo' => 'bar']), $service->get("dataset", "1"));
   }
 
   /**

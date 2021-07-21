@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Storage;
+namespace Drupal\Tests\metastore\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;

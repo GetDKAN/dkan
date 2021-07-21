@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore\Plugin\Validation\Constraint;
+namespace Drupal\Tests\metastore\Unit\Plugin\Validation\Constraint;
 
 use Drupal\metastore\Plugin\Validation\Constraint\ProperJsonValidator;
 use Drupal\metastore\ValidMetadataFactory;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\metastore;
+namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -10,7 +10,6 @@ use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Service;
 use Drupal\metastore\WebServiceApi;
 use Drupal\metastore\SchemaRetriever;
-use Drupal\Tests\metastore\Unit\ServiceTest;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
