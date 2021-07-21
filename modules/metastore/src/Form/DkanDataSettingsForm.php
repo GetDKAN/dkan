@@ -4,6 +4,9 @@ namespace Drupal\metastore\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RouteBuilderInterface;
+use Drupal\metastore\SchemaPropertiesHelper;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class DkanDataSettingsForm.
@@ -12,6 +15,43 @@ use Drupal\Core\Form\FormStateInterface;
  * @codeCoverageIgnore
  */
 class DkanDataSettingsForm extends ConfigFormBase {
+
+  /**
+   * SchemaPropertiesHelper service.
+   *
+   * @var \Drupal\metastore\SchemaPropertiesHelper
+   */
+  private $schemaHelper;
+
+  /**
+   * Route Builder service.
+   *
+   * @var \Drupal\Core\Routing\RouteBuilder
+   */
+  private $routeBuilder;
+
+  /**
+   * Constructs form.
+   *
+   * @param \Drupal\metastore\SchemaPropertiesHelper $schemaHelper
+   *   The schema properties helper service.
+   * @param \Drupal\Core\Routing\RouteBuilderInterface $routeBuilder
+   *   The route builder service.
+   */
+  public function __construct(SchemaPropertiesHelper $schemaHelper, RouteBuilderInterface $routeBuilder) {
+    $this->schemaHelper = $schemaHelper;
+    $this->routeBuilder = $routeBuilder;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('dkan.metastore.schema_properties_helper'),
+      $container->get('router.builder')
+    );
+  }
 
   /**
    * Inherited.
@@ -40,11 +80,11 @@ class DkanDataSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('metastore.settings');
-    $options = $this->retrieveSchemaProperties();
+    $options = $this->schemaHelper->retrieveSchemaProperties('dataset');
     $default_values = $config->get('property_list');
     $form['description'] = [
       '#markup' => $this->t(
-        'Select properties from the dataset schema to be available as individual objects. 
+        'Select properties from the dataset schema to be available as individual objects.
         Each property will be assigned a unique identifier in addition to its original schema value.'
       ),
     ];
@@ -55,32 +95,6 @@ class DkanDataSettingsForm extends ConfigFormBase {
       '#default_value' => $default_values,
     ];
     return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * Retrieve schema properties.
-   *
-   * @return array
-   *   List of schema properties' title and description.
-   */
-  public function retrieveSchemaProperties() : array {
-    // Create a json object from our schema.
-    $schemaRetriever = \Drupal::service('dkan.metastore.schema_retriever');
-    $schema = $schemaRetriever->retrieve('dataset');
-    $schema_object = json_decode($schema);
-
-    // Build a list of the schema properties' title and description.
-    $property_list = [];
-    foreach ($schema_object->properties as $property_id => $property_object) {
-      if (isset($property_object->title)) {
-        $property_list[$property_id] = "{$property_object->title} ({$property_id})";
-      }
-      else {
-        $property_list[$property_id] = ucfirst($property_id);
-      }
-    }
-
-    return $property_list;
   }
 
   /**
@@ -96,7 +110,7 @@ class DkanDataSettingsForm extends ConfigFormBase {
       ->save();
 
     // Rebuild routes, without clearing all caches.
-    \Drupal::service("router.builder")->rebuild();
+    $this->routeBuilder->rebuild();
   }
 
 }

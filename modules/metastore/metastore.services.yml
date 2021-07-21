@@ -23,6 +23,11 @@ services:
       - '@extension.list.module'
     shared: false
 
+  dkan.metastore.schema_properties_helper:
+    class: \Drupal\metastore\SchemaPropertiesHelper
+    arguments:
+      - '@dkan.metastore.schema_retriever'
+
   dkan.metastore.storage:
     class: \Drupal\metastore\Storage\DataFactory
     arguments:
