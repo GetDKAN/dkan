@@ -354,6 +354,34 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
+  public function testStreamedResourceQueryCsvSpecificColumns() {
+    $data = json_encode([
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+      ],
+      "format" => "csv",
+      "properties" => ["record_number", "data"]
+    ]);
+
+    $response = file_get_contents(__DIR__ . "/../../data/response_with_specific_header.json");
+    $response = new \RootedData\RootedJsonData($response);
+
+    $container = $this->getQueryContainer($data, 'POST', TRUE)
+      ->add(Service::class, "runQuery", $response);
+
+    $webServiceApi = QueryController::create($container->getMock());
+    ob_start(['self', 'getBuffer']);
+    $result = $webServiceApi->query(TRUE);
+    $result->sendContent();
+
+    $csv = explode("\n", $this->buffer);
+    ob_get_clean();
+    $this->assertEquals('record_number,data', $csv[0]);
+  }
+
   private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE, array $info = []) {
     if ($method == "GET") {
       $request = Request::create("http://example.com?$data", $method);
