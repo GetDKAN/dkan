@@ -3,8 +3,8 @@ name: 'DKAN Open Data Catalog'
 mail: admin@example.com
 slogan: ''
 page:
-  403: ''
-  404: ''
+  403: /home
+  404: /home
   front: /home
 admin_compact_mode: false
 weight_select_max: 100
