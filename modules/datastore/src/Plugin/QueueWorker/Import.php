@@ -71,6 +71,12 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       foreach ($results as $result) {
         $queued = $this->processResult($result, $data, $queued);
       }
+
+      // Delete local resource.
+      if ($this->container->get('config.factory')->get('datastore.settings')->get('delete_local_resource')) {
+        $this->container->get('dkan.datastore.service.resource_localizer')->remove($identifier, $version);
+      }
+
     }
     catch (\Exception $e) {
       $this->log(RfcLogLevel::ERROR,
