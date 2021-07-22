@@ -33,7 +33,7 @@ trait EventDispatcherTrait {
   private function dispatchEvent($eventName, $data, $validator = NULL) {
     if ($this->useLegacyDispatcher()) {
       $this->legacyDispatchEvent($eventName, $data, $validator);
-    }    
+    }
     $dispatcher = \Drupal::service('event_dispatcher');
 
     if ($event = $dispatcher->dispatch(new Event($data, $validator), $eventName)) {
