@@ -1,0 +1,81 @@
+# Route name can be used in several places; e.g. links, redirects, and local
+# actions.
+entity.metastore_item.canonical:
+  path: '/metastore/{metastore_item}'
+  defaults:
+    _entity_view: 'metastore_entity_metastore_item'
+    _title: 'Metastore item'
+  requirements:
+    _entity_access: 'metastore_entity_metastore_item.view'
+
+entity.metastore_item.collection:
+  path: '/admin/content/metastore'
+  defaults:
+    _entity_list: 'metastore_item'
+    _title: 'DKAN Metastore Item List'
+  requirements:
+    _permission: 'administer metastore entity'
+
+entity.metastore_item.add_form:
+  path: '/metastore/add/{schema}'
+  defaults:
+    _entity_form: metastore_item.default
+    _title: 'Add metastore item'
+  requirements:
+    _entity_create_access: 'metastore_item'
+
+entity.metastore_item.edit_form:
+  path: '/metastore/{metastore_item}/edit'
+  defaults:
+    _entity_form: metastore_item.default
+    _title: 'Edit metastore item'
+  requirements:
+    _entity_access: 'metastore_item.edit'
+
+entity.metastore_item.delete_form:
+  path: '/metastore/{metastore_item}/delete'
+  defaults:
+    _entity_form: metastore_item.delete
+    _title: 'Delete metastore item'
+  requirements:
+    _entity_access: 'metastore_item.delete'
+
+entity.metastore_schema.collection:
+  path: '/admin/structure/metastore_schemas'
+  defaults:
+    _entity_list: 'metastore_schema'
+    _title: 'Metastore schemas'
+  requirements:
+    _permission: 'administer metastore schemas'
+
+metastore_entity.metastore_schema_add:
+  path: '/admin/structure/metastore_schemas/add'
+  defaults:
+    _entity_form: 'metastore_schema.add'
+    _title: 'Add schema'
+  requirements:
+    _permission: 'administer metastore schemas'
+
+entity.metastore_schema.edit_form:
+  path: '/admin/structure/metastore_schemas/manage/{metastore_schema}'
+  defaults:
+    _entity_form: 'metastore_schema.edit'
+    _title: 'Edit schema'
+  requirements:
+    _permission: 'administer metastore schemas'
+
+entity.metastore_schema.delete_form:
+  path: '/admin/structure/metastore_schemas/manage/{metastore_schema}/delete'
+  defaults:
+    _entity_form: 'metastore_schema.delete'
+    _title: 'Delete schema'
+  requirements:
+    _permission: 'administer metastore schemas'
+
+metastore_entity.add_page:
+  path: '/metastore/add'
+  defaults:
+    _title: 'Add DKAN Metastore Item'
+    _controller: '\Drupal\metastore_entity\Entity\Controller\MetastoreItemController:addPage'
+  requirements:
+    _permission: 'add metastore entity'
