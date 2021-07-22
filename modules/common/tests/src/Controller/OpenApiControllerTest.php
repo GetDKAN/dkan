@@ -89,7 +89,6 @@ class OpenApiControllerTest extends TestCase {
 
     $this->assertEquals('application/json', $headers->get('content-type'));
     $this->assertEquals('max-age=600, public', $headers->get('cache-control'));
-    $this->assertEquals('Cookie', $headers->get('vary'));
     $this->assertNotEmpty($headers->get('last-modified'));
 
     // YAML. Caching on.
@@ -98,7 +97,6 @@ class OpenApiControllerTest extends TestCase {
 
     $this->assertEquals('application/vnd.oai.openapi', $headers->get('content-type'));
     $this->assertEquals('max-age=600, public', $headers->get('cache-control'));
-    $this->assertEquals('Cookie', $headers->get('vary'));
     $this->assertNotEmpty($headers->get('last-modified'));
 
     // Turn caching off.
