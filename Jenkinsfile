@@ -77,12 +77,6 @@ pipeline {
             steps {
                 script {
                     def target_url = "http://$DKTL_SLUG.$WEB_DOMAIN"
-                    sh '''
-                    QA_SITE_WEB_ID=`docker ps|grep qa_$CHANGE_ID|grep web|awk '{ print $1 }'`
-                    QA_SITE_PORT=`docker container port $QA_SITE_WEB_ID|grep 80|awk '{ print $3 }'|awk 'BEGIN { FS = ":" };{ print $2 }'`
-                    echo QA site ready at ${target_url}
-                    curl -I ${target_url}
-                    '''
                     setBuildStatus("QA site ready at ${target_url}", target_url, "success");
                 }
             }
