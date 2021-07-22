@@ -76,8 +76,12 @@ pipeline {
             when { changeRequest(); }
             steps {
                 script {
-                    def target_url = "http://$DKTL_SLUG.$WEB_DOMAIN"
-                    setBuildStatus("QA site ready at ${target_url}", target_url, "success");
+                    sh '''
+                    QA_SITE_WEB_ID=`docker ps|grep qa_$CHANGE_ID|grep web|awk '{ print $1 }'`
+                    QA_SITE_PORT=`docker container port $QA_SITE_WEB_ID|grep 80|awk '{ print $3 }'|awk 'BEGIN { FS = ":" };{ print $2 }'`
+                    echo QA site ready at http://$DKTL_SLUG.$WEB_DOMAIN
+                    curl -I "http://$DKTL_SLUG.$WEB_DOMAIN"
+                    '''
                 }
             }
         }
@@ -94,7 +98,10 @@ pipeline {
             script {
                 gitCommitMessage = sh(returnStdout: true, script: 'git -C projects/dkan log -1 --pretty=%B || true').trim()
                 currentBuild.description = "${gitCommitMessage}"
+                def target_url = "http://$DKTL_SLUG.$WEB_DOMAIN"
+                setBuildStatus("QA site ready at ${target_url}", target_url, "success");
             }
+            
         }
     }
 }
