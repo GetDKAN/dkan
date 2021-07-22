@@ -103,14 +103,14 @@ pipeline {
 void setBuildStatus(String message, String target_url, String state) {
     withCredentials([string(credentialsId: 'dkanuploadassets',
 			  variable: 'GITHUB_API_TOKEN')]) {
-	def url = "https://api.github.com/repos/getdkan/dkan/statuses/$GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
-	def data = [
-	    target_url: target_url,
-	    state: state,
-	    description: message,
-	    context: "continuous-integration/jenkins/qa-site"
-	]
-	def payload = JsonOutput.toJson(data)
-	sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${url}"
+        def url = "https://api.github.com/repos/getdkan/dkan/statuses/$GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
+        def data = [
+            target_url: target_url,
+            state: state,
+            description: message,
+            context: "continuous-integration/jenkins/qa-site"
+        ]
+        def payload = JsonOutput.toJson(data)
+        sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${url}"
     }
 }
