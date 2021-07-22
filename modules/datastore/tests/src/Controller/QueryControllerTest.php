@@ -336,7 +336,6 @@ class QueryControllerTest extends TestCase {
 
     $this->assertEquals('text/csv', $headers->get('content-type'));
     $this->assertEquals('max-age=600, public', $headers->get('cache-control'));
-    $this->assertEquals('Cookie', $headers->get('vary'));
     $this->assertNotEmpty($headers->get('last-modified'));
 
     // Turn caching off.

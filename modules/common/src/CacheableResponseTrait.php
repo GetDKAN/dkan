@@ -39,7 +39,6 @@ trait CacheableResponseTrait {
         'max_age' => $this->cacheMaxAge,
         'last_modified' => new \DateTime(),
       ]);
-      $response->setVary('Cookie');
     }
     return $response;
   }
