@@ -85,14 +85,14 @@ class MetastoreSubscriberTest extends TestCase {
     $chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'get', $dist)
-      ->add(ResourceMapper::class, 'get', $resource)
-      ->add(ResourceMapper::class, 'remove', new \Exception('error'))
+      ->add(ResourceMapper::class, 'get', NULL)
+      ->add(ResourceMapper::class, 'remove')
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 
     $subscriber = MetastoreSubscriber::create($chain->getMock());
     $test = $subscriber->cleanResourceMapperTable($event);
-    $this->assertContains('Failed to remove', $chain->getStoredInput('errors')[0]);
+    $this->assertContains('Failed to remove resource', $chain->getStoredInput('errors')[0]);
 
   }
 
