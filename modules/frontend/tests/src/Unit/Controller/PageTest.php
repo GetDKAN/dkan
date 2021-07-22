@@ -111,7 +111,6 @@ class ControllerPageTest extends TestCase {
     $headers = $response->headers;
 
     $this->assertEquals('max-age=600, public', $headers->get('cache-control'));
-    $this->assertEquals('Cookie', $headers->get('vary'));
     $this->assertNotEmpty($headers->get('last-modified'));
   }
 
