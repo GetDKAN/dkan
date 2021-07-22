@@ -75,14 +75,16 @@ pipeline {
         stage('Check QA Site') {
             when { changeRequest(); }
             steps {
+                def target_url = "http://$DKTL_SLUG.$WEB_DOMAIN"
                 script {
                     sh '''
                     QA_SITE_WEB_ID=`docker ps|grep qa_$CHANGE_ID|grep web|awk '{ print $1 }'`
                     QA_SITE_PORT=`docker container port $QA_SITE_WEB_ID|grep 80|awk '{ print $3 }'|awk 'BEGIN { FS = ":" };{ print $2 }'`
-                    echo QA site ready at http://$DKTL_SLUG.$WEB_DOMAIN
-                    curl -I "http://$DKTL_SLUG.$WEB_DOMAIN"
+                    echo QA site ready at ${target_url}
+                    curl -I ${target_url}
                     '''
                 }
+                setBuildStatus("QA site ready at ${target_url}", target_url, "success");
             }
         }
     }
@@ -100,5 +102,27 @@ pipeline {
                 currentBuild.description = "${gitCommitMessage}"
             }
         }
+    }
+}
+
+/**
+ * Report build status to github.
+ *
+ * @param message Message for status description
+ * @param target_url URL of the QA site we're building
+ * @param state State to report to Github (e.g. "success")
+ */
+void setBuildStatus(String message, String target_url, String state) {
+    withCredentials([string(credentialsId: 'nucivicmachine',
+			  variable: 'GITHUB_API_TOKEN')]) {
+	def url = "https://api.github.com/repos/getdkan/dkan-code/statuses/$GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
+	def data = [
+	    target_url: target_url,
+	    state: state,
+	    description: message,
+	    context: "continuous-integration/jenkins/build-status"
+	]
+	def payload = JsonOutput.toJson(data)
+	sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${url}"
     }
 }
