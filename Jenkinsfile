@@ -75,7 +75,6 @@ pipeline {
         stage('Check QA Site') {
             when { changeRequest(); }
             steps {
-                def target_url = "http://$DKTL_SLUG.$WEB_DOMAIN"
                 script {
                     sh '''
                     QA_SITE_WEB_ID=`docker ps|grep qa_$CHANGE_ID|grep web|awk '{ print $1 }'`
@@ -83,8 +82,9 @@ pipeline {
                     echo QA site ready at ${target_url}
                     curl -I ${target_url}
                     '''
+                    def target_url = "http://$DKTL_SLUG.$WEB_DOMAIN"
+                    setBuildStatus("QA site ready at ${target_url}", target_url, "success");
                 }
-                setBuildStatus("QA site ready at ${target_url}", target_url, "success");
             }
         }
     }
