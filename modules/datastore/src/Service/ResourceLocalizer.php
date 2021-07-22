@@ -48,8 +48,10 @@ class ResourceLocalizer {
    */
   public function localize($identifier, $version = NULL) {
     $resource = $this->getResourceSource($identifier, $version);
-    $ff = $this->getFileFetcher($resource);
-    return $ff->run();
+    if ($resource) {
+      $ff = $this->getFileFetcher($resource);
+      return $ff->run();
+    }
   }
 
   /**
