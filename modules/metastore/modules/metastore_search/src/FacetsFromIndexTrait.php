@@ -11,7 +11,6 @@ use Drupal\search_api\Query\QueryInterface;
  * @package Drupal\metastore_search
  */
 trait FacetsFromIndexTrait {
-  use FacetsCommonTrait;
 
   /**
    * Private.

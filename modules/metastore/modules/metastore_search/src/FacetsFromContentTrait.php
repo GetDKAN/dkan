@@ -11,7 +11,6 @@ use RootedData\RootedJsonData;
  * @package Drupal\metastore_search
  */
 trait FacetsFromContentTrait {
-  use FacetsCommonTrait;
 
   /**
    * Private.

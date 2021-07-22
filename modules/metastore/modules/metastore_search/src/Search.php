@@ -18,6 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Search implements ContainerInjectionInterface {
   use QueryBuilderTrait;
+  // Both FacetTraits depend on Common, but this makes them collide, we should fix this.
+  use FacetsCommonTrait;
   use FacetsFromIndexTrait;
   // @todo Use real classes to get proper encapsulation.
   use FacetsFromContentTrait;
