@@ -121,7 +121,7 @@ void setBuildStatus(String message, String target_url, String state) {
 	    target_url: target_url,
 	    state: state,
 	    description: message,
-	    context: "continuous-integration/jenkins/build-status"
+	    context: "continuous-integration/jenkins/qa-site"
 	]
 	def payload = JsonOutput.toJson(data)
 	sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${url}"
