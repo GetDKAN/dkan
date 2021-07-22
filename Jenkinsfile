@@ -114,7 +114,7 @@ pipeline {
  * @param state State to report to Github (e.g. "success")
  */
 void setBuildStatus(String message, String target_url, String state) {
-    withCredentials([string(credentialsId: 'nucivicmachine',
+    withCredentials([string(credentialsId: 'dkanuploadassets',
 			  variable: 'GITHUB_API_TOKEN')]) {
 	def url = "https://api.github.com/repos/getdkan/dkan-code/statuses/$GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
 	def data = [
