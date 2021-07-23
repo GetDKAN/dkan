@@ -232,7 +232,7 @@ datastore.dkan_resource_settings:
     _permission: 'administer site configuration'
 
 datastore.datasets_import_status_dashboard:
-  path: '/admin/dkan/datasets_import_status_dashboard/{harvestId}'
+  path: '/admin/dkan/dataset-status/{harvestId}'
   methods: [ GET ]
   defaults:
     _controller: \Drupal\datastore\Controller\DashboardController::datasetsImportStatus
