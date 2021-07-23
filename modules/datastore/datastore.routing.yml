@@ -214,7 +214,7 @@ datastore.sql_endpoint.post.api:
     _access: 'TRUE'
 
 datastore.sql_endpoint.settings:
-  path: '/admin/dkan/sql_endpoint'
+  path: '/admin/dkan/sql-endpoint'
   defaults:
     _form: '\Drupal\datastore\SqlEndpoint\Form\DkanSqlEndpointSettingsForm'
     _title: "Datastore SQL endpoint settings"
