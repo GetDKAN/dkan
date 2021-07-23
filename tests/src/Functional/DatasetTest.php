@@ -201,22 +201,6 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertDirectoryExists('public://resources/');
     $this->assertDirectoryNotExists('public://resources/' . $refUuid);
 
-    $database = \Drupal::database();
-
-    // Assert that there is no record in the filefetcher table.
-    $query = $database->select('jobstore_filefetcher_filefetcher', 'ff');
-    $query->condition('ff.ref_uuid', $refUuid);
-    $num_rows = $query->countQuery()->execute()->fetchField();
-    $this->assertEqual($num_rows, 0);
-
-    // Assert that there is no record in the resource mapper table.
-    $query = $database->select('dkan_metastore_resource_mapper', 'rm');
-    $query->condition('rm.identifier', $resourceId[0]);
-    $query->condition('rm.version', $resourceId[1]);
-    $query->condition('rm.perspective', ['local_file', 'local_url'], 'IN');
-    $num_rows = $query->countQuery()->execute()->fetchField();
-    $this->assertEqual($num_rows, 0);
-
     // delete_local_resource is off.
     $datastoreSettings->set('delete_local_resource', 0)->save();
 
@@ -231,21 +215,6 @@ class DatasetTest extends ExistingSiteBase {
 
     // Assert the local resource folder exists.
     $this->assertDirectoryExists('public://resources/' . $refUuid);
-
-    // Assert that there is a record in the filefetcher table.
-    $database = \Drupal::database();
-    $query = $database->select('jobstore_filefetcher_filefetcher', 'ff');
-    $query->condition('ff.ref_uuid', $refUuid);
-    $num_rows = $query->countQuery()->execute()->fetchField();
-    $this->assertEqual($num_rows, 1);
-
-    // Assert that there are 2 records (local_file & local_url) in the resource mapper table.
-    $query = $database->select('dkan_metastore_resource_mapper', 'rm');
-    $query->condition('rm.identifier', $resourceId[0]);
-    $query->condition('rm.version', $resourceId[1]);
-    $query->condition('rm.perspective', ['local_file', 'local_url'], 'IN');
-    $num_rows = $query->countQuery()->execute()->fetchField();
-    $this->assertEqual($num_rows, 2);
 
     // Restore the original config value.
     $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();

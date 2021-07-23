@@ -72,9 +72,10 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
         $queued = $this->processResult($result, $data, $queued);
       }
 
-      // Delete local resource.
+      // Delete local resource file.
       if ($this->container->get('config.factory')->get('datastore.settings')->get('delete_local_resource')) {
-        $this->container->get('dkan.datastore.service.resource_localizer')->remove($identifier, $version);
+        $uuid = "{$identifier}_{$version}";
+        $this->container->get('file_system')->deleteRecursive("public://resources/{$uuid}");
       }
 
     }
