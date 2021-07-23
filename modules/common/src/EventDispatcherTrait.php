@@ -32,7 +32,8 @@ trait EventDispatcherTrait {
    */
   private function dispatchEvent($eventName, $data, $validator = NULL) {
     if ($this->useLegacyDispatcher()) {
-      $this->legacyDispatchEvent($eventName, $data, $validator);
+      $data = $this->legacyDispatchEvent($eventName, $data, $validator);
+      return $data;
     }
     $dispatcher = \Drupal::service('event_dispatcher');
 
@@ -56,7 +57,7 @@ trait EventDispatcherTrait {
    *   True if the newer Symfony event system is available.
    */
   private function useLegacyDispatcher() {
-    return class_exists('\Symfony\Contracts\EventDispatcher\Event');
+    return !class_exists('\Symfony\Contracts\EventDispatcher\Event');
   }
 
   /**
