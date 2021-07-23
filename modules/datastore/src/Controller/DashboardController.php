@@ -133,7 +133,7 @@ class DashboardController implements ContainerInjectionInterface {
         '#header' => self::DATASET_HEADERS,
         '#rows' => $this->pagerArray($rows, $this->itemsPerPage),
         '#attributes' => ['class' => 'dashboard-datasets'],
-        '#attached' => ['library' => ['harvest_dashboard/style']],
+        '#attached' => ['library' => ['harvest/style']],
         '#empty' => 'No datasets found',
       ],
       'pager' => [

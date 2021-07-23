@@ -59,7 +59,7 @@ class DashboardController {
       '#header' => self::HARVEST_HEADERS,
       '#rows' => $rows,
       '#attributes' => ['class' => 'dashboard-harvests'],
-      '#attached' => ['library' => ['harvest_dashboard/style']],
+      '#attached' => ['library' => ['harvest/style']],
       '#empty' => "No harvests found",
     ];
   }
