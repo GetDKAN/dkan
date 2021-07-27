@@ -61,14 +61,14 @@ class DatastoreSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['fieldset'] = [
       '#type' => 'fieldset',
-      '#title' => $this->t('Triggering property'),
+      '#title' => $this->t('Triggering properties'),
       '#description' => $this->t('Property to trigger update of the datastore.'),
     ];
-    $form['fieldset']['triggering_property'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Datastore triggering property'),
+    $form['fieldset']['triggering_properties'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Datastore triggering properties'),
       '#options' => $this->schemaHelper->retrieveSchemaProperties('dataset'),
-      '#default_value' => $this->config('datastore.settings')->get('triggering_property'),
+      '#default_value' => $this->config('datastore.settings')->get('triggering_properties'),
     ];
     return parent::buildForm($form, $form_state);
   }
@@ -78,7 +78,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('datastore.settings')
-      ->set('triggering_property', $form_state->getValue('triggering_property'))
+      ->set('triggering_properties', $form_state->getValue('triggering_properties'))
       ->save();
     parent::submitForm($form, $form_state);
   }
