@@ -372,8 +372,18 @@ abstract class Data implements MetastoreStorageInterface {
    * @codeCoverageIgnore
    */
   private function htmlPurifier(string $input) {
-    $filter = new \HTMLPurifier();
-    return $filter->purify($input);
+    // Determine path to temp directory.
+    $temp_path = \Drupal::service('file_system')->getTempDirectory();
+    // Specify custom location in temp directory for storing HTML Purifier
+    // cache.
+    $cache_path = rtrim($temp_path, '/') . '/html_purifier_cache';
+
+    // Create HTML purifier instance using custom cache path.
+    $filter = new \HTMLPurifier(\HTMLPurifier_Config::create([
+      'Cache.SerializerPath' => $cache_path,
+    ]));
+    // Filter the supplied string.
+     return $filter->purify($input);
   }
 
   /**
