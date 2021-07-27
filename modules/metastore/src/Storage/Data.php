@@ -383,7 +383,7 @@ abstract class Data implements MetastoreStorageInterface {
       'Cache.SerializerPath' => $cache_path,
     ]));
     // Filter the supplied string.
-     return $filter->purify($input);
+    return $filter->purify($input);
   }
 
   /**
