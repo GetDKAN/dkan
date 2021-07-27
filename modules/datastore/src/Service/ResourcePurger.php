@@ -301,8 +301,12 @@ class ResourcePurger implements ContainerInjectionInterface {
     $distributions = $metadata->{'%Ref:distribution'};
 
     foreach ($distributions as $distribution) {
-      $resource = $distribution->data->{'%Ref:downloadURL'}[0]->data;
-      $resources[] = json_encode([$resource->identifier, $resource->version]);
+      // Retrieve and validate the resource for this distribution before adding
+      // it to the resources list.
+      $resource = $distribution->data->{'%Ref:downloadURL'}[0] ?? NULL;
+      if (isset($resource->data->identifier, $resource->data->version)) {
+        $resources[] = json_encode([$resource->data->identifier, $resource->data->version]);
+      }
     }
 
     return $resources;
