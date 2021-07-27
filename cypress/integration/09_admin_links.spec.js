@@ -20,7 +20,7 @@ context('Administration pages', () => {
         cy.wrap($el).invoke('show')
         cy.wrap($el).contains('SQL endpoint')
     })
-    cy.visit(baseurl + "/admin/dkan/sql_endpoint")
+    cy.visit(baseurl + "/admin/dkan/sql-endpoint")
     cy.get('label').should('have.text', 'Rows limit')
   })
 })
