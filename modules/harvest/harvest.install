@@ -99,3 +99,10 @@ function harvest_schema() {
 
   return $schema;
 }
+
+/**
+ * Uninstall obsolete submodule harvest_dashboard.
+ */
+function harvest_update_8001(&$sandbox) {
+  \Drupal::service('module_installer')->uninstall(['harvest_dashboard']);
+}

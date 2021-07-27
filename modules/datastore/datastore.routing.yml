@@ -214,7 +214,7 @@ datastore.sql_endpoint.post.api:
     _access: 'TRUE'
 
 datastore.sql_endpoint.settings:
-  path: '/admin/dkan/sql_endpoint'
+  path: '/admin/dkan/sql-endpoint'
   defaults:
     _form: '\Drupal\datastore\SqlEndpoint\Form\DkanSqlEndpointSettingsForm'
     _title: "Datastore SQL endpoint settings"
@@ -230,6 +230,18 @@ datastore.dkan_resource_settings:
     _form: 'Drupal\datastore\Form\ResourceSettingsForm'
   requirements:
     _permission: 'administer site configuration'
+
+datastore.datasets_import_status_dashboard:
+  path: '/admin/dkan/dataset-status/{harvestId}'
+  methods: [ GET ]
+  defaults:
+    _controller: \Drupal\datastore\Controller\DashboardController::datasetsImportStatus
+    _title_callback: \Drupal\datastore\Controller\DashboardController::datasetsImportStatusTitle
+    harvestId: NULL
+  requirements:
+    _permission: 'dkan.harvest.dashboard'
+  options:
+    _auth: [ 'basic_auth', 'cookie' ]
 
 datastore.settings:
   path: '/admin/dkan/datastore'

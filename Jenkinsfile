@@ -1,3 +1,5 @@
+import groovy.json.JsonOutput
+
 pipeline {
     agent any
     environment {
@@ -9,10 +11,12 @@ pipeline {
         DKAN_REPO = 'https://github.com/GetDKAN/dkan.git'
         DKTL_REPO = 'https://github.com/GetDKAN/dkan-tools.git'
         DKTL_DIRECTORY = "$WORKSPACE/dkan-tools"
-	TARGET_URL = ""
+        DKTL_NO_PROXY = "1"
+        TARGET_URL = ""
     }
     stages {
         stage ('Clean-Preclean') {
+            when { changeRequest(); }
             steps {
                 script {
                     sh '''
@@ -28,10 +32,10 @@ pipeline {
                         docker container rm $i
                       done
 		      
-		      docker network disconnect $qa_network_id proxy
+                      docker network disconnect $qa_network_id proxy || true
                       docker network rm $qa_network_id
 		      
-		      sudo rm -r $WORKSPACE/*
+                    sudo rm -r $WORKSPACE/*
                     fi
                     '''
                     deleteDir()
@@ -39,7 +43,7 @@ pipeline {
             }
         }
         stage ('Clone DKAN Repo') {
-            when { allOf { changeRequest(); not { branch '2.x' } } }
+            when { changeRequest(); }
                 steps {
                     dir ("projects/dkan") {
                         git url: DKAN_REPO, branch: "${env.CHANGE_BRANCH}"
@@ -47,49 +51,47 @@ pipeline {
                 }
         }
         stage ('Clone dkan-tools') {
-            when { allOf { changeRequest(); not { branch '2.x' } } }
+            when { changeRequest(); }
                 steps {
                     dir ("dkan-tools") {
-                        git url: DKTL_REPO, branch: "dkan-qa-builder"
+                        git url: DKTL_REPO, branch: "dkan-qa-builder-no-proxy"
                     }
                 }
         }
         stage('Build QA Site') {
-            when { allOf { changeRequest(); not { branch '2.x' } } }
+            when { changeRequest(); }
             steps {
                 script {
                     sh '''
-		    	cd projects
+                        cd projects
                         export DKTL_DIRECTORY="$WORKSPACE/dkan-tools"
                         echo $DKTL_DIRECTORY
                         dktl init --dkan-local
                         dktl demo
                         dktl drush user:password admin mayisnice
                         sudo chown -R 1000:docker $WORKSPACE/dkan-tools/vendor
-                    '''
-                }
-            }
-        }
-        stage('Check QA Site') {
-            when { allOf { changeRequest(); not { branch '2.x' } } }
-            steps {
-                script {
-                    sh '''
-                    QA_SITE_WEB_ID=`docker ps|grep qa_$CHANGE_ID|grep web|awk '{ print $1 }'`
-                    QA_SITE_PORT=`docker container port $QA_SITE_WEB_ID|grep 80|awk '{ print $3 }'|awk 'BEGIN { FS = ":" };{ print $2 }'`
-                    echo QA site ready at http://$DKTL_SLUG.$WEB_DOMAIN
-                    curl -I "http://$DKTL_SLUG.$WEB_DOMAIN"
+                        curl -fI `dktl url`
                     '''
                 }
             }
         }
     }
     post {
+        always {
+            script {
+                sh '''
+                sudo chown -R 1000:docker $WORKSPACE
+                '''
+            }
+        }
         success {
             script {
-                gitCommitMessage = sh(returnStdout: true, script: 'cd projects/dkan; git log -1 --pretty=%B').trim()
+                gitCommitMessage = sh(returnStdout: true, script: 'git -C projects/dkan log -1 --pretty=%B || true').trim()
                 currentBuild.description = "${gitCommitMessage}"
+                def target_url = "http://$DKTL_SLUG.$WEB_DOMAIN"
+                setBuildStatus("QA site ready at ${target_url}", target_url, "success");
             }
+            
         }
     }
 }
@@ -102,16 +104,16 @@ pipeline {
  * @param state State to report to Github (e.g. "success")
  */
 void setBuildStatus(String message, String target_url, String state) {
-    withCredentials([string(credentialsId: 'github-token',
+    withCredentials([string(credentialsId: 'dkanuploadassets',
 			  variable: 'GITHUB_API_TOKEN')]) {
-	def url = "https://api.github.com/repos/getdkan/dkan/statuses/env.GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
-	def data = [
-	    target_url: target_url,
-	    state: state,
-	    description: message,
-	    context: "continuous-integration/jenkins/build-status"
-	]
-	def payload = JsonOutput.toJson(data)
-	sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${url}"
+        def url = "https://api.github.com/repos/getdkan/dkan/statuses/$GIT_COMMIT?access_token=${GITHUB_API_TOKEN}"
+        def data = [
+            target_url: target_url,
+            state: state,
+            description: message,
+            context: "continuous-integration/jenkins/qa-site"
+        ]
+        def payload = JsonOutput.toJson(data)
+        sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${url}"
     }
 }
