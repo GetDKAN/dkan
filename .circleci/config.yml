@@ -18,11 +18,12 @@ jobs:
       - when:
           condition: << parameters.upgrade >>
           steps:
-            name: Switch to latest stable tag to upgrade from
-            command: |
-              TAG="$(git --git-dir=dkan describe --abbrev=0 --tags)"
-              echo "Testing upgrade from tag: ${TAG}"
-              git --git-dir=dkan checkout "${TAG}"
+            - run:
+                name: Switch to latest stable tag to upgrade from
+                command: |
+                  TAG="$(git --git-dir=dkan describe --abbrev=0 --tags)"
+                  echo "Testing upgrade from tag: ${TAG}"
+                  git --git-dir=dkan checkout "${TAG}"
       - run:
           name: Setup composer config
           command: |
@@ -56,7 +57,7 @@ jobs:
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
-      - attach-workspace:
+      - attach_workspace:
           at: ~/
       - run:
           name: Set up DKAN Tools
@@ -70,12 +71,13 @@ jobs:
       - when:
           condition: << parameters.upgrade >>
           steps:
-            name: Switch to target commit and run DKAN upgrade
-            command: |
-              git --git-dir=dkan checkout "${CIRCLE_SHA1}"
-              dktl drush cr
-              dktl drush updb -y
-              dktl drush cim -y
+            - run:
+                name: Switch to target commit and run DKAN upgrade
+                command: |
+                  git --git-dir=dkan checkout "${CIRCLE_SHA1}"
+                  dktl drush cr
+                  dktl drush updb -y
+                  dktl drush cim -y
       - run:
           name: Run phpUnit tests
           command: |
@@ -98,7 +100,7 @@ jobs:
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
-      - attach-workspace:
+      - attach_workspace:
           at: ~/
       - run:
           name: Set up DKAN Tools
@@ -112,12 +114,13 @@ jobs:
       - when:
           condition: << parameters.upgrade >>
           steps:
-            name: Switch to target commit and run DKAN upgrade
-            command: |
-              git --git-dir=dkan checkout "${CIRCLE_SHA1}"
-              dktl drush cr
-              dktl drush updb -y
-              dktl drush cim -y
+            - run:
+                name: Switch to target commit and run DKAN upgrade
+                command: |
+                  git --git-dir=dkan checkout "${CIRCLE_SHA1}"
+                  dktl drush cr
+                  dktl drush updb -y
+                  dktl drush cim -y
       - run:
           name: Run DKAN cypress tests
           command: dktl dkan:test-cypress --headless --browser=chromium
@@ -131,27 +134,27 @@ workflows:
   install_and_test:
     jobs:
       - build:
-          name: install
+          name: install_build
       - phpunit_dredd:
           name: install_test_phpunit_dredd
           requires:
-            - build
+            - install_build
       - cypress_backend:
           name: install_test_cypress_backend
           requires:
-            - build
+            - install_build
   upgrade_and_test:
     jobs:
       - build:
-          name: upgrade
+          name: upgrade_build
           upgrade: true
       - phpunit_dredd:
           name: upgrade_test_phpunit_dredd
           upgrade: true
           requires:
-            - build
+            - upgrade_build
       - cypress_backend:
           name: upgrade_test_cypress_backend
           upgrade: true
           requires:
-            - build
+            - upgrade_build
