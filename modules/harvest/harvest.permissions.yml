@@ -10,3 +10,6 @@
 'harvest_api_info':
   title: 'Harvest: API: Info'
   description: 'See the info about harvest plan runs through the API.'
+'dkan.harvest.dashboard':
+  title: 'DKAN: Harvest Dashaboard'
+  description: 'See information about DKAN harvests.'

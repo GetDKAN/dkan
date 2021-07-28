@@ -65,34 +65,37 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   /**
    * React to a distribution being orphaned.
    *
+   * Removes resources associated with the orphaned distribution.
+   *
    * @param \Drupal\common\Events\Event $event
    *   The event object containing the resource uuid.
    */
   public function cleanResourceMapperTable(Event $event) {
-    $uuid = $event->getData();
-    // Use the metastore service to build a resource object.
-    $resource = $this->service->get('distribution', $uuid);
-    $resource = json_decode($resource);
-    $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
-    $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective;
-    $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
-    // Use the metastore resourceMapper to remove the source entry.
-    try {
-      $resource = $this->resourceMapper->get($id, $perspective, $version);
-      if ($resource) {
+    $distribution_id = $event->getData();
+    // Use the metastore service to build a distribution object.
+    $distribution = $this->service->get('distribution', $distribution_id);
+    // Attempt to extract all resources for the given distribution.
+    $resources = $distribution->{'$.data["%Ref:downloadURL"]..data'} ?? [];
+
+    // Remove all resource entries associated with this distribution from the
+    // metadata resource mapper.
+    foreach ($resources as $resource) {
+      // Retrieve the distributions ID, perspective, and version metadata.
+      $resource_id = $resource['identifier'] ?? NULL;
+      $perspective = $resource['perspective'] ?? NULL;
+      $version = $resource['version'] ?? NULL;
+      // Ensure a valid ID, perspective, and version were found for the given
+      // distribution.
+      if (isset($resource_id) && $resource = $this->resourceMapper->get($resource_id, $perspective, $version)) {
+        // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
       else {
-        $this->loggerFactory->get('metastore')->error('Missing resource');
+        $this->loggerFactory->get('metastore')->error('Failed to remove resource with id "@distribution_id" from source mapping for distribution with id "@resource_id".', [
+          '@distribution_id' => $distribution_id,
+          '@resource_id' => $resource_id,
+        ]);
       }
-    }
-    catch (\Exception $e) {
-      $this->loggerFactory->get('metastore')->error('Failed to remove resource source mapping for @uuid. @message',
-        [
-          '@uuid' => $uuid,
-          '@message' => $e->getMessage(),
-        ]
-      );
     }
   }
 
