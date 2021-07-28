@@ -39,6 +39,13 @@ class OnPreReferenceTest extends ExistingSiteBase {
    *
    */
   public function test() {
+    /** @var \Drupal\Core\Config\ConfigFactory $config */
+    $config_factory = \Drupal::service('config.factory');
+    // Ensure the proper triggering properties are set for datastore comparison.
+    $datastore_settings = $config_factory->getEditable('datastore.settings');
+    $datastore_settings->set('triggering_properties', ['modified']);
+    $datastore_settings->save();
+
     // Test posting a dataset to the metastore.
     $data = $this->getData($this->downloadUrl);
     /** @var \Drupal\metastore\Service $metastore */

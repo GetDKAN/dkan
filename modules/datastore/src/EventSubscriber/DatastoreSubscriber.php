@@ -176,34 +176,44 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     // Retrieve a list of metadata properties which, when changed, should
     // trigger a new metadata resource revision.
     $datastore_settings = $this->configFactory->get('datastore.settings');
-    $triggers = array_filter($datastore_settings->get('triggering_properties'));
-    $this->loggerFactory->get('datastore')->error(get_class($original));
+    $triggers = array_filter($datastore_settings->get('triggering_properties') ?: ['modified']);
     // Ensure at least one trigger has been selected in datastore settings, and
     // that a valid MetastoreItem data object was found for the previous version
     // of the wrapped node.
-    if (!empty($triggers) && $original instanceof MetastoreItemInterface) {
-      // Retrieve applicable metadata objects.
-      $old = $original->getMetaData();
-      $new = $data->getMetaData();
+    // If a change was found in one of the triggering elements, change the
+    // "new revision" flag to true in order to trigger a datastore update.
+    if (!empty($triggers) && $original instanceof MetastoreItemInterface &&
+        $this->lazyDiffObject($original->getMetadata(), $data->getMetadata(), $triggers)) {
+      // Assign value to static variable.
+      $rev = &drupal_static('metastore_resource_mapper_new_revision');
+      $rev = 1;
+    }
+  }
 
-      // Determine if any changes have been made to the trigger properties for
-      // this metadata object.
-      $changed = FALSE;
-      foreach ($triggers as $trigger) {
-        if ($old->{$trigger} != $new->{$trigger}) {
-          $changed = TRUE;
-          break;
-        }
-      }
 
-      // If a change was found in one of the triggering elements, change the
-      // "new revision" flag to true in order to trigger a datastore update.
-      if ($changed) {
-        // Assign value to static variable.
-        $rev = &drupal_static('metastore_resource_mapper_new_revision');
-        $rev = 1;
+  /**
+   * Determine differences in the supplied objects in the given property scope.
+   *
+   * @param object $a
+   *   The first object being compared.
+   * @param object $b
+   *   The second object being compared.
+   * @param array $scope
+   *   Shared object properties being compared.
+   *
+   * @returns bool
+   *   Whether any differences were found in the scoped two objects.
+   */
+  protected function lazyDiffObject(object $a, object $b, array $scope): bool {
+    $changed = FALSE;
+    foreach ($scope as $property) {
+      if ($a->{$property} != $b->{$property}) {
+        $changed = TRUE;
+        break;
       }
     }
+
+    return $changed;
   }
 
 }
