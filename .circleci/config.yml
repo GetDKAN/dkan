@@ -130,7 +130,7 @@ workflows:
   version: 2
   install_and_test:
     jobs:
-      - build
+      - build:
           name: install
       - phpunit_dredd:
           name: install_test_phpunit_dredd
@@ -142,7 +142,7 @@ workflows:
             - build
   upgrade_and_test:
     jobs:
-      - build
+      - build:
           name: upgrade
           upgrade: true
       - phpunit_dredd:
