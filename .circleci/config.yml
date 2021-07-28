@@ -21,9 +21,9 @@ jobs:
             - run:
                 name: Switch to latest stable tag to upgrade from
                 command: |
-                  TAG="$(git --git-dir=dkan describe --abbrev=0 --tags)"
+                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
                   echo "Testing upgrade from tag: ${TAG}"
-                  git --git-dir=dkan checkout "${TAG}"
+                  git --git-dir=dkan/.git checkout "${TAG}"
       - run:
           name: Setup composer config
           command: |
@@ -74,7 +74,7 @@ jobs:
             - run:
                 name: Switch to target commit and run DKAN upgrade
                 command: |
-                  git --git-dir=dkan checkout "${CIRCLE_SHA1}"
+                  git --git-dir=dkan/.git checkout "${CIRCLE_SHA1}"
                   dktl drush cr
                   dktl drush updb -y
                   dktl drush cim -y
@@ -117,7 +117,7 @@ jobs:
             - run:
                 name: Switch to target commit and run DKAN upgrade
                 command: |
-                  git --git-dir=dkan checkout "${CIRCLE_SHA1}"
+                  git --git-dir=dkan/.git checkout "${CIRCLE_SHA1}"
                   dktl drush cr
                   dktl drush updb -y
                   dktl drush cim -y
