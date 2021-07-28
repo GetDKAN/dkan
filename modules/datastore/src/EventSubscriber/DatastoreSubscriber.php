@@ -176,7 +176,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     // Retrieve a list of metadata properties which, when changed, should
     // trigger a new metadata resource revision.
     $datastore_settings = $this->configFactory->get('datastore.settings');
-    $triggers = array_filter($datastore_settings->get('triggering_properties') ?: ['modified']);
+    $triggers = array_filter($datastore_settings->get('triggering_properties'));
     // Ensure at least one trigger has been selected in datastore settings, and
     // that a valid MetastoreItem data object was found for the previous version
     // of the wrapped node.
@@ -189,7 +189,6 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       $rev = 1;
     }
   }
-
 
   /**
    * Determine differences in the supplied objects in the given property scope.
@@ -204,7 +203,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * @returns bool
    *   Whether any differences were found in the scoped two objects.
    */
-  protected function lazyDiffObject(object $a, object $b, array $scope): bool {
+  protected function lazyDiffObject($a, $b, array $scope): bool {
     $changed = FALSE;
     foreach ($scope as $property) {
       if ($a->{$property} != $b->{$property}) {
