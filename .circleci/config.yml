@@ -1,14 +1,28 @@
-version: 2
+version: 2.1
+
 jobs:
   build:
     machine:
       image: circleci/classic:latest
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.2.2"
     steps:
       - checkout:
           path: dkan
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            name: Switch to latest stable tag to upgrade from
+            command: |
+              TAG="$(git --git-dir=dkan describe --abbrev=0 --tags)"
+              echo "Testing upgrade from tag: ${TAG}"
+              git --git-dir=dkan checkout "${TAG}"
       - run:
           name: Setup composer config
           command: |
@@ -34,6 +48,11 @@ jobs:
   phpunit_dredd:
     machine:
       image: circleci/classic:latest
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
@@ -48,6 +67,15 @@ jobs:
       - run:
           name: Install Drupal
           command: sleep 10 && dktl install
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            name: Switch to target commit and run DKAN upgrade
+            command: |
+              git --git-dir=dkan checkout "${CIRCLE_SHA1}"
+              dktl drush cr
+              dktl drush updb -y
+              dktl drush cim -y
       - run:
           name: Run phpUnit tests
           command: |
@@ -62,6 +90,11 @@ jobs:
   cypress_backend:
     machine:
       image: circleci/classic:latest
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
@@ -76,6 +109,15 @@ jobs:
       - run:
           name: Install Drupal
           command: sleep 10 && dktl install
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            name: Switch to target commit and run DKAN upgrade
+            command: |
+              git --git-dir=dkan checkout "${CIRCLE_SHA1}"
+              dktl drush cr
+              dktl drush updb -y
+              dktl drush cim -y
       - run:
           name: Run DKAN cypress tests
           command: dktl dkan:test-cypress --headless --browser=chromium
@@ -83,14 +125,33 @@ jobs:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/videos
+
 workflows:
   version: 2
-  build_and_test:
+  install_and_test:
     jobs:
       - build
+          name: install
       - phpunit_dredd:
+          name: install_test_phpunit_dredd
           requires:
             - build
       - cypress_backend:
+          name: install_test_cypress_backend
+          requires:
+            - build
+  upgrade_and_test:
+    jobs:
+      - build
+          name: upgrade
+          upgrade: true
+      - phpunit_dredd:
+          name: upgrade_test_phpunit_dredd
+          upgrade: true
+          requires:
+            - build
+      - cypress_backend:
+          name: upgrade_test_cypress_backend
+          upgrade: true
           requires:
             - build
