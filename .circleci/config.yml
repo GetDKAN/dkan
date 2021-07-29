@@ -15,15 +15,6 @@ jobs:
     steps:
       - checkout:
           path: dkan
-      - when:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Switch to latest stable tag to upgrade from
-                command: |
-                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
-                  echo "Testing upgrade from tag: ${TAG}"
-                  git --git-dir=dkan/.git checkout "${TAG}"
       - run:
           name: Setup composer config
           command: |
@@ -34,9 +25,24 @@ jobs:
           command: |
             git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-      - run:
-          name: Initialize Project
-          command: dktl init --dkan-local
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Initialize with latest stable tag to upgrade from
+                command: |
+                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
+                  echo "Testing upgrade from tag: ${TAG}"
+                  git --git-dir=dkan/.git checkout "${TAG}"
+                  dktl init --dkan-local
+                  # Switch expected composer dependency to the same release
+                  dktl exec:composer -- require "getdkan/dkan:${TAG}" --no-update --ansi
+      - unless:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Initialize Project
+                command: dktl init --dkan-local
       - run:
           name: Make DKAN
           command: dktl make
@@ -75,8 +81,10 @@ jobs:
                 name: Switch to target commit and run DKAN upgrade
                 command: |
                   git --git-dir=dkan/.git checkout "${CIRCLE_SHA1}"
-                  dktl drush cr
-                  dktl drush updb -y
+                  dktl exec:composer -- require 'getdkan/dkan:dev-HEAD' --no-update --ansi
+                  dktl make
+                  dktl drush cache:rebuild
+                  dktl drush updatedb -y
       - run:
           name: Run phpUnit tests
           command: |
@@ -117,8 +125,10 @@ jobs:
                 name: Switch to target commit and run DKAN upgrade
                 command: |
                   git --git-dir=dkan/.git checkout "${CIRCLE_SHA1}"
-                  dktl drush cr
-                  dktl drush updb -y
+                  dktl exec:composer -- require 'getdkan/dkan:dev-HEAD' --no-update --ansi
+                  dktl make
+                  dktl drush cache:rebuild
+                  dktl drush updatedb -y
       - run:
           name: Run DKAN cypress tests
           command: dktl dkan:test-cypress --headless --browser=chromium
