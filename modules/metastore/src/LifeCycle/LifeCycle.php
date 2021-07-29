@@ -189,11 +189,14 @@ class LifeCycle {
     $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective;
     $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
 
-    $this->queueFactory->get('orphan_resource_remover')->createItem([
-      $id,
-      $perspective,
-      $version,
-    ]);
+    // Ensure a valid resource ID was found since it's required.
+    if (isset($id)) {
+      $this->queueFactory->get('orphan_resource_remover')->createItem([
+        $id,
+        $perspective,
+        $version,
+      ]);
+    }
   }
 
   /**
