@@ -4,8 +4,9 @@ commands:
   dktl:
     steps:
       - run:
-          name: Install DKAN Tools (dktl)
+          name: Install/configure DKAN Tools (dktl)
           command: |
+            if [ ! -d ~/dkan-tools ]; then git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools; fi
             export PATH=~/dkan-tools/bin:$PATH
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
   prepare_site:
