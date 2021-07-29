@@ -79,7 +79,6 @@ jobs:
                   dktl composer require "getdkan/dkan:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}" --ansi
                   dktl drush cr
                   dktl drush updb -y
-                  dktl drush cim -y
       - run:
           name: Run phpUnit tests
           command: |
@@ -122,7 +121,6 @@ jobs:
                   dktl composer require "getdkan/dkan:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}" --ansi
                   dktl drush cr
                   dktl drush updb -y
-                  dktl drush cim -y
       - run:
           name: Run DKAN cypress tests
           command: dktl dkan:test-cypress --headless --browser=chromium
