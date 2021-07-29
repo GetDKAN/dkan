@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\schema;
+namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Extension\ModuleExtensionList;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 class SchemaRetrieverTest extends TestCase {
   use ServiceCheckTrait;
 
-  const APP_ROOT = __DIR__ . '/files';
+  const APP_ROOT = __DIR__ . '/../files';
 
   /**
    * Protected.
