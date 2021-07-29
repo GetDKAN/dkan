@@ -1,5 +1,37 @@
 version: 2.1
 
+commands:
+  dktl:
+    steps:
+      - run:
+          name: Install DKAN Tools (dktl)
+          command: |
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+  prepare_site:
+    parameters:
+      upgrade:
+        description: "If true, will upgrade a stable instance to the target commit"
+        default: false
+        type: boolean
+    steps:
+      - run:
+          name: Install Drupal
+          command: |
+            dktl dc up -d
+            sleep 10 && dktl install
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Switch to target commit and run DKAN upgrade
+                command: |
+                  git --git-dir=dkan/.git --work-tree=dkan checkout "${CIRCLE_SHA1}"
+                  dktl exec:composer -- require 'getdkan/dkan:dev-HEAD' --no-update --ansi
+                  dktl make
+                  dktl drush cache:rebuild
+                  dktl drush updatedb -y
+
 jobs:
   build:
     machine:
@@ -20,11 +52,7 @@ jobs:
           command: |
             mkdir ~/.composer
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
-      - run:
-          name: Install DKTL
-          command: |
-            git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+      - dktl
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -65,26 +93,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run:
-          name: Set up DKAN Tools
-          command: |
-            export PATH=~/dkan-tools/bin:$PATH
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            dktl dc up -d
-      - run:
-          name: Install Drupal
-          command: sleep 10 && dktl install
-      - when:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Switch to target commit and run DKAN upgrade
-                command: |
-                  git --git-dir=dkan/.git --work-tree=dkan checkout "${CIRCLE_SHA1}"
-                  dktl exec:composer -- require 'getdkan/dkan:dev-HEAD' --no-update --ansi
-                  dktl make
-                  dktl drush cache:rebuild
-                  dktl drush updatedb -y
+      - dktl
+      - prepare_site:
+          upgrade: << parameters.upgrade >>
       - run:
           name: Run phpUnit tests
           command: |
@@ -109,26 +120,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run:
-          name: Set up DKAN Tools
-          command: |
-            export PATH=~/dkan-tools/bin:$PATH
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            dktl dc up -d
-      - run:
-          name: Install Drupal
-          command: sleep 10 && dktl install
-      - when:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Switch to target commit and run DKAN upgrade
-                command: |
-                  git --git-dir=dkan/.git --work-tree=dkan checkout "${CIRCLE_SHA1}"
-                  dktl exec:composer -- require 'getdkan/dkan:dev-HEAD' --no-update --ansi
-                  dktl make
-                  dktl drush cache:rebuild
-                  dktl drush updatedb -y
+      - dktl
+      - prepare_site:
+          upgrade: << parameters.upgrade >>
       - run:
           name: Run DKAN cypress tests
           command: dktl dkan:test-cypress --headless --browser=chromium
