@@ -33,7 +33,7 @@ jobs:
                 command: |
                   TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
                   echo "Testing upgrade from tag: ${TAG}"
-                  git --git-dir=dkan/.git checkout "${TAG}"
+                  git --git-dir=dkan/.git --work-tree=dkan checkout "${TAG}"
                   dktl init --dkan-local
                   # Switch expected composer dependency to the same release
                   dktl exec:composer -- require "getdkan/dkan:${TAG}" --no-update --ansi
@@ -80,7 +80,7 @@ jobs:
             - run:
                 name: Switch to target commit and run DKAN upgrade
                 command: |
-                  git --git-dir=dkan/.git checkout "${CIRCLE_SHA1}"
+                  git --git-dir=dkan/.git --work-tree=dkan checkout "${CIRCLE_SHA1}"
                   dktl exec:composer -- require 'getdkan/dkan:dev-HEAD' --no-update --ansi
                   dktl make
                   dktl drush cache:rebuild
@@ -124,7 +124,7 @@ jobs:
             - run:
                 name: Switch to target commit and run DKAN upgrade
                 command: |
-                  git --git-dir=dkan/.git checkout "${CIRCLE_SHA1}"
+                  git --git-dir=dkan/.git --work-tree=dkan checkout checkout "${CIRCLE_SHA1}"
                   dktl exec:composer -- require 'getdkan/dkan:dev-HEAD' --no-update --ansi
                   dktl make
                   dktl drush cache:rebuild
