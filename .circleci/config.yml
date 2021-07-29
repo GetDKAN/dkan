@@ -13,6 +13,17 @@ jobs:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.2.2"
     steps:
+      - checkout:
+          path: dkan
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Switch to latest stable tag to upgrade from
+                command: |
+                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
+                  echo "Testing upgrade from tag: ${TAG}"
+                  git --git-dir=dkan/.git checkout "${TAG}"
       - run:
           name: Setup composer config
           command: |
@@ -23,22 +34,9 @@ jobs:
           command: |
             git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-      - when:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Initialize using latest stable tag to upgrade from
-                command: |
-                  TAG="$(git ls-remote --tags --refs https://github.com/GetDKAN/dkan.git 2.* | cut --delimiter='/' --fields=3 | sort --version-sort | tail -n1)"
-                  echo "Testing upgrade from tag: ${TAG}"
-                  dktl init --dkan="${TAG}"
-      - unless:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Initialize using commit to test
-                command: |
-                  dktl init --dkan="dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}"
+      - run:
+          name: Initialize Project
+          command: dktl init --dkan-local
       - run:
           name: Make DKAN
           command: dktl make
@@ -74,9 +72,9 @@ jobs:
           condition: << parameters.upgrade >>
           steps:
             - run:
-                name: Switch to target test commit and run DKAN upgrade
+                name: Switch to target commit and run DKAN upgrade
                 command: |
-                  dktl composer require "getdkan/dkan:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}" --ansi
+                  git --git-dir=dkan/.git checkout "${CIRCLE_SHA1}"
                   dktl drush cr
                   dktl drush updb -y
       - run:
@@ -116,9 +114,9 @@ jobs:
           condition: << parameters.upgrade >>
           steps:
             - run:
-                name: Switch to target test commit and run DKAN upgrade
+                name: Switch to target commit and run DKAN upgrade
                 command: |
-                  dktl composer require "getdkan/dkan:dev-${CIRCLE_BRANCH}#${CIRCLE_SHA1}" --ansi
+                  git --git-dir=dkan/.git checkout "${CIRCLE_SHA1}"
                   dktl drush cr
                   dktl drush updb -y
       - run:
