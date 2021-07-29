@@ -29,7 +29,7 @@ jobs:
             - run:
                 name: Initialize using latest stable tag to upgrade from
                 command: |
-                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
+                  TAG="$(git ls-remote --tags --refs --sort="v:refname" https://github.com/GetDKAN/dkan.git 2.* | tail -n1 | cut --delimiter='/' --fields=3)"
                   echo "Testing upgrade from tag: ${TAG}"
                   dktl init --dkan="${TAG}"
       - unless:
