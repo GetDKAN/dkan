@@ -49,7 +49,7 @@ trait EventDispatcherTrait {
   }
 
   /**
-   * If we're on Drupal 8.9 or 9.0, we have to use the old dispatch sig.
+   * Determine the proper event dispatcher dispatch method signature.
    *
    * @see https://www.drupal.org/node/3154407
    *
@@ -57,7 +57,20 @@ trait EventDispatcherTrait {
    *   True if the newer Symfony event system is available.
    */
   private function useLegacyDispatcher() {
-    return !class_exists('\Symfony\Contracts\EventDispatcher\Event');
+    // Reflect on the event dispatcher classes 'dispatch' method.
+    $dispatcher_class = get_class(\Drupal::service('event_dispatcher'));
+    $dispatcher_reflection = new \ReflectionClass($dispatcher_class);
+    $dispatch_parameters = $dispatcher_reflection->getMethod('dispatch')->getParameters();
+    // Determine the proper type for this method's event parameter.
+    $event_parameter_type = NULL;
+    foreach ($dispatch_parameters as $parameter) {
+      if ($parameter->getName() === 'event') {
+        $event_parameter_type = $parameter->hasType() ? $parameter->getType()->getName() : NULL;
+      }
+    }
+    // Determine if the legacy event type is type hinted in the method
+    // signature.
+    return $event_parameter_type === 'Symfony\Component\EventDispatcher\Event';
   }
 
   /**
