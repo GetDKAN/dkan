@@ -229,7 +229,7 @@ class UploadOrLink extends ManagedFile {
    */
   public static function validateManagedFile(&$element, FormStateInterface $form_state, &$complete_form) {
     $uri = static::getDefaultUri($element, $form_state);
-    if (static::getUrlType($element) === static::TYPE_UPLOAD || !empty($element['#value']['fids'])) {
+    if (static::getUrlType($element) === static::TYPE_UPLOAD) {
       parent::validateManagedFile($element, $form_state, $complete_form);
       if ($element_parents = $form_state->get('upload_or_link_element')) {
         $element_parents[] = $element['#parents'];
@@ -248,6 +248,9 @@ class UploadOrLink extends ManagedFile {
   protected static function getUrlType($element) {
     if (isset($element['#value']['file_url_type'])) {
       return $element['#value']['file_url_type'];
+    }
+    elseif (!empty($element['#value']['fids'])) {
+      return static::TYPE_UPLOAD;
     }
     elseif (isset($element['#uri'])) {
       if (static::checkIfLocalFile($element['#uri'])) {
