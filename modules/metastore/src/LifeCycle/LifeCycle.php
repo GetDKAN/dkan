@@ -285,8 +285,8 @@ class LifeCycle {
    * Private.
    */
   protected function distributionPresave(MetastoreItemInterface $data) {
-    $metadata = $data->getMetaData();
-    $data->setMetadata($metadata);
+    // $metadata = $data->getMetaData();
+    // $data->setMetadata($metadata);
   }
 
   /**
