@@ -51,9 +51,15 @@ class ResourceLocalizerTest extends TestCase {
       ->add(ResourceMapper::class, 'get', $resource)
       ->getMock();
 
+
+    $fileFetcher = $this->getFileFetcherFactoryChain()
+      // TODO: mock a stream wrapper to make md5_file() return a string.
+      ->add(FileFetcher::class, 'getStateProperty', 'file://resources/hello.world/file.csv')
+      ->getMock();
+
     $service = new ResourceLocalizer(
       $fileMapper,
-      $this->getFileFetcherFactoryChain()->getMock(),
+      $fileFetcher,
       $this->getDrupalFilesChain()->getMock(),
       $this->getJobStoreFactoryChain()->getMock()
     );
