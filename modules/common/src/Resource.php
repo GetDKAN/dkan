@@ -246,7 +246,7 @@ class Resource implements \JsonSerializable {
   /**
    * Generates MD5 checksum for a file.
    */
-  private function generateChecksum() {
+  public function generateChecksum() {
     $this->checksum = md5_file($this->filePath);
   }
 

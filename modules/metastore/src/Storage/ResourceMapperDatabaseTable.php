@@ -21,7 +21,14 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   public function __construct(Connection $connection) {
     parent::__construct($connection);
 
-    $header = ['identifier', 'version', 'filePath', 'perspective', 'mimeType', 'checksum'];
+    $header = [
+      'identifier',
+      'version',
+      'filePath',
+      'perspective',
+      'mimeType',
+      'checksum',
+    ];
     $schema = [];
 
     foreach ($header as $field) {
