@@ -246,21 +246,18 @@ class UploadOrLink extends ManagedFile {
    * Helper function for getting the url type.
    */
   protected static function getUrlType($element) {
+    $type = NULL;
     if (isset($element['#value']['file_url_type'])) {
-      return $element['#value']['file_url_type'];
+      $type = $element['#value']['file_url_type'];
     }
     elseif (!empty($element['#value']['fids'])) {
-      return static::TYPE_UPLOAD;
+      $type = static::TYPE_UPLOAD;
     }
     elseif (isset($element['#uri'])) {
-      if (static::checkIfLocalFile($element['#uri'])) {
-        return static::TYPE_UPLOAD;
-      }
-      else {
-        return static::TYPE_REMOTE;
-      }
+      $type = static::checkIfLocalFile($element['#uri']) ?
+        static::TYPE_UPLOAD : static::TYPE_REMOTE;
     }
-    return NULL;
+    return $type;
   }
 
   /**
