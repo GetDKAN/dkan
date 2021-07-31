@@ -3,15 +3,17 @@
 namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\common\Events\Event;
+use Drupal\common\Resource;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\metastore\Service;
 use Drupal\metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\metastore\Reference\Referencer;
 
 /**
- * Class MetastoreSubscriber.
+ * Event subscriber for Metastore.
  */
 class MetastoreSubscriber implements EventSubscriberInterface {
 
@@ -79,24 +81,53 @@ class MetastoreSubscriber implements EventSubscriberInterface {
 
     // Remove all resource entries associated with this distribution from the
     // metadata resource mapper.
-    foreach ($resources as $resource) {
+    foreach ($resources as $resourceParams) {
       // Retrieve the distributions ID, perspective, and version metadata.
-      $resource_id = $resource['identifier'] ?? NULL;
-      $perspective = $resource['perspective'] ?? NULL;
-      $version = $resource['version'] ?? NULL;
+      $resource_id = $resourceParams['identifier'] ?? NULL;
+      $perspective = $resourceParams['perspective'] ?? NULL;
+      $version = $resourceParams['version'] ?? NULL;
+      $resource = $this->resourceMapper->get($resource_id, $perspective, $version);
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if (isset($resource_id) && $resource = $this->resourceMapper->get($resource_id, $perspective, $version)) {
+      if (isset($resource_id) && is_object($resource) && !$this->resourceInUse($resource, $distribution_id)) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
-      else {
-        $this->loggerFactory->get('metastore')->error('Failed to remove resource with id "@distribution_id" from source mapping for distribution with id "@resource_id".', [
-          '@distribution_id' => $distribution_id,
-          '@resource_id' => $resource_id,
-        ]);
+    }
+  }
+
+  /**
+   * Check if resource in use elsewhere.
+   *
+   * @param Drupal\common\Resource $resource
+   *   Resource object.
+   * @param string $orphanUuid
+   *   The uuid of the item we're orphaning.
+   *
+   * @return bool
+   *   True if resource currently in use.
+   *
+   * @todo Abstract out "distribution" and field_data_type.
+   */
+  private function resourceInUse(Resource $resource, $orphanUuid) {
+    $filepath = $resource->getFilePath();
+    $distributions = $this->service->getAll('distribution');
+
+    foreach ($distributions as $metadata) {
+      if (!isset($metadata->{'$.data.downloadURL'})) {
+        continue;
+      }
+      // We know it's in use in the one we're orphaning.
+      if ($orphanUuid == $metadata->{'$.identifier'}) {
+        continue;
+      }
+      $url = Referencer::hostify($metadata->{'$.data.downloadURL'});
+      if ($filepath == $url) {
+        // Path is in use, abort.
+        return TRUE;
       }
     }
+    return FALSE;
   }
 
 }
