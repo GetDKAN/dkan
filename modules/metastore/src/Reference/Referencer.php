@@ -8,6 +8,7 @@ use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\Service;
 
 /**
  * Metastore referencer service.
@@ -287,7 +288,7 @@ class Referencer {
     $storage = $this->storageFactory->getInstance($property_id);
     $nodes = $storage->getEntityStorage()->loadByProperties([
       'field_data_type' => $property_id,
-      'title' => md5(json_encode($data)),
+      'title' => Service::metadataHash($data),
     ]);
 
     if ($node = reset($nodes)) {
