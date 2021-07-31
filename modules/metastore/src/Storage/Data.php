@@ -5,6 +5,7 @@ namespace Drupal\metastore\Storage;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\Service;
 
 /**
  * Data.
@@ -311,7 +312,7 @@ abstract class Data implements MetastoreStorageInterface {
       $title = isset($data->title) ? $data->title : $data->name;
     }
     else {
-      $title = md5(json_encode($data->data));
+      $title = Service::metadataHash($data->data);
     }
     $entity = $this->entityStorage
       ->create(
