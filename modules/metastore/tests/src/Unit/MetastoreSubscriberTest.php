@@ -56,6 +56,7 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(Service::class, 'get', $dist)
       ->add(ResourceMapper::class, 'get', $resource)
       ->add(ResourceMapper::class, 'remove')
+      ->add(Resource::class, 'getFilePath', 'http://ho-st/thing.csv')
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 
