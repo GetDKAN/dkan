@@ -101,7 +101,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
    *
    * @param string $dist_id
    *   The uuid of the distribution where this resource is know to be in use.
-   * @param string $resource
+   * @param string $file_path
    *   The file path of the resource being checked.
    *
    * @return bool
