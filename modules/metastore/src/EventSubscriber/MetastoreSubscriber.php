@@ -89,7 +89,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
       $resource = $this->resourceMapper->get($resource_id, $perspective, $version);
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if (isset($resource_id) && is_object($resource) && !$this->resourceInUse($resource, $distribution_id)) {
+      if ($resource instanceof Resource && !$this->resourceInUseElsewhere($distribution_id, $resource->getFilePath())) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
@@ -97,36 +97,32 @@ class MetastoreSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Check if resource in use elsewhere.
+   * Determine if a resource is in use in another distribution.
    *
-   * @param Drupal\common\Resource $resource
-   *   Resource object.
-   * @param string $orphanUuid
-   *   The uuid of the item we're orphaning.
+   * @param string $dist_id
+   *   The uuid of the distribution where this resource is know to be in use.
+   * @param string $resource
+   *   The file path of the resource being checked.
    *
    * @return bool
-   *   True if resource currently in use.
+   *   Whether the resource is in use elsewhere.
    *
    * @todo Abstract out "distribution" and field_data_type.
    */
-  private function resourceInUse(Resource $resource, $orphanUuid) {
-    $filepath = $resource->getFilePath();
-    $distributions = $this->service->getAll('distribution');
-
-    foreach ($distributions as $metadata) {
-      if (!isset($metadata->{'$.data.downloadURL'})) {
-        continue;
-      }
-      // We know it's in use in the one we're orphaning.
-      if ($orphanUuid == $metadata->{'$.identifier'}) {
-        continue;
-      }
-      $url = Referencer::hostify($metadata->{'$.data.downloadURL'});
-      if ($filepath == $url) {
-        // Path is in use, abort.
+  private function resourceInUseElsewhere(string $dist_id, string $file_path): bool {
+    // Iterate over the metadata for all dataset distributions.
+    foreach ($this->service->getAll('distribution') as $metadata) {
+      // Attempt to determine the filepath for this distribution's resource.
+      $dist_file_path = Referencer::hostify($metadata->{'$.data.downloadURL'} ?? '');
+      // If the current distribution does is not the excluded distribution, and
+      // it's resource file path matches the supplied file path...
+      if ($metadata->{'$.identifier'} !== $dist_id && !empty($dist_file_path) && $dist_file_path === $file_path) {
+        // Another distribution with the same resource was found, meaning the
+        // resource is still in use.
         return TRUE;
       }
     }
+    // No other distributions were found using this resource.
     return FALSE;
   }
 

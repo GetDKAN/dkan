@@ -449,7 +449,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Remove references from metadata JSON.
    *
-   * @param RootedJsonData $object
+   * @param \RootedData\RootedJsonData $object
    *   Metadata JSON object.
    * @param string $prefix
    *   Property prefix.
@@ -477,7 +477,7 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Get the md5 hash for a metadata item
+   * Get the md5 hash for a metadata item.
    *
    * @param \RootedData\RootedJsonData|object|string $data
    *   Metadata. Can be a RootedJsonData object, a stdObject or JSON string.
