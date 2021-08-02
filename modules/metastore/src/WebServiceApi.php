@@ -91,6 +91,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       return (object) $modified_object->get('$');
     }, $this->service->getAll($schema_id));
 
+    $output = array_values($output);
     return $this->getResponse($output);
   }
 
