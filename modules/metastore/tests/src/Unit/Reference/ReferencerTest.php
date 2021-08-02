@@ -102,7 +102,19 @@ class ReferencerTest extends TestCase {
     $referencer = new Referencer($configService, $storageFactory);
     $data = $this->getData('https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv');
     $metadata = $referencer->reference($data);
-    $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
+    $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
+
+    $referencer = new Referencer($configService, $storageFactory);
+    $data = $this->getData('http://localhost/modules/contrib/dkan/modules/metastore/tests/data/countries.csv');
+    $metadata = $referencer->reference($data);
+    $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for local file (inaccessible via HTTP)');
+
+    // Test we get an error if we are unable to get the MIME type for a remote file.
+    $referencer = new Referencer($configService, $storageFactory);
+    $data = $this->getData('http://invalid');
+    // TODO: update this with correct exception.
+    $this->expectException(InvalidArgumentException::class);
+    $metadata = $referencer->reference($data);
   }
 
   /**
