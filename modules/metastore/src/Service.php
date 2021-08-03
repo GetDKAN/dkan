@@ -447,7 +447,17 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Remove references from metadata JSON.
+   *
+   * @param \RootedData\RootedJsonData $object
+   *   Metadata JSON object.
+   * @param string $prefix
+   *   Property prefix.
+   *
+   * @return \RootedData\RootedJsonData
+   *   The metadata without any reference artifacts.
+   *
+   * @todo Probably remove the prefix param and just always use "%Ref".
    */
   public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
     $array = $object->get('$');
@@ -464,6 +474,36 @@ class Service implements ContainerInjectionInterface {
 
     $object->set('$', $array);
     return $object;
+  }
+
+  /**
+   * Get the md5 hash for a metadata item.
+   *
+   * @param \RootedData\RootedJsonData|object|string $data
+   *   Metadata. Can be a RootedJsonData object, a stdObject or JSON string.
+   *
+   * @return string
+   *   An md5 hash of the normalized metadata.
+   *
+   * @todo This should probably be somewhere else.
+   */
+  public static function metadataHash($data) {
+    if ($data instanceof RootedJsonData) {
+      $normalizedData = $data;
+      self::removeReferences($normalizedData);
+    }
+    elseif (is_object($data)) {
+      $normalizedData = new RootedJsonData(json_encode($data));
+      self::removeReferences($normalizedData);
+    }
+    elseif (is_string($data)) {
+      $normalizedData = $data;
+    }
+    else {
+      throw new \InvalidArgumentException("Invalid metadata argument.");
+    }
+
+    return md5((string) $normalizedData);
   }
 
 }

@@ -3,15 +3,17 @@
 namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\common\Events\Event;
+use Drupal\common\Resource;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\metastore\Service;
 use Drupal\metastore\ResourceMapper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\metastore\Reference\Referencer;
 
 /**
- * Class MetastoreSubscriber.
+ * Event subscriber for Metastore.
  */
 class MetastoreSubscriber implements EventSubscriberInterface {
 
@@ -79,24 +81,49 @@ class MetastoreSubscriber implements EventSubscriberInterface {
 
     // Remove all resource entries associated with this distribution from the
     // metadata resource mapper.
-    foreach ($resources as $resource) {
+    foreach ($resources as $resourceParams) {
       // Retrieve the distributions ID, perspective, and version metadata.
-      $resource_id = $resource['identifier'] ?? NULL;
-      $perspective = $resource['perspective'] ?? NULL;
-      $version = $resource['version'] ?? NULL;
+      $resource_id = $resourceParams['identifier'] ?? NULL;
+      $perspective = $resourceParams['perspective'] ?? NULL;
+      $version = $resourceParams['version'] ?? NULL;
+      $resource = $this->resourceMapper->get($resource_id, $perspective, $version);
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if (isset($resource_id) && $resource = $this->resourceMapper->get($resource_id, $perspective, $version)) {
+      if ($resource instanceof Resource && !$this->resourceInUseElsewhere($distribution_id, $resource->getFilePath())) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
-      else {
-        $this->loggerFactory->get('metastore')->error('Failed to remove resource with id "@distribution_id" from source mapping for distribution with id "@resource_id".', [
-          '@distribution_id' => $distribution_id,
-          '@resource_id' => $resource_id,
-        ]);
+    }
+  }
+
+  /**
+   * Determine if a resource is in use in another distribution.
+   *
+   * @param string $dist_id
+   *   The uuid of the distribution where this resource is know to be in use.
+   * @param string $file_path
+   *   The file path of the resource being checked.
+   *
+   * @return bool
+   *   Whether the resource is in use elsewhere.
+   *
+   * @todo Abstract out "distribution" and field_data_type.
+   */
+  private function resourceInUseElsewhere(string $dist_id, string $file_path): bool {
+    // Iterate over the metadata for all dataset distributions.
+    foreach ($this->service->getAll('distribution') as $metadata) {
+      // Attempt to determine the filepath for this distribution's resource.
+      $dist_file_path = Referencer::hostify($metadata->{'$.data.downloadURL'} ?? '');
+      // If the current distribution does is not the excluded distribution, and
+      // it's resource file path matches the supplied file path...
+      if ($metadata->{'$.identifier'} !== $dist_id && !empty($dist_file_path) && $dist_file_path === $file_path) {
+        // Another distribution with the same resource was found, meaning the
+        // resource is still in use.
+        return TRUE;
       }
     }
+    // No other distributions were found using this resource.
+    return FALSE;
   }
 
 }
