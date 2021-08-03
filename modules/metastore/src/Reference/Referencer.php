@@ -260,6 +260,24 @@ class Referencer {
   /**
    * Private.
    */
+  private function getLocalMimeType($metadata, $mimeType) {
+    $filename = \Drupal::service('file_system')->basename($metadata->data->downloadURL);
+    $filename = urldecode($filename);
+    $files = \Drupal::entityTypeManager()
+      ->getStorage('file')
+      ->loadByProperties(['filename' => $filename]);
+    try {
+      $file = reset($files);
+      $mimeType = $file->getMimeType();
+    }
+    catch (MissingObjectException $exception) {
+    }
+    return $mimeType;
+  }
+
+  /**
+   * Private.
+   */
   private function getMimeType($metadata, $localFile) {
     $mimeType = "text/plain";
     if (isset($metadata->data->mediaType)) {
@@ -267,16 +285,7 @@ class Referencer {
     }
     elseif (isset($metadata->data->downloadURL)) {
       if ($localFile) {
-        $filename = \Drupal::service('file_system')->basename($metadata->data->downloadURL);
-        $filename = urldecode($filename);
-        $files = \Drupal::entityTypeManager()
-          ->getStorage('file')
-          ->loadByProperties(['filename' => $filename]);
-        try {
-          $file = reset($files);
-          $mimeType = $file->getMimeType();
-        }
-        catch (MissingObjectException $exception) {}
+        $mimeType = getLocalMimeType($metadata, $mimeType);
       }
       else {
         $client = new Client();
