@@ -200,6 +200,8 @@ class ResourceMapper {
    * @throws \Exception
    *   An exception is thrown if the file exists with json info about the
    *   existing resource.
+   *
+   * @todo Refactor this so it's not an exception.
    */
   public function filePathExists($filePath) {
     $query = new Query();

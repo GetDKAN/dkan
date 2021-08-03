@@ -8,6 +8,9 @@ use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\Exception\MissingObjectException;
+use GuzzleHttp\Client;
+use Drupal\metastore\Service;
 
 /**
  * Metastore referencer service.
@@ -147,8 +150,9 @@ class Referencer {
 
       // Modify local urls to use our host/shost scheme.
       $downloadUrl = $this->hostify($downloadUrl);
+      $localFile = $metadata->data->downloadURL !== $downloadUrl;
 
-      $mimeType = $this->getMimeType($metadata);
+      $mimeType = $this->getMimeType($metadata, $localFile);
 
       $downloadUrl = $this->registerWithResourceMapper(
         $downloadUrl,
@@ -257,14 +261,48 @@ class Referencer {
   /**
    * Private.
    */
-  private function getMimeType($metadata) {
+  private function getLocalMimeType($metadata, $mimeType) {
+    $filename = \Drupal::service('file_system')->basename($metadata->data->downloadURL);
+    $filename = urldecode($filename);
+    $files = \Drupal::entityTypeManager()
+      ->getStorage('file')
+      ->loadByProperties(['filename' => $filename]);
+    try {
+      $file = reset($files);
+      $mimeType = $file->getMimeType();
+    }
+    catch (MissingObjectException $exception) {
+    }
+    return $mimeType;
+  }
+
+  /**
+   * Private.
+   */
+  private function getRemoteMimeType($metadata, $mimeType) {
+    $client = new Client();
+    $response = $client->head($metadata->data->downloadURL);
+    if ($response->hasHeader('Content-Type')) {
+      $mimeType = $response->getHeader('Content-Type')[0];
+    }
+    return $mimeType;
+  }
+
+  /**
+   * Private.
+   */
+  private function getMimeType($metadata, $localFile) {
     $mimeType = "text/plain";
     if (isset($metadata->data->mediaType)) {
       $mimeType = $metadata->data->mediaType;
     }
     elseif (isset($metadata->data->downloadURL)) {
-      $headers = get_headers($metadata->data->downloadURL, 1);
-      $mimeType = isset($headers['Content-Type']) ? $headers['Content-Type'] : $mimeType;
+      if ($localFile) {
+        $mimeType = $this->getLocalMimeType($metadata, $mimeType);
+      }
+      else {
+        $mimeType = $this->getRemoteMimeType($metadata, $mimeType);
+      }
     }
     return $mimeType;
   }
@@ -287,7 +325,7 @@ class Referencer {
     $storage = $this->storageFactory->getInstance($property_id);
     $nodes = $storage->getEntityStorage()->loadByProperties([
       'field_data_type' => $property_id,
-      'title' => md5(json_encode($data)),
+      'title' => Service::metadataHash($data),
     ]);
 
     if ($node = reset($nodes)) {
