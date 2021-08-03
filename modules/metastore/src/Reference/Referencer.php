@@ -149,7 +149,7 @@ class Referencer {
 
       // Modify local urls to use our host/shost scheme.
       $downloadUrl = $this->hostify($downloadUrl);
-      $localFile = $metadata->data->downloadURL != $downloadUrl;
+      $localFile = $metadata->data->downloadURL !== $downloadUrl;
 
       $mimeType = $this->getMimeType($metadata, $localFile);
 

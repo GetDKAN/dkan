@@ -3,71 +3,155 @@
 namespace Drupal\Tests\metastore\Unit\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
+
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
+
+use GuzzleHttp\Exception\RequestException;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use GuzzleHttp\Exception\RequestException;
 
 class ReferencerTest extends TestCase {
 
-  public function testHostify() {
-    $container = (new Chain($this))
-      ->add(Container::class, 'get', RequestStack::class)
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getHost', 'test.test')
-      ->getMock();
-
-    \Drupal::setContainer($container);
-
-    $this->assertEquals(
-      'http://h-o.st/mycsv.txt',
-      Referencer::hostify("http://test.test/mycsv.txt"));
-  }
+  /**
+   * HTTP file path for testing download URL.
+   *
+   * @var string
+   */
+  const FILE_PATH = 'tmp/mycsv.csv';
 
   /**
+   * HTTP host protocol and domain for testing download URL.
    *
+   * @var string
    */
-  private function getData($downloadUrl) {
-    $data = '
-    {
-      "title": "Test Dataset No Media Type",
-      "description": "Hi",
-      "identifier": "12345",
-      "accessLevel": "public",
-      "modified": "06-04-2020",
-      "keyword": ["hello"],
-        "distribution": [
-          {
-            "title": "blah",
-            "downloadURL": "' . $downloadUrl . '"
+  const HOST = 'http://example.com';
+
+  /**
+   * Test file mime type.
+   *
+   * @var string
+   */
+  const MIME_TYPE = 'text/csv';
+
+  /**
+   * List referenceable dataset properties.
+   *
+   * @var string[]
+   */
+  const REFERENCEABLE_PROPERTY_LIST = [
+    'theme' => 0,
+    'keyword' => 0,
+    'publisher' => 0,
+    'distribution' => 'distribution',
+    'contactPoint' => 0,
+    '@type' => 0,
+    'title' => 0,
+    'identifier' => 0,
+    'description' => 0,
+    'accessLevel' => 0,
+    'accrualPeriodicity' => 0,
+    'describedBy' => 0,
+    'describedByType' => 0,
+    'issued' => 0,
+    'license' => 0,
+    'modified' => 0,
+    'references' => 0,
+    'spatial' => 0,
+    'temporal' => 0,
+    'isPartOf' => 0,
+  ];
+
+  /**
+   * Container chain for `\Drupal::container`.
+   *
+   * @var \MockChain\Chain
+   */
+  protected $chain;
+
+  /**
+   * @inheritDoc
+   */
+  protected function setUp(): void {
+    parent::setUp();
+
+    // Create a mock file storage class.
+    $storage = new class {
+      public function loadByProperties() {
+        return [
+          new class {
+            public function getMimeType() { return ReferencerTest::MIME_TYPE; }
           }
-        ]
-    }';
-    return json_decode($data);
+        ];
+      }
+    };
+
+    $options = (new Options())
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('file_system', FileSystem::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('request_stack', RequestStack::class)
+      ->index(0);
+
+    $this->chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(EntityTypeManager::class, 'getStorage', $storage)
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getHost', str_replace('http://', '', self::HOST))
+      ->add(MimeTypeGuesser::class, 'guessMimeType', self::MIME_TYPE)
+      ->add(ResourceMapper::class, 'register', TRUE, 'resource');
+
+    // Intialize `\Drupal::container` mock.
+    \Drupal::setContainer($this->chain->getMock());
   }
 
   /**
-   *
+   * Test the `Referencer::hostify()` method.
    */
-  public function testNoMediaType() {
-    $immutableConfig = (new Chain($this))
-      ->add(ImmutableConfig::class, 'get', $this->getPropertyList())
-      ->getMock();
+  public function testHostify(): void {
+    $this->assertEquals(
+      'http://' . UrlHostTokenResolver::TOKEN . '/' . self::FILE_PATH,
+      Referencer::hostify(self::HOST . '/' . self::FILE_PATH));
+  }
 
-    $configService = (new Chain($this))
-      ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
-      ->getMock();
+  /**
+   * Create a test dataset using the supplied download URL.
+   */
+  private function getData(string $downloadUrl, string $mediaType = NULL): object {
+    return (object) [
+      'title' => 'Test Dataset No Media Type',
+      'description' => 'Hi',
+      'identifier'=> '12345',
+      'accessLevel'=> 'public',
+      'modified'=> '06-04-2020',
+      'keyword'=> ['hello'],
+      'distribution'=> [
+        (object) array_filter([
+          'title'=> 'blah',
+          'mediaType' => $mediaType,
+          'downloadURL'=> $downloadUrl,
+        ]),
+      ],
+    ];
+  }
 
+  /**
+   * Test the remote/local file mime type detection logic.
+   */
+  public function testMimeTypeDetection(): void {
+    // Initialize mock node class.
     $node = new class {
       public function uuid() {
         return '0398f054-d712-4e20-ad1e-a03193d6ab33';
@@ -76,79 +160,35 @@ class ReferencerTest extends TestCase {
       public function save() {}
     };
 
+    // Initialize mock referencer service.
     $entity = (new Chain($this))
       ->add(EntityStorageInterface::class, 'loadByProperties', [$node])
       ->getMock();
-
+    $configService = (new Chain($this))
+      ->add(ConfigFactoryInterface::class, 'get', new class { public function get() { return ReferencerTest::REFERENCEABLE_PROPERTY_LIST; } })
+      ->getMock();
     $storageFactory = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', NodeData::class)
       ->add(NodeData::class, 'getEntityStorage', $entity)
       ->getMock();
-
-    $options = (new Options())
-      ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('request_stack', RequestStack::class)
-      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
-      ->index(0);
-
-    $container_chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getHost', 'test.test')
-      ->add(ResourceMapper::class, 'register', TRUE, 'resource');
-
-    $container = $container_chain->getMock();
-    \Drupal::setContainer($container);
-
     $referencer = new Referencer($configService, $storageFactory);
+
+    // Test Mime Type detection using the resource `mediaType` property.
+    $data = $this->getData(self::HOST . '/' . self::FILE_PATH, self::MIME_TYPE);
+    $referencer->reference($data);
+    $this->assertEquals(self::MIME_TYPE, $this->chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type from `mediaType` property');
+    // Test Mime Type detection on a local file.
+    $data = $this->getData(self::HOST . '/' . self::FILE_PATH);
+    $referencer->reference($data);
+    $this->assertEquals(self::MIME_TYPE, $this->chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for local file');
+    // Test Mime Type detection on a remote file.
     $data = $this->getData('https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv');
-    $metadata = $referencer->reference($data);
-    $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
-
-    // TODO: Update this test to create a managed file and check the mime type matches.
-    // $referencer = new Referencer($configService, $storageFactory);
-    // $drupalFiles = DrupalFiles::create($this->getFilesContainer());
-    // $drupalFiles->retrieveFile(
-    //   "file://" . __DIR__ . "/../../../data/countries.csv",
-    //   "public://tmp"
-    // );
-    // print($drupalFiles->fileCreateUrl("public://tmp"));
-    // $data = $this->getData('http://localhost/modules/contrib/dkan/modules/metastore/tests/data/countries.csv');
-    // $metadata = $referencer->reference($data);
-    // $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for local file (inaccessible via HTTP)');
-
-    // Test we get an error if we are unable to get the MIME type for a remote file.
-    $referencer = new Referencer($configService, $storageFactory);
+    $referencer->reference($data);
+    $this->assertEquals(self::MIME_TYPE, $this->chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
+    // Test Mime Type detection on a invalid remote file path.
     $data = $this->getData('http://invalid');
     $this->expectException(RequestException::class);
     $referencer->reference($data);
   }
 
-  /**
-   * Get list of properties.
-   */
-  private function getPropertyList() {
-    return [
-      'theme' => 0,
-      'keyword' => 0,
-      'publisher' => 0,
-      'distribution' => 'distribution',
-      'contactPoint' => 0,
-      '@type' => 0,
-      'title' => 0,
-      'identifier' => 0,
-      'description' => 0,
-      'accessLevel' => 0,
-      'accrualPeriodicity' => 0,
-      'describedBy' => 0,
-      'describedByType' => 0,
-      'issued' => 0,
-      'license' => 0,
-      'modified' => 0,
-      'references' => 0,
-      'spatial' => 0,
-      'temporal' => 0,
-      'isPartOf' => 0,
-    ];
-  }
 }
