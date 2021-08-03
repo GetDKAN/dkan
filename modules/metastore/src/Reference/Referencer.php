@@ -8,6 +8,8 @@ use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\Exception\MissingObjectException;
+use GuzzleHttp\Client;
 
 /**
  * Metastore referencer service.
@@ -262,23 +264,26 @@ class Referencer {
     $mimeType = "text/plain";
     if (isset($metadata->data->mediaType)) {
       $mimeType = $metadata->data->mediaType;
-    } elseif (isset($metadata->data->downloadURL)) {
+    }
+    elseif (isset($metadata->data->downloadURL)) {
       if ($localFile) {
         $filename = \Drupal::service('file_system')->basename($metadata->data->downloadURL);
         $filename = urldecode($filename);
         $files = \Drupal::entityTypeManager()
           ->getStorage('file')
           ->loadByProperties(['filename' => $filename]);
-        if (!empty($files)) {
+        try {
           $file = reset($files);
           $mimeType = $file->getMimeType();
-        } else {
-          // TODO: Throw error
         }
-      } else {
-        // TODO: switch to better HTTP client and add error handling.
-        $headers = get_headers($metadata->data->downloadURL, 1);
-        $mimeType = isset($headers['Content-Type']) ? $headers['Content-Type'] : $mimeType;
+        catch (MissingObjectException $exception) {}
+      }
+      else {
+        $client = new Client();
+        $response = $client->head($metadata->data->downloadURL);
+        if ($response->hasHeader('Content-Type')) {
+          $mimeType = $response->getHeader('Content-Type')[0];
+        }
       }
     }
     return $mimeType;
