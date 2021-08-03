@@ -278,6 +278,18 @@ class Referencer {
   /**
    * Private.
    */
+  private function getRemoteMimeType($metadata, $mimeType) {
+    $client = new Client();
+    $response = $client->head($metadata->data->downloadURL);
+    if ($response->hasHeader('Content-Type')) {
+      $mimeType = $response->getHeader('Content-Type')[0];
+    }
+    return $mimeType;
+  }
+
+  /**
+   * Private.
+   */
   private function getMimeType($metadata, $localFile) {
     $mimeType = "text/plain";
     if (isset($metadata->data->mediaType)) {
@@ -285,14 +297,10 @@ class Referencer {
     }
     elseif (isset($metadata->data->downloadURL)) {
       if ($localFile) {
-        $mimeType = getLocalMimeType($metadata, $mimeType);
+        $mimeType = $this->getLocalMimeType($metadata, $mimeType);
       }
       else {
-        $client = new Client();
-        $response = $client->head($metadata->data->downloadURL);
-        if ($response->hasHeader('Content-Type')) {
-          $mimeType = $response->getHeader('Content-Type')[0];
-        }
+        $mimeType = $this->getRemoteMimeType($metadata, $mimeType);
       }
     }
     return $mimeType;
