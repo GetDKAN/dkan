@@ -147,8 +147,9 @@ class Referencer {
 
       // Modify local urls to use our host/shost scheme.
       $downloadUrl = $this->hostify($downloadUrl);
+      $localFile = $metadata->data->downloadURL != $downloadUrl;
 
-      $mimeType = $this->getMimeType($metadata);
+      $mimeType = $this->getMimeType($metadata, $localFile);
 
       $downloadUrl = $this->registerWithResourceMapper(
         $downloadUrl,
@@ -257,14 +258,28 @@ class Referencer {
   /**
    * Private.
    */
-  private function getMimeType($metadata) {
+  private function getMimeType($metadata, $localFile) {
     $mimeType = "text/plain";
     if (isset($metadata->data->mediaType)) {
       $mimeType = $metadata->data->mediaType;
-    }
-    elseif (isset($metadata->data->downloadURL)) {
-      $headers = get_headers($metadata->data->downloadURL, 1);
-      $mimeType = isset($headers['Content-Type']) ? $headers['Content-Type'] : $mimeType;
+    } elseif (isset($metadata->data->downloadURL)) {
+      if ($localFile) {
+        $filename = \Drupal::service('file_system')->basename($metadata->data->downloadURL);
+        $filename = urldecode($filename);
+        $files = \Drupal::entityTypeManager()
+          ->getStorage('file')
+          ->loadByProperties(['filename' => $filename]);
+        if (!empty($files)) {
+          $file = reset($files);
+          $mimeType = $file->getMimeType();
+        } else {
+          // TODO: Throw error
+        }
+      } else {
+        // TODO: switch to better HTTP client and add error handling.
+        $headers = get_headers($metadata->data->downloadURL, 1);
+        $mimeType = isset($headers['Content-Type']) ? $headers['Content-Type'] : $mimeType;
+      }
     }
     return $mimeType;
   }
