@@ -219,7 +219,8 @@ class Referencer {
    * Private.
    */
   public static function hostify($url) {
-    $host = \Drupal::request()->getHost();
+    $public_url = UrlHostTokenResolver::getPublicHttpPath();
+    $host = $public_url['host'] ?? \Drupal::request()->getHost();
     $parsedUrl = parse_url($url);
     if (isset($parsedUrl['host']) && $parsedUrl['host'] == $host) {
       $parsedUrl['host'] = UrlHostTokenResolver::TOKEN;
