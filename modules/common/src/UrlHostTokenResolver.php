@@ -13,6 +13,7 @@ class UrlHostTokenResolver {
    *
    * @param string $string
    *   Full temporary token URL.
+   *
    * @return string
    *   Resolved domain URL.
    */
@@ -28,6 +29,7 @@ class UrlHostTokenResolver {
    *
    * @param string $url
    *   Full temporary token URL.
+   *
    * @return string
    *   Resolved public file path.
    */
