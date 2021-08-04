@@ -36,6 +36,7 @@ class UrlHostTokenResolver {
     $http_path = \Drupal::service('stream_wrapper_manager')
       ->getViaUri($public_scheme)
       ->getExternalUrl();
+    $url = self::resolve($url);
     return preg_replace('/^' . preg_quote($http_path, '/') . '/', $public_scheme, $url);
   }
 
