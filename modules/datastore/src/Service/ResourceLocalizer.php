@@ -161,7 +161,7 @@ class ResourceLocalizer {
     $directory = "public://resources/{$uuid}";
     $this->drupalFiles->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
     $config = [
-      'filePath' => UrlHostTokenResolver::resolve($resource->getFilePath()),
+      'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
       'temporaryDirectory' => $directory,
     ];
     return $this->fileFetcherFactory->getInstance($uuid, $config);
