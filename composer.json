@@ -20,9 +20,9 @@
     },
     "require": {
         "composer/installers": "^1.9",
-        "drupal/core-composer-scaffold": "~9.2.1",
-        "drupal/core-project-message": "~9.2.1",
-        "drupal/core-recommended": "~9.2.1",
+        "drupal/core-composer-scaffold": "^9.2",
+        "drupal/core-project-message": "^9.2",
+        "drupal/core-recommended": "^9.2",
         "cweagans/composer-patches": "^1.7",
         "drush/drush": "^10.1",
         "getdkan/dkan": "^2.0"
