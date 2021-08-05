@@ -78,7 +78,10 @@ class MysqlImport extends Importer {
         $new = $strings[0] . "_{$token}";
       }
 
-      $row[] = $new;
+      // Enclose all headers in backticks to allow non-standard headers.
+      //
+      // @see https://dev.mysql.com/doc/refman/8.0/en/identifiers.html
+      $row[] = '`' . $new . '`';
     }
     return $row;
   }
