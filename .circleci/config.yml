@@ -5,7 +5,7 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.2"
+      DKTL_VERSION: "drupal-9.2"
     steps:
       - checkout:
           path: dkan
