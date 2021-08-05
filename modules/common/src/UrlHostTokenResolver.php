@@ -9,42 +9,54 @@ class UrlHostTokenResolver {
   const TOKEN = "h-o.st";
   const PUBLIC_SCHEME = 'public://';
 
-  public static function getPublicHttpPath(): ?string {
+  /**
+   * Get the HTTP server public files URL.
+   *
+   * @return string|null
+   *   The HTTP server public files URL, or NULL in the case of failure.
+   */
+  public static function getServerPublicFilesUrl(): ?string {
+    // Get public file stream.
     $public_stream = \Drupal::service('stream_wrapper_manager')
       ->getViaUri(self::PUBLIC_SCHEME);
+    // Retrieve the URL path for the public stream.
     return $public_stream ? $public_stream->getExternalUrl() : NULL;
   }
 
   /**
-   * Resolve host token string to actual domain URL.
+   * Resolve hostified resource URL to actual domain URL.
    *
    * @param string $string
-   *   Full temporary token URL.
+   *   Hostified resource URL.
    *
    * @return string
-   *   Resolved domain URL.
+   *   Resolved resource URL (with actual domain).
    */
-  public static function resolve(string $string): string {
-    $public_url = self::getPublicHttpPath();
-    $host = $public_url['host'] ?? \Drupal::request()->getHost();
-    if (substr_count($string, self::TOKEN) > 0) {
-      $string = str_replace(self::TOKEN, $host, $string);
+  public static function resolve(string $resourceUrl): string {
+    // Get HTTP server public files URL and extract the host.
+    $serverPublicFilesUrl = self::getServerPublicFilesUrl();
+    $serverPublicFilesUrl = isset($serverPublicFilesUrl) ? parse_url($serverPublicFilesUrl) : NULL;
+    $serverHost = $serverPublicFilesUrl['host'] ?? \Drupal::request()->getHost();
+    // Determine whether the localhost token is present in the resource URL, and
+    // replace the token if necessary.
+    if (substr_count($resourceUrl, self::TOKEN) > 0) {
+      $resourceUrl = str_replace(self::TOKEN, $serverHost, $resourceUrl);
     }
-    return $string;
+    return $resourceUrl;
   }
 
   /**
    * Resolve host token string to public file path.
    *
-   * @param string $url
+   * @param string $resourceUrl
    *   Full temporary token URL.
    *
    * @return string
    *   Resolved public file path.
    */
-  public static function resolveFilePath(string $url): string {
-    return preg_replace('/^' . preg_quote(self::getPublicHttpPath(), '/') . '/',
-      self::PUBLIC_SCHEME, self::resolve($url));
+  public static function resolveFilePath(string $resourceUrl): string {
+    return preg_replace('/^' . preg_quote(self::getServerPublicFilesUrl(), '/') . '/',
+      self::PUBLIC_SCHEME, self::resolve($resourceUrl));
   }
 
 }
