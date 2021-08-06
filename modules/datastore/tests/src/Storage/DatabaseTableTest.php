@@ -8,7 +8,7 @@ use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Driver\mysql\Schema;
-use Drupal\Core\Database\Statement;
+use Drupal\Core\Database\StatementWrapper;
 use Drupal\common\Storage\Query;
 use MockChain\Chain;
 use MockChain\Sequence;
@@ -81,8 +81,8 @@ class DatabaseTableTest extends TestCase {
     $connection = $this->getConnectionChain()
       ->add(Connection::class, "select", Select::class)
       ->add(Select::class, "fields", Select::class)
-      ->add(Select::class, "execute", Statement::class)
-      ->add(Statement::class, 'fetchAll', $sequence)
+      ->add(Select::class, "execute", StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetchAll', $sequence)
       ->getMock();
 
     $databaseTable = new DatabaseTable(
@@ -104,8 +104,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -126,8 +126,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -149,8 +149,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -176,8 +176,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -200,8 +200,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'countQuery', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetchField', 1);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetchField', 1);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -218,8 +218,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'countQuery', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetchField', 1);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetchField', 1);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -263,8 +263,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -286,8 +286,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetch', NULL);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetch', NULL);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -307,8 +307,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetchAll', []);
+      ->add(Select::class, 'execute', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetchAll', []);
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
@@ -372,8 +372,8 @@ class DatabaseTableTest extends TestCase {
     $chain = (new Chain($this))
       // Construction.
       ->add(Connection::class, "schema", Schema::class)
-      ->add(Connection::class, 'query', Statement::class)
-      ->add(Statement::class, 'fetchAll', $fieldInfo)
+      ->add(Connection::class, 'query', StatementWrapper::class)
+      ->add(StatementWrapper::class, 'fetchAll', $fieldInfo)
       ->add(Schema::class, "tableExists", TRUE)
       ->add(Schema::class, 'getComment',
         (new Sequence())->add('First Name')->add('lAST nAME')
