@@ -133,7 +133,7 @@ class DatabaseTableTest extends TestCase {
       $connectionChain->getMock(),
       $this->getResource()
     );
-    $this->expectExceptionMessageRegExp("/The number of fields and data given do not match:/");
+    $this->expectExceptionMessageMatches("/The number of fields and data given do not match:/");
     $this->assertEquals("1", $databaseTable->store('["Foobar"]', "1"));
   }
 
@@ -188,7 +188,7 @@ class DatabaseTableTest extends TestCase {
       '["Two"]',
       '["Three"]',
     ];
-    $this->expectExceptionMessageRegExp("/The number of fields and data given do not match:/");
+    $this->expectExceptionMessageMatches("/The number of fields and data given do not match:/");
     $this->assertEquals("1", $databaseTable->storeMultiple($data, "1"));
   }
 
