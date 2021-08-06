@@ -14,14 +14,14 @@ class DkanStreamWrapperTest extends ExistingSiteBase {
     $scheme = $manager->getScheme($uri);
     $this->assertEquals("dkan", $scheme);
     $descriptions = $manager->getDescriptions();
-    $this->assertContains("Simple way to request DKAN", "$descriptions[$scheme]");
+    $this->assertStringContainsString("Simple way to request DKAN", "$descriptions[$scheme]");
     $names = $manager->getNames();
     $this->assertEquals("DKAN documents", "$names[$scheme]");
 
     $path = $manager->getViaScheme($scheme)->getDirectoryPath();
-    $this->assertContains("/api/1", $path);
+    $this->assertStringContainsString("/api/1", $path);
     $ext = $manager->getViaScheme($scheme)->getExternalUrl();
-    $this->assertContains("http://web/api/1", $ext);
+    $this->assertStringContainsString("http://web/api/1", $ext);
   }
 
 }

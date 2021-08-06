@@ -136,7 +136,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->getResources(1, 'dataset');
-    $this->assertContains('"message":"bad","status":404', $response->getContent());
+    $this->assertStringContainsString('"message":"bad","status":404', $response->getContent());
   }
 
   /**
@@ -148,7 +148,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
-    $this->assertContains('"message":"bad","status":404', $response->getContent());
+    $this->assertStringContainsString('"message":"bad","status":404', $response->getContent());
   }
 
   /**
@@ -199,7 +199,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->post('dataset');
-    $this->assertContains('"message":"bad","status":400', $response->getContent());
+    $this->assertStringContainsString('"message":"bad","status":400', $response->getContent());
   }
 
   /**
@@ -216,7 +216,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->post('dataset');
-    $this->assertContains('"message":"Already exists","status":409', $response->getContent());
+    $this->assertStringContainsString('"message":"Already exists","status":409', $response->getContent());
   }
 
   /**
@@ -246,7 +246,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
-    $this->assertContains('"message":"Invalid JSON","status":415', $response->getContent());
+    $this->assertStringContainsString('"message":"Invalid JSON","status":415', $response->getContent());
   }
 
   /**
@@ -259,7 +259,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
-    $this->assertContains('"message":"Empty body"', $response->getContent());
+    $this->assertStringContainsString('"message":"Empty body"', $response->getContent());
   }
 
   /**
@@ -284,7 +284,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->put('dataset', 1);
-    $this->assertContains('"message":"No changes","status":403', $response->getContent());
+    $this->assertStringContainsString('"message":"No changes","status":403', $response->getContent());
   }
 
   /**
@@ -296,7 +296,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->put('dataset', 1);
-    $this->assertContains('"message":"Unknown error"', $response->getContent());
+    $this->assertStringContainsString('"message":"Unknown error"', $response->getContent());
   }
 
   /**
@@ -332,7 +332,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
-    $this->assertContains('"message":"Identifier cannot be modified"', $response->getContent());
+    $this->assertStringContainsString('"message":"Identifier cannot be modified"', $response->getContent());
   }
 
   /**
@@ -348,7 +348,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
-    $this->assertContains('"message":"Invalid JSON","status":415', $response->getContent());
+    $this->assertStringContainsString('"message":"Invalid JSON","status":415', $response->getContent());
   }
 
   /**
@@ -364,7 +364,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1);
-    $this->assertContains('"message":"Not found"', $response->getContent());
+    $this->assertStringContainsString('"message":"Not found"', $response->getContent());
   }
 
   /**
@@ -376,7 +376,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1);
-    $this->assertContains('"message":"Unknown error"', $response->getContent());
+    $this->assertStringContainsString('"message":"Unknown error"', $response->getContent());
   }
 
   /**
@@ -388,7 +388,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->delete('dataset', "1");
-    $this->assertContains('"message":"Dataset 1 has been deleted."', $response->getContent());
+    $this->assertStringContainsString('"message":"Dataset 1 has been deleted."', $response->getContent());
   }
 
   /**
@@ -400,7 +400,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->delete('dataset', 1);
-    $this->assertContains('"message":"Unknown error"', $response->getContent());
+    $this->assertStringContainsString('"message":"Unknown error"', $response->getContent());
   }
 
   /**
@@ -412,7 +412,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->publish('dataset', 1);
-    $this->assertContains('"message":"Not found"', $response->getContent());
+    $this->assertStringContainsString('"message":"Not found"', $response->getContent());
   }
 
   /**
@@ -424,7 +424,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->publish('dataset', 1);
-    $this->assertContains('"message":"Unknown error"', $response->getContent());
+    $this->assertStringContainsString('"message":"Unknown error"', $response->getContent());
   }
 
   /**
@@ -439,7 +439,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->publish('dataset', "1");
-    $this->assertContains('"endpoint":"http:\/\/blah","identifier":"1"', $response->getContent());
+    $this->assertStringContainsString('"endpoint":"http:\/\/blah","identifier":"1"', $response->getContent());
   }
 
   /**
@@ -480,7 +480,7 @@ EOF;
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->getCatalog();
-    $this->assertContains('"message":"bad"', $response->getContent());
+    $this->assertStringContainsString('"message":"bad"', $response->getContent());
   }
 
   /**

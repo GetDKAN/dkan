@@ -28,7 +28,7 @@ class SelectFactoryTest extends TestCase {
     }
     else {
       $db_query = $this->selectFactory->create($query);
-      $this->assertContains($sql, $this->selectToString($db_query));
+      $this->assertStringContainsString($sql, $this->selectToString($db_query));
     }
   }
 

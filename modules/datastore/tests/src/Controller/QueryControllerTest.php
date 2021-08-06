@@ -134,7 +134,7 @@ class QueryControllerTest extends TestCase {
     $csv = explode("\n", $result->getContent());
     $this->assertEquals('record_number,data', $csv[0]);
     $this->assertEquals('1,data', $csv[1]);
-    $this->assertContains('data.csv', $result->headers->get('Content-Disposition'));
+    $this->assertStringContainsString('data.csv', $result->headers->get('Content-Disposition'));
   }
 
   /**
@@ -254,7 +254,7 @@ class QueryControllerTest extends TestCase {
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
-    $this->assertContains("json-schema.org", $result->getContent());
+    $this->assertStringContainsString("json-schema.org", $result->getContent());
   }
 
   /**

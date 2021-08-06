@@ -44,7 +44,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($this->getCommonMockChain("")->getMock());
     $response = $controller->runQueryGet();
-    $this->assertContains($expectedResponse->getContent(), $response->getContent());
+    $this->assertStringContainsString($expectedResponse->getContent(), $response->getContent());
   }
 
   /**
@@ -67,7 +67,7 @@ class WebServiceApiTest extends TestCase {
 
     $controller = WebServiceApi::create($this->getCommonMockChain("")->getMock());
     $response = $controller->runQueryPost();
-    $this->assertContains($expectedResponse->getContent(), $response->getContent());
+    $this->assertStringContainsString($expectedResponse->getContent(), $response->getContent());
   }
 
   /**
