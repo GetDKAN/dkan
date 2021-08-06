@@ -64,6 +64,7 @@ class DataTest extends TestCase {
     return (new Chain($this))
       ->add(EntityTypeManager::class, 'getStorage', NodeStorage::class)
       ->add(NodeStorage::class, 'getQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', ['1'])
       ->add(NodeStorage::class, 'getLatestRevisionId', '2')

@@ -38,6 +38,7 @@ class DkanDataset extends DatasourcePluginBase {
     $pageSize = 250;
     $ids = [];
     $query = \Drupal::entityQuery('node')
+      ->accessCheck(FALSE)
       ->condition('status', 1)
       ->condition('type', 'data')
       ->condition('field_data_type', 'dataset');
@@ -48,6 +49,7 @@ class DkanDataset extends DatasourcePluginBase {
     if ($page <= $pages) {
 
       $query = \Drupal::entityQuery('node')
+        ->accessCheck(FALSE)
         ->condition('status', 1)
         ->condition('type', 'data')
         ->condition('field_data_type', 'dataset')
