@@ -25,7 +25,7 @@ class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface
    * @inheritdoc
    */
   public static function create(ContainerInterface $container) {
-    $appRoot = $container->get('app.root');
+    $appRoot = $container->getParameter('app.root');
     $moduleExtension = $container->get('extension.list.module');
 
     return new static($appRoot, $moduleExtension);

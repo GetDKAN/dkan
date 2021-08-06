@@ -2,13 +2,13 @@ services:
   frontend.page:
       class: Drupal\frontend\Page
       arguments:
-        - '@app.root'
+        - '%app.root%'
         - '@dkan.common.node_storage'
         - '@config.factory'
       shared: false
   frontend.route_provider:
       class: Drupal\frontend\Routing\RouteProvider
       arguments:
-        - '@app.root'
+        - '%app.root%'
         - '@entity.query.sql'
         - '@config.factory'
