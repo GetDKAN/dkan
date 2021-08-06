@@ -19,9 +19,9 @@ class SelectFactoryTest extends TestCase {
   /**
    * @test
    *
-   * @dataProvider Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
+   * @dataProvider \Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
    */
-  public function testQuery(Query $query, string $sql, string $message) {
+  public function testQuery(Query $query, string $sql, $message) {
     if ($message) {
       $this->expectExceptionMessage($message);
       $this->selectFactory->create($query);
