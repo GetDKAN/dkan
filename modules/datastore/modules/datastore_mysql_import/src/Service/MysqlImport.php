@@ -44,7 +44,7 @@ class MysqlImport extends Importer {
     $storage = $this->dataStorage;
     $storage->count();
 
-    $sqlStatementLines = $this->getSqlStatement($filename, $storage, $header);
+    $sqlStatementLines = $this->getSqlStatement($filename, $storage, $headers);
 
     $sqlStatement = implode(' ', $sqlStatementLines);
 
@@ -73,7 +73,7 @@ class MysqlImport extends Importer {
   /**
    * Properly escape and format the supplied list of column names.
    *
-   * @param string[] $columnNames
+   * @param string[] $columns
    *   List of column names.
    *
    * @return array
