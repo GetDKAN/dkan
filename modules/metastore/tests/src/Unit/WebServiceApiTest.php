@@ -435,7 +435,7 @@ EOF;
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $mockChain->add(Request::class, 'getContent', '{}');
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
-    $mockChain->add(Service::class, "publish", "1");
+    $mockChain->add(Service::class, "publish", TRUE);
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->publish('dataset', "1");
