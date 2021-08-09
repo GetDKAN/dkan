@@ -182,20 +182,18 @@ class UploadOrLink extends ManagedFile {
    * Helper function to load files when local.
    */
   private static function loadLocalFilesWhenDefault($element) {
-    if (empty($element['#value']['fids']) && !empty($element['#uri'])) {
-      $file = static::checkIfLocalFile($element['#uri']);
-      if ($file && $element['#value']['file_url_type'] !== static::TYPE_REMOTE) {
-        $element['#files'][$file->id()] = $file;
-        $element['#value']['fids'] = [$file->id()];
-        $element['#value']['file_url_type'] = "upload";
-        $element['fids']['#type'] = 'hidden';
-        $element['fids']['#value'] = [$file->id()];
-        $file_link = [
-          '#theme' => 'file_link',
-          '#file' => $file,
-        ];
-        $element['file_' . $file->id()]['filename'] = $file_link + ['#weight' => -10];
-      }
+    if (empty($element['#value']['fids']) && !empty($element['#uri']) &&
+        $file = static::checkIfLocalFile($element['#uri'])) {
+      $element['#files'][$file->id()] = $file;
+      $element['#value']['fids'] = [$file->id()];
+      $element['#value']['file_url_type'] = static::TYPE_UPLOAD;
+      $element['fids']['#type'] = 'hidden';
+      $element['fids']['#value'] = [$file->id()];
+      $file_link = [
+        '#theme' => 'file_link',
+        '#file' => $file,
+      ];
+      $element['file_' . $file->id()]['filename'] = $file_link + ['#weight' => -10];
     }
     return $element;
   }
@@ -231,7 +229,7 @@ class UploadOrLink extends ManagedFile {
    */
   public static function validateManagedFile(&$element, FormStateInterface $form_state, &$complete_form) {
     $uri = static::getDefaultUri($element, $form_state);
-    if (($element['#value']['file_url_type'] ?? NULL) === static::TYPE_UPLOAD || !empty($element['#value']['fids'])) {
+    if (static::getUrlType($element) === static::TYPE_UPLOAD) {
       parent::validateManagedFile($element, $form_state, $complete_form);
       if ($element_parents = $form_state->get('upload_or_link_element')) {
         $element_parents[] = $element['#parents'];
@@ -248,18 +246,18 @@ class UploadOrLink extends ManagedFile {
    * Helper function for getting the url type.
    */
   protected static function getUrlType($element) {
+    $type = NULL;
     if (isset($element['#value']['file_url_type'])) {
-      return $element['#value']['file_url_type'];
+      $type = $element['#value']['file_url_type'];
+    }
+    elseif (!empty($element['#value']['fids'])) {
+      $type = static::TYPE_UPLOAD;
     }
     elseif (isset($element['#uri'])) {
-      if (static::checkIfLocalFile($element['#uri'])) {
-        return static::TYPE_UPLOAD;
-      }
-      else {
-        return static::TYPE_REMOTE;
-      }
+      $type = static::checkIfLocalFile($element['#uri']) ?
+        static::TYPE_UPLOAD : static::TYPE_REMOTE;
     }
-    return NULL;
+    return $type;
   }
 
   /**
@@ -272,10 +270,7 @@ class UploadOrLink extends ManagedFile {
       return '';
     }
 
-    if ((isset($element['#value']['file_url_type'])
-      && $element['#value']['file_url_type'] == static::TYPE_UPLOAD)
-      || !empty($element['#value']['fids'])
-    ) {
+    if (static::getUrlType($element) == static::TYPE_UPLOAD) {
       return static::getLocalFileUrl($element);
     }
     elseif (!empty($element['#value']['file_url_remote'])) {
