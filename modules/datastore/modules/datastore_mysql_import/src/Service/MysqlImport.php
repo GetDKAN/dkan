@@ -83,11 +83,14 @@ class MysqlImport extends Importer {
     return array_replace([], ...array_map(function ($column) {
       // Sanitize the supplied table header to generate a unique column name.
       $header = $this->sanitizeHeader($column);
-      // Prepend "d_" to the table column name to prevent numeric column name
-      // parsing issues.
-      //
-      // @see https://github.com/GetDKAN/dkan/issues/3606
-      $header = 'd_' . $header;
+
+      if (is_numeric($header)) {
+        // Prepend "_" to fully numeric table column name to prevent column name
+        // parsing issues - can be dropped after move to Drupal 9.
+        // @see https://github.com/GetDKAN/dkan/issues/3606
+        $header = '_' . $header;
+      }
+
       // Truncate the generated table column name, if necessary, to fit the max
       // column length.
       $header = $this->truncateHeader($header);
