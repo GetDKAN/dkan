@@ -80,7 +80,7 @@ class MysqlImport extends Importer {
    *   List of sanitized table headers keyed by original column names.
    */
   private function generateTableHeaders(array $columns): array {
-    return array_merge([], ...array_map(function ($column) {
+    return array_replace([], ...array_map(function ($column) {
       // Sanitize the supplied table header to generate a unique column name.
       $header = $this->sanitizeHeader($column);
       // Prepend "d_" to the table column name to prevent numeric column name
