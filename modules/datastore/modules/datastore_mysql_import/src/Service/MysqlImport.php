@@ -69,7 +69,8 @@ class MysqlImport extends Importer {
     'undo', 'union', 'unique', 'unlock', 'unsigned', 'update', 'usage', 'use',
     'using', 'utc_date', 'utc_time', 'utc_timestamp', 'values', 'varbinary',
     'varchar', 'varcharacter', 'varying', 'virtual', 'when', 'where', 'while',
-    'window', 'with', 'write', 'xor', 'year_month', 'zerofill'];
+    'window', 'with', 'write', 'xor', 'year_month', 'zerofill',
+  ];
 
   /**
    * Override.
