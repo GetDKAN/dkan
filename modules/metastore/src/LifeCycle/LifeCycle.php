@@ -169,8 +169,12 @@ class LifeCycle {
     if (is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
     }
-
-    $metadata->data->downloadURL = $downloadUrl;
+    
+    if ($downloadUrl) {
+      $metadata->data->downloadURL = $downloadUrl;
+    } else {
+      unset($metadata->data->downloadUrl);
+    }
 
     $data->setMetadata($metadata);
   }
