@@ -71,8 +71,6 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A logger channel factory instance.
    * @param \Drupal\Core\Queue\QueueFactory $queueFactory
    *   A database queue factory instance.
-   *
-   * @codeCoverageIgnore
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, DatastoreService $datastore, LoggerChannelFactory $loggerFactory, QueueFactory $queueFactory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
