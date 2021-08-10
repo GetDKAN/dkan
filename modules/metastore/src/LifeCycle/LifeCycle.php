@@ -166,13 +166,11 @@ class LifeCycle {
       $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
     }
 
-    if (is_string($downloadUrl)) {
+    if ($downloadUrl && is_string($downloadUrl)) {
       $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
-    }
-    
-    if ($downloadUrl) {
       $metadata->data->downloadURL = $downloadUrl;
-    } else {
+    }
+    else {
       unset($metadata->data->downloadUrl);
     }
 
