@@ -60,6 +60,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A DKAN datastore service instance.
    * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerFactory
    *   A logger channel factory instance.
+   *
+   * @codeCoverageIgnore
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, DatastoreService $datastore, LoggerChannelFactory $loggerFactory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);

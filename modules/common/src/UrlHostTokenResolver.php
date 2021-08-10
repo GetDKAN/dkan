@@ -26,7 +26,7 @@ class UrlHostTokenResolver {
   /**
    * Resolve hostified resource URL to actual domain URL.
    *
-   * @param string $string
+   * @param string $resourceUrl
    *   Hostified resource URL.
    *
    * @return string
