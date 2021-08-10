@@ -4,6 +4,8 @@ namespace Drupal\Tests\metastore\Unit\EventSubscriber;
 
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\common\Resource;
 use Drupal\common\Events\Event;
@@ -104,15 +106,27 @@ class MetastoreSubscriberTest extends TestCase {
     // Create a test distribution.
     $distribution = $this->createDistribution($resource_path);
 
+    // Construct and set `\Drupal::container` mock.
+    $options = (new Options())
+      ->add('request_stack', RequestStack::class)
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->index(0);
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST);
+
+    \Drupal::setContainer($container_chain->getMock());
+
+    // Initialize successful removal exception message.
+    $removal_message = 'Removed Successfully!';
+    // Construct new MetastoreSubscriber dependency chain.
     $options = (new Options())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', Service::class)
       ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->add('database', Connection::class)
       ->index(0);
-
-    $removal_message = 'Removed Successfully!';
-
     $chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'get', $distribution)
@@ -122,9 +136,11 @@ class MetastoreSubscriberTest extends TestCase {
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'errors');
 
+    // Ensure the `ResourceMapper::remove()` method was reached by checking for
+    // the successful removal exception message.
     $this->expectException(\Exception::class);
     $this->expectExceptionMessage($removal_message);
-
+    // Test `MetastoreSubscriber::cleanResourceMapperTable()`.
     $subscriber = MetastoreSubscriber::create($chain->getMock());
     $subscriber->cleanResourceMapperTable(new Event($distribution->{'$.identifier'}));
   }
@@ -142,6 +158,17 @@ class MetastoreSubscriberTest extends TestCase {
     $distribution_1 = $this->createDistribution($resource_path);
     $distribution_2 = $this->createDistribution($resource_path);
 
+    // Initialize `\Drupal::container`.
+    $options = (new Options())
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->index(0);
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class);
+    \Drupal::setContainer($container_chain->getMock());
+
+    // Intialize container for constructing `MetastoreSubscriber` service.
     $options = (new Options())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', Service::class)

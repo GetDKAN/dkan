@@ -7,11 +7,13 @@ use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use PHPUnit\Framework\TestCase;
+
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service;
+
 use MockChain\Chain;
 use MockChain\Options;
+use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 
 /**
@@ -41,8 +43,6 @@ class ImportTest extends TestCase {
       ->add(LoggerChannel::class, 'log', NULL, 'log');
     $container = $containerChain->getMock();
 
-    \Drupal::setContainer($container);
-
     $queueWorker = Import::create($container, [], '', '');
     $queueWorker->processItem((object) $this->data);
 
@@ -60,8 +60,6 @@ class ImportTest extends TestCase {
 
     $containerChain = $this->getContainerChain($result);
     $container = $containerChain->getMock();
-
-    \Drupal::setContainer($container);
 
     $queueWorker = Import::create($container, [], '', '');
     $queueWorker->processItem((object) $this->data);

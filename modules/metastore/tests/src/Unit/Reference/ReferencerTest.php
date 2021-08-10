@@ -7,6 +7,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Reference\Referencer;
@@ -74,59 +76,6 @@ class ReferencerTest extends TestCase {
   ];
 
   /**
-   * Container chain for `\Drupal::container`.
-   *
-   * @var \MockChain\Chain
-   */
-  protected $chain;
-
-  /**
-   * @inheritDoc
-   */
-  protected function setUp(): void {
-    parent::setUp();
-
-    // Create a mock file storage class.
-    $storage = new class {
-      public function loadByProperties() {
-        return [
-          new class {
-            public function getMimeType() { return ReferencerTest::MIME_TYPE; }
-          }
-        ];
-      }
-    };
-
-    $options = (new Options())
-      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
-      ->add('entity_type.manager', EntityTypeManager::class)
-      ->add('file_system', FileSystem::class)
-      ->add('logger.factory', LoggerChannelFactory::class)
-      ->add('request_stack', RequestStack::class)
-      ->index(0);
-
-    $this->chain = (new Chain($this))
-      ->add(Container::class, 'get', $options)
-      ->add(EntityTypeManager::class, 'getStorage', $storage)
-      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getHost', str_replace('http://', '', self::HOST))
-      ->add(MimeTypeGuesser::class, 'guessMimeType', self::MIME_TYPE)
-      ->add(ResourceMapper::class, 'register', TRUE, 'resource');
-
-    // Intialize `\Drupal::container` mock.
-    \Drupal::setContainer($this->chain->getMock());
-  }
-
-  /**
-   * Test the `Referencer::hostify()` method.
-   */
-  public function testHostify(): void {
-    $this->assertEquals(
-      'http://' . UrlHostTokenResolver::TOKEN . '/' . self::FILE_PATH,
-      Referencer::hostify(self::HOST . '/' . self::FILE_PATH));
-  }
-
-  /**
    * Create a test dataset using the supplied download URL.
    */
   private function getData(string $downloadUrl, string $mediaType = NULL): object {
@@ -148,6 +97,25 @@ class ReferencerTest extends TestCase {
   }
 
   /**
+   * Test the `Referencer::hostify()` method.
+   */
+  public function testHostify(): void {
+    // Initialize `\Drupal::container`.
+    $options = (new Options())
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->index(0);
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class);
+    \Drupal::setContainer($container_chain->getMock());
+    // Ensure the hostify method is properly resolving the supplied URL.
+    $this->assertEquals(
+      'http://' . UrlHostTokenResolver::TOKEN . '/' . self::FILE_PATH,
+      Referencer::hostify(self::HOST . '/' . self::FILE_PATH));
+  }
+
+  /**
    * Test the remote/local file mime type detection logic.
    */
   public function testMimeTypeDetection(): void {
@@ -159,6 +127,34 @@ class ReferencerTest extends TestCase {
       public function set() {}
       public function save() {}
     };
+
+    // Create a mock file storage class.
+    $storage = new class {
+      public function loadByProperties() {
+        return [
+          new class {
+            public function getMimeType() { return ReferencerTest::MIME_TYPE; }
+          }
+        ];
+      }
+    };
+
+    // Initialize `\Drupal::container`.
+    $options = (new Options())
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('entity_type.manager', EntityTypeManager::class)
+      ->add('file_system', FileSystem::class)
+      ->add('request_stack', RequestStack::class)
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->index(0);
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(EntityTypeManager::class, 'getStorage', $storage)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
+      ->add(ResourceMapper::class, 'register', TRUE, 'resource')
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class);
+    \Drupal::setContainer($container_chain->getMock());
 
     // Initialize mock referencer service.
     $entity = (new Chain($this))
@@ -176,15 +172,15 @@ class ReferencerTest extends TestCase {
     // Test Mime Type detection using the resource `mediaType` property.
     $data = $this->getData(self::HOST . '/' . self::FILE_PATH, self::MIME_TYPE);
     $referencer->reference($data);
-    $this->assertEquals(self::MIME_TYPE, $this->chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type from `mediaType` property');
+    $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type from `mediaType` property');
     // Test Mime Type detection on a local file.
     $data = $this->getData(self::HOST . '/' . self::FILE_PATH);
     $referencer->reference($data);
-    $this->assertEquals(self::MIME_TYPE, $this->chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for local file');
+    $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for local file');
     // Test Mime Type detection on a remote file.
     $data = $this->getData('https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv');
     $referencer->reference($data);
-    $this->assertEquals(self::MIME_TYPE, $this->chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
+    $this->assertEquals(self::MIME_TYPE, $container_chain->getStoredInput('resource')[0]->getMimeType(), 'Unable to fetch MIME type for remote file');
     // Test Mime Type detection on a invalid remote file path.
     $data = $this->getData('http://invalid');
     $this->expectException(RequestException::class);

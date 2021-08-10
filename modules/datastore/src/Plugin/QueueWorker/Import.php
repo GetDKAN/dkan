@@ -5,6 +5,7 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerBase;
 
 use Drupal\common\LoggerTrait;
@@ -26,6 +27,13 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   use LoggerTrait;
 
   /**
+   * This queue worker's corresponding database queue instance.
+   *
+   * @var \Drupal\Core\Queue\DatabaseQueue
+   */
+  protected $databaseQueue;
+
+  /**
    * DKAN datastore service instance.
    *
    * @var \Drupal\datastore\Service
@@ -43,7 +51,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $plugin_id,
       $plugin_definition,
       $container->get('dkan.datastore.service'),
-      $container->get('logger.factory')
+      $container->get('logger.factory'),
+      $container->get('queue')
     );
   }
 
@@ -60,11 +69,14 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A DKAN datastore service instance.
    * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerFactory
    *   A logger channel factory instance.
+   * @param \Drupal\Core\Queue\QueueFactory $queueFactory
+   *   A database queue factory instance.
    *
    * @codeCoverageIgnore
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, DatastoreService $datastore, LoggerChannelFactory $loggerFactory) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, DatastoreService $datastore, LoggerChannelFactory $loggerFactory, QueueFactory $queueFactory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->databaseQueue = $queueFactory->get($plugin_id);
     $this->datastore = $datastore;
     $this->setLoggerFactory($loggerFactory);
   }
@@ -141,9 +153,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @todo: Clarify return value. Documentation suggests it should return ID.
    */
   protected function requeue(array $data) {
-    return $this->container->get('queue')
-      ->get($this->getPluginId())
-      ->createItem($data);
+    return $this->databaseQueue->createItem($data);
   }
 
 }
