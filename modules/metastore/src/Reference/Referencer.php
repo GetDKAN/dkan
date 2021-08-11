@@ -260,9 +260,19 @@ class Referencer {
    */
   private function getMimeType($metadata) {
     $mimeType = "text/plain";
+    // If we have a mediaType set, use that.
     if (isset($metadata->data->mediaType)) {
       $mimeType = $metadata->data->mediaType;
     }
+    // Fall back if we have an importable format set.
+    // TODO: Update the UI to set mediaType when a format is selected.
+    elseif (isset($metadata->data->format) && $metadata->data->format == 'csv') {
+      $mimeType = 'text/csv';
+    }
+    elseif (isset($metadata->data->format) && $metadata->data->format == 'tsv') {
+      $mimeType = 'text/tab-separated-values';
+    }
+    // Finally, try and detect the MIME type.
     elseif (isset($metadata->data->downloadURL)) {
       $headers = get_headers($metadata->data->downloadURL, 1);
       $mimeType = isset($headers['Content-Type']) ? $headers['Content-Type'] : $mimeType;
