@@ -4,6 +4,8 @@ namespace Drupal\common;
 
 /**
  * UrlHostTokenResolver.
+ *
+ * @todo Convert to service with Dependency Injection.
  */
 class UrlHostTokenResolver {
   const TOKEN = "h-o.st";
