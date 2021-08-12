@@ -15,6 +15,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *  id = "metastore_search_api_docs",
  *  description = "Search docs"
  * )
+ *
+ * @codeCoverageIgnore
  */
 class MetastoreSearchApiDocs extends DkanApiDocsBase {
 
