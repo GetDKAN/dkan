@@ -373,8 +373,8 @@ class Referencer {
       // resource.
       $is_local = $distribution->downloadURL !== $this->hostify($distribution->downloadURL);
       $mime_type = $is_local ?
-        $this->getLocalMimeType($distribution->downloadURL, $mime_type) :
-        $this->getRemoteMimeType($distribution->downloadURL, $mime_type);
+        $this->getLocalMimeType($distribution->downloadURL) :
+        $this->getRemoteMimeType($distribution->downloadURL);
     }
 
     return $mime_type ?? self::DEFAULT_MIME_TYPE;
