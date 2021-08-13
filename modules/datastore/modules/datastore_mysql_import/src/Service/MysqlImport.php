@@ -68,11 +68,13 @@ class MysqlImport extends Importer {
   protected function getEol(string $line): ?string {
     $eol = NULL;
 
-    if (preg_match($line, '\r\n$')) {
+    if (preg_match('/\r\n$/', $line)) {
       $eol = '\r\n';
-    } elseif (preg_match($line, '\r$')) {
+    }
+    elseif (preg_match('/\r$/', $line)) {
       $eol = '\r';
-    } elseif (preg_match($line, '\n$')) {
+    }
+    elseif (preg_match('/\n$/', $line)) {
       $eol = '\n';
     }
 
