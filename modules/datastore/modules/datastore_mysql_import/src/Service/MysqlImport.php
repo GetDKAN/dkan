@@ -98,15 +98,15 @@ class MysqlImport extends Importer {
 
     // Attempt to detect the line ending for this resource file using the first
     // line from the file.
-    $eol = $this->getEol($line);
+    $eol = $this->getEol($header_line);
     // On failure, stop the import job and log an error.
     if (!isset($eol)) {
-      return $this->setResultError(sprintf('Failed to detect EOL character for resource file "%s" from header line "%s".', $filename, $line));
+      return $this->setResultError(sprintf('Failed to detect EOL character for resource file "%s" from header line "%s".', $filename, $header_line));
     }
 
     // Construct an SQL import statement using the information gathered from the
     // CSV file being imported.
-    $sqlStatement = $this->getSqlStatement($filename, $storage->getTableName(), $header, $eol);
+    $sqlStatement = $this->getSqlStatement($filename, $storage->getTableName(), $headers, $eol);
 
     $db = $this->getDatabaseConnectionCapableOfDataLoad();
     $db->query($sqlStatement);
