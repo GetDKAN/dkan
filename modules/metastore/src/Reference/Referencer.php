@@ -158,7 +158,7 @@ class Referencer {
    * @return object
    *   The supplied distribution with an updated resource download URL.
    */
-  private function distributionHandling(stdClass $distribution): object {
+  private function distributionHandling(\stdClass $distribution): object {
     // Ensure the supplied distribution has a valid resource before attempting
     // to register it with the resource mapper.
     if (isset($distribution->downloadURL)) {
@@ -359,7 +359,7 @@ class Referencer {
    * @return string
    *   The detected mime type, or DEFAULT_MIME_TYPE on failure.
    */
-  private function getMimeType(stdClass $distribution): string {
+  private function getMimeType(\stdClass $distribution): string {
     $mime_type = NULL;
 
     // Retrieve mime type from distribution media type if set.
