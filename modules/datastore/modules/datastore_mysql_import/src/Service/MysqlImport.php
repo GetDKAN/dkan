@@ -167,7 +167,7 @@ class MysqlImport extends Importer {
   private function generateTableHeaders(array $columns): array {
     return array_replace([], ...array_map(function ($column) {
       // Sanitize the supplied table header to generate a unique column name.
-      $header = $this->sanitizeHeader($column);
+      $header = $this->sanitizeHeader($column ?? '');
 
       if (is_numeric($header) || in_array($header, self::RESERVED_WORDS)) {
         // Prepend "_" to column name that are not allowed in MySQL
