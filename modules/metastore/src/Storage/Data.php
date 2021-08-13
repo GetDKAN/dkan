@@ -304,9 +304,20 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Private.
+   * Create a new metadata entity from incoming data and identifier.
+   *
+   * @param string $uuid
+   *   Metadata identifier.
+   * @param object $data
+   *   Decoded JSON data.
+   *
+   * @return string
+   *   UUID of new entity.
+   *
+   * @throws \JsonPath\InvalidJsonException
+   * @throws \InvalidArgumentException
    */
-  private function createNewEntity($uuid, $data) {
+  private function createNewEntity(string $uuid, $data) {
     $title = '';
     if ($this->schemaId === 'dataset') {
       $title = isset($data->title) ? $data->title : $data->name;
@@ -314,7 +325,7 @@ abstract class Data implements MetastoreStorageInterface {
     else {
       $title = Service::metadataHash($data->data);
     }
-    $entity = $this->entityStorage
+    $entity = $this->getEntityStorage()
       ->create(
         [
           $this->labelKey => $title,
