@@ -8,6 +8,7 @@ use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Util\DrupalFiles;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
+use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\ResourceMapper;
@@ -25,11 +26,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class ResourceLocalizerTest extends TestCase {
 
   /**
+   * HTTP host protocol and domain for testing download URL.
+   *
+   * @var string
+   */
+  const HOST = 'http://example.com';
+
+  /**
    *
    */
   public function testNoResourceFound() {
 
-    $resource = new Resource('http://hello.world/file.csv', 'text/csv');
+    $resource = new Resource(self::HOST . '/file.csv', 'text/csv');
 
     $service = new ResourceLocalizer(
       $this->getFileMapperChain()->getMock(),
@@ -45,7 +53,7 @@ class ResourceLocalizerTest extends TestCase {
    */
   public function testResourceLocalizerRemove() {
 
-    $resource = new Resource('http://hello.world/file.csv', 'text/csv');
+    $resource = new Resource(self::HOST . '/file.csv', 'text/csv');
 
     $fileMapper = $this->getFileMapperChain()
       ->add(ResourceMapper::class, 'get', $resource)
@@ -89,8 +97,8 @@ class ResourceLocalizerTest extends TestCase {
     return (new Chain($this))
       ->add(DrupalFiles::class, 'getFileSystem', FileSystem::class)
       ->add(FileSystem::class, 'prepareDirectory', NULL)
-      ->add(DrupalFiles::class, 'fileCreateUrl', 'http://hello.world/file.csv')
-      ->add(FileSystem::class, 'realpath', 'http://hello.world/file.csv')
+      ->add(DrupalFiles::class, 'fileCreateUrl', self::HOST . '/file.csv')
+      ->add(FileSystem::class, 'realpath', self::HOST . '/file.csv')
       ->add(DrupalFiles::class, 'getStreamWrapperManager', StreamWrapperManager::class);
   }
 
@@ -111,12 +119,15 @@ class ResourceLocalizerTest extends TestCase {
   private function getContainer() {
     $options = (new Options())
       ->add('request_stack', RequestStack::class)
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->index(0);
 
     $container = (new Chain($this))
       ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'getHost', 'http://hello.world');
+      ->add(Request::class, 'getHost', self::HOST);
 
     return $container;
   }
