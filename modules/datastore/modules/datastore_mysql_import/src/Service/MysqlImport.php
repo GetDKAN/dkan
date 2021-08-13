@@ -34,9 +34,17 @@ class MysqlImport extends Importer {
     $storage = $this->dataStorage;
     $storage->count();
 
-    $sqlStatementLines = $this->getSqlStatement($filename, $storage, $header);
+    // Attempt to detect the line ending for this resource file using the first
+    // line from the file.
+    $eol = $this->getEol($line);
+    // On failure, stop the import job and log an error.
+    if (!isset($eol)) {
+      return $this->setResultError(sprintf('Failed to detect EOL character for resource file "%s" from header line "%s".', $filename, $line));
+    }
 
-    $sqlStatement = implode(' ', $sqlStatementLines);
+    // Construct an SQL import statement using the information gathered from the
+    // CSV file being imported.
+    $sqlStatement = $this->getSqlStatement($filename, $storage->getTableName(), $header, $eol);
 
     $db = $this->getDatabaseConnectionCapableOfDataLoad();
     $db->query($sqlStatement);
@@ -46,6 +54,29 @@ class MysqlImport extends Importer {
     $this->getResult()->setStatus(Result::DONE);
 
     return $this->getResult();
+  }
+
+  /**
+   * Attempt to detect the EOL character for the given line.
+   *
+   * @param string $line
+   *   Line being analyzed.
+   *
+   * @return string|null
+   *   The EOL character for the given line, or NULL on failure.
+   */
+  protected function getEol(string $line): ?string {
+    $eol = NULL;
+
+    if (preg_match($line, '\r\n$')) {
+      $eol = '\r\n';
+    } elseif (preg_match($line, '\r$')) {
+      $eol = '\r';
+    } elseif (preg_match($line, '\n$')) {
+      $eol = '\n';
+    }
+
+    return $eol;
   }
 
   /**
@@ -84,19 +115,31 @@ class MysqlImport extends Importer {
   }
 
   /**
-   * Private.
+   * Construct a SQL file import statement using the given file information.
+   *
+   * @param string $filename
+   *   Name of the CSV file being imported.
+   * @param string $tablename
+   *   Name of the datastore table the file is being imported into.
+   * @param string[] $headers
+   *   List of CSV headers.
+   * @param string $eol
+   *   End Of Line character for file importation.
+   *
+   * @return string
+   *   Generated SQL file import statement.
    */
-  private function getSqlStatement($filename, $storage, $header) {
-    return [
+  private function getSqlStatement(string $filename, string $tablename, array $headers, string $eol): string {
+    return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $filename . '\'',
-      'INTO TABLE ' . $storage->getTableName(),
+      'INTO TABLE ' . $tablename,
       'FIELDS TERMINATED BY \',\'',
       'ENCLOSED BY \'\"\'',
-      'LINES TERMINATED BY \'\n\'',
+      'LINES TERMINATED BY \'' . $eol . '\'',
       'IGNORE 1 ROWS',
-      '(' . implode(',', $header) . ')',
+      '(' . implode(',', $headers) . ')',
       'SET record_number = NULL;',
-    ];
+    ]);
   }
 
 }
