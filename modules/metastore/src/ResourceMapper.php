@@ -197,7 +197,7 @@ class ResourceMapper {
    * @return bool
    *   FALSE of the path does not exist.
    *
-   * @throws \Exception
+   * @throws \Drupal\metastore\Exception\AlreadyRegistered
    *   An exception is thrown if the file exists with json info about the
    *   existing resource.
    *
