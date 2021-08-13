@@ -247,8 +247,8 @@ class ReferencerTest extends TestCase {
     $this->assertEquals('text/tab-separated-values', $container_chain->getStoredInput('resource')[0]->getMimeType());
   }
 
-    /**
-   * Test that TSV format translates to correct mediatype if mediatype not supplied
+  /**
+   * Test that a new reference is created when needed.
    */
   public function testNewReference() {
     $container_chain = $this->getContainer();
