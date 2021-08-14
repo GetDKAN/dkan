@@ -905,7 +905,9 @@ FILE_PATTERNS          = *.c \
                          *.ice \
                          *.rst \
                          *.json \
-                         *.info.yml
+                         *.info.yml \
+                         *.routing.yml \
+                         *.services.yml
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.
