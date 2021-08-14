@@ -216,7 +216,7 @@ class Referencer {
    */
   private function handleExistingResource($info, $stored, $mimeType) {
     if ($info[0]->perspective == Resource::DEFAULT_SOURCE_PERSPECTIVE &&
-      (resource_mapper_new_revision() == 1 || $stored->mimetype != $mimeType)) {
+      (resource_mapper_new_revision() == 1 || $stored->getMimeType() != $mimeType)) {
       $new = $stored->createNewVersion();
       // Update the MIME type, since this may be updated by the user.
       $new->changeMimeType($mimeType);
