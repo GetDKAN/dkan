@@ -358,13 +358,22 @@ class Referencer {
    *
    * @return string
    *   The detected mime type, or DEFAULT_MIME_TYPE on failure.
+   *
+   * @todo Update the UI to set mediaType when a format is selected.
    */
   private function getMimeType($distribution): string {
-    $mime_type = NULL;
+    $mimeType = "text/plain";
 
-    // Retrieve mime type from distribution media type if set.
+    // If we have a mediaType set, use that.
     if (isset($distribution->mediaType)) {
-      $mime_type = $distribution->mediaType;
+      $mimeType = $distribution->mediaType;
+    }
+    // Fall back if we have an importable format set.
+    elseif (isset($distribution->format) && $distribution->format == 'csv') {
+      $mimeType = 'text/csv';
+    }
+    elseif (isset($distribution->format) && $distribution->format == 'tsv') {
+      $mimeType = 'text/tab-separated-values';
     }
     // Otherwise, determine the proper mime type using the distribution's
     // download URL.
@@ -372,12 +381,12 @@ class Referencer {
       // Determine whether the supplied distribution has a local or remote
       // resource.
       $is_local = $distribution->downloadURL !== $this->hostify($distribution->downloadURL);
-      $mime_type = $is_local ?
+      $mimeType = $is_local ?
         $this->getLocalMimeType($distribution->downloadURL) :
         $this->getRemoteMimeType($distribution->downloadURL);
     }
 
-    return $mime_type ?? self::DEFAULT_MIME_TYPE;
+    return $mimeType ?? self::DEFAULT_MIME_TYPE;
   }
 
   /**
