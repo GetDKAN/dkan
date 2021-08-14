@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\Tests\datastore\Unit\Controller;
+
 use Drupal\common\DatasetInfo;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
@@ -365,7 +367,7 @@ class QueryControllerTest extends TestCase {
       "properties" => ["record_number", "data"]
     ]);
 
-    $response = file_get_contents(__DIR__ . "/../../data/response_with_specific_header.json");
+    $response = file_get_contents(__DIR__ . "/../../../data/response_with_specific_header.json");
     $response = new \RootedData\RootedJsonData($response);
 
     $container = $this->getQueryContainer($data, 'POST', TRUE)
@@ -406,7 +408,7 @@ class QueryControllerTest extends TestCase {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
     }
     else {
-      $queryResult = new RootedJsonData(file_get_contents(__DIR__ . "/../../data/response.json"));
+      $queryResult = new RootedJsonData(file_get_contents(__DIR__ . "/../../../data/response.json"));
       $chain->add(Service::class, 'runQuery', $queryResult);
     }
 
@@ -414,10 +416,10 @@ class QueryControllerTest extends TestCase {
   }
 
   private function addMultipleResponses() {
-    $response1 = file_get_contents(__DIR__ . "/../../data/response_big.json");
+    $response1 = file_get_contents(__DIR__ . "/../../../data/response_big.json");
     $response1 = new \RootedData\RootedJsonData($response1);
 
-    $response2 = file_get_contents(__DIR__ . "/../../data/response.json");
+    $response2 = file_get_contents(__DIR__ . "/../../../data/response.json");
     $response2 = new \RootedData\RootedJsonData($response2);
 
     return (new Sequence())->add($response1)->add($response2);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Controller;
+namespace Drupal\Tests\datastore\Unit\Controller;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\DatasetInfo;
