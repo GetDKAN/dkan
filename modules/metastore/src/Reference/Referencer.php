@@ -369,10 +369,10 @@ class Referencer {
       $mimeType = $distribution->mediaType;
     }
     // Fall back if we have an importable format set.
-    elseif (isset($distribution->data->format) && $distribution->data->format == 'csv') {
+    elseif (isset($distribution->format) && $distribution->format == 'csv') {
       $mimeType = 'text/csv';
     }
-    elseif (isset($distribution->data->format) && $distribution->data->format == 'tsv') {
+    elseif (isset($distribution->format) && $distribution->format == 'tsv') {
       $mimeType = 'text/tab-separated-values';
     }
     // Otherwise, determine the proper mime type using the distribution's
