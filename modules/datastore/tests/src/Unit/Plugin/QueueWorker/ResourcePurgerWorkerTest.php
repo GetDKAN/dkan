@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Plugin\QueueWorker;
+namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\datastore\Plugin\QueueWorker\ResourcePurgerWorker;

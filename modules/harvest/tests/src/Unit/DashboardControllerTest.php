@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest;
+namespace Drupal\Tests\harvest\Unit;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\DatasetInfo;

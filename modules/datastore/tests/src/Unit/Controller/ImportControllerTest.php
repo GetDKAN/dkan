@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\Tests\datastore\Unit\Controller;
+
 use MockChain\Options;
 use Drupal\datastore\Service;
 use PHPUnit\Framework\TestCase;

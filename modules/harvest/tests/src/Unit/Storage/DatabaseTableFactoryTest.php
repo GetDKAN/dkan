@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest\Storage;
+namespace Drupal\Tests\harvest\Unit\Storage;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Schema;

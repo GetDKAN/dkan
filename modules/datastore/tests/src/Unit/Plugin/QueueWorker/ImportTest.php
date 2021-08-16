@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\datastore\Plugin\QueuWorker;
+namespace Drupal\Tests\datastore\Unit\Plugin\QueuWorker;
 
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Logger\LoggerChannel;
