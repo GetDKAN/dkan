@@ -110,14 +110,14 @@ class MysqlImport extends Importer {
       return $this->setResultError(sprintf('Failed to detect EOL character for resource file "%s" from header line "%s".', $file_path, $header_line));
     }
 
-
-    /** @var $storage \Drupal\datastore\Storage\DatabaseTable */
-    $storage = $this->dataStorage;
-    $storage->count();
+    // Call `count` on database table in order to ensure a database table has
+    // been created for the datastore.
+    // @todo Find a better way to ensure creation of datastore tables.
+    $this->dataStorage->count();
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $storage->getTableName(), $headers, $eol));
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), $headers, $eol));
 
     Database::setActiveConnection();
 
