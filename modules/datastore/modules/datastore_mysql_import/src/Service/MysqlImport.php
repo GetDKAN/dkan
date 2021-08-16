@@ -83,8 +83,19 @@ class MysqlImport extends Importer {
 
     // Read the first (header) line from the CSV file.
     $f = fopen($filename, 'r');
+    // Ensure the file could be successfully opened.
+    if (!isset($f) || $f === FALSE) {
+      return $this->setResultError(sprintf('Failed to open resource file "%s".', $filename));
+    }
+    // Attempt to retrieve the first line from the resource file.
     $header_line = fgets($f);
+    // Close the resource file since it is no longer necessary.
     fclose($f);
+    // Ensure the first line of the resource file was successfully read.
+    if (!isset($header_line) || $header_line === FALSE) {
+      return $this->setResultError(sprintf('Failed to read header line from resource file "%s".', $filename));
+    }
+
     // Extract the columns names using the header line.
     $columns = str_getcsv($header_line);
     // Generate sanitized table headers from column names.
