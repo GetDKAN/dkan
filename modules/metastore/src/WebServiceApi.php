@@ -6,7 +6,6 @@ use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\InvalidJsonException;
 use Drupal\metastore\Exception\MetastoreException;
 use Drupal\metastore\Exception\MissingPayloadException;
-use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -87,7 +86,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     $keepRefs = $this->wantObjectWithReferences();
 
     $output = array_map(function ($object) use ($keepRefs) {
-      $modified_object = $keepRefs ? $this->swapReferences($object) : $this->service->removeReferences($object);
+      $modified_object = $keepRefs
+        ? $this->service->swapReferences($object)
+        : $this->service->removeReferences($object);
       return (object) $modified_object->get('$');
     }, $this->service->getAll($schema_id));
 
@@ -110,7 +111,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $object = $this->service->get($schema_id, $identifier);
       if ($this->wantObjectWithReferences()) {
-        $object = $this->swapReferences($object);
+        $object = $this->service->swapReferences($object);
       }
       else {
         $object = Service::removeReferences($object);
@@ -135,31 +136,6 @@ class WebServiceApi implements ContainerInjectionInterface {
       return FALSE;
     }
     return TRUE;
-  }
-
-  /**
-   * Private.
-   */
-  private function swapReferences(RootedJsonData $object): RootedJsonData {
-    $no_schema_object = $this->service->getValidMetadataFactory()->get("$object", NULL);
-    foreach ($no_schema_object->get('$') as $property => $value) {
-      if (substr_count($property, "%Ref:") > 0) {
-        $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
-      }
-    }
-
-    return Service::removeReferences($no_schema_object, "%Ref");
-  }
-
-  /**
-   * Private.
-   */
-  private function swapReference($property, $value, RootedJsonData $object): RootedJsonData {
-    $original = str_replace("%Ref:", "", $property);
-    if ($object->__isset("$.{$original}")) {
-      $object->set("$.{$original}", $value);
-    }
-    return $object;
   }
 
   /**
