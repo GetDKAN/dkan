@@ -94,11 +94,8 @@ class MysqlImport extends Importer {
       return $this->setResultError($e->getMessage());
     }
 
-    // Extract the columns names from the header line, and ensure any empty
-    // column names are null-coalesced to an empty string.
-    $columns = array_map(function ($column) {
-      return $column ?? '';
-    }, str_getcsv($header_line));
+    // Extract the columns names using the header line.
+    $columns = str_getcsv($header_line);
     // Generate sanitized table headers from column names.
     $headers = $this->generateTableHeaders($columns);
 
@@ -208,7 +205,7 @@ class MysqlImport extends Importer {
   /**
    * Properly escape and format the supplied list of column names.
    *
-   * @param string[] $columns
+   * @param string|null[] $columns
    *   List of column names.
    *
    * @return array
@@ -216,8 +213,9 @@ class MysqlImport extends Importer {
    */
   private function generateTableHeaders(array $columns): array {
     return array_replace([], ...array_map(function ($column) {
-      // Sanitize the supplied table header to generate a unique column name.
-      $header = $this->sanitizeHeader($column);
+      // Sanitize the supplied table header to generate a unique column name;
+      // null-coalesce potentially NULL column names to empty strings.
+      $header = $this->sanitizeHeader($column ?? '');
 
       if (is_numeric($header) || in_array($header, self::RESERVED_WORDS)) {
         // Prepend "_" to column name that are not allowed in MySQL
