@@ -140,8 +140,15 @@ class MysqlImport extends Importer {
    *   on failure to read the first line from the file.
    */
   protected function getFirstLineFromFile(string $file_path): string {
+    // Ensure the "auto_detect_line_endings" ini setting is enabled before
+    // openning the file to ensure Mac style EOL characters are detected.
+    $old_ini = ini_set('auto_detect_line_endings', '1');
     // Read the first (header) line from the CSV file.
     $f = fopen($file_path, 'r');
+    // Revert ini setting once the file has been opened.
+    if ($old_ini !== FALSE) {
+      ini_set('auto_detect_line_endings', $old_ini);
+    }
     // Ensure the file could be successfully opened.
     if (!isset($f) || $f === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
