@@ -185,6 +185,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $propertyKey = 'datastoreQuery' . ucfirst($key);
       $ref = ['$ref' => "#/components/parameters/$propertyKey"];
       $spec["paths"]["/api/1/datastore/query/{distributionId}"]["get"]["parameters"][] = $ref;
+      $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["get"]["parameters"][] = $ref;
     }
     return $spec;
   }
