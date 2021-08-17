@@ -8,26 +8,46 @@ use Drupal\common\DkanApiDocsGenerator;
  * Provides dataset-specific OpenAPI documentation.
  */
 class DatasetApiDocs {
-  /**
-   * List of schemas from the full spec to keep for dataset-specific docs.
-   *
-   * @var array
-   */
-  private $parametersToKeep;
 
-  /**
-   * List of schemas from the full spec to keep for dataset-specific docs.
-   *
-   * @var array
-   */
-  private $schemasToKeep;
+  const SPEC_PARAMETERS = [
+    'datasetUuid',
+    'showReferenceIds',
+    'datastoreDistributionUuid',
+    'datastoreQueryProperties',
+    'datastoreQueryConditions',
+    'datastoreQueryLimit',
+    'datastoreQueryOffset',
+    'datastoreQuerySorts',
+    'datastoreQueryCount',
+    'datastoreQueryResults',
+    'datastoreQuerySchema',
+    'datastoreQueryKeys',
+    'datastoreQueryFormat',
+    'datastoreQueryRowIds',
+    'datastoreDatasetUuid',
+    'datastoreDistributionIndex',
+  ];
 
-  /**
-   * List of schemas from the full spec to keep for dataset-specific docs.
-   *
-   * @var array
-   */
-  private $responsesToKeep;
+  const SPEC_SCHEMAS = [
+    'dataset',
+    'errorResponse',
+    'datastoreResourceQuery',
+    'datastoreQueryResource',
+    'datastoreQueryProperty',
+    'datastoreQueryExpression',
+    'datastoreQueryCondition',
+    'datastoreQueryConditionGroup',
+    'datastoreQuerySort',
+    'datastoreQueryResourceProperty',
+    'datastoreQuery',
+
+  ];
+
+  const SPEC_RESPONSES = [
+    '404IdNotFound',
+    '200JsonOrCsvQueryOk',
+    '400BadJson',
+  ];
 
   /**
    * OpenAPI spec for dataset-related endpoints.
@@ -54,47 +74,6 @@ class DatasetApiDocs {
   public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore) {
     $this->docsGenerator = $docsGenerator;
     $this->metastore = $metastore;
-
-    $this->parametersToKeep = [
-      'datasetUuid',
-      'showReferenceIds',
-      'datastoreDistributionUuid',
-      'datastoreQueryProperties',
-      'datastoreQueryConditions',
-      'datastoreQueryLimit',
-      'datastoreQueryOffset',
-      'datastoreQuerySorts',
-      'datastoreQueryCount',
-      'datastoreQueryResults',
-      'datastoreQuerySchema',
-      'datastoreQueryKeys',
-      'datastoreQueryFormat',
-      'datastoreQueryRowIds',
-      'datastoreDatasetUuid',
-      'datastoreDistributionIndex',
-    ];
-
-    $this->schemasToKeep = [
-      'dataset',
-      'errorResponse',
-      'datastoreResourceQuery',
-      'datastoreQueryResource',
-      'datastoreQueryProperty',
-      'datastoreQueryExpression',
-      'datastoreQueryCondition',
-      'datastoreQueryConditionGroup',
-      'datastoreQuerySort',
-      'datastoreQueryResourceProperty',
-      'datastoreQuery',
-
-    ];
-
-    $this->responsesToKeep = [
-      '404IdNotFound',
-      '200JsonOrCsvQueryOk',
-      '400BadJson',
-    ];
-
   }
 
   /**
@@ -121,12 +100,8 @@ class DatasetApiDocs {
     $metastorePath['parameters'] = array_values($metastorePath['parameters']);
     $datasetSpec['paths']["/api/1/metastore/schemas/dataset/items/$identifier"]['get'] = $metastorePath;
 
-    $datastoreIndexPath = $fullSpec['paths']['/api/1/datastore/query/{datasetId}/{index}'];
-    unset($datastoreIndexPath['get']['parameters'][0]);
-    $datastoreIndexPath['get']['parameters'] = array_values($datastoreIndexPath['get']['parameters']);
-    unset($datastoreIndexPath['post']['parameters'][0]);
-    $datastoreIndexPath['post']['parameters'] = array_values($datastoreIndexPath['post']['parameters']);
-    $datasetSpec['paths']["/api/1/datastore/query/$identifier/{index}"] = $datastoreIndexPath;
+    $datasetSpec['paths']["/api/1/datastore/query/$identifier/{index}"]
+      = $this->getDatastoreIndexPath($fullSpec, $identifier);
 
     $datasetSpec['paths']['/api/1/datastore/query/{distributionId}'] =
       $fullSpec['paths']['/api/1/datastore/query/{distributionId}'];
@@ -134,16 +109,54 @@ class DatasetApiDocs {
     $datasetSpec['paths']['/api/1/datastore/sql'] =
       $fullSpec['paths']['/api/1/datastore/sql'];
 
-    $datasetSpec['components']['parameters'] =
-      $this->datasetSpecificParameters($fullSpec['components']['parameters'], $identifier);
-    $datasetSpec['components']['schemas'] =
-      $this->datasetSpecificSchemas($fullSpec['components']['schemas']);
-    $datasetSpec['components']['responses'] =
-      $this->datasetSpecificResponses($fullSpec['components']['responses']);
+    $datasetSpec['components'] = $this->datasetSpecificComponents($fullSpec, $identifier);
 
     $this->alterDatastoreParameters($datasetSpec, $identifier);
 
     return $datasetSpec;
+  }
+
+  /**
+   * Set up components object for dataset-specific docs.
+   *
+   * @param mixed $fullSpec
+   *   The full docs spec.
+   * @param mixed $identifier
+   *   Dataset identifier.
+   *
+   * @return array
+   *   Components object (associative array).
+   */
+  private function datasetSpecificComponents($fullSpec, $identifier) {
+    $components = [];
+    $components['parameters'] =
+      $this->datasetSpecificParameters($fullSpec['components']['parameters'], $identifier);
+    $components['schemas'] =
+      $this->datasetSpecificSchemas($fullSpec['components']['schemas']);
+    $components['responses'] =
+      $this->datasetSpecificResponses($fullSpec['components']['responses']);
+
+    return $components;
+  }
+
+  /**
+   * Redo the datastore index endpoint assuming the ID is included in the path.
+   *
+   * @param mixed $fullSpec
+   *   Full site spec.
+   * @param mixed $identifier
+   *   Dataset identifier.
+   *
+   * @return array
+   *   Path array ready to insert.
+   */
+  private function getDatastoreIndexPath($fullSpec, $identifier) {
+    $datastoreIndexPath = $fullSpec['paths']['/api/1/datastore/query/{datasetId}/{index}'];
+    unset($datastoreIndexPath['get']['parameters'][0]);
+    $datastoreIndexPath['get']['parameters'] = array_values($datastoreIndexPath['get']['parameters']);
+    unset($datastoreIndexPath['post']['parameters'][0]);
+    $datastoreIndexPath['post']['parameters'] = array_values($datastoreIndexPath['post']['parameters']);
+    return $datastoreIndexPath;
   }
 
   /**
@@ -157,7 +170,7 @@ class DatasetApiDocs {
    */
   private function datasetSpecificSchemas(array $schemas) {
     $newSchemas = array_filter($schemas, function ($key) {
-      if (in_array($key, $this->schemasToKeep)) {
+      if (in_array($key, self::SPEC_SCHEMAS)) {
         return TRUE;
       }
       return FALSE;
@@ -178,7 +191,7 @@ class DatasetApiDocs {
    */
   private function datasetSpecificParameters(array $parameters, $identifier) {
     $newParameters = array_filter($parameters, function ($key) {
-      if (in_array($key, $this->parametersToKeep)) {
+      if (in_array($key, self::SPEC_PARAMETERS)) {
         return TRUE;
       }
       return FALSE;
@@ -198,7 +211,7 @@ class DatasetApiDocs {
    */
   private function datasetSpecificResponses(array $responses) {
     $newResponses = array_filter($responses, function ($key) {
-      if (in_array($key, $this->responsesToKeep)) {
+      if (in_array($key, self::SPEC_RESPONSES)) {
         return TRUE;
       }
       return FALSE;

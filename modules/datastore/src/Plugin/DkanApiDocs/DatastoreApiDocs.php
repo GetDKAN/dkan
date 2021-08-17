@@ -175,18 +175,10 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $ref = ['$ref' => "#/components/parameters/$propertyKey"];
       $spec["paths"]["/api/1/datastore/query"]["get"]["parameters"][] = $ref;
       $spec["paths"]["/api/1/datastore/query/download"]["get"]["parameters"][] = $ref;
+      $spec["paths"]["/api/1/datastore/query/{distributionId}"]["get"]["parameters"][] = $ref;
+      $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["get"]["parameters"][] = $ref;  
     }
 
-    $flatResourceQueryProperties = array_filter(
-      $spec["components"]["schemas"]["datastoreResourceQuery"]["properties"],
-      [$this, 'propertyIsFlat']
-    );
-    foreach (array_keys($flatResourceQueryProperties) as $key) {
-      $propertyKey = 'datastoreQuery' . ucfirst($key);
-      $ref = ['$ref' => "#/components/parameters/$propertyKey"];
-      $spec["paths"]["/api/1/datastore/query/{distributionId}"]["get"]["parameters"][] = $ref;
-      $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["get"]["parameters"][] = $ref;
-    }
     return $spec;
   }
 
