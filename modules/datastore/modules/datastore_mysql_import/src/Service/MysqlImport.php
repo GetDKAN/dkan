@@ -6,6 +6,8 @@ use Dkan\Datastore\Importer;
 use Drupal\Core\Database\Database;
 use Procrastinator\Result;
 
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+
 /**
  * Expiremental MySQL LOAD DATA importer.
  *
@@ -78,36 +80,114 @@ class MysqlImport extends Importer {
    * {@inheritdoc}
    */
   protected function runIt() {
-    $fileSystem = \Drupal::service('file_system');
-    $filename = $fileSystem->realpath($this->resource->getFilePath());
+    // Attempt to resolve resource file name from file path.
+    $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
+    if ($file_path === FALSE) {
+      return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s" and version "%s".', $file_path, $this->resource->getIdentifier(), $this->resource->getVersion()));
+    }
 
-    // Read the first (header) line from the CSV file.
-    $f = fopen($filename, 'r');
-    $header_line = fgets($f);
-    fclose($f);
+    // Read the header line from the CSV file.
+    try {
+      $header_line = $this->getFirstLineFromFile($file_path);
+    }
+    catch (FileException $e) {
+      return $this->setResultError($e->getMessage());
+    }
+
     // Extract the columns names using the header line.
     $columns = str_getcsv($header_line);
     // Generate sanitized table headers from column names.
     $headers = $this->generateTableHeaders($columns);
-    // Set the storage schema using the list of table headers.
+
+    // Use headers to set the storage schema.
     $this->setStorageSchema($headers);
 
-    // Instance of Drupal\datastore\Storage\DatabaseTable.
-    $storage = $this->dataStorage;
-    $storage->count();
+    // Attempt to detect the line ending for this resource file using the first
+    // line from the file.
+    $eol = $this->getEol($header_line);
+    // On failure, stop the import job and log an error.
+    if (!isset($eol)) {
+      return $this->setResultError(sprintf('Failed to detect EOL character for resource file "%s" from header line "%s".', $file_path, $header_line));
+    }
 
-    $sqlStatementLines = $this->getSqlStatement($filename, $storage, $headers);
-
-    $sqlStatement = implode(' ', $sqlStatementLines);
-
-    $db = $this->getDatabaseConnectionCapableOfDataLoad();
-    $db->query($sqlStatement);
+    // Call `count` on database table in order to ensure a database table has
+    // been created for the datastore.
+    // @todo Find a better way to ensure creation of datastore tables.
+    $this->dataStorage->count();
+    // Construct and execute a SQL import statement using the information
+    // gathered from the CSV file being imported.
+    $this->getDatabaseConnectionCapableOfDataLoad()->query(
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), $headers, $eol));
 
     Database::setActiveConnection();
 
     $this->getResult()->setStatus(Result::DONE);
 
     return $this->getResult();
+  }
+
+  /**
+   * Read the first line from the given file.
+   *
+   * @param string $file_path
+   *   File path.
+   *
+   * @return string
+   *   First line from file.
+   *
+   * @throws Symfony\Component\HttpFoundation\File\Exception\FileException
+   *   On failure to open the file;
+   *   on failure to read the first line from the file.
+   */
+  protected function getFirstLineFromFile(string $file_path): string {
+    // Ensure the "auto_detect_line_endings" ini setting is enabled before
+    // openning the file to ensure Mac style EOL characters are detected.
+    $old_ini = ini_set('auto_detect_line_endings', '1');
+    // Read the first (header) line from the CSV file.
+    $f = fopen($file_path, 'r');
+    // Revert ini setting once the file has been opened.
+    if ($old_ini !== FALSE) {
+      ini_set('auto_detect_line_endings', $old_ini);
+    }
+    // Ensure the file could be successfully opened.
+    if (!isset($f) || $f === FALSE) {
+      throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
+    }
+    // Attempt to retrieve the first line from the resource file.
+    $header_line = fgets($f);
+    // Close the resource file since it is no longer necessary.
+    fclose($f);
+    // Ensure the first line of the resource file was successfully read.
+    if (!isset($header_line) || $header_line === FALSE) {
+      throw new FileException(sprintf('Failed to read header line from resource file "%s".', $file_path));
+    }
+
+    return $header_line;
+  }
+
+  /**
+   * Attempt to detect the EOL character for the given line.
+   *
+   * @param string $line
+   *   Line being analyzed.
+   *
+   * @return string|null
+   *   The EOL character for the given line, or NULL on failure.
+   */
+  protected function getEol(string $line): ?string {
+    $eol = NULL;
+
+    if (preg_match('/\r\n$/', $line)) {
+      $eol = '\r\n';
+    }
+    elseif (preg_match('/\r$/', $line)) {
+      $eol = '\r';
+    }
+    elseif (preg_match('/\n$/', $line)) {
+      $eol = '\n';
+    }
+
+    return $eol;
   }
 
   /**
@@ -125,7 +205,7 @@ class MysqlImport extends Importer {
   /**
    * Properly escape and format the supplied list of column names.
    *
-   * @param string[] $columns
+   * @param string|null[] $columns
    *   List of column names.
    *
    * @return array
@@ -133,8 +213,9 @@ class MysqlImport extends Importer {
    */
   private function generateTableHeaders(array $columns): array {
     return array_replace([], ...array_map(function ($column) {
-      // Sanitize the supplied table header to generate a unique column name.
-      $header = $this->sanitizeHeader($column);
+      // Sanitize the supplied table header to generate a unique column name;
+      // null-coalesce potentially NULL column names to empty strings.
+      $header = $this->sanitizeHeader($column ?? '');
 
       if (is_numeric($header) || in_array($header, self::RESERVED_WORDS)) {
         // Prepend "_" to column name that are not allowed in MySQL
@@ -197,19 +278,31 @@ class MysqlImport extends Importer {
   }
 
   /**
-   * Private.
+   * Construct a SQL file import statement using the given file information.
+   *
+   * @param string $file_path
+   *   File path to the CSV file being imported.
+   * @param string $tablename
+   *   Name of the datastore table the file is being imported into.
+   * @param string[] $headers
+   *   List of CSV headers.
+   * @param string $eol
+   *   End Of Line character for file importation.
+   *
+   * @return string
+   *   Generated SQL file import statement.
    */
-  private function getSqlStatement($filename, $storage, $header) {
-    return [
-      'LOAD DATA LOCAL INFILE \'' . $filename . '\'',
-      'INTO TABLE ' . $storage->getTableName(),
+  private function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol): string {
+    return implode(' ', [
+      'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
+      'INTO TABLE ' . $tablename,
       'FIELDS TERMINATED BY \',\'',
       'ENCLOSED BY \'\"\'',
-      'LINES TERMINATED BY \'\n\'',
+      'LINES TERMINATED BY \'' . $eol . '\'',
       'IGNORE 1 ROWS',
-      '(' . implode(',', $header) . ')',
+      '(' . implode(',', $headers) . ')',
       'SET record_number = NULL;',
-    ];
+    ]);
   }
 
 }
