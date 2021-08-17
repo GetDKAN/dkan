@@ -84,3 +84,9 @@ services:
     class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:
       - '@entity.repository'
+
+  dkan.metastore.dataset_api_docs:
+    class: \Drupal\metastore\DatasetApiDocs
+    arguments:
+      - '@dkan.common.docs_generator'
+      - '@dkan.metastore.service'

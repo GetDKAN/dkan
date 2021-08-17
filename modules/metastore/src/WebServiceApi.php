@@ -35,6 +35,13 @@ class WebServiceApi implements ContainerInjectionInterface {
   private $service;
 
   /**
+   * Metastore dataset docs service.
+   *
+   * @var \Drupal\metastore\DatasetApiDocs
+   */
+  private $docs;
+
+  /**
    * Inherited.
    *
    * {@inheritdoc}
@@ -42,16 +49,18 @@ class WebServiceApi implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new WebServiceApi(
       $container->get('request_stack'),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('dkan.metastore.dataset_api_docs')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(RequestStack $requestStack, Service $service) {
+  public function __construct(RequestStack $requestStack, Service $service, DatasetApiDocs $docs) {
     $this->requestStack = $requestStack;
     $this->service = $service;
+    $this->docs = $docs;
   }
 
   /**
@@ -200,7 +209,10 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function publish(string $schema_id, string $identifier) {
     try {
       $this->service->publish($schema_id, $identifier);
-      return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
+      return $this->getResponse((object) [
+        "endpoint" => $this->getRequestUri(),
+        "identifier" => $identifier,
+      ]);
     }
     catch (MetastoreException $e) {
       return $this->getResponseFromException($e, $e->httpCode());
@@ -228,7 +240,13 @@ class WebServiceApi implements ContainerInjectionInterface {
       $data = $this->service->getValidMetadataFactory()->get($data, $schema_id);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
-      return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);
+      return $this->getResponse(
+        [
+          "endpoint" => $this->getRequestUri(),
+          "identifier" => $info['identifier'],
+        ],
+        $code
+      );
     }
     catch (MetastoreException $e) {
       return $this->getResponseFromException($e, $e->httpCode());
@@ -264,7 +282,10 @@ class WebServiceApi implements ContainerInjectionInterface {
       $this->checkIdentifier($data, $identifier);
 
       $this->service->patch($schema_id, $identifier, $data);
-      return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
+      return $this->getResponse((object) [
+        "endpoint" => $this->getRequestUri(),
+        "identifier" => $identifier,
+      ]);
     }
     catch (MetastoreException $e) {
       return $this->getResponseFromException($e, $e->httpCode());
@@ -304,6 +325,24 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function getCatalog() : JsonResponse {
     try {
       return $this->getResponse($this->service->getCatalog());
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e);
+    }
+  }
+
+  /**
+   * Get the API docs spec for a specific dataset.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   A JSON response.
+   */
+  public function getDocs($identifier) : JsonResponse {
+    try {
+      return $this->getResponse($this->docs->getDatasetSpecific($identifier));
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);

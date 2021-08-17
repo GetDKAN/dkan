@@ -18,7 +18,7 @@
                 "schema": {
                     "type": "string"
                 }
-            },
+            },         
             "datastoreDatasetUuid": {
                 "name": "datasetId",
                 "in": "path",
@@ -34,7 +34,7 @@
                 "description": "The index of a distribution in a dataset's distribution array. For instance, the first distribution in a dataset would have an index of \"0,\" the second would have \"1\", etc.",
                 "required": true,
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
@@ -391,6 +391,9 @@
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDistributionUuid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/datastoreDownload"
                     },
                     {
                         "in": "query",

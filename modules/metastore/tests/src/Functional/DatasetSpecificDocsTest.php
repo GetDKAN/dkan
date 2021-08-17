@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\metastore\Functional;
 
-use Drupal\metastore\WebServiceApiDocs;
 use Drupal\Tests\common\Traits\CleanUp;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -49,8 +48,8 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
     $dataset = $metastore->getValidMetadataFactory()->get($dataset, 'dataset');
     $metastore->post('dataset', $dataset);
 
-    $webService = WebServiceApiDocs::create(\Drupal::getContainer());
-    $response = $webService->getDatasetSpecific('123');
+    $docService = \Drupal::service('dkan.metastore.dataset_api_docs');
+    $response = $docService->getDatasetSpecific('123');
     $spec = json_decode($response->getContent());
     $this->assertTrue(is_object($spec));
     $this->assertEquals("123", $spec->components->parameters->datasetUuid->example);
