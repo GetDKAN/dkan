@@ -112,6 +112,7 @@ class DatasetApiDocs {
     $datasetSpec['components'] = $this->datasetSpecificComponents($fullSpec, $identifier);
 
     $this->alterDatastoreParameters($datasetSpec, $identifier);
+    $this->modifySqlEndpoints($datasetSpec, $identifier);
 
     return $datasetSpec;
   }
@@ -246,25 +247,19 @@ class DatasetApiDocs {
   /**
    * Modify the generic sql endpoint to be specific to the current dataset.
    *
-   * @param array $pathsAndOperations
-   *   The paths defined in the original spec.
+   * @param array $spec
+   *   The original spec.
    * @param string $identifier
    *   Dataset uuid.
-   *
-   * @return array
-   *   Spec with dataset-specific datastore sql endpoint.
    */
-  private function modifySqlEndpoints(array $pathsAndOperations, string $identifier) : array {
+  private function modifySqlEndpoints(array &$spec, string $identifier) {
 
-    foreach ($this->getSqlPathsAndOperations($pathsAndOperations) as $path => $operations) {
-
+    foreach ($this->getSqlPathsAndOperations($spec['paths']) as $path => $operations) {
       foreach ($this->getDistributions($identifier) as $dist) {
         $newOperations = $this->modifySqlEndpoint($operations, $dist);
-        $pathsAndOperations[$path] = $newOperations;
+        $spec['paths'][$path] = $newOperations;
       }
     }
-
-    return $pathsAndOperations;
   }
 
   /**
@@ -283,11 +278,11 @@ class DatasetApiDocs {
    * Private.
    */
   private function modifySqlEndpoint($operations, $distribution) {
-    $distKey = isset($distribution->title) ? $distribution->title : $distribution->identifier;
+    $distKey = isset($distribution['data']['title']) ? $distribution['data']['title'] : $distribution['identifier'];
     unset($operations['get']['parameters'][0]['example']);
     $operations['get']['parameters'][0]['examples'][$distKey] = [
-      "summary" => "Query distribution {$distribution->identifier}",
-      "value" => "[SELECT * FROM {$distribution->identifier}][LIMIT 2]",
+      "summary" => "Query distribution {$distribution['identifier']}",
+      "value" => "[SELECT * FROM {$distribution['identifier']}][LIMIT 2]",
     ];
     return $operations;
   }

@@ -176,7 +176,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $spec["paths"]["/api/1/datastore/query"]["get"]["parameters"][] = $ref;
       $spec["paths"]["/api/1/datastore/query/download"]["get"]["parameters"][] = $ref;
       $spec["paths"]["/api/1/datastore/query/{distributionId}"]["get"]["parameters"][] = $ref;
-      $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["get"]["parameters"][] = $ref;  
+      $spec["paths"]["/api/1/datastore/query/{datasetId}/{index}"]["get"]["parameters"][] = $ref;
     }
 
     return $spec;
@@ -284,8 +284,8 @@ class DatastoreApiDocs extends DkanApiDocsBase {
 
   /**
    * Get some example identifiers to populate docs.
-   * 
-   * @return array 
+   *
+   * @return array
    *   An array, with keys resource and distribution.
    *
    * @todo Page through results in case 20 isn't enough.
