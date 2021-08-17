@@ -57,8 +57,8 @@ class UrlHostTokenResolver {
    *   Resolved public file path.
    */
   public static function resolveFilePath(string $resourceUrl): string {
-    return preg_replace('/^' . preg_quote(self::getServerPublicFilesUrl(), '/') . '/',
-      self::PUBLIC_SCHEME, self::resolve($resourceUrl));
+    return urldecode(preg_replace('/^' . preg_quote(self::getServerPublicFilesUrl(), '/') . '/',
+      self::PUBLIC_SCHEME, self::resolve($resourceUrl)));
   }
 
 }
