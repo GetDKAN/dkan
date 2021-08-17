@@ -212,7 +212,9 @@ class MysqlImport extends Importer {
    *   List of sanitized table headers keyed by original column names.
    */
   private function generateTableHeaders(array $columns): array {
-    return array_replace([], ...array_map(function ($column) {
+    $headers = [];
+
+    foreach ($columns as $column) {
       // Sanitize the supplied table header to generate a unique column name;
       // null-coalesce potentially NULL column names to empty strings.
       $header = $this->sanitizeHeader($column ?? '');
@@ -228,8 +230,17 @@ class MysqlImport extends Importer {
       // column length.
       $header = $this->truncateHeader($header);
 
-      return [$column => $header];
-    }, $columns));
+      // Generate unique numeric suffix for the header if a header already
+      // exists with the same name.
+      for ($i = 2; isset($headers[$column]); $i++) {
+        $suffix = '_' . $i;
+        $column = substr($column, 0, self::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
+      }
+
+      $headers[$header] = $column;
+    }
+
+    return array_flip($headers);
   }
 
   /**
