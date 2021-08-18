@@ -147,7 +147,7 @@ class Service implements ContainerInjectionInterface {
       $label => $this->resourceLocalizer->localize($identifier, $version),
     ];
 
-    if ($result[$label]->getStatus() == Result::DONE) {
+    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
       $resource = $this->resourceLocalizer->get($identifier, $version);
     }
 
