@@ -49,10 +49,9 @@ class DatasetSpecificDocsTest extends ExistingSiteBase {
     $metastore->post('dataset', $dataset);
 
     $docService = \Drupal::service('dkan.metastore.dataset_api_docs');
-    $response = $docService->getDatasetSpecific('123');
-    $spec = json_decode($response->getContent());
-    $this->assertTrue(is_object($spec));
-    $this->assertEquals("123", $spec->components->parameters->datasetUuid->example);
+    $spec = $docService->getDatasetSpecific('123');
+    $this->assertTrue(is_array($spec));
+    $this->assertEquals("123", $spec['components']['parameters']['datasetUuid']['example']);
   }
 
   /**
