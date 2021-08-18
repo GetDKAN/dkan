@@ -232,9 +232,9 @@ class MysqlImport extends Importer {
 
       // Generate unique numeric suffix for the header if a header already
       // exists with the same name.
-      for ($i = 2; isset($headers[$column]); $i++) {
+      for ($i = 2; isset($headers[$header]); $i++) {
         $suffix = '_' . $i;
-        $column = substr($column, 0, self::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
+        $header = substr($header, 0, self::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
       }
 
       $headers[$header] = $column;
