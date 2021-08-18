@@ -96,7 +96,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
 
       $queued = FALSE;
       foreach ($results as $result) {
-        $queued = $result ? $this->processResult($result, $data, $queued) : FALSE;
+        $queued = isset($result) ? $this->processResult($result, $data, $queued) : FALSE;
       }
     }
     catch (\Exception $e) {
