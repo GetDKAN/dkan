@@ -209,7 +209,7 @@ class MysqlImport extends Importer {
    *   List of column names.
    *
    * @return array
-   *   List of sanitized table headers keyed by original column names.
+   *   List of sanitized table headers.
    */
   private function generateTableHeaders(array $columns): array {
     $headers = [];
@@ -237,10 +237,10 @@ class MysqlImport extends Importer {
         $header = substr($header, 0, self::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
       }
 
-      $headers[$header] = $column;
+      $headers[$header] = $header;
     }
 
-    return array_flip($headers);
+    return $headers;
   }
 
   /**
