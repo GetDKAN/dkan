@@ -11,9 +11,27 @@
                 }
             },
             "datastoreDistributionUuid": {
-                "name": "identifier",
+                "name": "distributionId",
                 "in": "path",
-                "description": "A distribution id",
+                "description": "A distribution ID",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },         
+            "datastoreDatasetUuid": {
+                "name": "datasetId",
+                "in": "path",
+                "description": "A dataset ID",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "datastoreDistributionIndex": {
+                "name": "index",
+                "in": "path",
+                "description": "The index of a distribution in a dataset's distribution array. For instance, the first distribution in a dataset would have an index of \"0,\" the second would have \"1\", etc.",
                 "required": true,
                 "schema": {
                     "type": "string"
@@ -235,7 +253,7 @@
             "get": {
                 "operationId": "datastore-query-get",
                 "summary": "Query one or more datastore resources",
-                "description": "Simple GET equivalent of a POST query. Note that parameter format is not fully supported by current Swagger UI and examples may not work. For more reliable queries, write your query in JSON and then convert to a multidimensional query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
+                "description": "Simple GET equivalent of a POST query. Note that parameters containing arrays or objects are not yet supported by SwaggerUI. For conditions, sorts, and other complex parameters, write your query in JSON and then convert to a nested query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
                 "tags": ["Datastore: query"],
                 "parameters": [],
                 "responses": {
@@ -266,7 +284,7 @@
             "get": {
                 "operationId": "datastore-query-download-get",
                 "summary": "Query one or more datastore resources for file download with get",
-                "description": "Simple GET equivalent of a POST query. Note that parameter format is not fully supported by current Swagger UI and examples may not work. For more reliable queries, write your query in JSON and then convert to a multidimensional query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
+                "description": "Simple GET equivalent of a POST query. Note that parameters containing arrays or objects are not yet supported by SwaggerUI. For conditions, sorts, and other complex parameters, write your query in JSON and then convert to a nested query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
                 "tags": ["Datastore: query"],
                 "parameters": [],
                 "responses": {
@@ -276,7 +294,7 @@
                 }
             }
         },
-        "/api/1/datastore/query/{identifier}": {
+        "/api/1/datastore/query/{distributionId}": {
             "post": {
                 "operationId": "datastore-resource-query-post",
                 "summary": "Query a single datastore resource",
@@ -301,9 +319,9 @@
                 }
             },
             "get": {
-                "operationId": "datastore-resource-query-get",
+                "operationId": "datastore-datasetindex-query-get",
                 "summary": "Query a single datastore resource with get",
-                "description": "Simple GET equivalent of a POST query. Note that parameter format is not fully supported by current Swagger UI and examples may not work. For more reliable queries, write your query in JSON and then convert to a multidimensional query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
+                "description": "Simple GET equivalent of a POST query. Note that parameters containing arrays or objects are not yet supported by SwaggerUI. For conditions, sorts, and other complex parameters, write your query in JSON and then convert to a nested query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
                 "tags": ["Datastore: query"],
                 "parameters": [
                     {
@@ -317,7 +335,54 @@
                 }
             }
         },
-        "/api/1/datastore/query/{identifier}/download": {
+        "/api/1/datastore/query/{datasetId}/{index}": {
+            "post": {
+                "operationId": "datastore-datasetindex-query-post",
+                "summary": "Query a single datastore resource",
+                "tags": ["Datastore: query"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreDatasetUuid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionIndex"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": { "$ref": "#/components/schemas/datastoreResourceQuery" }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            },
+            "get": {
+                "operationId": "datastore-resource-query-get",
+                "summary": "Query a single datastore resource with get",
+                "description": "Simple GET equivalent of a POST query -- see the POST endpoint documentation for full query schema. A few basic parameters are provided here as examples. For more reliable queries, write your query in JSON and then convert to a query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.",
+                "tags": ["Datastore: query"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreDatasetUuid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionIndex"
+                    }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200JsonOrCsvQueryOk"},
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            }
+        },
+        "/api/1/datastore/query/{distributionId}/download": {
             "get": {
                 "operationId": "datastore-resource-query-download-get",
                 "summary": "Query a single datastore resource for file download",
@@ -326,6 +391,41 @@
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/datastoreDistributionUuid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/datastoreDownload"
+                    },
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "csv",
+                        "description": "Response format. Currently, only csv is supported.",
+                        "style": "deepObject"
+                    }
+                ],
+                "responses": {
+                    "200": { "$ref": "#/components/responses/200DatastoreCsvOk"},
+                    "400": { "$ref": "#/components/responses/400BadJson" },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            }
+        },
+        "/api/1/datastore/query/{datasetId}/{index}/download": {
+            "get": {
+                "operationId": "datastore-datasetindex-query-download-get",
+                "summary": "Query a single datastore resource for file download",
+                "description": "Like the other datastore query GET endpoints, additional parameters may be added by serializing a query JSON object (documented in the POST endpoints) into a query string.",
+                "tags": ["Datastore: query"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/datastoreDatasetUuid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/datastoreDistributionIndex"
                     },
                     {
                         "in": "query",

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
+use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
@@ -84,6 +85,21 @@ class WebServiceApiTest extends TestCase {
     $this->assertEquals($json, $response->getContent());
   }
 
+
+  /**
+   *
+   */
+  public function testGetDocs() {
+    $json = '{"openapi":"3.0.1"}';
+    $spec = json_decode($json, TRUE);
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(DatasetApiDocs::class, 'getDatasetSpecific', $spec);
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->getDocs(1);
+    $this->assertEquals($json, $response->getContent());
+  }
+
   public function testGetWithRefs() {
     $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
     $jsonWithSwappedRefs = '{"name":{"identifier":"123","data":[]}}';
@@ -96,7 +112,6 @@ class WebServiceApiTest extends TestCase {
     $response = $controller->get('dataset', '1');
     $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
   }
-
 
   /**
    *
@@ -490,6 +505,7 @@ EOF;
     $options = (new Options)
       ->add('request_stack', RequestStack::class)
       ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.dataset_api_docs', DatasetApiDocs::class)
       ->index(0);
 
     $mockChain = (new Chain($this))
