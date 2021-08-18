@@ -85,6 +85,21 @@ class WebServiceApiTest extends TestCase {
     $this->assertEquals($json, $response->getContent());
   }
 
+
+  /**
+   *
+   */
+  public function testGetDocs() {
+    $json = '{"openapi":"3.0.1"}';
+    $spec = json_decode($json, TRUE);
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(DatasetApiDocs::class, 'getDatasetSpecific', $spec);
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->getDocs(1);
+    $this->assertEquals($json, $response->getContent());
+  }
+
   public function testGetWithRefs() {
     $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
     $jsonWithSwappedRefs = '{"name":{"identifier":"123","data":[]}}';
@@ -97,7 +112,6 @@ class WebServiceApiTest extends TestCase {
     $response = $controller->get('dataset', '1');
     $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
   }
-
 
   /**
    *

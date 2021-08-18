@@ -70,6 +70,15 @@ class SearchTest extends ExistingSiteBase {
 
     $response = $controller->facets();
     $this->assertEquals('400', $response->getStatusCode());
+
+    // Test past max page size
+    $requestStack = \Drupal::service('request_stack');
+    $params = ['page-size' => 200];
+    $request = $requestStack->pop()->duplicate($params);
+    $requestStack->push($request);
+    $response = $controller->search();
+    // @todo Better assertion.
+    $this->assertEquals('200', $response->getStatusCode());
   }
 
 }

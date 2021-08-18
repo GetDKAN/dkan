@@ -82,8 +82,8 @@ class DatasetApiDocs {
    * @param string $identifier
    *   Dataset uuid.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   OpenAPI spec response.
+   * @return array
+   *   OpenAPI spec.
    */
   public function getDatasetSpecific(string $identifier) {
     $fullSpec = $this->docsGenerator->buildSpec(
