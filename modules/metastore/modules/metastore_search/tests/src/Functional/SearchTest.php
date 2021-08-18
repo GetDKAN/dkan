@@ -59,6 +59,17 @@ class SearchTest extends ExistingSiteBase {
     $response = $controller->facets();
     $this->assertEquals('200', $response->getStatusCode());
 
+    // Now test with errors.
+    $requestStack = \Drupal::service('request_stack');
+    $params = ['page-size' => 'foo'];
+    $request = $requestStack->pop()->duplicate($params);
+    $requestStack->push($request);
+
+    $response = $controller->search();
+    $this->assertEquals('400', $response->getStatusCode());
+
+    $response = $controller->facets();
+    $this->assertEquals('400', $response->getStatusCode());
   }
 
 }
