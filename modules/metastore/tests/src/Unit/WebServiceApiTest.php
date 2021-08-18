@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
+use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Exception\UnmodifiedObjectException;
@@ -490,6 +491,7 @@ EOF;
     $options = (new Options)
       ->add('request_stack', RequestStack::class)
       ->add('dkan.metastore.service', Service::class)
+      ->add('dkan.metastore.dataset_api_docs', DatasetApiDocs::class)
       ->index(0);
 
     $mockChain = (new Chain($this))
