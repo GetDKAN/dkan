@@ -241,6 +241,12 @@ class ResourceMapper {
     return isset($item);
   }
 
+  /**
+   * Get the storage class.
+   *
+   * @return \Drupal\common\Storage\DatabaseTableInterface
+   *   A DB storage service.
+   */
   public function getStore() {
     return $this->store;
   }
