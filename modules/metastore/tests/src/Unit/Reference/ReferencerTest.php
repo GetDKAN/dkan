@@ -12,10 +12,13 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\common\UrlHostTokenResolver;
+use Drupal\common\Resource;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
+use Drupal\metastore\Storage\ResourceMapperDatabaseTable;
 use Drupal\node\NodeStorage;
 
 use GuzzleHttp\Exception\RequestException;
@@ -214,6 +217,67 @@ class ReferencerTest extends TestCase {
     $referencer->reference($data);
     $this->assertEquals('text/csv', $container_chain->getStoredInput('resource')[0]->getMimeType());
   }
+
+  /**
+   * Test that CSV format translates to correct mediatype if mediatype not supplied
+   */
+  public function testChangeMediaType() {
+    $options = (new Options())
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('request_stack', RequestStack::class)
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
+      ->add('dkan.metastore.resource_mapper_database_table', ResourceMapperDatabaseTable::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('file_system', FileSystem::class)
+      ->index(0);
+
+    $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
+    $resource = new Resource($downloadUrl, 'application/octet-stream');
+
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(RequestStack::class, 'getCurrentRequest', Request::class)
+      ->add(Request::class, 'getHost', 'test.test')
+      ->add(ResourceMapper::class, 'getStore', ResourceMapperDatabaseTable::class)
+      ->add(ResourceMapper::class, 'validateNewVersion', TRUE)
+      ->add(ResourceMapper::class, 'get', $resource)
+      ->add(ResourceMapperDatabaseTable::class, 'query', [
+        [
+          'identifier' => '123',
+          'perspective' => Resource::DEFAULT_SOURCE_PERSPECTIVE,
+        ],
+      ])
+      ->add(ResourceMapperDatabaseTable::class, 'store', '123', 'resource')
+      ->add(FileSystem::class, 'getTempDirectory', '/tmp');
+
+    $container = $container_chain->getMock();
+    \Drupal::setContainer($container);
+    $referencer = $this->mockReferencer();
+
+    $json = '
+    {
+      "title": "Test Dataset No Format",
+      "description": "Hi",
+      "identifier": "12345",
+      "accessLevel": "public",
+      "modified": "06-04-2020",
+      "keyword": ["hello"],
+        "distribution": [
+          {
+            "title": "blah",
+            "downloadURL": "' . $downloadUrl . '",
+            "format": "csv"
+          }
+        ]
+    }';
+    $data = json_decode($json);
+    $referencer->reference($data);
+    $storedResource = Resource::hydrate($container_chain->getStoredInput('resource')[0]);
+    // A new resource should have been stored, with the mimetype set to text/csv
+    $this->assertEquals('text/csv', $storedResource->getMimeType());
+  }
+
 
 
   /**
