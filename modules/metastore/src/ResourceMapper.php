@@ -47,16 +47,6 @@ class ResourceMapper {
    * @return string
    *   A resource perspective.
    */
-  public static function display() {
-    return drupal_static('metastore_resource_mapper_display', Resource::DEFAULT_SOURCE_PERSPECTIVE);
-  }
-
-  /**
-   * Helper method to retrieve the static value for a resource's display.
-   *
-   * @return string
-   *   A resource perspective.
-   */
   public static function newRevision() {
     return drupal_static('metastore_resource_mapper_new_revision', 0);
   }
