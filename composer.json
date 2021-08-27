@@ -29,7 +29,8 @@
         "ilbee/csv-response": "^1.0",
         "oomphinc/composer-installers-extender": "^2.0",
         "stolt/json-merge-patch": "^1.0",
-        "drupal/openapi_ui": "^1.0@RC"
+        "drupal/openapi_ui": "^1.0@RC",
+        "drush/drush": "^10.1"
     },
     "require-dev": {
         "getdkan/mock-chain": "^1.3.0",
