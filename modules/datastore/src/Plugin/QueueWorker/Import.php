@@ -19,7 +19,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @QueueWorker(
  *   id = "datastore_import",
- *   title = @Translation("Queue to process datastore import")
+ *   title = @Translation("Queue to process datastore import"),
+ *   cron = {"time" = 60}
  * )
  */
 class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface {
