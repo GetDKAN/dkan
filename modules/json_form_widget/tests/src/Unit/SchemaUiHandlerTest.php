@@ -301,6 +301,7 @@ class SchemaUiHandlerTest extends TestCase {
         '#type' => 'fieldset',
         '#title' => 'Related documents',
         '#description' => 'Improved description',
+        '#description_display' => 'before',
         '#prefix' => '<div id="references-fieldset-wrapper">',
         '#suffix' => '</div>',
         '#tree' => TRUE,

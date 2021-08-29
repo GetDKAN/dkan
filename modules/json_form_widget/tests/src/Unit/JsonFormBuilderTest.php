@@ -230,10 +230,12 @@ class JsonFormBuilderTest extends TestCase {
           "#open" => TRUE,
           "#title" => "Organization",
           "#description" => "A Dataset Publisher Organization.",
+          '#description_display' => 'before',
           "@type" => [
             "#type" => "textfield",
             "#title" => "Metadata Context",
             "#description" => "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
+            '#description_display' => 'before',
             "#default_value" => "org:Organization",
             "#required" => FALSE,
           ],
@@ -241,6 +243,7 @@ class JsonFormBuilderTest extends TestCase {
             "#type" => "textfield",
             "#title" => "Publisher Name",
             "#description" => "",
+            '#description_display' => 'before',
             "#default_value" => NULL,
             "#required" => TRUE,
           ],
@@ -278,6 +281,7 @@ class JsonFormBuilderTest extends TestCase {
         "#suffix" => "</div>",
         "#tree" => TRUE,
         "#description" => "Tags (or keywords).",
+        '#description_display' => 'before',
         "keyword" => [
           0 => [
             "#type" => "textfield",
@@ -324,6 +328,7 @@ class JsonFormBuilderTest extends TestCase {
         "#suffix" => "</div>",
         "#tree" => TRUE,
         "#description" => "Tags (or keywords).",
+        '#description_display' => 'before',
         "keyword" => [
           0 => [
             "#type" => "textfield",
