@@ -17,6 +17,7 @@ class ObjectHelper {
       '#type' => 'details',
       '#open' => TRUE,
       '#title' => $property_schema->title,
+      '#description_display' => 'before',
     ];
     if (isset($property_schema->description)) {
       $element[$field_name]['#description'] = $property_schema->description;

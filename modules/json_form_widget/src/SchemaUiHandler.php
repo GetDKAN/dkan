@@ -294,6 +294,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
   public function changeFieldDescriptions($spec, array $element) {
     if (isset($spec->description)) {
       $element['#description'] = $spec->description;
+      $element['#description_display'] = 'before';
     }
     return $element;
   }

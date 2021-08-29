@@ -86,6 +86,7 @@ class ArrayHelper implements ContainerInjectionInterface {
     $element = [
       '#type' => 'fieldset',
       '#title' => $definition['name'],
+      '#description_display' => 'before',
       '#prefix' => '<div id="' . $definition['name'] . '-fieldset-wrapper">',
       '#suffix' => '</div>',
       '#tree' => TRUE,
