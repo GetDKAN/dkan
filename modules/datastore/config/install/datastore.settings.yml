@@ -1,3 +1,4 @@
 rows_limit: 500
 purge_file: 1
 purge_table: 1
+triggering_properties: []

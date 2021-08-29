@@ -4,6 +4,8 @@ namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\LoggerChannelInterface;
@@ -90,7 +92,13 @@ class DatastoreSubscriberTest extends TestCase {
     $resource = new Resource($url, 'text/csv');
     $event = new Event($resource);
 
+    $config = (new Chain($this))
+      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', [])
+      ->getMock();
+
     $options = (new Options())
+      ->add('config.factory', $this->getImmutableConfigMock())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.datastore.service', Service::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
@@ -125,6 +133,7 @@ class DatastoreSubscriberTest extends TestCase {
     $event = new Event($resource);
 
     $options = (new Options())
+      ->add('config.factory', $this->getImmutableConfigMock())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.datastore.service', Service::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
@@ -157,6 +166,7 @@ class DatastoreSubscriberTest extends TestCase {
     $event = new Event($resource);
 
     $options = (new Options())
+      ->add('config.factory', $this->getImmutableConfigMock())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.datastore.service', Service::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
@@ -184,8 +194,8 @@ class DatastoreSubscriberTest extends TestCase {
    * Private.
    */
   private function getContainerChain() {
-
     $options = (new Options())
+      ->add('config.factory', $this->getImmutableConfigMock())
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.datastore.service', Service::class)
       ->add('dkan.datastore.service.resource_purger', ResourcePurger::class)
@@ -196,6 +206,13 @@ class DatastoreSubscriberTest extends TestCase {
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'import', [], 'import')
       ->add(ResourcePurger::class, 'schedule');
+  }
+
+  private function getImmutableConfigMock() {
+    return (new Chain($this))
+      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', [])
+      ->getMock();
   }
 
 }

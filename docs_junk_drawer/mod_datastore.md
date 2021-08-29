@@ -20,4 +20,4 @@ http://domain.com/api/1/datastore/sql?query=[SELECT * FROM ${resource_identifier
 ```
 
 **Configuration**
-If your server's resources are limited you can adjust the default number of rows returned with the configuration page located at `admin/config/dkan/sql_endpoint`.
+If your server's resources are limited you can adjust the default number of rows returned with the configuration page located at `admin/config/dkan/sql-endpoint`.

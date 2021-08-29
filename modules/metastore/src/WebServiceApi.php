@@ -6,7 +6,6 @@ use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\InvalidJsonException;
 use Drupal\metastore\Exception\MetastoreException;
 use Drupal\metastore\Exception\MissingPayloadException;
-use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,6 +35,13 @@ class WebServiceApi implements ContainerInjectionInterface {
   private $service;
 
   /**
+   * Metastore dataset docs service.
+   *
+   * @var \Drupal\metastore\DatasetApiDocs
+   */
+  private $docs;
+
+  /**
    * Inherited.
    *
    * {@inheritdoc}
@@ -43,16 +49,18 @@ class WebServiceApi implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new WebServiceApi(
       $container->get('request_stack'),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('dkan.metastore.dataset_api_docs')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(RequestStack $requestStack, Service $service) {
+  public function __construct(RequestStack $requestStack, Service $service, DatasetApiDocs $docs) {
     $this->requestStack = $requestStack;
     $this->service = $service;
+    $this->docs = $docs;
   }
 
   /**
@@ -87,10 +95,13 @@ class WebServiceApi implements ContainerInjectionInterface {
     $keepRefs = $this->wantObjectWithReferences();
 
     $output = array_map(function ($object) use ($keepRefs) {
-      $modified_object = $keepRefs ? $this->swapReferences($object) : $this->service->removeReferences($object);
+      $modified_object = $keepRefs
+        ? $this->service->swapReferences($object)
+        : $this->service->removeReferences($object);
       return (object) $modified_object->get('$');
     }, $this->service->getAll($schema_id));
 
+    $output = array_values($output);
     return $this->getResponse($output);
   }
 
@@ -109,7 +120,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     try {
       $object = $this->service->get($schema_id, $identifier);
       if ($this->wantObjectWithReferences()) {
-        $object = $this->swapReferences($object);
+        $object = $this->service->swapReferences($object);
       }
       else {
         $object = Service::removeReferences($object);
@@ -134,31 +145,6 @@ class WebServiceApi implements ContainerInjectionInterface {
       return FALSE;
     }
     return TRUE;
-  }
-
-  /**
-   * Private.
-   */
-  private function swapReferences(RootedJsonData $object): RootedJsonData {
-    $no_schema_object = $this->service->getValidMetadataFactory()->get("$object", NULL);
-    foreach ($no_schema_object->get('$') as $property => $value) {
-      if (substr_count($property, "%Ref:") > 0) {
-        $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
-      }
-    }
-
-    return Service::removeReferences($no_schema_object, "%Ref");
-  }
-
-  /**
-   * Private.
-   */
-  private function swapReference($property, $value, RootedJsonData $object): RootedJsonData {
-    $original = str_replace("%Ref:", "", $property);
-    if ($object->__isset("$.{$original}")) {
-      $object->set("$.{$original}", $value);
-    }
-    return $object;
   }
 
   /**
@@ -223,7 +209,10 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function publish(string $schema_id, string $identifier) {
     try {
       $this->service->publish($schema_id, $identifier);
-      return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
+      return $this->getResponse((object) [
+        "endpoint" => $this->getRequestUri(),
+        "identifier" => $identifier,
+      ]);
     }
     catch (MetastoreException $e) {
       return $this->getResponseFromException($e, $e->httpCode());
@@ -251,7 +240,13 @@ class WebServiceApi implements ContainerInjectionInterface {
       $data = $this->service->getValidMetadataFactory()->get($data, $schema_id);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
-      return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);
+      return $this->getResponse(
+        [
+          "endpoint" => $this->getRequestUri(),
+          "identifier" => $info['identifier'],
+        ],
+        $code
+      );
     }
     catch (MetastoreException $e) {
       return $this->getResponseFromException($e, $e->httpCode());
@@ -287,7 +282,10 @@ class WebServiceApi implements ContainerInjectionInterface {
       $this->checkIdentifier($data, $identifier);
 
       $this->service->patch($schema_id, $identifier, $data);
-      return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
+      return $this->getResponse((object) [
+        "endpoint" => $this->getRequestUri(),
+        "identifier" => $identifier,
+      ]);
     }
     catch (MetastoreException $e) {
       return $this->getResponseFromException($e, $e->httpCode());
@@ -327,6 +325,24 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function getCatalog() : JsonResponse {
     try {
       return $this->getResponse($this->service->getCatalog());
+    }
+    catch (\Exception $e) {
+      return $this->getResponseFromException($e);
+    }
+  }
+
+  /**
+   * Get the API docs spec for a specific dataset.
+   *
+   * @param string $identifier
+   *   Dataset identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   A JSON response.
+   */
+  public function getDocs($identifier) : JsonResponse {
+    try {
+      return $this->getResponse($this->docs->getDatasetSpecific($identifier));
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);

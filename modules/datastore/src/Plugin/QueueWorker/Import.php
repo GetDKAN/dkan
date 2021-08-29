@@ -2,10 +2,15 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
+use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerBase;
+
 use Drupal\common\LoggerTrait;
+use Drupal\datastore\Service as DatastoreService;
+
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -21,7 +26,19 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface {
   use LoggerTrait;
 
-  private $container;
+  /**
+   * This queue worker's corresponding database queue instance.
+   *
+   * @var \Drupal\Core\Queue\DatabaseQueue
+   */
+  protected $databaseQueue;
+
+  /**
+   * DKAN datastore service instance.
+   *
+   * @var \Drupal\datastore\Service
+   */
+  protected $datastore;
 
   /**
    * Inherited.
@@ -29,7 +46,14 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new Import($configuration, $plugin_id, $plugin_definition, $container);
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('dkan.datastore.service'),
+      $container->get('logger.factory'),
+      $container->get('queue')
+    );
   }
 
   /**
@@ -41,12 +65,18 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-   *   A dependency injection container.
+   * @param \Drupal\datastore\Service $datastore
+   *   A DKAN datastore service instance.
+   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerFactory
+   *   A logger channel factory instance.
+   * @param \Drupal\Core\Queue\QueueFactory $queueFactory
+   *   A database queue factory instance.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContainerInterface $container) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, DatastoreService $datastore, LoggerChannelFactory $loggerFactory, QueueFactory $queueFactory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->container = $container;
+    $this->databaseQueue = $queueFactory->get($plugin_id);
+    $this->datastore = $datastore;
+    $this->setLoggerFactory($loggerFactory);
   }
 
   /**
@@ -62,14 +92,11 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $identifier = $data['identifier'];
       $version = $data['version'];
 
-      /** @var \Drupal\datastore\Service $datastore */
-      $datastore = $this->container->get('dkan.datastore.service');
-
-      $results = $datastore->import($identifier, FALSE, $version);
+      $results = $this->datastore->import($identifier, FALSE, $version);
 
       $queued = FALSE;
       foreach ($results as $result) {
-        $queued = $this->processResult($result, $data, $queued);
+        $queued = isset($result) ? $this->processResult($result, $data, $queued) : FALSE;
       }
     }
     catch (\Exception $e) {
@@ -124,9 +151,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @todo: Clarify return value. Documentation suggests it should return ID.
    */
   protected function requeue(array $data) {
-    return $this->container->get('queue')
-      ->get($this->getPluginId())
-      ->createItem($data);
+    return $this->databaseQueue->createItem($data);
   }
 
 }

@@ -410,6 +410,40 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Insert full references with identifiers into metadata fields.
+   *
+   * @param \RootedData\RootedJsonData $object
+   *   The valid metastore item.
+   *
+   * @return \RootedData\RootedJsonData
+   *   Swapped reference object. RootedJsonData for consistency, but will have
+   *   no defined schema (swapping will break validation).
+   *
+   * @throws \Drupal\metastore\Exception\InvalidJsonException
+   */
+  public function swapReferences(RootedJsonData $object): RootedJsonData {
+    $no_schema_object = $this->getValidMetadataFactory()->get("$object", NULL);
+    foreach ($no_schema_object->get('$') as $property => $value) {
+      if (substr_count($property, "%Ref:") > 0) {
+        $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
+      }
+    }
+
+    return self::removeReferences($no_schema_object, "%Ref");
+  }
+
+  /**
+   * Private.
+   */
+  private function swapReference($property, $value, RootedJsonData $object): RootedJsonData {
+    $original = str_replace("%Ref:", "", $property);
+    if ($object->__isset("$.{$original}")) {
+      $object->set("$.{$original}", $value);
+    }
+    return $object;
+  }
+
+  /**
    * Private.
    */
   private function objectExists($schemaId, $identifier) {
@@ -447,7 +481,17 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Remove references from metadata JSON.
+   *
+   * @param \RootedData\RootedJsonData $object
+   *   Metadata JSON object.
+   * @param string $prefix
+   *   Property prefix.
+   *
+   * @return \RootedData\RootedJsonData
+   *   The metadata without any reference artifacts.
+   *
+   * @todo Probably remove the prefix param and just always use "%Ref".
    */
   public static function removeReferences(RootedJsonData $object, $prefix = "%"): RootedJsonData {
     $array = $object->get('$');
@@ -464,6 +508,36 @@ class Service implements ContainerInjectionInterface {
 
     $object->set('$', $array);
     return $object;
+  }
+
+  /**
+   * Get the md5 hash for a metadata item.
+   *
+   * @param \RootedData\RootedJsonData|object|string $data
+   *   Metadata. Can be a RootedJsonData object, a stdObject or JSON string.
+   *
+   * @return string
+   *   An md5 hash of the normalized metadata.
+   *
+   * @todo This should probably be somewhere else.
+   */
+  public static function metadataHash($data) {
+    if ($data instanceof RootedJsonData) {
+      $normalizedData = $data;
+      self::removeReferences($normalizedData);
+    }
+    elseif (is_object($data)) {
+      $normalizedData = new RootedJsonData(json_encode($data));
+      self::removeReferences($normalizedData);
+    }
+    elseif (is_string($data)) {
+      $normalizedData = $data;
+    }
+    else {
+      throw new \InvalidArgumentException("Invalid metadata argument.");
+    }
+
+    return md5((string) $normalizedData);
   }
 
 }

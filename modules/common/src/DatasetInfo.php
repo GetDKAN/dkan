@@ -193,6 +193,10 @@ class DatasetInfo implements ContainerInjectionInterface {
    */
   protected function getResourcesInfo(\stdClass $distribution) : array {
 
+    if (!isset($distribution->data->{'%Ref:downloadURL'})) {
+      return ['No resource found'];
+    }
+
     // A distribution's first resource, regardless of perspective or index,
     // should provide the information needed.
     $resource = array_shift($distribution->data->{'%Ref:downloadURL'});

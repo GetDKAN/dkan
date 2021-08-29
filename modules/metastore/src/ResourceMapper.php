@@ -42,6 +42,16 @@ class ResourceMapper {
   }
 
   /**
+   * Helper method to retrieve the static value for a resource's display.
+   *
+   * @return string
+   *   A resource perspective.
+   */
+  public static function newRevision() {
+    return drupal_static('metastore_resource_mapper_new_revision', 0);
+  }
+
+  /**
    * Register a new url for mapping.
    *
    * @todo the Resource class currently lives in datastore, we should move it
@@ -81,14 +91,14 @@ class ResourceMapper {
    */
   public function registerNewVersion(Resource $resource) {
     $this->validateNewVersion($resource);
-    $this->store->store(json_encode($resource));
+    $this->getStore()->store(json_encode($resource));
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
   }
 
   /**
    * Private.
    */
-  private function validateNewVersion(Resource $resource) {
+  protected function validateNewVersion(Resource $resource) {
     if ($resource->getPerspective() !== Resource::DEFAULT_SOURCE_PERSPECTIVE) {
       throw new \Exception("Only versions of source resources are allowed.");
     }
@@ -197,14 +207,16 @@ class ResourceMapper {
    * @return bool
    *   FALSE of the path does not exist.
    *
-   * @throws \Exception
+   * @throws \Drupal\metastore\Exception\AlreadyRegistered
    *   An exception is thrown if the file exists with json info about the
    *   existing resource.
+   *
+   * @todo Refactor this so it's not an exception.
    */
   public function filePathExists($filePath) {
     $query = new Query();
     $query->conditionByIsEqualTo('filePath', $filePath);
-    $results = $this->store->query($query);
+    $results = $this->getStore()->query($query);
     if (!empty($results)) {
       throw new AlreadyRegistered(json_encode($results));
     }
@@ -217,6 +229,16 @@ class ResourceMapper {
   private function exists($identifier, $perspective, $version = NULL) : bool {
     $item = $this->get($identifier, $perspective, $version);
     return isset($item);
+  }
+
+  /**
+   * Get the storage class.
+   *
+   * @return \Drupal\common\Storage\DatabaseTableInterface
+   *   A DB storage service.
+   */
+  public function getStore() {
+    return $this->store;
   }
 
 }

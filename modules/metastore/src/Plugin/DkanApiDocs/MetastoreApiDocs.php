@@ -39,7 +39,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
    * @param \Drupal\Core\StringTranslation\TranslationInterface $stringTranslation
    *   The module handler service.
    * @param \Drupal\metastore\Service $metastore
-   *   The module handler service.
+   *   The metastore service.
    */
   public function __construct(
     array $configuration,
