@@ -100,6 +100,7 @@ class SchemaUiHandlerTest extends TestCase {
         "#type" => "textarea",
         "#title" => "Textarea field",
         "#description" => "Test description",
+        '#description_display' => 'before',
         "#default_value" => NULL,
         "#required" => FALSE,
         "#rows" => 4,

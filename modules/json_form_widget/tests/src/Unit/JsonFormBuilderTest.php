@@ -126,12 +126,14 @@ class JsonFormBuilderTest extends TestCase {
         "#title" => "Test field",
         "#description" => "",
         "#default_value" => "Some value.",
+        '#description_display' => 'before',
         "#required" => FALSE,
       ],
       "downloadURL" => [
         "#type" => "url",
         "#title" => "Download URL",
         "#description" => "This is an URL field.",
+        '#description_display' => 'before',
         "#default_value" => NULL,
         "#required" => FALSE,
       ],
@@ -139,6 +141,7 @@ class JsonFormBuilderTest extends TestCase {
         "#type" => "select",
         "#title" => "Public Access Level",
         "#description" => "Description.",
+        '#description_display' => 'before',
         "#default_value" => "public",
         "#required" => TRUE,
         "#options" => [
@@ -151,6 +154,7 @@ class JsonFormBuilderTest extends TestCase {
         "#type" => "select",
         "#title" => "Frequency",
         "#description" => "Description.",
+        '#description_display' => 'before',
         "#default_value" => NULL,
         "#required" => FALSE,
         "#options" => [
