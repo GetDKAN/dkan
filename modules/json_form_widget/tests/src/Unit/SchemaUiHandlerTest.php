@@ -368,7 +368,6 @@ class SchemaUiHandlerTest extends TestCase {
             '#type' => 'textfield',
             '#title' => 'Metadata context',
             '#description' => 'Some description',
-            '#description_display' => 'before',
             '#default_value' => 'org:Organization',
             '#required' => FALSE,
             '#access' => FALSE,
