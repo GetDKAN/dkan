@@ -33,12 +33,13 @@ class CustomSubscriber implements EventSubscriberInterface {
     // Fetch the table schema from the event.
     $schema = $event->getData();
     $fields = array_keys($schema['fields']);
+    // @TODO Mechanism for getting frictionlessSchema.
     $frictionlessSchema = '{
       "schema": {
         "fields": [
           {
             "name": "lon",
-            "type": "float"
+            "type": "number"
           },
           {
             "name": "lat",
@@ -56,11 +57,44 @@ class CustomSubscriber implements EventSubscriberInterface {
     $columnDefinitions = $columnDefinitions->schema->fields;
     foreach ((array) $columnDefinitions as $column) {
       if (in_array($column->name, $fields)) {
-        $schema['fields'][$column->name]['type'] = $column->type;
+        $type = $this->getDatabaseType($column->type);
+        $schema['fields'][$column->name]['type'] = $type ? $type : $schema['fields'][$column->name]['type'];
       }
     }
     // Update schema stored in event.
     $event->setData($schema);
+  }
+
+  /**
+   * Get correct database field type.
+   *
+   * Allows mapping from frictionless data types to values accepted by the db.
+   *
+   * @param string $type
+   *   Field type from frictionless schema.
+   *
+   * @return mixed
+   *   Returns field type accepted by the db or FALSE if type is not valid.
+   */
+  public function getDatabaseType($type) {
+    // @TODO Improve the mapping mechanism.
+    $map = [
+      // Frictionless data type => Database type.
+      'string' => 'text',
+      'number' => 'float',
+      'integer' => 'int',
+      'boolean' => 'bool',
+      'date' => 'date',
+      'time' => 'time',
+      'datetime' => 'timestamp',
+    ];
+    if (in_array($type, array_keys($map))) {
+      return $map[$type];
+    }
+    elseif (in_array($type, array_values($map))) {
+      return $type;
+    }
+    return FALSE;
   }
 
 }
