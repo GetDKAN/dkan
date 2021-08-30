@@ -16,6 +16,9 @@ services:
       - '@date.formatter'
       - '@dkan.metastore.storage'
       - '@queue'
+    calls:
+      - [setPurge, ['@?purge.queue', '@?purge.invalidation.factory']]
+
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:

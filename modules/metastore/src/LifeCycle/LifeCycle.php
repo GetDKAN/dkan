@@ -73,6 +73,20 @@ class LifeCycle {
   protected $queueFactory;
 
   /**
+   * The 'purge.queue' service.
+   *
+   * @var null|\Drupal\purge\Plugin\Purge\Queue\QueueService
+   */
+  protected $purgeQueue;
+
+  /**
+   * The 'purge.invalidation.factory' service.
+   *
+   * @var null|\Drupal\purge\Plugin\Purge\Invalidation\InvalidationsServiceInterface
+   */
+  protected $purgeInvalidationFactory;
+
+  /**
    * Constructor.
    */
   public function __construct(
@@ -91,6 +105,17 @@ class LifeCycle {
     $this->dateFormatter = $dateFormatter;
     $this->dataFactory = $dataFactory;
     $this->queueFactory = $queueFactory;
+  }
+
+  /**
+   * Set optional purge queue.
+   *
+   * @param \Drupal\purge\Plugin\Purge\Queue\QueueService $purgeQueue
+   *   Meta tag manager.
+   */
+  public function setPurge(\Drupal\purge\Plugin\Purge\Queue\QueueService $purgeQueue, \Drupal\purge\Plugin\Purge\Invalidation\InvalidationsService $purgeInvalidationFactory) {
+    $this->purgeQueue = $purgeQueue;
+    $this->purgeInvalidationFactory = $purgeInvalidationFactory;
   }
 
   /**
@@ -263,6 +288,12 @@ class LifeCycle {
     // If one exists in the uuid it should be the same in the table.
     else {
       $data->setIdentifier($metadata->identifier);
+    }
+
+    // Purge any HTTP reponses if purge module enabled
+    if (!empty($this->purgeQueue)) {
+      $invalidations[] = $this->purgeInvalidationFactory->get('tag', $metadata->identifier);
+      $this->purgeQueue->add($this->queuer, $invalidations);
     }
 
     $this->dispatchEvent(self::EVENT_PRE_REFERENCE, $data, function ($data) {
