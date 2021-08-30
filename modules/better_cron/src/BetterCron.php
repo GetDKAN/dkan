@@ -8,6 +8,7 @@ use Drupal\Core\Queue\DelayableQueueInterface;
 use Drupal\Core\Queue\DelayedRequeueException;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
+use Drupal\Core\Utility\Error;
 
 /**
  * Cron service which allows for a separate queue time-limit and lease time.
@@ -77,7 +78,7 @@ class BetterCron extends Cron implements CronInterface {
             // release the item and skip to the next queue.
             $queue->releaseItem($item);
 
-            watchdog_exception('cron', $e);
+            $this->logger->error('%type: @message in %function (line %line of %file).', Error::decodeException($e));
 
             // Skip to the next queue.
             continue 2;
@@ -85,10 +86,11 @@ class BetterCron extends Cron implements CronInterface {
           catch (\Exception $e) {
             // In case of any other kind of exception, log it and leave the item
             // in the queue to be processed again later.
-            watchdog_exception('cron', $e);
+            $this->logger->error('%type: @message in %function (line %line of %file).', Error::decodeException($e));
           }
         }
       }
     }
   }
+
 }
