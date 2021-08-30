@@ -176,7 +176,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     // Retrieve a list of metadata properties which, when changed, should
     // trigger a new metadata resource revision.
     $datastore_settings = $this->configFactory->get('datastore.settings');
-    $triggers = array_filter($datastore_settings->get('triggering_properties'));
+    $triggers = array_filter($datastore_settings->get('triggering_properties') ?? []);
     // Ensure at least one trigger has been selected in datastore settings, and
     // that a valid MetastoreItem data object was found for the previous version
     // of the wrapped node.
