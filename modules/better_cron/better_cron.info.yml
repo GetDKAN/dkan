@@ -1,0 +1,6 @@
+name: Better Cron
+description: A Drupal Cron service implementation with support for separate queue time-limits and item lease times.
+type: module
+core: 8.x
+core_version_requirement: ^8 || ^9
+package: DKAN

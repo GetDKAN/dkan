@@ -1,0 +1,14 @@
+services:
+  cron:
+    class: Drupal\better_cron\BetterCron
+    arguments: [
+      '@module_handler',
+      '@lock',
+      '@queue',
+      '@state',
+      '@account_switcher',
+      '@logger.channel.cron',
+      '@plugin.manager.queue_worker',
+      '@datetime.time'
+    ]
+    lazy: true
