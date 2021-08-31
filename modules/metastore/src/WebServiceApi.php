@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore;
 
+use Drupal\common\ApiResponse;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\InvalidJsonException;
 use Drupal\metastore\Exception\MetastoreException;
@@ -10,7 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\JsonResponseTrait;
 
 /**
  * Class Api.
@@ -18,7 +18,6 @@ use Drupal\common\JsonResponseTrait;
  * @todo Move docs stuff.
  */
 class WebServiceApi implements ContainerInjectionInterface {
-  use JsonResponseTrait;
 
   /**
    * Request stack.
@@ -67,7 +66,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Get schemas.
    */
   public function getSchemas() {
-    return $this->getResponse($this->service->getSchemas());
+    return ApiResponse::jsonResponse($this->service->getSchemas());
   }
 
   /**
@@ -75,10 +74,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getSchema(string $identifier) {
     try {
-      return $this->getResponse($this->service->getSchema($identifier));
+      return ApiResponse::jsonResponse($this->service->getSchema($identifier));
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 404);
+      return ApiResponse::jsonResponseFromException($e, 404);
     }
   }
 
@@ -102,7 +101,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     }, $this->service->getAll($schema_id));
 
     $output = array_values($output);
-    return $this->getResponse($output);
+    return ApiResponse::jsonResponse($output);
   }
 
   /**
@@ -126,10 +125,10 @@ class WebServiceApi implements ContainerInjectionInterface {
         $object = Service::removeReferences($object);
       }
       $object = (object) $object->get('$');
-      return $this->getResponse($object);
+      return ApiResponse::jsonResponse($object);
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 404);
+      return ApiResponse::jsonResponseFromException($e, 404);
     }
   }
 
@@ -160,10 +159,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getResources(string $schema_id, string $identifier) {
     try {
-      return $this->getResponse($this->service->getResources($schema_id, $identifier));
+      return ApiResponse::jsonResponse($this->service->getResources($schema_id, $identifier));
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 404);
+      return ApiResponse::jsonResponseFromException($e, 404);
     }
   }
 
@@ -182,16 +181,16 @@ class WebServiceApi implements ContainerInjectionInterface {
       $this->checkIdentifier($data);
       $data = $this->service->getValidMetadataFactory()->get($data, $schema_id, ['method' => 'POST']);
       $identifier = $this->service->post($schema_id, $data);
-      return $this->getResponse([
+      return ApiResponse::jsonResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
         "identifier" => $identifier,
       ], 201);
     }
     catch (MetastoreException $e) {
-      return $this->getResponseFromException($e, $e->httpCode());
+      return ApiResponse::jsonResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+      return ApiResponse::jsonResponseFromException($e, 400);
     }
   }
 
@@ -209,16 +208,16 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function publish(string $schema_id, string $identifier) {
     try {
       $this->service->publish($schema_id, $identifier);
-      return $this->getResponse((object) [
+      return ApiResponse::jsonResponse((object) [
         "endpoint" => $this->getRequestUri(),
         "identifier" => $identifier,
       ]);
     }
     catch (MetastoreException $e) {
-      return $this->getResponseFromException($e, $e->httpCode());
+      return ApiResponse::jsonResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+      return ApiResponse::jsonResponseFromException($e, 400);
     }
   }
 
@@ -240,7 +239,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       $data = $this->service->getValidMetadataFactory()->get($data, $schema_id);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
-      return $this->getResponse(
+      return ApiResponse::jsonResponse(
         [
           "endpoint" => $this->getRequestUri(),
           "identifier" => $info['identifier'],
@@ -249,10 +248,10 @@ class WebServiceApi implements ContainerInjectionInterface {
       );
     }
     catch (MetastoreException $e) {
-      return $this->getResponseFromException($e, $e->httpCode());
+      return ApiResponse::jsonResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+      return ApiResponse::jsonResponseFromException($e, 400);
     }
   }
 
@@ -282,16 +281,16 @@ class WebServiceApi implements ContainerInjectionInterface {
       $this->checkIdentifier($data, $identifier);
 
       $this->service->patch($schema_id, $identifier, $data);
-      return $this->getResponse((object) [
+      return ApiResponse::jsonResponse((object) [
         "endpoint" => $this->getRequestUri(),
         "identifier" => $identifier,
       ]);
     }
     catch (MetastoreException $e) {
-      return $this->getResponseFromException($e, $e->httpCode());
+      return ApiResponse::jsonResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+      return ApiResponse::jsonResponseFromException($e, 400);
     }
   }
 
@@ -309,10 +308,10 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function delete($schema_id, $identifier) {
     try {
       $this->service->delete($schema_id, $identifier);
-      return $this->getResponse((object) ["message" => "Dataset {$identifier} has been deleted."]);
+      return ApiResponse::jsonResponse((object) ["message" => "Dataset {$identifier} has been deleted."]);
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e);
+      return ApiResponse::jsonResponseFromException($e);
     }
   }
 
@@ -324,10 +323,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getCatalog() : JsonResponse {
     try {
-      return $this->getResponse($this->service->getCatalog());
+      return ApiResponse::jsonResponse($this->service->getCatalog());
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e);
+      return ApiResponse::jsonResponseFromException($e);
     }
   }
 
@@ -342,10 +341,10 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getDocs($identifier) : JsonResponse {
     try {
-      return $this->getResponse($this->docs->getDatasetSpecific($identifier));
+      return ApiResponse::jsonResponse($this->docs->getDatasetSpecific($identifier));
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException($e);
+      return ApiResponse::jsonResponseFromException($e);
     }
   }
 
