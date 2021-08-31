@@ -15,16 +15,17 @@ use RootedData\Exception\ValidationException;
 class ApiResponse {
 
   /**
-   * 
+   * Create a basic, cacheable JSON response.
+   *
    * @param mixed $data
-   *   Array or object that can be encoded as JSON. 
+   *   Array or object that can be encoded as JSON.
    * @param int $code
    *   An HTTP response code.
    *
    * @return \Drupal\Core\Cache\CacheableJsonResponse
    *   A response, ready to be returned to a route.
    */
-  public static function jsonResponse($data, int $code = 200):CacheableJsonResponse {
+  public function jsonResponse($data, int $code = 200):CacheableJsonResponse {
     $response = new CacheableJsonResponse($data, $code, []);
     return $response;
   }
@@ -40,16 +41,16 @@ class ApiResponse {
    * @return Drupal\Core\Cache\CacheableJsonResponse
    *   JSON response.
    */
-  public static function jsonResponseFromException(\Exception $e, int $code = 400):CacheableJsonResponse {
+  public function jsonResponseFromException(\Exception $e, int $code = 400):CacheableJsonResponse {
     $body = [
       'message' => $e->getMessage(),
       'status' => $code,
       "timestamp" => date("c"),
     ];
-    if ($data = self::getExceptionData($e)) {
+    if ($data = $this->getExceptionData($e)) {
       $body['data'] = $data;
     }
-    return self::jsonResponse((object) $body, $code);
+    return $this->jsonResponse((object) $body, $code);
   }
 
   /**
@@ -63,7 +64,7 @@ class ApiResponse {
    * @return array|false
    *   An array of data to explain the errors.
    */
-  private static function getExceptionData(\Exception $e) {
+  private function getExceptionData(\Exception $e) {
     if ($e instanceof ValidationException) {
       $errors = $e->getResult()->getErrors();
       $presenter = new ValidationErrorPresenter(
