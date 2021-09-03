@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\metastore\ApiResponse;
 use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\Service;
