@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\metastore\Controller;
+namespace Drupal\metastore;
 
 use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheableMetadata;
@@ -44,6 +44,8 @@ class MetastoreApiResponse {
    *   want to add a general schema tag -- for instance, for a route that lists
    *   all items of a particular schema, simply add that schema to the array as
    *   a string. For instance, ['dataset'].
+   * @param \Symfony\Component\HttpFoundation\ParameterBag|null $params
+   *   The parameter object from the request.
    *
    * @return \Drupal\Core\Cache\CacheableJsonResponse
    *   A response, ready to be returned to a route.
@@ -78,7 +80,7 @@ class MetastoreApiResponse {
       }
     }
 
-    if ($params) {
+    if (isset($params)) {
       $this->addContexts($cacheMetadata, $params);
     }
 

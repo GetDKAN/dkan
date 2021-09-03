@@ -11,7 +11,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\metastore\ApiResponse;
 use Drupal\metastore\DatasetApiDocs;
+use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\Service;
 
 /**
@@ -59,7 +61,7 @@ class MetastoreController implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(ApiResponse $apiResponse, Service $service, DatasetApiDocs $docs) {
+  public function __construct(MetastoreApiResponse $apiResponse, Service $service, DatasetApiDocs $docs) {
     $this->apiResponse = $apiResponse;
     $this->service = $service;
     $this->docs = $docs;
