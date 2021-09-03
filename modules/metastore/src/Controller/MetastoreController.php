@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore\Controller;
 
+use Drupal\common\JsonResponseTrait;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\InvalidJsonException;
 use Drupal\metastore\Exception\MetastoreException;
@@ -19,6 +20,7 @@ use Drupal\metastore\Service;
  * @todo Move docs stuff.
  */
 class MetastoreController implements ContainerInjectionInterface {
+  use JsonResponseTrait;
 
   /**
    * Request stack.
@@ -78,7 +80,7 @@ class MetastoreController implements ContainerInjectionInterface {
       return $this->apiResponse->cachedJsonResponse($this->service->getSchema($identifier));
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e, 404);
+      return $this->getResponseFromException($e, 404);
     }
   }
 
@@ -133,7 +135,7 @@ class MetastoreController implements ContainerInjectionInterface {
       return $this->apiResponse->cachedJsonResponse($object, 200, [$schema_id => [$identifier]], $request->query);
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e, 404);
+      return $this->getResponseFromException($e, 404);
     }
   }
 
@@ -171,7 +173,7 @@ class MetastoreController implements ContainerInjectionInterface {
       return $this->apiResponse->cachedJsonResponse($this->service->getResources($schema_id, $identifier));
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e, 404);
+      return $this->getResponseFromException($e, 404);
     }
   }
 
@@ -196,10 +198,10 @@ class MetastoreController implements ContainerInjectionInterface {
       ], 201);
     }
     catch (MetastoreException $e) {
-      return $this->apiResponse->jsonResponseFromException($e, $e->httpCode());
+      return $this->getResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e, 400);
+      return $this->getResponseFromException($e, 400);
     }
   }
 
@@ -223,10 +225,10 @@ class MetastoreController implements ContainerInjectionInterface {
       ]);
     }
     catch (MetastoreException $e) {
-      return $this->apiResponse->jsonResponseFromException($e, $e->httpCode());
+      return $this->getResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e, 400);
+      return $this->getResponseFromException($e, 400);
     }
   }
 
@@ -257,10 +259,10 @@ class MetastoreController implements ContainerInjectionInterface {
       );
     }
     catch (MetastoreException $e) {
-      return $this->apiResponse->jsonResponseFromException($e, $e->httpCode());
+      return $this->getResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e, 400);
+      return $this->getResponseFromException($e, 400);
     }
   }
 
@@ -296,10 +298,10 @@ class MetastoreController implements ContainerInjectionInterface {
       ]);
     }
     catch (MetastoreException $e) {
-      return $this->apiResponse->jsonResponseFromException($e, $e->httpCode());
+      return $this->getResponseFromException($e, $e->httpCode());
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e, 400);
+      return $this->getResponseFromException($e, 400);
     }
   }
 
@@ -320,7 +322,7 @@ class MetastoreController implements ContainerInjectionInterface {
       return $this->apiResponse->cachedJsonResponse((object) ["message" => "Dataset {$identifier} has been deleted."]);
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e);
+      return $this->getResponseFromException($e);
     }
   }
 
@@ -335,7 +337,7 @@ class MetastoreController implements ContainerInjectionInterface {
       return $this->apiResponse->cachedJsonResponse($this->service->getCatalog());
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e);
+      return $this->getResponseFromException($e);
     }
   }
 
@@ -353,7 +355,7 @@ class MetastoreController implements ContainerInjectionInterface {
       return $this->apiResponse->cachedJsonResponse($this->docs->getDatasetSpecific($identifier));
     }
     catch (\Exception $e) {
-      return $this->apiResponse->jsonResponseFromException($e);
+      return $this->getResponseFromException($e);
     }
   }
 

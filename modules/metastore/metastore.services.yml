@@ -92,7 +92,7 @@ services:
       - '@dkan.metastore.service'
 
   dkan.metastore.api_response:
-    class: \Drupal\metastore\ApiResponse
+    class: \Drupal\metastore\MetastoreApiResponse
     arguments:
       - '@config.factory'
       - '@dkan.metastore.metastore_item_factory'

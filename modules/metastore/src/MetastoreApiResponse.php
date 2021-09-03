@@ -7,17 +7,12 @@ use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 use Drupal\metastore\MetastoreItemInterface;
-use OpisErrorPresenter\Implementation\MessageFormatterFactory;
-use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
-use OpisErrorPresenter\Implementation\Strategies\BestMatchError;
-use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
-use RootedData\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * Service to standardize building response objects for API requests.
  */
-class ApiResponse {
+class MetastoreApiResponse {
 
   /**
    * Cache page max age config value.
@@ -131,56 +126,6 @@ class ApiResponse {
     foreach ($params->keys() as $key) {
       $cacheMetadata->addCacheContexts(["url.query_args:$key"]);
     }
-  }
-
-  /**
-   * Create JSON response from a caught exception.
-   *
-   * @param \Exception $e
-   *   Exception object.
-   * @param int $code
-   *   HTTP response code.
-   *
-   * @return Drupal\Core\Cache\CacheableJsonResponse
-   *   JSON response.
-   */
-  public function jsonResponseFromException(\Exception $e, int $code = 400):CacheableJsonResponse {
-    $body = [
-      'message' => $e->getMessage(),
-      'status' => $code,
-      "timestamp" => date("c"),
-    ];
-    if ($data = $this->getExceptionData($e)) {
-      $body['data'] = $data;
-    }
-    return $this->cachedJsonResponse((object) $body, $code);
-  }
-
-  /**
-   * See if we can present more detail about the exception.
-   *
-   * Currently, only RootedJsonData validation errors supported.
-   *
-   * @param \Exception $e
-   *   Exception object.
-   *
-   * @return array|false
-   *   An array of data to explain the errors.
-   */
-  private function getExceptionData(\Exception $e) {
-    if ($e instanceof ValidationException) {
-      $errors = $e->getResult()->getErrors();
-      $presenter = new ValidationErrorPresenter(
-        new PresentedValidationErrorFactory(
-          new MessageFormatterFactory()
-        ),
-        new BestMatchError()
-      );
-      $presented = $presenter->present(...$errors);
-      return $presented[0];
-    }
-
-    return FALSE;
   }
 
 }
