@@ -46,4 +46,13 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    */
   public function wrap($input);
 
+  /**
+   * Return list cache tags for metastore items.
+   *
+   * @return array
+   *
+   * @todo Make this schema-specific.
+   */
+  public static function getCacheTags();
+
 }

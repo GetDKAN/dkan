@@ -36,6 +36,19 @@ class Data implements MetastoreItemInterface {
     $this->node = $entity;
   }
 
+  public function getCacheContexts() {
+    return $this->node->getCacheContexts();
+  }
+
+  public function getCacheTags() {
+    $cacheTags = $this->node->getCacheTags();
+    return $cacheTags;
+  }
+
+  public function getCacheMaxAge() {
+    return $this->node->getCacheMaxAge();
+  }
+
   /**
    * Private.
    */

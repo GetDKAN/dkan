@@ -90,3 +90,9 @@ services:
     arguments:
       - '@dkan.common.docs_generator'
       - '@dkan.metastore.service'
+
+  dkan.metastore.api_response:
+    class: \Drupal\metastore\ApiResponse
+    arguments:
+      - '@config.factory'
+      - '@dkan.metastore.metastore_item_factory'

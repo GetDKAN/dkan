@@ -9,7 +9,7 @@ use Drupal\metastore\Exception\UnmodifiedObjectException;
 use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Service;
-use Drupal\metastore\WebServiceApi;
+use Drupal\metastore\Controller\MetastoreController;
 use Drupal\metastore\SchemaRetriever;
 use MockChain\Chain;
 use MockChain\Options;
@@ -47,7 +47,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(Service::class, 'getAll', [$objectWithRefs, $objectWithRefs]);
     $mockChain->add(Service::class, "getValidMetadataFactory", ValidMetadataFactory::class);
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
     $this->assertEquals(json_encode([$data, $data]), $response->getContent());
   }
@@ -63,7 +63,7 @@ class WebServiceApiTest extends TestCase {
 
     // Try with show ref ids.
     $mockChain->add(Request::class, 'get', TRUE);
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getAll('dataset');
     $this->assertEquals(
       json_encode([$dataWithSwappedRefs, $dataWithSwappedRefs]),
@@ -80,7 +80,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
     $this->assertEquals($json, $response->getContent());
   }
@@ -95,7 +95,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(DatasetApiDocs::class, 'getDatasetSpecific', $spec);
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getDocs(1);
     $this->assertEquals($json, $response->getContent());
   }
@@ -108,7 +108,7 @@ class WebServiceApiTest extends TestCase {
 
     // Try with show ref ids.
     $mockChain->add(Request::class, 'get', TRUE);
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get('dataset', '1');
     $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
   }
@@ -122,7 +122,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(Service::class, 'get', new RootedJsonData($json));
     $mockChain->add(Request::class, 'get', TRUE);
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
     // References should be swapped.
     $this->assertEquals('{"name":{"identifier":"123","data":[]}}', $response->getContent());
@@ -137,7 +137,7 @@ class WebServiceApiTest extends TestCase {
     $distributions = [(object) ["title" => "Foo"], (object) ["title" => "Bar"]];
     $mockChain->add(Service::class, 'getResources', $distributions);
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getResources(1, 'dataset');
     $this->assertEquals(json_encode($distributions), $response->getContent());
   }
@@ -149,7 +149,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getResources', new \Exception("bad"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getResources(1, 'dataset');
     $this->assertContains('"message":"bad","status":404', $response->getContent());
   }
@@ -161,7 +161,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'get', new \Exception("bad"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
     $this->assertContains('"message":"bad","status":404', $response->getContent());
   }
@@ -178,7 +178,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, 'post', "1");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset');
     $this->assertEquals('{"endpoint":"http:\/\/blah\/1","identifier":"1"}', $response->getContent());
   }
@@ -195,7 +195,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, 'post', "1");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset');
     $this->assertEquals('{"endpoint":"http:\/\/blah\/1","identifier":"1"}', $response->getContent());
   }
@@ -212,7 +212,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, 'post', new \Exception("bad"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset');
     $this->assertContains('"message":"bad","status":400', $response->getContent());
   }
@@ -229,7 +229,7 @@ class WebServiceApiTest extends TestCase {
       ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
       ->add(Service::class, 'post', new ExistingObjectException("Already exists"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset');
     $this->assertContains('"message":"Already exists","status":409', $response->getContent());
   }
@@ -246,7 +246,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, "put", ["identifier" => "1", "new" => FALSE]);
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put(1, 'dataset');
     $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":"1"}', $response->getContent());
   }
@@ -259,7 +259,7 @@ class WebServiceApiTest extends TestCase {
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', "{");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
     $this->assertContains('"message":"Invalid JSON","status":415', $response->getContent());
   }
@@ -272,7 +272,7 @@ class WebServiceApiTest extends TestCase {
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'getContent', "");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
     $this->assertContains('"message":"Empty body"', $response->getContent());
   }
@@ -297,7 +297,7 @@ EOF;
       ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
       ->add(Service::class, "put", new UnmodifiedObjectException("No changes"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put('dataset', 1);
     $this->assertContains('"message":"No changes","status":403', $response->getContent());
   }
@@ -309,7 +309,7 @@ EOF;
     $mockChain = $this->getCommonMockChain()
       ->add(RequestStack::class, 'getCurrentRequest', new \Exception("Unknown error"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put('dataset', 1);
     $this->assertContains('"message":"Unknown error"', $response->getContent());
   }
@@ -328,7 +328,7 @@ EOF;
     $mockChain->add(ValidMetadataFactory::class, "get", RootedJsonData::class);
     $mockChain->add(Service::class, "patch", "1");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1);
     $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":1}', $response->getContent());
   }
@@ -345,7 +345,7 @@ EOF;
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
     $mockChain->add(Service::class, "patch", "1");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
     $this->assertContains('"message":"Identifier cannot be modified"', $response->getContent());
   }
@@ -361,7 +361,7 @@ EOF;
     $mockChain->add(Request::class, 'getContent', "{");
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset');
     $this->assertContains('"message":"Invalid JSON","status":415', $response->getContent());
   }
@@ -377,7 +377,7 @@ EOF;
       ->add(ValidMetadataFactory::class, "get", RootedJsonData::class)
       ->add(Service::class, "patch", new MissingObjectException("Not found"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1);
     $this->assertContains('"message":"Not found"', $response->getContent());
   }
@@ -389,7 +389,7 @@ EOF;
     $mockChain = $this->getCommonMockChain()
       ->add(RequestStack::class, 'getCurrentRequest', new \Exception("Unknown error"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1);
     $this->assertContains('"message":"Unknown error"', $response->getContent());
   }
@@ -401,7 +401,7 @@ EOF;
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'delete', "1");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->delete('dataset', "1");
     $this->assertContains('"message":"Dataset 1 has been deleted."', $response->getContent());
   }
@@ -413,7 +413,7 @@ EOF;
     $mockChain = $this->getCommonMockChain()
       ->add(Service::class, 'delete', new \Exception("Unknown error"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->delete('dataset', 1);
     $this->assertContains('"message":"Unknown error"', $response->getContent());
   }
@@ -425,7 +425,7 @@ EOF;
     $mockChain = $this->getCommonMockChain()
       ->add(Service::class, 'publish', new MissingObjectException("Not found"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', 1);
     $this->assertContains('"message":"Not found"', $response->getContent());
   }
@@ -437,7 +437,7 @@ EOF;
     $mockChain = $this->getCommonMockChain()
       ->add(Service::class, 'publish', new \Exception("Unknown error"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', 1);
     $this->assertContains('"message":"Unknown error"', $response->getContent());
   }
@@ -452,7 +452,7 @@ EOF;
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
     $mockChain->add(Service::class, "publish", "1");
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', "1");
     $this->assertContains('"endpoint":"http:\/\/blah","identifier":"1"', $response->getContent());
   }
@@ -466,7 +466,7 @@ EOF;
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getCatalog', $catalog);
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getCatalog();
     $this->assertEquals(json_encode($catalog), $response->getContent());
   }
@@ -477,7 +477,7 @@ EOF;
   public function testGetSchema() {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(SchemaRetriever::class, 'getAllIds', ['dataset']);
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getSchemas();
     $this->assertEquals('["dataset"]', $response->getContent());
 
@@ -493,7 +493,7 @@ EOF;
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Service::class, 'getCatalog', new \Exception("bad"));
 
-    $controller = WebServiceApi::create($mockChain->getMock());
+    $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getCatalog();
     $this->assertContains('"message":"bad"', $response->getContent());
   }

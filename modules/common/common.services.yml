@@ -48,9 +48,3 @@ services:
     class: \Drupal\common\StreamWrapper\DkanStreamWrapper
     tags:
       - { name: stream_wrapper, scheme: dkan }
-
-  dkan.common.api_response:
-    class: \Drupal\common\ApiResponse
-    arguments:
-      - '@config.factory'
-      - '@dkan.metastore.metastore_item_factory'
