@@ -94,6 +94,13 @@ class Resource implements \JsonSerializable {
   }
 
   /**
+   * Change MIME type.
+   */
+  public function changeMimeType($newMimeType) {
+    $this->mimeType = $newMimeType;
+  }
+
+  /**
    * Private.
    */
   private function createCommon($property, $value) {

@@ -5,9 +5,10 @@ namespace Drupal\metastore\Storage;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\Exception\MissingObjectException;
+use Drupal\metastore\Service;
 
 /**
- * Data.
+ * Abstract metastore storage class, for using Drupal entities.
  */
 abstract class Data implements MetastoreStorageInterface {
 
@@ -201,7 +202,7 @@ abstract class Data implements MetastoreStorageInterface {
   public function getEntityPublishedRevision(string $uuid) {
 
     $entity_id = $this->getEntityIdFromUuid($uuid);
-    // TODO: extract an actual published revision.
+    // @todo extract an actual published revision.
     return $entity_id ? $this->entityStorage->load($entity_id) : NULL;
   }
 
@@ -303,17 +304,28 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Private.
+   * Create a new metadata entity from incoming data and identifier.
+   *
+   * @param string $uuid
+   *   Metadata identifier.
+   * @param object $data
+   *   Decoded JSON data.
+   *
+   * @return string
+   *   UUID of new entity.
+   *
+   * @throws \JsonPath\InvalidJsonException
+   * @throws \InvalidArgumentException
    */
-  private function createNewEntity($uuid, $data) {
+  private function createNewEntity(string $uuid, $data) {
     $title = '';
     if ($this->schemaId === 'dataset') {
       $title = isset($data->title) ? $data->title : $data->name;
     }
     else {
-      $title = md5(json_encode($data->data));
+      $title = Service::metadataHash($data->data);
     }
-    $entity = $this->entityStorage
+    $entity = $this->getEntityStorage()
       ->create(
         [
           $this->labelKey => $title,
@@ -340,7 +352,7 @@ abstract class Data implements MetastoreStorageInterface {
    *   Filtered output.
    */
   private function filterHtml($input) {
-    // TODO: find out if we still need it.
+    // @todo find out if we still need it.
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);
@@ -372,7 +384,25 @@ abstract class Data implements MetastoreStorageInterface {
    * @codeCoverageIgnore
    */
   private function htmlPurifier(string $input) {
-    $filter = new \HTMLPurifier();
+    // Initialize HTML Purifier cache config settings array.
+    $config = [];
+
+    // Determine path to tmp directory.
+    $tmp_path = \Drupal::service('file_system')->getTempDirectory();
+    // Specify custom location in tmp directory for storing HTML Purifier cache.
+    $cache_dir = rtrim($tmp_path, '/') . '/html_purifier_cache';
+
+    // Ensure the tmp cache directory exists.
+    if (!is_dir($cache_dir) && !mkdir($cache_dir)) {
+      $this->log('metastore', 'Failed to create cache directory for HTML purifier');
+    }
+    else {
+      $config['Cache.SerializerPath'] = $cache_dir;
+    }
+
+    // Create HTML purifier instance using custom cache path.
+    $filter = new \HTMLPurifier(\HTMLPurifier_Config::create($config));
+    // Filter the supplied string.
     return $filter->purify($input);
   }
 
