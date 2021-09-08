@@ -46,6 +46,12 @@ class ResourceSettingsForm extends ConfigFormBase {
       '#title' => $this->t('File'),
       '#default_value' => $this->config('datastore.settings')->get('purge_file'),
     ];
+    $form['delete_local_resource'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Delete local resource'),
+      '#default_value' => $this->config('datastore.settings')->get('delete_local_resource'),
+      '#description' => $this->t('Delete local resource after the datastore import is complete'),
+    ];
     return parent::buildForm($form, $form_state);
   }
 
@@ -56,6 +62,7 @@ class ResourceSettingsForm extends ConfigFormBase {
     $this->config('datastore.settings')
       ->set('purge_table', $form_state->getValue('purge_table'))
       ->set('purge_file', $form_state->getValue('purge_file'))
+      ->set('delete_local_resource', $form_state->getValue('delete_local_resource'))
       ->save();
     parent::submitForm($form, $form_state);
   }

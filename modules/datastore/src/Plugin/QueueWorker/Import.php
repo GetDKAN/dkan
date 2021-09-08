@@ -2,8 +2,9 @@
 
 namespace Drupal\datastore\Plugin\QueueWorker;
 
-use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerBase;
@@ -41,22 +42,6 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   protected $datastore;
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('dkan.datastore.service'),
-      $container->get('logger.factory'),
-      $container->get('queue')
-    );
-  }
-
-  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -65,25 +50,46 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   A config factory instance.
    * @param \Drupal\datastore\Service $datastore
    *   A DKAN datastore service instance.
-   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerFactory
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   A file system service instance.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   A logger channel factory instance.
-   * @param \Drupal\Core\Queue\QueueFactory $queueFactory
+   * @param \Drupal\Core\Queue\QueueFactory $queue_factory
    *   A database queue factory instance.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, DatastoreService $datastore, LoggerChannelFactory $loggerFactory, QueueFactory $queueFactory) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory, DatastoreService $datastore, FileSystemInterface $file_system, LoggerChannelFactoryInterface $logger_factory, QueueFactory $queue_factory) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->databaseQueue = $queueFactory->get($plugin_id);
+    $this->datastoreConfig = $config_factory->get('datastore.settings');
+    $this->databaseQueue = $queue_factory->get($plugin_id);
     $this->datastore = $datastore;
-    $this->setLoggerFactory($loggerFactory);
+    $this->fileSystem = $file_system;
+    $this->setLoggerFactory($logger_factory, 'datastore');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('config.factory'),
+      $container->get('dkan.datastore.service'),
+      $container->get('file_system'),
+      $container->get('logger.factory'),
+      $container->get('queue')
+    );
   }
 
   /**
    * {@inheritdoc}
    */
   public function processItem($data) {
-
     if (is_object($data) && isset($data->data)) {
       $data = $data->data;
     }
@@ -98,10 +104,15 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       foreach ($results as $result) {
         $queued = isset($result) ? $this->processResult($result, $data, $queued) : FALSE;
       }
+
+      // Delete local resource file if enabled in datastore settings config.
+      if ($this->datastoreConfig->get('delete_local_resource')) {
+        $this->fileSystem->deleteRecursive("public://resources/{$identifier}_{$version}");
+      }
+
     }
     catch (\Exception $e) {
-      $this->log(RfcLogLevel::ERROR,
-        "Import for {$data['identifier']} returned an error: {$e->getMessage()}");
+      $this->error("Import for {$data['identifier']} returned an error: {$e->getMessage()}");
     }
   }
 
@@ -113,29 +124,26 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     $version = $data['version'];
     $uid = "{$identifier}__{$version}";
 
-    $level = RfcLogLevel::INFO;
-    $message = "";
     $status = $result->getStatus();
     switch ($status) {
       case Result::STOPPED:
         if (!$queued) {
           $newQueueItemId = $this->requeue($data);
-          $message = "Import for {$uid} is requeueing. (ID:{$newQueueItemId}).";
+          $this->notice("Import for {$uid} is requeueing. (ID:{$newQueueItemId}).");
           $queued = TRUE;
         }
         break;
 
       case Result::IN_PROGRESS:
       case Result::ERROR:
-        $level = RfcLogLevel::ERROR;
-        $message = "Import for {$uid} returned an error: {$result->getError()}";
+        $this->error("Import for {$uid} returned an error: {$result->getError()}");
         break;
 
       case Result::DONE:
-        $message = "Import for {$uid} completed.";
+        $this->notice("Import for {$uid} completed.");
         break;
     }
-    $this->log('dkan', $message, [], $level);
+
     return $queued;
   }
 
