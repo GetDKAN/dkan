@@ -24,26 +24,56 @@ use Procrastinator\JsonSerializeTrait;
  * 2. Resource::createNewPerspective()
  *
  * @todo Rename filePath to uri or url.
+ * @todo Refactor as service.
  */
 class Resource implements \JsonSerializable {
   use HydratableTrait, JsonSerializeTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
+  /**
+   * The file path or URL for the resource.
+   *
+   * @var string
+   */
   private $filePath;
+
+  /**
+   * MD5 hash of the filepath, used as the main identifier.
+   *
+   * @var string
+   */
   private $identifier;
+
+  /**
+   * Content type of the resource.
+   *
+   * @var string
+   */
   private $mimeType;
+
+  /**
+   * The resource "perspective" - e.g. "source".
+   *
+   * @var string
+   */
   private $perspective;
+
+  /**
+   * The resource "version" -- a timestamp.
+   *
+   * @var int
+   */
   private $version;
 
   /**
    * Constructor.
    */
-  public function __construct($file_path, $mime_type, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
+  public function __construct($file_path, $mimeType, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
     // @todo generate UUID instead.
     $this->identifier = md5($file_path);
     $this->filePath = $file_path;
-    $this->mimeType = $mime_type;
+    $this->mimeType = $mimeType;
     $this->perspective = $perspective;
     // @todo Create a timestamp property and generate uuid for version.
     $this->version = time();
@@ -233,10 +263,14 @@ class Resource implements \JsonSerializable {
    * Private.
    */
   private static function getDistribution($identifier) {
-    /* @var \Drupal\metastore\Storage\DataFactory $factory */
+    /**
+     * @var \Drupal\metastore\Storage\DataFactory $factory
+     */
     $factory = \Drupal::service('dkan.metastore.storage');
 
-    /* @var \Drupal\metastore\Storage\Data $storage */
+    /**
+     * @var \Drupal\metastore\Storage\Data $storage
+     */
     $storage = $factory->getInstance('distribution');
 
     $distroJson = $storage->retrieve($identifier);

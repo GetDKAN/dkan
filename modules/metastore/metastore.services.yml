@@ -94,5 +94,4 @@ services:
   dkan.metastore.api_response:
     class: \Drupal\metastore\MetastoreApiResponse
     arguments:
-      - '@config.factory'
       - '@dkan.metastore.metastore_item_factory'

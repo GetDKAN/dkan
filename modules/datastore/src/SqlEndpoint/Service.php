@@ -15,7 +15,7 @@ use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class Service.
+ * SQL endpoint service.
  */
 class Service implements ContainerInjectionInterface {
   /**
@@ -71,7 +71,8 @@ class Service implements ContainerInjectionInterface {
   public function runQuery(string $queryString, $showDbColumns = FALSE): array {
     $queryObject = $this->getQueryObject($queryString);
 
-    $identifier = NULL; $version = NULL;
+    $identifier = NULL;
+    $version = NULL;
     [$identifier, $version] = $this->getResourceIdentifierAndVersion($queryString);
 
     $databaseTable = $this->getDatabaseTable($identifier, $version);
