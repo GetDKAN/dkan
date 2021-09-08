@@ -50,6 +50,7 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * Return list cache tags for metastore items.
    *
    * @return array
+   *   An array of cache tags.
    *
    * @todo Make this schema-specific.
    */
