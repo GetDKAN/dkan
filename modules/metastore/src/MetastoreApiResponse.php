@@ -76,15 +76,7 @@ class MetastoreApiResponse {
     $cacheMetadata = new CacheableMetadata();
 
     foreach ($dependencies as $key => $item) {
-      if (is_string($key) && is_array($item)) {
-        $this->addItemDependencies($cacheMetadata, $item);
-      }
-      elseif (is_string($item)) {
-        $this->addSchemaDependency($cacheMetadata, $item);
-      }
-      else {
-        throw new \InvalidArgumentException("Invalid cacheable dependency. " . print_r([$key => $item], TRUE));
-      }
+      $this->addDependency($cacheMetadata, $key, $item);
     }
 
     if (isset($params)) {
@@ -92,6 +84,28 @@ class MetastoreApiResponse {
     }
 
     return $cacheMetadata;
+  }
+
+  /**
+   * Add a dependency from a dependency array.
+   *
+   * @param \Drupal\Core\Cache\CacheableMetadata $cacheMetadata
+   *   Cache metadata object.
+   * @param mixed $key
+   *   Key from dependency array.
+   * @param mixed $item
+   *   Item from dependency array.
+   */
+  private function addDependency(CacheableMetadata $cacheMetadata, $key, $item) {
+    if (is_string($key) && is_array($item)) {
+      $this->addItemDependencies($cacheMetadata, $item);
+    }
+    elseif (is_string($item)) {
+      $this->addSchemaDependency($cacheMetadata, $item);
+    }
+    else {
+      throw new \InvalidArgumentException("Invalid cacheable dependency. " . print_r([$key => $item], TRUE));
+    }
   }
 
   /**
