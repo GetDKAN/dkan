@@ -17,8 +17,6 @@ class MetastoreApiResponse {
    *
    * @param \Drupal\metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory
    *   Metastore Item factory service.
-   *
-   * @return void
    */
   public function __construct(MetastoreItemFactoryInterface $metastoreItemFactory) {
     $this->metastoreItemFactory = $metastoreItemFactory;
