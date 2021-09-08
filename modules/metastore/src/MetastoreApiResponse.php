@@ -4,9 +4,7 @@ namespace Drupal\metastore;
 
 use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\Core\Config\ConfigFactory;
 use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
-use Drupal\metastore\MetastoreItemInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -15,18 +13,14 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class MetastoreApiResponse {
 
   /**
-   * Cache page max age config value.
+   * Constructor.
    *
-   * @var int
+   * @param \Drupal\metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory
+   *   Metastore Item factory service.
+   *
+   * @return void
    */
-  protected $cacheMaxAge;
-
-  public function __construct(
-    ConfigFactory $configFactory, 
-    MetastoreItemFactoryInterface $metastoreItemFactory
-  ) {
-    $this->configFactory = $configFactory;
-    $this->cacheMaxAge = $configFactory->get('system.performance')->get('cache.page.max_age') ?: 0;
+  public function __construct(MetastoreItemFactoryInterface $metastoreItemFactory) {
     $this->metastoreItemFactory = $metastoreItemFactory;
   }
 
@@ -65,6 +59,19 @@ class MetastoreApiResponse {
     return $response;
   }
 
+  /**
+   * Create cache metadata for response.
+   *
+   * @param array $dependencies
+   *   Array of dependencies. See cachedJsonResponse().
+   * @param null|\Symfony\Component\HttpFoundation\ParameterBag $params
+   *   Parameters from request.
+   *
+   * @return \Drupal\Core\Cache\CacheableMetadata
+   *   Complete cache metadata object.
+   *
+   * @throws \InvalidArgumentException
+   */
   private function getCacheMetadata(array $dependencies, ?ParameterBag $params) {
     $cacheMetadata = new CacheableMetadata();
 
@@ -84,11 +91,18 @@ class MetastoreApiResponse {
       $this->addContexts($cacheMetadata, $params);
     }
 
-    $cacheMetadata->setCacheMaxAge($this->cacheMaxAge);
     return $cacheMetadata;
   }
 
-  private function addItemDependencies(CacheableMetadata $cacheMetadata, $ids) {
+  /**
+   * Add metastore item dependencies to cache metadata.
+   *
+   * @param \Drupal\Core\Cache\CacheableMetadata $cacheMetadata
+   *   Cache metadata object.
+   * @param array $ids
+   *   Array of metastore identifiers.
+   */
+  private function addItemDependencies(CacheableMetadata $cacheMetadata, array $ids) {
     foreach ($ids as $identifier) {
       $item = $this->metastoreItemFactory->getInstance($identifier);
       $cacheMetadata->addCacheableDependency($item);
@@ -96,6 +110,14 @@ class MetastoreApiResponse {
     }
   }
 
+  /**
+   * Add more dependencies for a metastore item's references.
+   *
+   * @param \Drupal\Core\Cache\CacheableMetadata $cacheMetadata
+   *   Cache metadata object.
+   * @param \Drupal\metastore\MetastoreItemInterface $item
+   *   Metastore item, such as a dataset.
+   */
   private function addReferenceDependencies(CacheableMetadata $cacheMetadata, MetastoreItemInterface $item) {
     $metadata = $item->getMetaData();
     $ids = [];
@@ -108,6 +130,14 @@ class MetastoreApiResponse {
     $this->addItemDependencies($cacheMetadata, $ids);
   }
 
+  /**
+   * Get UUID from reference property. Normalizes for string or array values.
+   *
+   * @param array $ids
+   *   Array of IDs to add as dependencies.
+   * @param mixed $value
+   *   The value for the reference field.
+   */
   private function addReferenceIdentifier(array &$ids, $value) {
     if (is_array($value)) {
       foreach ($value as $ref) {
@@ -119,11 +149,33 @@ class MetastoreApiResponse {
     }
   }
 
+  /**
+   * Add a metastore dependency for a whole schema/type.
+   *
+   * This is necessary so that the page cache distinguishes between
+   * requests with different GET queries.
+   *
+   * @param \Drupal\Core\Cache\CacheableMetadata $cacheMetadata
+   *   Cache metadata object to modify.
+   * @param mixed $schema
+   *   The schemaID (e.g., "dataset").
+   */
   private function addSchemaDependency(CacheableMetadata $cacheMetadata, $schema) {
+    // Silly line to make linters happy. Right now the itemFactory doesn't
+    // require a schema so it's not used.
+    $schema = $schema;
     $cacheTags = $this->metastoreItemFactory::getCacheTags();
     $cacheMetadata->addCacheTags($cacheTags);
   }
 
+  /**
+   * Add cache contexts based on request parameters.
+   *
+   * @param \Drupal\Core\Cache\CacheableMetadata $cacheMetadata
+   *   Cache metadata object to modify.
+   * @param \Symfony\Component\HttpFoundation\ParameterBag $params
+   *   Request parameters.
+   */
   private function addContexts(CacheableMetadata $cacheMetadata, ParameterBag $params) {
     foreach ($params->keys() as $key) {
       $cacheMetadata->addCacheContexts(["url.query_args:$key"]);
