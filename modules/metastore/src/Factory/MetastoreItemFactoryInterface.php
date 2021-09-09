@@ -30,7 +30,7 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * @param array $config
    *   User config; not usually used.
    *
-   * @return Drupal\metastore\MetastoreItemInterface
+   * @return \Drupal\metastore\MetastoreItemInterface
    *   A metastore item object.
    */
   public function getInstance(string $identifier, array $config = []);

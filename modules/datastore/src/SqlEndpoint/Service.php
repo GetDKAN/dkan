@@ -131,7 +131,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getTableNameFromSelect(MachineOfMachines $selectMachine): string {
+  protected function getTableNameFromSelect(MachineOfMachines $selectMachine): string {
     $machine = $selectMachine->gsm('table_var');
     $strings = $this->getStringsFromStringMachine($machine);
     if (empty($strings)) {
