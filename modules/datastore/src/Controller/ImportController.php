@@ -29,13 +29,6 @@ class ImportController implements ContainerInjectionInterface {
   protected $datastoreService;
 
   /**
-   * Metastore API response service.
-   *
-   * @var \Drupal\metastore\MetastoreApiResponse
-   */
-  private $requestStack;
-
-  /**
    * Api constructor.
    */
   public function __construct(Service $datastoreService, MetastoreApiResponse $metastoreApiResponse) {
