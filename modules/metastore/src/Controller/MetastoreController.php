@@ -183,6 +183,8 @@ class MetastoreController implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -213,6 +215,8 @@ class MetastoreController implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -240,6 +244,8 @@ class MetastoreController implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -274,6 +280,8 @@ class MetastoreController implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -368,16 +376,6 @@ class MetastoreController implements ContainerInjectionInterface {
     if (isset($identifier) && isset($obj->identifier) && $obj->identifier != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");
     }
-  }
-
-  /**
-   * Get the request's uri.
-   *
-   * @return string
-   *   The uri.
-   */
-  private function getRequestUri(): string {
-    return $this->requestStack->getCurrentRequest()->getRequestUri();
   }
 
 }
