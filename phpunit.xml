@@ -38,7 +38,6 @@
         </testsuite>
         <testsuite name="DkanFunctionalTests">
           <directory>modules/common/tests/src/Functional</directory>
-          <directory>tests/src/Functional</directory>
           <directory>modules/metastore/tests/src/Functional</directory>
           <directory>modules/metastore/modules/metastore/tests/src/Functional</directory>
           <directory>modules/metastore/modules/metastore_search/tests/src/Functional</directory>
@@ -47,6 +46,7 @@
           <directory>modules/frontend/tests/src/Functional</directory>
           <directory>modules/harvest/tests/src/Functional</directory>
           <directory>modules/harvest/modules/harvest_dashboard/tests/src/Functional</directory>
+          <directory>tests/src/Functional</directory>
         </testsuite>
     </testsuites>
 
