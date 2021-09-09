@@ -116,7 +116,7 @@ class MetastoreApiResponse {
    */
   private function addItemDependencies(CacheableMetadata $cacheMetadata, array $ids) {
     foreach ($ids as $identifier) {
-      $item = $this->metastoreItemFactory->getInstance($identifier);
+      $item = $this->getMetastoreItemFactory()->getInstance($identifier);
       $cacheMetadata->addCacheableDependency($item);
       $this->addReferenceDependencies($cacheMetadata, $item);
     }
@@ -130,7 +130,7 @@ class MetastoreApiResponse {
    * @param \Drupal\metastore\MetastoreItemInterface $item
    *   Metastore item, such as a dataset.
    */
-  private function addReferenceDependencies(CacheableMetadata $cacheMetadata, MetastoreItemInterface $item) {
+  protected function addReferenceDependencies(CacheableMetadata $cacheMetadata, MetastoreItemInterface $item) {
     $metadata = $item->getMetaData();
     $ids = [];
     foreach ($metadata as $propertyId => $value) {
@@ -176,8 +176,18 @@ class MetastoreApiResponse {
     // Silly line to make linters happy. Right now the itemFactory doesn't
     // require a schema so it's not used.
     $schema = $schema;
-    $cacheTags = $this->metastoreItemFactory::getCacheTags();
+    $cacheTags = $this->getMetastoreItemFactory()->getCacheTags();
     $cacheMetadata->addCacheTags($cacheTags);
+  }
+
+  /**
+   * Return the metastore item factory service.
+   *
+   * @return \Drupal\metastore\Factory\MetastoreItemFactoryInterface
+   *   Metastore item factory.
+   */
+  protected function getMetastoreItemFactory() {
+    return $this->metastoreItemFactory;
   }
 
   /**

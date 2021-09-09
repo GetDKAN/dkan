@@ -187,14 +187,14 @@ class MetastoreController implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function post(string $schema_id) {
+  public function post(string $schema_id, Request $request) {
     try {
-      $data = $this->getRequestContent();
+      $data = $request->getContent();
       $this->checkIdentifier($data);
       $data = $this->service->getValidMetadataFactory()->get($data, $schema_id, ['method' => 'POST']);
       $identifier = $this->service->post($schema_id, $data);
       return $this->apiResponse->cachedJsonResponse([
-        "endpoint" => "{$this->getRequestUri()}/{$identifier}",
+        "endpoint" => "{$request->getRequestUri()}/{$identifier}",
         "identifier" => $identifier,
       ], 201);
     }
@@ -217,11 +217,11 @@ class MetastoreController implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function publish(string $schema_id, string $identifier) {
+  public function publish(string $schema_id, string $identifier, Request $request) {
     try {
       $this->service->publish($schema_id, $identifier);
       return $this->apiResponse->cachedJsonResponse((object) [
-        "endpoint" => $this->getRequestUri(),
+        "endpoint" => "{$request->getRequestUri()}/{$identifier}/publish",
         "identifier" => $identifier,
       ]);
     }
@@ -244,16 +244,16 @@ class MetastoreController implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function put($schema_id, string $identifier) {
+  public function put($schema_id, string $identifier, Request $request) {
     try {
-      $data = $this->getRequestContent();
+      $data = $request->getContent();
       $this->checkIdentifier($data, $identifier);
       $data = $this->service->getValidMetadataFactory()->get($data, $schema_id);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->apiResponse->cachedJsonResponse(
         [
-          "endpoint" => $this->getRequestUri(),
+          "endpoint" => "{$request->getRequestUri()}/{$identifier}",
           "identifier" => $info['identifier'],
         ],
         $code
@@ -278,10 +278,10 @@ class MetastoreController implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function patch($schema_id, $identifier) {
+  public function patch($schema_id, $identifier, Request $request) {
 
     try {
-      $data = $this->getRequestContent();
+      $data = $request->getContent();
 
       if (empty($data)) {
         throw new MissingPayloadException("Empty body");
@@ -294,7 +294,7 @@ class MetastoreController implements ContainerInjectionInterface {
 
       $this->service->patch($schema_id, $identifier, $data);
       return $this->apiResponse->cachedJsonResponse((object) [
-        "endpoint" => $this->getRequestUri(),
+        "endpoint" => "{$request->getRequestUri()}/{$identifier}",
         "identifier" => $identifier,
       ]);
     }
@@ -378,16 +378,6 @@ class MetastoreController implements ContainerInjectionInterface {
    */
   private function getRequestUri(): string {
     return $this->requestStack->getCurrentRequest()->getRequestUri();
-  }
-
-  /**
-   * Get the request's content.
-   *
-   * @return string
-   *   The content.
-   */
-  private function getRequestContent(): string {
-    return $this->requestStack->getCurrentRequest()->getContent();
   }
 
 }
