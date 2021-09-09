@@ -77,9 +77,7 @@ class MetastoreApiResponse {
       $this->addDependency($cacheMetadata, $key, $item);
     }
 
-    if (isset($params)) {
-      $this->addContexts($cacheMetadata, $params);
-    }
+    $this->addContexts($cacheMetadata, $params ?? new ParameterBag([]));
 
     return $cacheMetadata;
   }
@@ -199,6 +197,7 @@ class MetastoreApiResponse {
    *   Request parameters.
    */
   private function addContexts(CacheableMetadata $cacheMetadata, ParameterBag $params) {
+    $cacheMetadata->addCacheContexts(["url"]);
     foreach ($params->keys() as $key) {
       $cacheMetadata->addCacheContexts(["url.query_args:$key"]);
     }
