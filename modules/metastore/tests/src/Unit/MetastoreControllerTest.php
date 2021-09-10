@@ -235,7 +235,7 @@ class MetastoreControllerTest extends TestCase {
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put('dataset', 1, $this->request('PUT', '{ }'));
-    $this->assertEquals('{"endpoint":"\/api\/1","identifier":"1"}', $response->getContent());
+    $this->assertEquals('{"endpoint":"\/api","identifier":"1"}', $response->getContent());
   }
 
   /**
@@ -307,7 +307,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1, $this->request('PATCH', json_encode($collection)));
-    $this->assertEquals('{"endpoint":"\/api\/1","identifier":1}', $response->getContent());
+    $this->assertEquals('{"endpoint":"\/api","identifier":1}', $response->getContent());
   }
 
   /**
@@ -420,7 +420,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', "1", $this->request('PUT', '{}'));
-    $this->assertContains('"endpoint":"\/api\/1\/publish","identifier":"1"', $response->getContent());
+    $this->assertContains('"endpoint":"\/api\/publish","identifier":"1"', $response->getContent());
   }
 
   /**
