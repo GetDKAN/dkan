@@ -225,7 +225,7 @@ class MetastoreController implements ContainerInjectionInterface {
     try {
       $this->service->publish($schema_id, $identifier);
       return $this->apiResponse->cachedJsonResponse((object) [
-        "endpoint" => "{$request->getRequestUri()}/{$identifier}/publish",
+        "endpoint" => "{$request->getRequestUri()}/publish",
         "identifier" => $identifier,
       ]);
     }
@@ -259,7 +259,7 @@ class MetastoreController implements ContainerInjectionInterface {
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->apiResponse->cachedJsonResponse(
         [
-          "endpoint" => "{$request->getRequestUri()}/{$identifier}",
+          "endpoint" => $request->getRequestUri(),
           "identifier" => $info['identifier'],
         ],
         $code
@@ -302,7 +302,7 @@ class MetastoreController implements ContainerInjectionInterface {
 
       $this->service->patch($schema_id, $identifier, $data);
       return $this->apiResponse->cachedJsonResponse((object) [
-        "endpoint" => "{$request->getRequestUri()}/{$identifier}",
+        "endpoint" => $request->getRequestUri(),
         "identifier" => $identifier,
       ]);
     }
