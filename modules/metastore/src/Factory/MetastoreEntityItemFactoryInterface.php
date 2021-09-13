@@ -34,4 +34,5 @@ interface MetastoreEntityItemFactoryInterface extends MetastoreItemFactoryInterf
    *   Field API name.
    */
   public static function getMetadataField();
+
 }
