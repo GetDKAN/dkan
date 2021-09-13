@@ -1,0 +1,24 @@
+{
+    "type": "object",
+    "required": [
+        "identifier",
+        "data"
+    ],
+    "properties": {
+        "identifier": {
+            "title": "Identifier",
+            "type": "string"
+        },
+        "data": {
+            "anyOf": [
+                {
+                    "type": "object"
+                },
+                {
+                    "type": "string"
+                }
+            ]
+        }
+    },
+    "additionalProperties": false
+}

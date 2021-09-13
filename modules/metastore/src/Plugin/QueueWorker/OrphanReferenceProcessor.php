@@ -10,7 +10,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\common\EventDispatcherTrait;
-use Drupal\metastore\Reference\ReferenceLookup;
+use Drupal\metastore\ReferenceLookupInterface;
 
 /**
  * Verifies if a dataset property reference is orphaned, then deletes it.
@@ -47,7 +47,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The plugin implementation definition.
    * @param \Drupal\node\NodeStorageInterface $nodeStorage
    *   Node storage service.
-   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
    *   The referencer lookup service.
    */
   public function __construct(
@@ -55,7 +55,7 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
     $plugin_id,
     $plugin_definition,
     NodeStorageInterface $nodeStorage,
-    ReferenceLookup $referenceLookup) {
+    ReferenceLookupInterface $referenceLookup) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->referenceLookup = $referenceLookup;
     $this->nodeStorage = $nodeStorage;
