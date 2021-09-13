@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest;
+namespace Drupal\Tests\harvest\Unit;
 
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\metastore\Service as Metastore;

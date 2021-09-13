@@ -1,17 +1,22 @@
 <?php
 
-namespace Drupal\Tests\datastore\Plugin\QueuWorker;
+namespace Drupal\Tests\datastore\Unit\Plugin\QueuWorker;
 
+use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\Container;
+use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use PHPUnit\Framework\TestCase;
+
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service;
+
 use MockChain\Chain;
 use MockChain\Options;
+use PHPUnit\Framework\TestCase;
 use Procrastinator\Result;
 
 /**
@@ -41,8 +46,6 @@ class ImportTest extends TestCase {
       ->add(LoggerChannel::class, 'log', NULL, 'log');
     $container = $containerChain->getMock();
 
-    \Drupal::setContainer($container);
-
     $queueWorker = Import::create($container, [], '', '');
     $queueWorker->processItem((object) $this->data);
 
@@ -61,8 +64,6 @@ class ImportTest extends TestCase {
     $containerChain = $this->getContainerChain($result);
     $container = $containerChain->getMock();
 
-    \Drupal::setContainer($container);
-
     $queueWorker = Import::create($container, [], '', '');
     $queueWorker->processItem((object) $this->data);
 
@@ -71,22 +72,29 @@ class ImportTest extends TestCase {
   }
 
   /**
-   * Private.
+   * Create base container chain object for mocking.
    */
   private function getContainerChain($result) {
+    $config_factory = (new Chain($this))
+      ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', [])
+      ->getMock();
+
     $options = (new Options())
-      ->add("logger.factory", LoggerChannelFactory::class)
-      ->add("dkan.datastore.service", Service::class)
+      ->add('config.factory', $config_factory)
+      ->add('dkan.datastore.service', Service::class)
+      ->add('file_system', FileSystem::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
       ->add('queue', QueueFactory::class)
       ->index(0);
 
-    $containerChain = (new Chain($this))
+    $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'import', [$result])
       ->add(QueueFactory::class, 'get', QueueInterface::class)
       ->add(QueueInterface::class, 'createItem', NULL, 'create_item');
 
-    return $containerChain;
+    return $container_chain;
   }
 
 }

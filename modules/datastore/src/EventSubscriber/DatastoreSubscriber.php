@@ -2,22 +2,33 @@
 
 namespace Drupal\datastore\EventSubscriber;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\common\Resource;
+
 use Drupal\common\Events\Event;
+use Drupal\common\Resource;
+use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
-use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\LifeCycle\LifeCycle;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Drupal\metastore\MetastoreItemInterface;
+use Drupal\metastore\ResourceMapper;
+
 use Dkan\Datastore\Importer;
-use Drupal\common\Storage\JobStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Subscriber.
  */
 class DatastoreSubscriber implements EventSubscriberInterface {
+
+  /**
+   * Drupal Config Factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
 
   /**
    * Logger service.
@@ -33,6 +44,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('config.factory'),
       $container->get('logger.factory'),
       $container->get('dkan.datastore.service'),
       $container->get('dkan.datastore.service.resource_purger'),
@@ -43,7 +55,9 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * Constructor.
    *
-   * @param Drupal\Core\Logger\LoggerChannelFactory $logger_factory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   A ConfigFactory service instance.
+   * @param \Drupal\Core\Logger\LoggerChannelFactory $logger_factory
    *   LoggerChannelFactory service.
    * @param \Drupal\datastore\Service $service
    *   The dkan.datastore.service service.
@@ -52,7 +66,8 @@ class DatastoreSubscriber implements EventSubscriberInterface {
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   The dkan.common.job_store service.
    */
-  public function __construct(LoggerChannelFactory $logger_factory, Service $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
+  public function __construct(ConfigFactoryInterface $config_factory, LoggerChannelFactory $logger_factory, Service $service, ResourcePurger $resourcePurger, JobStoreFactory $jobStoreFactory) {
+    $this->configFactory = $config_factory;
     $this->loggerFactory = $logger_factory;
     $this->service = $service;
     $this->resourcePurger = $resourcePurger;
@@ -70,6 +85,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
     $events[ResourceMapper::EVENT_RESOURCE_MAPPER_PRE_REMOVE_SOURCE][] = ['drop'];
     $events[ResourceMapper::EVENT_REGISTRATION][] = ['onRegistration'];
     $events[LifeCycle::EVENT_DATASET_UPDATE][] = ['purgeResources'];
+    $events[LifeCycle::EVENT_PRE_REFERENCE][] = ['onPreReference'];
     return $events;
   }
 
@@ -145,6 +161,58 @@ class DatastoreSubscriber implements EventSubscriberInterface {
         '@message' => $e->getMessage(),
       ]);
     }
+  }
+
+  /**
+   * React to a preReference to check if datastore update should be triggered.
+   *
+   * @param \Drupal\common\Events\Event $event
+   *   The event object containing the resource uuid.
+   */
+  public function onPreReference(Event $event) {
+    // Attempt to retrieve new and original revisions of metadata object.
+    $data = $event->getData();
+    $original = $data->getOriginal();
+    // Retrieve a list of metadata properties which, when changed, should
+    // trigger a new metadata resource revision.
+    $datastore_settings = $this->configFactory->get('datastore.settings');
+    $triggers = array_filter($datastore_settings->get('triggering_properties') ?? []);
+    // Ensure at least one trigger has been selected in datastore settings, and
+    // that a valid MetastoreItem data object was found for the previous version
+    // of the wrapped node.
+    // If a change was found in one of the triggering elements, change the
+    // "new revision" flag to true in order to trigger a datastore update.
+    if (!empty($triggers) && $original instanceof MetastoreItemInterface &&
+        $this->lazyDiffObject($original->getMetadata(), $data->getMetadata(), $triggers)) {
+      // Assign value to static variable.
+      $rev = &drupal_static('metastore_resource_mapper_new_revision');
+      $rev = 1;
+    }
+  }
+
+  /**
+   * Determine differences in the supplied objects in the given property scope.
+   *
+   * @param object $a
+   *   The first object being compared.
+   * @param object $b
+   *   The second object being compared.
+   * @param array $scope
+   *   Shared object properties being compared.
+   *
+   * @returns bool
+   *   Whether any differences were found in the scoped two objects.
+   */
+  protected function lazyDiffObject($a, $b, array $scope): bool {
+    $changed = FALSE;
+    foreach ($scope as $property) {
+      if ($a->{$property} != $b->{$property}) {
+        $changed = TRUE;
+        break;
+      }
+    }
+
+    return $changed;
   }
 
 }

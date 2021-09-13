@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest\Load;
+namespace Drupal\Tests\harvest\Unit\Load;
 
 use Contracts\Mock\Storage\Memory;
 use Drupal\Core\DependencyInjection\Container;

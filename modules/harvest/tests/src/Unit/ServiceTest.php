@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\harvest;
+namespace Drupal\Tests\harvest\Unit;
 
 use Contracts\FactoryInterface;
 use Contracts\Mock\Storage\Memory;
@@ -53,7 +53,7 @@ class ServiceTest extends TestCase {
       'identifier' => 'test_plan',
       'extract' => (object) [
         "type" => DataJson::class,
-        "uri" => "file://" . __DIR__ . '/../files/data.json',
+        "uri" => "file://" . __DIR__ . '/../../files/data.json',
       ],
       'transforms' => [],
       'load' => (object) [
@@ -90,7 +90,7 @@ class ServiceTest extends TestCase {
 
     // Run harvest with changes.
     $plan2 = clone $plan;
-    $plan2->extract->uri = "file://" . __DIR__ . '/../files/data2.json';
+    $plan2->extract->uri = "file://" . __DIR__ . '/../../files/data2.json';
     $service->registerHarvest($plan2);
     $result = $service->runHarvest('test_plan');
 
