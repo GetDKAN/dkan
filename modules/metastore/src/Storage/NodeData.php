@@ -23,6 +23,28 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
+  public function retrieveContains(string $string, bool $caseSensitive = TRUE): array {
+
+    $entity_ids = $this->entityStorage->getQuery()
+      ->condition($this->bundleKey, $this->bundle)
+      ->condition('field_data_type', $this->schemaId)
+      ->condition($this->getMetadataField(), $string, 'CONTAINS')
+      ->addTag('case_sensitive')
+      ->execute();
+
+    $all = [];
+    foreach ($entity_ids as $nid) {
+      $entity = $this->entityStorage->load($nid);
+      if ($entity->get('moderation_state')->getString() === 'published') {
+        $all[] = $entity->get('field_json_metadata')->getString();
+      }
+    }
+    return $all;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getEntityType() {
     return 'node';
   }
