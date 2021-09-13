@@ -71,7 +71,7 @@
         "R/P4M",
         "R/P1W",
         "R/PT1H",
-        "irregular"
+        "Irregular"
       ],
       "enumNames": [
         "Decennial",
@@ -93,7 +93,7 @@
         "Three times a year",
         "Weekly",
         "Hourly",
-        "irregular"
+        "Irregular"
       ]
     },
     "describedBy": {
