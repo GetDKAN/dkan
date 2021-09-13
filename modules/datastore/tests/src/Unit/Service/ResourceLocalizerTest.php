@@ -23,6 +23,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  */
 class ResourceLocalizerTest extends TestCase {
+  /**
+   * HTTP host protocol and domain for testing download URL.
+   *
+   * @var string
+   */
+  const HOST = 'http://example.com';
 
   /**
    *
@@ -54,7 +60,7 @@ class ResourceLocalizerTest extends TestCase {
    *   Path to resource file for testing DKAN resource creation and removal.
    */
   private function doTestResourceLocalizerRemove(string $file_path): void {
-    $resource = new Resource('http://hello.world/file.csv', 'text/csv');
+    $resource = new Resource(self::HOST . '/file.csv', 'text/csv');
 
     $fileMapper = $this->getFileMapperChain()
       ->add(ResourceMapper::class, 'get', $resource)
