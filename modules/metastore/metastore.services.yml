@@ -102,3 +102,4 @@ services:
       - '@dkan.metastore.storage'
       - '@dkan.metastore.metastore_item_factory'
       - '@cache_tags.invalidator'
+      - '@module_handler'
