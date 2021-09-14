@@ -3,14 +3,14 @@
 namespace Drupal\metastore\NodeWrapper;
 
 use Drupal\Core\Entity\EntityRepository;
-use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
+use Drupal\metastore\Factory\MetastoreEntityItemFactoryInterface;
 
 /**
  * Class NodeDataFactory.
  *
  * Build a MetastoreItemInterface object from a simple node.
  */
-class NodeDataFactory implements MetastoreItemFactoryInterface {
+class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
 
   /**
    * EntityRepository object.
