@@ -30,12 +30,12 @@ class ServiceTest extends TestCase {
    *
    */
   public function testImport() {
-
+    $resource = new Resource('http://example.org', 'text/csv');
     $chain = $this->getContainerChainForService('dkan.datastore.service')
-      ->add(ResourceLocalizer::class, 'get', Resource::class)
+      ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceLocalizer::class, 'getResult', Result::class)
       ->add(FileFetcher::class, 'run', Result::class)
-      ->add(ResourceMapper::class, 'get', Resource::class)
+      ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
       ->add(ImportService::class, "import", NULL)
       ->add(ImportService::class, "getResult", new Result())
@@ -49,8 +49,9 @@ class ServiceTest extends TestCase {
   }
 
   public function testDrop() {
+    $resource = new Resource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
-      ->add(ResourceLocalizer::class, 'get', Resource::class)
+      ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
       ->add(DatabaseTable::class, 'destroy')

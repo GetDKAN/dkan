@@ -73,6 +73,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
+      $container->get('dkan.metastore.reference_lookup'),
       $container->get('dkan.metastore.storage'),
       $container->get('dkan.datastore.service')
     );
