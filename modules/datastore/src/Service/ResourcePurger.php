@@ -236,18 +236,18 @@ class ResourcePurger implements ContainerInjectionInterface {
    *   Whether the given resource is being used by more than one distribution.
    */
   private function resourceNotUnique(string $resource_details): bool {
-      // Extract the identifier and version from the supplied resource details.
-      [$identifier, $version] = json_decode($resource_details);
-      // Determine the number of distributions making use of the current
-      // resource.
-      $count = \Drupal::entityQuery('node')
-        ->condition('type', 'data')
-        ->condition('field_json_metadata', $identifier . '__' . $version, 'CONTAINS')
-        ->count()
-        ->execute();
-      // If more than one distribution is using this resource, remove it from
-      // the purge list.
-      return $count <= 1;
+    // Extract the identifier and version from the supplied resource details.
+    [$identifier, $version] = json_decode($resource_details);
+    // Determine the number of distributions making use of the current
+    // resource.
+    $count = \Drupal::entityQuery('node')
+      ->condition('type', 'data')
+      ->condition('field_json_metadata', $identifier . '__' . $version, 'CONTAINS')
+      ->count()
+      ->execute();
+    // If more than one distribution is using this resource, remove it from
+    // the purge list.
+    return $count <= 1;
   }
 
   /**
