@@ -30,7 +30,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   /**
    * The dkan.metastore.reference_lookup service.
    *
-   * @var \Drupal\metastore\Reference\ReferenceLookup
+   * @var \Drupal\metastore\ReferenceLookupInterface
    */
   private $referenceLookup;
 
@@ -53,7 +53,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config.factory service.
-   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
    *   The dkan.metastore.reference_lookup service.
    * @param \Drupal\metastore\Storage\DataFactory $dataFactory
    *   The dkan.metastore.storage service.
@@ -321,7 +321,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Get all resources' identifier and version from a dataset.
+   * Get the identifier and version of all resources for a dataset.
    *
    * @param \Drupal\node\NodeInterface $dataset
    *   The dataset.
@@ -340,7 +340,11 @@ class ResourcePurger implements ContainerInjectionInterface {
       // it to the resources list.
       $resource = $distribution->data->{'%Ref:downloadURL'}[0] ?? NULL;
       if (isset($resource->data->identifier, $resource->data->version)) {
-        $resources[] = json_encode([$resource->data->identifier, $resource->data->version, $resource->data->perspective]);
+        $resources[] = json_encode([
+          $resource->data->identifier,
+          $resource->data->version,
+          $resource->data->perspective,
+        ]);
       }
     }
 
