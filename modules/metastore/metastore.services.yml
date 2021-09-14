@@ -90,3 +90,10 @@ services:
     arguments:
       - '@dkan.common.docs_generator'
       - '@dkan.metastore.service'
+
+  dkan.metastore.reference_lookup:
+    class: \Drupal\metastore\Reference\ReferenceLookup
+    arguments:
+      - '@dkan.metastore.storage'
+      - '@dkan.metastore.metastore_item_factory'
+      - '@module_handler'
