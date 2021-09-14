@@ -3,22 +3,47 @@
 namespace Drupal\metastore\Reference;
 
 use Contracts\FactoryInterface;
-use Drupal\common\LoggerTrait;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 
 /**
  * Service to find metastore items referencing an identifier.
  */
 class ReferenceLookup {
-  use HelperTrait;
-  use LoggerTrait;
+
+  /**
+   * Metastore storage service.
+   *
+   * @var \Contracts\FactoryInterface
+   */
+  private $metastoreStorage;
+
+  /**
+   * Metastore item factory - for loading full metastore objects.
+   *
+   * @var \Drupal\metastore\Factory\MetastoreItemFactoryInterface
+   */
+  private $metastoreItemFactory;
+
+  /**
+   * Cache tag invalidator service.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
+   */
+  private $invalidator;
 
   /**
    * Constructor.
    */
-  public function __construct(FactoryInterface $metastoreStorage, MetastoreItemFactoryInterface $metastoreItemFactory) {
+  public function __construct(
+    FactoryInterface $metastoreStorage,
+    MetastoreItemFactoryInterface $metastoreItemFactory,
+    CacheTagsInvalidatorInterface $invalidator
+  ) {
     $this->metastoreStorage = $metastoreStorage;
     $this->metastoreItemFactory = $metastoreItemFactory;
+    $this->invalidator = $invalidator;
   }
 
   /**
@@ -57,6 +82,26 @@ class ReferenceLookup {
     }
 
     return $referencers;
+  }
+
+  /**
+   * Invalidate cache tags in any items pointing to a reference.
+   *
+   * @param string $schemaId
+   *   The type of metadata to look for references within.
+   * @param string $referenceId
+   *   The UUID of the reference we're looking for.
+   * @param string $propertyId
+   *   The metadata property we hope to find it in.
+   */
+  public function invalidateReferencerCacheTags(string $schemaId, string $referenceId, string $propertyId) {
+    $referencers = $this->getReferencers($schemaId, $referenceId, $propertyId);
+    $tags = [];
+    foreach ($referencers as $identifier) {
+      $item = $this->metastoreItemFactory->getInstance($identifier);
+      $tags[] = Cache::mergeTags($tags, $item->getCacheTags());
+    }
+    $this->invalidator->invalidateTags($tags);
   }
 
 }
