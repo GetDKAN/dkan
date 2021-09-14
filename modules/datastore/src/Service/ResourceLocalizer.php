@@ -189,7 +189,7 @@ class ResourceLocalizer {
    * @return \Drupal\Core\File\FileSystemInterface
    *   Drupal filesystem.
    */
-  protected function getFileSystem(): FileSystemInterface {
+  public function getFileSystem(): FileSystemInterface {
     return $this->drupalFiles->getFileSystem();
   }
 
