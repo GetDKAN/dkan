@@ -70,7 +70,7 @@ class ReferenceLookup implements ReferenceLookupInterface {
       $propertyValue = $metadata->{$propertyId};
       // Check if uuid is found either directly or in an array.
       $idIsValue = $referenceId == $propertyValue;
-      $idInArray = is_array($propertyValue) && in_array($referenceId, $value);
+      $idInArray = is_array($propertyValue) && in_array($referenceId, $propertyValue);
       if ($idIsValue || $idInArray) {
         $referencers[] = $identifier;
       }
