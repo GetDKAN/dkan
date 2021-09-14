@@ -4,10 +4,14 @@ namespace Drupal\datastore\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+
 use Drupal\common\LoggerTrait;
+use Drupal\common\Resource;
 use Drupal\datastore\Service;
+use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -24,11 +28,11 @@ class ResourcePurger implements ContainerInjectionInterface {
   private $config;
 
   /**
-   * The dataset storage.
+   * The dkan.metastore.reference_lookup service.
    *
-   * @var \Drupal\metastore\Storage\Data
+   * @var \Drupal\metastore\Reference\ReferenceLookup
    */
-  private $storage;
+  private $referenceLookup;
 
   /**
    * The datastore service.
@@ -38,17 +42,27 @@ class ResourcePurger implements ContainerInjectionInterface {
   private $datastore;
 
   /**
+   * The dataset storage.
+   *
+   * @var \Drupal\metastore\Storage\Data
+   */
+  private $storage;
+
+  /**
    * Constructs a ResourcePurger object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config.factory service.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   The dkan.metastore.reference_lookup service.
    * @param \Drupal\metastore\Storage\DataFactory $dataFactory
    *   The dkan.metastore.storage service.
    * @param \Drupal\datastore\Service $datastore
    *   The dkan.datastore.service service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, DataFactory $dataFactory, Service $datastore) {
+  public function __construct(ConfigFactoryInterface $configFactory, ReferenceLookupInterface $referenceLookup, DataFactory $dataFactory, Service $datastore) {
     $this->config = $configFactory->get('datastore.settings');
+    $this->referenceLookup = $referenceLookup;
     $this->storage = $dataFactory->getInstance('dataset');
     $this->datastore = $datastore;
   }
@@ -237,17 +251,13 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function resourceNotUnique(string $resource_details): bool {
     // Extract the identifier and version from the supplied resource details.
-    [$identifier, $version] = json_decode($resource_details);
+    $identifier = Resource::buildUniqueIdentifier(...json_decode($resource_details));
     // Determine the number of distributions making use of the current
     // resource.
-    $count = \Drupal::entityQuery('node')
-      ->condition('type', 'data')
-      ->condition('field_json_metadata', $identifier . '__' . $version, 'CONTAINS')
-      ->count()
-      ->execute();
+    $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
     // If more than one distribution is using this resource, remove it from
     // the purge list.
-    return $count <= 1;
+    return count($distributions) <= 1;
   }
 
   /**
@@ -329,7 +339,7 @@ class ResourcePurger implements ContainerInjectionInterface {
       // it to the resources list.
       $resource = $distribution->data->{'%Ref:downloadURL'}[0] ?? NULL;
       if (isset($resource->data->identifier, $resource->data->version)) {
-        $resources[] = json_encode([$resource->data->identifier, $resource->data->version]);
+        $resources[] = json_encode([$resource->data->identifier, $resource->data->version, $resource->data->perspective]);
       }
     }
 

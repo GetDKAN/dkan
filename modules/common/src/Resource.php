@@ -33,7 +33,14 @@ class Resource implements \JsonSerializable {
   private $filePath;
   private $identifier;
   private $mimeType;
+
+  /**
+   * Specifies if a resource is local or remote ("local_file" or "remote").
+   *
+   * @var string
+   */
   private $perspective;
+
   private $version;
   private $checksum;
 
@@ -165,7 +172,7 @@ class Resource implements \JsonSerializable {
    * Getter.
    */
   public function getUniqueIdentifier() {
-    return "{$this->identifier}__{$this->version}__{$this->perspective}";
+    return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
   }
 
   /**
@@ -175,6 +182,23 @@ class Resource implements \JsonSerializable {
    */
   public function jsonSerialize() {
     return $this->serialize();
+  }
+
+  /**
+   * Build full resource identifier.
+   *
+   * @param string $identifier
+   *   MD5 hash of resource file path.
+   * @param string $version
+   *   Resource creation timestamp.
+   * @param string $perspective
+   *   Resource perspective ("source" or "local_file").
+   *
+   * @return string
+   *   Full resource identifier.
+   */
+  public static function buildUniqueIdentifier(string $identifier, string $version, string $perspective): string {
+    return $identifier . '__' . $version . '__' . $perspective;
   }
 
   /**
