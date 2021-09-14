@@ -12,7 +12,7 @@ use Contracts\FactoryInterface;
 use RootedData\RootedJsonData;
 
 /**
- * {@inheritDoc}
+ * {@inheritdoc}
  */
 class ReferenceLookup implements ReferenceLookupInterface {
   use HelperTrait;
@@ -56,7 +56,7 @@ class ReferenceLookup implements ReferenceLookupInterface {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    *
    * @todo Refactor when this storage vs item factory mess is resolved.
    */
