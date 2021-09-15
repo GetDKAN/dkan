@@ -61,18 +61,20 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A DKAN datastore service instance.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
    *   A logger channel factory instance.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   The reference lookup service.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
-    ConfigFactoryInterface $config_factory,
+    ConfigFactoryInterface $configFactory,
     DatastoreService $datastore,
     LoggerChannelFactoryInterface $loggerFactory,
     ReferenceLookup $referenceLookup
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->datastoreConfig = $config_factory->get('datastore.settings');
+    $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->datastore = $datastore;
     $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
     $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
@@ -91,7 +93,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $container->get('config.factory'),
       $container->get('dkan.datastore.service'),
       $container->get('logger.factory'),
-      $container->get('dkan.metastore.reference_lookup')      
+      $container->get('dkan.metastore.reference_lookup')
     );
   }
 
@@ -114,14 +116,12 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   /**
    * Perform the actual data import.
    *
-   * @param mixed $identifier
-   *   Resource identifier string.
-   * @param mixed $version
-   *   Resource version (timestamp).
+   * @param array $data
+   *   Resource identifier information.
    */
-  private function importData($data) {
+  private function importData(array $data) {
     $identifier = $data['identifier'];
-    $version = $data['version'];  
+    $version = $data['version'];
     $results = $this->datastore->import($identifier, FALSE, $version);
 
     $queued = FALSE;
@@ -193,7 +193,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @return mixed
    *   Queue ID or false if unsuccessful.
    *
-   * @todo: Clarify return value. Documentation suggests it should return ID.
+   * @todo Clarify return value. Documentation suggests it should return ID.
    */
   protected function requeue(array $data) {
     return $this->databaseQueue->createItem($data);

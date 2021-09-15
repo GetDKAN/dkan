@@ -3,17 +3,14 @@
 namespace Drupal\Tests\metastore\Unit;
 
 use Drupal\metastore\MetastoreApiResponse;
-use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
-use InvalidArgumentException;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -54,7 +51,7 @@ class MetastoreApiResponseTest extends TestCase {
     $service = new MetastoreApiResponse(\Drupal::service('dkan.metastore.metastore_item_factory'));
     // Identifiers must be in arrays keyed by schema.
     $deps = [['055e4cf7-4ecc-4a49-98e8-106c6532e743']];
-    $this->expectException(InvalidArgumentException::class);
+    $this->expectException(\InvalidArgumentException::class);
     $service->cachedJsonResponse('{}', 200, $deps);
   }
 
