@@ -1,0 +1,14 @@
+services:
+  data_catalog.page:
+      class: Drupal\data_catalog\Page
+      arguments:
+        - '@app.root'
+        - '@dkan.common.node_storage'
+        - '@config.factory'
+      shared: false
+  data_catalog.route_provider:
+      class: Drupal\data_catalog\Routing\RouteProvider
+      arguments:
+        - '@app.root'
+        - '@entity.query.sql'
+        - '@config.factory'

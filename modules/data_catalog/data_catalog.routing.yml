@@ -1,0 +1,2 @@
+route_callbacks:
+  - 'data_catalog.route_provider::routes'

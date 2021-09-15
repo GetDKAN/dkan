@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ * 
+ * Register a module or theme's theme implementations.
+ * The implementations declared by this hook specify how a particular render array is to be rendered as HTML.
+ * 
+ * See: https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Render%21theme.api.php/function/hook_theme/8.2.x
+ * 
+ * If you change this method, clear theme registry and routing table 'drush cc theme-registry' and 'drush cc router'.
+ */
+
+/**
+ * Implements hook_library_info_build().
+ *
+ * @return array
+ */
+function data_catalog_library_info_build() {
+  $libraries = [];
+  $js_path = \Drupal::config('data_catalog.config')->get('js_folder');
+  $css_path = \Drupal::config('data_catalog.config')->get('css_folder');
+  $js_filenames = [];
+  foreach(glob(\Drupal::root() . $js_path . '*.js') as $full_path) {
+    $basename = basename($full_path);
+    $libraries['data_catalog']['js'][$js_path . $basename] = [];
+  }
+  foreach(glob(\Drupal::root() . $css_path . '*.css') as $full_path) {
+    $basename = basename($full_path);
+    $libraries['data_catalog']['css']['theme'][$css_path . $basename] = [];
+  }
+  $libraries['data_catalog']['dependencies'] = [
+    'core/drupal',
+  ];
+  return $libraries;
+}
+
+/**
+ * Implements hook_page_attachments().
+ *
+ */
+function data_catalog_page_attachments(array &$page) {
+  $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
+  if($request == 'data_catalog') {
+    $page['#attached']['library'][] = 'data_catalog/data_catalog';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function data_catalog_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
+  if($request == 'data_catalog') {
+    $suggestions[] = 'page__data_catalog';
+  }
+}
+
+function data_catalog_theme($existing, $type, $theme, $path) {
+  return [
+    // Name of the theme hook. This is used in the controller to trigger the hook.
+    'page__data_catalog' => [
+      // If no template name is defined here, it defaults to the name of the theme hook, ie. module-name-theme-hook.html.twig
+      'template' => 'page--data-catalog',
+      'base hook' => 'page',
+      // Optionally define path to Twig template files. Defaults to the module's ./templates/ directory.
+      'path' => $path . '/templates',
+      // Optionally define variables that will be passed to the Twig template and set default values for them.
+    ],
+  ];
+
+}
