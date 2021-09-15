@@ -238,19 +238,19 @@ class ResourcePurger implements ContainerInjectionInterface {
     }
 
     // Remove duplicates and filter out resources in use elsewhere.
-    return array_filter(array_unique($purge), [$this, 'resourceNotUnique']);
+    return array_filter(array_unique($purge), [$this, 'resourceNotShared']);
   }
 
   /**
-   * Determine whether a resource is in use by more than one distribution.
+   * Determine whether a resource is in use by only one distribution.
    *
    * @param string $resource_details
    *   A JSON array of identifying resource details (id and version).
    *
    * @return bool
-   *   Whether the given resource is being used by more than one distribution.
+   *   Whether the given resource is being used by a single distribution.
    */
-  private function resourceNotUnique(string $resource_details): bool {
+  private function resourceNotShared(string $resource_details): bool {
     // Extract the identifier and version from the supplied resource details.
     $identifier = Resource::buildUniqueIdentifier(...json_decode($resource_details));
     // Determine the number of distributions making use of the current
