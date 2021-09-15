@@ -30,12 +30,19 @@ class Resource implements \JsonSerializable {
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
+  /**
+   * Specifies a path to the resource file.
+   *
+   * @var string
+   */
   private $filePath;
   private $identifier;
   private $mimeType;
 
   /**
-   * Specifies if a resource is local or remote ("local_file" or "remote").
+   * Specifies the perspective for the resource's file path.
+   *
+   * Can be one of "local_file", "local_url", or "source".
    *
    * @var string
    */
@@ -192,7 +199,7 @@ class Resource implements \JsonSerializable {
    * @param string $version
    *   Resource creation timestamp.
    * @param string $perspective
-   *   Resource perspective ("source" or "local_file").
+   *   Resource perspective.
    *
    * @return string
    *   Full resource identifier.
