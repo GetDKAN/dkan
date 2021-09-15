@@ -104,9 +104,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     }
 
     try {
-      $identifier = $data['identifier'];
-      $version = $data['version'];  
-      $this->importData($identifier, $version);
+      $this->importData($data);
     }
     catch (\Exception $e) {
       $this->error("Import for {$data['identifier']} returned an error: {$e->getMessage()}");
@@ -121,7 +119,9 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @param mixed $version
    *   Resource version (timestamp).
    */
-  private function importData($identifier, $version) {
+  private function importData($data) {
+    $identifier = $data['identifier'];
+    $version = $data['version'];  
     $results = $this->datastore->import($identifier, FALSE, $version);
 
     $queued = FALSE;
@@ -149,10 +149,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   The updated value for $queued.
    */
   private function processResult(Result $result, $data, $queued = FALSE) {
-    $identifier = $data['identifier'];
-    $version = $data['version'];
-    $uid = "{$identifier}__{$version}";
-
+    $uid = "{$data['identifier']}__{$data['version']}";
     $status = $result->getStatus();
     switch ($status) {
       case Result::STOPPED:

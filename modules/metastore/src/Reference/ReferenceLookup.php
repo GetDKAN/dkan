@@ -7,6 +7,7 @@ use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 use Drupal\metastore\ReferenceLookupInterface;
 
 use Contracts\FactoryInterface;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use RootedData\RootedJsonData;
@@ -88,7 +89,7 @@ class ReferenceLookup implements ReferenceLookupInterface {
     $tags = [];
     foreach ($referencers as $identifier) {
       $item = $this->metastoreItemFactory->getInstance($identifier);
-      $tags[] = Cache::mergeTags($tags, $item->getCacheTags());
+      $tags = Cache::mergeTags($tags, $item->getCacheTags());
     }
     $this->invalidator->invalidateTags($tags);
   }
