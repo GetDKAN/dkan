@@ -69,7 +69,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     ConfigFactoryInterface $config_factory,
     DatastoreService $datastore,
     LoggerChannelFactoryInterface $loggerFactory,
-    ReferenceLookup $referenceLookup,
+    ReferenceLookup $referenceLookup
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->datastoreConfig = $config_factory->get('datastore.settings');

@@ -2,13 +2,13 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\Core\Extension\ModuleHandlerInterface;
-
 use Drupal\common\LoggerTrait;
 use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 use Drupal\metastore\ReferenceLookupInterface;
 
 use Contracts\FactoryInterface;
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use RootedData\RootedJsonData;
 
 /**
@@ -40,11 +40,13 @@ class ReferenceLookup implements ReferenceLookupInterface {
   public function __construct(
     FactoryInterface $metastoreStorage,
     MetastoreItemFactoryInterface $metastoreItemFactory,
-    CacheTagsInvalidatorInterface $invalidator
+    CacheTagsInvalidatorInterface $invalidator,
+    ModuleHandlerInterface $moduleHandler
   ) {
     $this->metastoreStorage = $metastoreStorage;
     $this->metastoreItemFactory = $metastoreItemFactory;
     $this->invalidator = $invalidator;
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
