@@ -24,7 +24,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  */
 class ResourceLocalizerTest extends TestCase {
-
   /**
    * HTTP host protocol and domain for testing download URL.
    *
@@ -49,9 +48,19 @@ class ResourceLocalizerTest extends TestCase {
   }
 
   /**
-   *
+   * Test removal of a local resource file.
    */
-  public function testResourceLocalizerRemove() {
+  public function testResourceLocalizerRemove(): void {
+    $this->callWithTmpFile([$this, 'doTestResourceLocalizerRemove']);
+  }
+
+  /**
+   * Test removal of the given resource file.
+   *
+   * @param string $file_path
+   *   Path to resource file for testing DKAN resource creation and removal.
+   */
+  private function doTestResourceLocalizerRemove(string $file_path): void {
 
     $resource = new Resource(self::HOST . '/file.csv', 'text/csv');
 
@@ -59,9 +68,13 @@ class ResourceLocalizerTest extends TestCase {
       ->add(ResourceMapper::class, 'get', $resource)
       ->getMock();
 
+    $fileFetcher = $this->getFileFetcherFactoryChain()
+      ->add(FileFetcher::class, 'getStateProperty', $file_path)
+      ->getMock();
+
     $service = new ResourceLocalizer(
       $fileMapper,
-      $this->getFileFetcherFactoryChain()->getMock(),
+      $fileFetcher,
       $this->getDrupalFilesChain()->getMock(),
       $this->getJobStoreFactoryChain()->getMock()
     );
@@ -69,6 +82,36 @@ class ResourceLocalizerTest extends TestCase {
     \Drupal::setContainer($this->getContainer()->getMock());
 
     $this->assertNull($service->remove($resource->getIdentifier(), $resource->getVersion()));
+  }
+
+  /**
+   * Call the supplied function with a temp file.
+   *
+   * @param callable $function
+   *   The function being called.
+   * @param string $content
+   *   Optional content for the file being created.
+   *
+   * @return mixed
+   *   The result of calling the supplied function.
+   */
+  private function callWithTmpFile(callable $function, string $content = '') {
+    // Create a temp file.
+    $file = tmpfile();
+    if ($file === FALSE) {
+      throw new \UnexpectedValueException('Unable to create tmp file using `tmpfile()`.');
+    }
+    // Write the supplied file content to the file.
+    fwrite($file, $content);
+    // Extract the path from the supplied file.
+    $file_metadata = stream_get_meta_data($file);
+    $file_path = $file_metadata['uri'];
+    // Call the supplied function with the created file.
+    $result = $function($file_path);
+    // Close and delete the file.
+    fclose($file);
+    // Return the result.
+    return $result;
   }
 
   /**

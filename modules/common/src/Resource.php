@@ -65,6 +65,7 @@ class Resource implements \JsonSerializable {
    * @var int
    */
   private $version;
+  private $checksum;
 
   /**
    * Constructor.
@@ -77,6 +78,7 @@ class Resource implements \JsonSerializable {
     $this->perspective = $perspective;
     // @todo Create a timestamp property and generate uuid for version.
     $this->version = time();
+    $this->checksum = NULL;
   }
 
   /**
@@ -113,6 +115,11 @@ class Resource implements \JsonSerializable {
   public function createNewPerspective($perspective, $uri) {
     $new = $this->createCommon('perspective', $perspective);
     $new->changeFilePath($uri);
+
+    if ($perspective == 'local_file') {
+      $new->generateChecksum();
+    }
+
     return $new;
   }
 
@@ -274,6 +281,13 @@ class Resource implements \JsonSerializable {
 
     $distroJson = $storage->retrieve($identifier);
     return json_decode($distroJson);
+  }
+
+  /**
+   * Generates MD5 checksum for a file.
+   */
+  public function generateChecksum() {
+    $this->checksum = md5_file($this->filePath);
   }
 
 }
