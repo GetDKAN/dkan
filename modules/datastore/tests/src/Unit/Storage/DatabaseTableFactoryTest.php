@@ -7,8 +7,8 @@ use Drupal\Core\Database\Connection;
 use MockChain\Chain;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use PHPUnit\Framework\TestCase;
 use Drupal\indexer\IndexManager;
+use PHPUnit\Framework\TestCase;
 
 /**
  *
