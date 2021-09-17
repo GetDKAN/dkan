@@ -318,7 +318,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       return;
     }
 
-    $fields = $this->getFieldsFromFieldsInfo($fields_info);
+    foreach ($fields_info as $info) {
+      $fields[] = $info->Field;
+    }
     $schema = $this->getTableSchema($fields);
     if (method_exists($this->connection->schema(), 'getComment')) {
       foreach ($schema['fields'] as $fieldName => $info) {
@@ -328,20 +330,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       }
     }
     $this->setSchema($schema);
-  }
-
-  /**
-   * Get field names from results of a DESCRIBE query.
-   *
-   * @param array $fieldsInfo
-   *   Array containing three results of a DESCRIBE query sent to db connection.
-   */
-  private function getFieldsFromFieldsInfo(array $fieldsInfo) {
-    $fields = [];
-    foreach ($fieldsInfo as $info) {
-      $fields[] = $info->Field;
-    }
-    return $fields;
   }
 
   /**
