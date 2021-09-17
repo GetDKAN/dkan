@@ -52,6 +52,9 @@ class DatabaseTableFactory implements FactoryInterface {
 
     if (!isset($this->databaseTables[$identifier])) {
       $this->databaseTables[$identifier] = $this->getDatabaseTable($resource);
+      if ($this->indexManager) {
+        $this->databaseTables[$identifier]->setIndexManager($this->indexManager);
+      }
     }
 
     return $this->databaseTables[$identifier];
@@ -62,9 +65,6 @@ class DatabaseTableFactory implements FactoryInterface {
    */
   protected function getDatabaseTable($resource) {
     $databaseTable = new DatabaseTable($this->connection, $resource);
-    if ($this->indexManager) {
-      $databaseTable->setIndexManager($this->indexManager);
-    }
     return $databaseTable;
   }
 
