@@ -87,6 +87,60 @@
           "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL.",
           "pattern": "^[a-z]+?$",
           "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "title": "Table Schema Field",
+            "type": "object",
+            "properties": {
+              "name": {
+                "title": "Name",
+                "description": "A name for this field.",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "description": "A human-readable title.",
+                "type": "string"
+              },
+              "description": {
+                "title": "Description",
+                "description": "A text description. Markdown is encouraged.",
+                "type": "string"
+              },
+              "type": {
+                "description": "The type for the data.",
+                "type": "string",
+                "enum": [
+                  "string",
+                  "integer",
+                  "number",
+                  "boolean",
+                  "object",
+                  "array",
+                  "date",
+                  "time",
+                  "datetime",
+                  "year",
+                  "yearmonth",
+                  "duration",
+                  "geopoint",
+                  "geojson"
+                ]
+              },
+              "format": {
+                "description": "The format keyword options for `string` are `default`, `email`, `uri`, `binary`, and `uuid`.",
+                "enum": [
+                  "default",
+                  "email",
+                  "uri",
+                  "binary",
+                  "uuid"
+                ]
+              }
+            }
+          }
         }
       }
     }
