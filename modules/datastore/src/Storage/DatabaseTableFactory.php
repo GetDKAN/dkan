@@ -4,12 +4,20 @@ namespace Drupal\datastore\Storage;
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\indexer\IndexManager;
 
 /**
  * Class DatabaseTableFactory.
  */
 class DatabaseTableFactory implements FactoryInterface {
   private $connection;
+
+  /**
+   * Optional index manager service.
+   *
+   * @var null|\Drupal\indexer\IndexManager
+   */
+  private $indexManager;
 
   private $databaseTables = [];
 
@@ -18,6 +26,16 @@ class DatabaseTableFactory implements FactoryInterface {
    */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
+  }
+
+  /**
+   * Set an optional index manager service.
+   *
+   * @param \Drupal\indexer\IndexManager $indexManager
+   *   Index manager.
+   */
+  public function setIndexManager(IndexManager $indexManager) {
+    $this->indexManager = $indexManager;
   }
 
   /**
@@ -34,6 +52,9 @@ class DatabaseTableFactory implements FactoryInterface {
 
     if (!isset($this->databaseTables[$identifier])) {
       $this->databaseTables[$identifier] = $this->getDatabaseTable($resource);
+      if ($this->indexManager) {
+        $this->databaseTables[$identifier]->setIndexManager($this->indexManager);
+      }
     }
 
     return $this->databaseTables[$identifier];
@@ -43,7 +64,8 @@ class DatabaseTableFactory implements FactoryInterface {
    * Protected.
    */
   protected function getDatabaseTable($resource) {
-    return new DatabaseTable($this->connection, $resource);
+    $databaseTable = new DatabaseTable($this->connection, $resource);
+    return $databaseTable;
   }
 
 }
