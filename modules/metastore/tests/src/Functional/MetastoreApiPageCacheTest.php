@@ -66,6 +66,9 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
       'orphan_resource_remover',
     ];
 
+    // Retrieve node search plugin for updating node page indexes.
+    $node_search_plugin = $this->container->get('plugin.manager.search')->createInstance('node_search');
+
     // Request once, should not return cached version.
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
@@ -76,6 +79,10 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
 
     // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
+    // Update search index once the cache has been invalidated on the queried
+    // endpoints.
+    $node_search_plugin->updateIndex();
+
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $client->request('GET', 'api/1/datastore/query/111/0');
@@ -91,7 +98,13 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $datasetRootedJsonData->{'$.description'} = "Add a description.";
     $datasetRootedJsonData->{'$.modified'} = "2021-04-06";
     $this->httpVerbHandler('put', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
+
+    // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
+    // Update search index once the cache has been invalidated on the queried
+    // endpoints.
+    $node_search_plugin->updateIndex();
+
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $client->request('GET', 'api/1/datastore/query/111/0');
