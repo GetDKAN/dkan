@@ -2,15 +2,9 @@
 
 namespace Drupal\datastore_mysql_import\Service;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Database;
-use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Queue\QueueFactory;
 
 use Drupal\common\Resource;
-use Drupal\metastore\ReferenceLookupInterface;
-use Drupal\metastore\Storage\MetastoreStorageInterface;
 
 use Dkan\Datastore\Importer;
 use Procrastinator\Result;
@@ -89,43 +83,29 @@ class MysqlImport extends Importer {
     // Attempt to resolve resource file name from file path.
     $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
     if ($file_path === FALSE) {
-      return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s" and version "%s".', $file_path, $this->resource->getIdentifier(), $this->resource->getVersion()));
+      return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $file_path, $this->resource->getResourceId()));
     }
 
     // Read the header line from the CSV file.
     try {
-      $header_line = $this->getFirstLineFromFile($file_path);
+      $header_line = static::getFirstLineFromFile($file_path);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
     }
 
-    // Initialize empty headers array.
-    $headers = [];
-    ['identifier' => $resource_id, 'version' => $resource_version] = Resource::parseUniqueIdentifier($this->resource->getResourceId());
-    $resource_unique_id = Resource::buildUniqueIdentifier($resource_id, $resource_version, Resource::DEFAULT_SOURCE_PERSPECTIVE);
-    // Attempt to retrieve the field header details from this resource
-    // distribution's metadata.
-    $distribution_ids = \Drupal::service('dkan.metastore.reference_lookup')->getReferencers('distribution', $resource_unique_id, 'downloadURL');
-    if (!empty($distribution_ids) && $distribution_id = reset($distribution_ids)) {
-      $distribution_json = \Drupal::service('dkan.metastore.storage')->getInstance('distribution')->retrieve($distribution_id);
-      $distribution_metadata = json_decode($distribution_json);
-      $headers = $distribution_metadata->data->fields ?? [];
-    }
-    // If we were unable to find the resource's field header details in it's
+    // Attempt to retrieve the field details from this resource distribution's
+    // metadata.
+    // If we were unable to find the resource's field details in it's
     // distribution, extract the columns names using the header line, and
     // default to the text data type for all fields.
-    if (empty($headers)) {
-      $columns = str_getcsv($header_line);
-      $headers = $this->generateTableHeaders($columns);
-    }
-
+    $headers = self::buildTableHeadersFromResource($this->resource) ?? self::buildTableHeadersFromColumns(str_getcsv($header_line));
     // Use headers to set the storage schema.
     $this->setStorageSchema($headers);
 
     // Attempt to detect the line ending for this resource file using the first
     // line from the file.
-    $eol = $this->getEol($header_line);
+    $eol = static::getEol($header_line);
     // On failure, stop the import job and log an error.
     if (!isset($eol)) {
       return $this->setResultError(sprintf('Failed to detect EOL character for resource file "%s" from header line "%s".', $file_path, $header_line));
@@ -137,8 +117,8 @@ class MysqlImport extends Importer {
     $this->dataStorage->count();
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
-    $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), $headers, $eol));
+    self::getDatabaseConnectionCapableOfDataLoad()->query(
+      self::buildSqlStatement($file_path, $this->dataStorage->getTableName(), $headers, $eol));
 
     Database::setActiveConnection();
 
@@ -160,7 +140,7 @@ class MysqlImport extends Importer {
    *   On failure to open the file;
    *   on failure to read the first line from the file.
    */
-  protected function getFirstLineFromFile(string $file_path): string {
+  protected static function getFirstLineFromFile(string $file_path): string {
     // Ensure the "auto_detect_line_endings" ini setting is enabled before
     // openning the file to ensure Mac style EOL characters are detected.
     $old_ini = ini_set('auto_detect_line_endings', '1');
@@ -195,7 +175,7 @@ class MysqlImport extends Importer {
    * @return string|null
    *   The EOL character for the given line, or NULL on failure.
    */
-  protected function getEol(string $line): ?string {
+  protected static function getEol(string $line): ?string {
     $eol = NULL;
 
     if (preg_match('/\r\n$/', $line)) {
@@ -214,13 +194,40 @@ class MysqlImport extends Importer {
   /**
    * Private.
    */
-  private function getDatabaseConnectionCapableOfDataLoad() {
+  protected static function getDatabaseConnectionCapableOfDataLoad() {
     $options = \Drupal::database()->getConnectionOptions();
     $options['pdo'][\PDO::MYSQL_ATTR_LOCAL_INFILE] = 1;
     Database::addConnectionInfo('extra', 'default', $options);
     Database::setActiveConnection('extra');
 
     return Database::getConnection();
+  }
+
+  /**
+   * Build table headers using the distribution metadata for the supplied resource.
+   *
+   * @param Resource $header_line
+   *   CSV header line.
+   *
+   * @return array|null
+   *   Header details array or null on failure.
+   */
+  protected static function buildTableHeadersFromResource(Resource $resource): ?array {
+    $headers = NULL;
+
+    // Use the "unique" ID from the supplied resource to determine it's
+    // distribution.
+    $distribution_ids = \Drupal::service('dkan.metastore.reference_lookup')->getReferencers('distribution', $resource->getUniqueIdentifier(), 'downloadURL');
+    // If were able to successfully determine the distribution for this
+    // resource, attempt to retrieve the fields (resource headers) from the
+    // distribution's metadata.
+    if (!empty($distribution_ids) && $distribution_id = reset($distribution_ids)) {
+      $distribution_json = \Drupal::service('dkan.metastore.storage')->getInstance('distribution')->retrieve($distribution_id);
+      $distribution_metadata = json_decode($distribution_json);
+      $headers = $distribution_metadata->data->fields ?? NULL;
+    }
+
+    return $headers;
   }
 
   /**
@@ -232,13 +239,13 @@ class MysqlImport extends Importer {
    * @return array
    *   List of sanitized table headers.
    */
-  private function generateTableHeaders(array $columns): array {
+  protected static function buildTableHeadersFromColumns(array $columns): array {
     $headers = [];
 
     foreach ($columns as $column) {
       // Sanitize the supplied table header to generate a unique column name;
       // null-coalesce potentially NULL column names to empty strings.
-      $header = $this->sanitizeHeader($column ?? '');
+      $header = self::sanitizeHeader($column ?? '');
 
       if (is_numeric($header) || in_array($header, self::RESERVED_WORDS)) {
         // Prepend "_" to column name that are not allowed in MySQL
@@ -249,7 +256,7 @@ class MysqlImport extends Importer {
 
       // Truncate the generated table column name, if necessary, to fit the max
       // column length.
-      $header = $this->truncateHeader($header);
+      $header = self::truncateHeader($header);
 
       // Generate unique numeric suffix for the header if a header already
       // exists with the same name.
@@ -273,7 +280,7 @@ class MysqlImport extends Importer {
    * @returns string
    *   Sanitized column name.
    */
-  protected function sanitizeHeader(string $column): string {
+  protected static function sanitizeHeader(string $column): string {
     // Replace all spaces with underscores since spaces are not a supported
     // character.
     $column = str_replace(' ', '_', $column);
@@ -296,7 +303,7 @@ class MysqlImport extends Importer {
    * @returns string
    *   Truncated column name.
    */
-  protected function truncateHeader(string $column): string {
+  protected static function truncateHeader(string $column): string {
     // If the supplied table column name is longer than the max column length,
     // truncate the column name to 5 characters under the max length and
     // substitute the truncated characters with a unique hash.
@@ -324,7 +331,7 @@ class MysqlImport extends Importer {
    * @return string
    *   Generated SQL file import statement.
    */
-  private function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol): string {
+  protected static function buildSqlStatement(string $file_path, string $tablename, array $headers, string $eol): string {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
       'INTO TABLE ' . $tablename,

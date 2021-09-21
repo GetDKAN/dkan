@@ -2,17 +2,23 @@
 
 namespace Drupal\Tests\datastore\Storage;
 
-use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Driver\mysql\Schema;
 use Drupal\Core\Database\Statement;
+use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+
+use Drupal\Component\DependencyInjection\Container;
+use Drupal\common\Resource;
 use Drupal\common\Storage\Query;
-use MockChain\Chain;
-use MockChain\Sequence;
 use Drupal\datastore\Storage\DatabaseTable;
+
+use MockChain\Chain;
+use MockChain\Options;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +30,14 @@ class DatabaseTableTest extends TestCase {
    *
    */
   public function testConstruction() {
+    $options = (new Options())
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->index(0);
+    $container = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->getMock();
+    \Drupal::setContainer($container);
 
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
@@ -387,7 +401,7 @@ class DatabaseTableTest extends TestCase {
    * Private.
    */
   private function getResource() {
-    return new Resource("people", "", "text/csv");
+    return new Resource('http://example.org/test.csv', 'text/csv');
   }
 
 }

@@ -17,7 +17,6 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 
 use Dkan\Datastore\Importer;
-use Dkan\Datastore\Resource as DatastoreResource;
 use MockChain\Options;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -79,14 +78,13 @@ class ImportTest extends TestCase {
    */
   public function testLogImportError() {
     $importMock = (new Chain($this))
-      ->add(Service::class, 'initializeResource')
-      ->add(Service::class, 'getResource', DatastoreResource::class)
+      ->add(Service::class, 'getResource', Resource::class)
       ->add(Service::class, 'getImporter', Importer::class)
       ->add(Importer::class, 'run', Result::class)
       ->add(Service::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::ERROR)
-      ->add(DatastoreResource::class, 'getId', 'abc')
-      ->add(DatastoreResource::class, 'getFilePath', 'some/path/file.csv')
+      ->add(Resource::class, 'getIdentifier', 'abc')
+      ->add(Resource::class, 'getFilePath', 'some/path/file.csv')
       ->getMock();
 
     $containerChain = (new Chain($this))

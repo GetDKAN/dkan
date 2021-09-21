@@ -4,12 +4,10 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
-use Dkan\Datastore\Resource as DatastoreResource;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Procrastinator\Result;
@@ -35,7 +33,7 @@ class Import {
    * Constructor.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    $this->initializeResource($resource);
+    $this->resource = $resource;
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
@@ -48,20 +46,6 @@ class Import {
   }
 
   /**
-   * Initialize resource.
-   *
-   * @param \Drupal\common\Resource $resource
-   *   Resource.
-   */
-  protected function initializeResource(Resource $resource) {
-    $this->resource = new DatastoreResource(
-      $resource->getUniqueIdentifier(),
-      UrlHostTokenResolver::resolve($resource->getFilePath()),
-      $resource->getMimeType()
-    );
-  }
-
-  /**
    * Getter.
    *
    * @return \Dkan\Datastore\Resource
@@ -69,7 +53,7 @@ class Import {
    *
    * @codeCoverageIgnore
    */
-  protected function getResource() : DatastoreResource {
+  protected function getResource(): Resource {
     return $this->resource;
   }
 
@@ -84,7 +68,7 @@ class Import {
     if ($result->getStatus() == Result::ERROR) {
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->error('Error importing resource id:%id path:%path message:%message', [
-        '%id' => $this->getResource()->getId(),
+        '%id' => $this->getResource()->getIdentifier(),
         '%path' => $this->getResource()->getFilePath(),
         '%message' => $result->getError(),
       ]);
@@ -115,7 +99,7 @@ class Import {
     }
 
     $importer = call_user_func([$this->importerClass, 'get'],
-      $this->resource->getId(),
+      $this->resource->getIdentifier(),
       $this->jobStoreFactory->getInstance(Importer::class),
       [
         "storage" => $this->getStorage(),
@@ -164,7 +148,7 @@ class Import {
    *   DatabaseTable storage object.
    */
   public function getStorage(): DatabaseTable {
-    return $this->databaseTableFactory->getInstance($this->resource->getId(), ['resource' => $this->resource]);
+    return $this->databaseTableFactory->getInstance($this->resource->getIdentifier(), ['resource' => $this->resource]);
   }
 
 }

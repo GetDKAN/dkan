@@ -3,9 +3,11 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
-use Dkan\Datastore\Resource;
+
 use Drupal\common\LoggerTrait;
+use Drupal\common\Resource;
 use Drupal\common\Storage\AbstractDatabaseTable;
+use Drupal\common\UrlHostTokenResolver;
 
 /**
  * Database storage object.
@@ -19,7 +21,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Datastore resource object.
    *
-   * @var \Dkan\Datastore\Resource
+   * @var \Drupal\common\Resource
    */
   private $resource;
 
@@ -28,10 +30,12 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
-   * @param \Dkan\Datastore\Resource $resource
+   * @param \Drupal\common\Resource $resource
    *   A resource.
    */
   public function __construct(Connection $connection, Resource $resource) {
+    // Resolve the supplied resource's file path.
+    $resource->changeFilePath(UrlHostTokenResolver::resolve($resource->getFilePath()));
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
@@ -75,7 +79,8 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public function getTableName() {
     if ($this->resource) {
-      return "datastore_{$this->resource->getId()}";
+      $table_suffix = md5($this->resource->getIdentifier());
+      return "datastore_{$table_suffix}";
     }
     return "datastore_does_not_exist";
   }
