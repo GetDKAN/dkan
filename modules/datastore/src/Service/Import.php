@@ -55,7 +55,7 @@ class Import {
    */
   protected function initializeResource(Resource $resource) {
     $this->resource = new DatastoreResource(
-      md5($resource->getUniqueIdentifier()),
+      $resource->getUniqueIdentifier(),
       UrlHostTokenResolver::resolve($resource->getFilePath()),
       $resource->getMimeType()
     );

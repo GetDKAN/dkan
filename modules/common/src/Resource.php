@@ -178,6 +178,23 @@ class Resource implements \JsonSerializable {
   }
 
   /**
+   * Build full resource identifier.
+   *
+   * @param string $identifier
+   *   MD5 hash of resource file path.
+   * @param string $version
+   *   Resource creation timestamp.
+   * @param string $perspective
+   *   Resource perspective.
+   *
+   * @return string
+   *   Full resource identifier.
+   */
+  public static function buildUniqueIdentifier(string $identifier, string $version, string $perspective): string {
+    return $identifier . '__' . $version . '__' . $perspective;
+  }
+
+  /**
    * Parse unique identifier.
    *
    * @param string $uid

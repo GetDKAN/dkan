@@ -8,6 +8,7 @@ use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;
 
+use Drupal\common\Resource;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\MetastoreStorageInterface;
 
@@ -32,7 +33,7 @@ class MysqlImport extends Importer {
   /**
    * List of reserved words in MySQL 5.6-8 and MariaDB.
    *
-   * @var array
+   * @var string[]
    */
   protected const RESERVED_WORDS = ['accessible', 'add', 'all', 'alter', 'analyze',
     'and', 'as', 'asc', 'asensitive', 'before', 'between', 'bigint', 'binary',
@@ -82,67 +83,6 @@ class MysqlImport extends Importer {
   ];
 
   /**
-   * Constructs a \Drupal\Component\Plugin\PluginBase object.
-   *
-   * @param array $configuration
-   *   A configuration array containing information about the plugin instance.
-   * @param string $plugin_id
-   *   The plugin_id for the plugin instance.
-   * @param mixed $plugin_definition
-   *   The plugin implementation definition.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   A config factory instance.
-   * @param \Drupal\datastore\Service $datastore
-   *   A DKAN datastore service instance.
-   * @param \Drupal\metastore\ReferenceLookupInterface $reference_lookup
-   *   A reference lookup service instance.
-   * @param \Drupal\metastore\Storage\MetastoreStorageInterface\MetastoreStorageInterface $metastore_storage
-   *   A metastore storage service instance.
-   * @param \Drupal\Core\File\FileSystemInterface $file_system
-   *   A file system service instance.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
-   *   A logger channel factory instance.
-   * @param \Drupal\Core\Queue\QueueFactory $queue_factory
-   *   A database queue factory instance.
-   */
-  public function __construct(
-    array $configuration,
-    string $plugin_id,
-    $plugin_definition,
-    ConfigFactoryInterface $config_factory,
-    DatastoreService $datastore,
-    ReferenceLookupInterface $reference_lookup,
-    MetastoreStorageInterface $metastore_storage,
-    FileSystemInterface $file_system,
-    LoggerChannelFactoryInterface $logger_factory,
-    QueueFactory $queue_factory,
-  ) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $config_factory, $datastore, $file_system, $logger_factory, $queue_factory);
-    $this->referenceLookup = $reference_lookup;
-    $this->metastoreStorage = $metastore_storage;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('config.factory'),
-      $container->get('dkan.datastore.service'),
-      $container->get('dkan.metastore.reference_lookup'),
-      $container->get('dkan.metastore.storage'),
-      $container->get('file_system'),
-      $container->get('logger.factory'),
-      $container->get('queue')
-    );
-  }
-
-  /**
-   * Override.
-   *
    * {@inheritdoc}
    */
   protected function runIt() {
@@ -162,9 +102,11 @@ class MysqlImport extends Importer {
 
     // Initialize empty headers array.
     $headers = [];
+    ['identifier' => $resource_id, 'version' => $resource_version] = Resource::parseUniqueIdentifier($this->resource->getResourceId());
+    $resource_unique_id = Resource::buildUniqueIdentifier($resource_id, $resource_version, Resource::DEFAULT_SOURCE_PERSPECTIVE);
     // Attempt to retrieve the field header details from this resource
     // distribution's metadata.
-    $distribution_ids = \Drupal::service('dkan.metastore.reference_lookup')->getReferencers('distribution', $this->resource->getUniqueIdentifier(), 'downloadURL');
+    $distribution_ids = \Drupal::service('dkan.metastore.reference_lookup')->getReferencers('distribution', $resource_unique_id, 'downloadURL');
     if (!empty($distribution_ids) && $distribution_id = reset($distribution_ids)) {
       $distribution_json = \Drupal::service('dkan.metastore.storage')->getInstance('distribution')->retrieve($distribution_id);
       $distribution_metadata = json_decode($distribution_json);
