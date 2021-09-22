@@ -79,6 +79,17 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
 
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+
+    // Get the variants of the import endpoint
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111?show-reference-ids');
+    $dataset = json_decode($response->getBody()->getContents());
+    $distributionId = $dataset->distribution[0]->identifier;
+    $resourceId = $dataset->distribution[0]->data->{'%Ref:downloadURL'}[0]->identifier;
+    $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
+    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
+    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+
     $response = $client->request('GET', 'api/1/datastore/query/111/0');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
@@ -86,6 +97,10 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $client->request('GET', 'api/1/datastore/query/111/0');
+    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
+    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Editing the dataset should invalidate the cache.
@@ -100,6 +115,12 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $client->request('GET', 'api/1/datastore/query/111/0');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+
+    // The import endpoints shouldn't be there at all anymore.
+    $response = $client->request('GET', "api/1/datastore/imports/$distributionId");
+    $this->assertEquals(404, $response->getStatusCode());
+    $response = $client->request('GET', "api/1/datastore/imports/$resourceId");
+    $this->assertEquals(404, $response->getStatusCode());
   }
 
   /**
