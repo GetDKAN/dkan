@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "datastore_import",
  *   title = @Translation("Queue to process datastore import"),
  *   cron = {
- *     "time" = 60,
+ *     "time" = 180,
  *     "lease_time" = 10800
  *   }
  * )
