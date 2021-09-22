@@ -27,18 +27,29 @@ use PHPUnit\Framework\TestCase;
 class DatabaseTableTest extends TestCase {
 
   /**
-   *
+   * Initialize \Drupal::container with necessary services for tests.
    */
-  public function testConstruction() {
+  protected function setUp(): void {
+    parent::setUp();
+
+    $public_stream = (new Chain($this))
+      ->add(PublicStream::class, 'getExternalUrl', 'http://example.org/test.csv')
+      ->getMock();
     $options = (new Options())
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, 'get', $options)
-      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(StreamWrapperManager::class, 'getViaUri', $public_stream)
       ->getMock();
-    \Drupal::setContainer($container);
 
+    \Drupal::setContainer($container);
+  }
+
+  /**
+   * Test construction of `\Drupal\datastore\Storage\DatabaseTable` object.
+   */
+  public function testConstruction() {
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
       $this->getResource()
