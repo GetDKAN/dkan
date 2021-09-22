@@ -6,6 +6,7 @@ use Drupal\common\Resource;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\AlreadyRegistered;
 
 /**
@@ -74,6 +75,11 @@ class ResourceMapper {
     $perspective = $resource->getPerspective();
     if ($this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       if (!$this->exists($identifier, $perspective, $version)) {
+        // If the given resource has a local file, generate a checksum for the
+        // file before storing the resource.
+        if ($perspective == ResourceLocalizer::LOCAL_FILE_PERSPECTIVE) {
+          $resource->generateChecksum();
+        }
         $this->store->store(json_encode($resource));
         $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
       }
