@@ -9,6 +9,7 @@ use Drupal\common\JsonResponseTrait;
 use Drupal\Component\Uuid\Uuid;
 use Drupal\datastore\Service;
 use Drupal\metastore\MetastoreApiResponse;
+use Drupal\metastore\Reference\ReferenceLookup;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -31,18 +32,25 @@ class ImportController implements ContainerInjectionInterface {
   /**
    * Api constructor.
    */
-  public function __construct(Service $datastoreService, MetastoreApiResponse $metastoreApiResponse) {
+  public function __construct(
+    Service $datastoreService,
+    MetastoreApiResponse $metastoreApiResponse,
+    ReferenceLookup $referenceLookup
+  ) {
     $this->datastoreService = $datastoreService;
     $this->metastoreApiResponse = $metastoreApiResponse;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
    * Create controller object from dependency injection container.
    */
   public static function create(ContainerInterface $container) {
-    $datastoreService = $container->get('dkan.datastore.service');
-    $requestStack = $container->get('dkan.metastore.api_response');
-    return new ImportController($datastoreService, $requestStack);
+    return new ImportController(
+      $container->get('dkan.datastore.service'),
+      $container->get('dkan.metastore.api_response'),
+      $container->get('dkan.metastore.reference_lookup')
+    );
   }
 
   /**
@@ -80,11 +88,19 @@ class ImportController implements ContainerInjectionInterface {
   private function getDependencies($identifier) {
     // If a proper UUID, probably a distribution.
     if (Uuid::isValid($identifier)) {
-      $dependencies = ['distribution' => [$identifier]];
+      $distributions = [$identifier];
+    }
+    elseif (strlen($identifier) == 52) {
+      $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
+    }
+    elseif (strlen($identifier) == 44) {
+      $resourceId = "{$identifier}__source";
+      $distributions = $this->referenceLookup->getReferencers('distribution', $resourceId, 'downloadURL');
     }
     else {
-      $dependencies = ['distribution'];
+      $distributions = [];
     }
+    $dependencies = empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
     return $dependencies;
   }
 
