@@ -67,29 +67,35 @@ class ResourceMapper {
   }
 
   /**
-   * Register new perspective.
+   * Register new resource perspective.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   Resource for which to register new perspective.
    */
-  public function registerNewPerspective(Resource $resource) {
+  public function registerNewPerspective(Resource $resource): void {
     $identifier = $resource->getIdentifier();
     $version = $resource->getVersion();
-    $perspective = $resource->getPerspective();
-    if ($this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
-      if (!$this->exists($identifier, $perspective, $version)) {
-        // If the given resource has a local file, generate a checksum for the
-        // file before storing the resource.
-        if ($perspective == ResourceLocalizer::LOCAL_FILE_PERSPECTIVE) {
-          $resource->generateChecksum();
-        }
-        $this->store->store(json_encode($resource));
-        $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
-      }
-      else {
-        throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
-      }
-    }
-    else {
+    // Ensure a source perspective already exists for the resource.
+    if (!$this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       throw new \Exception("A resource with identifier {$identifier} was not found.");
     }
+
+    $perspective = $resource->getPerspective();
+    // Ensure the current perspective does not already exist for the resource.
+    if ($this->exists($identifier, $perspective, $version)) {
+      throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
+    }
+
+    // If the given resource has a local file, generate a checksum for the
+    // file before storing the resource.
+    if ($perspective == ResourceLocalizer::LOCAL_FILE_PERSPECTIVE) {
+      $resource->generateChecksum();
+    }
+
+    // Record resource in mapper table and dispatch an event for the
+    // resource's registration.
+    $this->store->store(json_encode($resource));
+    $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
   }
 
   /**
