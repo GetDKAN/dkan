@@ -2,13 +2,14 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\Core\Extension\ModuleHandlerInterface;
-
 use Drupal\common\LoggerTrait;
 use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 use Drupal\metastore\ReferenceLookupInterface;
 
 use Contracts\FactoryInterface;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use RootedData\RootedJsonData;
 
 /**
@@ -37,21 +38,15 @@ class ReferenceLookup implements ReferenceLookupInterface {
    *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
-  protected $moduleHandler;
-
-  /**
-   * Construct a ReferenceLookup object.
-   *
-   * @param \Contracts\FactoryInterface $metastoreStorage
-   *   Metastore Storage service.
-   * @param \Drupal\metastore\Factory\MetastoreItemFactoryInterface $metastoreItemFactory
-   *   Metastore Item Factory service.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
-   *   Module Handler service.
-   */
-  public function __construct(FactoryInterface $metastoreStorage, MetastoreItemFactoryInterface $metastoreItemFactory, ModuleHandlerInterface $moduleHandler) {
+  public function __construct(
+    FactoryInterface $metastoreStorage,
+    MetastoreItemFactoryInterface $metastoreItemFactory,
+    CacheTagsInvalidatorInterface $invalidator,
+    ModuleHandlerInterface $moduleHandler
+  ) {
     $this->metastoreStorage = $metastoreStorage;
     $this->metastoreItemFactory = $metastoreItemFactory;
+    $this->invalidator = $invalidator;
     $this->moduleHandler = $moduleHandler;
   }
 
@@ -77,6 +72,26 @@ class ReferenceLookup implements ReferenceLookupInterface {
     }
 
     return $referencers;
+  }
+
+  /**
+   * Invalidate cache tags in any items pointing to a reference.
+   *
+   * @param string $schemaId
+   *   The type of metadata to look for references within.
+   * @param string $referenceId
+   *   The UUID of the reference we're looking for.
+   * @param string $propertyId
+   *   The metadata property we hope to find it in.
+   */
+  public function invalidateReferencerCacheTags(string $schemaId, string $referenceId, string $propertyId) {
+    $referencers = $this->getReferencers($schemaId, $referenceId, $propertyId);
+    $tags = [];
+    foreach ($referencers as $identifier) {
+      $item = $this->metastoreItemFactory->getInstance($identifier);
+      $tags = Cache::mergeTags($tags, $item->getCacheTags());
+    }
+    $this->invalidator->invalidateTags($tags);
   }
 
   /**
