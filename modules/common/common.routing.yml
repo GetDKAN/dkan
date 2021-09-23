@@ -36,11 +36,3 @@ dkan.common.api.version.yaml:
     _permission: 'access content'
   options:
     _auth: ['basic_auth', 'cookie']
-
-dkan.common.api_admin:
-  path: '/admin/dkan/api'
-  defaults:
-    _title: 'DKAN API'
-    _form: 'Drupal\common\Form\DkanDocsAdminForm'
-  requirements:
-    _permission: 'access administration pages'
