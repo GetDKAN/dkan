@@ -307,7 +307,7 @@ class DatastoreApiDocs extends DkanApiDocsBase {
         'dataset' => "00000000-0000-0000-0000-000000000000",
         'datasetDistributionIndex' => 0,
       ],
-      $identifiers
+      $identifiers ?: []
     );
   }
 
