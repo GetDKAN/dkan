@@ -12,6 +12,9 @@ use MockChain\Chain;
 use MockChain\Options;
 use Drupal\datastore\SqlEndpoint\WebServiceApi;
 use Drupal\datastore\SqlEndpoint\Service;
+use Drupal\metastore\MetastoreApiResponse;
+use Drupal\metastore\NodeWrapper\Data;
+use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,6 +80,8 @@ class WebServiceApiTest extends TestCase {
 
     $options = (new Options())
       ->add('dkan.datastore.sql_endpoint.service', Service::class)
+      ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
+      ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->add("database", Connection::class)
       ->add('request_stack', RequestStack::class)
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
@@ -93,7 +98,14 @@ class WebServiceApiTest extends TestCase {
       ->add(Request::class, 'getContent', $body)
       ->add(ConfigFactory::class, 'get', Config::class)
       ->add(Config::class, 'get', 1000)
-      ->add(Service::class, 'runQuery', [$row]);
+      ->add(Service::class, 'runQuery', [$row])
+      ->add(Service::class, 'getTableNameFromSelect', '465s')
+      ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
+      ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
+      ->add(NodeDataFactory::class, 'getInstance', Data::class)
+      ->add(Data::class, 'getCacheContexts', ['url'])
+      ->add(Data::class, 'getCacheTags', ['node:1'])
+      ->add(Data::class, 'getCacheMaxAge', 0);
   }
 
 }

@@ -2,7 +2,6 @@
 
 namespace Drupal\datastore\Controller;
 
-use Drupal\common\CacheableResponseTrait;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -14,6 +13,8 @@ use RootedData\RootedJsonData;
 use Drupal\common\Util\RequestParamNormalizer;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use Drupal\datastore\Service;
+use Drupal\metastore\MetastoreApiResponse;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * Class Api.
@@ -22,7 +23,6 @@ use Drupal\datastore\Service;
  */
 class QueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
-  use CacheableResponseTrait;
 
   /**
    * Datastore Service.
@@ -48,20 +48,28 @@ class QueryController implements ContainerInjectionInterface {
   /**
    * Api constructor.
    */
-  public function __construct(Service $datastoreService, RequestStack $requestStack, DatasetInfo $datasetInfo) {
+  public function __construct(
+    Service $datastoreService,
+    RequestStack $requestStack,
+    DatasetInfo $datasetInfo,
+    MetastoreApiResponse $metastoreApiResponse
+  ) {
     $this->datastoreService = $datastoreService;
     $this->requestStack = $requestStack;
     $this->datasetInfo = $datasetInfo;
+    $this->metastoreApiResponse = $metastoreApiResponse;
   }
 
   /**
    * Create controller object from dependency injection container.
    */
   public static function create(ContainerInterface $container) {
-    $datastoreService = $container->get('dkan.datastore.service');
-    $requestStack = $container->get('request_stack');
-    $datasetInfo = $container->get('dkan.common.dataset_info');
-    return new QueryController($datastoreService, $requestStack, $datasetInfo);
+    return new static(
+      $container->get('dkan.datastore.service'),
+      $container->get('request_stack'),
+      $container->get('dkan.common.dataset_info'),
+      $container->get('dkan.metastore.api_response')
+    );
   }
 
   /**
@@ -71,8 +79,9 @@ class QueryController implements ContainerInjectionInterface {
    *   The json or CSV response.
    */
   public function query($stream = FALSE) {
+    $request = $this->requestStack->getCurrentRequest();
     $payloadJson = RequestParamNormalizer::getFixedJson(
-      $this->requestStack->getCurrentRequest(),
+      $request,
       file_get_contents(__DIR__ . "/../../docs/query.json")
     );
 
@@ -89,7 +98,28 @@ class QueryController implements ContainerInjectionInterface {
       return $this->streamResponse($datastoreQuery, $result);
     }
 
-    return $this->formatResponse($datastoreQuery, $result);
+    $dependencies = $this->extractMetastoreDependencies($datastoreQuery);
+    return $this->formatResponse($datastoreQuery, $result, $dependencies, $request->query);
+  }
+
+  /**
+   * Get metastore cache dependencies from a datastore query.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   The datastore query object.
+   *
+   * @return array
+   *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
+   */
+  private function extractMetastoreDependencies(DatastoreQuery $datastoreQuery): array {
+    if (!isset($datastoreQuery->{'$.resources'})) {
+      return [];
+    }
+    $dependencies = ['distribution' => []];
+    foreach ($datastoreQuery->{'$.resources'} as $resource) {
+      $dependencies['distribution'][] = $resource['id'];
+    }
+    return $dependencies;
   }
 
   /**
@@ -99,11 +129,20 @@ class QueryController implements ContainerInjectionInterface {
    *   A datastore query object.
    * @param RootedData\RootedJsonData $result
    *   The result of the datastore query.
+   * @param array $dependencies
+   *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
+   * @param \Symfony\Component\HttpFoundation\ParameterBag|null $params
+   *   The parameter object from the request.
    *
    * @return \Symfony\Component\HttpFoundation\Response
    *   The json response.
    */
-  public function formatResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
+  public function formatResponse(
+    DatastoreQuery $datastoreQuery,
+    RootedJsonData $result,
+    array $dependencies = [],
+    ?ParameterBag $params = NULL
+  ) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
         $response = new CsvResponse($result->{"$.results"}, 'data', ',');
@@ -111,7 +150,7 @@ class QueryController implements ContainerInjectionInterface {
 
       case 'json':
       default:
-        return $this->getResponse($result->{"$"}, 200);
+        return $this->metastoreApiResponse->cachedJsonResponse($result->{"$"}, 200, $dependencies, $params);
     }
 
   }
@@ -242,7 +281,8 @@ class QueryController implements ContainerInjectionInterface {
    *   The json response.
    */
   public function queryResource(string $identifier, bool $stream = FALSE) {
-    $payloadJson = RequestParamNormalizer::getJson($this->requestStack->getCurrentRequest());
+    $request = $this->requestStack->getCurrentRequest();
+    $payloadJson = RequestParamNormalizer::getJson($request);
     try {
       $this->prepareQueryResourcePayload($payloadJson, $identifier);
     }
@@ -266,7 +306,7 @@ class QueryController implements ContainerInjectionInterface {
       return $this->streamResponse($datastoreQuery, $result);
     }
 
-    return $this->formatResponse($datastoreQuery, $result);
+    return $this->formatResponse($datastoreQuery, $result, ['distribution' => [$identifier]], $request->query);
   }
 
   /**

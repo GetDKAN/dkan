@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
+use Drupal\metastore\MetastoreApiResponse;
 
 /**
  * Api class.
@@ -47,6 +48,7 @@ class WebServiceApi implements ContainerInjectionInterface {
       $container->get('dkan.datastore.sql_endpoint.service'),
       $container->get('database'),
       $container->get('request_stack'),
+      $container->get('dkan.metastore.api_response')
     );
   }
 
@@ -56,11 +58,13 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function __construct(
     Service $service,
     Connection $database,
-    RequestStack $requestStack
+    RequestStack $requestStack,
+    MetastoreApiResponse $metastoreApiResponse
   ) {
     $this->service = $service;
     $this->database = $database;
     $this->requestStack = $requestStack;
+    $this->metastoreApiResponse = $metastoreApiResponse;
   }
 
   /**
@@ -129,7 +133,14 @@ class WebServiceApi implements ContainerInjectionInterface {
       return $this->getResponseFromException($e);
     }
 
-    return $this->getResponse($result, 200);
+    $request = $this->requestStack->getCurrentRequest();
+
+    return $this->metastoreApiResponse->cachedJsonResponse(
+      $result,
+      200,
+      ['distribution' => [$uuid]],
+      $request->query
+    );
   }
 
 }
