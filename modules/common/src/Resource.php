@@ -86,10 +86,6 @@ class Resource implements \JsonSerializable {
     $new = $this->createCommon('perspective', $perspective);
     $new->changeFilePath($uri);
 
-    if ($perspective == 'local_file') {
-      $new->generateChecksum();
-    }
-
     return $new;
   }
 
