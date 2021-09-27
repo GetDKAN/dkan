@@ -1,3 +1,4 @@
+uuid: 55ab101c-3fc3-450b-b055-f3a8dc208437
 langcode: en
 status: true
 dependencies:
@@ -6,6 +7,8 @@ dependencies:
   module:
     - search_api
     - metastore_search
+_core:
+  default_config_hash: RUXS1l48SEXxagXAmVGSKfKQwV2h9u0DVJW_3WHlaaM
 id: dkan
 name: DKAN
 description: ''
@@ -21,6 +24,11 @@ field_settings:
     datasource_id: dkan_dataset
     property_path: keyword
     type: string
+  modified:
+    label: modified
+    datasource_id: dkan_dataset
+    property_path: modified
+    type: date
   publisher__name:
     label: publisher__name
     datasource_id: dkan_dataset
@@ -47,9 +55,9 @@ processor_settings:
       - description
       - keyword
       - publisher__name
+      - publisher__name
       - theme
       - title
-      - publisher__name
     weights:
       preprocess_index: -20
       preprocess_query: -20
