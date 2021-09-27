@@ -10,6 +10,7 @@ use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
 use Drupal\datastore\Service\Import as ImportService;
+use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
@@ -70,6 +71,7 @@ class ServiceTest extends TestCase {
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->index(0);
 
     return (new Chain($this))

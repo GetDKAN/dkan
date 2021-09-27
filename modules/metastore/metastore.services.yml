@@ -91,9 +91,15 @@ services:
       - '@dkan.common.docs_generator'
       - '@dkan.metastore.service'
 
+  dkan.metastore.api_response:
+    class: \Drupal\metastore\MetastoreApiResponse
+    arguments:
+      - '@dkan.metastore.metastore_item_factory'
+
   dkan.metastore.reference_lookup:
     class: \Drupal\metastore\Reference\ReferenceLookup
     arguments:
       - '@dkan.metastore.storage'
       - '@dkan.metastore.metastore_item_factory'
+      - '@cache_tags.invalidator'
       - '@module_handler'

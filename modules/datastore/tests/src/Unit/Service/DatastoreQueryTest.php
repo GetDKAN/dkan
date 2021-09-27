@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\datastore\Service\DatastoreQuery;
 use Drupal\datastore\Service\Import as ServiceImport;
+use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\QueryFactory;
 use Drupal\metastore\Storage\Data;
@@ -178,6 +179,7 @@ class DatastoreQueryTest extends TestCase {
       ->add('request_stack', RequestStack::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
       ->add('dkan.metastore.storage', DataFactory::class)
+      ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->index(0);
 
     $resource_metadata = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';

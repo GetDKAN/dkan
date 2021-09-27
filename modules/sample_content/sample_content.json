@@ -64,6 +64,7 @@
         {
           "@type":"dcat:Distribution",
           "downloadURL":"file:\/\//var/www/docroot/modules/contrib/dkan/modules/sample_content/files\/IMD-MAPS.zip",
+          "mediaType":"application\/zip",
           "format":"zip",
           "title":"Map files"
         }
@@ -78,7 +79,7 @@
         "name": "State Economic Council"
       },
       "spatial":"Pittsburgh, PA",
-      "temporal": "2016",
+      "temporal": "2016/P1Y",
       "theme":["Finance and Budgeting"],
       "title":"Market Value Analysis - Urban Redevelopment Authority"
     },
