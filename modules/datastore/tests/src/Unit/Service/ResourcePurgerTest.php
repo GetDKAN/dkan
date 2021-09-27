@@ -8,12 +8,15 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
+
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
+use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\Data;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorageInterface;
+
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -95,6 +98,7 @@ class ResourcePurgerTest extends TestCase {
 
     $options = (new Options())
       ->add('config.factory', ConfigFactoryInterface::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookupInterface::class)
       ->add('dkan.metastore.storage', DataFactory::class)
       ->add('dkan.datastore.service', Service::class)
       ->index(0);

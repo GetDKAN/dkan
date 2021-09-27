@@ -182,16 +182,17 @@ class DatastoreQueryTest extends TestCase {
       ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->index(0);
 
-    $resource = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';
+    $resource_metadata = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';
+    $resource = new Resource('http://example.org', 'text/csv');
     $queryResult = [(object) ["expression" => 123]];
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(DataFactory::class, "getInstance", Data::class)
-      ->add(Data::class, "retrieve", $resource)
+      ->add(Data::class, "retrieve", $resource_metadata)
       ->add(QueueFactory::class, "get", [])
-      ->add(ResourceLocalizer::class, "get", Resource::class)
+      ->add(ResourceLocalizer::class, "get", $resource)
       ->add(Import::class, "getInstance", ServiceImport::class)
       ->add(ServiceImport::class, "getStorage", DatabaseTable::class)
       ->add(DatabaseTable::class, "query", $queryResult, 'DatabaseTableQuery')

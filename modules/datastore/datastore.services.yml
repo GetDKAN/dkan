@@ -20,6 +20,7 @@ services:
     class: \Drupal\datastore\Service\ResourcePurger
     arguments:
       - '@config.factory'
+      - '@dkan.metastore.reference_lookup'
       - '@dkan.metastore.storage'
       - '@dkan.datastore.service'
     calls:
