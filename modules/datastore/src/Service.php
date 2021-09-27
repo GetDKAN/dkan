@@ -12,6 +12,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
+use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Storage\QueryFactory;
 
 /**
@@ -55,18 +56,37 @@ class Service implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service.resource_localizer'),
       $container->get('dkan.datastore.service.factory.import'),
       $container->get('queue'),
-      $container->get('dkan.common.job_store')
+      $container->get('dkan.common.job_store'),
+      $container->get('dkan.datastore.import_info_list'),
     );
   }
 
   /**
-   * Constructor for datastore service.
+   * Constructor.
+   *
+   * @param \Drupal\datastore\Service\ResourceLocalizer $resourceLocalizer
+   *   Resource localizer service.
+   * @param \Drupal\datastore\Service\Factory\ImportFactoryInterface $importServiceFactory
+   *   Import factory service.
+   * @param \Drupal\Core\Queue\QueueFactory $queue
+   *   Queue factory service.
+   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
+   *   Jobstore factory service.
+   * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
+   *   Import info list service.
    */
-  public function __construct(ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory) {
+  public function __construct(
+    ResourceLocalizer $resourceLocalizer,
+    ImportFactoryInterface $importServiceFactory,
+    QueueFactory $queue,
+    JobStoreFactory $jobStoreFactory,
+    ImportInfoList $importInfoList
+  ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
+    $this->importInfoList = $importInfoList;
   }
 
   /**
@@ -184,12 +204,9 @@ class Service implements ContainerInjectionInterface {
    *
    * @return array
    *   The importer list object.
-   *
-   * @todo Refactor to use dependency injection.
    */
   public function list() {
-    $service = \Drupal::service('dkan.datastore.import_info_list');
-    return $service->buildList();
+    return $this->importInfoList->buildList();
   }
 
   /**

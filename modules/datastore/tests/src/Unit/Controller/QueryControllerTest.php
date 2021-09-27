@@ -12,6 +12,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryController;
+use Drupal\metastore\MetastoreApiResponse;
+use Drupal\metastore\NodeWrapper\Data;
+use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use RootedData\RootedJsonData;
@@ -397,13 +400,20 @@ class QueryControllerTest extends TestCase {
       ->add("request_stack", RequestStack::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
+      ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
+      ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->index(0);
 
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', $request)
-      ->add(DatasetInfo::class, "gather", $info);
-
+      ->add(DatasetInfo::class, "gather", $info)
+      ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
+      ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
+      ->add(NodeDataFactory::class, 'getInstance', Data::class)
+      ->add(Data::class, 'getCacheContexts', ['url'])
+      ->add(Data::class, 'getCacheTags', ['node:1'])
+      ->add(Data::class, 'getCacheMaxAge', 0);
     if ($stream) {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
     }

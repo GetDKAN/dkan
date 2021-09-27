@@ -4,10 +4,13 @@ namespace Drupal\datastore\Controller;
 
 use Drupal\common\Resource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
+use Drupal\Component\Uuid\Uuid;
 use Drupal\datastore\Service;
+use Drupal\metastore\MetastoreApiResponse;
+use Drupal\metastore\Reference\ReferenceLookup;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class Api.
@@ -27,42 +30,45 @@ class ImportController implements ContainerInjectionInterface {
   protected $datastoreService;
 
   /**
-   * Request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  private $requestStack;
-
-  /**
    * Api constructor.
    */
-  public function __construct(Service $datastoreService, RequestStack $requestStack) {
+  public function __construct(
+    Service $datastoreService,
+    MetastoreApiResponse $metastoreApiResponse,
+    ReferenceLookup $referenceLookup
+  ) {
     $this->datastoreService = $datastoreService;
-    $this->requestStack = $requestStack;
+    $this->metastoreApiResponse = $metastoreApiResponse;
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
    * Create controller object from dependency injection container.
    */
   public static function create(ContainerInterface $container) {
-    $datastoreService = $container->get('dkan.datastore.service');
-    $requestStack = $container->get('request_stack');
-    return new ImportController($datastoreService, $requestStack);
+    return new ImportController(
+      $container->get('dkan.datastore.service'),
+      $container->get('dkan.metastore.api_response'),
+      $container->get('dkan.metastore.reference_lookup')
+    );
   }
 
   /**
    * Returns the dataset along with datastore headers and statistics.
    *
    * @param string $identifier
-   *   Identifier.
+   *   Resource or metastore (distribution) identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function summary($identifier) {
+  public function summary(string $identifier, Request $request) {
     try {
       $data = $this->datastoreService->summary($identifier);
-      return $this->getResponse($data);
+      $dependencies = $this->getDependencies($identifier);
+      return $this->metastoreApiResponse->cachedJsonResponse($data, 200, $dependencies, $request->query);
     }
     catch (\Exception $e) {
       $exception = new \Exception("A datastore for resource {$identifier} does not exist.");
@@ -71,11 +77,39 @@ class ImportController implements ContainerInjectionInterface {
   }
 
   /**
+   * Get cache dependencies for an identifier.
+   *
+   * @param string $identifier
+   *   Resource or distribution identifier.
+   *
+   * @return array
+   *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
+   */
+  private function getDependencies($identifier) {
+    // If a proper UUID, probably a distribution.
+    if (Uuid::isValid($identifier)) {
+      $distributions = [$identifier];
+    }
+    elseif (strlen($identifier) == 52) {
+      $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
+    }
+    elseif (strlen($identifier) == 44) {
+      $resourceId = "{$identifier}__source";
+      $distributions = $this->referenceLookup->getReferencers('distribution', $resourceId, 'downloadURL');
+    }
+    else {
+      $distributions = [];
+    }
+    $dependencies = empty($distributions) ? ['distribution'] : ['distribution' => $distributions];
+    return $dependencies;
+  }
+
+  /**
    * Import.
    */
-  public function import() {
+  public function import(Request $request) {
 
-    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    $payloadJson = $request->getContent();
     $payload = json_decode($payloadJson);
 
     if (isset($payload->resource_ids)) {
@@ -88,7 +122,8 @@ class ImportController implements ContainerInjectionInterface {
 
     try {
       $resourceId = $payload->resource_id;
-      $identifier = NULL; $version = NULL;
+      $identifier = NULL;
+      $version = NULL;
       list($identifier, $version) = Resource::getIdentifierAndVersion($resourceId);
       $results = $this->datastoreService->import($identifier, FALSE, $version);
       return $this->getResponse($results);
@@ -141,11 +176,14 @@ class ImportController implements ContainerInjectionInterface {
   /**
    * Drop multiples.
    *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
+   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   Json response.
    */
-  public function deleteMultiple() {
-    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+  public function deleteMultiple(Request $request) {
+    $payloadJson = $request->getContent();
     $payload = json_decode($payloadJson);
 
     if (!isset($payload->resource_ids)) {
@@ -165,13 +203,16 @@ class ImportController implements ContainerInjectionInterface {
   /**
    * Returns a list of import jobs and data about their status.
    *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
+   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function list() {
+  public function list(Request $request) {
     try {
       $data = $this->datastoreService->list();
-      return $this->getResponse($data);
+      return $this->metastoreApiResponse->cachedJsonResponse($data, 200, ['distribution'], $request->query);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException(
