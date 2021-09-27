@@ -72,5 +72,13 @@ context('Admin dataset json form', () => {
         cy.get('input[value="Delete"]').click({ force:true })
         cy.get('.messages').should('contain','Deleted 1 content item.')
     })
-
+    it('User does not see a preview button on the dataset form.', () => {
+        cy.visit(baseurl + "/node/add/data")
+        cy.wait(2000)
+        cy.get('#edit-actions').not('contain','Preview')
+        cy.visit(baseurl + "/admin/dkan/datasets")
+        cy.wait(2000)
+        cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
+        cy.get('#edit-actions').not('contain','Preview')
+    })
 })
