@@ -1,4 +1,3 @@
-uuid: 55ab101c-3fc3-450b-b055-f3a8dc208437
 langcode: en
 status: true
 dependencies:
@@ -7,8 +6,6 @@ dependencies:
   module:
     - search_api
     - metastore_search
-_core:
-  default_config_hash: RUXS1l48SEXxagXAmVGSKfKQwV2h9u0DVJW_3WHlaaM
 id: dkan
 name: DKAN
 description: ''
