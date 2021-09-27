@@ -25,7 +25,7 @@ field_settings:
     label: modified
     datasource_id: dkan_dataset
     property_path: modified
-    type: date
+    type: string
   publisher__name:
     label: publisher__name
     datasource_id: dkan_dataset
