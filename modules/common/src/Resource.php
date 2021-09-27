@@ -25,8 +25,8 @@ use Procrastinator\JsonSerializeTrait;
  *
  * @todo Rename filePath to uri or url.
  */
-class Resource implements \JsonSerializable {
-  use HydratableTrait, JsonSerializeTrait;
+class Resource implements \JsonSerializable, ResourceSchemaInterface {
+  use HydratableTrait, JsonSerializeTrait, ResourceSchemaDetectionTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
@@ -138,6 +138,33 @@ class Resource implements \JsonSerializable {
    */
   public function getFolder() {
     return dirname($this->filePath);
+  }
+
+  /**
+   * Attempt to detect the EOL character for this resource's file.
+   *
+   * @param string $line
+   *   Line being analyzed.
+   *
+   * @return string|null
+   *   The EOL character for the given line, or NULL on failure.
+   */
+  protected function getEol(): ?string {
+    $eol = NULL;
+
+    $header_line = $this->getFirstLineFromFile();
+
+    if (preg_match('/\r\n$/', $header_line)) {
+      $eol = '\r\n';
+    }
+    elseif (preg_match('/\r$/', $header_line)) {
+      $eol = '\r';
+    }
+    elseif (preg_match('/\n$/', $header_line)) {
+      $eol = '\n';
+    }
+
+    return $eol;
   }
 
   /**
