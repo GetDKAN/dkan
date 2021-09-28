@@ -44,8 +44,7 @@ context('Admin content and dataset views', () => {
     it('The default results list only contains datasets.', () => {
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.get('tbody td.views-field-field-data-type').each(($el, index, $list) => {
-            const CellValue = $el.text();
-            expect(CellValue).to.contains('dataset')
+            expect($el.text()).to.contains('dataset')
         })
     })
 
