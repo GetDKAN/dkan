@@ -2,7 +2,7 @@ dkan_alt_api.1.metastore.schemas.id.items:
   path: '/alt/api/1/metastore/schemas/{schema_id}/items'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::getAll'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::getAll'}
   requirements:
     _permission: 'get data through the alternate metastore api'
   options:
@@ -12,7 +12,7 @@ dkan_alt_api.1.metastore.schemas.id.items.id:
   path: '/alt/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::get'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::get'}
   requirements:
     _permission: 'get data through the alternate metastore api'
   options:
