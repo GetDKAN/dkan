@@ -45,6 +45,8 @@ context('Admin content and dataset views', () => {
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.get('tbody td.views-field-field-data-type').each(($el, index, $list) => {
             expect($el.text()).to.contains('dataset')
+            // http://bluebirdjs.com/docs/warning-explanations.html#warning-a-promise-was-created-in-a-handler-but-was-not-returned-from-it
+            return null;
         })
     })
 
