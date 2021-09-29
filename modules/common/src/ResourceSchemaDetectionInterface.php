@@ -8,14 +8,14 @@ interface ResourceSchemaDetectionInterface {
    *
    * @var int
    */
-  protected const MAX_COLUMN_LENGTH = 64;
+  public const MAX_COLUMN_LENGTH = 64;
 
   /**
    * List of reserved words in MySQL 5.6-8 and MariaDB.
    *
    * @var array
    */
-  protected const RESERVED_WORDS = [
+  public const RESERVED_WORDS = [
     'accessible', 'add', 'all', 'alter', 'analyze',
     'and', 'as', 'asc', 'asensitive', 'before', 'between', 'bigint', 'binary',
     'blob', 'both', 'by', 'call', 'cascade', 'case', 'change', 'char',

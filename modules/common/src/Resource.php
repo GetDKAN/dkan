@@ -25,7 +25,7 @@ use Procrastinator\JsonSerializeTrait;
  *
  * @todo Rename filePath to uri or url.
  */
-class Resource implements \JsonSerializable, ResourceSchemaInterface {
+class Resource implements \JsonSerializable, ResourceSchemaDetectionInterface {
   use HydratableTrait, JsonSerializeTrait, ResourceSchemaDetectionTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
