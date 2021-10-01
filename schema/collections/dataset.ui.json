@@ -145,6 +145,17 @@
           "extensions": "csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp",
           "progress_indicator": "bar"
         }
+      },
+      "schema": {
+        "fields": {
+          "items": {
+            "description": {
+              "ui:options": {
+                "widget": "hidden"
+              }
+            }
+          }
+        }
       }
     }
   },
