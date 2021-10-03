@@ -1,7 +1,7 @@
 services:
   json_form.builder:
     class: \Drupal\json_form_widget\FormBuilder
-    arguments: ['@dkan.metastore.schema_retriever','@json_form.router', '@json_form.schema_ui_handler', '@logger.factory']
+    arguments: ['@dkan.metastore.schema_retriever','@json_form.router', '@json_form.schema_ui_handler', '@logger.factory', '@language_manager']
   json_form.router:
     class: \Drupal\json_form_widget\FieldTypeRouter
     arguments: ['@json_form.string_helper','@json_form.object_helper', '@json_form.array_helper']
