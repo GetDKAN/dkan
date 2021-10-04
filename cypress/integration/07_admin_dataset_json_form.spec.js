@@ -46,8 +46,13 @@ context('Admin dataset json form', () => {
         // End filling up keyword.
         cy.get('#edit-submit').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
-        // Editing dataset.
+        // Confirm the default dkan admin view is filtered to show only datasets.
         cy.visit(baseurl + "/admin/dkan/datasets")
+        cy.get('tbody td.views-field-field-data-type').each(($el) => {
+            expect($el.text()).to.contains('dataset')
+            return null;
+        })
+        // Edit the dataset.
         cy.get('#edit-title').type('DKANTEST dataset title', { force:true } )
         cy.get('#edit-submit-dkan-dataset-content').click({ force:true })
         cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
