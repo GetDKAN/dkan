@@ -52,12 +52,12 @@ class DatabaseTableTest extends TestCase {
         "first_name" => [
           "name" => "first_name",
           "type" => "string",
-          "description" => "First Name",
+          "title" => "First Name",
         ],
         "last_name" => [
           "name" => "last_name",
           "type" => "string",
-          "description" => "lAST nAME",
+          "title" => "lAST nAME",
         ],
       ],
     ];

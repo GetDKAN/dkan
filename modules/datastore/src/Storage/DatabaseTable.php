@@ -150,7 +150,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       $name = $info->Field;
       $schema['fields'][$name] = array_filter([
         'name' => $name,
-        'description' => $canGetComment ? $this->connection->schema()->getComment($tableName, $name) : '',
+        'title' => $canGetComment ? $this->connection->schema()->getComment($tableName, $name) : '',
         'type' => $this->translateType($info->Type),
         'format' => $this->translateFormat($info->Type),
       ]);
