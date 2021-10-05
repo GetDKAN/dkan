@@ -44,7 +44,7 @@ jobs:
         type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.2"
+      DKTL_VERSION: "4.2.3"
     steps:
       - checkout:
           path: dkan
