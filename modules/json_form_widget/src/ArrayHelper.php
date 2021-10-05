@@ -6,7 +6,9 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Parsedown;
 
 /**
  * Class ArrayHelper.
@@ -96,7 +98,8 @@ class ArrayHelper implements ContainerInjectionInterface {
     }
 
     if (isset($definition['schema']->description)) {
-      $element['#description'] = $definition['schema']->description;
+      $parsedown = new Parsedown();
+      $element['#description'] = $parsedown->text($definition['schema']->description);
     }
 
     for ($i = 0; $i < $amount; $i++) {

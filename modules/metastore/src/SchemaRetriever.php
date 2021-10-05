@@ -54,6 +54,7 @@ class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface
       'theme.ui',
       'keyword',
       'keyword.ui',
+      'data-dictionary'
     ];
   }
 

@@ -7,7 +7,9 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Parsedown;
 
 /**
  * Class StringHelper.
@@ -66,7 +68,8 @@ class StringHelper implements ContainerInjectionInterface {
       '#type' => $this->getElementType($property),
     ];
     $element['#title'] = isset($property->title) ? $property->title : '';
-    $element['#description'] = isset($property->description) ? $property->description : '';
+    $parsedown = new Parsedown();
+    $element['#description'] = isset($property->description) ? $parsedown->text($property->description) : '';
     $element['#default_value'] = $this->getDefaultValue($data, $property);
 
     // Check if the field is required.

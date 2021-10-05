@@ -534,6 +534,7 @@ class Service implements ContainerInjectionInterface {
       $normalizedData = $data;
     }
     else {
+      \Drupal::logger('metastore')->notice(print_r(gettype($data), TRUE));
       throw new \InvalidArgumentException("Invalid metadata argument.");
     }
 

@@ -146,14 +146,14 @@
           "progress_indicator": "bar"
         }
       },
-      "schema": {
-        "fields": {
-          "items": {
-            "description": {
-              "ui:options": {
-                "widget": "hidden"
-              }
-            }
+      "describedBy": {
+        "ui:options": {
+          "widget": "list",
+          "hideActions": "true",
+          "child": "keyword",
+          "type": "autocomplete",
+          "source": {
+            "metastoreSchema": "data-dictionary"
           }
         }
       }

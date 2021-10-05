@@ -7,6 +7,8 @@ use Drupal\metastore\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
+use Parsedown;
+
 /**
  * Class SchemaUiHandler.
  */
@@ -293,7 +295,8 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    */
   public function changeFieldDescriptions($spec, array $element) {
     if (isset($spec->description)) {
-      $element['#description'] = $spec->description;
+      $parsedown = new Parsedown();
+      $element['#description'] = $parsedown->text($spec->description);
     }
     return $element;
   }
