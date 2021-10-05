@@ -35,7 +35,11 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
-    parent::__construct($connection);
+    $this->connection = $connection;
+
+    if ($this->tableExist($this->getTableName())) {
+      $this->setSchemaFromTable();
+    }
   }
 
   /**
@@ -124,23 +128,90 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Overriden.
+   * Set the schema using the existing database table.
    */
-  public function setSchema($schema) {
-    $fields = $schema['fields'];
-    $new_field = [
-      $this->primaryKey() =>
-      [
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ],
-    ];
-    $fields = array_merge($new_field, $fields);
+  private function setSchemaFromTable() {
+    $tableName = $this->getTableName();
+    $fieldsInfo = $this->connection->query("DESCRIBE `{$tableName}`")->fetchAll();
 
-    $schema['fields'] = $fields;
-    $schema['primary key'] = [$this->primaryKey()];
-    parent::setSchema($schema);
+    $schema = $this->buildTableSchema($tableName, $fieldsInfo);
+    $this->setSchema($schema);
+  }
+
+  /**
+   * Get table schema.
+   *
+   * @todo Note that this will brake on PostgresSQL
+   */
+  private function buildTableSchema($tableName, $fieldsInfo) {
+    $schema = ['primaryKey' => NULL, 'fields' => []];
+    $canGetComment = method_exists($this->connection->schema(), 'getComment');
+    foreach ($fieldsInfo as $info) {
+      $name = $info->Field;
+      $schema['fields'][$name] = array_filter([
+        'name' => $name,
+        'description' => $canGetComment ? $this->connection->schema()->getComment($tableName, $name) : '',
+        'type' => $this->translateType($info->Type),
+        'format' => $this->translateFormat($info->Type),
+      ]);
+      $schema['primaryKey'] = (isset($info->Key) && $info->Key == 'PRI') ? $name : $schema['primaryKey'];
+    }
+    return $schema;
+  }
+
+  /**
+   * Translate the database type into a table schema type.
+   *
+   * @param string $type
+   *   Type returned from the describe query.
+   *
+   * @return string
+   *   Fritionless Table Schema compatible type.
+   *
+   * @see https://specs.frictionlessdata.io/table-schema
+   */
+  private function translateType(string $type) {
+    // Clean up things like "int(10) unsigned".
+    $simpleType = strtok($type, '(');
+    $map = [
+      'varchar' => 'string',
+      'text' => 'string',
+      'char' => 'string',
+      'tinytext' => 'string',
+      'mediumtext' => 'string',
+      'longtext' => 'string',
+      'int' => 'number',
+      'tinyint' => 'number',
+      'smallint' => 'number',
+      'mediumint' => 'number',
+      'bigint' => 'number',
+      'float' => 'number',
+      'double' => 'number',
+      'decimal' => 'number',
+      'numeric' => 'number',
+      'date' => 'date',
+      'datetime' => 'datetime',
+    ];
+
+    return $map[$simpleType] ?? $type;
+  }
+
+  /**
+   * Add format to any database types requiring it.
+   *
+   * @param string $type
+   *   Database column type. Currently only works with datetime and timestamps.
+   *
+   * @return string|null
+   *   If available, a string to be used in the field format.
+   *
+   * @see https://specs.frictionlessdata.io/table-schema/
+   */
+  private function translateFormat(string $type) {
+    if (in_array($type, ['datetime', 'timestamp'])) {
+      return '%Y-%m-%d %H:%M:%S';
+    }
+    return NULL;
   }
 
 }

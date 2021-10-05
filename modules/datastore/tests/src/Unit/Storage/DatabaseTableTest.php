@@ -46,16 +46,17 @@ class DatabaseTableTest extends TestCase {
     $expectedSchema = [
       "fields" => [
         "record_number" => [
-          "type" => "serial",
-          "unsigned" => TRUE,
-          "not null" => TRUE,
+          "name" => "record_number",
+          "type" => "number",
         ],
         "first_name" => [
-          "type" => "text",
+          "name" => "first_name",
+          "type" => "string",
           "description" => "First Name",
         ],
         "last_name" => [
-          "type" => "text",
+          "name" => "last_name",
+          "type" => "string",
           "description" => "lAST nAME",
         ],
       ],
@@ -70,8 +71,9 @@ class DatabaseTableTest extends TestCase {
   public function testRetrieveAll() {
 
     $fieldInfo = [
-      (object) ['Field' => "first_name"],
-      (object) ['Field' => "last_name"],
+      (object) ['Field' => "record_number", 'Type' => 'int(10)', 'Key' => 'PRI'],
+      (object) ['Field' => "first_name", 'Type' => 'varchar(10)'],
+      (object) ['Field' => "last_name", 'Type' => 'tinytext'],
     ];
 
     $sequence = (new Sequence())
@@ -365,8 +367,9 @@ class DatabaseTableTest extends TestCase {
    */
   private function getConnectionChain() {
     $fieldInfo = [
-      (object) ['Field' => "first_name"],
-      (object) ['Field' => "last_name"],
+      (object) ['Field' => "record_number", 'Type' => 'int(10)', 'Key' => 'PRI'],
+      (object) ['Field' => "first_name", 'Type' => 'varchar(10)'],
+      (object) ['Field' => "last_name", 'Type' => 'tinytext'],
     ];
 
     $chain = (new Chain($this))
@@ -375,8 +378,10 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'query', Statement::class)
       ->add(Statement::class, 'fetchAll', $fieldInfo)
       ->add(Schema::class, "tableExists", TRUE)
-      ->add(Schema::class, 'getComment',
-        (new Sequence())->add('First Name')->add('lAST nAME')
+      ->add(Schema::class, 'getComment', (new Sequence())
+        ->add('')
+        ->add('First Name')
+        ->add('lAST nAME')
       )
       ->add(Schema::class, 'dropTable', NULL);
 
