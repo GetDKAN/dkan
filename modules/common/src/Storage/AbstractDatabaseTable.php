@@ -42,7 +42,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Get the primary key used in the table.
    */
-  abstract protected function primaryKey();
+  public function primaryKey() {
+    return 'id';
+  }
 
   /**
    * Constructor.
