@@ -3,6 +3,7 @@
 namespace Drupal\datastore;
 
 use Drupal\common\Resource;
+use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\DatastoreQuery;
 use Procrastinator\Result;
@@ -290,7 +291,7 @@ class Service implements ContainerInjectionInterface {
       $storage = $storageMap[$resource["alias"]];
       $schemaItem = $storage->getSchema();
       if (empty($datastoreQuery->{"$.rowIds"})) {
-        $schemaItem['fields'] = $this->filterSchemaFields($schemaItem);
+        $schemaItem = $this->filterSchemaFields($schemaItem, $storage->primaryKey());
       }
       $schema[$resource["id"]] = $schemaItem;
     }
@@ -334,8 +335,9 @@ class Service implements ContainerInjectionInterface {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
     if (empty($datastoreQuery->{"$.rowIds"}) && empty($datastoreQuery->{"$.properties"})) {
-      $schema = $storageMap[$primaryAlias]->getSchema();
-      $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
+      $storage = $storageMap[$primaryAlias];
+      $schema = $this->filterSchemaFields($$storage->getSchema(), $storage->primaryKey());
+      $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
     }
 
     $query = QueryFactory::create($datastoreQuery, $storageMap);
@@ -358,12 +360,12 @@ class Service implements ContainerInjectionInterface {
    * @return array
    *   Filtered schema fields.
    */
-  private function filterSchemaFields(array $schema) : array {
+  private function filterSchemaFields(array $schema, string $primaryKey) : array {
     // Hide identifier field by default.
-    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == 'record_number') {
-      unset($schema['fields']['record_number']);
+    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == $primaryKey) {
+      unset($schema['fields'][$primaryKey], $schema['primary key'][0]);
     }
-    return $schema['fields'];
+    return array_filter($schema);
   }
 
   /**
