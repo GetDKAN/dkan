@@ -35,7 +35,11 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
-    parent::__construct($connection);
+    $this->connection = $connection;
+
+    if ($this->tableExist($this->getTableName())) {
+      $this->setSchemaFromTable();
+    }
   }
 
   /**
@@ -124,23 +128,67 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Overriden.
+   * Set the schema using the existing database table.
    */
-  public function setSchema($schema) {
-    $fields = $schema['fields'];
-    $new_field = [
-      $this->primaryKey() =>
-      [
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ],
-    ];
-    $fields = array_merge($new_field, $fields);
+  private function setSchemaFromTable() {
+    $tableName = $this->getTableName();
+    $fieldsInfo = $this->connection->query("DESCRIBE `{$tableName}`")->fetchAll();
 
-    $schema['fields'] = $fields;
-    $schema['primary key'] = [$this->primaryKey()];
-    parent::setSchema($schema);
+    $schema = $this->buildTableSchema($tableName, $fieldsInfo);
+    $this->setSchema($schema);
+  }
+
+  /**
+   * Get table schema.
+   *
+   * @todo Note that this will brake on PostgresSQL
+   */
+  private function buildTableSchema($tableName, $fieldsInfo) {
+    $schema = ['primary key' => NULL, 'fields' => []];
+    $canGetComment = method_exists($this->connection->schema(), 'getComment');
+    foreach ($fieldsInfo as $info) {
+      $name = $info->Field;
+      $schema['fields'][$name] = $this->translateType($info->Type);
+      $schema['fields'][$name] += [
+        'description' => $canGetComment ? $this->connection->schema()->getComment($tableName, $name) : '',
+      ];
+      $schema['fields'][$name] = array_filter($schema['fields'][$name]);
+      $schema['primary key'] = (isset($info->Key) && $info->Key == 'PRI') ? $name : $schema['primary key'];
+    }
+    return $schema;
+  }
+
+  /**
+   * Translate the database type into a table schema type.
+   *
+   * @param string $type
+   *   Type returned from the describe query.
+   *
+   * @return string
+   *   Fritionless Table Schema compatible type.
+   *
+   * @see https://specs.frictionlessdata.io/table-schema
+   */
+  private function translateType(string $type) {
+    // Clean up things like "int(10) unsigned".
+    $db_type = strtok($type, '(');
+    $driver = $this->connection->driver();
+
+    preg_match('#\((.*?)\)#', $type, $match);
+    $length = $match[1] ?? NULL;
+
+    $map = array_flip(array_map('strtolower', $this->connection->schema()->getFieldTypeMap()));
+
+    $fullType = $map[$db_type] ?? 'varchar';
+    $type = (explode(':', $fullType))[0];
+    $size = (explode(':', $fullType))[1] ?? NULL;
+
+    return [
+      'type' => $type,
+      'length' => $length,
+      'size' => $size,
+      "{$driver}_type" => $db_type,
+    ];
   }
 
 }
