@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Controller;
 
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -46,18 +47,27 @@ class QueryController implements ContainerInjectionInterface {
   protected $datasetInfo;
 
   /**
+   * ConfigFactory object.
+   *
+   * @var Drupal\Core\Config\ConfigFactory
+   */
+  private $configFactory;
+
+  /**
    * Api constructor.
    */
   public function __construct(
     Service $datastoreService,
     RequestStack $requestStack,
     DatasetInfo $datasetInfo,
-    MetastoreApiResponse $metastoreApiResponse
+    MetastoreApiResponse $metastoreApiResponse,
+    ConfigFactory $configFactory
   ) {
     $this->datastoreService = $datastoreService;
     $this->requestStack = $requestStack;
     $this->datasetInfo = $datasetInfo;
     $this->metastoreApiResponse = $metastoreApiResponse;
+    $this->configFactory = $configFactory;
   }
 
   /**
@@ -68,7 +78,8 @@ class QueryController implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service'),
       $container->get('request_stack'),
       $container->get('dkan.common.dataset_info'),
-      $container->get('dkan.metastore.api_response')
+      $container->get('dkan.metastore.api_response'),
+      $container->get('config.factory')
     );
   }
 
@@ -294,7 +305,8 @@ class QueryController implements ContainerInjectionInterface {
     }
     try {
       $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../../docs/query.json"));
-      $datastoreQuery = new DatastoreQuery($payloadJson);
+      $rows_limit = (int) $this->configFactory->get('datastore.settings')->get('rows_limit') ?: 500;
+      $datastoreQuery = new DatastoreQuery($payloadJson, $rows_limit);
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
