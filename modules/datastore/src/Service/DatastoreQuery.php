@@ -17,7 +17,7 @@ class DatastoreQuery extends RootedJsonData {
    * @param int $rows_limit
    *   Maxmimum rows of data to return.
    */
-  public function __construct(string $json, int $rows_limit = 500) {
+  public function __construct(string $json, int $rows_limit) {
     $schema = file_get_contents(__DIR__ . "/../../docs/query.json");
     $q = json_decode($schema);
     $q->properties->limit->maximum = $rows_limit;
