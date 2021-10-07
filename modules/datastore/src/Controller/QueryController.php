@@ -54,6 +54,13 @@ class QueryController implements ContainerInjectionInterface {
   private $configFactory;
 
   /**
+   * Default API rows limit.
+   *
+   * @var int
+   */
+  protected const DEFAULT_ROWS_LIMIT = 500;
+
+  /**
    * Api constructor.
    */
   public function __construct(
@@ -97,7 +104,7 @@ class QueryController implements ContainerInjectionInterface {
     );
 
     try {
-      $datastoreQuery = new DatastoreQuery($payloadJson);
+      $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
@@ -305,8 +312,7 @@ class QueryController implements ContainerInjectionInterface {
     }
     try {
       $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../../docs/query.json"));
-      $rows_limit = (int) $this->configFactory->get('datastore.settings')->get('rows_limit') ?: 500;
-      $datastoreQuery = new DatastoreQuery($payloadJson, $rows_limit);
+      $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
@@ -378,6 +384,16 @@ class QueryController implements ContainerInjectionInterface {
     $resource = (object) ["id" => $identifier, "alias" => "t"];
     $data->resources = [$resource];
     $json = json_encode($data);
+  }
+
+  /**
+   * Get the rows limit for datastore queries.
+   *
+   * @return int
+   *   API rows limit.
+   */
+  protected function getRowsLimit(): int {
+    return (int) ($this->configFactory->get('datastore.settings')->get('rows_limit') ?: self::DEFAULT_ROWS_LIMIT);
   }
 
 }
