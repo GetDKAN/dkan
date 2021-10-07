@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
+use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\metastore\DatasetApiDocs;
 use Drupal\metastore\Exception\ExistingObjectException;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -20,7 +21,6 @@ use PHPUnit\Framework\TestCase;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  *
@@ -37,6 +37,15 @@ class MetastoreControllerTest extends TestCase {
   protected function setUp(): void {
     parent::setUp();
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
+
+    // Set cache services
+    $options = (new Options)
+      ->add('cache_contexts_manager', CacheContextsManager::class)
+      ->index(0);
+    $chain = (new Chain($this))
+      ->add(ContainerInterface::class, 'get', $options)
+      ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
+    \Drupal::setContainer($chain->getMock());
   }
 
   /**
@@ -110,7 +119,6 @@ class MetastoreControllerTest extends TestCase {
     $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
 
     // Try with show ref ids.
-    \Drupal::setContainer($mockChain->getMock());
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get('dataset', '1', new Request(['show-reference-ids' => TRUE]));
     $this->assertEquals($jsonWithSwappedRefs, $response->getContent());
