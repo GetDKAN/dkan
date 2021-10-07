@@ -32,6 +32,14 @@ commands:
                   dktl exec:composer -- update --no-interaction --ansi
                   dktl drush cache:rebuild
                   dktl drush updatedb -y
+      - unless:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Just in case, run a composer update
+                command: |
+                  dktl exec:composer -- update --no-interaction --ansi
+
 
 jobs:
   build:
@@ -130,7 +138,8 @@ jobs:
           upgrade: << parameters.upgrade >>
       - run:
           name: Run DKAN cypress tests
-          command: dktl dkan:test-cypress --headless --browser=chromium
+          command: |
+            dktl dkan:test-cypress --headless --browser=chromium
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
