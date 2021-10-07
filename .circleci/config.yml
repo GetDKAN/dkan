@@ -102,14 +102,7 @@ jobs:
           command: |
             dktl xdebug:start
             sed -i "/=debug/s/=.*/=coverage/" src/docker/etc/php/xdebug.ini
-            cat src/docker/etc/php/xdebug.ini
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
-      # - run:
-      #     name: Run DKAN dredd tests
-      #     command: |
-      #       dktl install:sample
-      #       dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
-      #       dktl dkan:test-dredd
   cypress_backend:
     machine:
       image: circleci/classic:latest
