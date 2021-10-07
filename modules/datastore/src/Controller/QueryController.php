@@ -305,7 +305,7 @@ class QueryController implements ContainerInjectionInterface {
     }
     try {
       $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../../docs/query.json"));
-      $rows_limit = $this->configFactory->get('datastore.settings')->get('rows_limit');
+      $rows_limit = (int) $this->configFactory->get('datastore.settings')->get('rows_limit') ?: 500;
       $datastoreQuery = new DatastoreQuery($payloadJson, $rows_limit);
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
