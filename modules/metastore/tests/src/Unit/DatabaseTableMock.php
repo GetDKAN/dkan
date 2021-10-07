@@ -12,6 +12,10 @@ class DatabaseTableMock implements DatabaseTableInterface {
   private $id = 0;
   private $store = [];
 
+  public function primaryKey() {
+    return 'id';
+  }
+
   /**
    *
    */

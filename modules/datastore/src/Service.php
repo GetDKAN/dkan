@@ -336,7 +336,7 @@ class Service implements ContainerInjectionInterface {
 
     if (empty($datastoreQuery->{"$.rowIds"}) && empty($datastoreQuery->{"$.properties"})) {
       $storage = $storageMap[$primaryAlias];
-      $schema = $this->filterSchemaFields($$storage->getSchema(), $storage->primaryKey());
+      $schema = $this->filterSchemaFields($storage->getSchema(), $storage->primaryKey());
       $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
     }
 
