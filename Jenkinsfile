@@ -54,7 +54,7 @@ pipeline {
             when { changeRequest(); }
                 steps {
                     dir ("dkan-tools") {
-                        git url: DKTL_REPO, branch: "master"
+                        git url: DKTL_REPO, branch: "dkan-qa-builder-no-proxy"
                     }
                 }
         }
