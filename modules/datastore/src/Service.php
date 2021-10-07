@@ -282,6 +282,8 @@ class Service implements ContainerInjectionInterface {
    *
    * @return array
    *   An assoc array containing a table schema for each resource.
+   *
+   * @see https://specs.frictionlessdata.io/schemas/table-schema.json
    */
   private function getSchema(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
@@ -290,8 +292,10 @@ class Service implements ContainerInjectionInterface {
       $storage = $storageMap[$resource["alias"]];
       $schemaItem = $storage->getSchema();
       if (empty($datastoreQuery->{"$.rowIds"})) {
-        $schemaItem['fields'] = $this->filterSchemaFields($schemaItem);
+        $schemaItem = $this->filterSchemaFields($schemaItem);
       }
+      // We actually want a plain array, not a keyed object.
+      $schemaItem['fields'] = array_values($schemaItem['fields']);
       $schema[$resource["id"]] = $schemaItem;
     }
     return $schema;
@@ -334,8 +338,8 @@ class Service implements ContainerInjectionInterface {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
     if (empty($datastoreQuery->{"$.rowIds"}) && empty($datastoreQuery->{"$.properties"})) {
-      $schema = $storageMap[$primaryAlias]->getSchema();
-      $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
+      $schema = $this->filterSchemaFields($storageMap[$primaryAlias]->getSchema());
+      $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
     }
 
     $query = QueryFactory::create($datastoreQuery, $storageMap);
@@ -360,10 +364,10 @@ class Service implements ContainerInjectionInterface {
    */
   private function filterSchemaFields(array $schema) : array {
     // Hide identifier field by default.
-    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == 'record_number') {
-      unset($schema['fields']['record_number']);
+    if (isset($schema["primaryKey"]) && $schema["primaryKey"] == 'record_number') {
+      unset($schema["primaryKey"], $schema['fields']['record_number']);
     }
-    return $schema['fields'];
+    return $schema;
   }
 
   /**

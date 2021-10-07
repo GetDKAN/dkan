@@ -8,7 +8,7 @@ use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
 
 /**
- * AbstractDatabaseTable class.
+ * Base class for database storage methods.
  */
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   use SqlStorageTrait;
@@ -59,19 +59,15 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function retrieve(string $id) {
     $this->setTable();
 
-    /* @var \Drupal\Core\Database\Query\Select $select */
     $select = $this->connection->select($this->getTableName(), 't')
       ->fields('t', array_keys($this->getSchema()['fields']))
       ->condition($this->primaryKey(), $id);
 
-    /* @var \Drupal\Core\Database\StatementInterface $statement */
     $statement = $select->execute();
 
     // The docs do not mention it, but fetch can return false.
@@ -81,9 +77,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function retrieveAll(): array {
     $this->setTable();
@@ -273,7 +267,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Check for existence of a table name.
    */
-  private function tableExist($table_name) {
+  protected function tableExist($table_name) {
     $exists = $this->connection->schema()->tableExists($table_name);
     return $exists;
   }
