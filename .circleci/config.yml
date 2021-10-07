@@ -101,7 +101,7 @@ jobs:
           name: Run phpUnit tests
           command: |
             dktl xdebug:start
-            echo 'xdebug.mode=coverage' >> src/docker/etc/php/xdebug.ini
+            sed -i "/=debug/s/=.*/=coverage/" src/docker/etc/php/xdebug.ini
             cat src/docker/etc/php/xdebug.ini
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       # - run:
