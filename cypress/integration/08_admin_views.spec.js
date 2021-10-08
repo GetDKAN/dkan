@@ -35,10 +35,35 @@ context('Admin content and dataset views', () => {
     })
 
     it('The dataset edit link should go to the json form.', () => {
+        // Create a dataset.
+        cy.visit(baseurl + "/node/add/data")
+        cy.wait(2000)
+        cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST dataset title', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-description').type('DKANTEST dataset description.', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-accesslevel').select('public', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-modified-date').type('2020-02-02', { force:true } )
+        // Fill select2 field for publisher.
+        cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
+          .find('.select2-selection')
+          .click({ force:true });
+        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]').type('DKANTEST Publisher{enter}')
+        // End filling up publisher.
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type('DKANTEST Contact Name', { force:true } )
+        cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('dkantest@test.com', { force:true } )
+        // Fill select2 field for keyword.
+        cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
+        .find('.select2-selection')
+        .click({ force: true });
+        cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
+        // End filling up keyword.
+        cy.get('#edit-submit').click({ force:true })
+        cy.get('.messages--status').should('contain','has been created')
         cy.visit(baseurl + "/admin/dkan/datasets")
+        cy.wait(2000)
         cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', '/edit')
         cy.get('tbody > :nth-child(1) > .views-field-nothing > a').click({ force: true })
         cy.get('h1').should('contain.text', 'Edit Data')
+        cy.get('#edit-delete').click({ force:true })
     })
 
   })
