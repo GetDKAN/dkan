@@ -387,7 +387,7 @@ class QueryController implements ContainerInjectionInterface {
   }
 
   /**
-   * Get the rows limit for datastore queries.t
+   * Get the rows limit for datastore queries.
    *
    * @return int
    *   API rows limit.
