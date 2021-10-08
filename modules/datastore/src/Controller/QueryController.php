@@ -2,7 +2,6 @@
 
 namespace Drupal\datastore\Controller;
 
-use Drupal\Core\Config\ConfigFactory;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -12,6 +11,7 @@ use Drupal\common\JsonResponseTrait;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use RootedData\RootedJsonData;
 use Drupal\common\Util\RequestParamNormalizer;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use Drupal\datastore\Service;
 use Drupal\metastore\MetastoreApiResponse;
@@ -49,7 +49,7 @@ class QueryController implements ContainerInjectionInterface {
   /**
    * ConfigFactory object.
    *
-   * @var Drupal\Core\Config\ConfigFactory
+   * @var Drupal\Core\Config\ConfigFactoryInterface
    */
   private $configFactory;
 
@@ -68,7 +68,7 @@ class QueryController implements ContainerInjectionInterface {
     RequestStack $requestStack,
     DatasetInfo $datasetInfo,
     MetastoreApiResponse $metastoreApiResponse,
-    ConfigFactory $configFactory
+    ConfigFactoryInterface $configFactory
   ) {
     $this->datastoreService = $datastoreService;
     $this->requestStack = $requestStack;

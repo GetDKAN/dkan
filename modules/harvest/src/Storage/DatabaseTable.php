@@ -58,7 +58,7 @@ class DatabaseTable extends AbstractDatabaseTable {
    *
    * @inheritdoc
    */
-  protected function primaryKey() {
+  public function primaryKey() {
     return "id";
   }
 
