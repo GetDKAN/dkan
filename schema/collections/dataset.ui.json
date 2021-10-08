@@ -148,12 +148,20 @@
       },
       "describedBy": {
         "ui:options": {
+          "title": "Data Dictionary",
           "widget": "list",
-          "hideActions": "true",
-          "child": "keyword",
           "type": "autocomplete",
+          "allowCreate": "true",
+          "titleProperty": "title",
           "source": {
             "metastoreSchema": "data-dictionary"
+          }
+        },
+        "properties": {
+          "identifier": {
+            "ui:options": {
+              "widget": "hidden"
+            }
           }
         }
       }

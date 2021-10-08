@@ -15,7 +15,7 @@ final class DkanDataset extends MetadataDatasourcePluginBase {
   /**
    * {@inheritDoc}
    */
-  protected static function getDataType(): string {
+  protected function getDataType(): string {
       return 'dataset';
   }
 

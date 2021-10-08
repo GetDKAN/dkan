@@ -6,9 +6,13 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\TypedData\ComplexDataInterface;
 
 use Drupal\metastore_search\ComplexData\Dataset;
+use Drupal\metastore_search\ComplexData\DkanMetadataFacade;
+use Drupal\metastore_search\MetadataStorageDefinition;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\Entity\Node;
 use Drupal\search_api\Datasource\DatasourcePluginBase;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Represents a datasource which exposes DKAN data.
@@ -38,7 +42,7 @@ abstract class MetadataDatasourcePluginBase extends DatasourcePluginBase {
    * @return string
    *   Metadata data type.
    */
-  abstract protected static function getDataType(): string;
+  abstract protected function getDataType(): string;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -53,14 +57,14 @@ abstract class MetadataDatasourcePluginBase extends DatasourcePluginBase {
   public function __construct(
     array $configuration,
     string $plugin_id,
-    $plugin_definition,
+    array $plugin_definition,
     DataFactory $datastorage_factory,
     EntityTypeManagerInterface $entity_type_manager,
     int $page_size = 250
   ) {
-    parent::__construct($configuration, $pluginId, $pluginDefinition);
-    $this->dataStorage = $datastorage_factory->getInstance(self::getDataType());
-    $this->metadataStorageDefinition = new MetadataStorageDefinition(self::getDataType());
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->dataStorage = $datastorage_factory->getInstance($this->getDataType());
+    $this->metadataStorageDefinition = new MetadataStorageDefinition($this->getDataType());
     $this->nodeQuery = $entity_type_manager->getStorage('node')->getQuery();
     $this->pageSize = $page_size;
   }
@@ -68,7 +72,7 @@ abstract class MetadataDatasourcePluginBase extends DatasourcePluginBase {
   /**
    * Container injection.
    *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The service container.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
@@ -90,15 +94,14 @@ abstract class MetadataDatasourcePluginBase extends DatasourcePluginBase {
       $pluginId,
       $pluginDefinition,
       $container->get('dkan.metastore.storage'),
-      $container->get('entity_type.manager'),
-      'dataset'
+      $container->get('entity_type.manager')
     );
   }
 
   /**
    * {@inheritDoc}
    */
-  public function getItemIds(?int $page = NULL): ?array {
+  public function getItemIds($page = NULL) {
     $nids = $this->nodeQuery
       ->condition('status', 1)
       ->condition('type', 'data')
@@ -116,9 +119,9 @@ abstract class MetadataDatasourcePluginBase extends DatasourcePluginBase {
   /**
    * {@inheritDoc}
    */
-  public function load(string $id): ?ComplexDataInterface {
+  public function load($id) {
     try {
-      return new DkanMetadataFacade($this->dataStorage->retrievePublished($id));
+      return new DkanMetadataFacade($this->metadataStorageDefinition, $this->dataStorage->retrievePublished($id));
     }
     catch (\Exception $e) {
       return NULL;
@@ -128,8 +131,8 @@ abstract class MetadataDatasourcePluginBase extends DatasourcePluginBase {
   /**
    * {@inheritDoc}
    */
-  public function loadMultiple(array $ids): array {
-    return array_filter(array_map([$this, 'load'], $ids));
+  public function loadMultiple($ids) {
+    return array_filter(array_map([$this, 'load'], array_combine($ids, $ids)));
   }
 
   /**

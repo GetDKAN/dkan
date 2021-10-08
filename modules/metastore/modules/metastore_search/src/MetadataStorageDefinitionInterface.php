@@ -23,17 +23,6 @@ interface MetadataStorageDefinitionInterface {
   public function getPropertyNames(): array;
 
   /**
-   * Gets the definition of a contained property.
-   *
-   * @param string $name
-   *   The name of property.
-   *
-   * @return \Drupal\Core\TypedData\DataDefinitionInterface|null
-   *   The definition of the property or NULL if the property does not exist.
-   */
-  public function getPropertyDefintion(): ?DataDefinitionInterface;
-
-  /**
    * Retrieves the properties exposed by the underlying complex data type.
    *
    * Property names have to start with a letter or an underscore, followed by
@@ -42,6 +31,6 @@ interface MetadataStorageDefinitionInterface {
    * @return \Drupal\Core\TypedData\DataDefinitionInterface[]
    *   An associative array of property data types, keyed by the property name.
    */
-  public function getPropertyDefintions(): array;
+  public function getPropertyDefinitions(): array;
 
 }

@@ -10,12 +10,12 @@ namespace Drupal\metastore_search\Plugin\search_api\datasource;
  *   label = "DKAN Data-Dictionary",
  * )
  */
-final class DkanDatadictionary extends MetadataDatasourcePluginBase {
+final class DkanDataDictionary extends MetadataDatasourcePluginBase {
 
   /**
    * {@inheritDoc}
    */
-  protected static function getDataType(): string {
+  protected function getDataType(): string {
       return 'data-dictionary';
   }
 

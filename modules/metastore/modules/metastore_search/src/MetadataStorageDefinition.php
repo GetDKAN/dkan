@@ -2,6 +2,9 @@
 
 namespace Drupal\metastore_search;
 
+use Drupal\Core\TypedData\DataDefinition;
+use Drupal\Core\TypedData\ListDataDefinition;
+
 /**
  * Metadata Storage Definition.
  */
@@ -35,8 +38,7 @@ class MetadataStorageDefinition implements MetadataStorageDefinitionInterface {
     $definitions = [];
 
     foreach ($this->getPropertyNames() as $property) {
-      $type = $this->schema->properties->{$property}->type ?? "string";
-      $defs = $this->getPropertyDefinition($type, $property);
+      $defs = $this->getPropertyDefinition($property);
       $definitions = array_merge($definitions, $defs);
     }
 
@@ -46,14 +48,15 @@ class MetadataStorageDefinition implements MetadataStorageDefinitionInterface {
   /**
    * {@inheritDoc}
    */
-  public function getPropertyDefinition($type, $property_name) {
+  protected function getPropertyDefinition(string $property): array {
     $defs = [];
-    if (($type == "array" && isset($this->schema->properties->{$property_name}->items->properties))
+    $type = $this->schema->properties->{$property}->type ?? "string";
+    if (($type == "array" && isset($this->schema->properties->{$property}->items->properties))
     || $type == "object") {
-      $defs = $this->getComplexPropertyDefinition($this->schema->properties->{$property_name}, $type, $property_name);
+      $defs = $this->getComplexPropertyDefinition($this->schema->properties->{$property}, $type, $property);
     }
     else {
-      $defs[$property_name] = $this->getDefinitionObject($type);
+      $defs[$property] = $this->getDefinitionObject($type);
     }
     return $defs;
   }
@@ -61,22 +64,22 @@ class MetadataStorageDefinition implements MetadataStorageDefinitionInterface {
   /**
    * Private.
    */
-  protected function getComplexPropertyDefinition($property_items, $type, $property_name) {
+  protected function getComplexPropertyDefinition($property_items, $type, $property): array {
     $prefix = '';
     $definitions = [];
     $child_properties = [];
     if ($type == "array" && isset($property_items->items->properties)) {
-      $prefix = $property_name . '__item__';
+      $prefix = $property . '__item__';
       $props = $property_items->items->properties;
       $child_properties = array_keys((array) $props);
     }
     elseif ($type == "object" && isset($property_items->properties)) {
-      $prefix = $property_name . '__';
+      $prefix = $property . '__';
       $props = $property_items->properties;
       $child_properties = array_keys((array) $props);
     }
     else {
-      $definitions[$property_name] = $this->getDefinitionObject($type);
+      $definitions[$property] = $this->getDefinitionObject($type);
     }
 
     foreach ($child_properties as $child) {
