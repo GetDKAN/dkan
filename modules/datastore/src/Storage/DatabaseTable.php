@@ -167,13 +167,13 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
     foreach ($fieldsInfo as $info) {
       $name = $info->Field;
-      $schema['fields'][$name] = $this->translateType($info->Type, $info->Extra);
+      $schema['fields'][$name] = $this->translateType($info->Type, ($info->Extra ?? NULL));
       $schema['fields'][$name] += [
         'description' => $canGetComment ? $this->connection->schema()->getComment($tableName, $name) : '',
       ];
       $schema['fields'][$name] = array_filter($schema['fields'][$name]);
     }
-    return $schema;
+    return $schema ?? ['fields' => []];
   }
 
   /**
@@ -193,10 +193,11 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   private function translateType(string $type, $extra = NULL) {
     // Clean up things like "int(10) unsigned".
     $db_type = strtok($type, '(');
-    $driver = $this->connection->driver();
+    $driver = $this->connection->driver() ?? 'mysql';
 
     preg_match('#\((.*?)\)#', $type, $match);
-    $length = (int) $match[1] ?? NULL;
+    $length = $match[1] ?? NULL;
+    $length = $length ? (int) $length : $length;
 
     $map = array_flip(array_map('strtolower', $this->connection->schema()->getFieldTypeMap()));
 
@@ -204,6 +205,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // Set type to serial if auto-increment, else use mapped type.
     $type = ($fullType[0] == 'int' && $extra == 'auto_increment') ? 'serial' : $fullType[0];
     $unsigned = ($type == 'serial') ? TRUE : NULL;
+    $notNull = ($type == 'serial') ? TRUE : NULL;
     // Ignore size if "normal" or unset.
     $size = (isset($fullType[1]) && $fullType[1] != 'normal') ? $fullType[1] : NULL;
 
@@ -212,6 +214,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       'length' => $length,
       'size' => $size,
       'unsigned' => $unsigned,
+      'not null' => $notNull,
       "{$driver}_type" => $db_type,
     ];
   }
