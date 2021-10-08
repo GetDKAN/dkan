@@ -3,7 +3,6 @@
 namespace Drupal\datastore;
 
 use Drupal\common\Resource;
-use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\DatastoreQuery;
 use Procrastinator\Result;
@@ -352,10 +351,12 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Filters schema fields.
+   * Remove the primary key from the schema field list.
    *
    * @param array $schema
-   *   Schema.
+   *   Schema array, should contain a key "fields".
+   * @param string $primaryKey
+   *   The name of the primary key field to filter out.
    *
    * @return array
    *   Filtered schema fields.

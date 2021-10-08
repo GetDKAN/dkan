@@ -181,9 +181,8 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @param string $type
    *   Type returned from the describe query.
-   *
    * @param string|null $extra
-   *   MySQL "Extra" property for column
+   *   MySQL "Extra" property for column.
    *
    * @return string
    *   Fritionless Table Schema compatible type.
