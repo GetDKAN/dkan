@@ -2,7 +2,6 @@
 
 namespace Drupal\datastore\Controller;
 
-use Drupal\Core\Config\ConfigFactory;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -388,7 +387,7 @@ class QueryController implements ContainerInjectionInterface {
   }
 
   /**
-   * Get the rows limit for datastore queries.
+   * Get the rows limit for datastore queries.t
    *
    * @return int
    *   API rows limit.
