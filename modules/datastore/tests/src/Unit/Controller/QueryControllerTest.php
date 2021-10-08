@@ -427,7 +427,10 @@ class QueryControllerTest extends TestCase {
       ->add(NodeDataFactory::class, 'getInstance', Data::class)
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
-      ->add(Data::class, 'getCacheMaxAge', 0);
+      ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', 500);
+
     if ($stream) {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
     }
