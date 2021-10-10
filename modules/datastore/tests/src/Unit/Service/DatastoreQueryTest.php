@@ -197,7 +197,8 @@ class DatastoreQueryTest extends TestCase {
       ->add(ServiceImport::class, "getStorage", DatabaseTable::class)
       ->add(DatabaseTable::class, "query", $queryResult, 'DatabaseTableQuery')
       ->add(DatabaseTable::class, "getSchema", ["fields" => ["a" => "a", "b" => "b"]])
-      ->add(DatabaseTable::class, "getTableName", "table2");
+      ->add(DatabaseTable::class, "getTableName", "table2")
+      ->add(DatabaseTable::class, "primaryKey", "record_number");
 
   }
 

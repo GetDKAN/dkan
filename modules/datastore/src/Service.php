@@ -290,7 +290,7 @@ class Service implements ContainerInjectionInterface {
       $storage = $storageMap[$resource["alias"]];
       $schemaItem = $storage->getSchema();
       if (empty($datastoreQuery->{"$.rowIds"})) {
-        $schemaItem['fields'] = $this->filterSchemaFields($schemaItem);
+        $schemaItem = $this->filterSchemaFields($schemaItem, $storage->primaryKey());
       }
       $schema[$resource["id"]] = $schemaItem;
     }
@@ -334,8 +334,9 @@ class Service implements ContainerInjectionInterface {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
     if (empty($datastoreQuery->{"$.rowIds"}) && empty($datastoreQuery->{"$.properties"})) {
-      $schema = $storageMap[$primaryAlias]->getSchema();
-      $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
+      $storage = $storageMap[$primaryAlias];
+      $schema = $this->filterSchemaFields($storage->getSchema(), $storage->primaryKey());
+      $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
     }
 
     $query = QueryFactory::create($datastoreQuery, $storageMap);
@@ -350,20 +351,22 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Filters schema fields.
+   * Remove the primary key from the schema field list.
    *
    * @param array $schema
-   *   Schema.
+   *   Schema array, should contain a key "fields".
+   * @param string $primaryKey
+   *   The name of the primary key field to filter out.
    *
    * @return array
    *   Filtered schema fields.
    */
-  private function filterSchemaFields(array $schema) : array {
+  private function filterSchemaFields(array $schema, string $primaryKey) : array {
     // Hide identifier field by default.
-    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == 'record_number') {
-      unset($schema['fields']['record_number']);
+    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == $primaryKey) {
+      unset($schema['fields'][$primaryKey], $schema['primary key'][0]);
     }
-    return $schema['fields'];
+    return array_filter($schema);
   }
 
   /**

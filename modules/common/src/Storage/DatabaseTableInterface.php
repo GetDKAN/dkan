@@ -22,4 +22,12 @@ interface DatabaseTableInterface extends StorageInterface, StorerInterface, Retr
    */
   public function query(Query $query);
 
+  /**
+   * Return the primary key for the table.
+   *
+   * @return string
+   *   Primary key name.
+   */
+  public function primaryKey();
+
 }
