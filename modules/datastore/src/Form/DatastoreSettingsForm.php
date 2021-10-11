@@ -73,7 +73,8 @@ class DatastoreSettingsForm extends ConfigFormBase {
     $form['triggering_properties'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Datastore triggering properties'),
-      '#description' => t('Metadata properties whose change will trigger a re-import of an associated resource to the datastore.'),
+      '#description' => $this->t('Metadata properties whose change will trigger a re-import of 
+        an associated resource to the datastore.'),
       '#options' => $this->schemaHelper->retrieveSchemaProperties('dataset'),
       '#default_value' => $this->config('datastore.settings')->get('triggering_properties'),
     ];
