@@ -21,6 +21,7 @@ class DatastoreQuery extends RootedJsonData {
     $schema = file_get_contents(__DIR__ . "/../../docs/query.json");
     $q = json_decode($schema);
     $q->properties->limit->maximum = $rows_limit;
+    $q->properties->limit->default = $rows_limit;
     $schema = json_encode($q);
     parent::__construct($json, $schema);
     $this->populateDefaults();

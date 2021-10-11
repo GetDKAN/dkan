@@ -211,7 +211,12 @@ class QueryController implements ContainerInjectionInterface {
    */
   protected function processStreamedCsv(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $data = $result->{"$"} ? $result->{"$"} : [];
-    $max = $datastoreQuery->{"$.limit"};
+    // Override limit, set to max.
+    $max = $datastoreQuery->{"$.limit"} = $this->getRowsLimit();
+
+    $lastIndex = (count($data['results']) - 1);
+    $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
+    $conditionIndex = count($datastoreQuery->{"$.conditions"} ?? []);
 
     // Disable extra queries.
     $datastoreQuery->{"$.count"} = FALSE;
@@ -219,8 +224,9 @@ class QueryController implements ContainerInjectionInterface {
 
     $this->addHeaderRow($data);
     $response = $this->initStreamedCsvResponse();
-    $response->setCallback(function () use (&$data, &$max, $datastoreQuery) {
+    $response->setCallback(function () use (&$data, &$max, $datastoreQuery, $lastRowId, $conditionIndex) {
       $i = 1;
+      // $useLast = !empty($lastRowId);
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
 
@@ -228,12 +234,17 @@ class QueryController implements ContainerInjectionInterface {
       $count = count($data['results']);
       // Count can be greater as we add a header row to the first time.
       while ($count >= $max) {
-        $datastoreQuery->{"$.offset"} = $max * $i;
+        // $datastoreQuery->{"$.offset"} = $max * $i;
+        $datastoreQuery->{"$.conditions[$conditionIndex]"} = ['property' => 'record_number', 'value' => $lastRowId, 'operator' => '>'];
         $result = $this->datastoreService->runQuery($datastoreQuery);
         $data = $result->{"$"};
         $this->sendRows($handle, $data);
         $i++;
         $count = count($data['results']);
+
+        $lastIndex = $count - 1;
+        $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
+        $conditionIndex = count($datastoreQuery->{"$.conditions"} ?? []);
       }
       fclose($handle);
     });
