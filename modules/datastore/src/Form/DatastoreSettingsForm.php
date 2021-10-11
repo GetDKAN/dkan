@@ -86,7 +86,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('datastore.settings')
-      ->set('rows_limit', $form_state->getValue('rows_limit') ?? QueryController::DEFAULT_ROWS_LIMIT)
+      ->set('rows_limit', $form_state->getValue('rows_limit') ?: QueryController::DEFAULT_ROWS_LIMIT)
       ->set('triggering_properties', $form_state->getValue('triggering_properties'))
       ->save();
     parent::submitForm($form, $form_state);
