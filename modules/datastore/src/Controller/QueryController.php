@@ -244,7 +244,6 @@ class QueryController implements ContainerInjectionInterface {
 
         $lastIndex = $count - 1;
         $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
-        $conditionIndex = count($datastoreQuery->{"$.conditions"} ?? []);
       }
       fclose($handle);
     });
