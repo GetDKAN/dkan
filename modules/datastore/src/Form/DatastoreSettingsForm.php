@@ -70,12 +70,7 @@ class DatastoreSettingsForm extends ConfigFormBase {
         Default 500; values above 20,000 not recommended.'),
     ];
 
-    $form['fieldset'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Triggering properties'),
-      '#description' => $this->t('Property to trigger update of the datastore.'),
-    ];
-    $form['fieldset']['triggering_properties'] = [
+    $form['triggering_properties'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Datastore triggering properties'),
       '#description' => t('Metadata properties whose change will trigger a re-import of an associated resource to the datastore.'),
