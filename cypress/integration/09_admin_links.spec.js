@@ -21,6 +21,6 @@ context('Administration pages', () => {
         cy.wrap($el).contains('Datastore settings')
     })
     cy.visit(baseurl + "/admin/dkan/datastore")
-    cy.get('label').should('have.text', 'Rows limit')
+    cy.get('label[for="edit-rows-limit"]').should('have.text', 'Rows limit')
   })
 })
