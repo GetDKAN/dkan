@@ -134,7 +134,7 @@ context('Metastore', () => {
       "identifier": uuid,
       "data": {
         "title": "Title for " + uuid,
-        "description": "Description for " + uuid,
+        "description": `<p>${generateRandomString()}</p>`,
         "format": "csv",
         "mediaType": "text/csv",
         "downloadURL": "https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv",
@@ -187,12 +187,14 @@ context('Metastore', () => {
         expect(response.body.describedBy).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.json")
       })
     })
-    it('Should at least contains both random datasets', () => {
-      cy.request({
-        url: 'data.json'
-      }).then((response) => {
-        expect(response.status).eql(200)
-        expect(response.body.dataset.length).to.be.greaterThan(1)
+
+    it('Should contain newly created datasets', () => {
+      createMetastore('dataset').then((response) => {
+          expect(response.status).eql(201)
+        cy.request('data.json').then((response) => {
+          expect(response.status).eql(200)
+          expect(response.body.dataset.length).to.be.greaterThan(1)
+        })
       })
     })
   })
