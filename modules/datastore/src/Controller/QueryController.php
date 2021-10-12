@@ -58,7 +58,7 @@ class QueryController implements ContainerInjectionInterface {
    *
    * @var int
    */
-  protected const DEFAULT_ROWS_LIMIT = 500;
+  public const DEFAULT_ROWS_LIMIT = 500;
 
   /**
    * Api constructor.
