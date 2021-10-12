@@ -175,26 +175,29 @@ context('Metastore', () => {
   }
 
   context('Catalog', () => {
+    it('Should contain newly created datasets', () => {
+      createMetastore('dataset').then((response) => {
+        expect(response.status).eql(201)
+        const identifier = response.body.identifier
+        cy.request('data.json').then((response) => {
+          expect(response.status).eql(200)
+          cy.wrap(response.body)
+            .its('dataset')
+            .should('not.be.empty')
+            .then((list) => Cypress._.map(list, 'identifier'))
+            .should('include', identifier)
+        })
+      })
+    })
+
     it('Corresponds to catalog shell', () => {
-      cy.request({
-        url: 'data.json'
-      }).then((response) => {
+      cy.request('data.json').then((response) => {
         expect(response.status).eql(200)
         expect(response.body["@context"]).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld")
         expect(response.body["@id"]).eql("http://dkan/data.json")
         expect(response.body["@type"]).eql("dcat:Catalog")
         expect(response.body.conformsTo).eql("https://project-open-data.cio.gov/v1.1/schema")
         expect(response.body.describedBy).eql("https://project-open-data.cio.gov/v1.1/schema/catalog.json")
-      })
-    })
-
-    it('Should contain newly created datasets', () => {
-      createMetastore('dataset').then((response) => {
-          expect(response.status).eql(201)
-        cy.request('data.json').then((response) => {
-          expect(response.status).eql(200)
-          expect(response.body.dataset.length).to.be.greaterThan(1)
-        })
       })
     })
   })
