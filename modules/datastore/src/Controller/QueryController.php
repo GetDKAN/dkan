@@ -11,6 +11,7 @@ use Drupal\common\JsonResponseTrait;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use RootedData\RootedJsonData;
 use Drupal\common\Util\RequestParamNormalizer;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use Drupal\datastore\Service;
 use Drupal\metastore\MetastoreApiResponse;
@@ -46,18 +47,34 @@ class QueryController implements ContainerInjectionInterface {
   protected $datasetInfo;
 
   /**
+   * ConfigFactory object.
+   *
+   * @var Drupal\Core\Config\ConfigFactoryInterface
+   */
+  private $configFactory;
+
+  /**
+   * Default API rows limit.
+   *
+   * @var int
+   */
+  public const DEFAULT_ROWS_LIMIT = 500;
+
+  /**
    * Api constructor.
    */
   public function __construct(
     Service $datastoreService,
     RequestStack $requestStack,
     DatasetInfo $datasetInfo,
-    MetastoreApiResponse $metastoreApiResponse
+    MetastoreApiResponse $metastoreApiResponse,
+    ConfigFactoryInterface $configFactory
   ) {
     $this->datastoreService = $datastoreService;
     $this->requestStack = $requestStack;
     $this->datasetInfo = $datasetInfo;
     $this->metastoreApiResponse = $metastoreApiResponse;
+    $this->configFactory = $configFactory;
   }
 
   /**
@@ -68,7 +85,8 @@ class QueryController implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service'),
       $container->get('request_stack'),
       $container->get('dkan.common.dataset_info'),
-      $container->get('dkan.metastore.api_response')
+      $container->get('dkan.metastore.api_response'),
+      $container->get('config.factory')
     );
   }
 
@@ -86,7 +104,7 @@ class QueryController implements ContainerInjectionInterface {
     );
 
     try {
-      $datastoreQuery = new DatastoreQuery($payloadJson);
+      $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
@@ -294,7 +312,7 @@ class QueryController implements ContainerInjectionInterface {
     }
     try {
       $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../../docs/query.json"));
-      $datastoreQuery = new DatastoreQuery($payloadJson);
+      $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
@@ -366,6 +384,16 @@ class QueryController implements ContainerInjectionInterface {
     $resource = (object) ["id" => $identifier, "alias" => "t"];
     $data->resources = [$resource];
     $json = json_encode($data);
+  }
+
+  /**
+   * Get the rows limit for datastore queries.
+   *
+   * @return int
+   *   API rows limit.
+   */
+  protected function getRowsLimit(): int {
+    return (int) ($this->configFactory->get('datastore.settings')->get('rows_limit') ?: self::DEFAULT_ROWS_LIMIT);
   }
 
 }

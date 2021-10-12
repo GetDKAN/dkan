@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
+use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
@@ -59,8 +60,10 @@ class MetastoreApiResponseTest extends TestCase {
    * Private.
    */
   private function getContainer() {
+
     $options = (new Options)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
+      ->add('cache_contexts_manager', CacheContextsManager::class)
       ->index(0);
 
     $dataset = $this->getDataset();
@@ -78,6 +81,7 @@ class MetastoreApiResponseTest extends TestCase {
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(Service::class, 'getSchemas', ['dataset'])
+      ->add(CacheContextsManager::class, 'assertValidTokens', TRUE)
       ->add(Service::class, 'getSchema', (object) ["id" => "http://schema"])
       ->add(NodeDataFactory::class, 'getInstance', NodeWrapperData::class)
       ->add(NodeWrapperData::class, 'getMetadata', $getMetadataResults)

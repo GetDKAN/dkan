@@ -3,6 +3,7 @@
 namespace Drupal\Tests\datastore\Unit\Controller;
 
 use Drupal\common\DatasetInfo;
+use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use MockChain\Options;
@@ -18,6 +19,7 @@ use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use RootedData\RootedJsonData;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -28,6 +30,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class QueryControllerTest extends TestCase {
 
   private $buffer;
+
+  protected function setUp() {
+    parent::setUp();
+    // Set cache services
+    $options = (new Options)
+      ->add('cache_contexts_manager', CacheContextsManager::class)
+      ->index(0);
+    $chain = (new Chain($this))
+      ->add(ContainerInterface::class, 'get', $options)
+      ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
+    \Drupal::setContainer($chain->getMock());
+  }
 
   public function testQueryJson() {
     $data = json_encode([
@@ -413,7 +427,10 @@ class QueryControllerTest extends TestCase {
       ->add(NodeDataFactory::class, 'getInstance', Data::class)
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
-      ->add(Data::class, 'getCacheMaxAge', 0);
+      ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(ImmutableConfig::class, 'get', 500);
+
     if ($stream) {
       $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
     }

@@ -1,26 +1,20 @@
 datastore.settings_form:
-  title: SQL endpoint
-  route_name: datastore.sql_endpoint.settings
-  description: Configure SQL query API endpoint.
+  title: Datastore settings
+  description: Datastore settings.
   parent: system.admin_dkan
+  route_name: datastore.settings
+  weight: 10
 
 datastore.dkan_resource_settings:
   title: Resources
   description: Resource options.
   parent: system.admin_dkan
   route_name: datastore.dkan_resource_settings
-  weight: 10
+  weight: 11
 
 datastore.datasets_import_status_dashboard:
   title: 'Datastore Import Status'
   parent: system.admin_dkan
   description: 'View status information on DKAN datastore imports.'
   route_name: datastore.datasets_import_status_dashboard
-  weight: 10
-
-datastore.triggering_settings:
-  title: Datastore settings
-  description: Datastore settings.
-  parent: system.admin_dkan
-  route_name: datastore.settings
-  weight: 10
+  weight: 12

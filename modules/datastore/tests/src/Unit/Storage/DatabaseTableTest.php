@@ -51,14 +51,19 @@ class DatabaseTableTest extends TestCase {
           "type" => "serial",
           "unsigned" => TRUE,
           "not null" => TRUE,
+          'length' => 10,
+          'mysql_type' => 'int',
         ],
         "first_name" => [
-          "type" => "text",
+          "type" => "varchar",
           "description" => "First Name",
+          'length' => 10,
+          'mysql_type' => 'varchar'
         ],
         "last_name" => [
           "type" => "text",
           "description" => "lAST nAME",
+          "mysql_type" => "text",
         ],
       ],
     ];
@@ -118,8 +123,8 @@ class DatabaseTableTest extends TestCase {
   public function testRetrieveAll() {
 
     $fieldInfo = [
-      (object) ['Field' => "first_name"],
-      (object) ['Field' => "last_name"],
+      (object) ['Field' => "first_name", 'Type' => "varchar(10)"],
+      (object) ['Field' => "last_name", 'Type' => 'text']
     ];
 
     $sequence = (new Sequence())
@@ -413,8 +418,20 @@ class DatabaseTableTest extends TestCase {
    */
   private function getConnectionChain() {
     $fieldInfo = [
-      (object) ['Field' => "first_name"],
-      (object) ['Field' => "last_name"],
+      (object) [
+        'Field' => "record_number", 
+        'Type' => "int(10)",
+        'Extra' => "auto_increment",
+      ],
+      (object) [
+        'Field' => "first_name", 
+        'Type' => "varchar(10)"
+      ],
+      (object) [
+        'Field' => 
+        "last_name", 
+        'Type' => 'text'
+      ]
     ];
 
     $chain = (new Chain($this))
@@ -424,7 +441,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Statement::class, 'fetchAll', $fieldInfo)
       ->add(Schema::class, "tableExists", TRUE)
       ->add(Schema::class, 'getComment',
-        (new Sequence())->add('First Name')->add('lAST nAME')
+        (new Sequence())->add(NULL)->add('First Name')->add('lAST nAME')
       )
       ->add(Schema::class, 'dropTable', NULL);
 
