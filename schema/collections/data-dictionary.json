@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Data Dictionary",
+  "type": "object",
+  "required": [
+    "identifier",
+    "title"
+  ],
+  "properties": {
+    "identifier": {
+      "title": "Identifier",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "data": {
+      "title": "Project Open Data Data-Dictionary",
+      "description": "A data dictionary for this resource, compliant with the [Table Schema](https://specs.frictionlessdata.io/table-schema/) specification.",
+      "type": "object",
+      "required": [
+        "fields"
+      ],
+      "properties": {
+        "fields": {
+          "title": "Dictionary Fields",
+          "type": "array",
+          "items": {
+            "title": "Dictionary Field",
+            "type": "object",
+            "required": [
+              "name",
+              "type"
+            ],
+            "properties": {
+              "name": {
+                "title": "Name",
+                "description": "A name for this field.",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "description": "A human-readable title.",
+                "type": "string",
+                "examples": [
+                  "{\n  \"title\": \"My Package Title\"\n}\n"
+                ]
+              },
+              "type": {
+                "title": "Type",
+                "description": "The type keyword, which `MUST` be a value of `string`.",
+                "type": "string",
+                "enum": [
+                  "string",
+                  "number",
+                  "integer",
+                  "date",
+                  "time",
+                  "datetime",
+                  "year",
+                  "yearmonth",
+                  "boolean",
+                  "object",
+                  "geopoint",
+                  "geojson",
+                  "array",
+                  "duration"
+                ]
+              },
+              "format": {
+                "title": "Format",
+                "description": "Supported formats depend on the specified field type:\n* For `string` the supported formats are `default`, `email`, `uri`, `binary`, and `uuid`:\n  - **default**: any valid string.\n  - **email**: A valid email address.\n  - **uri**: A valid URI.\n  - **binary**: A base64 encoded string representing binary data.\n  - **uuid**: A string that is a uuid.\n* For `number` only `default` is allowed.\n* For `integer` only `default` is allowed.\n* For `date` the supported formats are `default`, `any`, and `{PATTERN}`:\n  - **default**: An ISO8601 format string of YYYY-MM-DD.\n  - **any**: Any parsable representation of a date. The implementing library can attempt to parse the datetime via a range of strategies.\n  - **{PATTERN}**: The value can be parsed according to `{PATTERN}`, which `MUST` follow the date formatting syntax of C / Python [strftime](http://strftime.org/).\n* For `time` the supported formats are `default`, `any`, and `{PATTERN}`:\n  - **default**: An ISO8601 format string for time.\n  - **any**: Any parsable representation of a date. The implementing library can attempt to parse the datetime via a range of strategies.\n  - **{PATTERN}**: The value can be parsed according to `{PATTERN}`, which `MUST` follow the date formatting syntax of C / Python [strftime](http://strftime.org/).\n* For `datetime` the supported formats are `default`, `any`, and `{PATTERN}`:\n  - **default**: An ISO8601 format string for datetime.\n  - **any**: Any parsable representation of a date. The implementing library can attempt to parse the datetime via a range of strategies.\n  - **{PATTERN}**: The value can be parsed according to `{PATTERN}`, which `MUST` follow the date formatting syntax of C / Python [strftime](http://strftime.org/).\n* For `year` only `default` is allowed.\n* For `yearmonth` only `default` is allowed.\n* For `boolean` only `default` is allowed.\n* For `object` only `default` is allowed.\n* For `geopoint` the supported formats are `default`, `array`, and `object`:\n  - **default**: A string of the pattern 'lon, lat', where `lon` is the longitude and `lat` is the latitude.\n  - **array**: An array of exactly two items, where each item is either a number, or a string parsable as a number, and the first item is `lon` and the second item is `lat`.\n  - **object**: A JSON object with exactly two keys, `lat` and `lon`\n* For `geojson` the supported formats are `default` and `topojson`:\n  - **default**: A geojson object as per the [GeoJSON spec](http://geojson.org/).\n  - **topojson**: A topojson object as per the [TopoJSON spec](https://github.com/topojson/topojson-specification/blob/master/README.md).\n* For `array` only `default` is allowed.\n* For `duration` only `default` is allowed.",
+                "type": "string",
+                "default": "default"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
