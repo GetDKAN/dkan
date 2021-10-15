@@ -12,13 +12,7 @@ trait TableTrait {
   /**
    * Delete jobstore entries related to a datastore.
    */
-  public function jobstorePrune($uuid) {
-    if (!isset($this->resourceLocalizer)) {
-      \Drupal::logger('datastore')->error('ResourceLocalizer is not set.');
-      return;
-    }
-    $resource = $this->resourceLocalizer->get($uuid);
-    $ref_uuid = $resource->getUniqueIdentifier();
+  public function jobstorePrune($ref_uuid) {
     $jobs = [
       [
         "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
