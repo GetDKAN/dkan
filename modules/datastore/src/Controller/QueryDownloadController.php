@@ -61,12 +61,6 @@ class QueryDownloadController extends QueryController {
    */
   protected function processStreamedCsv(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $data = $result->{"$"} ? $result->{"$"} : [];
-    // Override limit, set to max.
-    $max = $datastoreQuery->{"$.limit"} = $this->getRowsLimit();
-
-    $lastIndex = (count($data['results']) - 1);
-    $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
-    $conditionIndex = count($datastoreQuery->{"$.conditions"} ?? []);
 
     // Disable extra queries.
     $datastoreQuery->{"$.count"} = FALSE;
@@ -74,24 +68,35 @@ class QueryDownloadController extends QueryController {
 
     $this->addHeaderRow($data);
     $response = $this->initStreamedCsvResponse();
-    $response->setCallback(function () use (&$data, &$max, $datastoreQuery, $lastRowId, $conditionIndex) {
-      $i = 1;
-      // $useLast = !empty($lastRowId);
+    $response->setCallback(function () use (&$data, $datastoreQuery) {
+      $conditionIndex = count($datastoreQuery->{"$.conditions"} ?? []);
+      $pageLimit = $datastoreQuery->{"$.limit"} = $this->getRowsLimit();
+      $queryLimit = $datastoreQuery->{"$.limit"};
+      
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
-
       $this->sendRows($handle, $data);
-      $count = count($data['results']);
+      
+      // For this first pass, remember we have to account for header row.
+      $pageCount = $count = (count($data['results']) - 1);
+      $lastIndex = $count;
+      $lastRowId = (int) $data['results'][$lastIndex]['record_number'];
+      
+      if ($pageCount > $pageLimit || $count >= $queryLimit) {
+        fclose($handle);
+        return TRUE;
+      }
+
       // Count can be greater as we add a header row to the first time.
-      while ($count >= $max) {
+      while ($pageCount >= $pageLimit && $count < $queryLimit) {
         $datastoreQuery->{"$.conditions[$conditionIndex]"} = ['property' => 'record_number', 'value' => $lastRowId, 'operator' => '>'];
         $result = $this->datastoreService->runQuery($datastoreQuery);
         $data = $result->{"$"};
         $this->sendRows($handle, $data);
-        $i++;
-        $count = count($data['results']);
+        $pageCount = count($data['results']);
+        $count += $pageCount;
 
-        $lastIndex = $count - 1;
+        $lastIndex = $pageCount - 1;
         $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
       }
       fclose($handle);
