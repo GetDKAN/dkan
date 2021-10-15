@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryController;
-use Drupal\datastore\Controller\QueryDownloadController;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
@@ -29,8 +28,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  *
  */
 class QueryControllerTest extends TestCase {
-
-  private $buffer;
 
   protected function setUp() {
     parent::setUp();
@@ -174,99 +171,6 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
-  /**
-   * Test big csv file.
-   */
-  public function testStreamedQueryCsv() {
-    $data = json_encode([
-      "resources" => [
-        [
-          "id" => "2",
-          "alias" => "t",
-        ],
-      ],
-      "format" => "csv",
-    ]);
-    // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryDownloadController::create($container->getMock());
-    ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->query(TRUE);
-    $result->sendContent();
-
-    $csv = explode("\n", $this->buffer);
-    ob_get_clean();
-    $this->assertEquals('record_number,data', $csv[0]);
-    $this->assertEquals('1,data', $csv[1]);
-    $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('1,data', $csv[501]);
-  }
-
-  /**
-   * Test json stream (shouldn't work).
-   */
-  public function testStreamedQueryJson() {
-    $data = json_encode([
-      "resources" => [
-        [
-          "id" => "2",
-          "alias" => "t",
-        ],
-      ],
-    ]);
-    // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryDownloadController::create($container->getMock());
-    $result = $webServiceApi->query(TRUE);
-    $this->assertEquals(400, $result->getStatusCode());
-  }
-
-  /**
-   * Test streamed resource csv.
-   */
-  public function testStreamedResourceQueryCsv() {
-    $data = json_encode([
-      "format" => "csv",
-    ]);
-    // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryDownloadController::create($container->getMock());
-    ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->queryResource("2", TRUE);
-    $result->sendContent();
-
-    $csv = explode("\n", $this->buffer);
-    ob_get_clean();
-    $this->assertEquals('record_number,data', $csv[0]);
-    $this->assertEquals('1,data', $csv[1]);
-    $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('1,data', $csv[501]);
-  }
-
-  /**
-   * Test streamed resource csv through dataset distribution index.
-   */
-  public function testStreamedResourceQueryCsvDatasetDistIndex() {
-    $data = json_encode([
-      "format" => "csv",
-    ]);
-    // Need 2 json responses which get combined on output.
-    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
-
-    $container = $this->getQueryContainer($data, 'POST', TRUE, $info);
-    $webServiceApi = QueryDownloadController::create($container->getMock());
-    ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->queryDatasetResource("2", "0", TRUE);
-    $result->sendContent();
-
-    $csv = explode("\n", $this->buffer);
-    ob_get_clean();
-    $this->assertEquals('record_number,data', $csv[0]);
-    $this->assertEquals('1,data', $csv[1]);
-    $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('1,data', $csv[501]);
-  }
-
   public function testQuerySchema() {
     $container = $this->getQueryContainer();
     $webServiceApi = QueryController::create($container->getMock());
@@ -373,34 +277,6 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
-  public function testStreamedResourceQueryCsvSpecificColumns() {
-    $data = json_encode([
-      "resources" => [
-        [
-          "id" => "2",
-          "alias" => "t",
-        ],
-      ],
-      "format" => "csv",
-      "properties" => ["record_number", "data"]
-    ]);
-
-    $response = file_get_contents(__DIR__ . "/../../../data/response_with_specific_header.json");
-    $response = new RootedJsonData($response);
-
-    $container = $this->getQueryContainer($data, 'POST', TRUE)
-      ->add(Service::class, "runQuery", $response);
-
-    $webServiceApi = QueryDownloadController::create($container->getMock());
-    ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->query(TRUE);
-    $result->sendContent();
-
-    $csv = explode("\n", $this->buffer);
-    ob_get_clean();
-    $this->assertEquals('record_number,data', $csv[0]);
-  }
-
   private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE, array $info = []) {
     if ($method == "GET") {
       $request = Request::create("http://example.com?$data", $method);
@@ -451,15 +327,6 @@ class QueryControllerTest extends TestCase {
     $response2 = new RootedJsonData($response2);
 
     return (new Sequence())->add($response1)->add($response2);
-  }
-
-  /**
-   * Callback to get output buffer.
-   *
-   * @param $buffer
-   */
-  protected function getBuffer($buffer) {
-    $this->buffer .= $buffer;
   }
 
 }
