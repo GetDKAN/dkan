@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryController;
+use Drupal\datastore\Controller\QueryDownloadController;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
@@ -188,7 +189,7 @@ class QueryControllerTest extends TestCase {
     ]);
     // Need 2 json responses which get combined on output.
     $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryController::create($container->getMock());
+    $webServiceApi = QueryDownloadController::create($container->getMock());
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->query(TRUE);
     $result->sendContent();
@@ -215,7 +216,7 @@ class QueryControllerTest extends TestCase {
     ]);
     // Need 2 json responses which get combined on output.
     $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryController::create($container->getMock());
+    $webServiceApi = QueryDownloadController::create($container->getMock());
     $result = $webServiceApi->query(TRUE);
     $this->assertEquals(400, $result->getStatusCode());
   }
@@ -229,7 +230,7 @@ class QueryControllerTest extends TestCase {
     ]);
     // Need 2 json responses which get combined on output.
     $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryController::create($container->getMock());
+    $webServiceApi = QueryDownloadController::create($container->getMock());
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->queryResource("2", TRUE);
     $result->sendContent();
@@ -253,7 +254,7 @@ class QueryControllerTest extends TestCase {
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
     $container = $this->getQueryContainer($data, 'POST', TRUE, $info);
-    $webServiceApi = QueryController::create($container->getMock());
+    $webServiceApi = QueryDownloadController::create($container->getMock());
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->queryDatasetResource("2", "0", TRUE);
     $result->sendContent();
@@ -385,12 +386,12 @@ class QueryControllerTest extends TestCase {
     ]);
 
     $response = file_get_contents(__DIR__ . "/../../../data/response_with_specific_header.json");
-    $response = new \RootedData\RootedJsonData($response);
+    $response = new RootedJsonData($response);
 
     $container = $this->getQueryContainer($data, 'POST', TRUE)
       ->add(Service::class, "runQuery", $response);
 
-    $webServiceApi = QueryController::create($container->getMock());
+    $webServiceApi = QueryDownloadController::create($container->getMock());
     ob_start(['self', 'getBuffer']);
     $result = $webServiceApi->query(TRUE);
     $result->sendContent();
@@ -444,10 +445,10 @@ class QueryControllerTest extends TestCase {
 
   private function addMultipleResponses() {
     $response1 = file_get_contents(__DIR__ . "/../../../data/response_big.json");
-    $response1 = new \RootedData\RootedJsonData($response1);
+    $response1 = new RootedJsonData($response1);
 
     $response2 = file_get_contents(__DIR__ . "/../../../data/response.json");
-    $response2 = new \RootedData\RootedJsonData($response2);
+    $response2 = new RootedJsonData($response2);
 
     return (new Sequence())->add($response1)->add($response2);
   }

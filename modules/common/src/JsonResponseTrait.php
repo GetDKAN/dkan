@@ -18,7 +18,7 @@ trait JsonResponseTrait {
   /**
    * Private.
    */
-  private function getResponse($message, int $code = 200): JsonResponse {
+  protected function getResponse($message, int $code = 200): JsonResponse {
     $response = new JsonResponse($message, $code, []);
     return $this->addCacheHeaders($response);
   }
@@ -34,7 +34,7 @@ trait JsonResponseTrait {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   A Symfony JSON response.
    */
-  private function getResponseFromException(\Exception $e, int $code = 400):JsonResponse {
+  protected function getResponseFromException(\Exception $e, int $code = 400):JsonResponse {
     $body = [
       'message' => $e->getMessage(),
       'status' => $code,
@@ -57,7 +57,7 @@ trait JsonResponseTrait {
    * @return array|false
    *   An array of data to explain the errors.
    */
-  private function getExceptionData(\Exception $e) {
+  protected function getExceptionData(\Exception $e) {
     if ($e instanceof ValidationException) {
       $errors = $e->getResult()->getErrors();
       $presenter = new ValidationErrorPresenter(

@@ -83,8 +83,7 @@ datastore.1.query.download.get:
   path: '/api/1/datastore/query/download'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::query'
-    stream: true
+    _controller: '\Drupal\datastore\Controller\QueryDownloadController::query'
   requirements:
     _permission: 'access content'
   options:
@@ -94,8 +93,7 @@ datastore.1.query.download.post:
   path: '/api/1/datastore/query/download'
   methods: [POST]
   defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::query'
-    stream: true
+    _controller: '\Drupal\datastore\Controller\QueryDownloadController::query'
   requirements:
     _permission: 'access content'
   options:
@@ -145,8 +143,7 @@ datastore.1.query.id.download.get:
   path: '/api/1/datastore/query/{identifier}/download'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
-    stream: true
+    _controller: '\Drupal\datastore\Controller\QueryDownloadController::queryResource'
   requirements:
     _permission: 'access content'
   options:
@@ -156,8 +153,7 @@ datastore.1.query.dataset.index.download.get:
   path: '/api/1/datastore/query/{dataset}/{index}/download'
   methods: [GET]
   defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
-    stream: true
+    _controller: '\Drupal\datastore\Controller\QueryDownloadController::queryDatasetResource'
   requirements:
     _permission: 'access content'
   options:
@@ -167,8 +163,7 @@ datastore.1.query.id.download.post:
   path: '/api/1/datastore/query/{identifier}/download'
   methods: [POST]
   defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
-    stream: true
+    _controller: '\Drupal\datastore\Controller\QueryDownloadController::queryResource'
   requirements:
     _permission: 'access content'
   options:
@@ -178,8 +173,7 @@ datastore.1.query.dataset.index.download.post:
   path: '/api/1/datastore/query/{dataset}/{index}/download'
   methods: [POST]
   defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
-    stream: true
+    _controller: '\Drupal\datastore\Controller\QueryDownloadController::queryDatasetResource'
   requirements:
     _permission: 'access content'
   options:
