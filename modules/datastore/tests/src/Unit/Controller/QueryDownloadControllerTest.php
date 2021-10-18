@@ -61,12 +61,13 @@ class QueryDownloadControllerTest extends TestCase {
     $result = $webServiceApi->query(TRUE);
     $result->sendContent();
 
-    $csv = explode("\n", $this->buffer);
+    $csv = explode("\n", trim($this->buffer));
     ob_get_clean();
     $this->assertEquals('record_number,data', $csv[0]);
     $this->assertEquals('1,data', $csv[1]);
     $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('1,data', $csv[501]);
+    $this->assertEquals('501,data', $csv[501]);
+    $this->assertEquals(count($csv), 604);
   }
 
   /**
@@ -107,7 +108,7 @@ class QueryDownloadControllerTest extends TestCase {
     $this->assertEquals('record_number,data', $csv[0]);
     $this->assertEquals('1,data', $csv[1]);
     $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('1,data', $csv[501]);
+    $this->assertEquals('501,data', $csv[501]);
   }
 
   /**
@@ -131,7 +132,7 @@ class QueryDownloadControllerTest extends TestCase {
     $this->assertEquals('record_number,data', $csv[0]);
     $this->assertEquals('1,data', $csv[1]);
     $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('1,data', $csv[501]);
+    $this->assertEquals('501,data', $csv[501]);
   }
 
   public function testStreamedResourceQueryCsvSpecificColumns() {
@@ -143,7 +144,7 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-      "properties" => ["record_number", "data"]
+      "properties" => ["record_number", "data"],
     ]);
 
     $response = file_get_contents(__DIR__ . "/../../../data/response_with_specific_header.json");
@@ -208,7 +209,7 @@ class QueryDownloadControllerTest extends TestCase {
     $response1 = file_get_contents(__DIR__ . "/../../../data/response_big.json");
     $response1 = new RootedJsonData($response1);
 
-    $response2 = file_get_contents(__DIR__ . "/../../../data/response.json");
+    $response2 = file_get_contents(__DIR__ . "/../../../data/response_big_p2.json");
     $response2 = new RootedJsonData($response2);
 
     return (new Sequence())->add($response1)->add($response2);
