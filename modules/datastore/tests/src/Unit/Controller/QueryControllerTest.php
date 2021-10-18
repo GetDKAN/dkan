@@ -60,6 +60,26 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
+  // Make sure nothing fails with no resources.
+  public function testQueryJsonNoResources() {
+    $data = json_encode([
+      "properties" => [
+        [
+          "resource" => "t",
+          "property" => "field",
+        ],
+      ],
+    ]);
+
+    $container = $this->getQueryContainer($data)->getMock();
+    $webServiceApi = QueryController::create($container);
+    $request = $container->get('request_stack')->getCurrentRequest();
+    $result = $webServiceApi->query($request);
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(200, $result->getStatusCode());
+  }
+
   public function testQueryInvalid() {
     $data = json_encode([
       "resources" => "nope",

@@ -46,6 +46,17 @@ class AbstractQueryControllerTest extends TestCase {
   }
 
   /**
+   * Make sure we get what we expect with a delete
+   */
+  public function testDeleteNormalizer() {
+    $this->expectExceptionMessage("Only POST, PUT, PATCH and GET requests can be normalized");
+    $schema = $this->getSampleSchema();
+
+    $request = Request::create("http://example.com", "DELETE");
+    AbstractQueryController::getPayloadJson($request, $schema);
+  }
+
+  /**
    * Make sure we get what we expect with a put
    */
   public function testPutNormalizer() {

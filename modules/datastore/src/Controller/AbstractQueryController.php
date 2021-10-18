@@ -214,9 +214,6 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   protected function prepareQueryResourcePayload(&$json, $identifier) {
     $data = json_decode($json);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-      throw new \Exception(json_last_error_msg());
-    }
     if (!empty($data->resources) || !empty($data->joins)) {
       throw new \Exception("Joins are not available and "
         . "resources should not be explicitly passed when using the resource "
