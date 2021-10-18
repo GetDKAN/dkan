@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  *
  * @package Drupal\datastore
  */
-class QueryDownloadController extends QueryController {
+class QueryDownloadController extends AbstractQueryController {
 
   /**
    * Stream a CSV response.
@@ -61,6 +61,7 @@ class QueryDownloadController extends QueryController {
    */
   protected function processStreamedCsv(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $data = $result->{"$"} ? $result->{"$"} : [];
+    $count = $data['count'];
 
     // Disable extra queries.
     $datastoreQuery->{"$.count"} = FALSE;
@@ -68,33 +69,34 @@ class QueryDownloadController extends QueryController {
 
     $this->addHeaderRow($data);
     $response = $this->initStreamedCsvResponse();
-    $response->setCallback(function () use (&$data, $datastoreQuery) {
+
+    $response->setCallback(function () use (&$data, $count, $datastoreQuery) {
       $conditionIndex = count($datastoreQuery->{"$.conditions"} ?? []);
       $pageLimit = $datastoreQuery->{"$.limit"} = $this->getRowsLimit();
-      $queryLimit = $datastoreQuery->{"$.limit"};
-      
+
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
       $this->sendRows($handle, $data);
-      
+
       // For this first pass, remember we have to account for header row.
-      $pageCount = $count = (count($data['results']) - 1);
-      $lastIndex = $count;
-      $lastRowId = (int) $data['results'][$lastIndex]['record_number'];
-      
-      if ($pageCount > $pageLimit || $count >= $queryLimit) {
+      $pageCount = $lastIndex = $progress = (count($data['results']) - 1);
+
+      // If we've already sent the full result set we can end now.
+      if ($count <= $progress) {
         fclose($handle);
         return TRUE;
       }
 
-      // Count can be greater as we add a header row to the first time.
-      while ($pageCount >= $pageLimit && $count < $queryLimit) {
+      // Otherwise we iterate.
+      $lastRowId = (int) $data['results'][$lastIndex]['record_number'];
+
+      while ($pageCount >= $pageLimit && $count > $progress) {
         $datastoreQuery->{"$.conditions[$conditionIndex]"} = ['property' => 'record_number', 'value' => $lastRowId, 'operator' => '>'];
         $result = $this->datastoreService->runQuery($datastoreQuery);
         $data = $result->{"$"};
         $this->sendRows($handle, $data);
         $pageCount = count($data['results']);
-        $count += $pageCount;
+        $progress += $pageCount;
 
         $lastIndex = $pageCount - 1;
         $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
