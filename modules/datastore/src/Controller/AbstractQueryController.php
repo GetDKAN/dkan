@@ -5,7 +5,6 @@ namespace Drupal\datastore\Controller;
 use Drupal\common\DatasetInfo;
 use Drupal\datastore\Service\DatastoreQuery;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
 use RootedData\RootedJsonData;
@@ -30,13 +29,6 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @var \Drupal\datastore\Service
    */
   protected $datastoreService;
-
-  /**
-   * Request stack.
-   *
-   * @var \Symfony\Component\HttpFoundation\RequestStack
-   */
-  private $requestStack;
 
   /**
    * DatasetInfo Service.
@@ -64,13 +56,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   public function __construct(
     Service $datastoreService,
-    RequestStack $requestStack,
     DatasetInfo $datasetInfo,
     MetastoreApiResponse $metastoreApiResponse,
     ConfigFactoryInterface $configFactory
   ) {
     $this->datastoreService = $datastoreService;
-    $this->requestStack = $requestStack;
     $this->datasetInfo = $datasetInfo;
     $this->metastoreApiResponse = $metastoreApiResponse;
     $this->configFactory = $configFactory;
@@ -82,7 +72,6 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('dkan.datastore.service'),
-      $container->get('request_stack'),
       $container->get('dkan.common.dataset_info'),
       $container->get('dkan.metastore.api_response'),
       $container->get('config.factory')
@@ -92,11 +81,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   /**
    * Perform a query on one or more datastore resources.
    *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
+   *
    * @return Ilbee\CSVResponse\CSVResponse|Symfony\Component\HttpFoundation\JsonResponse
    *   The json or CSV response.
    */
-  public function query() {
-    $request = $this->requestStack->getCurrentRequest();
+  public function query(Request $request) {
     $payloadJson = static::getPayloadJson($request);
 
     try {
@@ -134,7 +125,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
 
   /**
    * Format and return the result.
-   * 
+   *
    * Abstract method; override in specific implementations.
    *
    * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
@@ -158,12 +149,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *
    * @param string $identifier
    *   The uuid of a resource.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function queryResource(string $identifier) {
-    $request = $this->requestStack->getCurrentRequest();
+  public function queryResource(string $identifier, Request $request) {
     $payloadJson = static::getPayloadJson($request);
 
     try {
@@ -194,11 +186,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The uuid of a dataset.
    * @param string $index
    *   The index of the resource in the dataset array.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function queryDatasetResource(string $dataset, string $index) {
+  public function queryDatasetResource(string $dataset, string $index, Request $request) {
     $metadata = $this->datasetInfo->gather($dataset);
     if (!isset($metadata['latest_revision'])) {
       return $this->getResponse((object) ['message' => "No dataset found with the identifier $dataset"], 400);
@@ -207,7 +201,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       return $this->getResponse((object) ['message' => "No resource found at index $index"], 400);
     }
     $identifier = $metadata['latest_revision']['distributions'][$index]['distribution_uuid'];
-    return $this->queryResource($identifier);
+    return $this->queryResource($identifier, $request);
   }
 
   /**

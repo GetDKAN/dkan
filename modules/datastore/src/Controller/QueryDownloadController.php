@@ -17,9 +17,9 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Stream a CSV response.
    *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore query object.
-   * @param RootedData\RootedJsonData $result
+   * @param \RootedData\RootedJsonData $result
    *   The result of the datastore query.
    * @param array $dependencies
    *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
@@ -53,7 +53,7 @@ class QueryDownloadController extends AbstractQueryController {
    *
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   A datastore Query object.
-   * @param RootedData\RootedJsonData $result
+   * @param \RootedData\RootedJsonData $result
    *   Query result.
    *
    * @return \Symfony\Component\HttpFoundation\StreamedResponse
@@ -61,49 +61,70 @@ class QueryDownloadController extends AbstractQueryController {
    */
   protected function processStreamedCsv(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $data = $result->{"$"} ? $result->{"$"} : [];
-    $count = $data['count'];
-
-    // Disable extra queries.
-    $datastoreQuery->{"$.count"} = FALSE;
-    $datastoreQuery->{"$.schema"} = FALSE;
-
-    $this->addHeaderRow($data);
     $response = $this->initStreamedCsvResponse();
 
-    $response->setCallback(function () use (&$data, $count, $datastoreQuery) {
-      $conditionIndex = count($datastoreQuery->{"$.conditions"} ?? []);
-      $pageLimit = $datastoreQuery->{"$.limit"} = $this->getRowsLimit();
+    $response->setCallback(function () use ($data, $datastoreQuery) {
+      $count = $data['count'];
+      $this->addHeaderRow($data);
 
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
       $this->sendRows($handle, $data);
 
-      // For this first pass, remember we have to account for header row.
-      $pageCount = $lastIndex = $progress = (count($data['results']) - 1);
-
       // If we've already sent the full result set we can end now.
+      $progress = (count($data['results']) - 1);
       if ($count <= $progress) {
         fclose($handle);
         return TRUE;
       }
 
-      // Otherwise we iterate.
-      $lastRowId = (int) $data['results'][$lastIndex]['record_number'];
+      // Otherwise, we iterate.
+      $this->streamIterate($data, $datastoreQuery, $handle);
 
-      while ($pageCount >= $pageLimit && $count > $progress) {
-        $datastoreQuery->{"$.conditions[$conditionIndex]"} = ['property' => 'record_number', 'value' => $lastRowId, 'operator' => '>'];
-        $result = $this->datastoreService->runQuery($datastoreQuery);
-        $data = $result->{"$"};
-        $this->sendRows($handle, $data);
-        $pageCount = count($data['results']);
-        $progress += $pageCount;
-
-        $lastIndex = $pageCount - 1;
-        $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
-      }
       fclose($handle);
     });
     return $response;
+  }
+
+  /**
+   * Iterator for CSV streaming.
+   *
+   * @param array $data
+   *   The result data from the initial query.
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   The unmodified datastore query object.
+   * @param resource $handle
+   *   The PHP output stream.
+   */
+  private function streamIterate(array $data, DatastoreQuery $datastoreQuery, $handle) {
+    $count = $data['count'];
+    $pageCount = $lastIndex = $progress = (count($data['results']) - 1);
+    $iteratorQuery = clone $datastoreQuery;
+
+    // Disable extra queries.
+    $iteratorQuery->{"$.count"} = FALSE;
+    $iteratorQuery->{"$.schema"} = FALSE;
+
+    // For this first pass, remember we have to account for header row.
+    $conditionIndex = count($iteratorQuery->{"$.conditions"} ?? []);
+    $pageLimit = $this->getRowsLimit();
+    $lastRowId = (int) $data['results'][$lastIndex]['record_number'];
+
+    while ($pageCount >= $pageLimit && $count > $progress) {
+      $iteratorQuery->{"$.conditions[$conditionIndex]"} = [
+        'property' => 'record_number',
+        'value' => $lastRowId,
+        'operator' => '>',
+      ];
+      $result = $this->datastoreService->runQuery($iteratorQuery);
+      $data = $result->{"$"};
+      $this->sendRows($handle, $data);
+      $pageCount = count($data['results']);
+      $progress += $pageCount;
+
+      $lastIndex = $pageCount - 1;
+      $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
+    }
   }
 
   /**

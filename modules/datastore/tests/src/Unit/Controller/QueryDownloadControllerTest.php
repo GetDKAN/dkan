@@ -55,10 +55,11 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryDownloadController::create($container->getMock());
+    $container = $this->getQueryContainer($data, 'POST', TRUE)->getMock();
+    $webServiceApi = QueryDownloadController::create($container);
+    $request = $container->get('request_stack')->getCurrentRequest();
     ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->query(TRUE);
+    $result = $webServiceApi->query($request);
     $result->sendContent();
 
     $csv = explode("\n", trim($this->buffer));
@@ -83,9 +84,10 @@ class QueryDownloadControllerTest extends TestCase {
       ],
     ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryDownloadController::create($container->getMock());
-    $result = $webServiceApi->query(TRUE);
+    $container = $this->getQueryContainer($data, 'POST', TRUE)->getMock();
+    $webServiceApi = QueryDownloadController::create($container);
+    $request = $container->get('request_stack')->getCurrentRequest();
+    $result = $webServiceApi->query($request);
     $this->assertEquals(400, $result->getStatusCode());
   }
 
@@ -97,10 +99,11 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE);
-    $webServiceApi = QueryDownloadController::create($container->getMock());
+    $container = $this->getQueryContainer($data, 'POST', TRUE)->getMock();
+    $webServiceApi = QueryDownloadController::create($container);
+    $request = $container->get('request_stack')->getCurrentRequest();
     ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->queryResource("2", TRUE);
+    $result = $webServiceApi->queryResource("2", $request);
     $result->sendContent();
 
     $csv = explode("\n", $this->buffer);
@@ -121,10 +124,11 @@ class QueryDownloadControllerTest extends TestCase {
     // Need 2 json responses which get combined on output.
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $container = $this->getQueryContainer($data, 'POST', TRUE, $info);
-    $webServiceApi = QueryDownloadController::create($container->getMock());
+    $container = $this->getQueryContainer($data, 'POST', TRUE, $info)->getMock();
+    $webServiceApi = QueryDownloadController::create($container);
+    $request = $container->get('request_stack')->getCurrentRequest();
     ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->queryDatasetResource("2", "0", TRUE);
+    $result = $webServiceApi->queryDatasetResource("2", "0", $request);
     $result->sendContent();
 
     $csv = explode("\n", $this->buffer);
@@ -151,11 +155,13 @@ class QueryDownloadControllerTest extends TestCase {
     $response = new RootedJsonData($response);
 
     $container = $this->getQueryContainer($data, 'POST', TRUE)
-      ->add(Service::class, "runQuery", $response);
+      ->add(Service::class, "runQuery", $response)
+      ->getMock();
 
-    $webServiceApi = QueryDownloadController::create($container->getMock());
+    $webServiceApi = QueryDownloadController::create($container);
+    $request = $container->get('request_stack')->getCurrentRequest();
     ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->query(TRUE);
+    $result = $webServiceApi->query($request);
     $result->sendContent();
 
     $csv = explode("\n", $this->buffer);
