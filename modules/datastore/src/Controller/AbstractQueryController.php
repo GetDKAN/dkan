@@ -9,11 +9,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
 use RootedData\RootedJsonData;
-use Drupal\common\Util\RequestParamNormalizer;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\datastore\Service;
 use Drupal\metastore\MetastoreApiResponse;
+use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class Api.
@@ -96,10 +97,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   public function query() {
     $request = $this->requestStack->getCurrentRequest();
-    $payloadJson = RequestParamNormalizer::getFixedJson(
-      $request,
-      file_get_contents(__DIR__ . "/../../docs/query.json")
-    );
+    $payloadJson = static::getPayloadJson($request);
 
     try {
       $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
@@ -166,7 +164,8 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   public function queryResource(string $identifier) {
     $request = $this->requestStack->getCurrentRequest();
-    $payloadJson = RequestParamNormalizer::getJson($request);
+    $payloadJson = static::getPayloadJson($request);
+
     try {
       $this->prepareQueryResourcePayload($payloadJson, $identifier);
     }
@@ -177,7 +176,6 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       );
     }
     try {
-      $payloadJson = RequestParamNormalizer::fixTypes($payloadJson, file_get_contents(__DIR__ . "/../../docs/query.json"));
       $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
@@ -243,6 +241,70 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   protected function getRowsLimit(): int {
     return (int) ($this->configFactory->get('datastore.settings')->get('rows_limit') ?: self::DEFAULT_ROWS_LIMIT);
+  }
+
+  /**
+   * Get the JSON string from a request, with type coercion applied.
+   *
+   * @param Symfony\Component\HttpFoundation\Request $request
+   *   The HTTP request.
+   * @param string|null $schema
+   *   Optional JSON schema string, used to cast data types.
+   *
+   * @return string
+   *   Normalized and type-casted JSON string.
+   */
+  public static function getPayloadJson(Request $request, $schema = NULL) {
+    $schema = $schema ?? file_get_contents(__DIR__ . "/../../docs/query.json");
+    $payloadJson = static::getJson($request);
+    $payloadJson = static::fixTypes($payloadJson, $schema);
+    return $payloadJson;
+  }
+
+  /**
+   * Just get the JSON string from the request.
+   *
+   * @param Symfony\Component\HttpFoundation\Request $request
+   *   Symfony HTTP request object.
+   *
+   * @return string
+   *   JSON string.
+   *
+   * @throws UnexpectedValueException
+   *   When an unsupported HTTP method is passed.
+   */
+  public static function getJson(Request $request) {
+    $method = $request->getRealMethod();
+    switch ($method) {
+      case "POST":
+      case "PUT":
+      case "PATCH":
+        return $request->getContent();
+
+      case "GET":
+        return json_encode((object) $request->query->all());
+
+      default:
+        throw new \UnexpectedValueException("Only POST, PUT, PATCH and GET requests can be normalized.");
+    }
+  }
+
+  /**
+   * Cast data types in the JSON object according to a schema.
+   *
+   * @param string $json
+   *   JSON string.
+   * @param string $schema
+   *   JSON Schema string.
+   *
+   * @return string
+   *   JSON string with type coercion applied.
+   */
+  public static function fixTypes($json, $schema) {
+    $data = json_decode($json);
+    $validator = new Validator();
+    $validator->coerce($data, json_decode($schema));
+    return json_encode($data, JSON_PRETTY_PRINT);
   }
 
 }
