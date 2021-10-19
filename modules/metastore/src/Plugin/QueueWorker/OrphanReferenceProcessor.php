@@ -7,10 +7,10 @@ namespace Drupal\metastore\Plugin\QueueWorker;
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\metastore\NodeWrapper\Data;
 use Drupal\node\NodeStorageInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\metastore\ReferenceLookupInterface;
 
 /**
  * Verifies if a dataset property reference is orphaned, then deletes it.
@@ -47,9 +47,17 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
    *   The plugin implementation definition.
    * @param \Drupal\node\NodeStorageInterface $nodeStorage
    *   Node storage service.
+   * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
+   *   The referencer lookup service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, NodeStorageInterface $nodeStorage) {
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    NodeStorageInterface $nodeStorage,
+    ReferenceLookupInterface $referenceLookup) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->referenceLookup = $referenceLookup;
     $this->nodeStorage = $nodeStorage;
   }
 
@@ -63,41 +71,25 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
           $configuration,
           $plugin_id,
           $plugin_definition,
-          $container->get('dkan.common.node_storage')
+          $container->get('dkan.common.node_storage'),
+          $container->get('dkan.metastore.reference_lookup')
       );
     $me->setLoggerFactory($container->get('logger.factory'));
     return $me;
   }
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}
+   *
+   * @todo make the SchemaID for this dynamic
    */
   public function processItem($data) {
     $metadataProperty = $data[0];
     $identifier = $data[1];
+    $referencers = $this->referenceLookup->getReferencers('dataset', $identifier, $metadataProperty);
 
-    // @todo Search for uuid directly within the loadByProperties array.
-    // Search datasets using this uuid for this property id.
-    $properties = [
-      'type' => 'data',
-      'field_data_type' => 'dataset',
-    ];
-
-    $datasetNodes = $this->nodeStorage->loadByProperties($properties);
-
-    foreach ($datasetNodes as $node) {
-      $data = new Data($node);
-      $raw = $data->getRawMetadata();
-      $value = $raw->{$metadataProperty};
-      // Check if uuid is found either directly or in an array.
-      $uuid_is_value = $identifier == $value;
-      $uuid_found_in_array = is_array($value) && in_array($identifier, $value);
-      if ($uuid_is_value || $uuid_found_in_array) {
-        // Uuid found in use, abort.
-        return;
-      }
+    if (!empty($referencers)) {
+      return;
     }
 
     // Value reference uuid not found in any dataset, therefore safe to delete.

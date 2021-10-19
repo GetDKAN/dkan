@@ -4,10 +4,14 @@ namespace Drupal\datastore\Service;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+
 use Drupal\common\LoggerTrait;
+use Drupal\common\Resource;
 use Drupal\datastore\Service;
+use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\node\NodeInterface;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -24,11 +28,11 @@ class ResourcePurger implements ContainerInjectionInterface {
   private $config;
 
   /**
-   * The dataset storage.
+   * The dkan.metastore.reference_lookup service.
    *
-   * @var \Drupal\metastore\Storage\Data
+   * @var \Drupal\metastore\ReferenceLookupInterface
    */
-  private $storage;
+  private $referenceLookup;
 
   /**
    * The datastore service.
@@ -38,17 +42,27 @@ class ResourcePurger implements ContainerInjectionInterface {
   private $datastore;
 
   /**
+   * The dataset storage.
+   *
+   * @var \Drupal\metastore\Storage\Data
+   */
+  private $storage;
+
+  /**
    * Constructs a ResourcePurger object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config.factory service.
+   * @param \Drupal\metastore\ReferenceLookupInterface $referenceLookup
+   *   The dkan.metastore.reference_lookup service.
    * @param \Drupal\metastore\Storage\DataFactory $dataFactory
    *   The dkan.metastore.storage service.
    * @param \Drupal\datastore\Service $datastore
    *   The dkan.datastore.service service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, DataFactory $dataFactory, Service $datastore) {
+  public function __construct(ConfigFactoryInterface $configFactory, ReferenceLookupInterface $referenceLookup, DataFactory $dataFactory, Service $datastore) {
     $this->config = $configFactory->get('datastore.settings');
+    $this->referenceLookup = $referenceLookup;
     $this->storage = $dataFactory->getInstance('dataset');
     $this->datastore = $datastore;
   }
@@ -59,6 +73,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
+      $container->get('dkan.metastore.reference_lookup'),
       $container->get('dkan.metastore.storage'),
       $container->get('dkan.datastore.service')
     );
@@ -223,8 +238,28 @@ class ResourcePurger implements ContainerInjectionInterface {
       }
     }
 
-    // Remove any duplicate.
-    return array_unique($purge);
+    // Remove duplicates and filter out resources in use elsewhere.
+    return array_filter(array_unique($purge), [$this, 'resourceNotShared']);
+  }
+
+  /**
+   * Determine whether a resource is in use by only one distribution.
+   *
+   * @param string $resource_details
+   *   A JSON array of identifying resource details (id and version).
+   *
+   * @return bool
+   *   Whether the given resource is being used by a single distribution.
+   */
+  private function resourceNotShared(string $resource_details): bool {
+    // Extract the identifier and version from the supplied resource details.
+    $identifier = Resource::buildUniqueIdentifier(...json_decode($resource_details));
+    // Determine the number of distributions making use of the current
+    // resource.
+    $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');
+    // If more than one distribution is using this resource, remove it from
+    // the purge list.
+    return count($distributions) <= 1;
   }
 
   /**
@@ -287,7 +322,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   }
 
   /**
-   * Get all resources' identifier and version from a dataset.
+   * Get the identifier and version of all resources for a dataset.
    *
    * @param \Drupal\node\NodeInterface $dataset
    *   The dataset.
@@ -306,7 +341,11 @@ class ResourcePurger implements ContainerInjectionInterface {
       // it to the resources list.
       $resource = $distribution->data->{'%Ref:downloadURL'}[0] ?? NULL;
       if (isset($resource->data->identifier, $resource->data->version)) {
-        $resources[] = json_encode([$resource->data->identifier, $resource->data->version]);
+        $resources[] = json_encode([
+          $resource->data->identifier,
+          $resource->data->version,
+          $resource->data->perspective,
+        ]);
       }
     }
 

@@ -242,3 +242,11 @@ datastore.datasets_import_status_dashboard:
     _permission: 'dkan.harvest.dashboard'
   options:
     _auth: [ 'basic_auth', 'cookie' ]
+
+datastore.settings:
+  path: '/admin/dkan/datastore'
+  defaults:
+    _title: 'Datastore Settings'
+    _form: 'Drupal\datastore\Form\DatastoreSettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

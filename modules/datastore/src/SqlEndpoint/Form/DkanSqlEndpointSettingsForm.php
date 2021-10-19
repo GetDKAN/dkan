@@ -8,9 +8,12 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Settings form for the SQL endpoint.
  *
+ * NO LONGER USED; TO BE REMOVED.
+ *
  * @package Drupal\sql_endpoint\Form
+ * @todo Remove
+ *
  * @codeCoverageIgnore
- * @todo Add test coverage
  */
 class DkanSqlEndpointSettingsForm extends ConfigFormBase {
 

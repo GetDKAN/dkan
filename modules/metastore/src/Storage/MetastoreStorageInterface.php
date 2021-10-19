@@ -34,12 +34,30 @@ interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterf
    *
    * @param int $start
    *   Offset.
-   * @param int $length 
+   * @param int $length
    *   Number to retrieve.
+   *
    * @return array
    *   An array of metadata objects.
    */
   public function retrieveRange(int $start, int $length): array;
+
+  /**
+   * Retrieve all metadata items that contain a particular exact string.
+   *
+   * This will be used to query raw, referenced metadata in the storage system.
+   * Use the metastore search service for more precise/cofigurable searching
+   * and searching dereferenced, user-facing metadata.
+   *
+   * @param string $string
+   *   The string to match within raw metastore item JSON.
+   * @param bool $caseSensitive
+   *   Whether to search metadata in a case-sensitive manner.
+   *
+   * @return array
+   *   An array of metadata objects.
+   */
+  public function retrieveContains(string $string, bool $caseSensitive): array;
 
   /**
    * Retrieve the json metadata from an entity only if it is published.

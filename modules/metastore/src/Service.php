@@ -404,9 +404,46 @@ class Service implements ContainerInjectionInterface {
    */
   public function getCatalog() {
     $catalog = $this->getSchema('catalog');
-    $catalog->dataset = $this->getAll('dataset');
+    $catalog->dataset = array_map(function ($object) {
+      $modified_object = $this->removeReferences($object);
+      return (object) $modified_object->get('$');
+    }, $this->getAll('dataset'));
 
     return $catalog;
+  }
+
+  /**
+   * Insert full references with identifiers into metadata fields.
+   *
+   * @param \RootedData\RootedJsonData $object
+   *   The valid metastore item.
+   *
+   * @return \RootedData\RootedJsonData
+   *   Swapped reference object. RootedJsonData for consistency, but will have
+   *   no defined schema (swapping will break validation).
+   *
+   * @throws \Drupal\metastore\Exception\InvalidJsonException
+   */
+  public function swapReferences(RootedJsonData $object): RootedJsonData {
+    $no_schema_object = $this->getValidMetadataFactory()->get("$object", NULL);
+    foreach ($no_schema_object->get('$') as $property => $value) {
+      if (substr_count($property, "%Ref:") > 0) {
+        $no_schema_object = $this->swapReference($property, $value, $no_schema_object);
+      }
+    }
+
+    return self::removeReferences($no_schema_object, "%Ref");
+  }
+
+  /**
+   * Private.
+   */
+  private function swapReference($property, $value, RootedJsonData $object): RootedJsonData {
+    $original = str_replace("%Ref:", "", $property);
+    if ($object->__isset("$.{$original}")) {
+      $object->set("$.{$original}", $value);
+    }
+    return $object;
   }
 
   /**

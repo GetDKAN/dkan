@@ -21,10 +21,9 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   public function __construct(Connection $connection) {
     parent::__construct($connection);
 
-    $header = ['identifier', 'version', 'filePath', 'perspective', 'mimeType'];
     $schema = [];
 
-    foreach ($header as $field) {
+    foreach ($this->getHeader() as $field) {
       $schema['fields'][$field] = [
         'type' => "text",
       ];
@@ -46,6 +45,23 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
     $schema['fields'] = $fields;
     $schema['primary key'] = [$this->primaryKey()];
     $this->setSchema($schema);
+  }
+
+  /**
+   * Gets header fields.
+   *
+   * @return array
+   *   Header array.
+   */
+  protected function getHeader() : array {
+    return [
+      'identifier',
+      'version',
+      'filePath',
+      'perspective',
+      'mimeType',
+      'checksum',
+    ];
   }
 
   /**
@@ -93,7 +109,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   /**
    * Protected.
    */
-  protected function primaryKey() {
+  public function primaryKey() {
     return "id";
   }
 

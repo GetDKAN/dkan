@@ -30,10 +30,37 @@ class Data implements MetastoreItemInterface {
 
   /**
    * Constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   A Drupal entity.
+   *
+   * @throws \Drupal\common\Exception\DataNodeLifeCycleEntityValidationException
    */
   public function __construct(EntityInterface $entity) {
     $this->validate($entity);
     $this->node = $entity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheContexts() {
+    return $this->node->getCacheContexts();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTags() {
+    $cacheTags = $this->node->getCacheTags();
+    return $cacheTags;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheMaxAge() {
+    return $this->node->getCacheMaxAge();
   }
 
   /**

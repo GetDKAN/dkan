@@ -23,6 +23,11 @@ services:
       - '@extension.list.module'
     shared: false
 
+  dkan.metastore.schema_properties_helper:
+    class: \Drupal\metastore\SchemaPropertiesHelper
+    arguments:
+      - '@dkan.metastore.schema_retriever'
+
   dkan.metastore.storage:
     class: \Drupal\metastore\Storage\DataFactory
     arguments:
@@ -79,3 +84,22 @@ services:
     class: \Drupal\metastore\NodeWrapper\NodeDataFactory
     arguments:
       - '@entity.repository'
+
+  dkan.metastore.dataset_api_docs:
+    class: \Drupal\metastore\DatasetApiDocs
+    arguments:
+      - '@dkan.common.docs_generator'
+      - '@dkan.metastore.service'
+
+  dkan.metastore.api_response:
+    class: \Drupal\metastore\MetastoreApiResponse
+    arguments:
+      - '@dkan.metastore.metastore_item_factory'
+
+  dkan.metastore.reference_lookup:
+    class: \Drupal\metastore\Reference\ReferenceLookup
+    arguments:
+      - '@dkan.metastore.storage'
+      - '@dkan.metastore.metastore_item_factory'
+      - '@cache_tags.invalidator'
+      - '@module_handler'

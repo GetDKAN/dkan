@@ -48,8 +48,10 @@ class ResourceLocalizer {
    */
   public function localize($identifier, $version = NULL) {
     $resource = $this->getResourceSource($identifier, $version);
-    $ff = $this->getFileFetcher($resource);
-    return $ff->run();
+    if ($resource) {
+      $ff = $this->getFileFetcher($resource);
+      return $ff->run();
+    }
   }
 
   /**
@@ -159,9 +161,9 @@ class ResourceLocalizer {
   public function getFileFetcher(Resource $resource): FileFetcher {
     $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
     $directory = "public://resources/{$uuid}";
-    $this->drupalFiles->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
+    $this->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
     $config = [
-      'filePath' => UrlHostTokenResolver::resolve($resource->getFilePath()),
+      'filePath' => UrlHostTokenResolver::resolveFilePath($resource->getFilePath()),
       'temporaryDirectory' => $directory,
     ];
     return $this->fileFetcherFactory->getInstance($uuid, $config);
@@ -179,6 +181,16 @@ class ResourceLocalizer {
    */
   private function getJobStoreFactory() {
     return $this->jobStoreFactory;
+  }
+
+  /**
+   * Get the Drupal filesystem service.
+   *
+   * @return \Drupal\Core\File\FileSystemInterface
+   *   Drupal filesystem.
+   */
+  public function getFileSystem(): FileSystemInterface {
+    return $this->drupalFiles->getFileSystem();
   }
 
 }

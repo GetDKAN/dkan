@@ -20,7 +20,7 @@ class DkanDocsTest extends ExistingSiteBase {
     $controller = $this->getController();
     $response = $controller->getComplete();
     $this->assertEquals(200, $response->getStatusCode());
-    $data = json_decode($response->getContent(), true);
+    $data = json_decode($response->getContent(), TRUE);
 
     // Basic auth is included.
     $this->assertTrue(isset($data["components"]["securitySchemes"]["basic_auth"]));
@@ -36,7 +36,7 @@ class DkanDocsTest extends ExistingSiteBase {
     $controller = $this->getController();
     $response = $controller->getComplete('yaml');
     $this->assertEquals(200, $response->getStatusCode());
-    $data = Yaml::decode($response->getContent(), true);
+    $data = Yaml::decode($response->getContent(), TRUE);
 
     // Basic auth is included.
     $this->assertTrue(isset($data["components"]["securitySchemes"]["basic_auth"]));
@@ -53,7 +53,7 @@ class DkanDocsTest extends ExistingSiteBase {
 
     // Simulate an authentication=false parameter in the request stack.
     $this->assertEquals(200, $response->getStatusCode());
-    $data = json_decode($response->getContent(), true);
+    $data = json_decode($response->getContent(), TRUE);
 
     // Basic auth is excluded.
     $this->assertFalse(isset($data["components"]["securitySchemes"]["basic_auth"]));

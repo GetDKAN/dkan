@@ -24,29 +24,63 @@ use Procrastinator\JsonSerializeTrait;
  * 2. Resource::createNewPerspective()
  *
  * @todo Rename filePath to uri or url.
+ * @todo Refactor as service.
  */
 class Resource implements \JsonSerializable {
   use HydratableTrait, JsonSerializeTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
+  /**
+   * The file path or URL for the resource.
+   *
+   * @var string
+   */
   private $filePath;
+
+  /**
+   * MD5 hash of the filepath, used as the main identifier.
+   *
+   * @var string
+   */
   private $identifier;
+
+  /**
+   * Content type of the resource.
+   *
+   * @var string
+   */
   private $mimeType;
+
+  /**
+   * Specifies the perspective for the resource's file path.
+   *
+   * Can be one of "local_file", "local_url", or "source".
+   *
+   * @var string
+   */
   private $perspective;
+
+  /**
+   * The resource "version" -- a timestamp.
+   *
+   * @var int
+   */
   private $version;
+  private $checksum;
 
   /**
    * Constructor.
    */
-  public function __construct($file_path, $mime_type, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
+  public function __construct($file_path, $mimeType, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
     // @todo generate UUID instead.
     $this->identifier = md5($file_path);
     $this->filePath = $file_path;
-    $this->mimeType = $mime_type;
+    $this->mimeType = $mimeType;
     $this->perspective = $perspective;
     // @todo Create a timestamp property and generate uuid for version.
     $this->version = time();
+    $this->checksum = NULL;
   }
 
   /**
@@ -83,6 +117,7 @@ class Resource implements \JsonSerializable {
   public function createNewPerspective($perspective, $uri) {
     $new = $this->createCommon('perspective', $perspective);
     $new->changeFilePath($uri);
+
     return $new;
   }
 
@@ -91,6 +126,13 @@ class Resource implements \JsonSerializable {
    */
   public function changeFilePath($newPath) {
     $this->filePath = $newPath;
+  }
+
+  /**
+   * Change MIME type.
+   */
+  public function changeMimeType($newMimeType) {
+    $this->mimeType = $newMimeType;
   }
 
   /**
@@ -151,7 +193,7 @@ class Resource implements \JsonSerializable {
    * Getter.
    */
   public function getUniqueIdentifier() {
-    return "{$this->identifier}__{$this->version}__{$this->perspective}";
+    return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
   }
 
   /**
@@ -161,6 +203,23 @@ class Resource implements \JsonSerializable {
    */
   public function jsonSerialize() {
     return $this->serialize();
+  }
+
+  /**
+   * Build full resource identifier.
+   *
+   * @param string $identifier
+   *   MD5 hash of resource file path.
+   * @param string $version
+   *   Resource creation timestamp.
+   * @param string $perspective
+   *   Resource perspective.
+   *
+   * @return string
+   *   Full resource identifier.
+   */
+  public static function buildUniqueIdentifier(string $identifier, string $version, string $perspective): string {
+    return $identifier . '__' . $version . '__' . $perspective;
   }
 
   /**
@@ -223,17 +282,27 @@ class Resource implements \JsonSerializable {
   }
 
   /**
-   * Private.
+   * Get a distribution object from the metastore.
+   *
+   * @param mixed $identifier
+   *   A distribution UUID.
+   *
+   * @return object
+   *   JSON-decoded object.
    */
   private static function getDistribution($identifier) {
-    /* @var \Drupal\metastore\Storage\DataFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
-
-    /* @var \Drupal\metastore\Storage\Data $storage */
     $storage = $factory->getInstance('distribution');
 
     $distroJson = $storage->retrieve($identifier);
     return json_decode($distroJson);
+  }
+
+  /**
+   * Generates MD5 checksum for a file.
+   */
+  public function generateChecksum() {
+    $this->checksum = md5_file($this->filePath);
   }
 
 }

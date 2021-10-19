@@ -60,6 +60,7 @@ class SchemaRetrieverTest extends TestCase {
       'theme.ui',
       'keyword',
       'keyword.ui',
+      'data-dictionary',
     ];
     $this->assertEquals($expected, $ids);
   }

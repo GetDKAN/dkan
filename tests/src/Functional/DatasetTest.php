@@ -177,6 +177,49 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals(0, $this->countTables());
   }
 
+  /**
+   * Test local resource removal on datastore import.
+   */
+  public function testDatastoreImportDeleteLocalResource() {
+    // Get the original config value.
+    $datastoreSettings = \Drupal::service('config.factory')->getEditable('datastore.settings');
+    $deleteLocalResourceOriginal = $datastoreSettings->get('delete_local_resource');
+
+    // delete_local_resource is on.
+    $datastoreSettings->set('delete_local_resource', 1)->save();
+
+    // Post dataset 1 and run the 'datastore_import' queue.
+    $this->storeDatasetRunQueues(111, '1', ['1.csv']);
+
+    // Get local resource folder name.
+    $dataset = $this->getMetastore()->get('dataset', 111);
+    $datasetMetadata = $dataset->{'$'};
+    $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
+    $refUuid = $resourceId[0] . '_' . $resourceId[1];
+
+    // Assert the local resource folder doesn't exist.
+    $this->assertDirectoryExists('public://resources/');
+    $this->assertDirectoryNotExists('public://resources/' . $refUuid);
+
+    // delete_local_resource is off.
+    $datastoreSettings->set('delete_local_resource', 0)->save();
+
+    // Post dataset 2 and run the 'datastore_import' queue.
+    $this->storeDatasetRunQueues(222, '2', ['2.csv']);
+
+    // Get local resource folder name.
+    $dataset = $this->getMetastore()->get('dataset', 222);
+    $datasetMetadata = $dataset->{'$'};
+    $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
+    $refUuid = $resourceId[0] . '_' . $resourceId[1];
+
+    // Assert the local resource folder exists.
+    $this->assertDirectoryExists('public://resources/' . $refUuid);
+
+    // Restore the original config value.
+    $datastoreSettings->set('delete_local_resource', $deleteLocalResourceOriginal)->save();
+  }
+
   private function datasetPostAndRetrieve(): object {
     $datasetRootedJsonData = $this->getData(123, 'Test #1', ['district_centerpoints_small.csv']);
     $dataset = json_decode($datasetRootedJsonData);

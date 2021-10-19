@@ -125,7 +125,7 @@ class Search implements ContainerInjectionInterface {
    * @return array
    *   Array of facets, each containing type, name, total.
    */
-  public function facets(array $params) : array {
+  public function facets(array $params = []) : array {
     $params['page-size'] = PHP_INT_MAX;
     $params['page'] = 1;
 
@@ -182,6 +182,19 @@ class Search implements ContainerInjectionInterface {
     if (!$this->index) {
       throw new \Exception("An index named [{$id}] does not exist.");
     }
+  }
+
+  /**
+   * Get the current search index.
+   *
+   * @return \Drupal\search_api\IndexInterface|null
+   *   If available, return the search index.
+   */
+  public function getSearchIndex() {
+    if (isset($this->index)) {
+      return $this->index;
+    }
+    return NULL;
   }
 
 }

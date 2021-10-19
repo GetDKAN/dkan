@@ -12,7 +12,7 @@ metastore.1.metastore.schemas:
   path: '/api/1/metastore/schemas'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::getSchemas'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::getSchemas'}
   requirements:
     _permission: 'access content'
   options:
@@ -22,7 +22,7 @@ metastore.1.metastore.schemas.id:
   path: '/api/1/metastore/schemas/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::getSchema'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::getSchema'}
   requirements:
     _permission: 'access content'
   options:
@@ -32,7 +32,7 @@ metastore.1.metastore.schemas.id.items:
   path: '/api/1/metastore/schemas/{schema_id}/items'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::getAll'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::getAll'}
   requirements:
     _permission: 'access content'
   options:
@@ -42,7 +42,7 @@ metastore.1.metastore.schemas.id.items.post:
   path: '/api/1/metastore/schemas/{schema_id}/items'
   methods: [POST]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::post'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::post'}
   requirements:
     _permission: 'post put delete datasets through the api'
   options:
@@ -52,7 +52,7 @@ metastore.1.metastore.schemas.id.items.id:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::get'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::get'}
   requirements:
     _permission: 'access content'
   options:
@@ -62,7 +62,7 @@ metastore.1.metastore.schemas.id.items.id.publish:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/publish'
   methods: [PUT]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::publish'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::publish'}
   requirements:
     _permission: 'post put delete datasets through the api'
   options:
@@ -72,7 +72,7 @@ metastore.1.metastore.schemas.id.items.id.put:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [PUT]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::put'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::put'}
   requirements:
     _permission: 'post put delete datasets through the api'
   options:
@@ -82,7 +82,7 @@ metastore.1.metastore.schemas.id.items.id.patch:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [PATCH]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::patch'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::patch'}
   requirements:
     _permission: 'post put delete datasets through the api'
   options:
@@ -92,7 +92,7 @@ metastore.1.metastore.schemas.id.items.id.delete:
   path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}'
   methods: [DELETE]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::delete'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::delete'}
   requirements:
     _permission: 'post put delete datasets through the api'
   options:
@@ -102,7 +102,7 @@ metastore.1.metastore.schemas.dataset.items.id.docs:
   path: '/api/1/metastore/schemas/dataset/items/{identifier}/docs'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApiDocs::getDatasetSpecific'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::getDocs'}
   requirements:
     _permission: 'access content'
   options:
@@ -112,7 +112,7 @@ metastore.data_json:
   path: '/data.json'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\metastore\WebServiceApi::getCatalog'}
+    { _controller: '\Drupal\metastore\Controller\MetastoreController::getCatalog'}
   requirements:
     _permission: 'access content'
   options:

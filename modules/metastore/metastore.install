@@ -17,3 +17,11 @@ function metastore_update_8002() {
   ];
   $result = $drush_import->import(NULL, $options);
 }
+
+/**
+ * Import config to change visibility of the preveiw button on data form.
+ */
+function metastore_update_8003() {
+  $config = \Drupal::service('config.factory')->getEditable('node.type.data');
+  $config->set('preview_mode', 0)->save();
+}

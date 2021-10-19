@@ -10,6 +10,7 @@ use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\Factory\Import as ImportServiceFactory;
 use Drupal\datastore\Service\Import as ImportService;
+use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\metastore\ResourceMapper;
@@ -30,12 +31,12 @@ class ServiceTest extends TestCase {
    *
    */
   public function testImport() {
-
+    $resource = new Resource('http://example.org', 'text/csv');
     $chain = $this->getContainerChainForService('dkan.datastore.service')
-      ->add(ResourceLocalizer::class, 'get', Resource::class)
+      ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceLocalizer::class, 'getResult', Result::class)
       ->add(FileFetcher::class, 'run', Result::class)
-      ->add(ResourceMapper::class, 'get', Resource::class)
+      ->add(ResourceMapper::class, 'get', $resource)
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
       ->add(ImportService::class, "import", NULL)
       ->add(ImportService::class, "getResult", new Result())
@@ -49,8 +50,9 @@ class ServiceTest extends TestCase {
   }
 
   public function testDrop() {
+    $resource = new Resource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
-      ->add(ResourceLocalizer::class, 'get', Resource::class)
+      ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
       ->add(DatabaseTable::class, 'destroy')
@@ -69,6 +71,7 @@ class ServiceTest extends TestCase {
       ->add('dkan.datastore.service.factory.import', ImportServiceFactory::class)
       ->add('queue', QueueFactory::class)
       ->add('dkan.common.job_store', JobStoreFactory::class)
+      ->add('dkan.datastore.import_info_list', ImportInfoList::class)
       ->index(0);
 
     return (new Chain($this))

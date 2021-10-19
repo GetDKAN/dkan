@@ -1,0 +1,173 @@
+{
+    "components": {
+        "schemas": {
+            "facets": {
+                "type": "array",
+                "description": "Array of facet values.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "Machine name for the metastore property to filter on."
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "The facet filter value, for instance, the tet of a keyword to filter by"
+                        },
+                        "total": {
+                            "type": "integer",
+                            "description": "Number of results in the current result set that match this filter."
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/1/search": {
+            "get": {
+                "operationId": "search",
+                "summary": "Search the DKAN catalog",
+                "description": "Search description.\n",
+                "tags": [
+                    "Search"
+                ],
+                "parameters": [
+                    {
+                        "name": "fulltext",
+                        "in": "query",
+                        "description": "Full-text search to run against any metadata fields indexed for fulltext searches.",
+                        "schema": { 
+                            "type": "string", 
+                            "default": ""
+                        },
+                        "allowEmptyValue": true,
+                        "style": "form"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page of the result set.",
+                        "schema": { 
+                            "type": "integer",
+                            "default": 1 
+                        },
+                        "example": 1,
+                        "style": "form"
+                    },
+                    {
+                        "name": "page-size",
+                        "in": "query",
+                        "description": "How many results per page.",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "minimum": 1,
+                            "maximum": 100
+                        },
+                        "example": 20,
+                        "style": "form"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Which property to sort results on.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form"
+                    },
+                    {
+                        "name": "sort-order",
+                        "in": "query",
+                        "description": "Sort results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "default": "asc",
+                            "enum": [ "asc", "desc"]
+                        },
+                        "example": "desc",
+                        "style": "form"
+                    },
+                    {
+                        "name": "facets",
+                        "in": "query",
+                        "required": false,
+                        "allowEmptyValue": true,
+                        "description": "Request information on facets. Pass a comma-separated list to get specific facets. Pass an empty value or \"0\" for no facet infrmation. Omit this parameter to get all facet information.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "total": {
+                                            "type": "integer",
+                                            "description": "Total search results for query."
+                                        },
+                                        "results": {
+                                            "type": "object",
+                                            "description": "An object with keys following the format \"dkan_dataset/[uuid]\", containing full dataset objects from the DKAN metastore."
+                                        },
+                                        "facets": {
+                                            "$ref": "#/components/schemas/facets"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/errorResponse" }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/1/search/facets": {
+            "get": {
+                "operationId": "search-facets",
+                "summary": "Retrieve search facet information",
+                "tags": [
+                    "Search"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "facets": {
+                                            "$ref": "#/components/schemas/facets"
+                                        },
+                                        "time": {
+                                            "type": "number",
+                                            "description": "Execution time."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}

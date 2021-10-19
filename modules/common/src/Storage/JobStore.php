@@ -88,7 +88,7 @@ class JobStore extends AbstractDatabaseTable {
    *
    * @inheritdoc
    */
-  protected function primaryKey() {
+  public function primaryKey() {
     return 'ref_uuid';
   }
 

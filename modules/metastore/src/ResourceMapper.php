@@ -6,6 +6,7 @@ use Drupal\common\Resource;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\metastore\Exception\AlreadyRegistered;
 
 /**
@@ -42,6 +43,16 @@ class ResourceMapper {
   }
 
   /**
+   * Helper method to retrieve the static value for a resource's display.
+   *
+   * @return string
+   *   A resource perspective.
+   */
+  public static function newRevision() {
+    return drupal_static('metastore_resource_mapper_new_revision', 0);
+  }
+
+  /**
    * Register a new url for mapping.
    *
    * @todo the Resource class currently lives in datastore, we should move it
@@ -56,24 +67,35 @@ class ResourceMapper {
   }
 
   /**
-   * Register new perspective.
+   * Register new resource perspective.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   Resource for which to register new perspective.
    */
-  public function registerNewPerspective(Resource $resource) {
+  public function registerNewPerspective(Resource $resource): void {
     $identifier = $resource->getIdentifier();
     $version = $resource->getVersion();
-    $perspective = $resource->getPerspective();
-    if ($this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
-      if (!$this->exists($identifier, $perspective, $version)) {
-        $this->store->store(json_encode($resource));
-        $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
-      }
-      else {
-        throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
-      }
-    }
-    else {
+    // Ensure a source perspective already exists for the resource.
+    if (!$this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       throw new \Exception("A resource with identifier {$identifier} was not found.");
     }
+
+    $perspective = $resource->getPerspective();
+    // Ensure the current perspective does not already exist for the resource.
+    if ($this->exists($identifier, $perspective, $version)) {
+      throw new AlreadyRegistered("A resource with identifier {$identifier} and perspective {$perspective} already exists.");
+    }
+
+    // If the given resource has a local file, generate a checksum for the
+    // file before storing the resource.
+    if ($perspective == ResourceLocalizer::LOCAL_FILE_PERSPECTIVE) {
+      $resource->generateChecksum();
+    }
+
+    // Record resource in mapper table and dispatch an event for the
+    // resource's registration.
+    $this->store->store(json_encode($resource));
+    $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
   }
 
   /**
@@ -81,14 +103,14 @@ class ResourceMapper {
    */
   public function registerNewVersion(Resource $resource) {
     $this->validateNewVersion($resource);
-    $this->store->store(json_encode($resource));
+    $this->getStore()->store(json_encode($resource));
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
   }
 
   /**
    * Private.
    */
-  private function validateNewVersion(Resource $resource) {
+  protected function validateNewVersion(Resource $resource) {
     if ($resource->getPerspective() !== Resource::DEFAULT_SOURCE_PERSPECTIVE) {
       throw new \Exception("Only versions of source resources are allowed.");
     }
@@ -197,7 +219,7 @@ class ResourceMapper {
    * @return bool
    *   FALSE of the path does not exist.
    *
-   * @throws \Exception
+   * @throws \Drupal\metastore\Exception\AlreadyRegistered
    *   An exception is thrown if the file exists with json info about the
    *   existing resource.
    *
@@ -206,7 +228,7 @@ class ResourceMapper {
   public function filePathExists($filePath) {
     $query = new Query();
     $query->conditionByIsEqualTo('filePath', $filePath);
-    $results = $this->store->query($query);
+    $results = $this->getStore()->query($query);
     if (!empty($results)) {
       throw new AlreadyRegistered(json_encode($results));
     }
@@ -219,6 +241,16 @@ class ResourceMapper {
   private function exists($identifier, $perspective, $version = NULL) : bool {
     $item = $this->get($identifier, $perspective, $version);
     return isset($item);
+  }
+
+  /**
+   * Get the storage class.
+   *
+   * @return \Drupal\common\Storage\DatabaseTableInterface
+   *   A DB storage service.
+   */
+  public function getStore() {
+    return $this->store;
   }
 
 }

@@ -30,7 +30,7 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    * @param array $config
    *   User config; not usually used.
    *
-   * @return Drupal\metastore\MetastoreItemInterface
+   * @return \Drupal\metastore\MetastoreItemInterface
    *   A metastore item object.
    */
   public function getInstance(string $identifier, array $config = []);
@@ -45,5 +45,15 @@ interface MetastoreItemFactoryInterface extends FactoryInterface {
    *   A metastore item interface compliant object.
    */
   public function wrap($input);
+
+  /**
+   * Return list cache tags for metastore items.
+   *
+   * @return array
+   *   An array of cache tags.
+   *
+   * @todo Make this schema-specific.
+   */
+  public static function getCacheTags();
 
 }

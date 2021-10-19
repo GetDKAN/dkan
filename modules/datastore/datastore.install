@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Add a new "checksum" column to the "dkan_metastore_resource_mapper" table.
+ */
+function datastore_update_8001(&$sandbox) {
+  $schema = \Drupal::database()->schema();
+  $table = 'dkan_metastore_resource_mapper';
+  if ($schema->tableExists($table) && !$schema->fieldExists($table, 'checksum')) {
+    $spec = [
+      'type' => 'text',
+      'description' => "MD5 checksum",
+      'length' => 20,
+      'not null' => FALSE,
+    ];
+
+    $schema->addField($table, 'checksum', $spec);
+  }
+}

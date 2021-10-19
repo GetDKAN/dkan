@@ -70,7 +70,8 @@
         "R/P0.5M",
         "R/P4M",
         "R/P1W",
-        "R/PT1H"
+        "R/PT1H",
+        "irregular"
       ],
       "enumNames": [
         "Decennial",
@@ -91,7 +92,8 @@
         "Semimonthly",
         "Three times a year",
         "Weekly",
-        "Hourly"
+        "Hourly",
+        "Irregular"
       ]
     },
     "describedBy": {

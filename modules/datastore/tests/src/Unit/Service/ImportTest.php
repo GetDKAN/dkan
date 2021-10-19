@@ -2,21 +2,26 @@
 
 namespace Drupal\Tests\datastore\Unit\Service;
 
-use Drupal\common\Storage\JobStoreFactory;
-use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Logger\LoggerChannelFactory;
-use PHPUnit\Framework\TestCase;
-use Drupal\datastore\Service\Import as Service;
+use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+
 use Drupal\common\Resource;
-use MockChain\Chain;
 use Drupal\common\Storage\JobStore;
+use Drupal\common\Storage\JobStoreFactory;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Drupal\datastore\Service\Import as Service;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
-use Procrastinator\Result;
+
 use Dkan\Datastore\Importer;
 use Dkan\Datastore\Resource as DatastoreResource;
+use MockChain\Options;
+use MockChain\Chain;
+use PHPUnit\Framework\TestCase;
+use Procrastinator\Result;
 
 /**
  *
@@ -24,14 +29,27 @@ use Dkan\Datastore\Resource as DatastoreResource;
 class ImportTest extends TestCase {
 
   /**
+   * Host protocol and domain for testing file path and download URL.
+   *
+   * @var string
+   */
+  const HOST = 'http://h-o.st';
+
+  /**
    *
    */
   public function test() {
-    $container = (new Chain($this))
-      ->add(\Symfony\Component\DependencyInjection\Container::class, 'get', ContainerAwareEventDispatcher::class)
-      ->getMock();
+    $options = (new Options())
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
+      ->add('request_stack', RequestStack::class)
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->index(0);
+    $container_chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST);
 
-    \Drupal::setContainer($container);
+    \Drupal::setContainer($container_chain->getMock());
 
     $resource = new Resource("http://hello.goodby/text.csv", "text/csv");
 
@@ -81,7 +99,7 @@ class ImportTest extends TestCase {
 
     $importMock->import();
 
-    $expectedLogError = "Error importing resource id:%id path:%path";
+    $expectedLogError = 'Error importing resource id:%id path:%path message:%message';
 
     $this->assertEquals($expectedLogError, $containerChain->getStoredInput('errors')[0]);
   }
