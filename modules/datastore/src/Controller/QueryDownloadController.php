@@ -97,7 +97,7 @@ class QueryDownloadController extends AbstractQueryController {
    *   The PHP output stream.
    */
   private function streamIterate(array $data, DatastoreQuery $datastoreQuery, $handle) {
-    $pageCount = $lastIndex = $progress = (count($data['results']) - 1);
+    $pageCount = $progress = (count($data['results']) - 1);
     $iteratorQuery = clone $datastoreQuery;
 
     // Disable extra queries.
@@ -105,24 +105,17 @@ class QueryDownloadController extends AbstractQueryController {
     $iteratorQuery->{"$.schema"} = FALSE;
 
     // For this first pass, remember we have to account for header row.
-    $conditionIndex = count($iteratorQuery->{"$.conditions"} ?? []);
     $pageLimit = $this->getRowsLimit();
-    $lastRowId = (int) $data['results'][$lastIndex]['record_number'];
 
+    $i = 1;
     while ($pageCount >= $pageLimit) {
-      $iteratorQuery->{"$.conditions[$conditionIndex]"} = [
-        'property' => 'record_number',
-        'value' => $lastRowId,
-        'operator' => '>',
-      ];
+      $datastoreQuery->{"$.offset"} = $pageLimit * $i;
       $result = $this->datastoreService->runQuery($iteratorQuery);
       $data = $result->{"$"};
       $this->sendRows($handle, $data);
       $pageCount = count($data['results']);
       $progress += $pageCount;
-
-      $lastIndex = $pageCount - 1;
-      $lastRowId = (int) $result->{"$.results[$lastIndex].record_number"};
+      $i++;
     }
   }
 
