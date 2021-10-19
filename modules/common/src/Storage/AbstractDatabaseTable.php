@@ -308,7 +308,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Set the schema using the existing database table.
    */
-  private function setSchemaFromTable() {
+  protected function setSchemaFromTable() {
     $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
     if (empty($fields_info)) {
       return;

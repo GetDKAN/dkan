@@ -2,17 +2,20 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
+use Dkan\Datastore\Resource;
 use Drupal\common\DatasetInfo;
+use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Database\Driver\sqlite\Connection as SqliteConnection;
 use MockChain\Options;
 use Drupal\datastore\Service;
-use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryDownloadController;
+use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
@@ -34,11 +37,14 @@ class QueryDownloadControllerTest extends TestCase {
     // Set cache services
     $options = (new Options)
       ->add('cache_contexts_manager', CacheContextsManager::class)
+      ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->index(0);
     $chain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', $options)
       ->add(CacheContextsManager::class, 'assertValidTokens', TRUE);
     \Drupal::setContainer($chain->getMock());
+
+
   }
 
   /**
@@ -55,7 +61,7 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE)->getMock();
+    $container = $this->getQueryContainer($data, 'POST')->getMock();
     $webServiceApi = QueryDownloadController::create($container);
     $request = $container->get('request_stack')->getCurrentRequest();
     ob_start(['self', 'getBuffer']);
@@ -64,11 +70,11 @@ class QueryDownloadControllerTest extends TestCase {
 
     $csv = explode("\n", trim($this->buffer));
     ob_get_clean();
-    $this->assertEquals('record_number,data', $csv[0]);
-    $this->assertEquals('1,data', $csv[1]);
-    $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('501,data', $csv[501]);
-    $this->assertEquals(count($csv), 604);
+    $this->assertEquals('state,year', $csv[0]);
+    $this->assertEquals('Alabama,2010', $csv[1]);
+    $this->assertEquals('Wyoming,2010', $csv[50]);
+    $this->assertEquals('Arkansas,2014', $csv[105]);
+    $this->assertEquals(count($csv), 106);
   }
 
   /**
@@ -84,7 +90,7 @@ class QueryDownloadControllerTest extends TestCase {
       ],
     ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE)->getMock();
+    $container = $this->getQueryContainer($data, 'POST')->getMock();
     $webServiceApi = QueryDownloadController::create($container);
     $request = $container->get('request_stack')->getCurrentRequest();
     $result = $webServiceApi->query($request);
@@ -99,7 +105,7 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
     ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer($data, 'POST', TRUE)->getMock();
+    $container = $this->getQueryContainer($data, 'POST')->getMock();
     $webServiceApi = QueryDownloadController::create($container);
     $request = $container->get('request_stack')->getCurrentRequest();
     ob_start(['self', 'getBuffer']);
@@ -108,35 +114,10 @@ class QueryDownloadControllerTest extends TestCase {
 
     $csv = explode("\n", $this->buffer);
     ob_get_clean();
-    $this->assertEquals('record_number,data', $csv[0]);
-    $this->assertEquals('1,data', $csv[1]);
-    $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('501,data', $csv[501]);
-  }
-
-  /**
-   * Test streamed resource csv through dataset distribution index.
-   */
-  public function testStreamedResourceQueryCsvDatasetDistIndex() {
-    $data = json_encode([
-      "format" => "csv",
-    ]);
-    // Need 2 json responses which get combined on output.
-    $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
-
-    $container = $this->getQueryContainer($data, 'POST', TRUE, $info)->getMock();
-    $webServiceApi = QueryDownloadController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
-    ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->queryDatasetResource("2", "0", $request);
-    $result->sendContent();
-
-    $csv = explode("\n", $this->buffer);
-    ob_get_clean();
-    $this->assertEquals('record_number,data', $csv[0]);
-    $this->assertEquals('1,data', $csv[1]);
-    $this->assertEquals('50,data', $csv[50]);
-    $this->assertEquals('501,data', $csv[501]);
+    $this->assertEquals('state,year', $csv[0]);
+    $this->assertEquals('Alabama,2010', $csv[1]);
+    $this->assertEquals('Wyoming,2010', $csv[50]);
+    $this->assertEquals('Arkansas,2014', $csv[105]);
   }
 
   public function testStreamedResourceQueryCsvSpecificColumns() {
@@ -154,7 +135,7 @@ class QueryDownloadControllerTest extends TestCase {
     $response = file_get_contents(__DIR__ . "/../../../data/response_with_specific_header.json");
     $response = new RootedJsonData($response);
 
-    $container = $this->getQueryContainer($data, 'POST', TRUE)
+    $container = $this->getQueryContainer($data, 'POST')
       ->add(Service::class, "runQuery", $response)
       ->getMock();
 
@@ -169,7 +150,7 @@ class QueryDownloadControllerTest extends TestCase {
     $this->assertEquals('record_number,data', $csv[0]);
   }
 
-  private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE, array $info = []) {
+  private function getQueryContainer($data = '', string $method = "POST", array $info = []) {
     if ($method == "GET") {
       $request = Request::create("http://example.com?$data", $method);
     }
@@ -198,27 +179,35 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
-      ->add(ImmutableConfig::class, 'get', 500);
-
-    if ($stream) {
-      $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
-    }
-    else {
-      $queryResult = new RootedJsonData(file_get_contents(__DIR__ . "/../../../data/response.json"));
-      $chain->add(Service::class, 'runQuery', $queryResult);
-    }
+      ->add(Service::class, "getQueryStorageMap", ['t' => $this->getSqlLiteConnection()])
+      ->add(SqliteConnection::class, "getSchema", [])
+      ->add(ImmutableConfig::class, 'get', 50);
 
     return $chain;
   }
 
-  private function addMultipleResponses() {
-    $response1 = file_get_contents(__DIR__ . "/../../../data/response_big.json");
-    $response1 = new RootedJsonData($response1);
+  public function getSqlLiteConnection() {
+    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
+    $connection->query('CREATE TABLE `datastore_2` (`record_number` INTEGER NOT NULL, state TEXT, year INT);');
 
-    $response2 = file_get_contents(__DIR__ . "/../../../data/response_big_p2.json");
-    $response2 = new RootedJsonData($response2);
+    $sampleData = [];
+    $fp = fopen(__DIR__ . '/../../../data/states_with_dupes.csv', 'rb');
+    while (!feof($fp)) {
+      $sampleData[] = fgetcsv($fp);
+    }
+    foreach ($sampleData as $row) {
+      $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
+    }
 
-    return (new Sequence())->add($response1)->add($response2);
+    $storage = new SqliteDatabaseTable($connection, new Resource("2", "data.csv", "text/csv"));
+    $storage->setSchema([
+      'fields' => [
+        'record_number' => ['type' => 'int', 'not null' => TRUE],
+        'state' => ['type' => 'text'],
+        'year' => ['type' => 'int'],
+      ],
+    ]);
+    return $storage;
   }
 
   /**
