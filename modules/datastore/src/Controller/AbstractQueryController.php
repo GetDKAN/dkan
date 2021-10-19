@@ -79,7 +79,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   }
 
   /**
-   * Perform a query on one or more datastore resources.
+   * Query a resource (or several, using joins), identified in the request body.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request object.
@@ -104,48 +104,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   }
 
   /**
-   * Get metastore cache dependencies from a datastore query.
-   *
-   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
-   *   The datastore query object.
-   *
-   * @return array
-   *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
-   */
-  protected function extractMetastoreDependencies(DatastoreQuery $datastoreQuery): array {
-    if (!isset($datastoreQuery->{'$.resources'})) {
-      return [];
-    }
-    $dependencies = ['distribution' => []];
-    foreach ($datastoreQuery->{'$.resources'} as $resource) {
-      $dependencies['distribution'][] = $resource['id'];
-    }
-    return $dependencies;
-  }
-
-  /**
-   * Format and return the result.
-   *
-   * Abstract method; override in specific implementations.
-   *
-   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
-   *   A datastore query object.
-   * @param RootedData\RootedJsonData $result
-   *   The result of the datastore query.
-   * @param array $dependencies
-   *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
-   * @param \Symfony\Component\HttpFoundation\ParameterBag|null $params
-   *   The parameter object from the request.
-   */
-  abstract public function formatResponse(
-    DatastoreQuery $datastoreQuery,
-    RootedJsonData $result,
-    array $dependencies = [],
-    ?ParameterBag $params = NULL
-  );
-
-  /**
-   * Perform a query on a single datastore resource.
+   * Query a single resource, identified by resource or distribution ID.
    *
    * @param string $identifier
    *   The uuid of a resource.
@@ -180,7 +139,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   }
 
   /**
-   * Perform a query on a single datastore resource.
+   * Query a single resource, identified by dataset ID and index.
    *
    * @param string $dataset
    *   The uuid of a dataset.
@@ -205,7 +164,52 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   }
 
   /**
-   * Normalize the simplified resource query to a standard datastore query.
+   * Format and return the result.
+   *
+   * Abstract method; override in specific implementations.
+   *
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A datastore query object.
+   * @param RootedData\RootedJsonData $result
+   *   The result of the datastore query.
+   * @param array $dependencies
+   *   A dependency array for use by \Drupal\metastore\MetastoreApiResponse.
+   * @param \Symfony\Component\HttpFoundation\ParameterBag|null $params
+   *   The parameter object from the request.
+   */
+  abstract public function formatResponse(
+    DatastoreQuery $datastoreQuery,
+    RootedJsonData $result,
+    array $dependencies = [],
+    ?ParameterBag $params = NULL
+  );
+
+  /**
+   * Get metastore cache dependencies from a datastore query.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   The datastore query object.
+   *
+   * @return array
+   *   Dependency array for \Drupal\metastore\MetastoreApiResponse.
+   */
+  protected function extractMetastoreDependencies(DatastoreQuery $datastoreQuery): array {
+    if (!isset($datastoreQuery->{'$.resources'})) {
+      return [];
+    }
+    $dependencies = ['distribution' => []];
+    foreach ($datastoreQuery->{'$.resources'} as $resource) {
+      $dependencies['distribution'][] = $resource['id'];
+    }
+    return $dependencies;
+  }
+
+  /**
+   * Normalize a resource query to a standard datastore query.
+   *
+   * When querying a resource directly, the payload does not have a "resources"
+   * array. But one needs to be inferred from the request params and added
+   * before execution.
    *
    * @param string $json
    *   A JSON payload.
