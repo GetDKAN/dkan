@@ -153,7 +153,7 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Add the header row from specified properties or the schema.
    *
-   * Alters the data array 
+   * Alters the data array.
    *
    * @param \RootedData\RootedJsonData $result
    *   The result of a DatastoreQuery.
