@@ -59,9 +59,9 @@ datastore.1.imports.id.delete:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.post:
+datastore.1.query:
   path: '/api/1/datastore/query'
-  methods: [POST]
+  methods: [GET, POST]
   defaults:
     _controller: '\Drupal\datastore\Controller\QueryController::query'
   requirements:
@@ -69,19 +69,9 @@ datastore.1.query.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.get:
-  path: '/api/1/datastore/query'
-  methods: [GET]
-  defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::query'
-  requirements:
-    _permission: 'access content'
-  options:
-    _auth: ['basic_auth', 'cookie']
-
-datastore.1.query.download.get:
+datastore.1.query.download:
   path: '/api/1/datastore/query/download'
-  methods: [GET]
+  methods: [GET, POST]
   defaults:
     _controller: '\Drupal\datastore\Controller\QueryDownloadController::query'
   requirements:
@@ -89,19 +79,9 @@ datastore.1.query.download.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.download.post:
-  path: '/api/1/datastore/query/download'
-  methods: [POST]
-  defaults:
-    _controller: '\Drupal\datastore\Controller\QueryDownloadController::query'
-  requirements:
-    _permission: 'access content'
-  options:
-    _auth: ['basic_auth', 'cookie']
-
-datastore.1.query.id.post:
+datastore.1.query.id:
   path: '/api/1/datastore/query/{identifier}'
-  methods: [POST]
+  methods: [GET, POST]
   defaults:
     _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
   requirements:
@@ -109,39 +89,9 @@ datastore.1.query.id.post:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.dataset.index.post:
-  path: '/api/1/datastore/query/{dataset}/{index}'
-  methods: [POST]
-  defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
-  requirements:
-    _permission: 'access content'
-  options:
-    _auth: ['basic_auth', 'cookie']
-
-datastore.1.query.id.get:
-  path: '/api/1/datastore/query/{identifier}'
-  methods: [GET]
-  defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::queryResource'
-  requirements:
-    _permission: 'access content'
-  options:
-    _auth: ['basic_auth', 'cookie']
-
-datastore.1.query.dataset.index.get:
-  path: '/api/1/datastore/query/{dataset}/{index}'
-  methods: [GET]
-  defaults:
-    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
-  requirements:
-    _permission: 'access content'
-  options:
-    _auth: ['basic_auth', 'cookie']
-
-datastore.1.query.id.download.get:
+datastore.1.query.id.download:
   path: '/api/1/datastore/query/{identifier}/download'
-  methods: [GET]
+  methods: [GET, POST]
   defaults:
     _controller: '\Drupal\datastore\Controller\QueryDownloadController::queryResource'
   requirements:
@@ -149,29 +99,19 @@ datastore.1.query.id.download.get:
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.dataset.index.download.get:
-  path: '/api/1/datastore/query/{dataset}/{index}/download'
-  methods: [GET]
+datastore.1.query.dataset.index:
+  path: '/api/1/datastore/query/{dataset}/{index}'
+  methods: [GET, POST]
   defaults:
-    _controller: '\Drupal\datastore\Controller\QueryDownloadController::queryDatasetResource'
+    _controller: '\Drupal\datastore\Controller\QueryController::queryDatasetResource'
   requirements:
     _permission: 'access content'
   options:
     _auth: ['basic_auth', 'cookie']
 
-datastore.1.query.id.download.post:
-  path: '/api/1/datastore/query/{identifier}/download'
-  methods: [POST]
-  defaults:
-    _controller: '\Drupal\datastore\Controller\QueryDownloadController::queryResource'
-  requirements:
-    _permission: 'access content'
-  options:
-    _auth: ['basic_auth', 'cookie']
-
-datastore.1.query.dataset.index.download.post:
+datastore.1.query.dataset.index.download:
   path: '/api/1/datastore/query/{dataset}/{index}/download'
-  methods: [POST]
+  methods: [GET, POST]
   defaults:
     _controller: '\Drupal\datastore\Controller\QueryDownloadController::queryDatasetResource'
   requirements:
@@ -206,16 +146,6 @@ datastore.sql_endpoint.post.api:
     { _controller: '\Drupal\datastore\SqlEndpoint\WebServiceApi::runQueryPost'}
   requirements:
     _access: 'TRUE'
-
-datastore.sql_endpoint.settings:
-  path: '/admin/dkan/sql-endpoint'
-  defaults:
-    _form: '\Drupal\datastore\SqlEndpoint\Form\DkanSqlEndpointSettingsForm'
-    _title: "Datastore SQL endpoint settings"
-  requirements:
-    _permission: 'access administration pages'
-  options:
-    _admin_route: TRUE
 
 datastore.dkan_resource_settings:
   path: '/admin/dkan/resources'
