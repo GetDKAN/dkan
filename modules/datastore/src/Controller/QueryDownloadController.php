@@ -37,7 +37,7 @@ class QueryDownloadController extends AbstractQueryController {
   ) {
     switch ($datastoreQuery->{"$.format"}) {
       case 'csv':
-        return $this->processStreamedCsv($datastoreQuery, $result);
+        return $this->streamCsvResponse($datastoreQuery, $result);
 
       case 'json':
       default:
@@ -59,27 +59,27 @@ class QueryDownloadController extends AbstractQueryController {
    * @return \Symfony\Component\HttpFoundation\StreamedResponse
    *   Return the StreamedResponse object.
    */
-  protected function processStreamedCsv(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
-    $data = $result->{"$"} ? $result->{"$"} : [];
+  protected function streamCsvResponse(DatastoreQuery $datastoreQuery, RootedJsonData $result) {
     $response = $this->initStreamedCsvResponse();
 
-    $response->setCallback(function () use ($data, $datastoreQuery) {
-      $count = $data['count'];
-      $this->addHeaderRow($data);
+    $response->setCallback(function () use ($result, $datastoreQuery) {
+      $count = $result->{'$.count'};
+      $rows = $result->{'$.results'};
+      array_unshift($rows, $this->getHeaderRow($result));
 
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
-      $this->sendRows($handle, $data);
+      $this->sendRows($handle, $rows);
 
       // If we've already sent the full result set we can end now.
-      $progress = (count($data['results']) - 1);
+      $progress = (count($rows) - 1);
       if ($count <= $progress) {
         fclose($handle);
         return TRUE;
       }
 
       // Otherwise, we iterate.
-      $this->streamIterate($data, $datastoreQuery, $handle);
+      $this->streamIterate($result, $datastoreQuery, $handle);
 
       fclose($handle);
     });
@@ -89,15 +89,15 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Iterator for CSV streaming.
    *
-   * @param array $data
+   * @param \RootedData\RootedJsonData $result
    *   The result data from the initial query.
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   The unmodified datastore query object.
    * @param resource $handle
    *   The PHP output stream.
    */
-  private function streamIterate(array $data, DatastoreQuery $datastoreQuery, $handle) {
-    $pageCount = $progress = (count($data['results']) - 1);
+  private function streamIterate(RootedJsonData $result, DatastoreQuery $datastoreQuery, $handle) {
+    $pageCount = $progress = count($result->{'$.results'});
     $iteratorQuery = clone $datastoreQuery;
 
     // Disable extra queries.
@@ -109,11 +109,11 @@ class QueryDownloadController extends AbstractQueryController {
 
     $i = 1;
     while ($pageCount >= $pageLimit) {
-      $datastoreQuery->{"$.offset"} = $pageLimit * $i;
+      $iteratorQuery->{"$.offset"} = $pageLimit * $i;
       $result = $this->datastoreService->runQuery($iteratorQuery);
-      $data = $result->{"$"};
-      $this->sendRows($handle, $data);
-      $pageCount = count($data['results']);
+      $rows = $result->{"$.results"};
+      $this->sendRows($handle, $rows);
+      $pageCount = count($rows);
       $progress += $pageCount;
       $i++;
     }
@@ -134,15 +134,15 @@ class QueryDownloadController extends AbstractQueryController {
   }
 
   /**
-   * Loop through rows and send csv.
+   * Loop through a group of rows and send as csv.
    *
    * @param resource $handle
    *   The file handler.
    * @param array $data
    *   Data to send.
    */
-  private function sendRows($handle, array $data) {
-    foreach ($data['results'] as $row) {
+  private function sendRows($handle, array $rows) {
+    foreach ($rows as $row) {
       fputcsv($handle, $row);
     }
     ob_flush();
@@ -150,20 +150,27 @@ class QueryDownloadController extends AbstractQueryController {
   }
 
   /**
-   * Add the header row, from specified properties, if any, or the schema.
+   * Add the header row from specified properties or the schema.
+   *
+   * Alters the data array 
+   *
+   * @param \RootedData\RootedJsonData $result
+   *   The result of a DatastoreQuery.
    */
-  private function addHeaderRow(array &$data) {
+  private function getHeaderRow(RootedJsonData &$result) {
 
-    if (!empty($data['query']['properties'])) {
-      $header_row = $data['query']['properties'];
+    if (!empty($result->{'$.query.properties'})) {
+      $header_row = $result->{'$.query.properties'};
     }
     else {
-      $header_row = array_keys(reset($data['schema'])['fields']);
+      $tableSchema = reset($result->{'$.schema'});
+      $header_row = array_keys($tableSchema['fields']);
     }
 
-    if (is_array($header_row)) {
-      array_unshift($data['results'], $header_row);
+    if (empty($header_row) || !is_array($header_row)) {
+      throw new \Exception("Could not generate header for CSV.");
     }
+    return $header_row;
   }
 
 }
