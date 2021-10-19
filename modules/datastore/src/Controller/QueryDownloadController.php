@@ -99,23 +99,61 @@ class QueryDownloadController extends AbstractQueryController {
   private function streamIterate(RootedJsonData $result, DatastoreQuery $datastoreQuery, $handle) {
     $pageCount = $progress = count($result->{'$.results'});
     $pageLimit = $this->getRowsLimit();
-    $iteratorQuery = clone $datastoreQuery;
+    $iteratorQuery = new DatastoreQuery("$datastoreQuery", $this->getRowsLimit());
 
     // Disable extra information in response.
     $iteratorQuery->{"$.count"} = FALSE;
     $iteratorQuery->{"$.schema"} = FALSE;
     $iteratorQuery->{"$.keys"} = FALSE;
+    $iteratorQuery->{"$.offset"} = $pageCount;
 
-    $i = 1;
+    // Set up condition-based pagination.
+    $conditionIndex = count($iteratorQuery->{"$.conditions"} ?? []);
+    $lastIndex = $pageCount - 1;
+    $lastRowId = (int) $result->{"$.results.$pageCount.record_number"};
+
     while ($pageCount >= $pageLimit) {
-      $iteratorQuery->{"$.offset"} = $pageLimit * $i;
+      $this->alterProperties($iteratorQuery);
       $result = $this->datastoreService->runQuery($iteratorQuery);
       $rows = $result->{"$.results"};
-      $this->sendRows($handle, $rows);
       $pageCount = count($rows);
+      $lastIndex = $pageCount - 1;
       $progress += $pageCount;
-      $i++;
+      $lastRowId = (int) $rows[$lastIndex][2];
+      $this->alterRows($rows, $datastoreQuery, $iteratorQuery);
+      $this->sendRows($handle, $rows);
+      $iteratorQuery->{"$.conditions[$conditionIndex]"} = [
+        'property' => 'record_number',
+        'value' => $lastRowId,
+        'operator' => '>',
+      ];
+      $iteratorQuery->{"$.offset"} = 0;
+   }
+  }
+
+  private function alterProperties($iteratorQuery) {
+    $properties = $iteratorQuery->{'$.properties'} ?? null;
+    // if (!is_array($properties)) {
+    //   exit;
+    // }
+    // if (is_array($properties[0])) {
+    //   exit;
+    // }
+    if (!in_array('record_number', $properties)) {
+      $properties[] = 'record_number';
+      $iteratorQuery->{'$.properties'} = $properties;
     }
+  }
+
+  private function alterRows(array &$rows, $datastoreQuery, $iteratorQuery) {
+    if (in_array('record_number', $datastoreQuery->{'$.properties'}) || $datastoreQuery->{'$.rowIds'}) {
+      return;
+    }
+    array_walk($rows, function (&$row, $key) use ($iteratorQuery) {
+      foreach (array_keys($iteratorQuery->{'$.properties'}, 'record_number') as $columnIndex) {
+        unset($row[$columnIndex]);
+      }
+    });
   }
 
   /**
