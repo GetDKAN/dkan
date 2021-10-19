@@ -100,9 +100,10 @@ class QueryDownloadController extends AbstractQueryController {
     $pageCount = $progress = count($result->{'$.results'});
     $iteratorQuery = clone $datastoreQuery;
 
-    // Disable extra queries.
+    // Disable extra information in response.
     $iteratorQuery->{"$.count"} = FALSE;
     $iteratorQuery->{"$.schema"} = FALSE;
+    $iteratorQuery->{"$.keys"} = FALSE;
 
     // For this first pass, remember we have to account for header row.
     $pageLimit = $this->getRowsLimit();
@@ -138,8 +139,8 @@ class QueryDownloadController extends AbstractQueryController {
    *
    * @param resource $handle
    *   The file handler.
-   * @param array $data
-   *   Data to send.
+   * @param array $rows
+   *   Rows of data to send as CSV.
    */
   private function sendRows($handle, array $rows) {
     foreach ($rows as $row) {
