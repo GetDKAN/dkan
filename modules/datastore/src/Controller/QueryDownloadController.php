@@ -98,15 +98,13 @@ class QueryDownloadController extends AbstractQueryController {
    */
   private function streamIterate(RootedJsonData $result, DatastoreQuery $datastoreQuery, $handle) {
     $pageCount = $progress = count($result->{'$.results'});
+    $pageLimit = $this->getRowsLimit();
     $iteratorQuery = clone $datastoreQuery;
 
     // Disable extra information in response.
     $iteratorQuery->{"$.count"} = FALSE;
     $iteratorQuery->{"$.schema"} = FALSE;
     $iteratorQuery->{"$.keys"} = FALSE;
-
-    // For this first pass, remember we have to account for header row.
-    $pageLimit = $this->getRowsLimit();
 
     $i = 1;
     while ($pageCount >= $pageLimit) {
