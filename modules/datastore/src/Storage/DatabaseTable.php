@@ -130,7 +130,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Set the schema using the existing database table.
    */
-  private function setSchemaFromTable() {
+  protected function setSchemaFromTable() {
     $tableName = $this->getTableName();
     $fieldsInfo = $this->connection->query("DESCRIBE `{$tableName}`")->fetchAll();
 
@@ -163,7 +163,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @todo Note that this will breakZ on PostgresSQL
    */
-  private function buildTableSchema($tableName, $fieldsInfo) {
+  protected function buildTableSchema($tableName, $fieldsInfo) {
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
     foreach ($fieldsInfo as $info) {
       $name = $info->Field;
@@ -181,15 +181,15 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @param string $type
    *   Type returned from the describe query.
-   * @param string|null $extra
-   *   MySQL "Extra" property for column.
+   * @param mixed $extra
+   *   Additional information for column.
    *
    * @return string
    *   Fritionless Table Schema compatible type.
    *
    * @see https://specs.frictionlessdata.io/table-schema
    */
-  private function translateType(string $type, $extra = NULL) {
+  public function translateType(string $type, $extra = NULL) {
     // Clean up things like "int(10) unsigned".
     $db_type = strtok($type, '(');
     $driver = $this->connection->driver() ?? 'mysql';
