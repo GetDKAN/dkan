@@ -8,7 +8,7 @@ use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
- * Datastore CSV download methods.
+ * Controller providing functionality used to stream datastore queries.
  *
  * @package Drupal\datastore
  */

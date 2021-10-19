@@ -8,7 +8,7 @@ use Ilbee\CSVResponse\CSVResponse as CsvResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
- * Class Api.
+ * Controller providing functionality used to perform paged datastore queries.
  *
  * @package Drupal\datastore
  */

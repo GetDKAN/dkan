@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class Api.
+ * Abstract Controller providing base functionality used to query datastores.
  *
  * @package Drupal\datastore
  */
