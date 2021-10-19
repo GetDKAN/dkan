@@ -162,8 +162,9 @@ class QueryDownloadController extends AbstractQueryController {
       $header_row = $result->{'$.query.properties'};
     }
     else {
-      $tableSchema = reset($result->{'$.schema'});
-      $header_row = array_keys($tableSchema['fields']);
+      $schema = $result->{'$.schema'};
+      // Query has are no explicit properties; we should assume one table.
+      $header_row = array_keys(reset($schema)['fields']);
     }
 
     if (empty($header_row) || !is_array($header_row)) {
