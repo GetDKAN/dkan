@@ -52,10 +52,12 @@ class QueryController extends AbstractQueryController {
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
+   *
+   * @todo Incorporate config cache tags into the API response service.
    */
   public function querySchema() {
-    $schema = json_decode(file_get_contents(__DIR__ . "/../../docs/query.json"), TRUE);
-    return $this->getResponse($schema, 200);
+    $schema = (new DatastoreQuery("{}", $this->getRowsLimit()))->getSchema();
+    return $this->metastoreApiResponse->cachedJsonResponse(json_decode($schema), 200);
   }
 
 }
