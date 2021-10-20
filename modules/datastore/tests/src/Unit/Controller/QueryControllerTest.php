@@ -2,27 +2,27 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
+use Dkan\Datastore\Resource;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Database\Driver\sqlite\Connection as SqliteConnection;
 use MockChain\Options;
 use Drupal\datastore\Service;
-use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryController;
+use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
 use Ilbee\CSVResponse\CSVResponse as CsvResponse;
-use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  *
@@ -53,7 +53,7 @@ class QueryControllerTest extends TestCase {
 
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->query($request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -73,7 +73,7 @@ class QueryControllerTest extends TestCase {
 
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->query($request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -87,7 +87,7 @@ class QueryControllerTest extends TestCase {
 
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->query($request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -100,7 +100,7 @@ class QueryControllerTest extends TestCase {
 
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->queryResource("2", $request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -113,7 +113,7 @@ class QueryControllerTest extends TestCase {
     ]);
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->queryResource("2", $request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -129,7 +129,7 @@ class QueryControllerTest extends TestCase {
     ]);
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->queryResource("2", $request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -146,7 +146,7 @@ class QueryControllerTest extends TestCase {
 
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->queryResource("2", $request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -169,15 +169,15 @@ class QueryControllerTest extends TestCase {
 
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->query($request);
 
     $this->assertTrue($result instanceof CsvResponse);
     $this->assertEquals(200, $result->getStatusCode());
 
     $csv = explode("\n", $result->getContent());
-    $this->assertEquals('record_number,data', $csv[0]);
-    $this->assertEquals('1,data', $csv[1]);
+    $this->assertEquals('state,year', $csv[0]);
+    $this->assertEquals('Alabama,2010', $csv[1]);
     $this->assertContains('data.csv', $result->headers->get('Content-Disposition'));
   }
 
@@ -192,7 +192,7 @@ class QueryControllerTest extends TestCase {
 
     $container = $this->getQueryContainer($data)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->queryResource("2", $request);
 
     $this->assertTrue($result instanceof CsvResponse);
@@ -218,9 +218,9 @@ class QueryControllerTest extends TestCase {
     ]);
     $info = ['notice' => 'Not found'];
 
-    $container = $this->getQueryContainer($data, "GET", FALSE, $info)->getMock();
+    $container = $this->getQueryContainer($data, "GET", $info)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->queryDatasetResource("2", "0", $request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -236,9 +236,9 @@ class QueryControllerTest extends TestCase {
     ]);
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $container = $this->getQueryContainer($data, "GET", FALSE, $info)->getMock();
+    $container = $this->getQueryContainer($data, "GET", $info)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->queryDatasetResource("2", "1", $request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -254,9 +254,9 @@ class QueryControllerTest extends TestCase {
     ]);
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $container = $this->getQueryContainer($data, "GET", FALSE, $info)->getMock();
+    $container = $this->getQueryContainer($data, "GET", $info)->getMock();
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $result = $webServiceApi->queryDatasetResource("2", "0", $request);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -287,7 +287,7 @@ class QueryControllerTest extends TestCase {
 
     // CSV. Caching on.
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $response = $webServiceApi->query($request);
     $headers = $response->headers;
 
@@ -302,7 +302,7 @@ class QueryControllerTest extends TestCase {
 
     // CSV. No caching.
     $webServiceApi = QueryController::create($container);
-    $request = $container->get('request_stack')->getCurrentRequest();
+    $request = $this->mockRequest($data);
     $response = $webServiceApi->query($request);
     $headers = $response->headers;
 
@@ -312,7 +312,7 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
-  private function getQueryContainer($data = '', string $method = "POST", bool $stream = FALSE, array $info = []) {
+  private function getQueryContainer($data = '', string $method = "POST", array $info = []) {
     if ($method == "GET") {
       $request = Request::create("http://example.com?$data", $method);
     }
@@ -323,7 +323,6 @@ class QueryControllerTest extends TestCase {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", Service::class)
-      ->add("request_stack", RequestStack::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
@@ -332,7 +331,6 @@ class QueryControllerTest extends TestCase {
 
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(RequestStack::class, 'getCurrentRequest', $request)
       ->add(DatasetInfo::class, "gather", $info)
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
@@ -340,28 +338,56 @@ class QueryControllerTest extends TestCase {
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
+      ->add(Service::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()])
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 500);
-
-    if ($stream) {
-      $chain->add(Service::class, "runQuery", $this->addMultipleResponses());
-    }
-    else {
-      $queryResult = new RootedJsonData(file_get_contents(__DIR__ . "/../../../data/response.json"));
-      $chain->add(Service::class, 'runQuery', $queryResult);
-    }
 
     return $chain;
   }
 
-  private function addMultipleResponses() {
-    $response1 = file_get_contents(__DIR__ . "/../../../data/response_big.json");
-    $response1 = new RootedJsonData($response1);
+  /**
+   * We just test POST requests; logic for other methods is tested elsewhere.
+   *
+   * @param string $data
+   *   Request body.
+   */
+  public function mockRequest($data = '') {
+    return Request::create("http://example.com", 'POST', [], [], [], [], $data);
+  }
 
-    $response2 = file_get_contents(__DIR__ . "/../../../data/response.json");
-    $response2 = new RootedJsonData($response2);
+  /**
+   * Create a mock datastore table in memory with SQLite.
+   *
+   * The table will be based on states_with_dupes.csv, which contains the
+   * columns "record_number", "state" and "year". The record_number column
+   * is in ascending order but skips many numbers, and both other columns
+   * contain duplicate values.
+   *
+   * @return \Drupal\common\Storage\DatabaseTableInterface
+   *   A database table storage class useable for datastore queries.
+   */
+  public function mockDatastoreTable() {
+    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
+    $connection->query('CREATE TABLE `datastore_2` (`record_number` INTEGER NOT NULL, state TEXT, year INT);');
 
-    return (new Sequence())->add($response1)->add($response2);
+    $sampleData = [];
+    $fp = fopen(__DIR__ . '/../../../data/states_with_dupes.csv', 'rb');
+    while (!feof($fp)) {
+      $sampleData[] = fgetcsv($fp);
+    }
+    foreach ($sampleData as $row) {
+      $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
+    }
+
+    $storage = new SqliteDatabaseTable($connection, new Resource("2", "data.csv", "text/csv"));
+    $storage->setSchema([
+      'fields' => [
+        'record_number' => ['type' => 'int', 'not null' => TRUE],
+        'state' => ['type' => 'text'],
+        'year' => ['type' => 'int'],
+      ],
+    ]);
+    return $storage;
   }
 
 }
