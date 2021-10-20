@@ -285,6 +285,9 @@ class Service implements ContainerInjectionInterface {
    */
   private function getSchema(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    if (!$datastoreQuery->{"$.resources"}) {
+      return [];
+    }
     $schema = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
       $storage = $storageMap[$resource["alias"]];
