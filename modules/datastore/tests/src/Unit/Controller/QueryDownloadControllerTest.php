@@ -8,9 +8,7 @@ use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Driver\sqlite\Connection as SqliteConnection;
-use Drupal\Core\Database\IntegrityConstraintViolationException;
 use MockChain\Options;
 use Drupal\datastore\Service;
 use PHPUnit\Framework\TestCase;
@@ -22,18 +20,7 @@ use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\Storage\DataFactory;
-use Exception as GlobalException;
-use InvalidArgumentException;
-use ReflectionException;
-use PHPUnit\Framework\MockObject\RuntimeException;
-use PHPUnit\Framework\Exception;
-use LogicException;
-use PHPUnit\Framework\ExpectationFailedException;
-use RootedData\RootedJsonData;
-use SebastianBergmann\RecursionContext\InvalidArgumentException as RecursionContextInvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -193,7 +180,6 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(Service::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()])
-      ->add(SqliteConnection::class, "getSchema", [])
       ->add(ImmutableConfig::class, 'get', 50);
 
     return $chain;
