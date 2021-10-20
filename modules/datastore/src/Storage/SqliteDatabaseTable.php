@@ -2,6 +2,12 @@
 
 namespace Drupal\datastore\Storage;
 
+/**
+ * Database table storage class modified for SQLite.
+ *
+ * Currently only intended for use in unit tests; further testing
+ * needed to determine whether could support a full data catalog.
+ */
 class SqliteDatabaseTable extends DatabaseTable {
 
   /**
@@ -31,7 +37,7 @@ class SqliteDatabaseTable extends DatabaseTable {
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function translateType(string $type, $info = NULL) {
     // Clean up things like "int(10) unsigned".
