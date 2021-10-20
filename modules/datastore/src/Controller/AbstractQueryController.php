@@ -88,16 +88,19 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The json or CSV response.
    */
   public function query(Request $request) {
-    $payloadJson = static::getPayloadJson($request);
-
     try {
-      $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
+      $datastoreQuery = $this->buildDatastoreQuery($request);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
     }
-
-    $result = $this->datastoreService->runQuery($datastoreQuery);
+    try {
+      $result = $this->datastoreService->runQuery($datastoreQuery);
+    }
+    catch (\Exception $e) {
+      $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
+      return $this->getResponseFromException($e, $code);
+    }
 
     $dependencies = $this->extractMetastoreDependencies($datastoreQuery);
     return $this->formatResponse($datastoreQuery, $result, $dependencies, $request->query);
@@ -115,19 +118,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The json response.
    */
   public function queryResource(string $identifier, Request $request) {
-    $payloadJson = static::getPayloadJson($request);
-
     try {
-      $this->prepareQueryResourcePayload($payloadJson, $identifier);
+      $datastoreQuery = $this->buildDatastoreQuery($request, $identifier);
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException(
-        new \Exception("Invalid query JSON: {$e->getMessage()}"),
-        400
-      );
+      return $this->getResponseFromException($e, 400);
     }
     try {
-      $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
@@ -216,16 +213,19 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * @param mixed $identifier
    *   Resource identifier to query against.
    */
-  protected function prepareQueryResourcePayload(&$json, $identifier) {
+  protected function buildDatastoreQuery($request, $identifier = NULL) {
+    $json = static::getPayloadJson($request);
     $data = json_decode($json);
-    if (!empty($data->resources) || !empty($data->joins)) {
+    if ($identifier && (!empty($data->resources) || !empty($data->joins))) {
       throw new \Exception("Joins are not available and "
         . "resources should not be explicitly passed when using the resource "
         . "query endpoint. Try /api/1/datastore/query.");
     }
-    $resource = (object) ["id" => $identifier, "alias" => "t"];
-    $data->resources = [$resource];
-    $json = json_encode($data);
+    if ($identifier) {
+      $resource = (object) ["id" => $identifier, "alias" => "t"];
+      $data->resources = [$resource];
+    }
+    return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
   }
 
   /**
