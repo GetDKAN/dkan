@@ -9,6 +9,7 @@ use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Driver\sqlite\Connection as SqliteConnection;
+use Drupal\datastore\Controller\QueryController;
 use MockChain\Options;
 use Drupal\datastore\Service;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +48,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Test streaming of a CSV file from database.
    */
   public function testStreamedQueryCsv() {
-    $data = json_encode([
+    $data = [
       "resources" => [
         [
           "id" => "2",
@@ -55,23 +56,100 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-    ]);
+    ];
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer()->getMock();
-    $webServiceApi = QueryDownloadController::create($container);
-    $request = $this->mockRequest($data);
-    ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->query($request);
-    $result->sendContent();
+    $this->queryResultCompare($data);
+  }
 
-    $csv = explode("\n", trim($this->buffer));
-    ob_get_clean();
-    // Basic integrity checks.
-    $this->assertEquals('state,year', $csv[0]);
-    $this->assertEquals('Alabama,2010', $csv[1]);
-    $this->assertEquals('Wyoming,2010', $csv[50]);
-    $this->assertEquals('Arkansas,2014', $csv[105]);
-    $this->assertEquals(count($csv), 106);
+  /**
+   * Test streaming of a CSV file from database.
+   */
+  public function testStreamedOtherSortCsv() {
+    $data = [
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+      ],
+      "format" => "csv",
+      "properties" => ["state", "year"],
+      "sorts" => [
+        [
+          'property' => 'state',
+          'order' => 'asc',
+        ],
+        [
+          'property' => 'year',
+          'order' => 'desc',
+        ],
+      ],
+    ];
+
+    // Need 2 json responses which get combined on output.
+    $this->queryResultCompare($data);
+  }
+
+  /**
+   * Test streaming of a CSV file from database.
+   */
+  public function testStreamedJoinCsv() {
+    $data = [
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+        [
+          "id" => "3",
+          "alias" => "j",
+        ],
+      ],
+      "properties" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+        [
+          "resource" => "t",
+          "property" => "year",
+        ],
+        [
+          "resource" => "j",
+          "property" => "color",
+        ],
+      ],
+      "joins" => [
+        [
+          "resource" => 'j',
+          "condition" => [
+            'resource' => 't',
+            'property' => 'year',
+            'value' => [
+              'resource' => 'j',
+              'property' => 'year',
+            ],
+          ],
+        ],
+      ],
+      "format" => "csv",
+      "sorts" => [
+        [
+          'resource' => 'j',
+          'property' => 'color',
+          'order' => 'desc',
+        ],
+        [
+          'property' => 'year',
+          'order' => 'asc',
+        ],
+        [
+          'property' => 'state',
+          'order' => 'desc',
+        ],
+      ],
+    ];
+    $this->queryResultCompare($data);
   }
 
   /**
@@ -87,7 +165,29 @@ class QueryDownloadControllerTest extends TestCase {
       ],
     ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer()->getMock();
+    $container = $this->getQueryContainer(50);
+    $webServiceApi = QueryDownloadController::create($container);
+    $request = $this->mockRequest($data);
+    $result = $webServiceApi->query($request);
+    $this->assertEquals(400, $result->getStatusCode());
+  }
+
+  /**
+   * Test CSV stream request with a limit (not allowed).
+   */
+  public function testStreamedLimit() {
+    $data = json_encode([
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+      ],
+      "format" => "csv",
+      "limit" => 1000,
+    ]);
+    // Need 2 json responses which get combined on output.
+    $container = $this->getQueryContainer(50);
     $webServiceApi = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     $result = $webServiceApi->query($request);
@@ -98,7 +198,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Ensure that CSV header correct if columns specified.
    */
   public function testStreamedCsvSpecificColumns() {
-    $data = json_encode([
+    $data = [
       "resources" => [
         [
           "id" => "2",
@@ -106,19 +206,36 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-      "properties" => ["record_number", "state"],
-    ]);
+      "properties" => ["state", "year"],
+    ];
+    $this->queryResultCompare($data);
+  }
 
-    $container = $this->getQueryContainer()->getMock();
-    $webServiceApi = QueryDownloadController::create($container);
-    $request = $this->mockRequest($data);
-    ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->query($request);
-    $result->sendContent();
+  /**
+   * Ensure that pagination and CSV header correct if resource-specific columns.
+   */
+  public function testStreamedCsvResourceColumns() {
+    $data = [
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+      ],
+      "format" => "csv",
+      "properties" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+        [
+          "resource" => "t",
+          "property" => "year",
+        ],
+      ],
+    ];
 
-    $csv = explode("\n", $this->buffer);
-    ob_get_clean();
-    $this->assertEquals('record_number,state', $csv[0]);
+    $this->queryResultCompare($data);
   }
 
 
@@ -126,7 +243,7 @@ class QueryDownloadControllerTest extends TestCase {
    * Ensure that rowIds appear correctly if requested.
    */
   public function testStreamedCsvRowIds() {
-    $data = json_encode([
+    $data = [
       "resources" => [
         [
           "id" => "2",
@@ -134,20 +251,30 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-      "rowIds" => true,
-    ]);
+      "rowIds" => TRUE,
+    ];
 
-    $container = $this->getQueryContainer()->getMock();
-    $webServiceApi = QueryDownloadController::create($container);
+    $this->queryResultCompare($data);
+  }
+
+  private function queryResultCompare($data, $countOnly = FALSE) {
     $request = $this->mockRequest($data);
-    ob_start(['self', 'getBuffer']);
-    $result = $webServiceApi->query($request);
-    $result->sendContent();
 
-    $csv = explode("\n", $this->buffer);
+    $queryController = QueryController::create($this->getQueryContainer(500));
+    $response = $queryController->query($request);
+    $csv = $response->getContent();
+
+    $downloadController = QueryDownloadController::create($this->getQueryContainer(25));
+    ob_start(['self', 'getBuffer']);
+    $streamResponse = $downloadController->query($request);
+    $streamResponse->sendContent();
+    $streamedCsv = $this->buffer;
     ob_get_clean();
-    $this->assertEquals('record_number,state,year', $csv[0]);
-    $this->assertEquals('112,Wyoming,2010', $csv[50]);
+
+    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
+    if (!$countOnly) {
+      $this->assertEquals($csv, $streamedCsv);
+    }
   }
 
   /**
@@ -159,7 +286,7 @@ class QueryDownloadControllerTest extends TestCase {
    * @return \MockChain\Chain
    *   MockChain chain object.
    */
-  private function getQueryContainer(array $info = []) {
+  private function getQueryContainer(int $rowLimit) {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", Service::class)
@@ -169,9 +296,27 @@ class QueryDownloadControllerTest extends TestCase {
       ->add('dkan.metastore.api_response', MetastoreApiResponse::class)
       ->index(0);
 
+    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
+
+    $schema2 = [
+      'record_number' => ['type' => 'int', 'not null' => TRUE],
+      'state' => ['type' => 'text'],
+      'year' => ['type' => 'int'],
+    ];
+    $schema3 = [
+      'record_number' => ['type' => 'int', 'not null' => TRUE],
+      'year' => ['type' => 'int'],
+      'color' => ['type' => 'text'],
+    ];
+    $storageMap = [
+      't' => $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2),
+      'j' => $this->mockDatastoreTable($connection, "3", 'years_colors.csv', $schema3
+      ),
+    ];
+
     $chain = (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(DatasetInfo::class, "gather", $info)
+      ->add(DatasetInfo::class, "gather", [])
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', Data::class)
@@ -179,10 +324,10 @@ class QueryDownloadControllerTest extends TestCase {
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
-      ->add(Service::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()])
-      ->add(ImmutableConfig::class, 'get', 50);
+      ->add(Service::class, "getQueryStorageMap", $storageMap)
+      ->add(ImmutableConfig::class, 'get', $rowLimit);
 
-    return $chain;
+    return $chain->getMock();
   }
 
   /**
@@ -192,7 +337,13 @@ class QueryDownloadControllerTest extends TestCase {
    *   Request body.
    */
   public function mockRequest($data = '') {
-    return Request::create("http://example.com", 'POST', [], [], [], [], $data);
+    if (is_array($data) || is_object($data)) {
+      $body = json_encode($data);
+    }
+    else {
+      $body = $data;
+    }
+    return Request::create("http://example.com", 'POST', [], [], [], [], $body);
   }
 
   /**
@@ -206,26 +357,32 @@ class QueryDownloadControllerTest extends TestCase {
    * @return \Drupal\common\Storage\DatabaseTableInterface
    *   A database table storage class useable for datastore queries.
    */
-  public function mockDatastoreTable() {
-    $connection = new SqliteConnection(new \PDO('sqlite::memory:'), []);
-    $connection->query('CREATE TABLE `datastore_2` (`record_number` INTEGER NOT NULL, state TEXT, year INT);');
+  public function mockDatastoreTable($connection, $id, $csvFile, $fields) {
+    foreach ($fields as $name => $field) {
+      $types[] = $field['type'];
+      $notNull = $field['not null'] ?? FALSE;
+      $createFields[] = "`$name` " . strtoupper($field['type']) . (($notNull) ? ' NOT NULL' : '');
+    }
+    $createFieldsStr = implode(", ", $createFields);
+    $connection->query("CREATE TABLE `datastore_$id` ($createFieldsStr);");
 
     $sampleData = [];
-    $fp = fopen(__DIR__ . '/../../../data/states_with_dupes.csv', 'rb');
+    $fp = fopen(__DIR__ . "/../../../data/$csvFile", 'rb');
     while (!feof($fp)) {
       $sampleData[] = fgetcsv($fp);
     }
     foreach ($sampleData as $row) {
-      $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
+      $values = [];
+      foreach ($row as $key => $value) {
+        $values[] = $types[$key] == "int" ? $value : "'$value'";
+        $valuesStr = implode(", ", $values);
+      }
+      $connection->query("INSERT INTO `datastore_$id` VALUES ($valuesStr);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new Resource("2", "data.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable($connection, new Resource($id, "data-$id.csv", "text/csv"));
     $storage->setSchema([
-      'fields' => [
-        'record_number' => ['type' => 'int', 'not null' => TRUE],
-        'state' => ['type' => 'text'],
-        'year' => ['type' => 'int'],
-      ],
+      'fields' => $fields,
     ]);
     return $storage;
   }

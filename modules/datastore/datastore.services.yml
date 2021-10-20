@@ -36,10 +36,14 @@ services:
     parent: logger.channel_base
     arguments: ['datastore']
 
+  dkan.datastore.database:
+    class: \Drupal\datastore\Storage\DatabaseTableFactory
+    factory: \Drupal\datastore\Storage\DatabaseConnectionFactory::getConnection
+
   dkan.datastore.database_table_factory:
     class: \Drupal\datastore\Storage\DatabaseTableFactory
     arguments:
-      - '@database'
+      - '@dkan.datastore.database'
     calls:
       - [setIndexManager, ['@?indexer.indexmanager']]
 

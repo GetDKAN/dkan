@@ -44,7 +44,6 @@ class QueryController extends AbstractQueryController {
       default:
         return $this->metastoreApiResponse->cachedJsonResponse($result->{"$"}, 200, $dependencies, $params);
     }
-
   }
 
   /**

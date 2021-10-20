@@ -51,10 +51,60 @@ class QueryControllerTest extends TestCase {
       ],
     ]);
 
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->query($request);
+    $result = $this->getQueryResult($data);
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(200, $result->getStatusCode());
+  }
+
+  public function testQueryRowIdProperty() {
+    // Try simple string properties:
+    $data = json_encode(["properties" => ["record_number", "state"]]);
+
+    $result = $this->getQueryResult($data, "2");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(400, $result->getStatusCode());
+    $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
+
+    // Now try with resource properties:
+    $data = json_encode([
+      "properties" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+        [
+          "resource" => "t",
+          "property" => "record_number",
+        ],
+      ],
+    ]);
+
+    $result = $this->getQueryResult($data, "2");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(400, $result->getStatusCode());
+    $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
+  }
+
+  public function testQueryRowIdSort() {
+    $data = json_encode([
+      "sorts" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+          "order" => "desc",
+        ],
+        [
+          "resource" => "t",
+          "property" => "record_number",
+          "order" => "asc",
+        ],
+      ],
+    ]);
+
+    $result = $this->getQueryResult($data, "2");
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -71,10 +121,7 @@ class QueryControllerTest extends TestCase {
       ],
     ]);
 
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->query($request);
+    $result = $this->getQueryResult($data);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -85,10 +132,7 @@ class QueryControllerTest extends TestCase {
       "resources" => "nope",
     ]);
 
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->query($request);
+    $result = $this->getQueryResult($data);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -98,10 +142,7 @@ class QueryControllerTest extends TestCase {
   public function testResourceQueryInvalidJson() {
     $data = "{[";
 
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryResource("2", $request);
+    $result = $this->getQueryResult($data);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -111,10 +152,7 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "conditions" => "nope",
     ]);
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryResource("2", $request);
+    $result = $this->getQueryResult($data, "2");
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -127,10 +165,7 @@ class QueryControllerTest extends TestCase {
         "condition" => "t.field1 = s.field1",
       ],
     ]);
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryResource("2", $request);
+    $result = $this->getQueryResult($data, "2");
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -143,11 +178,7 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "results" => TRUE,
     ]);
-
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryResource("2", $request);
+    $result = $this->getQueryResult($data, "2");
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -167,10 +198,7 @@ class QueryControllerTest extends TestCase {
       "format" => "csv",
     ]);
 
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->query($request);
+    $result = $this->getQueryResult($data);
 
     $this->assertTrue($result instanceof CsvResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -181,6 +209,19 @@ class QueryControllerTest extends TestCase {
     $this->assertContains('data.csv', $result->headers->get('Content-Disposition'));
   }
 
+  private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
+    $container = $this->getQueryContainer($data, $info)->getMock();
+    $webServiceApi = QueryController::create($container);
+    $request = $this->mockRequest($data);
+    if ($id === NULL && $index === NULL) {
+      return $webServiceApi->query($request);
+    }
+    if ($index === NULL) {
+      return $webServiceApi->queryResource($id, $request);
+    }
+    return $webServiceApi->queryDatasetResource($id, $index, $request);
+  }
+
   /**
    *
    */
@@ -189,11 +230,7 @@ class QueryControllerTest extends TestCase {
       "results" => TRUE,
       "format" => "csv",
     ]);
-
-    $container = $this->getQueryContainer($data)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryResource("2", $request);
+    $result = $this->getQueryResult($data);
 
     $this->assertTrue($result instanceof CsvResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -216,12 +253,8 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "results" => TRUE,
     ]);
-    $info = ['notice' => 'Not found'];
 
-    $container = $this->getQueryContainer($data, "GET", $info)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryDatasetResource("2", "0", $request);
+    $result = $this->getQueryResult($data, "2", 0);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -236,10 +269,7 @@ class QueryControllerTest extends TestCase {
     ]);
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $container = $this->getQueryContainer($data, "GET", $info)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryDatasetResource("2", "1", $request);
+    $result = $this->getQueryResult($data, "2", 1, $info);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -254,10 +284,7 @@ class QueryControllerTest extends TestCase {
     ]);
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $container = $this->getQueryContainer($data, "GET", $info)->getMock();
-    $webServiceApi = QueryController::create($container);
-    $request = $this->mockRequest($data);
-    $result = $webServiceApi->queryDatasetResource("2", "0", $request);
+    $result = $this->getQueryResult($data, "2", 0, $info);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
@@ -312,13 +339,7 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
-  private function getQueryContainer($data = '', string $method = "POST", array $info = []) {
-    if ($method == "GET") {
-      $request = Request::create("http://example.com?$data", $method);
-    }
-    else {
-      $request = Request::create("http://example.com", $method, [], [], [], [], $data);
-    }
+  private function getQueryContainer($data = '', array $info = []) {
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)

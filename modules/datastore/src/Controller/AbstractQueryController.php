@@ -88,16 +88,19 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The json or CSV response.
    */
   public function query(Request $request) {
-    $payloadJson = static::getPayloadJson($request);
-
     try {
-      $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
+      $datastoreQuery = $this->buildDatastoreQuery($request);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
     }
-
-    $result = $this->datastoreService->runQuery($datastoreQuery);
+    try {
+      $result = $this->datastoreService->runQuery($datastoreQuery);
+    }
+    catch (\Exception $e) {
+      $code = (strpos($e->getMessage(), "Error retrieving") !== FALSE) ? 404 : 400;
+      return $this->getResponseFromException($e, $code);
+    }
 
     $dependencies = $this->extractMetastoreDependencies($datastoreQuery);
     return $this->formatResponse($datastoreQuery, $result, $dependencies, $request->query);
@@ -115,19 +118,13 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The json response.
    */
   public function queryResource(string $identifier, Request $request) {
-    $payloadJson = static::getPayloadJson($request);
-
     try {
-      $this->prepareQueryResourcePayload($payloadJson, $identifier);
+      $datastoreQuery = $this->buildDatastoreQuery($request, $identifier);
     }
     catch (\Exception $e) {
-      return $this->getResponseFromException(
-        new \Exception("Invalid query JSON: {$e->getMessage()}"),
-        400
-      );
+      return $this->getResponseFromException($e, 400);
     }
     try {
-      $datastoreQuery = new DatastoreQuery($payloadJson, $this->getRowsLimit());
       $result = $this->datastoreService->runQuery($datastoreQuery);
     }
     catch (\Exception $e) {
@@ -211,21 +208,61 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * array. But one needs to be inferred from the request params and added
    * before execution.
    *
-   * @param string $json
-   *   A JSON payload.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The client request.
    * @param mixed $identifier
-   *   Resource identifier to query against.
+   *   Resource identifier to query against, if supplied via path.
    */
-  protected function prepareQueryResourcePayload(&$json, $identifier) {
+  protected function buildDatastoreQuery(Request $request, $identifier = NULL) {
+    $json = static::getPayloadJson($request);
     $data = json_decode($json);
-    if (!empty($data->resources) || !empty($data->joins)) {
-      throw new \Exception("Joins are not available and "
-        . "resources should not be explicitly passed when using the resource "
-        . "query endpoint. Try /api/1/datastore/query.");
+    $this->additionalPayloadValidation($data);
+    if ($identifier) {
+      $resource = (object) ["id" => $identifier, "alias" => "t"];
+      $data->resources = [$resource];
     }
-    $resource = (object) ["id" => $identifier, "alias" => "t"];
-    $data->resources = [$resource];
-    $json = json_encode($data);
+    return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
+  }
+
+  /**
+   * Run some additional validation on incoming request.
+   *
+   * @param object $data
+   *   The decoded request data.
+   * @param mixed $identifier
+   *   Resource identifier.
+   */
+  protected function additionalPayloadValidation($data, $identifier = NULL) {
+    $this->checkForRowIdProperty($data);
+    if (!empty($data->properties) && !empty($data->rowIds)) {
+      throw new \Exception('The rowIds property cannot be set to true if you are requesting specific properties.');
+    }
+    if ($identifier && (!empty($data->resources) || !empty($data->joins))) {
+      throw new \Exception('Joins are not available and resources should not be explicitly passed ' .
+        'when using the resource query endpoint. Try /api/1/datastore/query.');
+    }
+  }
+
+  /**
+   * Check if the record_number is being explicitly requested.
+   *
+   * @param object $data
+   *   The query object.
+   */
+  protected function checkForRowIdProperty($data) {
+    if (!isset($data->properties)) {
+      return;
+    }
+    $hasProperty = FALSE;
+    foreach ($data->properties as $property) {
+      $hasProperty = (is_string($property) && $property == 'record_number');
+      $hasProperty = $hasProperty ?: (isset($property->property) && $property->property == 'record_number');
+      if ($hasProperty) {
+        throw new \Exception('The record_number property is for internal use and cannot be requested ' .
+        'directly. Set rowIds to true and remove properties from your query to see the full table ' .
+        'with row IDs.');
+      }
+    }
   }
 
   /**
