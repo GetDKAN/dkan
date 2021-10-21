@@ -21,6 +21,11 @@ class Connection extends CoreConnection {
   /**
    * {@inheritdoc}
    */
+  protected $identifierQuotes = '"';
+
+  /**
+   * {@inheritdoc}
+   */
   public function queryRange($query, $from, $count, array $args = [], array $options = []) {
     return new StatementEmpty();
   }
