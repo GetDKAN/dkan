@@ -11,6 +11,7 @@ use Drupal\Core\Database\Driver\mysql\Schema;
 use Drupal\Core\Database\StatementWrapper;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\common\Storage\Query;
+use Drupal\Core\Database\StatementInterface;
 use Drupal\indexer\IndexManager;
 use MockChain\Chain;
 use MockChain\Sequence;
@@ -97,8 +98,8 @@ class DatabaseTableTest extends TestCase {
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'countQuery', Select::class)
-      ->add(Select::class, 'execute', Statement::class)
-      ->add(Statement::class, 'fetchField', 1)
+      ->add(Select::class, 'execute', StatementInterface::class)
+      ->add(StatementInterface::class, 'fetchField', 1)
       ->getMock();
 
     $databaseTable = new DatabaseTable(
@@ -108,7 +109,7 @@ class DatabaseTableTest extends TestCase {
 
     $indexerClass = $this->getMockBuilder(IndexManager::class);
     $indexer = $indexerClass
-      ->setMethods(["modifySchema"])
+      ->onlyMethods(["modifySchema"])
       ->getMock();
     $indexer->expects($this->once())
       ->method('modifySchema');
