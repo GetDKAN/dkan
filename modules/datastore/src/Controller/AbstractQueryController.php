@@ -216,16 +216,44 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected function buildDatastoreQuery($request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
+    if (isset($data->sorts) && $this->checkForRowIdSort($data->sorts)) {
+      throw new \Exception('The record_number property is for internal use and cannot be used for sorting.');
+    }
+    if (isset($data->properties) && $this->checkForRowIdProperty($data->properties)) {
+      throw new \Exception('The record_number property is for internal use and cannot be requested ' .
+        'directly. Set rowIds to true and remove properties from your query to see the full table ' .
+        'with row IDs.');
+    }
     if ($identifier && (!empty($data->resources) || !empty($data->joins))) {
-      throw new \Exception("Joins are not available and "
-        . "resources should not be explicitly passed when using the resource "
-        . "query endpoint. Try /api/1/datastore/query.");
+      throw new \Exception('Joins are not available and resources should not be explicitly passed ' .
+        'when using the resource query endpoint. Try /api/1/datastore/query.');
     }
     if ($identifier) {
       $resource = (object) ["id" => $identifier, "alias" => "t"];
       $data->resources = [$resource];
     }
     return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
+  }
+
+  protected function checkForRowIdSort(array $sorts) {
+    foreach ($sorts as $sort) {
+      if (isset($sort->property) && $sort->property == 'record_number') {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+  protected function checkForRowIdProperty(array $properties) {
+    foreach ($properties as $property) {
+      if (is_string($property) && $property = 'record_number') {
+        return TRUE;
+      }
+      if (isset($property->property) && $property->property == 'record_number') {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
