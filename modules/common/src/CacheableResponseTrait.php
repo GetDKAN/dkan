@@ -29,7 +29,7 @@ trait CacheableResponseTrait {
    *
    * @throws \Exception
    */
-  private function addCacheHeaders(Response $response) : Response {
+  protected function addCacheHeaders(Response $response) : Response {
     $this->setCacheMaxAge();
 
     if ($this->cacheMaxAge !== 0) {
@@ -46,7 +46,7 @@ trait CacheableResponseTrait {
   /**
    * Sets cache max age.
    */
-  private function setCacheMaxAge() {
+  protected function setCacheMaxAge() {
     if (!isset($this->cacheMaxAge)) {
       // A hack to bypass the controllers' tests.
       if (\Drupal::hasService('config.factory')) {
