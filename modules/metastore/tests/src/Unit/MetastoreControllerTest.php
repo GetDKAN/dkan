@@ -173,7 +173,7 @@ class MetastoreControllerTest extends TestCase {
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset', new Request());
-    $this->assertContains('"message":"bad","status":404', $response->getContent());
+    $this->assertStringContainsString('"message":"bad","status":404', $response->getContent());
   }
 
   /**
@@ -215,7 +215,7 @@ class MetastoreControllerTest extends TestCase {
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset', $this->request('POST', '{ }'));
-    $this->assertContains('"message":"bad","status":400', $response->getContent());
+    $this->assertStringContainsString('"message":"bad","status":400', $response->getContent());
   }
 
   /**
@@ -229,7 +229,7 @@ class MetastoreControllerTest extends TestCase {
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->post('dataset', $this->request('POST', '{"identifier": "1"}'));
-    $this->assertContains('"message":"Already exists","status":409', $response->getContent());
+    $this->assertStringContainsString('"message":"Already exists","status":409', $response->getContent());
   }
 
   /**
@@ -254,7 +254,7 @@ class MetastoreControllerTest extends TestCase {
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset', $this->request('PATCH', '{'));
-    $this->assertContains('"message":"Invalid JSON","status":415', $response->getContent());
+    $this->assertStringContainsString('"message":"Invalid JSON","status":415', $response->getContent());
   }
 
   /**
@@ -264,7 +264,7 @@ class MetastoreControllerTest extends TestCase {
     $mockChain = $this->getCommonMockChain();
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset', $this->request('PATCH', ''));
-    $this->assertContains('"message":"Empty body"', $response->getContent());
+    $this->assertStringContainsString('"message":"Empty body"', $response->getContent());
   }
 
   /**
@@ -286,7 +286,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put('dataset', 1, $this->request('PUT', $updating));
-    $this->assertContains('"message":"No changes","status":403', $response->getContent());
+    $this->assertStringContainsString('"message":"No changes","status":403', $response->getContent());
   }
 
   /**
@@ -299,7 +299,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->put('dataset', 1, $this->request());
-    $this->assertContains('"message":"Unknown error"', $response->getContent());
+    $this->assertStringContainsString('"message":"Unknown error"', $response->getContent());
   }
 
   /**
@@ -329,7 +329,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset', $this->request('PATCH', json_encode($collection)));
-    $this->assertContains('"message":"Identifier cannot be modified"', $response->getContent());
+    $this->assertStringContainsString('"message":"Identifier cannot be modified"', $response->getContent());
   }
 
   /**
@@ -342,7 +342,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch(1, 'dataset', $this->request('PATCH', '{'));
-    $this->assertContains('"message":"Invalid JSON","status":415', $response->getContent());
+    $this->assertStringContainsString('"message":"Invalid JSON","status":415', $response->getContent());
   }
 
   /**
@@ -356,7 +356,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1, $this->request('PATCH', '{"identifier":"1","title":"foo"}'));
-    $this->assertContains('"message":"Not found"', $response->getContent());
+    $this->assertStringContainsString('"message":"Not found"', $response->getContent());
   }
 
   /**
@@ -368,7 +368,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1, $this->request('PATCH', '{}'));
-    $this->assertContains('"message":"Unknown error"', $response->getContent());
+    $this->assertStringContainsString('"message":"Unknown error"', $response->getContent());
   }
 
   /**
@@ -404,7 +404,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', 1, $this->request());
-    $this->assertContains('"message":"Not found"', $response->getContent());
+    $this->assertStringContainsString('"message":"Not found"', $response->getContent());
   }
 
   /**
@@ -416,7 +416,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', 1, $this->request());
-    $this->assertContains('"message":"Unknown error"', $response->getContent());
+    $this->assertStringContainsString('"message":"Unknown error"', $response->getContent());
   }
 
   /**
@@ -424,11 +424,11 @@ EOF;
    */
   public function testPublish() {
     $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, "publish", "1");
+    $mockChain->add(Service::class, "publish", true);
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->publish('dataset', "1", $this->request('PUT', '{}'));
-    $this->assertContains('"endpoint":"\/api\/publish","identifier":"1"', $response->getContent());
+    $this->assertStringContainsString('"endpoint":"\/api\/publish","identifier":"1"', $response->getContent());
   }
 
   /**
