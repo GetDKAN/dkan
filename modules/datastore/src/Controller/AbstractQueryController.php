@@ -246,7 +246,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
 
   protected function checkForRowIdProperty(array $properties) {
     foreach ($properties as $property) {
-      if (is_string($property) && $property = 'record_number') {
+      if (is_string($property) && $property == 'record_number') {
         return TRUE;
       }
       if (isset($property->property) && $property->property == 'record_number') {

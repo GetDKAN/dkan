@@ -48,6 +48,14 @@ class QueryDownloadController extends AbstractQueryController {
     }
   }
 
+  protected function buildDatastoreQuery($request, $identifier = NULL) {
+    $data = json_decode(static::getPayloadJson($request));
+    if (isset($data->limit)) {
+      throw new \Exception("Limits are, temporarily, not allowed in downloads.");
+    }
+    return parent::buildDatastoreQuery($request, $identifier);
+  }
+
   /**
    * Set up the Streamed Response callback.
    *
@@ -89,6 +97,8 @@ class QueryDownloadController extends AbstractQueryController {
   /**
    * Iterator for CSV streaming.
    *
+   * This is fairly non-intuitive so some explanation is probably necessary. 
+   *
    * @param \RootedData\RootedJsonData $result
    *   The result data from the initial query.
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
@@ -111,16 +121,16 @@ class QueryDownloadController extends AbstractQueryController {
     $conditionIndex = count($iteratorQuery->{"$.conditions"} ?? []);
     $lastIndex = $pageCount - 1;
     $lastRowId = (int) $result->{"$.results.$pageCount.record_number"};
+    $rowIdColumnIndex = $this->addRowIdProperty($iteratorQuery);
 
     while ($pageCount >= $pageLimit) {
-      $this->alterProperties($iteratorQuery);
       $result = $this->datastoreService->runQuery($iteratorQuery);
       $rows = $result->{"$.results"};
       $pageCount = count($rows);
       $lastIndex = $pageCount - 1;
       $progress += $pageCount;
-      $lastRowId = (int) $rows[$lastIndex][2];
-      $this->alterRows($rows, $datastoreQuery, $iteratorQuery);
+      $lastRowId = (int) $rows[$lastIndex][($rowIdColumnIndex !== NULL) ? $rowIdColumnIndex : 0];
+      $this->removeRowIdProperty($rows, $rowIdColumnIndex);
       $this->sendRows($handle, $rows);
       $iteratorQuery->{"$.conditions[$conditionIndex]"} = [
         'property' => 'record_number',
@@ -128,10 +138,10 @@ class QueryDownloadController extends AbstractQueryController {
         'operator' => '>',
       ];
       $iteratorQuery->{"$.offset"} = 0;
-   }
+    }
   }
 
-  private function alterProperties($iteratorQuery) {
+  private function addRowIdProperty($iteratorQuery) {
     $properties = $iteratorQuery->{'$.properties'} ?? null;
     // if (!is_array($properties)) {
     //   exit;
@@ -139,20 +149,20 @@ class QueryDownloadController extends AbstractQueryController {
     // if (is_array($properties[0])) {
     //   exit;
     // }
-    if (!in_array('record_number', $properties)) {
+    if (!empty($properties) && !in_array('record_number', $properties)) {
       $properties[] = 'record_number';
       $iteratorQuery->{'$.properties'} = $properties;
+      return array_search('record_number', $properties);
     }
+    return NULL;
   }
 
-  private function alterRows(array &$rows, $datastoreQuery, $iteratorQuery) {
-    if (in_array('record_number', $datastoreQuery->{'$.properties'}) || $datastoreQuery->{'$.rowIds'}) {
+  private function removeRowIdProperty(array &$rows, $rowIdColumnIndex) {
+    if ($rowIdColumnIndex === NULL) {
       return;
     }
-    array_walk($rows, function (&$row, $key) use ($iteratorQuery) {
-      foreach (array_keys($iteratorQuery->{'$.properties'}, 'record_number') as $columnIndex) {
-        unset($row[$columnIndex]);
-      }
+    array_walk($rows, function (&$row) use ($rowIdColumnIndex) {
+      unset($row[$rowIdColumnIndex]);
     });
   }
 
@@ -208,6 +218,11 @@ class QueryDownloadController extends AbstractQueryController {
     if (empty($header_row) || !is_array($header_row)) {
       throw new \Exception("Could not generate header for CSV.");
     }
+    array_walk($header_row, function (&$header) {
+      if (is_array($header)) {
+        $header = $header['alias'] ?? $header['property'];
+      }
+    });
     return $header_row;
   }
 
