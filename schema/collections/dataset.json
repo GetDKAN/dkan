@@ -224,7 +224,7 @@
       "minItems": 1
     },
     "distribution": {
-      "title": "Distributions",
+      "title": "Distribution",
       "description": "A distribution is a container for the data object. Each distribution should contain one accessURL or downloadURL. When providing a downloadURL, also include the format of the file.",
       "type": "array",
       "items": {
