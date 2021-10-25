@@ -52,7 +52,6 @@ processor_settings:
       - description
       - keyword
       - publisher__name
-      - publisher__name
       - theme
       - title
     weights:
