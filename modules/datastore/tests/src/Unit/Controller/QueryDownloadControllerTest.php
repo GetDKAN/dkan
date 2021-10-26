@@ -77,10 +77,6 @@ class QueryDownloadControllerTest extends TestCase {
       "sorts" => [
         [
           'property' => 'state',
-          'order' => 'desc',
-        ],
-        [
-          'property' => 'year',
           'order' => 'asc',
         ],
       ],
@@ -196,7 +192,7 @@ class QueryDownloadControllerTest extends TestCase {
     $this->queryResultCompare($data);
   }
 
-  private function queryResultCompare($data) {
+  private function queryResultCompare($data, $countOnly = FALSE) {
     $request = $this->mockRequest($data);
 
     $queryController = QueryController::create($this->getQueryContainer(500));
@@ -210,8 +206,10 @@ class QueryDownloadControllerTest extends TestCase {
     $streamedCsv = $this->buffer;
     ob_get_clean();
 
-    $this->assertEquals(107, count(explode("\n", $streamedCsv)));
-    $this->assertEquals($csv, $streamedCsv);
+    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
+    if (!$countOnly) {
+      $this->assertEquals($csv, $streamedCsv);
+    }
   }
 
   /**
@@ -277,7 +275,7 @@ class QueryDownloadControllerTest extends TestCase {
     if (is_array($data) || is_object($data)) {
       $body = json_encode($data);
     }
-    else{
+    else {
       $body = $data;
     }
     return Request::create("http://example.com", 'POST', [], [], [], [], $body);
