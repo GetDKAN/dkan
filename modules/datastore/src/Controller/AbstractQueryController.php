@@ -216,11 +216,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected function buildDatastoreQuery(Request $request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
-    if (isset($data->properties) && $this->checkForRowIdProperty($data->properties)) {
-      throw new \Exception('The record_number property is for internal use and cannot be requested ' .
-        'directly. Set rowIds to true and remove properties from your query to see the full table ' .
-        'with row IDs.');
-    }
+    $this->checkForRowIdProperty($data);
     if (!empty($data->properties) && !empty($data->rowIds)) {
       throw new \Exception('The rowIds property cannot be set to true if you are requesting specific properties.');
     }
@@ -238,22 +234,23 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   /**
    * Check if the record_number is being explicitly requested.
    *
-   * @param array $properties
-   *   The properties array from the query.
-   *
-   * @return bool
-   *   TRUE if record_number present.
+   * @param object $data
+   *   The query object.
    */
-  protected function checkForRowIdProperty(array $properties) {
-    foreach ($properties as $property) {
-      if (is_string($property) && $property == 'record_number') {
-        return TRUE;
-      }
-      if (isset($property->property) && $property->property == 'record_number') {
-        return TRUE;
-      }
+  protected function checkForRowIdProperty($data) {
+    if (!isset($data->properties)) {
+      return;
     }
-    return FALSE;
+    $hasProperty = FALSE;
+    foreach ($data->properties as $property) {
+      $hasProperty = (is_string($property) && $property == 'record_number');
+      $hasProperty = $hasProperty ?: (isset($property->property) && $property->property == 'record_number');
+    }
+    if ($hasProperty) {
+      throw new \Exception('The record_number property is for internal use and cannot be requested ' .
+      'directly. Set rowIds to true and remove properties from your query to see the full table ' .
+      'with row IDs.');
+    }
   }
 
   /**
