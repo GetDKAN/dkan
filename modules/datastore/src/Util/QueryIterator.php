@@ -122,10 +122,34 @@ class QueryIterator {
     }
 
     // We need groups for each sort.
+    $sorts = $this->query->{"$.sorts"};
+    $pageConditions = $this->intializeSortConditions($sorts, $lastRow);
+    // Finish building the pagination conditions tree.
+    $this->recurseSortConditions($sorts, $lastRow, $pageConditions);
+    $baseOrGroup = [
+      'groupOperator' => 'or',
+      'conditions' => array_values($pageConditions),
+    ];
+    // Add the whole thing as a single "OR" group in the conditions.
+    $this->query->{"$.conditions[$this->iteratorConditionIndex]"} = $baseOrGroup;
+  }
+
+  /**
+   * Create initial page conditions array.
+   *
+   * @param array $sorts
+   *   The sorts from the main query.
+   * @param array $lastRow
+   *   The last row from the previous iteration.
+   *
+   * @return array
+   *   An array of comparison conditions, to be used in the main "OR" group
+   *   for pagination.
+   */
+  private function intializeSortConditions(array $sorts, array $lastRow) {
     $pageConditions = [];
 
     // Set up initial pagination comparison conditions, per sort.
-    $sorts = $this->query->{"$.sorts"};
     foreach ($sorts as $sort) {
       $pageConditions[$sort['property']] = [
         'groupOperator' => 'and',
@@ -139,15 +163,7 @@ class QueryIterator {
         ],
       ];
     }
-    // Finish building the pagination conditions tree.
-    $this->recurseSortConditions($sorts, $lastRow, $pageConditions);
-    $baseOrGroup = [
-      'groupOperator' => 'or',
-      'conditions' => array_values($pageConditions),
-    ];
-    // Add the whole thing as a single "OR" group in the conditions.
-    $this->query->{"$.conditions[$this->iteratorConditionIndex]"} = $baseOrGroup;
-
+    return $pageConditions;
   }
 
   /**

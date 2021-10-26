@@ -208,17 +208,14 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    * array. But one needs to be inferred from the request params and added
    * before execution.
    *
-   * @param string $json
-   *   A JSON payload.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The client request.
    * @param mixed $identifier
-   *   Resource identifier to query against.
+   *   Resource identifier to query against, if supplied via path.
    */
-  protected function buildDatastoreQuery($request, $identifier = NULL) {
+  protected function buildDatastoreQuery(Request $request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
-    if (isset($data->sorts) && $this->checkForRowIdSort($data->sorts)) {
-      throw new \Exception('The record_number property is for internal use and cannot be used for sorting.');
-    }
     if (isset($data->properties) && $this->checkForRowIdProperty($data->properties)) {
       throw new \Exception('The record_number property is for internal use and cannot be requested ' .
         'directly. Set rowIds to true and remove properties from your query to see the full table ' .
@@ -238,15 +235,15 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
   }
 
-  protected function checkForRowIdSort(array $sorts) {
-    foreach ($sorts as $sort) {
-      if (isset($sort->property) && $sort->property == 'record_number') {
-        return TRUE;
-      }
-    }
-    return FALSE;
-  }
-
+  /**
+   * Check if the record_number is being explicitly requested.
+   *
+   * @param array $properties
+   *   The properties array from the query.
+   *
+   * @return bool
+   *   TRUE if record_number present.
+   */
   protected function checkForRowIdProperty(array $properties) {
     foreach ($properties as $property) {
       if (is_string($property) && $property == 'record_number') {

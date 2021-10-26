@@ -73,7 +73,7 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-      // "properties" => ["state", "year"],
+      "properties" => ["state", "year"],
       "sorts" => [
         [
           'property' => 'state',
