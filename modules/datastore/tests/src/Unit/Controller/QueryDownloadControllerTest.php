@@ -73,17 +73,83 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-      "properties" => ["state", "year"],
+      // "properties" => ["state", "year"],
       "sorts" => [
         [
           'property' => 'state',
           'order' => 'asc',
         ],
+        [
+          'property' => 'year',
+          'order' => 'desc',
+        ],
       ],
-      "rowIds" => TRUE,
+      'rowIds' => TRUE,
     ];
 
     // Need 2 json responses which get combined on output.
+    $this->queryResultCompare($data);
+  }
+
+  /**
+   * Test streaming of a CSV file from database.
+   */
+  public function testStreamedJoinCsv() {
+    $data = [
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "t",
+        ],
+        [
+          "id" => "3",
+          "alias" => "j",
+        ],
+      ],
+      "properties" => [
+        [
+          "resource" => "t",
+          "property" => "state",
+        ],
+        [
+          "resource" => "t",
+          "property" => "year",
+        ],
+        [
+          "resource" => "j",
+          "property" => "color",
+        ],
+      ],
+      "joins" => [
+        [
+          "resource" => 'j',
+          "condition" => [
+            'resource' => 't',
+            'property' => 'year',
+            'value' => [
+              'resource' => 'j',
+              'property' => 'year',
+            ],
+          ],
+        ],
+      ],
+      "format" => "csv",
+      "sorts" => [
+        [
+          'resource' => 'j',
+          'property' => 'color',
+          'order' => 'desc',
+        ],
+        [
+          'property' => 'year',
+          'order' => 'asc',
+        ],
+        [
+          'property' => 'state',
+          'order' => 'desc',
+        ],
+      ],
+    ];
     $this->queryResultCompare($data);
   }
 
@@ -122,7 +188,7 @@ class QueryDownloadControllerTest extends TestCase {
       "limit" => 1000,
     ]);
     // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer(50);;
+    $container = $this->getQueryContainer(50);
     $webServiceApi = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
     $result = $webServiceApi->query($request);
@@ -199,7 +265,7 @@ class QueryDownloadControllerTest extends TestCase {
     $response = $queryController->query($request);
     $csv = $response->getContent();
 
-    $downloadController = QueryDownloadController::create($this->getQueryContainer(50));
+    $downloadController = QueryDownloadController::create($this->getQueryContainer(25));
     ob_start(['self', 'getBuffer']);
     $streamResponse = $downloadController->query($request);
     $streamResponse->sendContent();

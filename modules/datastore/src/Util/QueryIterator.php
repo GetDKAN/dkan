@@ -2,17 +2,53 @@
 
 namespace Drupal\datastore\Util;
 
+use Drupal\datastore\Service;
 use Drupal\datastore\Service\DatastoreQuery;
 use RootedData\RootedJsonData;
 
 /**
+ * Help the query download paginate through a query efficiently.
+ *
  * @package Drupal\datastore
  *
- * @todo Dependency injection.
+ * @todo Proper dependency injection.
  */
 class QueryIterator {
 
-  public function __construct($datastoreQuery, $rowsLimit, $datastoreService) {
+  /**
+   * The iterator query, modified throughout the process.
+   *
+   * @var \Drupal\datastore\Service\DatastoreQuery
+   */
+  private $query;
+
+  /**
+   * The datastore service.
+   *
+   * @var \Drupal\datastore\Service
+   */
+  private $datastoreService;
+
+  /**
+   * Index of the condition array to use for pagination filters.
+   *
+   * @var int
+   */
+  private $iteratorConditionIndex;
+
+  /**
+   * Constructor.
+   *
+   * @param Drupal\datastore\Service\DatastoreQuery $datastoreQuery
+   *   A DKAN datastore query object. Will not be modified.
+   * @param int $rowsLimit
+   *   The system limit for rows returned in a single DB query.
+   * @param \Drupal\Datastore\Service $datastoreService
+   *   The main datastore service.
+   *
+   * @todo Implement as a service with proper dependency injection.
+   */
+  public function __construct(DatastoreQuery $datastoreQuery, int $rowsLimit, Service $datastoreService) {
     $this->datastoreService = $datastoreService;
     $iteratorQuery = new DatastoreQuery("$datastoreQuery", $rowsLimit);
 
@@ -23,9 +59,9 @@ class QueryIterator {
     $iteratorQuery->{"$.offset"} = 0;
 
     // Set up our properties, conditions and sorts.
-    $this->rowIdColumnIndex = $this->addRowIdProperty($iteratorQuery);
-    $this->order = $this->addRowIdSort($iteratorQuery);
-    $this->rowIdConditionIndex = count($iteratorQuery->{"$.conditions"} ?? []);
+    $this->addRowIdProperty($iteratorQuery);
+    $this->addRowIdSort($iteratorQuery);
+    $this->iteratorConditionIndex = count($iteratorQuery->{"$.conditions"} ?? []);
 
     $this->query = $iteratorQuery;
   }
@@ -72,6 +108,7 @@ class QueryIterator {
    * Advance the pagination condition(s) once to prepare to request next page.
    *
    * Returns nothing, just modifies the iterator query conditions by reference.
+   * Uses the "keyset pagination" method.
    *
    * @param \RootedData\RootedJsonData $result
    *   The full result object from the previous iteration.
@@ -83,57 +120,72 @@ class QueryIterator {
     if (empty($lastRow)) {
       return;
     }
-    $lastRowId = $lastRow['record_number'];
-    $rowIdCondition = [
-      'resource' => $this->getPrimaryResource($this->query),
-      'property' => 'record_number',
-      'operator' => $this->order == 'asc' ? '>' : '<',
-      'value' => $lastRowId,
-    ];
 
+    // We need groups for each sort.
+    $pageConditions = [];
+
+    // Set up initial pagination comparison conditions, per sort.
     $sorts = $this->query->{"$.sorts"};
-    array_pop($sorts);
-
-    if (empty($sorts)) {
-      $this->query->{"$.conditions[$this->rowIdConditionIndex]"} = $rowIdCondition;
-      return;
-    }
-
-    // If we're still here, we've got sorts and need an OR group.
-    $orGroup = [
-      'groupOperator' => 'or',
-      'conditions' => [$rowIdCondition],
-    ];
-    $andGroup = [
-      'groupOperator' => 'and',
-      'conditions' => [],
-    ];
-
-    // The rowId sort is the last one; remove it and see if anything's left.
     foreach ($sorts as $sort) {
-      $andCondition = [
-        'resource' => $sort['resource'] ?? $this->getPrimaryResource($this->query),
-        'property' => $sort['property'],
-        'operator' => $this->order == 'asc' ? '>=' : '<=',
-        'value' => $lastRow[$sort['property']],
+      $pageConditions[$sort['property']] = [
+        'groupOperator' => 'and',
+        'conditions' => [
+          [
+            'resource' => $sort['resource'] ?? $this->getPrimaryResource($this->query),
+            'property' => $sort['property'],
+            'operator' => $sort['order'] == 'asc' ? '>' : '<',
+            'value' => $lastRow[$sort['property']],
+          ],
+        ],
       ];
-      $andGroup['conditions'][] = $andCondition;
-
-      $orCondition = $andCondition;
-      $orCondition['operator'] = substr($andCondition['operator'], 0, 1);
-      $orGroup['conditions'][] = $orCondition;
     }
-    $andGroup['conditions'][] = $orGroup;
-    $this->query->{"$.conditions[$this->rowIdConditionIndex]"} = $andGroup;
+    // Finish building the pagination conditions tree.
+    $this->recurseSortConditions($sorts, $lastRow, $pageConditions);
+    $baseOrGroup = [
+      'groupOperator' => 'or',
+      'conditions' => array_values($pageConditions),
+    ];
+    // Add the whole thing as a single "OR" group in the conditions.
+    $this->query->{"$.conditions[$this->iteratorConditionIndex]"} = $baseOrGroup;
+
   }
 
   /**
-   * If properties are being specified, add one for pagination.
+   * We need to add "=" conditions for each sort to address possible duplicates.
+   *
+   * @param array $sorts
+   *   An array of sorts from the query. Will be altered in recursion.
+   * @param array $lastRow
+   *   The last result row from the previous query.
+   * @param array $pageConditions
+   *   The full pagination conditions group.
+   */
+  private function recurseSortConditions(array &$sorts, array $lastRow, array &$pageConditions) {
+    // For each recursion, we have a "main" sort we are adding conditions for.
+    $mainSort = array_shift($sorts);
+    // We copy the existing comparison condition, and swap in a "=" operator.
+    $mainSortCondition = $pageConditions[$mainSort['property']]['conditions'][0];
+    $mainSortCondition['operator'] = '=';
+    // Add an "=" condition to each or the main comparison conditions.
+    foreach ($sorts as $sort) {
+      $pageConditions[$sort['property']]['conditions'][] = $mainSortCondition;
+    }
+    // If we have more than one sort left, we need to do it all again.
+    if (count($sorts) > 1) {
+      $this->recurseSortConditions($sorts, $lastRow, $pageConditions);
+    }
+  }
+
+  /**
+   * If properties are being specified, add one for safer pagination.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $iteratorQuery
+   *   Datastore query.
    *
    * @return int
    *   The array index of the column to use for pagination.
    */
-  private function addRowIdProperty($iteratorQuery) {
+  private function addRowIdProperty(DatastoreQuery $iteratorQuery) {
     $properties = $iteratorQuery->{'$.properties'} ?? NULL;
     if (!empty($properties)) {
       $properties[] = [
@@ -142,40 +194,40 @@ class QueryIterator {
       ];
       $iteratorQuery->{'$.properties'} = $properties;
       end($properties);
+      // We want to know which array index contains the added record_id
+      // property. Return it (the query itself is modified by reference).
       return key($properties);
     }
     return NULL;
   }
 
-
   /**
    * We need to explicitly sort by the row ID (record_number).
    *
-   * @return string
-   *   The sort order used. Will be either "asc" or "desc".
+   * @param \Drupal\datastore\Service\DatastoreQuery $iteratorQuery
+   *   Datastore query.
    */
-  private function addRowIdSort($iteratorQuery) {
+  private function addRowIdSort(DatastoreQuery $iteratorQuery) {
     $sorts = $iteratorQuery->{'$.sorts'} ?? [];
-    $orders = [];
-    foreach ($sorts as $sort) {
-      $orders[] = $sort['order'] ?? 'asc';
-    }
-    $orders = array_unique($orders ?: ['asc']);
-    if (count($orders) > 1) {
-      throw new \Exception("Because of how DKAN optimizes queries for large CSV downloads, you may not add sorts with different orders to the same query.");
-    }
-    $order = current($orders);
     $sorts[] = [
-      'resource' => 't',
+      'resource' => $this->getPrimaryResource($iteratorQuery),
       'property' => 'record_number',
-      'order' => $order,
+      'order' => 'asc',
     ];
 
     $iteratorQuery->{'$.sorts'} = $sorts;
-    return $order;
   }
 
-  private function getPrimaryResource($iteratorQuery) {
+  /**
+   * Get the alias string for the main resource in the query.
+   *
+   * @param \Drupal\datastore\Service\DatastoreQuery $iteratorQuery
+   *   Datastore query.
+   *
+   * @return string
+   *   The alias for the primary resource (table) in the query.
+   */
+  private function getPrimaryResource(DatastoreQuery $iteratorQuery) {
     return $iteratorQuery->{"$.resources[0][alias]"} ?? "t";
   }
 

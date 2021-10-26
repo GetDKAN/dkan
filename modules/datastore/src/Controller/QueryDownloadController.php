@@ -45,9 +45,6 @@ class QueryDownloadController extends AbstractQueryController {
     if (isset($data->limit)) {
       throw new \Exception("Limits are, temporarily, not allowed in downloads.");
     }
-    if (isset($data->sorts) && count($data->sorts) > 1) {
-      throw new \Exception("Downloads are currently limited to sorting on a single column.");
-    }
 
     return parent::buildDatastoreQuery($request, $identifier);
   }
