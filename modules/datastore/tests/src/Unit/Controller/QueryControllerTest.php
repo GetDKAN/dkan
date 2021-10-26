@@ -210,8 +210,8 @@ class QueryControllerTest extends TestCase {
     $this->assertContains('data.csv', $result->headers->get('Content-Disposition'));
   }
 
-  private function getQueryResult($data, $id = NULL, $index = NULL) {
-    $container = $this->getQueryContainer($data)->getMock();
+  private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {
+    $container = $this->getQueryContainer($data, $info)->getMock();
     $webServiceApi = QueryController::create($container);
     $request = $this->mockRequest($data);
     if ($id === NULL && $index === NULL) {
@@ -254,7 +254,7 @@ class QueryControllerTest extends TestCase {
     $data = json_encode([
       "results" => TRUE,
     ]);
-  
+
     $result = $this->getQueryResult($data, "2", 0);
 
     $this->assertTrue($result instanceof JsonResponse);
@@ -270,7 +270,7 @@ class QueryControllerTest extends TestCase {
     ]);
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $result = $this->getQueryResult($data, "2", 1);
+    $result = $this->getQueryResult($data, "2", 1, $info);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
@@ -285,7 +285,7 @@ class QueryControllerTest extends TestCase {
     ]);
     $info['latest_revision']['distributions'][0]['distribution_uuid'] = '123';
 
-    $result = $this->getQueryResult($data, "2", 0);
+    $result = $this->getQueryResult($data, "2", 0, $info);
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
