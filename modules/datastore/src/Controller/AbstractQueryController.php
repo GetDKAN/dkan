@@ -224,6 +224,9 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
         'directly. Set rowIds to true and remove properties from your query to see the full table ' .
         'with row IDs.');
     }
+    if (!empty($data->properties) && !empty($data->rowIds)) {
+      throw new \Exception('The rowIds property cannot be set to true if you are requesting specific properties.');
+    }
     if ($identifier && (!empty($data->resources) || !empty($data->joins))) {
       throw new \Exception('Joins are not available and resources should not be explicitly passed ' .
         'when using the resource query endpoint. Try /api/1/datastore/query.');
