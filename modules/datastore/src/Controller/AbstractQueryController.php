@@ -216,6 +216,22 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected function buildDatastoreQuery(Request $request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
+    if ($identifier) {
+      $resource = (object) ["id" => $identifier, "alias" => "t"];
+      $data->resources = [$resource];
+    }
+    return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
+  }
+
+  /**
+   * Run some additional validation on incoming request.
+   *
+   * @param object $data
+   *   The decoded request data.
+   * @param mixed $identifier
+   *   Resource identifier.
+   */
+  protected function additionalPayloadValidation($data, $identifier = NULL) {
     $this->checkForRowIdProperty($data);
     if (!empty($data->properties) && !empty($data->rowIds)) {
       throw new \Exception('The rowIds property cannot be set to true if you are requesting specific properties.');
@@ -224,11 +240,6 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
       throw new \Exception('Joins are not available and resources should not be explicitly passed ' .
         'when using the resource query endpoint. Try /api/1/datastore/query.');
     }
-    if ($identifier) {
-      $resource = (object) ["id" => $identifier, "alias" => "t"];
-      $data->resources = [$resource];
-    }
-    return new DatastoreQuery(json_encode($data), $this->getRowsLimit());
   }
 
   /**
