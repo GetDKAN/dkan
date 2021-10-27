@@ -225,10 +225,10 @@
     },
     "distribution": {
       "title": "Distribution",
-      "description": "A container for the array of Distribution objects (data files).",
+      "description": "A distribution is a container for the data object. Each distribution should contain one accessURL or downloadURL. When providing a downloadURL, also include the format of the file.",
       "type": "array",
       "items": {
-        "title": "Project Open Data Distribution",
+        "title": "Data File",
         "type": "object",
         "properties": {
           "@type": {
@@ -240,13 +240,13 @@
           },
           "title": {
             "title": "Title",
-            "description": "Human-readable name of the distribution.",
+            "description": "Human-readable name of the file.",
             "type": "string",
             "minLength": 1
           },
           "description": {
             "title": "Description",
-            "description": "Human-readable description of the distribution.",
+            "description": "Human-readable description of the file.",
             "type": "string",
             "minLength": 1
           },

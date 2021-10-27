@@ -109,8 +109,8 @@ class UploadOrLink extends ManagedFile {
     return [
       '#type' => 'radios',
       '#options' => [
-        static::TYPE_UPLOAD => t('Upload file'),
-        static::TYPE_REMOTE => t('Remote file URL'),
+        static::TYPE_UPLOAD => t('Upload Data File'),
+        static::TYPE_REMOTE => t('Link to Data File'),
       ],
       '#default_value' => $file_url_type,
       '#prefix' => '<div class="container-inline">',

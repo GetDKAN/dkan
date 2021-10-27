@@ -65,3 +65,17 @@ function metastore_admin_update_8007() {
 
   drupal_flush_all_caches();
 }
+/**
+ * Update default display to filter by datasets.
+ */
+function metastore_admin_update_8008() {
+  $view = \Drupal::service('config.factory')->getEditable('views.view.dkan_dataset_content');
+  $displays = $view->get('display');
+  foreach ($displays as $display_name => $display) {
+    if ($display_name === 'default') {
+      $view->set('display.default.display_options.filters.field_data_type_value.value', 'dataset');
+      $view->save(TRUE);
+    }
+  }
+  drupal_flush_all_caches();
+}
