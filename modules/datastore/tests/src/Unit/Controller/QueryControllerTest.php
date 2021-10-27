@@ -94,12 +94,12 @@ class QueryControllerTest extends TestCase {
         [
           "resource" => "t",
           "property" => "state",
-          "direction" => "desc",
+          "order" => "desc",
         ],
         [
           "resource" => "t",
           "property" => "record_number",
-          "direction" => "asc",
+          "order" => "asc",
         ],
       ],
     ]);
@@ -107,8 +107,7 @@ class QueryControllerTest extends TestCase {
     $result = $this->getQueryResult($data, "2");
 
     $this->assertTrue($result instanceof JsonResponse);
-    $this->assertEquals(400, $result->getStatusCode());
-    $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
+    $this->assertEquals(200, $result->getStatusCode());
   }
 
   // Make sure nothing fails with no resources.

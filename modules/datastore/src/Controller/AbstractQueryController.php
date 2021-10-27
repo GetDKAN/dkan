@@ -216,6 +216,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected function buildDatastoreQuery(Request $request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
+    $this->additionalPayloadValidation($data);
     if ($identifier) {
       $resource = (object) ["id" => $identifier, "alias" => "t"];
       $data->resources = [$resource];
@@ -256,11 +257,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     foreach ($data->properties as $property) {
       $hasProperty = (is_string($property) && $property == 'record_number');
       $hasProperty = $hasProperty ?: (isset($property->property) && $property->property == 'record_number');
-    }
-    if ($hasProperty) {
-      throw new \Exception('The record_number property is for internal use and cannot be requested ' .
-      'directly. Set rowIds to true and remove properties from your query to see the full table ' .
-      'with row IDs.');
+      if ($hasProperty) {
+        throw new \Exception('The record_number property is for internal use and cannot be requested ' .
+        'directly. Set rowIds to true and remove properties from your query to see the full table ' .
+        'with row IDs.');
+      }
     }
   }
 
