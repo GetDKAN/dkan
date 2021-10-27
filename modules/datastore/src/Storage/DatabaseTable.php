@@ -161,7 +161,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Get table schema.
    *
-   * @todo Note that this will breakZ on PostgresSQL
+   * @todo Note that this will break on PostgresSQL
    */
   protected function buildTableSchema($tableName, $fieldsInfo) {
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
@@ -184,12 +184,12 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * @param mixed $extra
    *   Additional information for column.
    *
-   * @return string
-   *   Fritionless Table Schema compatible type.
+   * @return array
+   *   Drupal Schema array.
    *
-   * @see https://specs.frictionlessdata.io/table-schema
+   * @see https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/9.2.x
    */
-  public function translateType(string $type, $extra = NULL) {
+  protected function translateType(string $type, $extra = NULL) {
     // Clean up things like "int(10) unsigned".
     $db_type = strtok($type, '(');
     $driver = $this->connection->driver() ?? 'mysql';

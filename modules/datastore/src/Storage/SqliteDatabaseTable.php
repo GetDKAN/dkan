@@ -39,9 +39,9 @@ class SqliteDatabaseTable extends DatabaseTable {
   /**
    * {@inheritdoc}
    */
-  public function translateType(string $type, $info = NULL) {
+  protected function translateType(string $type, $info = NULL) {
     // Clean up things like "int(10) unsigned".
-    $driver = $this->connection->driver() ?? 'mysql';
+    $driver = $this->connection->driver() ?? 'sqlite';
     $db_type = strtolower($type);
     $map = array_flip(array_map('strtolower', $this->connection->schema()->getFieldTypeMap()));
     $length = NULL;
