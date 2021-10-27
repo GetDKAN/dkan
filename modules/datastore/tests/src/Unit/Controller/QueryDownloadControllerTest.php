@@ -84,7 +84,6 @@ class QueryDownloadControllerTest extends TestCase {
           'order' => 'desc',
         ],
       ],
-      'rowIds' => TRUE,
     ];
 
     // Need 2 json responses which get combined on output.
