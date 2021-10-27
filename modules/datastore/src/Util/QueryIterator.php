@@ -182,7 +182,7 @@ class QueryIterator {
     // We copy the existing comparison condition, and swap in a "=" operator.
     $mainSortCondition = $pageConditions[$mainSort['property']]['conditions'][0];
     $mainSortCondition['operator'] = '=';
-    // Add an "=" condition to each or the main comparison conditions.
+    // Add an "=" condition to each of the main comparison conditions.
     foreach ($sorts as $sort) {
       $pageConditions[$sort['property']]['conditions'][] = $mainSortCondition;
     }
