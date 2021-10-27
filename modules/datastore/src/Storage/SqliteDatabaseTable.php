@@ -11,7 +11,7 @@ namespace Drupal\datastore\Storage;
 class SqliteDatabaseTable extends DatabaseTable {
 
   /**
-   * Set the schema using the existing database table.
+   * {@inheritdoc}
    */
   protected function setSchemaFromTable() {
     $tableName = $this->getTableName();
@@ -23,9 +23,7 @@ class SqliteDatabaseTable extends DatabaseTable {
   }
 
   /**
-   * Get table schema.
-   *
-   * @todo Note that this will breakZ on PostgresSQL
+   * {@inheritdoc}
    */
   protected function buildTableSchema($tableName, $fieldsInfo) {
     foreach ($fieldsInfo as $info) {
