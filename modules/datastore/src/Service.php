@@ -327,7 +327,7 @@ class Service implements ContainerInjectionInterface {
    * @param bool $fetch
    *   Perform fetchAll and return array if true, else just statement (cursor).
    *
-   * @return array|\Drupal\Core\Database\StatementInterface|
+   * @return array|\Drupal\Core\Database\StatementInterface
    *   Array of result objects or result statement of $fetch is false.
    */
   public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE) {

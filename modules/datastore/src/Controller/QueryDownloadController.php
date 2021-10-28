@@ -69,7 +69,7 @@ class QueryDownloadController extends AbstractQueryController {
       // Open the stream and send the header.
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
-      $this->sendRow($handle, [$this->getHeaderRow($result)]);
+      $this->sendRow($handle, $this->getHeaderRow($result));
 
       // Otherwise, we're going to redo as an iterator from the beginning.
       $result = $this->datastoreService->runResultsQuery($datastoreQuery, FALSE);
