@@ -3,7 +3,6 @@
 namespace Drupal\datastore\Controller;
 
 use Drupal\datastore\Service\DatastoreQuery;
-use Drupal\datastore\Util\QueryIterator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use RootedData\RootedJsonData;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -103,8 +102,8 @@ class QueryDownloadController extends AbstractQueryController {
    *
    * @param resource $handle
    *   The file handler.
-   * @param array $rows
-   *   Rows of data to send as CSV.
+   * @param array $row
+   *   Row of data to send as CSV.
    */
   private function sendRow($handle, array $row) {
     fputcsv($handle, $row);
