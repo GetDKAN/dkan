@@ -14,14 +14,16 @@ class DatastoreQuery extends RootedJsonData {
    *
    * @param string $json
    *   JSON query string from API payload.
-   * @param int $rows_limit
+   * @param int|null $rows_limit
    *   Maxmimum rows of data to return.
    */
-  public function __construct(string $json, int $rows_limit = 500) {
+  public function __construct(string $json, $rows_limit = NULL) {
     $schema = file_get_contents(__DIR__ . "/../../docs/query.json");
     $q = json_decode($schema);
-    $q->properties->limit->maximum = $rows_limit;
-    $q->properties->limit->default = $rows_limit;
+    if ($rows_limit !== NULL) {
+      $q->properties->limit->maximum = $rows_limit;
+      $q->properties->limit->default = $rows_limit;
+    }
     $schema = json_encode($q);
     parent::__construct($json, $schema);
     $this->populateDefaults();
