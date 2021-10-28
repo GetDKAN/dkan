@@ -37,7 +37,7 @@ services:
     arguments: ['datastore']
 
   dkan.datastore.database:
-    class: \Drupal\datastore\Storage\DatabaseTableFactory
+    class: \Drupal\Core\Database\Connection
     factory: \Drupal\datastore\Storage\DatabaseConnectionFactory::getConnection
 
   dkan.datastore.database_table_factory:
