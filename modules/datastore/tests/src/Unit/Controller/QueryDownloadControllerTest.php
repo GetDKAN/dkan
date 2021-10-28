@@ -173,9 +173,11 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
-   * Test CSV stream request with a limit (not allowed).
+   * Test CSV stream request with a limit higher than the datastore row limit setting.
    */
   public function testStreamedLimit() {
+    $queryLimit = 75;
+    $pageLimit = 50;
     $data = json_encode([
       "resources" => [
         [
@@ -184,14 +186,21 @@ class QueryDownloadControllerTest extends TestCase {
         ],
       ],
       "format" => "csv",
-      "limit" => 1000,
+      "limit" => $queryLimit,
     ]);
-    // Need 2 json responses which get combined on output.
-    $container = $this->getQueryContainer(50);
-    $webServiceApi = QueryDownloadController::create($container);
+    // Set the row limit to 50 even though we're requesting 1000;
+    $container = $this->getQueryContainer($pageLimit);
+    $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
-    $result = $webServiceApi->query($request);
-    $this->assertEquals(400, $result->getStatusCode());
+    ob_start(['self', 'getBuffer']);
+    $streamResponse = $downloadController->query($request);
+    $this->assertEquals(200, $streamResponse->getStatusCode());
+    $streamResponse->sendContent();
+    ob_get_clean();
+    $streamedCsv = $this->buffer;
+    // Check that the CSV has the full queryLimit number of lines, plus header and final newline.
+    $this->assertEquals(($queryLimit + 2), count(explode("\n", $streamedCsv)));
+
   }
 
   /**

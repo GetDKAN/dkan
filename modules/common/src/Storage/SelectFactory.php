@@ -330,13 +330,11 @@ class SelectFactory {
    *   A DKAN query object.
    */
   private function setQueryLimitAndOffset(Select $db_query, Query $query) {
-    if (isset($query->limit)) {
-      if (isset($query->offset)) {
-        $db_query->range($query->offset, $query->limit);
-      }
-      else {
-        $db_query->range(0, $query->limit);
-      }
+    if (isset($query->limit) && $query->limit !== NULL) {
+      $db_query->range(($query->offset ?? 0), ($query->limit));
+    }
+    elseif (isset($query->offset) && $query->offset) {
+      $db_query->range(($query->offset));
     }
   }
 
