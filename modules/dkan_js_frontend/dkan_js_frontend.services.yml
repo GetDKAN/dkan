@@ -1,6 +1,6 @@
 services:
-  data_catalog.route_provider:
-      class: Drupal\data_catalog\Routing\RouteProvider
+  dkan_js_frontend.route_provider:
+      class: Drupal\dkan_js_frontend\Routing\RouteProvider
       arguments:
         - '@app.root'
         - '@entity.query.sql'

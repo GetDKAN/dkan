@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\data_catalog\Routing;
+namespace Drupal\dkan_js_frontend\Routing;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\Query\QueryFactoryInterface;
@@ -22,7 +22,7 @@ class RouteProvider {
   public function __construct(string $appRoot, QueryFactoryInterface $entityQuery, ConfigFactoryInterface $configFactory) {
     $this->appRoot = $appRoot;
     $this->entityQuery = $entityQuery;
-    $this->routes = $configFactory->get('data_catalog.config')->get('routes');
+    $this->routes = $configFactory->get('dkan_js_frontend.config')->get('routes');
   }
 
   /**
@@ -50,7 +50,7 @@ class RouteProvider {
     $route = new Route(
       "/$path",
       [
-        '_controller' => '\Drupal\data_catalog\Controller\Page::content',
+        '_controller' => '\Drupal\dkan_js_frontend\Controller\Page::content',
         'name' => $name,
       ]
     );
@@ -65,7 +65,7 @@ class RouteProvider {
     $config_routes = $this->routes;
     foreach ($config_routes as $config_route) {
       $possible_page = explode(",", $config_route);
-      $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "data_catalog"));
+      $routes->add($possible_page[0], $this->routeHelper($possible_page[1], "dkan_js_frontend"));
     }
   }
 
