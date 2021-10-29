@@ -297,6 +297,7 @@ class SchemaUiHandler implements ContainerInjectionInterface {
     if (isset($spec->description)) {
       $parsedown = new Parsedown();
       $element['#description'] = $parsedown->text($spec->description);
+      $element['#description_display'] = 'before';
     }
     return $element;
   }

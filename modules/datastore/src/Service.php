@@ -12,6 +12,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
+use Drupal\datastore\Service\Info\ImportInfoList;
 use Drupal\datastore\Storage\QueryFactory;
 
 /**
@@ -55,18 +56,37 @@ class Service implements ContainerInjectionInterface {
       $container->get('dkan.datastore.service.resource_localizer'),
       $container->get('dkan.datastore.service.factory.import'),
       $container->get('queue'),
-      $container->get('dkan.common.job_store')
+      $container->get('dkan.common.job_store'),
+      $container->get('dkan.datastore.import_info_list'),
     );
   }
 
   /**
-   * Constructor for datastore service.
+   * Constructor.
+   *
+   * @param \Drupal\datastore\Service\ResourceLocalizer $resourceLocalizer
+   *   Resource localizer service.
+   * @param \Drupal\datastore\Service\Factory\ImportFactoryInterface $importServiceFactory
+   *   Import factory service.
+   * @param \Drupal\Core\Queue\QueueFactory $queue
+   *   Queue factory service.
+   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
+   *   Jobstore factory service.
+   * @param \Drupal\datastore\Service\Info\ImportInfoList $importInfoList
+   *   Import info list service.
    */
-  public function __construct(ResourceLocalizer $resourceLocalizer, ImportFactoryInterface $importServiceFactory, QueueFactory $queue, JobStoreFactory $jobStoreFactory) {
+  public function __construct(
+    ResourceLocalizer $resourceLocalizer,
+    ImportFactoryInterface $importServiceFactory,
+    QueueFactory $queue,
+    JobStoreFactory $jobStoreFactory,
+    ImportInfoList $importInfoList
+  ) {
     $this->queue = $queue;
     $this->resourceLocalizer = $resourceLocalizer;
     $this->importServiceFactory = $importServiceFactory;
     $this->jobStoreFactory = $jobStoreFactory;
+    $this->importInfoList = $importInfoList;
   }
 
   /**
@@ -184,12 +204,9 @@ class Service implements ContainerInjectionInterface {
    *
    * @return array
    *   The importer list object.
-   *
-   * @todo Refactor to use dependency injection.
    */
   public function list() {
-    $service = \Drupal::service('dkan.datastore.import_info_list');
-    return $service->buildList();
+    return $this->importInfoList->buildList();
   }
 
   /**
@@ -268,12 +285,15 @@ class Service implements ContainerInjectionInterface {
    */
   private function getSchema(DatastoreQuery $datastoreQuery) {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
+    if (!$datastoreQuery->{"$.resources"}) {
+      return [];
+    }
     $schema = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
       $storage = $storageMap[$resource["alias"]];
       $schemaItem = $storage->getSchema();
       if (empty($datastoreQuery->{"$.rowIds"})) {
-        $schemaItem['fields'] = $this->filterSchemaFields($schemaItem);
+        $schemaItem = $this->filterSchemaFields($schemaItem, $storage->primaryKey());
       }
       $schema[$resource["id"]] = $schemaItem;
     }
@@ -317,8 +337,9 @@ class Service implements ContainerInjectionInterface {
     $storageMap = $this->getQueryStorageMap($datastoreQuery);
 
     if (empty($datastoreQuery->{"$.rowIds"}) && empty($datastoreQuery->{"$.properties"})) {
-      $schema = $storageMap[$primaryAlias]->getSchema();
-      $datastoreQuery->{"$.properties"} = array_keys($this->filterSchemaFields($schema));
+      $storage = $storageMap[$primaryAlias];
+      $schema = $this->filterSchemaFields($storage->getSchema(), $storage->primaryKey());
+      $datastoreQuery->{"$.properties"} = array_keys($schema['fields']);
     }
 
     $query = QueryFactory::create($datastoreQuery, $storageMap);
@@ -333,20 +354,22 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Filters schema fields.
+   * Remove the primary key from the schema field list.
    *
    * @param array $schema
-   *   Schema.
+   *   Schema array, should contain a key "fields".
+   * @param string $primaryKey
+   *   The name of the primary key field to filter out.
    *
    * @return array
    *   Filtered schema fields.
    */
-  private function filterSchemaFields(array $schema) : array {
+  private function filterSchemaFields(array $schema, string $primaryKey) : array {
     // Hide identifier field by default.
-    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == 'record_number') {
-      unset($schema['fields']['record_number']);
+    if (isset($schema["primary key"][0]) && $schema["primary key"][0] == $primaryKey) {
+      unset($schema['fields'][$primaryKey], $schema['primary key'][0]);
     }
-    return $schema['fields'];
+    return array_filter($schema);
   }
 
   /**

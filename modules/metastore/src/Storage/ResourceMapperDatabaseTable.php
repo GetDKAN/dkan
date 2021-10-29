@@ -58,7 +58,7 @@ class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   /**
    * Protected.
    */
-  protected function primaryKey() {
+  public function primaryKey() {
     return "id";
   }
 

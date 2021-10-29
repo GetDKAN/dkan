@@ -126,12 +126,14 @@ class JsonFormBuilderTest extends TestCase {
         "#title" => "Test field",
         "#description" => "",
         "#default_value" => "Some value.",
+        '#description_display' => 'before',
         "#required" => FALSE,
       ],
       "downloadURL" => [
         "#type" => "url",
         "#title" => "Download URL",
         "#description" => "This is an URL field.",
+        '#description_display' => 'before',
         "#default_value" => NULL,
         "#required" => FALSE,
       ],
@@ -139,6 +141,7 @@ class JsonFormBuilderTest extends TestCase {
         "#type" => "select",
         "#title" => "Public Access Level",
         "#description" => "Description.",
+        '#description_display' => 'before',
         "#default_value" => "public",
         "#required" => TRUE,
         "#options" => [
@@ -151,6 +154,7 @@ class JsonFormBuilderTest extends TestCase {
         "#type" => "select",
         "#title" => "Frequency",
         "#description" => "Description.",
+        '#description_display' => 'before',
         "#default_value" => NULL,
         "#required" => FALSE,
         "#options" => [
@@ -226,10 +230,12 @@ class JsonFormBuilderTest extends TestCase {
           "#open" => TRUE,
           "#title" => "Organization",
           "#description" => "A Dataset Publisher Organization.",
+          '#description_display' => 'before',
           "@type" => [
             "#type" => "textfield",
             "#title" => "Metadata Context",
             "#description" => "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
+            '#description_display' => 'before',
             "#default_value" => "org:Organization",
             "#required" => FALSE,
           ],
@@ -237,6 +243,7 @@ class JsonFormBuilderTest extends TestCase {
             "#type" => "textfield",
             "#title" => "Publisher Name",
             "#description" => "",
+            '#description_display' => 'before',
             "#default_value" => NULL,
             "#required" => TRUE,
           ],
@@ -274,6 +281,7 @@ class JsonFormBuilderTest extends TestCase {
         "#suffix" => "</div>",
         "#tree" => TRUE,
         "#description" => "Tags (or keywords).",
+        '#description_display' => 'before',
         "keyword" => [
           0 => [
             "#type" => "textfield",
@@ -320,6 +328,7 @@ class JsonFormBuilderTest extends TestCase {
         "#suffix" => "</div>",
         "#tree" => TRUE,
         "#description" => "Tags (or keywords).",
+        '#description_display' => 'before',
         "keyword" => [
           0 => [
             "#type" => "textfield",

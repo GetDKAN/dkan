@@ -300,15 +300,15 @@ class DatastoreApiDocs extends DkanApiDocsBase {
       $i++;
       $datastore = (bool) ($identifiers = $this->getDatastoreIds($item));
     }
-    if (empty($identifiers)) {
-      $identifiers = [
+    return array_merge(
+      [
         'resource' => '00000000000000000000000000000000__0000000000__source',
         'distribution' => "00000000-0000-0000-0000-000000000000",
         'dataset' => "00000000-0000-0000-0000-000000000000",
         'datasetDistributionIndex' => 0,
-      ];
-    }
-    return $identifiers;
+      ],
+      $identifiers ?: []
+    );
   }
 
   /**

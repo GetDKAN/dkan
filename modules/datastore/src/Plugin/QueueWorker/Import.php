@@ -3,16 +3,14 @@
 namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Utility\Error;
 
 use Drupal\common\LoggerTrait;
 use Drupal\datastore\Service as DatastoreService;
-
+use Drupal\metastore\Reference\ReferenceLookup;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -22,7 +20,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @QueueWorker(
  *   id = "datastore_import",
  *   title = @Translation("Queue to process datastore import"),
- *   cron = {"time" = 60}
+ *   cron = {
+ *     "time" = 180,
+ *     "lease_time" = 10800
+ *   }
  * )
  */
 class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface {
@@ -43,6 +44,13 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   protected $datastore;
 
   /**
+   * Reference lookup service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceLookup
+   */
+  protected $referenceLookup;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -51,24 +59,31 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   A config factory instance.
    * @param \Drupal\datastore\Service $datastore
    *   A DKAN datastore service instance.
-   * @param \Drupal\Core\File\FileSystemInterface $file_system
-   *   A file system service instance.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
    *   A logger channel factory instance.
-   * @param \Drupal\Core\Queue\QueueFactory $queue_factory
-   *   A database queue factory instance.
+   * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
+   *   The reference lookup service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory, DatastoreService $datastore, FileSystemInterface $file_system, LoggerChannelFactoryInterface $logger_factory, QueueFactory $queue_factory) {
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    ConfigFactoryInterface $configFactory,
+    DatastoreService $datastore,
+    LoggerChannelFactoryInterface $loggerFactory,
+    ReferenceLookup $referenceLookup
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->datastoreConfig = $config_factory->get('datastore.settings');
-    $this->databaseQueue = $queue_factory->get($plugin_id);
+    $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->datastore = $datastore;
-    $this->fileSystem = $file_system;
-    $this->setLoggerFactory($logger_factory, 'datastore');
+    $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
+    $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
+    $this->setLoggerFactory($loggerFactory, 'datastore');
+    $this->referenceLookup = $referenceLookup;
   }
 
   /**
@@ -81,9 +96,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $plugin_definition,
       $container->get('config.factory'),
       $container->get('dkan.datastore.service'),
-      $container->get('file_system'),
       $container->get('logger.factory'),
-      $container->get('queue')
+      $container->get('dkan.metastore.reference_lookup')
     );
   }
 
@@ -96,21 +110,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     }
 
     try {
-      $identifier = $data['identifier'];
-      $version = $data['version'];
-
-      $results = $this->datastore->import($identifier, FALSE, $version);
-
-      $queued = FALSE;
-      foreach ($results as $result) {
-        $queued = isset($result) ? $this->processResult($result, $data, $queued) : FALSE;
-      }
-
-      // Delete local resource file if enabled in datastore settings config.
-      if ($this->datastoreConfig->get('delete_local_resource')) {
-        $this->fileSystem->deleteRecursive("public://resources/{$identifier}_{$version}");
-      }
-
+      $this->importData($data);
     }
     catch (\Exception $e) {
       $error = Error::renderExceptionSafe($e);
@@ -119,13 +119,42 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   }
 
   /**
-   * Private.
+   * Perform the actual data import.
+   *
+   * @param array $data
+   *   Resource identifier information.
    */
-  private function processResult(Result $result, $data, $queued = FALSE) {
+  private function importData(array $data) {
     $identifier = $data['identifier'];
     $version = $data['version'];
-    $uid = "{$identifier}__{$version}";
+    $results = $this->datastore->import($identifier, FALSE, $version);
 
+    $queued = FALSE;
+    foreach ($results as $result) {
+      $queued = isset($result) ? $this->processResult($result, $data, $queued) : FALSE;
+    }
+
+    // Delete local resource file if enabled in datastore settings config.
+    if ($this->datastoreConfig->get('delete_local_resource')) {
+      $this->fileSystem->deleteRecursive("public://resources/{$identifier}_{$version}");
+    }
+  }
+
+  /**
+   * Process the result of the import operation.
+   *
+   * @param \Procrastinator\Result $result
+   *   The result object.
+   * @param mixed $data
+   *   The resource data for import.
+   * @param bool $queued
+   *   Whether the import job is currently queued.
+   *
+   * @return bool
+   *   The updated value for $queued.
+   */
+  private function processResult(Result $result, $data, $queued = FALSE) {
+    $uid = "{$data['identifier']}__{$data['version']}";
     $status = $result->getStatus();
     switch ($status) {
       case Result::STOPPED:
@@ -143,10 +172,21 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
 
       case Result::DONE:
         $this->notice("Import for {$uid} completed.");
+        $this->invalidateCacheTags("{$uid}__source");
         break;
     }
 
     return $queued;
+  }
+
+  /**
+   * Invalidate all appropriate cache tags for this resource.
+   *
+   * @param mixed $resourceId
+   *   A resource ID.
+   */
+  protected function invalidateCacheTags($resourceId) {
+    $this->referenceLookup->invalidateReferencerCacheTags('distribution', $resourceId, 'downloadURL');
   }
 
   /**
@@ -158,7 +198,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @return mixed
    *   Queue ID or false if unsuccessful.
    *
-   * @todo: Clarify return value. Documentation suggests it should return ID.
+   * @todo Clarify return value. Documentation suggests it should return ID.
    */
   protected function requeue(array $data) {
     return $this->databaseQueue->createItem($data);

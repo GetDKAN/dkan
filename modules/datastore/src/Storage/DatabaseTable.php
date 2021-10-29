@@ -39,7 +39,11 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
-    parent::__construct($connection);
+    $this->connection = $connection;
+
+    if ($this->tableExist($this->getTableName())) {
+      $this->setSchemaFromTable();
+    }
   }
 
   /**
@@ -112,7 +116,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Protected.
    */
-  protected function primaryKey() {
+  public function primaryKey() {
     return "record_number";
   }
 
@@ -129,7 +133,18 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Overriden.
+   * Set the schema using the existing database table.
+   */
+  protected function setSchemaFromTable() {
+    $tableName = $this->getTableName();
+    $fieldsInfo = $this->connection->query("DESCRIBE `{$tableName}`")->fetchAll();
+
+    $schema = $this->buildTableSchema($tableName, $fieldsInfo);
+    $this->setSchema($schema);
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function setSchema(array $schema): void {
     $fields = $schema['fields'];
@@ -146,6 +161,66 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $schema['fields'] = $fields;
     $schema['primary key'] = [$this->primaryKey()];
     parent::setSchema($schema);
+  }
+
+  /**
+   * Get table schema.
+   *
+   * @todo Note that this will break on PostgresSQL
+   */
+  protected function buildTableSchema($tableName, $fieldsInfo) {
+    $canGetComment = method_exists($this->connection->schema(), 'getComment');
+    foreach ($fieldsInfo as $info) {
+      $name = $info->Field;
+      $schema['fields'][$name] = $this->translateType($info->Type, ($info->Extra ?? NULL));
+      $schema['fields'][$name] += [
+        'description' => $canGetComment ? $this->connection->schema()->getComment($tableName, $name) : '',
+      ];
+      $schema['fields'][$name] = array_filter($schema['fields'][$name]);
+    }
+    return $schema ?? ['fields' => []];
+  }
+
+  /**
+   * Translate the database type into a table schema type.
+   *
+   * @param string $type
+   *   Type returned from the describe query.
+   * @param mixed $extra
+   *   Additional information for column.
+   *
+   * @return array
+   *   Drupal Schema array.
+   *
+   * @see https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Database!database.api.php/group/schemaapi/9.2.x
+   */
+  protected function translateType(string $type, $extra = NULL) {
+    // Clean up things like "int(10) unsigned".
+    $db_type = strtok($type, '(');
+    $driver = $this->connection->driver() ?? 'mysql';
+
+    preg_match('#\((.*?)\)#', $type, $match);
+    $length = $match[1] ?? NULL;
+    $length = $length ? (int) $length : $length;
+
+    $map = array_flip(array_map('strtolower', $this->connection->schema()->getFieldTypeMap()));
+
+    $fullType = explode(':', ($map[$db_type] ?? 'varchar'));
+    // Set type to serial if auto-increment, else use mapped type.
+    $type = ($fullType[0] == 'int' && $extra == 'auto_increment') ? 'serial' : $fullType[0];
+    $unsigned = ($type == 'serial') ? TRUE : NULL;
+    $notNull = ($type == 'serial') ? TRUE : NULL;
+    // Ignore size if "normal" or unset.
+    $size = (isset($fullType[1]) && $fullType[1] != 'normal') ? $fullType[1] : NULL;
+
+    return [
+      'type' => $type,
+      'length' => $length,
+      'size' => $size,
+      'unsigned' => $unsigned,
+      'not null' => $notNull,
+      "{$driver}_type" => $db_type,
+    ];
   }
 
 }

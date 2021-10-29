@@ -13,7 +13,8 @@ use Drupal\Core\Queue\QueueInterface;
 
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service;
-
+use Drupal\datastore\Service\ResourceLocalizer;
+use Drupal\metastore\Reference\ReferenceLookup;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -85,12 +86,16 @@ class ImportTest extends TestCase {
       ->add('dkan.datastore.service', Service::class)
       ->add('file_system', FileSystem::class)
       ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->add('queue', QueueFactory::class)
       ->index(0);
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'import', [$result])
+      ->add(Service::class, 'getQueueFactory', QueueFactory::class)
+      ->add(Service::class, 'getResourceLocalizer', ResourceLocalizer::class)
+      ->add(ResourceLocalizer::class, 'getFileSystem', FileSystem::class)
       ->add(QueueFactory::class, 'get', QueueInterface::class)
       ->add(QueueInterface::class, 'createItem', NULL, 'create_item');
 

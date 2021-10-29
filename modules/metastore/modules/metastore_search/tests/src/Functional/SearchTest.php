@@ -5,6 +5,7 @@ namespace Drupal\Tests\metastore_search\Functional;
 use Drupal\metastore_search\Commands\RebuildTrackerCommands;
 use Drupal\metastore_search\Controller\SearchController;
 use GuzzleHttp\Client;
+use Symfony\Component\HttpFoundation\Request;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
@@ -52,11 +53,12 @@ class SearchTest extends ExistingSiteBase {
     }
 
     $controller = SearchController::create(\Drupal::getContainer());
+    $request = Request::create("http://blah/api");
 
-    $response = $controller->search();
+    $response = $controller->search($request);
     $this->assertEquals('200', $response->getStatusCode());
 
-    $response = $controller->facets();
+    $response = $controller->facets($request);
     $this->assertEquals('200', $response->getStatusCode());
 
     // Now test with errors.
@@ -65,10 +67,10 @@ class SearchTest extends ExistingSiteBase {
     $request = $requestStack->pop()->duplicate($params);
     $requestStack->push($request);
 
-    $response = $controller->search();
+    $response = $controller->search($request);
     $this->assertEquals('400', $response->getStatusCode());
 
-    $response = $controller->facets();
+    $response = $controller->facets($request);
     $this->assertEquals('400', $response->getStatusCode());
 
     // Test past max page size
@@ -76,7 +78,7 @@ class SearchTest extends ExistingSiteBase {
     $params = ['page-size' => 200];
     $request = $requestStack->pop()->duplicate($params);
     $requestStack->push($request);
-    $response = $controller->search();
+    $response = $controller->search($request);
     // @todo Better assertion.
     $this->assertEquals('200', $response->getStatusCode());
   }

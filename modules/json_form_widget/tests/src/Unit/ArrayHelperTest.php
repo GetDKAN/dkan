@@ -185,6 +185,7 @@ class ArrayHelperTest extends TestCase {
       "#suffix" => "</div>",
       "#tree" => TRUE,
       "#description" => "Description.",
+      '#description_display' => 'before',
       "distribution" => [
         0 => $this->getExpectedObject(),
       ],

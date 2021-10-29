@@ -14,7 +14,7 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Procrastinator\Result;
 
 /**
- * Class Import.
+ * Datastore import service.
  */
 class Import {
   use LoggerTrait;
@@ -24,10 +24,34 @@ class Import {
 
   const DEFAULT_TIMELIMIT = 50;
 
+  /**
+   * The qualified class name of the importer to use.
+   *
+   * @var \Procrastinator\Job\AbstractPersistentJob
+   */
   private $importerClass = Importer::class;
 
+  /**
+   * The resource object to import.
+   *
+   * @var \Dkan\Datastore\Resource
+   */
   private $resource;
+
+  /**
+   * The jobstore factory service.
+   *
+   * @var \Drupal\common\Storage\JobStoreFactory
+   *
+   * @todo Can we remove this?
+   */
   private $jobStoreFactory;
+
+  /**
+   * Database table factory service.
+   *
+   * @var \Drupal\datastore\Storage\DatabaseTableFactory
+   */
   private $databaseTableFactory;
   private $schemaTranslator;
 

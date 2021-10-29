@@ -2,10 +2,12 @@
 
 namespace Drupal\metastore;
 
+use Drupal\Core\Cache\CacheableDependencyInterface;
+
 /**
  * Data.
  */
-interface MetastoreItemInterface {
+interface MetastoreItemInterface extends CacheableDependencyInterface {
 
   /**
    * Getter.

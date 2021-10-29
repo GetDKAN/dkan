@@ -1,23 +1,26 @@
 <?php
 
-namespace Drupal\metastore;
+namespace Drupal\metastore\Controller;
 
+use Drupal\common\JsonResponseTrait;
 use Drupal\metastore\Exception\CannotChangeUuidException;
 use Drupal\metastore\Exception\InvalidJsonException;
 use Drupal\metastore\Exception\MetastoreException;
 use Drupal\metastore\Exception\MissingPayloadException;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\common\JsonResponseTrait;
+use Drupal\metastore\DatasetApiDocs;
+use Drupal\metastore\MetastoreApiResponse;
+use Drupal\metastore\Service;
 
 /**
  * Class Api.
  *
  * @todo Move docs stuff.
  */
-class WebServiceApi implements ContainerInjectionInterface {
+class MetastoreController implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
   /**
@@ -47,8 +50,8 @@ class WebServiceApi implements ContainerInjectionInterface {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new WebServiceApi(
-      $container->get('request_stack'),
+    return new static(
+      $container->get('dkan.metastore.api_response'),
       $container->get('dkan.metastore.service'),
       $container->get('dkan.metastore.dataset_api_docs')
     );
@@ -57,8 +60,8 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(RequestStack $requestStack, Service $service, DatasetApiDocs $docs) {
-    $this->requestStack = $requestStack;
+  public function __construct(MetastoreApiResponse $apiResponse, Service $service, DatasetApiDocs $docs) {
+    $this->apiResponse = $apiResponse;
     $this->service = $service;
     $this->docs = $docs;
   }
@@ -67,7 +70,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    * Get schemas.
    */
   public function getSchemas() {
-    return $this->getResponse($this->service->getSchemas());
+    return $this->apiResponse->cachedJsonResponse($this->service->getSchemas());
   }
 
   /**
@@ -75,7 +78,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getSchema(string $identifier) {
     try {
-      return $this->getResponse($this->service->getSchema($identifier));
+      return $this->apiResponse->cachedJsonResponse($this->service->getSchema($identifier));
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 404);
@@ -87,12 +90,14 @@ class WebServiceApi implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function getAll(string $schema_id) {
-    $keepRefs = $this->wantObjectWithReferences();
+  public function getAll(string $schema_id, Request $request) {
+    $keepRefs = $this->wantObjectWithReferences($request);
 
     $output = array_map(function ($object) use ($keepRefs) {
       $modified_object = $keepRefs
@@ -102,7 +107,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     }, $this->service->getAll($schema_id));
 
     $output = array_values($output);
-    return $this->getResponse($output);
+    return $this->apiResponse->cachedJsonResponse($output, 200, [$schema_id], $request->query);
   }
 
   /**
@@ -112,21 +117,23 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function get(string $schema_id, string $identifier) {
+  public function get(string $schema_id, string $identifier, Request $request) {
     try {
       $object = $this->service->get($schema_id, $identifier);
-      if ($this->wantObjectWithReferences()) {
+      if ($this->wantObjectWithReferences($request)) {
         $object = $this->service->swapReferences($object);
       }
       else {
         $object = Service::removeReferences($object);
       }
       $object = (object) $object->get('$');
-      return $this->getResponse($object);
+      return $this->apiResponse->cachedJsonResponse($object, 200, [$schema_id => [$identifier]], $request->query);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 404);
@@ -134,13 +141,17 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Determine if we want to inject the reference metadata into the response.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
+   *
+   * @return bool
+   *   True if we want references.
    */
-  private function wantObjectWithReferences() {
-    $param = $this->requestStack->getCurrentRequest()
-      ->get('show-reference-ids', FALSE);
-    $param2 = $this->requestStack->getCurrentRequest()
-      ->get('show_reference_ids', FALSE);
+  private function wantObjectWithReferences(Request $request) {
+    $param = $request->get('show-reference-ids', FALSE);
+    $param2 = $request->get('show_reference_ids', FALSE);
     if ($param === FALSE && $param2 === FALSE) {
       return FALSE;
     }
@@ -160,7 +171,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getResources(string $schema_id, string $identifier) {
     try {
-      return $this->getResponse($this->service->getResources($schema_id, $identifier));
+      return $this->apiResponse->cachedJsonResponse($this->service->getResources($schema_id, $identifier));
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 404);
@@ -172,18 +183,20 @@ class WebServiceApi implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function post(string $schema_id) {
+  public function post(string $schema_id, Request $request) {
     try {
-      $data = $this->getRequestContent();
+      $data = $request->getContent();
       $this->checkIdentifier($data);
       $data = $this->service->getValidMetadataFactory()->get($data, $schema_id, ['method' => 'POST']);
       $identifier = $this->service->post($schema_id, $data);
-      return $this->getResponse([
-        "endpoint" => "{$this->getRequestUri()}/{$identifier}",
+      return $this->apiResponse->cachedJsonResponse([
+        "endpoint" => "{$request->getRequestUri()}/{$identifier}",
         "identifier" => $identifier,
       ], 201);
     }
@@ -202,15 +215,17 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function publish(string $schema_id, string $identifier) {
+  public function publish(string $schema_id, string $identifier, Request $request) {
     try {
       $this->service->publish($schema_id, $identifier);
-      return $this->getResponse((object) [
-        "endpoint" => $this->getRequestUri(),
+      return $this->apiResponse->cachedJsonResponse((object) [
+        "endpoint" => "{$request->getRequestUri()}/publish",
         "identifier" => $identifier,
       ]);
     }
@@ -229,20 +244,22 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function put($schema_id, string $identifier) {
+  public function put($schema_id, string $identifier, Request $request) {
     try {
-      $data = $this->getRequestContent();
+      $data = $request->getContent();
       $this->checkIdentifier($data, $identifier);
       $data = $this->service->getValidMetadataFactory()->get($data, $schema_id);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
-      return $this->getResponse(
+      return $this->apiResponse->cachedJsonResponse(
         [
-          "endpoint" => $this->getRequestUri(),
+          "endpoint" => $request->getRequestUri(),
           "identifier" => $info['identifier'],
         ],
         $code
@@ -263,14 +280,16 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function patch($schema_id, $identifier) {
+  public function patch($schema_id, $identifier, Request $request) {
 
     try {
-      $data = $this->getRequestContent();
+      $data = $request->getContent();
 
       if (empty($data)) {
         throw new MissingPayloadException("Empty body");
@@ -282,8 +301,8 @@ class WebServiceApi implements ContainerInjectionInterface {
       $this->checkIdentifier($data, $identifier);
 
       $this->service->patch($schema_id, $identifier, $data);
-      return $this->getResponse((object) [
-        "endpoint" => $this->getRequestUri(),
+      return $this->apiResponse->cachedJsonResponse((object) [
+        "endpoint" => $request->getRequestUri(),
         "identifier" => $identifier,
       ]);
     }
@@ -309,7 +328,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function delete($schema_id, $identifier) {
     try {
       $this->service->delete($schema_id, $identifier);
-      return $this->getResponse((object) ["message" => "Dataset {$identifier} has been deleted."]);
+      return $this->apiResponse->cachedJsonResponse((object) ["message" => "Dataset {$identifier} has been deleted."]);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);
@@ -324,7 +343,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getCatalog() : JsonResponse {
     try {
-      return $this->getResponse($this->service->getCatalog());
+      return $this->apiResponse->cachedJsonResponse($this->service->getCatalog());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);
@@ -342,7 +361,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function getDocs($identifier) : JsonResponse {
     try {
-      return $this->getResponse($this->docs->getDatasetSpecific($identifier));
+      return $this->apiResponse->cachedJsonResponse($this->docs->getDatasetSpecific($identifier));
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);
@@ -357,26 +376,6 @@ class WebServiceApi implements ContainerInjectionInterface {
     if (isset($identifier) && isset($obj->identifier) && $obj->identifier != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");
     }
-  }
-
-  /**
-   * Get the request's uri.
-   *
-   * @return string
-   *   The uri.
-   */
-  private function getRequestUri(): string {
-    return $this->requestStack->getCurrentRequest()->getRequestUri();
-  }
-
-  /**
-   * Get the request's content.
-   *
-   * @return string
-   *   The content.
-   */
-  private function getRequestContent(): string {
-    return $this->requestStack->getCurrentRequest()->getContent();
   }
 
 }

@@ -44,10 +44,19 @@ context('Admin dataset json form', () => {
         .click({ force: true });
         cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
         // End filling up keyword.
+        cy.get('#edit-actions').within(() => {
+          cy.get('#edit-preview').should('not.exist')
+        })
         cy.get('#edit-submit').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
-        // Editing dataset.
+        // Confirm the default dkan admin view is filtered to show only datasets.
         cy.visit(baseurl + "/admin/dkan/datasets")
+        cy.get('tbody tr').each(($el) => {
+          cy.wrap($el).within(() => {
+            cy.get('td.views-field-field-data-type').should('contain', 'dataset')
+          })
+        })
+        // Edit the dataset.
         cy.get('#edit-title').type('DKANTEST dataset title', { force:true } )
         cy.get('#edit-submit-dkan-dataset-content').click({ force:true })
         cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
@@ -62,6 +71,9 @@ context('Admin dataset json form', () => {
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title').type('DKANTEST distribution title text', { force:true })
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description').type('DKANTEST distribution description text', { force:true })
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select').select('csv', { force:true })
+        cy.get('#edit-actions').within(() => {
+          cy.get('#edit-preview').should('not.exist')
+        })
         cy.get('#edit-submit').click({ force:true })
         cy.get('.messages--status').should('contain','has been updated')
         // Delete dataset.

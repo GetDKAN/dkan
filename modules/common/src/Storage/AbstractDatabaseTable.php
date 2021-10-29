@@ -4,11 +4,12 @@ namespace Drupal\common\Storage;
 
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
+use Drupal\indexer\IndexManager;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\common\EventDispatcherTrait;
 
 /**
- * AbstractDatabaseTable class.
+ * Base class for database storage methods.
  */
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   use SqlStorageTrait;
@@ -22,6 +23,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * @var \Drupal\Core\Database\Connection
    */
   protected $connection;
+
+  /**
+   * Optional index manager service.
+   *
+   * @var null|\Drupal\indexer\IndexManager
+   */
+  protected $indexManager;
 
   /**
    * Get the full name of datastore db table.
@@ -42,7 +50,9 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Get the primary key used in the table.
    */
-  abstract protected function primaryKey();
+  public function primaryKey() {
+    return 'id';
+  }
 
   /**
    * Constructor.
@@ -59,19 +69,25 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Inherited.
+   * Set an optional index manager service.
    *
-   * @inheritdoc
+   * @param \Drupal\indexer\IndexManager $indexManager
+   *   Index manager.
+   */
+  public function setIndexManager(IndexManager $indexManager) {
+    $this->indexManager = $indexManager;
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function retrieve(string $id) {
     $this->setTable();
 
-    /* @var \Drupal\Core\Database\Query\Select $select */
     $select = $this->connection->select($this->getTableName(), 't')
       ->fields('t', array_keys($this->getSchema()['fields']))
       ->condition($this->primaryKey(), $id);
 
-    /* @var \Drupal\Core\Database\StatementInterface $statement */
     $statement = $select->execute();
 
     // The docs do not mention it, but fetch can return false.
@@ -81,9 +97,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function retrieveAll(): array {
     $this->setTable();
@@ -273,7 +287,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Check for existence of a table name.
    */
-  private function tableExist($table_name) {
+  protected function tableExist($table_name) {
     $exists = $this->connection->schema()->tableExists($table_name);
     return $exists;
   }
@@ -282,21 +296,27 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    * Create a table given a name and schema.
    */
   private function tableCreate($table_name, $schema) {
-    // Opportunity to alter the schema before table creation.
+    // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
+    // Add indexes if we have an index manager.
+    if (method_exists($this->indexManager, 'modifySchema')) {
+      $schema = $this->indexManager->modifySchema($table_name, $schema);
+    }
     $this->connection->schema()->createTable($table_name, $schema);
   }
 
   /**
    * Set the schema using the existing database table.
    */
-  private function setSchemaFromTable() {
+  protected function setSchemaFromTable() {
     $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
     if (empty($fields_info)) {
       return;
     }
 
-    $fields = $this->getFieldsFromFieldsInfo($fields_info);
+    foreach ($fields_info as $info) {
+      $fields[] = $info->Field;
+    }
     $schema = $this->getTableSchema($fields);
     if (method_exists($this->connection->schema(), 'getComment')) {
       foreach ($schema['fields'] as $fieldName => $info) {
@@ -306,20 +326,6 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       }
     }
     $this->setSchema($schema);
-  }
-
-  /**
-   * Get field names from results of a DESCRIBE query.
-   *
-   * @param array $fieldsInfo
-   *   Array containing three results of a DESCRIBE query sent to db connection.
-   */
-  private function getFieldsFromFieldsInfo(array $fieldsInfo) {
-    $fields = [];
-    foreach ($fieldsInfo as $info) {
-      $fields[] = $info->Field;
-    }
-    return $fields;
   }
 
   /**

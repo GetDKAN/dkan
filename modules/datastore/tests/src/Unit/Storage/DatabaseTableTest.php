@@ -8,13 +8,15 @@ use Drupal\Core\Database\Query\Insert;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Driver\mysql\Schema;
 use Drupal\Core\Database\Statement;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\Component\DependencyInjection\Container;
 use Drupal\common\Resource;
 use Drupal\common\Storage\Query;
+use Drupal\Component\DependencyInjection\Container;
 use Drupal\datastore\Storage\DatabaseTable;
+use Drupal\indexer\IndexManager;
 
 use MockChain\Chain;
 use MockChain\Options;
@@ -74,14 +76,19 @@ class DatabaseTableTest extends TestCase {
           "type" => "serial",
           "unsigned" => TRUE,
           "not null" => TRUE,
+          'length' => 10,
+          'mysql_type' => 'int',
         ],
         "first_name" => [
-          "type" => "text",
+          "type" => "varchar",
           "description" => "First Name",
+          'length' => 10,
+          'mysql_type' => 'varchar'
         ],
         "last_name" => [
           "type" => "text",
           "description" => "lAST nAME",
+          "mysql_type" => "text",
         ],
       ],
     ];
@@ -90,13 +97,59 @@ class DatabaseTableTest extends TestCase {
   }
 
   /**
+   * Ensure indexer service is used during create table code flow.
+   */
+  public function testIndexerService() {
+    // Stub event dispatcher service.
+    $eventDispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+    $container = new ContainerBuilder();
+    $container->set('event_dispatcher', $eventDispatcher);
+    \Drupal::setContainer($container);
+
+    $schema = [
+      "fields" => [
+        "record_number" => [
+          "type" => "serial",
+          "unsigned" => TRUE,
+          "not null" => TRUE,
+        ],
+      ],
+    ];
+
+    $connection = $this->getConnectionChain()
+      ->add(Schema::class, "tableExists", FALSE)
+      ->add(Schema::class, "createTable", FALSE)
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'countQuery', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetchField', 1)
+      ->getMock();
+
+    $databaseTable = new DatabaseTable(
+      $connection,
+      $this->getResource()
+    );
+
+    $indexerClass = $this->getMockBuilder(IndexManager::class);
+    $indexer = $indexerClass
+      ->setMethods(["modifySchema"])
+      ->getMock();
+    $indexer->expects($this->once())
+      ->method('modifySchema');
+    $databaseTable->setIndexManager($indexer);
+    $databaseTable->setSchema($schema);
+    $databaseTable->count();
+  }
+
+  /**
    *
    */
   public function testRetrieveAll() {
 
     $fieldInfo = [
-      (object) ['Field' => "first_name"],
-      (object) ['Field' => "last_name"],
+      (object) ['Field' => "first_name", 'Type' => "varchar(10)"],
+      (object) ['Field' => "last_name", 'Type' => 'text']
     ];
 
     $sequence = (new Sequence())
@@ -390,8 +443,20 @@ class DatabaseTableTest extends TestCase {
    */
   private function getConnectionChain() {
     $fieldInfo = [
-      (object) ['Field' => "first_name"],
-      (object) ['Field' => "last_name"],
+      (object) [
+        'Field' => "record_number", 
+        'Type' => "int(10)",
+        'Extra' => "auto_increment",
+      ],
+      (object) [
+        'Field' => "first_name", 
+        'Type' => "varchar(10)"
+      ],
+      (object) [
+        'Field' => 
+        "last_name", 
+        'Type' => 'text'
+      ]
     ];
 
     $chain = (new Chain($this))
@@ -401,7 +466,7 @@ class DatabaseTableTest extends TestCase {
       ->add(Statement::class, 'fetchAll', $fieldInfo)
       ->add(Schema::class, "tableExists", TRUE)
       ->add(Schema::class, 'getComment',
-        (new Sequence())->add('First Name')->add('lAST nAME')
+        (new Sequence())->add(NULL)->add('First Name')->add('lAST nAME')
       )
       ->add(Schema::class, 'dropTable', NULL);
 

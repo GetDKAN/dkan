@@ -75,6 +75,13 @@ class NodeDataFactory implements MetastoreEntityItemFactoryInterface {
   /**
    * {@inheritdoc}
    */
+  public static function getCacheTags() {
+    return ['node_list:data'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getMetadataField() {
     return 'field_json_metadata';
   }

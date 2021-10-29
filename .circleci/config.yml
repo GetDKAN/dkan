@@ -1,27 +1,85 @@
-version: 2
+version: 2.1
+
+commands:
+  dktl:
+    steps:
+      - run:
+          name: Install/configure DKAN Tools (dktl)
+          command: |
+            if [ ! -d ~/dkan-tools ]; then git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools; fi
+            export PATH=~/dkan-tools/bin:$PATH
+            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+  prepare_site:
+    parameters:
+      upgrade:
+        description: "If true, will upgrade a stable instance to the target commit"
+        default: false
+        type: boolean
+    steps:
+      - run:
+          name: Install Drupal
+          command: |
+            dktl dc up -d
+            sleep 10 && dktl install
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Switch to target commit and run DKAN upgrade
+                command: |
+                  git --git-dir=dkan/.git --work-tree=dkan checkout "${CIRCLE_SHA1}"
+                  dktl exec:composer -- require --no-interaction --ansi --no-update "getdkan/dkan:dev-${CIRCLE_SHA1}"
+                  dktl exec:composer -- update --no-interaction --ansi
+                  dktl drush cache:rebuild
+                  dktl drush updatedb -y
+      - unless:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Just in case, run a composer update
+                command: |
+                  dktl exec:composer -- update --no-interaction --ansi
+
+
 jobs:
   build:
     machine:
       image: circleci/classic:latest
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.2"
+      DKTL_VERSION: "4.2.4"
     steps:
       - checkout:
           path: dkan
       - run:
-          name: Setup composer config
+          name: Set up composer config
           command: |
             mkdir ~/.composer
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
-      - run:
-          name: Install DKTL
-          command: |
-            git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-      - run:
-          name: Initialize Project
-          command: dktl init --dkan-local
+      - dktl
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Initialize with latest stable tag to upgrade from
+                command: |
+                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
+                  echo "Testing upgrade from tag: ${TAG}"
+                  git --git-dir=dkan/.git --work-tree=dkan checkout "${TAG}"
+                  dktl init --dkan-local
+                  # Switch expected composer dependency to the same release
+                  dktl exec:composer -- require "getdkan/dkan:${TAG}" --no-update --ansi
+      - unless:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Initialize Project
+                command: dktl init --dkan-local
       - run:
           name: Make DKAN
           command: dktl make
@@ -34,63 +92,85 @@ jobs:
   phpunit_dredd:
     machine:
       image: circleci/classic:latest
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
-      - attach-workspace:
+      - attach_workspace:
           at: ~/
-      - run:
-          name: Set up DKAN Tools
-          command: |
-            export PATH=~/dkan-tools/bin:$PATH
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            dktl dc up -d
-      - run:
-          name: Install Drupal
-          command: sleep 10 && dktl install
-      - run:
-          name: Run phpUnit tests
-          command: |
-            dktl xdebug:start
-            dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
-      # - run:
-      #     name: Run DKAN dredd tests
-      #     command: |
-      #       dktl install:sample
-      #       dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
-      #       dktl dkan:test-dredd
+      - dktl
+      - prepare_site:
+          upgrade: << parameters.upgrade >>
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Run phpUnit tests
+                command: dktl dkan:test-phpunit --testsuite="DKAN Test Suite"
+      - unless:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Run phpUnit tests
+                command: |
+                  dktl xdebug:start
+                  sed -i "/=debug/s/=.*/=coverage/" src/docker/etc/php/xdebug.ini
+                  dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
   cypress_backend:
     machine:
       image: circleci/classic:latest
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
-      - attach-workspace:
+      - attach_workspace:
           at: ~/
-      - run:
-          name: Set up DKAN Tools
-          command: |
-            export PATH=~/dkan-tools/bin:$PATH
-            echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-            dktl dc up -d
-      - run:
-          name: Install Drupal
-          command: sleep 10 && dktl install
+      - dktl
+      - prepare_site:
+          upgrade: << parameters.upgrade >>
       - run:
           name: Run DKAN cypress tests
-          command: dktl dkan:test-cypress --headless --browser=chromium
+          command: |
+            dktl dkan:test-cypress --headless --browser=chromium
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/videos
+
 workflows:
   version: 2
-  build_and_test:
+  install_and_test:
     jobs:
-      - build
+      - build:
+          name: install_build
       - phpunit_dredd:
+          name: install_test_phpunit_dredd
           requires:
-            - build
+            - install_build
       - cypress_backend:
+          name: install_test_cypress_backend
           requires:
-            - build
+            - install_build
+  upgrade_and_test:
+    jobs:
+      - build:
+          name: upgrade_build
+          upgrade: true
+      - phpunit_dredd:
+          name: upgrade_test_phpunit_dredd
+          upgrade: true
+          requires:
+            - upgrade_build
+      - cypress_backend:
+          name: upgrade_test_cypress_backend
+          upgrade: true
+          requires:
+            - upgrade_build

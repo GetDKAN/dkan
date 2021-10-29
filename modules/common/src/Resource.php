@@ -24,27 +24,59 @@ use Procrastinator\JsonSerializeTrait;
  * 2. Resource::createNewPerspective()
  *
  * @todo Rename filePath to uri or url.
+ * @todo Refactor as service.
  */
 class Resource implements \JsonSerializable, ResourceSchemaDetectionInterface {
   use HydratableTrait, JsonSerializeTrait, ResourceSchemaDetectionTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
 
+  /**
+   * The file path or URL for the resource.
+   *
+   * @var string
+   */
   private $filePath;
+
+  /**
+   * MD5 hash of the filepath, used as the main identifier.
+   *
+   * @var string
+   */
   private $identifier;
+
+  /**
+   * Content type of the resource.
+   *
+   * @var string
+   */
   private $mimeType;
+
+  /**
+   * Specifies the perspective for the resource's file path.
+   *
+   * Can be one of "local_file", "local_url", or "source".
+   *
+   * @var string
+   */
   private $perspective;
+
+  /**
+   * The resource "version" -- a timestamp.
+   *
+   * @var int
+   */
   private $version;
   private $checksum;
 
   /**
    * Constructor.
    */
-  public function __construct($file_path, $mime_type, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
+  public function __construct($file_path, $mimeType, $perspective = self::DEFAULT_SOURCE_PERSPECTIVE) {
     // @todo generate UUID instead.
     $this->identifier = md5($file_path);
     $this->filePath = $file_path;
-    $this->mimeType = $mime_type;
+    $this->mimeType = $mimeType;
     $this->perspective = $perspective;
     // @todo Create a timestamp property and generate uuid for version.
     $this->version = time();
@@ -85,10 +117,6 @@ class Resource implements \JsonSerializable, ResourceSchemaDetectionInterface {
   public function createNewPerspective($perspective, $uri) {
     $new = $this->createCommon('perspective', $perspective);
     $new->changeFilePath($uri);
-
-    if ($perspective == 'local_file') {
-      $new->generateChecksum();
-    }
 
     return $new;
   }
@@ -192,7 +220,7 @@ class Resource implements \JsonSerializable, ResourceSchemaDetectionInterface {
    * Getter.
    */
   public function getUniqueIdentifier() {
-    return "{$this->identifier}__{$this->version}__{$this->perspective}";
+    return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
   }
 
   /**
@@ -293,13 +321,16 @@ class Resource implements \JsonSerializable, ResourceSchemaDetectionInterface {
   }
 
   /**
-   * Private.
+   * Get a distribution object from the metastore.
+   *
+   * @param mixed $identifier
+   *   A distribution UUID.
+   *
+   * @return object
+   *   JSON-decoded object.
    */
   private static function getDistribution($identifier) {
-    /* @var \Drupal\metastore\Storage\DataFactory $factory */
     $factory = \Drupal::service('dkan.metastore.storage');
-
-    /* @var \Drupal\metastore\Storage\Data $storage */
     $storage = $factory->getInstance('distribution');
 
     $distroJson = $storage->retrieve($identifier);

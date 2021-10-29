@@ -351,8 +351,8 @@ EOF;
 
     $service = Service::create($container->getMock());
     $catalog->dataset = [
-      $dataset,
-      $dataset,
+      (object) $dataset->{'$'},
+      (object) $dataset->{'$'},
     ];
     $this->assertEquals($catalog, $service->getCatalog());
   }

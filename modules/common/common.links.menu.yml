@@ -5,9 +5,3 @@ system.admin_dkan:
   parent: 'system.admin'
   weight: 4
 
-dkan.common.api_admin:
-  title: 'DKAN API'
-  description: 'Administer DKAN catalog.'
-  route_name: dkan.common.api_admin
-  parent: 'system.admin_dkan'
-  weight: 8
