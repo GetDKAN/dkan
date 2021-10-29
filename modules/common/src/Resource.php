@@ -205,6 +205,18 @@ class Resource implements \JsonSerializable, ResourceSchemaDetectionInterface {
   }
 
   /**
+   * Returns a list of serializable properties.
+   */
+  protected function serializeIgnoreProperties(): array {
+    return [
+      'columns',
+      'dataDictionary',
+      'headerLine',
+      'schema',
+    ];
+  }
+
+  /**
    * Build full resource identifier.
    *
    * @param string $identifier

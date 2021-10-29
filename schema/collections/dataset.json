@@ -293,28 +293,14 @@
             "format": "uri"
           },
           "describedBy": {
-            "$schema": "http://json-schema.org/draft-07/schema#",
             "title": "Data Dictionary",
-            "type": "object",
-            "required": [
-              "identifier",
-              "title"
-            ],
-            "properties": {
-              "identifier": {
-                "title": "Identifier",
-                "type": "string"
-              },
-              "title": {
-                "title": "Title",
-                "type": "string"
-              }
-            }
+            "description": " URL or internal UUID of the data dictionary for the distribution found at the downloadURL.",
+            "type": "string"
           },
           "describedByType": {
             "title": "Data Dictionary Type",
             "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL.",
-            "pattern": "^[a-z]+?$",
+            "pattern": "^(?P<type>[-\\w.+]+)\\/(?P<subtype>[-\\w.+]+)(?:;[\\n\\t ]*(?P<parameters>.*?))?$",
             "type": "string"
           }
         },

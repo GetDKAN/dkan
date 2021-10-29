@@ -145,25 +145,6 @@
           "extensions": "csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp",
           "progress_indicator": "bar"
         }
-      },
-      "describedBy": {
-        "ui:options": {
-          "title": "Data Dictionary",
-          "widget": "list",
-          "type": "autocomplete",
-          "allowCreate": "true",
-          "titleProperty": "title",
-          "source": {
-            "metastoreSchema": "data-dictionary"
-          }
-        },
-        "properties": {
-          "identifier": {
-            "ui:options": {
-              "widget": "hidden"
-            }
-          }
-        }
       }
     }
   },

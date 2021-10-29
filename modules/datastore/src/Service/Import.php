@@ -8,6 +8,7 @@ use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\SchemaTranslatorInterface;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Procrastinator\Result;
@@ -28,14 +29,16 @@ class Import {
   private $resource;
   private $jobStoreFactory;
   private $databaseTableFactory;
+  private $schemaTranslator;
 
   /**
    * Constructor.
    */
-  public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+  public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory, SchemaTranslatorInterface $schemaTranslator) {
     $this->resource = $resource;
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->schemaTranslator = $schemaTranslator;
   }
 
   /**
@@ -102,9 +105,10 @@ class Import {
       $this->resource->getIdentifier(),
       $this->jobStoreFactory->getInstance(Importer::class),
       [
-        "storage" => $this->getStorage(),
-        "parser" => $this->getNonRecordingParser($delimiter),
-        "resource" => $this->resource,
+        'storage' => $this->getStorage(),
+        'parser' => $this->getNonRecordingParser($delimiter),
+        'resource' => $this->resource,
+        'schema_translator' => $this->schemaTranslator,
       ]
     );
 

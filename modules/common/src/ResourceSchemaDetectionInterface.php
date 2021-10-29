@@ -3,6 +3,7 @@
 namespace Drupal\common;
 
 interface ResourceSchemaDetectionInterface {
+
   /**
    * The maximum length of a MySQL table column name.
    *
@@ -64,10 +65,18 @@ interface ResourceSchemaDetectionInterface {
   ];
 
   /**
+   * RegEx for matching UUIDs.
+   *
+   * @var string
+   */
+  public const UUID_REGEX = '%^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$%';
+
+  /**
    * Accessor for schema property.
    *
    * @return array
    *  Schema property value.
    */
   public function getSchema(): array;
+
 }

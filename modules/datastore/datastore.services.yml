@@ -29,6 +29,7 @@ services:
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.database_table_factory'
+      - '@dkan.datastore.schema_converter'
 
   dkan.datastore.logger_channel:
     parent: logger.channel_base
@@ -68,3 +69,6 @@ services:
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
+
+  dkan.datastore.schema_translator:
+    class: \Drupal\datastore\FrictionlessSchemaTranslator

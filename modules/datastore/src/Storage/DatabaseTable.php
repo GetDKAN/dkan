@@ -131,7 +131,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Overriden.
    */
-  public function setSchema($schema) {
+  public function setSchema(array $schema): void {
     $fields = $schema['fields'];
     $new_field = [
       $this->primaryKey() =>

@@ -8,8 +8,9 @@ namespace Drupal\common;
  * @todo Convert to service with Dependency Injection.
  */
 class UrlHostTokenResolver {
-  const TOKEN = "h-o.st";
+  const TOKEN = 'h-o.st';
   const PUBLIC_SCHEME = 'public://';
+  protected const HTTP_URL_PATTERN = '/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/';
 
   /**
    * Get the HTTP server public files URL.
@@ -59,6 +60,10 @@ class UrlHostTokenResolver {
   public static function resolveFilePath(string $resourceUrl): string {
     return urldecode(preg_replace('/^' . preg_quote(self::getServerPublicFilesUrl(), '/') . '/',
       self::PUBLIC_SCHEME, self::resolve($resourceUrl)));
+  }
+
+  public static function isValidHttpUrl(string $url): bool {
+    return preg_match(self::HTTP_URL_PATTERN, $url) === 1;
   }
 
 }

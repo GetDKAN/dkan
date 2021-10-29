@@ -8,6 +8,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\Core\Utility\Error;
 
 use Drupal\common\LoggerTrait;
 use Drupal\datastore\Service as DatastoreService;
@@ -112,7 +113,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
 
     }
     catch (\Exception $e) {
-      $this->error("Import for {$data['identifier']} returned an error: {$e->getMessage()}");
+      $error = Error::renderExceptionSafe($e);
+      $this->error("Import for {$data['identifier']} returned an error: {$error}");
     }
   }
 

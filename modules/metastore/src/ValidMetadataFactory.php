@@ -80,6 +80,22 @@ class ValidMetadataFactory implements ContainerInjectionInterface {
   }
 
   /**
+   * Validate the supplied JSON string against the specified schema.
+   *
+   * @param string $json_string
+   *   JSON being validated.
+   * @param string $schema_id
+   *   Schema ID being validated against.
+   *
+   * @return bool
+   *   Whether the JSON given successfully validated against the given schema.
+   */
+  public function validate(string $json_string, string $schema_id): bool {
+    $schema = $this->getSchemaRetriever()->retrieve($schema_id);
+    return RootedJsonData::validate($json_string, $schema)->isValid();
+  }
+
+  /**
    * Adds identifier to JSON payload.
    *
    * @param string $schema_id

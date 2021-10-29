@@ -148,11 +148,33 @@ class WidgetRouter implements ContainerInjectionInterface {
    *   The element configured as a list element.
    */
   public function handleListElement($spec, array $element) {
-    if (isset($spec->title)) {
-      $element['#title'] = $spec->title;
+    if (isset($spec->titleProperty)) {
+      if (isset($element[$spec->titleProperty])) {
+        $element[$spec->titleProperty] = $this->getDropdownElement($element[$spec->titleProperty], $spec, $spec->titleProperty);
+      }
     }
+    else {
+      $element = $this->getDropdownElement($element, $spec);
+    }
+    return $element;
+  }
+
+  /**
+   * Helper function to build a dropdown element.
+   *
+   * @param mixed $element
+   *   Element to apply UI options.
+   * @param mixed $spec
+   *   Object with spec for UI options.
+   * @param mixed $titleProperty
+   *   The title property name in which the dropdown should be added (or FALSE).
+   *
+   * @return array
+   *   The dropdown element configured.
+   */
+  public function getDropdownElement($element, $spec, $titleProperty = FALSE) {
     $element['#type'] = $this->getSelectType($spec);
-    $element['#options'] = $this->getDropdownOptions($spec);
+    $element['#options'] = $this->getDropdownOptions($spec->source, $titleProperty);
     if ($element['#type'] === 'select_or_other_select') {
       $element = $this->handleSelectOtherDefaultValue($element, $element['#options']);
       $element['#input_type'] = isset($spec->other_type) ? $spec->other_type : 'textfield';
@@ -197,15 +219,13 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Array with options for the dropdown.
    */
-  public function getDropdownOptions(object $spec)  {
+  public function getDropdownOptions($source, $titleProperty = FALSE) {
     $options = [];
-    if (isset($spec->source->enum)) {
-      $options = $this->stringHelper->getSelectOptions($spec->source);
+    if (isset($source->enum)) {
+      $options = $this->stringHelper->getSelectOptions($source);
     }
-    if (isset($spec->source->metastoreSchema)) {
-      $title_prop = $spec->titleProperty ?? NULL;
-      $id_prop = $spec->idProperty ?? NULL;
-      $options = $this->getOptionsFromMetastore($spec->source->metastoreSchema, $title_prop, $id_prop);
+    if (isset($source->metastoreSchema)) {
+      $options = $this->getOptionsFromMetastore($source, $titleProperty);
     }
     return $options;
   }
@@ -221,17 +241,18 @@ class WidgetRouter implements ContainerInjectionInterface {
    * @return array
    *   Array with options from metastore for the dropdown.
    */
-  public function getOptionsFromMetastore(string $metastore_schema, ?string $title_prop, ?string $id_prop) {
+  public function getOptionsFromMetastore($source, $titleProperty = FALSE) {
     $options = [];
-    $values = $this->metastore->getAll($metastore_schema);
-
+    $values = $this->metastore->getAll($source->metastoreSchema);
     foreach ($values as $value) {
       $value = json_decode($value);
-      $title = isset($title_prop) ? ($value->data->{$title_prop} ?? $value->{$title_prop}) : $value->data;
-      $id = $value->data->{$id_prop} ?? $value->{$id_prop} ?? $title;
-      $options[$id] = $title;
+      if ($titleProperty) {
+        $options[$value->data->{$titleProperty}] = $value->data->{$titleProperty};
+      }
+      else {
+        $options[$value->data] = $value->data;
+      }
     }
-
     return $options;
   }
 

@@ -13,57 +13,6 @@ use Psr\Log\LogLevel;
 class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   use LoggerTrait;
 
-  private $schema;
-
-  /**
-   * Constructor.
-   */
-  public function __construct(Connection $connection) {
-    parent::__construct($connection);
-
-    $schema = [];
-
-    foreach ($this->getHeader() as $field) {
-      $schema['fields'][$field] = [
-        'type' => "text",
-      ];
-    }
-
-    $fields = $schema['fields'];
-
-    $new_field = [
-      $this->primaryKey() =>
-        [
-          'type' => 'serial',
-          'unsigned' => TRUE,
-          'not null' => TRUE,
-        ],
-    ];
-
-    $fields = array_merge($new_field, $fields);
-
-    $schema['fields'] = $fields;
-    $schema['primary key'] = [$this->primaryKey()];
-    $this->setSchema($schema);
-  }
-
-  /**
-   * Gets header fields.
-   *
-   * @return array
-   *   Header array.
-   */
-  protected function getHeader() : array {
-    return [
-      'identifier',
-      'version',
-      'filePath',
-      'perspective',
-      'mimeType',
-      'checksum',
-    ];
-  }
-
   /**
    * Get the full name of datastore db table.
    *
