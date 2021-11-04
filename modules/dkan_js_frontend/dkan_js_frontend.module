@@ -38,7 +38,6 @@ function dkan_js_frontend_page_attachments(array &$page) {
     // $response = $controller->get('dataset', 1, new Request());
     $metastoreService = \Drupal::service('dkan.metastore.service');
     $datasets = $metastoreService->get('dataset', 'cedcd327-4e5d-43f9-8eb1-c11850fa7c55');
-    
     $baseUrl = Settings::get('config_sync_directory', '');
     $page['#attached']['drupalSettings']['dkan_js_frontend']['baseUrl'] = $baseUrl;
     $page['#attached']['drupalSettings']['dkan_js_frontend']['ids'] = $datasets;
