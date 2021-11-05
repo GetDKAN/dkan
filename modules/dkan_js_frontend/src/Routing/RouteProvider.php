@@ -59,7 +59,8 @@ class RouteProvider {
   }
 
   /**
-   * Private. All routes return root JS file.
+   * Private. All routes tagged with dkan_js_frontend.
+   * This allows for select attachment of JS libraries by Drupal module.
    */
   private function addIndexPage(RouteCollection $routes) {
     $config_routes = $this->routes;
