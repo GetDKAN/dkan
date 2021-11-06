@@ -1,0 +1,7 @@
+.toolbar-icon-system-admin-dkan:before {
+  background-image: url(block-787878.svg);
+}
+.toolbar-icon-system-admin-dkan:active:before,
+.toolbar-icon-system-admin-dkan.is-active:before {
+  background-image: url(block-000000.svg);
+}

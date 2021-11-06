@@ -8,6 +8,7 @@
         "drupal/admin_toolbar": "^2.3",
         "drupal/config_update": "^1.6",
         "cweagans/composer-patches": "^1.7",
+        "drupal/moderated_content_bulk_publish": "^2.0",
         "drupal/search_api": "^1.15",
         "drupal/views_bulk_operations": "^3.6",
         "ext-json": "*",
