@@ -187,7 +187,6 @@ display:
             - archive_current
             - node_delete_action
             - publish_latest
-            - unpublish_current
           plugin_id: node_bulk_form
           entity_type: node
         uuid:
