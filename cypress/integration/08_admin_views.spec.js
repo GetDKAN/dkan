@@ -81,7 +81,7 @@ context('Admin content and dataset views', () => {
         cy.get('h1').should('contain.text', 'Edit Data')
         cy.get('#edit-delete').click({ force:true })
         cy.get('#edit-submit').click({ force:true })
-        cy.get('.dc-hero-title').should('contain.text','Welcome to DKAN' )
+        cy.get('h2').should('contain.text','Welcome to DKAN' )
     })
 
   })
