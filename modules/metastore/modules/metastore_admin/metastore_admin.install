@@ -82,9 +82,16 @@ function metastore_admin_update_8008() {
 }
 
 /**
- * Update dkan dataset content view bulk opperations.
+ * Enable the moderated_content_bulk_publish module.
  */
 function metastore_admin_update_8009() {
+  \Drupal::service('module_installer')->install(['moderated_content_bulk_publish']);
+}
+
+/**
+ * Update dkan dataset content view bulk opperations.
+ */
+function metastore_admin_update_8010() {
   $view = \Drupal::service('config.factory')->getEditable('views.view.dkan_dataset_content');
   $displays = $view->get('display');
   foreach ($displays as $display_name => $display) {
