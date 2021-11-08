@@ -6,7 +6,7 @@ This module provides a way to access a decoupled JavaScript frontend at defined 
 The paths used by are defined by the `dkan_js_frontend.config` yml. In the routes array add any path you want this module to use with a string structured like `unique_path_name,/the_path`. The first part is used by Drupal to store paths and the second is the actual path the JS frontend will show at.
 
 ## JS/CSS
-The module assumes Create React App has been loaded into the `/src/frontend` folder of the site. This can be changed by updating the `dkan_js_frontend.config` keys of `css_folder` and `js_folder` with the new directory path. 
+The module assumes Create React App (CRA) has been loaded into the `/src/frontend` folder of the site. This can be changed by updating the `dkan_js_frontend.config` keys of `css_folder` and `js_folder` with the new directory path. 
 
 The code will glob all files in the folders specified and attach them to any route/path that has been defined. The glob functionality should allow you to get around issues like CRA's hash in file names. The JS/CSS is directly attached to the page template provided, so the generated `index.html` file from CRA will not be used so all header updates will need to be made in Drupal and not the public files provided by the JS framework.
 
