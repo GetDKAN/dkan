@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Core\Site\Settings;
+use Drupal\Core\Config\FileStorage;
 /**
  * @file
  */
@@ -31,31 +33,32 @@ function metastore_update_8003() {
  */
 function metastore_update_8004() {
   $workflow = \Drupal::service('config.factory')->getEditable('workflows.workflow.dkan_publishing');
+
   $states = $workflow->get('type_settings.states');
-  $states['archived'] = [
+  $states["archived"] = [
+    "label" => "Archived",
     "published" => false,
     "default_revision" => true,
-    "label" => "Archived",
     "weight" => 3
   ];
+
   $transitions = $workflow->get('type_settings.transitions');
-  $transitions['archive'] = [
+  $transitions["archive"] = [
     "label" => "Archive",
     "from" => ["published"],
-    "to" => ["archived"],
+    "to" => "archived",
     "weight" => 3
   ];
-  $transitions['restore'] = [
+  $transitions["restore"] = [
     "label" => "Restore",
     "from" => ["archived"],
-    "to" => ["published"],
+    "to" => "published",
     "weight" => 4
   ];
 
-  $workflow->set('workflows.workflow.dkan_publishing.type_settings.states', $states);
-  $workflow->set('workflows.workflow.dkan_publishing.type_settings.transitions', $transitions);
+  $workflow->set('type_settings.states', $states);
+  $workflow->set('type_settings.transitions', $transitions);
   $workflow->save(TRUE);
 
   drupal_flush_all_caches();
 }
-
