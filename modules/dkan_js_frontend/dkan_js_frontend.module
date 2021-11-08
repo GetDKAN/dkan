@@ -1,0 +1,70 @@
+<?php
+
+use Drupal\Core\Site\Settings;
+
+/**
+ * Implements hook_library_info_build().
+ * Collects all CSS/JS files in the paths set in config 
+ * and adds them the dkan_js_frontend.
+ *
+ * @return array
+ */
+function dkan_js_frontend_library_info_build() {
+  $libraries = [];
+  $js_path = \Drupal::config('dkan_js_frontend.config')->get('js_folder');
+  $css_path = \Drupal::config('dkan_js_frontend.config')->get('css_folder');
+  foreach(glob(\Drupal::root() . $js_path . '*.js') as $full_path) {
+    $basename = basename($full_path);
+    $libraries['dkan_js_frontend']['js'][$js_path . $basename] = [];
+  }
+  foreach(glob(\Drupal::root() . $css_path . '*.css') as $full_path) {
+    $basename = basename($full_path);
+    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename] = [];
+  }
+  $libraries['dkan_js_frontend']['dependencies'] = [
+    'core/drupal',
+  ];
+  return $libraries;
+}
+
+/**
+ * Implements hook_page_attachments().
+ *
+ */
+function dkan_js_frontend_page_attachments(array &$page) {
+  $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
+  if($request == 'dkan_js_frontend') {
+    $page['#attached']['library'][] = 'dkan_js_frontend/dkan_js_frontend';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function dkan_js_frontend_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
+  if($request == 'dkan_js_frontend') {
+    $suggestions[] = 'page__dkan_js_frontend';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ * 
+ * Register a module or theme's theme implementations.
+ * The implementations declared by this hook specify how a particular render array is to be rendered as HTML.
+ * 
+ * See: https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Render%21theme.api.php/function/hook_theme/8.2.x
+ * 
+ * If you change this method, clear theme registry and routing table 'drush cc theme-registry' and 'drush cc router'.
+ */
+function dkan_js_frontend_theme($existing, $type, $theme, $path) {
+  return [
+    'page__dkan_js_frontend' => [
+      'template' => 'page--dkan_js_frontend',
+      'base hook' => 'page',
+      'path' => $path . '/templates',
+    ],
+  ];
+
+}
