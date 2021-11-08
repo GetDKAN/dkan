@@ -3,7 +3,7 @@
 This module provides a way to access a decoupled JavaScript frontend at defined paths. 
 
 ## Defining Paths
-The paths used by are defined by the `dkan_js_frontend.config` yml. In the routes array add any path you want this module to use with a string structured like `unique_path_name,/the_path`. The first part is used by Drupal to store paths and the second is the actual path the JS frontend will show at.
+The paths used are defined by the `dkan_js_frontend.config` yml. In the routes array add any path you want this module to use with a string structured like `unique_path_name,/the_path`. The first part is used by Drupal to store paths and the second is the actual path the JS frontend will show at.
 
 ## JS/CSS
 The module assumes Create React App (CRA) has been loaded into the `/src/frontend` folder of the site. This can be changed by updating the `dkan_js_frontend.config` keys of `css_folder` and `js_folder` with the new directory path. 
