@@ -66,8 +66,10 @@ class QueryFactory {
     $this->populateQueryConditions($query);
     $this->populateQueryJoins($query);
     $this->populateQuerySorts($query);
-    $query->limit = $this->datastoreQuery->{"$.limit"};
-    $query->offset = $this->datastoreQuery->{"$.offset"};
+    if ($this->datastoreQuery->{"$.limit"}) {
+      $query->limit = $this->datastoreQuery->{"$.limit"};
+    }
+    $query->offset = $this->datastoreQuery->{"$.offset"} ?? 0;
     $query->showDbColumns = TRUE;
 
     return $query;

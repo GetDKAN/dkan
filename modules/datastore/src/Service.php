@@ -324,11 +324,13 @@ class Service implements ContainerInjectionInterface {
    *
    * @param \Drupal\datastore\Service\DatastoreQuery $datastoreQuery
    *   DatastoreQuery object.
+   * @param bool $fetch
+   *   Perform fetchAll and return array if true, else just statement (cursor).
    *
-   * @return array
-   *   Array of result objects.
+   * @return array|\Drupal\Core\Database\StatementInterface
+   *   Array of result objects or result statement of $fetch is false.
    */
-  private function runResultsQuery(DatastoreQuery $datastoreQuery) {
+  public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE) {
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return [];
@@ -344,9 +346,9 @@ class Service implements ContainerInjectionInterface {
 
     $query = QueryFactory::create($datastoreQuery, $storageMap);
 
-    $result = $storageMap[$primaryAlias]->query($query, $primaryAlias);
+    $result = $storageMap[$primaryAlias]->query($query, $primaryAlias, $fetch);
 
-    if ($datastoreQuery->{"$.keys"} === FALSE) {
+    if ($datastoreQuery->{"$.keys"} === FALSE && is_array($result)) {
       $result = array_map([$this, 'stripRowKeys'], $result);
     }
     return $result;

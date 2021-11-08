@@ -68,7 +68,7 @@ class Query implements
    *
    * @var int|null
    */
-  public $limit = 500;
+  public $limit;
 
   /**
    * Number of records to offset by or skip before returning first record.
