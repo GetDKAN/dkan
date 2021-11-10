@@ -206,7 +206,7 @@ class QueryControllerTest extends TestCase {
     $csv = explode("\n", $result->getContent());
     $this->assertEquals('state,year', $csv[0]);
     $this->assertEquals('Alabama,2010', $csv[1]);
-    $this->assertContains('data.csv', $result->headers->get('Content-Disposition'));
+    $this->assertStringContainsString('data.csv', $result->headers->get('Content-Disposition'));
   }
 
   private function getQueryResult($data, $id = NULL, $index = NULL, $info = []) {

@@ -14,6 +14,12 @@ use Drupal\Tests\common\Unit\Connection;
  */
 class SelectFactoryTest extends TestCase {
   private $query;
+
+  /**
+   * SelectFactory object.
+   *
+   * @var \Drupal\common\Storage\SelectFactory
+   */
   private $selectFactory;
 
   /**
@@ -70,7 +76,7 @@ class SelectFactoryTest extends TestCase {
   /**
    *
    */
-  public function setUp() {
+  public function setUp():void {
     $this->query = new Query();
     $this->selectFactory = $this->getSelectFactory();
   }

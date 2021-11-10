@@ -245,7 +245,7 @@ class SelectFactory {
   /**
    * Add a condition to the DB query object.
    *
-   * @param mixed $db_query
+   * @param \Drupal\Core\Database\Query\Select|\Drupal\Core\Database\Query\Condition $db_query
    *   Drupal DB API select object or condition object.
    * @param object $condition
    *   A condition from the DKAN query object.
