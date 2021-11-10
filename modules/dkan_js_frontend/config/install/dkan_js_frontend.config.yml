@@ -1,0 +1,10 @@
+css_folder: '/frontend/build/static/css/'
+js_folder: '/frontend/build/static/js/'
+routes:
+  - home,/home
+  - about,/about
+  - api,/api
+  - dataset,/dataset/{id}
+  - datasetapi,/dataset/{id}/api
+  - search,/search
+  - publishers,/publishers

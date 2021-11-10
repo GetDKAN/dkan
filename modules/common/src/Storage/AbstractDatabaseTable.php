@@ -224,21 +224,27 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *   Query object.
    * @param string $alias
    *   (Optional) alias for primary table.
+   * @param bool $fetch
+   *   Fetch the rows if true, just return the result statement if not.
+   *
+   * @return array|\Drupal\Core\Database\StatementInterface
+   *   Array of results if $fetch is true, otherwise result of
+   *   Select::execute() (prepared Statement object or null).
    */
-  public function query(Query $query, string $alias = 't'): array {
+  public function query(Query $query, string $alias = 't', $fetch = TRUE) {
     $this->setTable();
     $query->collection = $this->getTableName();
     $selectFactory = new SelectFactory($this->connection, $alias);
     $db_query = $selectFactory->create($query);
 
     try {
-      $result = $db_query->execute()->fetchAll();
+      $result = $db_query->execute();
     }
     catch (DatabaseExceptionWrapper $e) {
       throw new \Exception($this->sanitizedErrorMessage($e->getMessage()));
     }
 
-    return $result;
+    return $fetch ? $result->fetchAll() : $result;
   }
 
   /**
@@ -308,7 +314,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   /**
    * Set the schema using the existing database table.
    */
-  private function setSchemaFromTable() {
+  protected function setSchemaFromTable() {
     $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
     if (empty($fields_info)) {
       return;

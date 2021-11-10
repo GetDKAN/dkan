@@ -1,3 +1,4 @@
+uuid: c6063248-bbd1-4f27-bdd6-4bb7f60a50e3
 langcode: en
 status: true
 dependencies:
@@ -5,11 +6,18 @@ dependencies:
     - node.type.data
   module:
     - content_moderation
+_core:
+  default_config_hash: HyUKOHOgXOT7djTOmi2TA5fKRYCuL1g-ik2ocwAMVIM
 id: dkan_publishing
 label: 'DKAN publishing'
 type: content_moderation
 type_settings:
   states:
+    archived:
+      published: false
+      default_revision: true
+      label: Archived
+      weight: 3
     draft:
       label: Draft
       published: false
@@ -26,6 +34,12 @@ type_settings:
       default_revision: true
       weight: 1
   transitions:
+    archive:
+      label: Archive
+      from:
+        - published
+      to: archived
+      weight: 3
     create_new_draft:
       label: 'Create New Draft'
       to: draft
@@ -47,6 +61,12 @@ type_settings:
       from:
         - draft
         - published
+    restore:
+      label: Restore
+      from:
+        - archived
+      to: published
+      weight: 4
   entity_types:
     node:
       - data

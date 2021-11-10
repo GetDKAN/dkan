@@ -65,7 +65,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "SELECT t.* FROM {table} t LIMIT 500 OFFSET 0";
+        return "SELECT t.* FROM {table} t";
 
       case self::EXCEPTION:
         return '';
@@ -424,7 +424,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "LIMIT 500 OFFSET 5";
+        return "OFFSET 5";
 
       case self::EXCEPTION:
         return '';
