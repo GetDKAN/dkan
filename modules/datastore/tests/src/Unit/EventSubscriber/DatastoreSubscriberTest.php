@@ -120,7 +120,7 @@ class DatastoreSubscriberTest extends TestCase {
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $test = $subscriber->drop($event);
-    $this->assertContains('Dropping datastore', $chain->getStoredInput('notices')[0]);
+    $this->assertStringContainsString('Dropping datastore', $chain->getStoredInput('notices')[0]);
     $this->assertEmpty($chain->getStoredInput('errors'));
   }
 
@@ -154,7 +154,7 @@ class DatastoreSubscriberTest extends TestCase {
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $test = $subscriber->drop($event);
-    $this->assertContains('Failed to drop', $chain->getStoredInput('errors')[0]);
+    $this->assertStringContainsString('Failed to drop', $chain->getStoredInput('errors')[0]);
   }
 
   /**
@@ -187,7 +187,7 @@ class DatastoreSubscriberTest extends TestCase {
 
     $subscriber = DatastoreSubscriber::create($chain->getMock());
     $test = $subscriber->drop($event);
-    $this->assertContains('Failed to remove importer job', $chain->getStoredInput('errors')[0]);
+    $this->assertStringContainsString('Failed to remove importer job', $chain->getStoredInput('errors')[0]);
   }
 
   /**

@@ -118,6 +118,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $nodeStorage = $this->storage->getEntityStorage();
 
     $nids = $nodeStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', 'data')
       ->condition('field_data_type', 'dataset')
       ->execute();

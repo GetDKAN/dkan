@@ -2,7 +2,7 @@
 
 namespace Drupal\common\Events;
 
-use Symfony\Component\EventDispatcher\Event as SymfonyEvent;
+use Drupal\Component\EventDispatcher\Event as SymfonyEvent;
 
 /**
  * Class Event.

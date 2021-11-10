@@ -43,6 +43,7 @@ class DkanDatasetTest extends TestCase {
       ->add(EntityStorageInterface::class, 'getQuery', QueryInterface::class)
       ->add(EntityStorageInterface::class, 'load', NodeInterface::class)
       ->add(NodeInterface::class, 'uuid', 'xyz')
+      ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'count', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', $executeSequence)

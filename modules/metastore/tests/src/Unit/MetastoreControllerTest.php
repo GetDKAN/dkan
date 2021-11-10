@@ -161,7 +161,7 @@ class MetastoreControllerTest extends TestCase {
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getResources(1, 'dataset');
-    $this->assertContains('"message":"bad","status":404', $response->getContent());
+    $this->assertStringContainsString('"message":"bad","status":404', $response->getContent());
   }
 
   /**
@@ -380,7 +380,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->delete('dataset', "1");
-    $this->assertContains('"message":"Dataset 1 has been deleted."', $response->getContent());
+    $this->assertStringContainsString('"message":"Dataset 1 has been deleted."', $response->getContent());
   }
 
   /**
@@ -392,7 +392,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->delete('dataset', 1);
-    $this->assertContains('"message":"Unknown error"', $response->getContent());
+    $this->assertStringContainsString('"message":"Unknown error"', $response->getContent());
   }
 
   /**
@@ -469,7 +469,7 @@ EOF;
 
     $controller = MetastoreController::create($mockChain->getMock());
     $response = $controller->getCatalog();
-    $this->assertContains('"message":"bad"', $response->getContent());
+    $this->assertStringContainsString('"message":"bad"', $response->getContent());
   }
 
   /**

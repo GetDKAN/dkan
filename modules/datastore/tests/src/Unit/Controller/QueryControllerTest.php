@@ -243,7 +243,7 @@ class QueryControllerTest extends TestCase {
 
     $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(200, $result->getStatusCode());
-    $this->assertContains("json-schema.org", $result->getContent());
+    $this->assertStringContainsString("json-schema.org", $result->getContent());
   }
 
   /**

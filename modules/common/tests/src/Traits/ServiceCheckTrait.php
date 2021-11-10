@@ -8,7 +8,7 @@ use MockChain\Chain;
 use MockChain\Options;
 
 /**
- *
+ * @todo Fix for non-service arguments like '%app.root%'.
  */
 trait ServiceCheckTrait {
 
