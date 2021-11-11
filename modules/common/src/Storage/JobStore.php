@@ -10,6 +10,11 @@ use Drupal\Core\Database\Connection;
  */
 class JobStore extends AbstractDatabaseTable {
 
+  /**
+   * The qualified class name of the job type we're handling.
+   *
+   * @var string
+   */
   private $jobClass;
 
   /**
