@@ -199,7 +199,7 @@ class DatasetTest extends ExistingSiteBase {
 
     // Assert the local resource folder doesn't exist.
     $this->assertDirectoryExists('public://resources/');
-    $this->assertDirectoryNotExists('public://resources/' . $refUuid);
+    $this->assertDirectoryDoesNotExist('public://resources/' . $refUuid);
 
     // delete_local_resource is off.
     $datastoreSettings->set('delete_local_resource', 0)->save();
