@@ -55,7 +55,7 @@ class ServiceTest extends TestCase {
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
       ->add(ImportService::class, 'getStorage', DatabaseTable::class)
-      ->add(DatabaseTable::class, 'destroy')
+      ->add(DatabaseTable::class, 'destruct')
       ->add(ResourceLocalizer::class, 'remove');
 
     $service = Service::create($mockChain->getMock());

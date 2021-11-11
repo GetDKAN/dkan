@@ -300,7 +300,7 @@ class DatabaseTableTest extends TestCase {
       $connectionChain->getMock(),
       $this->getResource()
     );
-    $databaseTable->destroy();
+    $databaseTable->destruct();
     $this->assertTrue(TRUE);
 
   }

@@ -396,7 +396,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function removeDatastoreStorage(string $id, string $version) {
     try {
-      $this->datastore->getStorage($id, $version)->destroy();
+      $this->datastore->getStorage($id, $version)->destruct();
     }
     catch (\Exception $e) {
       $this->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());

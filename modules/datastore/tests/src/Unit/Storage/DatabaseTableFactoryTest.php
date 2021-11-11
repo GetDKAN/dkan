@@ -20,7 +20,7 @@ class DatabaseTableFactoryTest extends TestCase {
    */
   public function test() {
     $connection = (new Chain($this))
-      ->add(Connection::class, "destroy", NULL)
+      ->add(Connection::class, "__destruct", NULL)
       ->getMock();
 
     $databaseTable = (new Chain($this))
@@ -29,7 +29,7 @@ class DatabaseTableFactoryTest extends TestCase {
 
     $builder = $this->getMockBuilder(DatabaseTableFactory::class);
     $factory = $builder->setConstructorArgs([$connection])
-      ->setMethods(["getDatabaseTable"])
+      ->onlyMethods(["getDatabaseTable"])
       ->getMock();
 
     $factory->method("getDatabaseTable")->willReturn($databaseTable);
@@ -44,7 +44,7 @@ class DatabaseTableFactoryTest extends TestCase {
    */
   public function testIndexer() {
     $connection = (new Chain($this))
-      ->add(Connection::class, "destroy", NULL)
+      ->add(Connection::class, "__destruct", NULL)
       ->getMock();
 
     $databaseTable = (new Chain($this))

@@ -23,6 +23,8 @@ class Connection extends CoreConnection {
    */
   protected $identifierQuotes = ['`', '`'];
 
+  protected $statementClass = NULL;
+
   /**
    * {@inheritdoc}
    */
