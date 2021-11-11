@@ -65,7 +65,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "SELECT `t`.* FROM {table} `t`";
+        return "SELECT t.* FROM {table} t";
 
       case self::EXCEPTION:
         return '';
@@ -83,7 +83,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "SELECT `t`.`field1` AS `field1`, `t`.`field2` AS `field2` FROM {table} `t`";
+        return "SELECT t.field1 AS field1, t.field2 AS field2 FROM {table} t";
 
       case self::EXCEPTION:
         return '';
@@ -170,7 +170,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "SELECT (t.field1 + 1) AS `add_one`, (t.field2 + 2) AS `add_two`, (SUM(t.field2)) AS `sum` FROM {table} `t` ORDER BY `add_one` ASC";
+        return "SELECT (t.field1 + 1) AS add_one, (t.field2 + 2) AS add_two, (SUM(t.field2)) AS sum FROM {table} t ORDER BY add_one ASC";
 
       case self::EXCEPTION:
         return '';
@@ -209,7 +209,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "SELECT ((t.field1 + t.field2) * (t.field3 + t.field4)) AS `nested` FROM {table} `t`";
+        return "SELECT ((t.field1 + t.field2) * (t.field3 + t.field4)) AS nested FROM {table} t";
 
       case self::EXCEPTION:
         return '';
@@ -259,7 +259,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "WHERE `t`.`field1` = :db_condition_placeholder_0";
+        return "WHERE t.field1 = :db_condition_placeholder_0";
 
       case self::EXCEPTION:
         return '';
@@ -284,7 +284,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "WHERE `t`.`field1` LIKE :db_condition_placeholder_0";
+        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
 
       case self::EXCEPTION:
         return '';
@@ -309,7 +309,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "WHERE `t`.`field1` IN (:db_condition_placeholder_0, :db_condition_placeholder_1)";
+        return "WHERE t.field1 IN (:db_condition_placeholder_0, :db_condition_placeholder_1)";
 
       case self::EXCEPTION:
         return '';
@@ -354,7 +354,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "WHERE (`t`.`field1` < :db_condition_placeholder_0) OR ((`t`.`field2` = :db_condition_placeholder_1) AND (`t`.`field3` = :db_condition_placeholder_2))";
+        return "WHERE (t.field1 < :db_condition_placeholder_0) OR ((t.field2 = :db_condition_placeholder_1) AND (t.field3 = :db_condition_placeholder_2))";
 
       case self::EXCEPTION:
         return '';
@@ -388,7 +388,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "ORDER BY `t`.`field1` DESC, `t`.`field2` ASC, `t`.`field3` DESC";
+        return "ORDER BY t.field1 DESC, t.field2 ASC, t.field3 DESC";
 
       case self::EXCEPTION:
         return '';
@@ -474,7 +474,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "INNER JOIN {table2} `l` ON t.field1 = l.field1";
+        return "INNER JOIN {table2} l ON t.field1 = l.field1";
 
       case self::EXCEPTION:
         return '';
@@ -512,7 +512,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "SELECT `t`.`field2` AS `field2`, `l`.`field3` AS `field3` FROM {table} `t` INNER JOIN {table2} `l`";
+        return "SELECT t.field2 AS field2, l.field3 AS field3 FROM {table} t INNER JOIN {table2} l";
 
       case self::EXCEPTION:
         return '';
@@ -530,7 +530,7 @@ class QueryDataProvider {
         return $query;
 
       case self::SQL:
-        return "SELECT COUNT(*) AS `expression`";
+        return "SELECT COUNT(*) AS expression";
 
       case self::EXCEPTION:
         return '';
