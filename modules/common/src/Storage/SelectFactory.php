@@ -24,12 +24,7 @@ class SelectFactory {
    */
   private $alias;
 
-  /**
-   * The DB query to return.
-   *
-   * @var \Drupal\Core\Database\Query\SelectInterface
-   */
-  private $dbQuery;
+  private $db_query;
 
   /**
    * Constructor function.
@@ -51,7 +46,7 @@ class SelectFactory {
    *   DKAN Query object.
    */
   public function create(Query $query): Select {
-    $this->dbQuery = $this->connection->select($query->collection, $this->alias);
+    $this->db_query = $this->connection->select($query->collection, $this->alias);
 
     $this->setQueryProperties($query);
     $this->setQueryConditions($query);
@@ -59,23 +54,25 @@ class SelectFactory {
     $this->setQueryLimitAndOffset($query);
     $this->setQueryJoins($query);
 
-    // $string = $this->dbQuery->__toString();
+    // $string = $this->db_query->__toString();
     if ($query->count) {
-      $this->dbQuery = $this->dbQuery->countQuery();
+      $this->db_query = $this->db_query->countQuery();
     }
-    return $this->dbQuery;
+    return $this->db_query;
   }
 
   /**
    * Specify fields on DB query.
    *
+   * @param Drupal\Core\Database\Query\Select $this->db_query
+   *   A Drupal database query API object.
    * @param Drupal\common\Storage\Query $query
    *   A DKAN query object.
    */
   private function setQueryProperties(Query $query) {
     // If properties is empty, just get all from base collection.
     if (empty($query->properties)) {
-      $this->dbQuery->fields($this->alias);
+      $this->db_query->fields($this->alias);
       return;
     }
 
@@ -87,17 +84,19 @@ class SelectFactory {
   /**
    * Set a single property.
    *
+   * @param SeDrupal\Core\Database\Query\Select $this->db_query
+   *   A Drupal database query API object.
    * @param mixed $property
    *   One property from a query properties array.
    */
   private function setQueryProperty($property) {
     if (isset($property->expression)) {
       $expressionStr = $this->expressionToString($property->expression);
-      $this->dbQuery->addExpression($expressionStr, $property->alias);
+      $this->db_query->addExpression($expressionStr, $property->alias);
     }
     else {
       $property = $this->normalizeProperty($property);
-      $this->dbQuery->addField($property->collection, $property->property, $property->alias);
+      $this->db_query->addField($property->collection, $property->property, $property->alias);
     }
   }
 
@@ -229,16 +228,18 @@ class SelectFactory {
   /**
    * Set filter conditions on DB query.
    *
+   * @param Drupal\Core\Database\Query\Select $this->db_query
+   *   A Drupal database query API object.
    * @param Drupal\common\Storage\Query $query
    *   A DKAN query object.
    */
   private function setQueryConditions(Query $query) {
     foreach ($query->conditions as $c) {
       if (isset($c->groupOperator)) {
-        $this->addConditionGroup($this->dbQuery, $c);
+        $this->addConditionGroup($this->db_query, $c);
       }
       else {
-        $this->addCondition($this->dbQuery, $c);
+        $this->addCondition($this->db_query, $c);
       }
     }
   }
@@ -246,7 +247,7 @@ class SelectFactory {
   /**
    * Add a condition to the DB query object.
    *
-   * @param \Drupal\Core\Database\Query\Select|\Drupal\Core\Database\Query\Condition $statementObj
+   * @param \Drupal\Core\Database\Query\Select|\Drupal\Core\Database\Query\Condition $this->db_query
    *   Drupal DB API select object or condition object.
    * @param object $condition
    *   A condition from the DKAN query object.
@@ -264,14 +265,14 @@ class SelectFactory {
   /**
    * Add a condition group to the database query.
    *
-   * @param Drupal\Core\Database\Query\Select|Drupal\Core\Database\Query\Condition $statementObj
-   *   Drupal DB API select object or condition.
+   * @param Drupal\Core\Database\Query\Select|Drupal\Core\Database\Query\Condition $this->db_query
+   *   Drupal DB API select object.
    * @param object $conditionGroup
    *   A condition from the DKAN query object.
    */
   private function addConditionGroup($statementObj, $conditionGroup) {
     $groupMethod = "{$conditionGroup->groupOperator}ConditionGroup";
-    $group = $this->dbQuery->$groupMethod();
+    $group = $this->db_query->$groupMethod();
     foreach ($conditionGroup->conditions as $c) {
       if (isset($c->groupOperator)) {
         $this->addConditionGroup($group, $c);
@@ -286,12 +287,14 @@ class SelectFactory {
   /**
    * Set sort order on DB query.
    *
+   * @param Drupal\Core\Database\Query\Select $this->db_query
+   *   A Drupal database query API object.
    * @param Query $query
    *   A DKAN query object.
    */
   private function setQueryOrderBy(Query $query) {
     foreach ($query->sorts as $sort) {
-      $this->setQueryDirectionOrderBy($sort, $this->dbQuery);
+      $this->setQueryDirectionOrderBy($sort, $this->db_query);
     }
   }
 
@@ -315,37 +318,41 @@ class SelectFactory {
     if (isset($sort->collection)) {
       $propertyStr = "{$sort->collection}.{$propertyStr}";
     }
-    $this->dbQuery->orderBy($propertyStr, strtoupper($sort->order));
+    $this->db_query->orderBy($propertyStr, strtoupper($sort->order));
   }
 
   /**
    * Set limit and offset on DB query.
    *
+   * @param Drupal\Core\Database\Query\Select $this->db_query
+   *   A Drupal database query API object.
    * @param Query $query
    *   A DKAN query object.
    */
   private function setQueryLimitAndOffset(Query $query) {
     if (isset($query->limit) && $query->limit !== NULL) {
-      $this->dbQuery->range(($query->offset ?? 0), ($query->limit));
+      $this->db_query->range(($query->offset ?? 0), ($query->limit));
     }
     elseif (isset($query->offset) && $query->offset) {
-      $this->dbQuery->range(($query->offset));
+      $this->db_query->range(($query->offset));
     }
   }
 
   /**
    * Add joins to the DB query.
    *
+   * @param Drupal\Core\Database\Query\Select $this->db_query
+   *   A Drupal database query API object.
    * @param Query $query
    *   A DKAN query object.
    */
   private function setQueryJoins(Query $query) {
     foreach ($query->joins as $join) {
       if (isset($join->condition)) {
-        $this->dbQuery->join($join->collection, $join->alias, $this->conditionString($join->condition));
+        $this->db_query->join($join->collection, $join->alias, $this->conditionString($join->condition));
       }
       if (empty($query->properties)) {
-        $this->dbQuery->fields($join->alias);
+        $this->db_query->fields($join->alias);
       }
     }
   }
