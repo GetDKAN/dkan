@@ -1,0 +1,2 @@
+route_callbacks:
+  - 'dkan_js_frontend.route_provider::routes'

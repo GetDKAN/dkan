@@ -14,6 +14,13 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-data-type').select('theme',{ force: true }).should('have.value', 'theme')
     })
 
+    it('The admin content screen has bulk operations options.', () => {
+        cy.visit(baseurl + "/admin/dkan/datasets")
+        cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
+        cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
+        cy.get('#edit-action').select('Publish latest revision',{ force: true }).should('have.value', 'publish_latest')
+    })
+
     it('The content table has a column for Data Type', () => {
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.get('#view-field-data-type-table-column > a').should('contain','Data Type');
@@ -34,7 +41,7 @@ context('Admin content and dataset views', () => {
         cy.get('h1').should('have.text', 'Create Data')
     })
 
-    it('The dataset edit link should go to the json form.', () => {
+    it('User can archive, publish, and edit, and delete a dataset. The edit link on the admin view should go to the json form.', () => {
         // Create a dataset.
         cy.visit(baseurl + "/node/add/data")
         cy.wait(2000)
@@ -60,10 +67,21 @@ context('Admin content and dataset views', () => {
         cy.get('.messages--status').should('contain','has been created')
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.wait(2000)
+        cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
+        cy.get('#edit-node-bulk-form-0').click({force:true})
+        cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
+        cy.get('#edit-submit--2').click({ force:true })
+        cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Unpublished')
+        cy.get('#edit-node-bulk-form-0').click({force:true})
+        cy.get('#edit-action').select('Publish latest revision',{ force: true }).should('have.value', 'publish_latest')
+        cy.get('#edit-submit--2').click({ force:true })
+        cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
         cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', '/edit')
         cy.get('tbody > :nth-child(1) > .views-field-nothing > a').click({ force: true })
         cy.get('h1').should('contain.text', 'Edit Data')
         cy.get('#edit-delete').click({ force:true })
+        cy.get('#edit-submit').click({ force:true })
+        cy.get('.messages--status').should('contain','has been deleted')
     })
 
   })

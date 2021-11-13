@@ -1,0 +1,7 @@
+services:
+  dkan_js_frontend.route_provider:
+      class: Drupal\dkan_js_frontend\Routing\RouteProvider
+      arguments:
+        - '@app.root'
+        - '@entity.query.sql'
+        - '@config.factory'

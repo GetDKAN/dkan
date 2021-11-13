@@ -11,4 +11,5 @@ dependencies:
   - user
   - views
   - views_bulk_operations
+  - moderated_content_bulk_publish
 package: DKAN

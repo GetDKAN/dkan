@@ -119,14 +119,12 @@ class Query implements
    *   Property to filter on.
    * @param string $value
    *   Property value to filter against.
-   * @param bool $case
-   *   Case sensitive filter?
    */
-  public function conditionByIsEqualTo(string $property, string $value, bool $case = FALSE) {
+  public function conditionByIsEqualTo(string $property, string $value) {
     $this->conditions[] = (object) [
       'property' => $property,
       'value' => $value,
-      'operator' => $case ? 'LIKE BINARY' : 'LIKE',
+      'operator' => 'LIKE',
     ];
   }
 
