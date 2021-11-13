@@ -69,13 +69,20 @@ class QueryDownloadController extends AbstractQueryController {
       // Open the stream and send the header.
       set_time_limit(0);
       $handle = fopen('php://output', 'wb');
-      $this->sendRow($handle, $this->getHeaderRow($result));
 
-      // Otherwise, we're going to redo as an iterator from the beginning.
-      $result = $this->datastoreService->runResultsQuery($datastoreQuery, FALSE);
+      // Wrap in try/catch so that we can still close the output buffer.
+      try {
+        // Send the header row.
+        $this->sendRow($handle, $this->getHeaderRow($result));
 
-      while ($row = $result->fetchAssoc()) {
-        $this->sendRow($handle, array_values($row));
+        // Get the result pointer and send each row to the stream one by one.
+        $result = $this->datastoreService->runResultsQuery($datastoreQuery, FALSE);
+        while ($row = $result->fetchAssoc()) {
+          $this->sendRow($handle, array_values($row));
+        }
+      }
+      catch (\Exception $e) {
+        $this->sendRow($handle, [$e->getMessage()]);
       }
 
       fclose($handle);
@@ -121,18 +128,23 @@ class QueryDownloadController extends AbstractQueryController {
    */
   private function getHeaderRow(RootedJsonData &$result) {
 
-    if (!empty($result->{'$.query.properties'})) {
-      $header_row = $result->{'$.query.properties'};
+    try {
+      if (!empty($result->{'$.query.properties'})) {
+        $header_row = $result->{'$.query.properties'};
+      }
+      else {
+        $schema = $result->{'$.schema'};
+        // Query has are no explicit properties; we should assume one table.
+        $header_row = array_keys(reset($schema)['fields']);
+      }
+      if (empty($header_row) || !is_array($header_row)) {
+        throw new \DomainException("Could not generate header for CSV.");
+      }
     }
-    else {
-      $schema = $result->{'$.schema'};
-      // Query has are no explicit properties; we should assume one table.
-      $header_row = array_keys(reset($schema)['fields']);
+    catch (\Exception $e) {
+      throw new \DomainException("Could not generate header for CSV.");
     }
 
-    if (empty($header_row) || !is_array($header_row)) {
-      throw new \Exception("Could not generate header for CSV.");
-    }
     array_walk($header_row, function (&$header) {
       if (is_array($header)) {
         $header = $header['alias'] ?? $header['property'];

@@ -151,10 +151,10 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   public function queryDatasetResource(string $dataset, string $index, Request $request) {
     $metadata = $this->datasetInfo->gather($dataset);
     if (!isset($metadata['latest_revision'])) {
-      return $this->getResponse((object) ['message' => "No dataset found with the identifier $dataset"], 400);
+      return $this->getResponse((object) ['message' => "No dataset found with the identifier $dataset"], 404);
     }
     if (!isset($metadata['latest_revision']['distributions'][$index]['distribution_uuid'])) {
-      return $this->getResponse((object) ['message' => "No resource found at index $index"], 400);
+      return $this->getResponse((object) ['message' => "No resource found at index $index"], 404);
     }
     $identifier = $metadata['latest_revision']['distributions'][$index]['distribution_uuid'];
     return $this->queryResource($identifier, $request);
@@ -216,7 +216,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   protected function buildDatastoreQuery(Request $request, $identifier = NULL) {
     $json = static::getPayloadJson($request);
     $data = json_decode($json);
-    $this->additionalPayloadValidation($data);
+    $this->additionalPayloadValidation($data, $identifier);
     if ($identifier) {
       $resource = (object) ["id" => $identifier, "alias" => "t"];
       $data->resources = [$resource];
