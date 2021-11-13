@@ -45,8 +45,8 @@ class SelectFactoryTest extends TestCase {
   public function testConditionByIsEqualToCaseInsensitive() {
     $query = new Query();
     $query->conditionByIsEqualTo('prop1', 'value1', TRUE);
-    $db_query2 = $this->selectFactory->create($query2);
-    $this->assertStringContainsString('t.prop1 LIKE BINARY :db_condition_placeholder_0', $this->selectToString($db_query2));
+    $db_query = $this->selectFactory->create($query);
+    $this->assertStringContainsString('t.prop1 LIKE BINARY :db_condition_placeholder_0', $this->selectToString($db_query));
   }
 
   /**
