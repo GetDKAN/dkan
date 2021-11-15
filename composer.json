@@ -20,17 +20,17 @@
     },
     "require": {
         "composer/installers": "^1.9",
-        "drupal/core-composer-scaffold": "~9.1.1",
-        "drupal/core-project-message": "~9.1.1",
-        "drupal/core-recommended": "~9.1.1",
+        "drupal/core-composer-scaffold": "^9.2",
+        "drupal/core-project-message": "^9.2",
+        "drupal/core-recommended": "^9.2",
         "cweagans/composer-patches": "^1.7",
         "drush/drush": "^10.1",
         "getdkan/dkan": "^2.0"
     },
     "require-dev": {
+        "drupal/core-dev": "^9.2",
         "getdkan/mock-chain": "^1.3.0",
-        "weitzman/drupal-test-traits": "^1.5",
-        "phpunit/phpunit": "^7.5"
+        "weitzman/drupal-test-traits": "^1.5"
     },
     "conflict": {
         "drupal/drupal": "*"
