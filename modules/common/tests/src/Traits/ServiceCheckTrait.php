@@ -20,7 +20,7 @@ trait ServiceCheckTrait {
     $service = $this->checkService($serviceName);
     // Extract services from service arguments.
     $arguments = array_filter($service['arguments'], function ($arg) {
-      return preg_match('/^@([^@].*)$/', $arg, $matches) === 1;
+      return preg_match('/^@[^@]/', $arg, $matches) === 1;
     });
     foreach ($arguments as $arg) {
       // Extract service name from argument.
