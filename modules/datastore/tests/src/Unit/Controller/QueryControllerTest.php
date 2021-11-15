@@ -57,15 +57,55 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
+  /**
+   * Do some things differently to throw exception on metastore retrieval.
+   */
+  public function testQueryWrongIdentifier() {
+    $data = json_encode([
+      "results" => TRUE,
+      "resources" => [
+        [
+          "id" => "9",
+          "alias" => "t",
+        ],
+      ],
+    ]);
+
+    $options = (new Options())
+      ->add("dkan.metastore.storage", DataFactory::class)
+      ->index(0);
+    $container = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(DataFactory::class, 'getInstance', MockStorage::class)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $chain = $this->getQueryContainer($data, [], FALSE);
+    $webServiceApi = QueryController::create($chain->getMock());
+    $request = $this->mockRequest($data);
+    $result = $webServiceApi->query($request);
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(404, $result->getStatusCode());
+    $this->assertStringContainsString('Error retrieving published dataset', $result->getContent());
+  }
+
   public function testQueryRowIdProperty() {
     // Try simple string properties:
     $data = json_encode(["properties" => ["record_number", "state"]]);
 
     $result = $this->getQueryResult($data, "2");
 
-    $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
     $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
+
+    // Now try with rowIds plus an arbitrary property:
+    $data = json_encode(["properties" => ["state"], "rowIds" => TRUE]);
+
+    $result = $this->getQueryResult($data, "2");
+
+    $this->assertEquals(400, $result->getStatusCode());
+    $this->assertStringContainsString('The rowIds property cannot be set to true', $result->getContent());
 
     // Now try with resource properties:
     $data = json_encode([
@@ -83,7 +123,6 @@ class QueryControllerTest extends TestCase {
 
     $result = $this->getQueryResult($data, "2");
 
-    $this->assertTrue($result instanceof JsonResponse);
     $this->assertEquals(400, $result->getStatusCode());
     $this->assertStringContainsString('The record_number property is for internal use', $result->getContent());
   }
@@ -185,6 +224,60 @@ class QueryControllerTest extends TestCase {
   }
 
   /**
+   * Do some things differently to throw exception on metastore retrieval.
+   */
+  public function testResourceQueryWrongIdentifier() {
+    $data = json_encode([
+      "results" => TRUE,
+    ]);
+
+    $options = (new Options())
+      ->add("dkan.metastore.storage", DataFactory::class)
+      ->index(0);
+    $container = (new Chain($this))
+      ->add(Container::class, "get", $options)
+      ->add(DataFactory::class, 'getInstance', MockStorage::class)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $chain = $this->getQueryContainer($data, [], FALSE);
+    $webServiceApi = QueryController::create($chain->getMock());
+    $request = $this->mockRequest($data);
+    $result = $webServiceApi->queryResource("9", $request);
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(404, $result->getStatusCode());
+    $this->assertStringContainsString('Error retrieving published dataset', $result->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testResourceQueryJoins() {
+    $data = json_encode([
+      "results" => TRUE,
+      "joins" => [
+        [
+          "resource" => "t",
+          "condition" => [
+            "resource" => "t",
+            "property" => "record_number",
+            "value" => [
+              "resource" => "t",
+              "property" => "record_number",
+            ]
+          ]
+        ],
+      ],
+    ]);
+    $result = $this->getQueryResult($data, "2");
+
+    $this->assertTrue($result instanceof JsonResponse);
+    $this->assertEquals(400, $result->getStatusCode());
+    $this->assertStringContainsString('Joins are not available', $result->getContent());
+  }
+
+  /**
    *
    */
   public function testQueryCsv() {
@@ -257,7 +350,7 @@ class QueryControllerTest extends TestCase {
     $result = $this->getQueryResult($data, "2", 0);
 
     $this->assertTrue($result instanceof JsonResponse);
-    $this->assertEquals(400, $result->getStatusCode());
+    $this->assertEquals(404, $result->getStatusCode());
   }
 
   /**
@@ -272,7 +365,7 @@ class QueryControllerTest extends TestCase {
     $result = $this->getQueryResult($data, "2", 1, $info);
 
     $this->assertTrue($result instanceof JsonResponse);
-    $this->assertEquals(400, $result->getStatusCode());
+    $this->assertEquals(404, $result->getStatusCode());
   }
 
   /**
@@ -339,7 +432,7 @@ class QueryControllerTest extends TestCase {
     $this->assertEmpty($headers->get('last-modified'));
   }
 
-  private function getQueryContainer($data = '', array $info = []) {
+  private function getQueryContainer($data = '', array $info = [], $mockMap = TRUE) {
 
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
@@ -359,9 +452,12 @@ class QueryControllerTest extends TestCase {
       ->add(Data::class, 'getCacheContexts', ['url'])
       ->add(Data::class, 'getCacheTags', ['node:1'])
       ->add(Data::class, 'getCacheMaxAge', 0)
-      ->add(Service::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()])
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
       ->add(ImmutableConfig::class, 'get', 500);
+
+    if ($mockMap) {
+      $chain->add(Service::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()]);
+    }
 
     return $chain;
   }

@@ -26,7 +26,7 @@ class OpenApiControllerTest extends TestCase {
    * Test spec generation from sample yaml file.
    */
   public function testGetComplete() {
-    $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
+    $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../../docs/openapi_spec.yml'));
     $request = new Request();
     $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
@@ -41,7 +41,7 @@ class OpenApiControllerTest extends TestCase {
    * Test invalid spec.
    */
   public function testGetInvalid() {
-    $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
+    $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../../docs/openapi_spec.yml'));
     unset($spec['openapi']);
     $request = new Request();
     $controller = $this->getControllerMock($spec, $request);
@@ -56,7 +56,7 @@ class OpenApiControllerTest extends TestCase {
    * Test removal of authenticated methods.
    */
   public function testGetPublic() {
-    $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
+    $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../../docs/openapi_spec.yml'));
     $request = new Request(['authentication' => 'false']);
     $controller = $this->getControllerMock($spec, $request);
     $response = $controller->getComplete();
@@ -70,7 +70,7 @@ class OpenApiControllerTest extends TestCase {
    * Test cache headers.
    */
   public function testGetCompleteCacheHeaders() {
-    $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../docs/openapi_spec.yml'));
+    $spec = Yaml::decode(file_get_contents(__DIR__ . '/../../../docs/openapi_spec.yml'));
     $request = new Request();
 
     // Create a container with caching turned on.

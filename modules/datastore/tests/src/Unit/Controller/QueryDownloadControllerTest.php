@@ -45,6 +45,27 @@ class QueryDownloadControllerTest extends TestCase {
   }
 
   /**
+   * Helper function to compare output of streaming vs normal query controller.
+   */
+  private function queryResultCompare($data, $resource = NULL) {
+    $request = $this->mockRequest($data);
+
+    $qController = QueryController::create($this->getQueryContainer(500));
+    $response = $resource ? $qController->queryResource($resource, $request) : $qController->query($request);
+    $csv = $response->getContent();
+
+    $dController = QueryDownloadController::create($this->getQueryContainer(25));
+    ob_start(['self', 'getBuffer']);
+    $streamResponse = $resource ? $dController->queryResource($resource, $request) : $dController->query($request);
+    $streamResponse->sendContent();
+    $streamedCsv = $this->buffer;
+    ob_get_clean();
+
+    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
+    $this->assertEquals($csv, $streamedCsv);
+  }
+
+  /**
    * Test streaming of a CSV file from database.
    */
   public function testStreamedQueryCsv() {
@@ -59,6 +80,17 @@ class QueryDownloadControllerTest extends TestCase {
     ];
     // Need 2 json responses which get combined on output.
     $this->queryResultCompare($data);
+  }
+
+  /**
+   * Test streaming of a CSV file from database.
+   */
+  public function testStreamedResourceQueryCsv() {
+    $data = [
+      "format" => "csv",
+    ];
+    // Need 2 json responses which get combined on output.
+    $this->queryResultCompare($data, "2");
   }
 
   /**
@@ -188,7 +220,7 @@ class QueryDownloadControllerTest extends TestCase {
       "format" => "csv",
       "limit" => $queryLimit,
     ]);
-    // Set the row limit to 50 even though we're requesting 1000;
+    // Set the row limit to 50 even though we're requesting 1000.
     $container = $this->getQueryContainer($pageLimit);
     $downloadController = QueryDownloadController::create($container);
     $request = $this->mockRequest($data);
@@ -266,24 +298,28 @@ class QueryDownloadControllerTest extends TestCase {
     $this->queryResultCompare($data);
   }
 
-  private function queryResultCompare($data, $countOnly = FALSE) {
+  /**
+   * Check that a bad schema will return a CSV with an error message.
+   */
+  public function testStreamedBadSchema() {
+    $data = [
+      "resources" => [
+        [
+          "id" => "2",
+          "alias" => "tx",
+        ],
+      ],
+      "format" => "csv",
+    ];
     $request = $this->mockRequest($data);
-
-    $queryController = QueryController::create($this->getQueryContainer(500));
-    $response = $queryController->query($request);
-    $csv = $response->getContent();
-
-    $downloadController = QueryDownloadController::create($this->getQueryContainer(25));
+    $dController = QueryDownloadController::create($this->getQueryContainer(25));
     ob_start(['self', 'getBuffer']);
-    $streamResponse = $downloadController->query($request);
+    $streamResponse = $dController->query($request);
     $streamResponse->sendContent();
     $streamedCsv = $this->buffer;
     ob_get_clean();
 
-    $this->assertEquals(count(explode("\n", $csv)), count(explode("\n", $streamedCsv)));
-    if (!$countOnly) {
-      $this->assertEquals($csv, $streamedCsv);
-    }
+    $this->assertStringContainsString("Could not generate header", $streamedCsv);
   }
 
   /**
@@ -317,8 +353,13 @@ class QueryDownloadControllerTest extends TestCase {
       'year' => ['type' => 'int'],
       'color' => ['type' => 'text'],
     ];
+
+    $storage2 = $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2);
+    $storage2x = clone($storage2);
+    $storage2x->setSchema(['fields' => []]);
     $storageMap = [
-      't' => $this->mockDatastoreTable($connection, "2", 'states_with_dupes.csv', $schema2),
+      't' => $storage2,
+      'tx' => $storage2x,
       'j' => $this->mockDatastoreTable($connection, "3", 'years_colors.csv', $schema3
       ),
     ];
