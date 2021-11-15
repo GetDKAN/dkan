@@ -57,7 +57,7 @@ class QueryControllerTest extends TestCase {
     $this->assertEquals(200, $result->getStatusCode());
   }
 
-    /**
+  /**
    * Do some things differently to throw exception on metastore retrieval.
    */
   public function testQueryWrongIdentifier() {

@@ -6,7 +6,7 @@ use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Storage\Data;
 
 /**
- * Mock metastore controllery for certain datastore tests.
+ * Mock metastore controller for certain datastore tests.
  */
 class MockStorage extends Data {
 
