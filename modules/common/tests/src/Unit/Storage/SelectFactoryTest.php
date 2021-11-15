@@ -31,6 +31,23 @@ class SelectFactoryTest extends TestCase {
       $this->assertContains($sql, $this->selectToString($db_query));
     }
   }
+  
+  /**
+   * Test two variations of Query::testConditionByIsEqualTo()
+   */
+  public function testConditionByIsEqualTo() {
+    $query = new Query();
+    $query->conditionByIsEqualTo('prop1', 'value1');
+    $db_query = $this->selectFactory->create($query);
+    $this->assertStringContainsString('t.prop1 LIKE :db_condition_placeholder_0', $this->selectToString($db_query));
+  }
+
+  public function testConditionByIsEqualToCaseInsensitive() {
+    $query = new Query();
+    $query->conditionByIsEqualTo('prop1', 'value1', TRUE);
+    $db_query = $this->selectFactory->create($query);
+    $this->assertStringContainsString('t.prop1 LIKE BINARY :db_condition_placeholder_0', $this->selectToString($db_query));
+  }
 
   /**
    *

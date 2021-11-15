@@ -227,7 +227,7 @@ class ResourceMapper {
    */
   public function filePathExists($filePath) {
     $query = new Query();
-    $query->conditionByIsEqualTo('filePath', $filePath);
+    $query->conditionByIsEqualTo('filePath', $filePath, TRUE);
     $results = $this->getStore()->query($query);
     if (!empty($results)) {
       throw new AlreadyRegistered(json_encode($results));
