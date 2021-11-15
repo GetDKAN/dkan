@@ -26,6 +26,7 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
   public function retrieveContains(string $string, bool $caseSensitive = TRUE): array {
 
     $entity_ids = $this->entityStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition($this->bundleKey, $this->bundle)
       ->condition('field_data_type', $this->schemaId)
       ->condition($this->getMetadataField(), $string, 'CONTAINS')

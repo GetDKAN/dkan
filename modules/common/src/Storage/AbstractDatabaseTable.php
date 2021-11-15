@@ -284,7 +284,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    *
    * Drop the database table.
    */
-  public function destroy() {
+  public function destruct() {
     if ($this->tableExist($this->getTableName())) {
       $this->connection->schema()->dropTable($this->getTableName());
     }

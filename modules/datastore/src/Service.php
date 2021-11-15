@@ -193,7 +193,7 @@ class Service implements ContainerInjectionInterface {
     $storage = $this->getStorage($identifier, $version);
 
     if ($storage) {
-      $storage->destroy();
+      $storage->destruct();
     }
 
     $this->resourceLocalizer->remove($identifier, $version);

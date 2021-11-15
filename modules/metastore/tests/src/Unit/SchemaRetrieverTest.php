@@ -7,6 +7,7 @@ use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
 use MockChain\Chain;
+use MockChain\Options;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -103,10 +104,12 @@ class SchemaRetrieverTest extends TestCase {
       $appRoot = self::APP_ROOT;
     }
 
-    $options = $this->getContainerOptionsForService('dkan.metastore.schema_retriever');
-    $options->add('app.root', $appRoot);
+    $options = (new Options())
+      ->add('extension.list.module', ModuleExtensionList::class)
+      ->index(0);
 
     $chain = (new Chain($this))
+      ->add(Container::class, 'getParameter', $appRoot)
       ->add(Container::class, 'get', $options)
       ->add(ModuleExtensionList::class, 'getPathname', "tmp");
 

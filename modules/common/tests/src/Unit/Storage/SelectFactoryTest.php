@@ -14,12 +14,18 @@ use Drupal\Tests\common\Unit\Connection;
  */
 class SelectFactoryTest extends TestCase {
   private $query;
+
+  /**
+   * SelectFactory object.
+   *
+   * @var \Drupal\common\Storage\SelectFactory
+   */
   private $selectFactory;
 
   /**
    * @test
    *
-   * @dataProvider Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
+   * @dataProvider \Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
    */
   public function testQuery(Query $query, string $sql, string $message) {
     if ($message) {
@@ -28,7 +34,7 @@ class SelectFactoryTest extends TestCase {
     }
     else {
       $db_query = $this->selectFactory->create($query);
-      $this->assertContains($sql, $this->selectToString($db_query));
+      $this->assertStringContainsString($sql, $this->selectToString($db_query));
     }
   }
   
@@ -87,7 +93,7 @@ class SelectFactoryTest extends TestCase {
   /**
    *
    */
-  public function setUp() {
+  public function setUp():void {
     $this->query = new Query();
     $this->selectFactory = $this->getSelectFactory();
   }

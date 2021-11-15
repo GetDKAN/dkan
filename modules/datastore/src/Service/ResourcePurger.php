@@ -118,6 +118,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $nodeStorage = $this->storage->getEntityStorage();
 
     $nids = $nodeStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', 'data')
       ->condition('field_data_type', 'dataset')
       ->execute();
@@ -395,7 +396,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function removeDatastoreStorage(string $id, string $version) {
     try {
-      $this->datastore->getStorage($id, $version)->destroy();
+      $this->datastore->getStorage($id, $version)->destruct();
     }
     catch (\Exception $e) {
       $this->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());

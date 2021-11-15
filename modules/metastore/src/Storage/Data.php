@@ -95,6 +95,7 @@ abstract class Data implements MetastoreStorageInterface {
   public function retrieveAll(): array {
 
     $entity_ids = $this->entityStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
       ->condition('field_data_type', $this->schemaId)
       ->execute();
@@ -117,6 +118,7 @@ abstract class Data implements MetastoreStorageInterface {
   public function retrieveRange($start, $length): array {
 
     $entity_ids = $this->entityStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
       ->condition('field_data_type', $this->schemaId)
       ->range($start, $length)
@@ -239,6 +241,7 @@ abstract class Data implements MetastoreStorageInterface {
   public function getEntityIdFromUuid(string $uuid) : ?int {
 
     $entity_ids = $this->entityStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('uuid', $uuid)
       ->condition($this->bundleKey, $this->bundle)
       ->condition('field_data_type', $this->schemaId)

@@ -19,7 +19,7 @@ services:
   dkan.metastore.schema_retriever:
     class: \Drupal\metastore\SchemaRetriever
     arguments:
-      - '@app.root'
+      - '%app.root%'
       - '@extension.list.module'
     shared: false
 

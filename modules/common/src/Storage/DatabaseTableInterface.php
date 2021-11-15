@@ -15,7 +15,7 @@ interface DatabaseTableInterface extends StorageInterface, StorerInterface, Retr
   /**
    * Destroy.
    */
-  public function destroy();
+  public function destruct();
 
   /**
    * Query.
