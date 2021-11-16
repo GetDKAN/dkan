@@ -355,13 +355,20 @@ class MetastoreController implements ContainerInjectionInterface {
    *
    * @param string $identifier
    *   Dataset identifier.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request object.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   A JSON response.
    */
-  public function getDocs($identifier) : JsonResponse {
+  public function getDocs($identifier, Request $request) : JsonResponse {
     try {
-      return $this->apiResponse->cachedJsonResponse($this->docs->getDatasetSpecific($identifier));
+      return $this->apiResponse->cachedJsonResponse(
+        $this->docs->getDatasetSpecific($identifier),
+        200,
+        ['dataset' => [$identifier]],
+        $request->query
+      );
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);

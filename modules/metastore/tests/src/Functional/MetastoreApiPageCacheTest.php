@@ -69,9 +69,13 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
     // Request once, should not return cached version.
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
+    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Request again, should return cached version.
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
+    $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
     $this->assertEquals("HIT", $response->getHeaders()['X-Drupal-Cache'][0]);
 
     // Importing the datastore should invalidate the cache.
@@ -105,13 +109,15 @@ class MetastoreApiPageCacheTest extends ExistingSiteBase {
 
     // Editing the dataset should invalidate the cache.
     $datasetRootedJsonData->{'$.description'} = "Add a description.";
-    $datasetRootedJsonData->{'$.modified'} = "2021-04-06";
+    $datasetRootedJsonData->{'$.modified'} = "2021-05-07";
     $this->httpVerbHandler('put', $datasetRootedJsonData, json_decode($datasetRootedJsonData));
 
     // Importing the datastore should invalidate the cache.
     $this->runQueues($queues);
 
     $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111');
+    $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
+    $response = $client->request('GET', 'api/1/metastore/schemas/dataset/items/111/docs');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
     $response = $client->request('GET', 'api/1/datastore/query/111/0');
     $this->assertEquals("MISS", $response->getHeaders()['X-Drupal-Cache'][0]);
