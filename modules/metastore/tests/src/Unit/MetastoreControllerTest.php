@@ -108,7 +108,7 @@ class MetastoreControllerTest extends TestCase {
     $mockChain->add(DatasetApiDocs::class, 'getDatasetSpecific', $spec);
 
     $controller = MetastoreController::create($mockChain->getMock());
-    $response = $controller->getDocs(1);
+    $response = $controller->getDocs(1, new Request());
     $this->assertEquals($json, $response->getContent());
   }
 
