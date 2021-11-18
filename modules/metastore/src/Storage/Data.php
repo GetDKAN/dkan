@@ -88,6 +88,20 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
+   * Count objects of this metastore's schema ID.
+   *
+   * @return int
+   *   Object count.
+   */
+  public function count(): int {
+    return $this->entityStorage->getQuery()
+      ->condition('type', $this->bundle)
+      ->condition('field_data_type', $this->schemaId)
+      ->count()
+      ->execute();
+  }
+
+  /**
    * Inherited.
    *
    * {@inheritdoc}.
@@ -111,18 +125,49 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
+   * Get range of object UUIDs of this metastore's schema ID.
+   *
+   * @param int $start
+   *   Schema object offset.
+   * @param int $length
+   *   Number of objects to fetch.
+   *
+   * @return string[]
+   *   Range of object UUIDs of the given schema_id.
+   */
+  public function retrieveRangeUuids(int $start, int $length): array {
+    return array_map(function ($node) {
+      return $node->uuid();
+    }, $this->entityStorage->loadMultiple($this->retrieveRangeIds($start, $length)));
+  }
+
+  /**
+   * Get range of object IDs of this metastore's schema ID.
+   *
+   * @param int $start
+   *   Schema object offset.
+   * @param int $length
+   *   Number of objects to fetch.
+   *
+   * @return string[]
+   *   Range of object IDs of the given schema_id.
+   */
+  protected function retrieveRangeIds(int $start, int $length): array {
+    return $this->entityStorage->getQuery()
+      ->condition('type', $this->bundle)
+      ->condition('field_data_type', $this->schemaId)
+      ->range($start, $length)
+      ->execute();
+  }
+
+  /**
    * Inherited.
    *
    * {@inheritdoc}.
    */
   public function retrieveRange($start, $length): array {
 
-    $entity_ids = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->range($start, $length)
-      ->execute();
+    $entity_ids = $this->retrieveRangeIds($start, $length);
 
     $all = [];
     foreach ($entity_ids as $nid) {

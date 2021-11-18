@@ -116,13 +116,20 @@ class DashboardController implements ContainerInjectionInterface {
     if (!empty($harvestId)) {
       $harvestLoad = $this->getHarvestLoadStatus($harvestId);
       $datasets = array_keys($harvestLoad);
+      $total = count($datasets);
+      $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
+
+      $chunks = array_chunk($datasets, $this->itemsPerPage);
+      $datasets = $chunks[$currentPage];
     }
     else {
       $harvestLoad = [];
       foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
         $harvestLoad += $this->getHarvestLoadStatus($harvestId);
       }
-      $datasets = $this->getAllDatasetUuids();
+      $total = $this->metastore->count('dataset');
+      $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
+      $datasets = $this->metastore->getRangeUuids('dataset', $currentPage, $this->itemsPerPage);
     }
 
     $rows = $this->buildDatasetRows($datasets, $harvestLoad);
@@ -131,7 +138,7 @@ class DashboardController implements ContainerInjectionInterface {
       'table' => [
         '#theme' => 'table',
         '#header' => self::DATASET_HEADERS,
-        '#rows' => $this->pagerArray($rows, $this->itemsPerPage),
+        '#rows' => $rows,
         '#attributes' => ['class' => 'dashboard-datasets'],
         '#attached' => ['library' => ['harvest/style']],
         '#empty' => 'No datasets found',
@@ -140,18 +147,6 @@ class DashboardController implements ContainerInjectionInterface {
         '#type' => 'pager',
       ],
     ];
-  }
-
-  /**
-   * Gets all dataset uuids from metadata.
-   *
-   * @return array
-   *   Dataset uuids array.
-   */
-  private function getAllDatasetUuids() : array {
-    return array_map(function ($datasetMetadata) {
-      return $datasetMetadata->{"$.identifier"};
-    }, $this->metastore->getAll('dataset'));
   }
 
   /**
@@ -287,24 +282,6 @@ class DashboardController implements ContainerInjectionInterface {
       'data' => $percent,
       'class' => $percent == 100 ? 'done' : 'in-progress',
     ];
-  }
-
-  /**
-   * Returns pager array.
-   *
-   * @param array $items
-   *   Table rows.
-   * @param int $itemsPerPage
-   *   Items per page.
-   *
-   * @return array
-   *   Table rows chunk.
-   */
-  private function pagerArray(array $items, int $itemsPerPage) : array {
-    $total = count($items);
-    $currentPage = $this->pagerManager->createPager($total, $itemsPerPage)->getCurrentPage();
-    $chunks = array_chunk($items, $itemsPerPage);
-    return !empty($chunks) ? $chunks[$currentPage] : [];
   }
 
 }
