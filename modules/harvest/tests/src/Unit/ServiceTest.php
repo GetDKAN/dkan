@@ -185,7 +185,7 @@ class ServiceTest extends TestCase {
               /**
                *
                */
-              public function destroy() {
+              public function destruct() {
                 $this->storage = [];
               }
 
