@@ -142,14 +142,14 @@ class Service implements ContainerInjectionInterface {
   /**
    * Public.
    *
-   * @todo the destroy method should be part of some interface.
+   * @todo the destruct method should be part of some interface.
    */
   public function revertHarvest($id) {
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    if (!method_exists($run_store, "destroy")) {
-      throw new \Exception("Storage of class " . get_class($run_store) . " does not implement destroy method.");
+    if (!method_exists($run_store, "destruct")) {
+      throw new \Exception("Storage of class " . get_class($run_store) . " does not implement destruct method.");
     }
-    $run_store->destroy();
+    $run_store->destruct();
     $harvester = $this->getHarvester($id);
     return $harvester->revert();
   }
