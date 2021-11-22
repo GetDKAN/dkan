@@ -40,7 +40,7 @@ class DashboardControllerTest extends TestCase {
 
     $controller = DashboardController::create($container->getMock());
 
-    $response = $controller->datasetsImportStatus('test');
+    $response = $controller->buildDatasetsImportStatusTable('test');
 
     $json = json_encode($response);
     $strings = array_merge(DashboardController::DATASET_HEADERS,);
@@ -85,7 +85,7 @@ class DashboardControllerTest extends TestCase {
 
     $controller = DashboardController::create($container->getMock());
 
-    $response = $controller->datasetsImportStatus('test');
+    $response = $controller->buildDatasetsImportStatusTable('test');
 
     $json = json_encode($response);
     $strings = array_merge(
@@ -99,7 +99,7 @@ class DashboardControllerTest extends TestCase {
       $this->assertStringContainsString($string, $json);
     }
 
-    $title = (string) $controller->datasetsImportStatusTitle('test');
+    $title = (string) $controller->buildDatasetsImportStatusTitle('test');
     $this->assertEquals('Datastore Import Status. Harvest <em class="placeholder">test</em>', $title);
   }
 
@@ -164,7 +164,7 @@ class DashboardControllerTest extends TestCase {
 
     $controller = DashboardController::create($container->getMock());
 
-    $response = $controller->datasetsImportStatus(NULL);
+    $response = $controller->buildDatasetsImportStatusTable(NULL);
 
     // Assert that there are both datasets: harvested and non-harvested.
     $this->assertEquals(2, count($response["table"]['#rows']));
@@ -177,7 +177,7 @@ class DashboardControllerTest extends TestCase {
     $this->assertEquals('Non-Harvest Dataset', $response["table"]["#rows"][1][1]);
     $this->assertEquals('N/A', $response["table"]["#rows"][1][4]["data"]);
 
-    $title = (string) $controller->datasetsImportStatusTitle(NULL);
+    $title = (string) $controller->buildDatasetsImportStatusTitle(NULL);
     $this->assertEquals('Datastore Import Status', $title);
   }
 
@@ -206,7 +206,7 @@ class DashboardControllerTest extends TestCase {
 
     $controller = DashboardController::create($container->getMock());
 
-    $response = $controller->datasetsImportStatus('test');
+    $response = $controller->buildDatasetsImportStatusTable('test');
 
     $this->assertEmpty($response["table"]["#rows"][0][7]["data"]["#rows"]);
   }

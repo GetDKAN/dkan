@@ -95,6 +95,7 @@ abstract class Data implements MetastoreStorageInterface {
    */
   public function count(): int {
     return $this->entityStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
       ->condition('field_data_type', $this->schemaId)
       ->count()
@@ -136,28 +137,16 @@ abstract class Data implements MetastoreStorageInterface {
    *   Range of object UUIDs of the given schema_id.
    */
   public function retrieveRangeUuids(int $start, int $length): array {
-    return array_map(function ($node) {
-      return $node->uuid();
-    }, $this->entityStorage->loadMultiple($this->retrieveRangeIds($start, $length)));
-  }
-
-  /**
-   * Get range of object IDs of this metastore's schema ID.
-   *
-   * @param int $start
-   *   Schema object offset.
-   * @param int $length
-   *   Number of objects to fetch.
-   *
-   * @return string[]
-   *   Range of object IDs of the given schema_id.
-   */
-  protected function retrieveRangeIds(int $start, int $length): array {
-    return $this->entityStorage->getQuery()
+    $ids = $this->entityStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
       ->condition('field_data_type', $this->schemaId)
       ->range($start, $length)
       ->execute();
+
+    return array_map(function ($entity) {
+      return $entity->uuid();
+    }, $this->entityStorage->loadMultiple($ids));
   }
 
   /**
@@ -166,12 +155,15 @@ abstract class Data implements MetastoreStorageInterface {
    * {@inheritdoc}.
    */
   public function retrieveRange($start, $length): array {
-
-    $entity_ids = $this->retrieveRangeIds($start, $length);
+    $entity_ids = $this->entityStorage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', $this->bundle)
+      ->condition('field_data_type', $this->schemaId)
+      ->range($start, $length)
+      ->execute();
 
     $all = [];
-    foreach ($entity_ids as $nid) {
-      $entity = $this->entityStorage->load($nid);
+    foreach ($this->entityStorage->loadMultiple($entity_ids) as $entity) {
       if ($entity->get('moderation_state')->getString() === 'published') {
         $all[] = $entity->get('field_json_metadata')->getString();
       }
@@ -344,7 +336,7 @@ abstract class Data implements MetastoreStorageInterface {
     // Dkan publishing's default moderation state.
     $entity->set('moderation_state', $this->getDefaultModerationState());
 
-    $entity->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
+    $entity->setRevisionLogMessage("Updated on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
     $entity->setRevisionCreationTime(time());
     $entity->save();
 
@@ -383,7 +375,7 @@ abstract class Data implements MetastoreStorageInterface {
           'field_json_metadata' => json_encode($data),
         ]
       );
-    $entity->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
+    $entity->setRevisionLogMessage("Created on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
 
     $entity->save();
 
@@ -452,17 +444,6 @@ abstract class Data implements MetastoreStorageInterface {
     $filter = new \HTMLPurifier(\HTMLPurifier_Config::create($config));
     // Filter the supplied string.
     return $filter->purify($input);
-  }
-
-  /**
-   * Returns the current time, formatted.
-   *
-   * @return string
-   *   Current timestamp, formatted.
-   */
-  private function formattedTimestamp() : string {
-    $now = new \DateTime('now');
-    return $now->format(\DateTime::ATOM);
   }
 
   /**
