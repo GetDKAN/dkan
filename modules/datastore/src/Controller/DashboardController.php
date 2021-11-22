@@ -100,7 +100,7 @@ class DashboardController implements ContainerInjectionInterface {
   /**
    * Create controller object from dependency injection container.
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('dkan.harvest.service'),
       $container->get('dkan.common.dataset_info'),
@@ -112,7 +112,7 @@ class DashboardController implements ContainerInjectionInterface {
   /**
    * Build datasets import status table.
    */
-  public function buildDatasetsImportStatusTable($harvestId) {
+  public function buildDatasetsImportStatusTable(?string $harvestId): array {
     return [
       'table' => [
         '#theme' => 'table',
@@ -131,7 +131,7 @@ class DashboardController implements ContainerInjectionInterface {
   /**
    * Build datasets import status table title.
    */
-  public function buildDatasetsImportStatusTitle($harvestId) {
+  public function buildDatasetsImportStatusTitle(?string $harvestId) {
     if (!empty($harvestId)) {
       return $this->t("Datastore Import Status. Harvest %harvest", ['%harvest' => $harvestId]);
     }
@@ -141,7 +141,7 @@ class DashboardController implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getHarvestLoadStatus($harvestId): array {
+  private function getHarvestLoadStatus(?string $harvestId): array {
     $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
     $runId = end($runIds);
 
@@ -190,7 +190,7 @@ class DashboardController implements ContainerInjectionInterface {
       $total = count($datasets);
       $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
 
-      $chunks = array_chunk($datasets, $this->itemsPerPage);
+      $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
       $datasets = $chunks[$currentPage];
     }
     else {
