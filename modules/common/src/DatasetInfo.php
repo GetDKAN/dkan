@@ -220,6 +220,7 @@ class DatasetInfo implements ContainerInjectionInterface {
       'fetcher_percent_done' => $info->fileFetcherPercentDone ?? 0,
       'file_path' => isset($fileMapper) ? $fileMapper->getFilePath() : 'not found',
       'importer_status' => $info->importerStatus,
+      'importer_status' => $info->importerError,
       'importer_percent_done' => $info->importerPercentDone ?? 0,
       'table_name' => isset($storage) ? $storage->getTableName() : 'not found',
     ];

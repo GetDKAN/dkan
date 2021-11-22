@@ -58,6 +58,7 @@ class ImportInfo {
       'importerStatus' => 'waiting',
       'importerBytes' => 0,
       'importerPercentDone' => 0,
+      'importerError' => NULL,
     ];
 
     if (isset($ff)) {
@@ -71,6 +72,7 @@ class ImportInfo {
     /** @var \Dkan\Datastore\Importer $imp */
     if (isset($imp)) {
       $item->importerStatus = $imp->getResult()->getStatus();
+      $item->importerError = $imp->getResult()->getError();
       $item->importerBytes = $this->getBytesProcessed($imp);
       $item->importerPercentDone = $this->getPercentDone($imp);
     }
