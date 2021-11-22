@@ -157,7 +157,8 @@ class DashboardControllerTest extends TestCase {
 
     $container = $this->getCommonMockChain()
       ->add(Harvest::class, 'getAllHarvestRunInfo', [$time])
-      ->add(MetastoreService::class, 'getAll', $metastoreGetAllDatasets)
+      ->add(MetastoreService::class, 'count', 2)
+      ->add(MetastoreService::class, 'getRangeUuids', [$dataset1Info['latest_revision']['uuid'], $nonHarvestDatasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfoOptions);
 
     \Drupal::setContainer($container->getMock());
