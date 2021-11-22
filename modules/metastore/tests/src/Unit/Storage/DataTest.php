@@ -66,9 +66,58 @@ class DataTest extends TestCase {
       ->add(NodeStorage::class, 'getQuery', QueryInterface::class)
       ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'count', QueryInterface::class)
+      ->add(QueryInterface::class, 'range', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', ['1'])
       ->add(NodeStorage::class, 'getLatestRevisionId', '2')
       ->addd('loadRevision', Node::class);
+  }
+
+  /**
+   * Test \Drupal\metastore\Storage\Data::count() method.
+   */
+  public function testCount(): void {
+    // Set constant which should be returned by the ::count() method.
+    $count = 5;
+
+    // Create mock chain for testing ::count() method.
+    $etmMock = $this->getEtmChain()
+      ->add(QueryInterface::class, 'execute', $count)
+      ->getMock();
+
+    // Create Data object.
+    $nodeData = new NodeData('dataset', $etmMock);
+    // Ensure count matches return value.
+    $this->assertEquals($count, $nodeData->count());
+  }
+
+  /**
+   * Test \Drupal\metastore\Storage\Data::retrieveRangeUuids() method.
+   */
+  public function testRetrieveRangeUuids(): void {
+    // Generate dataset nodes for testing ::retrieveRangeUuids().
+    $nodes = [];
+    $uuids = [];
+
+    for ($i = 0; $i < 5; $i ++) {
+      $nodes[$i] = new class {
+        private $uuid;
+        public function uuid() {
+          return isset($this->uuid) ? $this->uuid : $this->uuid = uniqid();
+        }
+      };
+      $uuids[$i] = $nodes[$i]->uuid();
+    }
+
+    // Create mock chain for testing ::retrieveRangeUuids() method.
+    $etmMock = $this->getEtmChain()
+      ->add(NodeStorage::class, 'loadMultiple', $nodes)
+      ->getMock();
+
+    // Create Data object.
+    $nodeData = new NodeData('dataset', $etmMock);
+    // Ensure the returned uuids match those belonging to the generated nodes.
+    $this->assertEquals($uuids, $nodeData->retrieveRangeUuids(1, 5));
   }
 
 }

@@ -319,6 +319,40 @@ EOF;
   }
 
   /**
+   * Test \Drupal\metastore\Service::count() method.
+   */
+  public function testCount(): void {
+    // Set constant which should be returned by the ::count() method.
+    $count = 5;
+
+    // Create mock chain for testing ::count() method.
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, 'count', $count);
+
+    // Create metastore service object.
+    $service = Service::create($container->getMock());
+    // Ensure count matches return value.
+    $this->assertEquals($count, $service->count('test'));
+  }
+
+  /**
+   * Test \Drupal\metastore\Service::getRangeUuids() method.
+   */
+  public function testGetRangeUuids(): void {
+    // Set constant which should be returned by the ::getRangeUuids() method.
+    $uuids = ['a', 'b', 'c'];
+
+    // Create mock chain for testing ::getRangeUuids() method.
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, 'retrieveRangeUuids', $uuids);
+
+    // Create metastore service object.
+    $service = Service::create($container->getMock());
+    // Ensure count matches return value.
+    $this->assertEquals($uuids, $service->getRangeUuids('test', 1, 5));
+  }
+
+  /**
    *
    */
   public function testDelete() {
