@@ -25,6 +25,16 @@ function metastore_search_search_api_tracking(EntityInterface $entity, string $o
     return;
   }
 
+  //Get moderation_state to see if this page should be indexed by search api.
+  $moderation_state = $entity->get('moderation_state')->getValue()[0]['value'];
+  if ($moderation_state == 'publish_without_search_indexing' && $operation != "Deleted") {
+    if ($operation == 'Updated') {
+      $operation = "Deleted";
+    }else{
+      return;
+    }
+  }
+
   $method = "trackItems{$operation}";
 
   $storage = \Drupal::service('entity_type.manager')
