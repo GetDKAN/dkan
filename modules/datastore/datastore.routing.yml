@@ -159,8 +159,8 @@ datastore.datasets_import_status_dashboard:
   path: '/admin/dkan/dataset-status/{harvestId}'
   methods: [ GET ]
   defaults:
-    _controller: \Drupal\datastore\Controller\DashboardController::datasetsImportStatus
-    _title_callback: \Drupal\datastore\Controller\DashboardController::datasetsImportStatusTitle
+    _controller: \Drupal\datastore\Controller\DashboardController::buildDatasetsImportStatusTable
+    _title_callback: \Drupal\datastore\Controller\DashboardController::buildDatasetsImportStatusTitle
     harvestId: NULL
   requirements:
     _permission: 'dkan.harvest.dashboard'

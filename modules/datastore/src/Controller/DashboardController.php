@@ -100,7 +100,7 @@ class DashboardController implements ContainerInjectionInterface {
   /**
    * Create controller object from dependency injection container.
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('dkan.harvest.service'),
       $container->get('dkan.common.dataset_info'),
@@ -110,28 +110,14 @@ class DashboardController implements ContainerInjectionInterface {
   }
 
   /**
-   * Datasets information.
+   * Build datasets import status table.
    */
-  public function datasetsImportStatus($harvestId) {
-    if (!empty($harvestId)) {
-      $harvestLoad = $this->getHarvestLoadStatus($harvestId);
-      $datasets = array_keys($harvestLoad);
-    }
-    else {
-      $harvestLoad = [];
-      foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
-        $harvestLoad += $this->getHarvestLoadStatus($harvestId);
-      }
-      $datasets = $this->getAllDatasetUuids();
-    }
-
-    $rows = $this->buildDatasetRows($datasets, $harvestLoad);
-
+  public function buildDatasetsImportStatusTable(?string $harvestId): array {
     return [
       'table' => [
         '#theme' => 'table',
         '#header' => self::DATASET_HEADERS,
-        '#rows' => $this->pagerArray($rows, $this->itemsPerPage),
+        '#rows' => $this->buildDatasetRows($harvestId),
         '#attributes' => ['class' => 'dashboard-datasets'],
         '#attached' => ['library' => ['harvest/style']],
         '#empty' => 'No datasets found',
@@ -143,21 +129,9 @@ class DashboardController implements ContainerInjectionInterface {
   }
 
   /**
-   * Gets all dataset uuids from metadata.
-   *
-   * @return array
-   *   Dataset uuids array.
+   * Build datasets import status table title.
    */
-  private function getAllDatasetUuids() : array {
-    return array_map(function ($datasetMetadata) {
-      return $datasetMetadata->{"$.identifier"};
-    }, $this->metastore->getAll('dataset'));
-  }
-
-  /**
-   * Datasets information. Title callback.
-   */
-  public function datasetsImportStatusTitle($harvestId) {
+  public function buildDatasetsImportStatusTitle(?string $harvestId) {
     if (!empty($harvestId)) {
       return $this->t("Datastore Import Status. Harvest %harvest", ['%harvest' => $harvestId]);
     }
@@ -167,7 +141,7 @@ class DashboardController implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getHarvestLoadStatus($harvestId): array {
+  private function getHarvestLoadStatus(?string $harvestId): array {
     $runIds = $this->harvest->getAllHarvestRunInfo($harvestId);
     $runId = end($runIds);
 
@@ -181,26 +155,56 @@ class DashboardController implements ContainerInjectionInterface {
   /**
    * Builds dataset rows array to be themed as a table.
    *
-   * @param array $datasets
-   *   Dataset uuids array.
-   * @param array $harvestLoad
-   *   Harvest statuses by dataset array.
+   * @param array|null $harvestId
+   *   Harvest ID for which to generate dataset rows.
    *
    * @return array
    *   Table rows.
    */
-  private function buildDatasetRows(array $datasets, array $harvestLoad) {
+  private function buildDatasetRows(?string $harvestId): array {
     $rows = [];
-    foreach ($datasets as $datasetId) {
+    foreach ($this->getDatasetsWithHarvestId($harvestId) as $datasetId => $status) {
       $datasetInfo = $this->datasetInfo->gather($datasetId);
       if (empty($datasetInfo['latest_revision'])) {
         continue;
       }
-      $harvestStatus = isset($harvestLoad[$datasetId]) ? $harvestLoad[$datasetId] : 'N/A';
-      $datasetRow = $this->buildDatasetRow($datasetInfo, $harvestStatus);
+      $datasetRow = $this->buildDatasetRow($datasetInfo, $status);
       $rows = array_merge($rows, $datasetRow);
     }
     return $rows;
+  }
+
+  /**
+   * Retrieve datasets and import status belonging to the given harvest ID.
+   *
+   * @param string|null $harvestId
+   *   Harvest ID which fetched datasets should belong to.
+   *
+   * @return string[]
+   *   Dataset import statuses keyed by their dataset IDs.
+   */
+  protected function getDatasetsWithHarvestId(?string $harvestId): array {
+    if (!empty($harvestId)) {
+      $harvestLoad = $this->getHarvestLoadStatus($harvestId);
+      $datasets = array_keys($harvestLoad);
+      $total = count($datasets);
+      $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
+
+      $chunks = array_chunk($datasets, $this->itemsPerPage) ?: [[]];
+      $datasets = $chunks[$currentPage];
+    }
+    else {
+      $harvestLoad = [];
+      foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
+        $harvestLoad += $this->getHarvestLoadStatus($harvestId);
+      }
+      $total = $this->metastore->count('dataset');
+      $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
+      $datasets = $this->metastore->getRangeUuids('dataset', $currentPage, $this->itemsPerPage);
+      $datasets = array_replace(array_fill_keys($datasets, 'N/A'), $harvestLoad);
+    }
+
+    return $datasets;
   }
 
   /**
@@ -287,24 +291,6 @@ class DashboardController implements ContainerInjectionInterface {
       'data' => $percent,
       'class' => $percent == 100 ? 'done' : 'in-progress',
     ];
-  }
-
-  /**
-   * Returns pager array.
-   *
-   * @param array $items
-   *   Table rows.
-   * @param int $itemsPerPage
-   *   Items per page.
-   *
-   * @return array
-   *   Table rows chunk.
-   */
-  private function pagerArray(array $items, int $itemsPerPage) : array {
-    $total = count($items);
-    $currentPage = $this->pagerManager->createPager($total, $itemsPerPage)->getCurrentPage();
-    $chunks = array_chunk($items, $itemsPerPage);
-    return !empty($chunks) ? $chunks[$currentPage] : [];
   }
 
 }

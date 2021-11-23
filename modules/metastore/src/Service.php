@@ -114,6 +114,36 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Count objects of the given schema ID.
+   *
+   * @param string $schema_id
+   *   The schema ID to be counted.
+   *
+   * @return int
+   *   Object count.
+   */
+  public function count(string $schema_id): int {
+    return $this->getStorage($schema_id)->count();
+  }
+
+  /**
+   * Get range of object UUIDs of the given schema ID.
+   *
+   * @param string $schema_id
+   *   The schema ID to be counted.
+   * @param int $start
+   *   Schema object offset.
+   * @param int $length
+   *   Number of objects to fetch.
+   *
+   * @return string[]
+   *   Range of object UUIDs of the given schema_id.
+   */
+  public function getRangeUuids(string $schema_id, int $start, int $length): array {
+    return $this->getStorage($schema_id)->retrieveRangeUuids($start, $length);
+  }
+
+  /**
    * Get all.
    *
    * @param string $schema_id
