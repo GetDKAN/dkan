@@ -47,7 +47,6 @@ class ImportInfo {
    *   And object with info about imports: file name, fetching status, etc.
    */
   public function getItem(string $identifier, string $version) {
-    $ff = NULL; $imp = NULL;
     [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
 
     $item = (object) [
