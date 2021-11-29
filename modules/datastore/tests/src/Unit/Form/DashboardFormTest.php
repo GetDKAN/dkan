@@ -107,10 +107,10 @@ class DashboardFormTest extends TestCase {
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
 
-    $this->assertEquals(1, count($form["table"]['#rows']));
-    $this->assertEquals('dataset-1', $form["table"]["#rows"][0][0]["data"]);
-    $this->assertEquals('Dataset 1', $form["table"]["#rows"][0][1]);
-    $this->assertEquals('NEW', $form["table"]["#rows"][0][4]["data"]);
+    $this->assertEquals(1, count($form['table']['#rows']));
+    $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']);
+    $this->assertEquals('Dataset 1', $form['table']['#rows'][0][1]);
+    $this->assertEquals('NEW', $form['table']['#rows'][0][4]['data']);
   }
 
   /**
@@ -140,10 +140,10 @@ class DashboardFormTest extends TestCase {
     \Drupal::setContainer($container);
     $form = DashboardForm::create($container)->buildForm([], new FormState());
 
-    $this->assertEquals(1, count($form["table"]['#rows']));
-    $this->assertEquals('test', $form["table"]["#rows"][0][0]["data"]);
-    $this->assertEquals('Title', $form["table"]["#rows"][0][1]);
-    $this->assertEquals('N/A', $form["table"]["#rows"][0][4]["data"]);
+    $this->assertEquals(1, count($form['table']['#rows']));
+    $this->assertEquals('test', $form['table']['#rows'][0][0]['data']);
+    $this->assertEquals('Title', $form['table']['#rows'][0][1]);
+    $this->assertEquals('N/A', $form['table']['#rows'][0][4]['data']);
   }
 
   /**
@@ -203,15 +203,15 @@ class DashboardFormTest extends TestCase {
     $form = DashboardForm::create($container->getMock())->buildForm([], new FormState());
 
     // Assert that there are both datasets: harvested and non-harvested.
-    $this->assertEquals(2, count($form["table"]['#rows']));
+    $this->assertEquals(2, count($form['table']['#rows']));
 
-    $this->assertEquals('dataset-1', $form["table"]["#rows"][0][0]["data"]);
-    $this->assertEquals('Dataset 1', $form["table"]["#rows"][0][1]);
-    $this->assertEquals('NEW', $form["table"]["#rows"][0][4]["data"]);
+    $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']);
+    $this->assertEquals('Dataset 1', $form['table']['#rows'][0][1]);
+    $this->assertEquals('NEW', $form['table']['#rows'][0][4]['data']);
 
-    $this->assertEquals('non-harvest-dataset', $form["table"]["#rows"][1][0]["data"]);
-    $this->assertEquals('Non-Harvest Dataset', $form["table"]["#rows"][1][1]);
-    $this->assertEquals('N/A', $form["table"]["#rows"][1][4]["data"]);
+    $this->assertEquals('non-harvest-dataset', $form['table']['#rows'][1][0]['data']);
+    $this->assertEquals('Non-Harvest Dataset', $form['table']['#rows'][1][1]);
+    $this->assertEquals('N/A', $form['table']['#rows'][1][4]['data']);
   }
 
   /**
