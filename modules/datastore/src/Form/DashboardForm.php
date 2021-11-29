@@ -25,7 +25,7 @@ class DashboardForm extends FormBase {
    *
    * @var string[]
    */
-  protected const DATASET_HEADERS = [
+  public const DATASET_HEADERS = [
     'Dataset UUID',
     'Dataset Title',
     'Revision ID',
@@ -41,7 +41,7 @@ class DashboardForm extends FormBase {
    *
    * @var string[]
    */
-  protected const DISTRIBUTION_HEADERS = [
+  public const DISTRIBUTION_HEADERS = [
     'Distribution UUID',
     'Fetch',
     '%',
@@ -136,6 +136,8 @@ class DashboardForm extends FormBase {
     $form_state->setMethod('GET');
     // Fetch GET parameter.
     $params = $this->getParameters();
+    // Add custom after_build method to remove unnecessary GET parameters.
+    $form['#after_build'] = ['::afterBuild'];
 
     // Build dataset import status table render array.
     return $form + $this->buildFilters($params) + $this->buildTable($this->getDatasets($params));
@@ -208,8 +210,6 @@ class DashboardForm extends FormBase {
           ],
         ],
       ],
-      // The after_build removes elements from GET parameters.
-      '#after_build' => ['::afterBuild'],
     ];
   }
 
@@ -383,8 +383,8 @@ class DashboardForm extends FormBase {
    *   Distribution table render array.
    */
   protected function buildResourcesTable(array $distributions): array {
-
     $rows = [];
+
     foreach ($distributions as $dist) {
       if (isset($dist['distribution_uuid'])) {
         $rows[] = [
