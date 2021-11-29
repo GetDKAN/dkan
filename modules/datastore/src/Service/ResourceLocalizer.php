@@ -48,7 +48,7 @@ class ResourceLocalizer {
    */
   public function localize($identifier, $version = NULL) {
     $resource = $this->getResourceSource($identifier, $version);
-    if (isset($resource) && !file_exists(UrlHostTokenResolver::resolveFilePath($resource->getFilePath()))) {
+    if ($resource) {
       $ff = $this->getFileFetcher($resource);
       return $ff->run();
     }
