@@ -157,7 +157,7 @@ class DashboardForm extends FormBase {
   public function afterBuild(array $element, FormStateInterface $form_state): array {
     // Remove the form_token, form_build_id, form_id, and op from the GET
     // parameters.
-    unset($element['form_token'], $element['form_build_id'], $element['form_id'], $element['actions']['submit']['#name']);
+    unset($element['form_token'], $element['form_build_id'], $element['form_id'], $element['filters']['actions']['submit']['#name']);
 
     return $element;
   }
@@ -177,26 +177,35 @@ class DashboardForm extends FormBase {
    *   Table filters render array.
    */
   protected function buildFilters(array $filters): array {
+    // Retrieve potential harvest IDs for "Harvest ID" filter.
+    $harvestIds = $this->harvest->getAllHarvestIds();
+
     return [
-      'uuid' => [
-        '#type' => 'textfield',
-        '#weight' => 1,
-        '#title' => $this->t('UUID'),
-        '#default_value' => $filters['uuid'] ?? '',
-      ],
-      'harvest_id' => [
-        '#type' => 'textfield',
-        '#weight' => 1,
-        '#title' => $this->t('Harvest ID'),
-        '#default_value' => $filters['harvest_id'] ?? '',
-      ],
-      'actions' => [
-        '#type' => 'actions',
-        '#weight' => 2,
-        'submit' => [
-          '#type' => 'submit',
-          '#value' => $this->t('Filter'),
-          '#button_type' => 'primary',
+      'filters' => [
+        '#type' => 'container',
+        '#attributes' => ['class' => ['form--inline', 'clearfix']],
+        'uuid' => [
+          '#type' => 'textfield',
+          '#weight' => 1,
+          '#title' => $this->t('UUID'),
+          '#default_value' => $filters['uuid'] ?? '',
+        ],
+        'harvest_id' => [
+          '#type' => 'select',
+          '#weight' => 1,
+          '#title' => $this->t('Harvest ID'),
+          '#default_value' => $filters['harvest_id'] ?? '',
+          '#empty_option' => $this->t('- None -'),
+          '#options' => array_combine($harvestIds, $harvestIds),
+        ],
+        'actions' => [
+          '#type' => 'actions',
+          '#weight' => 2,
+          'submit' => [
+            '#type' => 'submit',
+            '#value' => $this->t('Filter'),
+            '#button_type' => 'primary',
+          ],
         ],
       ],
       // The after_build removes elements from GET parameters.
