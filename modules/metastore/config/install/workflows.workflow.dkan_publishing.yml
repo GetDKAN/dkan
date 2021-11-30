@@ -1,4 +1,4 @@
-uuid: c6063248-bbd1-4f27-bdd6-4bb7f60a50e3
+uuid: f13dbb18-99d0-41b2-b046-061b9dd5992d
 langcode: en
 status: true
 dependencies:
@@ -14,9 +14,9 @@ type: content_moderation
 type_settings:
   states:
     archived:
+      label: Archived
       published: false
       default_revision: true
-      label: Archived
       weight: 3
     draft:
       label: Draft
@@ -28,6 +28,11 @@ type_settings:
       default_revision: true
       label: Orphaned
       weight: 2
+    publish_without_search_indexing:
+      published: true
+      default_revision: false
+      label: 'Publish without search indexing'
+      weight: 4
     published:
       label: Published
       published: true
@@ -37,6 +42,7 @@ type_settings:
     archive:
       label: Archive
       from:
+        - publish_without_search_indexing
         - published
       to: archived
       weight: 3
@@ -46,11 +52,13 @@ type_settings:
       weight: 0
       from:
         - draft
+        - publish_without_search_indexing
         - published
     orphan:
       label: Orphan
       from:
         - draft
+        - publish_without_search_indexing
         - published
       to: orphaned
       weight: 2
@@ -60,7 +68,16 @@ type_settings:
       weight: 1
       from:
         - draft
+        - publish_without_search_indexing
         - published
+    remove_from_search_indexing:
+      label: 'Remove from search indexing'
+      from:
+        - draft
+        - publish_without_search_indexing
+        - published
+      to: publish_without_search_indexing
+      weight: 5
     restore:
       label: Restore
       from:
