@@ -86,29 +86,18 @@ class MysqlImport extends Importer {
       return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s" and version "%s".', $file_path, $this->resource->getIdentifier(), $this->resource->getVersion()));
     }
 
-    // Read the header line from the CSV file.
+    // Read the columns and EOL character sequence from the CSV file.
     try {
-      $header_line = $this->getFirstLineFromFile($file_path);
+      [$columns, $eol] = $this->getColsAndEolFromFile($file_path);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
     }
 
-    // Extract the columns names using the header line.
-    $columns = str_getcsv($header_line);
     // Generate sanitized table headers from column names.
     $headers = $this->generateTableHeaders($columns);
-
     // Use headers to set the storage schema.
     $this->setStorageSchema($headers);
-
-    // Attempt to detect the line ending for this resource file using the first
-    // line from the file.
-    $eol = $this->getEol($header_line);
-    // On failure, stop the import job and log an error.
-    if (!isset($eol)) {
-      return $this->setResultError(sprintf('Failed to detect EOL character for resource file "%s" from header line "%s".', $file_path, $header_line));
-    }
 
     // Call `count` on database table in order to ensure a database table has
     // been created for the datastore.
@@ -127,19 +116,20 @@ class MysqlImport extends Importer {
   }
 
   /**
-   * Read the first line from the given file.
+   * Attempt to read the headers and detect the EOL chars of the given CSV file.
    *
    * @param string $file_path
    *   File path.
    *
-   * @return string
-   *   First line from file.
+   * @return array
+   *   An array containing only two elements; the CSV headers and the EOL
+   *   character sequence.
    *
    * @throws Symfony\Component\HttpFoundation\File\Exception\FileException
    *   On failure to open the file;
    *   on failure to read the first line from the file.
    */
-  protected function getFirstLineFromFile(string $file_path): string {
+  protected function getColsAndEolFromFile(string $file_path): array {
     // Ensure the "auto_detect_line_endings" ini setting is enabled before
     // openning the file to ensure Mac style EOL characters are detected.
     $old_ini = ini_set('auto_detect_line_endings', '1');
@@ -153,16 +143,32 @@ class MysqlImport extends Importer {
     if (!isset($f) || $f === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
     }
-    // Attempt to retrieve the first line from the resource file.
-    $header_line = fgets($f);
-    // Close the resource file since it is no longer necessary.
+    // Attempt to retrieve the headers from the resource file.
+    $headers = fgetcsv($f);
+    // Prepare for reading the files EOL character sequence by attempt to rewind
+    // the file pointer by two characters, to ensure the file pointer is before
+    // any possible EOL character sequence. On failure, attempt to rewind the
+    // file pointer by just 1 character.
+    if (fseek($f, -2, SEEK_CUR) === -1) {
+      fseek($f, -1, SEEK_CUR);
+    }
+    // Attempt to retrieve the later part of the header line containing the EOL
+    // character sequence for this file.
+    $headers_eol = fgets($f) ?: '';
+    // Close the resource file, since it is no longer necessary.
     fclose($f);
+
     // Ensure the first line of the resource file was successfully read.
     if (!isset($header_line) || $header_line === FALSE) {
       throw new FileException(sprintf('Failed to read header line from resource file "%s".', $file_path));
     }
+    // Attempt to detect the EOL character sequence for this file.
+    $eol = $this->getEol($headers_eol);
+    if (!isset($eol)) {
+      throw new FileException(sprintf('Failed to detect EOL character for resource file "%s".', $file_path));
+    }
 
-    return $header_line;
+    return ['headers' => $headers, 'eol' => $eol];
   }
 
   /**
