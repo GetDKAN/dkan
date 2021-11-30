@@ -158,9 +158,9 @@ class MysqlImport extends Importer {
     // Close the resource file, since it is no longer necessary.
     fclose($f);
 
-    // Ensure the first line of the resource file was successfully read.
+    // Ensure the headers of the resource file were successfully read.
     if (!isset($headers) || $headers === FALSE) {
-      throw new FileException(sprintf('Failed to read header line from resource file "%s".', $file_path));
+      throw new FileException(sprintf('Failed to read headers from resource file "%s".', $file_path));
     }
     // Attempt to detect the EOL character sequence for this file; default to
     // '\n' on failure.
