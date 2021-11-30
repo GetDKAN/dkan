@@ -16,6 +16,17 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class MysqlImport extends Importer {
 
   /**
+   * End Of Line character sequence escape to literal map.
+   *
+   * @var string[]
+   */
+  protected const EOL_TABLE = [
+    '\r\n' => "\r\n",
+    '\r' => "\r",
+    '\n' => "\n",
+  ];
+
+  /**
    * The maximum length of a MySQL table column name.
    *
    * @var int
@@ -25,7 +36,7 @@ class MysqlImport extends Importer {
   /**
    * List of reserved words in MySQL 5.6-8 and MariaDB.
    *
-   * @var array
+   * @var string[]
    */
   protected const RESERVED_WORDS = ['accessible', 'add', 'all', 'alter', 'analyze',
     'and', 'as', 'asc', 'asensitive', 'before', 'between', 'bigint', 'binary',
@@ -88,12 +99,17 @@ class MysqlImport extends Importer {
 
     // Read the columns and EOL character sequence from the CSV file.
     try {
-      [$columns, $eol] = $this->getColsAndEolFromFile($file_path);
+      ['columns' => $columns, 'lines' => $column_lines] = $this->getColsFromFile($file_path);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
     }
-
+    // Attempt to detect the EOL character sequence for this file; default to
+    // '\n' on failure.
+    $eol = $this->getEol($column_lines) ?? '\n';
+    // Count the number of EOL characters in the header row to determine how
+    // many lines the headers are occupying.
+    $header_line_count = substr_count(trim($column_lines), self::EOL_TABLE[$eol]) + 1;
     // Generate sanitized table headers from column names.
     $headers = $this->generateTableHeaders($columns);
     // Use headers to set the storage schema.
@@ -106,7 +122,7 @@ class MysqlImport extends Importer {
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), $headers, $eol));
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), $headers, $eol, $header_line_count));
 
     Database::setActiveConnection();
 
@@ -116,24 +132,24 @@ class MysqlImport extends Importer {
   }
 
   /**
-   * Attempt to read the headers and detect the EOL chars of the given CSV file.
+   * Attempt to read the columns and detect the EOL chars of the given CSV file.
    *
    * @param string $file_path
    *   File path.
    *
    * @return array
-   *   An array containing only two elements; the CSV headers and the EOL
-   *   character sequence.
+   *   An array containing only two elements; the CSV columns and the column
+   *   lines.
    *
    * @throws Symfony\Component\HttpFoundation\File\Exception\FileException
    *   On failure to open the file;
    *   on failure to read the first line from the file.
    */
-  protected function getColsAndEolFromFile(string $file_path): array {
+  protected function getColsFromFile(string $file_path): array {
     // Ensure the "auto_detect_line_endings" ini setting is enabled before
     // openning the file to ensure Mac style EOL characters are detected.
     $old_ini = ini_set('auto_detect_line_endings', '1');
-    // Read the first (header) line from the CSV file.
+    // Open the CSV file.
     $f = fopen($file_path, 'r');
     // Revert ini setting once the file has been opened.
     if ($old_ini !== FALSE) {
@@ -143,30 +159,22 @@ class MysqlImport extends Importer {
     if (!isset($f) || $f === FALSE) {
       throw new FileException(sprintf('Failed to open resource file "%s".', $file_path));
     }
-    // Attempt to retrieve the headers from the resource file.
-    $headers = fgetcsv($f);
-    // Prepare for reading the files EOL character sequence by attempt to rewind
-    // the file pointer by two characters, to ensure the file pointer is before
-    // any possible EOL character sequence. On failure, attempt to rewind the
-    // file pointer by just 1 character.
-    if (fseek($f, -2, SEEK_CUR) === -1) {
-      fseek($f, -1, SEEK_CUR);
-    }
-    // Attempt to retrieve the later part of the header line containing the EOL
-    // character sequence for this file.
-    $headers_eol = fgets($f) ?: '';
+
+    // Attempt to retrieve the columns from the resource file.
+    $columns = fgetcsv($f);
+    // Attempt to read the column lines from the resource file.
+    $end_pointer = ftell($f);
+    rewind($f);
+    $column_lines = fread($f, $end_pointer);
+
     // Close the resource file, since it is no longer necessary.
     fclose($f);
-
-    // Ensure the headers of the resource file were successfully read.
-    if (!isset($headers) || $headers === FALSE) {
-      throw new FileException(sprintf('Failed to read headers from resource file "%s".', $file_path));
+    // Ensure the columns of the resource file were successfully read.
+    if (!isset($columns) || $columns === FALSE) {
+      throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
     }
-    // Attempt to detect the EOL character sequence for this file; default to
-    // '\n' on failure.
-    $eol = $this->getEol($headers_eol) ?? '\n';
 
-    return ['headers' => $headers, 'eol' => $eol];
+    return ['columns' => $columns, 'lines' => $column_lines];
   }
 
   /**
@@ -261,7 +269,7 @@ class MysqlImport extends Importer {
     // not a supported.
     $column = preg_replace('/(?: |\r\n|\r|\n)/', '_', $column);
     // Strip unsupported characters from the header.
-    $column = preg_replace('/[^A-Za-z0-9_ ]/', '', $column);
+    $column = preg_replace('/[^A-Za-z0-9_]/', '', $column);
     // Trim underscores from the beginning and end of the column name.
     $column = trim($column, '_');
     // Convert the column name to lowercase.
@@ -303,11 +311,13 @@ class MysqlImport extends Importer {
    *   List of CSV headers.
    * @param string $eol
    *   End Of Line character for file importation.
+   * @param int $header_line_count
+   *   Number of lines occupied by the csv header row.
    *
    * @return string
    *   Generated SQL file import statement.
    */
-  private function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol): string {
+  private function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count): string {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
       'INTO TABLE ' . $tablename,
@@ -315,7 +325,7 @@ class MysqlImport extends Importer {
       'OPTIONALLY ENCLOSED BY \'"\'',
       'ESCAPED BY \'\'',
       'LINES TERMINATED BY \'' . $eol . '\'',
-      'IGNORE 1 ROWS',
+      'IGNORE ' . $header_line_count . ' LINES',
       '(' . implode(',', $headers) . ')',
       'SET record_number = NULL;',
     ]);
