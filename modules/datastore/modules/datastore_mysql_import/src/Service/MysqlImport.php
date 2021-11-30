@@ -159,14 +159,12 @@ class MysqlImport extends Importer {
     fclose($f);
 
     // Ensure the first line of the resource file was successfully read.
-    if (!isset($header_line) || $header_line === FALSE) {
+    if (!isset($headers) || $headers === FALSE) {
       throw new FileException(sprintf('Failed to read header line from resource file "%s".', $file_path));
     }
-    // Attempt to detect the EOL character sequence for this file.
-    $eol = $this->getEol($headers_eol);
-    if (!isset($eol)) {
-      throw new FileException(sprintf('Failed to detect EOL character for resource file "%s".', $file_path));
-    }
+    // Attempt to detect the EOL character sequence for this file; default to
+    // '\n' on failure.
+    $eol = $this->getEol($headers_eol) ?? '\n';
 
     return ['headers' => $headers, 'eol' => $eol];
   }
