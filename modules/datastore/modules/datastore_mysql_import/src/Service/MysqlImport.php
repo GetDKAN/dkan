@@ -259,9 +259,9 @@ class MysqlImport extends Importer {
    *   Sanitized column name.
    */
   protected function sanitizeHeader(string $column): string {
-    // Replace all spaces with underscores since spaces are not a supported
-    // character.
-    $column = str_replace(' ', '_', $column);
+    // Replace all spaces and newline characters with underscores since they are
+    // not a supported.
+    $column = preg_replace('/(?: |\r\n|\r|\n)/', '_', $column);
     // Strip unsupported characters from the header.
     $column = preg_replace('/[^A-Za-z0-9_ ]/', '', $column);
     // Trim underscores from the beginning and end of the column name.
