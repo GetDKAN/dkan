@@ -20,7 +20,6 @@ class ImportInfoListTest extends TestCase {
     $ff = FileFetcher::hydrate('{}');
 
     $result = Result::hydrate('{"status":"error","data":"","error":"File import error"}');
-    $result->setData('{"total_bytes":1500}');
 
     $imp = (new Chain($this))
       ->add(Importer::class, "getResult", $result)
@@ -43,6 +42,7 @@ class ImportInfoListTest extends TestCase {
     $list = $listService->buildList();
     $this->assertStringContainsString('File import error', $list['1_1']->importerError);
     $this->assertStringContainsString('error', $list['1_1']->importerStatus);
+    $this->assertEquals(1500, $list['1_1']->importerBytes);
   }
 
 }
