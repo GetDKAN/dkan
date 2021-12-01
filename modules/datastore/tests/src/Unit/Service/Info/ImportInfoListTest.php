@@ -2,17 +2,32 @@
 
 namespace Drupal\Tests\datastore\Unit\Service\Info;
 
+use Dkan\Datastore\Importer;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
+use Drupal\datastore\Service\Import;
 use Drupal\datastore\Service\Info\ImportInfo;
 use Drupal\datastore\Service\Info\ImportInfoList;
+use Drupal\datastore\Storage\DatabaseTableFactory;
+use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Options;
+use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
+use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\Container;
 
 class ImportInfoListTest extends TestCase {
   public function test() {
+
+    $ff = FileFetcher::hydrate('{}');
+
+    $result = Result::hydrate('{"status":"error","data":"","error":"File import error"}');
+    $result->setData('{"total_bytes":1500}');
+
+    $imp = (new Chain($this))
+      ->add(Importer::class, "getResult", $result)
+      ->getMock();
 
     $services = (new Options())
       ->add('dkan.common.job_store', JobStoreFactory::class)
@@ -22,11 +37,15 @@ class ImportInfoListTest extends TestCase {
     $container = (new Chain($this))
       ->add(Container::class, 'get', $services)
       ->add(JobStoreFactory::class, 'getInstance', JobStore::class)
-      ->add(JobStore::class, 'retrieveAll', [])
+      ->add(JobStore::class, 'retrieveAll', ["1_1"])
+      ->add(ImportInfo::class, 'getFileFetcherAndImporter', [$ff, $imp])
+      ->add(ImportInfo::class, 'getBytesProcessed', 1500)
       ->getMock();
 
-    $list = ImportInfoList::create($container);
-    $list->buildList();
-    $this->assertTrue(true);
+    $listService = ImportInfoList::create($container);
+    $list = $listService->buildList();
+    $this->assertStringContainsString('File import error', $list['1_1']->importerError);
+    $this->assertStringContainsString('error', $list['1_1']->importerStatus);
   }
+
 }
