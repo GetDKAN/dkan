@@ -309,9 +309,6 @@ class DashboardForm extends FormBase {
 
   /**
    * Fetch the status of all harvests.
-   *
-   * @return \Generator
-   *   Dataset harvest statuses.
    */
   protected function getHarvestLoadStatuses(): \Generator {
     foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
