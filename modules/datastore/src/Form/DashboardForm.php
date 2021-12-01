@@ -177,6 +177,8 @@ class DashboardForm extends FormBase {
    *
    * @return array[]
    *   Table filters render array.
+   *
+   * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
    */
   protected function buildFilters(array $filters): array {
     // Retrieve potential harvest IDs for "Harvest ID" filter.
