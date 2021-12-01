@@ -178,7 +178,7 @@ class DashboardForm extends FormBase {
    * @return array[]
    *   Table filters render array.
    *
-   * @codingStandardsIgnoreStart
+   * @codeCoverageIgnoreStart
    */
   protected function buildFilters(array $filters): array {
     // Retrieve potential harvest IDs for "Harvest ID" filter.
@@ -214,7 +214,7 @@ class DashboardForm extends FormBase {
       ],
     ];
   }
-  // @codingStandardsIgnoreEnd
+  // @codeCoverageIgnoreEnd
 
   /**
    * Build datasets import status table.
