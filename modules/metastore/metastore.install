@@ -60,3 +60,63 @@ function metastore_update_8004() {
 
   drupal_flush_all_caches();
 }
+
+
+/**
+ * Add archived state and transitions to dkan publishing workflow config.
+ */
+function metastore_update_8005() {
+  $workflow = \Drupal::service('config.factory')->getEditable('workflows.workflow.dkan_publishing');
+
+  $states = $workflow->get('type_settings.states');
+  $states["hidden"] = [
+    "label" => "Publish without search indexing",
+    "published" => false,
+    "default_revision" => true,
+    "weight" => 4
+  ];
+
+  $transitions = $workflow->get('type_settings.transitions');
+  $transitions["archive"] = [
+    "label" => "Archive",
+    "from" => ["published,hidden"],
+    "to" => "archived",
+    "weight" => 3
+  ];
+  $transitions["restore"] = [
+    "label" => "Restore",
+    "from" => ["archived,hidden"],
+    "to" => "published",
+    "weight" => 4
+  ];
+  $transitions["create_new_draft"] = [
+    "label" => "Create New Draft",
+    "from" => ["draft,hidden,published"],
+    "to" => "draft",
+    "weight" => 0
+  ];
+  $transitions["orphan"] = [
+    "label" => "Orphan",
+    "from" => ["draft,hidden,published"],
+    "to" => "orphaned",
+    "weight" => 2
+  ];
+  $transitions["publish"] = [
+    "label" => "Publish",
+    "from" => ["draft,hidden,published"],
+    "to" => "published",
+    "weight" => 1
+  ];
+  $transitions["hidden"] = [
+    "label" => "Remove from search indexing",
+    "from" => ["draft,hidden,published"],
+    "to" => "hidden",
+    "weight" => 5
+  ];
+
+  $workflow->set('type_settings.states', $states);
+  $workflow->set('type_settings.transitions', $transitions);
+  $workflow->save(TRUE);
+
+  drupal_flush_all_caches();
+}

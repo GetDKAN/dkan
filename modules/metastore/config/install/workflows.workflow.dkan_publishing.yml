@@ -28,7 +28,7 @@ type_settings:
       default_revision: true
       label: Orphaned
       weight: 2
-    publish_without_search_indexing:
+    hidden:
       published: true
       default_revision: false
       label: 'Publish without search indexing'
@@ -42,7 +42,7 @@ type_settings:
     archive:
       label: Archive
       from:
-        - publish_without_search_indexing
+        - hidden
         - published
       to: archived
       weight: 3
@@ -52,13 +52,13 @@ type_settings:
       weight: 0
       from:
         - draft
-        - publish_without_search_indexing
+        - hidden
         - published
     orphan:
       label: Orphan
       from:
         - draft
-        - publish_without_search_indexing
+        - hidden
         - published
       to: orphaned
       weight: 2
@@ -68,15 +68,15 @@ type_settings:
       weight: 1
       from:
         - draft
-        - publish_without_search_indexing
+        - hidden
         - published
-    remove_from_search_indexing:
+    hidden:
       label: 'Remove from search indexing'
       from:
         - draft
-        - publish_without_search_indexing
+        - hidden
         - published
-      to: publish_without_search_indexing
+      to: hidden
       weight: 5
     restore:
       label: Restore
