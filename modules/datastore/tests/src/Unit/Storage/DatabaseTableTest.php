@@ -293,7 +293,7 @@ class DatabaseTableTest extends TestCase {
   /**
    *
    */
-  public function testDestroy() {
+  public function testDestruct() {
     $connectionChain = $this->getConnectionChain();
 
     $databaseTable = new DatabaseTable(
