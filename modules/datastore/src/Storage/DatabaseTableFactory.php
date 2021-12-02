@@ -3,29 +3,44 @@
 namespace Drupal\datastore\Storage;
 
 use Contracts\FactoryInterface;
-use Drupal\Core\Database\Connection;
+
+use Drupal\datastore\Storage\DatabaseConnectionFactory;
 use Drupal\indexer\IndexManager;
 
 /**
  * Class DatabaseTableFactory.
  */
 class DatabaseTableFactory implements FactoryInterface {
-  private $connection;
+
+  /**
+   * Database connection factory service.
+   *
+   * @var \Drupal\datastore\Storage\DatabaseConnectionFactory
+   */
+  protected $databaseConnectionFactory;
 
   /**
    * Optional index manager service.
    *
-   * @var null|\Drupal\indexer\IndexManager
+   * @var \Drupal\indexer\IndexManager|null
    */
-  private $indexManager;
-
-  private $databaseTables = [];
+  protected $indexManager;
 
   /**
-   * Constructor.
+   * Database table instances.
+   *
+   * @var \Drupal\datastore\Storage\DatabaseTable[]
    */
-  public function __construct(Connection $connection) {
-    $this->connection = $connection;
+  protected $databaseTables = [];
+
+  /**
+   * Create DatabaseTableFactory instance.
+   *
+   * @param \Drupal\datastore\Storage\DatabaseConnectionFactory
+   *   Database connection factory service instance.
+   */
+  public function __construct(DatabaseConnectionFactory $databaseConnectionFactory) {
+    $this->databaseConnectionFactory = $databaseConnectionFactory;
   }
 
   /**
@@ -39,8 +54,6 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
-   * Inherited.
-   *
    * @inheritdoc
    */
   public function getInstance(string $identifier, array $config = []) {
@@ -61,11 +74,16 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
-   * Protected.
+   * Generate database table for the given resource.
+   *
+   * @param \Dkan\Datastore\Resource $resource
+   *   The datastore resource being imported.
+   *
+   * @return \Drupal\datastore\Storage\DatabaseTable
+   *   Database table instance.
    */
-  protected function getDatabaseTable($resource) {
-    $databaseTable = new DatabaseTable($this->connection, $resource);
-    return $databaseTable;
+  protected function getDatabaseTable($resource): DatabaseTable {
+    return new DatabaseTable($this->databaseConnectionFactory->getConnection(), $resource);
   }
 
 }
