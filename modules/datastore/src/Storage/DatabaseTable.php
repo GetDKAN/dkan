@@ -6,7 +6,6 @@ use Drupal\Core\Database\Connection;
 
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
-use Drupal\datastore\Storage\DatabaseConnectionFactory;
 
 use Dkan\Datastore\Resource;
 
@@ -48,9 +47,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $this->databaseConnectionFactory = $databaseConnectionFactory;
   }
 
-  /**
-   * @inheritdoc
-   */
   protected function getConnection(): Connection {
     if (!isset($this->connection)) {
       $this->connection = $this->databaseConnectionFactory->getConnection();
@@ -58,9 +54,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     return $this->connection;
   }
 
-  /**
-   * @inheritdoc
-   */
   public function getSchema() {
     if (!isset($this->schema) && $this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
@@ -79,11 +72,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     return new TableSummary($numOfColumns, $columns, $numOfRows);
   }
 
-  /**
-   * Inherited.
-   *
-   * {@inheritdoc}
-   */
   public function jsonSerialize() {
     return (object) ['resource' => $this->resource];
   }
@@ -165,9 +153,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $this->setSchema($schema);
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function setSchema($schema) {
     $fields = $schema['fields'];
     $new_field = [
