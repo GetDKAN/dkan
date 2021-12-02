@@ -2,10 +2,10 @@
 
 namespace Drupal\datastore\Storage;
 
-use Contracts\FactoryInterface;
-
-use Drupal\datastore\Storage\DatabaseConnectionFactory;
 use Drupal\indexer\IndexManager;
+
+use Contracts\FactoryInterface;
+use Dkan\Datastore\Resource;
 
 /**
  * Class DatabaseTableFactory.
@@ -36,7 +36,7 @@ class DatabaseTableFactory implements FactoryInterface {
   /**
    * Create DatabaseTableFactory instance.
    *
-   * @param \Drupal\datastore\Storage\DatabaseConnectionFactory
+   * @param \Drupal\datastore\Storage\DatabaseConnectionFactory $databaseConnectionFactory
    *   Database connection factory service instance.
    */
   public function __construct(DatabaseConnectionFactory $databaseConnectionFactory) {
@@ -82,8 +82,8 @@ class DatabaseTableFactory implements FactoryInterface {
    * @return \Drupal\datastore\Storage\DatabaseTable
    *   Database table instance.
    */
-  protected function getDatabaseTable($resource): DatabaseTable {
-    return new DatabaseTable($this->databaseConnectionFactory->getConnection(), $resource);
+  protected function getDatabaseTable(Resource $resource): DatabaseTable {
+    return new DatabaseTable($this->databaseConnectionFactory, $resource);
   }
 
 }

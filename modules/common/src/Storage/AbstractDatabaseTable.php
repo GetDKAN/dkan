@@ -69,6 +69,16 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   }
 
   /**
+   * Get a database connection instance.
+   *
+   * @return \Drupal\Core\Database\Connection
+   *   Drupal database connection object.
+   */
+  protected function getConnection(): Connection {
+    return $this->connection;
+  }
+
+  /**
    * Set an optional index manager service.
    *
    * @param \Drupal\indexer\IndexManager $indexManager
@@ -84,7 +94,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   public function retrieve(string $id) {
     $this->setTable();
 
-    $select = $this->connection->select($this->getTableName(), 't')
+    $select = $this->getConnection()->select($this->getTableName(), 't')
       ->fields('t', array_keys($this->getSchema()['fields']))
       ->condition($this->primaryKey(), $id);
 
@@ -103,7 +113,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     $this->setTable();
     $tableName = $this->getTableName();
 
-    $result = $this->connection->select($tableName, 't')
+    $result = $this->getConnection()->select($tableName, 't')
       ->fields('t', [$this->primaryKey()])
       ->execute()
       ->fetchAll();
@@ -141,13 +151,13 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
         );
       }
 
-      $q = $this->connection->insert($this->getTableName());
+      $q = $this->getConnection()->insert($this->getTableName());
       $q->fields($fields);
       $q->values($data);
       $returned_id = $q->execute();
     }
     else {
-      $q = $this->connection->update($this->getTableName());
+      $q = $this->getConnection()->update($this->getTableName());
       $q->fields($data)
         ->condition($this->primaryKey(), $id)
         ->execute();
@@ -170,7 +180,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
     $fields = $this->getNonSerialFields();
 
-    $q = $this->connection->insert($this->getTableName());
+    $q = $this->getConnection()->insert($this->getTableName());
     $q->fields($fields);
     foreach ($data as $datum) {
       $datum = $this->prepareData($datum);
@@ -203,7 +213,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();
-    $this->connection->delete($tableName)
+    $this->getConnection()->delete($tableName)
       ->condition($this->primaryKey(), $id)
       ->execute();
   }
@@ -213,7 +223,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function count(): int {
     $this->setTable();
-    $query = $this->connection->select($this->getTableName());
+    $query = $this->getConnection()->select($this->getTableName());
     return $query->countQuery()->execute()->fetchField();
   }
 
@@ -234,7 +244,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   public function query(Query $query, string $alias = 't', $fetch = TRUE) {
     $this->setTable();
     $query->collection = $this->getTableName();
-    $selectFactory = new SelectFactory($this->connection, $alias);
+    $selectFactory = new SelectFactory($this->getConnection(), $alias);
     $db_query = $selectFactory->create($query);
 
     try {
@@ -286,16 +296,15 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
    */
   public function destruct() {
     if ($this->tableExist($this->getTableName())) {
-      $this->connection->schema()->dropTable($this->getTableName());
+      $this->getConnection()->schema()->dropTable($this->getTableName());
     }
   }
 
   /**
    * Check for existence of a table name.
    */
-  protected function tableExist($table_name) {
-    $exists = $this->connection->schema()->tableExists($table_name);
-    return $exists;
+  protected function tableExist(string $tableName): bool {
+    return $this->getConnection()->schema()->tableExists($tableName);
   }
 
   /**
@@ -308,14 +317,14 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     if (method_exists($this->indexManager, 'modifySchema')) {
       $schema = $this->indexManager->modifySchema($table_name, $schema);
     }
-    $this->connection->schema()->createTable($table_name, $schema);
+    $this->getConnection()->schema()->createTable($table_name, $schema);
   }
 
   /**
    * Set the schema using the existing database table.
    */
   protected function setSchemaFromTable() {
-    $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
+    $fields_info = $this->getConnection()->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
     if (empty($fields_info)) {
       return;
     }
@@ -324,10 +333,10 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       $fields[] = $info->Field;
     }
     $schema = $this->getTableSchema($fields);
-    if (method_exists($this->connection->schema(), 'getComment')) {
+    if (method_exists($this->getConnection()->schema(), 'getComment')) {
       foreach ($schema['fields'] as $fieldName => $info) {
         $newInfo = $info;
-        $newInfo['description'] = $this->connection->schema()->getComment($this->getTableName(), $fieldName);
+        $newInfo['description'] = $this->getConnection()->schema()->getComment($this->getTableName(), $fieldName);
         $schema['fields'][$fieldName] = $newInfo;
       }
     }

@@ -3,9 +3,12 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
-use Dkan\Datastore\Resource;
+
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
+use Drupal\datastore\Storage\DatabaseConnectionFactory;
+
+use Dkan\Datastore\Resource;
 
 /**
  * Database storage object.
@@ -21,25 +24,49 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @var \Dkan\Datastore\Resource
    */
-  private $resource;
+  protected $resource;
+
+  /**
+   * DatabaseConnectionFactory service.
+   *
+   * @var \Drupal\datastore\Storage\DatabaseConnectionFactory
+   */
+  protected $databaseConnectionFactory;
 
   /**
    * Constructor method.
    *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Drupal database connection object.
+   * @param \Drupal\datastore\Storage\DatabaseConnectionFactory $databaseConnectionFactory
+   *   DatabaseConnectionFactory service.
    * @param \Dkan\Datastore\Resource $resource
    *   A resource.
    */
-  public function __construct(Connection $connection, Resource $resource) {
+  public function __construct(DatabaseConnectionFactory $databaseConnectionFactory, Resource $resource) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
-    $this->connection = $connection;
+    $this->databaseConnectionFactory = $databaseConnectionFactory;
+  }
 
-    if ($this->tableExist($this->getTableName())) {
+  /**
+   * @inheritdoc
+   */
+  protected function getConnection(): Connection {
+    if (!isset($this->connection)) {
+      $this->connection = $this->databaseConnectionFactory->getConnection();
+    }
+    return $this->connection;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function getSchema() {
+    if (!isset($this->schema) && $this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
     }
+
+    return parent::getSchema();
   }
 
   /**
@@ -132,7 +159,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   protected function setSchemaFromTable() {
     $tableName = $this->getTableName();
-    $fieldsInfo = $this->connection->query("DESCRIBE `{$tableName}`")->fetchAll();
+    $fieldsInfo = $this->getConnection()->query("DESCRIBE `{$tableName}`")->fetchAll();
 
     $schema = $this->buildTableSchema($tableName, $fieldsInfo);
     $this->setSchema($schema);
@@ -164,12 +191,12 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * @todo Note that this will break on PostgresSQL
    */
   protected function buildTableSchema($tableName, $fieldsInfo) {
-    $canGetComment = method_exists($this->connection->schema(), 'getComment');
+    $canGetComment = method_exists($this->getConnection()->schema(), 'getComment');
     foreach ($fieldsInfo as $info) {
       $name = $info->Field;
       $schema['fields'][$name] = $this->translateType($info->Type, ($info->Extra ?? NULL));
       $schema['fields'][$name] += [
-        'description' => $canGetComment ? $this->connection->schema()->getComment($tableName, $name) : '',
+        'description' => $canGetComment ? $this->getConnection()->schema()->getComment($tableName, $name) : '',
       ];
       $schema['fields'][$name] = array_filter($schema['fields'][$name]);
     }
@@ -192,13 +219,13 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   protected function translateType(string $type, $extra = NULL) {
     // Clean up things like "int(10) unsigned".
     $db_type = strtok($type, '(');
-    $driver = $this->connection->driver() ?? 'mysql';
+    $driver = $this->getConnection()->driver() ?? 'mysql';
 
     preg_match('#\((.*?)\)#', $type, $match);
     $length = $match[1] ?? NULL;
     $length = $length ? (int) $length : $length;
 
-    $map = array_flip(array_map('strtolower', $this->connection->schema()->getFieldTypeMap()));
+    $map = array_flip(array_map('strtolower', $this->getConnection()->schema()->getFieldTypeMap()));
 
     $fullType = explode(':', ($map[$db_type] ?? 'varchar'));
     // Set type to serial if auto-increment, else use mapped type.
