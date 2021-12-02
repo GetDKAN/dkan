@@ -21,7 +21,7 @@ class DkanStreamWrapperTest extends ExistingSiteBase {
     $path = $manager->getViaScheme($scheme)->getDirectoryPath();
     $this->assertStringContainsString("/api/1", $path);
     $ext = $manager->getViaScheme($scheme)->getExternalUrl();
-    $this->assertStringContainsString("http://web/api/1", $ext);
+    $this->assertStringContainsString("http://dkan.localtest.me/api/1", $ext);
   }
 
 }
