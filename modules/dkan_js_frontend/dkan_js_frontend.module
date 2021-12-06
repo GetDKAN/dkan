@@ -1,6 +1,11 @@
 <?php
 
-use Drupal\Core\Site\Settings;
+use Drupal\simple_sitemap\Entity\SimpleSitemapInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Implements hook_library_info_build().
@@ -67,4 +72,74 @@ function dkan_js_frontend_theme($existing, $type, $theme, $path) {
     ],
   ];
 
+}
+
+/**
+ * Implements hook_simple_sitemap_arbitrary_links_alter().
+ */
+function dkan_js_frontend_simple_sitemap_arbitrary_links_alter(array &$arbitrary_links, SimpleSitemapInterface $sitemap): void {
+  // Ignore anything that isn't the default sitemap.
+  if ($sitemap->id() !== 'default') {
+    return;
+  }
+
+  // Gather DKAN routes.
+  $routes = \Drupal::service('dkan_js_frontend.route_provider')->routes();
+
+  _dkan_js_frontend_add_static_links($arbitrary_links, $routes);
+  // If the 'dataset' route exists, add links for the dataset route.
+  if ($dataset_route = $routes->get('dataset')) {
+    _dkan_js_frontend_add_dataset_links($arbitrary_links, $dataset_route);
+  }
+  else {
+    \Drupal::logger('dkan_js_frontend')->warning('Missing required DKAN route "dataset"; unable to build sitemap for dataset URLs.');
+  }
+}
+
+/**
+ * Generate links for static routes.
+ *
+ * @param array $arbitrary_links
+ *   Multi-dimensional array for storing arbitrary site links.
+ * @param \Symfony\Component\Routing\RouteCollection $routes
+ *   Collection of DKAN routes.
+ */
+function _dkan_js_frontend_add_static_links(array &$arbitrary_links, RouteCollection $routes): void {
+  // Loop through routes and add to sitemap.
+  foreach ($routes as $route) {
+    // Add this link to the sitemap if it's not a dynamic route.
+    if (empty($route->compile()->getPathVariables())) {
+      $arbitrary_links[] = [
+        'url' => $route->getPath(),
+        'priority' => '0.7',
+        'changefreq' => 'daily',
+      ];
+    }
+  }
+}
+
+/**
+ * Generate dynamic links for dataset routes.
+ *
+ * @param array $arbitrary_links
+ *   Multi-dimensional array for storing arbitrary site links.
+ * @param \Symfony\Component\Routing\Route $routes
+ *   Collection of DKAN routes.
+ */
+function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dataset_route): void {
+  // Build route URL generator.
+  $route_collection = new RouteCollection();
+  $route_collection->add('dataset', $dataset_route);
+  $url_generator = new UrlGenerator($route_collection, new RequestContext());
+
+  // Fetch dataset UUIDs.
+  $dataset_uuids = \Drupal::service('dkan.metastore.service')->getRangeUuids('dataset');
+  // Add dataset routes using the fetched UUIDs.
+  foreach ($dataset_uuids as $uuid) {
+    $arbitrary_links[] = [
+      'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_PATH),
+      'priority' => '0.5',
+      'changefreq' => 'weekly',
+    ];
+  }
 }

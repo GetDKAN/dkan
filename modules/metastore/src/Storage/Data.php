@@ -128,25 +128,29 @@ abstract class Data implements MetastoreStorageInterface {
   /**
    * Get range of object UUIDs of this metastore's schema ID.
    *
-   * @param int $start
-   *   Schema object offset.
-   * @param int $length
-   *   Number of objects to fetch.
+   * If no start or length is specified, all dataset UUIDs will be returned.
+   *
+   * @param int|null $start
+   *   Schema object offset or null for all.
+   * @param int|null $length
+   *   Number of objects to fetch or null for all.
    *
    * @return string[]
    *   Range of object UUIDs of the given schema_id.
    */
-  public function retrieveRangeUuids(int $start, int $length): array {
-    $ids = $this->entityStorage->getQuery()
+  public function retrieveRangeUuids(?int $start = NULL, ?int $length = NULL): array {
+    $ids_query = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->range($start, $length)
-      ->execute();
+      ->condition('field_data_type', $this->schemaId);
+
+    if (isset($start, $length)) {
+      $ids_query = $ids_query->range($start, $length);
+    }
 
     return array_map(function ($entity) {
       return $entity->uuid();
-    }, $this->entityStorage->loadMultiple($ids));
+    }, $this->entityStorage->loadMultiple($ids_query->execute()));
   }
 
   /**

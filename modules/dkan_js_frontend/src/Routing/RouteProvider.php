@@ -28,7 +28,7 @@ class RouteProvider {
   /**
    * Routes.
    */
-  public function routes() {
+  public function routes(): RouteCollection {
     $routes = new RouteCollection();
     $this->addIndexPage($routes);
     $routes->addRequirements(['_access' => 'TRUE']);
