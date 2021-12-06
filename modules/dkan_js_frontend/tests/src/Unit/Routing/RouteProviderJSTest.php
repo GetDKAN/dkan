@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\Tests\RouteProvider\Unit\Routing;
+
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
@@ -38,7 +40,7 @@ class RouteProviderJSTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', $options)
       ->getMock();
 
-    $reactAppProvider = new RouteProvider(__DIR__ . "/../../../cra", $queryFactory, $configFactory);
+    $reactAppProvider = new RouteProvider($configFactory);
 
     /** @var \Symfony\Component\Routing\RouteCollection $routes */
     $reactappRoutes = $reactAppProvider->routes();

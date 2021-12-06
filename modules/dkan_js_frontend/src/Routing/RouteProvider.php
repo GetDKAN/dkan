@@ -3,7 +3,6 @@
 namespace Drupal\dkan_js_frontend\Routing;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\Query\QueryFactoryInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -12,16 +11,17 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class RouteProvider {
 
-  private $appRoot;
-  private $entityQuery;
-  private $configFactory;
+  /**
+   * Route-URL pairs, separated by a comma.
+   *
+   * @var string[]
+   */
+  protected $routes;
 
   /**
    * Constructor.
    */
-  public function __construct(string $appRoot, QueryFactoryInterface $entityQuery, ConfigFactoryInterface $configFactory) {
-    $this->appRoot = $appRoot;
-    $this->entityQuery = $entityQuery;
+  public function __construct(ConfigFactoryInterface $configFactory) {
     $this->routes = $configFactory->get('dkan_js_frontend.config')->get('routes');
   }
 

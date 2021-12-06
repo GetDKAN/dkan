@@ -7,6 +7,16 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
+const DKAN_JS_FRONTEND_MISSING_DATASET_ROUTE_ERROR = 'Missing required DKAN route "dataset"; unable to build sitemap for dataset URLs.';
+const DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK = [
+  'priority' => '0.7',
+  'changefreq' => 'daily',
+];
+const DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK = [
+  'priority' => '0.5',
+  'changefreq' => 'weekly',
+];
+
 /**
  * Implements hook_library_info_build().
  * Collects all CSS/JS files in the paths set in config 
@@ -92,7 +102,7 @@ function dkan_js_frontend_simple_sitemap_arbitrary_links_alter(array &$arbitrary
     _dkan_js_frontend_add_dataset_links($arbitrary_links, $dataset_route);
   }
   else {
-    \Drupal::logger('dkan_js_frontend')->warning('Missing required DKAN route "dataset"; unable to build sitemap for dataset URLs.');
+    \Drupal::logger('dkan_js_frontend')->error(DKAN_JS_FRONTEND_MISSING_DATASET_ROUTE_ERROR);
   }
 }
 
@@ -109,10 +119,8 @@ function _dkan_js_frontend_add_static_links(array &$arbitrary_links, RouteCollec
   foreach ($routes as $route) {
     // Add this link to the sitemap if it's not a dynamic route.
     if (empty($route->compile()->getPathVariables())) {
-      $arbitrary_links[] = [
+      $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK + [
         'url' => $route->getPath(),
-        'priority' => '0.7',
-        'changefreq' => 'daily',
       ];
     }
   }
@@ -136,10 +144,8 @@ function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dat
   $dataset_uuids = \Drupal::service('dkan.metastore.service')->getRangeUuids('dataset');
   // Add dataset routes using the fetched UUIDs.
   foreach ($dataset_uuids as $uuid) {
-    $arbitrary_links[] = [
+    $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + [
       'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_PATH),
-      'priority' => '0.5',
-      'changefreq' => 'weekly',
     ];
   }
 }
