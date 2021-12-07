@@ -5,8 +5,12 @@ namespace Drupal\Tests\datastore\Unit\Form;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Form\FormState;
 use Drupal\common\DatasetInfo;
+use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Pager\Pager;
 use Drupal\Core\Pager\PagerManagerInterface;
+use Drupal\Core\Path\PathValidator;
+use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\datastore\Form\DashboardForm;
 use Drupal\harvest\Service as Harvest;
@@ -98,6 +102,8 @@ class DashboardFormTest extends TestCase {
       'fetcher_percent_done' => 100,
       'importer_status' => 'done',
       'importer_percent_done' => 100,
+      'importer_error' => '',
+      'source_path' => 'http://example.com/file.csv',
     ];
 
     $container = $this->buildContainerChain()
@@ -108,9 +114,9 @@ class DashboardFormTest extends TestCase {
     $form = DashboardForm::create($container)->buildForm([], new FormState());
 
     $this->assertEquals(1, count($form['table']['#rows']));
-    $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']);
-    $this->assertEquals('Dataset 1', $form['table']['#rows'][0][1]);
-    $this->assertEquals('NEW', $form['table']['#rows'][0][4]['data']);
+    $this->assertEquals('dataset-1', $form['table']['#rows'][0][0]['data']['#uuid']);
+    $this->assertEquals('Dataset 1', $form['table']['#rows'][0][0]['data']['#title']);
+    $this->assertEquals('NEW', $form['table']['#rows'][0][2]['data']);
   }
 
   /**
@@ -131,6 +137,8 @@ class DashboardFormTest extends TestCase {
       'fetcher_percent_done' => 100,
       'importer_status' => 'done',
       'importer_percent_done' => 100,
+      'importer_error' => '',
+      'source_path' => 'http://example.com/file.csv',
     ];
 
     $container = $this->buildContainerChain()
@@ -165,6 +173,8 @@ class DashboardFormTest extends TestCase {
             'fetcher_percent_done' => 0,
             'importer_status' => 'waiting',
             'importer_percent_done' => 0,
+            'importer_error' => '',
+            'source_path' => 'http://example.com/file.csv',
           ],
         ],
       ],
@@ -185,6 +195,8 @@ class DashboardFormTest extends TestCase {
             'fetcher_percent_done' => 100,
             'importer_status' => 'done',
             'importer_percent_done' => 100,
+            'importer_error' => '',
+            'source_path' => 'http://example.com/file2.csv',
           ],
         ],
       ],
@@ -252,6 +264,9 @@ class DashboardFormTest extends TestCase {
       ->add('pager.manager', PagerManagerInterface::class)
       ->add('request_stack', RequestStack::class)
       ->add('string_translation', TranslationManager::class)
+      ->add('date.formatter', DateFormatter::class)
+      ->add('path.validator', PathValidator::class)
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->index(0);
 
     $runInfo = (new Options())
@@ -274,6 +289,10 @@ class DashboardFormTest extends TestCase {
       ->add(MetastoreService::class, 'count', 0)
       ->add(MetastoreService::class, 'getRangeUuids', [])
       ->add(PagerManagerInterface::class,'createPager', Pager::class)
-      ->add(Pager::class,'getCurrentPage', 0);
+      ->add(DateFormatter::class, 'format', '12/31/2021')
+      ->add(PathValidator::class, 'getUrlIfValidWithoutAccessCheck', NULL)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(PublicStream::class, 'getExternalUrl', 'http://example.com')
+      ->add(Pager::class, 'getCurrentPage', 0);
   }
 }
