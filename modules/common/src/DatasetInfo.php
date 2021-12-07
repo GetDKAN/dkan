@@ -205,6 +205,7 @@ class DatasetInfo implements ContainerInjectionInterface {
 
     $info = $this->importInfo->getItem($identifier, $version);
     $fileMapper = $this->resourceMapper->get($identifier, 'local_file', $version);
+    $source = $this->resourceMapper->get($identifier, 'source', $version);
 
     try {
       $storage = $this->datastore->getStorage($identifier, $version);
@@ -219,6 +220,7 @@ class DatasetInfo implements ContainerInjectionInterface {
       'fetcher_status' => $info->fileFetcherStatus,
       'fetcher_percent_done' => $info->fileFetcherPercentDone ?? 0,
       'file_path' => isset($fileMapper) ? $fileMapper->getFilePath() : 'not found',
+      'source_path' => isset($source) ? $source->getFilePath() : '',
       'importer_percent_done' => $info->importerPercentDone ?? 0,
       'importer_status' => $info->importerStatus,
       'importer_error' => $info->importerError,
