@@ -122,4 +122,17 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
     $this->assertEquals($containerChain->getStoredInput('error')[0], DKAN_JS_FRONTEND_MISSING_DATASET_ROUTE_ERROR);
   }
 
+  /**
+   * Ensure the $arbitrary_links array is not modified for non-default sitemaps.
+   */
+  public function testArbitraryLinksNotModifiedForNonDefaultSitemap(): void {
+    $arbitrary_links = [];
+    $simpleSitemap = (new Chain($this))
+      ->add(SimpleSitemapInterface::class, 'id', 'test')
+      ->getMock();
+    dkan_js_frontend_simple_sitemap_arbitrary_links_alter($arbitrary_links, $simpleSitemap);
+
+    $this->assertEmpty($arbitrary_links);
+  }
+
 }
