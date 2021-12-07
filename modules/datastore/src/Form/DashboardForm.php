@@ -68,6 +68,8 @@ class DashboardForm extends FormBase {
    *   Metastore service.
    * @param \Drupal\Core\Pager\PagerManagerInterface $pagerManager
    *   Pager manager service.
+   * @param \Drupal\Core\Datetime\DateFormatter $dateFormatter
+   *   Date formatter service.
    */
   public function __construct(
     Service $harvestService,
@@ -376,7 +378,7 @@ class DashboardForm extends FormBase {
           [
             'rowspan' => count($distributions),
             'data' => $harvestStatus,
-            'class' => strtolower($harvestStatus)
+            'class' => strtolower($harvestStatus),
           ],
         ],
         $this->buildResourcesRow(array_shift($distributions))
