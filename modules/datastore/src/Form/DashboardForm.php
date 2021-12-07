@@ -272,7 +272,7 @@ class DashboardForm extends FormBase {
     else {
       $total = $this->metastore->count('dataset');
       $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
-      $datasets = $this->metastore->getRangeUuids('dataset', $currentPage, $this->itemsPerPage);
+      $datasets = $this->metastore->getRangeUuids('dataset', ($currentPage * $this->itemsPerPage), $this->itemsPerPage);
     }
 
     return $datasets;
