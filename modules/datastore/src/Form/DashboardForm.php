@@ -218,6 +218,7 @@ class DashboardForm extends FormBase {
       ],
       'pager' => [
         '#type' => 'pager',
+        '#weight' => 5,
       ],
     ];
   }
