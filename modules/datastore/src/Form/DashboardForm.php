@@ -8,9 +8,17 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 use Drupal\common\DatasetInfo;
+use Drupal\Core\Datetime\DateFormatter;
+use Drupal\Core\DependencyInjection\ContainerNotInitializedException;
+use Drupal\Core\Render\Element\Link;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\Url;
+use Drupal\common\UrlHostTokenResolver;
 use Drupal\harvest\Service;
 use Drupal\metastore\Service as MetastoreService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 /**
  * Datastore Import Dashboard form.
@@ -19,35 +27,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DashboardForm extends FormBase {
   use StringTranslationTrait;
-
-  /**
-   * Dataset column headers.
-   *
-   * @var string[]
-   */
-  public const DATASET_HEADERS = [
-    'Dataset UUID',
-    'Dataset Title',
-    'Revision ID',
-    'Publication Status',
-    'Harvest Status',
-    'Modified Date Metadata',
-    'Modified Date DKAN',
-    'Resources',
-  ];
-
-  /**
-   * Distribution column headers.
-   *
-   * @var string[]
-   */
-  public const DISTRIBUTION_HEADERS = [
-    'Distribution UUID',
-    'Fetch',
-    '%',
-    'Store',
-    '%',
-  ];
 
   /**
    * Harvest service.
@@ -100,12 +79,14 @@ class DashboardForm extends FormBase {
     Service $harvestService,
     DatasetInfo $datasetInfo,
     MetastoreService $metastoreService,
-    PagerManagerInterface $pagerManager
+    PagerManagerInterface $pagerManager,
+    DateFormatter $dateFormatter
   ) {
     $this->harvest = $harvestService;
     $this->datasetInfo = $datasetInfo;
     $this->metastore = $metastoreService;
     $this->pagerManager = $pagerManager;
+    $this->dateFormatter = $dateFormatter;
     $this->itemsPerPage = 10;
   }
 
@@ -117,7 +98,8 @@ class DashboardForm extends FormBase {
       $container->get('dkan.harvest.service'),
       $container->get('dkan.common.dataset_info'),
       $container->get('dkan.metastore.service'),
-      $container->get('pager.manager')
+      $container->get('pager.manager'),
+      $container->get('date.formatter')
     );
   }
 
@@ -138,6 +120,7 @@ class DashboardForm extends FormBase {
     $params = $this->getParameters();
     // Add custom after_build method to remove unnecessary GET parameters.
     $form['#after_build'] = ['::afterBuild'];
+    $form['#attached'] = ['library' => ['datastore/style']];
 
     // Build dataset import status table render array.
     return $form + $this->buildFilters($params) + $this->buildTable($this->getDatasets($params));
@@ -189,7 +172,7 @@ class DashboardForm extends FormBase {
         'uuid' => [
           '#type' => 'textfield',
           '#weight' => 1,
-          '#title' => $this->t('UUID'),
+          '#title' => $this->t('Dataset ID'),
           '#default_value' => $filters['uuid'] ?? '',
         ],
         'harvest_id' => [
@@ -227,7 +210,7 @@ class DashboardForm extends FormBase {
       'table' => [
         '#theme' => 'table',
         '#weight' => 3,
-        '#header' => self::DATASET_HEADERS,
+        '#header' => $this->getDatasetTableHeader(),
         '#rows' => $this->buildDatasetRows($datasets),
         '#attributes' => ['class' => 'dashboard-datasets'],
         '#attached' => ['library' => ['harvest/style']],
@@ -300,7 +283,7 @@ class DashboardForm extends FormBase {
         continue;
       }
       // Build a table row using it's details and harvest status.
-      $datasetRow = $this->buildDatasetRow($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
+      $datasetRow = $this->buildRevisionRows($datasetInfo, $harvestLoad[$datasetId] ?? 'N/A');
       $rows = array_merge($rows, $datasetRow);
     }
 
@@ -337,34 +320,75 @@ class DashboardForm extends FormBase {
   }
 
   /**
+   * Create the header array for table template.
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup[]
+   *   Array of table headers.
+   */
+  protected function getDatasetTableHeader(): array {
+    return [
+      $this->t('Dataset'),
+      $this->t('Revision'),
+      $this->t('Harvest'),
+      $this->t('Resource'),
+      $this->t('Fetch'),
+      $this->t('Store'),
+    ];
+  }
+
+  /**
    * Build dataset row(s) for the given dataset revision information.
    *
    * This method may build 2 rows if data has both published and draft version.
    *
-   * @param array $revisions
-   *   Dataset revisions information.
+   * @param array $datasetInfo
+   *   Dataset information, result of \Drupal\common\DatasetInfo::gather().
    * @param string $harvestStatus
    *   Dataset harvest status.
    *
    * @return array[]
    *   Dataset revision rows.
    */
-  protected function buildDatasetRow(array $revisions, string $harvestStatus) : array {
+  protected function buildRevisionRows(array $datasetInfo, string $harvestStatus) : array {
     $rows = [];
-    $count = count($revisions);
 
-    foreach (array_values($revisions) as $i => $rev) {
-      $row = $i == 0 ? [['data' => $rev['uuid'], 'rowspan' => $count]] : [];
-
-      $rows[] = array_merge($row, [
-        $rev['title'],
-        $rev['revision_id'],
-        ['data' => $rev['moderation_state'], 'class' => $rev['moderation_state']],
-        ['data' => $harvestStatus, 'class' => strtolower($harvestStatus)],
-        $rev['modified_date_metadata'],
-        $rev['modified_date_dkan'],
-        ['data' => $this->buildResourcesTable($rev['distributions'])],
-      ]);
+    // Create a row for each dataset revision (there could be both a published
+    // and latest).
+    foreach (array_values($datasetInfo) as $rev) {
+      $modified = $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short');
+      $distributions = $rev['distributions'];
+      $rows[] = array_merge(
+        [
+          [
+            'rowspan' => count($distributions),
+            'data' => [
+              '#theme' => 'datastore_dashboard_dataset_cell',
+              '#uuid' => $rev['uuid'],
+              '#title' => $rev['title'],
+              '#url' => Url::fromUri("internal:/dataset/$rev[uuid]"),
+            ],
+          ],
+          [
+            'rowspan' => count($distributions),
+            'class' => $rev['moderation_state'],
+            'data' => [
+              '#theme' => 'datastore_dashboard_revision_cell',
+              '#revision_id' => $rev['revision_id'],
+              '#modified' => $modified,
+              '#moderation_state' => $rev['moderation_state'],
+            ],
+          ],
+          [
+            'rowspan' => count($distributions),
+            'data' => $harvestStatus,
+            'class' => strtolower($harvestStatus)
+          ],
+        ],
+        $this->buildResourcesRow(array_shift($distributions))
+      );
+      while (!empty($distributions)) {
+        $rows[] = $this->buildResourcesRow(array_shift($distributions));
+      }
     }
 
     return $rows;
@@ -379,27 +403,36 @@ class DashboardForm extends FormBase {
    * @return array
    *   Distribution table render array.
    */
-  protected function buildResourcesTable(array $distributions): array {
-    $rows = [];
-
-    foreach ($distributions as $dist) {
-      if (isset($dist['distribution_uuid'])) {
-        $rows[] = [
-          $dist['distribution_uuid'],
-          $this->statusCell($dist['fetcher_status']),
-          $this->percentCell($dist['fetcher_percent_done']),
-          $this->statusCell($dist['importer_status']),
-          $this->percentCell($dist['importer_percent_done']),
-        ];
-      }
+  protected function buildResourcesRow(array $dist): array {
+    if (isset($dist['distribution_uuid'])) {
+      return [
+        [
+          'data' => [
+            '#theme' => 'datastore_dashboard_resource_cell',
+            '#uuid' => $dist['distribution_uuid'],
+            '#file_name' => basename($dist['source_path']),
+            '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
+          ],
+        ],
+        [
+          'data' => [
+            '#theme' => 'datastore_dashboard_status_cell',
+            '#status' => $dist['fetcher_status'],
+            '#percent' => $dist['fetcher_percent_done'],
+          ],
+          'class' => str_replace('_', '-', $dist['fetcher_status']),
+        ],
+        [
+          'data' => [
+            '#theme' => 'datastore_dashboard_status_cell',
+            '#status' => $dist['importer_status'],
+            '#percent' => $dist['importer_percent_done'] ?: "0",
+            '#error' => $this->cleanUpError($dist['importer_error']),
+          ],
+          'class' => str_replace('_', '-', $dist['importer_status']),
+        ],
+      ];
     }
-
-    return [
-      '#theme' => 'table',
-      '#header' => self::DISTRIBUTION_HEADERS,
-      '#rows' => $rows,
-      '#empty' => 'No resources',
-    ];
   }
 
   /**
@@ -411,11 +444,31 @@ class DashboardForm extends FormBase {
    * @return string[]
    *   Resource status cell render array.
    */
-  protected function statusCell(string $status): array {
+  protected function statusCell(string $status, int $percent, $error = ''): array {
+    $error = $this->cleanUpError((string) $error);
+    $detail = $error ?: "$percent%";
     return [
-      'data' => $status,
+      'data' => "$status ($detail)",
       'class' => $status == 'in_progress' ? 'in-progress' : $status,
     ];
+  }
+
+  /**
+   * Tidy up error message from MySQL for display.
+   *
+   * @param mixed $error
+   *   An error message. Will be cast to string.
+   *
+   * @return string
+   *   The sanitized error message.
+   */
+  private function cleanUpError($error) {
+    $error = (string) $error;
+    $mysqlErrorPattern = '/^SQLSTATE\[[A-Z0-9]+\]: .+?: [0-9]+ (.+?): [A-Z]/';
+    if (preg_match($mysqlErrorPattern, $error, $matches)) {
+      return $matches[1];
+    }
+    return $error;
   }
 
   /**
