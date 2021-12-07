@@ -392,14 +392,14 @@ class DashboardForm extends FormBase {
   /**
    * Build resources table using the supplied distributions.
    *
-   * @param array[] $distributions
+   * @param array|string $dist
    *   Distribution details.
    *
    * @return array
    *   Distribution table render array.
    */
-  protected function buildResourcesRow(array $dist): array {
-    if (isset($dist['distribution_uuid'])) {
+  protected function buildResourcesRow($dist): array {
+    if (is_array($dist) && isset($dist['distribution_uuid'])) {
       return [
         [
           'data' => [
@@ -428,6 +428,7 @@ class DashboardForm extends FormBase {
         ],
       ];
     }
+    return ['','',''];
   }
 
   /**
