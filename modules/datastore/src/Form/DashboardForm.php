@@ -428,25 +428,7 @@ class DashboardForm extends FormBase {
         ],
       ];
     }
-    return ['','',''];
-  }
-
-  /**
-   * Build resource status cell.
-   *
-   * @param string $status
-   *   Resource status.
-   *
-   * @return string[]
-   *   Resource status cell render array.
-   */
-  protected function statusCell(string $status, int $percent, $error = ''): array {
-    $error = $this->cleanUpError((string) $error);
-    $detail = $error ?: "$percent%";
-    return [
-      'data' => "$status ($detail)",
-      'class' => $status == 'in_progress' ? 'in-progress' : $status,
-    ];
+    return ['', '', ''];
   }
 
   /**
@@ -465,22 +447,6 @@ class DashboardForm extends FormBase {
       return $matches[1];
     }
     return $error;
-  }
-
-  /**
-   * Build resource progress percentage cell.
-   *
-   * @param int $percent
-   *   Resource progress percentage.
-   *
-   * @return string[]
-   *   Resource percent cell render array.
-   */
-  protected function percentCell(int $percent): array {
-    return [
-      'data' => $percent,
-      'class' => $percent == 100 ? 'done' : 'in-progress',
-    ];
   }
 
 }
