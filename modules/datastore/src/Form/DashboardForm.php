@@ -352,43 +352,63 @@ class DashboardForm extends FormBase {
     // Create a row for each dataset revision (there could be both a published
     // and latest).
     foreach (array_values($datasetInfo) as $rev) {
-      $modified = $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short');
       $distributions = $rev['distributions'];
+      // For first distribution, combine with revision information.
       $rows[] = array_merge(
-        [
-          [
-            'rowspan' => count($distributions),
-            'data' => [
-              '#theme' => 'datastore_dashboard_dataset_cell',
-              '#uuid' => $rev['uuid'],
-              '#title' => $rev['title'],
-              '#url' => Url::fromUri("internal:/dataset/$rev[uuid]"),
-            ],
-          ],
-          [
-            'rowspan' => count($distributions),
-            'class' => $rev['moderation_state'],
-            'data' => [
-              '#theme' => 'datastore_dashboard_revision_cell',
-              '#revision_id' => $rev['revision_id'],
-              '#modified' => $modified,
-              '#moderation_state' => $rev['moderation_state'],
-            ],
-          ],
-          [
-            'rowspan' => count($distributions),
-            'data' => $harvestStatus,
-            'class' => strtolower($harvestStatus),
-          ],
-        ],
+        $this->buildRevisionRow($rev, count($distributions), $harvestStatus),
         $this->buildResourcesRow(array_shift($distributions))
       );
+      // If there are more distributions, add additional rows for them.
       while (!empty($distributions)) {
         $rows[] = $this->buildResourcesRow(array_shift($distributions));
       }
     }
 
     return $rows;
+  }
+
+  /**
+   * Create the three-column row for revision information.
+   *
+   * @param array $rev
+   *   Revision information from DatasetInfo arrray.
+   * @param int $resourceCount
+   *   Number of resources attached to this dataset revision.
+   * @param string $harvestStatus
+   *   Dataset harvest status.
+   *
+   * @return array
+   *   Three-column revision row (expected to be merged with one resource row).
+   */
+  protected function buildRevisionRow(array $rev, int $resourceCount, string $harvestStatus) {
+    $modified = $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short');
+    return [
+      [
+        'rowspan' => $resourceCount,
+        'data' => [
+          '#theme' => 'datastore_dashboard_dataset_cell',
+          '#uuid' => $rev['uuid'],
+          '#title' => $rev['title'],
+          '#url' => Url::fromUri("internal:/dataset/$rev[uuid]"),
+        ],
+      ],
+      [
+        'rowspan' => $resourceCount,
+        'class' => $rev['moderation_state'],
+        'data' => [
+          '#theme' => 'datastore_dashboard_revision_cell',
+          '#revision_id' => $rev['revision_id'],
+          '#modified' => $modified,
+          '#moderation_state' => $rev['moderation_state'],
+        ],
+      ],
+      [
+        'rowspan' => $resourceCount,
+        'data' => $harvestStatus,
+        'class' => strtolower($harvestStatus),
+      ],
+    ];
+
   }
 
   /**
@@ -424,7 +444,7 @@ class DashboardForm extends FormBase {
    * @param string $status
    *   Current job status.
    * @param int $percentDone
-   *   Percent done, 0-100
+   *   Percent done, 0-100.
    * @param null|string $error
    *   An error message, if any.
    *

@@ -186,9 +186,12 @@ class DatasetInfo implements ContainerInjectionInterface {
    * Get the storage object for a resource.
    *
    * @param string $identifier
-   *   Resource identifier
-   * @param string $version 
-   * @return null|\Drupal\datastore\Storage\DatabaseTable 
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version timestamp.
+   *
+   * @return null|\Drupal\datastore\Storage\DatabaseTable
+   *   The Database table object, or NULL.
    */
   protected function getStorage(string $identifier, string $version) {
     try {
