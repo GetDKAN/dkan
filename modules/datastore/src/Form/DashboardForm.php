@@ -381,7 +381,6 @@ class DashboardForm extends FormBase {
    *   Three-column revision row (expected to be merged with one resource row).
    */
   protected function buildRevisionRow(array $rev, int $resourceCount, string $harvestStatus) {
-    $modified = $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short');
     return [
       [
         'rowspan' => $resourceCount,
@@ -398,7 +397,7 @@ class DashboardForm extends FormBase {
         'data' => [
           '#theme' => 'datastore_dashboard_revision_cell',
           '#revision_id' => $rev['revision_id'],
-          '#modified' => $modified,
+          '#modified' => $this->dateFormatter->format(strtotime($rev['modified_date_dkan']), 'short'),
           '#moderation_state' => $rev['moderation_state'],
         ],
       ],
@@ -408,7 +407,6 @@ class DashboardForm extends FormBase {
         'class' => strtolower($harvestStatus),
       ],
     ];
-
   }
 
   /**
