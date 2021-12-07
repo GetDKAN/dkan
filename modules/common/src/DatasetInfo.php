@@ -183,6 +183,27 @@ class DatasetInfo implements ContainerInjectionInterface {
   }
 
   /**
+   * Get the storage object for a resource.
+   *
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version timestamp.
+   *
+   * @return null|\Drupal\datastore\Storage\DatabaseTable
+   *   The Database table object, or NULL.
+   */
+  protected function getStorage(string $identifier, string $version) {
+    try {
+      $storage = $this->datastore->getStorage($identifier, $version);
+    }
+    catch (\Exception $e) {
+      $storage = NULL;
+    }
+    return $storage;
+  }
+
+  /**
    * Get resources information.
    *
    * @param object $distribution
@@ -205,12 +226,7 @@ class DatasetInfo implements ContainerInjectionInterface {
 
     $info = $this->importInfo->getItem($identifier, $version);
     $fileMapper = $this->resourceMapper->get($identifier, 'local_file', $version);
-
-    try {
-      $storage = $this->datastore->getStorage($identifier, $version);
-    }
-    catch (\Exception $e) {
-    }
+    $source = $this->resourceMapper->get($identifier, 'source', $version);
 
     return [
       'distribution_uuid' => $distribution->identifier,
@@ -219,10 +235,11 @@ class DatasetInfo implements ContainerInjectionInterface {
       'fetcher_status' => $info->fileFetcherStatus,
       'fetcher_percent_done' => $info->fileFetcherPercentDone ?? 0,
       'file_path' => isset($fileMapper) ? $fileMapper->getFilePath() : 'not found',
+      'source_path' => isset($source) ? $source->getFilePath() : '',
       'importer_percent_done' => $info->importerPercentDone ?? 0,
       'importer_status' => $info->importerStatus,
       'importer_error' => $info->importerError,
-      'table_name' => isset($storage) ? $storage->getTableName() : 'not found',
+      'table_name' => ($storage = $this->getStorage($identifier, $version)) ? $storage->getTableName() : 'not found',
     ];
   }
 
