@@ -411,26 +411,36 @@ class DashboardForm extends FormBase {
             '#file_path' => UrlHostTokenResolver::resolve($dist['source_path']),
           ],
         ],
-        [
-          'data' => [
-            '#theme' => 'datastore_dashboard_status_cell',
-            '#status' => $dist['fetcher_status'],
-            '#percent' => $dist['fetcher_percent_done'],
-          ],
-          'class' => str_replace('_', '-', $dist['fetcher_status']),
-        ],
-        [
-          'data' => [
-            '#theme' => 'datastore_dashboard_status_cell',
-            '#status' => $dist['importer_status'],
-            '#percent' => $dist['importer_percent_done'] ?: "0",
-            '#error' => $this->cleanUpError($dist['importer_error']),
-          ],
-          'class' => str_replace('_', '-', $dist['importer_status']),
-        ],
+        $this->buildStatusCell($dist['fetcher_status'], $dist['fetcher_percent_done']),
+        $this->buildStatusCell($dist['importer_status'], $dist['importer_percent_done'], $this->cleanUpError($dist['importer_error'])),
       ];
     }
     return ['', '', ''];
+  }
+
+  /**
+   * Create a cell for a job status.
+   *
+   * @param string $status
+   *   Current job status.
+   * @param int $percentDone
+   *   Percent done, 0-100
+   * @param null|string $error
+   *   An error message, if any.
+   *
+   * @return array
+   *   Renderable array.
+   */
+  protected function buildStatusCell(string $status, int $percentDone, ?string $error = NULL) {
+    return [
+      'data' => [
+        '#theme' => 'datastore_dashboard_status_cell',
+        '#status' => $status,
+        '#percent' => $percentDone,
+        '#error' => $error,
+      ],
+      'class' => str_replace('_', '-', $status),
+    ];
   }
 
   /**
