@@ -254,6 +254,60 @@ class DashboardFormTest extends TestCase {
   }
 
   /**
+   * Test building the dashboard table for a dataset without a distribution.
+   */
+  public function testBuildTableRowsDatasetMultipleDistribution() {
+    $datasetInfo = [
+      'latest_revision' => [
+        'uuid' => 'dataset-1',
+        'revision_id' => '1',
+        'moderation_state' => 'published',
+        'title' => 'Dataset 1',
+        'modified_date_metadata' => '2019-08-12',
+        'modified_date_dkan' => '2021-07-08',
+        'distributions' => [
+          [
+            'distribution_uuid' => 'dist-1',
+            'fetcher_status' => 'waiting',
+            'fetcher_percent_done' => 0,
+            'importer_status' => 'waiting',
+            'importer_percent_done' => 0,
+            'importer_error' => '',
+            'source_path' => 'http://example.com/file.csv',
+          ],
+          [
+            'distribution_uuid' => 'dist-2',
+            'fetcher_status' => 'done',
+            'fetcher_percent_done' => 100,
+            'importer_status' => 'done',
+            'importer_percent_done' => 100,
+            'importer_error' => '',
+            'source_path' => 'http://example.com/file2.csv',
+          ],
+        ],
+      ],
+    ];
+
+    $container = $this->buildContainerChain()
+      ->add(MetastoreService::class, 'count', 1)
+      ->add(MetastoreService::class, 'getRangeUuids', [$datasetInfo['latest_revision']['uuid']])
+      ->add(DatasetInfo::class, 'gather', $datasetInfo)
+      ->getMock();
+    \Drupal::setContainer($container);
+
+    $form = DashboardForm::create($container)->buildForm([], new FormState());
+    $this->assertEquals(2, count($form['table']['#rows']));
+    // First row has six columns and rowspan on first two
+    $this->assertEquals(6, count($form['table']['#rows'][0]));
+    $this->assertEquals(2, $form['table']['#rows'][0][1]['rowspan']);
+    // The second row has only three columns.
+    $this->assertEquals(3, count($form['table']['#rows'][1]));
+
+    $this->assertEquals('dist-1', $form['table']['#rows'][0][3]['data']['#uuid']);
+    $this->assertEquals('dist-2', $form['table']['#rows'][1][0]['data']['#uuid']);
+  }
+
+  /**
    * Build container mock chain object.
    */
   private function buildContainerChain(): Chain {
