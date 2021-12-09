@@ -34,7 +34,7 @@ class ResourceSettingsForm extends ConfigFormBase {
     $form['resources'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Purge dataset resources'),
-      '#description' => $this->t('Upon dataset publication, delete these resources if they are no longer necessary.'),
+      '#description' => $this->t('Upon dataset publication, delete older revision resources if they are no longer necessary.'),
     ];
     $form['resources']['purge_table'] = [
       '#type' => 'checkbox',
@@ -50,7 +50,7 @@ class ResourceSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Delete local resource'),
       '#default_value' => $this->config('datastore.settings')->get('delete_local_resource'),
-      '#description' => $this->t('Delete local resource after the datastore import is complete'),
+      '#description' => $this->t('Delete local copy of remote files after the datastore import is complete'),
     ];
     return parent::buildForm($form, $form_state);
   }
