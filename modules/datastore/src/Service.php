@@ -107,7 +107,7 @@ class Service implements ContainerInjectionInterface {
     // If we passed $deferred, immediately add to the queue for later.
     if ($deferred == TRUE) {
       // Attempt to fetch the file in a queue so as to not block user.
-      $queueId = $this->queue->get('datastore_import')
+      $queueId = $this->queue->get('file_fetcher')
         ->createItem(['identifier' => $identifier, 'version' => $version]);
 
       if ($queueId === FALSE) {
@@ -155,22 +155,9 @@ class Service implements ContainerInjectionInterface {
     $label = $this->getLabelFromObject($this->resourceLocalizer);
     $resource = $this->resourceLocalizer->get($identifier, $version);
 
-    if ($resource) {
-      $result = [
-        $label => $this->resourceLocalizer->getResult($identifier, $version),
-      ];
-      return [$resource, $result];
-    }
-
-    // @todo we should not do this, we need a filefetcher queue worker.
     $result = [
-      $label => $this->resourceLocalizer->localize($identifier, $version),
+      $label => $this->resourceLocalizer->getResult($identifier, $version),
     ];
-
-    if (isset($result[$label]) && $result[$label]->getStatus() == Result::DONE) {
-      $resource = $this->resourceLocalizer->get($identifier, $version);
-    }
-
     return [$resource, $result];
   }
 
