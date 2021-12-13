@@ -5,7 +5,6 @@ namespace Drupal\datastore;
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\DatastoreQuery;
-use Procrastinator\Result;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
