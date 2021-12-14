@@ -4,6 +4,7 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerBase;
 
 use Drupal\common\LoggerTrait;
@@ -24,7 +25,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   }
  * )
  */
-class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+class FileFetcher extends QueueWorkerBase implements ContainerFactoryPluginInterface {
   use LoggerTrait;
 
   /**
@@ -87,7 +88,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
 
     if (isset($result)) {
       if ($result->getStatus() === Result::DONE) {
-        $this->scheduleImport($data);
+        $this->scheduleImport($identifier, $version);
       }
       else {
         $this->error("Failed to fetch resource: {$result->getError()}.");
