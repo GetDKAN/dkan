@@ -129,17 +129,19 @@ class Service implements ContainerInjectionInterface {
   /**
    * Get range of object UUIDs of the given schema ID.
    *
+   * If no start or length is specified, all dataset UUIDs will be returned.
+   *
    * @param string $schema_id
    *   The schema ID to be counted.
-   * @param int $start
-   *   Schema object offset.
-   * @param int $length
-   *   Number of objects to fetch.
+   * @param int|null $start
+   *   Schema object offset or null for all.
+   * @param int|null $length
+   *   Number of objects to fetch or null for all.
    *
    * @return string[]
    *   Range of object UUIDs of the given schema_id.
    */
-  public function getRangeUuids(string $schema_id, int $start, int $length): array {
+  public function getRangeUuids(string $schema_id, ?int $start = NULL, ?int $length = NULL): array {
     return $this->getStorage($schema_id)->retrieveRangeUuids($start, $length);
   }
 
