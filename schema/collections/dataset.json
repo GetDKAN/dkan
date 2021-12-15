@@ -20,7 +20,7 @@
     },
     "title": {
       "title": "Title",
-      "description": "Human-readable name of the asset. Should be in plain English and include sufficient detail to facilitate search and discovery.",
+      "description": "Name of the asset, in plain language. Include sufficient detail to facilitate search and discovery.",
       "type": "string",
       "minLength": 1
     },
@@ -32,7 +32,7 @@
     },
     "description": {
       "title": "Description",
-      "description": "Human-readable description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
+      "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.",
       "type": "string",
       "minLength": 1
     },
@@ -225,7 +225,7 @@
     },
     "distribution": {
       "title": "Distribution",
-      "description": "A distribution is a container for the data object. Each distribution should contain one accessURL or downloadURL. When providing a downloadURL, also include the format of the file.",
+      "description": "A distribution is a container for the metadata specific to the data resource being shared. Each distribution should contain one <strong>Access URL</strong> or <strong>Download URL</strong>. When providing a Download URL, also include the format of the file.",
       "type": "array",
       "items": {
         "title": "Data File",
@@ -239,19 +239,17 @@
             "readOnly": true
           },
           "title": {
-            "title": "Title",
-            "description": "Human-readable name of the file.",
+            "title": "File Name",
             "type": "string",
             "minLength": 1
           },
           "description": {
-            "title": "Description",
-            "description": "Human-readable description of the file.",
+            "title": "File Description",
             "type": "string",
             "minLength": 1
           },
           "format": {
-            "title": "Format",
+            "title": "File Format",
             "description": "A human-readable description of the file format of a distribution (i.e. csv, pdf, xml, kml, etc.).",
             "type": "string",
             "examples": [
@@ -276,19 +274,19 @@
           },
           "downloadURL": {
             "title": "Download URL",
-            "description": "URL providing direct access to a downloadable file of a dataset.",
+            "description": "URL providing direct access to a downloadable file.",
             "type": "string",
             "format": "uri"
           },
           "accessURL": {
             "title": "Access URL",
-            "description": "URL providing indirect access to a dataset.",
+            "description": "URL providing indirect access to the data, for example via API or a graphical interface.",
             "type": "string",
             "format": "uri"
           },
           "conformsTo": {
             "title": "Data Standard",
-            "description": "URL providing indirect access to a dataset.",
+            "description": "URI used to identify a standardized specification the distribution conforms to.",
             "type": "string",
             "format": "uri"
           },
