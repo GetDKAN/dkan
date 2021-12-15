@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore\Storage;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Database;
 
 /**
@@ -10,13 +11,29 @@ use Drupal\Core\Database\Database;
 class DatabaseConnectionFactory {
 
   /**
+   * Connection info.
+   *
+   * @var array
+   */
+  protected $connectionInfo;
+
+  /**
    * Create a database connection factory object.
    */
   public function __construct() {
     $info = Database::getConnectionInfo();
-    $datastoreInfo = $info['default'];
-    $datastoreInfo['pdo'][\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = FALSE;
-    Database::addConnectionInfo('datastore', 'default', $datastoreInfo);
+    $this->connectionInfo = $info['default'];
+    $this->connectionInfo['pdo'][\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = FALSE;
+  }
+
+  /**
+   * Add init command used when create a database connection.
+   *
+   * @param string $command
+   *   Connection initialization command.
+   */
+  public function addInitCommand(string $command): void {
+    $this->connectionInfo['init_commands'][] = $command;
   }
 
   /**
@@ -25,7 +42,8 @@ class DatabaseConnectionFactory {
    * @return \Drupal\Core\Database\Connection
    *   New datastore connection object.
    */
-  public function getConnection() {
+  public function getConnection(): Connection {
+    Database::addConnectionInfo('datastore', 'default', $this->connectionInfo);
     return Database::getConnection('default', 'datastore');
   }
 

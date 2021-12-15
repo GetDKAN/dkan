@@ -6,9 +6,11 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\Core\Database\Connection;
 
 use Drupal\common\LoggerTrait;
 use Drupal\datastore\Service as DatastoreService;
+use Drupal\datastore\Storage\DatabaseConnectionFactory;
 use Drupal\metastore\Reference\ReferenceLookup;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -50,6 +52,20 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   protected $referenceLookup;
 
   /**
+   * Datastore config settings.
+   *
+   * @var \Drupal\Core\Config\Config
+   */
+  protected $datastoreConfig;
+
+  /**
+   * File system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface;
+   */
+  protected $fileSystem;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -66,6 +82,10 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A logger channel factory instance.
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
+   * @param \Drupal\datastore\Storage\DatabaseConnectionFactory
+   *   A database connection factory instance.
+   * @param \Drupal\Core\Database\Connection $defaultDatabaseConnection
+   *   An instance of the default database connection.
    */
   public function __construct(
     array $configuration,
@@ -74,15 +94,24 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     ConfigFactoryInterface $configFactory,
     DatastoreService $datastore,
     LoggerChannelFactoryInterface $loggerFactory,
-    ReferenceLookup $referenceLookup
+    ReferenceLookup $referenceLookup,
+    DatabaseConnectionFactory $connectionFactory,
+    Connection $defaultDatabaseConnection
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->datastore = $datastore;
+    $this->referenceLookup = $referenceLookup;
+    $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
     $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
     $this->setLoggerFactory($loggerFactory, 'datastore');
-    $this->referenceLookup = $referenceLookup;
+    // Set the timeout for database connections to the queue lease time.
+    // This ensures that database connections will remain open for the
+    // duration of the time the queue is being processed.
+    $timeout = (int) $plugin_definition['cron']['lease_time'];
+    $timeout_command = 'SET SESSION wait_timeout = ' . $timeout;
+    $defaultDatabaseConnection->query($timeout_command);
+    $connectionFactory->addInitCommand($timeout_command);
   }
 
   /**
@@ -96,7 +125,9 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $container->get('config.factory'),
       $container->get('dkan.datastore.service'),
       $container->get('logger.factory'),
-      $container->get('dkan.metastore.reference_lookup')
+      $container->get('dkan.metastore.reference_lookup'),
+      $container->get('dkan.datastore.database_connection_factory'),
+      $container->get('database')
     );
   }
 
@@ -122,7 +153,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @param array $data
    *   Resource identifier information.
    */
-  private function importData(array $data) {
+  protected function importData(array $data) {
     $identifier = $data['identifier'];
     $version = $data['version'];
     $results = $this->datastore->import($identifier, FALSE, $version);
@@ -151,7 +182,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @return bool
    *   The updated value for $queued.
    */
-  private function processResult(Result $result, $data, $queued = FALSE) {
+  protected function processResult(Result $result, $data, $queued = FALSE) {
     $uid = "{$data['identifier']}__{$data['version']}";
     $status = $result->getStatus();
     switch ($status) {
