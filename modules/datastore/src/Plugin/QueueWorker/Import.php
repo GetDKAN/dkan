@@ -82,9 +82,9 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A logger channel factory instance.
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
-   * @param \Drupal\datastore\Storage\DatabaseConnectionFactory
+   * @param \Drupal\datastore\Storage\DatabaseConnectionFactory $connectionFactory
    *   A database connection factory instance.
-   * @param \Drupal\Core\Database\Connection $defaultDatabaseConnection
+   * @param \Drupal\Core\Database\Connection $defaultConnection
    *   An instance of the default database connection.
    */
   public function __construct(
@@ -96,7 +96,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     LoggerChannelFactoryInterface $loggerFactory,
     ReferenceLookup $referenceLookup,
     DatabaseConnectionFactory $connectionFactory,
-    Connection $defaultDatabaseConnection
+    Connection $defaultConnection
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->datastore = $datastore;
@@ -110,7 +110,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     // duration of the time the queue is being processed.
     $timeout = (int) $plugin_definition['cron']['lease_time'];
     $timeout_command = 'SET SESSION wait_timeout = ' . $timeout;
-    $defaultDatabaseConnection->query($timeout_command);
+    $defaultConnection->query($timeout_command);
     $connectionFactory->addInitCommand($timeout_command);
   }
 

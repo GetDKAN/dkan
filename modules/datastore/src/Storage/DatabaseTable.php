@@ -47,6 +47,12 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $this->databaseConnectionFactory = $databaseConnectionFactory;
   }
 
+  /**
+   * Get datastore database connection.
+   *
+   * @return \Drupal\Core\Database\Connection
+   *   Database connection instance.
+   */
   protected function getConnection(): Connection {
     if (!isset($this->connection)) {
       $this->connection = $this->databaseConnectionFactory->getConnection();
@@ -54,7 +60,13 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     return $this->connection;
   }
 
-  public function getSchema() {
+  /**
+   * Get table schema.
+   *
+   * @return array
+   *   Database table schema array.
+   */
+  public function getSchema(): array {
     if (!isset($this->schema) && $this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
     }
@@ -72,7 +84,15 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     return new TableSummary($numOfColumns, $columns, $numOfRows);
   }
 
-  public function jsonSerialize() {
+  /**
+   * Specify data which should be serialized to JSON.
+   *
+   * This method is used if json_encode() is called on an object of this class.
+   *
+   * @return object
+   *   Object instance representing this tables serializable content.
+   */
+  public function jsonSerialize(): object {
     return (object) ['resource' => $this->resource];
   }
 
@@ -153,7 +173,13 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $this->setSchema($schema);
   }
 
-  public function setSchema($schema) {
+  /**
+   * Provide schema for this database table.
+   *
+   * @param array $schema
+   *   Database table schema array.
+   */
+  public function setSchema(array $schema): void {
     $fields = $schema['fields'];
     $new_field = [
       $this->primaryKey() =>
