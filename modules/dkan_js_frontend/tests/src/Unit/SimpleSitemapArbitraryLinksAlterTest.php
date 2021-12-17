@@ -3,6 +3,7 @@
 namespace Drupal\Tests\RouteProvider\Unit;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -12,7 +13,6 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 
 use Drupal\dkan_js_frontend\Routing\RouteProvider;
 use Drupal\metastore\Service;
-use Drupal\simple_sitemap\Entity\SimpleSitemapInterface;
 
 use MockChain\Chain;
 use MockChain\Options;
@@ -48,7 +48,7 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
 
     $arbitrary_links = [];
     $simpleSitemap = (new Chain($this))
-      ->add(SimpleSitemapInterface::class, 'id', 'default')
+      ->add(ConfigEntityInterface::class, 'id', 'default')
       ->getMock();
     dkan_js_frontend_simple_sitemap_arbitrary_links_alter($arbitrary_links, $simpleSitemap);
 
@@ -81,7 +81,7 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
 
     $arbitrary_links = [];
     $simpleSitemap = (new Chain($this))
-      ->add(SimpleSitemapInterface::class, 'id', 'default')
+      ->add(ConfigEntityInterface::class, 'id', 'default')
       ->getMock();
     dkan_js_frontend_simple_sitemap_arbitrary_links_alter($arbitrary_links, $simpleSitemap);
 
@@ -115,7 +115,7 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
 
     $arbitrary_links = [];
     $simpleSitemap = (new Chain($this))
-      ->add(SimpleSitemapInterface::class, 'id', 'default')
+      ->add(ConfigEntityInterface::class, 'id', 'default')
       ->getMock();
     dkan_js_frontend_simple_sitemap_arbitrary_links_alter($arbitrary_links, $simpleSitemap);
 
@@ -128,7 +128,7 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
   public function testArbitraryLinksNotModifiedForNonDefaultSitemap(): void {
     $arbitrary_links = [];
     $simpleSitemap = (new Chain($this))
-      ->add(SimpleSitemapInterface::class, 'id', 'test')
+      ->add(ConfigEntityInterface::class, 'id', 'test')
       ->getMock();
     dkan_js_frontend_simple_sitemap_arbitrary_links_alter($arbitrary_links, $simpleSitemap);
 
