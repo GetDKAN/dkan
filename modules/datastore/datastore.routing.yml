@@ -156,7 +156,7 @@ datastore.dkan_resource_settings:
     _permission: 'administer site configuration'
 
 datastore.datasets_import_status_dashboard:
-  path: '/admin/dkan/dataset-status'
+  path: '/admin/dkan/datastore/status'
   methods: [ GET ]
   defaults:
     _title: 'Datastore Import Status'
