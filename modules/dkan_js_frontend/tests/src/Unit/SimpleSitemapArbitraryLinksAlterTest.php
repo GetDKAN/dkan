@@ -85,9 +85,10 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->getMock();
     dkan_js_frontend_simple_sitemap_arbitrary_links_alter($arbitrary_links, $simpleSitemap);
 
+    $host = \Drupal::request()->getSchemeAndHttpHost();
     $this->assertEquals($arbitrary_links, [
-      DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => '/dataset/1'],
-      DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => '/dataset/2'],
+      DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => $host . '/dataset/1'],
+      DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => $host . '/dataset/2'],
     ]);
   }
 
