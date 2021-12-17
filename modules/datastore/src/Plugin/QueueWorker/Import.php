@@ -61,7 +61,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   /**
    * File system service.
    *
-   * @var \Drupal\Core\File\FileSystemInterface;
+   * @var \Drupal\Core\File\FileSystemInterface
    */
   protected $fileSystem;
 
