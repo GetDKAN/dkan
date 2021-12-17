@@ -144,7 +144,7 @@ function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dat
   // Add dataset routes using the fetched UUIDs.
   foreach ($dataset_uuids as $uuid) {
     $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + [
-      'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_PATH),
+      'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_URL),
     ];
   }
 }
