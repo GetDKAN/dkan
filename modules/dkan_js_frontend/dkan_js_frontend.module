@@ -1,6 +1,5 @@
 <?php
 
-use Drupal\simple_sitemap\Entity\SimpleSitemapInterface;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
@@ -87,7 +86,7 @@ function dkan_js_frontend_theme($existing, $type, $theme, $path) {
 /**
  * Implements hook_simple_sitemap_arbitrary_links_alter().
  */
-function dkan_js_frontend_simple_sitemap_arbitrary_links_alter(array &$arbitrary_links, SimpleSitemapInterface $sitemap): void {
+function dkan_js_frontend_simple_sitemap_arbitrary_links_alter(array &$arbitrary_links, $sitemap): void {
   // Ignore anything that isn't the default sitemap.
   if ($sitemap->id() !== 'default') {
     return;
