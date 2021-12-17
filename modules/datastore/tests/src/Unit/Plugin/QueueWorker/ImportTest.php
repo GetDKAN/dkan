@@ -48,7 +48,7 @@ class ImportTest extends TestCase {
       ->add(LoggerChannel::class, 'log', NULL, 'log');
     $container = $containerChain->getMock();
 
-    $queueWorker = Import::create($container, [], '', '');
+    $queueWorker = Import::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
     $queueWorker->processItem((object) $this->data);
 
     // @todo Don't do this.
@@ -66,7 +66,7 @@ class ImportTest extends TestCase {
     $containerChain = $this->getContainerChain($result);
     $container = $containerChain->getMock();
 
-    $queueWorker = Import::create($container, [], '', '');
+    $queueWorker = Import::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
     $queueWorker->processItem((object) $this->data);
 
     $input = $containerChain->getStoredInput('create_item');
