@@ -114,12 +114,17 @@ function dkan_js_frontend_simple_sitemap_arbitrary_links_alter(array &$arbitrary
  *   Collection of DKAN routes.
  */
 function _dkan_js_frontend_add_static_links(array &$arbitrary_links, RouteCollection $routes): void {
+  // Build request context from request.
+  $request = \Drupal::request();
+  $request_context = (new RequestContext())->fromRequest($request);
+  // Build route URL generator.
+  $url_generator = new UrlGenerator($routes, $request_context);
   // Loop through routes and add to sitemap.
-  foreach ($routes as $route) {
+  foreach ($routes as $route_name => $route) {
     // Add this link to the sitemap if it's not a dynamic route.
     if (empty($route->compile()->getPathVariables())) {
       $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK + [
-        'url' => $route->getPath(),
+        'url' => $url_generator->generate($route_name, [], UrlGeneratorInterface::ABSOLUTE_URL),
       ];
     }
   }
@@ -134,17 +139,21 @@ function _dkan_js_frontend_add_static_links(array &$arbitrary_links, RouteCollec
  *   Collection of DKAN routes.
  */
 function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dataset_route): void {
+  // Build route collection.
+  $routes = new RouteCollection();
+  $routes->add('dataset', $dataset_route);
+  // Build request context from request.
+  $request = \Drupal::request();
+  $request_context = (new RequestContext())->fromRequest($request);
   // Build route URL generator.
-  $route_collection = new RouteCollection();
-  $route_collection->add('dataset', $dataset_route);
-  $url_generator = new UrlGenerator($route_collection, new RequestContext());
+  $url_generator = new UrlGenerator($routes, $request_context);
 
   // Fetch dataset UUIDs.
   $dataset_uuids = \Drupal::service('dkan.metastore.service')->getRangeUuids('dataset');
   // Add dataset routes using the fetched UUIDs.
   foreach ($dataset_uuids as $uuid) {
     $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + [
-      'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_PATH),
+      'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_URL),
     ];
   }
 }
