@@ -17,6 +17,8 @@ use Drupal\metastore\Service;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 $module_path = substr(__DIR__, 0, strpos(__DIR__, '/dkan_js_frontend/')) . '/dkan_js_frontend';
 require_once($module_path . '/dkan_js_frontend.module');
@@ -25,6 +27,13 @@ require_once($module_path . '/dkan_js_frontend.module');
  * Test dkan_js_frontend_simple_sitemap_arbitrary_links_alter() function.
  */
 class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
+
+  /**
+   * Base URL to use for testing sitemap URL generation.
+   *
+   * @var string
+   */
+  protected const BASE_URL = 'https://example.com';
 
   /**
    * Test sitemap generation of static links.
@@ -40,9 +49,11 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add('entity_type.repository', EntityTypeRepository::class)
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
       ->add('logger.factory', LoggerChannelFactory::class)
+      ->add('request_stack', RequestStack::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
+      ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)))
       ->getMock();
     \Drupal::setContainer($container);
 
@@ -53,8 +64,8 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
     dkan_js_frontend_simple_sitemap_arbitrary_links_alter($arbitrary_links, $simpleSitemap);
 
     $this->assertEquals($arbitrary_links, [
-      DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK + ['url' => '/home'],
-      DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK + ['url' => '/about'],
+      DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK + ['url' => self::BASE_URL . '/home'],
+      DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK + ['url' => self::BASE_URL . '/about'],
     ]);
   }
 
@@ -72,9 +83,11 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add('entity_type.repository', EntityTypeRepository::class)
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
       ->add('dkan.metastore.service', Service::class)
+      ->add('request_stack', RequestStack::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
+      ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)))
       ->add(Service::class, 'getRangeUuids', [1, 2])
       ->getMock();
     \Drupal::setContainer($container);
@@ -87,8 +100,8 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
 
     $host = \Drupal::request()->getSchemeAndHttpHost();
     $this->assertEquals($arbitrary_links, [
-      DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => $host . '/dataset/1'],
-      DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => $host . '/dataset/2'],
+      DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => self::BASE_URL . '/dataset/1'],
+      DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => self::BASE_URL . '/dataset/2'],
     ]);
   }
 
@@ -107,11 +120,13 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', Service::class)
+      ->add('request_stack', RequestStack::class)
       ->index(0);
     $containerChain = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
-      ->add(LoggerChannelInterface::class, 'error', NULL, 'error');
+      ->add(LoggerChannelInterface::class, 'error', NULL, 'error')
+      ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)));
     \Drupal::setContainer($containerChain->getMock());
 
     $arbitrary_links = [];
