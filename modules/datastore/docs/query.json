@@ -72,6 +72,18 @@
                 "required": ["resource", "condition"]
             }
         },
+        "groups": {
+            "type": "array",
+            "description": "Properties or aliases from the properties array to group results by.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "resource": { "$ref": "#/definitions/resource" },
+                    "property": { "$ref": "#/definitions/property" }
+                },
+                "required": [ "property" ]                
+            }
+        },
         "limit": {
             "type": "integer",
             "description": "Limit for maximum number of records returned. Pass zero for no limit (may be restricted by user permissions)."
@@ -197,7 +209,7 @@
             "properties": {
                 "operator": {
                     "type": "string",
-                    "description": "Expression operator. Note that performing expressions on text or other non-numeric data types my yeild unexpected results.",
+                    "description": "Expression operator. Note that performing expressions on text or other non-numeric data types my yield unexpected results.",
                     "enum": [
                         "+",
                         "-",
