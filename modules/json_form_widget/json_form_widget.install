@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @file
  * Install hooks for json_form_widget.
  */
 

@@ -12,7 +12,6 @@ use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
 use Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidget;
 
-
 /**
  * Submit handler for the "add-one-more" button.
  *
@@ -127,7 +126,6 @@ function _json_form_widget_update_file(string $url, FormStateInterface $form_sta
     $fu->add($file, 'json_form_widget', $entity->getEntityTypeId(), $entity->id());
   }
 }
-
 
 /**
  * Generate a Drupal internal URI from a URL in the widget.

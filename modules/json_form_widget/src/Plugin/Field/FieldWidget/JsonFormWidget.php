@@ -2,6 +2,8 @@
 
 namespace Drupal\json_form_widget\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityFormInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -123,8 +125,8 @@ class JsonFormWidget extends WidgetBase {
     foreach ($items as $item) {
       $default_data = json_decode($item->value);
     }
-    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
-    $type = isset($type) ? $type : $this->getSetting('schema');
+
+    $type = $this->getDkanSchemaId($form_state) ?: $this->getSetting('schema');
     $this->builder->setSchema($this->getSetting('schema'), $type);
     $this->schema = $this->builder->getSchema();
     $json_form = $this->builder->getJsonForm($default_data, $form_state);
@@ -135,13 +137,34 @@ class JsonFormWidget extends WidgetBase {
   }
 
   /**
+   * Get the DKAN Schema ID from the form_state if available.
+   *
+   * @param Drupal\Core\Form\FormStateInterface $form_state
+   *   Current FormState object.
+   *
+   * @return string|false
+   *   The schema ID if available, false if not.
+   */
+  private function getDkanSchemaId(FormStateInterface $form_state) {
+    $schema = FALSE;
+    $fo = $form_state->getFormObject();
+
+    if ($fo instanceof EntityFormInterface) {
+      $entity = $fo->getEntity();
+    }
+
+    if (isset($entity) && $entity instanceof ContentEntityInterface) {
+      $schema = $entity->get('field_data_type')->getValue();
+    }
+    return $schema;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
     $field_name = $form_state->get('json_form_widget_field');
-    // TODO: there is duplicated code here.
-    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
-    $type = isset($type) ? $type : $this->getSetting('schema');
+    $type = $this->getDkanSchemaId($form_state) ?: $this->getSetting('schema');
     $this->builder->setSchema($this->getSetting('schema'), $type);
     $schema = $this->builder->getSchema();
 

@@ -5,7 +5,7 @@ namespace Drupal\json_form_widget;
 use Drupal\Core\Datetime\DrupalDateTime;
 
 /**
- * Class ValueHandler.
+ * Handle submitted values in form widget.
  */
 class ValueHandler {
 

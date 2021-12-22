@@ -9,7 +9,7 @@ use Drupal\metastore\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class WidgetRouter.
+ * Determine which element to use for a specific JSON field.
  */
 class WidgetRouter implements ContainerInjectionInterface {
 

@@ -17,7 +17,6 @@ use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\metastore\SchemaRetriever;
 use MockChain\Options;
-use stdClass;
 
 /**
  * Test class for JsonFormWidget.
@@ -163,7 +162,7 @@ class JsonFormBuilderTest extends TestCase {
         ],
       ],
     ];
-    $default_data = new stdClass();
+    $default_data = new \stdClass();
     $default_data->test = "Some value.";
     $this->assertEquals($form_builder->getJsonForm($default_data), $expected);
 

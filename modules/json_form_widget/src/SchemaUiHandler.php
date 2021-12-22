@@ -8,7 +8,12 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
 /**
- * Class SchemaUiHandler.
+ * Handles UI schema.
+ *
+ * Based losely on concept from
+ * https://github.com/rjsf-team/react-jsonschema-form.
+ *
+ * @see https://react-jsonschema-form.readthedocs.io/en/latest/api-reference/uiSchema/
  */
 class SchemaUiHandler implements ContainerInjectionInterface {
 

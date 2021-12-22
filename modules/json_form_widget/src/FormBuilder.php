@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
 /**
- * Class FormBuilder.
+ * Builds the full JSON Schema form.
  */
 class FormBuilder implements ContainerInjectionInterface {
 

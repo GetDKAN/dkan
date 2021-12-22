@@ -3,7 +3,6 @@
 namespace Drupal\Tests\json_form_widget\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\ArrayHelper;
 use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
