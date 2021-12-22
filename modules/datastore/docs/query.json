@@ -76,12 +76,10 @@
             "type": "array",
             "description": "Properties or aliases from the properties array to group results by.",
             "items": {
-                "type": "object",
-                "properties": {
-                    "resource": { "$ref": "#/definitions/resource" },
-                    "property": { "$ref": "#/definitions/property" }
-                },
-                "required": [ "property" ]                
+                "anyOf": [
+                    { "$ref": "#/definitions/resource" },
+                    { "$ref": "#/definitions/resourceProperty" }
+                ]
             }
         },
         "limit": {
