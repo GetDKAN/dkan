@@ -2,9 +2,16 @@
 
 /**
  * @file
+ * Defines a multi-field form element based on a JSON Schema.
  */
 
+use Drupal\Core\Entity\EntityFormInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\file\Entity\File;
+use Drupal\file\FileInterface;
+use Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidget;
+
 
 /**
  * Submit handler for the "add-one-more" button.
@@ -46,33 +53,121 @@ function json_form_widget_remove_one(array &$form, FormStateInterface $form_stat
 }
 
 /**
- * Add custom submit handler to data form.
+ * Implements hook_field_widget_multivalue_form_alter().
+ *
+ * Set json_form_widget flag for later.
+ */
+function json_form_widget_field_widget_multivalue_form_alter(array $elements, FormStateInterface $form_state, array $context) {
+  if ($context['widget'] instanceof JsonFormWidget) {
+    $form_state->has_json_form_widget = TRUE;
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Add custom submit handler to form if it contains an upload_or_link element.
  */
 function json_form_widget_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  if ($form_id === "node_data_form" || $form_id === "node_data_edit_form") {
-    $form['actions']['submit']['#submit'][] = 'json_form_widget_save_dkan_file_submit';
+  if (!isset($form['actions']['submit']) || !isset($form_state->has_json_form_widget)) {
+    return;
+  }
+  if ($form_state->has_json_form_widget) {
+    $form['actions']['submit']['#submit'][] = 'json_form_widget_file_submit';
   }
 }
 
 /**
  * Submit handler for uploaded elements on upload_or_link.
+ *
+ * Sets up file entities created by upload element.
  */
-function json_form_widget_save_dkan_file_submit($form, FormStateInterface $form_state) {
-  if ($parents = $form_state->get('upload_or_link_element')) {
-    foreach ($parents as $parent) {
-      $uri = $form_state->getValue($parent);
-      $filename = \Drupal::service('file_system')->basename($uri);
-      $filename = urldecode($filename);
-      $files = \Drupal::entityTypeManager()
-        ->getStorage('file')
-        ->loadByProperties(['filename' => $filename]);
-      if (!empty($files)) {
-        $file = reset($files);
-        $file->setPermanent();
-        $file->save();
-        $file_usage = \Drupal::service('file.usage');
-        $file_usage->add($file, 'json_form_widget', 'json_form_widget', \Drupal::currentUser()->id());
-      }
-    }
+function json_form_widget_file_submit(array $form, FormStateInterface $form_state) {
+  $parents = $form_state->get('upload_or_link_element');
+  if (empty($parents)) {
+    return;
+  }
+
+  // Avoid double usage if URL is duplicated in form object.
+  $urls = [];
+  foreach ($parents as $parent) {
+    $urls[] = $form_state->getValue($parent);
+  }
+  $urls = array_unique(array_filter($urls));
+
+  foreach ($urls as $url) {
+    _json_form_widget_update_file($url, $form_state);
+  }
+}
+
+/**
+ * Find recently-uploaded file entity, set to permanent and add usage.
+ *
+ * @param string $url
+ *   The URL of the file stored in the form submission.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form_state object.
+ */
+function _json_form_widget_update_file(string $url, FormStateInterface $form_state) {
+  $fo = $form_state->getFormObject();
+  $storage = \Drupal::entityTypeManager()->getStorage('file');
+  $props = ['uri' => _json_form_widget_get_file_uri($url)];
+  $file = reset($storage->loadByProperties($props));
+
+  if ($file instanceof FileInterface) {
+    $file->setPermanent();
+    $file->save();
+  }
+  else {
+    return FALSE;
+  }
+  // If we're working with an entity form, set up usage.
+  if ($fo instanceof EntityFormInterface && $entity = $fo->getEntity()) {
+    $fu = \Drupal::service('file.usage');
+    $fu->add($file, 'json_form_widget', $entity->getEntityTypeId(), $entity->id());
+  }
+}
+
+
+/**
+ * Generate a Drupal internal URI from a URL in the widget.
+ *
+ * @todo The module should be using internal URIs which would make this step
+ * unnecessary.
+ */
+function _json_form_widget_get_file_uri($url) {
+  $path = urldecode(file_url_transform_relative($url));
+  // We're loading scheme from config, but this will probably break if not
+  // "public".
+  $scheme = \Drupal::config('system.file')->get('default_scheme') . "://";
+  $scheme_path = file_url_transform_relative(file_create_url($scheme));
+  $uri = str_replace($scheme_path, $scheme, $path, $count);
+
+  return $count ? $uri : $path;
+}
+
+/**
+ * Implements hook_entity_delete().
+ *
+ * Clean up file usage after entity delete.
+ */
+function json_form_widget_entity_delete(EntityInterface $entity) {
+  $type = $entity->getEntityTypeId();
+  $id = $entity->id();
+
+  // Find files by entity/module usage.
+  $fids = \Drupal::database()->select('file_usage', 'fu')
+    ->fields('fu', ['fid'])
+    ->condition('fu.type', $type)
+    ->condition('fu.id', $id)
+    ->condition('fu.module', 'json_form_widget')
+    ->execute()
+    ->fetchCol();
+
+  $files = File::loadMultiple($fids);
+
+  // Remove one usage for each file related to deleted entity.
+  foreach ($files as $file) {
+    \Drupal::service('file.usage')->delete($file, 'json_form_widget', $type, $id);
   }
 }
