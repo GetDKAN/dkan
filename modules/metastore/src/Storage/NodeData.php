@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Node Data.
  */
-class NodeData extends Data implements MetastoreEntityStorageInterface {
+class NodeData extends Data {
 
   /**
    * NodeData constructor.
@@ -25,22 +25,15 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
    */
   public function retrieveContains(string $string, bool $caseSensitive = TRUE): array {
 
-    $entity_ids = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->condition($this->bundleKey, $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->condition($this->getMetadataField(), $string, 'CONTAINS')
-      ->addTag('case_sensitive')
-      ->execute();
-
-    $all = [];
-    foreach ($entity_ids as $nid) {
-      $entity = $this->entityStorage->load($nid);
-      if ($entity->get('moderation_state')->getString() === 'published') {
-        $all[] = $entity->get('field_json_metadata')->getString();
-      }
+    $query = $this->listQueryBase()->condition(static::getMetadataField(), $string, 'CONTAINS');
+    if ($caseSensitive) {
+      $query->addTag('case_sensitive');
     }
-    return $all;
+    $entityIds = $query->execute();
+
+    return array_map(function ($entity) {
+      return $entity->get(static::getMetadataField())->getString();
+    }, $this->entityStorage->loadMultiple($entityIds));
   }
 
   /**
@@ -62,6 +55,13 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
    */
   public static function getMetadataField() {
     return 'field_json_metadata';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSchemaIdField() {
+    return 'field_data_type';
   }
 
   /**

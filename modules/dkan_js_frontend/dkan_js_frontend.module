@@ -149,7 +149,7 @@ function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dat
   $url_generator = new UrlGenerator($routes, $request_context);
 
   // Fetch dataset UUIDs.
-  $dataset_uuids = \Drupal::service('dkan.metastore.service')->getRangeUuids('dataset');
+  $dataset_uuids = \Drupal::service('dkan.metastore.service')->getIdentifiers('dataset');
   // Add dataset routes using the fetched UUIDs.
   foreach ($dataset_uuids as $uuid) {
     $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + [

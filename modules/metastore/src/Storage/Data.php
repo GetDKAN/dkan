@@ -2,15 +2,21 @@
 
 namespace Drupal\metastore\Storage;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\common\LoggerTrait;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Service;
+use Drupal\workflows\WorkflowInterface;
 
 /**
  * Abstract metastore storage class, for using Drupal entities.
  */
-abstract class Data implements MetastoreStorageInterface {
+abstract class Data implements MetastoreEntityStorageInterface {
+
+  use LoggerTrait;
 
   /**
    * Entity type manager.
@@ -88,91 +94,88 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Count objects of this metastore's schema ID.
+   * Get the field name where the JSON metadata is stored.
    *
-   * @return int
-   *   Object count.
+   * @return string
+   *   Field name, eg., field_json_metadata.
    */
-  public function count(): int {
-    return $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->count()
-      ->execute();
-  }
+  abstract public static function getMetadataField();
 
   /**
-   * Inherited.
+   * Get the field name where the schema ID is stored.
    *
-   * {@inheritdoc}.
+   * @return string
+   *   Field name, eg., field_data_type.
    */
-  public function retrieveAll(): array {
-
-    $entity_ids = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->execute();
-
-    $all = [];
-    foreach ($entity_ids as $nid) {
-      $entity = $this->entityStorage->load($nid);
-      if ($entity->get('moderation_state')->getString() === 'published') {
-        $all[] = $entity->get('field_json_metadata')->getString();
-      }
-    }
-    return $all;
-  }
+  abstract public static function getSchemaIdField();
 
   /**
-   * Get range of object UUIDs of this metastore's schema ID.
+   * Create basic query for a list of metastore items.
    *
-   * If no start or length is specified, all dataset UUIDs will be returned.
-   *
-   * @param int|null $start
-   *   Schema object offset or null for all.
+   * @param int $start
+   *   Offset. Should default to zero (i.e., no offset).
    * @param int|null $length
-   *   Number of objects to fetch or null for all.
+   *   Number of items to retrieve. NULL for no limit.
+   * @param bool $unpublished
+   *   Whether to include unpublished items in the results.
+   *
+   * @return \Drupal\Core\Entity\Query\QueryInterface
+   *   A Drupal query object.
+   */
+  protected function listQueryBase(int $start = 0, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
+    $query = $this->entityStorage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', $this->bundle)
+      ->condition(static::getMetadataField(), $this->schemaId)
+      ->range($start, $length);
+
+    if ($unpublished === FALSE) {
+      $query->condition('status', 1);
+    }
+
+    return $query;
+  }
+
+  /**
+   * Take an array of entity IDs and load the JSON metadata for each.
+   *
+   * @param array $entityIds
+   *   An array of Drupal entity IDs, returned from an entity query.
    *
    * @return string[]
-   *   Range of object UUIDs of the given schema_id.
+   *   An array of JSON strings containing the metadata.
    */
-  public function retrieveRangeUuids(?int $start = NULL, ?int $length = NULL): array {
-    $ids_query = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId);
+  protected function entityIdsToJsonStrings(array $entityIds): array {
+    return array_map(function ($entity) {
+      return $entity->get($this->getMetadataField())->getString();
+    }, $this->entityStorage->loadMultiple($entityIds));
+  }
 
-    if (isset($start, $length)) {
-      $ids_query = $ids_query->range($start, $length);
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function count($unpublished = FALSE): int {
+    return $this->listQueryBase()->count($unpublished)->execute();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function retrieveAll(int $start = 0, ?int $length = NULL, bool $unpublished = FALSE): array {
+    $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
+    return $this->entityIdsToJsonStrings($entityIds);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function retrieveIds(int $start = 0, ?int $length = NULL, bool $unpublished = FALSE): array {
+
+    $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
 
     return array_map(function ($entity) {
       return $entity->uuid();
-    }, $this->entityStorage->loadMultiple($ids_query->execute()));
-  }
-
-  /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
-   */
-  public function retrieveRange($start, $length): array {
-    $entity_ids = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->range($start, $length)
-      ->execute();
-
-    $all = [];
-    foreach ($this->entityStorage->loadMultiple($entity_ids) as $entity) {
-      if ($entity->get('moderation_state')->getString() === 'published') {
-        $all[] = $entity->get('field_json_metadata')->getString();
-      }
-    }
-    return $all;
+    }, $this->entityStorage->loadMultiple($entityIds));
   }
 
   /**
@@ -184,7 +187,7 @@ abstract class Data implements MetastoreStorageInterface {
     $entity = $this->getEntityPublishedRevision($uuid);
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
-      return $entity->get('field_json_metadata')->getString();
+      return $entity->get(static::getMetadataField())->getString();
     }
 
     throw new MissingObjectException("Error retrieving published dataset: {$this->schemaId} {$uuid} not found.");
@@ -205,7 +208,7 @@ abstract class Data implements MetastoreStorageInterface {
     }
 
     if ($entity) {
-      return $entity->get('field_json_metadata')->getString();
+      return $entity->get(static::getMetadataField())->getString();
     }
 
     throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
@@ -255,10 +258,10 @@ abstract class Data implements MetastoreStorageInterface {
    * @param string $uuid
    *   The dataset identifier.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity's latest revision, if found.
    */
-  public function getEntityLatestRevision(string $uuid) {
+  public function getEntityLatestRevision(string $uuid): ContentEntityInterface {
 
     $entity_id = $this->getEntityIdFromUuid($uuid);
 
@@ -285,7 +288,7 @@ abstract class Data implements MetastoreStorageInterface {
       ->accessCheck(FALSE)
       ->condition('uuid', $uuid)
       ->condition($this->bundleKey, $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
+      ->condition(static::getSchemaIdField(), $this->schemaId)
       ->execute();
 
     return $entity_ids ? (int) reset($entity_ids) : NULL;
@@ -320,7 +323,7 @@ abstract class Data implements MetastoreStorageInterface {
       $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if (isset($entity) && $entity instanceof EntityInterface) {
+    if (isset($entity) && $entity instanceof ContentEntityInterface) {
       return $this->updateExistingEntity($entity, $data);
     }
     // Create new entity.
@@ -330,18 +333,28 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Private.
+   * Overwrite a content entity with new metadata.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Drupal content entity.
+   * @param string $data
+   *   JSON data.
+   *
+   * @return string|null
+   *   The content entity UUID, or null if failed.
    */
-  private function updateExistingEntity(EntityInterface $entity, $data) {
-    $entity->field_data_type = $this->schemaId;
+  private function updateExistingEntity(ContentEntityInterface $entity, string $data): ?string {
+    $entity->{static::getSchemaIdField()} = $this->schemaId;
     $new_data = json_encode($data);
-    $entity->field_json_metadata = $new_data;
+    $entity->{static::getMetadataField()} = $new_data;
 
     // Dkan publishing's default moderation state.
     $entity->set('moderation_state', $this->getDefaultModerationState());
 
-    $entity->setRevisionLogMessage("Updated on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
-    $entity->setRevisionCreationTime(time());
+    if ($entity instanceof RevisionLogInterface) {
+      $entity->setRevisionLogMessage("Updated on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
+      $entity->setRevisionCreationTime(time());
+    }
     $entity->save();
 
     return $entity->uuid();
@@ -369,17 +382,18 @@ abstract class Data implements MetastoreStorageInterface {
     else {
       $title = Service::metadataHash($data->data);
     }
-    $entity = $this->getEntityStorage()
-      ->create(
-        [
-          $this->labelKey => $title,
-          $this->bundleKey => $this->bundle,
-          'uuid' => $uuid,
-          'field_data_type' => $this->schemaId,
-          'field_json_metadata' => json_encode($data),
-        ]
-      );
-    $entity->setRevisionLogMessage("Created on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
+    $entity = $this->getEntityStorage()->create(
+      [
+        $this->labelKey => $title,
+        $this->bundleKey => $this->bundle,
+        'uuid' => $uuid,
+        static::getSchemaIdField() => $this->schemaId,
+        static::getMetadataField() => json_encode($data),
+      ]
+    );
+    if ($entity instanceof RevisionLogInterface) {
+      $entity->setRevisionLogMessage("Created on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
+    }
 
     $entity->save();
 
@@ -456,11 +470,13 @@ abstract class Data implements MetastoreStorageInterface {
    * @return string
    *   Either 'draft', 'published' or 'orphaned'.
    */
-  public function getDefaultModerationState() {
-    return $this->entityTypeManager->getStorage('workflow')
-      ->load('dkan_publishing')
-      ->getTypePlugin()
-      ->getConfiguration()['default_moderation_state'];
+  public function getDefaultModerationState(): string {
+    $workflow = $this->entityTypeManager->getStorage('workflow')->load('dkan_publishing');
+    if ($workflow instanceof WorkflowInterface) {
+      return $workflow->getTypePlugin()->getConfiguration()['default_moderation_state'];
+    }
+    // If this failed for some reason, default to published.
+    return 'published';
   }
 
 }
