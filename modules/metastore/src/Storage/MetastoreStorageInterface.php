@@ -43,8 +43,8 @@ interface MetastoreStorageInterface {
   /**
    * Retrieve all metadata items.
    *
-   * @param int $start
-   *   Offset. Should default to zero (i.e., no offset).
+   * @param int|null $start
+   *   Offset. NULL for no range, zero for beginning of set.
    * @param int|null $length
    *   Number of items to retrieve. NULL for no limit.
    * @param bool $unpublished
@@ -53,12 +53,12 @@ interface MetastoreStorageInterface {
    * @return string[]
    *   An array of JSON strings representing metadata objects.
    */
-  public function retrieveAll(int $start, ?int $length, bool $unpublished): array;
+  public function retrieveAll(?int $start, ?int $length, bool $unpublished): array;
 
   /**
    * Retrieve just identifiers.
    *
-   * @param int $start
+   * @param int|null $start
    *   Offset.
    * @param int|null $length
    *   Number of identifiers to retrieve. NULL for no limit.
@@ -68,7 +68,7 @@ interface MetastoreStorageInterface {
    * @return string[]
    *   An array of metastore item identifiers.
    */
-  public function retrieveIds(int $start, ?int $length, bool $unpublished): array;
+  public function retrieveIds(?int $start, ?int $length, bool $unpublished): array;
 
   /**
    * Retrieve all metadata items that contain a particular exact string.

@@ -154,8 +154,8 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   Schema ID.
-   * @param int $start
-   *   Start offset.
+   * @param int|null $start
+   *   Start offset. Null for no range.
    * @param int|null $length
    *   Number of items to retrieve.
    * @param bool $unpublished
@@ -164,7 +164,7 @@ class Service implements ContainerInjectionInterface {
    * @return array
    *   Array of RootedJsonData objects.
    */
-  public function getAll(string $schema_id, int $start = 0, ?int $length = NULL, $unpublished = FALSE):array {
+  public function getAll(string $schema_id, ?int $start = NULL, ?int $length = NULL, $unpublished = FALSE):array {
     $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll($start, $length, $unpublished);
     $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
 

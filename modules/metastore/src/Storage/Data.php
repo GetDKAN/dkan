@@ -112,8 +112,8 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * Create basic query for a list of metastore items.
    *
-   * @param int $start
-   *   Offset. Should default to zero (i.e., no offset).
+   * @param int|null $start
+   *   Offset. NULL if no range, 0 to start at beginning of set.
    * @param int|null $length
    *   Number of items to retrieve. NULL for no limit.
    * @param bool $unpublished
@@ -122,11 +122,11 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return \Drupal\Core\Entity\Query\QueryInterface
    *   A Drupal query object.
    */
-  protected function listQueryBase(int $start = 0, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
+  protected function listQueryBase(int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
     $query = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
-      ->condition(static::getMetadataField(), $this->schemaId)
+      ->condition(static::getSchemaIdField(), $this->schemaId)
       ->range($start, $length);
 
     if ($unpublished === FALSE) {
@@ -161,7 +161,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function retrieveAll(int $start = 0, ?int $length = NULL, bool $unpublished = FALSE): array {
+  public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array {
     $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
     return $this->entityIdsToJsonStrings($entityIds);
   }
@@ -169,7 +169,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function retrieveIds(int $start = 0, ?int $length = NULL, bool $unpublished = FALSE): array {
+  public function retrieveIds(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array {
 
     $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
 
@@ -261,7 +261,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity's latest revision, if found.
    */
-  public function getEntityLatestRevision(string $uuid): ContentEntityInterface {
+  public function getEntityLatestRevision(string $uuid) {
 
     $entity_id = $this->getEntityIdFromUuid($uuid);
 
