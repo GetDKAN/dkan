@@ -344,7 +344,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @return string|null
    *   The content entity UUID, or null if failed.
    */
-  private function updateExistingEntity(ContentEntityInterface $entity, object $data): ?string {
+  private function updateExistingEntity(ContentEntityInterface $entity, \stdClass $data): ?string {
     $entity->{static::getSchemaIdField()} = $this->schemaId;
     $new_data = json_encode($data);
     $entity->{static::getMetadataField()} = $new_data;
