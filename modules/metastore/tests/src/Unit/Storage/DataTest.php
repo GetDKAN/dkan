@@ -92,10 +92,10 @@ class DataTest extends TestCase {
   }
 
   /**
-   * Test \Drupal\metastore\Storage\Data::retrieveRangeUuids() method.
+   * Test \Drupal\metastore\Storage\Data::retrieveIds() method.
    */
   public function testRetrieveRangeUuids(): void {
-    // Generate dataset nodes for testing ::retrieveRangeUuids().
+    // Generate dataset nodes for testing ::retrieveIds().
     $nodes = [];
     $uuids = [];
 
@@ -109,7 +109,7 @@ class DataTest extends TestCase {
       $uuids[$i] = $nodes[$i]->uuid();
     }
 
-    // Create mock chain for testing ::retrieveRangeUuids() method.
+    // Create mock chain for testing ::retrieveIds() method.
     $etmMock = $this->getEtmChain()
       ->add(NodeStorage::class, 'loadMultiple', $nodes)
       ->getMock();
@@ -117,7 +117,7 @@ class DataTest extends TestCase {
     // Create Data object.
     $nodeData = new NodeData('dataset', $etmMock);
     // Ensure the returned uuids match those belonging to the generated nodes.
-    $this->assertEquals($uuids, $nodeData->retrieveRangeUuids(1, 5));
+    $this->assertEquals($uuids, $nodeData->retrieveIds(1, 5));
   }
 
 }

@@ -336,20 +336,20 @@ EOF;
   }
 
   /**
-   * Test \Drupal\metastore\Service::getRangeUuids() method.
+   * Test \Drupal\metastore\Service::getIdentifiers() method.
    */
-  public function testGetRangeUuids(): void {
-    // Set constant which should be returned by the ::getRangeUuids() method.
+  public function testGetIdentifiers(): void {
+    // Set constant which should be returned by the ::getIdentifiers() method.
     $uuids = ['a', 'b', 'c'];
 
-    // Create mock chain for testing ::getRangeUuids() method.
+    // Create mock chain for testing ::getIdentifiers() method.
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, 'retrieveRangeUuids', $uuids);
+      ->add(NodeData::class, 'retrieveIds', $uuids);
 
     // Create metastore service object.
     $service = Service::create($container->getMock());
     // Ensure count matches return value.
-    $this->assertEquals($uuids, $service->getRangeUuids('test', 1, 5));
+    $this->assertEquals($uuids, $service->getIdentifiers('test', 1, 5));
   }
 
   /**

@@ -208,7 +208,7 @@ class DashboardFormTest extends TestCase {
 
     $container = $this->buildContainerChain()
       ->add(MetastoreService::class, 'count', 2)
-      ->add(MetastoreService::class, 'getRangeUuids', [$datasetInfo['latest_revision']['uuid'], $nonHarvestDatasetInfo['latest_revision']['uuid']])
+      ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid'], $nonHarvestDatasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfoOptions);
 
     \Drupal::setContainer($container->getMock());
@@ -244,7 +244,7 @@ class DashboardFormTest extends TestCase {
 
     $container = $this->buildContainerChain()
       ->add(MetastoreService::class, 'count', 1)
-      ->add(MetastoreService::class, 'getRangeUuids', [$datasetInfo['latest_revision']['uuid']])
+      ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfo)
       ->getMock();
     \Drupal::setContainer($container);
@@ -290,7 +290,7 @@ class DashboardFormTest extends TestCase {
 
     $container = $this->buildContainerChain()
       ->add(MetastoreService::class, 'count', 1)
-      ->add(MetastoreService::class, 'getRangeUuids', [$datasetInfo['latest_revision']['uuid']])
+      ->add(MetastoreService::class, 'getIdentifiers', [$datasetInfo['latest_revision']['uuid']])
       ->add(DatasetInfo::class, 'gather', $datasetInfo)
       ->getMock();
     \Drupal::setContainer($container);
@@ -341,7 +341,7 @@ class DashboardFormTest extends TestCase {
       ->add(Harvest::class,'getAllHarvestRunInfo', ['test'])
       ->add(Harvest::class,'getHarvestRunInfo', $runInfo)
       ->add(MetastoreService::class, 'count', 0)
-      ->add(MetastoreService::class, 'getRangeUuids', [])
+      ->add(MetastoreService::class, 'getIdentifiers', [])
       ->add(PagerManagerInterface::class,'createPager', Pager::class)
       ->add(DateFormatter::class, 'format', '12/31/2021')
       ->add(PathValidator::class, 'getUrlIfValidWithoutAccessCheck', NULL)
