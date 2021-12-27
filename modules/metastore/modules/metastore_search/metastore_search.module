@@ -25,6 +25,11 @@ function metastore_search_search_api_tracking(EntityInterface $entity, string $o
     return;
   }
 
+  /** @var \Drupal\Core\Entity $entity */
+  if($operation !== 'Deleted' && $entity->get('moderation_state')->getString() !== 'published') {
+    return;
+  }
+
   $method = "trackItems{$operation}";
 
   $storage = \Drupal::service('entity_type.manager')
