@@ -143,12 +143,13 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *   An array of Drupal entity IDs, returned from an entity query.
    *
    * @return string[]
-   *   An array of JSON strings containing the metadata.
+   *   An array of JSON strings containing the metadata. Note that array
+   *   keys from $enditityIds will not be preserved.
    */
   protected function entityIdsToJsonStrings(array $entityIds): array {
     return array_map(function ($entity) {
       return $entity->get($this->getMetadataField())->getString();
-    }, $this->entityStorage->loadMultiple($entityIds));
+    }, array_values($this->entityStorage->loadMultiple($entityIds)));
   }
 
   /**
@@ -337,13 +338,13 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   Drupal content entity.
-   * @param string $data
+   * @param object $data
    *   JSON data.
    *
    * @return string|null
    *   The content entity UUID, or null if failed.
    */
-  private function updateExistingEntity(ContentEntityInterface $entity, string $data): ?string {
+  private function updateExistingEntity(ContentEntityInterface $entity, object $data): ?string {
     $entity->{static::getSchemaIdField()} = $this->schemaId;
     $new_data = json_encode($data);
     $entity->{static::getMetadataField()} = $new_data;
