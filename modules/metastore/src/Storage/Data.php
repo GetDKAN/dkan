@@ -14,7 +14,7 @@ use Drupal\workflows\WorkflowInterface;
 /**
  * Abstract metastore storage class, for using Drupal entities.
  */
-abstract class Data implements MetastoreEntityStorageInterface {
+abstract class Data implements MetastoreStorageInterface {
 
   use LoggerTrait;
 
@@ -66,6 +66,10 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * @var string
    */
   protected $bundle;
+  
+  protected $metadataField;
+
+  protected $schemaIdField;
 
   /**
    * Constructor.
@@ -94,22 +98,6 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Get the field name where the JSON metadata is stored.
-   *
-   * @return string
-   *   Field name, eg., field_json_metadata.
-   */
-  abstract public static function getMetadataField();
-
-  /**
-   * Get the field name where the schema ID is stored.
-   *
-   * @return string
-   *   Field name, eg., field_data_type.
-   */
-  abstract public static function getSchemaIdField();
-
-  /**
    * Create basic query for a list of metastore items.
    *
    * @param int|null $start
@@ -126,7 +114,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     $query = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
-      ->condition(static::getSchemaIdField(), $this->schemaId)
+      ->condition($this->schemaIdField, $this->schemaId)
       ->range($start, $length);
 
     if ($unpublished === FALSE) {
@@ -148,7 +136,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    */
   protected function entityIdsToJsonStrings(array $entityIds): array {
     return array_map(function ($entity) {
-      return $entity->get($this->getMetadataField())->getString();
+      return $entity->get($this->metadataField)->getString();
     }, array_values($this->entityStorage->loadMultiple($entityIds)));
   }
 
@@ -188,7 +176,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     $entity = $this->getEntityPublishedRevision($uuid);
 
     if ($entity && $entity->get('moderation_state')->getString() == 'published') {
-      return $entity->get(static::getMetadataField())->getString();
+      return $entity->get($this->metadataField)->getString();
     }
 
     throw new MissingObjectException("Error retrieving published dataset: {$this->schemaId} {$uuid} not found.");
@@ -209,7 +197,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
     }
 
     if ($entity) {
-      return $entity->get(static::getMetadataField())->getString();
+      return $entity->get($this->metadataField)->getString();
     }
 
     throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
@@ -289,7 +277,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
       ->accessCheck(FALSE)
       ->condition('uuid', $uuid)
       ->condition($this->bundleKey, $this->bundle)
-      ->condition(static::getSchemaIdField(), $this->schemaId)
+      ->condition($this->schemaIdField, $this->schemaId)
       ->execute();
 
     return $entity_ids ? (int) reset($entity_ids) : NULL;
@@ -345,9 +333,9 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *   The content entity UUID, or null if failed.
    */
   private function updateExistingEntity(ContentEntityInterface $entity, $data): ?string {
-    $entity->{static::getSchemaIdField()} = $this->schemaId;
+    $entity->{$this->schemaIdField} = $this->schemaId;
     $new_data = json_encode($data);
-    $entity->{static::getMetadataField()} = $new_data;
+    $entity->{$this->metadataField} = $new_data;
 
     // Dkan publishing's default moderation state.
     $entity->set('moderation_state', $this->getDefaultModerationState());
@@ -388,8 +376,8 @@ abstract class Data implements MetastoreEntityStorageInterface {
         $this->labelKey => $title,
         $this->bundleKey => $this->bundle,
         'uuid' => $uuid,
-        static::getSchemaIdField() => $this->schemaId,
-        static::getMetadataField() => json_encode($data),
+        $this->schemaIdField => $this->schemaId,
+        $this->metadataField => json_encode($data),
       ]
     );
     if ($entity instanceof RevisionLogInterface) {

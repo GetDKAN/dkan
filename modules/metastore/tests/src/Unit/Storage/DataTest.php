@@ -21,7 +21,6 @@ class DataTest extends TestCase {
 
     $data = new NodeData('dataset', $this->getEtmChain()->getMock());
     $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
-    $this->assertEquals('field_json_metadata', $data->getMetadataField());
   }
 
   public function testPublishDatasetNotFound() {

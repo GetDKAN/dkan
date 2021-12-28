@@ -26,20 +26,4 @@ class MockStorage extends Data {
     throw new MissingObjectException("Error retrieving published dataset: distribution {$uuid} not found.");
   }
 
-  public static function getMetadataField() {
-    return 'field_json_metadata';
-  }
-
-  public static function getSchemaIdField() {
-    return 'field_data_type';
-  }
-
-  public static function getEntityType() {
-    return 'node';
-  }
-
-  public static function getBundles() {
-    return 'data';
-  }
-
 }
