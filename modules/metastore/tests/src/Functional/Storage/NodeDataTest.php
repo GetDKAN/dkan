@@ -9,6 +9,7 @@ use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Service as Metastore;
+use Drupal\metastore\Service;
 use Drupal\metastore_search\Search;
 use Drupal\node\NodeStorage;
 use Drupal\search_api\Entity\Index;
@@ -24,7 +25,7 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @package Drupal\Tests\dkan\Functional
  * @group dkan
  */
-class NodeDataDatasetTest extends ExistingSiteBase {
+class NodeDataTest extends ExistingSiteBase {
   use CleanUp;
 
   private const S3_PREFIX = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit';
@@ -75,7 +76,7 @@ class NodeDataDatasetTest extends ExistingSiteBase {
 
   }
 
-    /**
+  /**
    * Test resource removal on distribution deleting.
    */
   public function testBadPublish() {
@@ -87,6 +88,20 @@ class NodeDataDatasetTest extends ExistingSiteBase {
 
     $this->expectException(MissingObjectException::class);
     $datasetStorage->publish("abc");
+  }
+
+  /**
+   * Test resource removal on distribution deleting.
+   */
+  public function testRetrieveByHash() {
+    $this->datasetPostTwoAndUnpublishOne();
+    $keywordStorage = $this->getMetastore()->getStorage('keyword');
+
+    $keyword = 'some keyword';
+    $hash = Service::metadataHash($keyword);
+    $keywordId = $keywordStorage->retrieveByHash($hash, 'keyword');
+    $keywordMetadata = json_decode($keywordStorage->retrieve($keywordId));
+    $this->assertEquals($keyword, $keywordMetadata->data);
   }
 
   private function datasetPostTwoAndUnpublishOne() {
