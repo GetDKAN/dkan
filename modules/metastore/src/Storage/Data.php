@@ -135,26 +135,10 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Take an array of entity IDs and load the JSON metadata for each.
-   *
-   * @param array $entityIds
-   *   An array of Drupal entity IDs, returned from an entity query.
-   *
-   * @return string[]
-   *   An array of JSON strings containing the metadata. Note that array
-   *   keys from $enditityIds will not be preserved.
-   */
-  protected function entityIdsToJsonStrings(array $entityIds): array {
-    return array_map(function ($entity) {
-      return $entity->get($this->metadataField)->getString();
-    }, array_values($this->entityStorage->loadMultiple($entityIds)));
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function count($unpublished = FALSE): int {
-    return $this->listQueryBase()->count($unpublished)->execute();
+    return $this->listQueryBase(NULL, NULL, $unpublished)->count()->execute();
   }
 
   /**
@@ -162,7 +146,9 @@ abstract class Data implements MetastoreEntityStorageInterface {
    */
   public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array {
     $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
-    return $this->entityIdsToJsonStrings($entityIds);
+    return array_map(function ($entity) {
+      return $entity->get($this->metadataField)->getString();
+    }, array_values($this->entityStorage->loadMultiple($entityIds)));
   }
 
   /**
@@ -174,7 +160,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
 
     return array_map(function ($entity) {
       return $entity->uuid();
-    }, $this->entityStorage->loadMultiple($entityIds));
+    }, array_values($this->entityStorage->loadMultiple($entityIds)));
   }
 
   /**
@@ -218,14 +204,14 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * {@inheritdoc}.
    */
-  public function publish(string $uuid) : string {
+  public function publish(string $uuid): bool {
 
     $entity = $this->getEntityLatestRevision($uuid);
 
     if (!$entity) {
-      throw new \Exception("Error publishing dataset: {$uuid} not found.");
+      throw new MissingObjectException("Error publishing dataset: {$uuid} not found.");
     }
-    elseif ('published' !== $entity->get('moderation_state')) {
+    elseif ('published' !== $entity->get('moderation_state')->getString()) {
       $entity->set('moderation_state', 'published');
       $entity->save();
       return TRUE;

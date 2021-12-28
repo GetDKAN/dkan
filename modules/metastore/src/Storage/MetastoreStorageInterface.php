@@ -11,12 +11,12 @@ interface MetastoreStorageInterface {
    * Count objects of the current schema ID.
    *
    * @param bool $unpublished
-   *   Whether to include unpublished items. Should default to false.
+   *   Whether to include unpublished items.
    *
    * @return int
    *   Count.
    */
-  public function count(bool $unpublished): int;
+  public function count(bool $unpublished = FALSE): int;
 
   /**
    * Retrieve a metadata string by ID, regardless of whether it is published.
@@ -53,7 +53,7 @@ interface MetastoreStorageInterface {
    * @return string[]
    *   An array of JSON strings representing metadata objects.
    */
-  public function retrieveAll(?int $start, ?int $length, bool $unpublished): array;
+  public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array;
 
   /**
    * Retrieve just identifiers.
@@ -93,10 +93,10 @@ interface MetastoreStorageInterface {
    * @param string $uuid
    *   Identifier.
    *
-   * @return string
-   *   Identifier.
+   * @return bool
+   *   True if success.
    */
-  public function publish(string $uuid) : string;
+  public function publish(string $uuid): bool;
 
   /**
    * Remove.
