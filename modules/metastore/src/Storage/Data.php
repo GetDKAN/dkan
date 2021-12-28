@@ -294,9 +294,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function remove(string $uuid) {
 
@@ -307,9 +305,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function store($data, string $uuid = NULL): string {
     $data = json_decode($data);
