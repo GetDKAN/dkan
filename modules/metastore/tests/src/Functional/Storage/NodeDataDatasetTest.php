@@ -90,7 +90,7 @@ class NodeDataDatasetTest extends ExistingSiteBase {
   }
 
   private function datasetPostTwoAndUnpublishOne() {
-    $datasetRootedJsonData = $this->getData("123", 'Test Published', ['district_centerpoints_small.csv']);
+    $datasetRootedJsonData = $this->getData("123", 'Test Published', []);
     $dataset = json_decode($datasetRootedJsonData);
 
     $uuid = $this->getMetastore()->post('dataset', $datasetRootedJsonData);
@@ -111,7 +111,7 @@ class NodeDataDatasetTest extends ExistingSiteBase {
       $uuid
     );
 
-    $datasetRootedJsonData = $this->getData("456", 'Test Unpublished', ['district_centerpoints_small.csv']);
+    $datasetRootedJsonData = $this->getData("456", 'Test Unpublished', []);
     $this->getMetastore()->post('dataset', $datasetRootedJsonData);
   }
 
