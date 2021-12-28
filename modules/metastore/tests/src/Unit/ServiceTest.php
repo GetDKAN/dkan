@@ -298,11 +298,11 @@ EOF;
   public function testPublish() {
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, "retrieve", "1")
-      ->add(NodeData::class, "publish", "1");
+      ->add(NodeData::class, "publish", TRUE);
 
     $service = Service::create($container->getMock());
     $result = $service->publish('dataset', 1);
-    $this->assertEquals("1", $result);
+    $this->assertTrue($result);
   }
 
   /**

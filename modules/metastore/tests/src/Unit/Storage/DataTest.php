@@ -4,6 +4,7 @@ namespace Drupal\Tests\metastore\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
@@ -37,7 +38,8 @@ class DataTest extends TestCase {
   public function testPublishDraftDataset() {
 
     $etmMock = $this->getEtmChain()
-      ->add(Node::class, 'get', 'draft')
+      ->add(Node::class, 'get', FieldItemListInterface::class)
+      ->add(FieldItemListInterface::class, 'getString', 'draft')
       ->add(Node::class, 'set')
       ->add(Node::class, 'save')
       ->getMock();
@@ -50,7 +52,8 @@ class DataTest extends TestCase {
   public function testPublishDatasetAlreadyPublished() {
 
     $etmMock = $this->getEtmChain()
-      ->add(Node::class, 'get', 'published')
+      ->add(Node::class, 'get', FieldItemListInterface::class)
+      ->add(FieldItemListInterface::class, 'getString', 'published')
       ->getMock();
 
     $nodeData = new NodeData('dataset', $etmMock);
