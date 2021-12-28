@@ -2,20 +2,11 @@
 
 namespace Drupal\Tests\metastore\Functional\Storage;
 
-use Drupal\common\Resource;
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\datastore\Service\ResourceLocalizer;
-use Drupal\harvest\Load\Dataset;
-use Drupal\harvest\Service as Harvester;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Service as Metastore;
 use Drupal\metastore\Service;
-use Drupal\metastore_search\Search;
-use Drupal\node\NodeStorage;
-use Drupal\search_api\Entity\Index;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\metastore\Unit\ServiceTest;
-use Harvest\ETL\Extract\DataJson;
 use RootedData\RootedJsonData;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
