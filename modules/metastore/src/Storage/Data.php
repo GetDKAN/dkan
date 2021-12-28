@@ -14,7 +14,7 @@ use Drupal\workflows\WorkflowInterface;
 /**
  * Abstract metastore storage class, for using Drupal entities.
  */
-abstract class Data implements MetastoreStorageInterface {
+abstract class Data implements MetastoreEntityStorageInterface {
 
   use LoggerTrait;
 
