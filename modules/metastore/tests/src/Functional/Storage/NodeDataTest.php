@@ -42,7 +42,7 @@ class NodeDataTest extends ExistingSiteBase {
 
     // Post a dataset with a single distribution.
     $this->datasetPostTwoAndUnpublishOne();
-    $datasetStorage = $this->getMetastore()->getStorage('dataset');
+    $datasetStorage = $this->getStorage('dataset');
 
     $this->assertEquals(1, $datasetStorage->count());
     $this->assertEquals(2, $datasetStorage->count(TRUE));
@@ -72,7 +72,7 @@ class NodeDataTest extends ExistingSiteBase {
    */
   public function testBadPublish() {
     $this->datasetPostTwoAndUnpublishOne();
-    $datasetStorage = $this->getMetastore()->getStorage('dataset');
+    $datasetStorage = $this->getStorage('dataset');
 
     $result = $datasetStorage->publish("123");
     $this->assertFalse($result);
@@ -86,7 +86,7 @@ class NodeDataTest extends ExistingSiteBase {
    */
   public function testRetrieveByHash() {
     $this->datasetPostTwoAndUnpublishOne();
-    $keywordStorage = $this->getMetastore()->getStorage('keyword');
+    $keywordStorage = $this->getStorage('keyword');
 
     $keyword = 'some keyword';
     $hash = Service::metadataHash($keyword);
@@ -159,6 +159,10 @@ class NodeDataTest extends ExistingSiteBase {
 
   private function getMetastore(): Metastore {
     return \Drupal::service('dkan.metastore.service');
+  }
+
+  private function getStorage($schemaId) {
+    return \Drupal::service('dkan.metastore.storage')->getInstance($schemaId);
   }
 
   private function setDefaultModerationState($state = 'published') {

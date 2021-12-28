@@ -106,7 +106,7 @@ class Service implements ContainerInjectionInterface {
    * @return \Drupal\metastore\Storage\MetastoreStorageInterface
    *   Entity storage.
    */
-  public function getStorage(string $schema_id): MetastoreStorageInterface {
+  private function getStorage(string $schema_id): MetastoreStorageInterface {
     if (!isset($this->storages[$schema_id])) {
       $this->storages[$schema_id] = $this->storageFactory->getInstance($schema_id);
     }
