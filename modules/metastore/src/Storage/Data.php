@@ -66,9 +66,19 @@ abstract class Data implements MetastoreStorageInterface {
    * @var string
    */
   protected $bundle;
-  
+
+  /**
+   * The entity field or property used to store JSON metadata.
+   *
+   * @var string
+   */
   protected $metadataField;
 
+  /**
+   * The entity field or property used to store the schema ID (e.g. "dataset).
+   *
+   * @var string
+   */
   protected $schemaIdField;
 
   /**
