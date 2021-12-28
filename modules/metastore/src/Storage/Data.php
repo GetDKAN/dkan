@@ -75,7 +75,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   protected $metadataField;
 
   /**
-   * The entity field or property used to store the schema ID (e.g. "dataset).
+   * The entity field or property used to store the schema ID (e.g. "dataset").
    *
    * @var string
    */
