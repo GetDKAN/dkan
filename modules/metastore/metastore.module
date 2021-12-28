@@ -96,50 +96,30 @@ function metastore_data_lifecycle(EntityInterface $entity, string $stage) {
  *   Returns true if the entity is used by the metastore.
  */
 function metastore_entity_is_valid_item(EntityInterface $entity) {
-  $storageClass = metastore_storage_class();
+  $storageClass = \Drupal::service('dkan.metastore.storage')::getStorageClass();
 
   // If the storage class used implements the entity storage interface, continue.
   if (!is_a($storageClass, MetastoreEntityStorageInterface::class, true)) {
     return FALSE;
   }
 
+  $storageEntityType = \Drupal::service('dkan.metastore.metastore_item_factory')::getEntityType();
+  $storageBundles = \Drupal::service('dkan.metastore.metastore_item_factory')::getBundles();
+
   // If the type and bundle are correct, return true.
-  if ($entity->getEntityTypeId() != $storageClass::getEntityType()) {
+  if ($entity->getEntityTypeId() != $storageEntityType) {
     return FALSE;
   }
-  if (in_array($entity->bundle(), $storageClass::getBundles())) {
+  if (in_array($entity->bundle(), $storageBundles)) {
     return TRUE;
   }
-}
-
-/**
- * Get the storage class currently in use.
- *
- * @return string
- *   Qualified storage class name.
- */
-function metastore_storage_class() {
-  $storageFactory = \Drupal::service('dkan.metastore.storage');
-  return $storageFactory::getStorageClass();
-}
-
-
-/**
- * Get the field currently used for storing .
- *
- * @return string
- *   Qualified storage class name.
- */
-function metastore_metadata_field() {
-  $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
-  return $itemFactory::getMetadataField();
 }
 
 /**
  * Implements hook_form_alter().
  */
 function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  $fieldName = metastore_metadata_field();
+  $fieldName = \Drupal::service('dkan.metastore.metastore_item_factory')::getMetadataField();
   if (isset($form[$fieldName]['widget'][0]['value']['#default_value'])) {
     $json = $form[$fieldName]['widget'][0]['value']['#default_value'];
     if (empty($json)) {
@@ -156,7 +136,7 @@ function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) 
  * Implements hook_entity_view_alter.
  */
 function metastore_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
-  $fieldName = metastore_metadata_field();
+  $fieldName = \Drupal::service('dkan.metastore.metastore_item_factory')::getMetadataField();
 
   if (isset($build[$fieldName][0]['#context']['value'])) {
     $json = $build[$fieldName][0]['#context']['value'];
