@@ -474,8 +474,6 @@ abstract class Data implements MetastoreEntityStorageInterface {
     if ($workflow instanceof WorkflowInterface) {
       return $workflow->getTypePlugin()->getConfiguration()['default_moderation_state'];
     }
-    // If this failed for some reason, default to published.
-    return 'published';
   }
 
 }
