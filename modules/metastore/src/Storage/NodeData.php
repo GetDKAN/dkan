@@ -48,6 +48,9 @@ class NodeData extends Data {
    *
    * @return string|null
    *   The uuid of the item with that hash.
+   *
+   * @todo This method is not consistent with others in this class, and
+   * may not be needed at all. Fix or remove.
    */
   public function retrieveByHash($hash, $schema_id) {
     $nodes = $this->getEntityStorage()->loadByProperties([
