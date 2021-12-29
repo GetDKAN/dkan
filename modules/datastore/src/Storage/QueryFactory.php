@@ -86,11 +86,11 @@ class QueryFactory {
    *   When ungrouped properties are found in the datastore query.
    */
   private function populateQueryGroupBy(Query $query): void {
-    $groups = $this->extractPropertyNames($this->datastoreQuery->{"$.groups"});
+    $groups = $this->extractPropertyNames($this->datastoreQuery->{"$.groups"} ?? []);
     if (empty($groups)) {
       return;
     }
-    $props = $this->extractPropertyNames($this->datastoreQuery->{"$.properties"});
+    $props = $this->extractPropertyNames($this->datastoreQuery->{"$.properties"} ?? []);
     if ($ungrouped = array_diff($props, $groups)) {
       \Drupal::logger('dkan')->notice('<pre>' . print_r($ungrouped, TRUE) . '</pre>');
       throw new \Exception('Un-grouped properties found in aggregate query: ' . implode(', ', $ungrouped));
