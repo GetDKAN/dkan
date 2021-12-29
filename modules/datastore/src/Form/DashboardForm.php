@@ -250,9 +250,14 @@ class DashboardForm extends FormBase {
     // If no filter values were supplied, fetch from the list of all dataset
     // UUIDs.
     else {
-      $total = $this->metastore->count('dataset');
+      $total = $this->metastore->count('dataset', TRUE);
       $currentPage = $this->pagerManager->createPager($total, $this->itemsPerPage)->getCurrentPage();
-      $datasets = $this->metastore->getRangeUuids('dataset', ($currentPage * $this->itemsPerPage), $this->itemsPerPage);
+      $datasets = $this->metastore->getIdentifiers(
+        'dataset',
+        ($currentPage * $this->itemsPerPage),
+        $this->itemsPerPage,
+        TRUE
+      );
     }
 
     return $datasets;

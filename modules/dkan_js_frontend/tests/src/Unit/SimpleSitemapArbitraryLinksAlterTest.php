@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 $module_path = substr(__DIR__, 0, strpos(__DIR__, '/dkan_js_frontend/')) . '/dkan_js_frontend';
-require_once($module_path . '/dkan_js_frontend.module');
+require_once $module_path . '/dkan_js_frontend.module';
 
 /**
  * Test dkan_js_frontend_simple_sitemap_arbitrary_links_alter() function.
@@ -88,7 +88,7 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
       ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)))
-      ->add(Service::class, 'getRangeUuids', [1, 2])
+      ->add(Service::class, 'getIdentifiers', [1, 2])
       ->getMock();
     \Drupal::setContainer($container);
 
@@ -98,7 +98,6 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->getMock();
     dkan_js_frontend_simple_sitemap_arbitrary_links_alter($arbitrary_links, $simpleSitemap);
 
-    $host = \Drupal::request()->getSchemeAndHttpHost();
     $this->assertEquals($arbitrary_links, [
       DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => self::BASE_URL . '/dataset/1'],
       DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + ['url' => self::BASE_URL . '/dataset/2'],

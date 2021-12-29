@@ -65,7 +65,7 @@ class DatasetTest extends ExistingSiteBase {
   /**
    * Test the resource purger when the default moderation state is 'published'.
    */
-  public function test3() {
+  public function testResourcePurgePublished() {
 
     // Post then update a dataset with multiple, changing resources.
     $this->storeDatasetRunQueues(111, '1.1', ['1.csv', '2.csv']);
@@ -79,7 +79,7 @@ class DatasetTest extends ExistingSiteBase {
   /**
    * Test the resource purger when the default moderation state is 'draft'.
    */
-  public function test4() {
+  public function testResourcePurgeDraft() {
     $this->setDefaultModerationState('draft');
 
     // Post, update and publish a dataset with multiple, changing resources.
@@ -120,7 +120,7 @@ class DatasetTest extends ExistingSiteBase {
   /**
    * Test removal of datasets by a subsequent harvest.
    */
-  public function test5() {
+  public function testHarvestOrphan() {
 
     $plan = $this->getPlan('test5', 'catalog-step-1.json');
     $harvester = $this->getHarvester();
@@ -146,9 +146,9 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertEquals($expected, $result['status']['load']);
 
     $this->assertEquals('published', $this->getModerationState('1'));
-    $this->assertEquals('published' , $this->getModerationState('2'));
-    $this->assertEquals('orphaned' , $this->getModerationState('3'));
-    $this->assertEquals('published' , $this->getModerationState('4'));
+    $this->assertEquals('published', $this->getModerationState('2'));
+    $this->assertEquals('orphaned', $this->getModerationState('3'));
+    $this->assertEquals('published', $this->getModerationState('4'));
   }
 
   /**
@@ -290,7 +290,7 @@ class DatasetTest extends ExistingSiteBase {
    * @param array $downloadUrls
    *   Array of resource files URLs for this dataset.
    *
-   * @return string|false
+   * @return \RootedData\RootedJsonData
    *   Json encoded string of this dataset's metadata, or FALSE if error.
    */
   private function getData(string $identifier, string $title, array $downloadUrls): RootedJsonData {

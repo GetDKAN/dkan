@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 /**
  * Node Data.
  */
-class NodeData extends Data implements MetastoreEntityStorageInterface {
+class NodeData extends Data {
 
   /**
    * NodeData constructor.
@@ -17,6 +17,8 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
     $this->bundle = 'data';
     $this->bundleKey = "type";
     $this->labelKey = "title";
+    $this->schemaIdField = "field_data_type";
+    $this->metadataField = "field_json_metadata";
     parent::__construct($schemaId, $entityTypeManager);
   }
 
@@ -25,43 +27,15 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
    */
   public function retrieveContains(string $string, bool $caseSensitive = TRUE): array {
 
-    $entity_ids = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->condition($this->bundleKey, $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->condition($this->getMetadataField(), $string, 'CONTAINS')
-      ->addTag('case_sensitive')
-      ->execute();
-
-    $all = [];
-    foreach ($entity_ids as $nid) {
-      $entity = $this->entityStorage->load($nid);
-      if ($entity->get('moderation_state')->getString() === 'published') {
-        $all[] = $entity->get('field_json_metadata')->getString();
-      }
+    $query = $this->listQueryBase()->condition($this->metadataField, $string, 'CONTAINS');
+    if ($caseSensitive) {
+      $query->addTag('case_sensitive');
     }
-    return $all;
-  }
+    $entityIds = $query->execute();
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function getEntityType() {
-    return 'node';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getBundles() {
-    return ['data'];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function getMetadataField() {
-    return 'field_json_metadata';
+    return array_map(function ($entity) {
+      return $entity->get($this->metadataField)->getString();
+    }, $this->entityStorage->loadMultiple($entityIds));
   }
 
   /**
@@ -74,11 +48,14 @@ class NodeData extends Data implements MetastoreEntityStorageInterface {
    *
    * @return string|null
    *   The uuid of the item with that hash.
+   *
+   * @todo This method is not consistent with others in this class, and
+   * may not be needed at all. Fix or remove.
    */
   public function retrieveByHash($hash, $schema_id) {
     $nodes = $this->getEntityStorage()->loadByProperties([
       $this->labelKey => $hash,
-      'field_data_type' => $schema_id,
+      $this->schemaIdField => $schema_id,
     ]);
     if ($node = reset($nodes)) {
       return $node->uuid();
