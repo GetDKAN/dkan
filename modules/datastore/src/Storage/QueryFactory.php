@@ -92,7 +92,6 @@ class QueryFactory {
     }
     $props = $this->extractPropertyNames($this->datastoreQuery->{"$.properties"} ?? []);
     if ($ungrouped = array_diff($props, $groups)) {
-      \Drupal::logger('dkan')->notice('<pre>' . print_r($ungrouped, TRUE) . '</pre>');
       throw new \Exception('Un-grouped properties found in aggregate query: ' . implode(', ', $ungrouped));
     }
     $query->groupby = $groups;
