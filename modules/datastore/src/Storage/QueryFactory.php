@@ -132,9 +132,7 @@ class QueryFactory {
         if (isset($prop->expression)) {
           return NULL;
         }
-        throw new \Exception('Invalid property object is neither a property or expression.');
       }
-      throw new \Exception('Invalid type for resource property, expected string or object, found "' . gettype($prop) . '".');
     }, $props));
   }
 
