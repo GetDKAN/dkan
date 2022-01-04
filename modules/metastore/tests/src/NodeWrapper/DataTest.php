@@ -5,7 +5,7 @@ namespace Drupal\Tests\metastore\NodeWrapper;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\metastore\NodeWrapper\MetastoreNodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreNodeStorageFactory;
 use Drupal\node\Entity\Node;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;

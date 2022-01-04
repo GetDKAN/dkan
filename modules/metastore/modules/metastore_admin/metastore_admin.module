@@ -39,7 +39,7 @@ function metastore_admin_form_views_exposed_form_alter(&$form, FormStateInterfac
  */
 function metastore_admin_preprocess_views_view_field(&$vars) {
   if (isset($vars['view'])
-    && ($vars['view']->id() == 'dkan_content')
+    && ($vars['view']->id() == 'dkan_dataset_content')
     && ($vars['view']->current_display == 'page_1')) {
     // To access current row entity.
     $entity = $vars['row']->_entity;

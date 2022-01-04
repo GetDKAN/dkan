@@ -7,8 +7,8 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\Reference\Dereferencer;
 use Drupal\metastore\Service\Uuid5;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\NodeData;
+use Drupal\metastore\Storage\MetastoreNodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreNodeStorage;
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -25,8 +25,8 @@ class DereferencerTest extends TestCase {
     $metadata = '{"data":{"name":"Gerardo","company":"CivicActions"}}';
 
     $storageFactory = (new Chain($this))
-      ->add(DataFactory::class, 'getInstance', NodeData::class)
-      ->add(NodeData::class, 'retrieve', $metadata)
+      ->add(MetastoreNodeStorageFactory::class, 'getInstance', MetastoreNodeStorage::class)
+      ->add(MetastoreNodeStorage::class, 'retrieve', $metadata)
       ->getMock();
 
     $uuidService = new Uuid5();
@@ -60,8 +60,8 @@ class DereferencerTest extends TestCase {
       ->add($keyword2);
 
     $storageFactory = (new Chain($this))
-      ->add(DataFactory::class, 'getInstance', NodeData::class)
-      ->add(NodeData::class, 'retrieve', $keywords)
+      ->add(MetastoreNodeStorageFactory::class, 'getInstance', MetastoreNodeStorage::class)
+      ->add(MetastoreNodeStorage::class, 'retrieve', $keywords)
       ->getMock();
 
     $uuidService = new Uuid5();

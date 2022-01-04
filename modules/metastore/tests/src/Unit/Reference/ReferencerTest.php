@@ -7,13 +7,11 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
-use Drupal\metastore\Storage\DataFactory;
-use Drupal\metastore\Storage\NodeData;
-use Drupal\node\NodeStorage;
+use Drupal\metastore\Storage\MetastoreNodeStorageFactory;
+use Drupal\metastore\Storage\MetastoreNodeStorage;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -71,8 +69,8 @@ class ReferencerTest extends TestCase {
     $uuid = '0398f054-d712-4e20-ad1e-a03193d6ab33';
 
     $storageFactory = (new Chain($this))
-      ->add(DataFactory::class, 'getInstance', NodeData::class)
-      ->add(NodeData::class, 'retrieveByHash', $uuid)
+      ->add(MetastoreNodeStorageFactory::class, 'getInstance', MetastoreNodeStorage::class)
+      ->add(MetastoreNodeStorage::class, 'retrieveByHash', $uuid)
       ->getMock();
 
     $options = (new Options())
