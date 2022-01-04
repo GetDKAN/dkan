@@ -115,11 +115,12 @@ class SearchTest extends TestCase {
     ],
     ];
 
-    $expect2 = [(object) [
-      'type' => 'publisher__name',
-      'name' => 'Steve',
-      'total' => 0,
-    ],
+    $expect2 = [
+      (object) [
+        'type' => 'publisher__name',
+        'name' => 'Steve',
+        'total' => 0,
+      ],
     ];
 
     $container = $this->getCommonMockChain($this)->getMock();
@@ -181,7 +182,8 @@ class SearchTest extends TestCase {
     $getAllOptions = (new Options())
       ->add('keyword', [])
       ->add('theme', [])
-      ->add('publisher', [ServiceTest::getValidMetadataFactory($case)->get(json_encode($facet), 'publisher')]);
+      ->add('publisher', [ServiceTest::getValidMetadataFactory($case)->get(json_encode($facet), 'publisher')])
+      ->index(0);
 
     $getData = ServiceTest::getValidMetadataFactory($case)->get(json_encode($collection), 'dummy_schema_id');
 

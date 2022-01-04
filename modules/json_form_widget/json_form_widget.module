@@ -169,3 +169,75 @@ function json_form_widget_entity_delete(EntityInterface $entity) {
     \Drupal::service('file.usage')->delete($file, 'json_form_widget', $type, $id);
   }
 }
+
+/**
+ * Find recently-uploaded file entity, set to permanent and add usage.
+ *
+ * @param string $url
+ *   The URL of the file stored in the form submission.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form_state object.
+ */
+function _json_form_widget_update_file(string $url, FormStateInterface $form_state) {
+  $fo = $form_state->getFormObject();
+  $storage = \Drupal::entityTypeManager()->getStorage('file');
+  $props = ['uri' => _json_form_widget_get_file_uri($url)];
+  $file = reset($storage->loadByProperties($props));
+
+  if ($file instanceof FileInterface) {
+    $file->setPermanent();
+    $file->save();
+  }
+  else {
+    return FALSE;
+  }
+  // If we're working with an entity form, set up usage.
+  if ($fo instanceof EntityFormInterface && $entity = $fo->getEntity()) {
+    $fu = \Drupal::service('file.usage');
+    $fu->add($file, 'json_form_widget', $entity->getEntityTypeId(), $entity->id());
+  }
+}
+
+
+/**
+ * Generate a Drupal internal URI from a URL in the widget.
+ *
+ * @todo The module should be using internal URIs which would make this step
+ * unnecessary.
+ */
+function _json_form_widget_get_file_uri($url) {
+  $path = urldecode(file_url_transform_relative($url));
+  // We're loading scheme from config, but this will probably break if not
+  // "public".
+  $scheme = \Drupal::config('system.file')->get('default_scheme') . "://";
+  $scheme_path = file_url_transform_relative(file_create_url($scheme));
+  $uri = str_replace($scheme_path, $scheme, $path, $count);
+
+  return $count ? $uri : $path;
+}
+
+/**
+ * Implements hook_entity_delete().
+ *
+ * Clean up file usage after entity delete.
+ */
+function json_form_widget_entity_delete(EntityInterface $entity) {
+  $type = $entity->getEntityTypeId();
+  $id = $entity->id();
+
+  // Find files by entity/module usage.
+  $fids = \Drupal::database()->select('file_usage', 'fu')
+    ->fields('fu', ['fid'])
+    ->condition('fu.type', $type)
+    ->condition('fu.id', $id)
+    ->condition('fu.module', 'json_form_widget')
+    ->execute()
+    ->fetchCol();
+
+  $files = File::loadMultiple($fids);
+
+  // Remove one usage for each file related to deleted entity.
+  foreach ($files as $file) {
+    \Drupal::service('file.usage')->delete($file, 'json_form_widget', $type, $id);
+  }
+}

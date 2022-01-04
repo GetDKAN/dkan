@@ -118,12 +118,14 @@ class Service implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The schema ID to be counted.
+   * @param bool $unpublished
+   *   Whether to include unpublished items.
    *
    * @return int
    *   Object count.
    */
-  public function count(string $schema_id): int {
-    return $this->getStorage($schema_id)->count();
+  public function count(string $schema_id, bool $unpublished = FALSE): int {
+    return $this->getStorage($schema_id)->count($unpublished);
   }
 
   /**
@@ -137,54 +139,33 @@ class Service implements ContainerInjectionInterface {
    *   Schema object offset or null for all.
    * @param int|null $length
    *   Number of objects to fetch or null for all.
+   * @param bool $unpublished
+   *   Whether to include unpublished items.
    *
    * @return string[]
    *   Range of object UUIDs of the given schema_id.
    */
-  public function getRangeUuids(string $schema_id, ?int $start = NULL, ?int $length = NULL): array {
-    return $this->getStorage($schema_id)->retrieveRangeUuids($start, $length);
+  public function getIdentifiers(string $schema_id, ?int $start = NULL, ?int $length = NULL, $unpublished = FALSE): array {
+    return $this->getStorage($schema_id)->retrieveIds($start, $length, $unpublished);
   }
 
   /**
-   * Get all.
-   *
-   * @param string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   *
-   * @return array
-   *   All objects of the given schema_id.
-   */
-  public function getAll($schema_id): array {
-    $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
-    $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
-
-    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
-      if (!is_array($data)) {
-        return FALSE;
-      }
-      if (count($data) == 0) {
-        return TRUE;
-      }
-      return reset($data) instanceof RootedJsonData;
-    });
-
-  }
-
-  /**
-   * Get a subset of metastore items according to a range.
+   * Get all items, with optional pagination and status filters.
    *
    * @param string $schema_id
    *   Schema ID.
-   * @param int $start
-   *   Start offset.
-   * @param int $length
+   * @param int|null $start
+   *   Start offset. Null for no range.
+   * @param int|null $length
    *   Number of items to retrieve.
+   * @param bool $unpublished
+   *   Whether to include unpublished items. Should default to false.
    *
    * @return array
    *   Array of RootedJsonData objects.
    */
-  public function getRange(string $schema_id, int $start, int $length):array {
-    $jsonStringsArray = $this->getStorage($schema_id)->retrieveRange($start, $length);
+  public function getAll(string $schema_id, ?int $start = NULL, ?int $length = NULL, $unpublished = FALSE):array {
+    $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll($start, $length, $unpublished);
     $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
