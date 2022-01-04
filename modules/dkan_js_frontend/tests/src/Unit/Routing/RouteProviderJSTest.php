@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\RouteProvider\Unit\Routing;
+namespace Drupal\Tests\dkan_js_frontend\Unit\Routing;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\Query\QueryFactoryInterface;

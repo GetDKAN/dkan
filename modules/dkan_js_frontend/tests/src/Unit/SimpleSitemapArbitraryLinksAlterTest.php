@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\RouteProvider\Unit;
+namespace Drupal\Tests\dkan_js_frontend\Unit;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
@@ -50,10 +50,12 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('request_stack', RequestStack::class)
+      ->add('simple_sitemap.settings', SimpleSitemapSettingsInterface::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
       ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)))
+      ->add(SimpleSitemapSettingsInterface::class, 'get', NULL)
       ->getMock();
     \Drupal::setContainer($container);
 
@@ -84,11 +86,13 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add('entity_type.manager', EntityTypeManagerInterface::class)
       ->add('dkan.metastore.service', Service::class)
       ->add('request_stack', RequestStack::class)
+      ->add('simple_sitemap.settings', SimpleSitemapSettingsInterface::class)
       ->index(0);
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
       ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)))
       ->add(Service::class, 'getIdentifiers', [1, 2])
+      ->add(SimpleSitemapSettingsInterface::class, 'get', NULL)
       ->getMock();
     \Drupal::setContainer($container);
 
@@ -120,12 +124,14 @@ class SimpleSitemapArbitraryLinksAlterTest extends TestCase {
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.service', Service::class)
       ->add('request_stack', RequestStack::class)
+      ->add('simple_sitemap.settings', SimpleSitemapSettingsInterface::class)
       ->index(0);
     $containerChain = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
       ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'error')
-      ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)));
+      ->add(RequestStack::class, 'getCurrentRequest', (Request::create(self::BASE_URL)))
+      ->add(SimpleSitemapSettingsInterface::class, 'get', NULL);
     \Drupal::setContainer($containerChain->getMock());
 
     $arbitrary_links = [];
