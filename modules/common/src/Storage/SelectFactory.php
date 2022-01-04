@@ -55,6 +55,7 @@ class SelectFactory {
 
     $this->setQueryProperties($query);
     $this->setQueryConditions($query);
+    $this->setQueryGroupBy($query);
     $this->setQueryOrderBy($query);
     $this->setQueryLimitAndOffset($query);
     $this->setQueryJoins($query);
@@ -281,6 +282,16 @@ class SelectFactory {
       }
     }
     $statementObj->condition($group);
+  }
+
+  /**
+   * Set fields to group by on DB query.
+   *
+   * @param Query $query
+   *   A DKAN query object.
+   */
+  private function setQueryGroupBy(Query $query) {
+    array_map([$this->dbQuery, 'groupBy'], $query->groupby);
   }
 
   /**
