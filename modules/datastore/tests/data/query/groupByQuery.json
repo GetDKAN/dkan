@@ -31,7 +31,7 @@
             "operator": "="
         }
     ],
-    "groups": [
+    "groupings": [
         {
             "resource": "t",
             "property": "prop"

@@ -77,7 +77,7 @@ class QueryFactory {
   }
 
   /**
-   * Helper function for adding datastore groups to the given query.
+   * Helper function for adding group by clauses to the given query.
    *
    * @param Drupal\common\Storage\Query $query
    *   DKAN query object we're building.
@@ -86,15 +86,15 @@ class QueryFactory {
    *   When ungrouped properties are found in the datastore query.
    */
   private function populateQueryGroupBy(Query $query): void {
-    $groups = $this->extractPropertyNames($this->datastoreQuery->{"$.groups"} ?? []);
-    if (empty($groups)) {
+    $groupings = $this->extractPropertyNames($this->datastoreQuery->{"$.groupings"} ?? []);
+    if (empty($groupings)) {
       return;
     }
     $props = $this->extractPropertyNames($this->datastoreQuery->{"$.properties"} ?? []);
-    if ($ungrouped = array_diff($props, $groups)) {
+    if ($ungrouped = array_diff($props, $groupings)) {
       throw new \Exception('Un-grouped properties found in aggregate query: ' . implode(', ', $ungrouped));
     }
-    $query->groupby = $groups;
+    $query->groupby = $groupings;
   }
 
   /**

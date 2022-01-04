@@ -72,9 +72,9 @@
                 "required": ["resource", "condition"]
             }
         },
-        "groups": {
+        "groupings": {
             "type": "array",
-            "description": "Properties or aliases from the properties array to group results by.",
+            "description": "Properties or aliases to group results by.",
             "items": {
                 "anyOf": [
                     { "$ref": "#/definitions/resource" },
