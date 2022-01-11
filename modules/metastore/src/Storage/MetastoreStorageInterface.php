@@ -30,17 +30,6 @@ interface MetastoreStorageInterface {
   public function retrieve(string $id);
 
   /**
-   * Retrieve the json metadata from an entity only if it is published.
-   *
-   * @param string $uuid
-   *   The identifier.
-   *
-   * @return string|null
-   *   The entity's json metadata, or NULL if the entity was not found.
-   */
-  public function retrievePublished(string $uuid) : ?string;
-
-  /**
    * Retrieve all metadata items.
    *
    * @param int|null $start
