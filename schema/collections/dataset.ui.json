@@ -4,9 +4,21 @@
       "widget": "hidden"
     }
   },
+  "title": {
+    "ui:options": {
+      "description": "Name of the asset, in plain language. Include sufficient detail to facilitate search and discovery."
+    }
+  },
   "identifier": {
     "ui:options": {
       "widget": "dkan_uuid"
+    }
+  },
+  "description": {
+    "ui:options": {
+      "widget": "textarea",
+      "rows": 5,
+      "description": "Description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest."
     }
   },
   "contactPoint": {
@@ -99,10 +111,19 @@
     }
   },
   "distribution": {
+    "ui:options": {
+      "description": "A distribution is a container for the metadata specific to the data resource being shared. Each distribution should contain one <strong>Access URL</strong> or <strong>Download URL</strong>. When providing a Download URL, also include the format of the file."
+    },
     "items": {
       "@type": {
         "ui:options": {
           "widget": "hidden"
+        }
+      },
+      "title":  {
+        "ui:options": {
+          "title": "File Title",
+          "description": ""
         }
       },
       "mediaType": {
@@ -113,14 +134,18 @@
       "description": {
         "ui:options": {
           "widget": "textarea",
-          "rows": 5
+          "rows": 5,
+          "title": "File Description",
+          "description": ""
         }
       },
       "format": {
         "ui:options": {
+          "title": "File Format",
           "widget": "list",
           "type": "select_other",
           "other_type": "textfield",
+          "description": "CSV files must be encoded in UTF-8 format to be imported correctly. UTF-8 encoding is an established standard that provides optimal compatibility between applications and operating systems. Note that Excel provides a <strong>CSV UTF-8</strong> option when saving data files.",
           "source": {
             "enum": [
               "arcgis",
@@ -143,15 +168,25 @@
         "ui:options": {
           "widget": "upload_or_link",
           "extensions": "csv html xls json xlsx doc docx rdf txt jpg png gif tiff pdf odf ods odt tsv tab geojson xml zip kml kmz shp",
-          "progress_indicator": "bar"
+          "progress_indicator": "bar",
+          "description": "URL providing direct access to a downloadable file."
+        }
+      },
+      "accessURL": {
+        "ui:options": {
+          "description": "URL providing indirect access to the data, for example via API or a graphical interface."
+        }
+      },
+      "describedBy": {
+        "ui:options": {
+          "description": "URL to the data dictionary for the file found at the Download URL."
+        }
+      },
+      "describedByType": {
+        "ui:options": {
+          "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s Data Dictionary URL."
         }
       }
-    }
-  },
-  "description": {
-    "ui:options": {
-      "widget": "textarea",
-      "rows": 5
     }
   },
   "references": {

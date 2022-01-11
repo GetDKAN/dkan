@@ -86,9 +86,8 @@ class DatasetApiDocs {
    *   OpenAPI spec.
    */
   public function getDatasetSpecific(string $identifier) {
-    $fullSpec = $this->docsGenerator->buildSpec(
-      ['metastore_api_docs', 'datastore_api_docs']
-    )->{"$"};
+    $specs = ['metastore_api_docs', 'datastore_api_docs'];
+    $fullSpec = $this->docsGenerator->buildSpec($specs)->{"$"};
 
     $datasetSpec = [
       'openapi' => $fullSpec['openapi'],

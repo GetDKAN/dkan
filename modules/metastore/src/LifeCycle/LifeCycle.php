@@ -293,7 +293,7 @@ class LifeCycle {
    * Private.
    */
   private function addDatasetModifiedDate($metadata, $date) {
-    $formattedChangedDate = $this->dateFormatter->format($date, 'html_date');
+    $formattedChangedDate = $this->dateFormatter->format($date, 'html_datetime');
     $metadata->{'%modified'} = $formattedChangedDate;
     return $metadata;
   }

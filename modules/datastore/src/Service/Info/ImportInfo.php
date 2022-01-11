@@ -21,9 +21,25 @@ class ImportInfo {
    */
   private $jobStoreFactory;
 
+  /**
+   * Resource localizer service.
+   *
+   * @var \Drupal\datastore\Service\ResourceLocalizer
+   */
   private $resourceLocalizer;
+
+  /**
+   * Import factory service.
+   *
+   * @var \Drupal\datastore\Service\Factory\ImportFactoryInterface
+   */
   private $importServiceFactory;
 
+  /**
+   * FileFetcher service.
+   *
+   * @var \FileFetcher\FileFetcher
+   */
   private $fileFetcher;
 
   /**
@@ -47,7 +63,6 @@ class ImportInfo {
    *   And object with info about imports: file name, fetching status, etc.
    */
   public function getItem(string $identifier, string $version) {
-    $ff = NULL; $imp = NULL;
     [$ff, $imp] = $this->getFileFetcherAndImporter($identifier, $version);
 
     $item = (object) [
@@ -58,6 +73,7 @@ class ImportInfo {
       'importerStatus' => 'waiting',
       'importerBytes' => 0,
       'importerPercentDone' => 0,
+      'importerError' => NULL,
     ];
 
     if (isset($ff)) {
@@ -71,6 +87,7 @@ class ImportInfo {
     /** @var \Dkan\Datastore\Importer $imp */
     if (isset($imp)) {
       $item->importerStatus = $imp->getResult()->getStatus();
+      $item->importerError = $imp->getResult()->getError();
       $item->importerBytes = $this->getBytesProcessed($imp);
       $item->importerPercentDone = $this->getPercentDone($imp);
     }
@@ -79,9 +96,17 @@ class ImportInfo {
   }
 
   /**
-   * Private.
+   * Get the filefetcher and importer objects for a resource.
+   *
+   * @param string $identifier
+   *   Resource identifier.
+   * @param string $version
+   *   Resource version.
+   *
+   * @return array
+   *   Array with a filefetcher and importer object.
    */
-  private function getFileFetcherAndImporter($identifier, $version) {
+  protected function getFileFetcherAndImporter($identifier, $version) {
     try {
       $resource = $this->resourceLocalizer->get($identifier, $version);
 
@@ -129,7 +154,7 @@ class ImportInfo {
    * @return int
    *   File size in bytes.
    */
-  private function getFileSize(): int {
+  protected function getFileSize(): int {
     return $this->fileFetcher->getStateProperty('total_bytes');
   }
 
@@ -142,7 +167,7 @@ class ImportInfo {
    * @return int
    *   Total bytes processed.
    */
-  private function getBytesProcessed(Job $job): int {
+  protected function getBytesProcessed(Job $job): int {
     $className = get_class($job);
     switch ($className) {
       // For Importer, avoid going above total size due to chunk multiplication.

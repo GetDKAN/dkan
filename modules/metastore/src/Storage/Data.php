@@ -2,15 +2,21 @@
 
 namespace Drupal\metastore\Storage;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\common\LoggerTrait;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Service;
+use Drupal\workflows\WorkflowInterface;
 
 /**
  * Abstract metastore storage class, for using Drupal entities.
  */
-abstract class Data implements MetastoreStorageInterface {
+abstract class Data implements MetastoreEntityStorageInterface {
+
+  use LoggerTrait;
 
   /**
    * Entity type manager.
@@ -62,6 +68,20 @@ abstract class Data implements MetastoreStorageInterface {
   protected $bundle;
 
   /**
+   * The entity field or property used to store JSON metadata.
+   *
+   * @var string
+   */
+  protected $metadataField;
+
+  /**
+   * The entity field or property used to store the schema ID (e.g. "dataset").
+   *
+   * @var string
+   */
+  protected $schemaIdField;
+
+  /**
    * Constructor.
    */
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
@@ -88,50 +108,59 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Inherited.
+   * Create basic query for a list of metastore items.
    *
-   * {@inheritdoc}.
+   * @param int|null $start
+   *   Offset. NULL if no range, 0 to start at beginning of set.
+   * @param int|null $length
+   *   Number of items to retrieve. NULL for no limit.
+   * @param bool $unpublished
+   *   Whether to include unpublished items in the results.
+   *
+   * @return \Drupal\Core\Entity\Query\QueryInterface
+   *   A Drupal query object.
    */
-  public function retrieveAll(): array {
-
-    $entity_ids = $this->entityStorage->getQuery()
+  protected function listQueryBase(int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE):QueryInterface {
+    $query = $this->entityStorage->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->execute();
+      ->condition($this->schemaIdField, $this->schemaId)
+      ->range($start, $length);
 
-    $all = [];
-    foreach ($entity_ids as $nid) {
-      $entity = $this->entityStorage->load($nid);
-      if ($entity->get('moderation_state')->getString() === 'published') {
-        $all[] = $entity->get('field_json_metadata')->getString();
-      }
+    if ($unpublished === FALSE) {
+      $query->condition('status', 1);
     }
-    return $all;
+
+    return $query;
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
-  public function retrieveRange($start, $length): array {
+  public function count($unpublished = FALSE): int {
+    return $this->listQueryBase(NULL, NULL, $unpublished)->count()->execute();
+  }
 
-    $entity_ids = $this->entityStorage->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('type', $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
-      ->range($start, $length)
-      ->execute();
+  /**
+   * {@inheritdoc}
+   */
+  public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array {
+    $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
+    return array_map(function ($entity) {
+      return $entity->get($this->metadataField)->getString();
+    }, array_values($this->entityStorage->loadMultiple($entityIds)));
+  }
 
-    $all = [];
-    foreach ($entity_ids as $nid) {
-      $entity = $this->entityStorage->load($nid);
-      if ($entity->get('moderation_state')->getString() === 'published') {
-        $all[] = $entity->get('field_json_metadata')->getString();
-      }
-    }
-    return $all;
+  /**
+   * {@inheritdoc}
+   */
+  public function retrieveIds(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array {
+
+    $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
+
+    return array_map(function ($entity) {
+      return $entity->uuid();
+    }, array_values($this->entityStorage->loadMultiple($entityIds)));
   }
 
   /**
@@ -160,7 +189,7 @@ abstract class Data implements MetastoreStorageInterface {
     }
 
     if ($entity) {
-      return $entity->get('field_json_metadata')->getString();
+      return $entity->get($this->metadataField)->getString();
     }
 
     throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
@@ -171,14 +200,14 @@ abstract class Data implements MetastoreStorageInterface {
    *
    * {@inheritdoc}.
    */
-  public function publish(string $uuid) : string {
+  public function publish(string $uuid): bool {
 
     $entity = $this->getEntityLatestRevision($uuid);
 
     if (!$entity) {
-      throw new \Exception("Error publishing dataset: {$uuid} not found.");
+      throw new MissingObjectException("Error publishing dataset: {$uuid} not found.");
     }
-    elseif ('published' !== $entity->get('moderation_state')) {
+    elseif ('published' !== $entity->get('moderation_state')->getString()) {
       $entity->set('moderation_state', 'published');
       $entity->save();
       return TRUE;
@@ -210,7 +239,7 @@ abstract class Data implements MetastoreStorageInterface {
    * @param string $uuid
    *   The dataset identifier.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity's latest revision, if found.
    */
   public function getEntityLatestRevision(string $uuid) {
@@ -240,16 +269,14 @@ abstract class Data implements MetastoreStorageInterface {
       ->accessCheck(FALSE)
       ->condition('uuid', $uuid)
       ->condition($this->bundleKey, $this->bundle)
-      ->condition('field_data_type', $this->schemaId)
+      ->condition($this->schemaIdField, $this->schemaId)
       ->execute();
 
     return $entity_ids ? (int) reset($entity_ids) : NULL;
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function remove(string $uuid) {
 
@@ -260,9 +287,7 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function store($data, string $uuid = NULL): string {
     $data = json_decode($data);
@@ -275,7 +300,7 @@ abstract class Data implements MetastoreStorageInterface {
       $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if (isset($entity) && $entity instanceof EntityInterface) {
+    if (isset($entity) && $entity instanceof ContentEntityInterface) {
       return $this->updateExistingEntity($entity, $data);
     }
     // Create new entity.
@@ -285,18 +310,28 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Private.
+   * Overwrite a content entity with new metadata.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   Drupal content entity.
+   * @param object $data
+   *   JSON data.
+   *
+   * @return string|null
+   *   The content entity UUID, or null if failed.
    */
-  private function updateExistingEntity(EntityInterface $entity, $data) {
-    $entity->field_data_type = $this->schemaId;
+  private function updateExistingEntity(ContentEntityInterface $entity, $data): ?string {
+    $entity->{$this->schemaIdField} = $this->schemaId;
     $new_data = json_encode($data);
-    $entity->field_json_metadata = $new_data;
+    $entity->{$this->metadataField} = $new_data;
 
     // Dkan publishing's default moderation state.
     $entity->set('moderation_state', $this->getDefaultModerationState());
 
-    $entity->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
-    $entity->setRevisionCreationTime(time());
+    if ($entity instanceof RevisionLogInterface) {
+      $entity->setRevisionLogMessage("Updated on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
+      $entity->setRevisionCreationTime(time());
+    }
     $entity->save();
 
     return $entity->uuid();
@@ -324,17 +359,18 @@ abstract class Data implements MetastoreStorageInterface {
     else {
       $title = Service::metadataHash($data->data);
     }
-    $entity = $this->getEntityStorage()
-      ->create(
-        [
-          $this->labelKey => $title,
-          $this->bundleKey => $this->bundle,
-          'uuid' => $uuid,
-          'field_data_type' => $this->schemaId,
-          'field_json_metadata' => json_encode($data),
-        ]
-      );
-    $entity->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
+    $entity = $this->getEntityStorage()->create(
+      [
+        $this->labelKey => $title,
+        $this->bundleKey => $this->bundle,
+        'uuid' => $uuid,
+        $this->schemaIdField => $this->schemaId,
+        $this->metadataField => json_encode($data),
+      ]
+    );
+    if ($entity instanceof RevisionLogInterface) {
+      $entity->setRevisionLogMessage("Created on " . (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM));
+    }
 
     $entity->save();
 
@@ -406,27 +442,16 @@ abstract class Data implements MetastoreStorageInterface {
   }
 
   /**
-   * Returns the current time, formatted.
-   *
-   * @return string
-   *   Current timestamp, formatted.
-   */
-  private function formattedTimestamp() : string {
-    $now = new \DateTime('now');
-    return $now->format(\DateTime::ATOM);
-  }
-
-  /**
    * Return the default moderation state of our custom dkan_publishing workflow.
    *
    * @return string
    *   Either 'draft', 'published' or 'orphaned'.
    */
-  public function getDefaultModerationState() {
-    return $this->entityTypeManager->getStorage('workflow')
-      ->load('dkan_publishing')
-      ->getTypePlugin()
-      ->getConfiguration()['default_moderation_state'];
+  public function getDefaultModerationState(): string {
+    $workflow = $this->entityTypeManager->getStorage('workflow')->load('dkan_publishing');
+    if ($workflow instanceof WorkflowInterface) {
+      return $workflow->getTypePlugin()->getConfiguration()['default_moderation_state'];
+    }
   }
 
 }

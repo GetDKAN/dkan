@@ -298,11 +298,11 @@ EOF;
   public function testPublish() {
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, "retrieve", "1")
-      ->add(NodeData::class, "publish", "1");
+      ->add(NodeData::class, "publish", TRUE);
 
     $service = Service::create($container->getMock());
     $result = $service->publish('dataset', 1);
-    $this->assertEquals("1", $result);
+    $this->assertTrue($result);
   }
 
   /**
@@ -316,6 +316,40 @@ EOF;
 
     $this->expectException(MissingObjectException::class);
     $service->publish('dataset', "foobar");
+  }
+
+  /**
+   * Test \Drupal\metastore\Service::count() method.
+   */
+  public function testCount(): void {
+    // Set constant which should be returned by the ::count() method.
+    $count = 5;
+
+    // Create mock chain for testing ::count() method.
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, 'count', $count);
+
+    // Create metastore service object.
+    $service = Service::create($container->getMock());
+    // Ensure count matches return value.
+    $this->assertEquals($count, $service->count('test'));
+  }
+
+  /**
+   * Test \Drupal\metastore\Service::getIdentifiers() method.
+   */
+  public function testGetIdentifiers(): void {
+    // Set constant which should be returned by the ::getIdentifiers() method.
+    $uuids = ['a', 'b', 'c'];
+
+    // Create mock chain for testing ::getIdentifiers() method.
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, 'retrieveIds', $uuids);
+
+    // Create metastore service object.
+    $service = Service::create($container->getMock());
+    // Ensure count matches return value.
+    $this->assertEquals($uuids, $service->getIdentifiers('test', 1, 5));
   }
 
   /**
