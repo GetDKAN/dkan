@@ -30,6 +30,10 @@ export function getMetastoreDeleteEndpoint (schema_id, identifier) {
   return `/${api_uri}/metastore/schemas/${schema_id}/items/${identifier}`
 }
 
+function getMetastoreSearchEndpoint () {
+  return `/${api_uri}/search`
+}
+
 // Generate a random uuid.
 // Credit: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
 export function generateMetastoreIdentifier () {
@@ -65,6 +69,15 @@ export function createMetastore (schema_id, item = null) {
     auth: user_credentials,
     body: item
   })
+}
+
+// search metastore
+export function searchMetastore (params = {}) {
+  // build url
+  const param_string = (new URLSearchParams(params)).toString()
+  const url = getMetastoreSearchEndpoint() + '?' + param_string
+  // perform request
+  return cy.request('GET', url)
 }
 
 export function generateMetastore (schema_id, identifier = null) {

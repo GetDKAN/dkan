@@ -60,15 +60,17 @@ interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterf
   public function retrieveContains(string $string, bool $caseSensitive): array;
 
   /**
-   * Retrieve the json metadata from an entity only if it is published.
+   * Determine whether the given metastore item is published.
    *
-   * @param string $uuid
-   *   The identifier.
+   * @param string $schema_id
+   *   The metastore schema in question.
+   * @param string $identifier
+   *   The ID of the metastore item in question.
    *
-   * @return string|null
-   *   The entity's json metadata, or NULL if the entity was not found.
+   * @return bool
+   *   Whether the given metastore item is published.
    */
-  public function retrievePublished(string $uuid) : ?string;
+  public function isPublished(string $uuid) : bool;
 
   /**
    * Publish the latest version of a data entity.

@@ -139,14 +139,10 @@ abstract class Data implements MetastoreStorageInterface {
    *
    * {@inheritdoc}.
    */
-  public function retrievePublished(string $uuid) : ?string {
+  public function isPublished(string $uuid): bool {
     $entity = $this->getEntityPublishedRevision($uuid);
 
-    if ($entity && $entity->get('moderation_state')->getString() == 'published') {
-      return $entity->get('field_json_metadata')->getString();
-    }
-
-    throw new MissingObjectException("Error retrieving published dataset: {$this->schemaId} {$uuid} not found.");
+    return isset($entity) && boolval($entity->status->value ?? FALSE);
   }
 
   /**

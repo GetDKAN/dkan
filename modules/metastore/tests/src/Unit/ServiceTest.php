@@ -43,7 +43,7 @@ class ServiceTest extends TestCase {
     $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
 
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(NodeData::class, 'retrieve', json_encode(['foo' => 'bar']))
       ->add(ValidMetadataFactory::class, 'get', $data);
 
     \Drupal::setContainer($container->getMock());

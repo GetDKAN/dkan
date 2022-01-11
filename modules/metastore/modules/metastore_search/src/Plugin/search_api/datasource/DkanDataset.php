@@ -74,18 +74,15 @@ class DkanDataset extends DatasourcePluginBase {
   public function loadMultiple(array $ids) {
     /* @var   \Drupal\metastore\Storage\DataFactory $dataStorageFactory */
     $dataStorageFactory = \Drupal::service("dkan.metastore.storage");
-
     /* @var \Drupal\metastore\Storage\Data $dataStorage */
     $dataStorage = $dataStorageFactory->getInstance('dataset');
 
-    $items = [];
-    foreach ($ids as $id) {
-      try {
-        $items[$id] = new Dataset($dataStorage->retrievePublished($id));
-      }
-      catch (\Exception $e) {
-      }
-    }
+    $ids = array_filter($ids, function ($id) use ($dataStorage) {
+      return $dataStorage->isPublished($id);
+    });
+    $items = array_map(function ($id) use ($dataStorage) {
+      return new Dataset($dataStorage->retrieve($id));
+    }, array_combine($ids, $ids));
 
     return $items;
   }
