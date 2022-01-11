@@ -79,9 +79,7 @@ interface MetastoreStorageInterface {
   /**
    * Determine whether the given metastore item is published.
    *
-   * @param string $schema_id
-   *   The metastore schema in question.
-   * @param string $identifier
+   * @param string $uuid
    *   The ID of the metastore item in question.
    *
    * @return bool
