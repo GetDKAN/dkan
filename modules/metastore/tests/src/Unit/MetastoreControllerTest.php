@@ -488,6 +488,7 @@ EOF;
       ->add(Service::class, 'getSchemas', ['dataset'])
       ->add(Service::class, 'getSchema', (object) ["id" => "http://schema"])
       ->add(Service::class, 'getValidMetadataFactory', ValidMetadataFactory::class)
+      ->add(Service::class, 'isPublished', TRUE)
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', NodeWrapperData::class)

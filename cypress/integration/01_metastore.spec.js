@@ -5,7 +5,7 @@ const uuid_regex = new RegExp(Cypress.env('UUID_REGEX'))
 
 context('Metastore', () => {
   context('Catalog', () => {
-    it.only('Should contain newly created datasets', () => {
+    it('Should contain newly created datasets', () => {
       dkan.createMetastore('dataset').then((response) => {
         expect(response.status).eql(201)
         const identifier = response.body.identifier
