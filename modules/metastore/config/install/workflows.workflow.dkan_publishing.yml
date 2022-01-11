@@ -30,7 +30,7 @@ type_settings:
       weight: 2
     hidden:
       published: true
-      default_revision: false
+      default_revision: true
       label: 'Publish without search indexing'
       weight: 4
     published:
