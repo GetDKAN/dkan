@@ -87,14 +87,25 @@ class MetastoreControllerTest extends TestCase {
    *
    */
   public function testGet() {
+    $schema_id = 'dataset';
+    $identifier = 1;
+
     $json = '{"name":"hello"}';
     $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
-    $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
+    $mockChain = $this->getCommonMockChain()
+      ->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
 
     $controller = MetastoreController::create($mockChain->getMock());
-    $response = $controller->get('dataset', 1, new Request());
+    $response = $controller->get($schema_id, $identifier, new Request());
     $this->assertEquals($json, $response->getContent());
+
+    $container = $this->getCommonMockChain()
+      ->add(Service::class, 'isPublished', FALSE)
+      ->getMock();
+    $controller = MetastoreController::create($container);
+    $response = $controller->get($schema_id, $identifier, new Request());
+    $json = json_decode($response->getContent());
+    $this->assertEquals("Error retrieving published dataset: {$schema_id} {$identifier} not found.", $json->message);
   }
 
 

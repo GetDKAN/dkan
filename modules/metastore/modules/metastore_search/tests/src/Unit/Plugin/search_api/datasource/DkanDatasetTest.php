@@ -12,7 +12,6 @@ use Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
 use MockChain\Options;
-use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeRepository;
 use Drupal\metastore_search\ComplexData\Dataset;

@@ -12,7 +12,9 @@ use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 use Drupal\metastore\Storage\NodeData;
+
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -34,6 +36,18 @@ class ServiceTest extends TestCase {
   protected function setUp(): void {
     parent::setUp();
     $this->validMetadataFactory = self::getValidMetadataFactory($this);
+  }
+
+  /**
+   * Test \Drupal\metastore\Service::isPublished() method.
+   */
+  public function testIsPublished() {
+    $service = (new Chain($this))
+      ->add(Service::class, 'getStorage', MetastoreStorageInterface::class)
+      ->add(MetastoreStorageInterface::class, 'isPublished', TRUE)
+      ->getMock();
+
+    $this->assertTrue($service->isPublished('dataset', 1));
   }
 
   /**

@@ -122,11 +122,14 @@ class MetastoreController implements ContainerInjectionInterface {
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
+   *
+   * @throws \InvalidArgumentException
+   *   When an unpublished or invalid resource is requested.
    */
   public function get(string $schema_id, string $identifier, Request $request) {
     try {
       if (!$this->service->isPublished($schema_id, $identifier)) {
-        throw new \Exception("Error retrieving published dataset: {$schema_id} {$identifier} not found.");
+        throw new \InvalidArgumentException("Error retrieving published dataset: {$schema_id} {$identifier} not found.");
       }
 
       $object = $this->service->get($schema_id, $identifier);

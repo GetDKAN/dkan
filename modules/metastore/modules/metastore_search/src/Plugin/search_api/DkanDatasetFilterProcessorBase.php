@@ -46,9 +46,9 @@ abstract class DkanDatasetFilterProcessorBase extends ProcessorPluginBase implem
    */
   public static function supportsIndex(IndexInterface $index) {
     foreach ($index->getDatasources() as $datasource) {
-      $entity_type_id = $datasource->getPluginId();
+      $datasource_id = $datasource->getPluginId();
       // We only support indexes with the dkan_dataset datasource.
-      if ($entity_type_id === 'dkan_dataset') {
+      if ($datasource_id === 'dkan_dataset') {
         return TRUE;
       }
     }
@@ -60,17 +60,14 @@ abstract class DkanDatasetFilterProcessorBase extends ProcessorPluginBase implem
    */
   public function alterIndexedItems(array &$items) {
     foreach (array_keys($items) as $item_id) {
+      // Retrieve item object.
       $item_object = $items[$item_id]->getOriginalObject();
-      // Only alter dataset items.
-      if (!$item_object instanceof Dataset) {
-        continue;
-      }
-
       // Extract dataset ID.
       $id_parts = Utility::splitCombinedId($item_id);
       $dataset_id = $id_parts[1];
-      // Ensure item is valid.
-      if (!$this->isValid($dataset_id)) {
+
+      // Ensure item is a dataset and is valid.
+      if ($item_object instanceof Dataset && !$this->isValid($dataset_id)) {
         unset($items[$item_id]);
       }
     }
