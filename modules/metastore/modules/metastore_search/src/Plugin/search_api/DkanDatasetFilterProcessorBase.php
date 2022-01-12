@@ -71,7 +71,6 @@ abstract class DkanDatasetFilterProcessorBase extends ProcessorPluginBase implem
       $dataset_id = $id_parts[1];
       // Ensure item is valid.
       if (!$this->isValid($dataset_id)) {
-        \Drupal::logger('search_api')->notice(print_r($dataset_id, TRUE));
         unset($items[$item_id]);
       }
     }
