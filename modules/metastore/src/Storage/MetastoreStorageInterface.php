@@ -19,15 +19,20 @@ interface MetastoreStorageInterface {
   public function count(bool $unpublished = FALSE): int;
 
   /**
-   * Retrieve a metadata string by ID, regardless of whether it is published.
+   * Retrieve a metadata string by ID.
    *
    * @param string $id
    *   The identifier for the data.
+   * @param bool $published
+   *   Whether to retrieve the published revision of the metadata.
    *
    * @return string|HydratableInterface
    *   The data or null if no data could be retrieved.
+   *
+   * @throws \Drupal\metastore\Exception\MissingObjectException
+   *   When attempting to retrieve metadata fails.
    */
-  public function retrieve(string $id);
+  public function retrieve(string $id, bool $published = FALSE);
 
   /**
    * Retrieve all metadata items.

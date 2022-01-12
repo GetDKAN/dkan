@@ -238,7 +238,7 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get(string $schema_id, string $identifier): RootedJsonData {
-    $json_string = $this->getStorage($schema_id)->retrieve($identifier);
+    $json_string = $this->getStorage($schema_id)->retrieve($identifier, TRUE);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);

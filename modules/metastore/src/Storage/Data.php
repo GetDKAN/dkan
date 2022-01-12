@@ -168,6 +168,17 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * {@inheritdoc}.
    */
+  public function isHidden(string $uuid): bool {
+    $entity = $this->getEntityPublishedRevision($uuid);
+
+    return isset($entity) && ($entity->moderation_state->value ?? NULL) === 'hidden';
+  }
+
+  /**
+   * Inherited.
+   *
+   * {@inheritdoc}.
+   */
   public function isPublished(string $uuid): bool {
     $entity = $this->getEntityPublishedRevision($uuid);
 
@@ -179,20 +190,19 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * {@inheritdoc}.
    */
-  public function retrieve(string $uuid) : ?string {
-
-    if ($this->getDefaultModerationState() === 'published') {
+  public function retrieve(string $uuid, bool $published = FALSE) : ?string {
+    if ($published || $this->getDefaultModerationState() === 'published') {
       $entity = $this->getEntityPublishedRevision($uuid);
     }
     else {
       $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if ($entity) {
-      return $entity->get($this->metadataField)->getString();
+    if (!isset($entity)) {
+      throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
     }
 
-    throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
+    return $entity->get($this->metadataField)->getString();
   }
 
   /**
