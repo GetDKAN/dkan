@@ -4,7 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -21,7 +21,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * Entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
@@ -84,7 +84,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * Constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
+  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
     $this->schemaId = $schemaId;

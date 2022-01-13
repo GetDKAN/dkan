@@ -15,6 +15,11 @@ use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Storage\NodeData;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
+
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -99,13 +104,21 @@ class MetastoreControllerTest extends TestCase {
     $response = $controller->get($schema_id, $identifier, new Request());
     $this->assertEquals($json, $response->getContent());
 
+    $entityTypeManagerMock = (new Chain($this))
+      ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, 'getQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
+      ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', NULL)
+      ->getMock();
+    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock);
     $container = $this->getCommonMockChain()
-      ->add(Service::class, 'isPublished', FALSE)
+      ->add(Service::class, 'getStorage', $nodeDataMock)
       ->getMock();
     $controller = MetastoreController::create($container);
     $response = $controller->get($schema_id, $identifier, new Request());
     $json = json_decode($response->getContent());
-    $this->assertEquals("Error retrieving published dataset: {$schema_id} {$identifier} not found.", $json->message);
+    $this->assertEquals("Error retrieving metadata: {$schema_id} {$identifier} not found.", $json->message);
   }
 
 

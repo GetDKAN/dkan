@@ -1,6 +1,8 @@
 <?php
 
 use Drupal\Core\Entity\EntityInterface;
+
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\metastore\NodeWrapper\Data;
 
 /**
@@ -12,8 +14,15 @@ use Drupal\metastore\NodeWrapper\Data;
  * @return bool
  *   Whether the entity is a dataset.
  */
-function _is_dataset(EntityInterface $entity): bool {
-  return $entity->getEntityTypeId() === 'node' && $entity->bundle() === 'data' && (new Data($entity))->getDataType() === 'dataset';
+function _metastore_search_is_dataset(EntityInterface $entity): bool {
+  try {
+    // Attempt to check this entity's data type.
+    return (new Data($entity))->getDataType() === 'dataset';
+  }
+  catch (DataNodeLifeCycleEntityValidationException $e) {
+    // If the data object fails validation, the given entity is not a dataset.
+    return FALSE;
+  }
 }
 
 /**
@@ -24,7 +33,7 @@ function _is_dataset(EntityInterface $entity): bool {
 function metastore_search_entity_insert(EntityInterface $entity): void {
   // Ensure the entity in question is a dataset and is not hidden or
   // unpublished.
-  if (!_is_dataset($entity)) {
+  if (!_metastore_search_is_dataset($entity)) {
     return;
   }
 
@@ -40,7 +49,7 @@ function metastore_search_entity_insert(EntityInterface $entity): void {
  */
 function metastore_search_entity_update(EntityInterface $entity): void {
   // Ensure the entity in question is a dataset.
-  if (!_is_dataset($entity)) {
+  if (!_metastore_search_is_dataset($entity)) {
     return;
   }
 
@@ -56,7 +65,7 @@ function metastore_search_entity_update(EntityInterface $entity): void {
  */
 function metastore_search_entity_delete(EntityInterface $entity): void {
   // Ensure the entity in question is a dataset.
-  if (!_is_dataset($entity)) {
+  if (!_metastore_search_is_dataset($entity)) {
     return;
   }
 

@@ -128,10 +128,6 @@ class MetastoreController implements ContainerInjectionInterface {
    */
   public function get(string $schema_id, string $identifier, Request $request) {
     try {
-      if (!$this->service->isPublished($schema_id, $identifier)) {
-        throw new \InvalidArgumentException("Error retrieving published dataset: {$schema_id} {$identifier} not found.");
-      }
-
       $object = $this->service->get($schema_id, $identifier);
       if ($this->wantObjectWithReferences($request)) {
         $object = $this->service->swapReferences($object);
