@@ -66,7 +66,7 @@ abstract class DkanDatasetFilterProcessorBase extends ProcessorPluginBase implem
       $id_parts = Utility::splitCombinedId($item_id);
       $dataset_id = $id_parts[1];
 
-      // Ensure item is a dataset and is valid.
+      // Filter out invalid datasets.
       if ($item_object instanceof Dataset && !$this->isValid($dataset_id)) {
         unset($items[$item_id]);
       }

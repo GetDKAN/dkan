@@ -60,3 +60,49 @@ function metastore_update_8004() {
 
   drupal_flush_all_caches();
 }
+
+/**
+ * Add hidden state and transitions to dkan publishing workflow config.
+ */
+function metastore_update_8005() {
+  $workflow_settings = \Drupal::service('config.factory')->getEditable('workflows.workflow.dkan_publishing');
+
+  $states = $workflow_settings->get('type_settings.states');
+  $states['hidden'] = [
+    'label' => 'Publish without search indexing',
+    'published' => TRUE,
+    'default_revision' => TRUE,
+    'weight' => 4
+  ];
+
+  $transitions = $workflow_settings->get('type_settings.transitions');
+  $hidable = ['archive', 'create_new_draft', 'orphan', 'publish'];
+  foreach ($hidable as $state) {
+    $transitions[$state]['from'][] = 'hidden';
+  }
+  $transitions['hidden'] = [
+    'label' => 'Remove from search indexing',
+    'from' => [
+      'draft',
+      'hidden',
+      'published',
+    ],
+    'to' => 'hidden',
+    'weight' => 5,
+  ];
+
+  $workflow_settings->set('type_settings.states', $states);
+  $workflow_settings->set('type_settings.transitions', $transitions);
+  $workflow_settings->save();
+}
+
+/**
+ * Add hidden and unpublished filters to the dkan search_api index.
+ */
+function metastore_update_8006() {
+  $index_settings = \Drupal::service('config.factory')->getEditable('search_api.index.dkan');
+
+  $index_settings.set('processor_settings.dkan_dataset_filter_hidden', []);
+  $index_settings.set('processor_settings.dkan_dataset_filter_unpublished', []);
+  $index_settings->save();
+}
