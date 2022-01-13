@@ -14,13 +14,21 @@ use Harvest\Harvester as DkanHarvester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Service.
+ * Main DKAN Harvester service.
+ *
+ * Import groups of datasets from an external source, and manage existing
+ * harvest plans and their dependent datasets.
  */
 class Service implements ContainerInjectionInterface {
 
   use LoggerTrait;
   use OrphanDatasetsProcessor;
 
+  /**
+   * Service to instantiate storage objects for Harvest plan storage.
+   *
+   * @var \Contracts\FactoryInterface
+   */
   private $storeFactory;
 
   /**
