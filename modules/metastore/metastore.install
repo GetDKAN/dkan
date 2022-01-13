@@ -102,7 +102,7 @@ function metastore_update_8005() {
 function metastore_update_8006() {
   $index_settings = \Drupal::service('config.factory')->getEditable('search_api.index.dkan');
 
-  $index_settings.set('processor_settings.dkan_dataset_filter_hidden', []);
-  $index_settings.set('processor_settings.dkan_dataset_filter_unpublished', []);
+  $index_settings->set('processor_settings.dkan_dataset_filter_hidden', []);
+  $index_settings->set('processor_settings.dkan_dataset_filter_unpublished', []);
   $index_settings->save();
 }

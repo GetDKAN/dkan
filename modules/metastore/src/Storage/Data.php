@@ -87,7 +87,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
-    $this->setSchema($schemaId);
+    $this->schemaId = $schemaId;
   }
 
   /**
@@ -98,13 +98,6 @@ abstract class Data implements MetastoreEntityStorageInterface {
    */
   public function getEntityStorage() {
     return $this->entityStorage;
-  }
-
-  /**
-   * Private.
-   */
-  private function setSchema($schemaId) {
-    $this->schemaId = $schemaId;
   }
 
   /**
