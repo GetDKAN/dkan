@@ -205,7 +205,7 @@ class MysqlImport extends Importer {
   /**
    * Private.
    */
-  private function getDatabaseConnectionCapableOfDataLoad() {
+  protected function getDatabaseConnectionCapableOfDataLoad() {
     $options = \Drupal::database()->getConnectionOptions();
     $options['pdo'][\PDO::MYSQL_ATTR_LOCAL_INFILE] = 1;
     Database::addConnectionInfo('extra', 'default', $options);
@@ -317,7 +317,7 @@ class MysqlImport extends Importer {
    * @return string
    *   Generated SQL file import statement.
    */
-  private function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count): string {
+  protected function getSqlStatement(string $file_path, string $tablename, array $headers, string $eol, int $header_line_count): string {
     return implode(' ', [
       'LOAD DATA LOCAL INFILE \'' . $file_path . '\'',
       'INTO TABLE ' . $tablename,
