@@ -233,11 +233,11 @@ class Service implements ContainerInjectionInterface {
   public function publish(string $id): array {
 
     $lastRunInfoObj = $this->getLastRunInfoObj($id);
-    if (isset($lastRunInfoObj->status->extracted_items_ids)) {
-      return $this->publishHelper($id, $lastRunInfoObj->status);
+    if (!isset($lastRunInfoObj->status->extracted_items_ids)) {
+      return [];
     }
-    
-    return [];
+
+    return $this->publishHelper($id, $lastRunInfoObj->status);
   }
 
   /**
