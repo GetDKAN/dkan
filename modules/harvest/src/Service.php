@@ -224,59 +224,53 @@ class Service implements ContainerInjectionInterface {
   /**
    * Publish a harvest.
    *
-   * @param string $id
+   * @param string $harvestId
    *   Harvest identifier.
    *
    * @return array
    *   The uuids of the published datasets.
    */
-  public function publish(string $id): array {
+  public function publish(string $harvestId): array {
 
-    $lastRunInfoObj = $this->getLastRunInfoObj($id);
-    if (!isset($lastRunInfoObj->status->extracted_items_ids)) {
+    $lastRunId = $this->getLastHarvestRunId($harvestId);
+    $lastRunInfo = json_decode($this->getHarvestRunInfo($harvestId, $lastRunId));
+    $status = $lastRunInfo->status ?? NULL;
+    if (!isset($status->extracted_items_ids)) {
       return [];
     }
 
-    return $this->publishHelper($id, $lastRunInfoObj->status);
-  }
-
-  /**
-   * Private.
-   */
-  private function getLastRunInfoObj(string $harvestId) {
-    $lastRunId = $this->getLastHarvestRunId($harvestId);
-    $lastRunInfoJsonString = $this->getHarvestRunInfo($harvestId, $lastRunId);
-    return json_decode($lastRunInfoJsonString);
-  }
-
-  /**
-   * Private.
-   */
-  private function publishHelper(string $harvestId, $lastRunStatus): array {
-    $publishedIdentifiers = [];
-
-    foreach ($lastRunStatus->extracted_items_ids as $uuid) {
-      try {
-        if ($this->metastorePublishHelper($lastRunStatus, $uuid)) {
-          $publishedIdentifiers[] = $uuid;
-        }
-      }
-      catch (\Exception $e) {
-        $this->error("Error publishing dataset {$uuid} in harvest {$harvestId}: {$e->getMessage()}");
-      }
+    $published = [];
+    foreach ($status->extracted_items_ids as $datasetId) {
+      // $this->publishHarvestedDataset() will return true if $datasetId
+      // could be successfully published.
+      $published[] = $this->publishHarvestedDataset($status, $datasetId) ? $datasetId : NULL;
     }
 
-    return $publishedIdentifiers;
+    return array_values(array_filter($published));
   }
 
   /**
-   * Private.
+   * Use metastore service to publish a harvested item.
+   *
+   * @param object $runInfoStatus
+   *   Status object with run information.
+   * @param string $datasetId
+   *   ID to DKAN dataset.
+   *
+   * @return bool
+   *   Whether or not publish action was successful.
    */
-  private function metastorePublishHelper($runInfoStatus, string $uuid): bool {
-    return isset($runInfoStatus->load) &&
-      $runInfoStatus->load->{$uuid} &&
-      $runInfoStatus->load->{$uuid} != 'FAILURE' &&
-      $this->metastore->publish('dataset', $uuid);
+  protected function publishHarvestedDataset($runInfoStatus, string $datasetId): bool {
+    try {
+      return isset($runInfoStatus->load) &&
+        $runInfoStatus->load->{$datasetId} &&
+        $runInfoStatus->load->{$datasetId} != 'FAILURE' &&
+        $this->metastore->publish('dataset', $datasetId);
+    }
+    catch (\Exception $e) {
+      $this->error("Error publishing dataset {$datasetId}: {$e->getMessage()}");
+      return FALSE;
+    }
   }
 
   /**
@@ -293,9 +287,15 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Get a DKAN harvester instance.
+   *
+   * @param string $id
+   *   Harvester ID.
+   *
+   * @return \Harvest\Harvester
+   *   Harvester object.
    */
-  private function getHarvester($id) {
+  private function getHarvester(string $id) {
     $plan_store = $this->storeFactory->getInstance("harvest_plans");
     $harvestPlan = json_decode($plan_store->retrieve($id));
     $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");

@@ -263,7 +263,7 @@ class ServiceTest extends TestCase {
     $this->assertEquals(['abcd-1003'], $result);
 
     $loggerResult = $logger->getStoredInput('error')[0];
-    $error = 'Error publishing dataset abcd-1002 in harvest 1: FooBar';
+    $error = 'Error publishing dataset abcd-1002: FooBar';
     $this->assertEquals($error, $loggerResult);
 
     $result = $service->publish('2');
