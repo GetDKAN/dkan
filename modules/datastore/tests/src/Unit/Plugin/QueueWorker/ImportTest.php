@@ -1,9 +1,10 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\Plugin\QueuWorker;
+namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannel;
@@ -47,7 +48,7 @@ class ImportTest extends TestCase {
       ->add(LoggerChannel::class, 'log', NULL, 'log');
     $container = $containerChain->getMock();
 
-    $queueWorker = Import::create($container, [], '', '');
+    $queueWorker = Import::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
     $queueWorker->processItem((object) $this->data);
 
     // @todo Don't do this.
@@ -65,7 +66,7 @@ class ImportTest extends TestCase {
     $containerChain = $this->getContainerChain($result);
     $container = $containerChain->getMock();
 
-    $queueWorker = Import::create($container, [], '', '');
+    $queueWorker = Import::create($container, [], '', ['cron' => ['lease_time' => 10800]]);
     $queueWorker->processItem((object) $this->data);
 
     $input = $containerChain->getStoredInput('create_item');
@@ -88,6 +89,8 @@ class ImportTest extends TestCase {
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->add('queue', QueueFactory::class)
+      ->add('database', Connection::class)
+      ->add('dkan.datastore.database', Connection::class)
       ->index(0);
 
     $container_chain = (new Chain($this))
@@ -97,7 +100,8 @@ class ImportTest extends TestCase {
       ->add(Service::class, 'getResourceLocalizer', ResourceLocalizer::class)
       ->add(ResourceLocalizer::class, 'getFileSystem', FileSystem::class)
       ->add(QueueFactory::class, 'get', QueueInterface::class)
-      ->add(QueueInterface::class, 'createItem', NULL, 'create_item');
+      ->add(QueueInterface::class, 'createItem', NULL, 'create_item')
+      ->add(Connection::class, 'query', NULL);
 
     return $container_chain;
   }

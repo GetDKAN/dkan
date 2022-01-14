@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Allows access to tabular data from a database store.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function datastore_theme($existing, $type, $theme, $path) {
+  return [
+    'datastore_dashboard_dataset_cell' => [
+      'variables' => [
+        'uuid' => NULL,
+        'title' => NULL,
+        'url' => NULL,
+      ],
+    ],
+    'datastore_dashboard_revision_cell' => [
+      'variables' => [
+        'revision_id' => NULL,
+        'modified' => NULL,
+        'moderation_state' => NULL,
+      ],
+    ],
+    'datastore_dashboard_resource_cell' => [
+      'variables' => [
+        'uuid' => NULL,
+        'file_name' => NULL,
+        'file_path' => NULL,
+      ],
+    ],
+    'datastore_dashboard_status_cell' => [
+      'variables' => [
+        'status' => NULL,
+        'percent' => "0",
+        'error' => NULL,
+      ],
+    ],
+  ];
+}
