@@ -38,9 +38,6 @@ class DashboardController {
    * A list of harvests and some status info.
    */
   public function harvests(): array {
-
-    date_default_timezone_set('EST');
-
     $rows = [];
     foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
       // @todo Make Harvest Service's private getLastHarvestRunId() public,
