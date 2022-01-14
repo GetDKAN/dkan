@@ -167,7 +167,7 @@ class MysqlImport extends Importer {
     rewind($f);
     $column_lines = fread($f, $end_pointer);
 
-    // Close the resource file, since it is no longer necessary.
+    // Close the resource file, since it is no longer needed.
     fclose($f);
     // Ensure the columns of the resource file were successfully read.
     if (!isset($columns) || $columns === FALSE) {
@@ -266,7 +266,7 @@ class MysqlImport extends Importer {
    */
   protected function sanitizeHeader(string $column): string {
     // Replace all spaces and newline characters with underscores since they are
-    // not a supported.
+    // not supported.
     $column = preg_replace('/(?: |\r\n|\r|\n)/', '_', $column);
     // Strip unsupported characters from the header.
     $column = preg_replace('/[^A-Za-z0-9_]/', '', $column);
