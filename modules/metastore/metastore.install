@@ -69,7 +69,7 @@ function metastore_update_8005() {
 
   $states = $workflow_settings->get('type_settings.states');
   $states['hidden'] = [
-    'label' => 'Publish without search indexing',
+    'label' => 'Published (hidden)',
     'published' => TRUE,
     'default_revision' => TRUE,
     'weight' => 4
