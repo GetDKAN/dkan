@@ -12,7 +12,6 @@ use Drupal\metastore_search\Plugin\search_api\datasource\DkanDataset;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
 use MockChain\Options;
-use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeRepository;
 use Drupal\metastore_search\ComplexData\Dataset;
@@ -35,22 +34,22 @@ class DkanDatasetTest extends TestCase {
       ->add('dkan.metastore.storage', DataFactory::class)
       ->index(0);
 
-    $nids = [1, 2];
-    $executeSequence = (new Sequence())->add(2)->add($nids);
+    $nodeMock = (new Chain($this))
+      ->add(NodeInterface::class, 'uuid', 'xyz')
+      ->getMock();
     $container = (new Chain($this))
       ->add(Container::class, 'get', $containerOptions)
       ->add(EntityTypeManager::class, 'getStorage', EntityStorageInterface::class)
       ->add(EntityStorageInterface::class, 'getQuery', QueryInterface::class)
-      ->add(EntityStorageInterface::class, 'load', NodeInterface::class)
-      ->add(NodeInterface::class, 'uuid', 'xyz')
+      ->add(EntityStorageInterface::class, 'loadMultiple', [$nodeMock, $nodeMock])
       ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
       ->add(QueryInterface::class, 'condition', QueryInterface::class)
       ->add(QueryInterface::class, 'count', QueryInterface::class)
-      ->add(QueryInterface::class, 'execute', $executeSequence)
+      ->add(QueryInterface::class, 'execute', [1, 2])
       ->add(QueryInterface::class, 'range', QueryInterface::class)
       ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
       ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'retrievePublished', '{}')
+      ->add(Data::class, 'retrieve', '{}')
       ->getMock();
 
     \Drupal::setContainer($container);

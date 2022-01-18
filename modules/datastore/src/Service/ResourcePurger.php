@@ -334,7 +334,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function getResources(NodeInterface $dataset) : array {
     $resources = [];
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
-    $distributions = $metadata->{'%Ref:distribution'};
+    $distributions = $metadata->{'%Ref:distribution'} ?? [];
 
     foreach ($distributions as $distribution) {
       // Retrieve and validate the resource for this distribution before adding
