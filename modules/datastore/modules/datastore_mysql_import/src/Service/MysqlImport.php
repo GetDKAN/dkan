@@ -99,7 +99,7 @@ class MysqlImport extends Importer {
 
     // Read the columns and EOL character sequence from the CSV file.
     try {
-      ['columns' => $columns, 'lines' => $column_lines] = $this->getColsFromFile($file_path);
+      [$columns, $column_lines] = $this->getColsFromFile($file_path);
     }
     catch (FileException $e) {
       return $this->setResultError($e->getMessage());
@@ -174,7 +174,7 @@ class MysqlImport extends Importer {
       throw new FileException(sprintf('Failed to read columns from resource file "%s".', $file_path));
     }
 
-    return ['columns' => $columns, 'lines' => $column_lines];
+    return [$columns, $column_lines];
   }
 
   /**
