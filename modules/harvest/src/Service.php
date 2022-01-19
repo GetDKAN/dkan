@@ -228,9 +228,41 @@ class Service implements ContainerInjectionInterface {
    *   Harvest identifier.
    *
    * @return array
-   *   The uuids of the published datasets.
+   *   The uuids of the datasets to publish.
    */
   public function publish(string $harvestId): array {
+    return $this->bulkUpdateStatus($harvestId, 'publish');
+
+  }
+
+  /**
+   * Archive a harvest.
+   *
+   * @param string $harvestId
+   *   Harvest identifier.
+   *
+   * @return array
+   *   The uuids of the published datasets.
+   */
+  public function archive(string $harvestId): array {
+    return $this->bulkUpdateStatus($harvestId, 'archive');
+  }
+
+  /**
+   * Archive a harvest.
+   *
+   * @param string $harvestId
+   *   Harvest identifier.
+   * @param string $method
+   *   Metastore update status method - "archive" or "publish" available.
+   *
+   * @return array
+   *   The uuids of the published datasets.
+   */
+  protected function bulkUpdateStatus(string $harvestId, string $method): array {
+    if (!in_array($method, ['archive', 'publish'])) {
+      throw new \OutOfRangeException("Method {$method} does not exist");
+    }
 
     $lastRunId = $this->getLastHarvestRunId($harvestId);
     $lastRunInfo = json_decode($this->getHarvestRunInfo($harvestId, $lastRunId));
@@ -239,14 +271,14 @@ class Service implements ContainerInjectionInterface {
       return [];
     }
 
-    $published = [];
+    $updated = [];
     foreach ($status->extracted_items_ids as $datasetId) {
       // $this->publishHarvestedDataset() will return true if $datasetId
       // could be successfully published.
-      $published[] = $this->publishHarvestedDataset($status, $datasetId) ? $datasetId : NULL;
+      $updated[] = $this->setDatasetStatus($status, $datasetId, $method) ? $datasetId : NULL;
     }
 
-    return array_values(array_filter($published));
+    return array_values(array_filter($updated));
   }
 
   /**
@@ -256,19 +288,21 @@ class Service implements ContainerInjectionInterface {
    *   Status object with run information.
    * @param string $datasetId
    *   ID to DKAN dataset.
+   * @param string $method
+   *   Metastore update status method - "archive" or "publish" available.
    *
    * @return bool
    *   Whether or not publish action was successful.
    */
-  protected function publishHarvestedDataset($runInfoStatus, string $datasetId): bool {
+  protected function setDatasetStatus($runInfoStatus, string $datasetId, string $method): bool {
     try {
       return isset($runInfoStatus->load) &&
         $runInfoStatus->load->{$datasetId} &&
         $runInfoStatus->load->{$datasetId} != 'FAILURE' &&
-        $this->metastore->publish('dataset', $datasetId);
+        $this->metastore->$method('dataset', $datasetId);
     }
     catch (\Exception $e) {
-      $this->error("Error publishing dataset {$datasetId}: {$e->getMessage()}");
+      $this->error("Error applying method {$method} to dataset {$datasetId}: {$e->getMessage()}");
       return FALSE;
     }
   }

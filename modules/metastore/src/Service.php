@@ -308,6 +308,25 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Publish an item's update by making its latest revision its default one.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   *
+   * @return bool
+   *   True if the dataset is successfully archived, false otherwise.
+   */
+  public function archive(string $schema_id, string $identifier): bool {
+    if ($this->objectExists($schema_id, $identifier)) {
+      return $this->getStorage($schema_id)->archive($identifier);
+    }
+
+    throw new MissingObjectException("No data with the identifier {$identifier} was found.");
+  }
+
+  /**
    * Implements PUT method.
    *
    * @param string $schema_id

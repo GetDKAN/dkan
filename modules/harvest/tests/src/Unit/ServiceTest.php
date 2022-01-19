@@ -263,10 +263,58 @@ class ServiceTest extends TestCase {
     $this->assertEquals(['abcd-1003'], $result);
 
     $loggerResult = $logger->getStoredInput('error')[0];
-    $error = 'Error publishing dataset abcd-1002: FooBar';
+    $error = 'Error applying method publish to dataset abcd-1002: FooBar';
     $this->assertEquals($error, $loggerResult);
 
     $result = $service->publish('2');
+    $this->assertEmpty($result);
+  }
+
+  public function testArchive() {
+    $datasetUuids = ['abcd-1001', 'abcd-1002', 'abcd-1003', 'abcd-1004'];
+    $lastRunInfo = (new Sequence())
+      ->add(json_encode((object) [
+        'status' => [
+          'extracted_items_ids' => $datasetUuids,
+          'load' => [
+            'abcd-1001' => "SUCCESS",
+            'abcd-1002' => "SUCCESS",
+            'abcd-1003' => "SUCCESS",
+            'abcd-1004' => "FAILURE",
+          ],
+        ],
+      ]))
+      ->add(json_encode((object) [
+        'status' => [],
+      ]));
+
+    $metastoreArchiveResults = (new Sequence())
+      // abcd-1001 will be skipped since already archived.
+      ->add(FALSE)
+      // abcd-1002 will be skipped due to exception.
+      ->add(new \Exception('FooBar'))
+      // abcd-1003 should be archived without issue.
+      ->add(TRUE);
+
+    $logger = (new Chain($this))
+      ->add(LoggerChannelFactory::class, 'get', LoggerChannelInterface::class)
+      ->add(LoggerChannelInterface::class, 'error', NULL, 'error');
+
+    $container = $this->getCommonMockChain()
+      ->add(DatabaseTable::class, "retrieve", $lastRunInfo)
+      ->add(Metastore::class, 'archive', $metastoreArchiveResults);
+
+    $service = HarvestService::create($container->getMock());
+    $service->setLoggerFactory($logger->getMock());
+    $result = $service->archive('1');
+
+    $this->assertEquals(['abcd-1003'], $result);
+
+    $loggerResult = $logger->getStoredInput('error')[0];
+    $error = 'Error applying method archive to dataset abcd-1002: FooBar';
+    $this->assertEquals($error, $loggerResult);
+
+    $result = $service->archive('2');
     $this->assertEmpty($result);
   }
 

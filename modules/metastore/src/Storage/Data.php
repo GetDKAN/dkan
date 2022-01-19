@@ -200,19 +200,37 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function publish(string $uuid): bool {
 
-    $entity = $this->getEntityLatestRevision($uuid);
+    $entity = $this->getEntityPublishedRevision($uuid);
 
     if (!$entity) {
       throw new MissingObjectException("Error publishing dataset: {$uuid} not found.");
     }
     elseif ('published' !== $entity->get('moderation_state')->getString()) {
       $entity->set('moderation_state', 'published');
+      $entity->save();
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function archive(string $uuid): bool {
+
+    $entity = $this->getEntityLatestRevision($uuid);
+
+    if (!$entity) {
+      throw new MissingObjectException("Error archiving dataset: {$uuid} not found.");
+    }
+    elseif ('archived' !== $entity->get('moderation_state')->getString()) {
+      $entity->set('moderation_state', 'archive');
       $entity->save();
       return TRUE;
     }
