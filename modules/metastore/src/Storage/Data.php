@@ -203,7 +203,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    */
   public function publish(string $uuid): bool {
 
-    $entity = $this->getEntityPublishedRevision($uuid);
+    $entity = $this->getEntityLatestRevision($uuid);
 
     if (!$entity) {
       throw new MissingObjectException("Error publishing dataset: {$uuid} not found.");
