@@ -230,7 +230,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
       throw new MissingObjectException("Error archiving dataset: {$uuid} not found.");
     }
     elseif ('archived' !== $entity->get('moderation_state')->getString()) {
-      $entity->set('moderation_state', 'archive');
+      $entity->set('moderation_state', 'archived');
       $entity->save();
       return TRUE;
     }
