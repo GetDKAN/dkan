@@ -184,6 +184,28 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
+   * Archive all harvested datasets for a single harvest.
+   *
+   * @param string $harvestId
+   *   The source to archive harvests for.
+   *
+   * @command dkan:harvest:archive
+   *
+   * @usage dkan:harvest:revert
+   *   Removes harvested entities.
+   */
+  public function archive($harvestId) {
+    $this->validateHarvestId($harvestId);
+    $result = $this->harvestService->archive($harvestId);
+    if (empty($result)) {
+      (new ConsoleOutput())->write("No items available to archive for the '{$harvestId}' harvest plan." . PHP_EOL);
+    }
+    foreach ($result as $id) {
+      (new ConsoleOutput())->write("Archived dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
+    }
+  }
+
+  /**
    * Show status of of a particular harvest run.
    *
    * @param string $harvestId
