@@ -63,7 +63,7 @@ class NodeDataTest extends ExistingSiteBase {
     $this->assertEquals("456", $allIds[1]);
 
     $this->expectException(MissingObjectException::class);
-    $datasetStorage->retrieve('abc');
+    $datasetStorage->retrievePublished('abc');
 
   }
 

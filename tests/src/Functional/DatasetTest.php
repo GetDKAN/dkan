@@ -329,13 +329,6 @@ class DatasetTest extends ExistingSiteBase {
     $data->modified = "06-04-2020";
     $data->keyword = ["some keyword"];
     $data->distribution = [];
-    $data->publisher = (object) [
-      'name' => 'Test Publisher',
-    ];
-    $data->contactPoint = (object) [
-      'fn' => 'Test Name',
-      'hasEmail' => 'test@example.com',
-    ];
 
     foreach ($downloadUrls as $key => $downloadUrl) {
       $distribution = new \stdClass();
