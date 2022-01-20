@@ -15,6 +15,11 @@ use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data as NodeWrapperData;
 use Drupal\metastore\NodeWrapper\NodeDataFactory;
 use Drupal\metastore\SchemaRetriever;
+use Drupal\metastore\Storage\NodeData;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryInterface;
+
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -87,14 +92,33 @@ class MetastoreControllerTest extends TestCase {
    *
    */
   public function testGet() {
+    $schema_id = 'dataset';
+    $identifier = 1;
+
     $json = '{"name":"hello"}';
     $jsonWithRefs = '{"name": "hello", "%Ref:name": {"identifier": "123", "data": []}}';
-    $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
+    $mockChain = $this->getCommonMockChain()
+      ->add(Service::class, 'get', new RootedJsonData($jsonWithRefs));
 
     $controller = MetastoreController::create($mockChain->getMock());
-    $response = $controller->get('dataset', 1, new Request());
+    $response = $controller->get($schema_id, $identifier, new Request());
     $this->assertEquals($json, $response->getContent());
+
+    $entityTypeManagerMock = (new Chain($this))
+      ->add(EntityTypeManagerInterface::class, 'getStorage', EntityStorageInterface::class)
+      ->add(EntityStorageInterface::class, 'getQuery', QueryInterface::class)
+      ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
+      ->add(QueryInterface::class, 'condition', QueryInterface::class)
+      ->add(QueryInterface::class, 'execute', NULL)
+      ->getMock();
+    $nodeDataMock = new NodeData($schema_id, $entityTypeManagerMock);
+    $container = $this->getCommonMockChain()
+      ->add(Service::class, 'getStorage', $nodeDataMock)
+      ->getMock();
+    $controller = MetastoreController::create($container);
+    $response = $controller->get($schema_id, $identifier, new Request());
+    $json = json_decode($response->getContent());
+    $this->assertEquals("Error retrieving metadata: {$schema_id} {$identifier} not found.", $json->message);
   }
 
 
@@ -488,6 +512,7 @@ EOF;
       ->add(Service::class, 'getSchemas', ['dataset'])
       ->add(Service::class, 'getSchema', (object) ["id" => "http://schema"])
       ->add(Service::class, 'getValidMetadataFactory', ValidMetadataFactory::class)
+      ->add(Service::class, 'isPublished', TRUE)
       ->add(MetastoreApiResponse::class, 'getMetastoreItemFactory', NodeDataFactory::class)
       ->add(MetastoreApiResponse::class, 'addReferenceDependencies', NULL)
       ->add(NodeDataFactory::class, 'getInstance', NodeWrapperData::class)

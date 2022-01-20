@@ -106,7 +106,7 @@ class Service implements ContainerInjectionInterface {
    * @return \Drupal\metastore\Storage\MetastoreStorageInterface
    *   Entity storage.
    */
-  private function getStorage(string $schema_id): MetastoreStorageInterface {
+  protected function getStorage(string $schema_id): MetastoreStorageInterface {
     if (!isset($this->storages[$schema_id])) {
       $this->storages[$schema_id] = $this->storageFactory->getInstance($schema_id);
     }
@@ -212,6 +212,21 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Determine whether the given metastore item is published.
+   *
+   * @param string $schema_id
+   *   The metastore schema in question.
+   * @param string $identifier
+   *   The ID of the metastore item in question.
+   *
+   * @return bool
+   *   Whether the given metastore item is published.
+   */
+  public function isPublished(string $schema_id, string $identifier): bool {
+    return $this->getStorage($schema_id)->isPublished($identifier);
+  }
+
+  /**
    * Implements GET method.
    *
    * @param string $schema_id
@@ -222,8 +237,8 @@ class Service implements ContainerInjectionInterface {
    * @return \RootedData\RootedJsonData
    *   The json data.
    */
-  public function get($schema_id, $identifier): RootedJsonData {
-    $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
+  public function get(string $schema_id, string $identifier): RootedJsonData {
+    $json_string = $this->getStorage($schema_id)->retrieve($identifier, TRUE);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
