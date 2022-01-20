@@ -1,5 +1,7 @@
-// login as a given drupal user
-Cypress.Commands.add('drupalLogin', (user, password) => {
+/**
+ * Drupal Collection
+ */
+Cypress.Commands.add("drupalLogin", (user, password) => {
     return cy.request({
         method: 'POST',
         url: '/user/login',
@@ -12,13 +14,11 @@ Cypress.Commands.add('drupalLogin', (user, password) => {
     });
 });
 
-// logout of drupal
 Cypress.Commands.add('drupalLogout', () => {
     return cy.request('/user/logout');
 });
 
-// Run the supplied drush command
-Cypress.Commands.add('drupalDrushCommand', (command) => {
+Cypress.Commands.add("drupalDrushCommand", (command) => {
     var cmd = Cypress.env('drupalDrushCmdLine');
 
     if (cmd == null) {

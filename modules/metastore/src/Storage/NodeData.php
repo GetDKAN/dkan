@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore\Storage;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 
 /**
  * Node Data.
@@ -12,7 +12,7 @@ class NodeData extends Data {
   /**
    * NodeData constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityType = 'node';
     $this->bundle = 'data';
     $this->bundleKey = "type";

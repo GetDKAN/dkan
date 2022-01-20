@@ -122,9 +122,6 @@ class MetastoreController implements ContainerInjectionInterface {
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
-   *
-   * @throws \InvalidArgumentException
-   *   When an unpublished or invalid resource is requested.
    */
   public function get(string $schema_id, string $identifier, Request $request) {
     try {
