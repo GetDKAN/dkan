@@ -316,7 +316,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function getRevisionData(string $vid) : array {
     $revision = $this->storage->getEntityStorage()->loadRevision($vid);
     return [
-      $revision->get('moderation_state')->getString() == 'published',
+      $revision->status->value ?? FALSE,
       $this->getResources($revision),
     ];
   }

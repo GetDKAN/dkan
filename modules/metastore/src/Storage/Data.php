@@ -175,7 +175,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   public function isPublished(string $uuid): bool {
     $entity = $this->getEntityPublishedRevision($uuid);
 
-    return isset($entity) && boolval($entity->status->value ?? FALSE);
+    return isset($entity);
   }
 
   /**
@@ -227,13 +227,25 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *   The dataset identifier.
    *
    * @return \Drupal\Core\Entity\ContentEntityInterface|null
-   *   The entity's published revision, if found.
+   *   The entity's published revision, if one is found.
    */
-  public function getEntityPublishedRevision(string $uuid) {
-
+  public function getEntityPublishedRevision(string $uuid): ?ContentEntityInterface {
     $entity_id = $this->getEntityIdFromUuid($uuid);
-    // @todo extract an actual published revision.
-    return $entity_id ? $this->entityStorage->load($entity_id) : NULL;
+    if (!isset($entity_id)) {
+      return NULL;
+    }
+
+    $entity = $this->entityStorage->load($entity_id);
+    if (!isset($entity)) {
+      return NULL;
+    }
+
+    $published = $entity->status->value ?? FALSE;
+    if (!$published) {
+      return NULL;
+    }
+
+    return $entity;
   }
 
   /**
