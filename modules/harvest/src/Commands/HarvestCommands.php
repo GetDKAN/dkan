@@ -3,8 +3,10 @@
 namespace Drupal\harvest\Commands;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service;
 use Drush\Commands\DrushCommands;
+use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -64,26 +66,60 @@ class HarvestCommands extends DrushCommands {
   /**
    * Register a new harvest.
    *
-   * @param string $harvest_plan
-   *   Harvest plan configuration as JSON, wrapped in single quotes,
-   *   do not add spaces between elements.
+   * You may supply a full Harvest plan in JSON or provide configuration via
+   * individual options. For a simple data.json harvest, pass only an
+   * identifier and extract-uri.
+   *
+   * @param string $plan_json
+   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
+   * @param array $opts
+   *   Options array.
+   *
+   * @option identifier Identifier
+   * @option extract-type Extract type
+   * @option extract-uri Extract URI
+   * @option transform A transform class to apply. You may pass multiple transforms.
+   * @option load-type Load class
    *
    * @command dkan:harvest:register
+   *
    * @usage dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
    * @aliases dkan-harvest:register
    * @deprecated dkan-harvest:register is deprecated and will be removed in a future Dkan release. Use dkan:harvest:register instead.
    */
-  public function register($harvest_plan) {
+  public function register(string $plan_json = '', array $opts = [
+    'identifier' => '',
+    'extract-type' => DataJson::class,
+    'extract-uri' => '',
+    'transform' => [],
+    'load-type' => Dataset::class,
+  ]) {
     try {
-      $plan       = json_decode($harvest_plan);
-      $identifier = $this->harvestService
-        ->registerHarvest($plan);
+      $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
+      $identifier = $this->harvestService->registerHarvest($plan);
       $this->logger->notice("Successfully registered the {$identifier} harvest.");
     }
     catch (\Exception $e) {
       $this->logger->error($e->getMessage());
       $this->logger->debug($e->getTraceAsString());
     }
+  }
+
+  protected function buildPlanFromOpts($opts) {
+    if (!$opts['identifier']) {
+      throw new \Exception("Missing identifier for harvest plan.");
+    }
+    return (object) [
+      'identifier' => $opts['identifier'],
+      'extract' => (object) [
+        'type' => $opts['extract-type'],
+        'uri' => $opts['extract-uri'],
+      ],
+      'transforms' => $opts['transform'],
+      'load' => (object) [
+        'type' => $opts['load-type'],
+      ],
+    ];
   }
 
   /**
