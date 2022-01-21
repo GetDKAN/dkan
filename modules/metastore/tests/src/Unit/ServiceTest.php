@@ -136,28 +136,6 @@ class ServiceTest extends TestCase {
   /**
    *
    */
-  public function testGetResources() {
-    $dataset = [
-      "identifier" => "1",
-      "distribution" => [
-        ["title" => "hello"],
-      ],
-    ];
-    $data = $this->validMetadataFactory->get(json_encode($dataset), 'dataset');
-
-    $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", json_encode($dataset))
-      ->add(ValidMetadataFactory::class, 'get', $data);
-
-    $service = Service::create($container->getMock());
-
-    $this->assertEquals(json_encode([["title" => "hello"]]),
-      json_encode($service->getResources("dataset", "1")));
-  }
-
-  /**
-   *
-   */
   public function testPost() {
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, 'store', '1');

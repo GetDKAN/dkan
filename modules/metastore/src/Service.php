@@ -246,29 +246,6 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * GET all resources associated with a dataset.
-   *
-   * @param string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param string $identifier
-   *   Identifier.
-   *
-   * @return array
-   *   An array of resources.
-   *
-   * @todo Make this aware of revisions and moderation states.
-   */
-  public function getResources($schema_id, $identifier): array {
-    $json_string = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = $this->validMetadataFactory->get($json_string, $schema_id);
-
-    /* @todo decouple from POD. */
-    $resources = $data->{"$.distribution"};
-
-    return $resources;
-  }
-
-  /**
    * Get ValidMetadataFactory.
    *
    * @return \Drupal\metastore\ValidMetadataFactory

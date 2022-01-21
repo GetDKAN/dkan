@@ -162,26 +162,6 @@ class MetastoreController implements ContainerInjectionInterface {
   }
 
   /**
-   * GET all resources associated with a dataset.
-   *
-   * @param string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param string $identifier
-   *   Identifier.
-   *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse
-   *   The json response.
-   */
-  public function getResources(string $schema_id, string $identifier) {
-    try {
-      return $this->apiResponse->cachedJsonResponse($this->service->getResources($schema_id, $identifier));
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e, 404);
-    }
-  }
-
-  /**
    * Implements POST method.
    *
    * @param string $schema_id

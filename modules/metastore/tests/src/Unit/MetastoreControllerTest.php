@@ -162,32 +162,6 @@ class MetastoreControllerTest extends TestCase {
     $this->assertEquals('{"name":{"identifier":"123","data":[]}}', $response->getContent());
   }
 
-
-  /**
-   *
-   */
-  public function testGetResources() {
-    $mockChain = $this->getCommonMockChain();
-    $distributions = [(object) ["title" => "Foo"], (object) ["title" => "Bar"]];
-    $mockChain->add(Service::class, 'getResources', $distributions);
-
-    $controller = MetastoreController::create($mockChain->getMock());
-    $response = $controller->getResources(1, 'dataset');
-    $this->assertEquals(json_encode($distributions), $response->getContent());
-  }
-
-  /**
-   *
-   */
-  public function testGetResourcesException() {
-    $mockChain = $this->getCommonMockChain();
-    $mockChain->add(Service::class, 'getResources', new \Exception("bad"));
-
-    $controller = MetastoreController::create($mockChain->getMock());
-    $response = $controller->getResources(1, 'dataset');
-    $this->assertStringContainsString('"message":"bad","status":404', $response->getContent());
-  }
-
   /**
    *
    */
