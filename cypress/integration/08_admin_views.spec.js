@@ -41,7 +41,7 @@ context('Admin content and dataset views', () => {
         cy.get('h1').should('have.text', 'Create Data')
     })
 
-    it('User can archive, publish, and edit, and delete a dataset. The edit link on the admin view should go to the json form.', () => {
+    it('User can archive, publish, edit, and delete a dataset. The edit link on the admin view should go to the json form.', () => {
         // Create a dataset.
         cy.visit(baseurl + "/node/add/data")
         cy.wait(2000)
