@@ -71,7 +71,7 @@ class HarvestCommands extends DrushCommands {
    * identifier and extract-uri.
    *
    * @param string $plan_json
-   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
+   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
    * @param array $opts
    *   Options array.
    *
@@ -105,6 +105,15 @@ class HarvestCommands extends DrushCommands {
     }
   }
 
+  /**
+   * Build a harvest plan object based on the options from register.
+   *
+   * @param mixed $opts
+   *   Options array from register method.
+   *
+   * @return object
+   *   A harvest plan PHP object.
+   */
   protected function buildPlanFromOpts($opts) {
     if (!$opts['identifier']) {
       throw new \Exception("Missing identifier for harvest plan.");
