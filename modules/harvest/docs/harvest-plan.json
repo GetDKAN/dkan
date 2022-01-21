@@ -1,0 +1,46 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://getdkan.com/api/harvest.plan.json",
+    "title": "Harvest Plan",
+    "description": "Schema for DKAN harvest plan.",
+    "type": "object",
+    "properties": {
+        "identifier": {
+            "type": "string",
+            "description": "Must be unique within the DKAN catalog. Alphanumeric, dash (-) and underscore (_) characeters only."
+        },
+        "extract": {
+            "type": "object",
+            "description": "Information on the extract method for this harvest plan.",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Qualified name of a PHP class that implements the \\Harvest\\ETL\\Extract\\IExctract interface."   
+                },
+                "uri": {
+                    "type": "string",
+                    "description": "URI to the source to extract from."
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        "transforms": {
+            "type": "array",
+            "description": "List of transforms applied after extract. Transforms are qualified PHP class names that extend the \\Harvest\\ETL\\Transform\\Transform base class.",
+            "items": {
+                "type": "string"
+            }
+        },
+        "load": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Qualified name of a PHP class that extends the Harvest\\ETL\\Load base class."
+                }
+            }
+        }
+    }
+}
