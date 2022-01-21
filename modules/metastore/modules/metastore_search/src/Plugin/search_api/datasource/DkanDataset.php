@@ -70,7 +70,7 @@ class DkanDataset extends DatasourcePluginBase {
     $dataStorage = $dataStorageFactory->getInstance('dataset');
 
     $items = array_map(function ($id) use ($dataStorage) {
-      return new Dataset($dataStorage->retrieve($id, TRUE));
+      return new Dataset($dataStorage->retrieve($id));
     }, array_combine($ids, $ids));
 
     return $items;

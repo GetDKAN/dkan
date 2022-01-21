@@ -184,12 +184,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
    * {@inheritdoc}.
    */
   public function retrieve(string $uuid, bool $published = FALSE) : ?string {
-    if ($published || $this->getDefaultModerationState() === 'published') {
-      $entity = $this->getEntityPublishedRevision($uuid);
-    }
-    else {
-      $entity = $this->getEntityLatestRevision($uuid);
-    }
+    $entity = $published ? $this->getEntityPublishedRevision($uuid) : $this->getEntityLatestRevision($uuid);
 
     if (!isset($entity)) {
       throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
