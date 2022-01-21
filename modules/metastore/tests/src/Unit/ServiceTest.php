@@ -304,6 +304,19 @@ EOF;
     $result = $service->publish('dataset', 1);
     $this->assertTrue($result);
   }
+  
+  /**
+   *
+   */
+  public function testArchive() {
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, "retrieve", "1")
+      ->add(NodeData::class, "archive", TRUE);
+
+    $service = Service::create($container->getMock());
+    $result = $service->archive('dataset', 1);
+    $this->assertTrue($result);
+  }
 
   /**
    *

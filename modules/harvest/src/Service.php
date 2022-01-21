@@ -14,13 +14,21 @@ use Harvest\Harvester as DkanHarvester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Service.
+ * Main DKAN Harvester service.
+ *
+ * Import groups of datasets from an external source, and manage existing
+ * harvest plans and their dependent datasets.
  */
 class Service implements ContainerInjectionInterface {
 
   use LoggerTrait;
   use OrphanDatasetsProcessor;
 
+  /**
+   * Service to instantiate storage objects for Harvest plan storage.
+   *
+   * @var \Contracts\FactoryInterface
+   */
   private $storeFactory;
 
   /**
@@ -216,59 +224,87 @@ class Service implements ContainerInjectionInterface {
   /**
    * Publish a harvest.
    *
-   * @param string $id
+   * @param string $harvestId
+   *   Harvest identifier.
+   *
+   * @return array
+   *   The uuids of the datasets to publish.
+   */
+  public function publish(string $harvestId): array {
+    return $this->bulkUpdateStatus($harvestId, 'publish');
+
+  }
+
+  /**
+   * Archive a harvest.
+   *
+   * @param string $harvestId
    *   Harvest identifier.
    *
    * @return array
    *   The uuids of the published datasets.
    */
-  public function publish(string $id): array {
+  public function archive(string $harvestId): array {
+    return $this->bulkUpdateStatus($harvestId, 'archive');
+  }
 
-    $lastRunInfoObj = $this->getLastRunInfoObj($id);
-    if (!isset($lastRunInfoObj->status->extracted_items_ids)) {
+  /**
+   * Archive a harvest.
+   *
+   * @param string $harvestId
+   *   Harvest identifier.
+   * @param string $method
+   *   Metastore update status method - "archive" or "publish" available.
+   *
+   * @return array
+   *   The uuids of the published datasets.
+   */
+  protected function bulkUpdateStatus(string $harvestId, string $method): array {
+    if (!in_array($method, ['archive', 'publish'])) {
+      throw new \OutOfRangeException("Method {$method} does not exist");
+    }
+
+    $lastRunId = $this->getLastHarvestRunId($harvestId);
+    $lastRunInfo = json_decode($this->getHarvestRunInfo($harvestId, $lastRunId));
+    $status = $lastRunInfo->status ?? NULL;
+    if (!isset($status->extracted_items_ids)) {
       return [];
     }
 
-    return $this->publishHelper($id, $lastRunInfoObj->status);
-  }
-
-  /**
-   * Private.
-   */
-  private function getLastRunInfoObj(string $harvestId) {
-    $lastRunId = $this->getLastHarvestRunId($harvestId);
-    $lastRunInfoJsonString = $this->getHarvestRunInfo($harvestId, $lastRunId);
-    return json_decode($lastRunInfoJsonString);
-  }
-
-  /**
-   * Private.
-   */
-  private function publishHelper(string $harvestId, $lastRunStatus): array {
-    $publishedIdentifiers = [];
-
-    foreach ($lastRunStatus->extracted_items_ids as $uuid) {
-      try {
-        if ($this->metastorePublishHelper($lastRunStatus, $uuid)) {
-          $publishedIdentifiers[] = $uuid;
-        }
-      }
-      catch (\Exception $e) {
-        $this->error("Error publishing dataset {$uuid} in harvest {$harvestId}: {$e->getMessage()}");
-      }
+    $updated = [];
+    foreach ($status->extracted_items_ids as $datasetId) {
+      // $this->publishHarvestedDataset() will return true if $datasetId
+      // could be successfully published.
+      $updated[] = $this->setDatasetStatus($status, $datasetId, $method) ? $datasetId : NULL;
     }
 
-    return $publishedIdentifiers;
+    return array_values(array_filter($updated));
   }
 
   /**
-   * Private.
+   * Use metastore service to publish a harvested item.
+   *
+   * @param object $runInfoStatus
+   *   Status object with run information.
+   * @param string $datasetId
+   *   ID to DKAN dataset.
+   * @param string $method
+   *   Metastore update status method - "archive" or "publish" available.
+   *
+   * @return bool
+   *   Whether or not publish action was successful.
    */
-  private function metastorePublishHelper($runInfoStatus, string $uuid): bool {
-    return isset($runInfoStatus->load) &&
-      $runInfoStatus->load->{$uuid} &&
-      $runInfoStatus->load->{$uuid} != 'FAILURE' &&
-      $this->metastore->publish('dataset', $uuid);
+  protected function setDatasetStatus($runInfoStatus, string $datasetId, string $method): bool {
+    try {
+      return isset($runInfoStatus->load) &&
+        $runInfoStatus->load->{$datasetId} &&
+        $runInfoStatus->load->{$datasetId} != 'FAILURE' &&
+        $this->metastore->$method('dataset', $datasetId);
+    }
+    catch (\Exception $e) {
+      $this->error("Error applying method {$method} to dataset {$datasetId}: {$e->getMessage()}");
+      return FALSE;
+    }
   }
 
   /**
@@ -285,9 +321,15 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   * Get a DKAN harvester instance.
+   *
+   * @param string $id
+   *   Harvester ID.
+   *
+   * @return \Harvest\Harvester
+   *   Harvester object.
    */
-  private function getHarvester($id) {
+  private function getHarvester(string $id) {
     $plan_store = $this->storeFactory->getInstance("harvest_plans");
     $harvestPlan = json_decode($plan_store->retrieve($id));
     $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");

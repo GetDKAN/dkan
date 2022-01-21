@@ -13,6 +13,8 @@ use Drupal\workflows\WorkflowInterface;
 
 /**
  * Abstract metastore storage class, for using Drupal entities.
+ *
+ * @todo Separate workflow management and storage into separate classes.
  */
 abstract class Data implements MetastoreEntityStorageInterface {
 
@@ -200,19 +202,38 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function publish(string $uuid): bool {
+    return $this->setWorkflowState($uuid, 'published');
+  }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function archive(string $uuid): bool {
+    return $this->setWorkflowState($uuid, 'archived');
+  }
+
+  /**
+   * Change the state of a metastore item.
+   *
+   * @param string $uuid
+   *   Metastore identifier.
+   * @param string $state
+   *   Any workflow state that can be applied to a metastore entity.
+   *
+   * @return bool
+   *   Whether or not an item was transitioned.
+   */
+  protected function setWorkflowState(string $uuid, string $state): bool {
     $entity = $this->getEntityLatestRevision($uuid);
 
     if (!$entity) {
-      throw new MissingObjectException("Error publishing dataset: {$uuid} not found.");
+      throw new MissingObjectException("Error: {$uuid} not found.");
     }
-    elseif ('published' !== $entity->get('moderation_state')->getString()) {
-      $entity->set('moderation_state', 'published');
+    elseif ($state !== $entity->get('moderation_state')->getString()) {
+      $entity->set('moderation_state', $state);
       $entity->save();
       return TRUE;
     }

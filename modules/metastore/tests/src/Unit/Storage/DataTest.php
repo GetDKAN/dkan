@@ -30,7 +30,7 @@ class DataTest extends TestCase {
       ->add(QueryInterface::class, 'execute', [])
       ->getMock();
 
-    $this->expectExceptionMessage('Error publishing dataset: 1 not found.');
+    $this->expectExceptionMessage('Error: 1 not found.');
     $nodeData = new NodeData('dataset', $etmMock);
     $nodeData->publish('1');
   }
