@@ -18,7 +18,11 @@ class MockStorage extends Data {
     return [];
   }
 
-  public function retrieve(string $uuid, bool $published = FALSE) : ?string {
+  public function retrievePublished(string $uuid) : ?string {
+    throw new MissingObjectException("Error retrieving published dataset: distribution {$uuid} not found.");
+  }
+
+  public function retrieve(string $uuid) : ?string {
     throw new MissingObjectException("Error retrieving published dataset: distribution {$uuid} not found.");
   }
 

@@ -19,20 +19,26 @@ interface MetastoreStorageInterface {
   public function count(bool $unpublished = FALSE): int;
 
   /**
-   * Retrieve a metadata string by ID.
+   * Retrieve a metadata string by ID, regardless of whether it is published.
    *
    * @param string $id
    *   The identifier for the data.
-   * @param bool $published
-   *   Whether to retrieve the published revision of the metadata.
    *
    * @return string|HydratableInterface
    *   The data or null if no data could be retrieved.
-   *
-   * @throws \Drupal\metastore\Exception\MissingObjectException
-   *   When attempting to retrieve metadata fails.
    */
-  public function retrieve(string $id, bool $published = FALSE);
+  public function retrieve(string $id);
+
+  /**
+   * Retrieve the json metadata from an entity only if it is published.
+   *
+   * @param string $uuid
+   *   The identifier.
+   *
+   * @return string|null
+   *   The entity's json metadata, or NULL if the entity was not found.
+   */
+  public function retrievePublished(string $uuid) : ?string;
 
   /**
    * Retrieve all metadata items.
@@ -80,17 +86,6 @@ interface MetastoreStorageInterface {
    *   An array of metadata objects.
    */
   public function retrieveContains(string $string, bool $caseSensitive): array;
-
-  /**
-   * Determine whether the given metastore item is published.
-   *
-   * @param string $uuid
-   *   The ID of the metastore item in question.
-   *
-   * @return bool
-   *   Whether the given metastore item is published.
-   */
-  public function isPublished(string $uuid) : bool;
 
   /**
    * Publish the latest version of a data entity.

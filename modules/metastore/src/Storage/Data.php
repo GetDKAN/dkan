@@ -4,7 +4,7 @@ namespace Drupal\metastore\Storage;
 
 use Drupal\common\LoggerTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\metastore\Exception\MissingObjectException;
@@ -21,7 +21,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * Entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
   protected $entityTypeManager;
 
@@ -84,10 +84,10 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * Constructor.
    */
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(string $schemaId, EntityTypeManager $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
     $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
-    $this->schemaId = $schemaId;
+    $this->setSchema($schemaId);
   }
 
   /**
@@ -98,6 +98,13 @@ abstract class Data implements MetastoreEntityStorageInterface {
    */
   public function getEntityStorage() {
     return $this->entityStorage;
+  }
+
+  /**
+   * Private.
+   */
+  private function setSchema($schemaId) {
+    $this->schemaId = $schemaId;
   }
 
   /**
@@ -161,10 +168,14 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * {@inheritdoc}.
    */
-  public function isHidden(string $uuid): bool {
+  public function retrievePublished(string $uuid) : ?string {
     $entity = $this->getEntityPublishedRevision($uuid);
 
-    return isset($entity) && ($entity->moderation_state->value ?? NULL) === 'hidden';
+    if ($entity && $entity->get('moderation_state')->getString() == 'published') {
+      return $entity->get($this->metadataField)->getString();
+    }
+
+    throw new MissingObjectException("Error retrieving published dataset: {$this->schemaId} {$uuid} not found.");
   }
 
   /**
@@ -172,30 +183,20 @@ abstract class Data implements MetastoreEntityStorageInterface {
    *
    * {@inheritdoc}.
    */
-  public function isPublished(string $uuid): bool {
-    $entity = $this->getEntityPublishedRevision($uuid);
+  public function retrieve(string $uuid) : ?string {
 
-    return isset($entity) && boolval($entity->status->value ?? FALSE);
-  }
-
-  /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
-   */
-  public function retrieve(string $uuid, bool $published = FALSE) : ?string {
-    if ($published || $this->getDefaultModerationState() === 'published') {
+    if ($this->getDefaultModerationState() === 'published') {
       $entity = $this->getEntityPublishedRevision($uuid);
     }
     else {
       $entity = $this->getEntityLatestRevision($uuid);
     }
 
-    if (!isset($entity)) {
-      throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
+    if ($entity) {
+      return $entity->get($this->metadataField)->getString();
     }
 
-    return $entity->get($this->metadataField)->getString();
+    throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
   }
 
   /**
