@@ -231,10 +231,6 @@ abstract class Data implements MetastoreEntityStorageInterface {
     }
 
     $entity = $this->entityStorage->load($entity_id);
-    if (!isset($entity)) {
-      return NULL;
-    }
-
     $published = $entity->status->value ?? FALSE;
     if (!$published) {
       return NULL;
