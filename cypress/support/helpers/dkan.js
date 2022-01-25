@@ -221,4 +221,20 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
     .click({ force:true })
   cy.get('.messages--status')
     .should('contain','has been created')
+  cy.get('.messages--status a').click()
+  // Visit the new dataset and retrieve the identifier.
+  // Alias the resulting dataset identifier so it can be retrieved
+  // in the test.
+  cy.get('.field--name-field-json-metadata .field__item').invoke('text')
+    .then((text) => {
+      const regexp = /"identifier":"([a-zA-Z0-9\-]+?)",/g
+      const result = regexp.exec(text)
+      cy.wrap(result[1]).as('datasetId')
+    })
+  // Let's capture the node ID too
+  cy.url().then((url) => {
+    const regexp = /\/([0-9]+)$/g
+    const result = regexp.exec(url)
+    cy.wrap(result[1]).as('nodeId')
+  })
 }
