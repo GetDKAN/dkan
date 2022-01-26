@@ -142,9 +142,8 @@ jobs:
           command: |
             mkdir dkan/cypress/tmp
             mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split) dkan/cypress/tmp || true
-            ls dkan
-            ls dkan/cypress
             ls dkan/cypress/tmp
+            dktl dc exec cli ls /var/www/dkan/cypress/tmp
             dktl dkan:test-cypress --headless --browser=chromium --spec cypress/tmp/*
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
