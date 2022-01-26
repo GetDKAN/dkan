@@ -117,6 +117,32 @@ class DatasetTest extends ExistingSiteBase {
     $this->assertArrayNotHasKey('dkan_dataset/333', $searchResults->results);
   }
 
+
+  /**
+   * Test archiving of datasets after a harvest
+   */
+  public function testHarvestArchive() {
+
+    $plan = $this->getPlan('testHarvestArchive', 'catalog-step-1.json');
+    $harvester = $this->getHarvester();
+    $harvester->registerHarvest($plan);
+
+    // First harvest.
+    $harvester->runHarvest('testHarvestArchive');
+
+    // Ensure different harvest run identifiers, since based on timestamp.
+    sleep(1);
+
+    // Confirm we have some published datasets.
+    $this->assertEquals('published', $this->getModerationState('1'));
+    $this->assertEquals('published', $this->getModerationState('2'));
+
+    // Run archive command, confirm datasets are archived.
+    $harvester->archive('testHarvestArchive');
+    $this->assertEquals('archived', $this->getModerationState('1'));
+    $this->assertEquals('archived', $this->getModerationState('2'));
+  }
+
   /**
    * Test removal of datasets by a subsequent harvest.
    */
@@ -303,6 +329,13 @@ class DatasetTest extends ExistingSiteBase {
     $data->modified = "06-04-2020";
     $data->keyword = ["some keyword"];
     $data->distribution = [];
+    $data->publisher = (object) [
+      'name' => 'Test Publisher',
+    ];
+    $data->contactPoint = (object) [
+      'fn' => 'Test Name',
+      'hasEmail' => 'test@example.com',
+    ];
 
     foreach ($downloadUrls as $key => $downloadUrl) {
       $distribution = new \stdClass();

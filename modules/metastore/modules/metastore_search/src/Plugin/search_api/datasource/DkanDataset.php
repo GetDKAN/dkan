@@ -21,6 +21,13 @@ use Drupal\search_api\Datasource\DatasourcePluginBase;
 class DkanDataset extends DatasourcePluginBase {
 
   /**
+   * Item IDs query pager size.
+   *
+   * @var int
+   */
+  protected const PAGE_SIZE = 250;
+
+  /**
    * Inherited.
    *
    * @inheritdoc
@@ -35,35 +42,20 @@ class DkanDataset extends DatasourcePluginBase {
    * @inheritdoc
    */
   public function getItemIds($page = NULL) {
-    $pageSize = 250;
-    $ids = [];
-    $query = \Drupal::entityQuery('node')
+    $ids_query = \Drupal::entityQuery('node')
       ->accessCheck(FALSE)
-      ->condition('status', 1)
       ->condition('type', 'data')
       ->condition('field_data_type', 'dataset');
 
-    $total = $query->count()->execute();
-    $pages = floor($total / $pageSize);
-
-    if ($page <= $pages) {
-
-      $query = \Drupal::entityQuery('node')
-        ->accessCheck(FALSE)
-        ->condition('status', 1)
-        ->condition('type', 'data')
-        ->condition('field_data_type', 'dataset')
-        ->range($page * $pageSize, $pageSize);
-      $nids = $query->execute();
-
-      foreach ($nids as $id) {
-        $node = Node::load($id);
-        $ids[] = $node->uuid();
-      }
-
-      return $ids;
+    if (isset($page)) {
+      $ids_query->range($page * self::PAGE_SIZE, self::PAGE_SIZE);
     }
-    return NULL;
+
+    $uuids = array_map(function ($node) {
+      return $node->uuid();
+    }, Node::loadMultiple($ids_query->execute()));
+
+    return $uuids ?: NULL;
   }
 
   /**
@@ -74,18 +66,12 @@ class DkanDataset extends DatasourcePluginBase {
   public function loadMultiple(array $ids) {
     /* @var   \Drupal\metastore\Storage\DataFactory $dataStorageFactory */
     $dataStorageFactory = \Drupal::service("dkan.metastore.storage");
-
     /* @var \Drupal\metastore\Storage\Data $dataStorage */
     $dataStorage = $dataStorageFactory->getInstance('dataset');
 
-    $items = [];
-    foreach ($ids as $id) {
-      try {
-        $items[$id] = new Dataset($dataStorage->retrievePublished($id));
-      }
-      catch (\Exception $e) {
-      }
-    }
+    $items = array_map(function ($id) use ($dataStorage) {
+      return new Dataset($dataStorage->retrieve($id));
+    }, array_combine($ids, $ids));
 
     return $items;
   }
