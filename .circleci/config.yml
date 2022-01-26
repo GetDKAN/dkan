@@ -78,53 +78,6 @@ commands:
                   dktl exec:composer -- update --no-interaction --ansi
 
 jobs:
-  build:
-    machine:
-      image: circleci/classic:latest
-    parameters:
-      upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
-        default: false
-        type: boolean
-    environment:
-      TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.5"
-    steps:
-      - checkout:
-          path: dkan
-      - run:
-          name: Set up composer config
-          command: |
-            mkdir ~/.composer
-            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
-      - dktl
-      - when:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Initialize with latest stable tag to upgrade from
-                command: |
-                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
-                  echo "Testing upgrade from tag: ${TAG}"
-                  git --git-dir=dkan/.git --work-tree=dkan checkout "${TAG}"
-                  dktl init --dkan-local
-                  # Switch expected composer dependency to the same release
-                  dktl exec:composer -- require "getdkan/dkan:${TAG}" --no-update --ansi
-      - unless:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Initialize Project
-                command: dktl init --dkan-local
-      - run:
-          name: Make DKAN
-          command: dktl make
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - dkan-tools
-            - project
-            - .composer
   phpunit_dredd:
     machine:
       image: circleci/classic:latest
