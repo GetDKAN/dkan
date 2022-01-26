@@ -78,7 +78,7 @@ commands:
                   dktl exec:composer -- update --no-interaction --ansi
 
 jobs:
-  phpunit_dredd:
+  phpunit:
     machine:
       image: circleci/classic:latest
     parameters:
@@ -112,7 +112,7 @@ jobs:
                   dktl xdebug:start
                   sed -i "/=debug/s/=.*/=coverage/" src/docker/etc/php/xdebug.ini
                   dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
-  cypress_backend:
+  cypress:
     machine:
       image: circleci/classic:latest
     parameters:
@@ -148,15 +148,15 @@ workflows:
   version: 2
   install_and_test:
     jobs:
-      - phpunit_dredd:
-          name: install_test_phpunit_dredd
-      - cypress_backend:
-          name: install_test_cypress_backend
+      - phpunit:
+          name: install_test_phpunit
+      - cypress:
+          name: install_test_cypress
   upgrade_and_test:
     jobs:
-      - phpunit_dredd:
-          name: upgrade_test_phpunit_dredd
+      - phpunit:
+          name: upgrade_test_phpunit
           upgrade: true
-      - cypress_backend:
-          name: upgrade_test_cypress_backend
+      - cypress:
+          name: upgrade_test_cypress
           upgrade: true
