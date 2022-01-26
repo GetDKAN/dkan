@@ -185,12 +185,12 @@ class LifeCycle {
     $resource = $storage->retrieve($distributionUuid);
     $resource = json_decode($resource);
 
-    $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier;
-    $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective;
-    $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version;
+    $id = $resource->data->{'%Ref:downloadURL'}[0]->data->identifier ?? NULL;
 
     // Ensure a valid resource ID was found since it's required.
     if (isset($id)) {
+      $perspective = $resource->data->{'%Ref:downloadURL'}[0]->data->perspective ?? NULL;
+      $version = $resource->data->{'%Ref:downloadURL'}[0]->data->version ?? NULL;
       $this->queueFactory->get('orphan_resource_remover')->createItem([
         $id,
         $perspective,
