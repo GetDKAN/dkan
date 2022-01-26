@@ -145,7 +145,6 @@ jobs:
             ls dkan
             ls dkan/cypress
             ls dkan/cypress/tmp
-            tree
             dktl dkan:test-cypress --headless --browser=chromium --spec cypress/tmp/*
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
