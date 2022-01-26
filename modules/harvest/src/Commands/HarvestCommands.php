@@ -70,6 +70,9 @@ class HarvestCommands extends DrushCommands {
    * individual options. For a simple data.json harvest, pass only an
    * identifier and extract-uri.
    *
+   * Harvest plans are validated against the schema at:
+   * https://github.com/GetDKAN/harvest/blob/master/schema/schema.json
+   *
    * @param string $plan_json
    *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
    * @param array $opts
@@ -83,7 +86,7 @@ class HarvestCommands extends DrushCommands {
    *
    * @command dkan:harvest:register
    *
-   * @usage dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
+   * @usage dkan-harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
    * @aliases dkan-harvest:register
    * @deprecated dkan-harvest:register is deprecated and will be removed in a future Dkan release. Use dkan:harvest:register instead.
    */
@@ -115,14 +118,11 @@ class HarvestCommands extends DrushCommands {
    *   A harvest plan PHP object.
    */
   protected function buildPlanFromOpts($opts) {
-    if (!$opts['identifier']) {
-      throw new \Exception("Missing identifier for harvest plan.");
-    }
     return (object) [
       'identifier' => $opts['identifier'],
       'extract' => (object) [
-        'type' => $opts['extract-type'],
-        'uri' => $opts['extract-uri'],
+        'type' => $opts['extract-type'] ?: NULL,
+        'uri' => $opts['extract-uri'] ?: NULL,
       ],
       'transforms' => $opts['transform'],
       'load' => (object) [
