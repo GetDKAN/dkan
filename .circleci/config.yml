@@ -120,6 +120,7 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+    parallelism: 2
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.2.5"
@@ -136,6 +137,7 @@ jobs:
           command: |
             mkdir dkan/cypress/integration/tmp
             mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split) dkan/cypress/integration/tmp || true
+            ls dkan/cypress/tmp
             dktl dc exec cli ls /var/www/dkan/cypress/tmp
             dktl dkan:test-cypress --headless --browser=chromium --spec cypress/integration/tmp/*
       - store_artifacts:
