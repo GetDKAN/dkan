@@ -9,6 +9,46 @@ commands:
             if [ ! -d ~/dkan-tools ]; then git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools; fi
             export PATH=~/dkan-tools/bin:$PATH
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+  prepare_build:
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DKTL_VERSION: "4.2.5"
+    steps:
+      - checkout:
+          path: dkan
+      - run:
+          name: Set up composer config
+          command: |
+            mkdir ~/.composer
+            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
+      - dktl
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Initialize with latest stable tag to upgrade from
+                command: |
+                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
+                  echo "Testing upgrade from tag: ${TAG}"
+                  git --git-dir=dkan/.git --work-tree=dkan checkout "${TAG}"
+                  dktl init --dkan-local
+                  # Switch expected composer dependency to the same release
+                  dktl exec:composer -- require "getdkan/dkan:${TAG}" --no-update --ansi
+      - unless:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Initialize Project
+                command: dktl init --dkan-local
+      - run:
+          name: Make DKAN
+          command: dktl make
+
   prepare_site:
     parameters:
       upgrade:
@@ -39,7 +79,6 @@ commands:
                 name: Just in case, run a composer update
                 command: |
                   dktl exec:composer -- update --no-interaction --ansi
-
 
 jobs:
   build:
@@ -100,6 +139,8 @@ jobs:
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
+      - prepare_build:
+          upgrade: << parameters.upgrade >>
       - attach_workspace:
           at: ~/
       - dktl
@@ -132,6 +173,8 @@ jobs:
       TEST_RESULTS: /tmp/test-results
     parallelism: 4
     steps:
+      - prepare_build:
+          upgrade: << parameters.upgrade >>
       - attach_workspace:
           at: ~/
       - dktl
@@ -154,28 +197,15 @@ workflows:
   version: 2
   install_and_test:
     jobs:
-      - build:
-          name: install_build
       - phpunit_dredd:
           name: install_test_phpunit_dredd
-          requires:
-            - install_build
       - cypress_backend:
           name: install_test_cypress_backend
-          requires:
-            - install_build
   upgrade_and_test:
     jobs:
-      - build:
-          name: upgrade_build
-          upgrade: true
       - phpunit_dredd:
           name: upgrade_test_phpunit_dredd
           upgrade: true
-          requires:
-            - upgrade_build
       - cypress_backend:
           name: upgrade_test_cypress_backend
           upgrade: true
-          requires:
-            - upgrade_build
