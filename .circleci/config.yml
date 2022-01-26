@@ -140,11 +140,11 @@ jobs:
       - run:
           name: Run DKAN cypress tests
           command: |
-            mkdir dkan/cypress/tmp
-            mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split) dkan/cypress/tmp || true
+            mkdir dkan/cypress/integration/tmp
+            mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split) dkan/cypress/integration/tmp || true
             ls dkan/cypress/tmp
             dktl dc exec cli ls /var/www/dkan/cypress/tmp
-            dktl dkan:test-cypress --headless --browser=chromium --spec cypress/tmp/*
+            dktl dkan:test-cypress --headless --browser=chromium --spec cypress/integration/tmp/*
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
