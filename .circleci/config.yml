@@ -9,25 +9,6 @@ commands:
             if [ ! -d ~/dkan-tools ]; then git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools; fi
             export PATH=~/dkan-tools/bin:$PATH
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
-  export_images:
-    steps:
-      - run:
-          name: Export each dkan-tools image to tar
-          command: |
-            mkdir ~/images
-            docker save getdkan/dkan-web > ~/images/web.tar
-            docker save getdkan/dkan-cli > ~/images/cli.tar
-            docker save drydockcloud/drupal-acquia-mysql > ~/images/db.tar
-  import_images:
-    steps:
-      - run:
-          name: Import each persisted tar file as image
-          command: |
-            docker load --input ~/images/web.tar
-            docker load --input ~/images/cli.tar
-            docker load --input ~/images/db.tar
-            docker images
-            rm ~/images/*
   prepare_site:
     parameters:
       upgrade:
@@ -102,11 +83,9 @@ jobs:
       - run:
           name: Make DKAN
           command: dktl make
-      - export_images
       - persist_to_workspace:
           root: ~/
           paths:
-            - images
             - dkan-tools
             - project
             - .composer
@@ -123,7 +102,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - import_images
       - dktl
       - prepare_site:
           upgrade: << parameters.upgrade >>
