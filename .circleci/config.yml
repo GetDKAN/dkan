@@ -130,6 +130,7 @@ jobs:
         type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
+    parallelism: 4
     steps:
       - attach_workspace:
           at: ~/
@@ -139,7 +140,9 @@ jobs:
       - run:
           name: Run DKAN cypress tests
           command: |
-            dktl dkan:test-cypress --headless --browser=chromium
+            mkdir dkan/cypress/tmp
+            cp $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split) dkan/cypress/tmp || true
+            dktl dkan:test-cypress --headless --browser=chromium --spec cypress/tmp/*
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
