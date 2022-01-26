@@ -84,7 +84,7 @@ class HarvestCommands extends DrushCommands {
    *
    * @command dkan:harvest:register
    *
-   * @usage dkan-harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
+   * @usage dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
    * @aliases dkan-harvest:register
    * @deprecated dkan-harvest:register is deprecated and will be removed in a future Dkan release. Use dkan:harvest:register instead.
    */
