@@ -15,9 +15,6 @@ commands:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-    environment:
-      TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.5"
     steps:
       - checkout:
           path: dkan
@@ -138,6 +135,7 @@ jobs:
         type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
+      DKTL_VERSION: "4.2.5"
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
@@ -171,7 +169,7 @@ jobs:
         type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
-    parallelism: 4
+      DKTL_VERSION: "4.2.5"
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
