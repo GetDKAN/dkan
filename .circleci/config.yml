@@ -120,7 +120,7 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-    parallelism: 2
+    parallelism: 4
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.2.5"
