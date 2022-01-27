@@ -139,12 +139,14 @@ jobs:
             mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
             rm dkan/cypress/integration/* && mv dkan/cypress/tmp/* dkan/cypress/integration
             dktl dkan:test-cypress --headless --browser=chromium --reporter=junit --reporter-options "mochaFile=results/output.xml,toConsole=true"
+            ls dkan/cypress
+            ls dkan/cypress/results
       - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/screenshots
+          path: dkan/cypress/screenshots
       - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/videos
+          path: dkan/cypress/videos
       - store_test_results:
-          path: docroot/modules/contrib/dkan/cypress/results
+          path: dkan/cypress/results
 
 workflows:
   version: 2
