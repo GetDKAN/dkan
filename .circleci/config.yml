@@ -136,14 +136,14 @@ jobs:
           name: Run DKAN cypress tests
           command: |
             mkdir dkan/cypress/integration/tmp
-            mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split) dkan/cypress/integration/tmp || true
-            ls dkan/cypress/integration/tmp
-            dktl dc exec cli ls /var/www/dkan/cypress/integration/tmp
-            dktl dkan:test-cypress --headless --browser=chromium --spec cypress/integration/tmp/*
+            mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings) dkan/cypress/integration/tmp || true
+            dktl dkan:test-cypress --headless --browser=chromium --spec=cypress/integration/tmp/* --reporter=junit --reporter-options "mochaFile=results/output.xml,toConsole=true"
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/screenshots
       - store_artifacts:
           path: docroot/modules/contrib/dkan/cypress/videos
+      - store_test_results:
+          path: docroot/modules/contrib/dkan/cypress/result
 
 workflows:
   version: 2
