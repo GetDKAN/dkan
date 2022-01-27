@@ -12,7 +12,9 @@ use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 use Drupal\metastore\Storage\NodeData;
+
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -37,13 +39,25 @@ class ServiceTest extends TestCase {
   }
 
   /**
+   * Test \Drupal\metastore\Service::isPublished() method.
+   */
+  public function testIsPublished() {
+    $service = (new Chain($this))
+      ->add(Service::class, 'getStorage', MetastoreStorageInterface::class)
+      ->add(MetastoreStorageInterface::class, 'isPublished', TRUE)
+      ->getMock();
+
+    $this->assertTrue($service->isPublished('dataset', 1));
+  }
+
+  /**
    * Get a dataset.
    */
   public function testGet() {
     $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
 
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(NodeData::class, 'retrieve', json_encode(['foo' => 'bar']))
       ->add(ValidMetadataFactory::class, 'get', $data);
 
     \Drupal::setContainer($container->getMock());
@@ -117,28 +131,6 @@ class ServiceTest extends TestCase {
       json_encode([$data]),
       json_encode($service->getAll("dataset"))
     );
-  }
-
-  /**
-   *
-   */
-  public function testGetResources() {
-    $dataset = [
-      "identifier" => "1",
-      "distribution" => [
-        ["title" => "hello"],
-      ],
-    ];
-    $data = $this->validMetadataFactory->get(json_encode($dataset), 'dataset');
-
-    $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", json_encode($dataset))
-      ->add(ValidMetadataFactory::class, 'get', $data);
-
-    $service = Service::create($container->getMock());
-
-    $this->assertEquals(json_encode([["title" => "hello"]]),
-      json_encode($service->getResources("dataset", "1")));
   }
 
   /**
