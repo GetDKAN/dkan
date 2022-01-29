@@ -30,6 +30,8 @@ class DkanApiDocsGenerator {
    *
    * @param \Drupal\common\Plugin\DkanApiDocsPluginManager $dkanApiDocsPluginManager
    *   The DKAN API Docs Plugin Manager service.
+   * @param \Drupal\Core\Site\Settings $settings
+   *   The Drupal settings service.
    */
   public function __construct(DkanApiDocsPluginManager $dkanApiDocsPluginManager, Settings $settings) {
     $this->docManager = $dkanApiDocsPluginManager;
