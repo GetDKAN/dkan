@@ -11,6 +11,7 @@ use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Serialization\Yaml;
+use Drupal\Core\Site\Settings;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -80,7 +81,7 @@ class OpenApiControllerTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', 600);
     \Drupal::setContainer($container->getMock());
 
-    $generator = new DkanApiDocsGenerator($container->getMock()->get('plugin.manager.dkan_api_docs'));
+    $generator = $this->getGenerator($container->getMock());
     $controller = new OpenApiController($container->getMock()->get('request_stack'), $generator);
 
     // JSON. Caching on.
@@ -103,7 +104,7 @@ class OpenApiControllerTest extends TestCase {
     $container->add(ImmutableConfig::class, 'get', 0);
     \Drupal::setContainer($container->getMock());
 
-    $generator = new DkanApiDocsGenerator($container->getMock()->get('plugin.manager.dkan_api_docs'));
+    $generator = $this->getGenerator($container->getMock());
     $controller = new OpenApiController($container->getMock()->get('request_stack'), $generator);
 
     // JSON. No caching.
@@ -126,12 +127,21 @@ class OpenApiControllerTest extends TestCase {
   }
 
   /**
+  *
+  */
+  private function getGenerator($containerMock): DkanApiDocsGenerator {
+    $manager = $containerMock->get('plugin.manager.dkan_api_docs');
+    $settings = $containerMock->get('settings');
+    return new DkanApiDocsGenerator($manager, $settings);
+  }
+
+  /**
    * Generate mock controller.
    */
   private function getControllerMock($spec, Request $request) {
     $container = $this->getContainerMock($spec, $request)->getMock();
 
-    $generator = new DkanApiDocsGenerator($container->get('plugin.manager.dkan_api_docs'));
+    $generator = $this->getGenerator($container);
     return new OpenApiController($container->get('request_stack'), $generator);
   }
 
@@ -144,6 +154,7 @@ class OpenApiControllerTest extends TestCase {
       ->add('request_stack', RequestStack::class)
       ->add('plugin.manager.dkan_api_docs', DkanApiDocsPluginManager::class)
       ->add('config.factory', ConfigFactoryInterface::class)
+      ->add('settings', new Settings([]))
       ->index(0);
 
     $pluginDefinition = [
