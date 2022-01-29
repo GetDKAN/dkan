@@ -2,6 +2,7 @@
 
 namespace Drupal\common;
 
+use Drupal\Core\Site\Settings;
 use Drupal\common\Plugin\DkanApiDocsPluginManager;
 use Drupal\common\Plugin\OpenApiSpec;
 
@@ -11,13 +12,28 @@ use Drupal\common\Plugin\OpenApiSpec;
 class DkanApiDocsGenerator {
 
   /**
+   * Docs manager.
+   *
+   * @var \Drupal\common\Plugin\DkanApiDocsPluginManager
+   */
+  protected DkanApiDocsPluginManager $docManager;
+
+  /**
+   * Site settings.
+   *
+   * @var \Drupal\Core\Site\Settings
+   */
+  protected Settings $settings;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\common\Plugin\DkanApiDocsPluginManager $dkanApiDocsPluginManager
    *   The DKAN API Docs Plugin Manager service.
    */
-  public function __construct(DkanApiDocsPluginManager $dkanApiDocsPluginManager) {
+  public function __construct(DkanApiDocsPluginManager $dkanApiDocsPluginManager, Settings $settings) {
     $this->docManager = $dkanApiDocsPluginManager;
+    $this->settings = $settings;
   }
 
   /**
@@ -40,7 +56,33 @@ class DkanApiDocsGenerator {
       $spec = array_merge_recursive($spec, $pluginSpec);
     }
 
+    if ($dkanApiBase = $this->settings->get('dkan_api_base')) {
+      $spec = $this->prependDkanApiBase($spec, $dkanApiBase);
+    }
+
     return new OpenApiSpec(json_encode($spec));
+  }
+
+  /**
+   * Prepend each path in the API Docs.
+   *
+   * @param array $spec
+   *   Original spec.
+   * @param string $dkanApiBase
+   *   The missing part of the url we want to prepend.
+   *
+   * @return array
+   *   Spec with modified paths.
+   */
+  private function prependDkanApiBase(array $spec, string $dkanApiBase = ''): array {
+
+    $modifiedPaths = [];
+    foreach ($spec['paths'] as $path => $value) {
+      $modifiedPaths[$dkanApiBase . $path] = $value;
+    }
+    $spec['paths'] = $modifiedPaths;
+
+    return $spec;
   }
 
   /**
