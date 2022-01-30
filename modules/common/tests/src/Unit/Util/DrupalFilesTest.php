@@ -28,6 +28,28 @@ class DrupalFilesTest extends TestCase {
   }
 
   /**
+   *
+   */
+  public function testUnsupportedOriginUrl() {
+    $drupalFiles = DrupalFiles::create($this->getContainer());
+    $this->expectExceptionMessage("Only file:// and http(s) urls are supported");
+    $drupalFiles->retrieveFile(
+      "s3://foo/bar/hello.txt",
+      "public://tmp");
+  }
+
+  /**
+   *
+   */
+  public function testUnsupportedDestination() {
+    $drupalFiles = DrupalFiles::create($this->getContainer());
+    $this->expectExceptionMessage("Only moving files to Drupal's public directory (public://) is supported");
+    $drupalFiles->retrieveFile(
+      "file://" . __DIR__ . "/../../../files/hello.txt",
+      "private://tmp");
+  }
+
+  /**
    * Private.
    */
   private function getContainer(): ContainerInterface {
@@ -50,7 +72,10 @@ class DrupalFilesTest extends TestCase {
    * Protected.
    */
   protected function tearDown() {
-    unlink("/tmp/hello.txt");
+    $file = '/tmp/hello.txt';
+    if (file_exists($file)) {
+      unlink($file);
+    }
   }
 
 }
