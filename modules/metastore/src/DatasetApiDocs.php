@@ -3,6 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\common\DkanApiDocsGenerator;
+use Drupal\Core\Site\Settings;
 
 /**
  * Provides dataset-specific OpenAPI documentation.
@@ -64,16 +65,26 @@ class DatasetApiDocs {
   private $metastore;
 
   /**
+   * Site settings.
+   *
+   * @var \Drupal\Core\Site\Settings
+   */
+  private Settings $settings;
+
+  /**
    * Constructs a new MetastoreDocsController.
    *
    * @param \Drupal\common\DkanApiDocsGenerator $docsGenerator
    *   Serves openapi spec.
    * @param \Drupal\metastore\Service $metastore
    *   The metastore service.
+   * @param \Drupal\Core\Site\Settings $settings
+   *   The Drupal settings service.
    */
-  public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore) {
+  public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore, Settings $settings) {
     $this->docsGenerator = $docsGenerator;
     $this->metastore = $metastore;
+    $this->settings = $settings;
   }
 
   /**
@@ -112,6 +123,7 @@ class DatasetApiDocs {
 
     $this->alterDatastoreParameters($datasetSpec, $identifier);
     $this->modifySqlEndpoints($datasetSpec, $identifier);
+    $this->prependDkanApiBase($datasetSpec);
 
     return $datasetSpec;
   }
@@ -300,6 +312,27 @@ class DatasetApiDocs {
     $data = $this->metastore->swapReferences($this->metastore->get("dataset", $identifier));
 
     return $data->{"$.distribution"} ?? [];
+  }
+
+  /**
+   * Alter the dataset-specific paths based on settings' dkan_api_base.
+   *
+   * @param array $spec
+   *   The dataset specific openapi.
+   */
+  private function prependDkanApiBase(array &$spec) {
+
+    $dkanApiBase = $this->settings->get('dkan_api_base');
+
+    if (!$dkanApiBase) {
+      return;
+    }
+
+    $modifiedPaths = [];
+    foreach ($spec['paths'] as $path => $value) {
+      $modifiedPaths[$dkanApiBase . $path] = $value;
+    }
+    $spec['paths'] = $modifiedPaths;
   }
 
 }
