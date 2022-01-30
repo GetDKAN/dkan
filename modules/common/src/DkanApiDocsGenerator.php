@@ -2,6 +2,7 @@
 
 namespace Drupal\common;
 
+use Drupal\common\Util\ApiDocsPathModifier;
 use Drupal\Core\Site\Settings;
 use Drupal\common\Plugin\DkanApiDocsPluginManager;
 use Drupal\common\Plugin\OpenApiSpec;
@@ -59,32 +60,10 @@ class DkanApiDocsGenerator {
     }
 
     if ($dkanApiBase = $this->settings->get('dkan_api_base')) {
-      $spec = $this->prependDkanApiBase($spec, $dkanApiBase);
+      $spec = ApiDocsPathModifier::prepend($spec, $dkanApiBase);
     }
 
     return new OpenApiSpec(json_encode($spec));
-  }
-
-  /**
-   * Prepend each path in the API Docs.
-   *
-   * @param array $spec
-   *   Original spec.
-   * @param string $dkanApiBase
-   *   The missing part of the url we want to prepend.
-   *
-   * @return array
-   *   Spec with modified paths.
-   */
-  private function prependDkanApiBase(array $spec, string $dkanApiBase = ''): array {
-
-    $modifiedPaths = [];
-    foreach ($spec['paths'] as $path => $value) {
-      $modifiedPaths[$dkanApiBase . $path] = $value;
-    }
-    $spec['paths'] = $modifiedPaths;
-
-    return $spec;
   }
 
   /**

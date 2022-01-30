@@ -3,6 +3,7 @@
 namespace Drupal\metastore;
 
 use Drupal\common\DkanApiDocsGenerator;
+use Drupal\common\Util\ApiDocsPathModifier;
 use Drupal\Core\Site\Settings;
 
 /**
@@ -123,7 +124,9 @@ class DatasetApiDocs {
 
     $this->alterDatastoreParameters($datasetSpec, $identifier);
     $this->modifySqlEndpoints($datasetSpec, $identifier);
-    $this->prependDkanApiBase($datasetSpec);
+    if ($dkanApiBase = $this->settings->get('dkan_api_base')) {
+      $datasetSpec = ApiDocsPathModifier::prepend($datasetSpec, $dkanApiBase);
+    }
 
     return $datasetSpec;
   }
@@ -312,27 +315,6 @@ class DatasetApiDocs {
     $data = $this->metastore->swapReferences($this->metastore->get("dataset", $identifier));
 
     return $data->{"$.distribution"} ?? [];
-  }
-
-  /**
-   * Alter the dataset-specific paths based on settings' dkan_api_base.
-   *
-   * @param array $spec
-   *   The dataset specific openapi.
-   */
-  private function prependDkanApiBase(array &$spec) {
-
-    $dkanApiBase = $this->settings->get('dkan_api_base');
-
-    if (!$dkanApiBase) {
-      return;
-    }
-
-    $modifiedPaths = [];
-    foreach ($spec['paths'] as $path => $value) {
-      $modifiedPaths[$dkanApiBase . $path] = $value;
-    }
-    $spec['paths'] = $modifiedPaths;
   }
 
 }
