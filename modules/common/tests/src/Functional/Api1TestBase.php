@@ -27,6 +27,7 @@ abstract class Api1TestBase extends ExistingSiteBase {
     $this->flushQueues();
     $this->removeFiles();
     $this->removeDatastoreTables();
+    $this->setDefaultModerationState($state = 'published');
     $this->baseUrl = getenv('SIMPLETEST_BASE_URL');
     $this->http = new Client(['base_uri' => $this->baseUrl]);
     $this->auth = ['testuser', '2jqzOAnXS9mmcLasy'];
@@ -58,5 +59,19 @@ abstract class Api1TestBase extends ExistingSiteBase {
       RequestOptions::AUTH => $this->auth,
       RequestOptions::HTTP_ERRORS => $httpErrors,
     ]);
+  }
+
+  protected function getSampleDataset(int $n = 0) {
+    $sampleJson = file_get_contents('/var/www/docroot/modules/contrib/dkan/modules/sample_content/sample_content.json');
+    $sampleDatasets = json_decode($sampleJson);
+    return $sampleDatasets->dataset[$n];
+  }
+
+  protected function setDefaultModerationState($state = 'published') {
+    /** @var \Drupal\Core\Config\ConfigFactory $config */
+    $config = \Drupal::service('config.factory');
+    $defaultModerationState = $config->getEditable('workflows.workflow.dkan_publishing');
+    $defaultModerationState->set('type_settings.default_moderation_state', $state);
+    $defaultModerationState->save();
   }
 }

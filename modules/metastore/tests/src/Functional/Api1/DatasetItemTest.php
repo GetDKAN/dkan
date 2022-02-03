@@ -131,10 +131,4 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals($dataset, $responseBody);
   }
 
-  private function getSampleDataset(int $n = 0) {
-    $sampleJson = file_get_contents('/var/www/docroot/modules/contrib/dkan/modules/sample_content/sample_content.json');
-    $sampleDatasets = json_decode($sampleJson);
-    return $sampleDatasets->dataset[$n];
-  }
-
 }
