@@ -52,7 +52,7 @@ jobs:
         type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.5"
+      DKTL_VERSION: "phpunit-testuser"
     steps:
       - checkout:
           path: dkan
