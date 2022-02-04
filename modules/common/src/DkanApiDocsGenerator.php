@@ -59,8 +59,9 @@ class DkanApiDocsGenerator {
       $spec = array_merge_recursive($spec, $pluginSpec);
     }
 
-    // Add 'dkan_api_base' setting to prefix the API path if your routing does not start
-    // with your site's root URL (e.g. "data" for API paths to use "/data/api/1").
+    // Add 'dkan_api_base' setting to prefix the API path if your routing
+    // does not start with your site's root URL (e.g. "data" for API paths
+    // to use "/data/api/1").
     if ($dkanApiBase = $this->settings->get('dkan_api_base')) {
       $spec = ApiDocsPathModifier::prepend($spec, $dkanApiBase);
     }
