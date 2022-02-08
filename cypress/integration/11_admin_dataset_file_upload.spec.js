@@ -35,7 +35,7 @@ context('Admin dataset file upload', () => {
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-remote')
         .click({ force:true })
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote')
-        .type('https://download.medicaid.gov/data/wallpaper-banner.y7hy-xrtw.194ac9ce-07a3-5e94-a3ee-cfafaa164c2b.csv', { force:true })
+        .type('https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv', { force:true })
       cy.get('#edit-submit')
         .click({ force:true })
       cy.get('.messages--status')
@@ -61,6 +61,7 @@ context('Admin dataset file upload', () => {
         .should('be.visible')
       cy.get('.dc-datatable > .dc-table', {timeout: 60000})
         .should('be.visible')
+      cy.wait(2000)
     })
   })
 
