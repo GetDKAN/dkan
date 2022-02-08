@@ -2,6 +2,8 @@
 
 namespace Drupal\common;
 
+use Drupal\common\Util\ApiDocsPathModifier;
+use Drupal\Core\Site\Settings;
 use Drupal\common\Plugin\DkanApiDocsPluginManager;
 use Drupal\common\Plugin\OpenApiSpec;
 
@@ -11,13 +13,30 @@ use Drupal\common\Plugin\OpenApiSpec;
 class DkanApiDocsGenerator {
 
   /**
+   * Docs manager.
+   *
+   * @var \Drupal\common\Plugin\DkanApiDocsPluginManager
+   */
+  protected DkanApiDocsPluginManager $docManager;
+
+  /**
+   * Site settings.
+   *
+   * @var \Drupal\Core\Site\Settings
+   */
+  protected Settings $settings;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\common\Plugin\DkanApiDocsPluginManager $dkanApiDocsPluginManager
    *   The DKAN API Docs Plugin Manager service.
+   * @param \Drupal\Core\Site\Settings $settings
+   *   The Drupal settings service.
    */
-  public function __construct(DkanApiDocsPluginManager $dkanApiDocsPluginManager) {
+  public function __construct(DkanApiDocsPluginManager $dkanApiDocsPluginManager, Settings $settings) {
     $this->docManager = $dkanApiDocsPluginManager;
+    $this->settings = $settings;
   }
 
   /**
@@ -38,6 +57,13 @@ class DkanApiDocsGenerator {
     foreach ($docPluginDefinitions as $definition) {
       $pluginSpec = $this->docManager->createInstance($definition['id'])->spec();
       $spec = array_merge_recursive($spec, $pluginSpec);
+    }
+
+    // Add 'dkan_api_base' setting to prefix the API path if your routing
+    // does not start with your site's root URL (e.g. "data" for API paths
+    // to use "/data/api/1").
+    if ($dkanApiBase = $this->settings->get('dkan_api_base')) {
+      $spec = ApiDocsPathModifier::prepend($spec, $dkanApiBase);
     }
 
     return new OpenApiSpec(json_encode($spec));

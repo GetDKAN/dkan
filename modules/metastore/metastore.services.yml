@@ -90,6 +90,7 @@ services:
     arguments:
       - '@dkan.common.docs_generator'
       - '@dkan.metastore.service'
+      - '@settings'
 
   dkan.metastore.api_response:
     class: \Drupal\metastore\MetastoreApiResponse
