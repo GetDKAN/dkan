@@ -1,5 +1,3 @@
-import 'cypress-file-upload'
-
 context('Admin dataset file upload', () => {
   let baseurl = Cypress.config().baseUrl
   beforeEach(() => {
@@ -68,11 +66,11 @@ context('Admin dataset file upload', () => {
 
   context('Create dataset with file upload', () => {
     it('can fill up the form with distribution and submit', () => {
-      const fileType = 'csv'
       const selectorDist = '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload'
       const fileName = 'example.csv'
+      const fileType = 'csv'
 
-      cy.visit(baseurl + "/node/add/data")
+      cy.visit(baseurl + '/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST distribution title file upload', { force:true } )
       cy.get('#edit-field-json-metadata-0-value-description').type('DKANTEST distribution description.', { force:true } )
@@ -101,8 +99,7 @@ context('Admin dataset file upload', () => {
 
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-upload')
         .click({ force:true })
-      cy.get(selectorDist).attachFile(fileName, { force: true })
-      cy.wait(2000)
+      cy.get(selectorDist).uploadFile(fileName, fileType)
       //wait for the file to be fully loaded
       cy.get('.file--mime-text-csv', {timeout: 120000})
         .should('be.visible')
