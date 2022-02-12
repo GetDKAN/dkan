@@ -2,7 +2,7 @@ DKAN Roles and Permissions
 ===========================
 Roles categorize types of users. Permissions are assigned to these roles and represent functions the user can perform across the site.
 
-Below is a list of the roles and general permissions included in the **DKAN Permissions** module. The descriptions should help show what different user types are able to do on the site. Whan adding new users, site managers will assign the appropriate role(s) to match the tasks the user is expected to perform.
+Below is a list of the roles and general permissions included in the **DKAN Permissions** module. The descriptions should help show what different user types are able to do on the site. When adding new users, site managers will assign the appropriate role(s) to match the tasks the user is expected to perform.
 
 There will also be cases where you need users to have different permissions in the context of a particular **group** (for instance, to be able to modify content belonging to their agency but not other agencies on the same website). Read more about :ref:`group permissions here <group_roles_permissions>`.
 
