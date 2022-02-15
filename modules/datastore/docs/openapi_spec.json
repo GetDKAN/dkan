@@ -393,9 +393,6 @@
                         "$ref": "#/components/parameters/datastoreDistributionUuid"
                     },
                     {
-                        "$ref": "#/components/parameters/datastoreDownload"
-                    },
-                    {
                         "in": "query",
                         "name": "format",
                         "required": false,
