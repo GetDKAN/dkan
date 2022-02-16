@@ -529,8 +529,11 @@ class Service implements ContainerInjectionInterface {
       }
     }
 
-    if (isset($array['distribution'][0]['%Ref:downloadURL'])) {
-      unset($array['distribution'][0]['%Ref:downloadURL']);
+    if (!empty($array['distribution'])) {
+      $array['distribution'] = array_map(function ($dist) {
+        unset($dist['%Ref:downloadURL']);
+        return $dist;
+      }, $array['distribution']);
     }
 
     $object->set('$', $array);
