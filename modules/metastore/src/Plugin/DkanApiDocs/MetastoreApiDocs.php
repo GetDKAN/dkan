@@ -18,6 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class MetastoreApiDocs extends DkanApiDocsBase {
 
+  const DOC_SCHEMAS = ['dataset'];
+
   /**
    * The DKAN metastore service.
    *
@@ -87,19 +89,33 @@ class MetastoreApiDocs extends DkanApiDocsBase {
    * {@inheritdoc}
    */
   public function spec() {
-    $schemas = $this->metastore->getSchemas();
-    $schemaIds = array_values(array_filter(
-      array_keys($schemas),
+    $spec = $this->getDoc('metastore');
+
+    $exampleSchemaIds = array_values(array_filter(
+      array_keys($this->metastore->getSchemas()),
       [$this, 'filterSchemaIds']
     ));
-    $spec = $this->getDoc('metastore');
-    $spec["components"]["parameters"]["schemaId"]["schema"]["example"] = $schemaIds[0];
+    foreach ($exampleSchemaIds as $schemaId) {
+      $spec["components"]["parameters"]["schemaId"]["examples"]["$schemaId"] = ['value' => $schemaId];
+    }
+
+    $schemaIds = self::DOC_SCHEMAS;
     foreach ($schemaIds as $schemaId) {
       $spec["components"]["schemas"] += $this->schemaComponent($schemaId);
-      $spec["components"]["parameters"]["schemaId"]["examples"]["$schemaId"] = ['value' => $schemaId];
       $spec["components"]["parameters"] += $this->schemaParameters($schemaId);
       $spec['paths'] += $this->schemaPaths($schemaId);
+
+      $tSchema = [':schemaId' => $schemaId];
+      $spec['tags'][] = [
+        'name' => $this->t("Metastore: :schemaId", $tSchema),
+        'description' => $this->t("CRUD operations for :schemaId metastore items. Substitute any other schema name for \":schemaId\" to modify other items.", $tSchema),
+      ];
     }
+
+    // Copy one of the UUID parameters to a generic one for
+    // non-schema-specific URLs.
+    $spec["components"]["parameters"]["exampleUuid"] = $spec["components"]["parameters"]["{$schemaIds[0]}Uuid"];
+
     return $spec;
   }
 
@@ -263,7 +279,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return [
       "operationId" => "$schemaId-post",
       "summary" => $this->t("Create a new :schemaId.", $tSchema),
-      "tags" => [$this->t("Metastore: create")],
+      "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
       "security" => [['basic_auth' => []]],
       "requestBody" => [
         "required" => TRUE,
@@ -275,12 +291,13 @@ class MetastoreApiDocs extends DkanApiDocsBase {
         ],
       ],
       "responses" => [
-        "200" => [
+        "201" => [
           "description" => "Metadata creation successful.",
           "content" => [
             "application/json" => ["schema" => ['$ref' => '#/components/schemas/metastoreWriteResponse']],
           ],
         ],
+        '400' => ['$ref' => '#/components/responses/400BadJson']
       ],
     ];
   }
@@ -299,7 +316,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     return [
       "operationId" => "$schemaId-get-item",
       "summary" => $this->t("Get a single :schemaId.", $tSchema),
-      "tags" => [$this->t("Metastore: get")],
+      "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
       "parameters" => [
         ['$ref' => "#/components/parameters/{$schemaId}Uuid"],
         ['$ref' => "#/components/parameters/showReferenceIds"],
@@ -331,9 +348,9 @@ class MetastoreApiDocs extends DkanApiDocsBase {
     $tSchema = [':schemaId' => $schemaId];
     return [
       "operationId" => "$schemaId-put",
-      "summary" => $this->t("Fully replace an existing :schemaId", $tSchema),
+      "summary" => $this->t("Replace a :schemaId", $tSchema),
       "description" => $this->t("Object will be completely replaced; optional properties not included in the request will be deleted.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, changing values, and pasting to test.", $tSchema),
-      "tags" => [$this->t("Metastore: replace")],
+      "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
       "security" => [
         ['basic_auth' => []],
       ],
@@ -372,7 +389,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       "operationId" => "$schemaId-patch",
       "summary" => $this->t("Modify an existing :schemaId", $tSchema),
       "description" => $this->t("Values provided will replace existing values, but required values may be omitted.\n\nAutomatic example not yet available; try retrieving a :schemaId via GET, changing values, removing unchanged properties, and pasting to test.", $tSchema),
-      "tags" => ["Metastore: patch"],
+      "tags" => [$this->t("Metastore: :schemaId", $tSchema)],
       "security" => [
         ['basic_auth' => []],
       ],
