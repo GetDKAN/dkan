@@ -108,7 +108,10 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       $tSchema = [':schemaId' => $schemaId];
       $spec['tags'][] = [
         'name' => $this->t("Metastore: :schemaId", $tSchema),
-        'description' => $this->t("CRUD operations for :schemaId metastore items. Substitute any other schema name for \":schemaId\" to modify other items.", $tSchema),
+        'description' => $this->t(
+          'CRUD operations for :schemaId metastore items. Substitute any other schema name for ":schemaId" to modify other items.', 
+          $tSchema
+        ),
       ];
     }
 
@@ -297,7 +300,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
             "application/json" => ["schema" => ['$ref' => '#/components/schemas/metastoreWriteResponse']],
           ],
         ],
-        '400' => ['$ref' => '#/components/responses/400BadJson']
+        '400' => ['$ref' => '#/components/responses/400BadJson'],
       ],
     ];
   }
