@@ -109,7 +109,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       $spec['tags'][] = [
         'name' => $this->t("Metastore: :schemaId", $tSchema),
         'description' => $this->t(
-          'CRUD operations for :schemaId metastore items. Substitute any other schema name for ":schemaId" to modify other items.', 
+          'CRUD operations for :schemaId metastore items. Substitute any other schema name for ":schemaId" to modify other items.',
           $tSchema
         ),
       ];
