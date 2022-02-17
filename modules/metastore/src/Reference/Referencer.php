@@ -418,8 +418,10 @@ class Referencer {
       // If an existing but orphaned data node is found,
       // change the state back to published.
       // @ToDo: if the referencing node is in a draft state, do not publish the referenced node.
-      $node->set('moderation_state', 'published');
-      $node->save();
+      if ($node->get('moderation_state')->value !== "published") {
+        $node->set('moderation_state', 'published');
+        $node->save();
+      }
       return $node->uuid();
     }
     return NULL;
