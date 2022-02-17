@@ -23,7 +23,9 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::AUTH => $this->auth,
     ]);
 
-    $response = $this->http->get($this->endpoint);
+    $response = $this->http->get($this->endpoint, [
+      RequestOptions::AUTH => $this->auth,
+    ]);
     $responseBody = json_decode($response->getBody());
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertEquals(2, count($responseBody));
@@ -34,6 +36,7 @@ class DatasetRevisionTest extends Api1TestBase {
     $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions";
     $response = $this->http->get($badDatasetUrl, [
       RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::AUTH => $this->auth,
     ]);
     $this->assertEquals(404, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
@@ -46,17 +49,21 @@ class DatasetRevisionTest extends Api1TestBase {
       RequestOptions::JSON => $data,
       RequestOptions::AUTH => $this->auth,
     ]);
-    $responseSchema = $this->spec->components->schemas->metastoreWriteResponse;
+    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
     $responseBody = json_decode($response->getBody());
     $this->assertJsonIsValid($responseSchema, $responseBody);
 
-    $response = $this->http->get($this->endpoint);
+    $response = $this->http->get($this->endpoint, [
+      RequestOptions::AUTH => $this->auth,
+    ]);
     $responseBody = json_decode($response->getBody());
     $listRevision = $responseBody[0];
 
     // Confirm we get the same object from the item get as the list.
-    $response = $this->http->get($this->endpoint . "/$listRevision->identifier");
+    $response = $this->http->get($this->endpoint . "/$listRevision->identifier", [
+      RequestOptions::AUTH => $this->auth,
+    ]);
     $this->assertEquals(200, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($listRevision, $responseBody);
@@ -65,6 +72,7 @@ class DatasetRevisionTest extends Api1TestBase {
     $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/abc-123/revisions/$listRevision->identifier";
     $response = $this->http->get($badDatasetUrl, [
       RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::AUTH => $this->auth,
     ]);
     $this->assertEquals(404, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
@@ -79,6 +87,7 @@ class DatasetRevisionTest extends Api1TestBase {
     $badDatasetUrl = "/api/1/metastore/schemas/dataset/items/$secondData->identifier/revisions/$listRevision->identifier";
     $response = $this->http->get($badDatasetUrl, [
       RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::AUTH => $this->auth,
     ]);
     $this->assertEquals(404, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
@@ -87,6 +96,7 @@ class DatasetRevisionTest extends Api1TestBase {
     // Confirm we get an error if we have a non-existant revision ID.
     $response = $this->http->get($this->endpoint . "/123456789", [
       RequestOptions::HTTP_ERRORS => FALSE,
+      RequestOptions::AUTH => $this->auth,
     ]);
     $this->assertEquals(404, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
@@ -109,7 +119,7 @@ class DatasetRevisionTest extends Api1TestBase {
       'archived' => FALSE,
       'hidden' => TRUE,
     ];
-    $responseSchema = $this->spec->components->schemas->metastoreWriteResponse;
+    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
     $count = 1;
     foreach ($states as $state => $public) {
@@ -123,14 +133,18 @@ class DatasetRevisionTest extends Api1TestBase {
       $this->assertJsonIsValid($responseSchema, $responseBody);
 
       // Validate URL and contents of response object.
-      $response = $this->http->get($responseBody->endpoint);
+      $response = $this->http->get($responseBody->endpoint, [
+        RequestOptions::AUTH => $this->auth,
+      ]);
       $responseBody = json_decode($response->getBody());
       // Message and state match the values submitted.
       $this->assertStringContainsString($state, $responseBody->message);
       $this->assertEquals($state, $responseBody->state);
 
       // Confirm revisions list has increased by one item.
-      $response = $this->http->get($this->endpoint);
+      $response = $this->http->get($this->endpoint, [
+        RequestOptions::AUTH => $this->auth,
+      ]);
       $responseBody = json_decode($response->getBody());
       $this->assertEquals($count, count($responseBody));
 
@@ -148,7 +162,9 @@ class DatasetRevisionTest extends Api1TestBase {
     $this->assertEquals(400, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
     $this->assertStringContainsString('does not exist in workflow', $responseBody->message);
-    $response = $this->http->get($this->endpoint);
+    $response = $this->http->get($this->endpoint, [
+      RequestOptions::AUTH => $this->auth,
+    ]);
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($count, count($responseBody));
 
@@ -165,7 +181,9 @@ class DatasetRevisionTest extends Api1TestBase {
     $this->assertEquals(400, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
     $this->assertStringContainsString('No dataset found', $responseBody->message);
-    $response = $this->http->get($this->endpoint);
+    $response = $this->http->get($this->endpoint, [
+      RequestOptions::AUTH => $this->auth,
+    ]);
     $responseBody = json_decode($response->getBody());
     $this->assertEquals($count, count($responseBody));
 

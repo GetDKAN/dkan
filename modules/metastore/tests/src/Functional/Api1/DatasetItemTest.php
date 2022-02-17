@@ -45,7 +45,7 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(201, $response->getStatusCode());
 
     $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->schemas->metastoreWriteResponse;
+    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
 
     $this->assertJsonIsValid($responseSchema, $responseBody);
     $this->assertDatasetGet($dataset);
@@ -70,7 +70,7 @@ class DatasetItemTest extends Api1TestBase {
     $this->assertEquals(200, $response->getStatusCode());
 
     $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->schemas->metastoreWriteResponse;
+    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
     $this->assertJsonIsValid($responseSchema, $responseBody);
 
     $dataset->title = $newTitle->title;
@@ -107,7 +107,7 @@ class DatasetItemTest extends Api1TestBase {
     ]);
     $this->assertEquals(200, $response->getStatusCode());
     $responseBody = json_decode($response->getBody());
-    $responseSchema = $this->spec->components->schemas->metastoreWriteResponse;
+    $responseSchema = $this->spec->components->responses->{"201MetadataCreated"}->content->{"application/json"}->schema;
     $this->assertJsonIsValid($responseSchema, $responseBody);
     $this->assertDatasetGet($newDataset);
 
