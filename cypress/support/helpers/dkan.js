@@ -30,8 +30,21 @@ export function getMetastoreDeleteEndpoint (schema_id, identifier) {
   return `/${api_uri}/metastore/schemas/${schema_id}/items/${identifier}`
 }
 
+function getDatastoreImportsEndpoint () {
+  return `/${api_uri}/datastore/imports`
+}
+
 function getMetastoreSearchEndpoint () {
   return `/${api_uri}/search`
+}
+
+// verify dataset file was imported successfully
+export function verifyFileImportedSuccessfully (file_name) {
+  cy.request(getDatastoreImportsEndpoint()).then(response => {
+    expect(response.status).eql(200)
+    console.log(response.body)
+    expect(response.body).to.satisfy(body => Object.values(body).find(item => item.fileName === file_name && item.importerStatus === 'done'))
+  })
 }
 
 // Generate a random uuid.

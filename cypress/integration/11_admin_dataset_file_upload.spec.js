@@ -1,3 +1,5 @@
+import * as dkan from '../support/helpers/dkan'
+
 context('Admin dataset file upload', () => {
   let baseurl = Cypress.config().baseUrl
   beforeEach(() => {
@@ -6,6 +8,8 @@ context('Admin dataset file upload', () => {
 
   context('Create dataset with NetStorage upload', () => {
     it('can fill up the form with distribution and submit', () => {
+      const fileUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv'
+
       cy.visit(baseurl + "/node/add/data")
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST remote file test', { force:true } )
@@ -35,33 +39,21 @@ context('Admin dataset file upload', () => {
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-remote')
         .click({ force:true })
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-remote')
-        .type('https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv', { force:true })
+        .type(fileUrl, { force:true })
       cy.get('#edit-submit')
         .click({ force:true })
       cy.get('.messages--status')
         .should('contain','has been created')
 
-      //run Cron Job to get table populated on dataset page
+      // run cron to import new dataset
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')
         .click({force: true})
       cy.get('.messages--status', {timeout: 120000})
         .should('be.visible')
 
-      //view dataset and verify that the preview table exists
-      cy.visit('/admin/dkan/datasets')
-      cy.get('#edit-title')
-        .type('DKANTEST remote file test',{ force:true })
-      cy.get('#edit-submit-dkan-dataset-content')
-        .click({ force:true })
-      cy.get('tbody > tr > .views-field-title > a')
-        .should('be.visible')
-        .click({ force:true })
-      cy.get('.dc-resource > a', {timeout: 30000})
-        .should('be.visible')
-      cy.get('.dc-datatable > .dc-table', {timeout: 60000})
-        .should('be.visible')
-      cy.wait(2000)
+      // verify dataset was imported successfully
+      dkan.verifyFileImportedSuccessfully(fileUrl.split('/').pop())
     })
   })
 
@@ -108,25 +100,16 @@ context('Admin dataset file upload', () => {
         .click({ force:true })
       cy.get('.messages--status')
         .should('contain','has been created')
-      // run cron job to get table populated on dataset page
+
+      // run cron to import new dataset
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')
         .click({force: true})
       cy.get('.messages--status', {timeout: 120000})
         .should('be.visible')
 
-      cy.visit('/admin/dkan/datasets')
-      cy.get('#edit-title')
-        .type('DKANTEST distribution title file upload',{ force:true })
-      cy.get('#edit-submit-dkan-dataset-content')
-        .click({ force:true })
-      cy.get('tbody > tr > .views-field-title > a')
-        .should('be.visible')
-        .click({ force:true })
-      cy.get('.dc-resource > a', {timeout: 30000})
-        .should('be.visible')
-      cy.get('.dc-datatable > .dc-table', {timeout: 60000})
-        .should('be.visible')
+      // verify dataset was imported successfully
+      dkan.verifyFileImportedSuccessfully(fileName)
     })
   })
 
