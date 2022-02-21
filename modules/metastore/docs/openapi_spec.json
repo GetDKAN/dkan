@@ -25,6 +25,26 @@
             }
         },
         "responses": {
+            "201MetadataCreated": {
+                "description": "Metadata creation successful.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "endpoint": {
+                                    "type": "string",
+                                    "description": "Path to the metadata from the API."
+                                },
+                                "identifier": {
+                                    "type": "string",
+                                    "description": "Identifier for metadata just created or modified."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "412MetadataObjectNotFound": {
                 "description": "Missing object, usually due to incorrect identifier.",
                 "content": {
@@ -41,19 +61,65 @@
 
         },
         "schemas": {
-            "metastoreWriteResponse": {
+            "metastoreRevision": {
                 "type": "object",
                 "properties": {
-                    "endpoint": {
-                        "type": "string",
-                        "description": "Path to the metadata from the API."
-                    },
                     "identifier": {
                         "type": "string",
-                        "description": "Identifier for metadata just created or modified."
+                        "description": "Revision identifier."
+                    },
+                    "published": {
+                        "type": "boolean",
+                        "description": "Is this the currently published revision?."
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Revision log message."
+                    },
+                    "modified": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp of this revision/modification."
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "published",
+                            "hidden",
+                            "archived",
+                            "orphaned"
+                        ],
+                        "description": "The workflow state of this revision. Currently five states are supported in DKAN."
+                    }
+                }
+            },
+            "metastoreNewRevision": {
+                "type": "object",
+                "description": "When creating a new revision, you may only submit a message and state.",
+                "additionalProperties": false,
+                "required": [
+                    "state"
+                ],
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "Revision log message."
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "published",
+                            "hidden",
+                            "archived",
+                            "orphaned"
+                        ],
+                        "description": "The workflow state of this revision. Currently five states are supported in DKAN."
                     }
                 }
             }
+
         }
     },
     "paths": {
@@ -129,29 +195,115 @@
                 }
             }
         },
-        "/api/1/metastore/schemas/dataset/items/{identifier}/docs": {
+        "/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions": {
             "get": {
-                "operationId": "docs-get-dataset-specific",
-                "summary": "Dataset-specific json documentation",
-                "tags": [
-                    "Metastore: documentation"
-                ],
+                "operationId": "metastore-get-all-revisions",
+                "summary": "Get all revisions for an item.",
+                "tags": [ "Metastore" ],
                 "parameters": [
-                    { "$ref": "#/components/parameters/datasetUuid" }
+                    { "$ref": "#/components/parameters/schemaId" },
+                    { "$ref": "#/components/parameters/exampleUuid" }
                 ],
+                "security": [ { "basic_auth": [] } ],
                 "responses": {
                     "200": {
                         "description": "Ok",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "array",
+                                    "description": "Array of revision objects.",
+                                    "items": { "$ref": "#/components/schemas/metastoreRevision"}
+                                }
+                            }
+                        }
+                    },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
+                }
+            },
+            "post": {
+                "operationId": "metastore-revision-post",
+                "summary": "Create new item revision/state.",
+                "tags": [ "Metastore" ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/schemaId" },
+                    { "$ref": "#/components/parameters/exampleUuid" }
+                ],
+                "security": [ { "basic_auth": [] } ],
+                "requestBody": {
+                    "required": true,
+                    "description": "Post a new revision object to change an item's moderation state. Simultaneous metastore item content changes and state changes not currently possible.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "description": "Revision log message."
+                                    },                
+                                    "state": {
+                                        "type": "string",
+                                        "enum": [
+                                            "draft",
+                                            "published",
+                                            "hidden",
+                                            "archived",
+                                            "orphaned"
+                                        ],
+                                        "description": "The workflow state of this revision. Currently five states are supported in DKAN."
+                                    }                
                                 }
                             }
                         }
                     }
+                },
+                "responses": {
+                    "201": { "$ref": "#/components/responses/201MetadataCreated" },
+                    "400": { "$ref": "#/components/responses/400BadJson"}
+                }
+            }
+        },
+        "/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions/{revision_id}": {
+            "get": {
+                "operationId": "metastore-get-revision",
+                "summary": "Get all revisions for an item.",
+                "tags": [ "Metastore" ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/schemaId" },
+                    { "$ref": "#/components/parameters/exampleUuid" },
+                    {
+                        "name": "revision_id",
+                        "in": "path",
+                        "description": "Revision identifier. Use \"identifier\" property from revision object.",
+                        "required": true,
+                        "schema": { "type": "string" },
+                        "example": "1"
+                    }
+                ],
+                "security": [
+                    {
+                        "basic_auth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": { "$ref": "#/components/schemas/metastoreRevision" }
+                            }
+                        }
+                    },
+                    "404": { "$ref": "#/components/responses/404IdNotFound" }
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Metastore",
+            "description": "Work with metadata items."
+        }
+    ]
 }

@@ -1,3 +1,5 @@
+import * as dkan from '../support/helpers/dkan'
+
 context('Admin content and dataset views', () => {
     let baseurl = Cypress.config().baseUrl;
     beforeEach(() => {
@@ -15,6 +17,8 @@ context('Admin content and dataset views', () => {
     })
 
     it('The admin content screen has bulk operations options.', () => {
+        // Make sure there is at least one dataset in the view
+        dkan.createDatasetWithModerationState('Testing bulk operations', 'published')
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
         cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
