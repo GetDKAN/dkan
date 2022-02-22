@@ -1,5 +1,4 @@
 {
-  "baseUrl": "http://2x.localtest.me",
   "apiUri": "api/1",
   "env": {
     "TEST_USER_CREDENTIALS": {
