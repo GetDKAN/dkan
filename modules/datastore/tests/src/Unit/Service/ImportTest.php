@@ -71,7 +71,10 @@ class ImportTest extends TestCase {
     $service = new Service($resource, $jobStoreFactory, $databaseTableFactory);
     $service->import();
 
-    $this->assertTrue($service->getResult() instanceof Result);
+    $result = $service->getResult();
+    $this->assertTrue($result instanceof Result);
+    $this->assertEmpty($result->getError());
+
   }
 
   /**

@@ -1,0 +1,174 @@
+<?php
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
+
+const DKAN_JS_FRONTEND_MISSING_DATASET_ROUTE_ERROR = 'Missing required DKAN route "dataset"; unable to build sitemap for dataset URLs.';
+const DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK = [
+  'priority' => '0.7',
+  'changefreq' => 'daily',
+];
+const DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK = [
+  'priority' => '0.5',
+  'changefreq' => 'weekly',
+];
+
+/**
+ * Implements hook_library_info_build().
+ * Collects all CSS/JS files in the paths set in config 
+ * and adds them the dkan_js_frontend.
+ *
+ * @return array
+ */
+function dkan_js_frontend_library_info_build() {
+  $libraries = [];
+  $js_path = \Drupal::config('dkan_js_frontend.config')->get('js_folder');
+  $css_path = \Drupal::config('dkan_js_frontend.config')->get('css_folder');
+  foreach(glob(\Drupal::root() . $js_path . '*.js') as $full_path) {
+    $basename = basename($full_path);
+    $libraries['dkan_js_frontend']['js'][$js_path . $basename] = [];
+  }
+  foreach(glob(\Drupal::root() . $css_path . '*.css') as $full_path) {
+    $basename = basename($full_path);
+    $libraries['dkan_js_frontend']['css']['theme'][$css_path . $basename] = [];
+  }
+  $libraries['dkan_js_frontend']['dependencies'] = [
+    'core/drupal',
+  ];
+  return $libraries;
+}
+
+/**
+ * Implements hook_page_attachments().
+ *
+ */
+function dkan_js_frontend_page_attachments(array &$page) {
+  $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
+  if($request == 'dkan_js_frontend') {
+    $page['#attached']['library'][] = 'dkan_js_frontend/dkan_js_frontend';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function dkan_js_frontend_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  $request = \Drupal::routeMatch()->getRouteObject()->getDefault('name');
+  if($request == 'dkan_js_frontend') {
+    $suggestions[] = 'page__dkan_js_frontend';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ * 
+ * Register a module or theme's theme implementations.
+ * The implementations declared by this hook specify how a particular render array is to be rendered as HTML.
+ * 
+ * See: https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Render%21theme.api.php/function/hook_theme/8.2.x
+ * 
+ * If you change this method, clear theme registry and routing table 'drush cc theme-registry' and 'drush cc router'.
+ */
+function dkan_js_frontend_theme($existing, $type, $theme, $path) {
+  return [
+    'page__dkan_js_frontend' => [
+      'template' => 'page--dkan_js_frontend',
+      'base hook' => 'page',
+      'path' => $path . '/templates',
+    ],
+  ];
+
+}
+
+/**
+ * Implements hook_simple_sitemap_arbitrary_links_alter().
+ */
+function dkan_js_frontend_simple_sitemap_arbitrary_links_alter(array &$arbitrary_links, $sitemap): void {
+  // Ignore anything that isn't the default sitemap.
+  if ($sitemap->id() !== 'default') {
+    return;
+  }
+
+  // Gather DKAN routes.
+  $routes = \Drupal::service('dkan_js_frontend.route_provider')->routes();
+
+  $request_context = _dkan_js_frontend_build_request_context();
+  _dkan_js_frontend_add_static_links($arbitrary_links, $routes, $request_context);
+  // If the 'dataset' route exists, add links for the dataset route.
+  if ($dataset_route = $routes->get('dataset')) {
+    _dkan_js_frontend_add_dataset_links($arbitrary_links, $dataset_route, $request_context);
+  }
+  else {
+    \Drupal::logger('dkan_js_frontend')->error(DKAN_JS_FRONTEND_MISSING_DATASET_ROUTE_ERROR);
+  }
+}
+
+/**
+ * Build request context for sitemap.
+ *
+ * @return \Drupal\Core\Routing\RequestContext
+ *   Request context containing base URL for sitemap URL generation.
+ */
+function _dkan_js_frontend_build_request_context(): RequestContext {
+  $base_url = \Drupal::service('simple_sitemap.settings')->get('base_url');
+  // Attempt to create request from base URL specified in sitemap settings; if
+  // no base URL is specified, fall back to the current request.
+  $request = isset($base_url) ? Request::create($base_url) : \Drupal::request();
+  // Build request context from request.
+  return (new RequestContext())->fromRequest($request);
+}
+
+/**
+ * Generate links for static routes.
+ *
+ * @param array $arbitrary_links
+ *   Multi-dimensional array for storing arbitrary site links.
+ * @param \Symfony\Component\Routing\RouteCollection $routes
+ *   Collection of DKAN routes.
+ * @param \Drupal\Core\Routing\RequestContext
+ *   Request context containing base URL for sitemap URL generation.
+ */
+function _dkan_js_frontend_add_static_links(array &$arbitrary_links, RouteCollection $routes, RequestContext $request_context): void {
+  // Build route URL generator.
+  $url_generator = new UrlGenerator($routes, $request_context);
+  // Loop through routes and add to sitemap.
+  foreach ($routes as $route_name => $route) {
+    // Add this link to the sitemap if it's not a dynamic route.
+    if (empty($route->compile()->getPathVariables())) {
+      $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_STATIC_LINK + [
+        'url' => $url_generator->generate($route_name, [], UrlGeneratorInterface::ABSOLUTE_URL),
+      ];
+    }
+  }
+}
+
+/**
+ * Generate dynamic links for dataset routes.
+ *
+ * @param array $arbitrary_links
+ *   Multi-dimensional array for storing arbitrary site links.
+ * @param \Symfony\Component\Routing\Route $routes
+ *   Collection of DKAN routes.
+ * @param \Drupal\Core\Routing\RequestContext
+ *   Request context containing base URL for sitemap URL generation.
+ */
+function _dkan_js_frontend_add_dataset_links(array &$arbitrary_links, Route $dataset_route, RequestContext $request_context): void {
+  // Build route collection.
+  $routes = new RouteCollection();
+  $routes->add('dataset', $dataset_route);
+  // Build route URL generator.
+  $url_generator = new UrlGenerator($routes, $request_context);
+
+  // Fetch dataset UUIDs.
+  $dataset_uuids = \Drupal::service('dkan.metastore.service')->getIdentifiers('dataset');
+  // Add dataset routes using the fetched UUIDs.
+  foreach ($dataset_uuids as $uuid) {
+    $arbitrary_links[] = DKAN_JS_FRONTEND_DEFAULT_DATASET_LINK + [
+      'url' => $url_generator->generate('dataset', ['id' => $uuid], UrlGeneratorInterface::ABSOLUTE_URL),
+    ];
+  }
+}

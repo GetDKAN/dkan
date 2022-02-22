@@ -8,7 +8,7 @@ use MockChain\Chain;
 use MockChain\Options;
 
 /**
- *
+ * Provide methods for fetching and parsing container service arguments.
  */
 trait ServiceCheckTrait {
 
@@ -18,8 +18,12 @@ trait ServiceCheckTrait {
   private function getContainerOptionsForService($serviceName): Options {
     $options = (new Options())->index(0);
     $service = $this->checkService($serviceName);
-    $arguments = $service['arguments'];
+    // Extract services from service arguments.
+    $arguments = array_filter($service['arguments'], function ($arg) {
+      return preg_match('/^@[^@]/', $arg, $matches) === 1;
+    });
     foreach ($arguments as $arg) {
+      // Extract service name from argument.
       $arg = str_replace("@", '', $arg);
       $argService = $this->checkService($arg);
       $class = $argService['class'];

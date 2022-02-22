@@ -64,11 +64,18 @@ class Query implements
   public $joins = [];
 
   /**
+   * Fields to group by in query.
+   *
+   * @var string[]
+   */
+  public $groupby = [];
+
+  /**
    * Limit for maximum number of records returned.
    *
    * @var int|null
    */
-  public $limit = 500;
+  public $limit;
 
   /**
    * Number of records to offset by or skip before returning first record.
@@ -119,12 +126,14 @@ class Query implements
    *   Property to filter on.
    * @param string $value
    *   Property value to filter against.
+   * @param bool $case
+   *   Case sensitive filter?
    */
-  public function conditionByIsEqualTo(string $property, string $value) {
+  public function conditionByIsEqualTo(string $property, string $value, bool $case = FALSE) {
     $this->conditions[] = (object) [
       'property' => $property,
       'value' => $value,
-      'operator' => 'LIKE',
+      'operator' => $case ? 'LIKE BINARY' : 'LIKE',
     ];
   }
 

@@ -72,10 +72,19 @@
                 "required": ["resource", "condition"]
             }
         },
+        "groupings": {
+            "type": "array",
+            "description": "Properties or aliases to group results by.",
+            "items": {
+                "anyOf": [
+                    { "$ref": "#/definitions/resource" },
+                    { "$ref": "#/definitions/resourceProperty" }
+                ]
+            }
+        },
         "limit": {
             "type": "integer",
-            "description": "Limit for maximum number of records returned. Pass zero for no limit (may be restricted by user permissions).",
-            "default": 500
+            "description": "Limit for maximum number of records returned. Pass zero for no limit (may be restricted by user permissions)."
         },
         "offset": {
             "type": "integer",
@@ -198,7 +207,7 @@
             "properties": {
                 "operator": {
                     "type": "string",
-                    "description": "Expression operator. Note that performing expressions on text or other non-numeric data types my yeild unexpected results.",
+                    "description": "Expression operator. Note that performing expressions on text or other non-numeric data types my yield unexpected results.",
                     "enum": [
                         "+",
                         "-",

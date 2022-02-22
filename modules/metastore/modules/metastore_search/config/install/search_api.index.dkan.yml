@@ -21,6 +21,11 @@ field_settings:
     datasource_id: dkan_dataset
     property_path: keyword
     type: string
+  modified:
+    label: modified
+    datasource_id: dkan_dataset
+    property_path: modified
+    type: string
   publisher__name:
     label: publisher__name
     datasource_id: dkan_dataset
@@ -41,6 +46,8 @@ datasource_settings:
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  dkan_dataset_filter_hidden: {  }
+  dkan_dataset_filter_unpublished: {  }
   ignorecase:
     all_fields: false
     fields:
@@ -49,7 +56,6 @@ processor_settings:
       - publisher__name
       - theme
       - title
-      - publisher__name
     weights:
       preprocess_index: -20
       preprocess_query: -20

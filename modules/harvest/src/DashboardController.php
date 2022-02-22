@@ -38,9 +38,6 @@ class DashboardController {
    * A list of harvests and some status info.
    */
   public function harvests(): array {
-
-    date_default_timezone_set('EST');
-
     $rows = [];
     foreach ($this->harvest->getAllHarvestIds() as $harvestId) {
       // @todo Make Harvest Service's private getLastHarvestRunId() public,
@@ -68,7 +65,7 @@ class DashboardController {
    * Private.
    */
   private function buildHarvestRow(string $harvestId, string $runId, $info) {
-    $url = Url::fromRoute("datastore.datasets_import_status_dashboard", ['harvestId' => $harvestId]);
+    $url = Url::fromRoute('datastore.datasets_import_status_dashboard', ['harvest_id' => $harvestId]);
 
     return [
       'harvest_link' => Link::fromTextAndUrl($harvestId, $url),

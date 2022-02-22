@@ -118,6 +118,7 @@ class ResourcePurger implements ContainerInjectionInterface {
     $nodeStorage = $this->storage->getEntityStorage();
 
     $nids = $nodeStorage->getQuery()
+      ->accessCheck(FALSE)
       ->condition('type', 'data')
       ->condition('field_data_type', 'dataset')
       ->execute();
@@ -315,7 +316,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function getRevisionData(string $vid) : array {
     $revision = $this->storage->getEntityStorage()->loadRevision($vid);
     return [
-      $revision->get('moderation_state')->getString() == 'published',
+      $revision->status->value ?? FALSE,
       $this->getResources($revision),
     ];
   }
@@ -333,7 +334,7 @@ class ResourcePurger implements ContainerInjectionInterface {
   private function getResources(NodeInterface $dataset) : array {
     $resources = [];
     $metadata = json_decode($dataset->get('field_json_metadata')->getString());
-    $distributions = $metadata->{'%Ref:distribution'};
+    $distributions = $metadata->{'%Ref:distribution'} ?? [];
 
     foreach ($distributions as $distribution) {
       // Retrieve and validate the resource for this distribution before adding
@@ -395,7 +396,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function removeDatastoreStorage(string $id, string $version) {
     try {
-      $this->datastore->getStorage($id, $version)->destroy();
+      $this->datastore->getStorage($id, $version)->destruct();
     }
     catch (\Exception $e) {
       $this->error("Error deleting datastore id {$id}, version {$version}: " . $e->getMessage());

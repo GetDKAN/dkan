@@ -106,6 +106,7 @@ class ResourcePurgerTest extends TestCase {
     return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(ConfigFactoryInterface::class, 'get', ImmutableConfig::class)
+      ->add(QueryInterface::class, 'accessCheck', QueryInterface::class)
       ->add(ImmutableConfig::class, 'get', 1)
       ->add(DataFactory::class, 'getInstance', Data::class);
   }

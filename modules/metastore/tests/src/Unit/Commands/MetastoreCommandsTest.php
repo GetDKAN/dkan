@@ -21,7 +21,7 @@ class MetastoreCommandsTest extends TestCase {
   public function testPublish() {
     $dataFactory = (new Chain($this))
       ->add(DataFactory::class, 'getInstance', Data::class)
-      ->add(Data::class, 'publish', '12345')
+      ->add(Data::class, 'publish', TRUE)
       ->getMock();
 
     $loggerChain = (new Chain($this))

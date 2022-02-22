@@ -2,27 +2,26 @@
 
 use Drupal\Core\Entity\EntityInterface;
 
+use Drupal\common\Exception\DataNodeLifeCycleEntityValidationException;
+use Drupal\metastore\NodeWrapper\Data;
+
 /**
- * Manage item tracking of search api items.
+ * Determine whether the supplied entity is a dataset.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   The entity in question.
+ *
+ * @return bool
+ *   Whether the entity is a dataset.
  */
-function metastore_search_search_api_tracking(EntityInterface $entity, string $operation) {
-  if ($entity->getEntityTypeId() != 'node') {
-    return;
+function _metastore_search_is_dataset(EntityInterface $entity): bool {
+  try {
+    // Attempt to check this entity's data type.
+    return (new Data($entity))->getDataType() === 'dataset';
   }
-
-  if ($entity->bundle() != 'data') {
-    return;
-  }
-
-  $wrapper = new Drupal\metastore\NodeWrapper\Data($entity);
-  if ($wrapper->getDataType() != 'dataset') {
-    return;
-  }
-
-  $acceptableOperation = ['Inserted', 'Updated', 'Deleted'];
-
-  if (!in_array($operation, $acceptableOperation)) {
-    return;
+  catch (DataNodeLifeCycleEntityValidationException $e) {
+    // If the data object fails validation, the given entity is not a dataset.
+    return FALSE;
   }
 
   if($operation !== 'Deleted' && $entity->get('moderation_state')->getString() !== 'published') {
@@ -42,21 +41,49 @@ function metastore_search_search_api_tracking(EntityInterface $entity, string $o
 
 /**
  * Implements hook_entity_insert().
+ *
+ * Track created datasets in the DKAN search api index.
  */
-function metastore_search_entity_insert(EntityInterface $entity) {
-  metastore_search_search_api_tracking($entity, 'Inserted');
+function metastore_search_entity_insert(EntityInterface $entity): void {
+  // Ensure the entity in question is a dataset and is not hidden or
+  // unpublished.
+  if (!_metastore_search_is_dataset($entity)) {
+    return;
+  }
+
+  $storage = \Drupal::service('entity_type.manager')->getStorage('search_api_index');
+  $index = $storage->load('dkan');
+  $index->trackItemsInserted('dkan_dataset', [$entity->uuid()]);
 }
 
 /**
  * Implements hook_entity_update().
+ *
+ * Track updated datasets in the DKAN search api index.
  */
-function metastore_search_entity_update(EntityInterface $entity) {
-  metastore_search_search_api_tracking($entity, 'Updated');
+function metastore_search_entity_update(EntityInterface $entity): void {
+  // Ensure the entity in question is a dataset.
+  if (!_metastore_search_is_dataset($entity)) {
+    return;
+  }
+
+  $storage = \Drupal::service('entity_type.manager')->getStorage('search_api_index');
+  $index = $storage->load('dkan');
+  $index->trackItemsUpdated('dkan_dataset', [$entity->uuid()]);
 }
 
 /**
  * Implements hook_entity_delete().
+ *
+ * Track deleted datasets in the DKAN search api index.
  */
-function metastore_search_entity_delete(EntityInterface $entity) {
-  metastore_search_search_api_tracking($entity, 'Deleted');
+function metastore_search_entity_delete(EntityInterface $entity): void {
+  // Ensure the entity in question is a dataset.
+  if (!_metastore_search_is_dataset($entity)) {
+    return;
+  }
+
+  $storage = \Drupal::service('entity_type.manager')->getStorage('search_api_index');
+  $index = $storage->load('dkan');
+  $index->trackItemsDeleted('dkan_dataset', [$entity->uuid()]);
 }

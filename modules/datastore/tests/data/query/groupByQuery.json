@@ -1,0 +1,40 @@
+{
+    "resources": [
+        {
+            "id": "asdf",
+            "alias": "t"
+        }
+    ],
+    "properties": [
+        {
+            "resource": "t",
+            "property": "prop"
+        },
+        {
+            "alias": "sum",
+            "expression": {
+                "operator": "sum",
+                "operands": [
+                    {
+                        "resource": "t",
+                        "property": "summable"
+                    }
+                ]
+            }
+        }
+    ],
+    "conditions": [
+        {
+            "resource": "t",
+            "property": "filterable",
+            "value": "value",
+            "operator": "="
+        }
+    ],
+    "groupings": [
+        {
+            "resource": "t",
+            "property": "prop"
+        }
+    ]
+}

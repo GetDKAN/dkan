@@ -40,14 +40,23 @@ context('Admin dataset json form', () => {
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('dkantest@test.com', { force:true } )
         // Fill select2 field for keyword.
         cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
-        .find('.select2-selection')
-        .click({ force: true });
+          .find('.select2-selection')
+          .click({ force: true });
         cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
         // End filling up keyword.
+        cy.get('#edit-actions').within(() => {
+          cy.get('#edit-preview').should('not.exist')
+        })
         cy.get('#edit-submit').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
-        // Editing dataset.
+        // Confirm the default dkan admin view is filtered to show only datasets.
         cy.visit(baseurl + "/admin/dkan/datasets")
+        cy.get('tbody tr').each(($el) => {
+          cy.wrap($el).within(() => {
+            cy.get('td.views-field-field-data-type').should('contain', 'dataset')
+          })
+        })
+        // Edit the dataset.
         cy.get('#edit-title').type('DKANTEST dataset title', { force:true } )
         cy.get('#edit-submit-dkan-dataset-content').click({ force:true })
         cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
@@ -62,28 +71,19 @@ context('Admin dataset json form', () => {
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title').type('DKANTEST distribution title text', { force:true })
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description').type('DKANTEST distribution description text', { force:true })
         cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select').select('csv', { force:true })
+        cy.get('#edit-actions').within(() => {
+          cy.get('#edit-preview').should('not.exist')
+        })
         cy.get('#edit-submit').click({ force:true })
         cy.get('.messages--status').should('contain','has been updated')
         // Delete dataset.
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.wait(2000)
+        cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
         cy.get('#edit-node-bulk-form-0').check({ force:true })
         cy.get('#edit-submit--2').click({ force:true })
         cy.get('input[value="Delete"]').click({ force:true })
         cy.get('.messages').should('contain','Deleted 1 content item.')
-    })
-    it('User does not see a preview button on the dataset form.', () => {
-        cy.visit(baseurl + "/node/add/data")
-        cy.wait(2000)
-        cy.get('#edit-actions').within(() => {
-          cy.get('#edit-preview').should('not.exist')
-        })
-        cy.visit(baseurl + "/admin/dkan/datasets")
-        cy.wait(2000)
-        cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
-        cy.get('#edit-actions').within(() => {
-          cy.get('#edit-preview').should('not.exist')
-        })
     })
 
 })

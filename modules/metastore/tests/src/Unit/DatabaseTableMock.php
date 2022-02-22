@@ -39,10 +39,10 @@ class DatabaseTableMock implements DatabaseTableInterface {
   /**
    *
    */
-  public function destroy() {
-    // TODO: Implement destroy() method.
+  public function destruct() {
+    // TODO: Implement destruct() method.
   }
-
+  
   /**
    *
    */

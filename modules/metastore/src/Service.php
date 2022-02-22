@@ -106,7 +106,7 @@ class Service implements ContainerInjectionInterface {
    * @return \Drupal\metastore\Storage\MetastoreStorageInterface
    *   Entity storage.
    */
-  private function getStorage(string $schema_id): MetastoreStorageInterface {
+  protected function getStorage(string $schema_id): MetastoreStorageInterface {
     if (!isset($this->storages[$schema_id])) {
       $this->storages[$schema_id] = $this->storageFactory->getInstance($schema_id);
     }
@@ -114,45 +114,58 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
-   * Get all.
+   * Count objects of the given schema ID.
    *
    * @param string $schema_id
-   *   The {schema_id} slug from the HTTP request.
+   *   The schema ID to be counted.
+   * @param bool $unpublished
+   *   Whether to include unpublished items.
    *
-   * @return array
-   *   All objects of the given schema_id.
+   * @return int
+   *   Object count.
    */
-  public function getAll($schema_id): array {
-    $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll();
-    $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
-
-    return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
-      if (!is_array($data)) {
-        return FALSE;
-      }
-      if (count($data) == 0) {
-        return TRUE;
-      }
-      return $data[0] instanceof RootedJsonData;
-    });
-
+  public function count(string $schema_id, bool $unpublished = FALSE): int {
+    return $this->getStorage($schema_id)->count($unpublished);
   }
 
   /**
-   * Get a subset of metastore items according to a range.
+   * Get range of object UUIDs of the given schema ID.
+   *
+   * If no start or length is specified, all dataset UUIDs will be returned.
+   *
+   * @param string $schema_id
+   *   The schema ID to be counted.
+   * @param int|null $start
+   *   Schema object offset or null for all.
+   * @param int|null $length
+   *   Number of objects to fetch or null for all.
+   * @param bool $unpublished
+   *   Whether to include unpublished items.
+   *
+   * @return string[]
+   *   Range of object UUIDs of the given schema_id.
+   */
+  public function getIdentifiers(string $schema_id, ?int $start = NULL, ?int $length = NULL, $unpublished = FALSE): array {
+    return $this->getStorage($schema_id)->retrieveIds($start, $length, $unpublished);
+  }
+
+  /**
+   * Get all items, with optional pagination and status filters.
    *
    * @param string $schema_id
    *   Schema ID.
-   * @param int $start
-   *   Start offset.
-   * @param int $length
+   * @param int|null $start
+   *   Start offset. Null for no range.
+   * @param int|null $length
    *   Number of items to retrieve.
+   * @param bool $unpublished
+   *   Whether to include unpublished items. Should default to false.
    *
    * @return array
    *   Array of RootedJsonData objects.
    */
-  public function getRange(string $schema_id, int $start, int $length):array {
-    $jsonStringsArray = $this->getStorage($schema_id)->retrieveRange($start, $length);
+  public function getAll(string $schema_id, ?int $start = NULL, ?int $length = NULL, $unpublished = FALSE):array {
+    $jsonStringsArray = $this->getStorage($schema_id)->retrieveAll($start, $length, $unpublished);
     $objects = array_filter($this->jsonStringsArrayToObjects($jsonStringsArray, $schema_id));
 
     return $this->dispatchEvent(self::EVENT_DATA_GET_ALL, $objects, function ($data) {
@@ -162,7 +175,7 @@ class Service implements ContainerInjectionInterface {
       if (count($data) == 0) {
         return TRUE;
       }
-      return $data[0] instanceof RootedJsonData;
+      return reset($data) instanceof RootedJsonData;
     });
 
   }
@@ -199,6 +212,21 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Determine whether the given metastore item is published.
+   *
+   * @param string $schema_id
+   *   The metastore schema in question.
+   * @param string $identifier
+   *   The ID of the metastore item in question.
+   *
+   * @return bool
+   *   Whether the given metastore item is published.
+   */
+  public function isPublished(string $schema_id, string $identifier): bool {
+    return $this->getStorage($schema_id)->isPublished($identifier);
+  }
+
+  /**
    * Implements GET method.
    *
    * @param string $schema_id
@@ -209,35 +237,12 @@ class Service implements ContainerInjectionInterface {
    * @return \RootedData\RootedJsonData
    *   The json data.
    */
-  public function get($schema_id, $identifier): RootedJsonData {
-    $json_string = $this->getStorage($schema_id)->retrievePublished($identifier);
+  public function get(string $schema_id, string $identifier): RootedJsonData {
+    $json_string = $this->getStorage($schema_id)->retrieve($identifier, TRUE);
     $data = $this->validMetadataFactory->get($json_string, $schema_id);
 
     $data = $this->dispatchEvent(self::EVENT_DATA_GET, $data);
     return $data;
-  }
-
-  /**
-   * GET all resources associated with a dataset.
-   *
-   * @param string $schema_id
-   *   The {schema_id} slug from the HTTP request.
-   * @param string $identifier
-   *   Identifier.
-   *
-   * @return array
-   *   An array of resources.
-   *
-   * @todo Make this aware of revisions and moderation states.
-   */
-  public function getResources($schema_id, $identifier): array {
-    $json_string = $this->getStorage($schema_id)->retrieve($identifier);
-    $data = $this->validMetadataFactory->get($json_string, $schema_id);
-
-    /* @todo decouple from POD. */
-    $resources = $data->{"$.distribution"};
-
-    return $resources;
   }
 
   /**
@@ -289,6 +294,25 @@ class Service implements ContainerInjectionInterface {
   public function publish(string $schema_id, string $identifier): bool {
     if ($this->objectExists($schema_id, $identifier)) {
       return $this->getStorage($schema_id)->publish($identifier);
+    }
+
+    throw new MissingObjectException("No data with the identifier {$identifier} was found.");
+  }
+
+  /**
+   * Publish an item's update by making its latest revision its default one.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   *
+   * @return bool
+   *   True if the dataset is successfully archived, false otherwise.
+   */
+  public function archive(string $schema_id, string $identifier): bool {
+    if ($this->objectExists($schema_id, $identifier)) {
+      return $this->getStorage($schema_id)->archive($identifier);
     }
 
     throw new MissingObjectException("No data with the identifier {$identifier} was found.");
@@ -505,8 +529,11 @@ class Service implements ContainerInjectionInterface {
       }
     }
 
-    if (isset($array['distribution'][0]['%Ref:downloadURL'])) {
-      unset($array['distribution'][0]['%Ref:downloadURL']);
+    if (!empty($array['distribution'])) {
+      $array['distribution'] = array_map(function ($dist) {
+        unset($dist['%Ref:downloadURL']);
+        return $dist;
+      }, $array['distribution']);
     }
 
     $object->set('$', $array);

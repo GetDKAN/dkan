@@ -3,18 +3,18 @@ datastore.settings_form:
   description: Datastore settings.
   parent: system.admin_dkan
   route_name: datastore.settings
-  weight: 10
+  weight: 12
 
 datastore.dkan_resource_settings:
   title: Resources
   description: Resource options.
   parent: system.admin_dkan
   route_name: datastore.dkan_resource_settings
-  weight: 11
+  weight: 15
 
 datastore.datasets_import_status_dashboard:
   title: 'Datastore Import Status'
   parent: system.admin_dkan
   description: 'View status information on DKAN datastore imports.'
   route_name: datastore.datasets_import_status_dashboard
-  weight: 12
+  weight: 11

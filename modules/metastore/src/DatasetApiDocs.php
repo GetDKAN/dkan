@@ -3,6 +3,8 @@
 namespace Drupal\metastore;
 
 use Drupal\common\DkanApiDocsGenerator;
+use Drupal\common\Util\ApiDocsPathModifier;
+use Drupal\Core\Site\Settings;
 
 /**
  * Provides dataset-specific OpenAPI documentation.
@@ -64,16 +66,26 @@ class DatasetApiDocs {
   private $metastore;
 
   /**
+   * Site settings.
+   *
+   * @var \Drupal\Core\Site\Settings
+   */
+  private Settings $settings;
+
+  /**
    * Constructs a new MetastoreDocsController.
    *
    * @param \Drupal\common\DkanApiDocsGenerator $docsGenerator
    *   Serves openapi spec.
    * @param \Drupal\metastore\Service $metastore
    *   The metastore service.
+   * @param \Drupal\Core\Site\Settings $settings
+   *   The Drupal settings service.
    */
-  public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore) {
+  public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore, Settings $settings) {
     $this->docsGenerator = $docsGenerator;
     $this->metastore = $metastore;
+    $this->settings = $settings;
   }
 
   /**
@@ -86,9 +98,8 @@ class DatasetApiDocs {
    *   OpenAPI spec.
    */
   public function getDatasetSpecific(string $identifier) {
-    $fullSpec = $this->docsGenerator->buildSpec(
-      ['metastore_api_docs', 'datastore_api_docs']
-    )->{"$"};
+    $specs = ['metastore_api_docs', 'datastore_api_docs'];
+    $fullSpec = $this->docsGenerator->buildSpec($specs)->{"$"};
 
     $datasetSpec = [
       'openapi' => $fullSpec['openapi'],
@@ -113,6 +124,9 @@ class DatasetApiDocs {
 
     $this->alterDatastoreParameters($datasetSpec, $identifier);
     $this->modifySqlEndpoints($datasetSpec, $identifier);
+    if ($dkanApiBase = $this->settings->get('dkan_api_base')) {
+      $datasetSpec = ApiDocsPathModifier::prepend($datasetSpec, $dkanApiBase);
+    }
 
     return $datasetSpec;
   }

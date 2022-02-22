@@ -67,6 +67,7 @@ class StringHelper implements ContainerInjectionInterface {
     ];
     $element['#title'] = isset($property->title) ? $property->title : '';
     $element['#description'] = isset($property->description) ? $property->description : '';
+    $element['#description_display'] = 'before';
     $element['#default_value'] = $this->getDefaultValue($data, $property);
 
     // Check if the field is required.

@@ -65,12 +65,75 @@ class QueryFactory {
     $this->populateQueryProperties($query);
     $this->populateQueryConditions($query);
     $this->populateQueryJoins($query);
+    $this->populateQueryGroupBy($query);
     $this->populateQuerySorts($query);
-    $query->limit = $this->datastoreQuery->{"$.limit"};
-    $query->offset = $this->datastoreQuery->{"$.offset"};
+    if ($this->datastoreQuery->{"$.limit"}) {
+      $query->limit = $this->datastoreQuery->{"$.limit"};
+    }
+    $query->offset = $this->datastoreQuery->{"$.offset"} ?? 0;
     $query->showDbColumns = TRUE;
 
     return $query;
+  }
+
+  /**
+   * Helper function for adding group by clauses to the given query.
+   *
+   * @param Drupal\common\Storage\Query $query
+   *   DKAN query object we're building.
+   *
+   * @throws \Exception
+   *   When ungrouped properties are found in the datastore query.
+   */
+  private function populateQueryGroupBy(Query $query): void {
+    $groupings = $this->extractPropertyNames($this->datastoreQuery->{"$.groupings"} ?? []);
+    if (empty($groupings)) {
+      return;
+    }
+    $props = $this->extractPropertyNames($this->datastoreQuery->{"$.properties"} ?? []);
+    if ($ungrouped = array_diff($props, $groupings)) {
+      throw new \Exception('Un-grouped properties found in aggregate query: ' . implode(', ', $ungrouped));
+    }
+    $query->groupby = $groupings;
+  }
+
+  /**
+   * Extract list of property names from an array of properties.
+   *
+   * Properties can be either objects, associative-arrays, or strings. If a
+   * property is an object or associative-array, the property name is stored in
+   * the "property" field. If a property is a string, the string itself is a
+   * property name.
+   *
+   * @param array $props
+   *   List of query properties (which can be a string, associative array, or
+   *   object, see above).
+   *
+   * @return string[]
+   *   List of extracted property names.
+   *
+   * @throws \Exception
+   *   When an invaid property is encountered.
+   */
+  protected function extractPropertyNames(array $props): array {
+    return array_filter(array_map(function ($prop) {
+      if (is_string($prop)) {
+        return $prop;
+      }
+      // If prop is an array, convert it to an object.
+      if (is_array($prop)) {
+        $prop = (object) $prop;
+      }
+      if (is_object($prop)) {
+        if (isset($prop->property)) {
+          return $prop->property;
+        }
+        // If this property object is an expression, ignore it.
+        if (isset($prop->expression)) {
+          return NULL;
+        }
+      }
+    }, $props));
   }
 
   /**

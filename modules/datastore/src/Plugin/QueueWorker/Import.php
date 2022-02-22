@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\Core\Database\Connection;
 
 use Drupal\common\LoggerTrait;
 use Drupal\datastore\Service as DatastoreService;
@@ -50,6 +51,20 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   protected $referenceLookup;
 
   /**
+   * Datastore config settings.
+   *
+   * @var \Drupal\Core\Config\Config
+   */
+  protected $datastoreConfig;
+
+  /**
+   * File system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -66,6 +81,10 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A logger channel factory instance.
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
+   * @param \Drupal\Core\Database\Connection $defaultConnection
+   *   An instance of the default database connection.
+   * @param \Drupal\Core\Database\Connection $datastoreConnection
+   *   An instance of the datastore database connection.
    */
   public function __construct(
     array $configuration,
@@ -74,15 +93,23 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     ConfigFactoryInterface $configFactory,
     DatastoreService $datastore,
     LoggerChannelFactoryInterface $loggerFactory,
-    ReferenceLookup $referenceLookup
+    ReferenceLookup $referenceLookup,
+    Connection $defaultConnection,
+    Connection $datastoreConnection
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->datastore = $datastore;
+    $this->referenceLookup = $referenceLookup;
+    $this->datastoreConfig = $configFactory->get('datastore.settings');
     $this->databaseQueue = $datastore->getQueueFactory()->get($plugin_id);
     $this->fileSystem = $datastore->getResourceLocalizer()->getFileSystem();
     $this->setLoggerFactory($loggerFactory, 'datastore');
-    $this->referenceLookup = $referenceLookup;
+    // Set the timeout for database connections to the queue lease time.
+    // This ensures that database connections will remain open for the
+    // duration of the time the queue is being processed.
+    $timeout = (int) $plugin_definition['cron']['lease_time'];
+    $this->setConnectionTimeout($datastoreConnection, $timeout);
+    $this->setConnectionTimeout($defaultConnection, $timeout);
   }
 
   /**
@@ -96,8 +123,23 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $container->get('config.factory'),
       $container->get('dkan.datastore.service'),
       $container->get('logger.factory'),
-      $container->get('dkan.metastore.reference_lookup')
+      $container->get('dkan.metastore.reference_lookup'),
+      $container->get('database'),
+      $container->get('dkan.datastore.database')
     );
+  }
+
+  /**
+   * Set the wait_timeout for the given database connection.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection instance.
+   * @param int $timeout
+   *   Wait timeout in seconds.
+   */
+  protected function setConnectionTimeout(Connection $connection, int $timeout): void {
+    $command = 'SET SESSION wait_timeout = ' . $timeout;
+    $connection->query($command);
   }
 
   /**
@@ -122,7 +164,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @param array $data
    *   Resource identifier information.
    */
-  private function importData(array $data) {
+  protected function importData(array $data) {
     $identifier = $data['identifier'];
     $version = $data['version'];
     $results = $this->datastore->import($identifier, FALSE, $version);
@@ -151,7 +193,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @return bool
    *   The updated value for $queued.
    */
-  private function processResult(Result $result, $data, $queued = FALSE) {
+  protected function processResult(Result $result, $data, $queued = FALSE) {
     $uid = "{$data['identifier']}__{$data['version']}";
     $status = $result->getStatus();
     switch ($status) {

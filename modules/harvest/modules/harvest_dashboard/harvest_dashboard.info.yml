@@ -1,7 +1,7 @@
 name: "Harvest Dashboard (DEPRECATED)"
 description: "Harvest Dashboard. Deprecated and moved into main Harvest module, this module should be disabled."
 type: module
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9.1
 package: DKAN
 dependencies:
   - harvest

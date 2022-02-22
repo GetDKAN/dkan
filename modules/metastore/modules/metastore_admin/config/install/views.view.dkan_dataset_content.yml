@@ -9,7 +9,7 @@ dependencies:
     - node
     - user
 _core:
-  default_config_hash: JJ6DPebkL1IQR5zAMGv3XEHJ7DDkhUeD2jgxJ4X7dKU
+  default_config_hash: hqCRcH1GhTvAtLJHQ76Icu7pvaE085KTvHmvjyz8-5Y
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
@@ -184,7 +184,9 @@ display:
           action_title: Action
           include_exclude: include
           selected_actions:
+            - archive_current
             - node_delete_action
+            - publish_latest
           plugin_id: node_bulk_form
           entity_type: node
         uuid:
@@ -669,7 +671,7 @@ display:
           group_type: group
           admin_label: ''
           operator: '='
-          value: ''
+          value: dataset
           group: 1
           exposed: true
           expose:

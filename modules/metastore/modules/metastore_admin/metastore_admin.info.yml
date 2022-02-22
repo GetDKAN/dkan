@@ -1,7 +1,7 @@
 name: Administration
 description: Provides administrative views for managing dataset content.
 type: module
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9.1
 dependencies:
   - metastore
   - admin_toolbar
@@ -11,4 +11,5 @@ dependencies:
   - user
   - views
   - views_bulk_operations
+  - moderated_content_bulk_publish
 package: DKAN

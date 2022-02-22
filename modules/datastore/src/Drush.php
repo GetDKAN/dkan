@@ -144,7 +144,7 @@ class Drush extends DrushCommands {
    * Drop a datastore.
    *
    * @param string $uuid
-   *   The uuid of a dataset.
+   *   The uuid of a dataset resource.
    *
    * @command dkan:datastore:drop
    * @aliases dkan-datastore:drop
@@ -152,6 +152,14 @@ class Drush extends DrushCommands {
    */
   public function drop($uuid) {
     try {
+      // Retrieve the UUID for the dataset's resource before dropping the
+      // dataset's resource mapper table entry.
+      $resource = $this->resourceLocalizer->get($uuid);
+      if (!isset($resource)) {
+        throw new \UnexpectedValueException("Resource not found with uuid {$uuid}");
+      }
+      $resource_uuid = $resource->getUniqueIdentifier();
+      // Drop the datastore table and corresponding resource mapper table entry.
       $this->datastoreService->drop($uuid);
       $this->logger->notice("Successfully dropped the datastore for {$uuid}");
     }
@@ -168,8 +176,8 @@ class Drush extends DrushCommands {
       $this->logger->debug($e->getMessage());
       return;
     }
-
-    $this->jobstorePrune($uuid);
+    // Drop any remaining jobstore entries for this resource.
+    $this->jobstorePrune($resource_uuid);
   }
 
   /**
