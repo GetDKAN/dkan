@@ -35,11 +35,11 @@ Cypress.Commands.add('drupalDrushCommand', (command) => {
 });
 
 // upload a file to the given field
-Cypress.Commands.add('uploadFile', { prevSubject: true }, (subject, fileName, fileType = '') => {
-  cy.fixture(fileName,'binary').then(content => {
+Cypress.Commands.add('uploadFile', { prevSubject: true }, (subject, fileName, fileType = '', uploadFileName = '') => {
+  cy.fixture(fileName, 'binary').then(content => {
     const blob =  Cypress.Blob.binaryStringToBlob(content, fileType)
       const el = subject[0];
-      const testFile = new File([blob], fileName, {type: fileType});
+      const testFile = new File([blob], (uploadFileName || fileName), {type: fileType});
       const dataTransfer = new DataTransfer();
 
       dataTransfer.items.add(testFile);
