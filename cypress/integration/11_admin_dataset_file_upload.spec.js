@@ -6,7 +6,7 @@ context('Admin dataset file upload', () => {
     cy.drupalLogin('testeditor', 'testeditor')
   })
 
-  context('Create dataset with NetStorage upload', () => {
+  context('Create dataset with remote file', () => {
     it('can fill up the form with distribution and submit', () => {
       const fileUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv'
 
