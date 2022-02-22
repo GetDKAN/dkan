@@ -3,6 +3,7 @@ services:
     class: \Drupal\common\DkanApiDocsGenerator
     arguments:
       - '@plugin.manager.dkan_api_docs'
+      - '@settings'
 
   dkan.common.job_store:
     class: \Drupal\common\Storage\JobStoreFactory
@@ -32,7 +33,7 @@ services:
       - [setDatastore, ['@?dkan.datastore.service']]
       - [setResourceMapper, ['@?dkan.metastore.resource_mapper']]
       - [setImportInfo, ['@?dkan.datastore.import_info']]
-  
+
   plugin.manager.dkan_api_docs:
     class: \Drupal\common\Plugin\DkanApiDocsPluginManager
     parent: default_plugin_manager

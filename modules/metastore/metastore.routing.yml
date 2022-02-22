@@ -98,6 +98,37 @@ metastore.1.metastore.schemas.id.items.id.delete:
   options:
     _auth: ['basic_auth', 'cookie']
 
+metastore.1.metastore.schemas.id.items.id.revisions:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\metastore\Controller\MetastoreRevisionController::getAll'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+metastore.1.metastore.schemas.id.items.id.revisions.id:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions/{revision_id}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\metastore\Controller\MetastoreRevisionController::get'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+metastore.1.metastore.schemas.id.items.id.revisions.post:
+  path: '/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\metastore\Controller\MetastoreRevisionController::post'}
+  requirements:
+    _permission: 'post put delete datasets through the api'
+  options:
+    _auth: ['basic_auth', 'cookie']
+
+
 metastore.1.metastore.schemas.dataset.items.id.docs:
   path: '/api/1/metastore/schemas/dataset/items/{identifier}/docs'
   methods: [GET]
