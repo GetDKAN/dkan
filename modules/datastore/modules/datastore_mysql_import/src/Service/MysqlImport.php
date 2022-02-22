@@ -261,12 +261,7 @@ class MysqlImport extends Importer {
    *   Column name on single line.
    */
   public function sanitizeDescription(string $column) {
-    $trimmed = array_filter(
-      array_map(
-        'trim',
-        explode($this->getEol($column) ?? "\n", $column)
-      )
-    );
+    $trimmed = array_filter(array_map('trim', explode("\n", $column)));
     return implode(" ", $trimmed);
   }
 
