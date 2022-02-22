@@ -111,9 +111,9 @@ class MysqlImport extends Importer {
     // many lines the headers are occupying.
     $header_line_count = substr_count(trim($column_lines), self::EOL_TABLE[$eol]) + 1;
     // Generate sanitized table headers from column names.
-    $headers = $this->generateTableHeaders($columns);
     // Use headers to set the storage schema.
-    $this->setStorageSchema($headers);
+    $spec = $this->generateTableSpec($columns);
+    $this->dataStorage->setSchema(['fields' => $spec]);
 
     // Call `count` on database table in order to ensure a database table has
     // been created for the datastore.
@@ -122,7 +122,7 @@ class MysqlImport extends Importer {
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
-      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), $headers, $eol, $header_line_count));
+      $this->getSqlStatement($file_path, $this->dataStorage->getTableName(), array_keys($spec), $eol, $header_line_count));
 
     Database::setActiveConnection();
 
@@ -223,36 +223,46 @@ class MysqlImport extends Importer {
    * @return array
    *   List of sanitized table headers.
    */
-  private function generateTableHeaders(array $columns): array {
-    $headers = [];
+  public function generateTableSpec(array $columns): array {
+    $spec = [];
 
     foreach ($columns as $column) {
       // Sanitize the supplied table header to generate a unique column name;
       // null-coalesce potentially NULL column names to empty strings.
-      $header = $this->sanitizeHeader($column ?? '');
-
-      if (is_numeric($header) || in_array($header, self::RESERVED_WORDS)) {
-        // Prepend "_" to column name that are not allowed in MySQL
-        // This can be dropped after move to Drupal 9.
-        // @see https://github.com/GetDKAN/dkan/issues/3606
-        $header = '_' . $header;
-      }
+      $name = $this->sanitizeHeader($column ?? '');
 
       // Truncate the generated table column name, if necessary, to fit the max
       // column length.
-      $header = $this->truncateHeader($header);
+      $name = $this->truncateHeader($name);
 
       // Generate unique numeric suffix for the header if a header already
       // exists with the same name.
-      for ($i = 2; isset($headers[$header]); $i++) {
+      for ($i = 2; isset($spec[$name]); $i++) {
         $suffix = '_' . $i;
-        $header = substr($header, 0, self::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
+        $name = substr($name, 0, self::MAX_COLUMN_LENGTH - strlen($suffix)) . $suffix;
       }
 
-      $headers[$header] = $header;
+      $spec[$name] = [
+        'type' => "text",
+        'description' => $this->sanitizeDescription($column ?? ''),
+      ];
     }
 
-    return $headers;
+    return $spec;
+  }
+
+  /**
+   * Transform possible multiline string to single line for description.
+   *
+   * @param string $column
+   *   Column name.
+   *
+   * @return string
+   *   Column name on single line.
+   */
+  public function sanitizeDescription(string $column) {
+    $trimmed = array_filter(array_map('trim', explode("\n", $column)));
+    return implode(" ", $trimmed);
   }
 
   /**
@@ -274,6 +284,13 @@ class MysqlImport extends Importer {
     $column = trim($column, '_');
     // Convert the column name to lowercase.
     $column = strtolower($column);
+
+    if (is_numeric($column) || in_array($column, self::RESERVED_WORDS)) {
+      // Prepend "_" to column name that are not allowed in MySQL
+      // This can be dropped after move to Drupal 9.
+      // @see https://github.com/GetDKAN/dkan/issues/3606
+      $column = '_' . $column;
+    }
 
     return $column;
   }

@@ -33,6 +33,36 @@ class MysqlImportTest extends TestCase {
   protected const TABLE_NAME = 'example_table';
 
   /**
+   * Test spec generation.
+   */
+  public function testGenerateTableSpec() {
+    $mysqlImporter = $this->getMysqlImporter();
+    $columns = [
+      "two\nlines",
+      "two\n lines \nwith spaces\n",
+      "oneline",
+    ];
+
+    $expectedSpec = [
+      'two_lines' => [
+        'type' => 'text',
+        'description' => 'two lines',
+      ],
+      'two__lines__with_spaces' => [
+        'type' => 'text',
+        'description' => 'two lines with spaces',
+      ],
+      'oneline' => [
+        'type' => 'text',
+        'description' => 'oneline',
+      ],
+    ];
+    $spec = $mysqlImporter->generateTableSpec($columns);
+
+    $this->assertEquals($expectedSpec, $spec);
+  }
+
+  /**
    * Test MysqlImport importer.
    */
   public function testMysqlImporter() {
