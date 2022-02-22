@@ -135,9 +135,9 @@ jobs:
       - run:
           name: Run DKAN cypress tests
           command: |
-            mkdir dkan/cypress/tmp && mkdir dkan/cypress/results
-            mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
-            rm dkan/cypress/integration/* && mv dkan/cypress/tmp/* dkan/cypress/integration
+            cd dkan && mkdir cypress/tmp && mkdir cypress/results
+            mv $(circleci tests glob cypress/integration/*.spec.js | circleci tests split --split-by=timings) cypress/tmp || true
+            rm cypress/integration/* && mv cypress/tmp/* cypress/integration
             dktl dkan:test-cypress --headless --browser=chromium --reporter=junit --reporter-options="mochaFile=cypress/results/output-[hash].xml"
       - store_artifacts:
           path: dkan/cypress/screenshots
