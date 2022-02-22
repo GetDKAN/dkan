@@ -15,7 +15,7 @@
       <directory>modules/metastore/modules/metastore_search/src</directory>
       <directory>modules/metastore/modules/metastore_admin/src</directory>
       <directory>modules/datastore/src</directory>
-      <directory>modules/datastore/modules/datastore_fast_import/src</directory>
+      <directory>modules/datastore/modules/datastore_mysql_importer/src</directory>
       <directory>modules/frontend/src</directory>
       <directory>modules/harvest/src</directory>
       <directory>modules/harvest/modules/harvest_dashboard/src</directory>
