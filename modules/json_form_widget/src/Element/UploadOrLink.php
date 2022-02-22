@@ -57,21 +57,6 @@ class UploadOrLink extends ManagedFile {
   }
 
   /**
-   * Helper function to check a url and define if it corresponds to local file.
-   */
-  private static function checkIfLocalFile($url) {
-    $filename = \Drupal::service('file_system')->basename($url);
-    $filename = urldecode($filename);
-    $files = \Drupal::entityTypeManager()
-      ->getStorage('file')
-      ->loadByProperties(['filename' => $filename]);
-    if (!empty($files)) {
-      return reset($files);
-    }
-    return FALSE;
-  }
-
-  /**
    * Render API callback: Expands the managed_file element type.
    *
    * Expands file_managed type to include option for links to remote files/urls.
@@ -82,7 +67,6 @@ class UploadOrLink extends ManagedFile {
     $element = parent::processManagedFile($element, $form_state, $complete_form);
     $file_url_type = static::getUrlType($element);
     $element = static::unsetFilesWhenRemoving($form_state->getTriggeringElement(), $element);
-    $element = static::loadLocalFilesWhenDefault($element);
 
     $file_url_remote = isset($element['#value']['file_url_remote']) ? $element['#value']['file_url_remote'] : $element['#uri'];
     $file_url_remote_is_valid = UrlHelper::isValid($file_url_remote, TRUE);
@@ -179,26 +163,6 @@ class UploadOrLink extends ManagedFile {
   }
 
   /**
-   * Helper function to load files when local.
-   */
-  private static function loadLocalFilesWhenDefault($element) {
-    if (empty($element['#value']['fids']) && !empty($element['#uri']) &&
-        $file = static::checkIfLocalFile($element['#uri'])) {
-      $element['#files'][$file->id()] = $file;
-      $element['#value']['fids'] = [$file->id()];
-      $element['#value']['file_url_type'] = static::TYPE_UPLOAD;
-      $element['fids']['#type'] = 'hidden';
-      $element['fids']['#value'] = [$file->id()];
-      $file_link = [
-        '#theme' => 'file_link',
-        '#file' => $file,
-      ];
-      $element['file_' . $file->id()]['filename'] = $file_link + ['#weight' => -10];
-    }
-    return $element;
-  }
-
-  /**
    * Helper function to override upload subelement.
    */
   private static function overrideUploadSubfield($element, $file_url_type_selector) {
@@ -246,16 +210,12 @@ class UploadOrLink extends ManagedFile {
    * Helper function for getting the url type.
    */
   protected static function getUrlType($element) {
-    $type = NULL;
+    $type = static::TYPE_REMOTE;
     if (isset($element['#value']['file_url_type'])) {
       $type = $element['#value']['file_url_type'];
     }
     elseif (!empty($element['#value']['fids'])) {
       $type = static::TYPE_UPLOAD;
-    }
-    elseif (isset($element['#uri'])) {
-      $type = static::checkIfLocalFile($element['#uri']) ?
-        static::TYPE_UPLOAD : static::TYPE_REMOTE;
     }
     return $type;
   }

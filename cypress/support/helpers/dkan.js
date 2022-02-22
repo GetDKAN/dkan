@@ -60,6 +60,14 @@ export function generateRandomString () {
   return generateMetastoreIdentifier()
 }
 
+export function generateCSVFileName () {
+  const length = 20
+  const chars = 'abcdefghijklmnopqrstuvwxyz1234567890'
+  let result = ''
+  for (let i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)]
+  return result + '.csv'
+}
+
 export function generateRandomDateString () {
   const start = new Date('1970-01-01T00:00:00.000Z')
   const end = new Date()
