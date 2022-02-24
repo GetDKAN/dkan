@@ -34,6 +34,15 @@ Cypress.Commands.add('drupalDrushCommand', (command) => {
     return cy.exec(execCmd);
 });
 
+Cypress.Commands.add('drupalCron', () => {
+  // run cron to import new dataset
+  cy.visit('/admin/config/system/cron')
+  cy.get('#edit-run')
+    .click({force: true})
+  cy.get('.messages--status', {timeout: 120000})
+    .should('be.visible')
+})
+
 // upload a file to the given field
 Cypress.Commands.add('uploadFile', { prevSubject: true }, (subject, fileName, fileType = '', uploadFileName = '') => {
   cy.fixture(fileName, 'binary').then(content => {

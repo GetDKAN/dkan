@@ -38,11 +38,22 @@ function getMetastoreSearchEndpoint () {
   return `/${api_uri}/search`
 }
 
+function getDatastoreQueryEndpoint (dataset_id, index) {
+  return `/${api_uri}/datastore/query/${dataset_id}/${index}`
+}
+
+function getMetastoreItemsEndpoint (schema_id) {
+  return `/${api_uri}/metastore/schemas/${schema_id}/items`
+}
+
+export function getMetastoreItems (schema_id) {
+  return cy.request(getMetastoreItemsEndpoint(schema_id))
+}
+
 // verify dataset file was imported successfully
 export function verifyFileImportedSuccessfully (file_name) {
   cy.request(getDatastoreImportsEndpoint()).then(response => {
     expect(response.status).eql(200)
-    console.log(response.body)
     expect(response.body).to.satisfy(body => Object.values(body).find(item => item.fileName === file_name && item.importerStatus === 'done'))
   })
 }
@@ -206,6 +217,77 @@ export function generateDataDictionary(uuid) {
   }
 }
 
+// create a dataset using the dataset form with the given info
+export function createDataset(dataset = {}) {
+  function getCurrentDate() {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = ('0' + (today.getMonth() + 1)).slice(-2)
+    const day = ('0' + today.getDate()).slice(-2)
+    return year + '-' + month + '-' + day
+  }
+
+  const defaultDataset = {
+    title: 'Test Dataset Title',
+    description: 'Test Dataset Description',
+    accessLevel: 'public',
+    modifiedDate: getCurrentDate(),
+    publisherName: 'Test Dataset Publisher',
+    contactName: 'Test Dataset Contact Name',
+    contactEmail: 'test@example.com',
+    keyword: 'open data',
+    distributionTitle: 'Test Distribution Title',
+    distributionDescription: 'Test Distribution Description',
+    fileType: 'csv',
+    fileName: 'example.csv',
+    // generate a separate upload file name to prevent collisions across tests
+    uploadedFileName: generateCSVFileName(),
+    moderationState: 'published',
+  }
+  dataset = Object.assign({}, defaultDataset, dataset)
+
+  cy.visit('/node/add/data')
+  cy.get('#edit-field-json-metadata-0-value-title').type(dataset.title)
+  cy.get('#edit-field-json-metadata-0-value-description').type(dataset.description)
+  cy.get('#edit-field-json-metadata-0-value-accesslevel').select(dataset.accessLevel)
+  cy.get('#edit-field-json-metadata-0-value-modified-date').type(dataset.modifiedDate)
+  // Fill select2 field for publisher.
+  cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
+    .find('.select2-selection')
+    .click()
+  cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]').type(dataset.publisherName + '{enter}')
+  // End filling up publisher.
+  cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type(dataset.contactName)
+  cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type(dataset.contactEmail)
+  // Fill select2 field for keyword.
+  cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
+    .find('.select2-selection')
+    .click()
+  cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type(dataset.keyword + '{enter}')
+  // End filling up keyword.
+  cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-title')
+    .type(dataset.distributionTitle)
+  cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-description')
+    .type(dataset.distributionDescription)
+
+  cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-format-select')
+    .select(dataset.fileType)
+  cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-file-url-type-upload')
+    .click()
+  cy.get('#edit-moderation-state-0-state')
+    .select(dataset.moderationState)
+
+  const selectorDist = '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload'
+  cy.get(selectorDist).uploadFile(dataset.fileName, dataset.fileType, dataset.uploadedFileName)
+  //wait for the file to be fully loaded
+  cy.get('.file--mime-text-csv', {timeout: 120000})
+    .should('be.visible')
+  cy.get('#edit-submit')
+    .click()
+  cy.get('.messages--status')
+    .should('contain','has been created')
+}
+
 // create dataset with a given moderation state
 export function createDatasetWithModerationState(dataset_title, moderation_state) {
   // Create a dataset.
@@ -258,4 +340,10 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
     const result = regexp.exec(url)
     cy.wrap(result[1]).as('nodeId')
   })
+}
+
+export function queryDatastoreResource(datasetId, index = 0, params = {}) {
+  const param_string = (new URLSearchParams(params)).toString()
+  const url = getDatastoreQueryEndpoint(datasetId, index) + '?' + param_string
+  return cy.request(url)
 }
