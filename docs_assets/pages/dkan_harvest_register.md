@@ -4,19 +4,23 @@ Register a new harvest.
 
 #### Arguments
 
-- **harvest_plan**. Harvest plan configuration as JSON, wrapped in single quotes, do not add spaces between elements.
+- Harvest plan configuration as a JSON string. Wrap in single quotes, do not add spaces between elements.
 
-#### Example
+#### Options
+- **identifier** The harvest id.
+- **extract-type** Extract type.
+- **extract-uri** Extract URI.
+- **transform** A transform class to apply. You may pass multiple transforms.
+- **load-type** Load class.
 
-<code>
-dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
-</code>
+#### Usage
+
+    dkan-harvest:register '{"identifier":"myHarvestId","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"http://example.com/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
+
+Or
+
+    dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
 
 #### Aliases
 
 - dkan-harvest:register
-
-@note <i class="fas fa-fire" style="color: #42b983"></i> Legend
-    - An argument or option with square brackets is optional.
-    - Any default value is listed at end of arg/option description.
-    - An ellipsis indicates that an argument accepts multiple values separated by a space.
