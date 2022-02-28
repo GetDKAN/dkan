@@ -179,6 +179,9 @@ trait QueryBuilderTrait {
    *
    * @param array $params
    *   Search parameters.
+   * @param int $index
+   *   The array index to match the sort order to the sort field, in case
+   *   of multiple sorts.
    *
    * @return mixed
    *   String describing sort order as ascending or descending.
