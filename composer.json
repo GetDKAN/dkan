@@ -13,7 +13,7 @@
         "drupal/search_api": "^1.15",
         "drupal/select_or_other": "1.x-dev",
         "drupal/select2": "1.x-dev",
-        "drupal/views_bulk_operations": "^3.6",
+        "drupal/views_bulk_operations": "^4.0",
         "ext-json": "*",
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.0",
