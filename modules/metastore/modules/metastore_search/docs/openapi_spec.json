@@ -72,7 +72,7 @@
                     {
                         "name": "sort",
                         "in": "query",
-                        "description": "Which property to sort results on.",
+                        "description": "Which property to sort results on. Use array format to sort on multiple properties, e.g. sort[0]=field1&sort[1]=field2",
                         "schema": {
                             "type": "string"
                         },
@@ -81,7 +81,7 @@
                     {
                         "name": "sort-order",
                         "in": "query",
-                        "description": "Sort results in ascending or descending order.",
+                        "description": "Sort results in ascending or descending order. If sorting on multiple properties, use array format to map to sort values, e.g. sort-order[0]=asc&sort-order[1]=desc",
                         "schema": {
                             "type": "string",
                             "default": "asc",

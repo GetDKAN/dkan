@@ -158,12 +158,19 @@ trait QueryBuilderTrait {
   private function setSort(QueryInterface $query, array $params, IndexInterface $index): QueryInterface {
     $fields = array_keys($index->getFields());
 
-    if (isset($params['sort']) && in_array($params['sort'], $fields)) {
-      $query->sort($params['sort'], $this->getSortOrder($params));
-      return $query;
+    $sorts = $params['sort'] ?? [];
+    if (!is_array($sorts)) {
+      $sorts = [$sorts];
+    }
+    if (empty($sorts)) {
+      $query->sort('search_api_relevance', Query::SORT_DESC);
+    }
+    foreach ($sorts as $index => $sort) {
+      if (in_array($sort, $fields)) {
+        $query->sort($sort, $this->getSortOrder($params, $index));
+      }
     }
 
-    $query->sort('search_api_relevance', Query::SORT_DESC);
     return $query;
   }
 
@@ -172,20 +179,30 @@ trait QueryBuilderTrait {
    *
    * @param array $params
    *   Search parameters.
+   * @param int $index
+   *   The array index to match the sort order to the sort field, in case
+   *   of multiple sorts.
    *
    * @return mixed
    *   String describing sort order as ascending or descending.
    */
-  private function getSortOrder(array $params) {
+  private function getSortOrder(array $params, int $index = 0) {
+    $allowed = [
+      strtolower(QueryInterface::SORT_ASC),
+      strtolower(QueryInterface::SORT_DESC),
+    ];
     $default = QueryInterface::SORT_ASC;
-    if (!isset($params['sort-order'])) {
+
+    $orders = $params['sort-order'] ?? [];
+    if (!is_array($orders)) {
+      $orders = [$orders];
+    }
+
+    if (!isset($orders[$index]) || !in_array($orders[$index], $allowed)) {
       return $default;
     }
-    if ($params['sort-order'] != 'asc' && $params['sort-order'] != 'desc') {
-      return $default;
-    }
-    return ($params['sort-order'] == 'asc') ? QueryInterface::SORT_ASC :
-      QueryInterface::SORT_DESC;
+
+    return strtoupper($orders[$index]);
   }
 
   /**
