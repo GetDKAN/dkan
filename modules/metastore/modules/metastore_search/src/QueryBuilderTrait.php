@@ -159,9 +159,11 @@ trait QueryBuilderTrait {
     $fields = array_keys($index->getFields());
 
     $sorts = $params['sort'] ?? [];
-    if (!is_array($sorts)) {
-      $sorts = [$sorts];
+    if (is_string($sorts)) {
+      // @todo Move this into Util class to share with FacetsCommonTrait.
+      $sorts = array_map('trim', str_getcsv($sorts));
     }
+
     if (empty($sorts)) {
       $query->sort('search_api_relevance', Query::SORT_DESC);
     }
@@ -194,8 +196,8 @@ trait QueryBuilderTrait {
     $default = QueryInterface::SORT_ASC;
 
     $orders = $params['sort-order'] ?? [];
-    if (!is_array($orders)) {
-      $orders = [$orders];
+    if (is_string($orders)) {
+      $orders = array_map('trim', str_getcsv($orders));
     }
 
     if (!isset($orders[$index]) || !in_array($orders[$index], $allowed)) {

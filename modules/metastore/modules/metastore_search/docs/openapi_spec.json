@@ -72,23 +72,30 @@
                     {
                         "name": "sort",
                         "in": "query",
-                        "description": "Which property to sort results on. Use array format to sort on multiple properties, e.g. sort[0]=field1&sort[1]=field2",
+                        "description": "Which property to sort results on.",
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "title"
+                            }
                         },
-                        "style": "form"
+                        "style": "form",
+                        "explode": false
                     },
                     {
                         "name": "sort-order",
                         "in": "query",
-                        "description": "Sort results in ascending or descending order. If sorting on multiple properties, use array format to map to sort values, e.g. sort-order[0]=asc&sort-order[1]=desc",
+                        "description": "Sort results in ascending or descending order. Allowed values: <em>asc, desc</em>",
                         "schema": {
-                            "type": "string",
-                            "default": "asc",
-                            "enum": [ "asc", "desc"]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "asc"
+                            }
                         },
-                        "example": "desc",
-                        "style": "form"
+                        "style": "form",
+                        "explode": false
                     },
                     {
                         "name": "facets",
