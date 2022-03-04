@@ -82,7 +82,10 @@ class MetastoreSearchApiDocs extends DkanApiDocsBase {
   public function spec() {
     $spec = $this->getDoc('metastore_search');
 
-    $spec['paths']['/api/1/search']['get']['parameters'][3]['schema']['enum'] = $this->getIndexedFields();
+    $propList = $this->t('Available properties: %list', [
+      '%list' => implode(", ", $this->getIndexedFields()),
+    ]);
+    $spec['paths']['/api/1/search']['get']['parameters'][3]['description'] .= " $propList";
 
     $facetTypes = $this->getFacetTypes();
     foreach ($facetTypes as $type => $example) {
