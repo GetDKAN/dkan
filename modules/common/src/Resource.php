@@ -197,6 +197,13 @@ class Resource implements \JsonSerializable {
   }
 
   /**
+   * Retrieve datastore table name for resource.
+   */
+  public function getTableName() {
+    return 'datastore_' . md5($this->getUniqueIdentifier());
+  }
+
+  /**
    * Inherited.
    *
    * @inheritdoc

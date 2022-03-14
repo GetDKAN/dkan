@@ -26,6 +26,13 @@ class Import {
   const DEFAULT_TIMELIMIT = 50;
 
   /**
+   * Default data dictionary ID.
+   *
+   * @var string
+   */
+  protected const DEFAULT_DICTIONARY_ID = 'string';
+
+  /**
    * The qualified class name of the importer to use.
    *
    * @var \Procrastinator\Job\AbstractPersistentJob
@@ -105,7 +112,7 @@ class Import {
     $importer->run();
 
     $result = $this->getResult();
-    if ($result->getStatus() == Result::ERROR) {
+    if ($result->getStatus() === Result::ERROR) {
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->error('Error importing resource id:%id path:%path message:%message', [
         '%id' => $this->getResource()->getId(),
@@ -113,6 +120,21 @@ class Import {
         '%message' => $result->getError(),
       ]);
     }
+    // If the import job finished successfully...
+    elseif ($result->getStatus() === Result::DONE) {
+      // Queue the imported resource for data-dictionary enforcement.
+      $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
+      $dictionary_enforcer_queue->createItem((object) [
+        'datastore_table' => $this->getStorage()->getTableName(),
+        // @TODO Replace `self::DEFAULT_DICTIONARY_ID` with data-dictionary ID
+        // for this dataset.
+        'dictionary_identifier' => self::DEFAULT_DICTIONARY_ID,
+      ]);
+    }
+  }
+
+  protected function getDataDictionaryIdentifier(): string {
+    return $this->configService->get('metastore.settings')->get('data_dictionary_mode');
   }
 
   /**

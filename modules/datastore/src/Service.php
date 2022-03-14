@@ -257,6 +257,7 @@ class Service implements ContainerInjectionInterface {
    *   Array of row/record objects.
    */
   public function runQuery(DatastoreQuery $datastoreQuery) {
+    \Drupal::logger('dkan')->notice('<pre>' . print_r($datastoreQuery, TRUE) . '</pre>');
     $return = (object) [];
     if ($datastoreQuery->{"$.results"} !== FALSE) {
       $return->results = $this->runResultsQuery($datastoreQuery);
@@ -331,6 +332,7 @@ class Service implements ContainerInjectionInterface {
    *   Array of result objects or result statement of $fetch is false.
    */
   public function runResultsQuery(DatastoreQuery $datastoreQuery, $fetch = TRUE) {
+    \Drupal::logger('dkan')->notice('<pre>' . print_r($datastoreQuery, TRUE) . '</pre>');
     $primaryAlias = $datastoreQuery->{"$.resources[0].alias"};
     if (!$primaryAlias) {
       return [];

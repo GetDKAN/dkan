@@ -76,3 +76,6 @@ services:
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
+
+  dkan.datastore.frictionless_date_format_converter.mysql:
+    class: \Drupal\datastore\Service\FrictionlessMySQLDateFormatConverter
