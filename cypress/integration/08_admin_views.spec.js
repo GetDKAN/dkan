@@ -9,8 +9,6 @@ context('Admin content and dataset views', () => {
     })
 
     it('The admin content screen has an exposed data type filter that contains the values I expect.', () => {
-        cy.visit(baseurl + "/admin/dkan/datasets")
-        cy.get('h1').should('have.text', 'DKAN Metastore (Datasets)')
         cy.get('#edit-data-type').select('dataset',{ force: true }).should('have.value', 'dataset')
         cy.get('#edit-data-type').select('distribution',{ force: true }).should('have.value', 'distribution')
         cy.get('#edit-data-type').select('keyword',{ force: true }).should('have.value', 'keyword')
@@ -25,29 +23,18 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
         cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
         cy.get('#edit-action').select('Publish latest revision',{ force: true }).should('have.value', 'publish_latest')
+        cy.get('#edit-action').select('Hide current revision',{ force: true }).should('have.value', 'hide_current')
     })
 
-    it('The content table has a column for Data Type', () => {
-        cy.visit(baseurl + "/admin/dkan/datasets")
+    it('Confirm the admin view has expected items.', () => {
+        // The content table has a column for Data Type.
         cy.get('#view-field-data-type-table-column > a').should('contain','Data Type');
-    })
-
-    it('There is a link in the admin menu to the datasets admin screen.', () => {
-        cy.visit(baseurl + "/admin/dkan/datasets")
-        cy.get('.toolbar-icon-system-admin-dkan').contains('DKAN').next('.toolbar-menu').then($el=> {
-            cy.wrap($el).invoke('show')
-            cy.wrap($el).contains('Datasets')
-        })
-    })
-
-    it('There is an "Add new dataset" button that takes user to the dataset json form.', () => {
-        cy.visit(baseurl + "/admin/dkan/datasets")
-        cy.get('h1').should('have.text', 'DKAN Metastore (Datasets)')
+        // There is an "Add new dataset" button that takes user to the dataset json form.
         cy.get('.view-header > .form-actions > .button').should('contain', 'Add new dataset').click({ force:true })
-        cy.get('h1').should('have.text', 'Create Data')
+        cy.contains('h1', 'Create Data');
     })
 
-    it('User can archive, publish, edit, and delete a dataset. The edit link on the admin view should go to the json form.', () => {
+    it('User can create a dataset with the UI.', () => {
         // Create a dataset.
         cy.visit(baseurl + "/node/add/data")
         cy.wait(2000)
@@ -72,23 +59,30 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-submit').click({ force:true })
         cy.get('.button').contains('Yes').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
+    })
+
+    it('Test moderation bulk operations', () => {
+        dkan.createDatasetWithModerationState('Testing bulk operations', 'hidden')
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.wait(2000)
         cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
+        cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Published (hidden)')
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
         cy.get('#edit-submit--2').click({ force:true })
         cy.get('.button').contains('Yes').click({ force:true });
-        cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Unpublished')
+        cy.get('tbody > :nth-child(1) > .views-field-status', {timeout: 2000}).should('contain', 'Unpublished')
+        cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Archived')
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Publish latest revision',{ force: true }).should('have.value', 'publish_latest')
         cy.get('#edit-submit--2').click({ force:true })
         cy.get('.button').contains('Yes').click({ force:true })
-        cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
-        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', '/edit')
-        cy.get('tbody > :nth-child(1) > .views-field-nothing > a').click({ force: true })
-        cy.get('h1').should('contain.text', 'Edit Data')
-        cy.get('#edit-delete').click({ force:true })
+        cy.get('tbody > :nth-child(1) > .views-field-status', {timeout: 2000}).should('contain', 'Published')
+        cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Published')
+        cy.get('#edit-node-bulk-form-0').click({force:true})
+        cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
+        cy.get('#edit-submit--2').click({ force:true })
+        cy.get('.button').contains('Yes').click({ force:true })
         cy.get('#edit-submit').click({ force:true })
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.get('.messages--status').should('contain','has been deleted')

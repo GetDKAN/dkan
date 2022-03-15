@@ -16,7 +16,7 @@ function metastore_admin_update_8002() {
  * Import config from metastore_admin to have the right links in the admin form.
  */
 function metastore_admin_update_8003() {
-  $config_path = drupal_get_path('module', 'metastore_admin') . '/config/install';
+  $config_path = \Drupal::service('extension.list.module')->getPath('metastore_admin') . '/config/install';
   $container = \Drupal::getContainer();
   $drush_import = $container->get('config.import.commands');
   $options = [
@@ -101,5 +101,15 @@ function metastore_admin_update_8010() {
       $view->save(TRUE);
     }
   }
+  drupal_flush_all_caches();
+}
+
+/**
+ * Reinstall DKAN Dataset Content view.
+ */
+function metastore_admin_update_8011() {
+  \Drupal::service('config.installer')
+    ->installDefaultConfig('module', 'metastore_admin');
+
   drupal_flush_all_caches();
 }
