@@ -153,10 +153,14 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
     if (!isset($metadata['latest_revision'])) {
       return $this->getResponse((object) ['message' => "No dataset found with the identifier $dataset"], 404);
     }
-    if (!isset($metadata['latest_revision']['distributions'][$index]['distribution_uuid'])) {
+    $datasetRevision = $metadata['latest_revision'];
+    if (isset($metadata['published_revision'])) {
+      $datasetRevision = $metadata['published_revision'];
+    }
+    if (!isset($datasetRevision['distributions'][$index]['distribution_uuid'])) {
       return $this->getResponse((object) ['message' => "No resource found at index $index"], 404);
     }
-    $identifier = $metadata['latest_revision']['distributions'][$index]['distribution_uuid'];
+    $identifier = $datasetRevision['distributions'][$index]['distribution_uuid'];
     return $this->queryResource($identifier, $request);
   }
 
