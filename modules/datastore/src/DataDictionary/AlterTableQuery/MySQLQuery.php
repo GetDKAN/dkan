@@ -57,7 +57,7 @@ class MySQLQuery implements AlterTableQueryInterface {
    *   Filtered list of applicable data dictionary fields.
    */
   protected function filterForDatastoreFields(array $dictionary_fields, string $table): array {
-    $table_cols = $this->datastoreTableQuery->getTableCols($table);
+    $table_cols = $this->getTableCols($table);
 
     return array_filter($dictionary_fields, fn ($fields) => in_array($fields['name'], $table_cols, TRUE));
   }

@@ -6,6 +6,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 
+use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\metastore\Service as MetastoreService;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;

@@ -47,6 +47,16 @@ class Import {
   private $resource;
 
   /**
+   * Resource ID.
+   */
+  protected string $resource_id;
+
+  /**
+   * Resource version.
+   */
+  protected string $resource_version;
+
+  /**
    * The jobstore factory service.
    *
    * @var \Drupal\common\Storage\JobStoreFactory
@@ -66,6 +76,8 @@ class Import {
    * Constructor.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+    $this->resource_id = $resource->getIdentifier();
+    $this->resource_version = $resource->getVersion();
     $this->initializeResource($resource);
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
@@ -122,13 +134,12 @@ class Import {
     }
     // If the import job finished successfully...
     elseif ($result->getStatus() === Result::DONE) {
+      $dictionary_discovery = \Drupal::service('dkan.metastore.data_dictionary_discovery');
       // Queue the imported resource for data-dictionary enforcement.
       $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
       $dictionary_enforcer_queue->createItem((object) [
         'datastore_table' => $this->getStorage()->getTableName(),
-        // @TODO Replace `self::DEFAULT_DICTIONARY_ID` with data-dictionary ID
-        // for this dataset.
-        'dictionary_identifier' => self::DEFAULT_DICTIONARY_ID,
+        'dictionary_identifier' => $dictionary_discovery->dictionaryIdFromResource($this->resource_id, $this->resource_version),
       ]);
     }
   }

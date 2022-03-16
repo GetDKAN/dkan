@@ -48,7 +48,7 @@ services:
 
   dkan.datastore.database:
     class: \Drupal\Core\Database\Connection
-    factory: \Drupal\datastore\Storage\DatabaseConnectionFactory::getConnection
+    factory: ['@dkan.datastore.database_connection_factory', 'getConnection']
 
   dkan.datastore.database_table_factory:
     class: \Drupal\datastore\Storage\DatabaseTableFactory
@@ -88,4 +88,4 @@ services:
       - '@dkan.datastore.import_info'
 
   dkan.datastore.frictionless_date_format_converter.mysql:
-    class: \Drupal\datastore\FrictionlessDateFormatConverter\MySQLConverter
+    class: \Drupal\datastore\DataDictionary\FrictionlessDateFormatConverter\MySQLConverter

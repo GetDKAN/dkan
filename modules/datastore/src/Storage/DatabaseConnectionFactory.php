@@ -16,17 +16,12 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
   /**
    * {@inheritdoc}
    */
-  protected int $timeout;
-
-  /**
-   * {@inheritdoc}
-   */
   protected string $target = 'default';
 
   /**
    * {@inheritdoc}
    */
-  protected string $key = 'datastore';
+  protected ?string $key = 'datastore';
 
   /**
    * {@inheritdoc}

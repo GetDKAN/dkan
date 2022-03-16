@@ -14,17 +14,23 @@ use Drupal\Core\Database\Database;
 class DatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
 
   /**
-   * {@inheritdoc}
+   * Timeout for built database connections in seconds.
+   *
+   * @var int
    */
   protected int $timeout;
 
   /**
-   * {@inheritdoc}
+   * Database connection target name.
+   *
+   * @var string
    */
   protected string $target = 'default';
 
   /**
-   * {@inheritdoc}
+   * Database connection key.
+   *
+   * @var string|null
    */
   protected ?string $key = NULL;
 
@@ -41,9 +47,7 @@ class DatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
    * {@inheritdoc}
    */
   protected function buildConnectionInfo(): array {
-    return [
-      $this->target => Database::getConnectionInfo(),
-    ];
+    return Database::getConnectionInfo()[$this->target];
   }
 
   /**
