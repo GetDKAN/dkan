@@ -88,7 +88,6 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *   The json or CSV response.
    */
   public function query(Request $request) {
-    \Drupal::logger('dkan')->notice('reached');
     try {
       $datastoreQuery = $this->buildDatastoreQuery($request);
     }

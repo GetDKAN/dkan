@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class MetastoreApiDocs extends DkanApiDocsBase {
 
-  const DOC_SCHEMAS = ['dataset', 'data-dictionary'];
+  const DOC_SCHEMAS = ['dataset'];
 
   /**
    * The DKAN metastore service.
