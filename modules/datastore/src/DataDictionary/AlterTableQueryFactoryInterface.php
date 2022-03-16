@@ -2,16 +2,33 @@
 
 namespace Drupal\datastore\DataDictionary;
 
+/**
+ * Alter table query factory interface.
+ */
 interface AlterTableQueryFactoryInterface {
 
-  public function get(string $datastore_table, array $dictionary_fields, int $timeout): AlterTableQueryInterface;
+  /**
+   * Build alter table query instance.
+   *
+   * @param string $datastore_table
+   *   Datastore table being altered.
+   * @param string $dictionary_fields
+   *   Data-dictionary fields list.
+   *
+   * @return
+   *   An alter table query instance.
+   */
+  public function getQuery(string $datastore_table, array $dictionary_fields): AlterTableQueryInterface;
 
   /**
    * Set the wait_timeout for the default database connection.
    *
    * @param int $timeout
    *   Wait timeout in seconds.
+   *
+   * @return self
+   *   Return instance of `$this` for chaining.
    */
-  public function setConnectionTimeout(int $timeout): void;
+  public function setConnectionTimeout(int $timeout): self;
 
 }

@@ -5,9 +5,7 @@ namespace Drupal\datastore\Plugin\QueueWorker;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\Core\Database\Connection;
 
-use Drupal\datastore\FrictionlessDateFormatConverterInterface;
 use Drupal\metastore\Service as MetastoreService;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,9 +34,9 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
   /**
    * Datastore table query service.
    *
-   * @var \Drupal\datastore\DatastoreTableQueryInterface
+   * @var \Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface
    */
-  protected $datastoreTableQuery;
+  protected $alterTableQueryFactory;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -49,10 +47,8 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Database\Connection $connection
-   *   An instance of the default database connection.
-   * @param \Drupal\datastore\FrictionlessDateFormatConverterInterface $date_format_converter
-   *   The frictionless date format converter service.
+   * @param \Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface $alter_table_query_factory
+   *   The alter table query factory service.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   A logger channel factory instance.
    * @param \Drupal\metastore\Service $metastore
@@ -62,21 +58,18 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
     array $configuration,
     $plugin_id,
     $plugin_definition,
-    Connection $connection,
-    FrictionlessDateFormatConverterInterface $date_format_converter,
+    AlterTableQueryFactoryInterface $alter_table_query_factory,
     LoggerChannelFactoryInterface $logger_factory,
     MetastoreService $metastore
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->connection = $connection;
-    $this->dateFormatConverter = $date_format_converter;
     $this->logger = $logger_factory->get('datastore');
     $this->metastore = $metastore;
     // Set the timeout for database connections to the queue lease time.
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
     $timeout = (int) $plugin_definition['cron']['lease_time'];
-    $this->setConnectionTimeout($timeout);
+    $this->alterTableQueryFactory = $alter_table_query_factory->setConnectionTimeout($timeout);
   }
 
   /**
@@ -87,8 +80,7 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('database'),
-      $container->get('dkan.datastore.frictionless_date_format_converter.mysql'),
+      $container->get('dkan.datastore.data_dictionary.alter_table_query_factory.mysql'),
       $container->get('logger.factory'),
       $container->get('dkan.metastore.service')
     );
@@ -118,7 +110,9 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    *   Mysql table name.
    */
   public function applyDictionary(array $dictionary_fields, string $datastore_table): void {
-    $this->datastoreTableQuery->applyDataTypes($datastore_table, $dictionary_fields);
+    $this->alterTableQueryFactory
+      ->getQuery($datastore_table, $dictionary_fields)
+      ->applyDataTypes();
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\DateFormat;
+namespace Drupal\datastore\DataDictionary;
 
 /**
  * Converts frictionless date formats to local database date formats.

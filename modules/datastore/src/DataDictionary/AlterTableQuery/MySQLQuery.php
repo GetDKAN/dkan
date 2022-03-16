@@ -2,56 +2,47 @@
 
 namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
+use Drupal\Core\Database\Connection;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface;
 
 /**
- *
+ * MySQL table alter query.
  */
-class MySQLQuery implements AlterTableQueryInterface, ContainerFactoryPluginInterface {
+class MySQLQuery implements AlterTableQueryInterface {
 
   /**
+   * Build a MySQL table alter query.
    *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection.
+   * @param \Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface $date_format_converter
+   *   Frictionless date format converter.
+   * @param string $datastore_table
+   *   Datastore table.
+   * @param array $dictionary_fields
+   *   Data-dictionary fields.
    */
   public function __construct(
-      $connection,
-      $alter_table_query,
-      $date_format_converter,
+      Connection $connection,
+      FrictionlessDateFormatConverterInterface $date_format_converter,
       string $datastore_table,
-      array $dictionary_fields,
-      int $timeout) {
+      array $dictionary_fields
+  ) {
     $this->connection = $connection;
-    $this->alterTableQuery = $alter_table_query;
     $this->dateFormatConverter = $date_format_converter;
     $this->datastoreTable = $datastore_table;
     $this->dictionaryFields = $dictionary_fields;
   }
 
   /**
-   * Apply data dictionary types to the given table.
-   *
-   * @param string $datastore_table
-   *   Mysql table name.
-   * @param array $dictionary_fields
-   *   Data dictionary fields.
+   * {@inheritdoc}
    */
-  public function applyDataTypes(string $datastore_table, array $dictionary_fields): void {
-    $dictionary_fields = $this->filterForDatastoreFields($dictionary_fields, $datastore_table);
+  public function applyDataTypes(): void {
+    $this->dictionaryFields = $this->filterForDatastoreFields($this->dictionaryFields, $this->datastoreTable);
 
-    array_map([$this->connection, 'query'], $this->buildPreAlterCommands($dictionary_fields, $datastore_table));
-    $this->connection->query($this->buildAlterCommand($dictionary_fields, $datastore_table));
-  }
-
-  /**
-   * Get list of MySQL table field names.
-   *
-   * @param string $table
-   *   Table name.
-   *
-   * @return string[]
-   *   List of column names.
-   */
-  public function getTableCols(string $table): array {
-    return $this->connection->query("DESCRIBE {$table};")->fetchCol();
+    array_map([$this->connection, 'query'], $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable));
+    $this->connection->query($this->buildAlterCommand($this->dictionaryFields, $this->datastoreTable));
   }
 
   /**
@@ -69,6 +60,19 @@ class MySQLQuery implements AlterTableQueryInterface, ContainerFactoryPluginInte
     $table_cols = $this->datastoreTableQuery->getTableCols($table);
 
     return array_filter($dictionary_fields, fn ($fields) => in_array($fields['name'], $table_cols, TRUE));
+  }
+
+  /**
+   * Get list of MySQL table field names.
+   *
+   * @param string $table
+   *   Table name.
+   *
+   * @return string[]
+   *   List of column names.
+   */
+  protected function getTableCols(string $table): array {
+    return $this->connection->query("DESCRIBE {$table};")->fetchCol();
   }
 
   /**

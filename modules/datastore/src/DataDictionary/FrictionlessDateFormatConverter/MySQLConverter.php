@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\Service;
+namespace Drupal\datastore\FrictionlessDateFormatConverter;
 
 use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterBase;
 

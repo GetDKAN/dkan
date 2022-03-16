@@ -6,11 +6,12 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\Core\Database\Connection;
 
 use Drupal\common\LoggerTrait;
+use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\datastore\Service as DatastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
+
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -94,8 +95,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     DatastoreService $datastore,
     LoggerChannelFactoryInterface $loggerFactory,
     ReferenceLookup $referenceLookup,
-    Connection $defaultConnection,
-    Connection $datastoreConnection
+    DatabaseConnectionFactoryInterface $defaultConnectionFactory,
+    DatabaseConnectionFactoryInterface $datastoreConnectionFactory
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->datastore = $datastore;
@@ -108,8 +109,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
     $timeout = (int) $plugin_definition['cron']['lease_time'];
-    $this->setConnectionTimeout($datastoreConnection, $timeout);
-    $this->setConnectionTimeout($defaultConnection, $timeout);
+    $defaultConnectionFactory->setConnectionTimeout($timeout);
+    $datastoreConnectionFactory->setConnectionTimeout($timeout);
   }
 
   /**
@@ -124,22 +125,9 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $container->get('dkan.datastore.service'),
       $container->get('logger.factory'),
       $container->get('dkan.metastore.reference_lookup'),
-      $container->get('database'),
-      $container->get('dkan.datastore.database')
+      $container->get('dkan.common.database_connection_factory'),
+      $container->get('dkan.datastore.database_connection_factory')
     );
-  }
-
-  /**
-   * Set the wait_timeout for the given database connection.
-   *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Database connection instance.
-   * @param int $timeout
-   *   Wait timeout in seconds.
-   */
-  protected function setConnectionTimeout(Connection $connection, int $timeout): void {
-    $command = 'SET SESSION wait_timeout = ' . $timeout;
-    $connection->query($command);
   }
 
   /**
