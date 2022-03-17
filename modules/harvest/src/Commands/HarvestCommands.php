@@ -87,7 +87,7 @@ class HarvestCommands extends DrushCommands {
    * @usage dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
    * @aliases dkan-harvest:register
    *
-   * @deprecated in dkan:2.14.0 and is removed from dkan:3.x. Use dkan:harvest:register instead.
+   * @deprecated in dkan:2.14.0 and is removed from dkan:3.0.0. Use dkan:harvest:register instead.
    * @see https://github.com/GetDKAN/dkan/releases/tag/2.14.0
    */
   public function register(string $plan_json = '', array $opts = [
