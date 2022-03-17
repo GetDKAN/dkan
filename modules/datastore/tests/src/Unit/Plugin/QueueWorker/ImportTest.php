@@ -4,14 +4,13 @@ namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-
+use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\datastore\Plugin\QueueWorker\Import;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -89,21 +88,18 @@ class ImportTest extends TestCase {
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('dkan.metastore.reference_lookup', ReferenceLookup::class)
       ->add('queue', QueueFactory::class)
-      ->add('database', Connection::class)
-      ->add('dkan.datastore.database', Connection::class)
+      ->add('dkan.common.database_connection_factory', DatabaseConnectionFactoryInterface::class)
+      ->add('dkan.datastore.database_connection_factory', DatabaseConnectionFactoryInterface::class)
       ->index(0);
 
-    $container_chain = (new Chain($this))
+    return (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(Service::class, 'import', [$result])
       ->add(Service::class, 'getQueueFactory', QueueFactory::class)
       ->add(Service::class, 'getResourceLocalizer', ResourceLocalizer::class)
       ->add(ResourceLocalizer::class, 'getFileSystem', FileSystem::class)
       ->add(QueueFactory::class, 'get', QueueInterface::class)
-      ->add(QueueInterface::class, 'createItem', NULL, 'create_item')
-      ->add(Connection::class, 'query', NULL);
-
-    return $container_chain;
+      ->add(QueueInterface::class, 'createItem', NULL, 'create_item');
   }
 
 }
