@@ -62,7 +62,7 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:import
    * @aliases dkan-datastore:import
    *
-   * @deprecated in dkan:2.14.0 and is removed from 3.x. Use dkan:datastore:import instead.
+   * @deprecated in dkan:2.14.0 and is removed from dkan:3.x. Use dkan:datastore:import instead.
    * @see https://github.com/GetDKAN/dkan/releases/tag/2.14.0
    */
   public function import($uuid, $deferred = FALSE) {
@@ -94,7 +94,7 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:list
    * @aliases dkan-datastore:list
    *
-   * @deprecated in dkan:2.14.0 and is removed from 3.x. Use dkan:datastore:list instead.
+   * @deprecated in dkan:2.14.0 and is removed from dkan:3.x. Use dkan:datastore:list instead.
    * @see https://github.com/GetDKAN/dkan/releases/tag/2.14.0
    */
   public function list($options = [
@@ -153,7 +153,7 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:drop
    * @aliases dkan-datastore:drop
    *
-   * @deprecated in dkan:2.14.0 and is removed from 3.x. Use dkan:datastore:drop instead.
+   * @deprecated in dkan:2.14.0 and is removed from dkan:3.x. Use dkan:datastore:drop instead.
    * @see https://github.com/GetDKAN/dkan/releases/tag/2.14.0
    */
   public function drop($uuid) {
