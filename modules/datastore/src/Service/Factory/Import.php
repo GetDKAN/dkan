@@ -12,9 +12,26 @@ use Drupal\common\Storage\JobStoreFactory;
  * @codeCoverageIgnore
  */
 class Import implements ImportFactoryInterface {
+
+  /**
+   * Job store factory.
+   *
+   * @var \Drupal\common\Storage\JobStoreFactory
+   */
   private $jobStoreFactory;
+
+  /**
+   * Database table factory.
+   *
+   * @var \Drupal\datastore\Storage\DatabaseTableFactory
+   */
   private $databaseTableFactory;
 
+  /**
+   * Import services.
+   *
+   * @var \Drupal\datastore\Service\Import[]
+   */
   private $services = [];
 
   /**
