@@ -10,7 +10,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class StringHelper.
+ * JSON form widget string helper service.
  */
 class StringHelper implements ContainerInjectionInterface {
   use StringTranslationTrait;

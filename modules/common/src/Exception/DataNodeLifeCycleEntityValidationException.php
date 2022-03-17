@@ -3,7 +3,7 @@
 namespace Drupal\common\Exception;
 
 /**
- * Class DataNodeLifeCycleEntityValidationException.
+ * Class Metastore item object validation exception.
  */
 class DataNodeLifeCycleEntityValidationException extends \Exception {
 

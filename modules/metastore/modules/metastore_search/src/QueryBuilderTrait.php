@@ -9,7 +9,7 @@ use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Utility\QueryHelperInterface;
 
 /**
- * Trait QueryBuilderTrait.
+ * Search API query builder trait.
  *
  * @package Drupal\metastore_search
  */

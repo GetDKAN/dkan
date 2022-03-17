@@ -30,7 +30,7 @@ function metastore_search_search_api_tracking(EntityInterface $entity, string $o
   $storage = \Drupal::service('entity_type.manager')
     ->getStorage('search_api_index');
 
-  /* @var $index \Drupal\search_api\Entity\Index */
+  /** @var $index \Drupal\search_api\Entity\Index */
   $index = $storage->load('dkan');
 
   $index->{$method}('dkan_dataset', [$entity->uuid()]);

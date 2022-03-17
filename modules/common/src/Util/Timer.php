@@ -3,10 +3,22 @@
 namespace Drupal\common\Util;
 
 /**
- * Class Timer.
+ * Timer utility object.
  */
 class Timer {
+
+  /**
+   * Start times in microseconds.
+   *
+   * @var float[]
+   */
   private $starts = [];
+
+  /**
+   * End times in microseconds.
+   *
+   * @var float[]
+   */
   private $ends = [];
 
   /**

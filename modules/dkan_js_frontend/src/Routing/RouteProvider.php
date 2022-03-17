@@ -8,20 +8,14 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Class.
+ * DKAN JS frontend route provider.
  */
 class RouteProvider {
-
-  private $appRoot;
-  private $entityQuery;
-  private $configFactory;
 
   /**
    * Constructor.
    */
   public function __construct(string $appRoot, QueryFactoryInterface $entityQuery, ConfigFactoryInterface $configFactory) {
-    $this->appRoot = $appRoot;
-    $this->entityQuery = $entityQuery;
     $this->routes = $configFactory->get('dkan_js_frontend.config')->get('routes');
   }
 

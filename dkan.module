@@ -1,7 +1,7 @@
 <?php
 
 function dkan_update_8001() {
-  /* @var $metastoreService \Drupal\metastore\Service */
+  /** @var $metastoreService \Drupal\metastore\Service */
   $metastoreService = \Drupal::service('dkan.metastore.service');
   foreach ($metastoreService->getAll('dataset') as $dataset) {
     $metastoreService->publish('dataset', $dataset->identifier);

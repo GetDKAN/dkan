@@ -373,7 +373,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function countTables() {
-    /* @var $db \Drupal\Core\Database\Connection */
+    /** @var $db \Drupal\Core\Database\Connection */
     $db = \Drupal::service('database');
 
     $tables = $db->schema()->findTables("datastore_%");
@@ -398,7 +398,7 @@ class DatasetTest extends ExistingSiteBase {
   }
 
   private function queryResource(object $resource, string $queryString) {
-    /* @var $sqlEndpoint \Drupal\datastore\SqlEndpoint\Service */
+    /** @var $sqlEndpoint \Drupal\datastore\SqlEndpoint\Service */
     $sqlEndpoint = \Drupal::service('dkan.datastore.sql_endpoint.service');
     $results = $sqlEndpoint->runQuery($queryString);
     $this->assertGreaterThan(0, count($results));

@@ -4,7 +4,6 @@ namespace Drupal\metastore\Plugin\Validation\Constraint;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\metastore\ValidMetadataFactory;
-use InvalidArgumentException;
 use OpisErrorPresenter\Implementation\MessageFormatterFactory;
 use OpisErrorPresenter\Implementation\PresentedValidationErrorFactory;
 use OpisErrorPresenter\Implementation\ValidationErrorPresenter;
