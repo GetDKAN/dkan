@@ -61,7 +61,9 @@ class Drush extends DrushCommands {
    * @todo pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan:datastore:import
    * @aliases dkan-datastore:import
-   * @deprecated dkan-datastore:import is deprecated and will be removed in a future Dkan release. Use dkan:datastore:import instead.
+   *
+   * @deprecated in 2.14.0 and is removed from 3.x. Use dkan:datastore:import instead.
+   * @see https://github.com/GetDKAN/dkan/releases/tag/2.14.0
    */
   public function import($uuid, $deferred = FALSE) {
 
@@ -91,7 +93,9 @@ class Drush extends DrushCommands {
    *
    * @command dkan:datastore:list
    * @aliases dkan-datastore:list
-   * @deprecated dkan-datastore:list is deprecated and will be removed in a future Dkan release. Use dkan:datastore:list instead.
+   *
+   * @deprecated in 2.14.0 and is removed from 3.x. Use dkan:datastore:list instead.
+   * @see https://github.com/GetDKAN/dkan/releases/tag/2.14.0
    */
   public function list($options = [
     'format' => 'table',
@@ -148,7 +152,9 @@ class Drush extends DrushCommands {
    *
    * @command dkan:datastore:drop
    * @aliases dkan-datastore:drop
-   * @deprecated dkan-datastore:drop is deprecated and will be removed in a future Dkan release. Use dkan:datastore:drop instead.
+   *
+   * @deprecated in 2.14.0 and is removed from 3.x. Use dkan:datastore:drop instead.
+   * @see https://github.com/GetDKAN/dkan/releases/tag/2.14.0
    */
   public function drop($uuid) {
     try {
