@@ -3,8 +3,10 @@
 namespace Drupal\harvest\Commands;
 
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\harvest\Load\Dataset;
 use Drupal\harvest\Service;
 use Drush\Commands\DrushCommands;
+use Harvest\ETL\Extract\DataJson;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -44,8 +46,6 @@ class HarvestCommands extends DrushCommands {
    * List available harvests.
    *
    * @command dkan:harvest:list
-   * @aliases dkan-harvest:list
-   * @deprecated dkan-harvest:list is deprecated and will be removed in a future Dkan release. Use dkan:harvest:list instead.
    *
    * @usage dkan:harvest:list
    *   List available harvests.
@@ -64,20 +64,40 @@ class HarvestCommands extends DrushCommands {
   /**
    * Register a new harvest.
    *
-   * @param string $harvest_plan
-   *   Harvest plan configuration as JSON, wrapped in single quotes,
-   *   do not add spaces between elements.
+   * You may supply a full Harvest plan in JSON or provide configuration via
+   * individual options. For a simple data.json harvest, pass only an
+   * identifier and extract-uri.
+   *
+   * Harvest plans are validated against the schema at:
+   * https://github.com/GetDKAN/harvest/blob/master/schema/schema.json
+   *
+   * @param string $plan_json
+   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
+   * @param array $opts
+   *   Options array.
+   *
+   * @option identifier Identifier
+   * @option extract-type Extract type
+   * @option extract-uri Extract URI
+   * @option transform A transform class to apply. You may pass multiple transforms.
+   * @option load-type Load class
    *
    * @command dkan:harvest:register
-   * @usage dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'
+   *
+   * @usage dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
    * @aliases dkan-harvest:register
    * @deprecated dkan-harvest:register is deprecated and will be removed in a future Dkan release. Use dkan:harvest:register instead.
    */
-  public function register($harvest_plan) {
+  public function register(string $plan_json = '', array $opts = [
+    'identifier' => '',
+    'extract-type' => DataJson::class,
+    'extract-uri' => '',
+    'transform' => [],
+    'load-type' => Dataset::class,
+  ]) {
     try {
-      $plan       = json_decode($harvest_plan);
-      $identifier = $this->harvestService
-        ->registerHarvest($plan);
+      $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
+      $identifier = $this->harvestService->registerHarvest($plan);
       $this->logger->notice("Successfully registered the {$identifier} harvest.");
     }
     catch (\Exception $e) {
@@ -87,11 +107,32 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
+   * Build a harvest plan object based on the options from register.
+   *
+   * @param mixed $opts
+   *   Options array from register method.
+   *
+   * @return object
+   *   A harvest plan PHP object.
+   */
+  protected function buildPlanFromOpts($opts) {
+    return (object) [
+      'identifier' => $opts['identifier'],
+      'extract' => (object) [
+        'type' => $opts['extract-type'] ?: NULL,
+        'uri' => $opts['extract-uri'] ?: NULL,
+      ],
+      'transforms' => $opts['transform'],
+      'load' => (object) [
+        'type' => $opts['load-type'],
+      ],
+    ];
+  }
+
+  /**
    * Deregister a harvest.
    *
    * @command dkan:harvest:deregister
-   * @aliases dkan-harvest:deregister
-   * @deprecated dkan-harvest:deregister is deprecated and will be removed in a future Dkan release. Use dkan:harvest:deregister instead.
    */
   public function deregister($id) {
     try {
@@ -113,8 +154,6 @@ class HarvestCommands extends DrushCommands {
    *   The harvest id.
    *
    * @command dkan:harvest:run
-   * @aliases dkan-harvest:run
-   * @deprecated dkan-harvest:run is deprecated and will be removed in a future Dkan release. Use dkan:harvest:run instead.
    *
    * @usage dkan:harvest:run
    *   Runs a harvest.
@@ -136,8 +175,6 @@ class HarvestCommands extends DrushCommands {
    * Run all pending harvests.
    *
    * @command dkan:harvest:run-all
-   * @aliases dkan-harvest:run-all
-   * @deprecated dkan-harvest:run-all is deprecated and will be removed in a future Dkan release. Use dkan:harvest:run-all instead.
    *
    * @usage dkan:harvest:run-all
    *   Runs all pending harvests.
@@ -155,65 +192,94 @@ class HarvestCommands extends DrushCommands {
   /**
    * Give information about a previous harvest run.
    *
-   * @param string $id
+   * @param string $harvestId
    *   The harvest id.
-   * @param string $run_id
+   * @param string $runId
    *   The run's id.
    *
    * @command dkan:harvest:info
-   * @aliases dkan-harvest:info
-   * @deprecated dkan-harvest:info is deprecated and will be removed in a future Dkan release. Use dkan:harvest:info instead.
    */
-  public function info($id, $run_id = NULL) {
-    $run_ids = [];
+  public function info($harvestId, $runId = NULL) {
+    $this->validateHarvestId($harvestId);
+    $runIds = $runId ? [$runId] : $this->harvestService->getAllHarvestRunInfo($harvestId);
 
-    if (!isset($run_id)) {
-      $run_ids = $this->harvestService
-        ->getAllHarvestRunInfo($id);
-    }
-    else {
-      $run_ids = [$run_id];
-    }
-
-    $run_infos = [];
-    foreach ($run_ids as $run_id) {
-      $run = $this->harvestService
-        ->getHarvestRunInfo($id, $run_id);
+    foreach ($runIds as $id) {
+      $run = $this->harvestService->getHarvestRunInfo($harvestId, $id);
       $result = json_decode($run, TRUE);
 
-      $run_infos[] = [$run_id, $result];
+      $runs[] = [$id, $result];
     }
 
-    $this->renderHarvestRunsInfo($run_infos);
+    $this->renderHarvestRunsInfo($runs ?? []);
   }
 
   /**
    * Revert a harvest, i.e. remove all of its harvested entities.
    *
-   * @param string $id
+   * @param string $harvestId
    *   The source to revert.
    *
    * @command dkan:harvest:revert
-   * @aliases dkan-harvest:revert
-   * @deprecated dkan-harvest:revert is deprecated and will be removed in a future Dkan release. Use dkan:harvest:revert instead.
    *
    * @usage dkan:harvest:revert
    *   Removes harvested entities.
    */
-  public function revert($id) {
+  public function revert($harvestId) {
+    $this->validateHarvestId($harvestId);
+    $result = $this->harvestService->revertHarvest($harvestId);
+    (new ConsoleOutput())->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
+  }
 
-    $result = $this->harvestService
-      ->revertHarvest($id);
+  /**
+   * Archive all harvested datasets for a single harvest.
+   *
+   * @param string $harvestId
+   *   The source to archive harvests for.
+   *
+   * @command dkan:harvest:archive
+   *
+   * @usage dkan:harvest:archive
+   *   Archives harvested entities.
+   */
+  public function archive($harvestId) {
+    $this->validateHarvestId($harvestId);
+    $result = $this->harvestService->archive($harvestId);
+    if (empty($result)) {
+      (new ConsoleOutput())->write("No items available to archive for the '{$harvestId}' harvest plan." . PHP_EOL);
+    }
+    foreach ($result as $id) {
+      (new ConsoleOutput())->write("Archived dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
+    }
+  }
 
-    (new ConsoleOutput())->write("{$result} items reverted for the '{$id}' harvest plan." . PHP_EOL);
+  /**
+   * Archive all harvested datasets for a single harvest.
+   *
+   * @param string $harvestId
+   *   The source to archive harvests for.
+   *
+   * @command dkan:harvest:publish
+   *
+   * @usage dkan:harvest:publish
+   *   Publishes harvested entities.
+   */
+  public function publish($harvestId) {
+    $this->validateHarvestId($harvestId);
+    $result = $this->harvestService->publish($harvestId);
+    if (empty($result)) {
+      (new ConsoleOutput())->write("No items available to publish for the '{$harvestId}' harvest plan." . PHP_EOL);
+    }
+    foreach ($result as $id) {
+      (new ConsoleOutput())->write("Published dataset {$id} from harvest '{$harvestId}'." . PHP_EOL);
+    }
   }
 
   /**
    * Show status of of a particular harvest run.
    *
-   * @param string $harvest_id
+   * @param string $harvestId
    *   The id of the harvest source.
-   * @param string $run_id
+   * @param string $runId
    *   The run's id. Optional. Show the status for the latest run if not
    *   provided.
    *
@@ -222,44 +288,37 @@ class HarvestCommands extends DrushCommands {
    * @usage dkan:harvest:status
    *   test 1599157120
    */
-  public function status($harvest_id, $run_id = NULL) {
-    // Validate the harvest id.
-    $harvest_id_all = $this->harvestService->getAllHarvestIds();
-
-    if (array_search($harvest_id, $harvest_id_all) === FALSE) {
-      (new ConsoleOutput())->writeln("<error>harvest id $harvest_id not found.</error>");
-      return DrushCommands::EXIT_FAILURE;
-    }
+  public function status($harvestId, $runId = NULL) {
+    $this->validateHarvestId($harvestId);
 
     // No run_id provided, get the latest run_id.
     // Validate run_id.
-    $run_id_all = $this->harvestService->getAllHarvestRunInfo($harvest_id);
+    $allRunIds = $this->harvestService->getAllHarvestRunInfo($harvestId);
 
-    if (empty($run_id_all)) {
-      (new ConsoleOutput())->writeln("<error>No Run IDs found for harvest id $harvest_id</error>");
+    if (empty($allRunIds)) {
+      (new ConsoleOutput())->writeln("<error>No Run IDs found for harvest id $harvestId</error>");
       return DrushCommands::EXIT_FAILURE;
     }
 
-    if (empty($run_id)) {
+    if (empty($runId)) {
       // Get the last run_id from the array.
-      $run_id = end($run_id_all);
-      reset($run_id_all);
+      $runId = end($allRunIds);
+      reset($allRunIds);
     }
 
-    if (array_search($run_id, $run_id_all) === FALSE) {
-      (new ConsoleOutput())->writeln("<error>Run ID $run_id not found for harvest id $harvest_id</error>");
+    if (array_search($runId, $allRunIds) === FALSE) {
+      (new ConsoleOutput())->writeln("<error>Run ID $runId not found for harvest id $harvestId</error>");
       return DrushCommands::EXIT_FAILURE;
     }
 
-    $run = $this->harvestService
-      ->getHarvestRunInfo($harvest_id, $run_id);
+    $run = $this->harvestService->getHarvestRunInfo($harvestId, $runId);
 
     if (empty($run)) {
-      (new ConsoleOutput())->writeln("<error>No status found for harvest id $harvest_id and run id $run_id</error>");
+      (new ConsoleOutput())->writeln("<error>No status found for harvest id $harvestId and run id $runId</error>");
       return DrushCommands::EXIT_FAILURE;
     }
 
-    $this->renderStatusTable($harvest_id, $run_id, json_decode($run, TRUE));
+    $this->renderStatusTable($harvestId, $runId, json_decode($run, TRUE));
   }
 
   /**
@@ -275,11 +334,7 @@ class HarvestCommands extends DrushCommands {
    * @alias dkan:harvest:orphan
    */
   public function orphanDatasets(string $harvestId) : int {
-
-    if (!in_array($harvestId, $this->harvestService->getAllHarvestIds())) {
-      $this->logger()->error("Harvest id {$harvestId} not found.");
-      return DrushCommands::EXIT_FAILURE;
-    }
+    $this->validateHarvestId($harvestId);
 
     try {
       $orphans = $this->harvestService->getOrphanIdsFromCompleteHarvest($harvestId);
@@ -292,6 +347,19 @@ class HarvestCommands extends DrushCommands {
         '%harvest' => $harvestId,
         '%error' => $e->getMessage(),
       ]);
+      return DrushCommands::EXIT_FAILURE;
+    }
+  }
+
+  /**
+   * Throw error if Harvest ID does not exist.
+   *
+   * @param string $harvestId
+   *   The Harvest ID.
+   */
+  private function validateHarvestId($harvestId) {
+    if (!in_array($harvestId, $this->harvestService->getAllHarvestIds())) {
+      $this->logger()->error("Harvest id {$harvestId} not found.");
       return DrushCommands::EXIT_FAILURE;
     }
   }

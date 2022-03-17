@@ -9,6 +9,43 @@ commands:
             if [ ! -d ~/dkan-tools ]; then git clone -b $DKTL_VERSION https://github.com/GetDKAN/dkan-tools.git ~/dkan-tools; fi
             export PATH=~/dkan-tools/bin:$PATH
             echo "export PATH=~/dkan-tools/bin:$PATH" >> $BASH_ENV
+  prepare_build:
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
+    steps:
+      - checkout:
+          path: dkan
+      - run:
+          name: Set up composer config
+          command: |
+            mkdir ~/.composer
+            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
+      - dktl
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Initialize with latest stable tag to upgrade from
+                command: |
+                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
+                  echo "Testing upgrade from tag: ${TAG}"
+                  git --git-dir=dkan/.git --work-tree=dkan checkout "${TAG}"
+                  dktl init --dkan-local
+                  # Switch expected composer dependency to the same release
+                  dktl exec:composer -- require "getdkan/dkan:${TAG}" --no-update --ansi
+      - unless:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Initialize Project
+                command: dktl init --dkan-local
+      - run:
+          name: Make DKAN
+          command: dktl make
+
   prepare_site:
     parameters:
       upgrade:
@@ -40,9 +77,8 @@ commands:
                 command: |
                   dktl exec:composer -- update --no-interaction --ansi
 
-
 jobs:
-  build:
+  phpunit:
     machine:
       image: circleci/classic:latest
     parameters:
@@ -52,54 +88,10 @@ jobs:
         type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.5"
+      DKTL_VERSION: "4.2.9"
     steps:
-      - checkout:
-          path: dkan
-      - run:
-          name: Set up composer config
-          command: |
-            mkdir ~/.composer
-            bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
-      - dktl
-      - when:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Initialize with latest stable tag to upgrade from
-                command: |
-                  TAG="$(git --git-dir=dkan/.git describe --abbrev=0 --tags)"
-                  echo "Testing upgrade from tag: ${TAG}"
-                  git --git-dir=dkan/.git --work-tree=dkan checkout "${TAG}"
-                  dktl init --dkan-local
-                  # Switch expected composer dependency to the same release
-                  dktl exec:composer -- require "getdkan/dkan:${TAG}" --no-update --ansi
-      - unless:
-          condition: << parameters.upgrade >>
-          steps:
-            - run:
-                name: Initialize Project
-                command: dktl init --dkan-local
-      - run:
-          name: Make DKAN
-          command: dktl make
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - dkan-tools
-            - project
-            - .composer
-  phpunit_dredd:
-    machine:
-      image: circleci/classic:latest
-    parameters:
-      upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
-        default: false
-        type: boolean
-    environment:
-      TEST_RESULTS: /tmp/test-results
-    steps:
+      - prepare_build:
+          upgrade: << parameters.upgrade >>
       - attach_workspace:
           at: ~/
       - dktl
@@ -120,7 +112,7 @@ jobs:
                   dktl xdebug:start
                   sed -i "/=debug/s/=.*/=coverage/" src/docker/etc/php/xdebug.ini
                   dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
-  cypress_backend:
+  cypress:
     machine:
       image: circleci/classic:latest
     parameters:
@@ -128,9 +120,13 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+    parallelism: 4
     environment:
       TEST_RESULTS: /tmp/test-results
+      DKTL_VERSION: "4.2.9"
     steps:
+      - prepare_build:
+          upgrade: << parameters.upgrade >>
       - attach_workspace:
           at: ~/
       - dktl
@@ -139,38 +135,30 @@ jobs:
       - run:
           name: Run DKAN cypress tests
           command: |
-            dktl dkan:test-cypress --headless --browser=chromium
+            mkdir dkan/cypress/tmp && mkdir dkan/cypress/results
+            mv $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings) dkan/cypress/tmp || true
+            rm dkan/cypress/integration/* && mv dkan/cypress/tmp/* dkan/cypress/integration
+            dktl dkan:test-cypress --headless --browser=chromium --reporter=junit --reporter-options "mochaFile=cypress/results/output.xml"
       - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/screenshots
+          path: dkan/cypress/screenshots
       - store_artifacts:
-          path: docroot/modules/contrib/dkan/cypress/videos
+          path: dkan/cypress/videos
+      - store_test_results:
+          path: dkan/cypress/results
 
 workflows:
   version: 2
   install_and_test:
     jobs:
-      - build:
-          name: install_build
-      - phpunit_dredd:
-          name: install_test_phpunit_dredd
-          requires:
-            - install_build
-      - cypress_backend:
-          name: install_test_cypress_backend
-          requires:
-            - install_build
+      - phpunit:
+          name: install_test_phpunit
+      - cypress:
+          name: install_test_cypress
   upgrade_and_test:
     jobs:
-      - build:
-          name: upgrade_build
+      - phpunit:
+          name: upgrade_test_phpunit
           upgrade: true
-      - phpunit_dredd:
-          name: upgrade_test_phpunit_dredd
+      - cypress:
+          name: upgrade_test_cypress
           upgrade: true
-          requires:
-            - upgrade_build
-      - cypress_backend:
-          name: upgrade_test_cypress_backend
-          upgrade: true
-          requires:
-            - upgrade_build

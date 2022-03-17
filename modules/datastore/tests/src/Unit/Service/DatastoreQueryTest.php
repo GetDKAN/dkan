@@ -117,6 +117,18 @@ class DatastoreQueryTest extends TestCase {
     $datastoreService->runQuery($datastoreQuery);
   }
 
+  /**
+   * Ensure if an ungrouped property is specified, the query fails.
+   */
+  public function testUngroupedPropertyInGroupByQueryFails(): void {
+    $this->expectExceptionMessage('Un-grouped properties found in aggregate query: prop2');
+    $container = $this->getCommonMockChain();
+    \Drupal::setContainer($container->getMock());
+    $datastoreService = Service::create($container->getMock());
+    $datastoreQuery = $this->getDatastoreQueryFromJson('ungroupedGroupByQuery');
+    $datastoreService->runQuery($datastoreQuery);
+  }
+
   public function testRowIdsQuery() {
     $container = $this->getCommonMockChain()
       ->add(DatabaseTable::class, "getSchema", [
@@ -150,14 +162,15 @@ class DatastoreQueryTest extends TestCase {
    */
   public function queryCompareProvider() {
     return [
-      ["propertiesQuery"],
-      ["expressionQuery"],
-      ["arrayConditionQuery"],
-      ["likeConditionQuery"],
-      ["nestedExpressionQuery"],
-      ["nestedConditionGroupQuery"],
-      ["sortQuery"],
-      ["joinWithPropertiesFromBothQuery"],
+      ['propertiesQuery'],
+      ['expressionQuery'],
+      ['arrayConditionQuery'],
+      ['likeConditionQuery'],
+      ['nestedExpressionQuery'],
+      ['nestedConditionGroupQuery'],
+      ['sortQuery'],
+      ['joinWithPropertiesFromBothQuery'],
+      ['groupByQuery'],
     ];
   }
 

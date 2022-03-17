@@ -4,6 +4,7 @@ namespace Drupal\Tests\metastore\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\metastore\Storage\NodeData;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeStorage;
@@ -21,7 +22,6 @@ class DataTest extends TestCase {
 
     $data = new NodeData('dataset', $this->getEtmChain()->getMock());
     $this->assertInstanceOf(NodeStorage::class, $data->getEntityStorage());
-    $this->assertEquals('field_json_metadata', $data->getMetadataField());
   }
 
   public function testPublishDatasetNotFound() {
@@ -30,7 +30,7 @@ class DataTest extends TestCase {
       ->add(QueryInterface::class, 'execute', [])
       ->getMock();
 
-    $this->expectExceptionMessage('Error publishing dataset: 1 not found.');
+    $this->expectExceptionMessage('Error: 1 not found.');
     $nodeData = new NodeData('dataset', $etmMock);
     $nodeData->publish('1');
   }
@@ -38,7 +38,8 @@ class DataTest extends TestCase {
   public function testPublishDraftDataset() {
 
     $etmMock = $this->getEtmChain()
-      ->add(Node::class, 'get', 'draft')
+      ->add(Node::class, 'get', FieldItemListInterface::class)
+      ->add(FieldItemListInterface::class, 'getString', 'draft')
       ->add(Node::class, 'set')
       ->add(Node::class, 'save')
       ->getMock();
@@ -51,7 +52,8 @@ class DataTest extends TestCase {
   public function testPublishDatasetAlreadyPublished() {
 
     $etmMock = $this->getEtmChain()
-      ->add(Node::class, 'get', 'published')
+      ->add(Node::class, 'get', FieldItemListInterface::class)
+      ->add(FieldItemListInterface::class, 'getString', 'published')
       ->getMock();
 
     $nodeData = new NodeData('dataset', $etmMock);
@@ -92,10 +94,10 @@ class DataTest extends TestCase {
   }
 
   /**
-   * Test \Drupal\metastore\Storage\Data::retrieveRangeUuids() method.
+   * Test \Drupal\metastore\Storage\Data::retrieveIds() method.
    */
   public function testRetrieveRangeUuids(): void {
-    // Generate dataset nodes for testing ::retrieveRangeUuids().
+    // Generate dataset nodes for testing ::retrieveIds().
     $nodes = [];
     $uuids = [];
 
@@ -109,7 +111,7 @@ class DataTest extends TestCase {
       $uuids[$i] = $nodes[$i]->uuid();
     }
 
-    // Create mock chain for testing ::retrieveRangeUuids() method.
+    // Create mock chain for testing ::retrieveIds() method.
     $etmMock = $this->getEtmChain()
       ->add(NodeStorage::class, 'loadMultiple', $nodes)
       ->getMock();
@@ -117,7 +119,7 @@ class DataTest extends TestCase {
     // Create Data object.
     $nodeData = new NodeData('dataset', $etmMock);
     // Ensure the returned uuids match those belonging to the generated nodes.
-    $this->assertEquals($uuids, $nodeData->retrieveRangeUuids(1, 5));
+    $this->assertEquals($uuids, $nodeData->retrieveIds(1, 5));
   }
 
 }

@@ -10,6 +10,4 @@ When the value of these elements change or become outdated, the corresponding da
 
 If you prefer to run it manually, you may do so with:
 
-```
-drush queue-run orphan_reference_processor
-```
+    drush queue-run orphan_reference_processor

@@ -2,33 +2,41 @@
 
 namespace Drupal\metastore\Storage;
 
+use Drupal\Core\Entity\ContentEntityInterface;
+
 /**
  * Storage interface specifically for using drupal entities.
  */
 interface MetastoreEntityStorageInterface extends MetastoreStorageInterface {
 
   /**
-   * Get the entity type used in this storage class.
+   * Get entity storage.
    *
-   * @return string
-   *   Entity type.
+   * @return \Drupal\Core\Entity\EntityStorageInterface|mixed|object
+   *   Entity storage.
    */
-  public static function getEntityType();
+  public function getEntityStorage();
 
   /**
-   * Get the bundles used in this storage class.
+   * Load a Data entity's published revision.
    *
-   * @return array
-   *   Array of bundle names.
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
+   *   The entity's published revision, if one is found.
    */
-  public static function getBundles();
+  public function getEntityPublishedRevision(string $uuid): ?ContentEntityInterface;
 
   /**
-   * Get the name of the property or field used to store the JSON metadata.
+   * Load a entity's latest revision, given a dataset's uuid.
    *
-   * @return string
-   *   Field name.
+   * @param string $uuid
+   *   The dataset identifier.
+   *
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
+   *   The entity's latest revision, if found.
    */
-  public static function getMetadataField();
+  public function getEntityLatestRevision(string $uuid): ?ContentEntityInterface;
 
 }

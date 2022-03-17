@@ -288,7 +288,7 @@
           },
           "conformsTo": {
             "title": "Data Standard",
-            "description": "URL providing indirect access to a dataset.",
+            "description": "URI used to identify a standardized specification the distribution conforms to.",
             "type": "string",
             "format": "uri"
           },

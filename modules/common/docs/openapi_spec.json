@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "API Documentation",
-        "version": "Alpha"
+        "version": "v1"
     },
     "components": {
         "securitySchemes": {
@@ -37,7 +37,7 @@
                         "schema": { "$ref": "#/components/schemas/errorResponse" },
                         "example": {
                             "message": "Error retrieving metadata: 00000000-0000-0000-0000-000000000000 not found.",
-                            "status": 400,
+                            "status": 404,
                             "timestamp": "2021-06-14T13:46:06+00:00"
                         }
                     }

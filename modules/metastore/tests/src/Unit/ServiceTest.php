@@ -12,7 +12,9 @@ use Drupal\metastore\ValidMetadataFactory;
 use Drupal\metastore\Service;
 use Drupal\metastore\SchemaRetriever;
 use Drupal\metastore\Storage\DataFactory;
+use Drupal\metastore\Storage\MetastoreStorageInterface;
 use Drupal\metastore\Storage\NodeData;
+
 use MockChain\Chain;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
@@ -37,13 +39,25 @@ class ServiceTest extends TestCase {
   }
 
   /**
+   * Test \Drupal\metastore\Service::isPublished() method.
+   */
+  public function testIsPublished() {
+    $service = (new Chain($this))
+      ->add(Service::class, 'getStorage', MetastoreStorageInterface::class)
+      ->add(MetastoreStorageInterface::class, 'isPublished', TRUE)
+      ->getMock();
+
+    $this->assertTrue($service->isPublished('dataset', 1));
+  }
+
+  /**
    * Get a dataset.
    */
   public function testGet() {
     $data = $this->validMetadataFactory->get(json_encode(['foo' => 'bar']), 'dataset');
 
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, "retrievePublished", json_encode(['foo' => 'bar']))
+      ->add(NodeData::class, 'retrieve', json_encode(['foo' => 'bar']))
       ->add(ValidMetadataFactory::class, 'get', $data);
 
     \Drupal::setContainer($container->getMock());
@@ -117,28 +131,6 @@ class ServiceTest extends TestCase {
       json_encode([$data]),
       json_encode($service->getAll("dataset"))
     );
-  }
-
-  /**
-   *
-   */
-  public function testGetResources() {
-    $dataset = [
-      "identifier" => "1",
-      "distribution" => [
-        ["title" => "hello"],
-      ],
-    ];
-    $data = $this->validMetadataFactory->get(json_encode($dataset), 'dataset');
-
-    $container = self::getCommonMockChain($this)
-      ->add(Data::class, "retrieve", json_encode($dataset))
-      ->add(ValidMetadataFactory::class, 'get', $data);
-
-    $service = Service::create($container->getMock());
-
-    $this->assertEquals(json_encode([["title" => "hello"]]),
-      json_encode($service->getResources("dataset", "1")));
   }
 
   /**
@@ -298,11 +290,24 @@ EOF;
   public function testPublish() {
     $container = self::getCommonMockChain($this)
       ->add(NodeData::class, "retrieve", "1")
-      ->add(NodeData::class, "publish", "1");
+      ->add(NodeData::class, "publish", TRUE);
 
     $service = Service::create($container->getMock());
     $result = $service->publish('dataset', 1);
-    $this->assertEquals("1", $result);
+    $this->assertTrue($result);
+  }
+  
+  /**
+   *
+   */
+  public function testArchive() {
+    $container = self::getCommonMockChain($this)
+      ->add(NodeData::class, "retrieve", "1")
+      ->add(NodeData::class, "archive", TRUE);
+
+    $service = Service::create($container->getMock());
+    $result = $service->archive('dataset', 1);
+    $this->assertTrue($result);
   }
 
   /**
@@ -336,20 +341,20 @@ EOF;
   }
 
   /**
-   * Test \Drupal\metastore\Service::getRangeUuids() method.
+   * Test \Drupal\metastore\Service::getIdentifiers() method.
    */
-  public function testGetRangeUuids(): void {
-    // Set constant which should be returned by the ::getRangeUuids() method.
+  public function testGetIdentifiers(): void {
+    // Set constant which should be returned by the ::getIdentifiers() method.
     $uuids = ['a', 'b', 'c'];
 
-    // Create mock chain for testing ::getRangeUuids() method.
+    // Create mock chain for testing ::getIdentifiers() method.
     $container = self::getCommonMockChain($this)
-      ->add(NodeData::class, 'retrieveRangeUuids', $uuids);
+      ->add(NodeData::class, 'retrieveIds', $uuids);
 
     // Create metastore service object.
     $service = Service::create($container->getMock());
     // Ensure count matches return value.
-    $this->assertEquals($uuids, $service->getRangeUuids('test', 1, 5));
+    $this->assertEquals($uuids, $service->getIdentifiers('test', 1, 5));
   }
 
   /**

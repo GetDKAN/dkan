@@ -64,6 +64,13 @@ class Query implements
   public $joins = [];
 
   /**
+   * Fields to group by in query.
+   *
+   * @var string[]
+   */
+  public $groupby = [];
+
+  /**
    * Limit for maximum number of records returned.
    *
    * @var int|null

@@ -40,8 +40,8 @@ context('Admin dataset json form', () => {
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-hasemail').type('dkantest@test.com', { force:true } )
         // Fill select2 field for keyword.
         cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
-        .find('.select2-selection')
-        .click({ force: true });
+          .find('.select2-selection')
+          .click({ force: true });
         cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
         // End filling up keyword.
         cy.get('#edit-actions').within(() => {

@@ -43,6 +43,7 @@ class QueryDataProvider {
       'joinsQuery',
       'joinWithPropertiesFromBothQuery',
       'countQuery',
+      'groupByQuery',
     ];
     $data = [];
     foreach ($tests as $test) {
@@ -535,6 +536,57 @@ class QueryDataProvider {
       case self::EXCEPTION:
         return '';
     }
+  }
+
+  /**
+   * Provides an example groupby query object, SQL string, and exception string.
+   *
+   * @param int $returnType
+   *   Expected groupby query return value type.
+   *
+   * @return Query|string
+   */
+  public static function groupByQuery(int $returnType) {
+    switch ($returnType) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->properties = [
+          (object) [
+            'collection' => 't',
+            'property' => 'prop',
+          ],
+          (object) [
+            'alias' => 'sum',
+            'expression' => (object) [
+              'operator' => 'sum',
+              'operands' => [
+                (object) [
+                  'collection' => 't',
+                  'property' => 'summable',
+                ],
+              ],
+            ],
+          ],
+        ];
+        $query->conditions = [
+          (object) [
+            'collection' => 't',
+            'property' => 'filterable',
+            'value' => 'value',
+            'operator' => '=',
+          ],
+        ];
+        $query->groupby = ['prop'];
+        return $query;
+
+      case self::SQL:
+        return 'SELECT t.prop AS prop, (SUM(t.summable)) AS sum FROM {table} t WHERE t.filterable = :db_condition_placeholder_0 GROUP BY prop';
+
+      case self::EXCEPTION:
+        return '';
+    }
+
+    throw new \UnexpectedValueException('Unknown return type provided.');
   }
 
 }

@@ -3,3 +3,4 @@ dkan.metastore.config_properties:
   route_name: dkan.metastore.config_properties
   description: Configure dataset properties for referencing an API endpoint.
   parent: system.admin_dkan
+  weight: 14

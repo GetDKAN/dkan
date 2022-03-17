@@ -2,45 +2,67 @@
 
 namespace Drupal\metastore\Storage;
 
-use Contracts\BulkRetrieverInterface;
-use Contracts\StorerInterface;
-
 /**
  * Interface for all metastore storage classes.
  */
-interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterface {
+interface MetastoreStorageInterface {
 
   /**
-   * Retrieve.
+   * Count objects of the current schema ID.
+   *
+   * @param bool $unpublished
+   *   Whether to include unpublished items.
+   *
+   * @return int
+   *   Count.
+   */
+  public function count(bool $unpublished = FALSE): int;
+
+  /**
+   * Retrieve a metadata string by ID.
    *
    * @param string $id
    *   The identifier for the data.
+   * @param bool $published
+   *   Whether to retrieve the published revision of the metadata.
    *
    * @return string|HydratableInterface
    *   The data or null if no data could be retrieved.
+   *
+   * @throws \Drupal\metastore\Exception\MissingObjectException
+   *   When attempting to retrieve metadata fails.
    */
-  public function retrieve(string $id);
+  public function retrieve(string $id, bool $published = FALSE);
 
   /**
-   * Retrieve all.
+   * Retrieve all metadata items.
    *
-   * @return array
-   *   An array of metadata objects.
+   * @param int|null $start
+   *   Offset. NULL for no range, zero for beginning of set.
+   * @param int|null $length
+   *   Number of items to retrieve. NULL for no limit.
+   * @param bool $unpublished
+   *   Whether to include unpublished items in the results.
+   *
+   * @return string[]
+   *   An array of JSON strings representing metadata objects.
    */
-  public function retrieveAll(): array;
+  public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array;
 
   /**
-   * Retrieve a limited range of metadata items.
+   * Retrieve just identifiers.
    *
-   * @param int $start
+   * @param int|null $start
    *   Offset.
-   * @param int $length
-   *   Number to retrieve.
+   * @param int|null $length
+   *   Number of identifiers to retrieve. NULL for no limit.
+   * @param bool $unpublished
+   *   Whether to include unpublished items in the results.
    *
-   * @return array
-   *   An array of metadata objects.
+   * @return string[]
+   *   An array of metastore item identifiers.
    */
-  public function retrieveRange(int $start, int $length): array;
+  public function retrieveIds(?int $start, ?int $length, bool $unpublished): array;
 
   /**
    * Retrieve all metadata items that contain a particular exact string.
@@ -60,15 +82,15 @@ interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterf
   public function retrieveContains(string $string, bool $caseSensitive): array;
 
   /**
-   * Retrieve the json metadata from an entity only if it is published.
+   * Determine whether the given metastore item is published.
    *
    * @param string $uuid
-   *   The identifier.
+   *   The ID of the metastore item in question.
    *
-   * @return string|null
-   *   The entity's json metadata, or NULL if the entity was not found.
+   * @return bool
+   *   Whether the given metastore item is published.
    */
-  public function retrievePublished(string $uuid) : ?string;
+  public function isPublished(string $uuid) : bool;
 
   /**
    * Publish the latest version of a data entity.
@@ -76,10 +98,10 @@ interface MetastoreStorageInterface extends StorerInterface, BulkRetrieverInterf
    * @param string $uuid
    *   Identifier.
    *
-   * @return string
-   *   Identifier.
+   * @return bool
+   *   True if success.
    */
-  public function publish(string $uuid) : string;
+  public function publish(string $uuid): bool;
 
   /**
    * Remove.
