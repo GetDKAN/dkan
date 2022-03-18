@@ -48,13 +48,17 @@ class Import {
 
   /**
    * Resource ID.
+   *
+   * @var string
    */
-  protected string $resource_id;
+  protected string $resource_id = '';
 
   /**
    * Resource version.
+   *
+   * @var int|null
    */
-  protected string $resource_version;
+  protected ?int $resource_version = NULL;
 
   /**
    * The jobstore factory service.
@@ -142,10 +146,6 @@ class Import {
         'dictionary_identifier' => $dictionary_discovery->dictionaryIdFromResource($this->resource_id, $this->resource_version),
       ]);
     }
-  }
-
-  protected function getDataDictionaryIdentifier(): string {
-    return $this->configService->get('metastore.settings')->get('data_dictionary_mode');
   }
 
   /**
