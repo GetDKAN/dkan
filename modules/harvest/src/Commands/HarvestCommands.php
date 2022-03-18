@@ -62,53 +62,6 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Register a new harvest.
-   *
-   * You may supply a full Harvest plan in JSON or provide configuration via
-   * individual options. For a simple data.json harvest, pass only an
-   * identifier and extract-uri.
-   *
-   * Harvest plans are validated against the schema at:
-   * https://github.com/GetDKAN/harvest/blob/master/schema/schema.json
-   *
-   * @param string $plan_json
-   *   Harvest plan configuration as JSON string. Example: '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\harvest\\Load\\Dataset"}}'.
-   * @param array $opts
-   *   Options array.
-   *
-   * @option identifier Identifier
-   * @option extract-type Extract type
-   * @option extract-uri Extract URI
-   * @option transform A transform class to apply. You may pass multiple transforms.
-   * @option load-type Load class
-   *
-   * @command dkan:harvest:register
-   *
-   * @usage dkan:harvest:register --identifier=myHarvestId --extract-uri=http://example.com/data.json
-   * @aliases dkan-harvest:register
-   *
-   * @deprecated in dkan:2.14.0 and is removed from dkan:3.0.0. Use dkan:harvest:register instead.
-   * @see https://github.com/GetDKAN/dkan/releases/tag/2.14.0
-   */
-  public function register(string $plan_json = '', array $opts = [
-    'identifier' => '',
-    'extract-type' => DataJson::class,
-    'extract-uri' => '',
-    'transform' => [],
-    'load-type' => Dataset::class,
-  ]) {
-    try {
-      $plan = $plan_json ? json_decode($plan_json) : $this->buildPlanFromOpts($opts);
-      $identifier = $this->harvestService->registerHarvest($plan);
-      $this->logger->notice("Successfully registered the {$identifier} harvest.");
-    }
-    catch (\Exception $e) {
-      $this->logger->error($e->getMessage());
-      $this->logger->debug($e->getTraceAsString());
-    }
-  }
-
-  /**
    * Build a harvest plan object based on the options from register.
    *
    * @param mixed $opts
