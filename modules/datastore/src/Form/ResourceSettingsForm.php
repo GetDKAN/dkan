@@ -6,7 +6,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class ResourceSettingsForm.
+ * DKAN resource settings form.
  *
  * @package Drupal\datastore\Form
  * @codeCoverageIgnore

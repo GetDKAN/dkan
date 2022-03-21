@@ -6,10 +6,22 @@ use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
 
 /**
- * DatabaseTableFactory.
+ * Database table factory.
  */
 class DatabaseTableFactory implements FactoryInterface {
+
+  /**
+   * Drupal database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
   private $connection;
+
+  /**
+   * Database table data objects.
+   *
+   * @var \Drupal\harvest\Storage\DatabaseTable
+   */
   private $storage = [];
 
   /**

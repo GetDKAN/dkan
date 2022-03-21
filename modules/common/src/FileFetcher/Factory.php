@@ -7,11 +7,22 @@ use Drupal\common\Storage\JobStoreFactory;
 use FileFetcher\FileFetcher;
 
 /**
- * FileFetcher Factory.
+ * File fetcher Factory.
  */
 class Factory implements FactoryInterface {
 
+  /**
+   * Job store factory service.
+   *
+   * @var \Drupal\common\Storage\JobStoreFactory
+   */
   private $factory;
+
+  /**
+   * Default file fetcher config.
+   *
+   * @var array
+   */
   private $configDefault = [
     'keep_original_filename' => TRUE,
   ];
@@ -37,7 +48,7 @@ class Factory implements FactoryInterface {
    * Private.
    */
   private function getFileFetcherJobStore() {
-    /* @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
+    /** @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
     $jobStoreFactory = $this->factory;
     return $jobStoreFactory->getInstance(FileFetcher::class);
   }

@@ -9,7 +9,7 @@ use Drupal\metastore\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class WidgetRouter.
+ * JSON form widget router service.
  */
 class WidgetRouter implements ContainerInjectionInterface {
 
