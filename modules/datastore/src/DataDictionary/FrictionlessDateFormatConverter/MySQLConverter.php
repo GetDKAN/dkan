@@ -55,65 +55,65 @@ use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterBase;
  * | UTC offset ±HHMM[SS[.ffffff]] (e.g. +0000) | %z               |           |
  * | Time zone name (e.g. UTC)                  | %Z               |           |
  */
- class MySQLConverter extends FrictionlessDateFormatConverterBase {
+class MySQLConverter extends FrictionlessDateFormatConverterBase {
 
-   /**
-    * Get Abstract Syntax Tree for the date format converter.
-    *
-    * @return array
-    *   Date conversion AST.
-    */
+  /**
+   * Get Abstract Syntax Tree for the date format converter.
+   *
+   * @return array
+   *   Date conversion AST.
+   */
   protected function getDateConversionAst(): array {
     return [
       '%' => [
-        // Abbreviated weekday name (Sun to Sat)
+        // Abbreviated weekday name (Sun to Sat).
         'a' => '%a',
-        // Weekday name in full (Sunday to Saturday)
+        // Weekday name in full (Sunday to Saturday).
         'A' => '%W',
-        // Abbreviated month name (Jan to Dec)
+        // Abbreviated month name (Jan to Dec).
         'b' => '%b',
-        // Month name in full (January to December)
+        // Month name in full (January to December).
         'B' => '%M',
-        // Day of the month as a numeric value (01 to 31)
+        // Day of the month as a numeric value (01 to 31).
         'd' => '%d',
-        // Microseconds (000000 to 999999)
+        // Microseconds (000000 to 999999).
         'f' => '%f',
-        // Hour (00 to 23)
+        // Hour (00 to 23).
         'H' => '%H',
-        // Hour (00 to 12)
+        // Hour (00 to 12).
         'I' => '%I',
-        // Numeric month name (0 to 12)
+        // Numeric month name (0 to 12).
         'm' => '%c',
-        // Minutes (00 to 59)
+        // Minutes (00 to 59).
         'M' => '%i',
-        // AM or PM
+        // AM or PM.
         'p' => '%p',
-        // Seconds (00 to 59)
+        // Seconds (00 to 59).
         'S' => '%s',
-        // Week where Sunday is the first day of the week (00 to 53)
+        // Week where Sunday is the first day of the week (00 to 53).
         'U' => '%U',
-        // Week where Monday is the first day of the week (00 to 53)
+        // Week where Monday is the first day of the week (00 to 53).
         'W' => '%u',
-        // Year as a numeric, 2-digit value
+        // Year as a numeric, 2-digit value.
         'y' => '%y',
-        // Year as a numeric, 4-digit value
+        // Year as a numeric, 4-digit value.
         'Y' => '%Y',
-        // A literal '%' character
+        // A literal '%' character.
         '%' => '%%',
         '-' => [
-          // Day of the month as a numeric value (0 to 31)
+          // Day of the month as a numeric value (0 to 31).
           'd' => '%e',
-          // Day of the year (001 to 366)
+          // Day of the year (001 to 366).
           'j' => '%j',
-          // Hour (0 to 23)
+          // Hour (0 to 23).
           'H' => '%k',
-          // Hour (1 to 12)
+          // Hour (1 to 12).
           'I' => '%l',
-          // Month name as a numeric value (01 to 12)
+          // Month name as a numeric value (01 to 12).
           'm' => '%m',
-          // Minutes (00 to 59)
+          // Minutes (00 to 59).
           'M' => '%i',
-          // Seconds (00 to 59)
+          // Seconds (00 to 59).
           'S' => '%s',
         ],
       ],
