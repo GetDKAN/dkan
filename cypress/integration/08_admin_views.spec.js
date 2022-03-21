@@ -56,7 +56,7 @@ context('Admin content and dataset views', () => {
         // Fill select2 field for publisher.
         cy.get('#edit-field-json-metadata-0-value-publisher-publisher-name + .select2')
           .find('.select2-selection')
-          .click({ force:true });
+          .click({ force:true })
         cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-publisher-publisher-name-results"]').type('DKANTEST Publisher{enter}')
         // End filling up publisher.
         cy.get('#edit-field-json-metadata-0-value-contactpoint-contactpoint-fn').type('DKANTEST Contact Name', { force:true } )
@@ -64,10 +64,11 @@ context('Admin content and dataset views', () => {
         // Fill select2 field for keyword.
         cy.get('#edit-field-json-metadata-0-value-keyword-keyword-0 + .select2')
         .find('.select2-selection')
-        .click({ force: true });
+        .click({ force: true })
         cy.get('input[aria-controls="select2-edit-field-json-metadata-0-value-keyword-keyword-0-results"]').type('open data{enter}')
         // End filling up keyword.
         cy.get('#edit-submit').click({ force:true })
+        cy.get('.button').contains('Yes').click({ force:true })
         cy.get('.messages--status').should('contain','has been created')
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.wait(2000)
@@ -75,10 +76,12 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
         cy.get('#edit-submit--2').click({ force:true })
+        cy.get('.button').contains('Yes').click({ force:true });
         cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Unpublished')
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Publish latest revision',{ force: true }).should('have.value', 'publish_latest')
         cy.get('#edit-submit--2').click({ force:true })
+        cy.get('.button').contains('Yes').click({ force:true })
         cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
         cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', '/edit')
         cy.get('tbody > :nth-child(1) > .views-field-nothing > a').click({ force: true })
