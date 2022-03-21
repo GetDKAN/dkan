@@ -26,6 +26,7 @@ context('Admin dataset json form', () => {
     it('User can create and edit a dataset with the json form UI. User can delete a dataset.', () => {
         cy.visit(baseurl + "/node/add/data")
         cy.wait(2000)
+        Cypress.$('*').unbind('click.moderated_content_bulk_publish');
         cy.get('#edit-field-json-metadata-0-value-title').type('DKANTEST dataset title', { force:true } )
         cy.get('#edit-field-json-metadata-0-value-description').type('DKANTEST dataset description.', { force:true } )
         cy.get('#edit-field-json-metadata-0-value-accesslevel').select('public', { force:true } )
@@ -79,6 +80,7 @@ context('Admin dataset json form', () => {
         // Delete dataset.
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.wait(2000)
+        Cypress.$('*').unbind('click.moderated_content_bulk_publish');
         cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
         cy.get('#edit-node-bulk-form-0').check({ force:true })
         cy.get('#edit-submit--2').click({ force:true })
