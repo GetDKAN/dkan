@@ -124,13 +124,13 @@ class MySQLQuery implements AlterTableQueryInterface {
    * @return string[]
    *   Prep commands list.
    */
-  protected function buildPreAlterCommands(array $dictionary_fields, string $datastore_table): array {
+  protected function buildPreAlterCommands(array $dictionary_fields, string $table): array {
     $pre_alter_cmds = [];
 
     foreach ($dictionary_fields as ['name' => $field, 'type' => $type, 'format' => $format]) {
       if ($type === 'date') {
         $mysql_date_format = $this->dateFormatConverter->convert($format);
-        $pre_alter_cmds[] = "UPDATE {$datastore_table} SET {$field} = STR_TO_DATE({$field}, '{$mysql_date_format}');";
+        $pre_alter_cmds[] = "UPDATE {$table} SET {$field} = STR_TO_DATE({$field}, '{$mysql_date_format}');";
       }
     }
 
@@ -142,21 +142,21 @@ class MySQLQuery implements AlterTableQueryInterface {
    *
    * @param array $dictionary_fields
    *   Data dictionary fields.
-   * @param string $datastore_table
+   * @param string $table
    *   Mysql table name.
    *
    * @return string
    *   MySQL table alter command.
    */
-  protected function buildAlterCommand(array $dictionary_fields, string $datastore_table): string {
+  protected function buildAlterCommand(array $dictionary_fields, string $table): string {
     $modify_lines = [];
 
     foreach ($dictionary_fields as ['name' => $field, 'type' => $type]) {
-      $column_type = $this->getType($type, $field, $datastore_table);
+      $column_type = $this->getType($type, $field, $table);
       $modify_lines[] = "MODIFY COLUMN {$field} {$column_type}";
     }
 
-    return "ALTER TABLE {$datastore_table} " . implode(', ', $modify_lines) . ';';
+    return "ALTER TABLE {$table} " . implode(', ', $modify_lines) . ';';
   }
 
 }

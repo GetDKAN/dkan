@@ -30,9 +30,9 @@ class DatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
   /**
    * Database connection key.
    *
-   * @var string|null
+   * @var string
    */
-  protected ?string $key = NULL;
+  protected string $key = 'default';
 
   /**
    * Build database connection factory.
@@ -69,11 +69,10 @@ class DatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
     return $this;
   }
 
-
   /**
    * Set the timeout on the supplied connection object.
    *
-   * @param \Drupal\Core\Database\Connection
+   * @param \Drupal\Core\Database\Connection $connection
    *   Database connection object.
    */
   protected function doSetConnectionTimeout(Connection $connection): void {

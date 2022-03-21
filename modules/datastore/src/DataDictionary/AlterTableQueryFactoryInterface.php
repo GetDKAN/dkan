@@ -12,10 +12,10 @@ interface AlterTableQueryFactoryInterface {
    *
    * @param string $datastore_table
    *   Datastore table being altered.
-   * @param string $dictionary_fields
+   * @param array $dictionary_fields
    *   Data-dictionary fields list.
    *
-   * @return
+   * @return \Drupal\datastore\DataDictionary\AlterTableQueryInterface
    *   An alter table query instance.
    */
   public function getQuery(string $datastore_table, array $dictionary_fields): AlterTableQueryInterface;

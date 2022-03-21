@@ -10,7 +10,7 @@ interface FrictionlessDateFormatConverterInterface {
   /**
    * Convert the supplied frictionless date format string.
    *
-   * @param string $frictionless_date_fromat
+   * @param string $frictionless_date_format
    *   Frictionless date format.
    *
    * @return string

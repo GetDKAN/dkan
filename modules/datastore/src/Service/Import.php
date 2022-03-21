@@ -51,14 +51,14 @@ class Import {
    *
    * @var string
    */
-  protected string $resource_id = '';
+  protected string $resourceId = '';
 
   /**
    * Resource version.
    *
    * @var int|null
    */
-  protected ?int $resource_version = NULL;
+  protected ?int $resourceVersion = NULL;
 
   /**
    * The jobstore factory service.
@@ -80,8 +80,8 @@ class Import {
    * Constructor.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    $this->resource_id = $resource->getIdentifier();
-    $this->resource_version = $resource->getVersion();
+    $this->resourceId = $resource->getIdentifier();
+    $this->resourceVersion = $resource->getVersion();
     $this->initializeResource($resource);
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
@@ -143,7 +143,7 @@ class Import {
       $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
       $dictionary_enforcer_queue->createItem((object) [
         'datastore_table' => $this->getStorage()->getTableName(),
-        'dictionary_identifier' => $dictionary_discovery->dictionaryIdFromResource($this->resource_id, $this->resource_version),
+        'dictionary_identifier' => $dictionary_discovery->dictionaryIdFromResource($this->resourceId, $this->resourceVersion),
       ]);
     }
   }

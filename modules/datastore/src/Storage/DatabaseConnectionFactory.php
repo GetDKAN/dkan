@@ -21,7 +21,7 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
   /**
    * {@inheritdoc}
    */
-  protected ?string $key = 'datastore';
+  protected string $key = 'datastore';
 
   /**
    * {@inheritdoc}

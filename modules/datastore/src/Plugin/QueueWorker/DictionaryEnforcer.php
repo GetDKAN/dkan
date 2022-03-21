@@ -107,7 +107,7 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    *
    * @param array $dictionary_fields
    *   Data dictionary fields.
-   * @param string $table
+   * @param string $datastore_table
    *   Mysql table name.
    */
   public function applyDictionary(array $dictionary_fields, string $datastore_table): void {
