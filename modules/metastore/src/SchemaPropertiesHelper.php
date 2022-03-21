@@ -6,7 +6,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class SchemaPropertiesHelper.
+ * Helper for metastore schema properties.
  *
  * @package Drupal\metastore
  */

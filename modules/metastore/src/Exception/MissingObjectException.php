@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Exception;
 
 /**
- * Class MissingObjectException.
+ * Exception thrown when a metastore item could not be found for an identifier.
  *
  * @package Drupal\metastore\Exception
  */

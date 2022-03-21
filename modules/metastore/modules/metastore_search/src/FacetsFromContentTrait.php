@@ -6,7 +6,7 @@ use Drupal\search_api\Query\QueryInterface;
 use RootedData\RootedJsonData;
 
 /**
- * Trait FacetsFromContentTrait.
+ * Trait used to generate facets from search API query conditions.
  *
  * @package Drupal\metastore_search
  */

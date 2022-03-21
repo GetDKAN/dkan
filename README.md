@@ -11,6 +11,15 @@
 ## Documentation
 DKAN's documentation lives at [docs.getdkan.com](https://docs.getdkan.com/)
 
+To generate the docs with a specfic version number, run:
+```
+DKAN_VERSION='v2.1.0' doxygen
+```
+To supply the current branch, run:
+```
+DKAN_VERSION=`git rev-parse --abbrev-ref HEAD` doxygen
+```
+
 ---
 
 ## Features

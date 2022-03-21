@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Exception;
 
 /**
- * Class MissingPayloadException.
+ * Exception thrown when a payload is missing from an HTTP request.
  *
  * @package Drupal\metastore\Exception
  */

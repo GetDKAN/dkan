@@ -13,6 +13,11 @@ use Psr\Log\LogLevel;
 class ResourceMapperDatabaseTable extends AbstractDatabaseTable {
   use LoggerTrait;
 
+  /**
+   * Resource mapper database table schema.
+   *
+   * @var array
+   */
   private $schema;
 
   /**

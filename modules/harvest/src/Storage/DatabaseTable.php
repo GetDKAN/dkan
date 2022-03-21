@@ -6,9 +6,15 @@ use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\AbstractDatabaseTable;
 
 /**
- * DatabaseTable.
+ * Harvest database table storage.
  */
 class DatabaseTable extends AbstractDatabaseTable {
+
+  /**
+   * Database table identifier.
+   *
+   * @var string
+   */
   private $identifier;
 
   /**

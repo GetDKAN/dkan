@@ -50,7 +50,10 @@ class PurgeCommands extends DrushCommands {
    *
    * @command dkan:datastore:purge
    */
-  public function purge(string $csvUuids, array $options = ['deferred' => FALSE, 'prior' => FALSE]) {
+  public function purge(
+    string $csvUuids,
+    array $options = ['deferred' => FALSE, 'prior' => FALSE]
+  ) {
     try {
       $uuids = StringUtils::csvToArray($csvUuids);
       $this->resourcePurger->schedule($uuids, $options['deferred'], $options['prior']);
@@ -79,7 +82,9 @@ class PurgeCommands extends DrushCommands {
    *
    * @command dkan:datastore:purge-all
    */
-  public function purgeAll(array $options = ['deferred' => FALSE, 'prior' => FALSE]) {
+  public function purgeAll(
+    array $options = ['deferred' => FALSE, 'prior' => FALSE]
+  ) {
     try {
       $this->resourcePurger->scheduleAllUuids($options['deferred'], $options['prior']);
       $messagePrefix = $options['deferred'] ? 'Queued the purging of' : 'Purged';

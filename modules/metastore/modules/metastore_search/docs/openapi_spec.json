@@ -74,21 +74,28 @@
                         "in": "query",
                         "description": "Which property to sort results on.",
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "title"
+                            }
                         },
-                        "style": "form"
+                        "style": "form",
+                        "explode": false
                     },
                     {
                         "name": "sort-order",
                         "in": "query",
-                        "description": "Sort results in ascending or descending order.",
+                        "description": "Sort results in ascending or descending order. Allowed values: <em>asc, desc</em>",
                         "schema": {
-                            "type": "string",
-                            "default": "asc",
-                            "enum": [ "asc", "desc"]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "default": "asc"
+                            }
                         },
-                        "example": "desc",
-                        "style": "form"
+                        "style": "form",
+                        "explode": false
                     },
                     {
                         "name": "facets",
