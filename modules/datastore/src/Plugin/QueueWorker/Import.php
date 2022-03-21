@@ -82,10 +82,10 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A logger channel factory instance.
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
-   * @param \Drupal\Core\Database\Connection $defaultConnection
-   *   An instance of the default database connection.
-   * @param \Drupal\Core\Database\Connection $datastoreConnection
-   *   An instance of the datastore database connection.
+   * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $defaultConnectionFactory
+   *   Default database connection factory.
+   * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $datastoreConnectionFactory
+   *   Datastore database connection factory.
    */
   public function __construct(
     array $configuration,
