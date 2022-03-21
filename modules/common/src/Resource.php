@@ -67,6 +67,12 @@ class Resource implements \JsonSerializable {
    * @var int
    */
   private $version;
+
+  /**
+   * Resource object checksum.
+   *
+   * @var string
+   */
   private $checksum;
 
   /**

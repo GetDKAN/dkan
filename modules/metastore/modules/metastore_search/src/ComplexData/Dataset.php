@@ -9,9 +9,15 @@ use Drupal\Core\TypedData\TypedData;
 use Drupal\metastore_search\Facade\ComplexDataFacade;
 
 /**
- * Dataset.
+ * Dataset facade for metastore search API facet.
  */
 class Dataset extends ComplexDataFacade {
+
+  /**
+   * Complex data object.
+   *
+   * @var object
+   */
   private $data;
 
   /**
@@ -20,7 +26,7 @@ class Dataset extends ComplexDataFacade {
   public static function definition() {
     $definitions = [];
 
-    /* @var   \Drupal\metastore\SchemaRetriever $schemaRetriever */
+    /** @var   \Drupal\metastore\SchemaRetriever $schemaRetriever */
     $schemaRetriever = \Drupal::service("dkan.metastore.schema_retriever");
     $json = $schemaRetriever->retrieve("dataset");
     $object = json_decode($json);

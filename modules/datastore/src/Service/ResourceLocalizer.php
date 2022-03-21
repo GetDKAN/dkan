@@ -25,12 +25,46 @@ class ResourceLocalizer {
   use LoggerTrait;
   use EventDispatcherTrait;
 
+  /**
+   * Local file perspective key.
+   *
+   * @var string
+   */
   const LOCAL_FILE_PERSPECTIVE = 'local_file';
+
+  /**
+   * Local URL perspective key.
+   *
+   * @var string
+   */
   const LOCAL_URL_PERSPECTIVE = 'local_url';
 
+  /**
+   * DKAN resource file mapper service.
+   *
+   * @var \Drupal\metastore\ResourceMapper
+   */
   private $fileMapper;
+
+  /**
+   * DKAN resource file fetcher factory.
+   *
+   * @var \Contracts\FactoryInterface
+   */
   private $fileFetcherFactory;
+
+  /**
+   * Drupal files utility service.
+   *
+   * @var \Drupal\common\Util\DrupalFiles
+   */
   private $drupalFiles;
+
+  /**
+   * Job store factory.
+   *
+   * @var \Drupal\common\Storage\JobStoreFactory
+   */
   private $jobStoreFactory;
 
   /**

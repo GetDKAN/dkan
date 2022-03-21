@@ -3,7 +3,7 @@
 namespace Drupal\metastore_search;
 
 /**
- * Trait FacetsCommonTrait.
+ * Trait for shared search api facet functionality.
  *
  * @package Drupal\metastore_search
  */

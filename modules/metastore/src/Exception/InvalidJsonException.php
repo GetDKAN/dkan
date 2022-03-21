@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Exception;
 
 /**
- * Class InvalidJsonException.
+ * Exception thrown when metastore item JSON validation failed.
  *
  * @package Drupal\metastore\Exception
  */

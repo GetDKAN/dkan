@@ -3,7 +3,7 @@
 namespace Drupal\common;
 
 /**
- * UrlHostTokenResolver.
+ * Convert between local file paths and public file URLs.
  *
  * @todo Convert to service with Dependency Injection.
  */

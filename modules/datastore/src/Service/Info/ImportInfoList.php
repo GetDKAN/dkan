@@ -19,6 +19,11 @@ class ImportInfoList implements ContainerInjectionInterface {
    */
   private $jobStoreFactory;
 
+  /**
+   * Datastore import job info.
+   *
+   * @var \Drupal\datastore\Service\Info\ImportInfo
+   */
   private $importInfo;
 
   /**

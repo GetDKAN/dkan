@@ -5,11 +5,14 @@ namespace Drupal\common\StreamWrapper;
 use Drupal\Core\StreamWrapper\LocalReadOnlyStream;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
 use Drupal\Core\Url;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * DKAN stream wrapper for creating domain-agnostic URLs to DKAN API endpoints.
  */
 class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInterface {
+
+  use StringTranslationTrait;
 
   const DKAN_API_VERSION = 1;
 
@@ -17,14 +20,14 @@ class DkanStreamWrapper extends LocalReadOnlyStream implements StreamWrapperInte
    * {@inheritdoc}
    */
   public function getName() {
-    return t('DKAN documents');
+    return $this->t('DKAN documents');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getDescription() {
-    return t('Simple way to request DKAN schemas and other documents as URIs.');
+    return $this->t('Simple way to request DKAN schemas and other documents as URIs.');
   }
 
   /**

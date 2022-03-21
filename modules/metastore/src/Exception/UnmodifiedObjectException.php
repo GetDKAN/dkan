@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Exception;
 
 /**
- * Class UnmodifiedObjectException.
+ * Exception thrown when an update request doesn't change a metastore item.
  *
  * @package Drupal\metastore\Exception
  */
