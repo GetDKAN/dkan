@@ -5,7 +5,7 @@ namespace Drupal\harvest\Storage;
 use Contracts\IdGeneratorInterface;
 
 /**
- * Class IdGenerator.
+ * Extracts identifiers from metastore data objects.
  *
  * @codeCoverageIgnore
  */
@@ -16,7 +16,7 @@ class IdGenerator implements IdGeneratorInterface {
    *
    * @var mixed
    */
-  protected  $data;
+  protected $data;
 
   /**
    * Public.

@@ -38,7 +38,7 @@ class OrphanCheckerTest extends ExistingSiteBase {
   }
 
   public function test() {
-    /* @var $service \Drupal\metastore\Service */
+    /** @var $service \Drupal\metastore\Service */
     $service = \Drupal::service('dkan.metastore.service');
     $dataset = $this->validMetadataFactory->get($this->getDataset(123, 'Test #1', ['district_centerpoints_small.csv']), 'dataset');
     $service->post('dataset', $dataset);

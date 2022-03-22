@@ -6,7 +6,7 @@ use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\QueryInterface;
 
 /**
- * Trait FacetsFromIndexTrait.
+ * Retrieves search API facets from search api indexes.
  *
  * @package Drupal\metastore_search
  */

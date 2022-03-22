@@ -6,13 +6,23 @@ use Drupal\node\NodeStorageInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
- * Class.
+ * Frontend page.
  */
 class Page {
 
+  /**
+   * App root directory for react data catalog app.
+   *
+   * @var string
+   */
   private $appRoot;
+
+  /**
+   * Node storage service.
+   *
+   * @var string
+   */
   private $nodeStorage;
-  private $configFactory;
 
   /**
    * Constructor.

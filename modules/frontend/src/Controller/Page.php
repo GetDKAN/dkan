@@ -14,6 +14,11 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 class Page implements ContainerInjectionInterface {
   use CacheableResponseTrait;
 
+  /**
+   * Drupal frontend page builder service.
+   *
+   * @var \Drupal\frontend\Page
+   */
   private $pageBuilder;
 
   /**

@@ -8,13 +8,16 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Class.
+ * DKAN Frontend route provider.
  */
 class RouteProvider {
 
+  /**
+   * App root directory for react data catalog app.
+   *
+   * @var string
+   */
   private $appRoot;
-  private $entityQuery;
-  private $configFactory;
 
   /**
    * Constructor.
@@ -52,7 +55,7 @@ class RouteProvider {
   /**
    * Public.
    */
-  public  function getNameFromPath($path) {
+  public function getNameFromPath($path) {
     $base = $this->appRoot . $this->frontendPath . $this->buildFolder;
     $sub = str_replace($base, "", $path);
     return str_replace("/", "__", $sub);
@@ -112,7 +115,7 @@ class RouteProvider {
     $possible_pages = $this->expandDirectories($base);
     foreach ($possible_pages as $possible_page) {
       if (file_exists($possible_page . "/index.html")) {
-        $name = self::getNameFromPath($possible_page);
+        $name = $this->getNameFromPath($possible_page);
         $path = str_replace($base, "", $possible_page);
         $routes->add($name, $this->routeHelper($path, $name));
       }

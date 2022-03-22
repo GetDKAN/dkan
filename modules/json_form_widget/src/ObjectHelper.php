@@ -3,7 +3,7 @@
 namespace Drupal\json_form_widget;
 
 /**
- * Class ObjectHelper.
+ * Object form element helper.
  */
 class ObjectHelper {
 

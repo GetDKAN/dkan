@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Exception;
 
 /**
- * Class CannotChangeUuidException.
+ * Exception thrown when unable to change UUID for a metastore item.
  *
  * @package Drupal\metastore\Exception
  */

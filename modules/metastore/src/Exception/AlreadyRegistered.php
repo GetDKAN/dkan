@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Exception;
 
 /**
- * Class AlreadyRegistered.
+ * Exception thrown when a resource is already registered.
  *
  * @package Drupal\metastore\Exception
  */

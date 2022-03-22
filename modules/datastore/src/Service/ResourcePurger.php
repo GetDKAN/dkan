@@ -15,7 +15,7 @@ use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * ResourcePurger service.
+ * Resource purger service.
  */
 class ResourcePurger implements ContainerInjectionInterface {
   use LoggerTrait;

@@ -7,9 +7,15 @@ use Drupal\Core\Database\Connection;
 use Drupal\indexer\IndexManager;
 
 /**
- * Class DatabaseTableFactory.
+ * DatabaseTable data object factory.
  */
 class DatabaseTableFactory implements FactoryInterface {
+
+  /**
+   * Drupal database connection service.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
   private $connection;
 
   /**
@@ -19,6 +25,11 @@ class DatabaseTableFactory implements FactoryInterface {
    */
   private $indexManager;
 
+  /**
+   * Database table data objects.
+   *
+   * @var \Drupal\datastore\Storage\DatabaseTable
+   */
   private $databaseTables = [];
 
   /**

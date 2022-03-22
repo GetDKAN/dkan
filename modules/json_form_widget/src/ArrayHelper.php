@@ -9,7 +9,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class ArrayHelper.
+ * Drupal render array helper service.
  */
 class ArrayHelper implements ContainerInjectionInterface {
   use StringTranslationTrait;
