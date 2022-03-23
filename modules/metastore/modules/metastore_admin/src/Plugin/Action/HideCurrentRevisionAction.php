@@ -6,6 +6,7 @@ use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\moderated_content_bulk_publish\AdminModeration;
 use Drupal\node\NodeInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Adds a VBO action for the published (hidden) state.
@@ -21,6 +22,8 @@ use Drupal\node\NodeInterface;
  * )
  */
 class HideCurrentRevisionAction extends ActionBase {
+
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -38,7 +41,7 @@ class HideCurrentRevisionAction extends ActionBase {
       return sprintf('Example action (configuration: %s)', print_r($this->configuration, TRUE));
     }
     else {
-      \Drupal::messenger()->addWarning(t("You don't have access to execute this operation!"));
+      $this->t("You don't have access to execute this operation!");
       return;
     }
 
