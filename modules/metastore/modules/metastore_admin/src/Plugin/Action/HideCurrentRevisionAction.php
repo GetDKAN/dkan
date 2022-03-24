@@ -20,6 +20,8 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  *   type = "node",
  *   confirm = TRUE,
  * )
+ *
+ * @codeCoverageIgnore
  */
 class HideCurrentRevisionAction extends ActionBase {
 
