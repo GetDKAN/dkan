@@ -2,8 +2,6 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-
 use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\UrlHostTokenResolver;
@@ -18,7 +16,6 @@ use GuzzleHttp\Client as GuzzleClient;
  * Metastore referencer service.
  */
 class Referencer {
-  use HelperTrait;
   use LoggerTrait;
 
   /**
@@ -27,6 +24,13 @@ class Referencer {
    * @var string
    */
   protected const DEFAULT_MIME_TYPE = 'text/plain';
+
+  /**
+   * The reference information by property.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceMap
+   */
+  private $referenceMap;
 
   /**
    * Storage factory interface service.
@@ -38,8 +42,8 @@ class Referencer {
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
-    $this->setConfigService($configService);
+  public function __construct(ReferenceMap $referenceMap, FactoryInterface $storageFactory) {
+    $this->referenceMap = $referenceMap;
     $this->storageFactory = $storageFactory;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
   }
@@ -53,14 +57,15 @@ class Referencer {
    * @return object
    *   Json object modified with references to some of its properties' values.
    */
-  public function reference($data) {
+  public function reference($data, string $schemaId = 'dataset') {
     if (!is_object($data)) {
       throw new \Exception("data must be an object.");
     }
+    $refs = $this->referenceMap->getAllReferences($schemaId);
     // Cycle through the dataset properties we seek to reference.
-    foreach ($this->getPropertyList() as $property_id) {
-      if (isset($data->{$property_id})) {
-        $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
+    foreach ($refs as $propertyId => $reference) {
+      if (isset($data->{$propertyId})) {
+        $data->{$propertyId} = $this->referenceProperty($reference, $data->{$propertyId});
       }
     }
     return $data;
@@ -69,39 +74,39 @@ class Referencer {
   /**
    * References a dataset property's value, general case.
    *
-   * @param string $property_id
-   *   The dataset property id.
+   * @param \Drupal\metastore\Reference\ReferenceDefinition $reference
+   *   The reference information.
    * @param mixed $data
    *   Single value or array of values to be referenced.
    *
    * @return string|array
    *   Single reference, or an array of references.
    */
-  private function referenceProperty(string $property_id, $data) {
+  private function referenceProperty(ReferenceDefinition $reference, $data) {
     if (is_array($data)) {
-      return $this->referenceMultiple($property_id, $data);
+      return $this->referenceMultiple($reference, $data);
     }
     else {
       // Case for $data being an object or a string.
-      return $this->referenceSingle($property_id, $data);
+      return $this->referenceSingle($reference, $data);
     }
   }
 
   /**
    * References a dataset property's value, array case.
    *
-   * @param string $property_id
-   *   The dataset property id.
+   * @param \Drupal\metastore\Reference\ReferenceDefinition $reference
+   *   The reference information.
    * @param array $values
    *   The array of values to be referenced.
    *
    * @return array
    *   The array of uuid references.
    */
-  private function referenceMultiple(string $property_id, array $values) : array {
+  private function referenceMultiple(Reference $reference, array $values) : array {
     $result = [];
     foreach ($values as $value) {
-      $data = $this->referenceSingle($property_id, $value);
+      $data = $this->referenceSingle($reference, $value);
       if (NULL !== $data) {
         $result[] = $data;
       }
@@ -112,23 +117,23 @@ class Referencer {
   /**
    * References a dataset property's value, string or object case.
    *
-   * @param string $property_id
-   *   The dataset property id.
+   * @param \Drupal\metastore\Reference\ReferenceDefinition $reference
+   *   The reference information.
    * @param string|object $value
    *   The value to be referenced.
    *
    * @return string|null
    *   The Uuid reference, or NULL on failure.
    */
-  private function referenceSingle(string $property_id, $value) {
+  private function referenceSingle(ReferenceDefinition $reference, $value) {
 
-    if ($property_id == 'distribution') {
+    if ($reference->schemaId() == 'distribution') {
       $value = $this->distributionHandling($value);
     }
 
-    $uuid = $this->checkExistingReference($property_id, $value);
+    $uuid = $this->checkExistingReference($reference, $value);
     if (!$uuid) {
-      $uuid = $this->createPropertyReference($property_id, $value);
+      $uuid = $this->createPropertyReference($reference, $value);
     }
     if ($uuid) {
       return $uuid;
@@ -138,7 +143,7 @@ class Referencer {
         'value_referencer',
         'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
         [
-          '@property_id' => $property_id,
+          '@property_id' => $reference->property(),
           '@value' => var_export($value, TRUE),
         ]
       );

@@ -1,0 +1,21 @@
+catalog:
+  schema_path: schema/catalog.json
+  references:
+    - { property: dataset, schema: dataset }
+
+dataset:
+  schema_path: schema/dataset.json
+  ui_schema_path: schema/dataset.ui.json
+  identifier: { property: identifier, type: uuid }
+  references:
+    - { property: distribution, schema: distribution }
+    - { property: publisher, schema: organization }
+    - { property: keyword, schema: keyword }
+    - { property: theme, schema: theme }
+
+distribution:
+  schema_path: schema/distribution.json
+  references:
+    - { property: downloadURL, type: resource }
+    - { property: describedBy, schema: data-dictionary, type: id }
+  class: distribution

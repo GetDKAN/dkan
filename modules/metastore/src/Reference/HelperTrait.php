@@ -31,7 +31,7 @@ trait HelperTrait {
    *
    * @todo consolidate with common RouteProvider's getPropertyList.
    */
-  private function getPropertyList() : array {
+  private function getPropertyList(string $schemaId) : array {
     if (isset($this->configService)) {
       $list = $this->configService->get('metastore.settings')->get('property_list');
       return array_values(array_filter($list));
