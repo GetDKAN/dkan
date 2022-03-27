@@ -12,7 +12,7 @@ use Drupal\Component\Annotation\Plugin;
  *
  * @Annotation
  */
-class ReferenceDefinition extends Plugin {
+class MetastoreReferenceType extends Plugin {
 
   /**
    * The plugin ID.

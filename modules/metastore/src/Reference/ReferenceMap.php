@@ -4,18 +4,30 @@ namespace Drupal\metastore\Reference;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 
-class ReferenceMap {
+class ReferenceMap implements ReferenceMapInterface {
 
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
+   *   The Drupal config service.
+   */
   public function __construct(ConfigFactoryInterface $configService) {
     $this->configService = $configService;
     $this->map = $this->buildReferenceMap();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getAllReferences(string $schemaId): array {
     return $map[$schemaId] ?? [];
   }
 
-  public function getReference($schemaId, $propertyName): ?ReferenceDefinition {
+  /**
+   * {@inheritdoc}
+   */
+  public function getReference(string $schemaId, string $propertyName): ?ReferenceTypeInterface {
     $refs = $this->getAllReferences($schemaId);
     return $refs[$propertyName] ?? NULL;
   }
