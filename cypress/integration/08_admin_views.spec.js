@@ -16,16 +16,6 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-data-type').select('theme',{ force: true }).should('have.value', 'theme')
     })
 
-    it('The admin content screen has bulk operations options.', () => {
-        // Make sure there is at least one dataset in the view
-        dkan.createDatasetWithModerationState('Testing bulk operations', 'published')
-        cy.visit(baseurl + "/admin/dkan/datasets")
-        cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
-        cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
-        cy.get('#edit-action').select('Publish latest revision',{ force: true }).should('have.value', 'publish_latest')
-        cy.get('#edit-action').select('Hide current revision',{ force: true }).should('have.value', 'hide_current')
-    })
-
     it('Confirm the admin view has expected items.', () => {
         // The content table has a column for Data Type.
         cy.get('#view-field-data-type-table-column > a').should('contain','Data Type');
@@ -62,23 +52,33 @@ context('Admin content and dataset views', () => {
     })
 
     it('Test moderation bulk operations', () => {
-        dkan.createDatasetWithModerationState('Testing bulk operations', 'hidden')
+        dkan.createDatasetWithModerationState('Testing bulk operations', 'published')
         cy.visit(baseurl + "/admin/dkan/datasets")
         cy.wait(2000)
         cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
+        cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Published')
+        // Change the state of the first dataset from published to published hidden.
+        cy.get('#edit-node-bulk-form-0').click({force:true})
+        cy.get('#edit-action').select('Hide current revision',{ force: true }).should('have.value', 'hide_current')
+        cy.get('#edit-submit--2').click({ force:true })
+        cy.get('.button').contains('Yes').click({ force:true })
+        cy.get('tbody > :nth-child(1) > .views-field-status').should('contain', 'Published')
         cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Published (hidden)')
+         // Change the state of the first dataset from hidden to archived.
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Archive current revision',{ force: true }).should('have.value', 'archive_current')
         cy.get('#edit-submit--2').click({ force:true })
         cy.get('.button').contains('Yes').click({ force:true });
         cy.get('tbody > :nth-child(1) > .views-field-status', {timeout: 2000}).should('contain', 'Unpublished')
         cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Archived')
+         // Change the state of the first dataset from archived to published.
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Publish latest revision',{ force: true }).should('have.value', 'publish_latest')
         cy.get('#edit-submit--2').click({ force:true })
         cy.get('.button').contains('Yes').click({ force:true })
         cy.get('tbody > :nth-child(1) > .views-field-status', {timeout: 2000}).should('contain', 'Published')
         cy.get('tbody > :nth-child(1) > .views-field-moderation-state', {timeout: 2000}).should('contain', 'Published')
+         // Delete the dataset.
         cy.get('#edit-node-bulk-form-0').click({force:true})
         cy.get('#edit-action').select('Delete content',{ force: true }).should('have.value', 'node_delete_action')
         cy.get('#edit-submit--2').click({ force:true })

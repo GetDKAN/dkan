@@ -113,3 +113,13 @@ function metastore_admin_update_8011() {
 
   drupal_flush_all_caches();
 }
+
+/**
+ * Install new moderated_content_bulk_publish action.
+ */
+function metastore_admin_update_8012() {
+  \Drupal::service('config.installer')
+    ->installDefaultConfig('module', 'moderated_content_bulk_publish');
+
+  drupal_flush_all_caches();
+}

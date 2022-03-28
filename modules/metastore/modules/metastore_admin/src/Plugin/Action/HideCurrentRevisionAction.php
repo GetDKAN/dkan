@@ -3,29 +3,27 @@
 namespace Drupal\metastore_admin\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;
+use Drupal\Core\Plugin\PluginFormInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\moderated_content_bulk_publish\AdminModeration;
-use Drupal\node\NodeInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\metastore_admin\MetastoreAdminModeration;
 
 /**
- * Adds a VBO action for the published (hidden) state.
+ * An example action covering most of the possible options.
  *
  * If type is left empty, action will be selectable for all
  * entity types.
  *
  * @Action(
  *   id = "hide_current_revision_action",
- *   label = @Translation("Hide Current Revision"),
+ *   label = @Translation("Archive Current Revision"),
  *   type = "node",
  *   confirm = TRUE,
  * )
- *
- * @codeCoverageIgnore
  */
-class HideCurrentRevisionAction extends ActionBase {
+class HideCurrentRevisionAction extends ActionBase/*extends ViewsBulkOperationsActionBase implements ViewsBulkOperationsPreconfigurationInterface, PluginFormInterface*/
+{
 
-  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -34,32 +32,40 @@ class HideCurrentRevisionAction extends ActionBase {
 
     $user = \Drupal::currentUser();
 
-    if ($user->hasPermission('use dkan_publishing transition hidden')) {
-      \Drupal::logger('metastore_admin')->notice("Executing hide latest revision of " . $entity->label());
+    if ($user->hasPermission('moderated content bulk archive')) {
+      \Drupal::logger('moderated_content_bulk_publish')->notice("Executing hide latest revision of " . $entity->label());
 
-      $adminModeration = new AdminModeration($entity, NodeInterface::PUBLISHED);
+      $adminModeration = new MetastoreAdminModeration($entity, \Drupal\node\NodeInterface::PUBLISHED);
       $entity = $adminModeration->hide();
 
+      // Check if published.
+      if (!$entity->isPublished()) {
+        $msg = "Something went wrong, the entity must be published by this point.  Review your content moderation configuration make sure you have the hidden state available and try again.";
+        \Drupal::Messenger()->addError(utf8_encode($msg));
+        \Drupal::logger('moderated_content_bulk_publish')->warning($msg);
+        return $msg;
+      }
       return sprintf('Example action (configuration: %s)', print_r($this->configuration, TRUE));
     }
     else {
-      $this->t("You don't have access to execute this operation!");
+      \Drupal::messenger()->addWarning(t("You don't have access to execute this operation!"));
       return;
     }
-
   }
 
   /**
    * {@inheritdoc}
    */
-  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
+  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE)
+  {
     if ($object->getEntityType() === 'node') {
       $access = $object->access('update', $account, TRUE)
         ->andIf($object->status->access('edit', $account, TRUE));
       return $return_as_object ? $access : $access->isAllowed();
     }
 
+    // Other entity types may have different
+    // access methods and properties.
     return TRUE;
   }
-
 }
