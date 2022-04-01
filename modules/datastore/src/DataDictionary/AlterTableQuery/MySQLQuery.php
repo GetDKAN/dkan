@@ -4,12 +4,27 @@ namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
+use Drupal\datastore\DataDictionary\Exception\IncompatibleTypeException;
 use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface;
 
 /**
  * MySQL table alter query.
  */
 class MySQLQuery implements AlterTableQueryInterface {
+
+  /**
+   * Max total size of the MySQL decimal type.
+   *
+   * @var int
+   */
+  protected const DECIMAL_MAX_SIZE = 65;
+
+  /**
+   * Max decimal size of the MySQL decimal type.
+   *
+   * @var int
+   */
+  protected const DECIMAL_MAX_DECIMAL = 30;
 
   /**
    * Build a MySQL table alter query.
@@ -91,13 +106,17 @@ class MySQLQuery implements AlterTableQueryInterface {
   protected function getType(string $frictionless_type, string $column, string $table): string {
     $args = [];
     if ($frictionless_type === 'number') {
-      $args['size'] = $this->connection->query("SELECT MAX(LENGTH({$column})) FROM {$table};")->fetchField();
+      $non_decimals = $this->connection->query("SELECT MAX(LENGTH(TRIM(LEADING '-' FROM SUBSTRING_INDEX({$column}, '.', 1)))) FROM {$table};")->fetchField();
       $args['decimal'] = $this->connection->query("SELECT MAX(LENGTH(SUBSTRING_INDEX({$column}, '.', -1))) FROM {$table};")->fetchField();
+      $args['size'] = $non_decimals + $args['decimal'];
+      if ($args['size'] > self::DECIMAL_MAX_SIZE || $args['decimal'] > self::DECIMAL_MAX_DECIMAL) {
+        throw new IncompatibleTypeException("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
+      }
     }
 
     return ([
       'string'    => (fn () => 'TEXT'),
-      'number'    => (fn ($args) => "DOUBLE({$args['size']}, {$args['decimal']})"),
+      'number'    => (fn ($args) => "DECIMAL({$args['size']}, {$args['decimal']})"),
       'integer'   => (fn () => 'INT'),
       'date'      => (fn () => 'DATE'),
       'time'      => (fn () => 'TIME'),
