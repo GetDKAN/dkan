@@ -1,11 +1,16 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\FrictionlessDateFormatConverter;
+namespace Drupal\datastore\DataDictionary\DateFormat;
 
-use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterBase;
+use Drupal\datastore\DataDictionary\CompilationMapInterface;
+use \ArrayObject;
 
 /**
- * Converts frictionless date formats to MySQL according the following table.
+ * MySQL compilation map.
+ *
+ * MySQL only supports a subset of Frictionless' date format directives. If an
+ * unsupported directive is encountered, an UnsupportedDirectiveException will
+ * be thrown by the compiler.
  *
  * Date Format Mappings:
  *
@@ -37,6 +42,14 @@ use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterBase;
  *
  * Not Supported:
  *
+ * | **Exclusive to Frictionless**              | **Frictionless** | **MySQL** |
+ * |--------------------------------------------|------------------|-----------|
+ * | Locale date/time (e.g. 09/08/13 07:06:05)  | %c               |           |
+ * | Locale’s date (e.g. 09/08/13)              | %x               |           |
+ * | Locale’s time (e.g. 07:06:05)              | %X               |           |
+ * | UTC offset ±HHMM[SS[.ffffff]] (e.g. +0000) | %z               |           |
+ * | Time zone name (e.g. UTC)                  | %Z               |           |
+ *
  * | **Exclusive to MySQL**                     | **Frictionless** | **MySQL** |
  * |--------------------------------------------|------------------|-----------|
  * | Numeric day of month with suffix (3rd)     |                  | %D        |
@@ -46,78 +59,68 @@ use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterBase;
  * | Week where Monday is first day (01 to 53)  |                  | %v        |
  * | Year for week where Sunday is first day    |                  | %X        |
  * | Year for week where Monday is first day    |                  | %x        |
- *
- * | **Exclusive to Frictionless**              | **Frictionless** | **MySQL** |
- * |--------------------------------------------|------------------|-----------|
- * | Locale date/time (e.g. 09/08/13 07:06:05)  | %c               |           |
- * | Locale’s date (e.g. 09/08/13)              | %x               |           |
- * | Locale’s time (e.g. 07:06:05)              | %X               |           |
- * | UTC offset ±HHMM[SS[.ffffff]] (e.g. +0000) | %z               |           |
- * | Time zone name (e.g. UTC)                  | %Z               |           |
  */
-class MySQLConverter extends FrictionlessDateFormatConverterBase {
+class MySQLCompilationMap extends ArrayObject implements CompilationMapInterface {
 
   /**
-   * Get Abstract Syntax Tree for the date format converter.
-   *
-   * @return array
-   *   Date conversion AST.
+   * {@inheritdoc}
    */
-  protected function getDateConversionAst(): array {
-    return [
-      '%' => [
-        // Abbreviated weekday name (Sun to Sat).
-        'a' => '%a',
-        // Weekday name in full (Sunday to Saturday).
-        'A' => '%W',
-        // Abbreviated month name (Jan to Dec).
-        'b' => '%b',
-        // Month name in full (January to December).
-        'B' => '%M',
-        // Day of the month as a numeric value (01 to 31).
-        'd' => '%d',
-        // Microseconds (000000 to 999999).
-        'f' => '%f',
-        // Hour (00 to 23).
-        'H' => '%H',
-        // Hour (00 to 12).
-        'I' => '%I',
-        // Numeric month name (0 to 12).
-        'm' => '%c',
-        // Minutes (00 to 59).
-        'M' => '%i',
-        // AM or PM.
-        'p' => '%p',
-        // Seconds (00 to 59).
-        'S' => '%s',
-        // Week where Sunday is the first day of the week (00 to 53).
-        'U' => '%U',
-        // Week where Monday is the first day of the week (00 to 53).
-        'W' => '%u',
-        // Year as a numeric, 2-digit value.
-        'y' => '%y',
-        // Year as a numeric, 4-digit value.
-        'Y' => '%Y',
-        // A literal '%' character.
-        '%' => '%%',
-        '-' => [
-          // Day of the month as a numeric value (0 to 31).
-          'd' => '%e',
-          // Day of the year (001 to 366).
-          'j' => '%j',
-          // Hour (0 to 23).
-          'H' => '%k',
-          // Hour (1 to 12).
-          'I' => '%l',
-          // Month name as a numeric value (01 to 12).
-          'm' => '%m',
-          // Minutes (00 to 59).
-          'M' => '%i',
-          // Seconds (00 to 59).
-          'S' => '%s',
-        ],
-      ],
-    ];
+  protected $storage = [
+    // Abbreviated weekday name (Sun to Sat).
+    '%a' => '%a',
+    // Weekday name in full (Sunday to Saturday).
+    '%A' => '%W',
+    // Abbreviated month name (Jan to Dec).
+    '%b' => '%b',
+    // Month name in full (January to December).
+    '%B' => '%M',
+    // Day of the month as a numeric value (01 to 31).
+    '%d' => '%d',
+    // Microseconds (000000 to 999999).
+    '%f' => '%f',
+    // Hour (00 to 23).
+    '%H' => '%H',
+    // Hour (00 to 12).
+    '%I' => '%I',
+    // Numeric month name (0 to 12).
+    '%m' => '%c',
+    // Minutes (00 to 59).
+    '%M' => '%i',
+    // AM or PM.
+    '%p' => '%p',
+    // Seconds (00 to 59).
+    '%S' => '%s',
+    // Week where Sunday is the first day of the week (00 to 53).
+    '%U' => '%U',
+    // Week where Monday is the first day of the week (00 to 53).
+    '%W' => '%u',
+    // Year as a numeric, 2-digit value.
+    '%y' => '%y',
+    // Year as a numeric, 4-digit value.
+    '%Y' => '%Y',
+    // A literal '%' character.
+    '%%' => '%%',
+    // Day of the month as a numeric value (0 to 31).
+    '%-d' => '%e',
+    // Day of the year (001 to 366).
+    '%-j' => '%j',
+    // Hour (0 to 23).
+    '%-H' => '%k',
+    // Hour (1 to 12).
+    '%-I' => '%l',
+    // Month name as a numeric value (01 to 12).
+    '%-m' => '%m',
+    // Minutes (00 to 59).
+    '%-M' => '%i',
+    // Seconds (00 to 59).
+    '%-S' => '%s',
+  ];
+
+  /**
+   * Creates a MySQL compilation map.
+   */
+  public function __construct() {
+    parent::__construct($this->storage);
   }
 
 }

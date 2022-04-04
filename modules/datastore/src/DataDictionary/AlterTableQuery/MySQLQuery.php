@@ -5,7 +5,7 @@ namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 use Drupal\Core\Database\Connection;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\Exception\IncompatibleTypeException;
-use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface;
+use Drupal\datastore\DataDictionary\DateFormatConverterInterface;
 
 /**
  * MySQL table alter query.
@@ -31,7 +31,7 @@ class MySQLQuery implements AlterTableQueryInterface {
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Database connection.
-   * @param \Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface $date_format_converter
+   * @param \Drupal\datastore\DataDictionary\DateFormatConverterInterface $date_format_converter
    *   Frictionless date format converter.
    * @param string $datastore_table
    *   Datastore table.
@@ -40,7 +40,7 @@ class MySQLQuery implements AlterTableQueryInterface {
    */
   public function __construct(
       Connection $connection,
-      FrictionlessDateFormatConverterInterface $date_format_converter,
+      DateFormatConverterInterface $date_format_converter,
       string $datastore_table,
       array $dictionary_fields
   ) {

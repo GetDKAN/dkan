@@ -43,7 +43,7 @@ services:
     class: \Drupal\datastore\DataDictionary\AlterTableQuery\Factory
     arguments:
       - '@dkan.datastore.database_connection_factory'
-      - '@dkan.datastore.frictionless_date_format_converter.mysql'
+      - '@dkan.datastore.date_format.converter.frictionless_to_mysql'
       - '\Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery'
 
   dkan.datastore.database:
@@ -87,5 +87,24 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
 
-  dkan.datastore.frictionless_date_format_converter.mysql:
-    class: \Drupal\datastore\DataDictionary\FrictionlessDateFormatConverter\MySQLConverter
+  dkan.datastore.date_format.converter.frictionless_to_mysql:
+    class: \Drupal\datastore\DataDictionary\DateFormat\Converter
+    arguments:
+      - '@dkan.datastore.date_format.parser.frictionless'
+      - '@dkan.datastore.date_format.compiler.mysql'
+
+  dkan.datastore.date_format.grammar.frictionless:
+    class: \Drupal\datastore\DataDictionary\DateFormat\FrictionlessGrammar
+
+  dkan.datastore.date_format.parser.frictionless:
+    class: \Drupal\datastore\DataDictionary\DateFormat\Parser
+    arguments:
+      - '@dkan.datastore.date_format.grammar.frictionless'
+
+  dkan.datastore.date_format.compilation_map.mysql:
+    class: \Drupal\datastore\DataDictionary\DateFormat\MySQLCompilationMap
+
+  dkan.datastore.date_format.compiler.mysql:
+    class: \Drupal\datastore\DataDictionary\DateFormat\Compiler
+    arguments:
+      - '@dkan.datastore.date_format.compilation_map.mysql'

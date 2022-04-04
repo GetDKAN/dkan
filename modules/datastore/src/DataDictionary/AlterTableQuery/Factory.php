@@ -5,7 +5,7 @@ namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
-use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface;
+use Drupal\datastore\DataDictionary\DateFormatConverterInterface;
 
 /**
  * Base alter table query factory.
@@ -22,9 +22,9 @@ class Factory implements AlterTableQueryFactoryInterface {
   /**
    * Frictionless date format converter.
    *
-   * @var \Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface
+   * @var \Drupal\datastore\DataDictionary\DateFormatConverterInterface
    */
-  protected FrictionlessDateFormatConverterInterface $dateFormatConverter;
+  protected DateFormatConverterInterface $dateFormatConverter;
 
   /**
    * Alter query class name.
@@ -38,7 +38,7 @@ class Factory implements AlterTableQueryFactoryInterface {
    */
   public function __construct(
     DatabaseConnectionFactoryInterface $database_connection_factory,
-    FrictionlessDateFormatConverterInterface $date_format_converter,
+    DateFormatConverterInterface $date_format_converter,
     string $query_class
   ) {
     $this->databaseConnectionFactory = $database_connection_factory;
