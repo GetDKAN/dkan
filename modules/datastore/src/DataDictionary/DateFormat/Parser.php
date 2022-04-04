@@ -43,8 +43,7 @@ class Parser implements ParserInterface {
 
     // Iterate through the input format string character-by-character in order
     // to incrementally build an AST from the input.
-    $input_chars = str_split($input_format);
-    foreach ($input_chars as $char) {
+    foreach (str_split($input_format) as $char) {
       $literal .= $char;
       // If the current character doesn't exist in this level of the AST, we
       // have no path to tokenizing this character...
@@ -55,11 +54,11 @@ class Parser implements ParserInterface {
           throw new UnknownTokenException(sprintf('Invalid frictionless format provided; unknown token "%s".', $literal));
         }
         // Since we have no path to tokenize this character, we want to go back
-        // to the top level of the AST,
+        // to the top level of the AST...
         $grammar_ptr = &$this->grammar;
-        // write the current character to the output format,
+        // Write the current character to the output format...
         $syntax[] = new LiteralToken($literal);
-        // and clear out the literal buffer now that the character has been
+        // And clear out the literal buffer now that the character has been
         // written to the output.
         $literal = '';
       }
@@ -67,17 +66,17 @@ class Parser implements ParserInterface {
       else {
         // If the current character is not an end node in the AST...
         if (is_array($grammar_ptr[$char])) {
-          // continue down the AST path.
+          // Continue down the AST path.
           $grammar_ptr = &$grammar_ptr[$char];
         }
         // Otherwise, if the current character is an end node...
         else {
-          // write the content of the end node to the output format,
+          // Write the content of the end node to the output format...
           $syntax[] = new DirectiveToken($literal);
-          // go back to the top level of the AST,
+          // Go back to the top level of the AST...
           $grammar_ptr = &$this->grammar;
-          // and clear out the literal buffer now that the character(s) has been
-          // written to the output.
+          // And clear out the literal buffer now that the character(s) has been
+          // written to the output...
           $literal = '';
         }
       }
