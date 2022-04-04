@@ -24,46 +24,60 @@ class Parser implements ParserInterface {
   /**
    * Break up supplied date format string into lexemes.
    *
+   * This function builds an abstract syntax tree from the supplied string. The
+   * AST is hardly a tree though since there is only one parent node with a
+   * bunch of children, it's more of a syntax list. As such, the return value
+   * of this function is a list of all child nodes in the tree.
+   *
    * @param string $input_format
    *   Date format string to lex.
    *
    * @return \Drupal\datastore\DataDictionary\FrictionlessDateFormatConverter\TokenInterface[]
-   *   Token list.
+   *   AST token list.
    */
   protected function lex(string $input_format): array {
-    // Initialize our AST reference and local DB output format string.
+    // Initialize our grammar reference, AST, and local DB output format string.
     $grammar_ptr = &$this->grammar;
     $syntax = [];
     $literal = '';
 
-    // Traverse the AST:
-    foreach (str_split($input_format) as $char) {
+    // Iterate through the input format string character-by-character in order
+    // to incrementally build an AST from the input.
+    $input_chars = str_split($input_format);
+    foreach ($input_chars as $char) {
       $literal .= $char;
       // If the current character doesn't exist in this level of the AST, we
-      // have no path to tokenizing it; therefore, we want to go back to the top
-      // level of the AST and write the current character to the output format.
+      // have no path to tokenizing this character...
       if (!isset($grammar_ptr[$char])) {
         // If no valid AST character was found mid-token, the given frictionless
         // format is invalid, and an exception should be thrown.
         if (strlen($literal) > 1) {
-          throw new UnknownTokenException(sprintf('Invalid frictionless format provided; unknown token "%s".', $token));
+          throw new UnknownTokenException(sprintf('Invalid frictionless format provided; unknown token "%s".', $literal));
         }
-        $syntax[] = new LiteralToken($literal);
+        // Since we have no path to tokenize this character, we want to go back
+        // to the top level of the AST,
         $grammar_ptr = &$this->grammar;
+        // write the current character to the output format,
+        $syntax[] = new LiteralToken($literal);
+        // and clear out the literal buffer now that the character has been
+        // written to the output.
         $literal = '';
       }
       // Otherwise, we have a path forward...
       else {
-        // If the current character is not an end node in the AST, continue down
-        // the AST path.
+        // If the current character is not an end node in the AST...
         if (is_array($grammar_ptr[$char])) {
+          // continue down the AST path.
           $grammar_ptr = &$grammar_ptr[$char];
         }
-        // If the current character is an end node, write the content of the end
-        // node to the output format, and go back to the top level of the AST.
+        // Otherwise, if the current character is an end node...
         else {
+          // write the content of the end node to the output format,
           $syntax[] = new DirectiveToken($literal);
+          // go back to the top level of the AST,
           $grammar_ptr = &$this->grammar;
+          // and clear out the literal buffer now that the character(s) has been
+          // written to the output.
           $literal = '';
         }
       }
