@@ -32,27 +32,60 @@ class Compiler implements CompilerInterface {
   /**
    * Convert the supplied token to it's string equivalent using compilation map.
    *
-   * @param TokenInterface $token
+   * @param \Drupal\datastore\DataDictionary\TokenInterface $token
    *   Lexical token.
    *
    * @return string
    *   Compiled token string.
+   *
+   * @throws \Drupal\datastore\DataDictionary\UnsupportedTokenException
+   *   When a token of a type not supported by this compiler is encountered.
    */
   protected function compileToken(TokenInterface $token): string {
     if ($token instanceof DirectiveToken) {
-      if ($result = $this->compilationMap[$token->getLiteral()] ?? NULL) {
-        return $result;
-      }
-      else {
-        throw new UnsupportedTokenException(sprintf('Unable to compile unsupported directive "%s"; not found in compilation map "%s".', $token->getLiteral(), get_class($this->compilationMap)));
-      }
+      return $this->compileDirective($token);
     }
     elseif ($token instanceof LiteralToken) {
-      return $token->getLiteral();
+      return $this->compileLiteral($token);
     }
     else {
       throw new UnsupportedTokenException(sprintf('Unable to compile unsupported token type "%s" with literal value "%s".', get_class($token), $token->getLiteral()));
     }
+  }
+
+  /**
+   * Compile a directive token to it's string equivalent.
+   *
+   * @param \Drupal\datastore\DataDictionary\DateFormat\DirectiveToken $token
+   *   Directive token.
+   *
+   * @return string
+   *   Compiled token string.
+   *
+   * @throws \Drupal\datastore\DataDictionary\UnsupportedTokenException
+   *   When the supplied token is not supported by the this compiler's
+   *   compilation map.
+   */
+  protected function compileDirective(DirectiveToken $token): string {
+    if ($result = $this->compilationMap[$token->getLiteral()] ?? NULL) {
+      return $result;
+    }
+    else {
+      throw new UnsupportedTokenException(sprintf('Unable to compile unsupported directive "%s"; not found in compilation map "%s".', $token->getLiteral(), get_class($this->compilationMap)));
+    }
+  }
+
+  /**
+   * Compile a literal token to a string.
+   *
+   * @param \Drupal\datastore\DataDictionary\DateFormat\LiteralToken $token
+   *   Literal token.
+   *
+   * @return string
+   *   Compiled token string.
+   */
+  protected function compileLiteral(LiteralToken $token): string {
+    return $token->getLiteral();
   }
 
   /**

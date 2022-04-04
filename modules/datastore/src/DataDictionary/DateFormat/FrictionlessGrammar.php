@@ -3,7 +3,6 @@
 namespace Drupal\datastore\DataDictionary\DateFormat;
 
 use Drupal\datastore\DataDictionary\GrammarInterface;
-use ArrayObject;
 
 /**
  * Frictionless date format grammar.
@@ -44,7 +43,7 @@ use ArrayObject;
  * | UTC offset ±HHMM[SS[.ffffff]] (e.g. +0000) | %z               |
  * | Time zone name (e.g. UTC)                  | %Z               |
  */
-class FrictionlessGrammar extends ArrayObject implements GrammarInterface {
+class FrictionlessGrammar extends \ArrayObject implements GrammarInterface {
 
   /**
    * {@inheritdoc}

@@ -135,7 +135,7 @@ class MySQLQuery implements AlterTableQueryInterface {
   /**
    * Build list of commands to prepare table for alter command.
    *
-   * @param array $dictionary_fields
+   * @param array $dict
    *   Data dictionary fields.
    * @param string $table
    *   Mysql table name.
@@ -143,13 +143,13 @@ class MySQLQuery implements AlterTableQueryInterface {
    * @return string[]
    *   Prep commands list.
    */
-  protected function buildPreAlterCommands(array $dictionary_fields, string $table): array {
+  protected function buildPreAlterCommands(array $dict, string $table): array {
     $pre_alter_cmds = [];
 
-    foreach ($dictionary_fields as ['name' => $field, 'type' => $type, 'format' => $format]) {
+    foreach ($dict as ['name' => $col, 'type' => $type, 'format' => $format]) {
       if ($type === 'date') {
         $mysql_date_format = $this->dateFormatConverter->convert($format);
-        $pre_alter_cmds[] = "UPDATE {$table} SET {$field} = STR_TO_DATE({$field}, '{$mysql_date_format}');";
+        $pre_alter_cmds[] = "UPDATE {$table} SET {$col} = STR_TO_DATE({$col}, '{$mysql_date_format}');";
       }
     }
 

@@ -3,7 +3,6 @@
 namespace Drupal\datastore\DataDictionary\DateFormat;
 
 use Drupal\datastore\DataDictionary\CompilationMapInterface;
-use \ArrayObject;
 
 /**
  * MySQL compilation map.
@@ -60,7 +59,7 @@ use \ArrayObject;
  * | Year for week where Sunday is first day    |                  | %X        |
  * | Year for week where Monday is first day    |                  | %x        |
  */
-class MySQLCompilationMap extends ArrayObject implements CompilationMapInterface {
+class MySQLCompilationMap extends \ArrayObject implements CompilationMapInterface {
 
   /**
    * {@inheritdoc}

@@ -2,6 +2,9 @@
 
 namespace Drupal\datastore\DataDictionary;
 
+/**
+ * AST compiler.
+ */
 interface CompilerInterface {
 
   /**
