@@ -2,7 +2,6 @@
 
 namespace Drupal\metastore\Reference;
 
-use Drupal\common\LoggerTrait;
 use Drupal\metastore\Factory\MetastoreItemFactoryInterface;
 use Drupal\metastore\ReferenceLookupInterface;
 
@@ -16,8 +15,6 @@ use RootedData\RootedJsonData;
  * {@inheritdoc}
  */
 class ReferenceLookup implements ReferenceLookupInterface {
-  use HelperTrait;
-  use LoggerTrait;
 
   /**
    * Metastore Storage service.

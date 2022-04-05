@@ -18,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @MetastoreReferenceType(
  *  id = "resource",
- *  description = Translation("Datastore resource definition.")
+ *  description = @Translation("Datastore resource definition.")
  * )
  */
 class ResourceReference extends ReferenceTypeBase {

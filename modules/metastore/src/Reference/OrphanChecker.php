@@ -9,7 +9,6 @@ use Drupal\Core\Queue\QueueFactory;
  * OrphanChecker.
  */
 class OrphanChecker {
-  use HelperTrait;
 
   /**
    * The queue service.
@@ -22,8 +21,8 @@ class OrphanChecker {
    * Constructor.
    */
   public function __construct(ConfigFactoryInterface $configService, QueueFactory $queueService) {
+    $this->configService = $configService;
     $this->queueService = $queueService;
-    $this->setConfigService($configService);
   }
 
   /**
@@ -46,7 +45,8 @@ class OrphanChecker {
       throw new \Exception("data must be an object.");
     }
     // Cycle through the dataset properties we seek to reference.
-    foreach ($this->getPropertyList() as $property_id) {
+    $list = $this->configService->get('metastore.settings')->get('property_list');
+    foreach ($list as $property_id) {
       if (isset($data->{$property_id})) {
         $this->processReferencesInDeletedProperty($property_id, $data->{$property_id});
       }
@@ -64,7 +64,8 @@ class OrphanChecker {
   public function processReferencesInUpdatedDataset($old_dataset, $new_dataset) {
     $this->objectsCheck([$old_dataset, $new_dataset]);
     // Cycle through the dataset properties being referenced, check for orphans.
-    foreach ($this->getPropertyList() as $property_id) {
+    $list = $this->configService->get('metastore.settings')->get('property_list');
+    foreach ($list as $property_id) {
       if (!isset($old_dataset->{$property_id})) {
         // The old dataset had no value for this property, thus no references
         // could be deleted. Safe to skip checking for orphan reference.
@@ -145,6 +146,22 @@ class OrphanChecker {
         throw new \Exception("data given must be an object.");
       }
     }
+  }
+
+  /**
+   * Private.
+   *
+   * @param mixed $data
+   *   Data whose type we want to match.
+   *
+   * @return array|string
+   *   Either the empty string or an empty array.
+   */
+  private function emptyPropertyOfSameType($data) {
+    if (is_array($data)) {
+      return [];
+    }
+    return "";
   }
 
 }

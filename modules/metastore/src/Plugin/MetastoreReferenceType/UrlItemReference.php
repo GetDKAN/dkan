@@ -11,7 +11,7 @@ use Drupal\metastore\Exception\MissingObjectException;
  *
  * @MetastoreReferenceType(
  *  id = "url",
- *  description = Translation("Metastore URL reference definition.")
+ *  description = @Translation("Metastore URL reference definition.")
  * )
  */
 class UrlItemReference extends ItemReference {

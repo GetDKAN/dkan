@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @MetastoreReferenceType(
  *  id = "item",
- *  description = Translation("Metastore item reference definition.")
+ *  description = @Translation("Metastore item reference definition.")
  * )
  */
 class ItemReference extends ReferenceTypeBase {
@@ -95,7 +95,7 @@ class ItemReference extends ReferenceTypeBase {
   /**
    * {@inheritdoc}
    */
-  public function dereference(string $identifier, $showId = FALSE) {
+  public function dereference(string $identifier, bool $showId = FALSE) {
     $storage = $this->storageFactory->getInstance($this->schemaId());
     try {
       $value = $storage->retrieve($identifier);

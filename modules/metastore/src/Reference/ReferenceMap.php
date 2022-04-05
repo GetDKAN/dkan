@@ -7,12 +7,20 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 class ReferenceMap implements ReferenceMapInterface {
 
   /**
+   * Reference type manager service.
+   *
+   * @var \Drupal\metastore\Reference\ReferenceTypeManager
+   */
+  private $referenceTypeManager;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
    *   The Drupal config service.
    */
-  public function __construct(ConfigFactoryInterface $configService) {
+  public function __construct(ReferenceTypeManager $referenceTypeManager, ConfigFactoryInterface $configService) {
+    $this->referenceTypeManager = $referenceTypeManager;
     $this->configService = $configService;
     $this->map = $this->buildReferenceMap();
   }
@@ -21,7 +29,7 @@ class ReferenceMap implements ReferenceMapInterface {
    * {@inheritdoc}
    */
   public function getAllReferences(string $schemaId): array {
-    return $map[$schemaId] ?? [];
+    return $this->map[$schemaId] ?? [];
   }
 
   /**
@@ -41,13 +49,13 @@ class ReferenceMap implements ReferenceMapInterface {
   protected function buildReferenceMap() {
     return [
       "catalog" => [
-        ['dataset'] => new ReferenceDefinition('dataset', 'schema', 'dataset')
+        'dataset' => $this->createReference('item', 'dataset', 'dataset'),
       ],
       "distribution" => [
-        ['downloadURL' => new ReferenceDefinition('downloadURL', 'resource')],
-        ['describedBy' => new ReferenceDefinition('describedBy', 'schema', 'data-dictionary')],
+        'downloadURL' => $this->createReference('resource', 'downloadURL'),
+        'describedBy' => $this->createReference('url', 'describedBy', 'data-dictionary'),
       ],
-      ['dataset' => $this->getDatasetReferences()],
+      'dataset' => $this->getDatasetReferences(),
     ];
   }
 
@@ -62,9 +70,18 @@ class ReferenceMap implements ReferenceMapInterface {
   protected function getDatasetReferences() : array {
     $list = $this->configService->get('metastore.settings')->get('property_list');
     foreach (array_values(array_filter($list)) as $propertyName) {
-      $refs[] = [$propertyName => new ReferenceDefinition($propertyName, 'schema', $propertyName)];
+      $refs[$propertyName] = $this->createReference('item', $propertyName, $propertyName);
     }
     return $refs;
+  }
+
+  protected function createReference($type, $propertyName, $schemaId = NULL) {
+    $config = [
+      'property' => $propertyName,
+      'schemaId' => $schemaId,
+    ];
+
+    return $this->referenceTypeManager->createInstance($type, $config);
   }
 
 }
