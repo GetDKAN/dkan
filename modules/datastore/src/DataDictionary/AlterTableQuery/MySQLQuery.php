@@ -3,6 +3,8 @@
 namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\StatementInterface;
+
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\Exception\IncompatibleTypeException;
 use Drupal\datastore\DataDictionary\DateFormatConverterInterface;
@@ -46,7 +48,7 @@ class MySQLQuery implements AlterTableQueryInterface {
   ) {
     $this->connection = $connection;
     $this->dateFormatConverter = $date_format_converter;
-    $this->datastoreTable = $datastore_table;
+    $this->datastoreTable = $this->connection->escapeTable($datastore_table);
     $this->dictionaryFields = $dictionary_fields;
   }
 
@@ -56,8 +58,11 @@ class MySQLQuery implements AlterTableQueryInterface {
   public function applyDataTypes(): void {
     $this->dictionaryFields = $this->filterForDatastoreFields($this->dictionaryFields, $this->datastoreTable);
 
-    array_map([$this->connection, 'query'], $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable));
-    $this->connection->query($this->buildAlterCommand($this->dictionaryFields, $this->datastoreTable));
+    // Build and execute SQL commands to prepare for table alter.
+    $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
+    array_map(fn ($cmd) => $cmd->execute(), $pre_alter_commands);
+    // Build and execute SQL command to perform table alter.
+    $this->buildAlterCommand($this->dictionaryFields, $this->datastoreTable)->execute();
   }
 
   /**
@@ -87,7 +92,7 @@ class MySQLQuery implements AlterTableQueryInterface {
    *   List of column names.
    */
   protected function getTableCols(string $table): array {
-    return $this->connection->query("DESCRIBE {$table};")->fetchCol();
+    return $this->connection->query("DESCRIBE {{$table}};")->fetchCol();
   }
 
   /**
@@ -104,16 +109,10 @@ class MySQLQuery implements AlterTableQueryInterface {
    *   MySQL data type.
    */
   protected function getType(string $frictionless_type, string $column, string $table): string {
-    $args = [];
-    if ($frictionless_type === 'number') {
-      $non_decimals = $this->connection->query("SELECT MAX(LENGTH(TRIM(LEADING '-' FROM SUBSTRING_INDEX({$column}, '.', 1)))) FROM {$table};")->fetchField();
-      $args['decimal'] = $this->connection->query("SELECT MAX(LENGTH(SUBSTRING_INDEX({$column}, '.', -1))) FROM {$table};")->fetchField();
-      $args['size'] = $non_decimals + $args['decimal'];
-      if ($args['size'] > self::DECIMAL_MAX_SIZE || $args['decimal'] > self::DECIMAL_MAX_DECIMAL) {
-        throw new IncompatibleTypeException("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
-      }
-    }
+    // Build the MySQL type argument list for the given Frictionless data type.
+    $args = $this->buildTypeArgs($frictionless_type, $column, $table);
 
+    // Build full MySQL type for the given Frictionless data type.
     return ([
       'string'    => (fn () => 'TEXT'),
       'number'    => (fn ($args) => "DECIMAL({$args['size']}, {$args['decimal']})"),
@@ -133,6 +132,36 @@ class MySQLQuery implements AlterTableQueryInterface {
   }
 
   /**
+   * Build MySQL type argument list for the given type.
+   *
+   * @param string $type
+   *   Frictionless type.
+   * @param string $column
+   *   Column name.
+   * @param string $table
+   *   Table name.
+   *
+   * @throws Drupal\datastore\DataDictionary\Exception\IncompatibleTypeException
+   *   When incompatible data is found in the table for the specified type.
+   */
+  protected function buildTypeArgs(string $type, string $column, string $table): array {
+    $args = [];
+
+    // If this field is a number field, build decimal and size arguments for
+    // MySQL type.
+    if ($type === 'number') {
+      $non_decimals = $this->connection->query("SELECT MAX(LENGTH(TRIM(LEADING '-' FROM SUBSTRING_INDEX({$column}, '.', 1)))) FROM {{$table}};")->fetchField();
+      $args['decimal'] = $this->connection->query("SELECT MAX(LENGTH(SUBSTRING_INDEX({$column}, '.', -1))) FROM {{$table}};")->fetchField();
+      $args['size'] = $non_decimals + $args['decimal'];
+      if ($args['size'] > self::DECIMAL_MAX_SIZE || $args['decimal'] > self::DECIMAL_MAX_DECIMAL) {
+        throw new IncompatibleTypeException("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
+      }
+    }
+
+    return $args;
+  }
+
+  /**
    * Build list of commands to prepare table for alter command.
    *
    * @param array $dict
@@ -140,16 +169,21 @@ class MySQLQuery implements AlterTableQueryInterface {
    * @param string $table
    *   Mysql table name.
    *
-   * @return string[]
-   *   Prep commands list.
+   * @return \Drupal\Core\Database\StatementInterface[]
+   *   Prep command statements.
    */
   protected function buildPreAlterCommands(array $dict, string $table): array {
     $pre_alter_cmds = [];
 
+    // Build pre-alter commands for each dictionary field.
     foreach ($dict as ['name' => $col, 'type' => $type, 'format' => $format]) {
-      if ($type === 'date') {
+      // If this field is a date field, and a valid format is provided; update
+      // the format of the date fields to ISO-8601 before importing into MySQL.
+      if ($type === 'date' && !empty($format) && $format !== 'default') {
         $mysql_date_format = $this->dateFormatConverter->convert($format);
-        $pre_alter_cmds[] = "UPDATE {$table} SET {$col} = STR_TO_DATE({$col}, '{$mysql_date_format}');";
+        $pre_alter_cmds[] = $this->connection->update($table)->expression($col, "STR_TO_DATE({$col}, :date_format)", [
+          ':date_format' => $mysql_date_format,
+        ]);
       }
     }
 
@@ -164,18 +198,22 @@ class MySQLQuery implements AlterTableQueryInterface {
    * @param string $table
    *   Mysql table name.
    *
-   * @return string
-   *   MySQL table alter command.
+   * @return \Drupal\Core\Database\StatementInterface
+   *   Prepared MySQL table alter command statement.
    */
-  protected function buildAlterCommand(array $dictionary_fields, string $table): string {
+  protected function buildAlterCommand(array $dictionary_fields, string $table): StatementInterface {
     $modify_lines = [];
+    $args = [];
 
     foreach ($dictionary_fields as ['name' => $field, 'type' => $type]) {
+      // Get MySQL type for column.
       $column_type = $this->getType($type, $field, $table);
+      // Build modify line for alter command and add the appropriate arguments
+      // to the args list.
       $modify_lines[] = "MODIFY COLUMN {$field} {$column_type}";
     }
 
-    return "ALTER TABLE {$table} " . implode(', ', $modify_lines) . ';';
+    return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $modify_lines) . ';', $args);
   }
 
 }
