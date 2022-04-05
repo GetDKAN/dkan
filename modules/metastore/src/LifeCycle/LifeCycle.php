@@ -127,7 +127,7 @@ class LifeCycle {
     $metadata = $data->getMetaData();
 
     // Dereference dataset properties.
-    $metadata = $this->dereferencer->dereference($metadata);
+    $metadata = $this->dereferencer->dereference($metadata, "dataset");
     $metadata = $this->addDatasetModifiedDate($metadata, $data->getModifiedDate());
 
     $data->setMetadata($metadata);
@@ -152,26 +152,7 @@ class LifeCycle {
       return;
     }
 
-    $downloadUrl = $metadata->data->downloadURL;
-
-    if (isset($downloadUrl) && !filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
-      $resourceIdentifier = $downloadUrl;
-      $ref = NULL;
-      $original = NULL;
-      [$ref, $original] = $this->retrieveDownloadUrlFromResourceMapper($resourceIdentifier);
-
-      $downloadUrl = isset($original) ? $original : "";
-
-      $refProperty = "%Ref:downloadURL";
-      $metadata->data->{$refProperty} = count($ref) == 0 ? NULL : $ref;
-    }
-
-    if (is_string($downloadUrl)) {
-      $downloadUrl = UrlHostTokenResolver::resolve($downloadUrl);
-    }
-
-    $metadata->data->downloadURL = $downloadUrl;
-
+    $metadata->data = $this->dereferencer->dereference($metadata->data, "distribution");
     $data->setMetadata($metadata);
   }
 
@@ -269,7 +250,7 @@ class LifeCycle {
       return $data instanceof MetastoreItemInterface;
     });
 
-    $metadata = $this->referencer->reference($metadata);
+    $metadata = $this->referencer->reference($metadata, "dataset");
 
     $data->setMetadata($metadata);
 
@@ -286,6 +267,7 @@ class LifeCycle {
    */
   protected function distributionPresave(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
+    $metadata = $this->referencer->reference($metadata->data, "distribution");
     $data->setMetadata($metadata);
   }
 
