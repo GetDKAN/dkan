@@ -6,8 +6,7 @@ use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\Messenger\Messenger;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Psr\Container\ContainerInterface;
 
@@ -19,16 +18,19 @@ use Psr\Container\ContainerInterface;
  *
  * @Action(
  *   id = "hide_current_revision_action",
- *   label = @Translation("Archive Current Revision"),
+ *   label = "Hide Current Revision",
  *   type = "node",
  *   confirm = TRUE,
  * )
  *
  * @codeCoverageIgnore
  */
-class HideCurrentRevisionAction extends ActionBase {
+class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPluginInterface {
 
-  use StringTranslationTrait;
+  /**
+   * Private.
+   */
+  private $entity = NULL;
 
   /**
    * Constructor.
@@ -55,9 +57,10 @@ class HideCurrentRevisionAction extends ActionBase {
     MessengerInterface $messenger,
     AccountInterface $currentUser
   ) {
+    parent::__construct($config, $pluginId, $pluginDefinition);
+    $this->loggerFactory = $loggerFactory->get('metastore_admin');
     $this->messenger = $messenger;
     $this->currentUser = $currentUser;
-    parent::__construct($config, $pluginId, $pluginDefinition, $loggerFactory);
   }
 
   /**
@@ -82,25 +85,17 @@ class HideCurrentRevisionAction extends ActionBase {
   ) {
     $loggerFactory = $container->get('logger.factory');
     $messenger = $container->get('messenger');
-    $currentUser = $container->get('currenUser');
+    $currentUser = $container->get('current_user');
     return new static($config, $pluginId, $pluginDefinition, $loggerFactory, $messenger, $currentUser);
   }
-
-
-  /**
-   * Entity.
-   *
-   * @var entity
-   */
-  private $entity = NULL;
 
   /**
    * {@inheritdoc}
    */
   public function execute($entity = NULL) {
 
-    if ($this->currentUser->hasPermission('moderated content bulk archive')) {
-      $this->logger->notice("Executing hide latest revision of " . $entity->label());
+    if ($entity && $this->currentUser->hasPermission('use dkan_publishing transition hidden')) {
+      $this->loggerFactory->notice("Executing hide current revision of " . $entity->label());
 
       $this->hide($entity);
 
@@ -108,7 +103,7 @@ class HideCurrentRevisionAction extends ActionBase {
       if (!$entity->isPublished()) {
         $msg = "Something went wrong, the entity must be published by this point.  Review your content moderation configuration make sure you have the hidden state available and try again.";
         $this->messenger->addError(utf8_encode($msg));
-        $this->logger->warning($msg);
+        $this->loggerFactory->warning($msg);
         return $msg;
       }
       return sprintf('Example action (configuration: %s)', print_r($this->configuration, TRUE));
