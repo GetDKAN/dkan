@@ -9,7 +9,7 @@ use Drupal\metastore\SchemaPropertiesHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class DkanDataSettingsForm.
+ * Metastore data settings form.
  *
  * @package Drupal\metastore\Form
  * @codeCoverageIgnore

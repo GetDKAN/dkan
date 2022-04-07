@@ -10,7 +10,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
- * Trait Helper.
+ * Commands helper trait.
  *
  * @codeCoverageIgnore
  */

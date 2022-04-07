@@ -80,7 +80,7 @@ commands:
 jobs:
   phpunit:
     machine:
-      image: circleci/classic:latest
+      image: ubuntu-2004:current
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -114,7 +114,7 @@ jobs:
                   dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
   cypress:
     machine:
-      image: circleci/classic:latest
+      image: ubuntu-2004:current
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"

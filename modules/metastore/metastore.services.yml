@@ -105,6 +105,11 @@ services:
       - '@cache_tags.invalidator'
       - '@module_handler'
 
+  dkan.metastore.data_dictionary_discovery:
+    class: \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
+    arguments:
+      - '@config.factory'
+
   plugin.manager.dkan_reference_type:
     class: \Drupal\metastore\Reference\ReferenceTypeManager
     parent: default_plugin_manager

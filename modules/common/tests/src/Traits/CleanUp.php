@@ -14,7 +14,7 @@ trait CleanUp {
    *
    */
   private function removeHarvests() {
-    /* @var \Drupal\harvest\Service $service */
+    /** @var \Drupal\harvest\Service $service */
     $service = \Drupal::service('dkan.harvest.service');
     foreach ($service->getAllHarvestIds() as $id) {
       $service->deregisterHarvest($id);
@@ -35,7 +35,7 @@ trait CleanUp {
    *
    */
   private function removeAllMappedFiles() {
-    /* @var \Drupal\metastore\Storage\ResourceMapperDatabaseTable $filemappertable */
+    /** @var \Drupal\metastore\Storage\ResourceMapperDatabaseTable $filemappertable */
     $filemappertable = \Drupal::service('dkan.metastore.resource_mapper_database_table');
     foreach ($filemappertable->retrieveAll() as $id) {
       $filemappertable->remove($id);
@@ -46,10 +46,10 @@ trait CleanUp {
    *
    */
   private function removeAllFileFetchingJobs() {
-    /* @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
+    /** @var \Drupal\common\Storage\JobStoreFactory $jobStoreFactory */
     $jobStoreFactory = \Drupal::service('dkan.common.job_store');
 
-    /* @var \Drupal\common\Storage\JobStore $jobStore */
+    /** @var \Drupal\common\Storage\JobStore $jobStore */
     $jobStore = $jobStoreFactory->getInstance(FileFetcher::class);
     foreach ($jobStore->retrieveAll() as $id) {
       $jobStore->remove($id);
@@ -62,7 +62,7 @@ trait CleanUp {
   private function flushQueues() {
     $dkanQueues = ['orphan_reference_processor', 'datastore_import', 'resource_purger'];
     foreach ($dkanQueues as $queueName) {
-      /* @var \Drupal\Core\Queue\QueueFactory $queueFactory */
+      /** @var \Drupal\Core\Queue\QueueFactory $queueFactory */
       $queueFactory = \Drupal::service('queue');
       $queue = $queueFactory->get($queueName);
       $queue->deleteQueue();
@@ -87,7 +87,7 @@ trait CleanUp {
    *
    */
   private function removeDatastoreTables() {
-    /* @var \Drupal\Core\Database\Connection $connection */
+    /** @var \Drupal\Core\Database\Connection $connection */
     $connection = \Drupal::service('database');
     $tables = $connection->schema()->findTables("datastore_%");
     foreach ($tables as $table) {

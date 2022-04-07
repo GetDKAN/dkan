@@ -6,7 +6,7 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Psr\Log\LogLevel;
 
 /**
- * LoggerTrait.
+ * DKAN logger channel trait.
  */
 trait LoggerTrait {
 
@@ -27,6 +27,11 @@ trait LoggerTrait {
    */
   private $loggerService;
 
+  /**
+   * Whether to enable debug messages logged by the debug method.
+   *
+   * @var bool
+   */
   private $debug = FALSE;
 
   /**

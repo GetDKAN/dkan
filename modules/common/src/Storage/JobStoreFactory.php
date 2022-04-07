@@ -6,10 +6,22 @@ use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
 
 /**
- * Class JobStoreFactory.
+ * DKAN JobStore Factory.
  */
 class JobStoreFactory implements FactoryInterface {
+
+  /**
+   * JobStore instances keyed by unique identifiers.
+   *
+   * @var \Drupal\common\Storage\JobStore[]
+   */
   private $instances = [];
+
+  /**
+   * Drupal database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
   private $connection;
 
   /**

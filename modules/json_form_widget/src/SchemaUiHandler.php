@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
 /**
- * Class SchemaUiHandler.
+ * JSON form widget schema UI handler service.
  */
 class SchemaUiHandler implements ContainerInjectionInterface {
 

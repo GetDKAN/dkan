@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Queue\QueueFactory;
 
 /**
- * OrphanChecker.
+ * Checks for orphanned references in deleted datasets.
  */
 class OrphanChecker {
 

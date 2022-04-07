@@ -240,6 +240,11 @@ export function createDatasetWithModerationState(dataset_title, moderation_state
   // End filling up keyword.
   cy.get('#edit-submit')
     .click({ force:true })
+  // Dialog will only show if we're using published, click yes.
+  if (moderation_state == 'published') {
+    cy.get('.button').contains('Yes')
+      .click({ force:true }) 
+  }
   cy.get('.messages--status')
     .should('contain','has been created')
   cy.get('.messages--status a').click()
