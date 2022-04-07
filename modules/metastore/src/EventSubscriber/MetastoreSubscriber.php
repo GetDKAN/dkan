@@ -5,6 +5,7 @@ namespace Drupal\metastore\EventSubscriber;
 use Drupal\common\Events\Event;
 use Drupal\common\Resource;
 use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\metastore\Plugin\MetastoreReferenceType\ResourceReference;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
 use Drupal\metastore\Service;
@@ -113,7 +114,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
     // Iterate over the metadata for all dataset distributions.
     foreach ($this->service->getAll('distribution') as $metadata) {
       // Attempt to determine the filepath for this distribution's resource.
-      $dist_file_path = Referencer::hostify($metadata->{'$.data.downloadURL'} ?? '');
+      $dist_file_path = ResourceReference::hostify($metadata->{'$.data.downloadURL'} ?? '');
       // If the current distribution does is not the excluded distribution, and
       // it's resource file path matches the supplied file path...
       if ($metadata->{'$.identifier'} !== $dist_id && !empty($dist_file_path) && $dist_file_path === $file_path) {

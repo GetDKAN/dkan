@@ -15,6 +15,7 @@ use Drupal\metastore\ResourceMapper;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
 use Drupal\common\EventDispatcherTrait;
+use Drupal\metastore\Plugin\MetastoreReferenceType\ResourceReference;
 
 /**
  * Resource localizer.
@@ -85,7 +86,7 @@ class ResourceLocalizer {
     $dir = "file://" . $this->drupalFiles->getPublicFilesDirectory();
     $localFileDrupalUri = str_replace($dir, "public://", $localFilePath);
     $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
-    $localUrl = Referencer::hostify($localUrl);
+    $localUrl = ResourceReference::hostify($localUrl);
 
     $new = $resource->createNewPerspective(self::LOCAL_FILE_PERSPECTIVE, $localFilePath);
 
