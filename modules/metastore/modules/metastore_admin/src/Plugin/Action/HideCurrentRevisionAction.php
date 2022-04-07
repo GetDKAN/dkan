@@ -30,6 +30,8 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
 
   /**
    * Private.
+   *
+   * @var entity
    */
   private $entity = NULL;
 
@@ -47,7 +49,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    *   Logger factory service.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger.
-   * @param AccountInterface $currentUser
+   * @param \Drupal\Core\Session\AccountInterface $currentUser
    *   Current user.
    * @param \Drupal\Component\Datetime\TimeInterface $timeInterface
    *   Time.
