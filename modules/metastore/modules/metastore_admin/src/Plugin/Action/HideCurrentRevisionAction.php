@@ -3,10 +3,10 @@
 namespace Drupal\metastore_admin\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;
-use Drupal\Core\Plugin\PluginFormInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\metastore_admin\MetastoreAdminModeration;
+use Drupal\node\NodeInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * An example action covering most of the possible options.
@@ -20,10 +20,12 @@ use Drupal\metastore_admin\MetastoreAdminModeration;
  *   type = "node",
  *   confirm = TRUE,
  * )
+ *
+ * @codeCoverageIgnore
  */
-class HideCurrentRevisionAction extends ActionBase/*extends ViewsBulkOperationsActionBase implements ViewsBulkOperationsPreconfigurationInterface, PluginFormInterface*/
-{
+class HideCurrentRevisionAction extends ActionBase {
 
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -35,7 +37,7 @@ class HideCurrentRevisionAction extends ActionBase/*extends ViewsBulkOperationsA
     if ($user->hasPermission('moderated content bulk archive')) {
       \Drupal::logger('moderated_content_bulk_publish')->notice("Executing hide latest revision of " . $entity->label());
 
-      $adminModeration = new MetastoreAdminModeration($entity, \Drupal\node\NodeInterface::PUBLISHED);
+      $adminModeration = new MetastoreAdminModeration($entity, NodeInterface::PUBLISHED);
       $entity = $adminModeration->hide();
 
       // Check if published.
@@ -48,7 +50,7 @@ class HideCurrentRevisionAction extends ActionBase/*extends ViewsBulkOperationsA
       return sprintf('Example action (configuration: %s)', print_r($this->configuration, TRUE));
     }
     else {
-      \Drupal::messenger()->addWarning(t("You don't have access to execute this operation!"));
+      \Drupal::messenger()->addWarning($this->t("You don't have access to execute this operation!"));
       return;
     }
   }
@@ -56,16 +58,14 @@ class HideCurrentRevisionAction extends ActionBase/*extends ViewsBulkOperationsA
   /**
    * {@inheritdoc}
    */
-  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE)
-  {
+  public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     if ($object->getEntityType() === 'node') {
       $access = $object->access('update', $account, TRUE)
         ->andIf($object->status->access('edit', $account, TRUE));
       return $return_as_object ? $access : $access->isAllowed();
     }
 
-    // Other entity types may have different
-    // access methods and properties.
     return TRUE;
   }
+
 }
