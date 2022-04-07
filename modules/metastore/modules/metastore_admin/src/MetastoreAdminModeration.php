@@ -12,13 +12,6 @@ use Drupal\Core\Entity\RevisionLogInterface;
 class MetastoreAdminModeration {
 
   /**
-   * Set this to true to send to $testEmailList.
-   *
-   * @var testMode
-   */
-  private $testMode = FALSE;
-
-  /**
    * Entity.
    *
    * @var entity
