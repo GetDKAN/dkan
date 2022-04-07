@@ -2,6 +2,7 @@
 
 namespace Drupal\metastore_admin\Plugin\Action;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
@@ -48,6 +49,8 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    *   Messenger.
    * @param AccountInterface $currentUser
    *   Current user.
+   * @param \Drupal\Component\Datetime\TimeInterface $timeInterface
+   *   Time.
    */
   public function __construct(
     array $config,
@@ -55,12 +58,15 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     $pluginDefinition,
     LoggerChannelFactoryInterface $loggerFactory,
     MessengerInterface $messenger,
-    AccountInterface $currentUser
+    AccountInterface $currentUser,
+    TimeInterface $timeInterface
   ) {
     parent::__construct($config, $pluginId, $pluginDefinition);
     $this->loggerFactory = $loggerFactory->get('metastore_admin');
     $this->messenger = $messenger;
     $this->currentUser = $currentUser;
+    $this->timeInterface = $timeInterface;
+
   }
 
   /**
@@ -86,7 +92,8 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     $loggerFactory = $container->get('logger.factory');
     $messenger = $container->get('messenger');
     $currentUser = $container->get('current_user');
-    return new static($config, $pluginId, $pluginDefinition, $loggerFactory, $messenger, $currentUser);
+    $timeInterface = $container->get('datetime.time');
+    return new static($config, $pluginId, $pluginDefinition, $loggerFactory, $messenger, $currentUser, $timeInterface);
   }
 
   /**
@@ -134,7 +141,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
 
     $entity->set('moderation_state', 'hidden');
     if ($entity instanceof RevisionLogInterface) {
-      //$entity->setRevisionCreationTime(\Drupal::time()->getRequestTime());
+      $entity->setRevisionCreationTime($this->timeInterface->getRequestTime());
       $msg = 'Bulk operation create hidden revision';
       $entity->setRevisionLogMessage($msg);
       $current_uid = $this->currentUser->id();
