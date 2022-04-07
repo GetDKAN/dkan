@@ -8,6 +8,8 @@ use Drupal\Core\Entity\RevisionLogInterface;
  * A Helper Class to assist with the "hide current revision" bulk action.
  *
  * Based on the moderated_content_bulk_publish module.
+ *
+ * @codeCoverageIgnore
  */
 class MetastoreAdminModeration {
 
