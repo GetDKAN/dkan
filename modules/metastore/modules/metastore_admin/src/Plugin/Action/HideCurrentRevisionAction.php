@@ -12,14 +12,14 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Psr\Container\ContainerInterface;
 
 /**
- * An example action covering most of the possible options.
+ * Provides a hide action to exclude an entity from search results.
  *
  * If type is left empty, action will be selectable for all
  * entity types.
  *
  * @Action(
  *   id = "hide_current_revision_action",
- *   label = "Hide Current Revision",
+ *   label =  @Translation("Hide Current Revision"),
  *   type = "node",
  *   confirm = TRUE,
  * )
