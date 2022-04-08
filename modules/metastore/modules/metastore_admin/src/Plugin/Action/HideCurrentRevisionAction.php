@@ -23,8 +23,6 @@ use Psr\Container\ContainerInterface;
  *   type = "node",
  *   confirm = TRUE,
  * )
- *
- * @codeCoverageIgnore
  */
 class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPluginInterface {
 
