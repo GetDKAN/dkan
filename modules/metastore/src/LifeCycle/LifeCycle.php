@@ -3,8 +3,6 @@
 namespace Drupal\metastore\LifeCycle;
 
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\Resource;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\metastore\MetastoreItemInterface;
@@ -181,60 +179,12 @@ class LifeCycle {
   }
 
   /**
-   * Get a download URL.
-   *
-   * @param string $resourceIdentifier
-   *   Identifier for resource.
-   *
-   * @return array
-   *   Array of reference and original.
-   */
-  private function retrieveDownloadUrlFromResourceMapper(string $resourceIdentifier) {
-    $reference = [];
-    $original = NULL;
-
-    $info = Resource::parseUniqueIdentifier($resourceIdentifier);
-
-    // Load resource object.
-    $sourceResource = $this->resourceMapper->get($info['identifier'], Resource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
-
-    if (!$sourceResource) {
-      return [$reference, $original];
-    }
-
-    $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = resource_mapper_display();
-    $resource = $sourceResource;
-
-    if (
-      $perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE &&
-      $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
-    ) {
-      $resource = $new;
-      $reference[] = $this->createResourceReference($resource);
-    }
-    $original = $resource->getFilePath();
-
-    return [$reference, $original];
-  }
-
-  /**
-   * Private.
-   */
-  private function createResourceReference(Resource $resource): object {
-    return (object) [
-      "identifier" => $resource->getUniqueIdentifier(),
-      "data" => $resource,
-    ];
-  }
-
-  /**
    * Private.
    */
   protected function datasetPresave(MetastoreItemInterface $data) {
     $metadata = $data->getMetaData();
 
-    $title = isset($metadata->title) ? $metadata->title : $metadata->name;
+    $title = $metadata->title ?: $metadata->name;
     $data->setTitle($title);
 
     // If there is no uuid add one.
