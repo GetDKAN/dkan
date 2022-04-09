@@ -6,6 +6,7 @@ use Contracts\FactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore\Reference\ReferenceTypeBase;
+use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Service;
 use Drupal\metastore\Service\Uuid5;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -75,10 +76,13 @@ class ItemReference extends ReferenceTypeBase {
    * {@inheritdoc}
    */
   public function reference($value): string {
+    // First see if there is an existing item that matches the value.
     $identifier = $this->checkExistingReference($value);
-    if (!$identifier) {
+    // In some cases, we always want to create and save a new referenced item.
+    if (!$identifier || $this->newRevision()) {
       $identifier = $this->createPropertyReference($value);
     }
+
     if ($identifier) {
       return $identifier;
     }
@@ -90,6 +94,21 @@ class ItemReference extends ReferenceTypeBase {
       ]
     );
     return NULL;
+  }
+
+  /**
+   * Should a new revision of this item be saved, even if it exists already?
+   *
+   * @return bool
+   *   True if a new revision should be created regardless.
+   *
+   * @todo Refactor; this logic should be absracted and not distribution/resource-specific.
+   */
+  protected function newRevision() {
+    if ($this->property() == 'distribution' && ResourceMapper::newRevision()) {
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**
@@ -114,7 +133,7 @@ class ItemReference extends ReferenceTypeBase {
           '@identifier' => var_export($identifier, TRUE),
         ]
       );
-  
+
       return NULL;
     }
     $metadata = json_decode($value);

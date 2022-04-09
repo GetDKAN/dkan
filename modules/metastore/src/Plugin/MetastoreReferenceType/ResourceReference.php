@@ -51,6 +51,10 @@ class ResourceReference extends ReferenceTypeBase {
    *   Logger factory service.
    * @param \Drupal\metastore\ResourceMapper $resourceMapper
    *   Metastore storage factory.
+   * @param \Drupal\Core\File\FileSystemInterface $fileSystem
+   *   Core filesystem service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Entity type manager service.
    */
   public function __construct(
     array $config,
@@ -125,7 +129,14 @@ class ResourceReference extends ReferenceTypeBase {
   }
 
   /**
-   * Private.
+   * Build object with identifier/data structure for reference.
+   *
+   * @param Drupal\common\Resource $resource
+   *   A DKAN resource object.
+   *
+   * @return object
+   *   The same resource object, wrapped in a stdClass object with an identifier
+   *   property.
    */
   private function createResourceReference(Resource $resource): object {
     return (object) [
