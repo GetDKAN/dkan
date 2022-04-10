@@ -1,10 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\DateFormat;
-
-use Drupal\datastore\DataDictionary\GrammarInterface;
-use Drupal\datastore\DataDictionary\ParserInterface;
-use Drupal\datastore\DataDictionary\UnknownTokenException;
+namespace PDLT;
 
 /**
  * Date format parser.
@@ -14,7 +10,7 @@ class Parser implements ParserInterface {
   /**
    * Creates a date format parser.
    *
-   * @param \Drupal\datastore\DataDictionary\GrammarInterface $grammar
+   * @param \PDLT\GrammarInterface $grammar
    *   Grammar for date format being parsed.
    */
   public function __construct(GrammarInterface $grammar) {
@@ -32,7 +28,7 @@ class Parser implements ParserInterface {
    * @param string $input_format
    *   Date format string to lex.
    *
-   * @return \Drupal\datastore\DataDictionary\FrictionlessDateFormatConverter\TokenInterface[]
+   * @return \PDLT\TokenInterface[]
    *   AST token list.
    */
   protected function lex(string $input_format): array {

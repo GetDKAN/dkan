@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\Tests\datastore\Unit\DataDictionary\DateFormat;
+namespace PDLT\tests;
 
-use Drupal\datastore\DataDictionary\DateFormat\Converter;
-use Drupal\datastore\DataDictionary\DateFormat\Parser;
-use Drupal\datastore\DataDictionary\DateFormat\Compiler;
-use Drupal\datastore\DataDictionary\DateFormat\FrictionlessGrammar;
-use Drupal\datastore\DataDictionary\DateFormat\MySQLCompilationMap;
+use PDLT\Converter;
+use PDLT\Parser;
+use PDLT\Compiler;
+use PDLT\Grammar\Frictionless as FrictionlessGrammar;
+use PDLT\CompilationMap\MySQL as MySQLCompilationMap;
 
 use PHPUnit\Framework\TestCase;
 

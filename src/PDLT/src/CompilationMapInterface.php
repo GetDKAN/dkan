@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary;
+namespace PDLT;
 
 /**
  * Simple single dimensional map of token literals to output token strings.

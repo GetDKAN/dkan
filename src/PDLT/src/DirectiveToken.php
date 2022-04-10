@@ -1,8 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\DateFormat;
-
-use Drupal\datastore\DataDictionary\TokenInterface;
+namespace PDLT;
 
 /**
  * Frictionless/Strptime date format directive token.

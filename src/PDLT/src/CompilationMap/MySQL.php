@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\DateFormat;
+namespace PDLT\CompilationMap;
 
-use Drupal\datastore\DataDictionary\CompilationMapInterface;
+use PDLT\CompilationMapInterface;
 
 /**
  * MySQL compilation map.
@@ -59,7 +59,7 @@ use Drupal\datastore\DataDictionary\CompilationMapInterface;
  * | Year for week where Sunday is first day    |                  | %X        |
  * | Year for week where Monday is first day    |                  | %x        |
  */
-class MySQLCompilationMap extends \ArrayObject implements CompilationMapInterface {
+class MySQL extends \ArrayObject implements CompilationMapInterface {
 
   /**
    * {@inheritdoc}

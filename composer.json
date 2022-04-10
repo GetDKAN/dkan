@@ -49,7 +49,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Social\\": "src"
+            "PDLT\\": "src/PDLT"
         }
     },
     "authors": [

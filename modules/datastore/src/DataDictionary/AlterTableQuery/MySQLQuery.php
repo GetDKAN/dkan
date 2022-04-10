@@ -6,7 +6,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\StatementInterface;
 
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
-use Drupal\datastore\DataDictionary\Exception\IncompatibleTypeException;
+use Drupal\datastore\DataDictionary\IncompatibleTypeException;
 use Drupal\datastore\DataDictionary\DateFormatConverterInterface;
 
 /**
@@ -141,7 +141,7 @@ class MySQLQuery implements AlterTableQueryInterface {
    * @param string $table
    *   Table name.
    *
-   * @throws Drupal\datastore\DataDictionary\Exception\IncompatibleTypeException
+   * @throws Drupal\datastore\DataDictionary\IncompatibleTypeException
    *   When incompatible data is found in the table for the specified type.
    */
   protected function buildTypeArgs(string $type, string $column, string $table): array {

@@ -87,24 +87,24 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
 
-  dkan.datastore.date_format.converter.frictionless_to_mysql:
-    class: \Drupal\datastore\DataDictionary\DateFormat\Converter
+  pdlt.converter.frictionless_to_mysql:
+    class: \PDLT\Converter
     arguments:
-      - '@dkan.datastore.date_format.parser.frictionless'
-      - '@dkan.datastore.date_format.compiler.mysql'
+      - '@pdlt.parser.frictionless'
+      - '@pdlt.compiler.mysql'
 
-  dkan.datastore.date_format.grammar.frictionless:
-    class: \Drupal\datastore\DataDictionary\DateFormat\FrictionlessGrammar
+  pdlt.grammar.frictionless:
+    class: \PDLT\Grammar\Frictionless
 
-  dkan.datastore.date_format.parser.frictionless:
-    class: \Drupal\datastore\DataDictionary\DateFormat\Parser
+  pdlt.parser.frictionless:
+    class: \PDLT\Parser
     arguments:
-      - '@dkan.datastore.date_format.grammar.frictionless'
+      - '@pdlt.grammar.frictionless'
 
-  dkan.datastore.date_format.compilation_map.mysql:
-    class: \Drupal\datastore\DataDictionary\DateFormat\MySQLCompilationMap
+  pdlt.compilation_map.mysql:
+    class: \PDLT\CompilationMap\MySQL
 
-  dkan.datastore.date_format.compiler.mysql:
-    class: \Drupal\datastore\DataDictionary\DateFormat\Compiler
+  pdlt.compiler.mysql:
+    class: \PDLT\Compiler
     arguments:
-      - '@dkan.datastore.date_format.compilation_map.mysql'
+      - '@pdlt.compilation_map.mysql'

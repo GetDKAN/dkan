@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary;
+namespace PDLT;
 
 /**
  * Exception thrown when an unsupported Frictionless date format token is found.

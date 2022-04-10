@@ -1,8 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\DateFormat;
-
-use Drupal\datastore\DataDictionary\TokenInterface;
+namespace PDLT;
 
 /**
  * Lexical token used to represent a string literal.

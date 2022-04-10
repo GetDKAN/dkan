@@ -1,10 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\DateFormat;
-
-use Drupal\datastore\DataDictionary\CompilerInterface;
-use Drupal\datastore\DataDictionary\DateFormatConverterInterface;
-use Drupal\datastore\DataDictionary\ParserInterface;
+namespace PDLT;
 
 /**
  * Converts between date formats.
@@ -16,7 +12,7 @@ use Drupal\datastore\DataDictionary\ParserInterface;
  * The internal language used by ASTs which all parsers are supposed to convert
  * input format's to is the Frictionless date format.
  */
-class Converter implements DateFormatConverterInterface {
+class Converter implements ConverterInterface {
 
   /**
    * Build date format converter using the given parser and compiler.

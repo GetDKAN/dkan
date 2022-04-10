@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary;
+namespace PDLT;
 
 /**
  * Converts date formats using the supplied parser and compiler services.
  */
-interface DateFormatConverterInterface {
+interface ConverterInterface {
 
   /**
    * Convert the supplied date format string.

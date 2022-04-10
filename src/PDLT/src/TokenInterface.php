@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary;
+namespace PDLT;
 
 /**
  * Lexical token.

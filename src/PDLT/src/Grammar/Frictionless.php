@@ -1,8 +1,8 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\DateFormat;
+namespace PDLT\Grammar;
 
-use Drupal\datastore\DataDictionary\GrammarInterface;
+use PDLT\GrammarInterface;
 
 /**
  * Frictionless date format grammar.
@@ -43,7 +43,7 @@ use Drupal\datastore\DataDictionary\GrammarInterface;
  * | UTC offset ±HHMM[SS[.ffffff]] (e.g. +0000) | %z               |
  * | Time zone name (e.g. UTC)                  | %Z               |
  */
-class FrictionlessGrammar extends \ArrayObject implements GrammarInterface {
+class Frictionless extends \ArrayObject implements GrammarInterface {
 
   /**
    * {@inheritdoc}

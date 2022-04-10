@@ -1,11 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\DateFormat;
-
-use Drupal\datastore\DataDictionary\CompilationMapInterface;
-use Drupal\datastore\DataDictionary\CompilerInterface;
-use Drupal\datastore\DataDictionary\TokenInterface;
-use Drupal\datastore\DataDictionary\UnsupportedTokenException;
+namespace PDLT;
 
 /**
  * Date format compiler.
@@ -15,14 +10,14 @@ class Compiler implements CompilerInterface {
   /**
    * Simple single dimensional map of token literals to output token strings.
    *
-   * @var \Drupal\datastore\DataDictionary\CompilationMapInterface
+   * @var \PDLT\CompilationMapInterface
    */
   protected CompilationMapInterface $compilationMap;
 
   /**
    * Builds a date format compiler.
    *
-   * @param \Drupal\datastore\DataDictionary\CompilationMapInterface $compilation_map
+   * @param \PDLT\CompilationMapInterface $compilation_map
    *   Date format compilation map.
    */
   public function __construct(CompilationMapInterface $compilation_map) {
@@ -32,13 +27,13 @@ class Compiler implements CompilerInterface {
   /**
    * Convert the supplied token to it's string equivalent using compilation map.
    *
-   * @param \Drupal\datastore\DataDictionary\TokenInterface $token
+   * @param \PDLT\TokenInterface $token
    *   Lexical token.
    *
    * @return string
    *   Compiled token string.
    *
-   * @throws \Drupal\datastore\DataDictionary\UnsupportedTokenException
+   * @throws \PDLT\UnsupportedTokenException
    *   When a token of a type not supported by this compiler is encountered.
    */
   protected function compileToken(TokenInterface $token): string {
@@ -56,13 +51,13 @@ class Compiler implements CompilerInterface {
   /**
    * Compile a directive token to it's string equivalent.
    *
-   * @param \Drupal\datastore\DataDictionary\DateFormat\DirectiveToken $token
+   * @param \PDLT\DirectiveToken $token
    *   Directive token.
    *
    * @return string
    *   Compiled token string.
    *
-   * @throws \Drupal\datastore\DataDictionary\UnsupportedTokenException
+   * @throws \PDLT\UnsupportedTokenException
    *   When the supplied token is not supported by the this compiler's
    *   compilation map.
    */
@@ -78,7 +73,7 @@ class Compiler implements CompilerInterface {
   /**
    * Compile a literal token to a string.
    *
-   * @param \Drupal\datastore\DataDictionary\DateFormat\LiteralToken $token
+   * @param \PDLT\LiteralToken $token
    *   Literal token.
    *
    * @return string
