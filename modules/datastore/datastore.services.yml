@@ -43,7 +43,7 @@ services:
     class: \Drupal\datastore\DataDictionary\AlterTableQuery\Factory
     arguments:
       - '@dkan.datastore.database_connection_factory'
-      - '@dkan.datastore.date_format.converter.frictionless_to_mysql'
+      - '@pdlt.converter.frictionless_to_mysql'
       - '\Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery'
 
   dkan.datastore.database:

@@ -8,8 +8,9 @@ use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQuery\Factory;
 use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
-use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface;
+
 use MockChain\Chain;
+use PDLT\ConverterInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,7 +28,7 @@ class FactoryTest extends TestCase {
       ->addd('getConnection', Connection::class)
       ->getMock();
     $converter = (new Chain($this))
-      ->add(FrictionlessDateFormatConverterInterface::class)
+      ->add(ConverterInterface::class)
       ->getMock();
 
     $factory = new Factory($connection, $converter, MySQLQuery::class);

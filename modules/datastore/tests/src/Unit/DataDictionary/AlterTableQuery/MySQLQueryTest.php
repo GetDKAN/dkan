@@ -5,7 +5,7 @@ namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\StatementInterface;
 use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
-use Drupal\datastore\DataDictionary\FrictionlessDateFormatConverterInterface;
+use PDLT\ConverterInterface;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
 
@@ -24,13 +24,13 @@ class MySQLQueryTest extends TestCase {
       ->add(StatementInterface::class, 'fetchCol', ['foo', 'bar', 'baz'])
       ->getMock();
     $converter = (new Chain($this))
-      ->add(FrictionlessDateFormatConverterInterface::class)
+      ->add(ConverterInterface::class)
       ->getMock();
     $table = 'datastore_' . uniqid();
     $dictionaryFields = [
-      ['name' => 'foo', 'type' => 'string', 'format' => 'string'],
-      ['name' => 'bar', 'type' => 'number', 'format' => 'string'],
-      ['name' => 'baz', 'type' => 'date', 'format' => 'string'],
+      ['name' => 'foo', 'type' => 'string', 'format' => 'default'],
+      ['name' => 'bar', 'type' => 'number', 'format' => 'default'],
+      ['name' => 'baz', 'type' => 'date', 'format' => 'default'],
     ];
 
     $mySqlQuery = new MySQLQuery($connection, $converter, $table, $dictionaryFields);

@@ -30,7 +30,8 @@
         "npm-asset/select2": "^4.0",
         "oomphinc/composer-installers-extender": "^2.0",
         "ramsey/uuid" : "^3.8.0",
-        "stolt/json-merge-patch": "^1.0"
+        "stolt/json-merge-patch": "^1.0",
+        "getdkan/pdlt": "0.1.0-alpha"
     },
     "require-dev": {
         "getdkan/mock-chain": "^1.3.0",
@@ -45,11 +46,6 @@
         "asset": {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "PDLT\\": "src/PDLT"
         }
     },
     "authors": [
