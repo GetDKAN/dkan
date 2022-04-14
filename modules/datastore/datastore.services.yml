@@ -43,7 +43,7 @@ services:
     class: \Drupal\datastore\DataDictionary\AlterTableQuery\Factory
     arguments:
       - '@dkan.datastore.database_connection_factory'
-      - '@pdlt.converter.frictionless_to_mysql'
+      - '@pdlt.converter.strptime_to_mysql'
       - '\Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery'
 
   dkan.datastore.database:
@@ -87,19 +87,19 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
 
-  pdlt.converter.frictionless_to_mysql:
+  pdlt.converter.strptime_to_mysql:
     class: \PDLT\Converter
     arguments:
-      - '@pdlt.parser.frictionless'
+      - '@pdlt.parser.strptime'
       - '@pdlt.compiler.mysql'
 
   pdlt.grammar.strptime:
     class: \PDLT\Grammar\Strptime
 
-  pdlt.parser.frictionless:
+  pdlt.parser.strptime:
     class: \PDLT\Parser
     arguments:
-      - '@pdlt.grammar.frictionless'
+      - '@pdlt.grammar.strptime'
 
   pdlt.compilation_map.mysql:
     class: \PDLT\CompilationMap\MySQL
