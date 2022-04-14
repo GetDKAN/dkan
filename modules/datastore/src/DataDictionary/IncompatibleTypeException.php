@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\Exception;
+namespace Drupal\datastore\DataDictionary;
 
 /**
  * Thrown when a type is specified for a table with incompatible values.

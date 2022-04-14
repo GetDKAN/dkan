@@ -7,6 +7,7 @@ use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\KeyValueStore\MemoryStorage;
 use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
+use Drupal\datastore\DataDictionary\IncompatibleTypeException;
 use Drupal\Tests\datastore\Unit\DataDictionary\UpdateQueryMock;
 
 use MockChain\Chain;
@@ -20,44 +21,61 @@ use PHPUnit\Framework\TestCase;
 class MySQLQueryTest extends TestCase {
 
   /**
-   * Test via main entrypoint, applyDataTypes().
+   * Prepare for tests.
    */
-  public function testApplyDataTypes() {
+  public function setUp(): void {
     // Build container with 'state' service for testing.
-    $containerOptions = (new Options())
+    $container_options = (new Options())
       ->add('state', (new MemoryStorage('test_storage')))
       ->index(0);
     $container = (new Chain($this))
-      ->add(Container::class, 'get', $containerOptions)
+      ->add(Container::class, 'get', $container_options)
       ->getMock();
     \Drupal::setContainer($container);
+  }
 
-    // Build MySQLQuery arguments.
-    $connectionChain = (new Chain($this))
+  /**
+   * Build MySQLQuery arguments.
+   */
+  public function buildConnectionChain(): Chain {
+    return (new Chain($this))
       ->add(Connection::class, 'getDriverClass', UpdateQueryMock::class)
       ->add(Connection::class, 'prepareStatement', StatementInterface::class, 'prepare')
       ->add(Connection::class, 'query', StatementInterface::class)
       ->add(StatementInterface::class, 'fetchCol', ['foo', 'bar', 'baz'])
       ->add(StatementInterface::class, 'execute', TRUE);
-    $connection = $connectionChain->getMock();
+  }
 
+  /**
+   * Build MySQLQuery object for testing.
+   */
+  public function buildMySQLQuery(Connection $connection, ?string $table = NULL, ?array $dictionary_fields = NULL): MySQLQuery {
     $converter = (new Chain($this))
       ->add(ConverterInterface::class)
       ->getMock();
 
-    $table = 'datastore_' . uniqid();
-    $dictionaryFields = [
+    $table ??= 'datastore_' . uniqid();
+    $dictionary_fields ??= [
       ['name' => 'foo', 'type' => 'string', 'format' => 'default'],
       ['name' => 'bar', 'type' => 'number', 'format' => 'default'],
       ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d'],
     ];
 
-    // Build MySQLQuery object for testing.
-    $mySqlQuery = new MySQLQuery($connection, $converter, $table, $dictionaryFields);
+    return new MySQLQuery($connection, $converter, $table, $dictionary_fields);
+  }
+
+  /**
+   * Test via main entrypoint, applyDataTypes().
+   */
+  public function testApplyDataTypes(): void {
+    $connection_chain = $this->buildConnectionChain();
+    $table = 'datastore_' . uniqid();
+    $mysql_query = $this->buildMySQLQuery($connection_chain->getMock(), $table);
+
     // Extract return value and generate queries for validation.
-    $return = $mySqlQuery->applyDataTypes();
+    $return = $mysql_query->applyDataTypes();
     $update_query = \Drupal::state()->get('update_query');
-    $query = $connectionChain->getStoredInput('prepare')[0];
+    $query = $connection_chain->getStoredInput('prepare')[0];
 
     // Validate return value and generated queries.
     $this->assertNull($return);
@@ -69,6 +87,21 @@ class MySQLQueryTest extends TestCase {
       ],
     ], $update_query);
     $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT, MODIFY COLUMN bar DECIMAL(0, ), MODIFY COLUMN baz DATE;", $query);
+  }
+
+
+  /**
+   * Ensure alter fails when attempting to apply decimal type to large numbers.
+   */
+  public function testApplyDataTypesWithTooLargeDecimal(): void {
+    $connection_chain = $this->buildConnectionChain()
+      ->add(StatementInterface::class, 'fetchField', 100);
+    $column = 'bar';
+    $mysql_query = $this->buildMySQLQuery($connection_chain->getMock(), NULL, [['name' => $column, 'type' => 'number', 'format' => 'default']]);
+
+    $this->expectException(IncompatibleTypeException::class);
+    $this->expectExceptionMessage("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
+    $mysql_query->applyDataTypes();
   }
 
 }
