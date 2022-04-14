@@ -21,7 +21,7 @@ class Factory implements AlterTableQueryFactoryInterface {
   protected DatabaseConnectionFactoryInterface $databaseConnectionFactory;
 
   /**
-   * Frictionless date format converter.
+   * Internal to SQL date format converter.
    *
    * @var \PDLT\ConverterInterface
    */

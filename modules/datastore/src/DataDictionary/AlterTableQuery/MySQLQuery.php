@@ -35,7 +35,7 @@ class MySQLQuery implements AlterTableQueryInterface {
    * @param \Drupal\Core\Database\Connection $connection
    *   Database connection.
    * @param \PDLT\ConverterInterface $date_format_converter
-   *   Frictionless date format converter.
+   *   Strptime-to-MySQL date format converter.
    * @param string $datastore_table
    *   Datastore table.
    * @param array $dictionary_fields
@@ -97,7 +97,7 @@ class MySQLQuery implements AlterTableQueryInterface {
   }
 
   /**
-   * Get MySQL data type equivalent of the given frictionless data type.
+   * Get MySQL data type equivalent of the given Frictionless data type.
    *
    * @param string $frictionless_type
    *   Frictionless data type.

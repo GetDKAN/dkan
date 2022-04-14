@@ -93,8 +93,8 @@ services:
       - '@pdlt.parser.frictionless'
       - '@pdlt.compiler.mysql'
 
-  pdlt.grammar.frictionless:
-    class: \PDLT\Grammar\Frictionless
+  pdlt.grammar.strptime:
+    class: \PDLT\Grammar\Strptime
 
   pdlt.parser.frictionless:
     class: \PDLT\Parser
