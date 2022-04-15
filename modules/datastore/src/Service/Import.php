@@ -138,14 +138,16 @@ class Import {
     }
     // If the import job finished successfully...
     elseif ($result->getStatus() === Result::DONE) {
-      $dictionary_discovery = \Drupal::service('dkan.metastore.data_dictionary_discovery');
-      $dict_id = $dictionary_discovery->dictionaryIdFromResource($this->resourceId, $this->resourceVersion);
       // If a dictionary ID was discovered for this resource.
       if (isset($dict_id)) {
         // Queue the imported resource for data-dictionary enforcement.
         $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
         $dictionary_enforcer_queue->createItem((object) [
           'datastore_table' => $this->getStorage()->getTableName(),
+          'resource' => (object) [
+            'id' => $this->resourceId,
+            'version' => $this->resourceVersion,
+          ],
           'dictionary_identifier' => $dict_id,
         ]);
       }

@@ -8,6 +8,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
 
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\metastore\Service as MetastoreService;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -40,6 +41,13 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
   protected $alterTableQueryFactory;
 
   /**
+   * Data dictionary discovery service.
+   *
+   * @var \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface
+   */
+  protected $dataDictionaryDiscovery;
+
+  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
@@ -61,7 +69,8 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
     $plugin_definition,
     AlterTableQueryFactoryInterface $alter_table_query_factory,
     LoggerChannelFactoryInterface $logger_factory,
-    MetastoreService $metastore
+    MetastoreService $metastore,
+    DataDictionaryDiscoveryInterface $data_dictionary_discovery
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->logger = $logger_factory->get('datastore');
@@ -71,6 +80,7 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
     // duration of the time the queue is being processed.
     $timeout = (int) $plugin_definition['cron']['lease_time'];
     $this->alterTableQueryFactory = $alter_table_query_factory->setConnectionTimeout($timeout);
+    $this->dataDictionaryDiscovery = $data_dictionary_discovery;
   }
 
   /**
@@ -83,7 +93,8 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
       $plugin_definition,
       $container->get('dkan.datastore.data_dictionary.alter_table_query_factory.mysql'),
       $container->get('logger.factory'),
-      $container->get('dkan.metastore.service')
+      $container->get('dkan.metastore.service'),
+      $container->get('dkan.metastore.data_dictionary_discovery')
     );
   }
 
@@ -91,7 +102,8 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    * {@inheritdoc}
    */
   public function processItem($data) {
-    $dictionary = $this->metastore->get('data-dictionary', $data->dictionary_identifier);
+    $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($data->resource->id, $data->resource->version);
+    $dictionary = $this->metastore->get('data-dictionary', $dict_id);
     $dictionary_fields = $dictionary->{'$.data.fields'};
 
     try {
@@ -103,7 +115,7 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
   }
 
   /**
-   * Apply data types in columns specified in `$dict` to `$dataset`.
+   * Apply data types in the given dictionary fields to the given datastore.
    *
    * @param array $dictionary_fields
    *   Data dictionary fields.
