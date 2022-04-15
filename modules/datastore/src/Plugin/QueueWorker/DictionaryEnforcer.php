@@ -105,6 +105,9 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    */
   public function processItem($data) {
     $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($data->resource->id, $data->resource->version);
+    if (!isset($dict_id)) {
+      throw new \UnexpectedValueException(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $data->resource->id, $data->resource->version));
+    }
     $dictionary = $this->metastore->get('data-dictionary', $dict_id);
     $dictionary_fields = $dictionary->{'$.data.fields'};
 

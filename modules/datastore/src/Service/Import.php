@@ -12,6 +12,7 @@ use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Procrastinator\Result;
 
 /**
@@ -156,15 +157,18 @@ class Import {
     }
     // If the import job finished successfully...
     elseif ($result->getStatus() === Result::DONE) {
-      // Queue the imported resource for data-dictionary enforcement.
-      $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
-      $dictionary_enforcer_queue->createItem((object) [
-        'datastore_table' => $this->getStorage()->getTableName(),
-        'resource' => (object) [
-          'id' => $this->getResourceId(),
-          'version' => $this->getResourceVersion(),
-        ],
-      ]);
+      $dd_discovery = \Drupal::service('dkan.metastore.data_dictionary_discovery');
+      if ($dd_discovery->getDataDictionaryMode() !== DataDictionaryDiscoveryInterface::MODE_NONE) {
+        // Queue the imported resource for data-dictionary enforcement.
+        $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
+        $dictionary_enforcer_queue->createItem((object) [
+          'datastore_table' => $this->getStorage()->getTableName(),
+          'resource' => (object) [
+            'id' => $this->getResourceId(),
+            'version' => $this->getResourceVersion(),
+          ],
+        ]);
+      }
     }
   }
 

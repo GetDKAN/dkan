@@ -49,7 +49,7 @@ context('Admin dataset file upload', () => {
       cy.drupalLogin('testeditor', 'testeditor')
     })
 
-    it('can fill up the form with distribution and submit', () => {
+    it('can import dataset with remote file URL', () => {
       // run cron to import new dataset
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')
@@ -129,7 +129,7 @@ context('Admin dataset file upload', () => {
       cy.drupalLogin('testeditor', 'testeditor')
     })
 
-    it('can create and import dataset with uploaded file', () => {
+    it('can import dataset with uploaded file', () => {
       // run cron to import new dataset
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')

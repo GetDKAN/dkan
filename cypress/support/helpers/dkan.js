@@ -42,7 +42,6 @@ function getMetastoreSearchEndpoint () {
 export function verifyFileImportedSuccessfully (file_name) {
   cy.request(getDatastoreImportsEndpoint()).then(response => {
     expect(response.status).eql(200)
-    console.log(response.body)
     expect(response.body).to.satisfy(body => Object.values(body).find(item => item.fileName === file_name && item.importerStatus === 'done'))
   })
 }

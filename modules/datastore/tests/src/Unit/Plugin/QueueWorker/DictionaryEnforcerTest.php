@@ -47,9 +47,9 @@ class DictionaryEnforcerTest extends TestCase {
   }
 
   /**
-   * Test exception thrown in processItem().
+   * Test exception thrown in applyDataTypes() is caught and logged.
    */
-  public function testProcessItemException() {
+  public function testProcessItemApplyDataTypesException() {
 
     $errorMessage = "Something went wrong: " . uniqid();
 
@@ -70,6 +70,31 @@ class DictionaryEnforcerTest extends TestCase {
 
     // Assert the log contains the expected exception message thrown earlier.
     $this->assertEquals($errorMessage, $containerChain->getStoredInput('error')[0]);
+  }
+
+  /**
+   * Test exception thrown in applyDataTypes() is caught and logged.
+   */
+  public function testProcessItemUnableToFindDataDictionaryForResourceException() {
+    $resource_id = 'test';
+    $resource_version = 12345;
+
+    $containerChain = $this->getContainerChain()
+      ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', NULL);
+
+    $dictionaryEnforcer = DictionaryEnforcer::create(
+      $containerChain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
+    );
+
+    $this->expectException(\UnexpectedValueException::class);
+    $this->expectExceptionMessage(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
+    $dictionaryEnforcer->processItem((object) [
+      'datastore_table' => 'datastore_foobar',
+      'resource' => (object) [
+        'id' => $resource_id,
+        'version' => $resource_version,
+      ],
+    ]);
   }
 
   /**

@@ -9,7 +9,7 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStore;
@@ -88,7 +88,7 @@ class ImportTest extends TestCase {
   }
 
   /**
-   * Test a dictionary enforcer queue job is created when on successful import.
+   * Test a dictionary enforcer queue job is created on success when enabled.
    */
   public function testDictEnforcerQueuedOnSuccess() {
     $datastore_table = 'datastore_test';
@@ -96,7 +96,7 @@ class ImportTest extends TestCase {
     $resource_version = 12345;
 
     $options = (new Options())
-      ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
+      ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
       ->add('logger', LoggerChannelFactory::class)
       ->add('queue', QueueFactory::class)
       ->index(0);
@@ -105,7 +105,8 @@ class ImportTest extends TestCase {
       ->add(LoggerChannelFactory::class, 'get', LoggerChannel::class)
       ->add(LoggerChannel::class, 'error', NULL, 'errors')
       ->add(QueueFactory::class, 'get', QueueInterface::class)
-      ->add(QueueInterface::class, 'createItem', NULL, 'items');
+      ->add(QueueInterface::class, 'createItem', NULL, 'items')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE);
     $container = $containerChain->getMock();
     \Drupal::setContainer($container);
 
