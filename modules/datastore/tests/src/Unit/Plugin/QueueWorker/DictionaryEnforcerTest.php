@@ -8,6 +8,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\DictionaryEnforcer;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Service as MetastoreService;
 use MockChain\Chain;
 use MockChain\Options;
@@ -71,6 +72,7 @@ class DictionaryEnforcerTest extends TestCase {
 
     $options = (new Options())
       ->add('dkan.datastore.data_dictionary.alter_table_query_factory.mysql', AlterTableQueryFactoryInterface::class)
+      ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
       ->add('logger.factory', LoggerChannelFactoryInterface::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->index(0);

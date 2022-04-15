@@ -95,6 +95,24 @@ class Import {
   }
 
   /**
+   * Resource ID accessor.
+   *
+   * @var string
+   */
+  protected function getResourceId(): string {
+    return $this->resourceId;
+  }
+
+  /**
+   * Resource version accessor.
+   *
+   * @var int|null
+   */
+  protected function getResourceVersion(): ?int {
+    return $this->resourceVersion;
+  }
+
+  /**
    * Initialize resource.
    *
    * @param \Drupal\common\Resource $resource
@@ -138,19 +156,15 @@ class Import {
     }
     // If the import job finished successfully...
     elseif ($result->getStatus() === Result::DONE) {
-      // If a dictionary ID was discovered for this resource.
-      if (isset($dict_id)) {
-        // Queue the imported resource for data-dictionary enforcement.
-        $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
-        $dictionary_enforcer_queue->createItem((object) [
-          'datastore_table' => $this->getStorage()->getTableName(),
-          'resource' => (object) [
-            'id' => $this->resourceId,
-            'version' => $this->resourceVersion,
-          ],
-          'dictionary_identifier' => $dict_id,
-        ]);
-      }
+      // Queue the imported resource for data-dictionary enforcement.
+      $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
+      $dictionary_enforcer_queue->createItem((object) [
+        'datastore_table' => $this->getStorage()->getTableName(),
+        'resource' => (object) [
+          'id' => $this->getResourceId(),
+          'version' => $this->getResourceVersion(),
+        ]
+      ]);
     }
   }
 

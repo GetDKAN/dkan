@@ -92,7 +92,8 @@ class ImportTest extends TestCase {
    */
   public function testDictEnforcerQueuedOnSuccess() {
     $datastore_table = 'datastore_test';
-    $dictionary_identifier = 'abc';
+    $resource_id = 'abc';
+    $resource_version = 12345;
 
     $options = (new Options())
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
@@ -104,8 +105,7 @@ class ImportTest extends TestCase {
       ->add(LoggerChannelFactory::class, 'get', LoggerChannel::class)
       ->add(LoggerChannel::class, 'error', NULL, 'errors')
       ->add(QueueFactory::class, 'get', QueueInterface::class)
-      ->add(QueueInterface::class, 'createItem', NULL, 'items')
-      ->add(DataDictionaryDiscovery::class, 'dictionaryIdFromResource', $dictionary_identifier);
+      ->add(QueueInterface::class, 'createItem', NULL, 'items');
     $container = $containerChain->getMock();
     \Drupal::setContainer($container);
 
@@ -114,6 +114,8 @@ class ImportTest extends TestCase {
       ->add(Service::class, 'getResource', DatastoreResource::class)
       ->add(Service::class, 'getImporter', Importer::class)
       ->add(Service::class, 'getStorage', DatabaseTable::class)
+      ->add(Service::class, 'getResourceId', $resource_id)
+      ->add(Service::class, 'getResourceVersion', $resource_version)
       ->add(Importer::class, 'run', Result::class)
       ->add(Service::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE)
@@ -124,9 +126,12 @@ class ImportTest extends TestCase {
 
     // Validate that a dictionary enforcer queue item was created.
     $expected = [
-      (object)[
+      (object) [
         'datastore_table' => $datastore_table,
-        'dictionary_identifier' => $dictionary_identifier,
+        'resource' => (object) [
+          'id' => $resource_id,
+          'version' => $resource_version,
+        ],
       ],
     ];
     $this->assertEquals($expected, $containerChain->getStoredInput('items'));
