@@ -163,7 +163,7 @@ class Import {
         'resource' => (object) [
           'id' => $this->getResourceId(),
           'version' => $this->getResourceVersion(),
-        ]
+        ],
       ]);
     }
   }

@@ -10,6 +10,7 @@ use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\DictionaryEnforcer;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Service as MetastoreService;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -33,8 +34,11 @@ class DictionaryEnforcerTest extends TestCase {
      );
 
     $dictionaryEnforcer->processItem((object) [
-      'dictionary_identifier' => 'foobar',
       'datastore_table' => 'datastore_foobar',
+      'resource' => (object) [
+        'id' => 'id',
+        'version' => 12345,
+      ],
     ]);
 
     // Assert no exceptions are thrown in happy path.
@@ -57,8 +61,11 @@ class DictionaryEnforcerTest extends TestCase {
     );
 
     $dictionaryEnforcer->processItem((object) [
-      'dictionary_identifier' => 'foobar',
       'datastore_table' => 'datastore_foobar',
+      'resource' => (object) [
+        'id' => 'id',
+        'version' => 12345,
+      ],
     ]);
 
     // Assert the log contains the expected exception message thrown earlier.
@@ -75,6 +82,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
       ->add('logger.factory', LoggerChannelFactoryInterface::class)
       ->add('dkan.metastore.service', MetastoreService::class)
+      ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';
@@ -85,7 +93,8 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(LoggerChannelInterface::class, 'error', NULL, 'error')
       ->add(MetastoreService::class, 'get', new RootedJsonData($json))
       ->add(AlterTableQueryFactoryInterface::class, 'setConnectionTimeout', AlterTableQueryFactoryInterface::class)
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class);
+      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id');
   }
 
 }
