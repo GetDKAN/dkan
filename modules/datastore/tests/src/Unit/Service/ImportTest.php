@@ -20,7 +20,6 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 
 use Dkan\Datastore\Importer;
-use Dkan\Datastore\Resource as DatastoreResource;
 use MockChain\Options;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -84,7 +83,6 @@ class ImportTest extends TestCase {
     $result = $service->getResult();
     $this->assertTrue($result instanceof Result);
     $this->assertEmpty($result->getError());
-
   }
 
   /**
@@ -92,8 +90,7 @@ class ImportTest extends TestCase {
    */
   public function testDictEnforcerQueuedOnSuccess() {
     $datastore_table = 'datastore_test';
-    $resource_id = 'abc';
-    $resource_version = 12345;
+    $resource = new Resource('abc.txt', 'text/csv');
 
     $options = (new Options())
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
@@ -111,31 +108,19 @@ class ImportTest extends TestCase {
     \Drupal::setContainer($container);
 
     $importService = (new Chain($this))
-      ->add(Service::class, 'initializeResource')
-      ->add(Service::class, 'getResource', DatastoreResource::class)
+      ->add(Service::class, 'getResource', Resource::class)
       ->add(Service::class, 'getImporter', Importer::class)
       ->add(Service::class, 'getStorage', DatabaseTable::class)
-      ->add(Service::class, 'getResourceId', $resource_id)
-      ->add(Service::class, 'getResourceVersion', $resource_version)
+      ->add(Service::class, 'getResource',  $resource)
       ->add(Importer::class, 'run', Result::class)
       ->add(Service::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE)
-      ->add(DatastoreResource::class, 'getId', '123')
       ->add(DatabaseTable::class, 'getTableName', $datastore_table)
       ->getMock();
     $importService->import();
 
     // Validate that a dictionary enforcer queue item was created.
-    $expected = [
-      (object) [
-        'datastore_table' => $datastore_table,
-        'resource' => (object) [
-          'id' => $resource_id,
-          'version' => $resource_version,
-        ],
-      ],
-    ];
-    $this->assertEquals($expected, $containerChain->getStoredInput('items'));
+    $this->assertEquals([$resource], $containerChain->getStoredInput('items'));
   }
 
   /**
@@ -143,14 +128,11 @@ class ImportTest extends TestCase {
    */
   public function testLogImportError() {
     $importMock = (new Chain($this))
-      ->add(Service::class, 'initializeResource')
-      ->add(Service::class, 'getResource', DatastoreResource::class)
+      ->add(Service::class, 'getResource', new Resource('abc.txt', 'text/csv'))
       ->add(Service::class, 'getImporter', Importer::class)
       ->add(Importer::class, 'run', Result::class)
       ->add(Service::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::ERROR)
-      ->add(DatastoreResource::class, 'getId', 'abc')
-      ->add(DatastoreResource::class, 'getFilePath', 'some/path/file.csv')
       ->getMock();
 
     $containerChain = (new Chain($this))

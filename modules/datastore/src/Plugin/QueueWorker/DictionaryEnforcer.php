@@ -6,10 +6,12 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 
+use Drupal\common\Resource;
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\metastore\Service as MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
+use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -104,19 +106,51 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    * {@inheritdoc}
    */
   public function processItem($data) {
-    $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($data->resource->id, $data->resource->version);
-    if (!isset($dict_id)) {
-      throw new \UnexpectedValueException(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $data->resource->id, $data->resource->version));
-    }
-    $dictionary = $this->metastore->get('data-dictionary', $dict_id);
-    $dictionary_fields = $dictionary->{'$.data.fields'};
-
+    // Catch and log any exceptions thrown when processing the queue item to
+    // prevent the item from being requeued.
     try {
-      $this->applyDictionary($dictionary_fields, $data->datastore_table);
+      $this->doProcessItem($data);
     }
     catch (\Exception $e) {
       $this->logger->error($e->getMessage());
     }
+  }
+
+  /**
+   * Retrieve dictionary and datastore table details; apply dictionary to table.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   DKAN Resource.
+   */
+  public function doProcessItem(Resource $resource): void {
+    // Retrieve name of datastore table for resource.
+    $datastore_table = $resource->getTableName();
+    // Get data-dictionary for the given resource.
+    $dictionary = $this->getDataDictionaryForResource($resource);
+    // Extract data-dictionary field types.
+    $dictionary_fields = $dictionary->{'$.data.fields'};
+
+    $this->applyDictionary($dictionary_fields, $datastore_table);
+  }
+
+  /**
+   * Retrieve the data-dictionary metadata object for the given resource.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   DKAN Resource.
+   *
+   * @return \RootedData\RootedJsonData
+   *   Data-dictionary metadata.
+   */
+  protected function getDataDictionaryForResource(Resource $resource): RootedJsonData {
+    $resource_id = $resource->getIdentifier();
+    $resource_version = $resource->getVersion();
+    $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);
+
+    if (!isset($dict_id)) {
+      throw new \UnexpectedValueException(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
+    }
+    return $this->metastore->get('data-dictionary', $dict_id);
   }
 
   /**

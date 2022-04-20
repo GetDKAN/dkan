@@ -5,12 +5,17 @@ namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
+use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+
+use Drupal\common\Resource;
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\DictionaryEnforcer;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\metastore\Service as MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -22,24 +27,25 @@ use RootedData\RootedJsonData;
 class DictionaryEnforcerTest extends TestCase {
 
   /**
+   * HTTP host protocol and domain for testing download URL.
+   *
+   * @var string
+   */
+  protected const HOST = 'http://example.com';
+
+  /**
    * Test the happy path in processItem().
    */
   public function testProcessItem() {
-
     $containerChain = $this->getContainerChain()
       ->add(AlterTableQueryInterface::class, 'applyDataTypes');
+    \Drupal::setContainer($containerChain->getMock());
 
     $dictionaryEnforcer = DictionaryEnforcer::create(
        $containerChain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
      );
 
-    $dictionaryEnforcer->processItem((object) [
-      'datastore_table' => 'datastore_foobar',
-      'resource' => (object) [
-        'id' => 'id',
-        'version' => 12345,
-      ],
-    ]);
+    $dictionaryEnforcer->processItem(new Resource('test.csv', 'text/csv'));
 
     // Assert no exceptions are thrown in happy path.
     $errors = $containerChain->getStoredInput('error');
@@ -60,13 +66,7 @@ class DictionaryEnforcerTest extends TestCase {
       $containerChain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
 
-    $dictionaryEnforcer->processItem((object) [
-      'datastore_table' => 'datastore_foobar',
-      'resource' => (object) [
-        'id' => 'id',
-        'version' => 12345,
-      ],
-    ]);
+    $dictionaryEnforcer->processItem(new Resource('test.csv', 'text/csv'));
 
     // Assert the log contains the expected exception message thrown earlier.
     $this->assertEquals($errorMessage, $containerChain->getStoredInput('error')[0]);
@@ -76,8 +76,7 @@ class DictionaryEnforcerTest extends TestCase {
    * Test exception thrown in applyDataTypes() is caught and logged.
    */
   public function testProcessItemUnableToFindDataDictionaryForResourceException() {
-    $resource_id = 'test';
-    $resource_version = 12345;
+    $resource = new Resource('test.csv', 'text/csv');
 
     $containerChain = $this->getContainerChain()
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', NULL);
@@ -86,15 +85,11 @@ class DictionaryEnforcerTest extends TestCase {
       $containerChain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
 
-    $this->expectException(\UnexpectedValueException::class);
-    $this->expectExceptionMessage(sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource_id, $resource_version));
-    $dictionaryEnforcer->processItem((object) [
-      'datastore_table' => 'datastore_foobar',
-      'resource' => (object) [
-        'id' => $resource_id,
-        'version' => $resource_version,
-      ],
-    ]);
+    $dictionaryEnforcer->processItem($resource);
+    $this->assertEquals(
+      sprintf('No data-dictionary found for resource with id "%s" and version "%s".', $resource->getIdentifier(), $resource->getVersion()),
+      $containerChain->getStoredInput('error')[0]
+    );
   }
 
   /**
@@ -108,6 +103,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('logger.factory', LoggerChannelFactoryInterface::class)
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';
@@ -119,7 +115,9 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(MetastoreService::class, 'get', new RootedJsonData($json))
       ->add(AlterTableQueryFactoryInterface::class, 'setConnectionTimeout', AlterTableQueryFactoryInterface::class)
       ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
-      ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id');
+      ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class);
   }
 
 }
