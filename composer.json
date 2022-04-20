@@ -31,7 +31,7 @@
         "oomphinc/composer-installers-extender": "^2.0",
         "ramsey/uuid" : "^3.8.0",
         "stolt/json-merge-patch": "^1.0",
-        "getdkan/pdlt": "0.1.2-alpha"
+        "getdkan/pdlt": "0.1.3"
     },
     "require-dev": {
         "getdkan/mock-chain": "^1.3.0",
