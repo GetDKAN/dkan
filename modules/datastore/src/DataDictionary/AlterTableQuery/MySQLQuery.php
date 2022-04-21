@@ -97,10 +97,10 @@ class MySQLQuery implements AlterTableQueryInterface {
   }
 
   /**
-   * Get MySQL data type equivalent of the given Frictionless data type.
+   * Get MySQL equivalent of the given Frictionless "Table Schema" type.
    *
    * @param string $frictionless_type
-   *   Frictionless data type.
+   *   Frictionless "Table Schema" data type.
    * @param string $column
    *   MySQL table column to get type for.
    * @param string $table
@@ -110,10 +110,10 @@ class MySQLQuery implements AlterTableQueryInterface {
    *   MySQL data type.
    */
   protected function getType(string $frictionless_type, string $column, string $table): string {
-    // Build the MySQL type argument list for the given Frictionless data type.
+    // Build the MySQL type argument list.
     $args = $this->buildTypeArgs($frictionless_type, $column, $table);
 
-    // Build full MySQL type for the given Frictionless data type.
+    // Build full MySQL type.
     return ([
       'string'    => (fn () => 'TEXT'),
       'number'    => (fn ($args) => "DECIMAL({$args['size']}, {$args['decimal']})"),
@@ -133,10 +133,10 @@ class MySQLQuery implements AlterTableQueryInterface {
   }
 
   /**
-   * Build MySQL type argument list for the given type.
+   * Build MySQL type arg list for the given Frictionless "Table Schema" type.
    *
    * @param string $type
-   *   Frictionless type.
+   *   Frictionless "Table Schema" data type.
    * @param string $column
    *   Column name.
    * @param string $table
