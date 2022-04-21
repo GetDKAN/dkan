@@ -135,10 +135,18 @@ class ImportTest extends TestCase {
       ->add(Result::class, 'getStatus', Result::ERROR)
       ->getMock();
 
+    // Construct and set `\Drupal::container` mock.
+    $options = (new Options())
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->index(0);
+
     $containerChain = (new Chain($this))
-      ->add(Container::class, 'get', LoggerChannelFactory::class)
+      ->add(Container::class, 'get', $options)
       ->add(LoggerChannelFactory::class, 'get', LoggerChannel::class)
-      ->add(LoggerChannel::class, 'error', NULL, 'errors');
+      ->add(LoggerChannel::class, 'error', NULL, 'errors')
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST);
     $container = $containerChain->getMock();
 
     \Drupal::setContainer($container);
