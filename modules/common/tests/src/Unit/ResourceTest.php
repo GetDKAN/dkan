@@ -40,7 +40,7 @@ class ResourceTest extends TestCase {
       'txt',
       Resource::DEFAULT_SOURCE_PERSPECTIVE
     );
-    $folder = $resource->getFolder();
+    $folder = dirname($resource->getFilePath());
 
     $this->assertEquals('/foo', $folder);
   }

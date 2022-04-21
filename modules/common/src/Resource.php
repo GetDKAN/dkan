@@ -187,13 +187,6 @@ class Resource implements \JsonSerializable {
   /**
    * Getter.
    */
-  public function getFolder() {
-    return dirname($this->filePath);
-  }
-
-  /**
-   * Getter.
-   */
   public function getMimeType() {
     return $this->mimeType;
   }

@@ -69,9 +69,9 @@ class Import {
    *
    * @param \Drupal\common\Resource $resource
    *   DKAN Resource.
-   * @param \Drupal\common\Storage\JobStoreFactory
+   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   Jobstore factory.
-   * @param \Drupal\datastore\Storage\DatabaseTableFactory
+   * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
