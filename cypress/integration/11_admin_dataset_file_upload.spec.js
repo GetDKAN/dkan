@@ -6,7 +6,7 @@ context('Admin dataset file upload', () => {
     const title = dkan.generateRandomString()
 
     before(() => {
-      cy.drupalLogin('testeditor', 'testeditor')
+      cy.drupalLogin('testadmin', 'testadmin')
       cy.visit('/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type(title, { force:true } )
@@ -46,7 +46,7 @@ context('Admin dataset file upload', () => {
     })
 
     beforeEach(() => {
-      cy.drupalLogin('testeditor', 'testeditor')
+      cy.drupalLogin('testadmin', 'testadmin')
     })
 
     it('can fill up the form with distribution and submit', () => {
@@ -83,7 +83,7 @@ context('Admin dataset file upload', () => {
     before(() => {
       const selectorDist = '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload'
 
-      cy.drupalLogin('testeditor', 'testeditor')
+      cy.drupalLogin('testadmin', 'testadmin')
       cy.visit('/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type(title, { force:true } )
@@ -126,7 +126,7 @@ context('Admin dataset file upload', () => {
     })
 
     beforeEach(() => {
-      cy.drupalLogin('testeditor', 'testeditor')
+      cy.drupalLogin('testadmin', 'testadmin')
     })
 
     it('can create and import dataset with uploaded file', () => {

@@ -1,7 +1,7 @@
 context('Administration pages', () => {
   let baseurl = Cypress.config().baseUrl;
   beforeEach(() => {
-      cy.drupalLogin('testeditor', 'testeditor')
+      cy.drupalLogin('testadmin', 'testadmin')
   })
 
   it('I should see a link for the dataset properties configuration', () => {

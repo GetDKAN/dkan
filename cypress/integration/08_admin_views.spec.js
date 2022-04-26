@@ -3,7 +3,7 @@ import * as dkan from '../support/helpers/dkan'
 context('Admin content and dataset views', () => {
     let baseurl = Cypress.config().baseUrl;
     beforeEach(() => {
-        cy.drupalLogin('testeditor', 'testeditor')
+        cy.drupalLogin('testadmin', 'testadmin')
     })
 
     it('The admin content screen has an exposed data type filter that contains the values I expect.', () => {
