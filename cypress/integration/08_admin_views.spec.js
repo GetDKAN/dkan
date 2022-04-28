@@ -45,7 +45,7 @@ context('Admin content and dataset views', () => {
         cy.get('h1').should('have.text', 'Create Data')
     })
 
-    it('User can archive, publish, edit, and delete a dataset. The edit link on the admin view should go to the json form.', () => {
+    it.only('User can archive, publish, edit, and delete a dataset. The edit link on the admin view should go to the json form.', () => {
         // Create a dataset.
         cy.visit(baseurl + "/node/add/data")
         cy.wait(2000)
@@ -88,6 +88,7 @@ context('Admin content and dataset views', () => {
         cy.get('h1').should('contain.text', 'Edit Data')
         cy.get('#edit-delete').click({ force:true })
         cy.get('#edit-submit').click({ force:true })
+        cy.visit(baseurl + "/admin/dkan/datasets")
         cy.get('.messages--status').should('contain','has been deleted')
     })
 

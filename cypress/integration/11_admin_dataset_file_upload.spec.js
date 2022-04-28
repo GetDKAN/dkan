@@ -54,6 +54,7 @@ context('Admin dataset file upload', () => {
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')
         .click({force: true})
+      cy.contains('h1', 'Cron');
       cy.get('.messages--status', {timeout: 120000})
         .should('be.visible')
 
