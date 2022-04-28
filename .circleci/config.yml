@@ -123,7 +123,7 @@ jobs:
     parallelism: 4
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.9"
+      DKTL_VERSION: "4.2.10-RC"
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
