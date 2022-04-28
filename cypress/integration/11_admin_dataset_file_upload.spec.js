@@ -2,11 +2,12 @@ import * as dkan from '../support/helpers/dkan'
 
 context('Admin dataset file upload', () => {
   context('Create dataset with remote file', () => {
+    const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
     const fileUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv'
     const title = dkan.generateRandomString()
 
     before(() => {
-      cy.drupalLogin('testadmin', 'testadmin')
+      cy.drupalLogin(user_credentials.user, user_credentials.pass)
       cy.visit('/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type(title, { force:true } )
@@ -46,7 +47,7 @@ context('Admin dataset file upload', () => {
     })
 
     beforeEach(() => {
-      cy.drupalLogin('testadmin', 'testadmin')
+      cy.drupalLogin(user_credentials.user, user_credentials.pass)
     })
 
     it('can fill up the form with distribution and submit', () => {
@@ -83,8 +84,8 @@ context('Admin dataset file upload', () => {
 
     before(() => {
       const selectorDist = '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload'
-
-      cy.drupalLogin('testadmin', 'testadmin')
+      const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+      cy.drupalLogin(user_credentials.user, user_credentials.pass)
       cy.visit('/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type(title, { force:true } )
@@ -127,6 +128,7 @@ context('Admin dataset file upload', () => {
     })
 
     beforeEach(() => {
+      const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
       cy.drupalLogin('testadmin', 'testadmin')
     })
 

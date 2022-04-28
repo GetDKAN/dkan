@@ -1,7 +1,10 @@
 import * as dkan from '../support/helpers/dkan'
 
 context('Draft datasets', () => {
-  beforeEach(() => cy.drupalLogin('testadmin', 'testadmin'))
+  beforeEach(() => {
+    const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+    cy.drupalLogin(user_credentials.user, user_credentials.pass)
+  })
 
   it('Draft datasets are hidden from the catalog until published.', () => {
     // Create draft dataset

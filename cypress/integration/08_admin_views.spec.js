@@ -2,8 +2,10 @@ import * as dkan from '../support/helpers/dkan'
 
 context('Admin content and dataset views', () => {
     let baseurl = Cypress.config().baseUrl;
+
     beforeEach(() => {
-        cy.drupalLogin('testadmin', 'testadmin')
+        const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+        cy.drupalLogin(user_credentials.user, user_credentials.pass)
     })
 
     it('The admin content screen has an exposed data type filter that contains the values I expect.', () => {
@@ -45,7 +47,7 @@ context('Admin content and dataset views', () => {
         cy.get('h1').should('have.text', 'Create Data')
     })
 
-    it.only('User can archive, publish, edit, and delete a dataset. The edit link on the admin view should go to the json form.', () => {
+    it('User can archive, publish, edit, and delete a dataset. The edit link on the admin view should go to the json form.', () => {
         // Create a dataset.
         cy.visit(baseurl + "/node/add/data")
         cy.wait(2000)
