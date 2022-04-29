@@ -1,6 +1,6 @@
 import * as dkan from '../support/helpers/dkan'
 
-context('Draft datasets', () => {
+context('DKAN Workflow', () => {
   beforeEach(() => {
     const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
     cy.drupalLogin(user_credentials.user, user_credentials.pass)
@@ -50,10 +50,6 @@ context('Draft datasets', () => {
       })
     })
   })
-})
-
-context('Archived datasets', () => {
-  beforeEach(() => cy.drupalLogin('testadmin', 'testadmin'))
 
   it('Existing datasets which are archived cannot be visited, and are hidden from the catalog.', () => {
     // Create published dataset
@@ -98,10 +94,6 @@ context('Archived datasets', () => {
       })
     })
   })
-})
-
-context('Hidden datasets', () => {
-  beforeEach(() => cy.drupalLogin('testadmin', 'testadmin'))
 
   it('Newly created hidden datasets are visible when visited directly, but hidden from the catalog.', () => {
     // create hidden dataset

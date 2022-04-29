@@ -68,6 +68,7 @@ context('Admin dataset file upload', () => {
       cy.get('#edit-title').type(title)
       cy.get('#edit-submit-dkan-dataset-content').click()
       cy.get('.views-field-nothing > a').click()
+      cy.contains('h1', 'Edit Data');
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')
         .invoke('attr', 'href')
         .should('eq', fileUrl)
@@ -129,7 +130,7 @@ context('Admin dataset file upload', () => {
 
     beforeEach(() => {
       const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
-      cy.drupalLogin('testadmin', 'testadmin')
+      cy.drupalLogin(user_credentials.user, user_credentials.pass)
     })
 
     it('can create and import dataset with uploaded file', () => {
