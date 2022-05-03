@@ -342,7 +342,7 @@ class Referencer {
 
     // Perform HTTP Head request against the supplied URL in order to determine
     // the content type of the remote resource.
-    $client = new GuzzleClient();
+    $client = \Drupal::httpClient();
     $response = $client->head($downloadUrl);
     // Extract the full value of the content type header.
     $content_type = $response->getHeader('Content-Type');
