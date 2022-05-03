@@ -2,7 +2,7 @@ version: 2
 plugins:
   phpcodesniffer:
     enabled: true
-    channel: beta
+    channel: master
     config:
       standard: "Drupal,DrupalPractice"
 exclude_patterns:
