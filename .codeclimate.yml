@@ -1,7 +1,7 @@
 version: 2
 plugins:
   phpcodesniffer:
-    enabled: true
+    enabled: false
     channel: stable
     config:
       standard: "Drupal,DrupalPractice"
