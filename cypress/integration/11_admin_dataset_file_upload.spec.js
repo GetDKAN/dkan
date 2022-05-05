@@ -2,12 +2,15 @@ import * as dkan from '../support/helpers/dkan'
 
 context('Admin dataset file upload', () => {
   context('Create dataset with remote file', () => {
-    const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
     const fileUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv'
     const title = dkan.generateRandomString()
 
-    before(() => {
+    beforeEach(() => {
+      const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
       cy.drupalLogin(user_credentials.user, user_credentials.pass)
+    })
+
+    it('create the dataset', () => {
       cy.visit('/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type(title, { force:true } )
@@ -46,10 +49,6 @@ context('Admin dataset file upload', () => {
         .should('contain','has been created')
     })
 
-    beforeEach(() => {
-      cy.drupalLogin(user_credentials.user, user_credentials.pass)
-    })
-
     it('can fill up the form with distribution and submit', () => {
       // run cron to import new dataset
       cy.visit('/admin/config/system/cron')
@@ -71,7 +70,7 @@ context('Admin dataset file upload', () => {
       cy.contains('h1', 'Edit Data');
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')
         .invoke('attr', 'href')
-        .should('eq', fileUrl)
+        .should('contain', fileUrl.split('_').pop())
     })
   })
 
@@ -83,10 +82,13 @@ context('Admin dataset file upload', () => {
     // tests
     const uploadedFileName = dkan.generateCSVFileName()
 
-    before(() => {
-      const selectorDist = '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload'
+    beforeEach(() => {
       const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
       cy.drupalLogin(user_credentials.user, user_credentials.pass)
+    })
+
+    it('create the dataset', () => {
+      const selectorDist = '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload'
       cy.visit('/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type(title, { force:true } )
@@ -128,10 +130,6 @@ context('Admin dataset file upload', () => {
         .should('contain','has been created')
     })
 
-    beforeEach(() => {
-      const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
-      cy.drupalLogin(user_credentials.user, user_credentials.pass)
-    })
 
     it('can create and import dataset with uploaded file', () => {
       // run cron to import new dataset
@@ -146,11 +144,13 @@ context('Admin dataset file upload', () => {
     })
 
     it('uploaded dataset files show local link on edit', () => {
+      //let filename = `${uploadedFileName}`.substring(0,20)
       // validate URL of uploaded CSV file
       cy.visit('/admin/dkan/datasets')
       cy.get('#edit-title').type(title)
       cy.get('#edit-submit-dkan-dataset-content').click()
-      cy.get('.views-field-nothing > a').click()
+      cy.get('tbody > :nth-child(1) > .views-field-nothing > a').click({force: true})
+      cy.get('h1').should('contain', 'Edit Data')
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')
         .invoke('attr', 'href')
         .should('contain', `uploaded_resources/${uploadedFileName}`)
