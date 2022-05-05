@@ -70,7 +70,7 @@ context('Admin dataset file upload', () => {
       cy.contains('h1', 'Edit Data');
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')
         .invoke('attr', 'href')
-        .should('contain', fileUrl.split('_').pop())
+        .should('eq', fileUrl)
     })
   })
 
