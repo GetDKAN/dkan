@@ -144,7 +144,6 @@ context('Admin dataset file upload', () => {
     })
 
     it('uploaded dataset files show local link on edit', () => {
-      //let filename = `${uploadedFileName}`.substring(0,20)
       // validate URL of uploaded CSV file
       cy.visit('/admin/dkan/datasets')
       cy.get('#edit-title').type(title)
