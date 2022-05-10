@@ -66,11 +66,11 @@ class DatasetApiDocs {
   private $metastore;
 
   /**
-   * Site settings.
+   * Prefix to the API path.
    *
-   * @var \Drupal\Core\Site\Settings
+   * @var string
    */
-  private Settings $settings;
+  private string $dkanApiBase;
 
   /**
    * Constructs a new MetastoreDocsController.
@@ -85,7 +85,7 @@ class DatasetApiDocs {
   public function __construct(DkanApiDocsGenerator $docsGenerator, Service $metastore, Settings $settings) {
     $this->docsGenerator = $docsGenerator;
     $this->metastore = $metastore;
-    $this->settings = $settings;
+    $this->dkanApiBase = $settings->get('dkan_api_base') ?? '';
   }
 
   /**
@@ -106,7 +106,7 @@ class DatasetApiDocs {
       'info' => $fullSpec['info'],
     ];
 
-    $metastorePath = $fullSpec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']['get'];
+    $metastorePath = $fullSpec['paths'][$this->dkanApiBase . '/api/1/metastore/schemas/dataset/items/{identifier}']['get'];
     unset($metastorePath['parameters'][0]);
     $metastorePath['parameters'] = array_values($metastorePath['parameters']);
     $datasetSpec['paths']["/api/1/metastore/schemas/dataset/items/$identifier"]['get'] = $metastorePath;
@@ -115,17 +115,17 @@ class DatasetApiDocs {
       = $this->getDatastoreIndexPath($fullSpec, $identifier);
 
     $datasetSpec['paths']['/api/1/datastore/query/{distributionId}'] =
-      $fullSpec['paths']['/api/1/datastore/query/{distributionId}'];
+      $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{distributionId}'];
 
     $datasetSpec['paths']['/api/1/datastore/sql'] =
-      $fullSpec['paths']['/api/1/datastore/sql'];
+      $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/sql'];
 
     $datasetSpec['components'] = $this->datasetSpecificComponents($fullSpec, $identifier);
 
     $this->alterDatastoreParameters($datasetSpec, $identifier);
     $this->modifySqlEndpoints($datasetSpec, $identifier);
-    if ($dkanApiBase = $this->settings->get('dkan_api_base')) {
-      $datasetSpec = ApiDocsPathModifier::prepend($datasetSpec, $dkanApiBase);
+    if ($this->dkanApiBase) {
+      $datasetSpec = ApiDocsPathModifier::prepend($datasetSpec, $this->dkanApiBase);
     }
 
     return $datasetSpec;
@@ -166,7 +166,7 @@ class DatasetApiDocs {
    *   Path array ready to insert.
    */
   private function getDatastoreIndexPath($fullSpec, $identifier) {
-    $datastoreIndexPath = $fullSpec['paths']['/api/1/datastore/query/{datasetId}/{index}'];
+    $datastoreIndexPath = $fullSpec['paths'][$this->dkanApiBase . '/api/1/datastore/query/{datasetId}/{index}'];
     unset($datastoreIndexPath['get']['parameters'][0]);
     $datastoreIndexPath['get']['parameters'] = array_values($datastoreIndexPath['get']['parameters']);
     unset($datastoreIndexPath['post']['parameters'][0]);
