@@ -1,7 +1,8 @@
 context('Administration pages', () => {
   let baseurl = Cypress.config().baseUrl;
   beforeEach(() => {
-      cy.drupalLogin('testeditor', 'testeditor')
+    const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+    cy.drupalLogin(user_credentials.user, user_credentials.pass)
   })
 
   it('I should see a link for the dataset properties configuration', () => {

@@ -2,8 +2,10 @@ import * as dkan from '../support/helpers/dkan'
 
 context('Admin content and dataset views', () => {
     let baseurl = Cypress.config().baseUrl;
+
     beforeEach(() => {
-        cy.drupalLogin('testeditor', 'testeditor')
+        const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+        cy.drupalLogin(user_credentials.user, user_credentials.pass)
     })
 
     it('The admin content screen has an exposed data type filter that contains the values I expect.', () => {
@@ -88,6 +90,7 @@ context('Admin content and dataset views', () => {
         cy.get('h1').should('contain.text', 'Edit Data')
         cy.get('#edit-delete').click({ force:true })
         cy.get('#edit-submit').click({ force:true })
+        cy.visit(baseurl + "/admin/dkan/datasets")
         cy.get('.messages--status').should('contain','has been deleted')
     })
 
