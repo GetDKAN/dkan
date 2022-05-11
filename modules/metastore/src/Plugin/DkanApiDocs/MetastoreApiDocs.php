@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @DkanApiDocs(
  *  id = "metastore_api_docs",
+ *  weight = 2,
  *  description = "Metastore docs"
  * )
  */

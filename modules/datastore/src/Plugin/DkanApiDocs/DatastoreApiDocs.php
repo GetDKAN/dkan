@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @DkanApiDocs(
  *  id = "datastore_api_docs",
+ *  weight = 1,
  *  description = "Datastore docs"
  * )
  */

@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @DkanApiDocs(
  *  id = "harvest_api_docs",
+ *  weight = 5,
  *  description = "Harvest docs"
  * )
  */
