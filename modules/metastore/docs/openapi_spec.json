@@ -195,6 +195,30 @@
                 }
             }
         },
+        "/api/1/metastore/schemas/dataset/items/{identifier}/docs": {
+            "get": {
+                "operationId": "docs-get-dataset-specific",
+                "summary": "Dataset-specific json documentation",
+                "tags": [
+                    "Documentation"
+                ],
+                "parameters": [
+                    { "$ref": "#/components/parameters/exampleUuid" }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/1/metastore/schemas/{schema_id}/items/{identifier}/revisions": {
             "get": {
                 "operationId": "metastore-get-all-revisions",
@@ -241,7 +265,7 @@
                                     "message": {
                                         "type": "string",
                                         "description": "Revision log message."
-                                    },                
+                                    },
                                     "state": {
                                         "type": "string",
                                         "enum": [
@@ -252,7 +276,7 @@
                                             "orphaned"
                                         ],
                                         "description": "The workflow state of this revision. Currently five states are supported in DKAN."
-                                    }                
+                                    }
                                 }
                             }
                         }
