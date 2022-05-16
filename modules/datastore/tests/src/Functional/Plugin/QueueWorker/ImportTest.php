@@ -22,13 +22,7 @@ class ImportTest extends ExistingSiteBase {
     parent::setUp();
 
     // Initialize services.
-    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
-    $this->datastore = \Drupal::service('dkan.datastore.service');
-    $this->metastore = \Drupal::service('dkan.metastore.service');
-    $this->queue = \Drupal::service('queue');
     $this->queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    $this->resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   /**
