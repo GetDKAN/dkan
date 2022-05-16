@@ -149,9 +149,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    * @param \Drupal\Core\Database\Connection $connection
    *   Database connection instance.
    */
-  protected function setInnodbMode(Connection $connection): void {
-    $command = 'SET SESSION innodb_strict_mode=off';
-    $connection->query($command);
+  public function setInnodbMode(Connection $connection): void {
+    $connection->query("SET SESSION innodb_strict_mode=OFF");
   }
 
   /**
