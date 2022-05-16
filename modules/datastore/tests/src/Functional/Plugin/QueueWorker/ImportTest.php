@@ -4,7 +4,6 @@ namespace Drupal\Tests\datastore\Functional\Service;
 
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\ServiceTest;
 
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -22,13 +21,7 @@ class ImportTest extends ExistingSiteBase {
     parent::setUp();
 
     // Initialize services.
-    $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
-    $this->datastore = \Drupal::service('dkan.datastore.service');
-    $this->metastore = \Drupal::service('dkan.metastore.service');
-    $this->queue = \Drupal::service('queue');
     $this->queueWorkerManager = \Drupal::service('plugin.manager.queue_worker');
-    $this->resourcePurger = \Drupal::service('dkan.datastore.service.resource_purger');
-    $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
   }
 
   /**
