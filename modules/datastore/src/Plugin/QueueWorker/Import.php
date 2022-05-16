@@ -144,7 +144,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   }
 
   /**
-   * Set the wait_timeout for the given database connection.
+   * Disable InnoDB strict mode for the given database connection.
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Database connection instance.
