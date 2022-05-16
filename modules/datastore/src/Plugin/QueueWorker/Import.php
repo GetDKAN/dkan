@@ -110,6 +110,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     $timeout = (int) $plugin_definition['cron']['lease_time'];
     $this->setConnectionTimeout($datastoreConnection, $timeout);
     $this->setConnectionTimeout($defaultConnection, $timeout);
+    $this->setInnodbMode($datastoreConnection);
   }
 
   /**
@@ -139,6 +140,17 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    */
   protected function setConnectionTimeout(Connection $connection, int $timeout): void {
     $command = 'SET SESSION wait_timeout = ' . $timeout;
+    $connection->query($command);
+  }
+
+  /**
+   * Set the wait_timeout for the given database connection.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection instance.
+   */
+  protected function setInnodbMode(Connection $connection): void {
+    $command = 'SET SESSION innodb_strict_mode=off';
     $connection->query($command);
   }
 
