@@ -10,6 +10,7 @@ use Drupal\common\Resource;
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\metastore\Service as MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\metastore\ResourceMapper;
 
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -29,13 +30,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
-   * A logger channel for this plugin.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
-
-  /**
    * Datastore table query service.
    *
    * @var \Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface
@@ -48,6 +42,27 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    * @var \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface
    */
   protected $dataDictionaryDiscovery;
+
+  /**
+   * A logger channel for this plugin.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
+   * The metastore service.
+   * 
+   * @var \Drupal\metastore\Service
+   */
+  protected $metastore;
+
+  /**
+   * The metastore resource mapper service.
+   * 
+   * @var \Drupal\metastore\ResourceMapper
+   */
+  protected $resourceMapper;
 
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
@@ -74,7 +89,8 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
     AlterTableQueryFactoryInterface $alter_table_query_factory,
     LoggerChannelFactoryInterface $logger_factory,
     MetastoreService $metastore,
-    DataDictionaryDiscoveryInterface $data_dictionary_discovery
+    DataDictionaryDiscoveryInterface $data_dictionary_discovery,
+    ResourceMapper $resource_mapper
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->logger = $logger_factory->get('datastore');
@@ -85,6 +101,7 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
     $timeout = (int) $plugin_definition['cron']['lease_time'];
     $this->alterTableQueryFactory = $alter_table_query_factory->setConnectionTimeout($timeout);
     $this->dataDictionaryDiscovery = $data_dictionary_discovery;
+    $this->resourceMapper = $resource_mapper;
   }
 
   /**
@@ -98,7 +115,8 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
       $container->get('dkan.datastore.data_dictionary.alter_table_query_factory.mysql'),
       $container->get('logger.factory'),
       $container->get('dkan.metastore.service'),
-      $container->get('dkan.metastore.data_dictionary_discovery')
+      $container->get('dkan.metastore.data_dictionary_discovery'),
+      $container->get('dkan.metastore.resource_mapper')
     );
   }
 
@@ -123,6 +141,15 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    *   DKAN Resource.
    */
   public function doProcessItem(Resource $resource): void {
+    $identifier = $resource->getIdentifier();
+    $version = $resource->getVersion();
+    $latest_resource = $this->resourceMapper->get($identifier);
+    // Do not apply data-dictionary if resource has changed.
+    if ($version !== $latest_resource->getVersion()) {
+      $this->logger->notice('Cancelling data-dictionary enforcement; resource has changed.');
+      return;
+    }
+
     // Retrieve name of datastore table for resource.
     $datastore_table = $resource->getTableName();
     // Get data-dictionary for the given resource.
