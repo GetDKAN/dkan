@@ -3,6 +3,7 @@
 namespace Drupal\metastore_search\Plugin\search_api\datasource;
 
 use Drupal\Core\TypedData\ComplexDataInterface;
+use Drupal\metastore\Exception\MissingObjectException;
 use Drupal\metastore_search\ComplexData\Dataset;
 use Drupal\node\Entity\Node;
 use Drupal\search_api\Datasource\DatasourcePluginBase;
@@ -70,9 +71,16 @@ class DkanDataset extends DatasourcePluginBase {
     /* @var \Drupal\metastore\Storage\Data $dataStorage */
     $dataStorage = $dataStorageFactory->getInstance('dataset');
 
-    $items = array_map(function ($id) use ($dataStorage) {
-      return new Dataset($dataStorage->retrieve($id, TRUE));
-    }, array_combine($ids, $ids));
+    $items = [];
+
+    foreach (array_combine($ids, $ids) as $id) {
+      try {
+        $items[$id] = new Dataset($dataStorage->retrieve($id, TRUE));
+      }
+      catch (MissingObjectException $missingObjectException) {
+        continue;
+      }
+    }
 
     return $items;
   }
