@@ -1,7 +1,8 @@
 context('Admin dataset json form', () => {
     let baseurl = Cypress.config().baseUrl;
     beforeEach(() => {
-        cy.drupalLogin('testeditor', 'testeditor')
+      const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+      cy.drupalLogin(user_credentials.user, user_credentials.pass)
     })
 
     it('The dataset form has the correct required fields.', () => {
