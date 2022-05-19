@@ -12,17 +12,6 @@ trait GetDataTrait {
   }
 
   /**
-   * @param string $filename
-   *   Resource filename.
-   *
-   * @return string
-   *   File path.
-   */
-  protected function getLocalFilePath(string $filename): string {
-    return 'file://' . __DIR__ . '/../../data/' . $filename;
-  }
-
-  /**
    * Generate dataset metadata, possibly with multiple distributions.
    *
    * @param string $identifier
@@ -51,7 +40,7 @@ trait GetDataTrait {
     foreach ($downloadUrls as $key => $downloadUrl) {
       $distribution = new \stdClass();
       $distribution->title = "Distribution #{$key} for {$identifier}";
-      $distribution->downloadURL = $localFiles ? $this->getLocalFilePath($downloadUrl) : $this->getDownloadUrl($downloadUrl);
+      $distribution->downloadURL = $localFiles ? $downloadUrl : $this->getDownloadUrl($downloadUrl);
       $distribution->mediaType = "text/csv";
 
       $data->distribution[] = $distribution;

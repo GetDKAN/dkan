@@ -2,10 +2,10 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
-use Drupal\Tests\common\Traits\GetDataTrait;
-use Drupal\Tests\metastore\Unit\ServiceTest;
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
+use Drupal\Tests\common\Traits\GetDataTrait;
+use Drupal\Tests\metastore\Unit\ServiceTest;
 
 use Symfony\Component\HttpFoundation\Request;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
@@ -15,6 +15,27 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
   use GetDataTrait;
+
+  /**
+   * Uploaded resource file destination.
+   *
+   * @var string
+   */
+  protected const UPLOAD_LOCATION = 'public://uploaded_resources/';
+
+  /**
+   * Test data file path.
+   *
+   * @var string
+   */
+  protected const TEST_DATA_PATH = __DIR__ . '/../../data/';
+
+  /**
+   * Resource file name.
+   *
+   * @var string
+   */
+  protected const RESOURCE_FILE = 'data-dict.csv';
 
   /**
    * Cron service.
@@ -64,12 +85,18 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
   public function setUp(): void {
     parent::setUp();
 
+    // Initialize services.
     $this->cron = \Drupal::service('cron');
     $this->metastore = \Drupal::service('dkan.metastore.service');
     $this->uuid = \Drupal::service('uuid');
     $this->validMetadataFactory = ServiceTest::getValidMetadataFactory($this);
     $this->webServiceApi = ImportController::create(\Drupal::getContainer());
     $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
+    // Copy resource file to uploads directory.
+    $upload_path = \Drupal::service('file_system')->realpath(self::UPLOAD_LOCATION);
+    \Drupal::service('file_system')->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path);
+    // Create resource URL.
+    $this->resourceUrl = \Drupal::service('stream_wrapper_manager')->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)->getExternalUrl();
   }
 
   /**
@@ -110,7 +137,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
 
     // Build dataset.
     $dataset_id = $this->uuid->generate();
-    $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, ['data-dict.csv'], TRUE), 'dataset');
+    $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
     // Create datset.
     $this->metastore->post('dataset', $dataset);
 

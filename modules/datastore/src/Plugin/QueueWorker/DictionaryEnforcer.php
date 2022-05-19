@@ -81,6 +81,8 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
    *   The metastore service.
    * @param \Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface $data_dictionary_discovery
    *   The data-dictionary discovery service.
+   * @param \Drupal\metastore\ResourceMapper $resource_mapper
+   *   The metastore resource mapper service.
    */
   public function __construct(
     array $configuration,

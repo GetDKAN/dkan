@@ -13,8 +13,9 @@ use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\DictionaryEnforcer;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
-use Drupal\metastore\Service as MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
+use Drupal\metastore\ResourceMapper;
+use Drupal\metastore\Service as MetastoreService;
 
 use MockChain\Chain;
 use MockChain\Options;
@@ -37,15 +38,17 @@ class DictionaryEnforcerTest extends TestCase {
    * Test the happy path in processItem().
    */
   public function testProcessItem() {
-    $containerChain = $this->getContainerChain()
+    $resource = new Resource('test.csv', 'text/csv');
+
+    $containerChain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'applyDataTypes');
-    \Drupal::setContainer($containerChain->getMock());
+    \Drupal::setContainer($containerChain->getMock($resource->getVersion()));
 
     $dictionaryEnforcer = DictionaryEnforcer::create(
        $containerChain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
      );
 
-    $dictionaryEnforcer->processItem(new Resource('test.csv', 'text/csv'));
+    $dictionaryEnforcer->processItem($resource);
 
     // Assert no exceptions are thrown in happy path.
     $errors = $containerChain->getStoredInput('error');
@@ -56,17 +59,18 @@ class DictionaryEnforcerTest extends TestCase {
    * Test exception thrown in applyDataTypes() is caught and logged.
    */
   public function testProcessItemApplyDataTypesException() {
+    $resource = new Resource('test.csv', 'text/csv');
 
     $errorMessage = "Something went wrong: " . uniqid();
 
-    $containerChain = $this->getContainerChain()
+    $containerChain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'applyDataTypes', new \Exception($errorMessage));
 
     $dictionaryEnforcer = DictionaryEnforcer::create(
       $containerChain->getMock(), [], '', ['cron' => ['lease_time' => 10800]]
     );
 
-    $dictionaryEnforcer->processItem(new Resource('test.csv', 'text/csv'));
+    $dictionaryEnforcer->processItem($resource);
 
     // Assert the log contains the expected exception message thrown earlier.
     $this->assertEquals($errorMessage, $containerChain->getStoredInput('error')[0]);
@@ -78,7 +82,7 @@ class DictionaryEnforcerTest extends TestCase {
   public function testProcessItemUnableToFindDataDictionaryForResourceException() {
     $resource = new Resource('test.csv', 'text/csv');
 
-    $containerChain = $this->getContainerChain()
+    $containerChain = $this->getContainerChain($resource->getVersion())
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', NULL);
 
     $dictionaryEnforcer = DictionaryEnforcer::create(
@@ -95,7 +99,7 @@ class DictionaryEnforcerTest extends TestCase {
   /**
    * Get container chain.
    */
-  private function getContainerChain() {
+  private function getContainerChain(int $resource_version) {
 
     $options = (new Options())
       ->add('dkan.datastore.data_dictionary.alter_table_query_factory.mysql', AlterTableQueryFactoryInterface::class)
@@ -104,6 +108,7 @@ class DictionaryEnforcerTest extends TestCase {
       ->add('dkan.metastore.service', MetastoreService::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('dkan.metastore.resource_mapper', ResourceMapper::class)
       ->index(0);
 
     $json = '{"identifier":"foo","title":"bar","data":{"fields":[]}}';
@@ -117,7 +122,9 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
-      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class);
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(ResourceMapper::class, 'get', Resource::class)
+      ->add(Resource::class, 'getVersion', $resource_version);
   }
 
 }
