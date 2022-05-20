@@ -12,6 +12,9 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
  * DictionaryEnforcer QueueWorker test.
+ *
+ * @package Drupal\Tests\datastore\Functional
+ * @group datastore
  */
 class DictionaryEnforcerTest extends ExistingSiteBase {
   use GetDataTrait;
@@ -128,6 +131,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $dict_id), 'data-dictionary');
     // Create data-dictionary.
     $this->metastore->post('data-dictionary', $data_dict);
+    $this->metastore->publish('data-dictionary', $dict_id);
 
     // Set global data-dictinary in metastore config.
     $metastore_config = \Drupal::configFactory()->getEditable('metastore.settings');
@@ -140,6 +144,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
     // Create datset.
     $this->metastore->post('dataset', $dataset);
+    $this->metastore->publish('dataset', $dataset_id);
 
     // Run cron to import dataset into datastore.
     $this->cron->run();

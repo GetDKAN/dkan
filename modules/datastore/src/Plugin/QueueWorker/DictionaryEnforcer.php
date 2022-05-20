@@ -145,7 +145,13 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
   public function doProcessItem(Resource $resource): void {
     $identifier = $resource->getIdentifier();
     $version = $resource->getVersion();
+
     $latest_resource = $this->resourceMapper->get($identifier);
+    // Do not apply data-dictionary if resource no longer exists.
+    if (!isset($latest_resource)) {
+      $this->logger->notice('Cancelling data-dictionary enforcement; resource no longer exists.');
+      return;
+    }
     // Do not apply data-dictionary if resource has changed.
     if ($version !== $latest_resource->getVersion()) {
       $this->logger->notice('Cancelling data-dictionary enforcement; resource has changed.');
