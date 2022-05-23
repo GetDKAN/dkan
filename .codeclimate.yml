@@ -38,4 +38,3 @@ exclude_patterns:
  - "**/*.module"
  - ".circleci/"
  - ".gitignore"
-
