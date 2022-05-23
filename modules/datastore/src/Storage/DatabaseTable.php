@@ -6,6 +6,7 @@ use Drupal\Core\Database\Connection;
 use Dkan\Datastore\Resource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
+use Drupal\Core\Database\Driver\mysql\Connection as MysqlConnection;
 
 /**
  * Database storage object.
@@ -156,21 +157,19 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $schema['fields'] = $fields;
     $schema['primary key'] = [$this->primaryKey()];
     parent::setSchema($schema);
-    $this->setInnodbMode("OFF");
-    $this->setTable();
-    $this->setInnodbMode("ON");
   }
 
   /**
    * Disable/enable InnoDB strict mode for the given database connection.
    *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Database connection instance.
    * @param string $value
    *   "ON" or "OFF".
    */
   public function setInnodbMode(string $value = "OFF"): void {
-    $this->connection->query("SET SESSION innodb_strict_mode=:value", [':value' => $value]);
+    // Only if we're using MySQL.
+    if ($this->connection instanceof MysqlConnection) {
+      $this->connection->query("SET SESSION innodb_strict_mode=:value", [':value' => $value]);
+    }
   }
 
   /**

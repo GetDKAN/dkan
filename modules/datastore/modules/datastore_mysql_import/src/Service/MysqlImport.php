@@ -118,7 +118,9 @@ class MysqlImport extends Importer {
     // Call `count` on database table in order to ensure a database table has
     // been created for the datastore.
     // @todo Find a better way to ensure creation of datastore tables.
+    $this->dataStorage->setInnodbMode("OFF");
     $this->dataStorage->count();
+    $this->dataStorage->setInnodbMode("ON");
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(
