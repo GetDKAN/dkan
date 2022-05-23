@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="dkan">
+  <description>Default PHP CodeSniffer configuration for DKAN.</description>
+
+  <file>./modules/common</file>
+  <file>./modules/frontend</file>
+  <file>./modules/metastore</file>
+  <file>./modules/datastore</file>
+  <file>./modules/harvest</file>
+  <file>./modules/sample_content</file>
+  <file>./modules/dkan_js_frontend</file>
+  <file>./modules/json_form_widget</file>
+
+  <arg name="extensions" value="inc,install,module,php,profile,test,theme,yml"/>
+
+  <!-- Drupal sniffs -->
+  <rule ref="Drupal"/>
+  <rule ref="DrupalPractice"/>
+
+</ruleset>
