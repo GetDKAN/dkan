@@ -10,6 +10,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Psr\Container\ContainerInterface;
+use Drupal\common\LoggerTrait;
 
 /**
  * Provides a hide action to exclude an entity from search results.
@@ -25,6 +26,7 @@ use Psr\Container\ContainerInterface;
  * )
  */
 class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPluginInterface {
+  use LoggerTrait;
 
   /**
    * Private.
@@ -36,7 +38,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
   /**
    * Constructor.
    *
-   * @param array $config
+   * @param array $configuration
    *   Details for reference definition. Possible keys:
    *   - schemaId: For some reference definitions, a schemaId must be specified.
    * @param string $pluginId
@@ -44,7 +46,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    * @param mixed $pluginDefinition
    *   The plugin implementation definition.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerFactory
-   *   Logger factory service.
+   *   A logger channel factory instance.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   Messenger.
    * @param \Drupal\Core\Session\AccountInterface $currentUser
@@ -53,7 +55,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    *   Time.
    */
   public function __construct(
-    array $config,
+    array $configuration,
     $pluginId,
     $pluginDefinition,
     LoggerChannelFactoryInterface $loggerFactory,
@@ -61,8 +63,10 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     AccountInterface $currentUser,
     TimeInterface $timeInterface
   ) {
-    parent::__construct($config, $pluginId, $pluginDefinition);
-    $this->loggerFactory = $loggerFactory->get('metastore_admin');
+    parent::__construct($configuration, $pluginId, $pluginDefinition);
+    //$this->setLoggerFactory($loggerFactory, 'metastore_admin');
+    //$this->loggerFactory = $loggerFactory->get('metastore_admin');
+    $this->loggerFactory = $loggerFactory;
     $this->messenger = $messenger;
     $this->currentUser = $currentUser;
     $this->timeInterface = $timeInterface;
@@ -70,30 +74,23 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
   }
 
   /**
-   * Container injection.
-   *
-   * @param \Drupal\common\Plugin\ContainerInterface $container
-   *   The service container.
-   * @param array $config
-   *   A configuration array containing information about the plugin instance.
-   * @param string $pluginId
-   *   The plugin_id for the plugin instance.
-   * @param mixed $pluginDefinition
-   *   The plugin implementation definition.
-   *
-   * @return static
+   * {@inheritdoc}
    */
   public static function create(
     ContainerInterface $container,
-    array $config,
+    array $configuration,
     $pluginId,
     $pluginDefinition
   ) {
-    $loggerFactory = $container->get('logger.factory');
-    $messenger = $container->get('messenger');
-    $currentUser = $container->get('current_user');
-    $timeInterface = $container->get('datetime.time');
-    return new static($config, $pluginId, $pluginDefinition, $loggerFactory, $messenger, $currentUser, $timeInterface);
+    return new static(
+      $configuration,
+      $pluginId,
+      $pluginDefinition,
+      $container->get('logger.factory'),
+      $container->get('messenger'),
+      $container->get('current_user'),
+      $container->get('datetime.time'),
+    );
   }
 
   /**
@@ -123,6 +120,8 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
 
   /**
    * {@inheritdoc}
+   *
+   * Drupal\Core\Action\ActionInterface::access.
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     if ($object->getEntityType() === 'node') {
@@ -148,7 +147,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
       $entity->setRevisionUserId($current_uid);
     }
 
-    if ($this->currentUser->hasPermission('use dkan_publishing transition hidden')) {
+    if ($this->currentUser->hasAccess($entity)) {
       $entity->save();
     }
     else {
