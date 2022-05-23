@@ -156,6 +156,21 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     $schema['fields'] = $fields;
     $schema['primary key'] = [$this->primaryKey()];
     parent::setSchema($schema);
+    $this->setInnodbMode("OFF");
+    $this->setTable();
+    $this->setInnodbMode("ON");
+  }
+
+  /**
+   * Disable/enable InnoDB strict mode for the given database connection.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection instance.
+   * @param string $value
+   *   "ON" or "OFF".
+   */
+  public function setInnodbMode(string $value = "OFF"): void {
+    $this->connection->query("SET SESSION innodb_strict_mode=:value", [':value' => $value]);
   }
 
   /**
