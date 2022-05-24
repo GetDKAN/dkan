@@ -115,12 +115,10 @@ class MysqlImport extends Importer {
     $spec = $this->generateTableSpec($columns);
     $this->dataStorage->setSchema(['fields' => $spec]);
 
-    // Call `count` on database table in order to ensure a database table has
-    // been created for the datastore.
     // @todo Find a better way to ensure creation of datastore tables.
-    $this->dataStorage->setInnodbMode("OFF");
+    $this->dataStorage->innodbStrictMode(FALSE);
     $this->dataStorage->count();
-    $this->dataStorage->setInnodbMode("ON");
+    $this->dataStorage->innodbStrictMode(TRUE);
     // Construct and execute a SQL import statement using the information
     // gathered from the CSV file being imported.
     $this->getDatabaseConnectionCapableOfDataLoad()->query(

@@ -162,10 +162,11 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Disable/enable InnoDB strict mode for the given database connection.
    *
-   * @param string $value
-   *   "ON" or "OFF".
+   * @param bool $on
+   *   Whether strict mode should be "ON" or "OFF".
    */
-  public function setInnodbMode(string $value = "OFF"): void {
+  public function innodbStrictMode(bool $on) {
+    $value = $on ? "ON" : "OFF";
     // Only if we're using MySQL.
     if ($this->connection instanceof MysqlConnection) {
       $this->connection->query("SET SESSION innodb_strict_mode=:value", [':value' => $value]);

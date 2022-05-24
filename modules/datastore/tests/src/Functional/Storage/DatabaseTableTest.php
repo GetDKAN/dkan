@@ -19,8 +19,7 @@ class DatabaseTableTest extends ExistingSiteBase {
   use CleanUp;
 
   /**
-   * Test that setInnodbMode() turns strict mode off for datastore but not
-   * the rest of DKAN/Drupal.
+   * Test that setInnodbMode() turns strict mode off for datastore.
    */
   public function testSetInnodbMode() {
     $connection = \Drupal::service('dkan.datastore.database');
@@ -30,7 +29,7 @@ class DatabaseTableTest extends ExistingSiteBase {
     $resource = new Resource('123', '/tmp', 'text/csv');
 
     $databaseTable = new DatabaseTable($connection, $resource);
-    $databaseTable->setInnodbMode("OFF");
+    $databaseTable->innodbStrictMode(FALSE);
 
     $result = $connection->query("SHOW SESSION VARIABLES LIKE 'innodb_strict_mode'")->fetchObject();
     $this->assertEquals($result->Value, "OFF");
@@ -41,7 +40,7 @@ class DatabaseTableTest extends ExistingSiteBase {
     $this->assertEquals($result->Value, "ON");
 
     // Safe mode can be turned back on.
-    $databaseTable->setInnodbMode("ON");
+    $databaseTable->innodbStrictMode(TRUE);
     $result = $connection->query("SHOW SESSION VARIABLES LIKE 'innodb_strict_mode'")->fetchObject();
     $this->assertEquals($result->Value, "ON");
   }
