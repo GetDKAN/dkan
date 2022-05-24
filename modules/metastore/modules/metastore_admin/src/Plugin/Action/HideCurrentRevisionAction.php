@@ -63,8 +63,8 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     AccountInterface $currentUser,
     TimeInterface $timeInterface
   ) {
-    parent::__construct([], $pluginId, $pluginDefinition);
-    $this->loggerFactory = $loggerFactory->get('metastore_admin');
+    parent::__construct($configuration, $pluginId, $pluginDefinition);
+    $this->logger = $loggerFactory->get('metastore_admin');
     $this->messenger = $messenger;
     $this->currentUser = $currentUser;
     $this->timeInterface = $timeInterface;
@@ -81,7 +81,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     $pluginDefinition
   ) {
     return new static(
-      [],
+      $configuration,
       $pluginId,
       $pluginDefinition,
       $container->get('logger.factory'),
@@ -97,7 +97,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
   public function execute($entity = NULL) {
 
     if ($entity && $this->currentUser->hasPermission('use dkan_publishing transition hidden')) {
-      $this->loggerFactory->notice("Executing hide current revision of " . $entity->label());
+      $this->logger->notice("Executing hide current revision of " . $entity->label());
 
       $this->hide($entity);
 
@@ -105,10 +105,9 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
       if (!$entity->isPublished()) {
         $msg = "Something went wrong, the entity must be published by this point.  Review your content moderation configuration make sure you have the hidden state available and try again.";
         $this->messenger->addError(utf8_encode($msg));
-        $this->loggerFactory->warning($msg);
+        $this->logger->warning($msg);
         return $msg;
       }
-      return sprintf('Example action (configuration: %s)', print_r($this->configuration, TRUE));
     }
     else {
       $this->messenger->addWarning($this->t("You don't have access to execute this operation!"));
@@ -123,8 +122,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     if ($object->getEntityType() === 'node') {
-      $access = $object->access('update', $account, TRUE)
-        ->andIf($object->status->access('edit', $account, TRUE));
+      $access = $object->access('update', $account, TRUE);
       return $return_as_object ? $access : $access->isAllowed();
     }
 
