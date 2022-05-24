@@ -9,7 +9,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Messenger\MessengerInterface;
-use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\common\LoggerTrait;
 
 /**
@@ -67,7 +67,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     $this->logger = $loggerFactory->get('metastore_admin');
     $this->messenger = $messenger;
     $this->currentUser = $currentUser;
-    $this->timeInterface = $timeInterface;
+  $this->timeInterface = $timeInterface;
 
   }
 
@@ -96,18 +96,9 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    */
   public function execute($entity = NULL) {
 
-    if ($entity && $this->currentUser->hasPermission('use dkan_publishing transition hidden')) {
+    if ($entity && $this->access($entity)) {
       $this->logger->notice("Executing hide current revision of " . $entity->label());
-
       $this->hide($entity);
-
-      // Check if published.
-      if (!$entity->isPublished()) {
-        $msg = "Something went wrong, the entity must be published by this point.  Review your content moderation configuration make sure you have the hidden state available and try again.";
-        $this->messenger->addError(utf8_encode($msg));
-        $this->logger->warning($msg);
-        return $msg;
-      }
     }
     else {
       $this->messenger->addWarning($this->t("You don't have access to execute this operation!"));
@@ -121,12 +112,14 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
    * Drupal\Core\Action\ActionInterface::access.
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
-    if ($object->getEntityType() === 'node') {
-      $access = $object->access('update', $account, TRUE);
-      return $return_as_object ? $access : $access->isAllowed();
+    if ($account === NULL) {
+      $account = $this->currentUser;
     }
-
-    return TRUE;
+    if (!$account->hasPermission('use dkan_publishing transition hidden')) {
+      return FALSE;
+    }
+    $access = $object->access('update', $account, TRUE);
+    return $return_as_object ? $access : $access->isAllowed();
   }
 
   /**
