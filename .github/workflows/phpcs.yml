@@ -34,4 +34,3 @@ jobs:
 
     - name: Run PHPCS
       run: composer run phpcs
-      continue-on-error: true
