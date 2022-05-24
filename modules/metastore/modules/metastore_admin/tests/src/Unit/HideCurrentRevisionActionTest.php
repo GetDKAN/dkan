@@ -35,19 +35,19 @@ class HideCurrentRevisionActionTest extends TestCase {
   }
 
   /**
-   * Test user access to edit the node.
+   * Test the HideCurrentRevisionAction plugin.
    *
-   * @covers ::access
+   * @covers ::hide
    */
-  public function testAccess() {
+  public function testHide() {
     $container = $this->getContainer();
     $actionPlugin = HideCurrentRevisionAction::create($container, [], 'hide_current_revision_action', []);
     $object = (new Chain($this))
-      ->add(Node::class, 'access', AccessResultInterface::class)
-      ->add(AccessResultInterface::class, 'andIf', TRUE)
+      ->add(EntityTypeManager::class, 'getStorage', NodeStorage::class)
+      ->add(NodeStorage::class, 'load')
       ->getMock();
 
-    $this->assertTrue($actionPlugin->access($object));
+    $this->assertTrue($actionPlugin->hide($object));
 
   }
 

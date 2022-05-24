@@ -63,10 +63,8 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     AccountInterface $currentUser,
     TimeInterface $timeInterface
   ) {
-    parent::__construct($configuration, $pluginId, $pluginDefinition);
-    //$this->setLoggerFactory($loggerFactory, 'metastore_admin');
-    //$this->loggerFactory = $loggerFactory->get('metastore_admin');
-    $this->loggerFactory = $loggerFactory;
+    parent::__construct([], $pluginId, $pluginDefinition);
+    $this->loggerFactory = $loggerFactory->get('metastore_admin');
     $this->messenger = $messenger;
     $this->currentUser = $currentUser;
     $this->timeInterface = $timeInterface;
@@ -83,7 +81,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     $pluginDefinition
   ) {
     return new static(
-      $configuration,
+      [],
       $pluginId,
       $pluginDefinition,
       $container->get('logger.factory'),
@@ -145,16 +143,9 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
       $entity->setRevisionLogMessage($msg);
       $current_uid = $this->currentUser->id();
       $entity->setRevisionUserId($current_uid);
-    }
 
-    if ($this->currentUser->hasAccess($entity)) {
-      $entity->save();
     }
-    else {
-      $this->logger->notice(
-        utf8_encode("Bulk hide not permitted, check permissions")
-      );
-    }
+    $entity->save();
 
     return $entity;
   }
