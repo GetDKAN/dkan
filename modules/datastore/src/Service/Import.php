@@ -25,7 +25,7 @@ class Import {
    *
    * @var string
    */
-  protected const EVENT_CONFIGURE_PARSER = 'dkan_datastore_import_configure_parser';
+  public const EVENT_CONFIGURE_PARSER = 'dkan_datastore_import_configure_parser';
 
   /**
    * Time-limit used for standard import service.
