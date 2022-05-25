@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: hide_current
+label: 'Hide current revision'
+type: node
+plugin: hide_current_revision_action
+configuration: {  }
