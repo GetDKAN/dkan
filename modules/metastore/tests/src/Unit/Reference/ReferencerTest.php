@@ -28,6 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use GuzzleHttp\Client;
 
 class ReferencerTest extends TestCase {
 
@@ -99,8 +100,10 @@ class ReferencerTest extends TestCase {
     $configService = (new Chain($this))
       ->add(ConfigFactoryInterface::class, 'get', $immutableConfig)
       ->getMock();
-
-    $referencer = new Referencer($configService, $storageFactory);
+    $httpClient = (new Chain($this))
+      ->add(Client::class)
+      ->getMock();
+    $referencer = new Referencer($configService, $storageFactory, $httpClient);
     return $referencer;
   }
 
