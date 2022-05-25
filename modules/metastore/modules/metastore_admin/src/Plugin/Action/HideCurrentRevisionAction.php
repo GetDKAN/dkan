@@ -10,7 +10,6 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\common\LoggerTrait;
 
 /**
  * Provides a hide action to exclude an entity from search results.
@@ -26,7 +25,6 @@ use Drupal\common\LoggerTrait;
  * )
  */
 class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPluginInterface {
-  use LoggerTrait;
 
   /**
    * Private.
@@ -67,8 +65,7 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
     $this->logger = $loggerFactory->get('metastore_admin');
     $this->messenger = $messenger;
     $this->currentUser = $currentUser;
-  $this->timeInterface = $timeInterface;
-
+    $this->timeInterface = $timeInterface;
   }
 
   /**
@@ -134,7 +131,6 @@ class HideCurrentRevisionAction extends ActionBase implements ContainerFactoryPl
       $entity->setRevisionLogMessage($msg);
       $current_uid = $this->currentUser->id();
       $entity->setRevisionUserId($current_uid);
-
     }
     $entity->save();
 
