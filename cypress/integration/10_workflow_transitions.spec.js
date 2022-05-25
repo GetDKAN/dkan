@@ -1,7 +1,10 @@
 import * as dkan from '../support/helpers/dkan'
 
-context('Draft datasets', () => {
-  beforeEach(() => cy.drupalLogin('testeditor', 'testeditor'))
+context('DKAN Workflow', () => {
+  beforeEach(() => {
+    const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+    cy.drupalLogin(user_credentials.user, user_credentials.pass)
+  })
 
   it('Draft datasets are hidden from the catalog until published.', () => {
     // Create draft dataset
@@ -33,7 +36,7 @@ context('Draft datasets', () => {
       cy.get('#edit-submit').click()
       cy.get('.button').contains('Yes').click({ force:true })
       cy.get('.messages--status').should('contain', 'has been updated')
-      
+
       // Ensure dataset is visible via public API with correct title
       cy.request('/api/1/metastore/schemas/dataset/items/' + datasetId).should((response) => {
         expect(response.status).to.eq(200)
@@ -47,10 +50,6 @@ context('Draft datasets', () => {
       })
     })
   })
-})
-
-context('Archived datasets', () => {
-  beforeEach(() => cy.drupalLogin('testeditor', 'testeditor'))
 
   it('Existing datasets which are archived cannot be visited, and are hidden from the catalog.', () => {
     // Create published dataset
@@ -95,10 +94,6 @@ context('Archived datasets', () => {
       })
     })
   })
-})
-
-context('Hidden datasets', () => {
-  beforeEach(() => cy.drupalLogin('testeditor', 'testeditor'))
 
   it('Newly created hidden datasets are visible when visited directly, but hidden from the catalog.', () => {
     // create hidden dataset
