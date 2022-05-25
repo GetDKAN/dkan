@@ -3,6 +3,7 @@
 namespace Drupal\Tests\metastore_admin\Functional\Plugin\Action;
 
 use Drupal\Core\Session\AccountProxy;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\metastore\Service as Metastore;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\common\Traits\CleanUp;
@@ -74,7 +75,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     );
 
     $this->assertEquals('published', $node->get('moderation_state')->getString());
-    
+
     $hideCurrentRevisionAction->execute($node);
 
     $this->assertEquals('hidden', $node->get('moderation_state')->getString());
@@ -93,7 +94,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
     $this->getMetastore()->post('dataset', $datasetRootedJsonData);
     $result = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => '458']);
     $node = current($result);
-    
+
     $accountProxy = new AccountProxy($container->get('event_dispatcher'));
     $accountProxy->setAccount($testapiuser);
     $container->set('current_user', $accountProxy);
@@ -111,7 +112,7 @@ class HideCurrentRevisionActionTest extends ExistingSiteBase {
 
     $this->assertEquals('published', $node->get('moderation_state')->getString());
     $hideCurrentRevisionAction->execute($node);
-    $this->assertEquals('hidden', $node->get('moderation_state')->getString());
+    $this->assertEquals('published', $node->get('moderation_state')->getString());
 
   }
 
