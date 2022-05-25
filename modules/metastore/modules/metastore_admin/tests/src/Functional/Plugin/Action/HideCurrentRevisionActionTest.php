@@ -3,7 +3,6 @@
 namespace Drupal\Tests\metastore_admin\Functional\Plugin\Action;
 
 use Drupal\Core\Session\AccountProxy;
-use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\metastore\Service as Metastore;
 use Drupal\metastore_admin\Plugin\Action\HideCurrentRevisionAction;
 use Drupal\Tests\common\Traits\CleanUp;
