@@ -30,7 +30,7 @@ abstract class Api1TestBase extends ExistingSiteBase {
     $this->setDefaultModerationState($state = 'published');
     $this->baseUrl = getenv('SIMPLETEST_BASE_URL');
     $this->http = new Client(['base_uri' => $this->baseUrl]);
-    $this->auth = ['testuser', '2jqzOAnXS9mmcLasy'];
+    $this->auth = ['testapiuser', 'testapiuser'];
     $this->endpoint = $this->getEndpoint();
 
     // Load the API spec for use by tests.
