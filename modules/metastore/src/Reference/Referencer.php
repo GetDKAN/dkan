@@ -12,7 +12,7 @@ use Drupal\metastore\ResourceMapper;
 use Drupal\metastore\Service;
 
 use Contracts\FactoryInterface;
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 
 /**
  * Metastore referencer service.
@@ -35,12 +35,21 @@ class Referencer {
    */
   private $storageFactory;
 
+
+  /**
+   * Http Client.
+   *
+   * @var \GuzzleHttp\ClientInterface
+   */
+  private $httpClient;
+
   /**
    * Constructor.
    */
-  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory) {
+  public function __construct(ConfigFactoryInterface $configService, FactoryInterface $storageFactory, ClientInterface $httpClient) {
     $this->setConfigService($configService);
     $this->storageFactory = $storageFactory;
+    $this->httpClient = $httpClient;
     $this->setLoggerFactory(\Drupal::service('logger.factory'));
   }
 
@@ -342,8 +351,7 @@ class Referencer {
 
     // Perform HTTP Head request against the supplied URL in order to determine
     // the content type of the remote resource.
-    $client = \Drupal::httpClient();
-    $response = $client->head($downloadUrl);
+    $response = $this->httpClient->head($downloadUrl);
     // Extract the full value of the content type header.
     $content_type = $response->getHeader('Content-Type');
     // Attempt to extract the mime type from the content type header.
