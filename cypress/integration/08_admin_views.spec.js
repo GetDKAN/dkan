@@ -6,6 +6,7 @@ context('Admin content and dataset views', () => {
     beforeEach(() => {
         const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
         cy.drupalLogin(user_credentials.user, user_credentials.pass)
+        cy.visit(baseurl + "/admin/dkan/datasets")
     })
 
     it('The admin content screen has an exposed data type filter that contains the values I expect.', () => {
@@ -84,8 +85,7 @@ context('Admin content and dataset views', () => {
         cy.get('#edit-submit--2').click({ force:true })
         cy.get('.button').contains('Yes').click({ force:true })
         cy.get('#edit-submit').click({ force:true })
-        cy.visit(baseurl + "/admin/dkan/datasets")
-        cy.get('.messages--status').should('contain','has been deleted')
+        cy.get('.messages--status').should('contain','Deleted 1 content item.')
     })
 
   })
