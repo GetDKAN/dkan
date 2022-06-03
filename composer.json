@@ -44,7 +44,7 @@
         "enable-patching": true,
         "patches": {
             "drupal/core": {
-                "3230541: Fix queue items not being leased by cron for proper time segments": "https://www.drupal.org/files/issues/2022-02-16/3230541-11.diff"
+                "3274931: Allow specifying cron queue item lease time": "https://www.drupal.org/files/issues/2022-05-20/3274931-5.diff"
             }
         },
         "drupal-scaffold": {
