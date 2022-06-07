@@ -71,7 +71,7 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('dkan.datastore.service'),
+      $container->get('dkan.datastore.query'),
       $container->get('dkan.common.dataset_info'),
       $container->get('dkan.metastore.api_response'),
       $container->get('config.factory')

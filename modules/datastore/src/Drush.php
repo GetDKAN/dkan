@@ -15,7 +15,6 @@ use Drush\Commands\DrushCommands;
  * @codeCoverageIgnore
  */
 class Drush extends DrushCommands {
-  use TableTrait;
   /**
    * The metastore service.
    *
@@ -190,7 +189,7 @@ class Drush extends DrushCommands {
    * Delete jobstore entries related to a datastore.
    */
   protected function jobstorePrune($ref_uuid) {
-    
+
     $jobs = [
       [
         "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
