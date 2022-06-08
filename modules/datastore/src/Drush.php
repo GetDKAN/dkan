@@ -30,13 +30,6 @@ class Drush extends DrushCommands {
   protected $datastoreService;
 
   /**
-   * Resource localizer for handling remote resource URLs.
-   *
-   * @var \Drupal\datastore\Service\ResourceLocalizer
-   */
-  private $resourceLocalizer;
-
-  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
@@ -52,7 +45,7 @@ class Drush extends DrushCommands {
   /**
    * Import a datastore.
    *
-   * @param string $uuid
+   * @param string $identifier
    *   The uuid of a resource.
    * @param bool $deferred
    *   Whether or not the process should be deferred to a queue.
@@ -60,13 +53,15 @@ class Drush extends DrushCommands {
    * @todo pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan:datastore:import
    */
-  public function import($uuid, $deferred = FALSE) {
+  public function import($identifier, $deferred = FALSE) {
 
     try {
-      $this->datastoreService->import($uuid, $deferred);
+      $result = $this->datastoreService->import($identifier, $deferred);
+      $status = $result['Import']->getStatus();
+      $this->logger->notice("Ran import for {$identifier}; status: $status");
     }
     catch (\Exception $e) {
-      $this->logger->error("We were not able to load the entity with uuid {$uuid}");
+      $this->logger->error("No resource found to import with identifier {$identifier}");
       $this->logger->debug($e->getMessage());
     }
   }
@@ -138,39 +133,18 @@ class Drush extends DrushCommands {
   /**
    * Drop a datastore.
    *
-   * @param string $uuid
-   *   The uuid of a dataset resource.
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   *
+   * @option keep-local
+   *   Do not remove localized resource, only datastore.
    *
    * @command dkan:datastore:drop
    */
-  public function drop($uuid) {
-    try {
-      // Retrieve the UUID for the dataset's resource before dropping the
-      // dataset's resource mapper table entry.
-      $resource = $this->resourceLocalizer->get($uuid);
-      if (!isset($resource)) {
-        throw new \UnexpectedValueException("Resource not found with uuid {$uuid}");
-      }
-      $resource_uuid = $resource->getUniqueIdentifier();
-      // Drop the datastore table and corresponding resource mapper table entry.
-      $this->datastoreService->drop($uuid);
-      $this->logger->notice("Successfully dropped the datastore for {$uuid}");
-    }
-    catch (\Exception $e) {
-      $this->logger->error("Unable to find an entity with uuid {$uuid}");
-      $this->logger->debug($e->getMessage());
-      return;
-    }
-    catch (\TypeError $e) {
-      // This will catch all TypeErrors with all arguments. Since we only
-      // pass the UUID to the DataStore::Service::drop method we can safely
-      // assume the issue is with the uuid.
-      $this->logger->error("Unexpected entity uuid.");
-      $this->logger->debug($e->getMessage());
-      return;
-    }
-    // Drop any remaining jobstore entries for this resource.
-    $this->jobstorePrune($resource_uuid);
+  public function drop(string $identifier, array $options = ['keep-local' => FALSE]) {
+    $keep_local = $options['keep-local'] ? FALSE : TRUE;
+    $this->datastoreService->drop($identifier, NULL, $keep_local);
+    $this->logger->notice("Successfully dropped the datastore for resource {$identifier}");
   }
 
   /**
@@ -184,33 +158,5 @@ class Drush extends DrushCommands {
       $this->drop($uuid);
     }
   }
-
-  /**
-   * Delete jobstore entries related to a datastore.
-   */
-  protected function jobstorePrune($ref_uuid) {
-
-    $jobs = [
-      [
-        "id" => substr(str_replace('__', '_', $ref_uuid), 0, -11),
-        "table" => "jobstore_filefetcher_filefetcher",
-      ],
-      [
-        "id" => md5($ref_uuid),
-        "table" => "jobstore_dkan_datastore_importer",
-      ],
-    ];
-
-    try {
-      foreach ($jobs as $job) {
-        \Drupal::database()->delete($job['table'])->condition('ref_uuid', $job['id'])->execute();
-        $this->logger('datastore')->notice("Successfully removed the {$job['table']} record for ref_uuid {$job['id']}.");
-      }
-    }
-    catch (\Exception $e) {
-      $this->logger('datastore')->error("Failed to delete the jobstore record for ref_uuid {$job['id']}.", $e->getMessage());
-    }
-  }
-
 
 }

@@ -100,8 +100,9 @@ class ResourceLocalizer {
     }
 
     $ff = $this->getFileFetcher($resource);
+    $status = $ff->getResult()->getStatus();
 
-    if ($ff->getResult()->getStatus() != Result::DONE) {
+    if ($status != Result::DONE) {
       return NULL;
     }
 
