@@ -190,7 +190,7 @@ class Service implements ContainerInjectionInterface {
    * @param bool $local_resource
    *   Whether to remove the local resource. If false, just drop the db table.
    */
-  public function drop(string $identifier, $version = NULL, $local_resource = TRUE) {
+  public function drop(string $identifier, ?string $version = NULL, bool $local_resource = TRUE) {
     $storage = $this->getStorage($identifier, $version);
     $resource_id = $this->resourceLocalizer->get($identifier, $version)->getUniqueIdentifier();
 
