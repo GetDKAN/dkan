@@ -43,22 +43,34 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Import a datastore.
+   * Import a datastore resource.
+   *
+   * Passing simply a resource identifier will immediately run an import for that
+   * resource. However, if both the FileFetcher and Import jobs are already recorded
+   * as "done" in the jobstore, nothing will happen. To re-import an existing
+   * resource, first use the dkan:datastore:drop command then use import. If you
+   * want to re-import the file to the datastore without repeating the FileFetcher,
+   * make sure to run the drop command with --keep-local. The local file and the
+   * FileFetcher status will be preserved, so the import will see them as "done"
+   * and go straight to the actual DB import job.
    *
    * @param string $identifier
-   *   The uuid of a resource.
-   * @param bool $deferred
-   *   Whether or not the process should be deferred to a queue.
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   *
+   * @option deferred
+   *   Add the import to the datastore_import queue, rather than importing now.
    *
    * @todo pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan:datastore:import
    */
-  public function import($identifier, $deferred = FALSE) {
+  public function import(string $identifier, array $options = ['deferred' => FALSE]) {
+    $deferred = $options['deferred'] ? TRUE : FALSE;
 
     try {
       $result = $this->datastoreService->import($identifier, $deferred);
-      $status = $result['Import']->getStatus();
-      $this->logger->notice("Ran import for {$identifier}; status: $status");
+      $status = $result['Import'] ? $result['Import']->getStatus() : 'failed, resource not found';
+      $message = $deferred ? "Queued import for {$identifier}" : "Ran import for {$identifier}; status: $status";
+      $this->logger->notice($message);
     }
     catch (\Exception $e) {
       $this->logger->error("No resource found to import with identifier {$identifier}");
@@ -131,7 +143,16 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Drop a datastore.
+   * Drop a resource from the datastore.
+   *
+   * If you pass a simple resource identifier, both the database table and the
+   * localized resource file (if the file is remote) will be deleted. If you
+   * would like to just drop the datastore table but keep the localized
+   * resource (this may be useful if a large file was successfully localized
+   * but the database import failed and you want to redo it) pass the
+   * --keep-local argument. In both cases, the appropriate jobstore results
+   * (where the status of the import or file-fetch jobs are stored) will be
+   * deleted.
    *
    * @param string $identifier
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
