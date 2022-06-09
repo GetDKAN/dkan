@@ -30,13 +30,6 @@ class Drush extends DrushCommands {
   protected $datastoreService;
 
   /**
-   * Resource localizer for handling remote resource URLs.
-   *
-   * @var \Drupal\datastore\Service\ResourceLocalizer
-   */
-  private $resourceLocalizer;
-
-  /**
    * Constructor for DkanDatastoreCommands.
    */
   public function __construct(
@@ -50,23 +43,37 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Import a datastore.
+   * Import a datastore resource.
    *
-   * @param string $uuid
-   *   The uuid of a resource.
-   * @param bool $deferred
-   *   Whether or not the process should be deferred to a queue.
+   * Passing simply a resource identifier will immediately run an import for that
+   * resource. However, if both the FileFetcher and Import jobs are already recorded
+   * as "done" in the jobstore, nothing will happen. To re-import an existing
+   * resource, first use the dkan:datastore:drop command then use import. If you
+   * want to re-import the file to the datastore without repeating the FileFetcher,
+   * make sure to run the drop command with --keep-local. The local file and the
+   * FileFetcher status will be preserved, so the import will see them as "done"
+   * and go straight to the actual DB import job.
+   *
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   *
+   * @option deferred
+   *   Add the import to the datastore_import queue, rather than importing now.
    *
    * @todo pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan:datastore:import
    */
-  public function import($uuid, $deferred = FALSE) {
+  public function import(string $identifier, array $options = ['deferred' => FALSE]) {
+    $deferred = $options['deferred'] ? TRUE : FALSE;
 
     try {
-      $this->datastoreService->import($uuid, $deferred);
+      $result = $this->datastoreService->import($identifier, $deferred);
+      $status = $result['Import'] ? $result['Import']->getStatus() : 'failed, resource not found';
+      $message = $deferred ? "Queued import for {$identifier}" : "Ran import for {$identifier}; status: $status";
+      $this->logger->notice($message);
     }
     catch (\Exception $e) {
-      $this->logger->error("We were not able to load the entity with uuid {$uuid}");
+      $this->logger->error("No resource found to import with identifier {$identifier}");
       $this->logger->debug($e->getMessage());
     }
   }
@@ -136,41 +143,33 @@ class Drush extends DrushCommands {
   }
 
   /**
-   * Drop a datastore.
+   * Drop a resource from the datastore.
    *
-   * @param string $uuid
-   *   The uuid of a dataset resource.
+   * If you pass a simple resource identifier, both the database table and the
+   * localized resource file (if the file is remote) will be deleted. If you
+   * would like to just drop the datastore table but keep the localized
+   * resource (this may be useful if a large file was successfully localized
+   * but the database import failed and you want to redo it) pass the
+   * --keep-local argument. In both cases, the appropriate jobstore results
+   * (where the status of the import or file-fetch jobs are stored) will be
+   * deleted.
+   *
+   * Note that if you have "Delete local resource" checked in
+   * /admin/dkan/resources, the file may already be deleted and therefore
+   * --keep-local may not have the desired effect.
+   *
+   * @param string $identifier
+   *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
+   *
+   * @option keep-local
+   *   Do not remove localized resource, only datastore.
    *
    * @command dkan:datastore:drop
    */
-  public function drop($uuid) {
-    try {
-      // Retrieve the UUID for the dataset's resource before dropping the
-      // dataset's resource mapper table entry.
-      $resource = $this->resourceLocalizer->get($uuid);
-      if (!isset($resource)) {
-        throw new \UnexpectedValueException("Resource not found with uuid {$uuid}");
-      }
-      $resource_uuid = $resource->getUniqueIdentifier();
-      // Drop the datastore table and corresponding resource mapper table entry.
-      $this->datastoreService->drop($uuid);
-      $this->logger->notice("Successfully dropped the datastore for {$uuid}");
-    }
-    catch (\Exception $e) {
-      $this->logger->error("Unable to find an entity with uuid {$uuid}");
-      $this->logger->debug($e->getMessage());
-      return;
-    }
-    catch (\TypeError $e) {
-      // This will catch all TypeErrors with all arguments. Since we only
-      // pass the UUID to the DataStore::Service::drop method we can safely
-      // assume the issue is with the uuid.
-      $this->logger->error("Unexpected entity uuid.");
-      $this->logger->debug($e->getMessage());
-      return;
-    }
-    // Drop any remaining jobstore entries for this resource.
-    $this->jobstorePrune($resource_uuid);
+  public function drop(string $identifier, array $options = ['keep-local' => FALSE]) {
+    $local_resource = $options['keep-local'] ? FALSE : TRUE;
+    $this->datastoreService->drop($identifier, NULL, $local_resource);
+    $this->logger->notice("Successfully dropped the datastore for resource {$identifier}");
   }
 
   /**

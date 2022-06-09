@@ -2,6 +2,7 @@
 
 namespace Drupal\datastore;
 
+use Dkan\Datastore\Importer;
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
 use Procrastinator\Result;
@@ -11,6 +12,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\Info\ImportInfoList;
+use FileFetcher\FileFetcher;
 
 /**
  * Main services for the datastore.
@@ -185,15 +187,26 @@ class Service implements ContainerInjectionInterface {
    *   A resource's identifier.
    * @param string|null $version
    *   A resource's version.
+   * @param bool $local_resource
+   *   Whether to remove the local resource. If false, just drop the db table.
    */
-  public function drop(string $identifier, $version = NULL) {
+  public function drop(string $identifier, ?string $version = NULL, bool $local_resource = TRUE) {
     $storage = $this->getStorage($identifier, $version);
+    $resource_id = $this->resourceLocalizer->get($identifier, $version)->getUniqueIdentifier();
 
     if ($storage) {
       $storage->destruct();
+      $this->jobStoreFactory
+        ->getInstance(Importer::class)
+        ->remove(md5($resource_id));
     }
 
-    $this->resourceLocalizer->remove($identifier, $version);
+    if ($local_resource) {
+      $this->resourceLocalizer->remove($identifier, $version);
+      $this->jobStoreFactory
+        ->getInstance(FileFetcher::class)
+        ->remove(substr(str_replace('__', '_', $resource_id), 0, -11));
+    }
   }
 
   /**
