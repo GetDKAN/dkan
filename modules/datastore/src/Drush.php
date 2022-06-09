@@ -154,6 +154,10 @@ class Drush extends DrushCommands {
    * (where the status of the import or file-fetch jobs are stored) will be
    * deleted.
    *
+   * Note that if you have "Delete local resource" checked in
+   * /admin/dkan/resources, the file may already be deleted and therefore
+   * --keep-local may not have the desired effect.
+   *
    * @param string $identifier
    *   Datastore resource identifier, e.g., "b210fb966b5f68be0421b928631e5d51".
    *
@@ -163,8 +167,8 @@ class Drush extends DrushCommands {
    * @command dkan:datastore:drop
    */
   public function drop(string $identifier, array $options = ['keep-local' => FALSE]) {
-    $keep_local = $options['keep-local'] ? FALSE : TRUE;
-    $this->datastoreService->drop($identifier, NULL, $keep_local);
+    $local_resource = $options['keep-local'] ? FALSE : TRUE;
+    $this->datastoreService->drop($identifier, NULL, $local_resource);
     $this->logger->notice("Successfully dropped the datastore for resource {$identifier}");
   }
 
