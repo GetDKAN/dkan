@@ -10,7 +10,7 @@
         "drupal/indexer": "1.0.x-dev",
         "drupal/moderated_content_bulk_publish": "^2.0",
         "drupal/search_api": "^1.15",
-        "drupal/select_or_other": "^4.0",
+        "drupal/select_or_other": "@stable",
         "drupal/select2": "1.x-dev",
         "drupal/views_bulk_operations": "^4.0",
         "ext-json": "*",
