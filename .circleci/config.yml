@@ -66,6 +66,8 @@ commands:
                 command: |
                   git --git-dir=dkan/.git --work-tree=dkan checkout "${CIRCLE_SHA1}"
                   dktl exec:composer -- require --no-interaction --ansi --no-update "getdkan/dkan:dev-${CIRCLE_SHA1}"
+                  rm -rf docroot/modules/contrib/select_or_other
+                  rm -rf vendor/
                   dktl exec:composer -- update --no-interaction --ansi
                   dktl drush cache:rebuild
                   dktl drush updatedb -y
