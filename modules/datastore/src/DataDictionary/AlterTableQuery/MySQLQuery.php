@@ -57,7 +57,7 @@ class MySQLQuery implements AlterTableQueryInterface {
    * {@inheritdoc}
    */
   public function applyDataTypes(): void {
-    $this->dictionaryFields = $this->filterForDatastoreFields($this->dictionaryFields, $this->datastoreTable);
+    $this->dictionaryFields = $this->mergeDatastoreFields($this->dictionaryFields, $this->datastoreTable);
 
     // Build and execute SQL commands to prepare for table alter.
     $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
@@ -67,33 +67,43 @@ class MySQLQuery implements AlterTableQueryInterface {
   }
 
   /**
-   * Filter out dictionary fields not found in the given table.
+   * Remove dictionary fields not found in the given table and copy over names.
    *
    * @param array $dictionary_fields
    *   Data dictionary fields.
    * @param string $table
-   *   Mysql table to filter against.
+   *   MySQL table to filter against.
    *
    * @return array
-   *   Filtered list of applicable data dictionary fields.
+   *   Filtered and updated list of applicable data dictionary fields.
    */
-  protected function filterForDatastoreFields(array $dictionary_fields, string $table): array {
-    $table_cols = $this->getTableCols($table);
+  protected function mergeDatastoreFields(array $dictionary_fields, string $table): array {
+    $table_cols = $this->getTableColsAndComments($table);
+    $column_names = array_keys($table_cols);
 
-    return array_filter($dictionary_fields, fn ($fields) => in_array($fields['name'], $table_cols, TRUE));
+    // Filter out un-applicable dictionary fields.
+    $filtered_dictionary_fields = array_filter($dictionary_fields, fn ($fields) => in_array($fields['name'], $column_names, TRUE));
+    // Fill missing dictionary field titles.
+    foreach ($table_cols as $column_name => $comment) {
+      if (isset($filtered_dictionary_fields[$column_name])) {
+        $filtered_dictionary_fields[$column_name]['title'] ??= $comment;
+      }
+    }
+
+    return $filtered_dictionary_fields;
   }
 
   /**
-   * Get list of MySQL table field names.
+   * Get list of MySQL table field details.
    *
    * @param string $table
    *   Table name.
    *
    * @return string[]
-   *   List of column names.
+   *   List of column comments keyed by column names.
    */
-  protected function getTableCols(string $table): array {
-    return $this->connection->query("DESCRIBE {{$table}};")->fetchCol();
+  protected function getTableColsAndComments(string $table): array {
+    return $this->connection->query("SHOW FULL COLUMNS FROM {{$table}};")->fetchAllKeyed(0, 9);
   }
 
   /**
@@ -204,17 +214,17 @@ class MySQLQuery implements AlterTableQueryInterface {
    */
   protected function buildAlterCommand(array $dictionary_fields, string $table): StatementInterface {
     $modify_lines = [];
-    $args = [];
 
-    foreach ($dictionary_fields as ['name' => $field, 'type' => $type]) {
+    foreach ($dictionary_fields as ['name' => $field, 'type' => $type, 'title' => $title]) {
       // Get MySQL type for column.
       $column_type = $this->getType($type, $field, $table);
       // Build modify line for alter command and add the appropriate arguments
       // to the args list.
-      $modify_lines[] = "MODIFY COLUMN {$field} {$column_type}";
+      $modify_lines[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$title}'";
     }
 
-    return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $modify_lines) . ';', $args);
+    \Drupal::logger('test')->alert("ALTER TABLE {{$table}} " . implode(', ', $modify_lines) . ';');
+    return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $modify_lines) . ';', []);
   }
 
 }
