@@ -158,3 +158,11 @@ dkan.metastore.config_properties:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+datastore.data_dictionary_settings:
+  path: '/admin/dkan/data-dictionary'
+  defaults:
+    _title: 'Data-Dictionary Settings'
+    _form: '\Drupal\metastore\Form\DataDictionarySettingsForm'
+  requirements:
+    _permission: 'administer site configuration'
