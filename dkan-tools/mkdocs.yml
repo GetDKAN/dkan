@@ -1,0 +1,24 @@
+site_name: DKAN Tools Documentation
+repo_url: https://github.com/GetDKAN/dkan-tools/
+theme: windmill
+extra_css:
+    - css/custom.css
+extra:
+    version: 2.4.x
+nav:
+    - 'index.md'
+    - 'installation.md'
+    - 'Starting a new project': 'newproject.md'
+    - 'Add DKAN to an existing site': 'add_dkan.md'
+    - 'File structure of a DKAN-Tools-based project': 'structure.md'
+    - 'Decoupled frontend': 'frontend.md'
+    - 'Database and file backups': 'backups.md'
+    - 'Site Maintenance': 'maintenance.md'
+    - 'patching.md'
+    - 'Custom commands': 'extend.md'
+    - 'Modifying the Docker containers': 'docker_config.md'
+    - 'Test users': 'testusers.md'
+    - 'troubleshooting.md'
+markdown_extensions:
+    - admonition
+site_dir: docs-build

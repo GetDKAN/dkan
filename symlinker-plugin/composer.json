@@ -1,0 +1,26 @@
+{
+    "name": "getdkan/symlinker-plugin",
+    "type": "composer-plugin",
+    "require": {
+        "php": ">=7.3.0",
+        "composer-plugin-api": "^1 || ^2",
+        "symfony/filesystem": "@stable"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dkan\\Composer\\Plugin\\Symlinker\\": "/src"
+        }
+    },
+    "extra": {
+        "class": "Dkan\\Composer\\Plugin\\Symlinker\\Plugin",
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "require-dev": {
+        "composer/composer": "^2.2@stable"
+    }
+}

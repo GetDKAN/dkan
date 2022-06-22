@@ -1,0 +1,19 @@
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         syntaxCheck="false"
+         bootstrap="boot.php"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         colors="true">
+    <testsuites>
+        <testsuite name="Custom Test Suite Example">
+            <file>example/CustomTest.php</file>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <ini name="display_errors" value="true"/>
+        <includePath>.</includePath>
+    </php>
+</phpunit>

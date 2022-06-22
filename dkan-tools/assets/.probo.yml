@@ -1,0 +1,33 @@
+image: proboci/ubuntu-16.04-lamp:php-7.0
+assets:
+  - .aws.tar.gz
+steps:
+  - name: Setup QA site
+    plugin: Script
+    script: |
+      export DKTL_MODE="HOST"
+
+      apt-get update -y
+      apt-get install awscli -y
+
+      cd /assets
+      tar -xzvf /assets/.aws.tar.gz
+      ln -s /assets/.aws ~/.aws
+      cd $SRC_DIR
+
+      git clone  https://github.com/GetDKAN/dkan-tools.git 
+      ln -s /src/dkan-tools/bin/dktl.sh /usr/local/bin/dktl
+      chmod +x /usr/local/bin/dktl
+
+      mysql -u root -pstrongpassword -e 'create database dkan;'
+
+      ln -s $SRC_DIR/docroot /var/www/html
+      chmod 777 $SRC_DIR/src/site
+      chmod 777 /var/www/html/sites/default
+
+      dktl dkan:restore
+      chmod -R 777 $SRC_DIR/src/site/files
+      chmod -R 777 /var/www/html/sites/default/files
+
+      dktl dkan:deploy test
+      dktl test:qa-users

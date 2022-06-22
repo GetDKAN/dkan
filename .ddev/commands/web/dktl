@@ -1,0 +1,5 @@
+#!/bin/bash
+
+## Description: Run dktl
+## Usage: dktl <command>
+DKTL_PROJECT_DIRECTORY=/var/www/html DKTL_DIRECTORY=/var/www/html/vendor/getdkan/dkan-tools DKTL_MODE=HOST /var/www/html/vendor/bin/dktl $@

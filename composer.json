@@ -1,6 +1,6 @@
 {
     "name": "getdkan/recommended-project",
-    "description": "Project template for Drupal 9 projects with a relocated document root",
+    "description": "Project template for DKAN sites.",
     "type": "project",
     "license": "GPL-2.0-or-later",
     "homepage": "https://www.drupal.org/project/drupal",
@@ -9,6 +9,18 @@
         "chat": "https://www.drupal.org/node/314178"
     },
     "repositories": {
+        "dkan_pathrepo_symlinker-plugin": {
+            "type": "path",
+            "url": "./symlinker-plugin"
+        },
+        "dkan-tools": {
+            "type": "path",
+            "url": "./dkan-tools"
+        },
+        "localdev-plugin": {
+            "type": "path",
+            "url": "./pathrepo-plugin"
+        },
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
@@ -20,15 +32,19 @@
     },
     "require": {
         "composer/installers": "^1.9",
+        "cweagans/composer-patches": "^1.7",
         "drupal/core-composer-scaffold": "~9.3.0",
         "drupal/core-project-message": "~9.3.0",
         "drupal/core-recommended": "~9.3.0",
-        "cweagans/composer-patches": "^1.7",
-        "drush/drush": "^10.1",
-        "getdkan/dkan": "^2.0"
+        "drush/drush": "^11.0",
+        "getdkan/dkan": "~2",
+        "getdkan/dkan_js_frontend_bartik": "dev-main",
+        "getdkan/pathrepo-plugin": "@dev",
+        "getdkan/symlinker-plugin": "@dev"
     },
     "require-dev": {
         "drupal/core-dev": "~9.3.0",
+        "getdkan/dkan-tools": "9.x-dev",
         "getdkan/mock-chain": "^1.3.0",
         "weitzman/drupal-test-traits": "^1.5"
     },
@@ -38,34 +54,78 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "drupal/core-composer-scaffold": true,
+            "drupal/core-project-message": true,
+            "composer/installers": true,
+            "cweagans/composer-patches": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "oomphinc/composer-installers-extender": true,
+            "getdkan/symlinker-plugin": true,
+            "getdkan/pathrepo-plugin": true
+        },
+        "platform": {
+            "php": "7.4"
+        }
     },
     "extra": {
-        "enable-patching": true,
-        "patches": {
-            "drupal/core": {
-                "3230541: Fix queue items not being leased by cron for proper time segments": "https://www.drupal.org/files/issues/2022-02-16/3230541-11.diff"
-            }
-        },
+        "enable-patching": false,
         "drupal-scaffold": {
             "locations": {
+                "project-root": "./",
                 "web-root": "docroot/"
+            },
+            "file-mapping": {
+                "[project-root]/src/frontend/README.txt": "scaffold/scaffolded-README.txt",
+                "[project-root]/src/libraries/README.txt": "scaffold/scaffolded-README.txt",
+                "[project-root]/src/modules/README.txt": "scaffold/scaffolded-README.txt",
+                "[project-root]/src/site/README.txt": "scaffold/scaffolded-README.txt",
+                "[project-root]/src/schema/README.txt": "scaffold/scaffolded-README.txt",
+                "[project-root]/src/themes/README.txt": "scaffold/scaffolded-README.txt"
+            }
+        },
+        "symlinker-plugin": {
+            "symlink-on-install-update": false,
+            "file-mapping": {
+                "[web-root]/frontend": "[project-root]/src/frontend",
+                "[web-root]/libraries": "[project-root]/src/libraries",
+                "[web-root]/modules/custom": "[project-root]/src/modules",
+                "[web-root]/sites/default": "[project-root]/src/site",
+                "[web-root]/schema": "[project-root]/src/schema",
+                "[web-root]/themes/custom": "[project-root]/src/themes"
             }
         },
         "installer-paths": {
-            "docroot/core": ["type:drupal-core"],
+            "docroot/core": [
+                "type:drupal-core"
+            ],
             "docroot/libraries/{$name}": [
                 "type:drupal-library",
                 "type:bower-asset",
                 "type:npm-asset"
             ],
-            "docroot/modules/contrib/{$name}": ["type:drupal-module"],
-            "docroot/profiles/contrib/{$name}": ["type:drupal-profile"],
-            "docroot/themes/contrib/{$name}": ["type:drupal-theme"],
-            "drush/Commands/contrib/{$name}": ["type:drupal-drush"],
-            "docroot/modules/custom/{$name}": ["type:drupal-custom-module"],
-            "docroot/profiles/custom/{$name}": ["type:drupal-custom-profile"],
-            "docroot/themes/custom/{$name}": ["type:drupal-custom-theme"]
+            "docroot/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "docroot/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "docroot/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "drush/Commands/contrib/{$name}": [
+                "type:drupal-drush"
+            ],
+            "docroot/modules/custom/{$name}": [
+                "type:drupal-custom-module"
+            ],
+            "docroot/profiles/custom/{$name}": [
+                "type:drupal-custom-profile"
+            ],
+            "docroot/themes/custom/{$name}": [
+                "type:drupal-custom-theme"
+            ]
         },
         "installer-types": [
             "bower-asset",

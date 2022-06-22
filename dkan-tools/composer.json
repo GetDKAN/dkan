@@ -1,0 +1,23 @@
+{
+    "name": "getdkan/dkan-tools",
+    "require": {
+        "consolidation/robo": "^3.0.0",
+        "pear/archive_tar": "^1.4",
+        "aws/aws-sdk-php": "^3.67"
+    },
+    "bin": [
+        "bin/dktl",
+        "bin/app.php"
+    ],
+    "autoload": {
+        "psr-4": {
+            "DkanTools\\": "src",
+            "DkanTools\\Custom\\": "/var/www/src/command"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "7.4"
+        }
+    }
+}

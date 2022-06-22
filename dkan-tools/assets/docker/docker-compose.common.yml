@@ -1,0 +1,75 @@
+# Common Docker Container configuration
+version: "2"
+services:
+  web:
+    hostname: web
+    image: getdkan/dkan-web:v0.2.0
+    ports:
+      - "80"
+      - "443"
+      - "8888"
+    volumes:
+      # PHP configuration overrides
+      - "${DKTL_PROJECT_DIRECTORY}:/var/www/:delegated"
+    env_file:
+      - "${DKTL_DIRECTORY}/assets/docker/mysql.env"
+    environment:
+      # no_proxy="" required for default Docker For Mac system proxy that contains a space and prevents Selenium from loading.
+      # Linked containers to browser will also need this setting.
+      - PROXY_DOMAIN
+      - DKTL_DOCKER=1
+      - no_proxy=localhost
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.passHostHeader=true"
+      - "traefik.http.routers.${DKTL_SLUG}-web.rule=Host(`${DKTL_PROXY_DOMAIN}`)"
+      - "traefik.http.routers.${DKTL_SLUG}-web.entrypoints=web"
+
+  # DB node
+  db:
+    hostname: db
+    image: drydockcloud/drupal-acquia-mysql:latest
+    ports:
+      - "3306"
+    env_file:
+      - "${DKTL_DIRECTORY}/assets/docker/mysql.env"
+    volumes:
+       - "${DKTL_DIRECTORY}/assets/docker/etc/mysql/my.cnf:/etc/my.cnf"
+       - mysql_data:/var/lib/mysql
+
+  # CLI node
+  # Used for all console commands and tools.
+  cli:
+    hostname: cli
+    image: getdkan/dkan-cli:v0.4.2
+    env_file:
+      - "${DKTL_DIRECTORY}/assets/docker/mysql.env"
+    environment:
+      - NODE_ENV=development
+      - DKTL_MODE=HOST
+      - DKTL_DOCKER=1
+      - DKTL_PROXY_DOMAIN
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_PROFILE
+      - PLATFORM
+      - XDEBUG_CONFIG=idekey=PHPSTORM
+      - XDEBUG_DKTL=1
+    links:
+      - "web:${DKTL_PROXY_DOMAIN}"
+      # Link web to dkan for backward compatibility.
+      - "web:dkan"
+    ports:
+      - "8888"
+    volumes:
+      - "${DKTL_PROJECT_DIRECTORY}:/var/www/:delegated"
+      # Load the DKAN tools dir
+      - "${DKTL_DIRECTORY}/:/usr/local/dkan-tools"
+      # Host SSH keys mapping. Uncomment one of the lines below based on your setup.
+      - ~/.ssh:/root/.ssh
+      - ~/.aws:/root/.aws
+      - composer:/root/.composer
+
+volumes:
+  composer:
+  mysql_data:

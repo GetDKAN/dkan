@@ -1,0 +1,70 @@
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    docker:
+      - image: ubuntu:16.04
+    working_directory: /www
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DKTL_CHOWN: False
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Updates etc
+          command: |
+            apt-get update
+            apt-get upgrade -y
+            apt-get install git curl wget ruby language-pack-en-base libdigest-hmac-perl -y
+      - run:
+          name: Setup AWS Creditials
+          command: |
+            mkdir ~/.aws
+            echo -e "[default]\naws_access_key_id = $AWS_ACCESS_KEY_ID\naws_secret_access_key = $AWS_SECRET_ACCESS_KEY" > ~/.aws/credentials
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.12.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+      - run:
+          name: Install Docker Compose
+          command: |
+            set -x
+            curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+      - run:
+          name: Install DKTL
+          command: |
+            cd ~
+            git clone https://github.com/GetDKAN/dkan-tools.git
+            ln -s ~/dkan-tools/bin/dktl.sh /usr/local/bin/dktl
+            chmod +x /usr/local/bin/dktl
+      - run:
+          name: Setup Containers
+          command: |
+            dktl dc up -d
+      - run:
+          name: Place our code inside of the containers
+          command: |
+            dktl dc exec cli rm -R /var/www
+            dktl dc exec cli rm -R /usr/local/dkan-tools
+            docker cp /www $(dktl dc ps -q cli):/var
+            docker cp /root/dkan-tools $(dktl dc ps -q cli):/usr/local
+            docker cp /root/.aws $(dktl dc ps -q cli):/root
+      - run:
+          name: Install Site
+          command: |
+            dktl dkan:restore
+            dktl dkan:deploy test
+      - run:
+          name: Run Unit Tests
+          command: |
+            dktl test:phpunit
+      - run:
+          name: Run Behat Tests
+          command: |
+            dktl test:behat --tags=~@javascript
