@@ -8,7 +8,7 @@ use Contracts\OffsetterInterface;
 use Contracts\LimiterInterface;
 
 /**
- * Query class.
+ * DKAN API Query data object.
  */
 class Query implements
     SorterInterface,

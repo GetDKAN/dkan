@@ -5,8 +5,12 @@ context('Admin dataset file upload', () => {
     const fileUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv'
     const title = dkan.generateRandomString()
 
-    before(() => {
-      cy.drupalLogin('testeditor', 'testeditor')
+    beforeEach(() => {
+      const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+      cy.drupalLogin(user_credentials.user, user_credentials.pass)
+    })
+
+    it('create the dataset', () => {
       cy.visit('/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type(title, { force:true } )
@@ -39,12 +43,10 @@ context('Admin dataset file upload', () => {
         .type(fileUrl, { force:true })
       cy.get('#edit-submit')
         .click({ force:true })
+      cy.get('.button').contains('Yes')
+        .click({ force:true })
       cy.get('.messages--status')
         .should('contain','has been created')
-    })
-
-    beforeEach(() => {
-      cy.drupalLogin('testeditor', 'testeditor')
     })
 
     it('can fill up the form with distribution and submit', () => {
@@ -52,6 +54,7 @@ context('Admin dataset file upload', () => {
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')
         .click({force: true})
+      cy.contains('h1', 'Cron');
       cy.get('.messages--status', {timeout: 120000})
         .should('be.visible')
 
@@ -64,6 +67,7 @@ context('Admin dataset file upload', () => {
       cy.get('#edit-title').type(title)
       cy.get('#edit-submit-dkan-dataset-content').click()
       cy.get('.views-field-nothing > a').click()
+      cy.contains('h1', 'Edit Data');
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')
         .invoke('attr', 'href')
         .should('eq', fileUrl)
@@ -78,10 +82,13 @@ context('Admin dataset file upload', () => {
     // tests
     const uploadedFileName = dkan.generateCSVFileName()
 
-    before(() => {
-      const selectorDist = '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload'
+    beforeEach(() => {
+      const user_credentials = Cypress.env('TEST_USER_CREDENTIALS')
+      cy.drupalLogin(user_credentials.user, user_credentials.pass)
+    })
 
-      cy.drupalLogin('testeditor', 'testeditor')
+    it('create the dataset', () => {
+      const selectorDist = '#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl-upload'
       cy.visit('/node/add/data')
       cy.wait(2000)
       cy.get('#edit-field-json-metadata-0-value-title').type(title, { force:true } )
@@ -117,13 +124,12 @@ context('Admin dataset file upload', () => {
         .should('be.visible')
       cy.get('#edit-submit')
         .click({ force:true })
+      cy.get('.button').contains('Yes')
+        .click({ force:true })
       cy.get('.messages--status')
         .should('contain','has been created')
     })
 
-    beforeEach(() => {
-      cy.drupalLogin('testeditor', 'testeditor')
-    })
 
     it('can create and import dataset with uploaded file', () => {
       // run cron to import new dataset
@@ -142,7 +148,8 @@ context('Admin dataset file upload', () => {
       cy.visit('/admin/dkan/datasets')
       cy.get('#edit-title').type(title)
       cy.get('#edit-submit-dkan-dataset-content').click()
-      cy.get('.views-field-nothing > a').click()
+      cy.get('tbody > :nth-child(1) > .views-field-nothing > a').click({force: true})
+      cy.get('h1').should('contain', 'Edit Data')
       cy.get('#edit-field-json-metadata-0-value-distribution-distribution-0-distribution-downloadurl a')
         .invoke('attr', 'href')
         .should('contain', `uploaded_resources/${uploadedFileName}`)

@@ -3,12 +3,30 @@
 namespace Drupal\datastore\SqlEndpoint\Helper;
 
 /**
- * Class GetStringsFromStateMachineExecution.
+ * SQL Endpoint state machine processor.
  */
 class GetStringsFromStateMachineExecution {
+
+  /**
+   * Execution state machine.
+   *
+   * @var array
+   */
   private $execution;
+
+  /**
+   * Built SQL strings.
+   *
+   * @var string[]
+   */
   private $strings = [];
-  private $currentString = "";
+
+  /**
+   * Current string being built from state machine.
+   *
+   * @var string
+   */
+  private $currentString = '';
 
   /**
    * Constructor.

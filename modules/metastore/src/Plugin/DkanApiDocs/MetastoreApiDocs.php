@@ -215,7 +215,7 @@ class MetastoreApiDocs extends DkanApiDocsBase {
       "{$schemaId}Uuid" => [
         "name" => "identifier",
         "in" => "path",
-        "description" => t("A :schemaId identifier", [":schemaId" => $schemaId]),
+        "description" => $this->t("A :schemaId identifier", [":schemaId" => $schemaId]),
         "required" => TRUE,
         "schema" => ["type" => "string"],
         "example" => $this->getExampleIdentifier($schemaId) ?: "00000000-0000-0000-0000-000000000000",

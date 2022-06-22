@@ -2,6 +2,7 @@ version: 2
 plugins:
   phpcodesniffer:
     enabled: true
+    channel: beta
     config:
       standard: "Drupal,DrupalPractice"
 exclude_patterns:
@@ -37,4 +38,4 @@ exclude_patterns:
  - "**/*.module"
  - ".circleci/"
  - ".gitignore"
-
+ 

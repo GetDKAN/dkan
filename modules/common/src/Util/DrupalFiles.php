@@ -8,7 +8,7 @@ use Drupal\Core\StreamWrapper\StreamWrapperManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class DrupalFiles.
+ * Provide custom DKAN file storage system functionality.
  *
  * It wraps a few file related Drupal functions, it provides
  * a mechanism to bring remote files locally, and to move local files to a
@@ -18,7 +18,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class DrupalFiles implements ContainerInjectionInterface {
 
+  /**
+   * Drupal file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
   private $filesystem;
+
+  /**
+   * Drupal stream wrapper manager.
+   *
+   * @var \Drupal\Core\StreamWrapper\StreamWrapperManager
+   */
   private $streamWrapperManager;
 
   /**

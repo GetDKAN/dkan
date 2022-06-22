@@ -10,6 +10,11 @@ use Drupal\Core\Database\Connection;
  */
 class JobStore extends AbstractDatabaseTable {
 
+  /**
+   * Procrastinator job class.
+   *
+   * @var string
+   */
   private $jobClass;
 
   /**

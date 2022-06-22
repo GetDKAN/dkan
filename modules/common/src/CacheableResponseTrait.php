@@ -19,7 +19,7 @@ trait CacheableResponseTrait {
   /**
    * Adds cache headers to the response.
    *
-   * TODO: implement more flexible caching and move the code out of the trait.
+   * @todo implement more flexible caching and move the code out of the trait.
    *
    * @param \Symfony\Component\HttpFoundation\Response $response
    *   Symfony response.

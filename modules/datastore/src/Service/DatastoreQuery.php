@@ -5,7 +5,7 @@ namespace Drupal\datastore\Service;
 use RootedData\RootedJsonData;
 
 /**
- * DatastoreQuery.
+ * Datastore query data object.
  */
 class DatastoreQuery extends RootedJsonData {
 

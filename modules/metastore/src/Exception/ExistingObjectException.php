@@ -3,7 +3,7 @@
 namespace Drupal\metastore\Exception;
 
 /**
- * Class ExistingObjectException.
+ * Exception thrown when metastore item already exists with a given identifier.
  *
  * @package Drupal\metastore\Exception
  */

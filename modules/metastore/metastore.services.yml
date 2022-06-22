@@ -104,3 +104,8 @@ services:
       - '@dkan.metastore.metastore_item_factory'
       - '@cache_tags.invalidator'
       - '@module_handler'
+
+  dkan.metastore.data_dictionary_discovery:
+    class: \Drupal\metastore\DataDictionary\DataDictionaryDiscovery
+    arguments:
+      - '@config.factory'
