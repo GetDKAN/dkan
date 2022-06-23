@@ -35,8 +35,7 @@
     "require-dev": {
         "getdkan/mock-chain": "^1.3.0",
         "weitzman/drupal-test-traits": "^1.5",
-        "phpunit/phpunit": "^8.5.14 || ^9",
-        "phpspec/prophecy-phpunit": "^2"
+        "phpunit/phpunit": "^8.5.14 || ^9"
     },
     "repositories": {
         "drupal": {
