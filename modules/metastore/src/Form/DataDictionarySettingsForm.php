@@ -40,22 +40,20 @@ class DataDictionarySettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config(static::SETTINGS);
 
-    $setting = 'dictionary_mode';
-    $form[$setting] = [
+    $form['dictionary_mode'] = [
       '#type' => 'select',
       '#title' => $this->t('Dictionary Mode'),
       '#options' => [
         DataDictionaryDiscoveryInterface::MODE_NONE => $this->t('Disabled'), 
         DataDictionaryDiscoveryInterface::MODE_SITEWIDE => $this->t('Sitewide'),
       ],
-      '#default_value' => $config->get($setting),
+      '#default_value' => $config->get('dictionary_mode'),
       '#attributes' => [
         'name' => 'dictionary_mode',
       ],
     ];  
 
-    $setting = 'sitewide_dictionary_id';
-    $form[$setting] = [
+    $form['sitewide_dictionary_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Sitewide Dictionary ID'),
       '#states' => [
@@ -63,7 +61,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
           ':input[name="dictionary_mode"]' => ['value' => DataDictionaryDiscoveryInterface::MODE_SITEWIDE],
         ],
       ],
-      '#default_value' => $config->get($setting),
+      '#default_value' => $config->get('sitewide_dictionary_id'),
     ];  
 
     return parent::buildForm($form, $form_state);
