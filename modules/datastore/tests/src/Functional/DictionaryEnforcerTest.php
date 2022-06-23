@@ -174,16 +174,19 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
         'a' => [
             'type' => 'int', 
             'length' => 11, 
-            'mysql_type' => 'int' 
+            'mysql_type' => 'int', 
+            'description' => 'A',
           ], 
         'b' => [
           'type' => 'varchar', 
-          'mysql_type' => 'date' 
+          'mysql_type' => 'date', 
+          'description' => 'B',
         ], 
         'c' => [
           'type' => 'numeric', 
           'length' => 3, 
-          'mysql_type' => 'decimal' 
+          'mysql_type' => 'decimal', 
+          'description' => 'C',
         ],
       ], 
       'numOfRows' => 2

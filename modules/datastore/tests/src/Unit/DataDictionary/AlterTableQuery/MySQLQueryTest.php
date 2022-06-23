@@ -42,8 +42,12 @@ class MySQLQueryTest extends TestCase {
       ->add(Connection::class, 'getDriverClass', UpdateQueryMock::class)
       ->add(Connection::class, 'prepareStatement', StatementInterface::class, 'prepare')
       ->add(Connection::class, 'query', StatementInterface::class)
-      ->add(StatementInterface::class, 'fetchCol', ['foo', 'bar', 'baz'])
-      ->add(StatementInterface::class, 'execute', TRUE);
+      ->add(StatementInterface::class, 'execute', TRUE)
+      ->add(StatementInterface::class, 'fetchAllKeyed', [
+        'foo' => 'Foo',
+        'bar' => 'Bar',
+        'baz' => 'Baz',
+      ]);
   }
 
   /**
@@ -56,9 +60,9 @@ class MySQLQueryTest extends TestCase {
 
     $table ??= 'datastore_' . uniqid();
     $dictionary_fields ??= [
-      ['name' => 'foo', 'type' => 'string', 'format' => 'default'],
-      ['name' => 'bar', 'type' => 'number', 'format' => 'default'],
-      ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d'],
+      ['name' => 'foo', 'type' => 'string', 'format' => 'default', 'title' => 'Foo'],
+      ['name' => 'bar', 'type' => 'number', 'format' => 'default', 'title' => 'Bar'],
+      ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d', 'title' => 'Baz'],
     ];
 
     return new MySQLQuery($connection, $converter, $table, $dictionary_fields);
@@ -86,7 +90,7 @@ class MySQLQueryTest extends TestCase {
         ':date_format' => ''
       ],
     ], $update_query);
-    $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT, MODIFY COLUMN bar DECIMAL(0, ), MODIFY COLUMN baz DATE;", $query);
+    $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT COMMENT 'Foo', MODIFY COLUMN bar DECIMAL(0, ) COMMENT 'Bar', MODIFY COLUMN baz DATE COMMENT 'Baz';", $query);
   }
 
 
@@ -97,7 +101,7 @@ class MySQLQueryTest extends TestCase {
     $connection_chain = $this->buildConnectionChain()
       ->add(StatementInterface::class, 'fetchField', 100);
     $column = 'bar';
-    $mysql_query = $this->buildMySQLQuery($connection_chain->getMock(), NULL, [['name' => $column, 'type' => 'number', 'format' => 'default']]);
+    $mysql_query = $this->buildMySQLQuery($connection_chain->getMock(), NULL, [['name' => $column, 'type' => 'number', 'format' => 'default', 'title' => 'Bar']]);
 
     $this->expectException(IncompatibleTypeException::class);
     $this->expectExceptionMessage("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");

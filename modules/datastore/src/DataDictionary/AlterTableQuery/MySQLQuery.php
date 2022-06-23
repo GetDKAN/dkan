@@ -103,7 +103,7 @@ class MySQLQuery implements AlterTableQueryInterface {
    *   List of column comments keyed by column names.
    */
   protected function getTableColsAndComments(string $table): array {
-    return $this->connection->query("SHOW FULL COLUMNS FROM {{$table}};")->fetchAllKeyed(0, 9);
+    return $this->connection->query("SHOW FULL COLUMNS FROM {{$table}};")->fetchAllKeyed(0, 8);
   }
 
   /**
@@ -223,7 +223,6 @@ class MySQLQuery implements AlterTableQueryInterface {
       $modify_lines[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$title}'";
     }
 
-    \Drupal::logger('test')->alert("ALTER TABLE {{$table}} " . implode(', ', $modify_lines) . ';');
     return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $modify_lines) . ';', []);
   }
 
