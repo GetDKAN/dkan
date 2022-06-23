@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use MockChain\Chain;
 use Drupal\datastore\Controller\QueryController;
+use Drupal\datastore\Service\Query;
 use Drupal\datastore\Storage\SqliteDatabaseTable;
 use Drupal\metastore\MetastoreApiResponse;
 use Drupal\metastore\NodeWrapper\Data;
@@ -437,6 +438,7 @@ class QueryControllerTest extends TestCase {
     $options = (new Options())
       ->add("dkan.metastore.storage", DataFactory::class)
       ->add("dkan.datastore.service", Service::class)
+      ->add("dkan.datastore.query", Query::class)
       ->add("dkan.common.dataset_info", DatasetInfo::class)
       ->add('config.factory', ConfigFactoryInterface::class)
       ->add('dkan.metastore.metastore_item_factory', NodeDataFactory::class)
@@ -456,7 +458,7 @@ class QueryControllerTest extends TestCase {
       ->add(ImmutableConfig::class, 'get', 500);
 
     if ($mockMap) {
-      $chain->add(Service::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()]);
+      $chain->add(Query::class, "getQueryStorageMap", ['t' => $this->mockDatastoreTable()]);
     }
 
     return $chain;

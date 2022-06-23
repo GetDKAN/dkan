@@ -158,8 +158,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     $results = $this->datastore->import($identifier, FALSE, $version);
 
     $queued = FALSE;
-    foreach ($results as $result) {
-      $queued = isset($result) ? $this->processResult($result, $data, $queued) : FALSE;
+    foreach ($results as $label => $result) {
+      $queued = isset($result) ? $this->processResult($result, $data, $queued, $label) : FALSE;
     }
 
     // Delete local resource file if enabled in datastore settings config.
@@ -177,29 +177,31 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   The resource data for import.
    * @param bool $queued
    *   Whether the import job is currently queued.
+   * @param string $label
+   *   A label to distinguish types of jobs in status messages.
    *
    * @return bool
    *   The updated value for $queued.
    */
-  protected function processResult(Result $result, $data, $queued = FALSE) {
+  protected function processResult(Result $result, $data, bool $queued = FALSE, string $label = 'Import') {
     $uid = "{$data['identifier']}__{$data['version']}";
     $status = $result->getStatus();
     switch ($status) {
       case Result::STOPPED:
         if (!$queued) {
           $newQueueItemId = $this->requeue($data);
-          $this->notice("Import for {$uid} is requeueing. (ID:{$newQueueItemId}).");
+          $this->notice("$label for {$uid} is requeueing. (ID:{$newQueueItemId}).");
           $queued = TRUE;
         }
         break;
 
       case Result::IN_PROGRESS:
       case Result::ERROR:
-        $this->error("Import for {$uid} returned an error: {$result->getError()}");
+        $this->error("$label for {$uid} returned an error: {$result->getError()}");
         break;
 
       case Result::DONE:
-        $this->notice("Import for {$uid} completed.");
+        $this->notice("$label for {$uid} completed.");
         $this->invalidateCacheTags("{$uid}__source");
         break;
     }

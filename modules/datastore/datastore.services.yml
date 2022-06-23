@@ -8,6 +8,11 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info_list'
 
+  dkan.datastore.query:
+    class: \Drupal\datastore\Service\Query
+    arguments:
+      - '@dkan.datastore.service'
+
   dkan.datastore.service.resource_localizer:
     class: \Drupal\datastore\Service\ResourceLocalizer
     arguments:
