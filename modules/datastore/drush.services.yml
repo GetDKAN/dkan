@@ -13,3 +13,11 @@ services:
       - '@dkan.datastore.service.resource_purger'
     tags:
       - { name: drush.command }
+  datastore.resource.commands:
+    class: Drupal\datastore\Commands\ResourceCommands
+    arguments:
+      - '@dkan.metastore.resource_mapper'
+      - '@dkan.common.drupal_files'
+      - '@dkan.datastore.service.resource_localizer'
+    tags:
+      - { name: drush.command }
