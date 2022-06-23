@@ -204,7 +204,7 @@ class MySQLQuery implements AlterTableQueryInterface {
   /**
    * Build alter command to modify table column data types.
    *
-   * @param array $dictionary_fields
+   * @param array $fields
    *   Data dictionary fields.
    * @param string $table
    *   Mysql table name.
@@ -212,10 +212,10 @@ class MySQLQuery implements AlterTableQueryInterface {
    * @return \Drupal\Core\Database\StatementInterface
    *   Prepared MySQL table alter command statement.
    */
-  protected function buildAlterCommand(array $dictionary_fields, string $table): StatementInterface {
+  protected function buildAlterCommand(array $fields, string $table): StatementInterface {
     $modify_lines = [];
 
-    foreach ($dictionary_fields as ['name' => $field, 'type' => $type, 'title' => $title]) {
+    foreach ($fields as ['name' => $field, 'type' => $type, 'title' => $title]) {
       // Get MySQL type for column.
       $column_type = $this->getType($type, $field, $table);
       // Build modify line for alter command and add the appropriate arguments

@@ -52,14 +52,14 @@ class DictionaryEnforcer extends QueueWorkerBase implements ContainerFactoryPlug
 
   /**
    * The metastore service.
-   * 
+   *
    * @var \Drupal\metastore\Service
    */
   protected $metastore;
 
   /**
    * The metastore resource mapper service.
-   * 
+   *
    * @var \Drupal\metastore\ResourceMapper
    */
   protected $resourceMapper;
