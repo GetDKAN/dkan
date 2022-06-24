@@ -66,6 +66,7 @@ class ResourceCommands extends DrushCommands {
 
     try {
       $this->resourceMapper->register($source);
+      $this->logger()->notice("Registered new source perspective for $sourceUrl");
     }
     catch (AlreadyRegistered $e) {
       $this->logger()->notice("Already registered source perspective for $sourceUrl");
@@ -80,27 +81,34 @@ class ResourceCommands extends DrushCommands {
       $localFilePerspective = $source->createNewPerspective(ResourceLocalizer::LOCAL_FILE_PERSPECTIVE, $localFilePath);
       try {
         $this->resourceMapper->registerNewPerspective($localFilePerspective);
+        $this->logger()->notice("Registered new local file perspective for $localFilePath");
       }
       catch (AlreadyRegistered $e) {
-        $this->logger()->notice("Already registered local perspective for $sourceUrl");
+        $this->logger()->notice("Already registered local file perspective for $localFilePath");
       }
 
       $dir = "file://" . $this->drupalFiles->getPublicFilesDirectory();
       $localFileDrupalUri = str_replace($dir, "public://", $localFilePath);
       $localUrl = $this->drupalFiles->fileCreateUrl($localFileDrupalUri);
+
+      if (!file_exists($localFileDrupalUri)) {
+        throw new \Exception("$localFileDrupalUri does not exist");
+      }
+
       $localUrl = Referencer::hostify($localUrl);
       $localUrlPerspective = $source->createNewPerspective(ResourceLocalizer::LOCAL_URL_PERSPECTIVE, $localUrl);
       try {
         $this->resourceMapper->registerNewPerspective($localUrlPerspective);
+        $this->logger()->notice("Registered new local URL perspective for $localUrl");
       }
       catch (AlreadyRegistered $e) {
+        $this->logger()->notice("Already registered local URL perspective for $localUrl");
       }
-      $this->logger()->notice($source->getIdentifier() . '_' . $source->getVersion());
-
+      
       $ff = $this->resourceLocalizer->getFileFetcher($source);
       $ff->getResult()->setStatus(Result::DONE);
-      $result = $ff->run();
-      return $result;
+      $ff->run();
+      $this->logger()->notice("Resource registered: " . $source->getIdentifier() . '_' . $source->getVersion());
     }
   }
 
