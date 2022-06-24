@@ -17,7 +17,7 @@ use Drupal\KernelTests\KernelTestBase;
 abstract class ConfigFormTestBase extends KernelTestBase {
 
   /**
-   * Form ID to use for testing.
+   * Form to use for testing.
    *
    * @var \Drupal\Core\Form\FormInterface
    */
@@ -44,7 +44,7 @@ abstract class ConfigFormTestBase extends KernelTestBase {
   abstract public function provideFormData(): array;
 
   /**
-   * Submit the system_config_form ensure the configuration has expected values.
+   * Test submitting config form.
    *
    * @param array $form_values
    *   Form values to test.
