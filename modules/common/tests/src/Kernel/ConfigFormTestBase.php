@@ -2,14 +2,17 @@
 
 namespace Drupal\Tests\common\Kernel;
 
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Form\FormState;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * Full generic test suite for any config form.
+ * Full generic test suite for any form that data with the configuration system.
  *
- * @see https://git.drupalcode.org/project/virtualcare/-/blob/8.x-1.x
- *   For original source class.
+ * @see Drupal\KernelTests\ConfigFormTestBase
+ *   For source of inspiration.
+ * @see \Drupal\Tests\metastore\Kernel\DataDictionarySettingsFormTest
+ *   For an example implementation.
  */
 abstract class ConfigFormTestBase extends KernelTestBase {
 
@@ -21,7 +24,7 @@ abstract class ConfigFormTestBase extends KernelTestBase {
   protected $form;
 
   /**
-   * Values to use for testing.
+   * Form data provider.
    *
    * Contains details for form key, configuration object name, and config key.
    * Example:
@@ -35,17 +38,22 @@ abstract class ConfigFormTestBase extends KernelTestBase {
    *   );
    * @endcode
    *
-   * @var array
+   * @return array[] 
+   *   Form test data.
    */
-  protected $values;
+  abstract public function provideFormData(): array;
 
   /**
-   * Test submitting config form ensure the configuration has expected values.
+   * Submit the system_config_form ensure the configuration has expected values.
+   *
+   * @param array $form_values
+   *   Form values to test.
+   *
+   * @dataProvider provideFormData
    */
-  public function testConfigForm() {
+  public function testConfigForm(array $form_values) {
     // Programmatically submit the given values.
-    $values = [];
-    foreach ($this->values as $form_key => $data) {
+    foreach ($form_values as $form_key => $data) {
       $values[$form_key] = $data['#value'];
     }
     $form_state = (new FormState())->setValues($values);
@@ -55,13 +63,13 @@ abstract class ConfigFormTestBase extends KernelTestBase {
     $errors = $form_state->getErrors();
     $valid_form = empty($errors);
     $args = [
-      print_r($values, TRUE),
-      $valid_form ? 'None' : implode(' ', $errors),
+      '%values' => print_r($values, TRUE),
+      '%errors' => $valid_form ? t('None') : implode(' ', $errors),
     ];
-    $this->assertTrue($valid_form, sprintf('Input values: %s<br/>Validation handler errors: %s', $args));
+    $this->assertTrue($valid_form, new FormattableMarkup('Input values: %values<br/>Validation handler errors: %errors', $args));
 
-    foreach ($this->values as $data) {
-      $this->assertEquals($data['#value'], $this->config($data['#config_name'])->get($data['#config_key']));
+    foreach ($form_values as $data) {
+      $this->assertEquals($this->config($data['#config_name'])->get($data['#config_key']), $data['#value']);
     }
   }
 
