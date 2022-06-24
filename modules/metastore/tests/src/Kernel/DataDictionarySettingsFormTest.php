@@ -33,8 +33,6 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
         '#config_name' => DataDictionarySettingsForm::SETTINGS,
         '#config_key' => 'dictionary_mode',
       ],
-    ];
-    $this->values = [
       'sitewide_dictionary_id' => [
         '#value' => $this->randomString(),
         '#config_name' => DataDictionarySettingsForm::SETTINGS,
