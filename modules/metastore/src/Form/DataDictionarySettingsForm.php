@@ -11,21 +11,21 @@ use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
  */
 class DataDictionarySettingsForm extends ConfigFormBase {
 
-  /** 
+  /**
    * Config ID.
    *
    * @var string
    */
   const SETTINGS = 'metastore.settings';
 
-  /** 
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
     return 'data_dictionary_settings';
   }
 
-  /** 
+  /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
@@ -34,7 +34,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
     ];
   }
 
-  /** 
+  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
@@ -44,14 +44,14 @@ class DataDictionarySettingsForm extends ConfigFormBase {
       '#type' => 'select',
       '#title' => $this->t('Dictionary Mode'),
       '#options' => [
-        DataDictionaryDiscoveryInterface::MODE_NONE => $this->t('Disabled'), 
+        DataDictionaryDiscoveryInterface::MODE_NONE => $this->t('Disabled'),
         DataDictionaryDiscoveryInterface::MODE_SITEWIDE => $this->t('Sitewide'),
       ],
       '#default_value' => $config->get('dictionary_mode'),
       '#attributes' => [
         'name' => 'dictionary_mode',
       ],
-    ];  
+    ];
 
     $form['sitewide_dictionary_id'] = [
       '#type' => 'textfield',
@@ -62,12 +62,12 @@ class DataDictionarySettingsForm extends ConfigFormBase {
         ],
       ],
       '#default_value' => $config->get('sitewide_dictionary_id'),
-    ];  
+    ];
 
     return parent::buildForm($form, $form_state);
   }
 
-  /** 
+  /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
