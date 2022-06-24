@@ -21,7 +21,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
   public static $modules = ['metastore', 'common'];
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
