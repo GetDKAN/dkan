@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormState;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
- * Full generic test suite for any form that data with the configuration system.
+ * Generic base config form test.
  *
  * @see Drupal\KernelTests\ConfigFormTestBase
  *   For source of inspiration.
