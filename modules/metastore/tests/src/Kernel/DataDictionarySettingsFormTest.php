@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\metastore\Kernel;
 
-use Drupal\KernelTests\ConfigFormTestBase;
+use Drupal\Tests\common\Kernel\ConfigFormTestBase;
 use Drupal\metastore\Form\DataDictionarySettingsForm;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
