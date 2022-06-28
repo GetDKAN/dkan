@@ -32,7 +32,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
         return $this->getSitewideDictionaryId();
 
       default:
-        throw new \OutOfRangeException("Unsupported data dictionary mode " . (string) $mode);
+        throw new \OutOfRangeException(sprintf('Unsupported data dictionary mode "%s"', $mode));
     }
   }
 
@@ -49,7 +49,7 @@ class DataDictionaryDiscovery implements DataDictionaryDiscoveryInterface {
   /**
    * {@inheritdoc}
    */
-  public function getDataDictionaryMode(): int {
+  public function getDataDictionaryMode(): string {
     return $this->config->get('data_dictionary_mode') ?? self::MODE_NONE;
   }
 
