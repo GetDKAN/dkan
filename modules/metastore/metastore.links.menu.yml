@@ -4,3 +4,10 @@ dkan.metastore.config_properties:
   description: Configure dataset properties for referencing an API endpoint.
   parent: system.admin_dkan
   weight: 14
+
+datastore.data_dictionary_settings_form:
+  title: Data-Dictionary settings
+  description: Data-Dictionary settings.
+  parent: system.admin_dkan
+  route_name: datastore.data_dictionary_settings
+  weight: 13
