@@ -5,19 +5,19 @@
 ## Description: Add users to the site for QA.
 ## Usage: dkan-test-users [path] [--remove]
 
-# Path is optional. If the first arg has double hyphens, it's the flag.
-TESTUSER_PATH="testUsers.json"
-if [[ ! ${1} = --* ]] ; then
-  TESTUSER_PATH=${1}
+# Get the path, which is optional. If the first arg has double hyphens, it's
+# the flag.
+if [[ ${1} != --* ]] ; then
+  TU_PATH=${1}
   shift
 fi
 
-# Flag arguments.
-TESTUSER_REMOVE=false
+# Glean flag arguments.
+TU_REMOVE=false
 while :; do
   case ${1:-} in
   --remove)
-    TESTUSER_REMOVE=true
+    TU_REMOVE=true
     shift
     ;;
   --) # End of all options.
@@ -33,24 +33,29 @@ while :; do
   shift
 done
 
-if [ ! -f $TESTUSER_PATH ]; then
-  echo "$TESTUSER_PATH not found."
+# If we didn't get an argument, use the default.
+if [ -z $TU_PATH ] ; then
+  TU_PATH="testUsers.json"
+fi
+
+if [ ! -f $TU_PATH ] ; then
+  echo "$TU_PATH not found."
   exit 1
 fi
 
-if [ $TESTUSER_REMOVE = true ]; then
-  echo "Removing users from $TESTUSER_PATH"
+if [ $TU_REMOVE = true ]; then
+  echo "Removing users from $TU_PATH"
 else
-  echo "Adding users from $TESTUSER_PATH"
+  echo "Adding users from $TU_PATH"
 fi
 
 # yq/jq magical incantations.
-readarray -t TESTUSER_TEST_USERS < <(yq -c '.[]' $TESTUSER_PATH)
-for TESTUSER_TESTUSER in "${TESTUSER_TEST_USERS[@]}"; do
-  name=$(yq -r '.name' <<<"$TESTUSER_TESTUSER")
-  mail=$(yq -r '.mail' <<<"$TESTUSER_TESTUSER")
-  role=$(yq -r '.role' <<<"$TESTUSER_TESTUSER")
-  if [ $TESTUSER_REMOVE = true ]; then
+readarray -t TU_TEST_USERS < <(yq -c '.[]' $TU_PATH)
+for TU_TEST_USER in "${TU_TEST_USERS[@]}"; do
+  name=$(yq -r '.name' <<<"$TU_TEST_USER")
+  mail=$(yq -r '.mail' <<<"$TU_TEST_USER")
+  role=$(yq -r '.role' <<<"$TU_TEST_USER")
+  if [ $TU_REMOVE = true ]; then
     drush user:cancel --delete-content $name -y
   else
     drush user:create $name --password=$name --mail=$mail
