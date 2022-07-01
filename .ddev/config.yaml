@@ -15,7 +15,17 @@ nfs_mount_enabled: false
 mutagen_enabled: false
 use_dns_when_possible: true
 composer_version: "2"
-nodejs_version: "16"
+nodejs_version: "14"
+
+webimage_extra_packages:
+  - chromium
+  - g++
+  - make
+  - python2
+  - python3-pip
+  - unzip
+  - wget
+  - xvfb
 
 web_environment:
   - COMPOSER_MEMORY_LIMIT=-1

@@ -82,13 +82,13 @@
                 "[project-root]/src/modules/README.txt": "scaffold/scaffolded-README.txt",
                 "[project-root]/src/site/README.txt": "scaffold/scaffolded-README.txt",
                 "[project-root]/src/schema/README.txt": "scaffold/scaffolded-README.txt",
-                "[project-root]/src/themes/README.txt": "scaffold/scaffolded-README.txt"
+                "[project-root]/src/themes/README.txt": "scaffold/scaffolded-README.txt",
+                "[project-root]/testUsers.json": "scaffold/testUsers.json"
             }
         },
         "symlinker-plugin": {
             "symlink-on-install-update": false,
             "file-mapping": {
-                "[web-root]/frontend": "[project-root]/src/frontend",
                 "[web-root]/libraries": "[project-root]/src/libraries",
                 "[web-root]/modules/custom": "[project-root]/src/modules",
                 "[web-root]/sites/default": "[project-root]/src/site",
