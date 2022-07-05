@@ -117,12 +117,9 @@ class Import {
     }
     // If the import job finished successfully...
     elseif ($result->getStatus() === Result::DONE) {
-      $dd_discovery = \Drupal::service('dkan.metastore.data_dictionary_discovery');
-      if ($dd_discovery->getDataDictionaryMode() !== DataDictionaryDiscoveryInterface::MODE_NONE) {
-        // Queue the imported resource for data-dictionary enforcement.
-        $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
-        $dictionary_enforcer_queue->createItem($resource);
-      }
+      // Queue the imported resource for post-import processing.
+      $post_import_queue = \Drupal::service('queue')->get('post_import');
+      $post_import_queue->createItem($resource);
     }
   }
 
