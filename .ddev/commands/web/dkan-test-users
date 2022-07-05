@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: Determine all the places to look for testUsers.json/yml.
-
 ## Description: Add users to the site for QA.
 ## Usage: dkan-test-users [path] [--remove]
 
