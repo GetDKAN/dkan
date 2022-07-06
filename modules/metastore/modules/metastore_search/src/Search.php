@@ -150,6 +150,9 @@ class Search implements ContainerInjectionInterface {
    */
   public static function orderFacets(array &$facets): void {
     usort($facets, function ($a, $b) {
+      if (!isset($a->name, $b->name, $a->total, $b->total)) {
+        throw new \InvalidArgumentException("Facets much name and total properties.");
+      }
       if ($a->total == $b->total) {
         return strcmp($a->name, $b->name);
       }

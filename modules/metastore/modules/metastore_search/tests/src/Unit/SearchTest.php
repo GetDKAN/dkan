@@ -128,6 +128,15 @@ class SearchTest extends TestCase {
     Search::orderFacets($in);
 
     $this->assertEquals($out, $in);
+
+    $no_name = [
+      (object) ['field1' => 'foo', 'field2' => 'bar'],
+      (object) ['field1' => 'x', 'field2' => 'y'],
+    ];
+
+    // Passing facets without name or total properties will throw exception.
+    $this->expectException(\InvalidArgumentException::class);
+    Search::orderFacets($no_name);
   }
 
   /**
