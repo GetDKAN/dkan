@@ -1,0 +1,36 @@
+#!/bin/bash
+
+## Description: Run PHPUnit tests for the DKAN module.
+## Usage: dkan-test-phpunit
+
+# TODO: Allow passing in a path on the command line.
+TEST_PATH="docroot/modules/contrib/dkan"
+# TODO: Allow passing in the test suite on the command line.
+TEST_SUITE="DKAN Test Suite"
+PHPUNIT_BINARY=vendor/bin/phpunit
+
+# Is there a PHPUnit binary?
+if [[ ! -f $PHPUNIT_BINARY ]] ; then
+  echo "Unable to find PHPUnit executable at $PHPUNIT_BINARY. Performing composer install."
+  composer install --dev --no-progress
+fi
+
+# Ensure prophecy.
+composer require --dev phpspec/prophecy-phpunit:^2
+
+# Add fixture users.
+./.ddev/commands/web/dkan-test-users
+
+echo "Starting PHPUnit test run."
+DDEV_PATH="$PWD"
+cd $TEST_PATH || exit 1
+# TODO: We're replacing a lot of the env vars in dkan's phpunit.xml here. Figure out which is canonical.
+# TODO: Can we replace db creds with env vars from ddev?
+DRUPAL_ROOT="/var/www/html/docroot" SIMPLETEST_BASE_URL=$DDEV_PRIMARY_URL SIMPLETEST_DB="mysql://db:db@ddev-recommended-project-db:3306/db" $DDEV_PATH/$PHPUNIT_BINARY --testsuite "$TEST_SUITE" --bootstrap /var/www/html/vendor/weitzman/drupal-test-traits/src/bootstrap.php --fail-on-risky
+TEST_RESULTS=$?
+
+# Clean up fixture users.
+cd $DDEV_PATH
+./.ddev/commands/web/dkan-test-users --remove
+
+exit $TEST_RESULTS
