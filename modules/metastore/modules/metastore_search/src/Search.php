@@ -138,7 +138,25 @@ class Search implements ContainerInjectionInterface {
       $facets = $this->getFacetsFromIndex($params, $this->index, $query);
     }
 
+    static::orderFacets($facets);
     return $facets;
+  }
+
+  /**
+   * Order the facet array by total (desc) then name (asc)
+   *
+   * @param array $facets
+   *   Array of facet objects with properties "total", "name" and "type".
+   */
+  public static function orderFacets(array &$facets): void {
+    usort($facets, function ($a, $b) {
+      if ($a->total == $b->total) {
+        return strcmp($a->name, $b->name);
+      }
+      else {
+        return $b->total - $a->total;
+      }
+    });
   }
 
   /**
@@ -147,7 +165,7 @@ class Search implements ContainerInjectionInterface {
    * @param \Drupal\search_api\Query\ResultSet $result
    *   Result set.
    *
-   * @return array
+   * @return null|array
    *   Filtered results.
    */
   private function getData(ResultSet $result) {
@@ -158,7 +176,7 @@ class Search implements ContainerInjectionInterface {
         $id = $item->getId();
         $id = str_replace('dkan_dataset/', '', $id);
         try {
-          return json_decode($metastore->get('dataset', $id));
+          return json_decode((string) $metastore->get('dataset', $id));
         }
         catch (\Exception $e) {
           return NULL;

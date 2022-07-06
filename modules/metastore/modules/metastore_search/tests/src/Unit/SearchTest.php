@@ -105,6 +105,32 @@ class SearchTest extends TestCase {
   }
 
   /**
+   * Test the Service::orderFacets method.
+   */
+  public function testOrderFacets() {
+    $in = [
+      (object) ['name' => 'Ana', 'total' => 1],
+      (object) ['name' => 'Bob', 'total' => 2],
+      (object) ['name' => 'Chris', 'total' => 3],
+      (object) ['name' => 'Dana', 'total' => 3],
+      (object) ['name' => 'Ed', 'total' => 3],
+    ];
+
+    // orderFacets() should order descending by count, then ascending by name.
+    $out = [
+      (object) ['name' => 'Chris', 'total' => 3],
+      (object) ['name' => 'Dana', 'total' => 3],
+      (object) ['name' => 'Ed', 'total' => 3],      
+      (object) ['name' => 'Bob', 'total' => 2],
+      (object) ['name' => 'Ana', 'total' => 1],
+    ];
+
+    Search::orderFacets($in);
+
+    $this->assertEquals($out, $in);
+  }
+
+  /**
    * Test for facets().
    */
   public function testFacets() {
