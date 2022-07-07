@@ -30,8 +30,9 @@
         "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
         "npm-asset/select2": "^4.0",
         "oomphinc/composer-installers-extender": "^2.0",
-        "ramsey/uuid": "^3.8.0",
-        "stolt/json-merge-patch": "^1.0"
+        "ramsey/uuid" : "^3.8.0",
+        "stolt/json-merge-patch": "^1.0",
+        "getdkan/pdlt": "~0.1"
     },
     "require-dev": {
         "drupal/coder": "@stable",
@@ -47,11 +48,6 @@
         "asset": {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "Social\\": "src"
         }
     },
     "authors": [

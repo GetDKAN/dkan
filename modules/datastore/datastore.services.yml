@@ -8,6 +8,11 @@ services:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info_list'
 
+  dkan.datastore.query:
+    class: \Drupal\datastore\Service\Query
+    arguments:
+      - '@dkan.datastore.service'
+
   dkan.datastore.service.resource_localizer:
     class: \Drupal\datastore\Service\ResourceLocalizer
     arguments:
@@ -24,7 +29,7 @@ services:
       - '@dkan.metastore.storage'
       - '@dkan.datastore.service'
     calls:
-      - [ setLoggerFactory, [ '@logger.factory' ] ]
+      - [setLoggerFactory, ['@logger.factory']]
 
   dkan.datastore.service.factory.import:
     class: \Drupal\datastore\Service\Factory\Import
@@ -36,9 +41,19 @@ services:
     parent: logger.channel_base
     arguments: ['datastore']
 
+  dkan.datastore.database_connection_factory:
+    class: \Drupal\datastore\Storage\DatabaseConnectionFactory
+
+  dkan.datastore.data_dictionary.alter_table_query_factory.mysql:
+    class: \Drupal\datastore\DataDictionary\AlterTableQuery\Factory
+    arguments:
+      - '@dkan.datastore.database_connection_factory'
+      - '@pdlt.converter.strptime_to_mysql'
+      - '\Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery'
+
   dkan.datastore.database:
     class: \Drupal\Core\Database\Connection
-    factory: \Drupal\datastore\Storage\DatabaseConnectionFactory::getConnection
+    factory: ['@dkan.datastore.database_connection_factory', 'getConnection']
 
   dkan.datastore.database_table_factory:
     class: \Drupal\datastore\Storage\DatabaseTableFactory
@@ -76,3 +91,25 @@ services:
     arguments:
       - '@dkan.common.job_store'
       - '@dkan.datastore.import_info'
+
+  pdlt.converter.strptime_to_mysql:
+    class: \PDLT\Converter
+    arguments:
+      - '@pdlt.parser.strptime'
+      - '@pdlt.compiler.mysql'
+
+  pdlt.grammar.strptime:
+    class: \PDLT\Grammar\Strptime
+
+  pdlt.parser.strptime:
+    class: \PDLT\Parser
+    arguments:
+      - '@pdlt.grammar.strptime'
+
+  pdlt.compilation_map.mysql:
+    class: \PDLT\CompilationMap\MySQL
+
+  pdlt.compiler.mysql:
+    class: \PDLT\Compiler
+    arguments:
+      - '@pdlt.compilation_map.mysql'

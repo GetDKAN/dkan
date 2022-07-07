@@ -2,6 +2,9 @@
 
 namespace Drupal\common;
 
+use Drupal\common\UrlHostTokenResolver;
+
+use Dkan\Datastore\Resource as DatastoreResource;
 use Procrastinator\HydratableTrait;
 use Procrastinator\JsonSerializeTrait;
 
@@ -155,6 +158,20 @@ class Resource implements \JsonSerializable
   }
 
   /**
+   * Get object storing datastore specific information about this resource.
+   *
+   * @return \Dkan\Datastore\Resource
+   *   Datastore Resource.
+   */
+  public function getDatastoreResource(): DatastoreResource {
+    return new DatastoreResource(
+      md5($this->getUniqueIdentifier()),
+      UrlHostTokenResolver::resolve($this->getFilePath()),
+      $this->getMimeType()
+    );
+  }
+
+  /**
    * Getter.
    */
   public function getIdentifier() {
@@ -166,13 +183,6 @@ class Resource implements \JsonSerializable
    */
   public function getFilePath() {
     return $this->filePath;
-  }
-
-  /**
-   * Getter.
-   */
-  public function getFolder() {
-    return dirname($this->filePath);
   }
 
   /**
@@ -201,6 +211,13 @@ class Resource implements \JsonSerializable
    */
   public function getUniqueIdentifier() {
     return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
+  }
+
+  /**
+   * Retrieve datastore table name for resource.
+   */
+  public function getTableName() {
+    return 'datastore_' . md5($this->getUniqueIdentifier());
   }
 
   /**

@@ -26,13 +26,6 @@ class DatabaseTableFactory implements FactoryInterface {
   private $indexManager;
 
   /**
-   * Database table data objects.
-   *
-   * @var \Drupal\datastore\Storage\DatabaseTable
-   */
-  private $databaseTables = [];
-
-  /**
    * Constructor.
    */
   public function __construct(Connection $connection) {
@@ -60,23 +53,19 @@ class DatabaseTableFactory implements FactoryInterface {
     }
 
     $resource = $config['resource'];
-
-    if (!isset($this->databaseTables[$identifier])) {
-      $this->databaseTables[$identifier] = $this->getDatabaseTable($resource);
-      if ($this->indexManager) {
-        $this->databaseTables[$identifier]->setIndexManager($this->indexManager);
-      }
+    $databaseTable = $this->getDatabaseTable($resource);
+    if ($this->indexManager) {
+      $databaseTable->setIndexManager($this->indexManager);
     }
 
-    return $this->databaseTables[$identifier];
+    return $databaseTable;
   }
 
   /**
    * Protected.
    */
   protected function getDatabaseTable($resource) {
-    $databaseTable = new DatabaseTable($this->connection, $resource);
-    return $databaseTable;
+    return new DatabaseTable($this->connection, $resource);
   }
 
 }

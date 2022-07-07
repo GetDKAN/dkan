@@ -6,11 +6,12 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\Core\Database\Connection;
 
 use Drupal\common\LoggerTrait;
+use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\datastore\Service as DatastoreService;
 use Drupal\metastore\Reference\ReferenceLookup;
+
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -81,10 +82,10 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   A logger channel factory instance.
    * @param \Drupal\metastore\Reference\ReferenceLookup $referenceLookup
    *   The reference lookup service.
-   * @param \Drupal\Core\Database\Connection $defaultConnection
-   *   An instance of the default database connection.
-   * @param \Drupal\Core\Database\Connection $datastoreConnection
-   *   An instance of the datastore database connection.
+   * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $defaultConnectionFactory
+   *   Default database connection factory.
+   * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $datastoreConnectionFactory
+   *   Datastore database connection factory.
    */
   public function __construct(
     array $configuration,
@@ -94,8 +95,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     DatastoreService $datastore,
     LoggerChannelFactoryInterface $loggerFactory,
     ReferenceLookup $referenceLookup,
-    Connection $defaultConnection,
-    Connection $datastoreConnection
+    DatabaseConnectionFactoryInterface $defaultConnectionFactory,
+    DatabaseConnectionFactoryInterface $datastoreConnectionFactory
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->datastore = $datastore;
@@ -108,8 +109,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     // This ensures that database connections will remain open for the
     // duration of the time the queue is being processed.
     $timeout = (int) $plugin_definition['cron']['lease_time'];
-    $this->setConnectionTimeout($datastoreConnection, $timeout);
-    $this->setConnectionTimeout($defaultConnection, $timeout);
+    $defaultConnectionFactory->setConnectionTimeout($timeout);
+    $datastoreConnectionFactory->setConnectionTimeout($timeout);
   }
 
   /**
@@ -124,22 +125,9 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
       $container->get('dkan.datastore.service'),
       $container->get('logger.factory'),
       $container->get('dkan.metastore.reference_lookup'),
-      $container->get('database'),
-      $container->get('dkan.datastore.database')
+      $container->get('dkan.common.database_connection_factory'),
+      $container->get('dkan.datastore.database_connection_factory')
     );
-  }
-
-  /**
-   * Set the wait_timeout for the given database connection.
-   *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Database connection instance.
-   * @param int $timeout
-   *   Wait timeout in seconds.
-   */
-  protected function setConnectionTimeout(Connection $connection, int $timeout): void {
-    $command = 'SET SESSION wait_timeout = ' . $timeout;
-    $connection->query($command);
   }
 
   /**
@@ -170,8 +158,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
     $results = $this->datastore->import($identifier, FALSE, $version);
 
     $queued = FALSE;
-    foreach ($results as $result) {
-      $queued = isset($result) ? $this->processResult($result, $data, $queued) : FALSE;
+    foreach ($results as $label => $result) {
+      $queued = isset($result) ? $this->processResult($result, $data, $queued, $label) : FALSE;
     }
 
     // Delete local resource file if enabled in datastore settings config.
@@ -189,29 +177,31 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   The resource data for import.
    * @param bool $queued
    *   Whether the import job is currently queued.
+   * @param string $label
+   *   A label to distinguish types of jobs in status messages.
    *
    * @return bool
    *   The updated value for $queued.
    */
-  protected function processResult(Result $result, $data, $queued = FALSE) {
+  protected function processResult(Result $result, $data, bool $queued = FALSE, string $label = 'Import') {
     $uid = "{$data['identifier']}__{$data['version']}";
     $status = $result->getStatus();
     switch ($status) {
       case Result::STOPPED:
         if (!$queued) {
           $newQueueItemId = $this->requeue($data);
-          $this->notice("Import for {$uid} is requeueing. (ID:{$newQueueItemId}).");
+          $this->notice("$label for {$uid} is requeueing. (ID:{$newQueueItemId}).");
           $queued = TRUE;
         }
         break;
 
       case Result::IN_PROGRESS:
       case Result::ERROR:
-        $this->error("Import for {$uid} returned an error: {$result->getError()}");
+        $this->error("$label for {$uid} returned an error: {$result->getError()}");
         break;
 
       case Result::DONE:
-        $this->notice("Import for {$uid} completed.");
+        $this->notice("$label for {$uid} completed.");
         $this->invalidateCacheTags("{$uid}__source");
         break;
     }

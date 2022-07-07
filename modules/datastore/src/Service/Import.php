@@ -4,14 +4,13 @@ namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
-use Dkan\Datastore\Resource as DatastoreResource;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
-use Drupal\common\UrlHostTokenResolver;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Procrastinator\Result;
 
 /**
@@ -21,9 +20,19 @@ class Import {
   use LoggerTrait;
   use EventDispatcherTrait;
 
-  const EVENT_CONFIGURE_PARSER = 'dkan_datastore_import_configure_parser';
+  /**
+   * Event name used when configuring the parser during import.
+   *
+   * @var string
+   */
+  public const EVENT_CONFIGURE_PARSER = 'dkan_datastore_import_configure_parser';
 
-  const DEFAULT_TIMELIMIT = 50;
+  /**
+   * Time-limit used for standard import service.
+   *
+   * @var int
+   */
+  protected const DEFAULT_TIMELIMIT = 50;
 
   /**
    * The qualified class name of the importer to use.
@@ -33,9 +42,9 @@ class Import {
   private $importerClass = Importer::class;
 
   /**
-   * The resource object to import.
+   * The DKAN Resource to import.
    *
-   * @var \Dkan\Datastore\Resource
+   * @var \Drupal\common\Resource
    */
   private $resource;
 
@@ -56,10 +65,17 @@ class Import {
   private $databaseTableFactory;
 
   /**
-   * Constructor.
+   * Create a resource service instance.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   DKAN Resource.
+   * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
+   *   Jobstore factory.
+   * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
+   *   Database Table factory.
    */
   public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
-    $this->initializeResource($resource);
+    $this->resource = $resource;
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
@@ -72,28 +88,12 @@ class Import {
   }
 
   /**
-   * Initialize resource.
+   * Get DKAN resource.
    *
-   * @param \Drupal\common\Resource $resource
-   *   Resource.
+   * @return \Drupal\common\Resource
+   *   DKAN Resource.
    */
-  protected function initializeResource(Resource $resource) {
-    $this->resource = new DatastoreResource(
-      md5($resource->getUniqueIdentifier()),
-      UrlHostTokenResolver::resolve($resource->getFilePath()),
-      $resource->getMimeType()
-    );
-  }
-
-  /**
-   * Getter.
-   *
-   * @return \Dkan\Datastore\Resource
-   *   Resource.
-   *
-   * @codeCoverageIgnore
-   */
-  protected function getResource() : DatastoreResource {
+  protected function getResource(): Resource {
     return $this->resource;
   }
 
@@ -105,13 +105,24 @@ class Import {
     $importer->run();
 
     $result = $this->getResult();
-    if ($result->getStatus() == Result::ERROR) {
+    $resource = $this->getResource();
+    if ($result->getStatus() === Result::ERROR) {
+      $datastore_resource = $resource->getDatastoreResource();
       $this->setLoggerFactory(\Drupal::service('logger.factory'));
       $this->error('Error importing resource id:%id path:%path message:%message', [
-        '%id' => $this->getResource()->getId(),
-        '%path' => $this->getResource()->getFilePath(),
+        '%id' => $datastore_resource->getId(),
+        '%path' => $datastore_resource->getFilePath(),
         '%message' => $result->getError(),
       ]);
+    }
+    // If the import job finished successfully...
+    elseif ($result->getStatus() === Result::DONE) {
+      $dd_discovery = \Drupal::service('dkan.metastore.data_dictionary_discovery');
+      if ($dd_discovery->getDataDictionaryMode() !== DataDictionaryDiscoveryInterface::MODE_NONE) {
+        // Queue the imported resource for data-dictionary enforcement.
+        $dictionary_enforcer_queue = \Drupal::service('queue')->get('dictionary_enforcer');
+        $dictionary_enforcer_queue->createItem($resource);
+      }
     }
   }
 
@@ -133,18 +144,20 @@ class Import {
    *   Throws exception if cannot create valid importer object.
    */
   public function getImporter(): Importer {
+    $datastore_resource = $this->getResource()->getDatastoreResource();
+
     $delimiter = ",";
-    if ($this->resource->getMimeType() == 'text/tab-separated-values') {
+    if ($datastore_resource->getMimeType() == 'text/tab-separated-values') {
       $delimiter = "\t";
     }
 
     $importer = call_user_func([$this->importerClass, 'get'],
-      $this->resource->getId(),
+      $datastore_resource->getId(),
       $this->jobStoreFactory->getInstance(Importer::class),
       [
         "storage" => $this->getStorage(),
         "parser" => $this->getNonRecordingParser($delimiter),
-        "resource" => $this->resource,
+        "resource" => $datastore_resource,
       ]
     );
 
@@ -188,7 +201,8 @@ class Import {
    *   DatabaseTable storage object.
    */
   public function getStorage(): DatabaseTable {
-    return $this->databaseTableFactory->getInstance($this->resource->getId(), ['resource' => $this->resource]);
+    $datastore_resource = $this->getResource()->getDatastoreResource();
+    return $this->databaseTableFactory->getInstance($datastore_resource->getId(), ['resource' => $datastore_resource]);
   }
 
 }

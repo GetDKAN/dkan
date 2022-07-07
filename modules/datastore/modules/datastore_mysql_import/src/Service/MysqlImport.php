@@ -94,7 +94,7 @@ class MysqlImport extends Importer {
     // Attempt to resolve resource file name from file path.
     $file_path = \Drupal::service('file_system')->realpath($this->resource->getFilePath());
     if ($file_path === FALSE) {
-      return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s" and version "%s".', $file_path, $this->resource->getIdentifier(), $this->resource->getVersion()));
+      return $this->setResultError(sprintf('Unable to resolve file name "%s" for resource with identifier "%s".', $this->resource->getFilePath(), $this->resource->getId()));
     }
 
     // Read the columns and EOL character sequence from the CSV file.
