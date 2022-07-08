@@ -10,7 +10,6 @@ use Drupal\common\Resource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
-use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 use Procrastinator\Result;
 
 /**

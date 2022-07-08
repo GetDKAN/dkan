@@ -43,6 +43,13 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   protected ResourceMapper $resourceMapper;
 
   /**
+   * The resource processor collector service.
+   *
+   * @var \Drupal\datastore\Service\ResourceProcessorCollector
+   */
+  protected ResourceProcessorCollector $processor_collector;
+
+  /**
    * Build queue worker.
    *
    * @param array $configuration
