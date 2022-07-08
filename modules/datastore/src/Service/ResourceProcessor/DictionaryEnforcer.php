@@ -46,12 +46,6 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
-   * @param array $configuration
-   *   A configuration array containing information about the plugin instance.
-   * @param string $plugin_id
-   *   The plugin_id for the plugin instance.
-   * @param mixed $plugin_definition
-   *   The plugin implementation definition.
    * @param \Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface $alter_table_query_factory
    *   The alter table query factory service.
    * @param \Drupal\metastore\Service $metastore
@@ -76,16 +70,12 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *   DKAN Resource.
    */
   public function process(Resource $resource): void {
-    // Ensure a valid date-dictionary mode has been selected before proceeding.
-    if ($this->dataDictionaryDiscovery->getDataDictionaryMode() === DataDictionaryDiscoveryInterface::MODE_NONE) {
-      return;
-    }
-    // Retrieve name of datastore table for resource.
-    $datastore_table = $resource->getTableName();
     // Get data-dictionary for the given resource.
     $dictionary = $this->getDataDictionaryForResource($resource);
     // Extract data-dictionary field types.
     $dictionary_fields = $dictionary->{'$.data.fields'};
+    // Retrieve name of datastore table for resource.
+    $datastore_table = $resource->getTableName();
 
     $this->applyDictionary($dictionary_fields, $datastore_table);
   }
