@@ -30,12 +30,12 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
           'dictionary_mode' => [
             '#value' => DataDictionaryDiscoveryInterface::MODE_SITEWIDE,
             '#config_name' => DataDictionarySettingsForm::SETTINGS,
-            '#config_key' => 'dictionary_mode',
+            '#config_key' => 'data_dictionary_mode',
           ],
           'sitewide_dictionary_id' => [
             '#value' => $this->randomString(),
             '#config_name' => DataDictionarySettingsForm::SETTINGS,
-            '#config_key' => 'sitewide_dictionary_id',
+            '#config_key' => 'data_dictionary_sitewide',
           ],
         ],
       ],
@@ -44,7 +44,7 @@ class DataDictionarySettingsFormTest extends ConfigFormTestBase {
           'dictionary_mode' => [
             '#value' => DataDictionaryDiscoveryInterface::MODE_NONE,
             '#config_name' => DataDictionarySettingsForm::SETTINGS,
-            '#config_key' => 'dictionary_mode',
+            '#config_key' => 'data_dictionary_mode',
           ],
         ],
       ],
