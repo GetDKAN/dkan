@@ -64,6 +64,8 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
    *   A logger channel factory instance.
    * @param \Drupal\metastore\ResourceMapper $resource_mapper
    *   The metastore resource mapper service.
+   * @param \Drupal\datastore\Service\ResourceProcessorCollector $processor_collector
+   *   The resource processor collector service.
    */
   public function __construct(
     array $configuration,
