@@ -9,12 +9,12 @@ use Drupal\common\Resource;
  */
 interface ResourceProcessorInterface {
 
-    /**
-     * Process the given datastore resource.
-     *
-     * @param \Drupal\common\Resource $resource
-     *   Datastore resource.
-     */
-    public function process(Resource $resource): void;
+  /**
+   * Process the given datastore resource.
+   *
+   * @param \Drupal\common\Resource $resource
+   *   Datastore resource.
+   */
+  public function process(Resource $resource): void;
 
 }
