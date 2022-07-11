@@ -105,6 +105,41 @@ class SearchTest extends TestCase {
   }
 
   /**
+   * Test the Service::orderFacets method.
+   */
+  public function testOrderFacets() {
+    $in = [
+      (object) ['name' => 'Ana', 'total' => 1],
+      (object) ['name' => 'Bob', 'total' => 2],
+      (object) ['name' => 'Chris', 'total' => 3],
+      (object) ['name' => 'Dana', 'total' => 3],
+      (object) ['name' => 'Ed', 'total' => 3],
+    ];
+
+    // orderFacets() should order descending by count, then ascending by name.
+    $out = [
+      (object) ['name' => 'Chris', 'total' => 3],
+      (object) ['name' => 'Dana', 'total' => 3],
+      (object) ['name' => 'Ed', 'total' => 3],      
+      (object) ['name' => 'Bob', 'total' => 2],
+      (object) ['name' => 'Ana', 'total' => 1],
+    ];
+
+    Search::orderFacets($in);
+
+    $this->assertEquals($out, $in);
+
+    $no_name = [
+      (object) ['field1' => 'foo', 'field2' => 'bar'],
+      (object) ['field1' => 'x', 'field2' => 'y'],
+    ];
+
+    // Passing facets without name or total properties will throw exception.
+    $this->expectException(\InvalidArgumentException::class);
+    Search::orderFacets($no_name);
+  }
+
+  /**
    * Test for facets().
    */
   public function testFacets() {
