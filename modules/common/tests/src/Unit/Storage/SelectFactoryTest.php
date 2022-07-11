@@ -27,7 +27,7 @@ class SelectFactoryTest extends TestCase {
    *
    * @dataProvider \Drupal\Tests\common\Unit\Storage\QueryDataProvider::getAllData()
    */
-  public function testQuery(Query $query, string $sql, string $message) {
+  public function testQuery(Query $query, string $sql, string $message, array $values = []) {
     if ($message) {
       $this->expectExceptionMessage($message);
       $this->selectFactory->create($query);
@@ -35,6 +35,10 @@ class SelectFactoryTest extends TestCase {
     else {
       $db_query = $this->selectFactory->create($query);
       $this->assertStringContainsString($sql, $this->selectToString($db_query));
+
+      if (!empty($values)) {
+        $this->assertEquals($values, array_values($db_query->arguments()));
+      }
     }
   }
   

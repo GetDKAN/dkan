@@ -72,6 +72,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -90,6 +93,10 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+      
+      case self::VALUES:
+        return [];
+  
     }
   }
 
@@ -108,6 +115,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Bad query property";
+      
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -126,6 +136,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Unsafe property name: l.field3";
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -177,6 +190,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+        case self::VALUES:
+          return [];
     }
   }
 
@@ -216,6 +232,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -242,6 +261,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Only basic arithmetic expressions and basic SQL functions currently supported.";
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -266,6 +288,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -291,7 +316,11 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
+
   }
 
 
@@ -317,6 +346,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return ['%value%'];
     }
   }
 
@@ -339,6 +371,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return ['value%'];
     }
   }
 
@@ -365,7 +400,11 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
+
   }
 
   /**
@@ -410,7 +449,11 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
+  
   }
 
   /**
@@ -444,6 +487,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -462,6 +508,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Invalid sort.";
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -480,6 +529,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -499,6 +551,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -530,6 +585,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -568,6 +626,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -586,6 +647,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -635,6 +699,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
 
     throw new \UnexpectedValueException('Unknown return type provided.');
