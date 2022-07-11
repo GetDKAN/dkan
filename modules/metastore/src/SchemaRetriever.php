@@ -68,9 +68,13 @@ class SchemaRetriever implements RetrieverInterface, ContainerInjectionInterface
   /**
    * Public.
    */
-  public function retrieve(string $id): ?string {
-
+  public function retrieve(string $id, string $langcode = ''): ?string {
     $filename = $this->getSchemaDirectory() . "/collections/{$id}.json";
+
+    if ($langcode !== '') {
+      $file = $this->getSchemaDirectory() . "/collections/{$id}.{$langcode}.json";
+      $filename = is_readable($file) ? $file : $filename;
+    }
 
     if (in_array($id, $this->getAllIds())
           && is_readable($filename)

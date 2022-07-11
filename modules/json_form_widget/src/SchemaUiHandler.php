@@ -76,9 +76,9 @@ class SchemaUiHandler implements ContainerInjectionInterface {
    * @param mixed $schema_name
    *   The schema name.
    */
-  public function setSchemaUi($schema_name) {
+  public function setSchemaUi($schema_name, $language = '') {
     try {
-      $schema_ui = $this->schemaRetriever->retrieve($schema_name . '.ui');
+      $schema_ui = $this->schemaRetriever->retrieve($schema_name . '.ui', $language);
       $this->schemaUi = json_decode($schema_ui);
     }
     catch (\Exception $exception) {
