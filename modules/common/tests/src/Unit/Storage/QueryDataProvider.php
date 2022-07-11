@@ -34,6 +34,8 @@ class QueryDataProvider {
       'badExpressionOperandQuery',
       'conditionQuery',
       'likeConditionQuery',
+      'containsConditionQuery',
+      'startsWithConditionQuery',
       'arrayConditionQuery',
       'nestedConditionGroupQuery',
       'sortQuery',
@@ -291,6 +293,55 @@ class QueryDataProvider {
         return '';
     }
   }
+
+
+  /**
+   *
+   */
+  public static function containsConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "value",
+            "operator" => "contains",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
+
+      case self::EXCEPTION:
+        return '';
+    }
+  }
+
+  public static function startsWithConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "value",
+            "operator" => "starts with",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
+
+      case self::EXCEPTION:
+        return '';
+    }
+  }
+
 
   /**
    *
