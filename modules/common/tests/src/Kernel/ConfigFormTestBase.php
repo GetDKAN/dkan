@@ -38,7 +38,7 @@ abstract class ConfigFormTestBase extends KernelTestBase {
    *   );
    * @endcode
    *
-   * @return array[] 
+   * @return array[]
    *   Form test data.
    */
   abstract public function provideFormData(): array;
@@ -69,7 +69,7 @@ abstract class ConfigFormTestBase extends KernelTestBase {
     $this->assertTrue($valid_form, new FormattableMarkup('Input values: %values<br/>Validation handler errors: %errors', $args));
 
     foreach ($form_values as $data) {
-      $this->assertEquals($this->config($data['#config_name'])->get($data['#config_key']), $data['#value']);
+      $this->assertEquals($data['#value'], $this->config($data['#config_name'])->get($data['#config_key']));
     }
   }
 
