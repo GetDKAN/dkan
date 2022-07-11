@@ -47,7 +47,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
         DataDictionaryDiscoveryInterface::MODE_NONE => $this->t('Disabled'),
         DataDictionaryDiscoveryInterface::MODE_SITEWIDE => $this->t('Sitewide'),
       ],
-      '#default_value' => $config->get('dictionary_mode'),
+      '#default_value' => $config->get('data_dictionary_mode'),
       '#attributes' => [
         'name' => 'dictionary_mode',
       ],
@@ -61,7 +61,7 @@ class DataDictionarySettingsForm extends ConfigFormBase {
           ':input[name="dictionary_mode"]' => ['value' => DataDictionaryDiscoveryInterface::MODE_SITEWIDE],
         ],
       ],
-      '#default_value' => $config->get('sitewide_dictionary_id'),
+      '#default_value' => $config->get('data_dictionary_sitewide'),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -74,8 +74,8 @@ class DataDictionarySettingsForm extends ConfigFormBase {
     // Retrieve the configuration.
     $this->config(static::SETTINGS)
       // Set the submitted configuration setting.
-      ->set('dictionary_mode', $form_state->getValue('dictionary_mode'))
-      ->set('sitewide_dictionary_id', $form_state->getValue('sitewide_dictionary_id'))
+      ->set('data_dictionary_mode', $form_state->getValue('dictionary_mode'))
+      ->set('data_dictionary_sitewide', $form_state->getValue('sitewide_dictionary_id'))
       ->save();
 
     parent::submitForm($form, $form_state);

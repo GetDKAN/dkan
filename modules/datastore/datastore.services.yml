@@ -21,6 +21,20 @@ services:
       - '@dkan.common.drupal_files'
       - '@dkan.common.job_store'
 
+  dkan.datastore.service.resource_processor_collector:
+    class: \Drupal\datastore\Service\ResourceProcessorCollector
+    tags:
+      - { name: service_collector, tag: resource_processor, call: addResourceProcessor }
+
+  dkan.datastore.service.resource_processor.dictionary_enforcer:
+    class: \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
+    arguments:
+      - '@dkan.datastore.data_dictionary.alter_table_query_factory.mysql'
+      - '@dkan.metastore.service'
+      - '@dkan.metastore.data_dictionary_discovery'
+    tags:
+      - { name: resource_processor, priority: 25 }
+
   dkan.datastore.service.resource_purger:
     class: \Drupal\datastore\Service\ResourcePurger
     arguments:
