@@ -19,6 +19,7 @@ class QueryDataProvider {
   const QUERY_OBJECT = 1;
   const SQL = 2;
   const EXCEPTION = 3;
+  const VALUES = 4;
 
   /**
    *
@@ -53,6 +54,7 @@ class QueryDataProvider {
         self::$test(self::QUERY_OBJECT),
         self::$test(self::SQL),
         self::$test(self::EXCEPTION),
+        self::$test(self::VALUES),
       ];
     }
     return $data;
@@ -290,7 +292,7 @@ class QueryDataProvider {
         return '';
 
       case self::VALUES:
-        return [];
+        return ['value'];
     }
   }
 
@@ -318,7 +320,7 @@ class QueryDataProvider {
         return '';
 
       case self::VALUES:
-        return [];
+        return ['%value%'];
     }
 
   }
@@ -402,7 +404,7 @@ class QueryDataProvider {
         return '';
 
       case self::VALUES:
-        return [];
+        return [1, 5];
     }
 
   }
@@ -451,7 +453,7 @@ class QueryDataProvider {
         return '';
 
       case self::VALUES:
-        return [];
+        return ['value1', 'value2', 'value3'];
     }
   
   }
@@ -701,7 +703,7 @@ class QueryDataProvider {
         return '';
 
       case self::VALUES:
-        return [];
+        return ['value'];
     }
 
     throw new \UnexpectedValueException('Unknown return type provided.');
