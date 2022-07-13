@@ -22,8 +22,6 @@ use Drupal\json_form_widget\ValueHandler;
  *     "string_long"
  *   }
  * )
- *
- * @codeCoverageIgnore
  */
 class JsonFormWidget extends WidgetBase {
 
@@ -118,7 +116,7 @@ class JsonFormWidget extends WidgetBase {
       $default_data = json_decode($item->value);
     }
     $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
-    $type = isset($type) ? $type : $this->getSchema();
+    $type = $type ?? $this->getSchema();
     $this->builder->setSchema($this->getSchema(), $type);
     $json_form = $this->builder->getJsonForm($default_data, $form_state);
 
@@ -134,7 +132,7 @@ class JsonFormWidget extends WidgetBase {
     $field_name = $form_state->get('json_form_widget_field');
     // @todo there is duplicated code here.
     $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
-    $type = isset($type) ? $type : $this->getSchema();
+    $type = $type ?? $this->getSchema();
     $this->builder->setSchema($this->getSchema(), $type);
     $schema = $this->builder->getSchema();
 
@@ -165,6 +163,7 @@ class JsonFormWidget extends WidgetBase {
    * Get form data schema.
    *
    * @return string
+   *   Data schema.
    */
   protected function getSchema(): string {
     return $this->schema ?? self::DEFAULT_SCHEMA;
