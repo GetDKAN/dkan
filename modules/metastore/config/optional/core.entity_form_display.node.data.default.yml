@@ -22,8 +22,7 @@ content:
     third_party_settings: {  }
   field_json_metadata:
     weight: 6
-    settings:
-      schema: dataset
+    settings: {  }
     third_party_settings: {  }
     type: json_form_widget
     region: content

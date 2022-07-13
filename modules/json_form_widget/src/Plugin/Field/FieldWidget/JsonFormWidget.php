@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\json_form_widget\FormBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Http\RequestStack;
 use Drupal\json_form_widget\ValueHandler;
 
 /**
@@ -27,6 +28,13 @@ use Drupal\json_form_widget\ValueHandler;
 class JsonFormWidget extends WidgetBase {
 
   /**
+   * Default DKAN Data Schema.
+   *
+   * @var string
+   */
+  protected const DEFAULT_SCHEMA = 'dataset';
+
+  /**
    * FormBuilder.
    *
    * @var \Drupal\json_form_widget\FormBuilder
@@ -39,6 +47,13 @@ class JsonFormWidget extends WidgetBase {
    * @var \Drupal\json_form_widget\ValueHandler
    */
   protected $valueHandler;
+
+  /**
+   * DKAN Data Schema.
+   *
+   * @var string|null
+   */
+  protected ?string $schema;
 
   /**
    * Constructs a WidgetBase object.
@@ -57,11 +72,23 @@ class JsonFormWidget extends WidgetBase {
    *   The JsonFormBuilder service.
    * @param \Drupal\json_form_widget\ValueHandler $value_handler
    *   The JsonFormValueHandler service.
+   * @param \Drupal\Core\Http\RequestStack $request_stack
+   *   Drupal request context service.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, FormBuilder $builder, ValueHandler $value_handler) {
+  public function __construct(
+    $plugin_id,
+    $plugin_definition,
+    FieldDefinitionInterface $field_definition,
+    array $settings,
+    array $third_party_settings,
+    FormBuilder $builder,
+    ValueHandler $value_handler,
+    RequestStack $request_stack
+  ) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->builder = $builder;
     $this->valueHandler = $value_handler;
+    $this->schema = $request_stack->getCurrentRequest()->query->get('schema');
   }
 
   /**
@@ -75,42 +102,9 @@ class JsonFormWidget extends WidgetBase {
       $configuration['settings'],
       $configuration['third_party_settings'],
       $container->get('json_form.builder'),
-      $container->get('json_form.value_handler')
+      $container->get('json_form.value_handler'),
+      $container->get('request_stack')
     );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function defaultSettings() {
-    return [
-      'schema' => 'dataset',
-    ] + parent::defaultSettings();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsForm(array $form, FormStateInterface $form_state) {
-    $element['schema'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('JSON Schema name'),
-      '#default_value' => $this->getSetting('schema'),
-      '#required' => TRUE,
-    ];
-
-    return $element;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsSummary() {
-    $summary = [];
-
-    $summary[] = $this->t('JSON Schema Name: @schema', ['@schema' => $this->getSetting('schema')]);
-
-    return $summary;
   }
 
   /**
@@ -124,9 +118,8 @@ class JsonFormWidget extends WidgetBase {
       $default_data = json_decode($item->value);
     }
     $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
-    $type = isset($type) ? $type : $this->getSetting('schema');
-    $this->builder->setSchema($this->getSetting('schema'), $type);
-    $this->schema = $this->builder->getSchema();
+    $type = isset($type) ? $type : $this->getSchema();
+    $this->builder->setSchema($this->getSchema(), $type);
     $json_form = $this->builder->getJsonForm($default_data, $form_state);
 
     if ($json_form) {
@@ -141,8 +134,8 @@ class JsonFormWidget extends WidgetBase {
     $field_name = $form_state->get('json_form_widget_field');
     // @todo there is duplicated code here.
     $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
-    $type = isset($type) ? $type : $this->getSetting('schema');
-    $this->builder->setSchema($this->getSetting('schema'), $type);
+    $type = isset($type) ? $type : $this->getSchema();
+    $this->builder->setSchema($this->getSchema(), $type);
     $schema = $this->builder->getSchema();
 
     $data = [];
@@ -166,6 +159,15 @@ class JsonFormWidget extends WidgetBase {
       unset($item->_original_delta, $item->_weight);
     }
     static::setWidgetState($form['#parents'], $field_name, $form_state, $field_state);
+  }
+
+  /**
+   * Get form data schema.
+   *
+   * @return string
+   */
+  protected function getSchema(): string {
+    return $this->schema ?? self::DEFAULT_SCHEMA;
   }
 
 }
