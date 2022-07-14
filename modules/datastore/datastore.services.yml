@@ -35,6 +35,13 @@ services:
     tags:
       - { name: resource_processor, priority: 25 }
 
+  dkan.datastore.service.resource_processor.fulltext_indexer:
+    class: \Drupal\datastore\Service\ResourceProcessor\FullTextIndexer
+    arguments:
+      - '@dkan.metastore.service'
+    tags:
+      - { name: resource_processor, priority: 35 }
+
   dkan.datastore.service.resource_purger:
     class: \Drupal\datastore\Service\ResourcePurger
     arguments:
