@@ -91,6 +91,7 @@ jobs:
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.2.11"
+      CC_TEST_REPORTER_ID: 74be475ee52e0fb228822ad90f32a72ac9ce658aaefc331330e3e9d2221dc0be
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
