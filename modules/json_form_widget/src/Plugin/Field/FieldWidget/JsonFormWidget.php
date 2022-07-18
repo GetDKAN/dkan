@@ -115,11 +115,13 @@ class JsonFormWidget extends WidgetBase {
     foreach ($items as $item) {
       $default_data = json_decode($item->value);
     }
-    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
-    $type = $type ?? $this->getSchema();
-    $this->builder->setSchema($this->getSchema(), $type);
+    $type = $this->getSchemaId();
+    // Copy the item type to the entity.
+    $form_state->getFormObject()->getEntity()->set('field_data_type', $type);
+    // Set the schema for the form builder.
+    $this->builder->setSchema($type);
+    // Attempt to build the form.
     $json_form = $this->builder->getJsonForm($default_data, $form_state);
-
     if ($json_form) {
       return ['value' => $json_form];
     }
@@ -129,13 +131,11 @@ class JsonFormWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
-    $field_name = $form_state->get('json_form_widget_field');
-    // @todo there is duplicated code here.
-    $type = $form_state->getformObject()->getEntity()->get('field_data_type')->value;
-    $type = $type ?? $this->getSchema();
-    $this->builder->setSchema($this->getSchema(), $type);
-    $schema = $this->builder->getSchema();
+    // Set the schema for the form builder.
+    $this->builder->setSchema($this->getSchemaId());
 
+    $field_name = $form_state->get('json_form_widget_field');
+    $schema = $this->builder->getSchema();
     $data = [];
     $properties = array_keys((array) $schema->properties);
     $values = $form_state->getValue($field_name)[0]['value'];
@@ -160,12 +160,21 @@ class JsonFormWidget extends WidgetBase {
   }
 
   /**
-   * Get form data schema.
+   * Get form data schema ID.
+   *
+   * @param FormStateInterface|null $form_state
+   *   Form state.
    *
    * @return string
-   *   Data schema.
+   *   Data schema ID.
    */
-  protected function getSchema(): string {
+  protected function getSchemaId(?FormStateInterface $form_state = NULL): string {
+    // Extract the metastore item type from form state if provided.
+    if (isset($form_state)) {
+      return $form_state->getFormObject()->getEntity()->field_data_type->value;
+    }
+    // Otherwise use form state provided in request query, or the default
+    // schema if one is not found.
     return $this->schema ?? self::DEFAULT_SCHEMA;
   }
 

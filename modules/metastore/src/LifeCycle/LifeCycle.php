@@ -102,9 +102,14 @@ class LifeCycle {
    *   Metastore item object.
    */
   public function go($stage, MetastoreItemInterface $data) {
+    // Removed dashes from schema ID since function names can't include dashes.
+    $schema_id = str_replace('-', '', $data->getSchemaId());
     $stage = ucwords($stage);
-    $method = "{$data->getSchemaId()}{$stage}";
+    // Build method name from schema ID and stage.
+    $method = "{$schema_id}{$stage}";
+    // Ensure a method exists for this life cycle stage.
     if (method_exists($this, $method)) {
+      // Call life cycle method on metastore item.
       $this->{$method}($data);
     }
   }
@@ -248,12 +253,25 @@ class LifeCycle {
   }
 
   /**
-   * Private.
+   * Dataset pre-save life cycle method.
+   *
+   * @param MetastoreItemInterface $data
+   *   Dataset metastore item.
    */
-  protected function datasetPresave(MetastoreItemInterface $data) {
+  protected function datasetPresave(MetastoreItemInterface $data): void {
+    $this->referenceMetadata($data);
+  }
+
+  /**
+   * Sanitize and reference metadata.
+   *
+   * @param MetastoreItemInterface $data
+   *   Metastore item.
+   */
+  protected function referenceMetadata(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
 
-    $title = isset($metadata->title) ? $metadata->title : $metadata->name;
+    $title = $metadata->title ?? $metadata->name;
     $data->setTitle($title);
 
     // If there is no uuid add one.
@@ -278,7 +296,16 @@ class LifeCycle {
       $raw = $data->getRawMetadata();
       $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }
+  }
 
+  /**
+   * Data-Dictionary pre-save life cycle method.
+   *
+   * @param MetastoreItemInterface $data
+   *   Data-Dictionary metastore item.
+   */
+  protected function datadictionaryPresave(MetastoreItemInterface $data): void {
+    $this->referenceMetadata($data);
   }
 
   /**
