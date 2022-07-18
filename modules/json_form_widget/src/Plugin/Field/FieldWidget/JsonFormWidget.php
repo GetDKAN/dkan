@@ -162,7 +162,7 @@ class JsonFormWidget extends WidgetBase {
   /**
    * Get form data schema ID.
    *
-   * @param FormStateInterface|null $form_state
+   * @param \Drupal\Core\Form\FormStateInterface|null $form_state
    *   Form state.
    *
    * @return string

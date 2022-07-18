@@ -255,7 +255,7 @@ class LifeCycle {
   /**
    * Dataset pre-save life cycle method.
    *
-   * @param MetastoreItemInterface $data
+   * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Dataset metastore item.
    */
   protected function datasetPresave(MetastoreItemInterface $data): void {
@@ -265,7 +265,7 @@ class LifeCycle {
   /**
    * Sanitize and reference metadata.
    *
-   * @param MetastoreItemInterface $data
+   * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Metastore item.
    */
   protected function referenceMetadata(MetastoreItemInterface $data): void {
@@ -301,7 +301,7 @@ class LifeCycle {
   /**
    * Data-Dictionary pre-save life cycle method.
    *
-   * @param MetastoreItemInterface $data
+   * @param \Drupal\metastore\MetastoreItemInterface $data
    *   Data-Dictionary metastore item.
    */
   protected function datadictionaryPresave(MetastoreItemInterface $data): void {
