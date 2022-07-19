@@ -2,6 +2,7 @@
 
 namespace Drupal\json_form_widget\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -117,7 +118,10 @@ class JsonFormWidget extends WidgetBase {
     }
     $type = $this->getSchemaId($form_state);
     // Copy the item type to the entity.
-    $form_state->getFormObject()->getEntity()->set('field_data_type', $type);
+    $form_entity = $form_state->getFormObject()->getEntity();
+    if ($form_entity instanceof FieldableEntityInterface) {
+      $form_entity->set('field_data_type', $type);
+    }
     // Set the schema for the form builder.
     $this->builder->setSchema($type);
     // Attempt to build the form.
@@ -171,9 +175,9 @@ class JsonFormWidget extends WidgetBase {
   protected function getSchemaId(?FormStateInterface $form_state = NULL): string {
     // Extract the metastore item type from form state if provided.
     if (isset($form_state)) {
-      $entity = $form_state->getFormObject()->getEntity();
-      if (isset($entity->field_data_type->value)) {
-        return $entity->field_data_type->value;
+      $form_entity = $form_state->getFormObject()->getEntity();
+      if ($form_entity instanceof FieldableEntityInterface && isset($form_entity->field_data_type->value)) {
+        return $form_entity->field_data_type->value;
       }
     }
     // Otherwise use form state provided in request query, or the default
