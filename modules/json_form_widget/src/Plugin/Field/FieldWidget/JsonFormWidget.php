@@ -115,7 +115,7 @@ class JsonFormWidget extends WidgetBase {
     foreach ($items as $item) {
       $default_data = json_decode($item->value);
     }
-    $type = $this->getSchemaId();
+    $type = $this->getSchemaId($form_state);
     // Copy the item type to the entity.
     $form_state->getFormObject()->getEntity()->set('field_data_type', $type);
     // Set the schema for the form builder.
@@ -132,7 +132,7 @@ class JsonFormWidget extends WidgetBase {
    */
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
     // Set the schema for the form builder.
-    $this->builder->setSchema($this->getSchemaId());
+    $this->builder->setSchema($this->getSchemaId($form_state));
 
     $field_name = $form_state->get('json_form_widget_field');
     $schema = $this->builder->getSchema();
@@ -171,7 +171,10 @@ class JsonFormWidget extends WidgetBase {
   protected function getSchemaId(?FormStateInterface $form_state = NULL): string {
     // Extract the metastore item type from form state if provided.
     if (isset($form_state)) {
-      return $form_state->getFormObject()->getEntity()->field_data_type->value;
+      $entity = $form_state->getFormObject()->getEntity();
+      if (isset($entity->field_data_type->value)) {
+        return $entity->field_data_type->value;
+      }
     }
     // Otherwise use form state provided in request query, or the default
     // schema if one is not found.
