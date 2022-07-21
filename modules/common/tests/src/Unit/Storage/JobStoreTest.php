@@ -2,17 +2,18 @@
 
 namespace Drupal\Tests\common\Unit\Storage;
 
-use Contracts\Mock\Storage\Memory;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Delete;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\Query\Update;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\StatementWrapper;
+use Drupal\common\Storage\JobStore;
+
+use Contracts\Mock\Storage\Memory;
+use FileFetcher\FileFetcher;
 use MockChain\Chain;
 use MockChain\Sequence;
-use Drupal\common\Storage\JobStore;
-use FileFetcher\FileFetcher;
 use PHPUnit\Framework\TestCase;
 
 /**

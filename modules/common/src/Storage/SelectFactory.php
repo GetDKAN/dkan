@@ -253,13 +253,31 @@ class SelectFactory {
    *   A condition from the DKAN query object.
    */
   private function addCondition($statementObj, $condition) {
-    if (!isset($condition->operator)) {
-      $condition->operator = '=';
-    }
+    $this->normalizeOperator($condition);
     $field = (isset($condition->collection) ? $condition->collection : $this->alias)
       . '.'
       . $condition->property;
     $statementObj->condition($field, $condition->value, strtoupper($condition->operator));
+  }
+
+  /**
+   * Fix any quirks in DKAN query object that won't translate well to SQL.
+   *
+   * @param object $condition
+   *   A condition from the DKAN query object.
+   */
+  private function normalizeOperator($condition) {
+    if (!isset($condition->operator)) {
+      $condition->operator = '=';
+    }
+    elseif ($condition->operator == 'contains') {
+      $condition->operator = 'like';
+      $condition->value = "%{$condition->value}%";
+    }
+    elseif ($condition->operator == 'starts with') {
+      $condition->operator = 'like';
+      $condition->value = "{$condition->value}%";
+    }
   }
 
   /**

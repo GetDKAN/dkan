@@ -131,7 +131,7 @@ context('Admin dataset file upload', () => {
     })
 
 
-    it('can create and import dataset with uploaded file', () => {
+    it('can import dataset with uploaded file', () => {
       // run cron to import new dataset
       cy.visit('/admin/config/system/cron')
       cy.get('#edit-run')

@@ -7,6 +7,9 @@ use Drupal\Core\Logger\LoggerChannel;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueInterface;
+use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
 
 use Drupal\common\Resource;
 use Drupal\common\Storage\JobStore;
@@ -17,7 +20,6 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 
 use Dkan\Datastore\Importer;
-use Dkan\Datastore\Resource as DatastoreResource;
 use MockChain\Options;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -38,25 +40,32 @@ class ImportTest extends TestCase {
   /**
    *
    */
-  public function test() {
+  public function testImport() {
     $options = (new Options())
       ->add('event_dispatcher', ContainerAwareEventDispatcher::class)
       ->add('request_stack', RequestStack::class)
       ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('queue', QueueFactory::class)
       ->index(0);
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
-      ->add(PublicStream::class, 'getExternalUrl', self::HOST);
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST)
+      ->add(QueueFactory::class, 'get', QueueInterface::class)
+      ->add(QueueInterface::class, 'createItem', NULL, 'items');
 
     \Drupal::setContainer($container_chain->getMock());
 
     $resource = new Resource("http://hello.goodby/text.csv", "text/csv");
 
+    $result = (new Chain($this))
+      ->add(Result::class, 'getStatus', Result::DONE)
+      ->getMock();
+
     $jobStore = (new Chain($this))
       ->add(JobStore::class, "retrieve", "")
       ->add(Importer::class, "run", Result::class)
-      ->add(Importer::class, "getResult", Result::class)
+      ->add(Importer::class, "getResult", $result)
       ->add(JobStore::class, "store", "")
       ->getMock();
 
@@ -74,7 +83,44 @@ class ImportTest extends TestCase {
     $result = $service->getResult();
     $this->assertTrue($result instanceof Result);
     $this->assertEmpty($result->getError());
+  }
 
+  /**
+   * Test a dictionary enforcer queue job is created on success when enabled.
+   */
+  public function testDictEnforcerQueuedOnSuccess() {
+    $datastore_table = 'datastore_test';
+    $resource = new Resource('abc.txt', 'text/csv');
+
+    $options = (new Options())
+      ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscoveryInterface::class)
+      ->add('logger', LoggerChannelFactory::class)
+      ->add('queue', QueueFactory::class)
+      ->index(0);
+    $containerChain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(LoggerChannelFactory::class, 'get', LoggerChannel::class)
+      ->add(LoggerChannel::class, 'error', NULL, 'errors')
+      ->add(QueueFactory::class, 'get', QueueInterface::class)
+      ->add(QueueInterface::class, 'createItem', NULL, 'items')
+      ->add(DataDictionaryDiscoveryInterface::class, 'getDataDictionaryMode', DataDictionaryDiscoveryInterface::MODE_SITEWIDE);
+    $container = $containerChain->getMock();
+    \Drupal::setContainer($container);
+
+    $importService = (new Chain($this))
+      ->add(Service::class, 'getResource', Resource::class)
+      ->add(Service::class, 'getImporter', Importer::class)
+      ->add(Service::class, 'getStorage', DatabaseTable::class)
+      ->add(Service::class, 'getResource',  $resource)
+      ->add(Importer::class, 'run', Result::class)
+      ->add(Service::class, 'getResult', Result::class)
+      ->add(Result::class, 'getStatus', Result::DONE)
+      ->add(DatabaseTable::class, 'getTableName', $datastore_table)
+      ->getMock();
+    $importService->import();
+
+    // Validate that a dictionary enforcer queue item was created.
+    $this->assertEquals([$resource], $containerChain->getStoredInput('items'));
   }
 
   /**
@@ -82,20 +128,25 @@ class ImportTest extends TestCase {
    */
   public function testLogImportError() {
     $importMock = (new Chain($this))
-      ->add(Service::class, 'initializeResource')
-      ->add(Service::class, 'getResource', DatastoreResource::class)
+      ->add(Service::class, 'getResource', new Resource('abc.txt', 'text/csv'))
       ->add(Service::class, 'getImporter', Importer::class)
       ->add(Importer::class, 'run', Result::class)
       ->add(Service::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::ERROR)
-      ->add(DatastoreResource::class, 'getId', 'abc')
-      ->add(DatastoreResource::class, 'getFilePath', 'some/path/file.csv')
       ->getMock();
 
+    // Construct and set `\Drupal::container` mock.
+    $options = (new Options())
+      ->add('stream_wrapper_manager', StreamWrapperManager::class)
+      ->add('logger.factory', LoggerChannelFactory::class)
+      ->index(0);
+
     $containerChain = (new Chain($this))
-      ->add(Container::class, 'get', LoggerChannelFactory::class)
+      ->add(Container::class, 'get', $options)
       ->add(LoggerChannelFactory::class, 'get', LoggerChannel::class)
-      ->add(LoggerChannel::class, 'error', NULL, 'errors');
+      ->add(LoggerChannel::class, 'error', NULL, 'errors')
+      ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
+      ->add(PublicStream::class, 'getExternalUrl', self::HOST);
     $container = $containerChain->getMock();
 
     \Drupal::setContainer($container);
