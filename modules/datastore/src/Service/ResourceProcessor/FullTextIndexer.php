@@ -27,13 +27,6 @@ class FullTextIndexer implements ResourceProcessorInterface {
   protected $metastore;
 
   /**
-   * The metastore resource mapper service.
-   *
-   * @var \Drupal\metastore\ResourceMapper
-   */
-  protected $resourceMapper;
-
-  /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
    * @param \Drupal\datastore\FullText\AlterTableQueryFactoryInterface $alter_table_query_factory
@@ -56,11 +49,11 @@ class FullTextIndexer implements ResourceProcessorInterface {
    *   DKAN Resource.
    */
   public function process(Resource $resource): void {
-    // @Todo: create process for defining indexes.
+    // @todo Create process for defining fulltext indexes.
     $indexes = [
       'keyword' => ['decisision_rationale', 'coverage_rules'],
       'condition' => ['_condition'],
-      'drug' => ['drug']
+      'drug' => ['drug'],
     ];
     // Retrieve name of datastore table for resource.
     $datastore_table = $resource->getTableName();

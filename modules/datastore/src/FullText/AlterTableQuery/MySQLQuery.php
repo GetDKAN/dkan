@@ -39,30 +39,30 @@ class MySQLQuery implements AlterTableQueryInterface {
     $this->indexes = $this->mergeIndexFields($this->indexes, $this->datastoreTable);
     // Loop through each index.
     foreach ($this->indexes as $indexId => $columns) {
-      $mergedColumns = $this->mergeIndexFields($columns, $this->datastoreTable);
       // Build and execute SQL command to perform table alter.
-      $this->buildAlterCommand($indexId, $mergedColumns, $this->datastoreTable)->execute();
+      $this->buildAlterCommand($indexId, $columns, $this->datastoreTable)->execute();
     }
   }
 
   /**
    * Confirm the index fields exist in the given table.
    *
-   * @param array $columns
-   *   Fields specified in the index.
+   * @param array $indexes
+   *   Fulltext indexes to apply.
    * @param string $table
    *   MySQL table to filter against.
    *
    * @return array
    *   Confirmed list of applicable index fields.
    */
-  protected function mergeIndexFields(array $columns, string $table): array {
+  protected function mergeIndexFields(array $indexes, string $table): array {
     $table_cols = $this->getTableColsAndComments($table);
     $column_names = array_keys($table_cols);
 
-    // Filter out un-applicable index fields.
-    $filtered_index_fields[] = array_filter($columns, fn ($fields) => in_array($fields['name'], $column_names, TRUE));
-
+    foreach ($indexes as $index) {
+      // Filter out un-applicable index fields.
+      $filtered_index_fields[] = array_filter($index, fn ($fields) => in_array($fields['name'], $column_names, TRUE));
+    }
     return $filtered_index_fields;
   }
 
