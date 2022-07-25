@@ -24,11 +24,11 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
   /**
-   * Datastore Service.
+   * Datastore query service.
    *
-   * @var \Drupal\datastore\Service
+   * @var \Drupal\datastore\Service\Query
    */
-  protected $datastoreService;
+  protected $queryService;
 
   /**
    * DatasetInfo Service.
@@ -42,7 +42,14 @@ abstract class AbstractQueryController implements ContainerInjectionInterface {
    *
    * @var Drupal\Core\Config\ConfigFactoryInterface
    */
-  private $configFactory;
+  protected $configFactory;
+
+  /**
+   * Metastore API response.
+   *
+   * @var \Drupal\metastore\MetastoreApiResponse
+   */
+  protected MetastoreApiResponse $metastoreApiResponse;
 
   /**
    * Default API rows limit.
