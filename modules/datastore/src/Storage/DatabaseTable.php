@@ -190,6 +190,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   protected function buildTableSchema(string $tableName, array $fieldsInfo) {
     // Add descriptions to schema from column comments.
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
+    $schema = ['fields' => []];
     foreach ($fieldsInfo as $info) {
       $name = $info->Field;
       $schema['fields'][$name] = $this->translateType($info->Type, ($info->Extra ?? NULL));
@@ -201,7 +202,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     // Add index information to schema if available.
     $this->addIndexInfo($schema);
 
-    return $schema ?? ['fields' => []];
+    return $schema;
   }
 
   /**
