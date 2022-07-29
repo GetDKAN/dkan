@@ -254,10 +254,38 @@ class SelectFactory {
    */
   private function addCondition($statementObj, $condition) {
     $this->normalizeOperator($condition);
+    if ($condition->operator == "match") {
+      $this->addMatchCondition($statementObj, $condition);
+      return;
+    }
     $field = (isset($condition->collection) ? $condition->collection : $this->alias)
       . '.'
       . $condition->property;
     $statementObj->condition($field, $condition->value, strtoupper($condition->operator));
+  }
+
+  /**
+   * Add a custom where condition in the case of a fulltext match operator.
+   *
+   * Currently, only BOOLEAN MODE Mysql fulltext searches supported.
+   *
+   * @param \Drupal\Core\Database\Query\Select|\Drupal\Core\Database\Query\Condition $statementObj
+   *   Drupal DB API select object or condition object.
+   * @param object $condition
+   *   A condition from the DKAN query object.
+   */
+  private function addMatchCondition($statementObj, $condition) {
+    $properties = explode(',', $condition->property);
+    $fields = [];
+    foreach ($properties as $property) {
+      $fields[] = (isset($condition->collection) ? $condition->collection : $this->alias)
+      . '.'
+      . $property;
+    }
+    $fields_list = implode(',', $fields);
+
+    $where = "MATCH($fields_list) AGAINST (:words IN BOOLEAN MODE)";
+    $statementObj->where($where, [':words' => $condition->value]);
   }
 
   /**
