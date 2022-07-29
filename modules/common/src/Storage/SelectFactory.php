@@ -278,7 +278,7 @@ class SelectFactory {
     $properties = explode(',', $condition->property);
     $fields = [];
     foreach ($properties as $property) {
-      $fields[] = (isset($condition->collection) ? $condition->collection : $this->alias)
+      $fields[] = ($condition->collection ?? $this->alias)
       . '.'
       . $property;
     }

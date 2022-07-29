@@ -180,7 +180,6 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @param string $tableName
    *   The table name.
-   *
    * @param array $fieldsInfo
    *   Array of fields info from DESCRIBE query.
    *
