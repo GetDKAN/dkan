@@ -32,7 +32,7 @@ class SelectFactory {
   private $dbQuery;
 
   /**
-   * Iterator for "words" named placeholder
+   * Iterator for "words" named placeholder.
    *
    * @var int
    */
