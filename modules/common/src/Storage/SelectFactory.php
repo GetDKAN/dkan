@@ -32,6 +32,13 @@ class SelectFactory {
   private $dbQuery;
 
   /**
+   * Iterator for "words" named placeholder
+   *
+   * @var int
+   */
+  private $wordsIterator = 0;
+
+  /**
    * Constructor function.
    *
    * @param Drupal\Core\Database\Connection $connection
@@ -284,8 +291,9 @@ class SelectFactory {
     }
     $fields_list = implode(',', $fields);
 
-    $where = "MATCH($fields_list) AGAINST (:words IN BOOLEAN MODE)";
-    $statementObj->where($where, [':words' => $condition->value]);
+    $where = "MATCH($fields_list) AGAINST (:words{$this->wordsIterator} IN BOOLEAN MODE)";
+    $statementObj->where($where, [":words{$this->wordsIterator}" => $condition->value]);
+    $this->wordsIterator++;
   }
 
   /**

@@ -391,17 +391,23 @@ class QueryDataProvider {
             "value" => "value",
             "operator" => "match",
           ],
+          (object) [
+            "collection" => "t",
+            "property" => "field2",
+            "value" => "value2",
+            "operator" => "match",
+          ],
         ];
         return $query;
 
       case self::SQL:
-        return "WHERE (MATCH(t.field1) AGAINST (:words IN BOOLEAN MODE))";
+        return "WHERE ((MATCH(t.field1) AGAINST (:words0 IN BOOLEAN MODE))) AND ((MATCH(t.field2) AGAINST (:words1 IN BOOLEAN MODE)))";
 
       case self::EXCEPTION:
         return '';
 
       case self::VALUES:
-        return ['value'];
+        return ['value', 'value2'];
     }
   }
 
