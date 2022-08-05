@@ -7,7 +7,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\datastore\Service\ResourceProcessorCollector;
 use Drupal\metastore\ResourceMapper;
@@ -119,10 +119,10 @@ class PostImportResourceProcessor extends QueueWorkerBase implements ContainerFa
   /**
    * Pass along new resource to resource processors.
    *
-   * @param \Drupal\common\Resource $resource
+   * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
    */
-  public function doProcessItem(Resource $resource): void {
+  public function doProcessItem(DataResource $resource): void {
     $identifier = $resource->getIdentifier();
     $version = $resource->getVersion();
 

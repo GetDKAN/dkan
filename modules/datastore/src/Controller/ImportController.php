@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Controller;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\JsonResponseTrait;
@@ -124,7 +124,7 @@ class ImportController implements ContainerInjectionInterface {
       $resourceId = $payload->resource_id;
       $identifier = NULL;
       $version = NULL;
-      list($identifier, $version) = Resource::getIdentifierAndVersion($resourceId);
+      list($identifier, $version) = DataResource::getIdentifierAndVersion($resourceId);
       $results = $this->datastoreService->import($identifier, FALSE, $version);
       return $this->getResponse($results);
     }

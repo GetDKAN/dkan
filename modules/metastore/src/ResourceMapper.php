@@ -2,7 +2,7 @@
 
 namespace Drupal\metastore;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\DatabaseTableInterface;
 use Drupal\common\Storage\Query;
 use Drupal\common\EventDispatcherTrait;
@@ -49,7 +49,7 @@ class ResourceMapper {
    *   A resource perspective.
    */
   public static function newRevision() {
-    return drupal_static('metastore_resource_mapper_new_revision', 0);
+    return \drupal_static('metastore_resource_mapper_new_revision', 0);
   }
 
   /**
@@ -58,7 +58,7 @@ class ResourceMapper {
    * @todo the Resource class currently lives in datastore, we should move it
    * to a more neutral place.
    */
-  public function register(Resource $resource) : bool {
+  public function register(DataResource $resource) : bool {
     $this->filePathExists($resource->getFilePath());
     $this->store->store(json_encode($resource));
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
@@ -69,14 +69,14 @@ class ResourceMapper {
   /**
    * Register new resource perspective.
    *
-   * @param \Drupal\common\Resource $resource
+   * @param \Drupal\common\DataResource $resource
    *   Resource for which to register new perspective.
    */
-  public function registerNewPerspective(Resource $resource): void {
+  public function registerNewPerspective(DataResource $resource): void {
     $identifier = $resource->getIdentifier();
     $version = $resource->getVersion();
     // Ensure a source perspective already exists for the resource.
-    if (!$this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
+    if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       throw new \Exception("A resource with identifier {$identifier} was not found.");
     }
 
@@ -101,7 +101,7 @@ class ResourceMapper {
   /**
    * Register new version.
    */
-  public function registerNewVersion(Resource $resource) {
+  public function registerNewVersion(DataResource $resource) {
     $this->validateNewVersion($resource);
     $this->getStore()->store(json_encode($resource));
     $this->dispatchEvent(self::EVENT_REGISTRATION, $resource);
@@ -110,19 +110,19 @@ class ResourceMapper {
   /**
    * Private.
    */
-  protected function validateNewVersion(Resource $resource) {
-    if ($resource->getPerspective() !== Resource::DEFAULT_SOURCE_PERSPECTIVE) {
+  protected function validateNewVersion(DataResource $resource) {
+    if ($resource->getPerspective() !== DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
       throw new \Exception("Only versions of source resources are allowed.");
     }
 
     $identifier = $resource->getIdentifier();
-    if (!$this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE)) {
+    if (!$this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE)) {
       throw new \Exception(
         "A resource with identifier {$identifier} was not found.");
     }
 
     $version = $resource->getVersion();
-    if ($this->exists($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
+    if ($this->exists($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version)) {
       throw new AlreadyRegistered(
         "A resource with identifier {$identifier} and version {$version} already exists.");
     }
@@ -131,9 +131,9 @@ class ResourceMapper {
   /**
    * Retrieve.
    */
-  public function get(string $identifier, $perspective = Resource::DEFAULT_SOURCE_PERSPECTIVE, $version = NULL): ?Resource {
+  public function get(string $identifier, $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version = NULL): ?DataResource {
     $data = $this->getFull($identifier, $perspective, $version);
-    return ($data != FALSE) ? Resource::hydrate(json_encode($data)) : NULL;
+    return ($data != FALSE) ? DataResource::hydrate(json_encode($data)) : NULL;
   }
 
   /**
@@ -152,7 +152,7 @@ class ResourceMapper {
   /**
    * Remove.
    */
-  public function remove(Resource $resource) {
+  public function remove(DataResource $resource) {
     if ($this->exists($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion())) {
       $object = $this->getRevision($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
       if ($resource->getPerspective() == 'source') {

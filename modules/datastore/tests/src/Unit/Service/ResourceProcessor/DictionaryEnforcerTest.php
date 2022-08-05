@@ -8,7 +8,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
@@ -40,7 +40,7 @@ class DictionaryEnforcerTest extends TestCase {
    * Test process() succeeds.
    */
   public function testProcess() {
-    $resource = new Resource('test.csv', 'text/csv');
+    $resource = new DataResource('test.csv', 'text/csv');
 
     $alter_table_query_factory = (new Chain($this))
       ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
@@ -75,7 +75,7 @@ class DictionaryEnforcerTest extends TestCase {
    * Test exception thrown if no dictionary is found for resource.
    */
   public function testNoDictionaryIdFoundForResourceException() {
-    $resource = new Resource('test.csv', 'text/csv');
+    $resource = new DataResource('test.csv', 'text/csv');
 
     $alter_table_query_factory = (new Chain($this))
       ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
@@ -110,7 +110,7 @@ class DictionaryEnforcerTest extends TestCase {
    * Test exception thrown in applyDataTypes() is caught and logged.
    */
   public function testProcessItemApplyDataTypesException() {
-    $resource = new Resource('test.csv', 'text/csv');
+    $resource = new DataResource('test.csv', 'text/csv');
 
     $alter_table_query_factory = (new Chain($this))
       ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
@@ -169,8 +169,8 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
-      ->add(ResourceMapper::class, 'get', Resource::class)
-      ->add(Resource::class, 'getVersion', $resource_version);
+      ->add(ResourceMapper::class, 'get', DataResource::class)
+      ->add(DataResource::class, 'getVersion', $resource_version);
   }
 
 }

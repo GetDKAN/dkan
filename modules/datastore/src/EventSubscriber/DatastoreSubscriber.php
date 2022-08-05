@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
 use Drupal\common\Events\Event;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
@@ -112,7 +112,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * Private.
    */
-  private function isDataStorable(Resource $resource) : bool {
+  private function isDataStorable(DataResource $resource) : bool {
     return in_array($resource->getMimeType(), [
       'text/csv',
       'text/tab-separated-values',

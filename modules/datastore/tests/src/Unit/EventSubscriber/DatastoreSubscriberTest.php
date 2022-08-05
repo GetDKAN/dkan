@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\EventSubscriber;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
@@ -33,7 +33,7 @@ class DatastoreSubscriberTest extends TestCase {
    */
   public function test() {
     $url = 'http://hello.world/file.csv';
-    $resource = new Resource($url, 'text/csv');
+    $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
 
     $chain = $this->getContainerChain();
@@ -52,7 +52,7 @@ class DatastoreSubscriberTest extends TestCase {
    */
   public function testOnRegistrationException() {
     $url = 'http://hello.world/file.csv';
-    $resource = new Resource($url, 'text/csv');
+    $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
 
     $chain = $this->getContainerChain();
@@ -89,7 +89,7 @@ class DatastoreSubscriberTest extends TestCase {
    */
   public function testDrop() {
     $url = 'http://hello.world/file.csv';
-    $resource = new Resource($url, 'text/csv');
+    $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
 
     $config = (new Chain($this))
@@ -129,7 +129,7 @@ class DatastoreSubscriberTest extends TestCase {
    */
   public function testDatastoreDropException() {
     $url = 'http://hello.world/file.csv';
-    $resource = new Resource($url, 'text/csv');
+    $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
 
     $options = (new Options())
@@ -162,7 +162,7 @@ class DatastoreSubscriberTest extends TestCase {
    */
   public function testJobStoreRemoveException() {
     $url = 'http://hello.world/file.csv';
-    $resource = new Resource($url, 'text/csv');
+    $resource = new DataResource($url, 'text/csv');
     $event = new Event($resource);
 
     $options = (new Options())

@@ -3,7 +3,7 @@
 namespace Drupal\datastore;
 
 use Dkan\Datastore\Importer;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Procrastinator\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -176,7 +176,7 @@ class Service implements ContainerInjectionInterface {
   /**
    * Getter.
    */
-  public function getImportService(Resource $resource) {
+  public function getImportService(DataResource $resource) {
     return $this->importServiceFactory->getInstance($resource->getUniqueIdentifier(), ['resource' => $resource]);
   }
 
@@ -225,7 +225,7 @@ class Service implements ContainerInjectionInterface {
   public function summary($identifier) {
     $id = NULL;
     $version = NULL;
-    [$id, $version] = Resource::getIdentifierAndVersion($identifier);
+    [$id, $version] = DataResource::getIdentifierAndVersion($identifier);
     $storage = $this->getStorage($id, $version);
 
     if ($storage) {

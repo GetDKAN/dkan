@@ -7,7 +7,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
@@ -82,7 +82,7 @@ class MysqlImportTest extends TestCase {
       ->getMock();
     \Drupal::setContainer($container);
 
-    $resource = new Resource(self::HOST . '/text.csv', 'text/csv');
+    $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();
     $jobStoreFactory = $this->getJobstoreFactoryMock();
 
@@ -125,7 +125,7 @@ class MysqlImportTest extends TestCase {
   }
 
   protected function getMysqlImporter() {
-    $resource = new Resource(self::HOST . '/text.csv', 'text/csv');
+    $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();
 
     return new class($resource, $databaseTableFactory->getInstance('test')) extends MysqlImport {
