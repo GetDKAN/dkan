@@ -186,7 +186,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    * @return array
    *   Full Drupal Schema API array.
    */
-  protected function buildTableSchema(string $tableName, array $fieldsInfo): array {
+  protected function buildTableSchema(string $tableName, array $fieldsInfo) {
     // Add descriptions to schema from column comments.
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
     $schema = ['fields' => []];
