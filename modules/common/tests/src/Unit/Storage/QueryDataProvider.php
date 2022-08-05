@@ -37,6 +37,7 @@ class QueryDataProvider {
       'likeConditionQuery',
       'containsConditionQuery',
       'startsWithConditionQuery',
+      'matchConditionQuery',
       'arrayConditionQuery',
       'nestedConditionGroupQuery',
       'sortQuery',
@@ -376,6 +377,37 @@ class QueryDataProvider {
 
       case self::VALUES:
         return ['value%'];
+    }
+  }
+
+  public static function matchConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "value",
+            "operator" => "match",
+          ],
+          (object) [
+            "collection" => "t",
+            "property" => "field2",
+            "value" => "value2",
+            "operator" => "match",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE ((MATCH(t.field1) AGAINST (:words0 IN BOOLEAN MODE))) AND ((MATCH(t.field2) AGAINST (:words1 IN BOOLEAN MODE)))";
+
+      case self::EXCEPTION:
+        return '';
+
+      case self::VALUES:
+        return ['value', 'value2'];
     }
   }
 

@@ -174,12 +174,22 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   * Get table schema.
+   * Get the table schema in Drupal Schema API format.
    *
-   * @todo Note that this will break on PostgresSQL
+   * NOTE: This will likely fail on any db driver other than mysql.
+   *
+   * @param string $tableName
+   *   The table name.
+   * @param array $fieldsInfo
+   *   Array of fields info from DESCRIBE query.
+   *
+   * @return array
+   *   Full Drupal Schema API array.
    */
-  protected function buildTableSchema($tableName, $fieldsInfo) {
+  protected function buildTableSchema(string $tableName, array $fieldsInfo) {
+    // Add descriptions to schema from column comments.
     $canGetComment = method_exists($this->connection->schema(), 'getComment');
+    $schema = ['fields' => []];
     foreach ($fieldsInfo as $info) {
       $name = $info->Field;
       $schema['fields'][$name] = $this->translateType($info->Type, ($info->Extra ?? NULL));
@@ -188,7 +198,34 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
       ];
       $schema['fields'][$name] = array_filter($schema['fields'][$name]);
     }
-    return $schema ?? ['fields' => []];
+    // Add index information to schema if available.
+    $this->addIndexInfo($schema);
+
+    return $schema;
+  }
+
+  /**
+   * Add index information to table schema.
+   *
+   * @param array $schema
+   *   Drupal Schema API array.
+   */
+  protected function addIndexInfo(array &$schema): void {
+    if ($this->connection->getConnectionOptions()['driver'] != 'mysql') {
+      return;
+    }
+
+    $indexInfo = $this->connection->query("SHOW INDEXES FROM  `{$this->getTableName()}`")->fetchAll();
+    foreach ($indexInfo as $info) {
+      // Primary key is handled elsewhere.
+      if ($info->Key_name == 'PRIMARY') {
+        continue;
+      }
+      // Deviating slightly from Drupal Schema API to specify fulltext indexes.
+      $indexes_key = $info->Index_type == 'FULLTEXT' ? 'fulltext indexes' : 'indexes';
+      $name = $info->Key_name;
+      $schema[$indexes_key][$name][] = $info->Column_name;
+    }
   }
 
   /**

@@ -206,7 +206,8 @@
                         "in",
                         "not in",
                         "contains",
-                        "starts with"
+                        "starts with",
+                        "match"
                     ],
                     "default": "="
                  }
