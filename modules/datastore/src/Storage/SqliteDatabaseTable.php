@@ -25,7 +25,7 @@ class SqliteDatabaseTable extends DatabaseTable {
   /**
    * {@inheritdoc}
    */
-  protected function buildTableSchema($tableName, $fieldsInfo):array {
+  protected function buildTableSchema($tableName, $fieldsInfo) {
     foreach ($fieldsInfo as $info) {
       $name = $info->name;
       $schema['fields'][$name] = $this->translateType(strtolower($info->type), $info);
