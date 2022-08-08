@@ -16,7 +16,7 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -170,8 +170,8 @@ class MysqlImportTest extends TestCase {
   protected function getJobstoreFactoryMock() {
     $jobStore = (new Chain($this))
       ->add(JobStore::class, 'retrieve', '')
-      ->add(Importer::class, 'run', Result::class)
-      ->add(Importer::class, 'getResult', Result::class)
+      ->add(ImportJob::class, 'run', Result::class)
+      ->add(ImportJob::class, 'getResult', Result::class)
       ->add(JobStore::class, 'store', '')
       ->getMock();
 

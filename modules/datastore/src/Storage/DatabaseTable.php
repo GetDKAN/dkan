@@ -11,7 +11,7 @@ use Drupal\Core\Database\Driver\mysql\Connection as MysqlConnection;
 /**
  * Database storage object.
  *
- * @see \Dkan\Datastore\Storage\StorageInterface
+ * @see \Drupal\common\Storage\DatabaseTableInterface
  */
 class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
 
@@ -142,7 +142,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * {@inheritdoc}
    */
-  public function setSchema($schema) {
+  public function setSchema($schema): void {
     $fields = $schema['fields'];
     $new_field = [
       $this->primaryKey() =>

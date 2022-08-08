@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Service\Info;
 
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Info\ImportInfo;
@@ -22,7 +22,7 @@ class ImportInfoListTest extends TestCase {
     $result = Result::hydrate('{"status":"error","data":"","error":"File import error"}');
 
     $imp = (new Chain($this))
-      ->add(Importer::class, "getResult", $result)
+      ->add(ImportJob::class, "getResult", $result)
       ->getMock();
 
     $services = (new Options())

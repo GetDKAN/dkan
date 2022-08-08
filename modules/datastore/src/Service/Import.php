@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
 use Drupal\common\DataResource;
@@ -38,7 +38,7 @@ class Import {
    *
    * @var \Procrastinator\Job\AbstractPersistentJob
    */
-  private $importerClass = Importer::class;
+  private $importerClass = ImportJob::class;
 
   /**
    * The DKAN Resource to import.
@@ -133,13 +133,13 @@ class Import {
   /**
    * Build an Importer.
    *
-   * @return \Dkan\Datastore\Importer
+   * @return \Drupal\datastore\Import
    *   Importer.
    *
    * @throws \Exception
    *   Throws exception if cannot create valid importer object.
    */
-  public function getImporter(): Importer {
+  public function getImporter(): ImportJob {
     $datastore_resource = $this->getResource()->getDatastoreResource();
 
     $delimiter = ",";
@@ -149,7 +149,7 @@ class Import {
 
     $importer = call_user_func([$this->importerClass, 'get'],
       $datastore_resource->getId(),
-      $this->jobStoreFactory->getInstance(Importer::class),
+      $this->jobStoreFactory->getInstance(ImportJob::class),
       [
         "storage" => $this->getStorage(),
         "parser" => $this->getNonRecordingParser($delimiter),

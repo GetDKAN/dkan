@@ -2,7 +2,6 @@
 
 namespace Drupal\datastore;
 
-use Dkan\Datastore\Importer;
 use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Procrastinator\Result;
@@ -197,7 +196,7 @@ class Service implements ContainerInjectionInterface {
     if ($storage) {
       $storage->destruct();
       $this->jobStoreFactory
-        ->getInstance(Importer::class)
+        ->getInstance(ImportJob::class)
         ->remove(md5($resource_id));
     }
 

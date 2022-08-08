@@ -14,7 +14,7 @@ use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\ResourceMapper;
 
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -153,7 +153,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       ]);
     }
     try {
-      $this->jobStoreFactory->getInstance(Importer::class)->remove($id);
+      $this->jobStoreFactory->getInstance(ImportJob::class)->remove($id);
     }
     catch (\Exception $e) {
       $this->loggerFactory->get('datastore')->error('Failed to remove importer job. @message',

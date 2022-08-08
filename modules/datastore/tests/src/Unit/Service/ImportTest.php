@@ -19,7 +19,7 @@ use Drupal\datastore\Service\Import as Service;
 use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use MockChain\Options;
 use MockChain\Chain;
 use PHPUnit\Framework\TestCase;
@@ -64,8 +64,8 @@ class ImportTest extends TestCase {
 
     $jobStore = (new Chain($this))
       ->add(JobStore::class, "retrieve", "")
-      ->add(Importer::class, "run", Result::class)
-      ->add(Importer::class, "getResult", $result)
+      ->add(ImportJob::class, "run", Result::class)
+      ->add(ImportJob::class, "getResult", $result)
       ->add(JobStore::class, "store", "")
       ->getMock();
 
@@ -109,10 +109,10 @@ class ImportTest extends TestCase {
 
     $importService = (new Chain($this))
       ->add(Service::class, 'getResource', DataResource::class)
-      ->add(Service::class, 'getImporter', Importer::class)
+      ->add(Service::class, 'getImporter', ImportJob::class)
       ->add(Service::class, 'getStorage', DatabaseTable::class)
       ->add(Service::class, 'getResource',  $resource)
-      ->add(Importer::class, 'run', Result::class)
+      ->add(ImportJob::class, 'run', Result::class)
       ->add(Service::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::DONE)
       ->add(DatabaseTable::class, 'getTableName', $datastore_table)
@@ -129,8 +129,8 @@ class ImportTest extends TestCase {
   public function testLogImportError() {
     $importMock = (new Chain($this))
       ->add(Service::class, 'getResource', new DataResource('abc.txt', 'text/csv'))
-      ->add(Service::class, 'getImporter', Importer::class)
-      ->add(Importer::class, 'run', Result::class)
+      ->add(Service::class, 'getImporter', ImportJob::class)
+      ->add(ImportJob::class, 'run', Result::class)
       ->add(Service::class, 'getResult', Result::class)
       ->add(Result::class, 'getStatus', Result::ERROR)
       ->getMock();
