@@ -254,6 +254,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       // Portion of the message => User friendly message.
       'Column not found' => 'Column not found',
       'Mixing of GROUP columns' => 'You may not mix simple properties and aggregation expressions in a single query. If one of your properties includes an expression with a sum, count, avg, min or max operator, remove other properties from your query and try again',
+      'Can\'t find FULLTEXT index matching the column list' => 'You have attempted a fulltext match against a column that is not indexed for fulltext searching',
     ];
     foreach ($messages as $portion => $message) {
       if (strpos($unsanitizedMessage, $portion) !== FALSE) {
