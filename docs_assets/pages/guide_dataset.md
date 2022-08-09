@@ -1,4 +1,4 @@
-@page tut_dataset How to add a Dataset
+@page guide_dataset How to add a Dataset
 
 ## API
 
@@ -27,8 +27,10 @@ Authorization: Basic admin:admin
 1. Log in to the site.
 2. Navigate to Admin > DKAN > Datasets.
 3. Click the "+ Add new dataset" button.
-4. Use the _Download URL_ field to enter a url to your file or upload a local file.
-5. Fill in the form and click "submit".
+4. Use the Distribution _Download URL_ field to enter a url to your file or upload a local file.
+5. Fill in the form with as much descriptive information as you can to make it discoverable.
+6. Click "submit".
+7. Run cron to start the import.
 
 ## Demo site content
 Running cron will import the csv files to the datstore.
