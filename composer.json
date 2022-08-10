@@ -17,7 +17,6 @@
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.0",
         "getdkan/contracts": "^1.0.0",
-        "getdkan/datastore": "^5.1.2",
         "getdkan/file-fetcher" : "^4.1.0",
         "getdkan/harvest": "^1.0.0",
         "getdkan/json-schema-provider": "^0.1.2",
