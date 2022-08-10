@@ -197,7 +197,7 @@ class ImportJobTest extends TestCase {
     $a = '["1","11110000","L","1","DESIGNATED","16.814","16.846","51.484"]';
     $this->assertEquals($a, $values[0]);
 
-    $b = '["859","11200000","L","1","DESIGNATED","15.055","17.728","4301.9723"]';
+    $b = '["5083","87080001","R","1","DESIGNATED","1.074","1.177","163.244"]';
     $this->assertEquals($b, $values[5000]);
 
     $c = '["11001","57060000","R","1","DESIGNATED","4.505","4.682","285.7762"]';
