@@ -7,8 +7,25 @@ namespace Drupal\datastore;
  */
 class DatastoreResource implements \JsonSerializable {
 
+  /**
+   * Resource identifier.
+   *
+   * @var string
+   */
   private $id;
+
+  /**
+   * Path to resource file.
+   *
+   * @var string
+   */
   private $filePath;
+
+  /**
+   * File media type.
+   *
+   * @var string
+   */
   private $mimeType;
 
   /**

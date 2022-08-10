@@ -105,7 +105,7 @@ class Query implements ContainerInjectionInterface {
   public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
     $storageMap = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
-      list($identifier, $version) = DataResource::getIdentifierAndVersion($resource["id"]);
+      [$identifier, $version] = DataResource::getIdentifierAndVersion($resource["id"]);
       $storage = $this->datastore->getStorage($identifier, $version);
       $storageMap[$resource["alias"]] = $storage;
     }

@@ -2,8 +2,6 @@
 
 namespace Drupal\common;
 
-use Drupal\common\UrlHostTokenResolver;
-
 use Dkan\Datastore\Resource as DatastoreResource;
 use Procrastinator\HydratableTrait;
 use Procrastinator\JsonSerializeTrait;

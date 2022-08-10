@@ -124,7 +124,7 @@ class ImportController implements ContainerInjectionInterface {
       $resourceId = $payload->resource_id;
       $identifier = NULL;
       $version = NULL;
-      list($identifier, $version) = DataResource::getIdentifierAndVersion($resourceId);
+      [$identifier, $version] = DataResource::getIdentifierAndVersion($resourceId);
       $results = $this->datastoreService->import($identifier, FALSE, $version);
       return $this->getResponse($results);
     }

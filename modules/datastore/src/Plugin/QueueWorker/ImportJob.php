@@ -9,16 +9,29 @@ use Procrastinator\Result;
 use ForceUTF8\Encoding;
 
 /**
- *
+ * "Procrastinator" job for importing to the datastore.
  */
 class ImportJob extends AbstractPersistentJob {
+
+  /**
+   * Storage class.
+   *
+   * @var \Drupal\common\Storage\DatabaseTableInterface
+   */
   protected $dataStorage;
   protected $parser;
   protected $resource;
   public const BYTES_PER_CHUNK = 8192;
 
   /**
+   * Constructor method.
    *
+   * @param string $identifier
+   *   Job identifier.
+   * @param mixed $storage
+   *   Storage class.
+   * @param array|null $config
+   *   Configuration options.
    */
   protected function __construct(string $identifier, $storage, array $config = NULL) {
     parent::__construct($identifier, $storage, $config);
@@ -35,7 +48,7 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
-   *
+   * Get the storage object.
    */
   public function getStorage() {
     return $this->dataStorage;
@@ -59,13 +72,7 @@ class ImportJob extends AbstractPersistentJob {
 
     try {
       $this->assertTextFile($filename);
-
-      $h = fopen($filename, 'r');
-      fseek($h, $this->getBytesProcessed());
-
-      $this->parseAndStore($h, $maximum_execution_time);
-
-      fclose($h);
+      $this->parseAndStore($filename, $maximum_execution_time);
     }
     catch (\Exception $e) {
       return $this->setResultError($e->getMessage());
@@ -85,7 +92,13 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
+   * Confirm this is a valid text file.
    *
+   * @param string $filename
+   *   Filename to test.
+   *
+   * @throws \Exception
+   *   Will throw exception if not valid, do nothing if valid.
    */
   protected function assertTextFile(string $filename) {
     $mimeType = mime_content_type($filename);
@@ -95,7 +108,13 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
+   * Add error message to result object.
    *
+   * @param mixed $message
+   *   Result message. Usually a string.
+   *
+   * @return \Procrastinator\Result
+   *   Updated result object.
    */
   protected function setResultError($message): Result {
     $this->getResult()->setStatus(Result::ERROR);
@@ -104,7 +123,10 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
+   * Get current count of bytes processed of file.
    *
+   * @return int
+   *   Count of bytes processed.
    */
   protected function getBytesProcessed() {
     $chunksProcessed = $this->getStateProperty('chunksProcessed', 0);
@@ -112,12 +134,20 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
+   * Parse a file and store results.
    *
+   * @param string $filename
+   *   The file name including path.
+   * @param mixed $maximumExecutionTime
+   *   Maximum time to parse for before exiting.
    */
-  protected function parseAndStore($fileHandler, $maximumExecutionTime) {
+  protected function parseAndStore($filename, $maximumExecutionTime) {
+    $h = fopen($filename, 'r');
+    fseek($h, $this->getBytesProcessed());
+
     $chunksProcessed = $this->getStateProperty('chunksProcessed', 0);
     while (time() < $maximumExecutionTime) {
-      $chunk = fread($fileHandler, self::BYTES_PER_CHUNK);
+      $chunk = fread($h, self::BYTES_PER_CHUNK);
 
       if (!$chunk) {
         $this->getResult()->setStatus(Result::DONE);
@@ -131,10 +161,11 @@ class ImportJob extends AbstractPersistentJob {
       $this->store();
       $this->setStateProperty('chunksProcessed', $chunksProcessed);
     }
+    fclose($h);
   }
 
   /**
-   *
+   * Drop all import jobs.
    */
   public function drop() {
     $results = $this->dataStorage->retrieveAll();
@@ -145,7 +176,7 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
-   *
+   * Store the current instance of ImportJob.
    */
   protected function store() {
     $recordNumber = $this->getStateProperty('recordNumber', 0);
@@ -168,9 +199,12 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
+   * Set the schema for the datastore storage operation.
    *
+   * @param array $header
+   *   Array of header strings.
    */
-  protected function setStorageSchema($header) {
+  protected function setStorageSchema(array $header) {
     $schema = [];
     $this->assertUniqueHeaders($header);
     foreach ($header as $field) {
@@ -184,12 +218,12 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Verify headers are unique.
    *
-   * @param $header
+   * @param array $header
    *   List of strings
    *
    * @throws \Exception
    */
-  protected function assertUniqueHeaders($header) {
+  protected function assertUniqueHeaders(array $header) {
     if (count($header) != count(array_unique($header))) {
       $duplicates = array_keys(array_filter(array_count_values($header), function ($i) {
           return $i > 1;
@@ -199,14 +233,17 @@ class ImportJob extends AbstractPersistentJob {
   }
 
   /**
+   * Get the parser object.
    *
+   * @return \Contracts\ParserInterface
+   *   Parser object.
    */
   public function getParser(): ParserInterface {
     return $this->parser;
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   protected function serializeIgnoreProperties(): array {
     $ignore = parent::serializeIgnoreProperties();
