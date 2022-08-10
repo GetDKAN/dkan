@@ -9,7 +9,7 @@ use Procrastinator\Result;
 use ForceUTF8\Encoding;
 
 /**
- * "Procrastinator" job for importing to the datastore.
+ * Procrastinator job for importing to the datastore.
  */
 class ImportJob extends AbstractPersistentJob {
 
@@ -19,8 +19,21 @@ class ImportJob extends AbstractPersistentJob {
    * @var \Drupal\common\Storage\DatabaseTableInterface
    */
   protected $dataStorage;
+
+  /**
+   * Parser object.
+   *
+   * @var \Contracts\ParserInterface
+   */
   protected $parser;
+
+  /**
+   * Datastore resource.
+   *
+   * @var \Drupal\datastore\DatastoreResource
+   */
   protected $resource;
+
   public const BYTES_PER_CHUNK = 8192;
 
   /**
