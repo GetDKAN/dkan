@@ -5,7 +5,6 @@ namespace Drupal\Tests\datastore\Unit\Plugin\QueueWorker;
 use Contracts\ParserInterface;
 use CsvParser\Parser\Csv;
 use Contracts\Mock\Storage\Memory;
-use Dkan\DatastoreTest\TestMemStorageBad;
 use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\DatabaseTableInterface;

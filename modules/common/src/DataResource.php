@@ -2,7 +2,7 @@
 
 namespace Drupal\common;
 
-use Dkan\Datastore\Resource as DatastoreResource;
+use Drupal\datastore\DatastoreResource;
 use Procrastinator\HydratableTrait;
 use Procrastinator\JsonSerializeTrait;
 
@@ -157,7 +157,7 @@ class DataResource implements \JsonSerializable {
   /**
    * Get object storing datastore specific information about this resource.
    *
-   * @return \Dkan\Datastore\Resource
+   * @return \Drupal\datastore\DatastoreResource
    *   Datastore Resource.
    */
   public function getDatastoreResource(): DatastoreResource {

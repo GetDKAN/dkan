@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Storage;
 
 use Drupal\Core\Database\Connection;
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\common\LoggerTrait;
 use Drupal\common\Storage\AbstractDatabaseTable;
 use Drupal\Core\Database\Driver\mysql\Connection as MysqlConnection;
@@ -20,7 +20,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   /**
    * Datastore resource object.
    *
-   * @var \Dkan\Datastore\Resource
+   * @var \Drupal\datastore\DatastoreResource
    */
   private $resource;
 
@@ -29,10 +29,10 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
-   * @param \Dkan\Datastore\Resource $resource
+   * @param \Drupal\datastore\DatastoreResource $resource
    *   A resource.
    */
-  public function __construct(Connection $connection, Resource $resource) {
+  public function __construct(Connection $connection, DatastoreResource $resource) {
     // Set resource before calling the parent constructor. The parent calls
     // getTableName which we implement and needs the resource to operate.
     $this->resource = $resource;
@@ -67,7 +67,7 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
    */
   public static function hydrate(string $json) {
     $data = json_decode($json);
-    $resource = Resource::hydrate(json_encode($data->resource));
+    $resource = DatastoreResource::hydrate(json_encode($data->resource));
 
     return new DatabaseTable(\Drupal::service('database'), $resource);
   }
