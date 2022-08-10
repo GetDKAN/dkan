@@ -198,7 +198,10 @@ class ImportJobTest extends TestCase {
     $this->assertEquals($a, $values[0]);
 
     $b = '["859","11200000","L","1","DESIGNATED","15.055","17.728","4301.9723"]';
-    $this->assertEquals($b, $values[840]);
+    $this->assertEquals($b, $values[5000]);
+
+    $c = '["11001","57060000","R","1","DESIGNATED","4.505","4.682","285.7762"]';
+    $this->assertEquals($c, $values[10000]);
   }
 
   /**
@@ -207,7 +210,7 @@ class ImportJobTest extends TestCase {
   public function testBadStorage() {
     $storageInterfaceClass = DatabaseTableInterface::class;
     $this->expectExceptionMessage("Storage must be an instance of {$storageInterfaceClass}");
-    $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/countries.csv", "text/csv");
+    $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/countries.csZv", "text/csv");
 
     $importer = ImportJob::get("1", new Memory(), [
       "resource" => $resource,
