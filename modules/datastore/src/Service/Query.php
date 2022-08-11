@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use RootedData\RootedJsonData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -105,7 +105,7 @@ class Query implements ContainerInjectionInterface {
   public function getQueryStorageMap(DatastoreQuery $datastoreQuery) {
     $storageMap = [];
     foreach ($datastoreQuery->{"$.resources"} as $resource) {
-      list($identifier, $version) = Resource::getIdentifierAndVersion($resource["id"]);
+      [$identifier, $version] = DataResource::getIdentifierAndVersion($resource["id"]);
       $storage = $this->datastore->getStorage($identifier, $version);
       $storageMap[$resource["alias"]] = $storage;
     }

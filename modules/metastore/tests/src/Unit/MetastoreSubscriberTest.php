@@ -7,7 +7,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Events\Event;
 use Drupal\common\Storage\JobStore;
 use Drupal\metastore\EventSubscriber\MetastoreSubscriber;
@@ -102,7 +102,7 @@ class MetastoreSubscriberTest extends TestCase {
   public function testCleanupWithResourceNotInUseElsewhere(): void {
     $resource_path = self::HOST . '/single.csv';
     // Create a test resource.
-    $resource = new Resource($resource_path, 'text/csv');
+    $resource = new DataResource($resource_path, 'text/csv');
     // Create a test distribution.
     $distribution = $this->createDistribution($resource_path);
 
@@ -153,7 +153,7 @@ class MetastoreSubscriberTest extends TestCase {
   public function testCleanupWithResourceInUseElsewhere(): void {
     $resource_path = self::HOST . '/single.csv';
     // Create a test resource.
-    $resource = new Resource($resource_path, 'text/csv');
+    $resource = new DataResource($resource_path, 'text/csv');
     // Create a test distribution.
     $distribution_1 = $this->createDistribution($resource_path);
     $distribution_2 = $this->createDistribution($resource_path);

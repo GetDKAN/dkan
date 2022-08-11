@@ -5,7 +5,7 @@ namespace Drupal\metastore\Reference;
 use Drupal\Core\Config\ConfigFactoryInterface;
 
 use Drupal\common\LoggerTrait;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\metastore\Exception\AlreadyRegistered;
 use Drupal\metastore\ResourceMapper;
@@ -186,7 +186,7 @@ class Referencer {
   private function registerWithResourceMapper(string $downloadUrl, string $mimeType): string {
     try {
       // Create a new resource using the supplied resource details.
-      $resource = new Resource($downloadUrl, $mimeType);
+      $resource = new DataResource($downloadUrl, $mimeType);
 
       // Attempt to register the url with the resource file mapper.
       if ($this->getFileMapper()->register($resource)) {
@@ -202,8 +202,8 @@ class Referencer {
       // being registered, generate a new version of the resource and update the
       // download URL with the new version ID.
       if (isset($info[0]->identifier)) {
-        /** @var \Drupal\common\Resource $stored */
-        $stored = $this->getFileMapper()->get($info[0]->identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE);
+        /** @var \Drupal\common\DataResource $stored */
+        $stored = $this->getFileMapper()->get($info[0]->identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE);
         $downloadUrl = $this->handleExistingResource($info, $stored, $mimeType);
       }
     }
@@ -215,7 +215,7 @@ class Referencer {
    * Private.
    */
   private function handleExistingResource($info, $stored, $mimeType) {
-    if ($info[0]->perspective == Resource::DEFAULT_SOURCE_PERSPECTIVE &&
+    if ($info[0]->perspective == DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       (ResourceMapper::newRevision() == 1 || $stored->getMimeType() != $mimeType)) {
       $new = $stored->createNewVersion();
       // Update the MIME type, since this may be updated by the user.

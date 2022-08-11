@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Storage;
 
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\Query\Insert;
@@ -508,7 +508,7 @@ class DatabaseTableTest extends TestCase {
    * Private.
    */
   private function getResource() {
-    return new Resource("people", "", "text/csv");
+    return new DatastoreResource("people", "", "text/csv");
   }
 
 }

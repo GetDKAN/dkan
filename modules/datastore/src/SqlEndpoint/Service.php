@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\SqlEndpoint;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\common\Storage\Query;
@@ -118,7 +118,7 @@ class Service implements ContainerInjectionInterface {
   public function getResourceIdentifierAndVersion(string $sqlString): array {
     $stateMachine = $this->validate($sqlString);
     $someIdentifier = $this->getTableNameFromSelect($stateMachine->gsm('select'));
-    return Resource::getIdentifierAndVersion($someIdentifier);
+    return DataResource::getIdentifierAndVersion($someIdentifier);
   }
 
   /**
