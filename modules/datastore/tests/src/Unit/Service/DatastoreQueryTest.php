@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Service;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Core\Queue\QueueFactory;
@@ -198,7 +198,7 @@ class DatastoreQueryTest extends TestCase {
       ->index(0);
 
     $resource_metadata = '{"data":{"%Ref:downloadURL":[{"data":{"identifier":"qwerty","version":"uiop"}}]}}';
-    $resource = new Resource('http://example.org', 'text/csv');
+    $resource = new DataResource('http://example.org', 'text/csv');
     $queryResult = [(object) ["expression" => 123]];
 
     return (new Chain($this))

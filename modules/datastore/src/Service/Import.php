@@ -3,10 +3,10 @@
 namespace Drupal\datastore\Service;
 
 use CsvParser\Parser\Csv;
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\EventDispatcherTrait;
 use Drupal\common\LoggerTrait;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore\Storage\DatabaseTableFactory;
@@ -38,12 +38,12 @@ class Import {
    *
    * @var \Procrastinator\Job\AbstractPersistentJob
    */
-  private $importerClass = Importer::class;
+  private $importerClass = ImportJob::class;
 
   /**
    * The DKAN Resource to import.
    *
-   * @var \Drupal\common\Resource
+   * @var \Drupal\common\DataResource
    */
   private $resource;
 
@@ -66,14 +66,14 @@ class Import {
   /**
    * Create a resource service instance.
    *
-   * @param \Drupal\common\Resource $resource
+   * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
    * @param \Drupal\common\Storage\JobStoreFactory $jobStoreFactory
    *   Jobstore factory.
    * @param \Drupal\datastore\Storage\DatabaseTableFactory $databaseTableFactory
    *   Database Table factory.
    */
-  public function __construct(Resource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+  public function __construct(DataResource $resource, JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
     $this->resource = $resource;
     $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
@@ -89,10 +89,10 @@ class Import {
   /**
    * Get DKAN resource.
    *
-   * @return \Drupal\common\Resource
+   * @return \Drupal\common\DataResource
    *   DKAN Resource.
    */
-  protected function getResource(): Resource {
+  protected function getResource(): DataResource {
     return $this->resource;
   }
 
@@ -133,13 +133,13 @@ class Import {
   /**
    * Build an Importer.
    *
-   * @return \Dkan\Datastore\Importer
+   * @return \Drupal\datastore\Import
    *   Importer.
    *
    * @throws \Exception
    *   Throws exception if cannot create valid importer object.
    */
-  public function getImporter(): Importer {
+  public function getImporter(): ImportJob {
     $datastore_resource = $this->getResource()->getDatastoreResource();
 
     $delimiter = ",";
@@ -149,7 +149,7 @@ class Import {
 
     $importer = call_user_func([$this->importerClass, 'get'],
       $datastore_resource->getId(),
-      $this->jobStoreFactory->getInstance(Importer::class),
+      $this->jobStoreFactory->getInstance(ImportJob::class),
       [
         "storage" => $this->getStorage(),
         "parser" => $this->getNonRecordingParser($delimiter),

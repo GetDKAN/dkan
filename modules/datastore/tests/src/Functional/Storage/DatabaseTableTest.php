@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Functional\Storage;
 
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\Tests\common\Traits\CleanUp;
 use Drupal\Tests\common\Traits\GetDataTrait;
@@ -26,7 +26,7 @@ class DatabaseTableTest extends ExistingSiteBase {
     $result = $connection->query("SHOW SESSION VARIABLES LIKE 'innodb_strict_mode'")->fetchObject();
     $this->assertEquals($result->Value, "ON");
 
-    $resource = new Resource('123', '/tmp', 'text/csv');
+    $resource = new DatastoreResource('123', '/tmp', 'text/csv');
 
     $databaseTable = new DatabaseTable($connection, $resource);
     $databaseTable->innodbStrictMode(FALSE);

@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\common\DatasetInfo;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Cache\Context\CacheContextsManager;
@@ -432,7 +432,7 @@ class QueryDownloadControllerTest extends TestCase {
       $connection->query("INSERT INTO `datastore_$id` VALUES ($valuesStr);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new Resource($id, "data-$id.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable($connection, new DatastoreResource($id, "data-$id.csv", "text/csv"));
     $storage->setSchema([
       'fields' => $fields,
     ]);

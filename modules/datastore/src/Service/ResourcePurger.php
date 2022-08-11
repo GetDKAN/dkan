@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 
 use Drupal\common\LoggerTrait;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\datastore\Service;
 use Drupal\metastore\ReferenceLookupInterface;
 use Drupal\metastore\Storage\DataFactory;
@@ -253,7 +253,7 @@ class ResourcePurger implements ContainerInjectionInterface {
    */
   private function resourceNotShared(string $resource_details): bool {
     // Extract the identifier and version from the supplied resource details.
-    $identifier = Resource::buildUniqueIdentifier(...json_decode($resource_details));
+    $identifier = DataResource::buildUniqueIdentifier(...json_decode($resource_details));
     // Determine the number of distributions making use of the current
     // resource.
     $distributions = $this->referenceLookup->getReferencers('distribution', $identifier, 'downloadURL');

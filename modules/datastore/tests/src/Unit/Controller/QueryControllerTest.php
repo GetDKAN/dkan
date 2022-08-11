@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Controller;
 
-use Dkan\Datastore\Resource;
+use Drupal\datastore\DatastoreResource;
 use Drupal\common\DatasetInfo;
 use Drupal\Core\Cache\Context\CacheContextsManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -498,7 +498,7 @@ class QueryControllerTest extends TestCase {
       $connection->query("INSERT INTO `datastore_2` VALUES ($row[0], '$row[1]', $row[2]);");
     }
 
-    $storage = new SqliteDatabaseTable($connection, new Resource("2", "data.csv", "text/csv"));
+    $storage = new SqliteDatabaseTable($connection, new DatastoreResource("2", "data.csv", "text/csv"));
     $storage->setSchema([
       'fields' => [
         'record_number' => ['type' => 'int', 'not null' => TRUE],

@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Service;
 
 use Drupal\common\LoggerTrait;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\common\Util\DrupalFiles;
@@ -91,8 +91,8 @@ class ResourceLocalizer {
   /**
    * Get the localized resource.
    */
-  public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?Resource {
-    /** @var \Drupal\common\Resource $resource */
+  public function get($identifier, $version = NULL, $perpective = self::LOCAL_FILE_PERSPECTIVE): ?DataResource {
+    /** @var \Drupal\common\DataResource $resource */
     $resource = $this->getResourceSource($identifier, $version);
 
     if (!$resource) {
@@ -114,7 +114,7 @@ class ResourceLocalizer {
   /**
    * Private.
    */
-  private function registerNewPerspectives(Resource $resource, FileFetcher $fileFetcher) {
+  private function registerNewPerspectives(DataResource $resource, FileFetcher $fileFetcher) {
 
     $localFilePath = $fileFetcher->getStateProperty('destination');
     $dir = "file://" . $this->drupalFiles->getPublicFilesDirectory();
@@ -151,7 +151,7 @@ class ResourceLocalizer {
    * Remove local file.
    */
   public function remove($identifier, $version = NULL) {
-    /** @var \Drupal\common\Resource $resource */
+    /** @var \Drupal\common\DataResource $resource */
     $resource = $this->get($identifier, $version);
     $resource2 = $this->get($identifier, $version, self::LOCAL_URL_PERSPECTIVE);
     if ($resource2) {
@@ -170,7 +170,7 @@ class ResourceLocalizer {
   /**
    * Remove the local_url perspective.
    */
-  private function removeLocalUrl(Resource $resource) {
+  private function removeLocalUrl(DataResource $resource) {
     return $this->fileMapper->remove($resource);
   }
 
@@ -186,14 +186,14 @@ class ResourceLocalizer {
   /**
    * Private.
    */
-  private function getResourceSource($identifier, $version = NULL): ?Resource {
-    return $this->getFileMapper()->get($identifier, Resource::DEFAULT_SOURCE_PERSPECTIVE, $version);
+  private function getResourceSource($identifier, $version = NULL): ?DataResource {
+    return $this->getFileMapper()->get($identifier, DataResource::DEFAULT_SOURCE_PERSPECTIVE, $version);
   }
 
   /**
    * Get FileFetcher.
    */
-  public function getFileFetcher(Resource $resource): FileFetcher {
+  public function getFileFetcher(DataResource $resource): FileFetcher {
     $uuid = "{$resource->getIdentifier()}_{$resource->getVersion()}";
     $directory = "public://resources/{$uuid}";
     $this->getFilesystem()->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);

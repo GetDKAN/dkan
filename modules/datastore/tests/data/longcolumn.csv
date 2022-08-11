@@ -1,0 +1,3 @@
+"id", "name", "extra_long_column_name_with_tons_of_characters_that_will_need_to_be_truncated_in_order_to_work", "extra_long_column_name_with_tons_of_characters_that_will_need_to_be_truncated_in_order_to_work2"
+1, "Greg", 45.6, 4
+2, "Mary", 22.1, 7

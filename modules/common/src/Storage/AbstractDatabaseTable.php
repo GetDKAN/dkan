@@ -2,7 +2,6 @@
 
 namespace Drupal\common\Storage;
 
-use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
 use Drupal\indexer\IndexManager;
 use Drupal\Core\Database\DatabaseExceptionWrapper;
@@ -12,7 +11,6 @@ use Drupal\common\EventDispatcherTrait;
  * Base class for database storage methods.
  */
 abstract class AbstractDatabaseTable implements DatabaseTableInterface {
-  use SqlStorageTrait;
   use EventDispatcherTrait;
 
   const EVENT_TABLE_CREATE = 'dkan_common_table_create';
@@ -347,6 +345,70 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
       ];
     }
     return $schema;
+  }
+
+  /**
+   * Clean up and set the schema for SQL storage.
+   */
+  private function cleanSchema(): void {
+    $cleanSchema = $this->schema;
+    $cleanSchema['fields'] = [];
+    foreach ($this->schema['fields'] as $field => $info) {
+      $new = preg_replace("/[^A-Za-z0-9_ ]/", '', $field);
+      $new = trim($new);
+      $new = strtolower($new);
+      $new = str_replace(" ", "_", $new);
+
+      $mysqlMaxColLength = 64;
+      if (strlen($new) > $mysqlMaxColLength) {
+        $strings = str_split($new, $mysqlMaxColLength - 5);
+        $token = $this->generateToken($field);
+        $new = $strings[0] . "_{$token}";
+      }
+
+      if ($field != $new) {
+        $info['description'] = $field;
+      }
+
+      $cleanSchema['fields'][$new] = $info;
+    }
+
+    $this->schema = $cleanSchema;
+  }
+
+  /**
+   * Define a schema for the table.
+   *
+   * @param array $schema
+   *   A schema. Should be a drupal schema array.
+   */
+  public function setSchema(array $schema): void {
+    $this->schema = $schema;
+    $this->cleanSchema();
+  }
+
+  /**
+   * Get the schema for this table.
+   *
+   * @return array
+   *   A schema array.
+   */
+  public function getSchema(): array {
+    return $this->schema;
+  }
+
+  /**
+   * Generate a short 4-character token for a field, to help truncate.
+   *
+   * @param string $field
+   *   A field name from the schema.
+   *
+   * @return string|false
+   *   The four-character token, or false if failed.
+   */
+  public function generateToken(string $field) {
+    $md5 = md5($field);
+    return substr($md5, 0, 4);
   }
 
 }

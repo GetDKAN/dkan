@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service\Info;
 
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service\Factory\ImportFactoryInterface;
 use Drupal\datastore\Service\ResourceLocalizer;
@@ -84,7 +84,7 @@ class ImportInfo {
       $item->fileFetcherPercentDone = $this->getPercentDone($ff);
     }
 
-    /** @var \Dkan\Datastore\Importer $imp */
+    /** @var \Drupal\datastore\Plugin\QueueWorker\ImportJob $imp */
     if (isset($imp)) {
       $item->importerStatus = $imp->getResult()->getStatus();
       $item->importerError = $imp->getResult()->getError();
@@ -171,8 +171,8 @@ class ImportInfo {
     $className = get_class($job);
     switch ($className) {
       // For Importer, avoid going above total size due to chunk multiplication.
-      case Importer::class:
-        $chunksSize = $job->getStateProperty('chunksProcessed') * Importer::BYTES_PER_CHUNK;
+      case ImportJob::class:
+        $chunksSize = $job->getStateProperty('chunksProcessed') * ImportJob::BYTES_PER_CHUNK;
         $fileSize = $this->getFileSize();
         return ($chunksSize > $fileSize) ? $fileSize : $chunksSize;
 

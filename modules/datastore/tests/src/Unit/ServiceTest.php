@@ -5,7 +5,7 @@ namespace Drupal\Tests\datastore\Unit;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Tests\common\Traits\ServiceCheckTrait;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service;
@@ -34,7 +34,7 @@ class ServiceTest extends TestCase {
    *
    */
   public function testImport() {
-    $resource = new Resource('http://example.org', 'text/csv');
+    $resource = new DataResource('http://example.org', 'text/csv');
     $chain = $this->getContainerChainForService('dkan.datastore.service')
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ResourceLocalizer::class, 'getResult', Result::class)
@@ -53,7 +53,7 @@ class ServiceTest extends TestCase {
   }
 
   public function testDrop() {
-    $resource = new Resource('http://example.org', 'text/csv');
+    $resource = new DataResource('http://example.org', 'text/csv');
     $mockChain = $this->getCommonChain()
       ->add(ResourceLocalizer::class, 'get', $resource)
       ->add(ImportServiceFactory::class, 'getInstance', ImportService::class)
