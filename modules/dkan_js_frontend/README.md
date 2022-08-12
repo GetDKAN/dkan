@@ -1,5 +1,4 @@
-@page dev_frontend DKAN JS Frontend
-# DKAN JS Frontend Module
+# DKAN JS Frontend Module {#dev_frontend}
 
 This is an integration module that provides a way to access a decoupled JavaScript frontend at defined paths.
 

@@ -1,4 +1,4 @@
-@page guide_datastore_settings How to configure datastore settings.
+# How to configure datastore settings {#guide_datastore_settings}
 
 Datastore settings can be found at `/admin/dkan/datastore`
 

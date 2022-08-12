@@ -1,4 +1,4 @@
-@page guide_metastore_properties How to add or remove entity generation for schema sub properties
+# How to add or remove entity generation for schema sub properties {#guide_metastore_properties}
 
 When you create a dataset, additional data nodes will be created for specific sub-elements of the dataset as well, the default properties are: publisher, theme, keywords, and distribution. These data nodes will provide unique reference ids for the sub-elements and can be accesssed via an API endpoint. Learn more [here](https://demo.getdkan.org/api).
 

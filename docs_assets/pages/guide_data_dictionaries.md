@@ -1,4 +1,4 @@
-@page guide_data_dictionaries How to use Data Dictionaries
+# How to use Data Dictionaries {#guide_data_dictionaries}
 
 ## Tutorial I: Catalog-wide data dictionary
 

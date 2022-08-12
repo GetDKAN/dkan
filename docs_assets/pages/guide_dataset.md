@@ -1,4 +1,4 @@
-@page guide_dataset How to add a Dataset
+# How to add a Dataset {#guide_dataset}
 
 ## API
 

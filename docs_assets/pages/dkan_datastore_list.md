@@ -1,4 +1,4 @@
-@page dkandatastorelist dkan:datastore:list
+# dkan:datastore:list {#dkandatastorelist}
 
 List information about all datastores.
 

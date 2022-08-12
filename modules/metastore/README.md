@@ -1,5 +1,4 @@
-@page dev_metastore Metastore
-# Metastore
+# Metastore {#dev_metastore}
 
 The metastore's job is to ingest data in JSON format, validate the JSON data against a JSON Schema, and to store the valid data.
 

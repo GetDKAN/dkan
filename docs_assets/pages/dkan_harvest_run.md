@@ -1,4 +1,4 @@
-@page dkanharvestrun dkan:harvest:run
+# dkan:harvest:run {#dkanharvestrun}
 
 Run a harvest.
 

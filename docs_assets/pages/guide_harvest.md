@@ -1,4 +1,4 @@
-@page guide_harvest How to create a harvest
+# How to create a harvest {#guide_harvest}
 
 Use drush commands to [harvest](glossary.html#term_harvest) data into your catalog.
 

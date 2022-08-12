@@ -1,3 +1,3 @@
-@page dkansamplecontentremove dkan:sample-content:remove
+# dkan:sample-content:remove {#dkansamplecontentremove}
 
 Remove sample content.
