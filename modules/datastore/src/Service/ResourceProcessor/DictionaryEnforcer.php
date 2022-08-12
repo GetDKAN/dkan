@@ -3,7 +3,7 @@
 namespace Drupal\datastore\Service\ResourceProcessor;
 
 use Drupal\common\Resource;
-use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
+use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorInterface;
 use Drupal\metastore\Service as MetastoreService;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscoveryInterface;
@@ -16,11 +16,11 @@ use RootedData\RootedJsonData;
 class DictionaryEnforcer implements ResourceProcessorInterface {
 
   /**
-   * Datastore table query service.
+   * Alter table query builder service.
    *
-   * @var \Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface
+   * @var \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface
    */
-  protected $alterTableQueryFactory;
+  protected $alterTableQueryBuilder;
 
   /**
    * Data dictionary discovery service.
@@ -46,7 +46,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Constructs a \Drupal\Component\Plugin\PluginBase object.
    *
-   * @param \Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface $alter_table_query_factory
+   * @param \Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface $alter_table_query_builder
    *   The alter table query factory service.
    * @param \Drupal\metastore\Service $metastore
    *   The metastore service.
@@ -54,13 +54,13 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *   The data-dictionary discovery service.
    */
   public function __construct(
-    AlterTableQueryFactoryInterface $alter_table_query_factory,
+    AlterTableQueryBuilderInterface $alter_table_query_builder,
     MetastoreService $metastore,
     DataDictionaryDiscoveryInterface $data_dictionary_discovery
   ) {
     $this->metastore = $metastore;
     $this->dataDictionaryDiscovery = $data_dictionary_discovery;
-    $this->alterTableQueryFactory = $alter_table_query_factory;
+    $this->alterTableQueryBuilder = $alter_table_query_builder;
   }
 
   /**
@@ -72,12 +72,10 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   public function process(Resource $resource): void {
     // Get data-dictionary for the given resource.
     $dictionary = $this->getDataDictionaryForResource($resource);
-    // Extract data-dictionary field types.
-    $dictionary_fields = $dictionary->{'$.data.fields'};
     // Retrieve name of datastore table for resource.
     $datastore_table = $resource->getTableName();
 
-    $this->applyDictionary($dictionary_fields, $datastore_table);
+    $this->applyDictionary($dictionary, $datastore_table);
   }
 
   /**
@@ -103,15 +101,17 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Apply data types in the given dictionary fields to the given datastore.
    *
-   * @param array $dictionary_fields
-   *   Data dictionary fields.
+   * @param \RootedData\RootedJsonData $dictionary
+   *   Data-dictionary.
    * @param string $datastore_table
-   *   Mysql table name.
+   *   SQL datastore table name.
    */
-  public function applyDictionary(array $dictionary_fields, string $datastore_table): void {
-    $this->alterTableQueryFactory
-      ->getQuery($datastore_table, $dictionary_fields)
-      ->applyDataTypes();
+  public function applyDictionary(RootedJsonData $dictionary, string $datastore_table): void {
+    $this->alterTableQueryBuilder
+      ->setTable($datastore_table)
+      ->addDataDictionary($dictionary)
+      ->getQuery()
+      ->execute();
   }
 
 }

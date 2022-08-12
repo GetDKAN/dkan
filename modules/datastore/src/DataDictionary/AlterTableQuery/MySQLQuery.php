@@ -45,25 +45,29 @@ class MySQLQuery implements AlterTableQueryInterface {
       Connection $connection,
       ConverterInterface $date_format_converter,
       string $datastore_table,
-      array $dictionary_fields
+      array $dictionary_fields,
+      array $dictionary_indexes
   ) {
     $this->connection = $connection;
     $this->dateFormatConverter = $date_format_converter;
     $this->datastoreTable = $this->connection->escapeTable($datastore_table);
     $this->dictionaryFields = $dictionary_fields;
+    $this->dictionaryIndexes = $dictionary_indexes;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function applyDataTypes(): void {
+  public function execute(): void {
     $this->dictionaryFields = $this->mergeDatastoreFields($this->dictionaryFields, $this->datastoreTable);
 
     // Build and execute SQL commands to prepare for table alter.
     $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
     array_map(fn ($cmd) => $cmd->execute(), $pre_alter_commands);
-    // Build and execute SQL command to perform table alter.
-    $this->buildAlterCommand($this->dictionaryFields, $this->datastoreTable)->execute();
+    // Build SQL command to perform table alter.
+    $command = $this->buildAlterCommand($this->dictionaryFields, $this->dictionaryIndexes, $this->datastoreTable);
+    // Execute alter command.
+    $command->execute();
   }
 
   /**
@@ -205,25 +209,68 @@ class MySQLQuery implements AlterTableQueryInterface {
    * Build alter command to modify table column data types.
    *
    * @param array $fields
-   *   Data dictionary fields.
+   *   Data-dictionary fields.
    * @param string $table
-   *   Mysql table name.
+   *   MySQL table name.
+   * @param array $indexes
+   *   Data-dictionary indexes.
    *
    * @return \Drupal\Core\Database\StatementInterface
    *   Prepared MySQL table alter command statement.
    */
-  protected function buildAlterCommand(array $fields, string $table): StatementInterface {
-    $modify_lines = [];
+  protected function buildAlterCommand(array $fields, string $table, array $indexes): StatementInterface {
+    // Build alter options.
+    $alter_options = array_merge(
+      $this->buildModifyColumnOptions($fields, $table),
+      $this->buildAddIndexOptions($indexes)
+    );
+
+    return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $alter_options) . ';', []);
+  }
+
+  /**
+   * Build alter command modify column options.
+   *
+   * @param array $fields
+   *   Data-dictionary fields.
+   * @param string $table
+   *   MySQL table name.
+   *
+   * @return string[]
+   *   Modify column options.
+   */
+  protected function buildModifyColumnOptions(array $fields, string $table): array {
+    $modify_column_options = [];
 
     foreach ($fields as ['name' => $field, 'type' => $type, 'title' => $title]) {
       // Get MySQL type for column.
       $column_type = $this->getType($type, $field, $table);
       // Build modify line for alter command and add the appropriate arguments
       // to the args list.
-      $modify_lines[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$title}'";
+      $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$title}'";
     }
 
-    return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $modify_lines) . ';', []);
+    return $modify_column_options;
+  }
+
+  /**
+   * Build alter command add index options.
+   *
+   * @param array $indexes
+   *   Data-dictionary indexes.
+   *
+   * @return string[]
+   *   Add index options.
+   */
+  protected function buildAddIndexOptions(array $indexes): array {
+    $add_index_options = [];
+
+    foreach ($indexes as ['name' => $name, 'type' => $type, 'fields' => $fields]) {
+      $index_field_options = implode(', ', array_map(fn ($field) => $field['name'] . ' ' . $field['length'], $fields));
+      $add_index_options[] = "ADD {$type} INDEX {$name} ({$index_field_options})";
+    }
+
+    return $add_index_options;
   }
 
 }
