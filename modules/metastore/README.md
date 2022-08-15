@@ -12,7 +12,7 @@ There are 3 main ways to interact with the metastore module:
 - Services
 
 ### Drush commands
-To see the Drush commands that are made available by this module look a the Drupal::metastore::Commands::MetastoreCommands class.
+To see the Drush commands that are made available by this module, look at the Drupal::metastore::Commands::MetastoreCommands class.
 
 ### Endpoints
 To see the endpoints that are made available by this module, check the metastore.routing.yml file.
