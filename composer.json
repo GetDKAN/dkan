@@ -32,7 +32,7 @@
         "npm-asset/select2": "^4.0",
         "oomphinc/composer-installers-extender": "^2.0",
         "ramsey/uuid" : "^3.8.0",
-        "stolt/json-merge-patch": "^1.0",
+        "stolt/json-merge-patch": "^2.0",
         "getdkan/pdlt": "~0.1"
     },
     "require-dev": {
