@@ -165,7 +165,7 @@ metastore.data_dictionary:
     _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
     _title: 'Data-Dictionary'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'create data content'
 
 metastore.data_dictionary.settings:
   path: '/admin/dkan/data-dictionary/settings'
