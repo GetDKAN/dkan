@@ -90,7 +90,7 @@ jobs:
         type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.11"
+      DKTL_VERSION: "WCMS-10673"
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
@@ -125,7 +125,7 @@ jobs:
     parallelism: 4
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.11"
+      DKTL_VERSION: "WCMS-10673"
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
