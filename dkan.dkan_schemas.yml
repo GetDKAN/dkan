@@ -1,0 +1,5 @@
+catalog:
+  schema_path: schema/catalog.json
+
+package:
+  schema_path: schema/tabular-data-package.json

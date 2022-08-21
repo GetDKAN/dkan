@@ -75,7 +75,8 @@ class MetastoreController implements ContainerInjectionInterface {
    */
   public function getSchema(string $identifier) {
     try {
-      return $this->apiResponse->cachedJsonResponse($this->service->getSchema($identifier));
+      return $this->getResponse($this->service->getSchema($identifier));
+      // return $this->apiResponse->cachedJsonResponse($this->service->getSchema($identifier));
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 404);

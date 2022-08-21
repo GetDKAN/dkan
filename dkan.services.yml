@@ -19,8 +19,7 @@ services:
   dkan.metastore.schema_retriever:
     class: \Drupal\dkan\SchemaRetriever
     arguments:
-      - '%app.root%'
-      - '@extension.list.module'
+      - '@plugin.manager.dkan_schema'
     shared: false
 
   dkan.metastore.schema_properties_helper:
@@ -102,3 +101,10 @@ services:
     class: \Drupal\dkan\DataDictionary\DataDictionaryDiscovery
     arguments:
       - '@config.factory'
+
+  plugin.manager.dkan_schema:
+    class: \Drupal\dkan\Schema\SchemaManager
+    arguments:
+      - '%app.root%'
+      - '@module_handler'
+      - '@cache.discovery'

@@ -17,7 +17,7 @@ class Event extends SymfonyEvent {
   public function __construct($data, $validator = NULL) {
     if (!isset($validator)) {
       $validator = function ($data) {
-        return TRUE;
+      return TRUE;
       };
     }
 
