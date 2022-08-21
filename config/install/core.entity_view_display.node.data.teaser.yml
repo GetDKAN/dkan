@@ -1,0 +1,24 @@
+uuid: 8695164f-04c7-493c-8963-f82f031c7f7a
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.data.field_data_type
+    - field.field.node.data.field_json_metadata
+    - node.type.data
+  module:
+    - user
+_core:
+  default_config_hash: 6xa4QLlbs8AC0Qlhn4-6G0QPL0JLGiXfS1X0ZR5h3HA
+id: node.data.teaser
+targetEntityType: node
+bundle: data
+mode: teaser
+content:
+  links:
+    weight: 100
+    region: content
+hidden:
+  field_data_type: true
+  field_json_metadata: true

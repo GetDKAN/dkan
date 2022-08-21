@@ -1,0 +1,21 @@
+uuid: 5fab256d-75eb-40b3-92cd-d73a009827f9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_json_metadata
+    - node.type.data
+_core:
+  default_config_hash: RusvzItfdnmUXlLeH7mU55DEPaVLyjs2DBlw-QWHJJ4
+id: node.data.field_json_metadata
+field_name: field_json_metadata
+entity_type: node
+bundle: data
+label: 'JSON Metadata'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

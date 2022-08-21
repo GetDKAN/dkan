@@ -4,10 +4,5 @@ type: module
 core_version_requirement: ^9.1
 package: DKAN
 dependencies:
-  - metastore
-  - metastore_admin
-  - metastore_search
-  - datastore
-  - harvest
-  - config
-  - json_form_widget
+  - basic_auth
+  - content_moderation

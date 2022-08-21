@@ -1,0 +1,2 @@
+
+In an attempt at making some tests more sociable and realistic, we are reducing some mocking and trying to use real classes. One of these examples is the ResourceMapper tests in which many Drupal classes (StreamWrapper, FileSystem, etc) are used. One of these classes requires a folder to exist, and that is why this empty folder named 'files' exists. The code that checks for the folder is in Drupal's LocalStream class.
