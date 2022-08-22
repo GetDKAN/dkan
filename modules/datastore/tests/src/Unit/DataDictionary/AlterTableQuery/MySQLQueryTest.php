@@ -64,8 +64,12 @@ class MySQLQueryTest extends TestCase {
       ['name' => 'bar', 'type' => 'number', 'format' => 'default', 'title' => 'Bar'],
       ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d', 'title' => 'Baz'],
     ];
+    $dictionary_indexes ??= [
+      ['name' => 'index1', 'type' => '', 'fields' => [['name' => 'foo', 'length' => 12], ['name' => 'bar', 'length' => 6], ['name' => 'baz', 'length' => 9]]],
+      ['name' => 'index2', 'type' => 'fulltext', 'fields' => [['name' => 'foo', 'length' => 6], ['name' => 'baz', 'length' => 3]]],
+    ];
 
-    return new MySQLQuery($connection, $converter, $table, $dictionary_fields);
+    return new MySQLQuery($connection, $converter, $table, $dictionary_fields, $dictionary_indexes);
   }
 
   /**
@@ -90,7 +94,11 @@ class MySQLQueryTest extends TestCase {
         ':date_format' => ''
       ],
     ], $update_query);
-    $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT COMMENT 'Foo', MODIFY COLUMN bar DECIMAL(0, ) COMMENT 'Bar', MODIFY COLUMN baz DATE COMMENT 'Baz';", $query);
+    $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT COMMENT 'Foo', " .
+      "MODIFY COLUMN bar DECIMAL(0, ) COMMENT 'Bar', " .
+      "MODIFY COLUMN baz DATE COMMENT 'Baz', " .
+      "ADD  INDEX index1 (foo 12, bar 6, baz 9), " .
+      "ADD fulltext INDEX index2 (foo 6, baz 3);", $query);
   }
 
 

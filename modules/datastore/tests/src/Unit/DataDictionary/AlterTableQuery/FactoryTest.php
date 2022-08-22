@@ -4,7 +4,7 @@ namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
-use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
+use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQuery\Factory;
 use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
@@ -35,7 +35,7 @@ class FactoryTest extends TestCase {
 
     // Test Factory's setConnectionTimeout() returns what's expected.
     $result = $factory->setConnectionTimeout(1);
-    $this->assertTrue(is_a($result, AlterTableQueryFactoryInterface::class));
+    $this->assertTrue(is_a($result, AlterTableQueryBuilderInterface::class));
 
     // Test Factory's getQuery() returns what's expected.
     $query = $factory->getQuery('datastore_' . uniqid(), []);

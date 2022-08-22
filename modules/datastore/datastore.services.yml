@@ -29,7 +29,7 @@ services:
   dkan.datastore.service.resource_processor.dictionary_enforcer:
     class: \Drupal\datastore\Service\ResourceProcessor\DictionaryEnforcer
     arguments:
-      - '@dkan.datastore.data_dictionary.alter_table_query_factory.mysql'
+      - '@dkan.datastore.data_dictionary.alter_table_query_builder.mysql'
       - '@dkan.metastore.service'
       - '@dkan.metastore.data_dictionary_discovery'
     tags:
@@ -58,8 +58,8 @@ services:
   dkan.datastore.database_connection_factory:
     class: \Drupal\datastore\Storage\DatabaseConnectionFactory
 
-  dkan.datastore.data_dictionary.alter_table_query_factory.mysql:
-    class: \Drupal\datastore\DataDictionary\AlterTableQuery\Factory
+  dkan.datastore.data_dictionary.alter_table_query_builder.mysql:
+    class: \Drupal\datastore\DataDictionary\AlterTableQuery\Builder
     arguments:
       - '@dkan.datastore.database_connection_factory'
       - '@pdlt.converter.strptime_to_mysql'

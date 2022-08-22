@@ -9,7 +9,7 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\common\DataResource;
-use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
+use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
 use Drupal\datastore\Service\ResourceProcessorCollector;
@@ -42,8 +42,8 @@ class DictionaryEnforcerTest extends TestCase {
   public function testProcess() {
     $resource = new DataResource('test.csv', 'text/csv');
 
-    $alter_table_query_factory = (new Chain($this))
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
       ->add(AlterTableQueryInterface::class, 'applyDataTypes')
       ->getMock();
     $metastore_service = (new Chain($this))
@@ -52,7 +52,7 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'dictionary-id')
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_factory, $metastore_service, $dictionary_discovery_service);
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
 
     $container_chain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'applyDataTypes')
@@ -77,8 +77,8 @@ class DictionaryEnforcerTest extends TestCase {
   public function testNoDictionaryIdFoundForResourceException() {
     $resource = new DataResource('test.csv', 'text/csv');
 
-    $alter_table_query_factory = (new Chain($this))
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
       ->add(AlterTableQueryInterface::class, 'applyDataTypes')
       ->getMock();
     $metastore_service = (new Chain($this))
@@ -87,7 +87,7 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', NULL)
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_factory, $metastore_service, $dictionary_discovery_service);
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
 
     $container_chain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'applyDataTypes')
@@ -112,8 +112,8 @@ class DictionaryEnforcerTest extends TestCase {
   public function testProcessItemApplyDataTypesException() {
     $resource = new DataResource('test.csv', 'text/csv');
 
-    $alter_table_query_factory = (new Chain($this))
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
+    $alter_table_query_builder = (new Chain($this))
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
       ->add(AlterTableQueryInterface::class, 'applyDataTypes', new \Exception('Test Error'))
       ->getMock();
     $metastore_service = (new Chain($this))
@@ -122,7 +122,7 @@ class DictionaryEnforcerTest extends TestCase {
     $dictionary_discovery_service = (new Chain($this))
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'data-dictionary')
       ->getMock();
-    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_factory, $metastore_service, $dictionary_discovery_service);
+    $dictionary_enforcer = new DictionaryEnforcer($alter_table_query_builder, $metastore_service, $dictionary_discovery_service);
 
     $container_chain = $this->getContainerChain($resource->getVersion())
       ->add(AlterTableQueryInterface::class, 'applyDataTypes')
@@ -147,7 +147,7 @@ class DictionaryEnforcerTest extends TestCase {
   protected function getContainerChain(int $resource_version) {
 
     $options = (new Options())
-      ->add('dkan.datastore.data_dictionary.alter_table_query_factory.mysql', AlterTableQueryFactoryInterface::class)
+      ->add('dkan.datastore.data_dictionary.alter_table_query_builder.mysql', AlterTableQueryBuilderInterface::class)
       ->add('dkan.metastore.data_dictionary_discovery', DataDictionaryDiscovery::class)
       ->add('logger.factory', LoggerChannelFactoryInterface::class)
       ->add('dkan.metastore.service', MetastoreService::class)
@@ -164,8 +164,8 @@ class DictionaryEnforcerTest extends TestCase {
       ->add(LoggerChannelFactoryInterface::class, 'get', LoggerChannelInterface::class)
       ->add(LoggerChannelInterface::class, 'error', NULL, 'error')
       ->add(MetastoreService::class, 'get', new RootedJsonData($json))
-      ->add(AlterTableQueryFactoryInterface::class, 'setConnectionTimeout', AlterTableQueryFactoryInterface::class)
-      ->add(AlterTableQueryFactoryInterface::class, 'getQuery', AlterTableQueryInterface::class)
+      ->add(AlterTableQueryBuilderInterface::class, 'setConnectionTimeout', AlterTableQueryBuilderInterface::class)
+      ->add(AlterTableQueryBuilderInterface::class, 'getQuery', AlterTableQueryInterface::class)
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
