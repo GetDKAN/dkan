@@ -77,4 +77,8 @@ class MetastoreSchema extends PluginBase implements MetastoreSchemaInterface {
   public function getUiSchema(): object {
     return (object) [];
   }
+
+  public function getIdentifierProperty(): ?string {
+    return $this->pluginDefinition['identifier_property'] ?? NULL;
+  }
 }

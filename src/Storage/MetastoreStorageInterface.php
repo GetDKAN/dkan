@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan\Storage;
 
+use Drupal\dkan\MetastoreItemInterface;
+
 /**
  * Interface for all metastore storage classes.
  */
@@ -23,19 +25,17 @@ interface MetastoreStorageInterface {
    *
    * @param string $id
    *   The identifier for the data.
-   * @param bool $published
-   *   Whether to retrieve the published revision of the metadata.
    *
-   * @return string|HydratableInterface
-   *   The data or null if no data could be retrieved.
+   * @return \Drupal\dkan\MetastoreItemInterface
+   *   A MetastoreItemObject.
    *
    * @throws \Drupal\dkan\Exception\MissingObjectException
    *   When attempting to retrieve metadata fails.
    */
-  public function retrieve(string $id, bool $published = FALSE);
+  public function retrieve(string $id): MetastoreItemInterface;
 
   /**
-   * Retrieve all metadata items.
+   * Retrieve multiple metadata items.
    *
    * @param int|null $start
    *   Offset. NULL for no range, zero for beginning of set.
@@ -44,10 +44,10 @@ interface MetastoreStorageInterface {
    * @param bool $unpublished
    *   Whether to include unpublished items in the results.
    *
-   * @return string[]
-   *   An array of JSON strings representing metadata objects.
+   * @return \Drupal\dkan\MetastoreItemInterface[]
+   *   An array of Metastore item objects.
    */
-  public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array;
+  public function retrieveMultiple(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array;
 
   /**
    * Retrieve just identifiers.
@@ -62,7 +62,7 @@ interface MetastoreStorageInterface {
    * @return string[]
    *   An array of metastore item identifiers.
    */
-  public function retrieveIds(?int $start, ?int $length, bool $unpublished): array;
+  public function retrieveIds(?int $start, ?int $length, bool $unpublished = FALSE): array;
 
   /**
    * Retrieve all metadata items that contain a particular exact string.
@@ -93,17 +93,6 @@ interface MetastoreStorageInterface {
   public function isPublished(string $uuid) : bool;
 
   /**
-   * Publish the latest version of a data entity.
-   *
-   * @param string $uuid
-   *   Identifier.
-   *
-   * @return bool
-   *   True if success.
-   */
-  public function publish(string $uuid): bool;
-
-  /**
    * Remove.
    *
    * @param string $id
@@ -114,8 +103,8 @@ interface MetastoreStorageInterface {
   /**
    * Store.
    *
-   * @param string|HydratableInterface $data
-   *   The data to be stored.
+   * @param object|array $data
+   *   The data to be stored, as a structured object or assoc array.
    * @param string $id
    *   The identifier for the data. If the act of storing generates the
    *   id, there is no need to pass one.

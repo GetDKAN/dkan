@@ -3,3 +3,4 @@ catalog:
 
 package:
   schema_path: schema/tabular-data-package.json
+  identifier_property: id

@@ -1,9 +1,8 @@
 <?php
 
-namespace Drupal\dkan;
+namespace Drupal\dkan\Schema;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan\Schema\SchemaManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

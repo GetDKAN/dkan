@@ -12,5 +12,7 @@ interface MetastoreSchemaInterface extends ContainerFactoryPluginInterface {
 
   public function getUiSchema(): ?object;
 
+  public function getIdentifierProperty(): ?string;
+
   // public function getTriggers(): array;
 }

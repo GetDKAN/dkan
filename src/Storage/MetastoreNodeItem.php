@@ -1,23 +1,25 @@
 <?php
 
-namespace Drupal\dkan\NodeWrapper;
+namespace Drupal\dkan\Storage;
 
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\dkan\Exception\DataNodeLifeCycleEntityValidationException;
 use Drupal\dkan\LoggerTrait;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\dkan\MetastoreItemInterface;
-use Drupal\node\Entity\Node;
+use Drupal\dkan\Storage\MetastoreEntityItemInterface;
+use Drupal\node\NodeInterface;
 
 /**
  * MetastoreItem object that wraps a data node, provides additional methods.
  */
-class Data implements MetastoreItemInterface {
+class MetastoreNodeItem implements MetastoreEntityItemInterface {
   use LoggerTrait;
 
   /**
    * Node.
    *
-   * @var \Drupal\node\Entity\Node
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -64,18 +66,9 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
-   */
-  private function fix() {
-    $this->fixDataType();
-    $this->saveRawMetadata();
-  }
-
-  /**
    * Getter.
    */
   public function getModifiedDate() {
-    $this->fix();
     return $this->node->getChangedTime();
   }
 
@@ -83,8 +76,6 @@ class Data implements MetastoreItemInterface {
    * Getter.
    */
   public function getIdentifier() {
-    $this->fix();
-
     return $this->node->uuid();
   }
 
@@ -92,7 +83,6 @@ class Data implements MetastoreItemInterface {
    * The unaltered version of the metadata.
    */
   public function getRawMetadata() {
-    $this->fix();
     if (isset($this->node->rawMetadata)) {
       return json_decode($this->node->rawMetadata);
     }
@@ -102,57 +92,53 @@ class Data implements MetastoreItemInterface {
    * Protected.
    */
   public function getDataType() {
-    $this->fix();
     return $this->node->get('field_data_type')->value;
   }
 
   /**
    * Protected.
    */
-  public function getMetaData() {
-    $this->fix();
+  public function getMetadata(bool $dereferenced = TRUE): object {
     return json_decode($this->node->get('field_json_metadata')->getString());
   }
 
   /**
-   * Protected.
+   * {@inheritdoc}
    */
-  public function setMetadata($metadata) {
-    $this->fix();
+  public function setMetadata(object $metadata): void {
     $this->node->set('field_json_metadata', json_encode($metadata));
   }
 
   /**
-   * Setter.
+   * {@inheritdoc}
    */
-  public function setIdentifier($identifier) {
-    $this->fix();
+  public function setIdentifier(string $identifier): void {
     $this->node->set('uuid', $identifier);
   }
 
   /**
    * Setter.
    */
-  public function setTitle($title) {
-    $this->fix();
+  public function setTitle(string $title): void {
     $this->node->set('title', $title);
   }
 
   /**
-   * Is New.
+   * {@inheritdoc}
    */
-  public function isNew() {
+  public function isNew(): bool {
     return $this->node->isNew();
   }
 
   /**
-   * Private.
+   * Validate an entity for item storage.
+   *
+   * @param \Drupal\node\NodeInterface $entity
+   *   An entity object, must be a node.
+   *
+   * @throws \Drupal\dkan\Exception\DataNodeLifeCycleEntityValidationException
    */
-  private function validate(EntityInterface $entity) {
-    if (!($entity instanceof Node)) {
-      throw new DataNodeLifeCycleEntityValidationException("We only work with nodes.");
-    }
-
+  private function validate(NodeInterface $entity): void {
     if ($entity->bundle() != "data") {
       throw new DataNodeLifeCycleEntityValidationException("We only work with data nodes.");
     }
@@ -177,23 +163,23 @@ class Data implements MetastoreItemInterface {
   }
 
   /**
-   * Private.
+   * Public factory method.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   A Drupal entity.
+   *
+   * @return static
+   *   Instantiated Mastore
    */
-  private function saveRawMetadata() {
-    // Temporarily save the raw json metadata, for later use.
-    if (!isset($this->node->rawMetadata)) {
-      $raw = $this->node->get('field_json_metadata')->value;
-      $this->node->rawMetadata = $raw;
-    }
+  public static function create(ContentEntityInterface $entity): MetastoreItemInterface {
+    return new static($entity);
   }
 
   /**
-   * Getter.
+   * {@inheritdoc}
    */
-  public function getOriginal() {
-    if (isset($this->node->original)) {
-      return new Data($this->node->original);
-    }
+  public function entity(): ContentEntityInterface {
+    return $this->node;
   }
 
 }

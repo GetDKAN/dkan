@@ -30,28 +30,43 @@ interface MetastoreItemInterface extends CacheableDependencyInterface {
   public function getSchemaId();
 
   /**
-   * Protected.
+   * Get the metadata itself from the item.
+   *
+   * @param bool $dereferenced
+   *   Whether to dereference the JSON values, defaults to true.
+   *
+   * @return object
+   *   Decoded JSON object.
    */
-  public function getMetadata();
+  public function getMetadata(bool $dereferenced = TRUE): object;
 
   /**
-   * Protected.
+   * Replace the metadata for an item.
+   *
+   * @param object $metadata
+   * @return void
    */
-  public function setMetadata($metadata);
+  public function setMetadata(object $metadata): void;
 
   /**
    * Setter.
    */
-  public function setIdentifier($identifier);
+  public function setIdentifier(string $identifier);
 
   /**
-   * Setter.
+   * Set the title of the item.
+   *
+   * @param string $title
+   *   A title string.
    */
-  public function setTitle($title);
+  public function setTitle(string $title): void;
 
   /**
-   * Is New.
+   * Checks if the item has just been created.
+   *
+   * @return bool
+   *   True if a new item.
    */
-  public function isNew();
+  public function isNew(): bool;
 
 }

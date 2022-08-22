@@ -4,11 +4,13 @@ namespace Drupal\dkan\Storage;
 
 use Drupal\dkan\LoggerTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\dkan\Exception\MissingObjectException;
 use Drupal\dkan\Metastore;
+use Drupal\dkan\MetastoreItemInterface;
 use Drupal\workflows\WorkflowInterface;
 
 /**
@@ -16,7 +18,7 @@ use Drupal\workflows\WorkflowInterface;
  *
  * @todo Separate workflow management and storage into separate classes.
  */
-abstract class Data implements MetastoreEntityStorageInterface {
+abstract class MetastoreEntityStorageBase {
 
   use LoggerTrait;
 
@@ -37,7 +39,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * Entity storage service.
    *
-   * @var \Drupal\Core\Entity\EntityStorageInterface|mixed|object
+   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected $entityStorage;
 
@@ -84,18 +86,16 @@ abstract class Data implements MetastoreEntityStorageInterface {
   protected $schemaIdField;
 
   /**
-   * Constructor.
+   * Qualified class name to use as the class for MetatoreItem creation.
+   *
+   * @var string
    */
-  public function __construct(string $schemaId, EntityTypeManagerInterface $entityTypeManager) {
-    $this->entityTypeManager = $entityTypeManager;
-    $this->entityStorage = $this->entityTypeManager->getStorage($this->entityType);
-    $this->schemaId = $schemaId;
-  }
+  protected $metastoreItemClass;
 
   /**
    * {@inheritdoc}
    */
-  public function getEntityStorage() {
+  public function getEntityStorage(): EntityStorageInterface {
     return $this->entityStorage;
   }
 
@@ -136,11 +136,27 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function retrieveAll(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array {
+  public function retrieveMultiple(?int $start = NULL, ?int $length = NULL, bool $unpublished = FALSE): array {
     $entityIds = $this->listQueryBase($start, $length, $unpublished)->execute();
     return array_map(function ($entity) {
-      return $entity->get($this->metadataField)->getString();
+      return $this->metastoreItemClass::create($entity);
     }, array_values($this->entityStorage->loadMultiple($entityIds)));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function retrieveContains(string $string, bool $caseSensitive = TRUE): array {
+
+    $query = $this->listQueryBase()->condition($this->metadataField, $string, 'CONTAINS');
+    if ($caseSensitive) {
+      $query->addTag('case_sensitive');
+    }
+    $entityIds = $query->execute();
+
+    return array_map(function ($entity) {
+      return $entity->get($this->metadataField)->getString();
+    }, $this->entityStorage->loadMultiple($entityIds));
   }
 
   /**
@@ -156,8 +172,6 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
    * {@inheritdoc}.
    */
   public function isHidden(string $uuid): bool {
@@ -167,9 +181,7 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
   public function isPublished(string $uuid): bool {
     $entity = $this->getEntityPublishedRevision($uuid);
@@ -178,59 +190,22 @@ abstract class Data implements MetastoreEntityStorageInterface {
   }
 
   /**
-   * Inherited.
-   *
-   * {@inheritdoc}.
+   * {@inheritdoc}
    */
-  public function retrieve(string $uuid, bool $published = FALSE) : ?string {
-    $entity = $published ? $this->getEntityPublishedRevision($uuid) : $this->getEntityLatestRevision($uuid);
+  public function retrieve(string $uuid): MetastoreItemInterface {
+    $entity_id = $this->getEntityIdFromUuid($uuid);
+
+    $entity = $this->entityStorage->load($entity_id);
 
     if (!isset($entity)) {
       throw new MissingObjectException("Error retrieving metadata: {$this->schemaId} {$uuid} not found.");
     }
 
-    return $entity->get($this->metadataField)->getString();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function publish(string $uuid): bool {
-    return $this->setWorkflowState($uuid, 'published');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function archive(string $uuid): bool {
-    return $this->setWorkflowState($uuid, 'archived');
-  }
-
-  /**
-   * Change the state of a metastore item.
-   *
-   * @param string $uuid
-   *   Metastore identifier.
-   * @param string $state
-   *   Any workflow state that can be applied to a metastore entity.
-   *
-   * @return bool
-   *   Whether or not an item was transitioned.
-   */
-  protected function setWorkflowState(string $uuid, string $state): bool {
-    $entity = $this->getEntityLatestRevision($uuid);
-
-    if (!$entity) {
-      throw new MissingObjectException("Error: {$uuid} not found.");
+    if (is_a($this->metastoreItemClass, MetastoreEntityItemInterface::class)) {
+      return $this->metastoreItemClass::create($entity);
     }
-    elseif ($state !== $entity->get('moderation_state')->getString()) {
-      $entity->set('moderation_state', $state);
-      $entity->save();
-      return TRUE;
-    }
-    else {
-      return FALSE;
-    }
+
+    throw new \DomainException("Invalid Metastore item class {$this->metastoreItemClass}");
   }
 
   /**
@@ -249,21 +224,6 @@ abstract class Data implements MetastoreEntityStorageInterface {
     }
 
     return $entity;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getEntityLatestRevision(string $uuid): ?ContentEntityInterface {
-
-    $entity_id = $this->getEntityIdFromUuid($uuid);
-
-    if ($entity_id) {
-      $revision_id = $this->entityStorage->getLatestRevisionId($entity_id);
-      return $this->entityStorage->loadRevision($revision_id);
-    }
-
-    return NULL;
   }
 
   /**
@@ -290,19 +250,17 @@ abstract class Data implements MetastoreEntityStorageInterface {
   /**
    * {@inheritdoc}
    */
-  public function remove(string $uuid) {
-
-    $entity = $this->getEntityLatestRevision($uuid);
-    if ($entity) {
-      return $entity->delete();
-    }
+  public function remove(string $uuid):void {
+    $item = $this->retrieve($uuid);
+    if (is_a($item, MetastoreEntityItemInterface::class)) {
+      $item->entity()->delete();
+    } 
   }
 
   /**
    * {@inheritdoc}
    */
-  public function store($data, string $uuid = NULL): string {
-    $data = json_decode($data);
+  public function store(object $data, string $uuid = NULL): string {
 
     $data = $this->filterHtml($data);
 
