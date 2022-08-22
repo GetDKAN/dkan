@@ -2,8 +2,8 @@
 
 namespace Drupal\datastore_mysql_import\Service;
 
-use Dkan\Datastore\Importer;
 use Drupal\Core\Database\Database;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Procrastinator\Result;
 
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
  *
  * @codeCoverageIgnore
  */
-class MysqlImport extends Importer {
+class MysqlImport extends ImportJob {
 
   /**
    * End Of Line character sequence escape to literal map.

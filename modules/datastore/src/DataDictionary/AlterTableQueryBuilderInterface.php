@@ -2,6 +2,8 @@
 
 namespace Drupal\datastore\DataDictionary;
 
+use RootedData\RootedJsonData;
+
 /**
  * Alter table query builder interface.
  */

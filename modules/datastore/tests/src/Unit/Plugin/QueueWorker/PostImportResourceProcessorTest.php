@@ -8,7 +8,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\Plugin\QueueWorker\PostImportResourceProcessor;
@@ -40,7 +40,7 @@ class PostImportResourceProcessorTest extends TestCase {
    * Test processItem() succeeds.
    */
   public function testProcessItem() {
-    $resource = new Resource('test.csv', 'text/csv');
+    $resource = new DataResource('test.csv', 'text/csv');
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process')
@@ -68,7 +68,7 @@ class PostImportResourceProcessorTest extends TestCase {
    * Test processItem() halts and logs a message if a resource no longer exists.
    */
   public function testProcessItemResourceNoLongerExists() {
-    $resource = new Resource('test.csv', 'text/csv');
+    $resource = new DataResource('test.csv', 'text/csv');
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process')
@@ -96,8 +96,8 @@ class PostImportResourceProcessorTest extends TestCase {
    * Test processItem() halts and logs a message if a resource has changed.
    */
   public function testProcessItemResourceChanged() {
-    $resource_a = new Resource('test.csv', 'text/csv');
-    $resource_b = (new Resource('test2.csv', 'text/csv'))->createNewVersion();
+    $resource_a = new DataResource('test.csv', 'text/csv');
+    $resource_b = (new DataResource('test2.csv', 'text/csv'))->createNewVersion();
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process')
@@ -125,7 +125,7 @@ class PostImportResourceProcessorTest extends TestCase {
    * Test processItem() logs errors encountered in processors.
    */
   public function testProcessItemProcessorError() {
-    $resource = new Resource('test.csv', 'text/csv');
+    $resource = new DataResource('test.csv', 'text/csv');
 
     $resource_processor = (new Chain($this))
       ->add(ResourceProcessorInterface::class, 'process', new \Exception('Test Error'))
@@ -178,7 +178,7 @@ class PostImportResourceProcessorTest extends TestCase {
       ->add(DataDictionaryDiscoveryInterface::class, 'dictionaryIdFromResource', 'resource_id')
       ->add(PublicStream::class, 'getExternalUrl', self::HOST)
       ->add(StreamWrapperManager::class, 'getViaUri', PublicStream::class)
-      ->add(ResourceMapper::class, 'get', Resource::class);
+      ->add(ResourceMapper::class, 'get', DataResource::class);
   }
 
 }

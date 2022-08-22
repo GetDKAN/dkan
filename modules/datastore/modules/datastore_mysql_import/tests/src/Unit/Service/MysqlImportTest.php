@@ -7,7 +7,7 @@ use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
@@ -16,7 +16,7 @@ use Drupal\datastore\Storage\DatabaseTableFactory;
 use Drupal\datastore\Storage\DatabaseTable;
 use Drupal\datastore_mysql_import\Service\MysqlImport;
 
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use MockChain\Chain;
 use MockChain\Options;
 use PHPUnit\Framework\TestCase;
@@ -82,7 +82,7 @@ class MysqlImportTest extends TestCase {
       ->getMock();
     \Drupal::setContainer($container);
 
-    $resource = new Resource(self::HOST . '/text.csv', 'text/csv');
+    $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();
     $jobStoreFactory = $this->getJobstoreFactoryMock();
 
@@ -125,7 +125,7 @@ class MysqlImportTest extends TestCase {
   }
 
   protected function getMysqlImporter() {
-    $resource = new Resource(self::HOST . '/text.csv', 'text/csv');
+    $resource = new DataResource(self::HOST . '/text.csv', 'text/csv');
     $databaseTableFactory = $this->getDatabaseTableFactoryMock();
 
     return new class($resource, $databaseTableFactory->getInstance('test')) extends MysqlImport {
@@ -170,8 +170,8 @@ class MysqlImportTest extends TestCase {
   protected function getJobstoreFactoryMock() {
     $jobStore = (new Chain($this))
       ->add(JobStore::class, 'retrieve', '')
-      ->add(Importer::class, 'run', Result::class)
-      ->add(Importer::class, 'getResult', Result::class)
+      ->add(ImportJob::class, 'run', Result::class)
+      ->add(ImportJob::class, 'getResult', Result::class)
       ->add(JobStore::class, 'store', '')
       ->getMock();
 

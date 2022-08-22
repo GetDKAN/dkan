@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
 use Drupal\common\Events\Event;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\datastore\Service;
 use Drupal\datastore\Service\ResourcePurger;
@@ -14,7 +14,7 @@ use Drupal\metastore\LifeCycle\LifeCycle;
 use Drupal\metastore\MetastoreItemInterface;
 use Drupal\metastore\ResourceMapper;
 
-use Dkan\Datastore\Importer;
+use Drupal\datastore\Plugin\QueueWorker\ImportJob;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -112,7 +112,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
   /**
    * Private.
    */
-  private function isDataStorable(Resource $resource) : bool {
+  private function isDataStorable(DataResource $resource) : bool {
     return in_array($resource->getMimeType(), [
       'text/csv',
       'text/tab-separated-values',
@@ -153,7 +153,7 @@ class DatastoreSubscriber implements EventSubscriberInterface {
       ]);
     }
     try {
-      $this->jobStoreFactory->getInstance(Importer::class)->remove($id);
+      $this->jobStoreFactory->getInstance(ImportJob::class)->remove($id);
     }
     catch (\Exception $e) {
       $this->loggerFactory->get('datastore')->error('Failed to remove importer job. @message',

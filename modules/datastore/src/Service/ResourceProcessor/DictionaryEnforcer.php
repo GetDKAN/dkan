@@ -2,7 +2,7 @@
 
 namespace Drupal\datastore\Service\ResourceProcessor;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\Service\ResourceProcessorInterface;
 use Drupal\metastore\Service as MetastoreService;
@@ -66,10 +66,10 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Retrieve dictionary and datastore table details; apply dictionary to table.
    *
-   * @param \Drupal\common\Resource $resource
+   * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
    */
-  public function process(Resource $resource): void {
+  public function process(DataResource $resource): void {
     // Get data-dictionary for the given resource.
     $dictionary = $this->getDataDictionaryForResource($resource);
     // Retrieve name of datastore table for resource.
@@ -81,13 +81,13 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
   /**
    * Retrieve the data-dictionary metadata object for the given resource.
    *
-   * @param \Drupal\common\Resource $resource
+   * @param \Drupal\common\DataResource $resource
    *   DKAN Resource.
    *
    * @return \RootedData\RootedJsonData
    *   Data-dictionary metadata.
    */
-  protected function getDataDictionaryForResource(Resource $resource): RootedJsonData {
+  protected function getDataDictionaryForResource(DataResource $resource): RootedJsonData {
     $resource_id = $resource->getIdentifier();
     $resource_version = $resource->getVersion();
     $dict_id = $this->dataDictionaryDiscovery->dictionaryIdFromResource($resource_id, $resource_version);

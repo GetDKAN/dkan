@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\datastore\Unit\Service;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\Storage\JobStore;
 use Drupal\common\Storage\JobStoreFactory;
 use Drupal\common\Util\DrupalFiles;
@@ -36,7 +36,7 @@ class ResourceLocalizerTest extends TestCase {
    */
   public function testNoResourceFound() {
 
-    $resource = new Resource(self::HOST . '/file.csv', 'text/csv');
+    $resource = new DataResource(self::HOST . '/file.csv', 'text/csv');
 
     $service = new ResourceLocalizer(
       $this->getFileMapperChain()->getMock(),
@@ -62,7 +62,7 @@ class ResourceLocalizerTest extends TestCase {
    */
   private function doTestResourceLocalizerRemove(string $file_path): void {
 
-    $resource = new Resource(self::HOST . '/file.csv', 'text/csv');
+    $resource = new DataResource(self::HOST . '/file.csv', 'text/csv');
 
     $fileMapper = $this->getFileMapperChain()
       ->add(ResourceMapper::class, 'get', $resource)
