@@ -1,4 +1,4 @@
-@page dkanharvestarchive dkan:harvest:archive
+# dkan:harvest:archive {#dkanharvestarchive}
 
 Archives (unpublish) harvested entities.
 

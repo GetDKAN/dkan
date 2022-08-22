@@ -1,4 +1,4 @@
-@page dkandatasetinfo dkan:dataset-info
+# dkan:dataset-info {#dkandatasetinfo}
 
 View information about a dataset.
 
