@@ -73,15 +73,15 @@ class MySQLQueryTest extends TestCase {
   }
 
   /**
-   * Test via main entrypoint, applyDataTypes().
+   * Test via main entrypoint, execute().
    */
-  public function testApplyDataTypes(): void {
+  public function testExecute(): void {
     $connection_chain = $this->buildConnectionChain();
     $table = 'datastore_' . uniqid();
     $mysql_query = $this->buildMySQLQuery($connection_chain->getMock(), $table);
 
     // Extract return value and generate queries for validation.
-    $return = $mysql_query->applyDataTypes();
+    $return = $mysql_query->execute();
     $update_query = \Drupal::state()->get('update_query');
     $query = $connection_chain->getStoredInput('prepare')[0];
 
@@ -105,7 +105,7 @@ class MySQLQueryTest extends TestCase {
   /**
    * Ensure alter fails when attempting to apply decimal type to large numbers.
    */
-  public function testApplyDataTypesWithTooLargeDecimal(): void {
+  public function testExecuteWithTooLargeDecimal(): void {
     $connection_chain = $this->buildConnectionChain()
       ->add(StatementInterface::class, 'fetchField', 100);
     $column = 'bar';
@@ -113,7 +113,7 @@ class MySQLQueryTest extends TestCase {
 
     $this->expectException(IncompatibleTypeException::class);
     $this->expectExceptionMessage("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
-    $mysql_query->applyDataTypes();
+    $mysql_query->execute();
   }
 
 }

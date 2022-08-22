@@ -2,18 +2,16 @@
 
 namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
-use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\StatementInterface;
 
+use Drupal\datastore\DataDictionary\AlterTableQueryBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\IncompatibleTypeException;
-
-use PDLT\ConverterInterface;
 
 /**
  * MySQL table alter query.
  */
-class MySQLQuery implements AlterTableQueryInterface {
+class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface {
 
   /**
    * Max total size of the MySQL decimal type.
@@ -30,32 +28,6 @@ class MySQLQuery implements AlterTableQueryInterface {
   protected const DECIMAL_MAX_DECIMAL = 30;
 
   /**
-   * Build a MySQL table alter query.
-   *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Database connection.
-   * @param \PDLT\ConverterInterface $date_format_converter
-   *   Strptime-to-MySQL date format converter.
-   * @param string $datastore_table
-   *   Datastore table.
-   * @param array $dictionary_fields
-   *   Data-dictionary fields.
-   */
-  public function __construct(
-      Connection $connection,
-      ConverterInterface $date_format_converter,
-      string $datastore_table,
-      array $dictionary_fields,
-      array $dictionary_indexes
-  ) {
-    $this->connection = $connection;
-    $this->dateFormatConverter = $date_format_converter;
-    $this->datastoreTable = $this->connection->escapeTable($datastore_table);
-    $this->dictionaryFields = $dictionary_fields;
-    $this->dictionaryIndexes = $dictionary_indexes;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function execute(): void {
@@ -65,7 +37,7 @@ class MySQLQuery implements AlterTableQueryInterface {
     $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
     array_map(fn ($cmd) => $cmd->execute(), $pre_alter_commands);
     // Build SQL command to perform table alter.
-    $command = $this->buildAlterCommand($this->dictionaryFields, $this->dictionaryIndexes, $this->datastoreTable);
+    $command = $this->buildAlterCommand($this->datastoreTable, $this->dictionaryFields, $this->dictionaryIndexes);
     // Execute alter command.
     $command->execute();
   }
@@ -208,17 +180,17 @@ class MySQLQuery implements AlterTableQueryInterface {
   /**
    * Build alter command to modify table column data types.
    *
-   * @param array $fields
-   *   Data-dictionary fields.
    * @param string $table
    *   MySQL table name.
+   * @param array $fields
+   *   Data-dictionary fields.
    * @param array $indexes
    *   Data-dictionary indexes.
    *
    * @return \Drupal\Core\Database\StatementInterface
    *   Prepared MySQL table alter command statement.
    */
-  protected function buildAlterCommand(array $fields, string $table, array $indexes): StatementInterface {
+  protected function buildAlterCommand(string $table, array $fields, array $indexes): StatementInterface {
     // Build alter options.
     $alter_options = array_merge(
       $this->buildModifyColumnOptions($fields, $table),

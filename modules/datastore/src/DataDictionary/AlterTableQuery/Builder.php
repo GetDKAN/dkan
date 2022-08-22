@@ -10,7 +10,7 @@ use PDLT\ConverterInterface;
 use RootedData\RootedJsonData;
 
 /**
- * Base alter table query factory.
+ * Alter table query builder.
  */
 class Builder implements AlterTableQueryBuilderInterface {
 
