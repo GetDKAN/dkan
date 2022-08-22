@@ -1,4 +1,4 @@
-@page dkanharvestlist dkan:harvest:list
+# dkan:harvest:list {#dkanharvestlist}
 
 List available harvests.
 

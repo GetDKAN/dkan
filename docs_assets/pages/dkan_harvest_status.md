@@ -1,4 +1,4 @@
-@page dkanharveststatus dkan:harvest:status
+# dkan:harvest:status {#dkanharveststatus}
 
 Show status of of a particular harvest run.
 

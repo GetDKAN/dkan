@@ -905,7 +905,9 @@ FILE_PATTERNS          = *.c \
                          *.ice \
                          *.rst \
                          *.json \
-                         *.info.yml
+                         *.info.yml \
+                         *.routing.yml \
+                         *.services.yml
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.
@@ -920,8 +922,8 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = "modules/datastore/modules/datastore_mysql_import/README.md" \
-                         "modules/dkan_js_frontend/README.md"
+#EXCLUDE                = "modules/datastore/modules/datastore_mysql_import/README.md" \
+#                         "modules/dkan_js_frontend/README.md"
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

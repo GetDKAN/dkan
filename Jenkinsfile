@@ -31,10 +31,10 @@ pipeline {
                         docker container stop $i
                         docker container rm $i
                       done
-		      
+
                       docker network disconnect $qa_network_id proxy || true
                       docker network rm $qa_network_id
-		      
+
                     sudo rm -r $WORKSPACE/*
                     fi
                     '''
@@ -70,9 +70,21 @@ pipeline {
                         dktl demo
                         dktl drush user:password admin mayisnice
                         sudo chown -R 1000:docker $WORKSPACE/dkan-tools/vendor
+                        dktl dkan:docs
                         curl -fI `dktl url`
                     '''
                 }
+            }
+        }
+        stage('RebuildDocs') {
+            steps {
+            sh '''
+            ssh -o StrictHostKeyChecking=no root@45.33.76.242 <<EOF
+            cd /var/www/demo/docroot/modules/contrib/dkan
+            latest_release=`curl -s https://api.github.com/repos/GetDKAN/dkan/releases/latest%7Cgrep tag_name|awk '{ print $2 }'|cut -d '"' -f2`
+            DKAN_VERSION="v$latest_release" doxygen
+            EOF
+            '''.stripIndent()
             }
         }
     }
@@ -91,7 +103,7 @@ pipeline {
                 def target_url = "http://$DKTL_SLUG.$WEB_DOMAIN"
                 setBuildStatus("QA site ready at ${target_url}", target_url, "success");
             }
-            
+
         }
     }
 }
