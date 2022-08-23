@@ -45,6 +45,9 @@ class Builder implements AlterTableQueryBuilderInterface {
   /**
    * Alter query field names, types, and formats.
    *
+   * @var array[]
+   *
+   * Example format:
    * @code
    * [
    *   [
@@ -54,8 +57,6 @@ class Builder implements AlterTableQueryBuilderInterface {
    *   ],
    * ]
    * @endcode
-   *
-   * @var array[]
    */
   protected array $fields;
 
@@ -95,9 +96,8 @@ class Builder implements AlterTableQueryBuilderInterface {
    */
   public function addDataDictionary(RootedJsonData $dictionary): self {
     $this->addFields($dictionary->{'$.data.fields'});
-    // @TODO: Uncomment once index support has been added to data-dictionaries.
+    // @todo Uncomment once index support has been added to data-dictionaries.
     // $this->addIndexes($dictionary->{'$.data.indexes'});
-
     return $this;
   }
 

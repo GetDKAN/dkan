@@ -92,4 +92,5 @@ interface AlterTableQueryBuilderInterface {
    *   Return instance of `$this` for chaining.
    */
   public function addIndexes(array $indexes): self;
+
 }
