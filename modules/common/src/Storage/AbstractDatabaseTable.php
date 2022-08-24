@@ -305,7 +305,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
     // Opportunity to further alter the schema before table creation.
     $schema = $this->dispatchEvent(self::EVENT_TABLE_CREATE, $schema);
     // Add indexes if we have an index manager.
-    if (method_exists($this->indexManager, 'modifySchema')) {
+    if (isset($this->indexManager) && method_exists($this->indexManager, 'modifySchema')) {
       $schema = $this->indexManager->modifySchema($table_name, $schema);
     }
     $this->connection->schema()->createTable($table_name, $schema);
