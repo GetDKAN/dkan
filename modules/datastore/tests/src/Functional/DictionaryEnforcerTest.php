@@ -115,7 +115,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $fields = [
       [
         'name' => 'a',
-        'title' => 'A',
         'type' => 'integer',
         'format' => 'default',
       ],
@@ -129,7 +128,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
         'name' => 'c',
         'title' => 'C',
         'type' => 'number',
-        'format' => 'default',
       ],
     ];
     $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $dict_id), 'data-dictionary');
@@ -179,7 +177,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
             'type' => 'int',
             'length' => 11,
             'mysql_type' => 'int',
-            'description' => 'A',
           ],
         'b' => [
           'type' => 'varchar',

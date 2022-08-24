@@ -65,8 +65,15 @@ class MySQLQueryTest extends TestCase {
       ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d', 'title' => 'Baz'],
     ];
     $dictionary_indexes ??= [
-      ['name' => 'index1', 'type' => '', 'fields' => [['name' => 'foo', 'length' => 12], ['name' => 'bar', 'length' => 6], ['name' => 'baz', 'length' => 9]]],
-      ['name' => 'index2', 'type' => 'fulltext', 'fields' => [['name' => 'foo', 'length' => 6], ['name' => 'baz', 'length' => 3]]],
+      ['name' => 'index1', 'type' => '', 'fields' => [
+        ['name' => 'foo', 'length' => 12],
+        ['name' => 'bar', 'length' => 6],
+        ['name' => 'baz', 'length' => 9],
+      ]],
+      ['name' => 'index2', 'type' => 'fulltext', 'fields' => [
+        ['name' => 'foo', 'length' => 6],
+        ['name' => 'baz', 'length' => 3],
+      ]],
     ];
 
     return new MySQLQuery($connection, $converter, $table, $dictionary_fields, $dictionary_indexes);

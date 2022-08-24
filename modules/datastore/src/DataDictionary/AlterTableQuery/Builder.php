@@ -52,13 +52,41 @@ class Builder implements AlterTableQueryBuilderInterface {
    * [
    *   [
    *     'name' => 'some_date_field',
+   *     'title' => 'Some Date Field', // optional
    *     'type' => 'date',
    *     'format' => '%Y-%m-%d' // optional
    *   ],
    * ]
    * @endcode
    */
-  protected array $fields;
+  protected array $fields = [];
+
+  /**
+   * Alter query index names, types, and formats.
+   *
+   * @var array[]
+   *
+   * Example format:
+   * @code
+   * [
+   *   [
+   *     'name' => 'some_date_field', // optional
+   *     'type' => 'fulltext', // optional
+   *     'fields' => [
+   *       [
+   *         'name' => 'field_a',
+   *         'length' => 10 // optional
+   *       ],
+   *       [
+   *         'name' => 'field_b',
+   *         'length' => 8 // optional
+   *       ],
+   *     ]
+   *   ]
+   * ]
+   * @endcode
+   */
+  protected array $indexes = [];
 
   /**
    * Create an alter table query factory.
@@ -105,18 +133,73 @@ class Builder implements AlterTableQueryBuilderInterface {
    * {@inheritdoc}
    */
   public function addFields(array $fields): self {
-    $this->fields = $fields;
+    // Validate and set fields.
+    $this->fields = array_map([$this, 'validateField'], $fields);
 
     return $this;
+  }
+
+  /**
+   * Validate data-dictionary field.
+   *
+   * Validate required properties, and fill empty optional properties.
+   *
+   * @param array $field
+   *   Field to validate.
+   *
+   * @return array
+   *   Validated field.
+   */
+  protected function validateField(array $field): array {
+    // Validate required properties.
+    if (empty($field['name']) || empty($field['type'])) {
+      throw new \UnexpectedValueException('"name" and "type" are required properties for data-dictionary fields.');
+    }
+
+    // Provide default values for optional properties.
+    $field['title'] ??= '';
+    $field['format'] ??= '';
+
+    return $field;
   }
 
   /**
    * {@inheritdoc}
    */
   public function addIndexes(array $indexes): self {
-    $this->indexes = $indexes;
+    // Validate and set indexes.
+    $this->indexes = array_map([$this, 'validateIndex'], $indexes);
 
     return $this;
+  }
+
+  /**
+   * Validate data-dictionary index.
+   *
+   * Validate required properties, and fill empty optional properties.
+   *
+   * @param array $index
+   *   Index to validate.
+   *
+   * @return array
+   *   Validated index.
+   */
+  public function validateIndex(array $index): array {
+    // Validate nested properties.
+    foreach ($index['fields'] as $key => $index_field) {
+      // Validate required properties.
+      if (empty($index_field['name'])) {
+        throw new \UnexpectedValueException('"name" is a required property for data-dictionary index fields.');
+      }
+      // Provide default values for optional properties.
+      $index['fields'][$key]['length'] ??= '';
+    }
+
+    // Provide default values for optional properties.
+    $index['name'] ??= '';
+    $index['type'] ??= '';
+
+    return $index;
   }
 
   /**
