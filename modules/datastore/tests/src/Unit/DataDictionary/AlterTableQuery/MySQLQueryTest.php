@@ -74,6 +74,10 @@ class MySQLQueryTest extends TestCase {
         ['name' => 'foo', 'length' => 6],
         ['name' => 'baz', 'length' => 3],
       ]],
+      ['name' => 'index3', 'type' => 'fulltext', 'fields' => [
+        ['name' => 'foo', 'length' => 6],
+        ['name' => 'missing', 'length' => 3],
+      ]],
     ];
 
     return new MySQLQuery($connection, $converter, $table, $dictionary_fields, $dictionary_indexes);

@@ -32,6 +32,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    */
   public function execute(): void {
     $this->dictionaryFields = $this->mergeDatastoreFields($this->dictionaryFields, $this->datastoreTable);
+    $this->dictionaryIndexes = $this->mergeDatastoreIndexes($this->dictionaryIndexes, $this->datastoreTable);
 
     // Build and execute SQL commands to prepare for table alter.
     $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
@@ -62,11 +63,35 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
     // Fill missing dictionary field titles.
     foreach ($table_cols as $column_name => $comment) {
       if (isset($filtered_dictionary_fields[$column_name])) {
-        $filtered_dictionary_fields[$column_name]['title'] ??= $comment;
+        $filtered_dictionary_fields[$column_name]['title'] = $filtered_dictionary_fields[$column_name]['title'] ?: $comment;
       }
     }
 
     return $filtered_dictionary_fields;
+  }
+
+  /**
+   * Remove dictionary indexes with fields not found in the given table and copy over names.
+   *
+   * @param array $dictionary_indexes
+   *   Data-dictionary indexes.
+   * @param string $table
+   *   MySQL table to filter against.
+   *
+   * @return array
+   *   Filtered list of applicable data-dictionary indexes.
+   */
+  protected function mergeDatastoreIndexes(array $dictionary_indexes, string $table): array {
+    $table_cols = $this->getTableColsAndComments($table);
+    $column_names = array_keys($table_cols);
+
+    // Filter out un-applicable dictionary indexes.
+    $dictionary_indexes = array_filter($dictionary_indexes, function ($index) use ($column_names) {
+      $fields = array_column($index['fields'], 'name');
+      return empty(array_diff($fields, $column_names));
+    });
+
+    return $dictionary_indexes;
   }
 
   /**
