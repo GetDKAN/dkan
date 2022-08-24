@@ -7,10 +7,10 @@ namespace Drupal\metastore\DataDictionary;
  */
 interface DataDictionaryDiscoveryInterface {
 
-  const MODE_NONE = 0;
-  const MODE_SITEWIDE = 1;
-  const MODE_COLLECTION = 2;
-  const MODE_GENERATE = 3;
+  public const MODE_NONE = 'none';
+  public const MODE_SITEWIDE = 'sitewide';
+  public const MODE_COLLECTION = 'collection';
+  public const MODE_GENERATE = 'generate';
 
   /**
    * Return the item ID for the appropriate data dictionary for a resource.
@@ -33,10 +33,10 @@ interface DataDictionaryDiscoveryInterface {
    * for behaviors in both the metastore and datastore sites of data dictionary
    * functionality.
    *
-   * @return int
+   * @return string
    *   Data dictionary mode. Returns one of the MODE_* constants.
    */
-  public function getDataDictionaryMode(): int;
+  public function getDataDictionaryMode(): string;
 
   /**
    * If a single sitewide data dictionary has been defined, return its ID.

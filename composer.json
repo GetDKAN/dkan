@@ -5,32 +5,35 @@
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
     "require": {
-        "cweagans/composer-patches": "^1.7",
         "drupal/admin_toolbar": "^2.3",
         "drupal/config_update": "^1.6",
         "drupal/indexer": "1.0.x-dev",
         "drupal/moderated_content_bulk_publish": "^2.0",
         "drupal/search_api": "^1.15",
-        "drupal/select_or_other": "1.x-dev",
+        "drupal/select_or_other": "dev-4.x#ae0585ff8c",
         "drupal/select2": "1.x-dev",
         "drupal/views_bulk_operations": "^4.0",
         "ext-json": "*",
         "ezyang/htmlpurifier" : "^4.11",
         "fmizzell/maquina": "^1.1.0",
         "getdkan/contracts": "^1.0.0",
-        "getdkan/datastore": "^5.1.2",
+        "getdkan/csv-parser": "^1.2.3",
         "getdkan/file-fetcher" : "^4.1.0",
         "getdkan/harvest": "^1.0.0",
         "getdkan/json-schema-provider": "^0.1.2",
+        "getdkan/locker": "^1.1.0",
+        "getdkan/procrastinator": "^4.0.0",
         "getdkan/rooted-json-data": "^0.0.2",
         "getdkan/sql-parser": "^2.0.0",
         "guzzlehttp/guzzle" : "^6.3",
         "ilbee/csv-response": "^1.0",
         "m1x0n/opis-json-schema-error-presenter": "^0.5.2",
+        "neitanod/forceutf8": "~2.0",
         "npm-asset/select2": "^4.0",
         "oomphinc/composer-installers-extender": "^2.0",
         "ramsey/uuid" : "^3.8.0",
-        "stolt/json-merge-patch": "^1.0"
+        "stolt/json-merge-patch": "^2.0",
+        "getdkan/pdlt": "~0.1"
     },
     "require-dev": {
         "getdkan/mock-chain": "^1.3.0",
@@ -45,11 +48,6 @@
         "asset": {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "Social\\": "src"
         }
     },
     "authors": [
@@ -67,12 +65,14 @@
         "installer-types": [
             "bower-asset",
             "npm-asset"
-        ],
-        "enable-patching": true,
-        "patches": {
-            "drupal/select_or_other": {
-                "https://www.drupal.org/project/select_or_other/issues/3205010": "https://git.drupalcode.org/project/select_or_other/-/merge_requests/1/diffs.patch"
-            }
+        ]
+    },
+    "discard-changes": true,
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "cweagans/composer-patches": true,
+            "oomphinc/composer-installers-extender": true
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
@@ -282,7 +282,7 @@ class DatasetTest extends ExistingSiteBase {
     /**/
   }
 
-  private function changeDatasetsResourceOutputPerspective(string $perspective = Resource::DEFAULT_SOURCE_PERSPECTIVE) {
+  private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
     $display = &drupal_static('metastore_resource_mapper_display');
     $display = $perspective;
   }

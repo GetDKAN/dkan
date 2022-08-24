@@ -12,7 +12,7 @@ use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 use Drupal\common\UrlHostTokenResolver;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\metastore\Reference\Referencer;
 use Drupal\metastore\ResourceMapper;
@@ -233,7 +233,7 @@ class ReferencerTest extends TestCase {
       ->index(0);
 
     $downloadUrl = 'https://dkan-default-content-files.s3.amazonaws.com/phpunit/district_centerpoints_small.csv';
-    $resource = new Resource($downloadUrl, 'application/octet-stream');
+    $resource = new DataResource($downloadUrl, 'application/octet-stream');
 
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
@@ -245,7 +245,7 @@ class ReferencerTest extends TestCase {
       ->add(ResourceMapperDatabaseTable::class, 'query', [
         [
           'identifier' => '123',
-          'perspective' => Resource::DEFAULT_SOURCE_PERSPECTIVE,
+          'perspective' => DataResource::DEFAULT_SOURCE_PERSPECTIVE,
         ],
       ])
       ->add(ResourceMapperDatabaseTable::class, 'store', '123', 'resource')
@@ -273,7 +273,7 @@ class ReferencerTest extends TestCase {
     }';
     $data = json_decode($json);
     $referencer->reference($data);
-    $storedResource = Resource::hydrate($container_chain->getStoredInput('resource')[0]);
+    $storedResource = DataResource::hydrate($container_chain->getStoredInput('resource')[0]);
     // A new resource should have been stored, with the mimetype set to text/csv
     $this->assertEquals('text/csv', $storedResource->getMimeType());
   }

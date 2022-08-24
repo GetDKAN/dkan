@@ -1,4 +1,4 @@
-@page conduct Code of conduct
+# Code of conduct {#conduct}
 
 ## Purpose
 

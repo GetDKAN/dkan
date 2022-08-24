@@ -19,6 +19,7 @@ class QueryDataProvider {
   const QUERY_OBJECT = 1;
   const SQL = 2;
   const EXCEPTION = 3;
+  const VALUES = 4;
 
   /**
    *
@@ -34,6 +35,9 @@ class QueryDataProvider {
       'badExpressionOperandQuery',
       'conditionQuery',
       'likeConditionQuery',
+      'containsConditionQuery',
+      'startsWithConditionQuery',
+      'matchConditionQuery',
       'arrayConditionQuery',
       'nestedConditionGroupQuery',
       'sortQuery',
@@ -51,6 +55,7 @@ class QueryDataProvider {
         self::$test(self::QUERY_OBJECT),
         self::$test(self::SQL),
         self::$test(self::EXCEPTION),
+        self::$test(self::VALUES),
       ];
     }
     return $data;
@@ -70,6 +75,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -88,6 +96,10 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+      
+      case self::VALUES:
+        return [];
+  
     }
   }
 
@@ -106,6 +118,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Bad query property";
+      
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -124,6 +139,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Unsafe property name: l.field3";
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -175,6 +193,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+        case self::VALUES:
+          return [];
     }
   }
 
@@ -214,6 +235,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -240,6 +264,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Only basic arithmetic expressions and basic SQL functions currently supported.";
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -264,6 +291,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return ['value'];
     }
   }
 
@@ -289,8 +319,98 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return ['%value%'];
+    }
+
+  }
+
+
+  /**
+   *
+   */
+  public static function containsConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "value",
+            "operator" => "contains",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
+
+      case self::EXCEPTION:
+        return '';
+
+      case self::VALUES:
+        return ['%value%'];
     }
   }
+
+  public static function startsWithConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "value",
+            "operator" => "starts with",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE t.field1 LIKE :db_condition_placeholder_0";
+
+      case self::EXCEPTION:
+        return '';
+
+      case self::VALUES:
+        return ['value%'];
+    }
+  }
+
+  public static function matchConditionQuery($return) {
+    switch ($return) {
+      case self::QUERY_OBJECT:
+        $query = new Query();
+        $query->conditions = [
+          (object) [
+            "collection" => "t",
+            "property" => "field1",
+            "value" => "value",
+            "operator" => "match",
+          ],
+          (object) [
+            "collection" => "t",
+            "property" => "field2",
+            "value" => "value2",
+            "operator" => "match",
+          ],
+        ];
+        return $query;
+
+      case self::SQL:
+        return "WHERE ((MATCH(t.field1) AGAINST (:words0 IN BOOLEAN MODE))) AND ((MATCH(t.field2) AGAINST (:words1 IN BOOLEAN MODE)))";
+
+      case self::EXCEPTION:
+        return '';
+
+      case self::VALUES:
+        return ['value', 'value2'];
+    }
+  }
+
 
   /**
    *
@@ -314,7 +434,11 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [1, 5];
     }
+
   }
 
   /**
@@ -359,7 +483,11 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return ['value1', 'value2', 'value3'];
     }
+  
   }
 
   /**
@@ -393,6 +521,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -411,6 +542,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return "Invalid sort.";
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -429,6 +563,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -448,6 +585,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -479,6 +619,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -517,6 +660,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -535,6 +681,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return [];
     }
   }
 
@@ -584,6 +733,9 @@ class QueryDataProvider {
 
       case self::EXCEPTION:
         return '';
+
+      case self::VALUES:
+        return ['value'];
     }
 
     throw new \UnexpectedValueException('Unknown return type provided.');

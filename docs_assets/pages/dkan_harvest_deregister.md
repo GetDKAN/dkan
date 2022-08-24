@@ -1,4 +1,4 @@
-@page dkanharvestderegister dkan:harvest:deregister
+# dkan:harvest:deregister {#dkanharvestderegister}
 
 Deregister a harvest.
 

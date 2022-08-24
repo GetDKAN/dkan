@@ -32,6 +32,13 @@ class SelectFactory {
   private $dbQuery;
 
   /**
+   * Iterator for "words" named placeholder.
+   *
+   * @var int
+   */
+  private $wordsIterator = 0;
+
+  /**
    * Constructor function.
    *
    * @param Drupal\Core\Database\Connection $connection
@@ -253,13 +260,60 @@ class SelectFactory {
    *   A condition from the DKAN query object.
    */
   private function addCondition($statementObj, $condition) {
-    if (!isset($condition->operator)) {
-      $condition->operator = '=';
+    $this->normalizeOperator($condition);
+    if ($condition->operator == "match") {
+      $this->addMatchCondition($statementObj, $condition);
+      return;
     }
     $field = (isset($condition->collection) ? $condition->collection : $this->alias)
       . '.'
       . $condition->property;
     $statementObj->condition($field, $condition->value, strtoupper($condition->operator));
+  }
+
+  /**
+   * Add a custom where condition in the case of a fulltext match operator.
+   *
+   * Currently, only BOOLEAN MODE Mysql fulltext searches supported.
+   *
+   * @param \Drupal\Core\Database\Query\Select|\Drupal\Core\Database\Query\Condition $statementObj
+   *   Drupal DB API select object or condition object.
+   * @param object $condition
+   *   A condition from the DKAN query object.
+   */
+  private function addMatchCondition($statementObj, $condition) {
+    $properties = explode(',', $condition->property);
+    $fields = [];
+    foreach ($properties as $property) {
+      $fields[] = ($condition->collection ?? $this->alias)
+      . '.'
+      . $property;
+    }
+    $fields_list = implode(',', $fields);
+
+    $where = "MATCH($fields_list) AGAINST (:words{$this->wordsIterator} IN BOOLEAN MODE)";
+    $statementObj->where($where, [":words{$this->wordsIterator}" => $condition->value]);
+    $this->wordsIterator++;
+  }
+
+  /**
+   * Fix any quirks in DKAN query object that won't translate well to SQL.
+   *
+   * @param object $condition
+   *   A condition from the DKAN query object.
+   */
+  private function normalizeOperator($condition) {
+    if (!isset($condition->operator)) {
+      $condition->operator = '=';
+    }
+    elseif ($condition->operator == 'contains') {
+      $condition->operator = 'like';
+      $condition->value = "%{$condition->value}%";
+    }
+    elseif ($condition->operator == 'starts with') {
+      $condition->operator = 'like';
+      $condition->value = "{$condition->value}%";
+    }
   }
 
   /**

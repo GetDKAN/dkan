@@ -1,4 +1,4 @@
-@page dkanharvestregister dkan:harvest:register
+# dkan:harvest:register {#dkanharvestregister}
 
 Register a new harvest.
 

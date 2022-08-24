@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\metastore\Unit;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\metastore\ResourceMapper;
@@ -111,7 +111,7 @@ class ResourceMapperTest extends TestCase {
   /**
    * Private.
    */
-  private function retrieveAndCheck(Resource $resource, $filemapper) {
+  private function retrieveAndCheck(DataResource $resource, $filemapper) {
     $retrieved = $filemapper->get($resource->getIdentifier(), $resource->getPerspective(), $resource->getVersion());
     $this->assertEquals($resource, $retrieved);
   }
@@ -120,7 +120,7 @@ class ResourceMapperTest extends TestCase {
    * Private.
    */
   private function getResource($url) {
-    return new Resource($url, 'text/csv', Resource::DEFAULT_SOURCE_PERSPECTIVE);
+    return new DataResource($url, 'text/csv', DataResource::DEFAULT_SOURCE_PERSPECTIVE);
   }
 
 }

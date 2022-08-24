@@ -1,4 +1,4 @@
-@page dkanharvestpublish dkan:harvest:publish
+# dkan:harvest:publish {#dkanharvestpublish}
 
 Publishes harvested entities.
 

@@ -2,6 +2,7 @@
 
 namespace Drupal\common;
 
+use Drupal\datastore\DatastoreResource;
 use Procrastinator\HydratableTrait;
 use Procrastinator\JsonSerializeTrait;
 
@@ -26,7 +27,7 @@ use Procrastinator\JsonSerializeTrait;
  * @todo Rename filePath to uri or url.
  * @todo Refactor as service.
  */
-class Resource implements \JsonSerializable {
+class DataResource implements \JsonSerializable {
   use HydratableTrait, JsonSerializeTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
@@ -154,6 +155,20 @@ class Resource implements \JsonSerializable {
   }
 
   /**
+   * Get object storing datastore specific information about this resource.
+   *
+   * @return \Drupal\datastore\DatastoreResource
+   *   Datastore Resource.
+   */
+  public function getDatastoreResource(): DatastoreResource {
+    return new DatastoreResource(
+      md5($this->getUniqueIdentifier()),
+      UrlHostTokenResolver::resolve($this->getFilePath()),
+      $this->getMimeType()
+    );
+  }
+
+  /**
    * Getter.
    */
   public function getIdentifier() {
@@ -165,13 +180,6 @@ class Resource implements \JsonSerializable {
    */
   public function getFilePath() {
     return $this->filePath;
-  }
-
-  /**
-   * Getter.
-   */
-  public function getFolder() {
-    return dirname($this->filePath);
   }
 
   /**
@@ -200,6 +208,13 @@ class Resource implements \JsonSerializable {
    */
   public function getUniqueIdentifier() {
     return self::buildUniqueIdentifier($this->identifier, $this->version, $this->perspective);
+  }
+
+  /**
+   * Retrieve datastore table name for resource.
+   */
+  public function getTableName() {
+    return 'datastore_' . md5($this->getUniqueIdentifier());
   }
 
   /**

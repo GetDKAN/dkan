@@ -3,7 +3,7 @@
 namespace Drupal\metastore\EventSubscriber;
 
 use Drupal\common\Events\Event;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\metastore\Plugin\QueueWorker\OrphanReferenceProcessor;
@@ -89,7 +89,7 @@ class MetastoreSubscriber implements EventSubscriberInterface {
       $resource = $this->resourceMapper->get($resource_id, $perspective, $version);
       // Ensure a valid ID, perspective, and version were found for the given
       // distribution.
-      if ($resource instanceof Resource && !$this->resourceInUseElsewhere($distribution_id, $resource->getFilePath())) {
+      if ($resource instanceof DataResource && !$this->resourceInUseElsewhere($distribution_id, $resource->getFilePath())) {
         // Remove resource entry for metadata resource mapper.
         $this->resourceMapper->remove($resource);
       }
