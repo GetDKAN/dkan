@@ -4,7 +4,7 @@ __DKAN__ is an open-source open-data platform inspired by [CKAN](https://ckan.or
 
 ## Structure
 
-%Drupal allows _modules_ to extend its functionality. DKAN is a %Drupal module.
+DKAN is a %Drupal module that adds data publishing functionality.
 
 Modules can have submodules; DKAN utilizes this structure to organize its internal subsystems. Information about the subsystems/components in DKAN can be found in the \ref components page.
 
@@ -17,7 +17,7 @@ DKAN's modules and subsystems are organized around four main data functions:
 
 ### Data Management
 
-The main function of any open data platform is to help manage data. Making data _public_ is simple, anyone can place a file in a web-accessible store these days, but making data _open_ takes a bit more work. True open data is accessible, discoverable, machine-readable, linked to other resources that provide context, published in an open format and under an open license. 
+The main function of any open data platform is to help manage data. Making data _public_ is simple, anyone can place a file in a web-accessible server, but making data _open_ takes a bit more work. True open data is accessible, discoverable, machine-readable, linked to other resources that provide context, published in an open format and under an open license.
 
 This is what we mean by data management: providing tools that empower data publishers to make data open, which empowers data consumers to find and use the data they need.
 
@@ -47,4 +47,4 @@ Data in files isn't naturally searchable, but the \ref datastore module parses a
 
 DKAN is actively maintained by [CivicActions](https://civicactions.com/dkan).
 
-To learn more about the DKAN community visit [GetDKAN.org](https://getdkan.org).
+To learn more about the DKAN community visit [DKAN Discussions](https://github.com/GetDKAN/dkan/discussions).

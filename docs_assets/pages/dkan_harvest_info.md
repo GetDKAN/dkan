@@ -1,4 +1,4 @@
-@page  dkanharvestinfo dkan:harvest:info
+# dkan:harvest:info {#dkanharvestinfo}
 
 Give information about a previous harvest run.
 
