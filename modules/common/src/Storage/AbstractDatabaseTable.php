@@ -15,7 +15,12 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
 
   const EVENT_TABLE_CREATE = 'dkan_common_table_create';
 
-  protected $schema = [];
+  /**
+   * A schema. Should be a drupal schema array.
+   *
+   * @var array
+   */
+  protected $schema;
 
   /**
    * Drupal DB connection object.

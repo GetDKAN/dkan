@@ -43,8 +43,6 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testBasics() {
-    $this->markTestIncomplete('This test fails under PHP 8.0');
-
     $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/countries.csv", "text/csv");
     $this->assertEquals($resource->getID(), 1);
 
@@ -54,6 +52,7 @@ class ImportJobTest extends TestCase {
     $this->assertEquals(Result::STOPPED, $datastore->getResult()->getStatus());
 
     $datastore->run();
+    $this->assertNotEquals(Result::ERROR, $datastore->getResult()->getStatus());
 
     $schema = $datastore->getStorage()->getSchema();
     $this->assertTrue(is_array($schema['fields'] ?? FALSE));
@@ -144,8 +143,6 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testSerialization() {
-    $this->markTestIncomplete('This test fails under PHP 8.0');
-
     $timeLimit = 40;
     $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/countries.csv", "text/csv");
     $this->assertEquals($resource->getID(), 1);

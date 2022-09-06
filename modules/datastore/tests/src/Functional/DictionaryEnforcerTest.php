@@ -106,8 +106,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
    * Test dictionary enforcement.
    */
   public function testDictionaryEnforcement(): void {
-    $this->markTestIncomplete('This test fails under PHP 8.0');
-
     // Build data-dictionary.
     $dict_id = $this->uuid->generate();
     $fields = [
