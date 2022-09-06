@@ -59,7 +59,7 @@ services:
     class: \Drupal\datastore\Storage\DatabaseConnectionFactory
 
   dkan.datastore.data_dictionary.alter_table_query_builder.mysql:
-    class: \Drupal\datastore\DataDictionary\AlterTableQuery\Builder
+    class: \Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQueryBuilder
     arguments:
       - '@dkan.datastore.database_connection_factory'
       - '@pdlt.converter.strptime_to_mysql'
