@@ -162,8 +162,6 @@ class ImportJobTest extends TestCase {
    *
    */
   public function testMultiplePasses() {
-    $this->markTestIncomplete('This test takes too long?');
-
     $resource = new DatastoreResource(1, __DIR__ . "/../../../../data/Bike_Lane.csv", "text/csv");
 
     $storage = new Memory();
@@ -181,6 +179,7 @@ class ImportJobTest extends TestCase {
     $datastore->setTimeLimit(1);
 
     $datastore->run();
+    $this->assertNotEquals(Result::ERROR, $datastore->getResult()->getStatus());
     // How many passes does it take to get through the data?
     $passes = 1;
     $results = $datastore->getStorage()->retrieveAll();
@@ -188,6 +187,7 @@ class ImportJobTest extends TestCase {
     while ($datastore->getResult()->getStatus() != Result::DONE) {
       $datastore = ImportJob::get("1", $storage, $config);
       $datastore->run();
+      $this->assertNotEquals(Result::ERROR, $datastore->getResult()->getStatus());
       $results += $datastore->getStorage()->retrieveAll();
       $passes++;
     }
