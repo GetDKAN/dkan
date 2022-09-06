@@ -28,25 +28,25 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
   protected ConverterInterface $dateFormatConverter;
 
   /**
-   * Datastore table.
+   * Query table.
    *
    * @var string
    */
-  protected string $datastoreTable;
+  protected string $table;
 
   /**
-   * Data-dictionary fields.
+   * Query fields.
    *
    * @var array
    */
-  protected array $dictionaryFields;
+  protected array $fields;
 
   /**
-   * Data-dictionary indexes.
+   * Query indexes.
    *
    * @var array
    */
-  protected array $dictionaryIndexes;
+  protected array $indexes;
 
   /**
    * Build a table alter query.
@@ -55,29 +55,29 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
    *   Database connection.
    * @param \PDLT\ConverterInterface $date_format_converter
    *   Strptime-to-MySQL date format converter.
-   * @param string $datastore_table
-   *   Datastore table.
-   * @param array $dictionary_fields
-   *   Data-dictionary fields.
-   * @param array $dictionary_indexes
-   *   Data-dictionary indexes.
+   * @param string $table
+   *   Query table.
+   * @param array $fields
+   *   Query fields.
+   * @param array $indexes
+   *   Query indexes.
    */
   public function __construct(
     Connection $connection,
     ConverterInterface $date_format_converter,
-    string $datastore_table,
-    array $dictionary_fields,
-    array $dictionary_indexes
+    string $table,
+    array $fields,
+    array $indexes
   ) {
     $this->connection = $connection;
     $this->dateFormatConverter = $date_format_converter;
-    $this->datastoreTable = $this->connection->escapeTable($datastore_table);
-    $this->dictionaryFields = $dictionary_fields;
-    $this->dictionaryIndexes = $dictionary_indexes;
+    $this->table = $this->connection->escapeTable($table);
+    $this->fields = $fields;
+    $this->indexes = $indexes;
   }
 
   /**
-   * Apply data dictionary types to the given table.
+   * Apply types and indexes to the given table.
    */
   abstract public function execute(): void;
 

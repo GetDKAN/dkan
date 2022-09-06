@@ -1,9 +1,8 @@
 <?php
 
-namespace Drupal\datastore\DataDictionary\AlterTableQuery;
+namespace Drupal\datastore\DataDictionary;
 
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
-use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 
 use PDLT\ConverterInterface;
@@ -12,7 +11,7 @@ use RootedData\RootedJsonData;
 /**
  * Alter table query builder.
  */
-class Builder implements AlterTableQueryBuilderInterface {
+abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInterface {
 
   /**
    * Database connection factory.
@@ -93,12 +92,10 @@ class Builder implements AlterTableQueryBuilderInterface {
    */
   public function __construct(
     DatabaseConnectionFactoryInterface $database_connection_factory,
-    ConverterInterface $date_format_converter,
-    string $query_class
+    ConverterInterface $date_format_converter
   ) {
     $this->databaseConnectionFactory = $database_connection_factory;
     $this->dateFormatConverter = $date_format_converter;
-    $this->queryClass = $query_class;
   }
 
   /**
@@ -205,14 +202,6 @@ class Builder implements AlterTableQueryBuilderInterface {
   /**
    * {@inheritdoc}
    */
-  public function getQuery(): AlterTableQueryInterface {
-    return new $this->queryClass(
-      $this->databaseConnectionFactory->getConnection(),
-      $this->dateFormatConverter,
-      $this->table,
-      $this->fields,
-      $this->indexes,
-    );
-  }
+  abstract public function getQuery(): AlterTableQueryInterface;
 
 }

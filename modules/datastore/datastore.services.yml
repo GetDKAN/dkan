@@ -63,7 +63,6 @@ services:
     arguments:
       - '@dkan.datastore.database_connection_factory'
       - '@pdlt.converter.strptime_to_mysql'
-      - '\Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery'
 
   dkan.datastore.database:
     class: \Drupal\Core\Database\Connection

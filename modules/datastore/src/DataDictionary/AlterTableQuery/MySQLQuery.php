@@ -31,67 +31,67 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * {@inheritdoc}
    */
   public function execute(): void {
-    $this->dictionaryFields = $this->mergeDatastoreFields($this->dictionaryFields, $this->datastoreTable);
-    $this->dictionaryIndexes = $this->mergeDatastoreIndexes($this->dictionaryIndexes, $this->datastoreTable);
+    $this->fields = $this->mergeFields($this->fields, $this->table);
+    $this->indexes = $this->mergeIndexes($this->indexes, $this->table);
 
     // Build and execute SQL commands to prepare for table alter.
-    $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
+    $pre_alter_commands = $this->buildPreAlterCommands($this->fields, $this->table);
     array_map(fn ($cmd) => $cmd->execute(), $pre_alter_commands);
     // Build SQL command to perform table alter.
-    $command = $this->buildAlterCommand($this->datastoreTable, $this->dictionaryFields, $this->dictionaryIndexes);
+    $command = $this->buildAlterCommand($this->table, $this->fields, $this->indexes);
     // Execute alter command.
     $command->execute();
   }
 
   /**
-   * Remove dictionary fields not found in the given table and copy over names.
+   * Remove query fields not found in the given table and copy over names.
    *
-   * @param array $dictionary_fields
-   *   Data dictionary fields.
+   * @param array $fields
+   *   Query fields.
    * @param string $table
    *   MySQL table to filter against.
    *
    * @return array
-   *   Filtered and updated list of applicable data dictionary fields.
+   *   Filtered and updated list of applicable query fields.
    */
-  protected function mergeDatastoreFields(array $dictionary_fields, string $table): array {
+  protected function mergeFields(array $fields, string $table): array {
     $table_cols = $this->getTableColsAndComments($table);
     $column_names = array_keys($table_cols);
 
-    // Filter out un-applicable dictionary fields.
-    $filtered_dictionary_fields = array_filter($dictionary_fields, fn ($fields) => in_array($fields['name'], $column_names, TRUE));
-    // Fill missing dictionary field titles.
+    // Filter out un-applicable query fields.
+    $filtered_fields = array_filter($fields, fn ($fields) => in_array($fields['name'], $column_names, TRUE));
+    // Fill missing field titles.
     foreach ($table_cols as $column_name => $comment) {
-      if (isset($filtered_dictionary_fields[$column_name])) {
-        $filtered_dictionary_fields[$column_name]['title'] = $filtered_dictionary_fields[$column_name]['title'] ?: $comment;
+      if (isset($filtered_fields[$column_name])) {
+        $filtered_fields[$column_name]['title'] = $filtered_fields[$column_name]['title'] ?: $comment;
       }
     }
 
-    return $filtered_dictionary_fields;
+    return $filtered_fields;
   }
 
   /**
-   * Remove dictionary indexes with fields not found in the given table and copy over names.
+   * Remove query indexes with fields not found in the given table and copy over names.
    *
-   * @param array $dictionary_indexes
-   *   Data-dictionary indexes.
+   * @param array $indexes
+   *   Query indexes.
    * @param string $table
    *   MySQL table to filter against.
    *
    * @return array
-   *   Filtered list of applicable data-dictionary indexes.
+   *   Filtered list of applicable query indexes.
    */
-  protected function mergeDatastoreIndexes(array $dictionary_indexes, string $table): array {
+  protected function mergeIndexes(array $indexes, string $table): array {
     $table_cols = $this->getTableColsAndComments($table);
     $column_names = array_keys($table_cols);
 
-    // Filter out un-applicable dictionary indexes.
-    $dictionary_indexes = array_filter($dictionary_indexes, function ($index) use ($column_names) {
+    // Filter out un-applicable query indexes.
+    $indexes = array_filter($indexes, function ($index) use ($column_names) {
       $fields = array_column($index['fields'], 'name');
       return empty(array_diff($fields, $column_names));
     });
 
-    return $dictionary_indexes;
+    return $indexes;
   }
 
   /**
@@ -176,19 +176,19 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   /**
    * Build list of commands to prepare table for alter command.
    *
-   * @param array $dict
-   *   Data dictionary fields.
+   * @param array $query_fields
+   *   Query fields.
    * @param string $table
    *   Mysql table name.
    *
    * @return \Drupal\Core\Database\StatementInterface[]
    *   Prep command statements.
    */
-  protected function buildPreAlterCommands(array $dict, string $table): array {
+  protected function buildPreAlterCommands(array $query_fields, string $table): array {
     $pre_alter_cmds = [];
 
-    // Build pre-alter commands for each dictionary field.
-    foreach ($dict as ['name' => $col, 'type' => $type, 'format' => $format]) {
+    // Build pre-alter commands for each query field.
+    foreach ($query_fields as ['name' => $col, 'type' => $type, 'format' => $format]) {
       // If this field is a date field, and a valid format is provided; update
       // the format of the date fields to ISO-8601 before importing into MySQL.
       if ($type === 'date' && !empty($format) && $format !== 'default') {
@@ -208,9 +208,9 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * @param string $table
    *   MySQL table name.
    * @param array $fields
-   *   Data-dictionary fields.
+   *   Query fields.
    * @param array $indexes
-   *   Data-dictionary indexes.
+   *   Query indexes.
    *
    * @return \Drupal\Core\Database\StatementInterface
    *   Prepared MySQL table alter command statement.
@@ -229,7 +229,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * Build alter command modify column options.
    *
    * @param array $fields
-   *   Data-dictionary fields.
+   *   Query fields.
    * @param string $table
    *   MySQL table name.
    *
@@ -254,7 +254,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * Build alter command add index options.
    *
    * @param array $indexes
-   *   Data-dictionary indexes.
+   *   Query indexes.
    *
    * @return string[]
    *   Add index options.
