@@ -29,6 +29,9 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
   protected function buildConnectionInfo(): array {
     $connection_info = parent::buildConnectionInfo();
     $connection_info['pdo'][\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = FALSE;
+    if (strpos($connection_info['init_commands']['sql_mode'], 'ALLOW_INVALID_DATES') === FALSE) {
+      $connection_info['init_commands']['sql_mode'] .= ',ALLOW_INVALID_DATES';
+    }
     return $connection_info;
   }
 
