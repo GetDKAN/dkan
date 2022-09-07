@@ -41,7 +41,7 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
    * Add option to 'sql_mode' setting initialization command.
    *
    * @param string $sql_mode
-   *   'sql_mode' setting initialization command.
+   *   The 'sql_mode' setting initialization command.
    * @param string $option
    *   Option to add.
    */
