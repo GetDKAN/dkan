@@ -29,10 +29,30 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
   protected function buildConnectionInfo(): array {
     $connection_info = parent::buildConnectionInfo();
     $connection_info['pdo'][\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = FALSE;
-    if (strpos($connection_info['init_commands']['sql_mode'], 'ALLOW_INVALID_DATES') === FALSE) {
-      $connection_info['init_commands']['sql_mode'] .= ',ALLOW_INVALID_DATES';
-    }
+
+    $connection_info['init_commands'] ??= [];
+    $connection_info['init_commands']['sql_mode'] ??= '';
+    $this->addSqlModeOption($connection_info['init_commands']['sql_mode'], 'ALLOW_INVALID_DATES');
+
     return $connection_info;
+  }
+
+  /**
+   * Add option to 'sql_mode' setting initialization command.
+   *
+   * @param string $sql_mode
+   *   'sql_mode' setting initialization command.
+   * @param string $option
+   *   Option to add.
+   */
+  protected function addSqlModeOption(string &$sql_mode, string $option): void {
+    $matches = [];
+    preg_match("/^SET sql_mode = '(?P<args>.+?)'$/", $sql_mode, $matches);
+
+    if (isset($matches['args']) && strpos($matches['args'], $option) === FALSE) {
+      $options = $matches['args'] . ',' . $option;
+      $sql_mode = "SET sql_mode = '" . $options . "'";
+    }
   }
 
 }
