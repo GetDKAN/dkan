@@ -52,9 +52,10 @@ class ImportJobTest extends TestCase {
     $this->assertEquals(Result::STOPPED, $datastore->getResult()->getStatus());
 
     $datastore->run();
+    $this->assertNotEquals(Result::ERROR, $datastore->getResult()->getStatus());
 
     $schema = $datastore->getStorage()->getSchema();
-    $this->assertTrue(is_array($schema['fields']));
+    $this->assertTrue(is_array($schema['fields'] ?? FALSE));
 
     $status = $datastore->getResult()->getStatus();
     $this->assertEquals(Result::DONE, $status);
@@ -178,6 +179,7 @@ class ImportJobTest extends TestCase {
     $datastore->setTimeLimit(1);
 
     $datastore->run();
+    $this->assertNotEquals(Result::ERROR, $datastore->getResult()->getStatus());
     // How many passes does it take to get through the data?
     $passes = 1;
     $results = $datastore->getStorage()->retrieveAll();
@@ -185,6 +187,7 @@ class ImportJobTest extends TestCase {
     while ($datastore->getResult()->getStatus() != Result::DONE) {
       $datastore = ImportJob::get("1", $storage, $config);
       $datastore->run();
+      $this->assertNotEquals(Result::ERROR, $datastore->getResult()->getStatus());
       $results += $datastore->getStorage()->retrieveAll();
       $passes++;
     }

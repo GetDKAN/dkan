@@ -11,6 +11,8 @@ use Drupal\common\Storage\Query;
 class TestMemStorage implements DatabaseTableInterface, \JsonSerializable
 {
 
+    protected $schema = [];
+
     protected $storage = [];
 
     public function destruct() { }

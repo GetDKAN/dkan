@@ -107,6 +107,8 @@ class ImportJob extends AbstractPersistentJob {
   /**
    * Confirm this is a valid text file.
    *
+   * Allow 'text/*' or 'application/*' per PHP 8.0 changes.
+   *
    * @param string $filename
    *   Filename to test.
    *
@@ -114,9 +116,11 @@ class ImportJob extends AbstractPersistentJob {
    *   Will throw exception if not valid, do nothing if valid.
    */
   protected function assertTextFile(string $filename) {
-    $mimeType = mime_content_type($filename);
-    if ("text" != substr($mimeType, 0, 4)) {
-      throw new \Exception("Invalid mime type: {$mimeType}");
+    if ($mimeType = mime_content_type($filename)) {
+      $mime_explode = explode('/', $mimeType);
+      if (!in_array($mime_explode[0], ['text', 'application'])) {
+        throw new \Exception("Invalid mime type: {$mimeType}");
+      }
     }
   }
 
