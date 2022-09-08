@@ -2,6 +2,8 @@
 
 namespace Drupal\datastore\Storage;
 
+use Drupal\Core\Database\Connection;
+
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\common\Storage\DatabaseConnectionFactory as DatabaseConnectionFactoryBase;
 
@@ -32,27 +34,46 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
 
     $connection_info['init_commands'] ??= [];
     $connection_info['init_commands']['sql_mode'] ??= '';
-    $this->addSqlModeOption($connection_info['init_commands']['sql_mode'], 'ALLOW_INVALID_DATES');
 
     return $connection_info;
+  }
+
+  /**
+   * Prepare database connection.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection object.
+   */
+  protected function prepareConnection(Connection $connection): void {
+    parent::prepareConnection($connection);
+    // Add sql mode option, "ALLOW_INVALID_DATES".
+    $sql_mode = $connection->query('SELECT @@sql_mode')->fetchField();
+    $sql_mode_cmd = $this->buildSqlModeCommand($sql_mode, 'ALLOW_INVALID_DATES');
+    if (!empty($sql_mode_cmd)) {
+      $connection->query($sql_mode_cmd);
+    }
   }
 
   /**
    * Add option to 'sql_mode' setting initialization command.
    *
    * @param string $sql_mode
-   *   The 'sql_mode' setting initialization command.
+   *   The current 'sql_mode' setting.
    * @param string $option
    *   Option to add.
+   *
+   * @return string
+   *   The revised 'sql_mode' setting initialization command.
    */
-  protected function addSqlModeOption(string &$sql_mode, string $option): void {
-    $matches = [];
-    preg_match("/^SET sql_mode = '(?P<args>.+?)'$/", $sql_mode, $matches);
+  protected function buildSqlModeCommand(string $sql_mode, string $option): string {
+    $sql_mode_cmd = '';
 
-    if (isset($matches['args']) && strpos($matches['args'], $option) === FALSE) {
-      $options = $matches['args'] . ',' . $option;
-      $sql_mode = "SET sql_mode = '" . $options . "'";
+    if (strpos($sql_mode, $option) === FALSE) {
+      $options = ltrim($sql_mode . ',' . $option, ',');
+      $sql_mode_cmd = 'SET sql_mode = "' . $options . '"';
     }
+
+    return $sql_mode_cmd;
   }
 
 }
