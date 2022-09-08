@@ -69,8 +69,7 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
     $sql_mode_cmd = '';
 
     if (strpos($sql_mode, $option) === FALSE) {
-      $options = ltrim($sql_mode . ',' . $option, ',');
-      $sql_mode_cmd = 'SET sql_mode = "' . $options . '"';
+      $sql_mode_cmd = 'SET SESSION sql_mode = "' . $option . '"';
     }
 
     return $sql_mode_cmd;
