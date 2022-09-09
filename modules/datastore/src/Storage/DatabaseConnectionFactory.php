@@ -32,9 +32,6 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
     $connection_info = parent::buildConnectionInfo();
     $connection_info['pdo'][\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = FALSE;
 
-    $connection_info['init_commands'] ??= [];
-    $connection_info['init_commands']['sql_mode'] ??= '';
-
     return $connection_info;
   }
 
@@ -46,34 +43,50 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
    */
   protected function prepareConnection(Connection $connection): void {
     parent::prepareConnection($connection);
-    // Add sql mode option, "ALLOW_INVALID_DATES".
-    $sql_mode = $connection->query('SELECT @@sql_mode')->fetchField();
-    $sql_mode_cmd = $this->buildSqlModeCommand($sql_mode, 'ALLOW_INVALID_DATES');
-    if (!empty($sql_mode_cmd)) {
-      $connection->query($sql_mode_cmd);
-    }
+    $this->updateSqlMode($connection);
   }
 
   /**
-   * Add option to 'sql_mode' setting initialization command.
+   * Update the SQL_Mode session setting on the provided connection.
+   *
+   * @param Connection $connection
+   *   Connection to update the SQL Mode setting on.
+   */
+  protected function updateSqlMode(Connection $connection): void {
+    // Add sql mode option, "ALLOW_INVALID_DATES", and remove sql mode options
+    // "NO_ZERO_DATE" and "NO_ZERO_IN_DATE".
+    $sql_mode_options = $connection->query('SELECT @@sql_mode')->fetchField();
+    $sql_mode_cmd = $this->buildSqlModeCommand(
+      explode(',', $sql_mode_options),
+      ['ALLOW_INVALID_DATES'],
+      ['NO_ZERO_DATE', 'NO_ZERO_IN_DATE']
+    );
+    $connection->query($sql_mode_cmd);
+  }
+
+  /**
+   * Build 'sql_mode' setting initialization command from existing setting and a new setting.
    *
    * @param string $sql_mode
    *   The current 'sql_mode' setting.
-   * @param string $option
-   *   Option to add.
+   * @param array $new_options
+   *   Options to add.
+   * @param array $options_to_exclude
+   *   Options to exclude from the generated command.
    *
    * @return string
-   *   The revised 'sql_mode' setting initialization command.
+   *   A revised 'sql_mode' setting initialization command.
    */
-  protected function buildSqlModeCommand(string $sql_mode, string $option): string {
-    $sql_mode_cmd = '';
+  protected function buildSqlModeCommand(array $existing_options, array $new_options, array $options_to_exclude): string {
+    // Remove the excluded options.
+    $generated_options = array_diff($existing_options, $options_to_exclude);
+    // Add the new options.
+    $generated_options = array_merge($generated_options, $new_options);
+    // Ensure all options are unique.
+    $generated_options = array_unique($generated_options);
 
-    if (strpos($sql_mode, $option) === FALSE) {
-      $options = ltrim($sql_mode . ',' . $option, ',');
-      $sql_mode_cmd = 'SET SESSION sql_mode = "' . $options . '"';
-    }
-
-    return $sql_mode_cmd;
+    // Return the generated command.
+    return 'SET SESSION sql_mode = "' . implode(',', $generated_options) . '"';
   }
 
 }
