@@ -61,7 +61,9 @@ class MySQLQuery implements AlterTableQueryInterface {
 
     // Build and execute SQL commands to prepare for table alter.
     $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
+    $this->connection->query('SET SESSION innodb_strict_mode=OFF');
     array_map(fn ($cmd) => $cmd->execute(), $pre_alter_commands);
+    $this->connection->query('SET SESSION innodb_strict_mode=ON');
     // Build and execute SQL command to perform table alter.
     $this->buildAlterCommand($this->dictionaryFields, $this->datastoreTable)->execute();
   }
@@ -193,11 +195,9 @@ class MySQLQuery implements AlterTableQueryInterface {
       if ($type === 'date' && !empty($format) && $format !== 'default') {
         $mysql_date_format = $this->dateFormatConverter->convert($format);
         // Temporarily disable strict mode for date conversion.
-        $this->connection->query('SET SESSION innodb_strict_mode=OFF');
         $pre_alter_cmds[] = $this->connection->update($table)->expression($col, "STR_TO_DATE({$col}, :date_format)", [
           ':date_format' => $mysql_date_format,
         ]);
-        $this->connection->query('SET SESSION innodb_strict_mode=ON');
       }
     }
 
