@@ -62,6 +62,10 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
       ['NO_ZERO_DATE', 'NO_ZERO_IN_DATE']
     );
     $connection->query($sql_mode_cmd);
+
+    $sql_mode = $this->connection->query('SELECT @@sql_mode')->fetchField();
+    $strict_mode = $this->connection->query('SELECT @@innodb_strict_mode')->fetchField();
+    \Drupal::logger('datastore')->notice('a ' . $sql_mode . ' ' . $strict_mode);
   }
 
   /**
