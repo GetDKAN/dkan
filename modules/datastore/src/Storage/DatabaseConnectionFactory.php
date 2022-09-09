@@ -49,7 +49,7 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
   /**
    * Update the SQL_Mode session setting on the provided connection.
    *
-   * @param Connection $connection
+   * @param \Drupal\Core\Database\Connection $connection
    *   Connection to update the SQL Mode setting on.
    */
   protected function updateSqlMode(Connection $connection): void {
@@ -65,13 +65,13 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
   }
 
   /**
-   * Build 'sql_mode' setting initialization command from existing setting and a new setting.
+   * Build 'sql_mode' setting initialization command.
    *
-   * @param string $sql_mode
+   * @param string[] $existing_options
    *   The current 'sql_mode' setting.
-   * @param array $new_options
+   * @param string[] $new_options
    *   Options to add.
-   * @param array $options_to_exclude
+   * @param string[] $options_to_exclude
    *   Options to exclude from the generated command.
    *
    * @return string
