@@ -65,7 +65,14 @@ class MySQLQuery implements AlterTableQueryInterface {
     $sql_mode = $this->connection->query('SELECT @@sql_mode')->fetchField();
     $strict_mode = $this->connection->query('SELECT @@innodb_strict_mode')->fetchField();
     \Drupal::logger('datastore')->notice('b ' . $sql_mode . ' ' . $strict_mode);
-    array_map(fn ($cmd) => $cmd->execute(), $pre_alter_commands);
+    array_map(function ($cmd) {
+      try {
+        $cmd->execute();
+      }
+      catch (\Throwable $e) {
+        // do nothing.
+      }
+    }, $pre_alter_commands);
     $this->connection->query('SET SESSION innodb_strict_mode=ON');
     // Build and execute SQL command to perform table alter.
     $this->buildAlterCommand($this->dictionaryFields, $this->datastoreTable)->execute();
