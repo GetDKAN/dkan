@@ -205,6 +205,7 @@ class MySQLQuery implements AlterTableQueryInterface {
       if ($type === 'date' && !empty($format) && $format !== 'default') {
         $mysql_date_format = $this->dateFormatConverter->convert($format);
         // Temporarily disable strict mode for date conversion.
+        $pre_alter_cmds[] = $this->connection->update($table)->expression($col, 'NULL')->condition($col, '');
         $pre_alter_cmds[] = $this->connection->update($table)->expression($col, "STR_TO_DATE({$col}, :date_format)", [
           ':date_format' => $mysql_date_format,
         ]);
