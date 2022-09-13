@@ -42,6 +42,10 @@ class MySQLQueryTest extends TestCase {
       ->add(Connection::class, 'getDriverClass', UpdateQueryMock::class)
       ->add(Connection::class, 'prepareStatement', StatementInterface::class, 'prepare')
       ->add(Connection::class, 'query', StatementInterface::class)
+      ->add(Connection::class, 'update', ConditionInterface::class)
+      ->add(ConditionInterface::class, 'condition', ConditionInterface::class)
+      ->add(ConditionInterface::class, 'expression', ConditionInterface::class)
+      ->add(ConditionInterface::class, 'execute', TRUE)
       ->add(StatementInterface::class, 'execute', TRUE)
       ->add(StatementInterface::class, 'fetchAllKeyed', [
         'foo' => 'Foo',
