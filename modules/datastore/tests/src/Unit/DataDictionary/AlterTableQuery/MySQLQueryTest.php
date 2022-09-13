@@ -3,9 +3,11 @@
 namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Query\ConditionInterface;
 use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\KeyValueStore\MemoryStorage;
+
 use Drupal\datastore\DataDictionary\AlterTableQuery\MySQLQuery;
 use Drupal\datastore\DataDictionary\IncompatibleTypeException;
 use Drupal\Tests\datastore\Unit\DataDictionary\UpdateQueryMock;
