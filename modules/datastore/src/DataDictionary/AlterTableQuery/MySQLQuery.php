@@ -61,12 +61,7 @@ class MySQLQuery implements AlterTableQueryInterface {
 
     // Build and execute SQL commands to prepare for table alter.
     $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
-    $this->connection->query('SET SESSION innodb_strict_mode=OFF');
-    $sql_mode = $this->connection->query('SELECT @@sql_mode')->fetchField();
-    $strict_mode = $this->connection->query('SELECT @@innodb_strict_mode')->fetchField();
-    \Drupal::logger('datastore')->notice('b ' . $sql_mode . ' ' . $strict_mode);
     array_map(fn ($cmd) => $cmd->execute(), $pre_alter_commands);
-    $this->connection->query('SET SESSION innodb_strict_mode=ON');
     // Build and execute SQL command to perform table alter.
     $this->buildAlterCommand($this->dictionaryFields, $this->datastoreTable)->execute();
   }
@@ -197,8 +192,9 @@ class MySQLQuery implements AlterTableQueryInterface {
       // the format of the date fields to ISO-8601 before importing into MySQL.
       if ($type === 'date' && !empty($format) && $format !== 'default') {
         $mysql_date_format = $this->dateFormatConverter->convert($format);
-        // Temporarily disable strict mode for date conversion.
-        $pre_alter_cmds[] = $this->connection->update($table)->expression($col, 'NULL')->condition($col, '');
+        // Replace empty date strings with NULL to prevent STR_TO_DATE errors.
+        $pre_alter_cmds[] = $this->connection->update($table)->condition($col, '')->expression($col, 'NULL');
+        // Convert date formats for date column.
         $pre_alter_cmds[] = $this->connection->update($table)->expression($col, "STR_TO_DATE({$col}, :date_format)", [
           ':date_format' => $mysql_date_format,
         ]);
