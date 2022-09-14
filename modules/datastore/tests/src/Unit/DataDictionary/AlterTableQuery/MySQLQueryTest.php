@@ -3,7 +3,6 @@
 namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Query\Update;
 use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\DependencyInjection\Container;
 use Drupal\Core\KeyValueStore\MemoryStorage;
@@ -74,27 +73,29 @@ class MySQLQueryTest extends TestCase {
    * Test via main entrypoint, applyDataTypes().
    */
   public function testApplyDataTypes(): void {
+    // Build MySQLQuery object.
     $connection_chain = $this->buildConnectionChain();
     $table = 'datastore_' . uniqid();
     $mysql_query = $this->buildMySQLQuery($connection_chain->getMock(), $table);
 
-    // Extract return value and generate queries for validation.
+    // Perform query and validate return values.
     $return = $mysql_query->applyDataTypes();
-    $update_query = \Drupal::state()->get('update_query');
-    $query = $connection_chain->getStoredInput('prepare')[0];
+    $this->assertNull($return);
+
+    // Validate pre_alter queries.
+    $pre_alter_queries = \Drupal::state()->get('pre_alter_queries');
+    $this->assertEquals([
+    ], $pre_alter_queries);
 
     // Validate return value and generated queries.
-    $this->assertNull($return);
-    $this->assertEquals([
-      'field' => 'baz',
-      'expression' => 'STR_TO_DATE(baz, :date_format)',
-      'arguments' => [
-        ':date_format' => ''
-      ],
-    ], $update_query);
-    $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT COMMENT 'Foo', MODIFY COLUMN bar DECIMAL(0, ) COMMENT 'Bar', MODIFY COLUMN baz DATE COMMENT 'Baz';", $query);
+    $query = $connection_chain->getStoredInput('prepare')[0];
+    $this->assertEquals(
+      "ALTER TABLE {{$table}} " .
+      "MODIFY COLUMN foo TEXT COMMENT 'Foo', " .
+      "MODIFY COLUMN bar DECIMAL(0, ) COMMENT 'Bar', " .
+      "MODIFY COLUMN baz DATE COMMENT 'Baz';",
+      $query);
   }
-
 
   /**
    * Ensure alter fails when attempting to apply decimal type to large numbers.
