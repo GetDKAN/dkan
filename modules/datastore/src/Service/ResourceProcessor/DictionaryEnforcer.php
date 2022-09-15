@@ -70,7 +70,7 @@ class DictionaryEnforcer implements ResourceProcessorInterface {
    *   DKAN Resource.
    */
   public function process(DataResource $resource): void {
-    // Ensure data-dictionaries are enabled before attempting to process this item.
+    // Ensure data-dictionaries are enabled before attempting to process item.
     if (DataDictionaryDiscoveryInterface::MODE_NONE === $this->dataDictionaryDiscovery->getDataDictionaryMode()) {
       return;
     }
