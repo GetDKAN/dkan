@@ -84,6 +84,7 @@ class MySQLQueryTest extends TestCase {
 
     // Validate pre_alter queries.
     $pre_alter_queries = \Drupal::state()->get('pre_alter_queries');
+    print_r($pre_alter_queries);
     $this->assertEquals([
     ], $pre_alter_queries);
 

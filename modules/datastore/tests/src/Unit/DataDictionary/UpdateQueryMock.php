@@ -26,7 +26,7 @@ class UpdateQueryMock extends Update {
 
     public function execute() {
         $pre_alter_queries = \Drupal::state()->get('pre_alter_queries', []);
-        $pre_alter_queries[] = (string) $this;
+        $pre_alter_queries[] = $this;
         \Drupal::state()->set('pre_alter_queries', $pre_alter_queries);
 
         return 0;
