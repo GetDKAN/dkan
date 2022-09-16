@@ -82,12 +82,6 @@ class MySQLQueryTest extends TestCase {
     $return = $mysql_query->applyDataTypes();
     $this->assertNull($return);
 
-    // Validate pre_alter queries.
-    $pre_alter_queries = \Drupal::state()->get('pre_alter_queries');
-    print_r($pre_alter_queries);
-    $this->assertEquals([
-    ], $pre_alter_queries);
-
     // Validate return value and generated queries.
     $query = $connection_chain->getStoredInput('prepare')[0];
     $this->assertEquals(
