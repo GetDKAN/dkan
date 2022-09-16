@@ -1,4 +1,4 @@
-@page dkanmetastorepublish dkan:metastore:publish
+# dkan:metastore:publish {#dkanmetastorepublish}
 
 Publish the latest version of a dataset.
 

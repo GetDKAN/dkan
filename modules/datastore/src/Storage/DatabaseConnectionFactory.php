@@ -27,11 +27,9 @@ class DatabaseConnectionFactory extends DatabaseConnectionFactoryBase implements
    * {@inheritdoc}
    */
   protected function buildConnectionInfo(): array {
-    return parent::buildConnectionInfo() + [
-      'pdo' => [
-        \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => FALSE,
-      ],
-    ];
+    $connection_info = parent::buildConnectionInfo();
+    $connection_info['pdo'][\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = FALSE;
+    return $connection_info;
   }
 
 }

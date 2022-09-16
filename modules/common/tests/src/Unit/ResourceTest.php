@@ -3,7 +3,7 @@
 namespace Drupal\Tests\common\Unit;
 
 use Drupal\Component\DependencyInjection\Container;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\metastore\Storage\DataFactory;
 use Drupal\metastore\Storage\NodeData;
 use MockChain\Chain;
@@ -20,10 +20,10 @@ class ResourceTest extends TestCase {
    */
   public function testGetTableName() {
 
-    $resource = new Resource(
+    $resource = new DataResource(
       '/foo/bar',
       'txt',
-      Resource::DEFAULT_SOURCE_PERSPECTIVE
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
     $tableName = $resource->getTableName();
 
@@ -35,10 +35,10 @@ class ResourceTest extends TestCase {
    */
   public function testGetFolder() {
 
-    $resource = new Resource(
+    $resource = new DataResource(
       '/foo/bar',
       'txt',
-      Resource::DEFAULT_SOURCE_PERSPECTIVE
+      DataResource::DEFAULT_SOURCE_PERSPECTIVE
     );
     $folder = dirname($resource->getFilePath());
 
@@ -55,7 +55,7 @@ class ResourceTest extends TestCase {
     $perspective = uniqid();
     $uuid = "{$identifier}__{$version}__{$perspective}";
 
-    $idAndVersion = Resource::getIdentifierAndVersion($uuid);
+    $idAndVersion = DataResource::getIdentifierAndVersion($uuid);
 
     $expected = [$identifier, $version];
     $this->assertEquals($expected, $idAndVersion);
@@ -79,7 +79,7 @@ class ResourceTest extends TestCase {
     $expectedMessage = "Could not find identifier and version for {$id}";
 
     $this->expectExceptionMessage($expectedMessage);
-    $result = Resource::getIdentifierAndVersion($id);
+    $result = DataResource::getIdentifierAndVersion($id);
   }
 
 }

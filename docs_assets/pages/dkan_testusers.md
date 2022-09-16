@@ -1,4 +1,4 @@
-@page dkantestusers dkan:qa-users-create
+# dkan:qa-users-create {#dkantestusers}
 
 DKAN ships with two test users: testapiuser and testadmin.
 

@@ -2,9 +2,7 @@
 
 namespace Drupal\common;
 
-use Drupal\common\UrlHostTokenResolver;
-
-use Dkan\Datastore\Resource as DatastoreResource;
+use Drupal\datastore\DatastoreResource;
 use Procrastinator\HydratableTrait;
 use Procrastinator\JsonSerializeTrait;
 
@@ -29,8 +27,7 @@ use Procrastinator\JsonSerializeTrait;
  * @todo Rename filePath to uri or url.
  * @todo Refactor as service.
  */
-class Resource implements \JsonSerializable
-{
+class DataResource implements \JsonSerializable {
   use HydratableTrait, JsonSerializeTrait;
 
   const DEFAULT_SOURCE_PERSPECTIVE = 'source';
@@ -160,7 +157,7 @@ class Resource implements \JsonSerializable
   /**
    * Get object storing datastore specific information about this resource.
    *
-   * @return \Dkan\Datastore\Resource
+   * @return \Drupal\datastore\DatastoreResource
    *   Datastore Resource.
    */
   public function getDatastoreResource(): DatastoreResource {

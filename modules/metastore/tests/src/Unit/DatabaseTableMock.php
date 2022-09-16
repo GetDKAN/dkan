@@ -85,15 +85,16 @@ class DatabaseTableMock implements DatabaseTableInterface {
   /**
    * Setter.
    */
-  public function setSchema($schema) {
+  public function setSchema(array $schema): void {
     // TODO: Implement setSchema() method.
   }
 
   /**
    * Getter.
    */
-  public function getSchema() {
+  public function getSchema(): array {
     // TODO: Implement getSchema() method.
+    return [];
   }
 
   /**

@@ -1,4 +1,4 @@
-@page dkanharvestrunall dkan:harvest:run-all
+# dkan:harvest:run-all {#dkanharvestrunall}
 
 Run all pending harvests.
 

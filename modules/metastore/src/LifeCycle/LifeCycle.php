@@ -3,7 +3,7 @@
 namespace Drupal\metastore\LifeCycle;
 
 use Drupal\common\EventDispatcherTrait;
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\common\UrlHostTokenResolver;
 use Drupal\Core\Datetime\DateFormatter;
 use Drupal\Core\Queue\QueueFactory;
@@ -102,9 +102,14 @@ class LifeCycle {
    *   Metastore item object.
    */
   public function go($stage, MetastoreItemInterface $data) {
+    // Removed dashes from schema ID since function names can't include dashes.
+    $schema_id = str_replace('-', '', $data->getSchemaId());
     $stage = ucwords($stage);
-    $method = "{$data->getSchemaId()}{$stage}";
+    // Build method name from schema ID and stage.
+    $method = "{$schema_id}{$stage}";
+    // Ensure a method exists for this life cycle stage.
     if (method_exists($this, $method)) {
+      // Call life cycle method on metastore item.
       $this->{$method}($data);
     }
   }
@@ -212,21 +217,21 @@ class LifeCycle {
     $reference = [];
     $original = NULL;
 
-    $info = Resource::parseUniqueIdentifier($resourceIdentifier);
+    $info = DataResource::parseUniqueIdentifier($resourceIdentifier);
 
     // Load resource object.
-    $sourceResource = $this->resourceMapper->get($info['identifier'], Resource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
+    $sourceResource = $this->resourceMapper->get($info['identifier'], DataResource::DEFAULT_SOURCE_PERSPECTIVE, $info['version']);
 
     if (!$sourceResource) {
       return [$reference, $original];
     }
 
     $reference[] = $this->createResourceReference($sourceResource);
-    $perspective = resource_mapper_display();
+    $perspective = \resource_mapper_display();
     $resource = $sourceResource;
 
     if (
-      $perspective != Resource::DEFAULT_SOURCE_PERSPECTIVE &&
+      $perspective != DataResource::DEFAULT_SOURCE_PERSPECTIVE &&
       $new = $this->resourceMapper->get($info['identifier'], $perspective, $info['version'])
     ) {
       $resource = $new;
@@ -240,7 +245,7 @@ class LifeCycle {
   /**
    * Private.
    */
-  private function createResourceReference(Resource $resource): object {
+  private function createResourceReference(DataResource $resource): object {
     return (object) [
       "identifier" => $resource->getUniqueIdentifier(),
       "data" => $resource,
@@ -248,12 +253,25 @@ class LifeCycle {
   }
 
   /**
-   * Private.
+   * Dataset pre-save life cycle method.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Dataset metastore item.
    */
-  protected function datasetPresave(MetastoreItemInterface $data) {
+  protected function datasetPresave(MetastoreItemInterface $data): void {
+    $this->referenceMetadata($data);
+  }
+
+  /**
+   * Sanitize and reference metadata.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Metastore item.
+   */
+  protected function referenceMetadata(MetastoreItemInterface $data): void {
     $metadata = $data->getMetaData();
 
-    $title = isset($metadata->title) ? $metadata->title : $metadata->name;
+    $title = $metadata->title ?? $metadata->name;
     $data->setTitle($title);
 
     // If there is no uuid add one.
@@ -278,7 +296,16 @@ class LifeCycle {
       $raw = $data->getRawMetadata();
       $this->orphanChecker->processReferencesInUpdatedDataset($raw, $metadata);
     }
+  }
 
+  /**
+   * Data-Dictionary pre-save life cycle method.
+   *
+   * @param \Drupal\metastore\MetastoreItemInterface $data
+   *   Data-Dictionary metastore item.
+   */
+  protected function datadictionaryPresave(MetastoreItemInterface $data): void {
+    $this->referenceMetadata($data);
   }
 
   /**

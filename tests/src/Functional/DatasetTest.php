@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan\Functional;
 
-use Drupal\common\Resource;
+use Drupal\common\DataResource;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\datastore\Service\ResourceLocalizer;
 use Drupal\harvest\Load\Dataset;
@@ -90,10 +90,10 @@ class DatasetTest extends ExistingSiteBase {
 
     $datasetInfo = \Drupal::service('dkan.common.dataset_info');
     $info = $datasetInfo->gather('111');
-    $this->assertEquals('1.csv', substr($info['latest_revision']['distributions'][0]['file_path'], -5));
-    $this->assertEquals('5.csv', substr($info['latest_revision']['distributions'][1]['file_path'], -5));
-    $this->assertEquals('3.csv', substr($info['published_revision']['distributions'][0]['file_path'], -5));
-    $this->assertEquals('1.csv', substr($info['published_revision']['distributions'][1]['file_path'], -5));
+    $this->assertStringEndsWith('1.csv', $info['latest_revision']['distributions'][0]['file_path']);
+    $this->assertStringEndsWith('5.csv', $info['latest_revision']['distributions'][1]['file_path']);
+    $this->assertStringEndsWith('3.csv', $info['published_revision']['distributions'][0]['file_path']);
+    $this->assertStringEndsWith('1.csv', $info['published_revision']['distributions'][1]['file_path']);
 
     // Verify that only the resources associated with the published and the
     // latest revision.
@@ -282,7 +282,7 @@ class DatasetTest extends ExistingSiteBase {
     /**/
   }
 
-  private function changeDatasetsResourceOutputPerspective(string $perspective = Resource::DEFAULT_SOURCE_PERSPECTIVE) {
+  private function changeDatasetsResourceOutputPerspective(string $perspective = DataResource::DEFAULT_SOURCE_PERSPECTIVE) {
     $display = &drupal_static('metastore_resource_mapper_display');
     $display = $perspective;
   }
@@ -479,6 +479,9 @@ class DatasetTest extends ExistingSiteBase {
     return \Drupal::service('dkan.metastore_search.service');
   }
 
+  /**
+   * @return \Drupal\metastore\Service
+   */
   private function getMetastore(): Metastore {
     return \Drupal::service('dkan.metastore.service');
   }

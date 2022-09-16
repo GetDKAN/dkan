@@ -159,8 +159,16 @@ dkan.metastore.config_properties:
   options:
     _admin_route: TRUE
 
-datastore.data_dictionary_settings:
+metastore.data_dictionary:
   path: '/admin/dkan/data-dictionary'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Data-Dictionary'
+  requirements:
+    _permission: 'create data content'
+
+metastore.data_dictionary.settings:
+  path: '/admin/dkan/data-dictionary/settings'
   defaults:
     _title: 'Data-Dictionary Settings'
     _form: '\Drupal\metastore\Form\DataDictionarySettingsForm'

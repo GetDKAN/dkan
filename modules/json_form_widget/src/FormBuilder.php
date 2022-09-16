@@ -74,13 +74,11 @@ class FormBuilder implements ContainerInjectionInterface {
   /**
    * Set schema.
    *
-   * @codeCoverageIgnore
+   * @param string $schema_name
+   *   Metadata schema name.
    */
-  public function setSchema($schema_name, $type = NULL) {
+  public function setSchema(string $schema_name): void {
     try {
-      if (!empty($type) && $type !== $schema_name) {
-        $schema_name = $type;
-      }
       $schema = $this->schemaRetriever->retrieve($schema_name);
       $this->schema = json_decode($schema);
       $this->schemaUiHandler->setSchemaUi($schema_name);
