@@ -9,7 +9,7 @@
         "cweagans/composer-patches": "^1.7",
         "drupal/admin_toolbar": "^2.3",
         "drupal/config_update": "^1.6",
-        "drupal/core": "@stable",
+        "drupal/core": "^9.3",
         "drupal/indexer": "1.0.x-dev",
         "drupal/moderated_content_bulk_publish": "^2.0",
         "drupal/search_api": "^1.15",
@@ -61,13 +61,14 @@
         }
     ],
     "config": {
-        "sort-packages": true,
         "allow-plugins": {
             "composer/installers": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "cweagans/composer-patches": true,
             "oomphinc/composer-installers-extender": true
-        }
+        },
+        "discard-changes": true,
+        "sort-packages": true
     },
     "extra": {
         "dkan-frontend": {
@@ -84,14 +85,6 @@
             "drupal/select_or_other": {
                 "https://www.drupal.org/project/select_or_other/issues/3205010": "https://git.drupalcode.org/project/select_or_other/-/merge_requests/1/diffs.patch"
             }
-        }
-    },
-    "discard-changes": true,
-    "config": {
-        "allow-plugins": {
-            "composer/installers": true,
-            "cweagans/composer-patches": true,
-            "oomphinc/composer-installers-extender": true
         }
     },
     "scripts": {
