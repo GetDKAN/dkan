@@ -20,10 +20,6 @@ class UpdateQueryMock extends Update {
         return $this;
     }
 
-    public function condition($field, $value = NULL, $operator = '=') {
-        return $this;
-    }
-
     public function execute() {
         return 0;
     }
