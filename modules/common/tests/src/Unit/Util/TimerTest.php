@@ -18,8 +18,7 @@ class TimerTest extends TestCase {
     $timer->start("hello");
     sleep(1);
     $timer->end("hello");
-    $report = "{$timer}";
-    $this->assertTrue(substr_count($report, "hello AVG: 1") > 0);
+    $this->assertStringContainsString("hello AVG: 1", (string) $timer);
   }
 
 }

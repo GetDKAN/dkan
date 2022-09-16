@@ -84,7 +84,7 @@
             "drupal/select_or_other": {
                 "https://www.drupal.org/project/select_or_other/issues/3205010": "https://git.drupalcode.org/project/select_or_other/-/merge_requests/1/diffs.patch"
             }
-        ]
+        }
     },
     "discard-changes": true,
     "config": {
