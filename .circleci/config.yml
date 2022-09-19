@@ -24,6 +24,11 @@ commands:
             mkdir ~/.composer
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
       - ddev
+      - run:
+          name: DDev status
+          command: |
+            which ddev
+            ddev status
 
 jobs:
   phpunit:
