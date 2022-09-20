@@ -4,7 +4,7 @@ commands:
   ddev:
     steps:
       - run:
-          name: Install ddev
+          name: Install DDev
           command: |
             curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
             echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
@@ -28,7 +28,12 @@ commands:
           name: DDev status
           command: |
             which ddev
-            ddev status
+            ddev --version
+            ddev config --project-type drupal9 --docroot docroot --create-docroot
+            ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
+            ddev restart
+            ddev dkan-init --moduledev
+            ddev dkan-site-install
 
 jobs:
   phpunit:
