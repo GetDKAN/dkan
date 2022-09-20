@@ -16,8 +16,6 @@ commands:
         default: false
         type: boolean
     steps:
-      - checkout:
-          path: dkan
       - run:
           name: Set up composer config
           command: |
@@ -25,15 +23,23 @@ commands:
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
       - ddev
       - run:
-          name: DDev status
+          name: DDev Init
           command: |
             which ddev
             ddev --version
             ddev config --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
             ddev restart
-            ddev dkan-init --moduledev
+            ddev dkan-init --force
+      - checkout:
+          path: dkan
+      - run:
+          name: DDev Site Install
+          command: |
+            ddev composer config repositories.dkan path dkan
+            ddev composer require getdkan/dkan:@dev
             ddev dkan-site-install
+            ddev drush rq
 
 jobs:
   phpunit:
