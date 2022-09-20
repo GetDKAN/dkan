@@ -64,20 +64,35 @@ class MySQLQueryTest extends TestCase {
       ['name' => 'bar', 'type' => 'number', 'format' => 'default', 'title' => 'Bar'],
       ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d', 'title' => 'Baz'],
     ];
+    $dictionary_indexes ??= [
+      ['name' => 'index1', 'type' => '', 'fields' => [
+        ['name' => 'foo', 'length' => 12],
+        ['name' => 'bar', 'length' => 6],
+        ['name' => 'baz', 'length' => 9],
+      ]],
+      ['name' => 'index2', 'type' => 'fulltext', 'fields' => [
+        ['name' => 'foo', 'length' => 6],
+        ['name' => 'baz', 'length' => 3],
+      ]],
+      ['name' => 'index3', 'type' => 'fulltext', 'fields' => [
+        ['name' => 'foo', 'length' => 6],
+        ['name' => 'missing', 'length' => 3],
+      ]],
+    ];
 
-    return new MySQLQuery($connection, $converter, $table, $dictionary_fields);
+    return new MySQLQuery($connection, $converter, $table, $dictionary_fields, $dictionary_indexes);
   }
 
   /**
-   * Test via main entrypoint, applyDataTypes().
+   * Test via main entrypoint, execute().
    */
-  public function testApplyDataTypes(): void {
+  public function testExecute(): void {
     $connection_chain = $this->buildConnectionChain();
     $table = 'datastore_' . uniqid();
     $mysql_query = $this->buildMySQLQuery($connection_chain->getMock(), $table);
 
     // Extract return value and generate queries for validation.
-    $return = $mysql_query->applyDataTypes();
+    $return = $mysql_query->execute();
     $update_query = \Drupal::state()->get('update_query');
     $query = $connection_chain->getStoredInput('prepare')[0];
 
@@ -90,14 +105,18 @@ class MySQLQueryTest extends TestCase {
         ':date_format' => ''
       ],
     ], $update_query);
-    $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT COMMENT 'Foo', MODIFY COLUMN bar DECIMAL(0, ) COMMENT 'Bar', MODIFY COLUMN baz DATE COMMENT 'Baz';", $query);
+    $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT COMMENT 'Foo', " .
+      "MODIFY COLUMN bar DECIMAL(0, ) COMMENT 'Bar', " .
+      "MODIFY COLUMN baz DATE COMMENT 'Baz', " .
+      "ADD  INDEX index1 (foo 12, bar 6, baz 9), " .
+      "ADD fulltext INDEX index2 (foo 6, baz 3);", $query);
   }
 
 
   /**
    * Ensure alter fails when attempting to apply decimal type to large numbers.
    */
-  public function testApplyDataTypesWithTooLargeDecimal(): void {
+  public function testExecuteWithTooLargeDecimal(): void {
     $connection_chain = $this->buildConnectionChain()
       ->add(StatementInterface::class, 'fetchField', 100);
     $column = 'bar';
@@ -105,7 +124,7 @@ class MySQLQueryTest extends TestCase {
 
     $this->expectException(IncompatibleTypeException::class);
     $this->expectExceptionMessage("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
-    $mysql_query->applyDataTypes();
+    $mysql_query->execute();
   }
 
 }

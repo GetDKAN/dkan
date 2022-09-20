@@ -2,18 +2,16 @@
 
 namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
-use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\StatementInterface;
 
+use Drupal\datastore\DataDictionary\AlterTableQueryBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\IncompatibleTypeException;
-
-use PDLT\ConverterInterface;
 
 /**
  * MySQL table alter query.
  */
-class MySQLQuery implements AlterTableQueryInterface {
+class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface {
 
   /**
    * Max total size of the MySQL decimal type.
@@ -30,67 +28,70 @@ class MySQLQuery implements AlterTableQueryInterface {
   protected const DECIMAL_MAX_DECIMAL = 30;
 
   /**
-   * Build a MySQL table alter query.
-   *
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Database connection.
-   * @param \PDLT\ConverterInterface $date_format_converter
-   *   Strptime-to-MySQL date format converter.
-   * @param string $datastore_table
-   *   Datastore table.
-   * @param array $dictionary_fields
-   *   Data-dictionary fields.
-   */
-  public function __construct(
-      Connection $connection,
-      ConverterInterface $date_format_converter,
-      string $datastore_table,
-      array $dictionary_fields
-  ) {
-    $this->connection = $connection;
-    $this->dateFormatConverter = $date_format_converter;
-    $this->datastoreTable = $this->connection->escapeTable($datastore_table);
-    $this->dictionaryFields = $dictionary_fields;
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public function applyDataTypes(): void {
-    $this->dictionaryFields = $this->mergeDatastoreFields($this->dictionaryFields, $this->datastoreTable);
+  public function execute(): void {
+    $this->fields = $this->mergeFields($this->fields, $this->table);
+    $this->indexes = $this->mergeIndexes($this->indexes, $this->table);
 
     // Build and execute SQL commands to prepare for table alter.
-    $pre_alter_commands = $this->buildPreAlterCommands($this->dictionaryFields, $this->datastoreTable);
+    $pre_alter_commands = $this->buildPreAlterCommands($this->fields, $this->table);
     array_map(fn ($cmd) => $cmd->execute(), $pre_alter_commands);
-    // Build and execute SQL command to perform table alter.
-    $this->buildAlterCommand($this->dictionaryFields, $this->datastoreTable)->execute();
+    // Build SQL command to perform table alter.
+    $command = $this->buildAlterCommand($this->table, $this->fields, $this->indexes);
+    // Execute alter command.
+    $command->execute();
   }
 
   /**
-   * Remove dictionary fields not found in the given table and copy over names.
+   * Remove query fields not found in the given table and copy over names.
    *
-   * @param array $dictionary_fields
-   *   Data dictionary fields.
+   * @param array $fields
+   *   Query fields.
    * @param string $table
    *   MySQL table to filter against.
    *
    * @return array
-   *   Filtered and updated list of applicable data dictionary fields.
+   *   Filtered and updated list of applicable query fields.
    */
-  protected function mergeDatastoreFields(array $dictionary_fields, string $table): array {
+  protected function mergeFields(array $fields, string $table): array {
     $table_cols = $this->getTableColsAndComments($table);
     $column_names = array_keys($table_cols);
 
-    // Filter out un-applicable dictionary fields.
-    $filtered_dictionary_fields = array_filter($dictionary_fields, fn ($fields) => in_array($fields['name'], $column_names, TRUE));
-    // Fill missing dictionary field titles.
+    // Filter out un-applicable query fields.
+    $filtered_fields = array_filter($fields, fn ($fields) => in_array($fields['name'], $column_names, TRUE));
+    // Fill missing field titles.
     foreach ($table_cols as $column_name => $comment) {
-      if (isset($filtered_dictionary_fields[$column_name])) {
-        $filtered_dictionary_fields[$column_name]['title'] ??= $comment;
+      if (isset($filtered_fields[$column_name])) {
+        $filtered_fields[$column_name]['title'] = $filtered_fields[$column_name]['title'] ?: $comment;
       }
     }
 
-    return $filtered_dictionary_fields;
+    return $filtered_fields;
+  }
+
+  /**
+   * Remove query indexes with fields not found in the given table and copy over names.
+   *
+   * @param array $indexes
+   *   Query indexes.
+   * @param string $table
+   *   MySQL table to filter against.
+   *
+   * @return array
+   *   Filtered list of applicable query indexes.
+   */
+  protected function mergeIndexes(array $indexes, string $table): array {
+    $table_cols = $this->getTableColsAndComments($table);
+    $column_names = array_keys($table_cols);
+
+    // Filter out un-applicable query indexes.
+    $indexes = array_filter($indexes, function ($index) use ($column_names) {
+      $fields = array_column($index['fields'], 'name');
+      return empty(array_diff($fields, $column_names));
+    });
+
+    return $indexes;
   }
 
   /**
@@ -175,19 +176,19 @@ class MySQLQuery implements AlterTableQueryInterface {
   /**
    * Build list of commands to prepare table for alter command.
    *
-   * @param array $dict
-   *   Data dictionary fields.
+   * @param array $query_fields
+   *   Query fields.
    * @param string $table
    *   Mysql table name.
    *
    * @return \Drupal\Core\Database\StatementInterface[]
    *   Prep command statements.
    */
-  protected function buildPreAlterCommands(array $dict, string $table): array {
+  protected function buildPreAlterCommands(array $query_fields, string $table): array {
     $pre_alter_cmds = [];
 
-    // Build pre-alter commands for each dictionary field.
-    foreach ($dict as ['name' => $col, 'type' => $type, 'format' => $format]) {
+    // Build pre-alter commands for each query field.
+    foreach ($query_fields as ['name' => $col, 'type' => $type, 'format' => $format]) {
       // If this field is a date field, and a valid format is provided; update
       // the format of the date fields to ISO-8601 before importing into MySQL.
       if ($type === 'date' && !empty($format) && $format !== 'default') {
@@ -204,26 +205,69 @@ class MySQLQuery implements AlterTableQueryInterface {
   /**
    * Build alter command to modify table column data types.
    *
-   * @param array $fields
-   *   Data dictionary fields.
    * @param string $table
-   *   Mysql table name.
+   *   MySQL table name.
+   * @param array $fields
+   *   Query fields.
+   * @param array $indexes
+   *   Query indexes.
    *
    * @return \Drupal\Core\Database\StatementInterface
    *   Prepared MySQL table alter command statement.
    */
-  protected function buildAlterCommand(array $fields, string $table): StatementInterface {
-    $modify_lines = [];
+  protected function buildAlterCommand(string $table, array $fields, array $indexes): StatementInterface {
+    // Build alter options.
+    $alter_options = array_merge(
+      $this->buildModifyColumnOptions($fields, $table),
+      $this->buildAddIndexOptions($indexes)
+    );
+
+    return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $alter_options) . ';', []);
+  }
+
+  /**
+   * Build alter command modify column options.
+   *
+   * @param array $fields
+   *   Query fields.
+   * @param string $table
+   *   MySQL table name.
+   *
+   * @return string[]
+   *   Modify column options.
+   */
+  protected function buildModifyColumnOptions(array $fields, string $table): array {
+    $modify_column_options = [];
 
     foreach ($fields as ['name' => $field, 'type' => $type, 'title' => $title]) {
       // Get MySQL type for column.
       $column_type = $this->getType($type, $field, $table);
       // Build modify line for alter command and add the appropriate arguments
       // to the args list.
-      $modify_lines[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$title}'";
+      $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$title}'";
     }
 
-    return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $modify_lines) . ';', []);
+    return $modify_column_options;
+  }
+
+  /**
+   * Build alter command add index options.
+   *
+   * @param array $indexes
+   *   Query indexes.
+   *
+   * @return string[]
+   *   Add index options.
+   */
+  protected function buildAddIndexOptions(array $indexes): array {
+    $add_index_options = [];
+
+    foreach ($indexes as ['name' => $name, 'type' => $type, 'fields' => $fields]) {
+      $index_field_options = implode(', ', array_map(fn ($field) => $field['name'] . ' ' . $field['length'], $fields));
+      $add_index_options[] = "ADD {$type} INDEX {$name} ({$index_field_options})";
+    }
+
+    return $add_index_options;
   }
 
 }
