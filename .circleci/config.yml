@@ -23,7 +23,7 @@ commands:
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
       - ddev
       - run:
-          name: DDev Init
+          name: Build site codebase
           command: |
             which ddev
             ddev --version
@@ -85,6 +85,9 @@ jobs:
           upgrade: << parameters.upgrade >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
+      - run:
+          name: Run PHPUnit tests
+          command: ddev dkan-test-phpunit
 
 workflows:
   version: 2
