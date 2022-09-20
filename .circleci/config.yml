@@ -31,17 +31,42 @@ commands:
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
             ddev restart
             ddev dkan-init --force
+
+  prepare_site:
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
+    steps:
       - checkout:
           path: dkan
-      - run:
-          name: DDev Site Install
-          command: |
-            ddev composer config repositories.dkan path dkan
-            ddev composer require getdkan/dkan:@dev
-            ddev composer show getdkan/dkan
-            ddev dkan-site-install
-            ddev drush updb -y
-            ddev drush rq
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Install site and update to dev dkan
+                command: |
+                  ddev composer show getdkan/dkan
+                  ddev dkan-site-install
+                  ddev composer config repositories.dkan path dkan
+                  ddev composer require getdkan/dkan:@dev --no-install
+                  ddev composer update --no-interaction --no-progress
+                  ddev composer show getdkan/dkan
+                  ddev drush updb -y
+                  ddev drush rq
+      - unless:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Install site
+                command: |
+                  ddev composer config repositories.dkan path dkan
+                  ddev composer require getdkan/dkan:@dev
+                  ddev composer show getdkan/dkan
+                  ddev dkan-site-install
+                  ddev drush updb -y
+                  ddev drush rq
 
 jobs:
   phpunit:
@@ -58,8 +83,8 @@ jobs:
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
-
-
+      - prepare_site:
+          upgrade: << parameters.upgrade >>
 
 workflows:
   version: 2
@@ -67,3 +92,8 @@ workflows:
     jobs:
       - phpunit:
           name: install_test_phpunit
+  upgrade_and_test:
+    jobs:
+      - phpunit:
+          name: upgrade_test_phpunit
+          upgrade: true
