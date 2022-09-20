@@ -38,7 +38,9 @@ commands:
           command: |
             ddev composer config repositories.dkan path dkan
             ddev composer require getdkan/dkan:@dev
+            ddev composer show getdkan/dkan
             ddev dkan-site-install
+            ddev drush updb -y
             ddev drush rq
 
 jobs:
