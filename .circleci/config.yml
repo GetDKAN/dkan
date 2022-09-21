@@ -67,6 +67,18 @@ commands:
                   ddev dkan-site-install
                   ddev drush updb -y
                   ddev drush rq
+  build_frontend:
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
+    steps:
+      - run:
+          name: Install and build frontend
+          command: |
+            ddev dkan-frontend-install
+            ddev dkan-frontend-build
 
 jobs:
   phpunit:
@@ -88,6 +100,27 @@ jobs:
       - run:
           name: Run PHPUnit tests
           command: ddev dkan-test-phpunit
+  cypress:
+    machine:
+      image: ubuntu-2004:current
+    parameters:
+      upgrade:
+        description: "If true, will install the latest stable version and test upgrade"
+        default: false
+        type: boolean
+    parallelism: 4
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DKTL_VERSION: "4.2.11"
+    steps:
+      - ddev
+      - prepare_build:
+          upgrade: << parameters.upgrade >>
+      - attach_workspace:
+          at: ~/
+      - prepare_site:
+          upgrade: << parameters.upgrade >>
+      - build_frontend
 
 workflows:
   version: 2
@@ -95,6 +128,8 @@ workflows:
     jobs:
       - phpunit:
           name: install_test_phpunit
+      - cypress:
+          name: install_test_cypress
   upgrade_and_test:
     jobs:
       - phpunit:
