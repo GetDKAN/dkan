@@ -130,9 +130,21 @@ class HarvestCommands extends DrushCommands {
   /**
    * Deregister a harvest.
    *
+   * @param string $id
+   *   Harvest identifier.
+   * @param array $options
+   *   An associative array of options whose values come from cli.
+   *
+   * @option revert Also remove this harvest's entities.
+   *
    * @command dkan:harvest:deregister
+   *
+   * @usage drush dkan:harvest:deregister foo_bar
+   *   Deregister the 'foo_bar' harvest.
+   * @usage drush dkan:harvest:deregister foo_bar --revert
+   *   Deregister the 'foo_bar' harvest, and remove all of its entities.
    */
-  public function deregister($id) {
+  public function deregister(string $id, array $options = ['revert' => FALSE]) {
     try {
       if ($this->harvestService->deregisterHarvest($id)) {
         $message = "Successfully deregistered the {$id} harvest.";
