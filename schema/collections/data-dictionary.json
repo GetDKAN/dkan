@@ -27,7 +27,7 @@
           "title": "Dictionary Fields",
           "type": "array",
           "items": {
-            "title": "Dictionary Field",
+            "title": "Field",
             "type": "object",
             "required": [
               "name",
@@ -78,6 +78,7 @@
           }
         },
         "indexes": {
+          "title": "Dictionary Indexes",
           "type": "array",
           "items": {
             "title": "Index",
