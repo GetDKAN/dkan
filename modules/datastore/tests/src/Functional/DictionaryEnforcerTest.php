@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\datastore\Functional;
 
+use Drupal\Core\File\FileSystemInterface;
+
 use Drupal\datastore\Controller\ImportController;
 use Drupal\metastore\DataDictionary\DataDictionaryDiscovery;
 use Drupal\Tests\common\Traits\GetDataTrait;
@@ -96,8 +98,10 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->webServiceApi = ImportController::create(\Drupal::getContainer());
     $this->datasetStorage = \Drupal::service('dkan.metastore.storage')->getInstance('dataset');
     // Copy resource file to uploads directory.
-    $upload_path = \Drupal::service('file_system')->realpath(self::UPLOAD_LOCATION);
-    \Drupal::service('file_system')->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path);
+    $file_system = \Drupal::service('file_system');
+    $upload_path = $file_system->realpath(self::UPLOAD_LOCATION);
+    $file_system->prepareDirectory($upload_path, FileSystemInterface::CREATE_DIRECTORY);
+    $file_system->copy(self::TEST_DATA_PATH . self::RESOURCE_FILE, $upload_path);
     // Create resource URL.
     $this->resourceUrl = \Drupal::service('stream_wrapper_manager')->getViaUri(self::UPLOAD_LOCATION . self::RESOURCE_FILE)->getExternalUrl();
   }
@@ -111,7 +115,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $fields = [
       [
         'name' => 'a',
-        'title' => 'A',
         'type' => 'integer',
         'format' => 'default',
       ],
@@ -125,7 +128,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
         'name' => 'c',
         'title' => 'C',
         'type' => 'number',
-        'format' => 'default',
       ],
     ];
     $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $dict_id), 'data-dictionary');
@@ -175,7 +177,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
             'type' => 'int',
             'length' => 11,
             'mysql_type' => 'int',
-            'description' => 'A',
           ],
         'b' => [
           'type' => 'varchar',
