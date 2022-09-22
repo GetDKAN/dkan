@@ -146,7 +146,7 @@ class HarvestCommands extends DrushCommands {
    */
   public function deregister(string $id, array $options = ['revert' => FALSE]) {
     try {
-      if ($this->harvestService->deregisterHarvest($id)) {
+      if ($this->harvestService->deregisterHarvest($id, $options['revert'])) {
         $message = "Successfully deregistered the {$id} harvest.";
       }
     }
