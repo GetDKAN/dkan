@@ -212,23 +212,6 @@ class HarvestCommands extends DrushCommands {
   }
 
   /**
-   * Revert a harvest, i.e. remove all of its harvested entities.
-   *
-   * @param string $harvestId
-   *   The source to revert.
-   *
-   * @command dkan:harvest:revert
-   *
-   * @usage dkan:harvest:revert
-   *   Removes harvested entities.
-   */
-  public function revert($harvestId) {
-    $this->validateHarvestId($harvestId);
-    $result = $this->harvestService->revertHarvest($harvestId);
-    (new ConsoleOutput())->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
-  }
-
-  /**
    * Archive all harvested datasets for a single harvest.
    *
    * @param string $harvestId
