@@ -76,6 +76,32 @@
               }
             }
           }
+        },
+        "indexes": {
+          "type": "array",
+          "items": {
+            "title": "Index",
+            "type": "object",
+            "properties": {
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "description": "One or more fields included in index. Must be keys from the fields object."
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": ["index", "fulltext"],
+                "default": "index"
+              },
+              "description": {
+                "type": "string",
+                "description": "Description of index purpose or functionality"
+              }
+            },
+            "required": ["fields"]
+          }
         }
       }
     }
