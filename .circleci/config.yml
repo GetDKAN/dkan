@@ -29,6 +29,7 @@ commands:
             ddev --version
             ddev config --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
+            mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
             ddev restart
             ddev dkan-init --force
 
