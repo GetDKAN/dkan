@@ -55,9 +55,19 @@ class DatabaseConnectionFactory implements DatabaseConnectionFactoryInterface {
    */
   public function getConnection(): Connection {
     $connection = Database::getConnection($this->target, $this->key);
-    $this->doSetConnectionTimeout($connection);
+    $this->prepareConnection($connection);
 
     return $connection;
+  }
+
+  /**
+   * Prepare database connection.
+   *
+   * @param \Drupal\Core\Database\Connection $connection
+   *   Database connection object.
+   */
+  protected function prepareConnection(Connection $connection): void {
+    $this->doSetConnectionTimeout($connection);
   }
 
   /**
