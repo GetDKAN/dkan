@@ -12,6 +12,6 @@ interface AlterTableQueryInterface {
   /**
    * Apply data dictionary types to the given table.
    */
-  public function applyDataTypes(): void;
+  public function execute(): void;
 
 }
