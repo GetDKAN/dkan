@@ -1,7 +1,7 @@
 version: 2.1
 
 commands:
-  ddev:
+  install-ddev:
     steps:
       - run:
           name: Install DDev
@@ -10,6 +10,7 @@ commands:
             echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
             sudo apt update && sudo apt install -y ddev
   prepare_build:
+    # TODO: Figure out the best way to share this build between the various jobs.
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -21,7 +22,7 @@ commands:
           command: |
             mkdir ~/.composer
             bash -c 'echo "{\"github-oauth\": {\"github.com\": \"$GITHUB_TOKEN\"}}"' > ~/.composer/auth.json
-      - ddev
+      - install-ddev
       - run:
           name: Build site codebase
           command: |
@@ -42,6 +43,7 @@ commands:
       - checkout:
           path: dkan
       - run:
+          # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
           name: Cypressify ddev
           command: |
             mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
@@ -72,18 +74,6 @@ commands:
                   ddev dkan-site-install
                   ddev drush updb -y
                   ddev drush rq
-  build_frontend:
-    parameters:
-      upgrade:
-        description: "If true, will install the latest stable version and test upgrade"
-        default: false
-        type: boolean
-    steps:
-      - run:
-          name: Install and build frontend
-          command: |
-            ddev dkan-frontend-install
-            ddev dkan-frontend-build
 
 jobs:
   phpunit:
@@ -105,6 +95,7 @@ jobs:
       - run:
           name: Run PHPUnit tests
           command: ddev dkan-test-phpunit
+
   cypress:
     machine:
       image: ubuntu-2004:current
@@ -116,7 +107,6 @@ jobs:
     parallelism: 4
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.11"
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
