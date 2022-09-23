@@ -29,7 +29,6 @@ commands:
             ddev --version
             ddev config --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
-            mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
             ddev restart
             ddev dkan-init --force
 
@@ -42,6 +41,11 @@ commands:
     steps:
       - checkout:
           path: dkan
+      - run:
+          name: Cypressify ddev
+          command: |
+            mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
+            ddev restart
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -117,11 +121,9 @@ jobs:
       - ddev
       - prepare_build:
           upgrade: << parameters.upgrade >>
-      - attach_workspace:
-          at: ~/
       - prepare_site:
           upgrade: << parameters.upgrade >>
-      - build_frontend
+
 
 workflows:
   version: 2
