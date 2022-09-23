@@ -118,12 +118,13 @@ jobs:
       TEST_RESULTS: /tmp/test-results
       DKTL_VERSION: "4.2.11"
     steps:
-      - ddev
       - prepare_build:
           upgrade: << parameters.upgrade >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
-
+      - run:
+          name: Run Cypress tests
+          command: ddev cypress-run
 
 workflows:
   version: 2
@@ -137,4 +138,7 @@ workflows:
     jobs:
       - phpunit:
           name: upgrade_test_phpunit
+          upgrade: true
+      - cypress:
+          name: install_test_cypress
           upgrade: true
