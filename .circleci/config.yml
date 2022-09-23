@@ -124,7 +124,7 @@ jobs:
           upgrade: << parameters.upgrade >>
       - run:
           name: Run Cypress tests
-          command: ddev cypress-run
+          command: ddev dkan-module-test-cypress-ci
 
 workflows:
   version: 2
