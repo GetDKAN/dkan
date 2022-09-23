@@ -140,5 +140,5 @@ workflows:
           name: upgrade_test_phpunit
           upgrade: true
       - cypress:
-          name: install_test_cypress
+          name: upgrade_test_cypress
           upgrade: true
