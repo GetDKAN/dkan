@@ -193,6 +193,9 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       // the format of the date fields to ISO-8601 before importing into MySQL.
       if ($type === 'date' && !empty($format) && $format !== 'default') {
         $mysql_date_format = $this->dateFormatConverter->convert($format);
+        // Replace empty date strings with NULL to prevent STR_TO_DATE errors.
+        $pre_alter_cmds[] = $this->connection->update($table)->condition($col, '')->expression($col, 'NULL');
+        // Convert date formats for date column.
         $pre_alter_cmds[] = $this->connection->update($table)->expression($col, "STR_TO_DATE({$col}, :date_format)", [
           ':date_format' => $mysql_date_format,
         ]);
