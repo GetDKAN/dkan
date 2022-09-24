@@ -106,14 +106,14 @@ jobs:
                 command: |
                   ddev xdebug on
                   ddev dkan-phpunit-test --coverage-clover $GITHUB_WORKSPACE/clover.xml
-          - name: Coverage Report
-              uses: dorny/test-reporter@v1
-              if: always()
-              with:
-                name: Maven Tests
-                path: $GITHUB_WORKSPACE/clover.xml
-                reporter: java-junit
-                fail-on-error: true
+            - name: Coverage Report
+                uses: dorny/test-reporter@v1
+                if: always()
+                with:
+                  name: Maven Tests
+                  path: $GITHUB_WORKSPACE/clover.xml
+                  reporter: java-junit
+                  fail-on-error: true
 
   cypress:
     machine:
