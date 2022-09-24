@@ -86,15 +86,34 @@ jobs:
         type: boolean
     environment:
       TEST_RESULTS: /tmp/test-results
-      DKTL_VERSION: "4.2.11"
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
-      - run:
-          name: Run PHPUnit tests
-          command: ddev dkan-test-phpunit
+      - when:
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Run PHPUnit tests
+                command: ddev dkan-test-phpunit
+      - unless:
+          # Only collect coverage info for non-upgrade PHPUnit tests.
+          condition: << parameters.upgrade >>
+          steps:
+            - run:
+                name: Run PHPUnit tests with coverage report
+                command: |
+                  ddev xdebug on
+                  ddev dkan-phpunit-test --coverage-clover $GITHUB_WORKSPACE/clover.xml
+          - name: Coverage Report
+              uses: dorny/test-reporter@v1
+              if: always()
+              with:
+                name: Maven Tests
+                path: $GITHUB_WORKSPACE/clover.xml
+                reporter: java-junit
+                fail-on-error: true
 
   cypress:
     machine:
