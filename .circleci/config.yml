@@ -46,6 +46,7 @@ commands:
           # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
           name: Cypressify ddev
           command: |
+            mkdir -p test_results
             mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
             ddev restart
       - when:
@@ -96,9 +97,7 @@ jobs:
           steps:
             - run:
                 name: Run PHPUnit tests
-                command: |
-                  mkdir -p $GITHUB_WORKSPACE/test_results
-                  ddev dkan-test-phpunit --log-junit $GITHUB_WORKSPACE/test_results/phpunit_results.xml
+                command: ddev dkan-test-phpunit --log-junit $GITHUB_WORKSPACE/test_results/phpunit_results.xml
       - unless:
           # Only collect coverage info for non-upgrade PHPUnit tests.
           condition: << parameters.upgrade >>
