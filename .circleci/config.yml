@@ -105,7 +105,7 @@ jobs:
                 name: Run PHPUnit tests with coverage report
                 command: |
                   ddev xdebug on
-                  ddev dkan-phpunit-test --coverage-clover $GITHUB_WORKSPACE/clover.xml
+                  ddev dkan-test-phpunit --coverage-clover $GITHUB_WORKSPACE/clover.xml
       - store_test_results:
           path: clover $GITHUB_WORKSPACE/test_results
 
@@ -135,3 +135,4 @@ workflows:
     jobs:
       - phpunit:
           name: install_test_phpunit
+          upgrade: true
