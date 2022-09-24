@@ -96,7 +96,9 @@ jobs:
           steps:
             - run:
                 name: Run PHPUnit tests
-                command: ddev dkan-test-phpunit --log-junit $GITHUB_WORKSPACE/test_results/phpunit_results.xml
+                command: |
+                  mkdir -p $GITHUB_WORKSPACE/test_results
+                  ddev dkan-test-phpunit --log-junit $GITHUB_WORKSPACE/test_results/phpunit_results.xml
       - unless:
           # Only collect coverage info for non-upgrade PHPUnit tests.
           condition: << parameters.upgrade >>
