@@ -44,7 +44,7 @@ commands:
         type: boolean
       needs_cypress:
         description: "If true, will add Cypress to the DDev environment"
-        default: true
+        default: false
         type: boolean
     steps:
       - checkout:
@@ -95,11 +95,16 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: false
+        type: boolean
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
+          needs_cypress: << parameters.needs_cypress >>
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -133,22 +138,25 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-    environment:
-      TEST_RESULTS: /tmp/test-results
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: false
+        type: boolean
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
+          needs_cypress: << parameters.needs_cypress >>
       - run:
           name: Run Cypress tests
           command: |
-            echo $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings)
+            echo $(circleci tests glob dkan/cypress/integration/*.spec.js)
             mkdir dkan/cypress/results
-            ddev dkan-module-test-cypress \
-              --headless \
-              --reporter junit \
-              --reporter-options mochaFile=cypress/results/output.xml
+#            ddev dkan-module-test-cypress \
+ #             --headless \
+  #            --reporter junit \
+   #           --reporter-options mochaFile=cypress/results/output.xml
       - store_artifacts:
           path: dkan/cypress/screenshots
       - store_artifacts:
@@ -166,3 +174,4 @@ workflows:
       - cypress:
           name: upgrade_test_cypress
           upgrade: true
+          needs_cypress: true
