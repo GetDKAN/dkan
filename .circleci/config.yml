@@ -128,12 +128,20 @@ jobs:
           upgrade: << parameters.upgrade >>
       - run:
           name: Run Cypress tests
-          command: ddev dkan-module-test-cypress-ci
+          command: |
+            ddev dkan-module-test-cypress \
+              --reporter junit \
+              --reporter-options mochaFile=cypress_results.xml,toConsole=true
+      - store_test_results:
+          path: cypress_results.xml
 
 workflows:
   version: 2
-  install_and_test:
+  upgrade_and_test:
     jobs:
       - phpunit:
           name: install_test_phpunit
+          upgrade: true
+      - cypress:
+          name: upgrade_test_cypress
           upgrade: true
