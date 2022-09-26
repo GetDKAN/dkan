@@ -108,7 +108,7 @@ jobs:
                   ddev xdebug on
                   ddev dkan-test-phpunit --coverage-clover $GITHUB_WORKSPACE/clover.xml
       - store_test_results:
-          path: clover test_results
+          path: test_results
 
   cypress:
     machine:
