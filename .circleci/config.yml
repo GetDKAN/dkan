@@ -97,7 +97,7 @@ jobs:
           steps:
             - run:
                 name: Run PHPUnit tests
-                command: ddev dkan-test-phpunit --log-junit $GITHUB_WORKSPACE/test_results/phpunit_results.xml
+                command: ddev dkan-test-phpunit --log-junit ../test_results/phpunit_results.xml
       - unless:
           # Only collect coverage info for non-upgrade PHPUnit tests.
           condition: << parameters.upgrade >>
@@ -108,7 +108,7 @@ jobs:
                   ddev xdebug on
                   ddev dkan-test-phpunit --coverage-clover $GITHUB_WORKSPACE/clover.xml
       - store_test_results:
-          path: clover $GITHUB_WORKSPACE/test_results
+          path: clover test_results
 
   cypress:
     machine:
