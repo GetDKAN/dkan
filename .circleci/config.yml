@@ -39,23 +39,16 @@ commands:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-      needs_cypress:
-        description: "If true, we need to restart ddev with Cypress available"
-        default: false
-        type: boolean
     steps:
       - checkout:
           path: dkan
-      - when:
-          condition: << needs_cypress >>
-          steps:
-            - run:
-                # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
-                name: Cypressify ddev
-                command: |
-                  mkdir -p test_results
-                  mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
-                  ddev restart
+      - run:
+          # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
+          name: Cypressify ddev
+          command: |
+            mkdir -p test_results
+            mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
+            ddev restart
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -99,7 +92,6 @@ jobs:
           upgrade: << parameters.upgrade >>
       - prepare_site:
           upgrade: << parameters.upgrade >>
-          needs_cypress: << parameters.needs_cypress >>
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -155,7 +147,14 @@ workflows:
   install_and_test:
     jobs:
       - phpunit:
-         name: install_test_phpunit
+          name: install_test_phpunit
       - cypress:
-         name: install_test_cypress
-         needs_cypress: true
+          name: install_test_cypress
+  upgrade_and_test:
+    jobs:
+      - phpunit:
+          name: upgrade_test_phpunit
+          upgrade: true
+      - cypress:
+          name: upgrade_test_cypress
+          upgrade: true
