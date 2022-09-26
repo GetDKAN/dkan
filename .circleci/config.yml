@@ -129,19 +129,25 @@ jobs:
       - run:
           name: Run Cypress tests
           command: |
+            echo $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings)
+            mkdir dkan/cypress/results
             ddev dkan-module-test-cypress \
+              --headless \
+              --browser chromium \
               --reporter junit \
-              --reporter-options mochaFile=cypress_results.xml,toConsole=true
+              --reporter-options mochaFile=cypress/results/output.xml
+      - store_artifacts:
+          path: dkan/cypress/screenshots
+      - store_artifacts:
+          path: dkan/cypress/videos
       - store_test_results:
-          path: cypress_results.xml
+          path: dkan/cypress/results
 
 workflows:
   version: 2
-  upgrade_and_test:
+  install_and_test:
     jobs:
       - phpunit:
-          name: install_test_phpunit
-          upgrade: true
+        name: install_test_phpunit
       - cypress:
-          name: upgrade_test_cypress
-          upgrade: true
+        name: install_test_cypress
