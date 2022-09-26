@@ -18,13 +18,12 @@ use Drupal\json_form_widget\Plugin\Field\FieldWidget\JsonFormWidget;
  *
  * Increments the max counter and causes a rebuild.
  */
-function json_form_widget_add_one(array &$form, FormStateInterface $form_state) {
-  $widget_array_info = $form_state->get('json_form_widget_array');
-  $field = $form_state->getTriggeringElement()['#name'];
-  $amount = $widget_array_info[$field]['amount'];
-  $widget_array_info[$field]['amount'] = $amount + 1;
-  $widget_array_info[$field]['adding'] = TRUE;
-  $form_state->set('json_form_widget_array', $widget_array_info);
+function json_form_widget_add_one(array &$form, FormStateInterface $form_state): void {
+  // Increment stored item count.
+  $field_name = $form_state->getTriggeringElement()['#name'];
+  $item_count = $form_state->get(['json_form_widget_info', $field_name, 'count']) ?? 0;
+  $item_count++;
+  $form_state->set(['json_form_widget_info', $field_name, 'count'], $item_count);
 
   // Since our buildForm() method relies on the value of 'num_names' to
   // generate 'name' form elements, we have to tell the form to rebuild. If we
@@ -37,15 +36,13 @@ function json_form_widget_add_one(array &$form, FormStateInterface $form_state) 
  *
  * Decrements the max counter and causes a form rebuild.
  */
-function json_form_widget_remove_one(array &$form, FormStateInterface $form_state) {
-  $widget_array_info = $form_state->get('json_form_widget_array');
-  $field = $form_state->getTriggeringElement()['#name'];
-  $amount = $widget_array_info[$field]['amount'];
-  if ($amount > 1) {
-    $widget_array_info[$field]['amount'] = $amount - 1;
-    $widget_array_info[$field]['removing'] = TRUE;
-    $form_state->set('json_form_widget_array', $widget_array_info);
-  }
+function json_form_widget_remove_one(array &$form, FormStateInterface $form_state): void {
+  // Decrement stored item count.
+  $field_name = $form_state->getTriggeringElement()['#name'];
+  $item_count = $form_state->get(['json_form_widget_info', $field_name, 'count']) ?? 1;
+  $item_count--;
+  $form_state->set(['json_form_widget_info', $field_name, 'count'], $item_count);
+
   // Since our buildForm() method relies on the value of 'num_names' to
   // generate 'name' form elements, we have to tell the form to rebuild. If we
   // don't do this, the form builder will not call buildForm().

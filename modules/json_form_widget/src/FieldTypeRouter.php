@@ -82,13 +82,15 @@ class FieldTypeRouter implements ContainerInjectionInterface {
   /**
    * Get form element based on property type.
    */
-  public function getFormElement($type, $definition, $data, $object_schema = FALSE, $form_state = NULL) {
+  public function getFormElement($type, $definition, $data, $object_schema = FALSE, $form_state = NULL, array $context = []) {
+    $context[] = $definition['name'];
+
     switch ($type) {
       case 'object':
-        return $this->objectHelper->handleObjectElement($definition, $data, $form_state, $this);
+        return $this->objectHelper->handleObjectElement($definition, $data, $form_state, $context, $this);
 
       case 'array':
-        return $this->arrayHelper->handleArrayElement($definition, $data, $form_state);
+        return $this->arrayHelper->handleArrayElement($definition, $data, $form_state, $context);
 
       case 'string':
         return $this->stringHelper->handleStringElement($definition, $data, $object_schema);
