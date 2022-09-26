@@ -42,16 +42,23 @@ commands:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
+      needs_cypress:
+        description: "If true, will add Cypress to the DDev environment"
+        default: true
+        type: boolean
     steps:
       - checkout:
           path: dkan
-      - run:
-          # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
-          name: Cypressify ddev
-          command: |
-            mkdir -p test_results
-            mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
-            ddev restart
+      - when:
+          condition: << parameters.needs_cypress >>
+          steps:
+            - run:
+                # TODO: This hacks around the specific Cypress version requirement for DKAN. Find a better way.
+                name: Cypressify ddev
+                command: |
+                  mkdir -p test_results
+                  mv .ddev/misc/docker-compose.cypress.yaml .ddev/docker-compose.cypress.yaml
+                  ddev restart
       - when:
           condition: << parameters.upgrade >>
           steps:
@@ -88,8 +95,6 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-    environment:
-      TEST_RESULTS: /tmp/test-results
     steps:
       - prepare_build:
           upgrade: << parameters.upgrade >>
@@ -100,16 +105,23 @@ jobs:
           steps:
             - run:
                 name: Run PHPUnit tests
-                command: ddev dkan-test-phpunit --log-junit ../test_results/phpunit_results.xml
+                command: |
+                  ddev dkan-test-phpunit \
+                    --log-junit ../test_results/phpunit_results.xml
       - unless:
           # Only collect coverage info for non-upgrade PHPUnit tests.
+          # TODO: Output structured coverage information for nifty reports.
           condition: << parameters.upgrade >>
           steps:
             - run:
                 name: Run PHPUnit tests with coverage report
+                environment:
+                  XDEBUG_MODE: coverage
                 command: |
                   ddev xdebug on
-                  ddev dkan-test-phpunit --coverage-clover $GITHUB_WORKSPACE/clover.xml
+                  ddev dkan-test-phpunit \
+                    --coverage-text \
+                    --log-junit ../test_results/phpunit_results.xml
       - store_test_results:
           path: test_results
 
@@ -121,7 +133,6 @@ jobs:
         description: "If true, will install the latest stable version and test upgrade"
         default: false
         type: boolean
-    parallelism: 4
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
@@ -147,12 +158,6 @@ jobs:
 
 workflows:
   version: 2
-  install_and_test:
-    jobs:
-      - phpunit:
-          name: install_test_phpunit
-      - cypress:
-          name: install_test_cypress
   upgrade_and_test:
     jobs:
       - phpunit:
