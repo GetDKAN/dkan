@@ -133,6 +133,7 @@ jobs:
   cypress:
     machine:
       image: ubuntu-2004:current
+    parallelism: 4
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -151,12 +152,12 @@ jobs:
       - run:
           name: Run Cypress tests
           command: |
-            echo $(circleci tests glob dkan/cypress/integration/*.spec.js)
             mkdir dkan/cypress/results
-#            ddev dkan-module-test-cypress \
- #             --headless \
-  #            --reporter junit \
-   #           --reporter-options mochaFile=cypress/results/output.xml
+            ddev dkan-module-test-cypress \
+              --headless \
+              --reporter junit \
+              --reporter-options mochaFile=cypress/results/output.xml \
+              --spec $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings)
       - store_artifacts:
           path: dkan/cypress/screenshots
       - store_artifacts:
