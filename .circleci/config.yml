@@ -133,7 +133,6 @@ jobs:
   cypress:
     machine:
       image: ubuntu-2004:current
-    parallelism: 4
     parameters:
       upgrade:
         description: "If true, will install the latest stable version and test upgrade"
@@ -156,8 +155,7 @@ jobs:
             ddev dkan-module-test-cypress \
               --headless \
               --reporter junit \
-              --reporter-options mochaFile=cypress/results/output.xml \
-              $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings)
+              --reporter-options mochaFile=cypress/results/output.xml
       - store_artifacts:
           path: dkan/cypress/screenshots
       - store_artifacts:
@@ -167,6 +165,13 @@ jobs:
 
 workflows:
   version: 2
+  install_and_test:
+    jobs:
+      - phpunit:
+          name: install_test_phpunit
+      - cypress:
+          name: install_test_cypress
+          needs_cypress: true
   upgrade_and_test:
     jobs:
       - phpunit:
