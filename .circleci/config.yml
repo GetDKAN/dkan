@@ -157,7 +157,7 @@ jobs:
               --headless \
               --reporter junit \
               --reporter-options mochaFile=cypress/results/output.xml \
-              --spec $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings)
+              $(circleci tests glob dkan/cypress/integration/*.spec.js | circleci tests split --split-by=timings)
       - store_artifacts:
           path: dkan/cypress/screenshots
       - store_artifacts:
