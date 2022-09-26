@@ -148,6 +148,6 @@ workflows:
   install_and_test:
     jobs:
       - phpunit:
-        name: install_test_phpunit
+         name: install_test_phpunit
       - cypress:
-        name: install_test_cypress
+         name: install_test_cypress
