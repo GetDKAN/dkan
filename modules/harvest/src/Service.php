@@ -130,16 +130,20 @@ class Service implements ContainerInjectionInterface {
    * Deregister harvest.
    *
    * @param string $id
-   *   Id.
+   *   Harvest identifier.
+   * @param bool $revert
+   *   Whether to also revert the harvest. Defaults to FALSE.
    *
    * @return bool
    *   Boolean.
    */
-  public function deregisterHarvest(string $id) {
-    try {
-      $this->revertHarvest($id);
-    }
-    catch (\Exception $e) {
+  public function deregisterHarvest(string $id, bool $revert = FALSE) {
+    if ($revert) {
+      try {
+        $this->revertHarvest($id);
+      }
+      catch (\Exception $e) {
+      }
     }
 
     $plan_store = $this->storeFactory->getInstance("harvest_plans");

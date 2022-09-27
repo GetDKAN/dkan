@@ -130,11 +130,23 @@ class HarvestCommands extends DrushCommands {
   /**
    * Deregister a harvest.
    *
+   * @param string $id
+   *   Harvest identifier.
+   * @param array $options
+   *   An associative array of options whose values come from cli.
+   *
+   * @option revert Also remove this harvest's entities.
+   *
    * @command dkan:harvest:deregister
+   *
+   * @usage drush dkan:harvest:deregister foo_bar
+   *   Deregister the 'foo_bar' harvest.
+   * @usage drush dkan:harvest:deregister foo_bar --revert
+   *   Deregister the 'foo_bar' harvest, and remove all of its entities.
    */
-  public function deregister($id) {
+  public function deregister(string $id, array $options = ['revert' => FALSE]) {
     try {
-      if ($this->harvestService->deregisterHarvest($id)) {
+      if ($this->harvestService->deregisterHarvest($id, $options['revert'])) {
         $message = "Successfully deregistered the {$id} harvest.";
       }
     }
@@ -209,23 +221,6 @@ class HarvestCommands extends DrushCommands {
     }
 
     $this->renderHarvestRunsInfo($runs ?? []);
-  }
-
-  /**
-   * Revert a harvest, i.e. remove all of its harvested entities.
-   *
-   * @param string $harvestId
-   *   The source to revert.
-   *
-   * @command dkan:harvest:revert
-   *
-   * @usage dkan:harvest:revert
-   *   Removes harvested entities.
-   */
-  public function revert($harvestId) {
-    $this->validateHarvestId($harvestId);
-    $result = $this->harvestService->revertHarvest($harvestId);
-    (new ConsoleOutput())->write("{$result} items reverted for the '{$harvestId}' harvest plan." . PHP_EOL);
   }
 
   /**
