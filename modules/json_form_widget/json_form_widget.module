@@ -37,7 +37,7 @@ function json_form_widget_remove_one(array &$form, FormStateInterface $form_stat
  *
  * @param FormStateInterface $form_state
  *   Form state.
- * @param integer $offset
+ * @param int $offset
  *   Offset to change count by.
  */
 function _json_form_widget_update_count(FormStateInterface $form_state, int $offset): void {

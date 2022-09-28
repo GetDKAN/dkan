@@ -59,8 +59,9 @@ class FieldTypeRouter implements ContainerInjectionInterface {
     $this->objectHelper = $object_helper;
     $this->arrayHelper = $array_helper;
 
-    $this->arrayHelper->setBuilder($this);
     $this->stringHelper->setBuilder($this);
+    $this->objectHelper->setBuilder($this);
+    $this->arrayHelper->setBuilder($this);
   }
 
   /**

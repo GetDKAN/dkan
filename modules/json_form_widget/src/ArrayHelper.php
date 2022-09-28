@@ -52,6 +52,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    */
   public function setBuilder(FieldTypeRouter $builder): void {
     $this->builder = $builder;
+    $this->objectHelper->setBuilder($builder);
   }
 
   /**
@@ -103,11 +104,16 @@ class ArrayHelper implements ContainerInjectionInterface {
     $context_name = implode('-', $context);
     // Determine number of form items to generate.
     $item_count = $this->getItemCount($context_name, count($data ?? []), $min_items, $form_state);
+
     // Determine if this field is required.
     $required_fields = $this->builder->getSchema()->required;
-    $required = in_array($field_name, $required_fields);
-    // Build field properties.
-    $field_properties = $this->generateFieldProperties($definition, $data, $item_count, $min_items, $form_state, $context, $required);
+    $field_required = in_array($field_name, $required_fields);
+    // Build the specified number of field item elements.
+    $field_properties = [];
+    for ($i = 0; $i < $item_count; $i++) {
+      $property_required = $field_required && ($i < $min_items);
+      $field_properties[] = $this->buildArrayElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
+    }
 
     // Build field element.
     return [
@@ -121,47 +127,6 @@ class ArrayHelper implements ContainerInjectionInterface {
       'actions'              => $this->buildActions($item_count, $min_items, $field_name, $context_name),
       $field_name            => $field_properties,
     ];
-  }
-
-  /**
-   * Generate field properties.
-   *
-   * @param array $definition
-   *   Field definition.
-   * @param array|null $data
-   *   Field submission data.
-   * @param integer $item_count
-   *   Field item count.
-   * @param integer $min_items
-   *   Minimum required items.
-   * @param FormStateInterface $form_state
-   *   Form state.
-   * @param array $context
-   *   Context of current field.
-   * @param boolean $field_required
-   *   Field requirement state.
-   *
-   * @return array
-   *   Field element properties.
-   */
-  protected function generateFieldProperties(
-    array $definition,
-    ?array $data,
-    int $item_count,
-    int $min_items,
-    FormStateInterface $form_state,
-    array $context,
-    bool $field_required
-  ): array {
-    $properties = [];
-
-    // Build the specified number of field item elements.
-    for ($i = 0; $i < $item_count; $i++) {
-      $property_required = $field_required && ($i < $min_items);
-      $properties[] = $this->buildArrayElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
-    }
-
-    return $properties;
   }
 
   /**
