@@ -66,7 +66,7 @@ class DatasetTest extends ExistingSiteBase {
    * Test the resource purger when the default moderation state is 'published'.
    */
   public function testResourcePurgePublished() {
-    $id_1 = uniqid(__METHOD__ . '1');
+    $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post then update a dataset with multiple, changing resources.
     $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv', '2.csv']);
@@ -81,9 +81,9 @@ class DatasetTest extends ExistingSiteBase {
    * Test the resource purger when the default moderation state is 'draft'.
    */
   public function testResourcePurgeDraft() {
-    $id_1 = uniqid(__METHOD__ . '1');
-    $id_2 = uniqid(__METHOD__ . '2');
-    $id_3 = uniqid(__METHOD__ . '3');
+    $id_1 = uniqid(__FUNCTION__ . '1');
+    $id_2 = uniqid(__FUNCTION__ . '2');
+    $id_3 = uniqid(__FUNCTION__ . '3');
 
     $this->setDefaultModerationState('draft');
 
@@ -186,7 +186,7 @@ class DatasetTest extends ExistingSiteBase {
    * Test resource removal on distribution deleting.
    */
   public function testDeleteDistribution() {
-    $id_1 = uniqid(__METHOD__ . '1');
+    $id_1 = uniqid(__FUNCTION__ . '1');
 
     // Post a dataset with a single distribution.
     $this->storeDatasetRunQueues($id_1, '1.1', ['1.csv']);
@@ -213,7 +213,8 @@ class DatasetTest extends ExistingSiteBase {
    * Test local resource removal on datastore import.
    */
   public function testDatastoreImportDeleteLocalResource() {
-    $id_1 = uniqid(__METHOD__ . '1');
+    $id_1 = uniqid(__FUNCTION__ . '1');
+    $id_2 = uniqid(__FUNCTION__ . '2');
 
     // Get the original config value.
     $datastoreSettings = \Drupal::service('config.factory')->getEditable('datastore.settings');
@@ -239,10 +240,10 @@ class DatasetTest extends ExistingSiteBase {
     $datastoreSettings->set('delete_local_resource', 0)->save();
 
     // Post dataset 2 and run the 'datastore_import' queue.
-    $this->storeDatasetRunQueues(222, '2', ['2.csv']);
+    $this->storeDatasetRunQueues($id_2, '2', ['2.csv']);
 
     // Get local resource folder name.
-    $dataset = $this->getMetastore()->get('dataset', 222);
+    $dataset = $this->getMetastore()->get('dataset', $id_2);
     $datasetMetadata = $dataset->{'$'};
     $resourceId = explode('__', $datasetMetadata["%Ref:distribution"][0]["data"]["%Ref:downloadURL"][0]["identifier"]);
     $refUuid = $resourceId[0] . '_' . $resourceId[1];
