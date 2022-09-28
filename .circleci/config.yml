@@ -170,28 +170,15 @@ workflows:
     jobs:
       - phpunit:
           name: install_test_phpunit
+      - cypress:
+          name: install_test_cypress
+          needs_cypress: true
   upgrade_and_test:
     jobs:
       - phpunit:
           name: upgrade_test_phpunit
           upgrade: true
-  upgrade_and_test2:
-    jobs:
-      - phpunit:
-          name: upgrade_test_phpunit2
+      - cypress:
+          name: upgrade_test_cypress
           upgrade: true
-  upgrade_and_test3:
-    jobs:
-      - phpunit:
-          name: upgrade_test_phpunit3
-          upgrade: true
-  upgrade_and_test4:
-    jobs:
-      - phpunit:
-          name: upgrade_test_phpunit4
-          upgrade: true
-  upgrade_and_test5:
-    jobs:
-      - phpunit:
-          name: upgrade_test_phpunit5
-          upgrade: true
+          needs_cypress: true
