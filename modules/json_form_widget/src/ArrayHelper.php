@@ -138,6 +138,8 @@ class ArrayHelper implements ContainerInjectionInterface {
    *   Number of items in the data array.
    * @param int $items_min
    *   Minimum number of items required.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
    *
    * @return int
    *   Form field items count.
