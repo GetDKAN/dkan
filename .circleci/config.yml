@@ -34,6 +34,7 @@ commands:
             ddev config --project-name test-$CIRCLE_WORKFLOW_JOB_ID --project-type drupal9 --docroot docroot --create-docroot
             ddev get https://github.com/GetDKAN/dkan-ddev-addon/archive/refs/heads/main.tar.gz
             ddev restart
+            ddev status
             ddev dkan-init --force
 
   prepare_site:
@@ -69,7 +70,7 @@ commands:
                   ddev dkan-site-install
                   ddev composer config repositories.dkan path dkan
                   ddev composer require getdkan/dkan:@dev --no-install
-                  ddev composer update --no-interaction --no-progress
+                  ddev composer update getdkan/dkan -W
                   ddev composer show getdkan/dkan
                   ddev drush updb -y
                   ddev drush rq
