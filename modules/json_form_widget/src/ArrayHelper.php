@@ -55,22 +55,40 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Callback for both ajax-enabled buttons.
+   * Update wrapper element of the triggering button after build.
    *
-   * Selects and returns the fieldset with the names in it.
+   * @param array $form
+   *   Newly built form render array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   Form state.
    *
-   * @codeCoverageIgnore
+   * @return array
+   *   Field wrapper render array.
    */
-  public function addmoreCallback(array &$form, FormStateInterface $form_state): array {
-    $field = $form_state->getTriggeringElement();
-    $element = $form;
-    foreach ($field['#array_parents'] as $parent) {
-      $element = $element[$parent];
-      if ($parent === $field['#name']) {
-        break;
+  public function addOrRemoveButtonCallback(array &$form, FormStateInterface $form_state): array {
+    // Retrieve triggering button element.
+    $button = $form_state->getTriggeringElement();
+    // Extract full heritage for the triggered button.
+    $button_heritage = $button['#array_parents'];
+    // Determine name of wrapper element of the triggering button which
+    // will be updated.
+    $button_parent = $button['#attributes']['data-parent'];
+
+    // Initialize target element to root form render array.
+    $target_element = $form;
+    // Iterate down element heritage from root form element in order to find
+    // immediate parent wrapper element.
+    foreach ($button_heritage as $button_ancestor) {
+      // Navigate deeper into form hierarchy according to the next listed
+      // button field ancestor.
+      $target_element = $target_element[$button_ancestor];
+      if ($button_ancestor === $button_parent) {
+        // We've found the parent element, so we can break early and return it.
+        return $target_element;
       }
     }
-    return $element;
+
+    throw new \RuntimeException('Failed to find wrapper element for button.');
   }
 
   /**
@@ -81,8 +99,10 @@ class ArrayHelper implements ContainerInjectionInterface {
     // for later reference.
     $field_name = $definition['name'];
     $min_items = $definition['schema']->minItems ?? 0;
+    // Build context name.
+    $context_name = implode('-', $context);
     // Determine number of form items to generate.
-    $item_count = $this->getItemCount($context, count($data ?? []), $min_items, $form_state);
+    $item_count = $this->getItemCount($context_name, count($data ?? []), $min_items, $form_state);
     // Determine if this field is required.
     $required_fields = $this->builder->getSchema()->required;
     $required = in_array($field_name, $required_fields);
@@ -95,11 +115,11 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#title'               => ($definition['schema']->title ?? $field_name),
       '#description'         => ($definition['schema']->description ?? ''),
       '#description_display' => 'before',
-      '#prefix'              => '<div id="' . $field_name . '-fieldset-wrapper">',
+      '#prefix'              => '<div id="' . $context_name . '-fieldset-wrapper">',
       '#suffix'              => '</div>',
       '#tree'                => TRUE,
-      'actions'              => $this->addArrayActions($field_name, $item_count, $min_items),
-      $field_name            => iterator_to_array($field_properties),
+      'actions'              => $this->buildActions($item_count, $min_items, $field_name, $context_name),
+      $field_name            => $field_properties,
     ];
   }
 
@@ -121,7 +141,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    * @param boolean $field_required
    *   Field requirement state.
    *
-   * @return \Generator
+   * @return array
    *   Field element properties.
    */
   protected function generateFieldProperties(
@@ -132,18 +152,22 @@ class ArrayHelper implements ContainerInjectionInterface {
     FormStateInterface $form_state,
     array $context,
     bool $field_required
-  ): \Generator {
-    // Build and yield `$item_count` field item elements.
+  ): array {
+    $properties = [];
+
+    // Build the specified number of field item elements.
     for ($i = 0; $i < $item_count; $i++) {
       $property_required = $field_required && ($i < $min_items);
-      yield $this->buildArrayElement($definition, $data[$i] ?? NULL, $form_state, $context, $property_required);
+      $properties[] = $this->buildArrayElement($definition, $data[$i] ?? NULL, $form_state, array_merge($context, [$i]), $property_required);
     }
+
+    return $properties;
   }
 
   /**
    * Get the form items count for the given field.
    *
-   * @param array $context
+   * @param string $context_name
    *   Field context to target.
    * @param int $data_count
    *   Number of items in the data array.
@@ -153,11 +177,11 @@ class ArrayHelper implements ContainerInjectionInterface {
    * @return int
    *   Form field items count.
    */
-  protected function getItemCount(array $context, int $data_count, int $items_min, FormStateInterface $form_state): int {
+  protected function getItemCount(string $context_name, int $data_count, int $items_min, FormStateInterface $form_state): int {
     // Retrieve the item count from form state (this is not necessarily the
     // current number of items on the form, but the number we wish to be
     // present on the form).
-    $count_property = array_merge(['json_form_widget_info'], $context, ['count']);
+    $count_property = self::buildCountProperty($context_name);
     $item_count = $form_state->get($count_property);
     // If item count is not set in form state...
     if (!isset($item_count)) {
@@ -170,38 +194,54 @@ class ArrayHelper implements ContainerInjectionInterface {
   }
 
   /**
-   * Helper function to add actions to array.
+   * Build count property.
+   *
+   * @param string $context_name
+   *   Field element context name.
+   *
+   * @return string[]
+   *   Full count property array.
    */
-  private function addArrayActions(string $field_name, int $item_count, int $min_items): array {
+  public static function buildCountProperty(string $context_name): array {
+    return ['json_form_widget_info', $context_name, 'count'];
+  }
+
+  /**
+   * Helper function to build form field actions.
+   */
+  protected function buildActions(int $item_count, int $min_items, string $parent, string $context_name): array {
+    $actions = [];
+
     // Build add action.
-    $add_action = $this->getAction($this->t('Add one'), 'json_form_widget_add_one', $field_name);
-    // Build remove action if there are more than `$min_items` field elements
+    $actions['add'] = $this->buildAction($this->t('Add one'), 'json_form_widget_add_one', $parent, $context_name);
+    // Build remove action if there are more than the minimum required elements
     // in this field array.
-    $remove_action = ($item_count > $min_items) ?
-      $this->getAction($this->t('Remove one'), 'json_form_widget_remove_one', $field_name) :
-      NULL;
+    if ($item_count > $min_items) {
+      $actions['remove'] = $this->buildAction($this->t('Remove one'), 'json_form_widget_remove_one', $parent, $context_name);
+    }
 
     return [
       '#type'   => 'actions',
-      'actions' => array_filter([
-        'add'    => $add_action,
-        'remove' => $remove_action,
-      ]),
+      'actions' => $actions,
     ];
   }
 
   /**
    * Helper function to get action.
    */
-  private function getAction(string $title, string $function, string $field_name): array {
+  protected function buildAction(string $title, string $function, string $parent, string $context_name): array {
     return [
       '#type'   => 'submit',
+      '#name'   => $context_name,
       '#value'  => $title,
       '#submit' => [$function],
-      '#name'   => $field_name,
       '#ajax'   => [
-        'callback' => [$this, 'addmoreCallback'],
-        'wrapper'  => $field_name . '-fieldset-wrapper',
+        'callback' => [$this, 'addOrRemoveButtonCallback'],
+        'wrapper'  => $context_name . '-fieldset-wrapper',
+      ],
+      '#attributes' => [
+        'data-parent'  => $parent,
+        'data-context' => $context_name,
       ],
       '#limit_validation_errors' => [],
     ];
@@ -212,7 +252,7 @@ class ArrayHelper implements ContainerInjectionInterface {
    *
    * Chooses whether element is simple or complex.
    */
-  public function buildArrayElement(array $definition, $data, FormStateInterface $form_state, array $context, bool $required): array {
+  protected function buildArrayElement(array $definition, $data, FormStateInterface $form_state, array $context, bool $required): array {
     // If this element's definition has properties defined...
     $element = isset($definition['schema']->items->properties) ?
       // Attempt to build a complex element, otherwise...
@@ -229,7 +269,7 @@ class ArrayHelper implements ContainerInjectionInterface {
   /**
    * Returns single simple element from array.
    */
-  public function buildSimpleArrayElement(array $definition, $data): array {
+  protected function buildSimpleArrayElement(array $definition, $data): array {
     return array_filter([
       '#type'          => 'textfield',
       '#title'         => $definition['schema']->items->title ?? NULL,
@@ -240,7 +280,7 @@ class ArrayHelper implements ContainerInjectionInterface {
   /**
    * Returns single complex element from array.
    */
-  public function buildComplexArrayElement(array $definition, $data, FormStateInterface $form_state, array $context): array {
+  protected function buildComplexArrayElement(array $definition, $data, FormStateInterface $form_state, array $context): array {
     $subdefinition = [
       'name'   => $definition['name'],
       'schema' => $definition['schema']->items,

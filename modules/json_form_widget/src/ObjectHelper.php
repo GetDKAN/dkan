@@ -75,14 +75,14 @@ class ObjectHelper {
   protected function generateProperties(array $definition, FieldTypeRouter $builder, ?object $data, FormStateInterface $form_state, array $context): \Generator {
     $properties = (array) $definition['schema']->properties;
     foreach ($properties as $property_name => $property) {
-      yield from [$property_name => $builder->getFormElement(
+      yield $property_name => $builder->getFormElement(
         $property->type ?? 'string', // type
         ['name' => $property_name, 'schema' => $property], // definition
         $data->{$property_name} ?? NULL, // value
         $definition['schema'], // schema
         $form_state,
         $context,
-      )];
+      );
     }
   }
 
