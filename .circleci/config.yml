@@ -161,7 +161,7 @@ jobs:
           path: dkan/cypress/screenshots
       - store_artifacts:
           path: dkan/cypress/videos
-      - store_test_results:
+      - store_artifacts:
           path: dkan/cypress/results
 
 workflows:
