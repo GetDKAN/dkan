@@ -84,7 +84,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       // button field ancestor.
       $target_element = $target_element[$button_ancestor];
       if ($button_ancestor === $button_parent) {
-        // We've found the parent element, so we can break early and return it.
+        // We've found the parent element, so we can return it.
         return $target_element;
       }
     }
