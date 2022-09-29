@@ -152,11 +152,10 @@ jobs:
       - run:
           name: Run Cypress tests
           command: |
-            mkdir dkan/cypress/results
             ddev dkan-module-test-cypress \
               --headless \
               --reporter junit \
-              --reporter-options mochaFile=cypress/results
+              --reporter-options "mochaFile=cypress/results/cypress-results-[hash].xml"
       - store_artifacts:
           path: dkan/cypress/screenshots
       - store_artifacts:
