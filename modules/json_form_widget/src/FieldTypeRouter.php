@@ -3,6 +3,8 @@
 namespace Drupal\json_form_widget;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Form\FormState;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -85,6 +87,7 @@ class FieldTypeRouter implements ContainerInjectionInterface {
    */
   public function getFormElement($type, $definition, $data, $object_schema = FALSE, $form_state = NULL, array $context = []) {
     $context[] = $definition['name'];
+    $form_state ??= new FormState();
 
     switch ($type) {
       case 'object':

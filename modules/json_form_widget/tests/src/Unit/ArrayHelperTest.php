@@ -27,42 +27,55 @@ class ArrayHelperTest extends TestCase {
    */
   public function testComplex() {
     $object = $this->getExpectedObject();
+
+    $options = (new Options())
+      ->add('json_form.object_helper', ObjectHelper::class)
+      ->index(0);
+    $chain = (new Chain($this))
+      ->add(Container::class, 'get', $options)
+      ->add(ObjectHelper::class, 'handleObjectElement', $object)
+      ->getMock();
+
+    $array_helper = ArrayHelper::create($chain);
     $options = (new Options())
       ->add('dkan.metastore.schema_retriever', SchemaRetriever::class)
       ->add('json_form.router', FieldTypeRouter::class)
       ->add('json_form.string_helper', StringHelper::class)
       ->add('json_form.object_helper', ObjectHelper::class)
+      ->add('json_form.array_helper', $array_helper)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('string_translation', TranslationManager::class)
-      ->add('json_form.array_helper', ArrayHelper::class)
       ->index(0);
 
     $distribution_schema = $this->getSchema();
-
     $container_chain = (new Chain($this))
       ->add(Container::class, 'get', $options)
       ->add(SchemaRetriever::class, 'retrieve', $distribution_schema)
       ->add(SchemaUiHandler::class, 'setSchemaUi')
-      ->add(ObjectHelper::class, 'handleObjectElement', $object);
+      ->add(ObjectHelper::class, 'handleObjectElement', $object)
+      ->add(ObjectHelper::class, 'setBuilder');
 
     $container = $container_chain->getMock();
     \Drupal::setContainer($container);
-
-    $form_state = new FormState();
-    $router = FieldTypeRouter::create($container);
-    $array_helper = ArrayHelper::create($container);
-    $array_helper->setBuilder($router);
 
     $definition = [
       'name' => 'distribution',
       'schema' => json_decode($distribution_schema),
     ];
-    $result = $array_helper->handleArrayElement($definition, [], $form_state);
+    $context = [$definition['name']];
+    $context_name = ArrayHelper::buildContextName($context);
+    $form_state = new FormState();
+    $form_state->set(ArrayHelper::buildCountProperty($context_name), 1);
+    $router = FieldTypeRouter::create($container);
+    $router->setSchema(json_decode($distribution_schema));
+    $array_helper->setBuilder($router);
+
+    $result = $array_helper->handleArrayElement($definition, [], $form_state, $context);
     $expected = $this->getExpectedComplexArrayElement();
-    unset($result['actions']);
+    unset($result[0]['actions']);
     unset($result['distribution'][0]['distribution']['schema']['schema']['fields']['actions']);
-    $this->assertEquals($result, $expected);
+    $this->assertEquals($expected, $result);
   }
 
   /**
@@ -171,6 +184,7 @@ class ArrayHelperTest extends TestCase {
           ]
         ],
       ],
+      "#required" => FALSE,
     ];
   }
 
@@ -179,15 +193,17 @@ class ArrayHelperTest extends TestCase {
    */
   private function getExpectedComplexArrayElement() {
     return [
-      "#type" => "fieldset",
-      "#title" => "Distribution",
-      "#prefix" => '<div id="distribution-fieldset-wrapper">',
-      "#suffix" => "</div>",
-      "#tree" => TRUE,
-      "#description" => "Description.",
-      '#description_display' => 'before',
-      "distribution" => [
-        0 => $this->getExpectedObject(),
+      '#type' => 'container',
+      '#id' => 'distribution-fieldset-wrapper',
+      [
+        '#type' => 'fieldset',
+        '#title' => 'Distribution',
+        '#tree' => TRUE,
+        '#description' => 'Description.',
+        '#description_display' => 'before',
+        'distribution' => [
+          0 => $this->getExpectedObject(),
+        ],
       ],
     ];
   }

@@ -101,12 +101,12 @@ class ArrayHelper implements ContainerInjectionInterface {
     $field_name = $definition['name'];
     $min_items = $definition['schema']->minItems ?? 0;
     // Build context name.
-    $context_name = implode('-', $context);
+    $context_name = self::buildContextName($context);
     // Determine number of form items to generate.
     $item_count = $this->getItemCount($context_name, count($data ?? []), $min_items, $form_state);
 
     // Determine if this field is required.
-    $required_fields = $this->builder->getSchema()->required;
+    $required_fields = $this->builder->getSchema()->required ?? [];
     $field_required = in_array($field_name, $required_fields);
     // Build the specified number of field item elements.
     $field_properties = [];
@@ -117,15 +117,17 @@ class ArrayHelper implements ContainerInjectionInterface {
 
     // Build field element.
     return [
-      '#type'                => 'fieldset',
-      '#title'               => ($definition['schema']->title ?? $field_name),
-      '#description'         => ($definition['schema']->description ?? ''),
-      '#description_display' => 'before',
-      '#prefix'              => '<div id="' . $context_name . '-fieldset-wrapper">',
-      '#suffix'              => '</div>',
-      '#tree'                => TRUE,
-      'actions'              => $this->buildActions($item_count, $min_items, $field_name, $context_name),
-      $field_name            => $field_properties,
+      '#type' => 'container',
+      '#id'   => self::buildWrapperIdentifier($context_name),
+      [
+        '#type'                => 'fieldset',
+        '#title'               => ($definition['schema']->title ?? $field_name),
+        '#description'         => ($definition['schema']->description ?? ''),
+        '#description_display' => 'before',
+        '#tree'                => TRUE,
+        'actions'              => $this->buildActions($item_count, $min_items, $field_name, $context_name),
+        $field_name            => $field_properties,
+      ],
     ];
   }
 
@@ -158,6 +160,32 @@ class ArrayHelper implements ContainerInjectionInterface {
       $form_state->set($count_property, $item_count);
     }
     return $item_count;
+  }
+
+  /**
+   * Build unique identifier from field context.
+   *
+   * @param string[] $context
+   *   Field context.
+   *
+   * @return string
+   *   Unique context identifier.
+   */
+  public static function buildContextName(array $context): string {
+    return implode('-', $context);
+  }
+
+  /**
+   * Build fieldset wrapper identifier from context name.
+   *
+   * @param string $context_name
+   *   Context name.
+   *
+   * @return string
+   *   Fieldset wrapper identifier.
+   */
+  protected static function buildWrapperIdentifier(string $context_name): string {
+    return $context_name . '-fieldset-wrapper';
   }
 
   /**
@@ -204,7 +232,7 @@ class ArrayHelper implements ContainerInjectionInterface {
       '#submit' => [$function],
       '#ajax'   => [
         'callback' => [$this, 'addOrRemoveButtonCallback'],
-        'wrapper'  => $context_name . '-fieldset-wrapper',
+        'wrapper'  => self::buildWrapperIdentifier($context_name),
       ],
       '#attributes' => [
         'data-parent'  => $parent,

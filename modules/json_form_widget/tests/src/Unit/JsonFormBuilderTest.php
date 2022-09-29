@@ -17,6 +17,7 @@ use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\metastore\SchemaRetriever;
 use MockChain\Options;
+use PhpParser\Node\Expr\Cast\Array_;
 use stdClass;
 
 /**
@@ -165,7 +166,7 @@ class JsonFormBuilderTest extends TestCase {
     ];
     $default_data = new stdClass();
     $default_data->test = "Some value.";
-    $this->assertEquals($form_builder->getJsonForm($default_data), $expected);
+    $this->assertEquals($expected, $form_builder->getJsonForm($default_data));
 
     // Test email.
     $container_chain = (new Chain($this))
@@ -190,7 +191,7 @@ class JsonFormBuilderTest extends TestCase {
     $form_builder = FormBuilder::create($container);
     $form_builder->setSchema('dataset');
     $result = $form_builder->getJsonForm($default_data);
-    $this->assertEquals($result["hasEmail"]['#type'], "email");
+    $this->assertEquals('email', $result["hasEmail"]['#type']);
     $this->assertArrayHasKey("#element_validate", $result["hasEmail"]);
 
     // Test object.
@@ -250,7 +251,7 @@ class JsonFormBuilderTest extends TestCase {
         ],
       ],
     ];
-    $this->assertEquals($form_builder->getJsonForm([]), $expected);
+    $this->assertEquals($expected, $form_builder->getJsonForm([]));
 
     // Test array.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '
@@ -275,25 +276,29 @@ class JsonFormBuilderTest extends TestCase {
     $form_builder->setSchema('dataset');
     $expected = [
       "keyword" => [
-        "#type" => "fieldset",
-        "#title" => "Tags",
-        "#prefix" => '<div id="keyword-fieldset-wrapper">',
-        "#suffix" => "</div>",
-        "#tree" => TRUE,
-        "#description" => "Tags (or keywords).",
-        '#description_display' => 'before',
-        "keyword" => [
-          0 => [
-            "#type" => "textfield",
-            "#title" => "Tag",
+        "#type" => "container",
+        "#id" => "keyword-fieldset-wrapper",
+        0 => [
+          "#type" => "fieldset",
+          "#title" => "Tags",
+          "#tree" => TRUE,
+          "#description" => "Tags (or keywords).",
+          '#description_display' => 'before',
+          "keyword" => [
+            0 => [
+              "#type" => "textfield",
+              "#title" => "Tag",
+              "#required" => FALSE,
+            ],
           ],
         ],
       ],
     ];
     $form_state = new FormState();
+    $form_state->set(ArrayHelper::buildCountProperty('keyword'), 1);
     $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['keyword']['actions']);
-    $this->assertEquals($result, $expected);
+    unset($result['keyword'][0]['actions']);
+    $this->assertEquals($expected, $result);
 
     // Test array required.
     $container_chain->add(SchemaRetriever::class, 'retrieve', '
@@ -322,26 +327,28 @@ class JsonFormBuilderTest extends TestCase {
     $form_builder->setSchema('dataset');
     $expected = [
       "keyword" => [
-        "#type" => "fieldset",
-        "#title" => "Tags",
-        "#prefix" => '<div id="keyword-fieldset-wrapper">',
-        "#suffix" => "</div>",
-        "#tree" => TRUE,
-        "#description" => "Tags (or keywords).",
-        '#description_display' => 'before',
-        "keyword" => [
-          0 => [
-            "#type" => "textfield",
-            "#title" => "Tag",
-            "#required" => TRUE,
+        "#type" => "container",
+        "#id" => "keyword-fieldset-wrapper",
+        [
+          "#type" => "fieldset",
+          "#title" => "Tags",
+          "#tree" => TRUE,
+          "#description" => "Tags (or keywords).",
+          '#description_display' => 'before',
+          "keyword" => [
+            0 => [
+              "#type" => "textfield",
+              "#title" => "Tag",
+              "#required" => TRUE,
+            ],
           ],
         ],
       ],
     ];
     $form_state = new FormState();
     $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['keyword']['actions']);
-    $this->assertEquals($result, $expected);
+    unset($result['keyword'][0]['actions']);
+    $this->assertEquals($expected, $result);
   }
 
   /**
@@ -351,11 +358,12 @@ class JsonFormBuilderTest extends TestCase {
     $email_validator = new EmailValidator();
     $string_helper = new StringHelper($email_validator);
     $object_helper = new ObjectHelper();
+    $array_helper = new ArrayHelper($object_helper);
 
     $options = (new Options())
       ->add('json_form.string_helper', $string_helper)
       ->add('json_form.object_helper', $object_helper)
-      ->add('json_form.array_helper', ArrayHelper::class)
+      ->add('json_form.array_helper', $array_helper)
       ->add('string_translation', TranslationManager::class)
       ->index(0);
 
