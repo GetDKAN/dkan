@@ -156,12 +156,12 @@ jobs:
             ddev dkan-module-test-cypress \
               --headless \
               --reporter junit \
-              --reporter-options mochaFile=cypress/results/output.xml
+              --reporter-options mochaFile=cypress/results
       - store_artifacts:
           path: dkan/cypress/screenshots
       - store_artifacts:
           path: dkan/cypress/videos
-      - store_artifacts:
+      - store_test_results:
           path: dkan/cypress/results
 
 workflows:
