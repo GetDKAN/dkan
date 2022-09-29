@@ -73,7 +73,7 @@ class ArrayHelperTest extends TestCase {
 
     $result = $array_helper->handleArrayElement($definition, [], $form_state, $context);
     $expected = $this->getExpectedComplexArrayElement();
-    unset($result[0]['actions']);
+    unset($result['actions']);
     unset($result['distribution'][0]['distribution']['schema']['schema']['fields']['actions']);
     $this->assertEquals($expected, $result);
   }
@@ -193,17 +193,15 @@ class ArrayHelperTest extends TestCase {
    */
   private function getExpectedComplexArrayElement() {
     return [
-      '#type' => 'container',
-      '#id' => 'distribution-fieldset-wrapper',
-      [
-        '#type' => 'fieldset',
-        '#title' => 'Distribution',
-        '#tree' => TRUE,
-        '#description' => 'Description.',
-        '#description_display' => 'before',
-        'distribution' => [
-          0 => $this->getExpectedObject(),
-        ],
+      '#type' => 'fieldset',
+      '#title' => 'Distribution',
+      '#tree' => TRUE,
+      '#description' => 'Description.',
+      '#description_display' => 'before',
+      '#prefix' => '<div id="distribution-fieldset-wrapper">',
+      '#suffix' => '</div>',
+      'distribution' => [
+        0 => $this->getExpectedObject(),
       ],
     ];
   }

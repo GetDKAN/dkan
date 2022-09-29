@@ -276,20 +276,18 @@ class JsonFormBuilderTest extends TestCase {
     $form_builder->setSchema('dataset');
     $expected = [
       "keyword" => [
-        "#type" => "container",
-        "#id" => "keyword-fieldset-wrapper",
-        0 => [
-          "#type" => "fieldset",
-          "#title" => "Tags",
-          "#tree" => TRUE,
-          "#description" => "Tags (or keywords).",
-          '#description_display' => 'before',
-          "keyword" => [
-            0 => [
-              "#type" => "textfield",
-              "#title" => "Tag",
-              "#required" => FALSE,
-            ],
+        "#type" => "fieldset",
+        "#title" => "Tags",
+        "#tree" => TRUE,
+        "#description" => "Tags (or keywords).",
+        "#description_display" => "before",
+        "#prefix" => '<div id="keyword-fieldset-wrapper">',
+        "#suffix" => '</div>',
+        "keyword" => [
+          0 => [
+            "#type" => "textfield",
+            "#title" => "Tag",
+            "#required" => FALSE,
           ],
         ],
       ],
@@ -297,7 +295,7 @@ class JsonFormBuilderTest extends TestCase {
     $form_state = new FormState();
     $form_state->set(ArrayHelper::buildCountProperty('keyword'), 1);
     $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['keyword'][0]['actions']);
+    unset($result['keyword']['actions']);
     $this->assertEquals($expected, $result);
 
     // Test array required.
@@ -327,27 +325,25 @@ class JsonFormBuilderTest extends TestCase {
     $form_builder->setSchema('dataset');
     $expected = [
       "keyword" => [
-        "#type" => "container",
-        "#id" => "keyword-fieldset-wrapper",
-        [
-          "#type" => "fieldset",
-          "#title" => "Tags",
-          "#tree" => TRUE,
-          "#description" => "Tags (or keywords).",
-          '#description_display' => 'before',
-          "keyword" => [
-            0 => [
-              "#type" => "textfield",
-              "#title" => "Tag",
-              "#required" => TRUE,
-            ],
+        "#type" => "fieldset",
+        "#title" => "Tags",
+        "#prefix" => '<div id="keyword-fieldset-wrapper">',
+        "#suffix" => "</div>",
+        "#tree" => TRUE,
+        "#description" => "Tags (or keywords).",
+        '#description_display' => 'before',
+        "keyword" => [
+          0 => [
+            "#type" => "textfield",
+            "#title" => "Tag",
+            "#required" => TRUE,
           ],
         ],
       ],
     ];
     $form_state = new FormState();
     $result = $form_builder->getJsonForm([], $form_state);
-    unset($result['keyword'][0]['actions']);
+    unset($result['keyword']['actions']);
     $this->assertEquals($expected, $result);
   }
 

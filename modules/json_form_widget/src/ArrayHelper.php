@@ -117,17 +117,15 @@ class ArrayHelper implements ContainerInjectionInterface {
 
     // Build field element.
     return [
-      '#type' => 'container',
-      '#id'   => self::buildWrapperIdentifier($context_name),
-      [
-        '#type'                => 'fieldset',
-        '#title'               => ($definition['schema']->title ?? $field_name),
-        '#description'         => ($definition['schema']->description ?? ''),
-        '#description_display' => 'before',
-        '#tree'                => TRUE,
-        'actions'              => $this->buildActions($item_count, $min_items, $field_name, $context_name),
-        $field_name            => $field_properties,
-      ],
+      '#type'                => 'fieldset',
+      '#title'               => ($definition['schema']->title ?? $field_name),
+      '#description'         => ($definition['schema']->description ?? ''),
+      '#description_display' => 'before',
+      '#prefix'              => '<div id="' . self::buildWrapperIdentifier($context_name) . '">',
+      '#suffix'              => '</div>',
+      '#tree'                => TRUE,
+      'actions'              => $this->buildActions($item_count, $min_items, $field_name, $context_name),
+      $field_name            => $field_properties,
     ];
   }
 
