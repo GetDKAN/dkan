@@ -241,7 +241,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Prepared MySQL table alter command statement.
    */
   protected function buildAlterCommand(string $table, array $fields, array $indexes): StatementInterface {
-    $mysql_type_map = $this->buildMySQLTypeMap($fields, $table);
+    $mysql_type_map = $this->buildDatabaseTypeMap($fields, $table);
     // Build alter options.
     $alter_options = array_merge(
       $this->buildModifyColumnOptions($fields, $mysql_type_map),
@@ -262,7 +262,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * @return string[]
    *   Column name -> MySQL type map.
    */
-  protected function buildMySQLTypeMap(array $fields, string $table): array {
+  protected function buildDatabaseTypeMap(array $fields, string $table): array {
     $type_map = [];
 
     foreach ($fields as ['name' => $field, 'type' => $type]) {
@@ -278,17 +278,17 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *
    * @param array $fields
    *   Query fields.
-   * @param string $table
-   *   MySQL table name.
+   * @param string[] $type_map
+   *   Field -> MySQL type map.
    *
    * @return string[]
    *   Modify column options.
    */
-  protected function buildModifyColumnOptions(array $fields, array $mysql_type_map): array {
+  protected function buildModifyColumnOptions(array $fields, array $type_map): array {
     $modify_column_options = [];
 
     foreach ($fields as ['name' => $field, 'title' => $title]) {
-      $column_type = $mysql_type_map[$field];
+      $column_type = $type_map[$field];
       // Escape characters in column title in preparation for it being used as
       // a MySQL comment.
       $comment = addslashes($title);
@@ -305,11 +305,15 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *
    * @param array $indexes
    *   Query indexes.
+   * @param string $table
+   *   Table name.
+   * @param string[] $type_map
+   *   Field -> MySQL type map.
    *
    * @return string[]
    *   Add index options.
    */
-  protected function buildAddIndexOptions(array $indexes, string $table, array $mysql_type_map): array {
+  protected function buildAddIndexOptions(array $indexes, string $table, array $type_map): array {
     $add_index_options = [];
 
     foreach ($indexes as ['name' => $name, 'type' => $index_type, 'fields' => $fields, 'description' => $description]) {
@@ -317,10 +321,10 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       $mysql_index_type = $this->getIndexType($index_type);
 
       // Build field options.
-      $field_options = array_map(function ($field) use ($table, $mysql_type_map) {
+      $field_options = array_map(function ($field) use ($table, $type_map) {
         $name = $field['name'];
         $length = $field['length'];
-        $type = $mysql_type_map[$field['name']];
+        $type = $type_map[$name];
         return $this->buildIndexFieldOption($name, $length, $table, $type);
       }, $fields);
       $formatted_field_options = implode(', ', $field_options);
@@ -359,6 +363,10 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Index field name.
    * @param int|null $length
    *   Index field length.
+   * @param string $table
+   *   Table name.
+   * @param string $type
+   *   MySQL column type.
    *
    * @return string
    *   Formatted index field option string.
@@ -394,7 +402,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * @param string $table
    *   Table name.
    *
-   * @return integer
+   * @return int
    *   Max table column length.
    */
   protected function getMaxColumnLength(string $column, string $table): int {

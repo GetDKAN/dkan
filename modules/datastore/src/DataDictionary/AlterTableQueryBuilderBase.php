@@ -101,7 +101,7 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
    *
    * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $database_connection_factory
    *   Database connection factory.
-   * @param \PDLT\ConverterInterface
+   * @param \PDLT\ConverterInterface $date_format_converter
    *   PHP Date Language Tool Converter.
    * @param \Drupal\Component\Uuid\UuidInterface $uuid
    *   Uuid generator service.

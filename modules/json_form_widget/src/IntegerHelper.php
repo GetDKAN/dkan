@@ -3,6 +3,7 @@
 namespace Drupal\json_form_widget;
 
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+
 /**
  * JSON form widget string helper service.
  */
@@ -31,7 +32,7 @@ class IntegerHelper {
    *
    * @param array $definition
    *   Field definition.
-   * @param int $data
+   * @param int|null $data
    *   Field data.
    * @param object|null $element_schema
    *   Parent field element schema.
@@ -62,7 +63,7 @@ class IntegerHelper {
   /**
    * Get default value for element.
    *
-   * @param int $data
+   * @param int|null $data
    *   Current field value.
    * @param object|null $field_schema
    *   Field schema.
