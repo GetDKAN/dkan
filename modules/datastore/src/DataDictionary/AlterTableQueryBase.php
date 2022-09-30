@@ -82,7 +82,7 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
   public function execute(): void {
     // Ensure either fields or indexes are present before attempting to run
     // this command.
-    if (!empty($this->fields) && !empty($this->indexes)) {
+    if (!empty($this->fields) || !empty($this->indexes)) {
       $this->doExecute();
     }
   }
