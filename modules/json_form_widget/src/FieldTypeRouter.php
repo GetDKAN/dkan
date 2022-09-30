@@ -17,7 +17,7 @@ class FieldTypeRouter implements ContainerInjectionInterface {
    *
    * @var object
    */
-  public $schema;
+  protected $schema;
 
   /**
    * String Helper.
@@ -41,6 +41,13 @@ class FieldTypeRouter implements ContainerInjectionInterface {
   protected $arrayHelper;
 
   /**
+   * Integer Helper.
+   *
+   * @var \Drupal\json_form_widget\IntegerHelper
+   */
+  protected $integerHelper;
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -50,20 +57,23 @@ class FieldTypeRouter implements ContainerInjectionInterface {
       $container->get('json_form.string_helper'),
       $container->get('json_form.object_helper'),
       $container->get('json_form.array_helper'),
+      $container->get('json_form.integer_helper'),
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(StringHelper $string_helper, ObjectHelper $object_helper, ArrayHelper $array_helper) {
+  public function __construct(StringHelper $string_helper, ObjectHelper $object_helper, ArrayHelper $array_helper, IntegerHelper $integer_helper) {
     $this->stringHelper = $string_helper;
     $this->objectHelper = $object_helper;
     $this->arrayHelper = $array_helper;
+    $this->integerHelper = $integer_helper;
 
     $this->stringHelper->setBuilder($this);
     $this->objectHelper->setBuilder($this);
     $this->arrayHelper->setBuilder($this);
+    $this->integerHelper->setBuilder($this);
   }
 
   /**
@@ -85,7 +95,7 @@ class FieldTypeRouter implements ContainerInjectionInterface {
   /**
    * Get form element based on property type.
    */
-  public function getFormElement($type, $definition, $data, $object_schema = FALSE, $form_state = NULL, array $context = []) {
+  public function getFormElement($type, $definition, $data, $object_schema = NULL, $form_state = NULL, array $context = []) {
     $context[] = $definition['name'];
     $form_state ??= new FormState();
 
@@ -98,6 +108,9 @@ class FieldTypeRouter implements ContainerInjectionInterface {
 
       case 'string':
         return $this->stringHelper->handleStringElement($definition, $data, $object_schema);
+
+      case 'integer':
+        return $this->integerHelper->handleIntegerElement($definition, $data, $object_schema);
     }
   }
 

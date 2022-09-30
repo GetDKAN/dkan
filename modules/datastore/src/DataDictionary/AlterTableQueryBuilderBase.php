@@ -2,6 +2,8 @@
 
 namespace Drupal\datastore\DataDictionary;
 
+use Drupal\Component\Uuid\UuidInterface;
+
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 
@@ -26,6 +28,13 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
    * @var \PDLT\ConverterInterface
    */
   protected ConverterInterface $dateFormatConverter;
+
+  /**
+   * Uuid service.
+   *
+   * @var \Drupal\Component\Uuid\UuidInterface
+   */
+  protected $uuid;
 
   /**
    * Alter query class name.
@@ -89,13 +98,22 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
 
   /**
    * Create an alter table query factory.
+   *
+   * @param \Drupal\common\Storage\DatabaseConnectionFactoryInterface $database_connection_factory
+   *   Database connection factory.
+   * @param \PDLT\ConverterInterface
+   *   PHP Date Language Tool Converter.
+   * @param \Drupal\Component\Uuid\UuidInterface $uuid
+   *   Uuid generator service.
    */
   public function __construct(
     DatabaseConnectionFactoryInterface $database_connection_factory,
-    ConverterInterface $date_format_converter
+    ConverterInterface $date_format_converter,
+    UuidInterface $uuid
   ) {
     $this->databaseConnectionFactory = $database_connection_factory;
     $this->dateFormatConverter = $date_format_converter;
+    $this->uuid = $uuid;
   }
 
   /**
@@ -121,8 +139,8 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
    */
   public function addDataDictionary(RootedJsonData $dictionary): self {
     $this->addFields($dictionary->{'$.data.fields'});
-    // @todo Uncomment once index support has been added to data-dictionaries.
-    // $this->addIndexes($dictionary->{'$.data.indexes'});
+    $this->addIndexes($dictionary->{'$.data.indexes'});
+
     return $this;
   }
 
@@ -183,20 +201,30 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
    */
   public function validateIndex(array $index): array {
     // Validate nested properties.
-    foreach ($index['fields'] as $key => $index_field) {
+    foreach (array_keys($index['fields']) as $key) {
       // Validate required properties.
-      if (empty($index_field['name'])) {
+      if (empty($index['fields'][$key]['name'])) {
         throw new \UnexpectedValueException('"name" is a required property for data-dictionary index fields.');
       }
       // Provide default values for optional properties.
-      $index['fields'][$key]['length'] ??= '';
+      $index['fields'][$key]['length'] ??= NULL;
     }
 
     // Provide default values for optional properties.
-    $index['name'] ??= '';
+    $index['name'] ??= $this->generateUniqueId();
     $index['type'] ??= '';
 
     return $index;
+  }
+
+  /**
+   * Generate a unique alphanumeric identifier.
+   *
+   * @return string
+   *   Unique identifier.
+   */
+  protected function generateUniqueId(): string {
+    return str_replace('-', '', $this->uuid->generate());
   }
 
   /**

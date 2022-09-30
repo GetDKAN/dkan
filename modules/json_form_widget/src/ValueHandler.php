@@ -27,6 +27,9 @@ class ValueHandler {
       case 'array':
         $data = $this->handleArrayValues($formValues, $property, $schema);
         break;
+
+      case 'integer':
+        $data = $this->handleIntegerValues($formValues, $property);
     }
     return $data;
   }
@@ -46,6 +49,13 @@ class ValueHandler {
       return isset($formValues[$property][0]) ? $formValues[$property][0] : NULL;
     }
     return !empty($formValues[$property]) ? $this->cleanSelectId($formValues[$property]) : FALSE;
+  }
+
+  /**
+   * Extract integer values from form submission.
+   */
+  public function handleIntegerValues($formValues, $property) {
+    return isset($formValues[$property]) ? intval($formValues[$property]) : NULL;
   }
 
   /**
