@@ -138,8 +138,8 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
    * {@inheritdoc}
    */
   public function addDataDictionary(RootedJsonData $dictionary): self {
-    $this->addFields($dictionary->{'$.data.fields'});
-    $this->addIndexes($dictionary->{'$.data.indexes'});
+    $this->addFields($dictionary->{'$.data.fields'} ?? []);
+    $this->addIndexes($dictionary->{'$.data.indexes'} ?? []);
 
     return $this;
   }

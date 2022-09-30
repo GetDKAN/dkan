@@ -52,7 +52,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   /**
    * {@inheritdoc}
    */
-  public function execute(): void {
+  public function doExecute(): void {
     $this->fields = $this->mergeFields($this->fields, $this->table);
     $this->indexes = $this->mergeIndexes($this->indexes, $this->table);
 
@@ -248,8 +248,6 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       $this->buildAddIndexOptions($indexes, $table, $mysql_type_map)
     );
 
-    $cmd = "ALTER TABLE {{$table}} " . implode(', ', $alter_options) . ';';
-    print_r($cmd);
     return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $alter_options) . ';', []);
   }
 

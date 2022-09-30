@@ -79,6 +79,17 @@ abstract class AlterTableQueryBase implements AlterTableQueryInterface {
   /**
    * Apply types and indexes to the given table.
    */
-  abstract public function execute(): void;
+  public function execute(): void {
+    // Ensure either fields or indexes are present before attempting to run
+    // this command.
+    if (!empty($this->fields) && !empty($this->indexes)) {
+      $this->doExecute();
+    }
+  }
+
+  /**
+   * Actor for public execute method.
+   */
+  abstract protected function doExecute(): void;
 
 }
