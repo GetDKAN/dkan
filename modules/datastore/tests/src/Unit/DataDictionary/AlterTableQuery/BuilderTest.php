@@ -26,7 +26,7 @@ class TestQuery extends AlterTableQueryBase {
     return $this->indexes;
   }
 
-  public function execute(): void {
+  protected function doExecute(): void {
     // Required method; do nothing.
   }
 
