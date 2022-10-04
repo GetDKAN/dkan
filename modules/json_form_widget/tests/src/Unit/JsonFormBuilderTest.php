@@ -12,12 +12,12 @@ use Drupal\Core\Form\FormState;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\json_form_widget\FieldTypeRouter;
+use Drupal\json_form_widget\IntegerHelper;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
 use Drupal\metastore\SchemaRetriever;
 use MockChain\Options;
-use PhpParser\Node\Expr\Cast\Array_;
 use stdClass;
 
 /**
@@ -355,11 +355,13 @@ class JsonFormBuilderTest extends TestCase {
     $string_helper = new StringHelper($email_validator);
     $object_helper = new ObjectHelper();
     $array_helper = new ArrayHelper($object_helper);
+    $integer_helper = new IntegerHelper();
 
     $options = (new Options())
       ->add('json_form.string_helper', $string_helper)
       ->add('json_form.object_helper', $object_helper)
       ->add('json_form.array_helper', $array_helper)
+      ->add('json_form.integer_helper', $integer_helper)
       ->add('string_translation', TranslationManager::class)
       ->index(0);
 

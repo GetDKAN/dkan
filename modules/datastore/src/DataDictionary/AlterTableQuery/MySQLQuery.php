@@ -406,7 +406,8 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Max table column length.
    */
   protected function getMaxColumnLength(string $column, string $table): int {
-    return intval($this->connection->query("SELECT MAX(LENGTH({$column})) FROM {{$table}};")->fetchField());
+    $max_length = $this->connection->query("SELECT MAX(LENGTH({$column})) FROM {{$table}};")->fetchField();
+    return intval($max_length);
   }
 
 }

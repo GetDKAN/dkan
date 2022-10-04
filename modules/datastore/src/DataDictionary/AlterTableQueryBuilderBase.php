@@ -212,7 +212,8 @@ abstract class AlterTableQueryBuilderBase implements AlterTableQueryBuilderInter
 
     // Provide default values for optional properties.
     $index['name'] ??= $this->generateUniqueId();
-    $index['type'] ??= '';
+    $index['type'] ??= 'index';
+    $index['description'] ??= '';
 
     return $index;
   }

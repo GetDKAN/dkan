@@ -3,7 +3,6 @@
 namespace Drupal\Tests\json_form_widget\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Drupal\json_form_widget\FormBuilder;
 use Drupal\json_form_widget\ArrayHelper;
 use MockChain\Chain;
 use Drupal\Component\DependencyInjection\Container;
@@ -11,6 +10,7 @@ use Drupal\Core\Form\FormState;
 use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\json_form_widget\FieldTypeRouter;
+use Drupal\json_form_widget\IntegerHelper;
 use Drupal\json_form_widget\ObjectHelper;
 use Drupal\json_form_widget\SchemaUiHandler;
 use Drupal\json_form_widget\StringHelper;
@@ -43,6 +43,7 @@ class ArrayHelperTest extends TestCase {
       ->add('json_form.string_helper', StringHelper::class)
       ->add('json_form.object_helper', ObjectHelper::class)
       ->add('json_form.array_helper', $array_helper)
+      ->add('json_form.integer_helper', IntegerHelper::class)
       ->add('json_form.schema_ui_handler', SchemaUiHandler::class)
       ->add('logger.factory', LoggerChannelFactory::class)
       ->add('string_translation', TranslationManager::class)
