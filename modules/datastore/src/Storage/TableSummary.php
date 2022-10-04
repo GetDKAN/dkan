@@ -24,6 +24,13 @@ class TableSummary implements \JsonSerializable {
   public $columns;
 
   /**
+   * Summary indexes.
+   *
+   * @var array
+   */
+  protected $indexes;
+
+  /**
    * Number of rows.
    *
    * @var int
@@ -33,9 +40,10 @@ class TableSummary implements \JsonSerializable {
   /**
    * Constructor.
    */
-  public function __construct(int $numOfColumns, array $columns, int $numOfRows) {
+  public function __construct(int $numOfColumns, array $columns, array $indexes, int $numOfRows) {
     $this->numOfColumns = $numOfColumns;
     $this->columns = $columns;
+    $this->indexes = $indexes;
     $this->numOfRows = $numOfRows;
   }
 
@@ -48,6 +56,7 @@ class TableSummary implements \JsonSerializable {
     return [
       'numOfColumns' => $this->numOfColumns,
       'columns' => $this->columns,
+      'indexes' => $this->indexes,
       'numOfRows' => $this->numOfRows,
     ];
   }

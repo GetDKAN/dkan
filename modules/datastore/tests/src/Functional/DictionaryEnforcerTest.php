@@ -129,8 +129,31 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
         'title' => 'C',
         'type' => 'number',
       ],
+      [
+        'name' => 'd',
+        'title' => 'D',
+        'type' => 'string',
+      ],
     ];
-    $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $dict_id), 'data-dictionary');
+    $indexes = [
+      [
+        'fields' => [
+          ['name' => 'a'],
+          ['name' => 'd', 'length' => 6],
+        ],
+        'type' => 'index',
+        'description' => 'Index',
+      ],
+      [
+        'fields' => [
+          ['name' => 'a'],
+          ['name' => 'd', 'length' => 3],
+        ],
+        'type' => 'fulltext',
+        'description' => 'Fulltext Index',
+      ],
+    ];
+    $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $indexes, $dict_id), 'data-dictionary');
     // Create data-dictionary.
     $this->metastore->post('data-dictionary', $data_dict);
     $this->metastore->publish('data-dictionary', $dict_id);
@@ -171,7 +194,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'length' => 10,
           'unsigned' => true,
           'not null' => true,
-          'mysql_type' => 'int'
+          'mysql_type' => 'int',
         ],
         'a' => [
             'type' => 'int',
@@ -189,8 +212,13 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'mysql_type' => 'decimal',
           'description' => 'C',
         ],
+        'd' => [
+          'type' => 'text',
+          'mysql_type' => 'text',
+          'description' => 'D',
+        ],
       ],
-      'numOfRows' => 2
+      'numOfRows' => 2,
     ], $result);
   }
 

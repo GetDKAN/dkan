@@ -337,7 +337,26 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
         $schema['fields'][$fieldName] = $newInfo;
       }
     }
+
+    $schema['indexes'] = $this->getTableIndexes($this->getTableName());
+
     $this->setSchema($schema);
+  }
+
+  protected function getTableIndexes(string $table_name): array {
+    $indexes = [];
+
+    $fields_info = $this->connection->query('SHOW INDEXES FROM '. $table_name)->fetchAll();
+    foreach ($fields_info as $info) {
+      $name = $info->Key_name;
+
+      $indexes[$name]['name'] = $name;
+      $indexes[$name]['columns'][] = $info->Column_name;
+      $indexes[$name]['type'] = $info->Index_type;
+      $indexes[$name]['comment'] = $info->Index_comment;
+    }
+
+    return array_values($indexes);
   }
 
   /**
