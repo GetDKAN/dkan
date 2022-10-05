@@ -137,20 +137,19 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     ];
     $indexes = [
       [
+        'name' => 'index_a',
         'fields' => [
           ['name' => 'a'],
           ['name' => 'd', 'length' => 6],
         ],
         'type' => 'index',
-        'description' => 'Index',
       ],
       [
+        'name' => 'fulltext_index_a',
         'fields' => [
-          ['name' => 'a'],
           ['name' => 'd', 'length' => 3],
         ],
         'type' => 'fulltext',
-        'description' => 'Fulltext Index',
       ],
     ];
     $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $indexes, $dict_id), 'data-dictionary');
@@ -187,7 +186,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
 
     // Validate schema.
     $this->assertEquals([
-      'numOfColumns' => 4,
+      'numOfColumns' => 5,
       'columns' => [
         'record_number' => [
           'type' => 'serial',
@@ -216,6 +215,17 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'type' => 'text',
           'mysql_type' => 'text',
           'description' => 'D',
+        ],
+      ],
+      'indexes' => [
+        'index_a' => [
+          'a',
+          'd',
+        ],
+      ],
+      'fulltextIndexes' => [
+        'fulltext_index_a' => [
+          'd',
         ],
       ],
       'numOfRows' => 2,
