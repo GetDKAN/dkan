@@ -346,7 +346,7 @@ abstract class AbstractDatabaseTable implements DatabaseTableInterface {
   protected function getTableIndexes(string $table_name): array {
     $indexes = [];
 
-    $fields_info = $this->connection->query('SHOW INDEXES FROM '. $table_name)->fetchAll();
+    $fields_info = $this->connection->query('SHOW INDEXES FROM ' . $table_name)->fetchAll();
     foreach ($fields_info as $info) {
       $name = $info->Key_name;
 
