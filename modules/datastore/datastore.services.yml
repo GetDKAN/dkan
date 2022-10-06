@@ -63,6 +63,7 @@ services:
     arguments:
       - '@dkan.datastore.database_connection_factory'
       - '@pdlt.converter.strptime_to_mysql'
+      - '@uuid'
 
   dkan.datastore.database:
     class: \Drupal\Core\Database\Connection

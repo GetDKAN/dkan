@@ -14,6 +14,13 @@ use Drupal\datastore\DataDictionary\IncompatibleTypeException;
 class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface {
 
   /**
+   * Default type to use for fields if no data-dictionary type is specified.
+   *
+   * @var string
+   */
+  protected const DEFAULT_FIELD_TYPE = 'TEXT';
+
+  /**
    * Max total size of the MySQL decimal type.
    *
    * @var int
@@ -28,9 +35,31 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   protected const DECIMAL_MAX_DECIMAL = 30;
 
   /**
+   * Default index field length.
+   *
+   * @var int
+   */
+  protected const DEFAULT_INDEX_FIELD_LENGTH = 50;
+
+  /**
+   * MySQL string field types.
+   *
+   * @var string[]
+   */
+  protected const STRING_FIELD_TYPES = [
+    'CHAR',
+    'VARCHAR',
+    'TEXT',
+    'TINYTEXT',
+    'BINARY',
+    'VARBINARY',
+    'BLOB',
+  ];
+
+  /**
    * {@inheritdoc}
    */
-  public function execute(): void {
+  public function doExecute(): void {
     $this->fields = $this->mergeFields($this->fields, $this->table);
     $this->indexes = $this->mergeIndexes($this->indexes, $this->table);
 
@@ -120,7 +149,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * @return string
    *   MySQL data type.
    */
-  protected function getType(string $frictionless_type, string $column, string $table): string {
+  protected function getFieldType(string $frictionless_type, string $column, string $table): string {
     // Build the MySQL type argument list.
     $args = $this->buildTypeArgs($frictionless_type, $column, $table);
 
@@ -219,13 +248,36 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Prepared MySQL table alter command statement.
    */
   protected function buildAlterCommand(string $table, array $fields, array $indexes): StatementInterface {
+    $mysql_type_map = $this->buildDatabaseTypeMap($fields, $table);
     // Build alter options.
     $alter_options = array_merge(
-      $this->buildModifyColumnOptions($fields, $table),
-      $this->buildAddIndexOptions($indexes)
+      $this->buildModifyColumnOptions($fields, $mysql_type_map),
+      $this->buildAddIndexOptions($indexes, $table, $mysql_type_map)
     );
 
     return $this->connection->prepareStatement("ALTER TABLE {{$table}} " . implode(', ', $alter_options) . ';', []);
+  }
+
+  /**
+   * Build MySQL type map from Frictionless field definitions.
+   *
+   * @param array $fields
+   *   Frictionless field definitions.
+   * @param string $table
+   *   Table name.
+   *
+   * @return string[]
+   *   Column name -> MySQL type map.
+   */
+  protected function buildDatabaseTypeMap(array $fields, string $table): array {
+    $type_map = [];
+
+    foreach ($fields as ['name' => $field, 'type' => $type]) {
+      // Get MySQL type for column.
+      $type_map[$field] = $this->getFieldType($type, $field, $table);
+    }
+
+    return $type_map;
   }
 
   /**
@@ -233,21 +285,23 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *
    * @param array $fields
    *   Query fields.
-   * @param string $table
-   *   MySQL table name.
+   * @param string[] $type_map
+   *   Field -> MySQL type map.
    *
    * @return string[]
    *   Modify column options.
    */
-  protected function buildModifyColumnOptions(array $fields, string $table): array {
+  protected function buildModifyColumnOptions(array $fields, array $type_map): array {
     $modify_column_options = [];
 
-    foreach ($fields as ['name' => $field, 'type' => $type, 'title' => $title]) {
-      // Get MySQL type for column.
-      $column_type = $this->getType($type, $field, $table);
+    foreach ($fields as ['name' => $field, 'title' => $title]) {
+      $column_type = $type_map[$field];
+      // Escape characters in column title in preparation for it being used as
+      // a MySQL comment.
+      $comment = addslashes($title);
       // Build modify line for alter command and add the appropriate arguments
       // to the args list.
-      $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$title}'";
+      $modify_column_options[] = "MODIFY COLUMN {$field} {$column_type} COMMENT '{$comment}'";
     }
 
     return $modify_column_options;
@@ -258,19 +312,109 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *
    * @param array $indexes
    *   Query indexes.
+   * @param string $table
+   *   Table name.
+   * @param string[] $type_map
+   *   Field -> MySQL type map.
    *
    * @return string[]
    *   Add index options.
    */
-  protected function buildAddIndexOptions(array $indexes): array {
+  protected function buildAddIndexOptions(array $indexes, string $table, array $type_map): array {
     $add_index_options = [];
 
-    foreach ($indexes as ['name' => $name, 'type' => $type, 'fields' => $fields]) {
-      $index_field_options = implode(', ', array_map(fn ($field) => $field['name'] . ' ' . $field['length'], $fields));
-      $add_index_options[] = "ADD {$type} INDEX {$name} ({$index_field_options})";
+    foreach ($indexes as ['name' => $name, 'type' => $index_type, 'fields' => $fields, 'description' => $description]) {
+      // Translate Frictionless index type to MySQL.
+      $mysql_index_type = $this->getIndexType($index_type);
+
+      // Build field options.
+      $field_options = array_map(function ($field) use ($table, $type_map) {
+        $name = $field['name'];
+        $length = $field['length'];
+        $type = $type_map[$name] ?? self::DEFAULT_FIELD_TYPE;
+        return $this->buildIndexFieldOption($name, $length, $table, $type);
+      }, $fields);
+      $formatted_field_options = implode(', ', $field_options);
+
+      // Escape characters in index description in preparation for it being
+      // used as a MySQL comment.
+      $comment = addslashes($description);
+
+      // Build add index option list.
+      $add_index_options[] = "ADD {$mysql_index_type} INDEX {$name} ({$formatted_field_options}) COMMENT '{$comment}'";
     }
 
     return $add_index_options;
+  }
+
+  /**
+   * Convert Frictionless to MySQL index types.
+   *
+   * @param string $frictionless_type
+   *   Frictionless index type.
+   *
+   * @return string
+   *   MySQL index type.
+   */
+  protected function getIndexType(string $frictionless_type): string {
+    return ([
+      'index'    => '',
+      'fulltext' => 'FULLTEXT',
+    ])[$frictionless_type];
+  }
+
+  /**
+   * Build formatted index field option.
+   *
+   * @param string $name
+   *   Index field name.
+   * @param int|null $length
+   *   Index field length.
+   * @param string $table
+   *   Table name.
+   * @param string $type
+   *   MySQL column type.
+   *
+   * @return string
+   *   Formatted index field option string.
+   */
+  protected function buildIndexFieldOption(string $name, ?int $length, string $table, string $type): string {
+    // Extract base type from full MySQL type.
+    $base_type = strtok($type, '(');
+    // If this field is a string type, determine what it's length should be...
+    if (in_array($base_type, self::STRING_FIELD_TYPES)) {
+      // Initialize length to the default index field length if not set.
+      $length ??= self::DEFAULT_INDEX_FIELD_LENGTH;
+      // Retrieve the max length for this table column.
+      $max_length = $this->getMaxColumnLength($name, $table);
+      // If the specified length is greater than the max length, defer to the
+      // max length.
+      $length = ($length > $max_length) ? $max_length : $length;
+      // Format the length.
+      $formatted_length = ' (' . strval($length) . ')';
+    }
+    // Otherwise, don't specify a length.
+    else {
+      $formatted_length = '';
+    }
+
+    return $name . $formatted_length;
+  }
+
+  /**
+   * Get the length of the largest value in the specified table column.
+   *
+   * @param string $column
+   *   Table column name.
+   * @param string $table
+   *   Table name.
+   *
+   * @return int
+   *   Max table column length.
+   */
+  protected function getMaxColumnLength(string $column, string $table): int {
+    $max_length = $this->connection->query("SELECT MAX(LENGTH({$column})) FROM {{$table}};")->fetchField();
+    return intval($max_length);
   }
 
 }
