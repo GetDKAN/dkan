@@ -14,6 +14,13 @@ use Drupal\datastore\DataDictionary\IncompatibleTypeException;
 class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface {
 
   /**
+   * Default type to use for fields if no data-dictionary type is specified.
+   *
+   * @var string
+   */
+  protected const DEFAULT_FIELD_TYPE = 'TEXT';
+
+  /**
    * Max total size of the MySQL decimal type.
    *
    * @var int
@@ -324,7 +331,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       $field_options = array_map(function ($field) use ($table, $type_map) {
         $name = $field['name'];
         $length = $field['length'];
-        $type = $type_map[$name];
+        $type = $type_map[$name] ?? self::DEFAULT_FIELD_TYPE;
         return $this->buildIndexFieldOption($name, $length, $table, $type);
       }, $fields);
       $formatted_field_options = implode(', ', $field_options);
