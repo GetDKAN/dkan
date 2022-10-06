@@ -1,0 +1,86 @@
+openapi: 3.0.1
+info:
+  title: API Documentation
+  version: Alpha
+tags:
+  - name: Dataset
+  - name: SQL Query
+  - name: Another Tag
+paths:
+  /random/prefix/api/1/metastore/schemas/dataset/items/{identifier}/docs:
+    get:
+      operationId: docs-get-dataset-specific
+      summary: Dataset-specific json documentation
+      tags:
+        - Documentation
+      parameters:
+        - name: identifier
+          in: path
+          description: A dataset uuid
+          required: true
+          schema:
+            type: string
+          example: c9e2d352-e24c-4051-9158-f48127aa5692
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+  /random/prefix/api/1/metastore/schemas/dataset/items/{identifier}:
+    get:
+      summary: Get this dataset
+      # description:
+      tags:
+        - Dataset
+      parameters:
+        - name: "identifier"
+          in: "path"
+          description: "Dataset uuid"
+          required: true
+          schema:
+            type: string
+          example: 11111111-1111-4111-1111-111111111111
+      responses:
+        200:
+          description: Ok
+    delete:
+      summary: This operation should not be present in dataset-specific docs.
+      responses:
+        200:
+          description: Ok
+    # Though an empty verb invalidates the spec, test its removal by dataset-specific docs.
+    post:
+  /random/prefix/api/1/datastore/sql:
+    get:
+      summary: Query resources
+      tags:
+        - SQL Query
+      parameters:
+        - $ref: '#/components/parameters/query'
+      responses:
+        '200':
+          description: Ok
+  /random/prefix/api/1/some/other/path:
+    patch:
+      summary: This path and operation should not be present in dataset-specific docs.
+      responses:
+        200:
+          description: Ok
+  # Though an empty path invalidates the spec, test its removal by dataset-specific docs.
+  /random/prefix/api/1/path/without/operations:
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  parameters:
+    query:
+      name: query
+      in: query
+      description: SQL query
+      required: true
+      schema:
+        type: string
+      example: '[SELECT * FROM DATASTORE-UUID];'

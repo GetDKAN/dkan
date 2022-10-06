@@ -1,0 +1,67 @@
+uuid: f3e854c0-ee32-438a-bde0-802a501c40b4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.data.field_data_type
+    - field.field.node.data.field_json_metadata
+    - node.type.data
+  module:
+    - json_form_widget
+    - path
+id: node.data.default
+targetEntityType: node
+bundle: data
+mode: default
+content:
+  created:
+    type: datetime_timestamp
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_json_metadata:
+    weight: 6
+    settings: {  }
+    third_party_settings: {  }
+    type: json_form_widget
+    region: content
+  path:
+    type: path
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 2
+    region: content
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 5
+    region: content
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 3
+    region: content
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 0
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    region: content
+    third_party_settings: {  }
+hidden:
+  field_data_type: true
+  title: true

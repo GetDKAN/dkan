@@ -1,9 +1,158 @@
 <?php
 
-function dkan_update_8001() {
-  /** @var $metastoreService \Drupal\metastore\Service */
-  $metastoreService = \Drupal::service('dkan.metastore.service');
-  foreach ($metastoreService->getAll('dataset') as $dataset) {
-    $metastoreService->publish('dataset', $dataset->identifier);
+/**
+ * @file
+ */
+
+use Drupal\dkan\DataResource;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\dkan\Metastore;
+use Drupal\metastore\Storage\MetastoreEntityStorageInterface;
+
+/**
+ * Implements hook_entity_load().
+ */
+function metastore_entity_load(array $entities) {
+  foreach($entities as $entity) {
+    metastore_data_lifecycle($entity, "load");
   }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function metastore_entity_presave(EntityInterface $entity) {
+  metastore_data_lifecycle($entity, "presave");
+}
+
+/**
+ * Implements hook_entity_predelete().
+ */
+function metastore_entity_predelete(EntityInterface $entity) {
+  metastore_data_lifecycle($entity, "predelete");
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function metastore_entity_update(EntityInterface $entity) {
+  metastore_data_lifecycle($entity, "update");
+}
+
+/**
+ * Implements hook_entity_bundle_field_info_alter().
+ */
+function metastore_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
+  if ($bundle === 'data') {
+    if (isset($fields['field_json_metadata'])) {
+      $fields['field_json_metadata']->addConstraint('ProperJson', []);
+    }
+  }
+}
+
+/**
+ * Helper method to retrieve the static value for a resource's display.
+ */
+function resource_mapper_display() {
+  return drupal_static('metastore_resource_mapper_display', DataResource::DEFAULT_SOURCE_PERSPECTIVE);
+}
+
+/**
+ * Helper method to retrieve the static value for a resource's revisioning.
+ */
+function resource_mapper_new_revision() {
+  return drupal_static('metastore_resource_mapper_new_revision', 0);
+}
+
+/**
+ * Create a LifeCycle object.
+ *
+ * @param Drupal\Core\Entity\ContentEntityInterface $entity
+ *
+ * @return Drupal\metastore\LifeCycle\Data
+ *   LifeCycle object.
+ */
+function metastore_data_lifecycle(EntityInterface $entity, string $stage) {
+
+  if (metastore_entity_is_valid_item($entity)) {
+    $itemFactory = \Drupal::service('dkan.metastore.metastore_item_factory');
+    $metastoreItem = $itemFactory->wrap($entity);
+    \Drupal::service('dkan.metastore.lifecycle')->go($stage, $metastoreItem);
+  }
+
+  return FALSE;
+}
+
+/**
+ * Check if the entity is part of the metastore.
+ *
+ * @param Drupal\Core\Entity\ContentEntityInterface $entity
+ *   A Drupal content entity.
+ *
+ * @return bool
+ *   Returns true if the entity is used by the metastore.
+ */
+function metastore_entity_is_valid_item(EntityInterface $entity) {
+  $storageClass = \Drupal::service('dkan.metastore.storage')::getStorageClass();
+
+  // If the storage class used implements the entity storage interface, continue.
+  if (!is_a($storageClass, MetastoreEntityStorageInterface::class, true)) {
+    return FALSE;
+  }
+
+  $storageEntityType = \Drupal::service('dkan.metastore.metastore_item_factory')::getEntityType();
+  $storageBundles = \Drupal::service('dkan.metastore.metastore_item_factory')::getBundles();
+
+  // If the type and bundle are correct, return true.
+  if ($entity->getEntityTypeId() != $storageEntityType) {
+    return FALSE;
+  }
+  if (in_array($entity->bundle(), $storageBundles)) {
+    return TRUE;
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function metastore_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $fieldName = \Drupal::service('dkan.metastore.metastore_item_factory')::getMetadataField();
+  if (isset($form[$fieldName]['widget'][0]['value']['#default_value'])) {
+    $json = $form[$fieldName]['widget'][0]['value']['#default_value'];
+    if (empty($json)) {
+      return;
+    }
+    // TODO: use an actual schema id.
+    $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
+    $object = \Drupal\metastore\Service::removeReferences($object);
+    $form[$fieldName]['widget'][0]['value']['#default_value'] = json_encode($object);
+  }
+}
+
+/**
+ * Implements hook_entity_view_alter.
+ */
+function metastore_entity_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+  $fieldName = \Drupal::service('dkan.metastore.metastore_item_factory')::getMetadataField();
+
+  if (isset($build[$fieldName][0]['#context']['value'])) {
+    $json = $build[$fieldName][0]['#context']['value'];
+    if (empty($json)) {
+      return;
+    }
+
+    $object = \Drupal::service('dkan.metastore.valid_metadata')->get($json);
+    $object = Service::removeReferences($object);
+    $build[$fieldName][0]['#context']['value'] = (string) $object;
+  }
+}
+
+/**
+ * Get the name of the current module.
+ */
+function get_module_name(): string {
+  return basename(__FILE__, '.module');
 }

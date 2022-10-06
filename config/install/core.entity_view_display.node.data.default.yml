@@ -1,0 +1,36 @@
+uuid: 0e747236-07f3-4d0b-b096-ad29c8978ab5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.data.field_data_type
+    - field.field.node.data.field_json_metadata
+    - node.type.data
+  module:
+    - user
+_core:
+  default_config_hash: XA5uexhb0lvO13SPgF0s_J_53T_QVvgzgAEWBfGfC90
+id: node.data.default
+targetEntityType: node
+bundle: data
+mode: default
+content:
+  field_data_type:
+    weight: 102
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_json_metadata:
+    weight: 101
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  links:
+    weight: 100
+    region: content
+hidden: {  }

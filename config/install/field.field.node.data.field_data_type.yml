@@ -1,0 +1,21 @@
+uuid: 30ed25b5-12a3-4b2b-971e-c55b973bcd08
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_data_type
+    - node.type.data
+_core:
+  default_config_hash: johslWBSEIrIVc0fL-JhBdrrIo6WgoykRoRitRzskc8
+id: node.data.field_data_type
+field_name: field_data_type
+entity_type: node
+bundle: data
+label: Type
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
