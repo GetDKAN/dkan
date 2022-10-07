@@ -342,7 +342,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   /**
    * Build pre-alter commands for boolean fields.
    *
-   * Convert strings 'true' and 'false' to '1' and '0' for boolean fields
+   * Convert strings 'true' and 'false' to '1' and '0' for boolean fields.
    *
    * @param string $table
    *   Table name.
