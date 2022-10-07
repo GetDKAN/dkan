@@ -126,10 +126,12 @@ jobs:
                 environment:
                   XDEBUG_MODE: coverage
                 command: |
+                  export COVERAGE_FILE=../test_results/clover.xml
                   ddev xdebug on
                   ddev dkan-test-phpunit \
-                    --coverage-text \
+                    --coverage-clover $COVERAGE_FILE \
                     --log-junit ../test_results/phpunit_results.xml
+                  ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
       - store_test_results:
           path: test_results
 
