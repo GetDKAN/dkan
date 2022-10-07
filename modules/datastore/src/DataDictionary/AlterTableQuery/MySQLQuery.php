@@ -218,7 +218,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    */
   protected function getFieldType(string $frictionless_type, string $column, string $table): string {
     // Determine MySQL base type.
-    $base_mysql_type = $this->getMySQLType($frictionless_type);
+    $base_mysql_type = $this->getBaseType($frictionless_type);
     // Build the MySQL type argument list.
     $args = $this->buildTypeArgs($base_mysql_type, $column, $table);
     $args_str = !empty($args) ? '(' . implode(', ', $args) . ')' : '';
@@ -236,7 +236,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * @return string
    *   Base MySQL data type.
    */
-  protected function getMySQLType(string $frictionless_type): string {
+  protected function getBaseType(string $frictionless_type): string {
     return ([
       'string'    => 'TEXT',
       'number'    => 'DECIMAL',
@@ -303,7 +303,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
     // Build pre-alter commands for each query field.
     foreach ($query_fields as ['name' => $col, 'type' => $type, 'format' => $format]) {
       // Determine base MySQL type for Frictionless column type.
-      $base_type = $this->getMySQLType($type);
+      $base_type = $this->getBaseType($type);
 
       // Replace empty strings with NULL for non-text columns to prevent
       // misc. errors (i.e. STR_TO_DATE function related and "Incorrect
