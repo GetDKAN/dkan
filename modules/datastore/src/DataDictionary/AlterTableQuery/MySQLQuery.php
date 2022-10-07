@@ -308,8 +308,8 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
       // Convert strings 'true' and 'false' to '1' and '0' for boolean fields.
       if ($base_type === 'BOOL') {
-        $pre_alter_cmds[] = $this->connection->update($table)->condition("UPPER({$col})", 'FALSE')->expression($col, '0');
-        $pre_alter_cmds[] = $this->connection->update($table)->condition("UPPER({$col})", 'TRUE')->expression($col, '1');
+        $pre_alter_cmds[] = $this->connection->update($table)->where("UPPER({$col}) = :value", [':value' => 'FALSE'])->expression($col, '0');
+        $pre_alter_cmds[] = $this->connection->update($table)->where("UPPER({$col}) = :value", [':value' => 'TRUE'])->expression($col, '1');
       }
     }
 

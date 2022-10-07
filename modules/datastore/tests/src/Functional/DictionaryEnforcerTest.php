@@ -166,10 +166,11 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     // Build dataset.
     $dataset_id = $this->uuid->generate();
     $dataset = $this->validMetadataFactory->get($this->getDataset($dataset_id, 'Test ' . $dataset_id, [$this->resourceUrl], TRUE), 'dataset');
-    // Create datset.
+    // Create dataset.
     $this->metastore->post('dataset', $dataset);
     $this->metastore->publish('dataset', $dataset_id);
 
+    print_r(`drush queue:list`);
     // Run cron to import dataset into datastore.
     $this->cron->run();
     // Run cron to apply data-dictionary.
