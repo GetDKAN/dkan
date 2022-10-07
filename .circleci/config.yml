@@ -139,7 +139,7 @@ jobs:
                     --coverage-clover $COVERAGE_FILE \
                     --log-junit ../test_results/phpunit_results.xml
                   ./cc-test-reporter after-build \
-                    --prefix $PWD/docroot/modules/contrib/dkan
+                    --prefix $PWD/docroot/modules/contrib/dkan \
                     --coverage-input-type clover \
                     --exit-code $?
       - store_test_results:
