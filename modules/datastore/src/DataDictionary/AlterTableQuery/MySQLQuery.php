@@ -295,12 +295,12 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
         $pre_alter_cmds[] = $this->connection->update($table)->condition($col, '')->expression($col, 'NULL');
       }
 
-      // If this field is a date field, and
+      // Build pre-alter commands for date fields.
       if (in_array($base_type, self::DATE_TIME_TYPES, TRUE)) {
         $pre_alter_cmds = array_merge($pre_alter_cmds, $this->buildDatePreAlterCommands($table, $col, $format));
       }
 
-      // Convert strings 'true' and 'false' to '1' and '0' for boolean fields.
+      // Build pre-alter commands for boolean fields.
       if ($base_type === 'BOOL') {
         $pre_alter_cmds = array_merge($pre_alter_cmds, $this->buildBoolPreAlterCommands($table, $col));
       }
@@ -341,6 +341,8 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
   /**
    * Build pre-alter commands for boolean fields.
+   *
+   * Convert strings 'true' and 'false' to '1' and '0' for boolean fields
    *
    * @param string $table
    *   Table name.
