@@ -126,7 +126,9 @@ jobs:
                 environment:
                   XDEBUG_MODE: coverage
                 command: |
-                  export COVERAGE_FILE=../test_results/clover.xml
+                  mkdir -p test_results
+                  export COVERAGE_FILE="$PWD"/test_results/clover.xml
+                  echo "coverage file $COVERAGE_FILE"
                   ddev xdebug on
                   ddev dkan-test-phpunit \
                     --coverage-clover $COVERAGE_FILE \
