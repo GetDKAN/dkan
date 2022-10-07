@@ -135,9 +135,10 @@ jobs:
                     echo "Coverage directory not created: $COVERAGE_DIR"
                   fi
                   ddev xdebug on
-                  TEST_RESULTS=ddev dkan-test-phpunit \
+                  ddev dkan-test-phpunit \
                     --coverage-clover $COVERAGE_FILE \
                     --log-junit ../test_results/phpunit_results.xml
+                  TEST_RESULTS=$?
                   if [ -f $COVERAGE_FILE ]; then
                     echo "Coverage file: $COVERAGE_FILE"
                   else
