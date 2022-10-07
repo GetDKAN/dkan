@@ -126,8 +126,8 @@ jobs:
                 environment:
                   XDEBUG_MODE: coverage
                 command: |
-                  $COVERAGE_DIR=$PWD/build/logs
-                  $COVERAGE_FILE=$COVERAGE_DIR/clover.xml
+                  COVERAGE_DIR=$PWD/build/logs
+                  COVERAGE_FILE=$COVERAGE_DIR/clover.xml
                   echo "Coverage directory: $COVERAGE_DIR"
                   mkdir -p $COVERAGE_DIR
                   ddev xdebug on
