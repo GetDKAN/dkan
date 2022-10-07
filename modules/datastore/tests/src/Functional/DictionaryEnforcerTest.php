@@ -129,8 +129,30 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
         'title' => 'C',
         'type' => 'number',
       ],
+      [
+        'name' => 'd',
+        'title' => 'D',
+        'type' => 'string',
+      ],
     ];
-    $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $dict_id), 'data-dictionary');
+    $indexes = [
+      [
+        'name' => 'index_a',
+        'fields' => [
+          ['name' => 'a'],
+          ['name' => 'd', 'length' => 6],
+        ],
+        'type' => 'index',
+      ],
+      [
+        'name' => 'fulltext_index_a',
+        'fields' => [
+          ['name' => 'd', 'length' => 3],
+        ],
+        'type' => 'fulltext',
+      ],
+    ];
+    $data_dict = $this->validMetadataFactory->get($this->getDataDictionary($fields, $indexes, $dict_id), 'data-dictionary');
     // Create data-dictionary.
     $this->metastore->post('data-dictionary', $data_dict);
     $this->metastore->publish('data-dictionary', $dict_id);
@@ -164,14 +186,14 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
 
     // Validate schema.
     $this->assertEquals([
-      'numOfColumns' => 4,
+      'numOfColumns' => 5,
       'columns' => [
         'record_number' => [
           'type' => 'serial',
           'length' => 10,
           'unsigned' => true,
           'not null' => true,
-          'mysql_type' => 'int'
+          'mysql_type' => 'int',
         ],
         'a' => [
             'type' => 'int',
@@ -189,8 +211,24 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'mysql_type' => 'decimal',
           'description' => 'C',
         ],
+        'd' => [
+          'type' => 'text',
+          'mysql_type' => 'text',
+          'description' => 'D',
+        ],
       ],
-      'numOfRows' => 2
+      'indexes' => [
+        'index_a' => [
+          'a',
+          'd',
+        ],
+      ],
+      'fulltextIndexes' => [
+        'fulltext_index_a' => [
+          'd',
+        ],
+      ],
+      'numOfRows' => 2,
     ], $result);
   }
 

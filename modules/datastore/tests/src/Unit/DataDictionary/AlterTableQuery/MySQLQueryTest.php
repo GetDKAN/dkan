@@ -12,6 +12,7 @@ use Drupal\Tests\datastore\Unit\DataDictionary\UpdateQueryMock;
 
 use MockChain\Chain;
 use MockChain\Options;
+use MockChain\Sequence;
 use PDLT\ConverterInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -47,7 +48,12 @@ class MySQLQueryTest extends TestCase {
         'foo' => 'Foo',
         'bar' => 'Bar',
         'baz' => 'Baz',
-      ]);
+      ])
+      ->add(StatementInterface::class, 'fetchField', (new Sequence())
+        ->add('5')
+        ->add('5')
+        ->add('50')
+      );
   }
 
   /**
@@ -65,16 +71,16 @@ class MySQLQueryTest extends TestCase {
       ['name' => 'baz', 'type' => 'date', 'format' => '%Y-%m-%d', 'title' => 'Baz'],
     ];
     $dictionary_indexes ??= [
-      ['name' => 'index1', 'type' => '', 'fields' => [
+      ['name' => 'index1', 'type' => 'index', 'description' => 'Fizz', 'fields' => [
         ['name' => 'foo', 'length' => 12],
         ['name' => 'bar', 'length' => 6],
-        ['name' => 'baz', 'length' => 9],
+        ['name' => 'baz', 'length' => NULL],
       ]],
-      ['name' => 'index2', 'type' => 'fulltext', 'fields' => [
+      ['name' => 'index2', 'type' => 'fulltext', 'description' => '', 'fields' => [
         ['name' => 'foo', 'length' => 6],
-        ['name' => 'baz', 'length' => 3],
+        ['name' => 'baz', 'length' => NULL],
       ]],
-      ['name' => 'index3', 'type' => 'fulltext', 'fields' => [
+      ['name' => 'index3', 'type' => 'fulltext', 'description' => '', 'fields' => [
         ['name' => 'foo', 'length' => 6],
         ['name' => 'missing', 'length' => 3],
       ]],
@@ -105,11 +111,12 @@ class MySQLQueryTest extends TestCase {
         ':date_format' => ''
       ],
     ], $update_query);
-    $this->assertEquals("ALTER TABLE {{$table}} MODIFY COLUMN foo TEXT COMMENT 'Foo', " .
-      "MODIFY COLUMN bar DECIMAL(0, ) COMMENT 'Bar', " .
-      "MODIFY COLUMN baz DATE COMMENT 'Baz', " .
-      "ADD  INDEX index1 (foo 12, bar 6, baz 9), " .
-      "ADD fulltext INDEX index2 (foo 6, baz 3);", $query);
+
+    $this->assertEquals("ALTER TABLE {" . $table . "} MODIFY COLUMN foo TEXT COMMENT 'Foo', " .
+    "MODIFY COLUMN bar DECIMAL(10, 5) COMMENT 'Bar', " .
+    "MODIFY COLUMN baz DATE COMMENT 'Baz', " .
+    "ADD  INDEX index1 (foo (12), bar, baz) COMMENT 'Fizz', " .
+    "ADD FULLTEXT INDEX index2 (foo (6), baz) COMMENT '';", $query);
   }
 
 

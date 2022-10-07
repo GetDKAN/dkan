@@ -4,6 +4,7 @@ namespace Drupal\Tests\datastore\Unit\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\Connection;
 use Drupal\common\Storage\DatabaseConnectionFactoryInterface;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\datastore\DataDictionary\AlterTableQueryBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryBuilderInterface;
@@ -26,7 +27,7 @@ class TestQuery extends AlterTableQueryBase {
     return $this->indexes;
   }
 
-  public function execute(): void {
+  protected function doExecute(): void {
     // Required method; do nothing.
   }
 
@@ -61,8 +62,11 @@ class BuilderTest extends TestCase {
     $converter = (new Chain($this))
       ->add(ConverterInterface::class)
       ->getMock();
+    $uuid = (new Chain($this))
+      ->add(UuidInterface::class)
+      ->getMock();
 
-    $builder = new TestBuilder($connection, $converter);
+    $builder = new TestBuilder($connection, $converter, $uuid);
 
     // Test Builder's setConnectionTimeout() returns what's expected.
     $result = $builder->setConnectionTimeout(1);
@@ -99,7 +103,8 @@ class BuilderTest extends TestCase {
             'name' => 'field_b',
             'length' => 8
           ],
-        ]
+        ],
+        'description' => 'Buzz'
       ]
     ];
     $result = $builder->addIndexes($indexes);
