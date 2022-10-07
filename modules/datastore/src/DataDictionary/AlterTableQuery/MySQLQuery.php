@@ -204,7 +204,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
   }
 
   /**
-   * Get MySQL equivalent of the given Frictionless "Table Schema" type.
+   * Build full MySQL equivalent of the given Frictionless "Table Schema" type.
    *
    * @param string $frictionless_type
    *   Frictionless "Table Schema" data type.
@@ -214,59 +214,76 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   MySQL table to get type for.
    *
    * @return string
-   *   MySQL data type.
+   *   Full MySQL data type.
    */
   protected function getFieldType(string $frictionless_type, string $column, string $table): string {
+    // Determine MySQL base type.
+    $base_mysql_type = $this->getMySQLType($frictionless_type);
     // Build the MySQL type argument list.
-    $args = $this->buildTypeArgs($frictionless_type, $column, $table);
+    $args = $this->buildTypeArgs($base_mysql_type, $column, $table);
+    $args_str = !empty($args) ? '(' . implode(', ', $args) . ')' : '';
 
     // Build full MySQL type.
-    return ([
-      'string'    => (fn () => 'TEXT'),
-      'number'    => (fn ($args) => "DECIMAL({$args['size']}, {$args['decimal']})"),
-      'integer'   => (fn () => 'INT'),
-      'date'      => (fn () => 'DATE'),
-      'time'      => (fn () => 'TIME'),
-      'datetime'  => (fn () => 'DATETIME'),
-      'year'      => (fn () => 'YEAR'),
-      'yearmonth' => (fn () => 'TINYTEXT'),
-      'boolean'   => (fn () => 'BOOL'),
-      'object'    => (fn () => 'TEXT'),
-      'geopoint'  => (fn () => 'TEXT'),
-      'geojson'   => (fn () => 'TEXT'),
-      'array'     => (fn () => 'TEXT'),
-      'duration'  => (fn () => 'TINYTEXT'),
-    ])[$frictionless_type]($args);
+    return $base_mysql_type . $args_str;
   }
 
   /**
-   * Build MySQL type arg list for the given Frictionless "Table Schema" type.
+   * Get base MySQL equivalent of the given Frictionless "Table Schema" type.
+   *
+   * @param string $frictionless_type
+   *   Frictionless "Table Schema" data type.
+   *
+   * @return string
+   *   Base MySQL data type.
+   */
+  protected function getMySQLType(string $frictionless_type): string {
+    return ([
+      'string'    => 'TEXT',
+      'number'    => 'DECIMAL',
+      'integer'   => 'INT',
+      'date'      => 'DATE',
+      'time'      => 'TIME',
+      'datetime'  => 'DATETIME',
+      'year'      => 'YEAR',
+      'yearmonth' => 'TINYTEXT',
+      'boolean'   => 'BOOL',
+      'object'    => 'TEXT',
+      'geopoint'  => 'TEXT',
+      'geojson'   => 'TEXT',
+      'array'     => 'TEXT',
+      'duration'  => 'TINYTEXT',
+    ])[$frictionless_type];
+  }
+
+  /**
+   * Build MySQL type arg list for MySQL type.
    *
    * @param string $type
-   *   Frictionless "Table Schema" data type.
+   *   MySQL data type.
    * @param string $column
    *   Column name.
    * @param string $table
    *   Table name.
    *
+   * @return array
+   *   MySQL type arguments.
+   *
    * @throws Drupal\datastore\DataDictionary\IncompatibleTypeException
    *   When incompatible data is found in the table for the specified type.
    */
   protected function buildTypeArgs(string $type, string $column, string $table): array {
-    $args = [];
-
-    // If this field is a number field, build decimal and size arguments for
-    // MySQL type.
-    if ($type === 'number') {
+    // If this field is a DECIMAL field, build decimal and size arguments.
+    if ($type === 'DECIMAL') {
       $non_decimals = $this->connection->query("SELECT MAX(LENGTH(TRIM(LEADING '-' FROM SUBSTRING_INDEX({$column}, '.', 1)))) FROM {{$table}};")->fetchField();
-      $args['decimal'] = $this->connection->query("SELECT MAX(LENGTH(SUBSTRING_INDEX({$column}, '.', -1))) FROM {{$table}};")->fetchField();
-      $args['size'] = $non_decimals + $args['decimal'];
-      if ($args['size'] > self::DECIMAL_MAX_SIZE || $args['decimal'] > self::DECIMAL_MAX_DECIMAL) {
+      $decimal = $this->connection->query("SELECT MAX(LENGTH(SUBSTRING_INDEX({$column}, '.', -1))) FROM {{$table}};")->fetchField();
+      $size = $non_decimals + $decimal;
+      if ($size > self::DECIMAL_MAX_SIZE || $decimal > self::DECIMAL_MAX_DECIMAL) {
         throw new IncompatibleTypeException("Decimal values found in column too large for DECIMAL type; please use type 'string' for column '{$column}'");
       }
+      return [$size, $decimal];
     }
 
-    return $args;
+    return [];
   }
 
   /**
@@ -285,8 +302,8 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
     // Build pre-alter commands for each query field.
     foreach ($query_fields as ['name' => $col, 'type' => $type, 'format' => $format]) {
-      // Extract base type from full MySQL column type.
-      $base_type = $this->getBaseType($type);
+      // Determine base MySQL type for Frictionless column type.
+      $base_type = $this->getMySQLType($type);
 
       // Replace empty strings with NULL for non-text columns to prevent
       // misc. errors (i.e. STR_TO_DATE function related and "Incorrect
@@ -357,19 +374,6 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
       $this->connection->update($table)->where("UPPER({$column}) = :value", [':value' => 'FALSE'])->expression($column, '0'),
       $this->connection->update($table)->where("UPPER({$column}) = :value", [':value' => 'TRUE'])->expression($column, '1'),
     ];
-  }
-
-  /**
-   * Extract base type from full MySQL type.
-   *
-   * @param string $type
-   *   Full MySQL type - e.g. "DECIMAL(12, 3)".
-   *
-   * @return string
-   *   Base MySQL type - e.g. "DECIMAL".
-   */
-  protected static function getBaseType(string $type): string {
-    return strtok($type, '(');
   }
 
   /**
@@ -517,8 +521,10 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Formatted index field option string.
    */
   protected function buildIndexFieldOption(string $name, ?int $length, string $table, string $type): string {
+    // Extract base type from full MySQL type ("DECIMAL(12, 3)" -> "DECIMAL").
+    $base_type = strtok($type, '(');
     // If this field is a string type, determine what it's length should be...
-    if (in_array($this->getBaseType($type), self::STRING_FIELD_TYPES)) {
+    if (in_array($base_type, self::STRING_FIELD_TYPES)) {
       // Initialize length to the default index field length if not set.
       $length ??= self::DEFAULT_INDEX_FIELD_LENGTH;
       // Retrieve the max length for this table column.

@@ -229,11 +229,11 @@ class MysqlImport extends ImportJob {
     foreach ($columns as $column) {
       // Sanitize the supplied table header to generate a unique column name;
       // null-coalesce potentially NULL column names to empty strings.
-      $name = $this->sanitizeHeader($column ?? '');
+      $name = self::sanitizeHeader($column ?? '');
 
       // Truncate the generated table column name, if necessary, to fit the max
       // column length.
-      $name = $this->truncateHeader($name);
+      $name = self::truncateHeader($name);
 
       // Generate unique numeric suffix for the header if a header already
       // exists with the same name.
@@ -244,7 +244,7 @@ class MysqlImport extends ImportJob {
 
       $spec[$name] = [
         'type' => "text",
-        'description' => $this->sanitizeDescription($column ?? ''),
+        'description' => self::sanitizeDescription($column ?? ''),
       ];
     }
 
@@ -260,7 +260,7 @@ class MysqlImport extends ImportJob {
    * @return string
    *   Column name on single line.
    */
-  public function sanitizeDescription(string $column) {
+  public static function sanitizeDescription(string $column) {
     $trimmed = array_filter(array_map('trim', explode("\n", $column)));
     return implode(" ", $trimmed);
   }
@@ -304,7 +304,7 @@ class MysqlImport extends ImportJob {
    * @returns string
    *   Truncated column name.
    */
-  protected function truncateHeader(string $column): string {
+  protected static function truncateHeader(string $column): string {
     // If the supplied table column name is longer than the max column length,
     // truncate the column name to 5 characters under the max length and
     // substitute the truncated characters with a unique hash.

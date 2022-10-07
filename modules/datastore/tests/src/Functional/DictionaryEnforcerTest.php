@@ -170,7 +170,6 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
     $this->metastore->post('dataset', $dataset);
     $this->metastore->publish('dataset', $dataset_id);
 
-    print_r(`drush queue:list`);
     // Run cron to import dataset into datastore.
     $this->cron->run();
     // Run cron to apply data-dictionary.
@@ -229,7 +228,7 @@ class DictionaryEnforcerTest extends ExistingSiteBase {
           'd',
         ],
       ],
-      'numOfRows' => 2,
+      'numOfRows' => 3,
     ], $result);
   }
 
