@@ -36,6 +36,8 @@ commands:
             ddev restart
             ddev status
             ddev dkan-init --force
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
 
   prepare_site:
     parameters:
