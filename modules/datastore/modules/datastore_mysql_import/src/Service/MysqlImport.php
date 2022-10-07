@@ -274,7 +274,7 @@ class MysqlImport extends ImportJob {
    * @returns string
    *   Sanitized column name.
    */
-  protected function sanitizeHeader(string $column): string {
+  public static function sanitizeHeader(string $column): string {
     // Replace all spaces and newline characters with underscores since they are
     // not supported.
     $column = preg_replace('/(?: |\r\n|\r|\n)/', '_', $column);

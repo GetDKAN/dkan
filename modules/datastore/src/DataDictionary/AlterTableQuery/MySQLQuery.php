@@ -4,6 +4,7 @@ namespace Drupal\datastore\DataDictionary\AlterTableQuery;
 
 use Drupal\Core\Database\StatementInterface;
 
+use Drupal\datastore_mysql_import\Service\MysqlImport;
 use Drupal\datastore\DataDictionary\AlterTableQueryBase;
 use Drupal\datastore\DataDictionary\AlterTableQueryInterface;
 use Drupal\datastore\DataDictionary\IncompatibleTypeException;
@@ -12,6 +13,17 @@ use Drupal\datastore\DataDictionary\IncompatibleTypeException;
  * MySQL table alter query.
  */
 class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface {
+
+  /**
+   * Date time specific types.
+   *
+   * @var string[]
+   */
+  protected const DATE_TIME_TYPES = [
+    'DATE',
+    'TIME',
+    'DATETIME',
+  ];
 
   /**
    * Default type to use for fields if no data-dictionary type is specified.
@@ -60,7 +72,15 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    * {@inheritdoc}
    */
   public function doExecute(): void {
+    // Sanitize field names to match database field names.
+    $this->fields = $this->sanitizeFields($this->fields);
+    // Filter out fields which are not present in the database table.
     $this->fields = $this->mergeFields($this->fields, $this->table);
+
+    // Sanitize index field names to match database field names.
+    $this->indexes = $this->sanitizeIndexes($this->indexes);
+    // Filter out indexes with fields which are not present in the database
+    // table.
     $this->indexes = $this->mergeIndexes($this->indexes, $this->table);
 
     // Build and execute SQL commands to prepare for table alter.
@@ -70,6 +90,54 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
     $command = $this->buildAlterCommand($this->table, $this->fields, $this->indexes);
     // Execute alter command.
     $command->execute();
+  }
+
+  /**
+   * Sanitize field names.
+   *
+   * @param array $fields
+   *   Query fields.
+   *
+   * @return array
+   *   Query fields list with sanitized field names.
+   */
+  protected function sanitizeFields(array $fields): array {
+    // Iterate through field list...
+    foreach (array_keys($fields) as $key) {
+      // Create reference to index field name.
+      $field_name = &$fields[$key]['name'];
+      // Sanitize field name.
+      $field_name = MysqlImport::sanitizeHeader($field_name);
+    }
+
+    return $fields;
+  }
+
+  /**
+   * Sanitize index field names.
+   *
+   * @param array $indexes
+   *   Query indexes.
+   *
+   * @return array
+   *   Query indexes list with sanitized index field names.
+   */
+  protected function sanitizeIndexes(array $indexes): array {
+    // Iterate through index list...
+    foreach (array_keys($indexes) as $index_key) {
+      // Create reference to index field list.
+      $index_fields = &$indexes[$index_key]['fields'];
+
+      // Iterate through index field list...
+      foreach (array_keys($index_fields) as $field_key) {
+        // Create reference to index field name.
+        $field_name = &$index_fields[$field_key]['name'];
+        // Sanitize field name.
+        $field_name = MysqlImport::sanitizeHeader($field_name);
+      }
+    }
+
+    return $indexes;
   }
 
   /**
@@ -218,20 +286,47 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
     // Build pre-alter commands for each query field.
     foreach ($query_fields as ['name' => $col, 'type' => $type, 'format' => $format]) {
+      // Extract base type from full MySQL column type.
+      $base_type = $this->getBaseType($type);
+
+      // Replace empty strings with NULL for non-text columns to prevent
+      // misc. errors (i.e. STR_TO_DATE function related and "Incorrect
+      // `type` value" errors).
+      if (!in_array($base_type, self::STRING_FIELD_TYPES, TRUE)) {
+        $pre_alter_cmds[] = $this->connection->update($table)->condition($col, '')->expression($col, 'NULL');
+      }
+
       // If this field is a date field, and a valid format is provided; update
       // the format of the date fields to ISO-8601 before importing into MySQL.
-      if ($type === 'date' && !empty($format) && $format !== 'default') {
+      if (in_array($base_type, self::DATE_TIME_TYPES, TRUE) && !empty($format) && $format !== 'default') {
         $mysql_date_format = $this->dateFormatConverter->convert($format);
-        // Replace empty date strings with NULL to prevent STR_TO_DATE errors.
-        $pre_alter_cmds[] = $this->connection->update($table)->condition($col, '')->expression($col, 'NULL');
         // Convert date formats for date column.
         $pre_alter_cmds[] = $this->connection->update($table)->expression($col, "STR_TO_DATE({$col}, :date_format)", [
           ':date_format' => $mysql_date_format,
         ]);
       }
+
+      // Convert strings 'true' and 'false' to '1' and '0' for boolean fields.
+      if ($base_type === 'BOOL') {
+        $pre_alter_cmds[] = $this->connection->update($table)->condition("UPPER({$col})", 'FALSE')->expression($col, '0');
+        $pre_alter_cmds[] = $this->connection->update($table)->condition("UPPER({$col})", 'TRUE')->expression($col, '1');
+      }
     }
 
     return $pre_alter_cmds;
+  }
+
+  /**
+   * Extract base type from full MySQL type.
+   *
+   * @param string $type
+   *   Full MySQL type - e.g. "DECIMAL(12, 3)".
+   *
+   * @return string
+   *   Base MySQL type - e.g. "DECIMAL".
+   */
+  protected static function getBaseType(string $type): string {
+    return strtok($type, '(');
   }
 
   /**
@@ -379,10 +474,8 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
    *   Formatted index field option string.
    */
   protected function buildIndexFieldOption(string $name, ?int $length, string $table, string $type): string {
-    // Extract base type from full MySQL type.
-    $base_type = strtok($type, '(');
     // If this field is a string type, determine what it's length should be...
-    if (in_array($base_type, self::STRING_FIELD_TYPES)) {
+    if (in_array($this->getBaseType($type), self::STRING_FIELD_TYPES)) {
       // Initialize length to the default index field length if not set.
       $length ??= self::DEFAULT_INDEX_FIELD_LENGTH;
       // Retrieve the max length for this table column.
