@@ -79,8 +79,7 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
 
     // Sanitize index field names to match database field names.
     $this->indexes = $this->sanitizeIndexes($this->indexes);
-    // Filter out indexes with fields which are not present in the database
-    // table.
+    // Filter out indexes with fields which are not present in the table.
     $this->indexes = $this->mergeIndexes($this->indexes, $this->table);
 
     // Build and execute SQL commands to prepare for table alter.
@@ -296,24 +295,66 @@ class MySQLQuery extends AlterTableQueryBase implements AlterTableQueryInterface
         $pre_alter_cmds[] = $this->connection->update($table)->condition($col, '')->expression($col, 'NULL');
       }
 
-      // If this field is a date field, and a valid format is provided; update
-      // the format of the date fields to ISO-8601 before importing into MySQL.
-      if (in_array($base_type, self::DATE_TIME_TYPES, TRUE) && !empty($format) && $format !== 'default') {
-        $mysql_date_format = $this->dateFormatConverter->convert($format);
-        // Convert date formats for date column.
-        $pre_alter_cmds[] = $this->connection->update($table)->expression($col, "STR_TO_DATE({$col}, :date_format)", [
-          ':date_format' => $mysql_date_format,
-        ]);
+      // If this field is a date field, and
+      if (in_array($base_type, self::DATE_TIME_TYPES, TRUE)) {
+        $pre_alter_cmds = array_merge($pre_alter_cmds, $this->buildDatePreAlterCommands($table, $col, $format));
       }
 
       // Convert strings 'true' and 'false' to '1' and '0' for boolean fields.
       if ($base_type === 'BOOL') {
-        $pre_alter_cmds[] = $this->connection->update($table)->where("UPPER({$col}) = :value", [':value' => 'FALSE'])->expression($col, '0');
-        $pre_alter_cmds[] = $this->connection->update($table)->where("UPPER({$col}) = :value", [':value' => 'TRUE'])->expression($col, '1');
+        $pre_alter_cmds = array_merge($pre_alter_cmds, $this->buildBoolPreAlterCommands($table, $col));
       }
     }
 
     return $pre_alter_cmds;
+  }
+
+  /**
+   * Build pre-alter commands for date fields.
+   *
+   * Update format of the date fields to ISO-8601 before importing into MySQL.
+   *
+   * @param string $table
+   *   Table name.
+   * @param string $column
+   *   Table column.
+   * @param string $format
+   *   Field frictionless date format.
+   *
+   * @return \Drupal\Core\Database\Query\Update[]
+   *   Pre-alter update DB queries.
+   */
+  protected function buildDatePreAlterCommands(string $table, string $column, string $format): array {
+    $pre_alter_cmds = [];
+
+    // If a valid format is provided...
+    if (!empty($format) && $format !== 'default') {
+      $mysql_date_format = $this->dateFormatConverter->convert($format);
+      // Convert date formats for date column.
+      $pre_alter_cmds[] = $this->connection->update($table)->expression($column, "STR_TO_DATE({$column}, :date_format)", [
+        ':date_format' => $mysql_date_format,
+      ]);
+    }
+
+    return $pre_alter_cmds;
+  }
+
+  /**
+   * Build pre-alter commands for boolean fields.
+   *
+   * @param string $table
+   *   Table name.
+   * @param string $column
+   *   Table column.
+   *
+   * @return \Drupal\Core\Database\Query\Update[]
+   *   Pre-alter update DB queries.
+   */
+  protected function buildBoolPreAlterCommands(string $table, string $column): array {
+    return [
+      $this->connection->update($table)->where("UPPER({$column}) = :value", [':value' => 'FALSE'])->expression($column, '0'),
+      $this->connection->update($table)->where("UPPER({$column}) = :value", [':value' => 'TRUE'])->expression($column, '1'),
+    ];
   }
 
   /**
