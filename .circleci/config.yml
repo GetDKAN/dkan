@@ -135,13 +135,19 @@ jobs:
                     echo "Coverage directory not created: $COVERAGE_DIR"
                   fi
                   ddev xdebug on
-                  ddev dkan-test-phpunit \
+                  TEST_RESULTS=ddev dkan-test-phpunit \
                     --coverage-clover $COVERAGE_FILE \
                     --log-junit ../test_results/phpunit_results.xml
+                  if [ -f $COVERAGE_FILE ]; then
+                    echo "Coverage file: $COVERAGE_FILE"
+                  else
+                    echo "Coverage file not created: $COVERAGE_FILE"
+                  fi
                   ./cc-test-reporter after-build \
                     --prefix $PWD/docroot/modules/contrib/dkan \
                     --coverage-input-type clover \
-                    --exit-code $?
+                    --exit-code $TEST_RESULTS
+                  exit $TEST_RESULTS
       - store_test_results:
           path: test_results
 
